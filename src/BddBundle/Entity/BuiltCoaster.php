@@ -63,6 +63,38 @@ class BuiltCoaster
      */
     private $coasters;
 
+    /**
+     * @var Manufacturer
+     *
+     * @ORM\ManyToOne(targetEntity="Manufacturer", inversedBy="builtCoasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $manufacturer;
+
+    /**
+     * @var Restraint
+     *
+     * @ORM\ManyToOne(targetEntity="Restraint", inversedBy="builtCoasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $restraint;
+
+    /**
+     * @var Launch
+     *
+     * @ORM\ManyToMany(targetEntity="Launch", inversedBy="builtCoasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $launchs;
+
+    /**
+     * @var Type
+     *
+     * @ORM\ManyToMany(targetEntity="Type", inversedBy="builtCoasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $types;
+
 
     /**
      * Constructor
@@ -234,5 +266,121 @@ class BuiltCoaster
     public function getCoasters()
     {
         return $this->coasters;
+    }
+
+    /**
+     * Set manufacturer
+     *
+     * @param \BddBundle\Entity\Manufacturer $manufacturer
+     *
+     * @return BuiltCoaster
+     */
+    public function setManufacturer(\BddBundle\Entity\Manufacturer $manufacturer)
+    {
+        $this->manufacturer = $manufacturer;
+
+        return $this;
+    }
+
+    /**
+     * Get manufacturer
+     *
+     * @return \BddBundle\Entity\Manufacturer
+     */
+    public function getManufacturer()
+    {
+        return $this->manufacturer;
+    }
+
+    /**
+     * Set restraint
+     *
+     * @param \BddBundle\Entity\Restraint $restraint
+     *
+     * @return BuiltCoaster
+     */
+    public function setRestraint(\BddBundle\Entity\Restraint $restraint)
+    {
+        $this->restraint = $restraint;
+
+        return $this;
+    }
+
+    /**
+     * Get restraint
+     *
+     * @return \BddBundle\Entity\Restraint
+     */
+    public function getRestraint()
+    {
+        return $this->restraint;
+    }
+
+    /**
+     * Add launch
+     *
+     * @param \BddBundle\Entity\Launch $launch
+     *
+     * @return BuiltCoaster
+     */
+    public function addLaunch(\BddBundle\Entity\Launch $launch)
+    {
+        $this->launchs[] = $launch;
+
+        return $this;
+    }
+
+    /**
+     * Remove launch
+     *
+     * @param \BddBundle\Entity\Launch $launch
+     */
+    public function removeLaunch(\BddBundle\Entity\Launch $launch)
+    {
+        $this->launchs->removeElement($launch);
+    }
+
+    /**
+     * Get launchs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getLaunchs()
+    {
+        return $this->launchs;
+    }
+
+    /**
+     * Add type
+     *
+     * @param \BddBundle\Entity\Type $type
+     *
+     * @return BuiltCoaster
+     */
+    public function addType(\BddBundle\Entity\Type $type)
+    {
+        $this->types[] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Remove type
+     *
+     * @param \BddBundle\Entity\Type $type
+     */
+    public function removeType(\BddBundle\Entity\Type $type)
+    {
+        $this->types->removeElement($type);
+    }
+
+    /**
+     * Get types
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTypes()
+    {
+        return $this->types;
     }
 }

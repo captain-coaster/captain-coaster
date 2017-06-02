@@ -35,6 +35,21 @@ class Status
      */
     private $slug;
 
+    /**
+     * @var Coaster
+     *
+     * @ORM\OneToMany(targetEntity="Coaster", mappedBy="status")
+     */
+    private $coasters;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->coasters = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -93,5 +108,38 @@ class Status
     {
         return $this->slug;
     }
-}
 
+    /**
+     * Add coaster
+     *
+     * @param \BddBundle\Entity\Coaster $coaster
+     *
+     * @return Status
+     */
+    public function addCoaster(\BddBundle\Entity\Coaster $coaster)
+    {
+        $this->coasters[] = $coaster;
+
+        return $this;
+    }
+
+    /**
+     * Remove coaster
+     *
+     * @param \BddBundle\Entity\Coaster $coaster
+     */
+    public function removeCoaster(\BddBundle\Entity\Coaster $coaster)
+    {
+        $this->coasters->removeElement($coaster);
+    }
+
+    /**
+     * Get coasters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoasters()
+    {
+        return $this->coasters;
+    }
+}

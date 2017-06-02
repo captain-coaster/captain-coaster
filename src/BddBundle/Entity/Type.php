@@ -35,7 +35,23 @@ class Type
      */
     private $slug;
 
+    /**
+     * @var BuiltCoaster
+     *
+     * @ORM\ManyToMany(targetEntity="BuiltCoaster", mappedBy="types")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $builtCoasters;
 
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->builtCoasters = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
     /**
      * Get id
      *
@@ -93,5 +109,38 @@ class Type
     {
         return $this->slug;
     }
-}
 
+    /**
+     * Add builtCoaster
+     *
+     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
+     *
+     * @return Type
+     */
+    public function addBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
+    {
+        $this->builtCoasters[] = $builtCoaster;
+
+        return $this;
+    }
+
+    /**
+     * Remove builtCoaster
+     *
+     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
+     */
+    public function removeBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
+    {
+        $this->builtCoasters->removeElement($builtCoaster);
+    }
+
+    /**
+     * Get builtCoasters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBuiltCoasters()
+    {
+        return $this->builtCoasters;
+    }
+}

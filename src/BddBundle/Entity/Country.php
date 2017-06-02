@@ -35,6 +35,20 @@ class Country
      */
     private $slug;
 
+    /**
+     * @var Park
+     *
+     * @ORM\OneToMany(targetEntity="Park", mappedBy="country")
+     */
+    private $parks;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->parks = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -93,5 +107,38 @@ class Country
     {
         return $this->slug;
     }
-}
 
+    /**
+     * Add park
+     *
+     * @param \BddBundle\Entity\Park $park
+     *
+     * @return Country
+     */
+    public function addPark(\BddBundle\Entity\Park $park)
+    {
+        $this->parks[] = $park;
+
+        return $this;
+    }
+
+    /**
+     * Remove park
+     *
+     * @param \BddBundle\Entity\Park $park
+     */
+    public function removePark(\BddBundle\Entity\Park $park)
+    {
+        $this->parks->removeElement($park);
+    }
+
+    /**
+     * Get parks
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParks()
+    {
+        return $this->parks;
+    }
+}

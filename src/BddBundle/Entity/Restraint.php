@@ -35,6 +35,21 @@ class Restraint
      */
     private $slug;
 
+    /**
+     * @var BuiltCoaster
+     *
+     * @ORM\OneToMany(targetEntity="BuiltCoaster", mappedBy="restraint")
+     */
+    private $builtCoasters;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->builtCoasters = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -93,5 +108,38 @@ class Restraint
     {
         return $this->slug;
     }
-}
 
+    /**
+     * Add builtCoaster
+     *
+     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
+     *
+     * @return Restraint
+     */
+    public function addBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
+    {
+        $this->builtCoasters[] = $builtCoaster;
+
+        return $this;
+    }
+
+    /**
+     * Remove builtCoaster
+     *
+     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
+     */
+    public function removeBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
+    {
+        $this->builtCoasters->removeElement($builtCoaster);
+    }
+
+    /**
+     * Get builtCoasters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBuiltCoasters()
+    {
+        return $this->builtCoasters;
+    }
+}

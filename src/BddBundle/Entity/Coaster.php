@@ -64,6 +64,22 @@ class Coaster
      */
     private $builtCoaster;
 
+    /**
+     * @var Park
+     *
+     * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $park;
+
+    /**
+     * @var Status
+     *
+     * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
+
 
     /**
      * Get id
@@ -217,5 +233,53 @@ class Coaster
     public function getBuiltCoaster()
     {
         return $this->builtCoaster;
+    }
+
+    /**
+     * Set park
+     *
+     * @param \BddBundle\Entity\Park $park
+     *
+     * @return Coaster
+     */
+    public function setPark(\BddBundle\Entity\Park $park)
+    {
+        $this->park = $park;
+
+        return $this;
+    }
+
+    /**
+     * Get park
+     *
+     * @return \BddBundle\Entity\Park
+     */
+    public function getPark()
+    {
+        return $this->park;
+    }
+
+    /**
+     * Set status
+     *
+     * @param \BddBundle\Entity\Status $status
+     *
+     * @return Coaster
+     */
+    public function setStatus(\BddBundle\Entity\Status $status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return \BddBundle\Entity\Status
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 }

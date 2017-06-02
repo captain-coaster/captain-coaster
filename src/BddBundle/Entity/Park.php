@@ -42,6 +42,29 @@ class Park
      */
     private $website;
 
+    /**
+     * @var Coaster
+     *
+     * @ORM\OneToMany(targetEntity="Coaster", mappedBy="park")
+     */
+    private $coasters;
+
+    /**
+     * @var Country
+     *
+     * @ORM\ManyToOne(targetEntity="Country", inversedBy="parks")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $country;
+
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->coasters = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -124,5 +147,62 @@ class Park
     {
         return $this->website;
     }
-}
 
+    /**
+     * Add coaster
+     *
+     * @param \BddBundle\Entity\Coaster $coaster
+     *
+     * @return Park
+     */
+    public function addCoaster(\BddBundle\Entity\Coaster $coaster)
+    {
+        $this->coasters[] = $coaster;
+
+        return $this;
+    }
+
+    /**
+     * Remove coaster
+     *
+     * @param \BddBundle\Entity\Coaster $coaster
+     */
+    public function removeCoaster(\BddBundle\Entity\Coaster $coaster)
+    {
+        $this->coasters->removeElement($coaster);
+    }
+
+    /**
+     * Get coasters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCoasters()
+    {
+        return $this->coasters;
+    }
+
+    /**
+     * Set country
+     *
+     * @param \BddBundle\Entity\Country $country
+     *
+     * @return Park
+     */
+    public function setCountry(\BddBundle\Entity\Country $country)
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * Get country
+     *
+     * @return \BddBundle\Entity\Country
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+}
