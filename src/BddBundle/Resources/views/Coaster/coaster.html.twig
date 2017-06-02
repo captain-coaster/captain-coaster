@@ -3,5 +3,9 @@
 {% block title %}BddBundle:Coaster:coaster{% endblock %}
 
 {% block body %}
-<h1>Welcome to the Coaster:coaster page</h1>
+<h1>{{ coaster.name }}</h1>
+Hauteur : {{ coaster.builtCoaster.height }}
+Longueur : {{ coaster.builtCoaster.length }}
+Hauteur : {{ coaster.builtCoaster.speed }}
+Hauteur : {{ coaster.builtCoaster.inversionsNumber }}
 {% endblock %}
