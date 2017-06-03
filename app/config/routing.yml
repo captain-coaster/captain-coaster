@@ -1,4 +1,6 @@
 bdd:
     resource: "@BddBundle/Controller/"
     type:     annotation
-    prefix:   /
+    prefix:   /{_locale}
+    requirements:
+      _locale: 'fr'
