@@ -49,6 +49,20 @@ class Manufacturer
      */
     private $builtCoasters;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phoneNumber", type="string", length=255)
+     */
+    private $phoneNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="place", type="string", length=255)
+     */
+    private $place;
+
 
     /**
      * Constructor
@@ -172,5 +186,53 @@ class Manufacturer
     public function getBuiltCoasters()
     {
         return $this->builtCoasters;
+    }
+
+    /**
+     * Set phoneNumber
+     *
+     * @param string $phoneNumber
+     *
+     * @return Manufacturer
+     */
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneNumber
+     *
+     * @return string
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Set place
+     *
+     * @param string $place
+     *
+     * @return Manufacturer
+     */
+    public function setPlace($place)
+    {
+        $this->place = $place;
+
+        return $this;
+    }
+
+    /**
+     * Get place
+     *
+     * @return string
+     */
+    public function getPlace()
+    {
+        return $this->place;
     }
 }

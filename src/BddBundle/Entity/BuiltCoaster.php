@@ -95,6 +95,13 @@ class BuiltCoaster
      */
     private $types;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="duration", type="time", unique=false, nullable=true)
+     */
+    private $duration;
+
 
     /**
      * Constructor
@@ -382,5 +389,29 @@ class BuiltCoaster
     public function getTypes()
     {
         return $this->types;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param \DateTime $duration
+     *
+     * @return BuiltCoaster
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return \DateTime
+     */
+    public function getDuration()
+    {
+        return $this->duration;
     }
 }
