@@ -3,6 +3,7 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
+use BddBundle\Form\Type\CoasterType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -19,30 +20,28 @@ use Symfony\Component\HttpFoundation\Request;
 class CoasterController extends Controller
 {
     /**
-     * @Route("/coaster/new", name="bdd_new_coaster")
+     * @Route("/coaster/create", name="bdd_create_coaster")
      * @Method({"GET", "POST"})
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function newAction(Request $request)
+    public function createAction(Request $request)
     {
         $coaster = new Coaster();
 
         /** @var Form $form */
-        $form = $this->createFormBuilder($coaster)
-            ->add('name', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Coaster'))
-            ->getForm();
-
+        $form = $this->createForm(CoasterType::class, $coaster);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $coaster = $form->getData();
+            dump($coaster);
+            exit;
         }
 
         return $this->render(
-            'BddBundle:Coaster:new.html.twig',
+            'BddBundle:Coaster:create.html.twig',
             array(
                 'form' => $form->createView(),
             )
