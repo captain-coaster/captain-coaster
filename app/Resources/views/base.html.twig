@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}{% endblock %} • Coasters World</title>
 
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
@@ -24,10 +24,8 @@
 
     <!-- Theme JS files -->
     <script type="text/javascript" src="{{ asset('js/plugins/ui/nicescroll.min.js') }}"></script>
-
     <script type="text/javascript" src="{{ asset('js/core/app.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/pages/layout_fixed_custom.js') }}"></script>
-
     <script type="text/javascript" src="{{ asset('js/plugins/ui/ripple.min.js') }}"></script>
     <!-- /theme JS files -->
 
@@ -37,7 +35,7 @@
 
 </head>
 
-<body class="navbar-top">
+<body class="navbar-top sidebar-xs has-detached-left">
 
 {{ include('::header.html.twig') }}
 
@@ -51,11 +49,12 @@
         {{ include('::sidebar.html.twig') }}
         <!-- /main sidebar -->
 
-
         <!-- Main content -->
         <div class="content-wrapper">
 
+            <!-- Page header -->
             {% include '::page_header.html.twig' with vars %}
+            <!-- /Page header -->
 
             <!-- Content area -->
             <div class="content">
