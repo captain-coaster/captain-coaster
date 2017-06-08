@@ -36,6 +36,13 @@ class Status
     private $slug;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255, unique=false)
+     */
+    private $type;
+
+    /**
      * @var Coaster
      *
      * @ORM\OneToMany(targetEntity="Coaster", mappedBy="status")
@@ -141,5 +148,29 @@ class Status
     public function getCoasters()
     {
         return $this->coasters;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Status
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
     }
 }

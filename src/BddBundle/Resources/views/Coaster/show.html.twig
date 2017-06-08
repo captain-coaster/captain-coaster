@@ -2,7 +2,12 @@
 
 {% block title %}{{ coaster.name }} - {{ coaster.park.name }}{% endblock %}
 
-{% set vars = {'title': coaster.name, 'subTitle': coaster.park.name, 'labelTitle': coaster.status.name} %}
+{% set vars = {
+    'title': coaster.name,
+    'subTitle': coaster.park.name,
+    'labelTitle': coaster.status
+    }
+%}
 
 {% block body %}
     <div class="sidebar-detached">
@@ -19,25 +24,45 @@
 
                     <div class="category-content">
                         <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Hauteur:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.height }}m</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Vitesse:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.speed }}km/h</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Longueur:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.height }}m</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Nombre d'inversions:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.inversionsNumber }}</div>
-                        </div>
-                        <div class="form-group">
                             <label class="control-label no-margin text-semibold">Statut:</label>
-                            <div class="pull-right"><span class="label bg-green">{{ coaster.status.name }}</span></div>
+                            <div class="pull-right"><span class="label label-{{ coaster.status.type }}">{{ coaster.status.name }}</span></div>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Parc:</label>
+                            <div class="pull-right">{{ coaster.park.name }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Pays:</label>
+                            <div class="pull-right">{{ coaster.park.country.name }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Type:</label>
+                            <div class="pull-right">
+                                {% for type in coaster.builtCoaster.types %}
+                                    {{ type.name }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Constructeur:</label>
+                            <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Système de retenue:</label>
+                            <div class="pull-right">{{ coaster.builtCoaster.restraint.name }}</div>
+                        </div>
+                        {% if coaster.builtCoaster.gForce %}
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Forces G:</label>
+                            <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
+                        </div>
+                        {% endif %}
+                        {% if coaster.builtCoaster.duration %}
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Durée:</label>
+                            <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
+                        </div>
+                        {% endif %}
                         <div class="form-group">
                             <label class="control-label no-margin text-semibold">Date d'ouverture:</label>
                             <div class="pull-right">
@@ -60,24 +85,16 @@
                                 </div>
                             </div>
                         {% endif %}
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Parc:</label>
-                            <div class="pull-right">{{ coaster.park.name }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Pays:</label>
-                            <div class="pull-right">{{ coaster.park.country.name }}</div>
-                        </div>
+                        {% if coaster.averageRating %}
                         <div class="form-group">
                             <label class="control-label no-margin text-semibold">Note:</label>
-                            <div class="pull-right">
-                                <i class="icon-star-full2 text-size-base text-warning-300"></i>
-                                <i class="icon-star-full2 text-size-base text-warning-300"></i>
-                                <i class="icon-star-full2 text-size-base text-warning-300"></i>
-                                <i class="icon-star-full2 text-size-base text-warning-300"></i>
-                                <i class="icon-star-full2 text-size-base text-warning-300"></i>
-                            </div>
+                                <div class="pull-right">
+                                    {% for i in 1..coaster.averageRating|round %}
+                                        <i class="icon-star-full2 text-size-base text-warning-300"></i>
+                                    {% endfor %}
+                                </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
                 <!-- /course details -->

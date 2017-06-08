@@ -5,7 +5,7 @@
                 <span class="text-semibold">{{ title }}</span>
                 {% if subTitle %} - {{ subTitle }}{% endif %}
                 &nbsp;
-                <span class="label label-success">{{ labelTitle }}</span>
+                <span class="label label-{{ labelTitle.type }}">{{ labelTitle.name }}</span>
             </h4>
         </div>
 
