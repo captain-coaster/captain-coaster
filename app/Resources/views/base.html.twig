@@ -17,20 +17,6 @@
 
     {% block stylesheets %}{% endblock %}
 
-    <!-- Core JS files -->
-    <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
-    <!-- /core JS files -->
-
-    <!-- Theme JS files -->
-    <script type="text/javascript" src="{{ asset('js/plugins/ui/nicescroll.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/core/app.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/pages/layout_fixed_custom.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/plugins/ui/ripple.min.js') }}"></script>
-    <!-- /theme JS files -->
-
-    {% block javascripts %}{% endblock %}
-
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 
 </head>
@@ -72,6 +58,20 @@
 
 </div>
 <!-- /page container -->
+
+<!-- Core JS files -->
+<script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
+<!-- /core JS files -->
+
+<!-- Theme JS files -->
+<script type="text/javascript" src="{{ asset('js/plugins/ui/nicescroll.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/core/app.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/pages/layout_fixed_custom.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/plugins/ui/ripple.min.js') }}"></script>
+<!-- /theme JS files -->
+
+{% block javascripts %}{% endblock %}
 
 </body>
 </html>

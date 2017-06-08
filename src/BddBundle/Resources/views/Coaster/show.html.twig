@@ -3,11 +3,10 @@
 {% block title %}{{ coaster.name }} - {{ coaster.park.name }}{% endblock %}
 
 {% set vars = {
-    'title': coaster.name,
-    'subTitle': coaster.park.name,
-    'labelTitle': coaster.status
-    }
-%}
+'title': coaster.name,
+'subTitle': coaster.park.name,
+'labelTitle': coaster.status
+} %}
 
 {% block body %}
     <div class="sidebar-detached">
@@ -25,7 +24,9 @@
                     <div class="category-content">
                         <div class="form-group">
                             <label class="control-label no-margin text-semibold">Statut:</label>
-                            <div class="pull-right"><span class="label label-{{ coaster.status.type }}">{{ coaster.status.name }}</span></div>
+                            <div class="pull-right"><span
+                                        class="label label-{{ coaster.status.type }}">{{ coaster.status.name }}</span>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label no-margin text-semibold">Parc:</label>
@@ -52,16 +53,16 @@
                             <div class="pull-right">{{ coaster.builtCoaster.restraint.name }}</div>
                         </div>
                         {% if coaster.builtCoaster.gForce %}
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Forces G:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
-                        </div>
+                            <div class="form-group">
+                                <label class="control-label no-margin text-semibold">Forces G:</label>
+                                <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
+                            </div>
                         {% endif %}
                         {% if coaster.builtCoaster.duration %}
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Durée:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
-                        </div>
+                            <div class="form-group">
+                                <label class="control-label no-margin text-semibold">Durée:</label>
+                                <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
+                            </div>
                         {% endif %}
                         <div class="form-group">
                             <label class="control-label no-margin text-semibold">Date d'ouverture:</label>
@@ -86,14 +87,14 @@
                             </div>
                         {% endif %}
                         {% if coaster.averageRating %}
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Note:</label>
+                            <div class="form-group">
+                                <label class="control-label no-margin text-semibold">Note:</label>
                                 <div class="pull-right">
                                     {% for i in 1..coaster.averageRating|round %}
                                         <i class="icon-star-full2 text-size-base text-warning-300"></i>
                                     {% endfor %}
                                 </div>
-                        </div>
+                            </div>
                         {% endif %}
                     </div>
                 </div>
@@ -166,25 +167,61 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
-                    <!-- Youtube -->
-                    <div class="panel panel-flat">
-                        <div class="panel-heading">
-                            <h5 class="panel-title">Video</h5>
-                        </div>
+                {#<div class="col-sm-6">#}
+                {#<!-- Youtube -->#}
+                {#<div class="panel panel-flat">#}
+                {#<div class="panel-heading">#}
+                {#<h5 class="panel-title">Video</h5>#}
+                {#</div>#}
 
-                        <div class="panel-body">
-                            <div class="content-group-lg">
-                                <div class="embed-responsive embed-responsive-16by9">
-                                    <iframe class="embed-responsive-item"
-                                            src="https://www.youtube.com/embed/vlDzYIIOYmM"
-                                            frameborder="0" allowfullscreen></iframe>
-                                </div>
+                {#<div class="panel-body">#}
+                {#<div class="content-group-lg">#}
+                {#<div class="embed-responsive embed-responsive-16by9">#}
+                {#<iframe class="embed-responsive-item"#}
+                {#src="https://www.youtube.com/embed/vlDzYIIOYmM"#}
+                {#frameborder="0" allowfullscreen></iframe>#}
+                {#</div>#}
+                {#</div>#}
+                {#</div>#}
+                {#</div>#}
+                {#</div>#}
+                {% if coaster.latitude and coaster.longitude %}
+                    <div class="col-sm-6">
+                        <!-- Basic map -->
+                        <div class="panel panel-flat">
+                            <div class="panel-heading">
+                                <h5 class="panel-title">Localisation</h5>
+                            </div>
+
+                            <div class="panel-body">
+                                <div id="map-coaster" class="map-container"></div>
                             </div>
                         </div>
+                        <!-- /basic map -->
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {% if coaster.latitude and coaster.longitude %}
+        <script>
+            function initMap() {
+                var uluru = {lat: {{ coaster.latitude }}, lng: {{ coaster.longitude }}};
+                var map = new google.maps.Map(document.getElementById('map-coaster'), {
+                    zoom: 11,
+                    center: uluru
+                });
+                var marker = new google.maps.Marker({
+                    position: uluru,
+                    map: map
+                });
+            }
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjmNUFwkxOLEws5nrJmNQudoAM_73uSJw&callback=initMap">
+        </script>
+    {% endif %}
 {% endblock %}
