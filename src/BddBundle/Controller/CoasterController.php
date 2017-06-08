@@ -4,11 +4,10 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
 use BddBundle\Form\Type\CoasterType;
+use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -57,10 +56,13 @@ class CoasterController extends Controller
      */
     public function showAction(Coaster $coaster)
     {
+        $imageUrls = $this->get(ImageService::class)->getCoasterImagesUrl($coaster->getId());
+
         return $this->render(
             'BddBundle:Coaster:show.html.twig',
             array(
                 'coaster' => $coaster,
+                'images' => $imageUrls,
             )
         );
     }

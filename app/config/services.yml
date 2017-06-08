@@ -33,3 +33,6 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+    BddBundle\Service\ImageService:
+        arguments: ['%base_path_images%', '%base_url_images%']
+        public: true

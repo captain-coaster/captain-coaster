@@ -17,3 +17,7 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Images
+    base_path_images: '/Users/florian/Sites/backup/cw-legacy/photo'
+    base_url_images: 'images/coasters/{coasterId}/big/{fileName}'
