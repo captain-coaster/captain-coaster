@@ -12,7 +12,7 @@
     <div class="sidebar-detached">
         <div class="sidebar sidebar-default sidebar-separate">
             <div class="sidebar-content">
-                <!-- Course details -->
+                <!-- Coaster details -->
                 <div class="sidebar-category">
                     <div class="category-title">
                         <span>Caractéristiques de {{ coaster.name }}</span>
@@ -98,7 +98,24 @@
                         {% endif %}
                     </div>
                 </div>
-                <!-- /course details -->
+                <!-- /coaster details -->
+                <div class="sidebar-category">
+                    <div class="category-title">
+                        <span>Egalement au {{ coaster.park.name }}
+                            &nbsp;<span class="badge badge-primary">{{ coaster.park.coasters|length - 1 }}</span>
+                        </span>
+                        <ul class="icons-list">
+                            <li><a href="#" data-action="collapse"></a></li>
+                        </ul>
+                    </div>
+                    <div class="category-content">
+                        {% for otherCoaster in coaster.park.coasters if otherCoaster.id != coaster.id %}
+                            <div class="form-group">
+                                <label class="control-label no-margin text-semibold">{{ otherCoaster.name }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
