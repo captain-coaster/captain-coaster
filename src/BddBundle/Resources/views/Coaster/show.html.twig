@@ -111,7 +111,9 @@
                     <div class="category-content">
                         {% for otherCoaster in coaster.park.coasters if otherCoaster.id != coaster.id %}
                             <div class="form-group">
-                                <label class="control-label no-margin text-semibold">{{ otherCoaster.name }}</label>
+                                <a href="{{ path('bdd_show_coaster', {'slug': otherCoaster.slug}) }}">
+                                    {{ otherCoaster.name }}
+                                </a>
                             </div>
                         {% endfor %}
                     </div>
@@ -132,7 +134,7 @@
                             </div>
 
                             <div class="media-right media-middle">
-                                <i class="icon-bubbles4 icon-3x opacity-75"></i>
+                                <i class="icon-arrow-up8 icon-3x opacity-75"></i>
                             </div>
                         </div>
                     </div>
@@ -147,7 +149,7 @@
                             </div>
 
                             <div class="media-right media-middle">
-                                <i class="icon-bag icon-3x opacity-75"></i>
+                                <i class="icon-meter-fast icon-3x opacity-75"></i>
                             </div>
                         </div>
                     </div>
@@ -157,7 +159,7 @@
                     <div class="panel panel-body bg-success-400 has-bg-image">
                         <div class="media no-margin">
                             <div class="media-left media-middle">
-                                <i class="icon-pointer icon-3x opacity-75"></i>
+                                <i class="icon-rulers icon-3x opacity-75"></i>
                             </div>
 
                             <div class="media-body text-right">
@@ -172,7 +174,7 @@
                     <div class="panel panel-body bg-indigo-400 has-bg-image">
                         <div class="media no-margin">
                             <div class="media-left media-middle">
-                                <i class="icon-enter6 icon-3x opacity-75"></i>
+                                <i class="icon-spinner11 icon-3x opacity-75"></i>
                             </div>
 
                             <div class="media-body text-right">
