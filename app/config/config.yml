@@ -68,3 +68,18 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+liip_imagine:
+    loaders:
+        default:
+            filesystem:
+                data_root: "/Users/florian/Sites/backup/cw-legacy"
+    resolvers:
+          default:
+              web_path: ~
+    filter_sets:
+          cache: ~
+          thumb_coaster:
+              quality: 75
+              filters:
+                  thumbnail: { size: [200, 150], mode: outbound }
