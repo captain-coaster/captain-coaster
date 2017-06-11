@@ -38,7 +38,7 @@ class ImageService
         $finder = new Finder();
         $finder
             ->files()
-            ->in($this->basePath.'/'.$coasterId)
+            ->in($this->basePath.'/'.$coasterId.'/big')
             ->name('*.jpg');
 
         // Generate URLs
