@@ -9,4 +9,6 @@ bdd:
     type:     annotation
     prefix:   /{_locale}
     requirements:
-      _locale: 'fr'
+        _locale: 'fr'
+    defaults:
+        _locale: 'fr'
