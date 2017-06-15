@@ -50,7 +50,7 @@ class CoasterController extends Controller
     }
 
     /**
-     * @Route("/coaster/{slug}", name="bdd_show_coaster")
+     * @Route("/coaster/{slug}", name="bdd_show_coaster", options = {"expose" = true})
      * @Method({"GET"})
      *
      * @param Coaster $coaster
@@ -70,26 +70,31 @@ class CoasterController extends Controller
     }
 
     /**
-     * @Route("/coaster/search/{term}", name="bdd_ajax_search_coaster")
+     * @Route("/coaster/ajax/search/all", name="bdd_ajax_search_all_coaster", options = {"expose" = true})
      * @Method({"GET"})
+     *
      */
-    public function ajaxSearchAction(string $term)
+    public function ajaxSearchAction()
     {
         $em = $this->get('doctrine.orm.default_entity_manager');
         $qb = $em->createQueryBuilder();
 
+//        $qb->select('c.name, c.slug')
+//            ->from('BddBundle:Coaster', 'c')
+//            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
+//            ->where(
+//                $qb->expr()->orX(
+//                    $qb->expr()->like('c.name', '?1'),
+//                    $qb->expr()->like('p.name', '?1')
+//                )
+//            )
+//            ->orderBy('c.name', 'ASC')
+//            ->setMaxResults(5)
+//            ->setParameter(1, '%'.$term.'%');
+
         $qb->select('c.name, c.slug')
             ->from('BddBundle:Coaster', 'c')
-            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->where(
-                $qb->expr()->orX(
-                    $qb->expr()->like('c.name', '?1'),
-                    $qb->expr()->like('p.name', '?1')
-                )
-            )
-            ->orderBy('c.name', 'ASC')
-            ->setMaxResults(5)
-            ->setParameter(1, '%'.$term.'%');
+            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id');
 
         $result = $qb->getQuery()->getArrayResult();
 

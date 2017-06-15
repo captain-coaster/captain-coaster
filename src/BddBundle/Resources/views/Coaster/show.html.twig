@@ -276,4 +276,31 @@
             })
         });
     </script>
+    <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
+    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+    <script>
+        let url = Routing.generate('bdd_ajax_search_all_coaster');
+        let dataSource = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            prefetch: url,
+            cache: false,
+//            remote: {
+//                url: url,
+//                wildcard: 'term'
+//            }
+        });
+
+        dataSource.clearPrefetchCache();
+        dataSource.clearRemoteCache();
+        dataSource.initialize();
+
+        $('#search-coaster').typeahead({highlight: true}, {
+            displayKey: 'name',
+            source: dataSource.ttAdapter()
+        }).bind('typeahead:select', function(ev, suggestion) {
+            window.location.href = Routing.generate('bdd_show_coaster', { slug: suggestion.slug });
+        });
+    </script>
 {% endblock %}
