@@ -285,16 +285,7 @@
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             prefetch: url,
-//            cache: false,
-//            remote: {
-//                url: url,
-//                wildcard: 'term'
-//            }
         });
-
-//        dataSource.clearPrefetchCache();
-//        dataSource.clearRemoteCache();
-//        dataSource.initialize();
 
         $('#search-coaster').typeahead({highlight: true}, {
             displayKey: 'name',
