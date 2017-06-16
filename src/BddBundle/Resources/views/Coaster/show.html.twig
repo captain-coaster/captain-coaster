@@ -185,6 +185,33 @@
                     </div>
                 </div>
             </div>
+
+            {% if images|length > 0 %}
+                {% for row in images|batch(4) %}
+                    <div class="row">
+                        {% for imagePath in row %}
+                            <div class="col-lg-3 col-sm-6">
+                                <div class="thumbnail">
+                                    <div class="thumb">
+                                        <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
+                                        <div class="caption-overflow">
+										<span>
+											<a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery"
+                                               class="btn border-white text-white btn-flat btn-icon btn-rounded"><i
+                                                        class="icon-plus3"></i></a>
+											<a href="#"
+                                               class="btn border-white text-white btn-flat btn-icon btn-rounded ml-5"><i
+                                                        class="icon-link2"></i></a>
+										</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
             <div class="row">
                 <div class="col-sm-6">
                     <!-- Youtube -->
@@ -218,31 +245,6 @@
                     </div>
                 {% endif %}
             </div>
-            {% if images|length > 0 %}
-                {% for row in images|batch(4) %}
-                    <div class="row">
-                        {% for imagePath in row %}
-                            <div class="col-lg-3 col-sm-6">
-                                <div class="thumbnail">
-                                    <div class="thumb">
-                                        <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
-                                        <div class="caption-overflow">
-										<span>
-											<a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery"
-                                               class="btn border-white text-white btn-flat btn-icon btn-rounded"><i
-                                                        class="icon-plus3"></i></a>
-											<a href="#"
-                                               class="btn border-white text-white btn-flat btn-icon btn-rounded ml-5"><i
-                                                        class="icon-link2"></i></a>
-										</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            {% endif %}
         </div>
     </div>
 {% endblock %}
