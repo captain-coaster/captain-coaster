@@ -285,22 +285,22 @@
             datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             prefetch: url,
-            cache: false,
+//            cache: false,
 //            remote: {
 //                url: url,
 //                wildcard: 'term'
 //            }
         });
 
-        dataSource.clearPrefetchCache();
-        dataSource.clearRemoteCache();
-        dataSource.initialize();
+//        dataSource.clearPrefetchCache();
+//        dataSource.clearRemoteCache();
+//        dataSource.initialize();
 
         $('#search-coaster').typeahead({highlight: true}, {
             displayKey: 'name',
             source: dataSource.ttAdapter()
         }).bind('typeahead:select', function(ev, suggestion) {
-            window.location.href = Routing.generate('bdd_show_coaster', { slug: suggestion.slug });
+            window.location.href = Routing.generate('bdd_show_coaster', {slug: suggestion.slug});
         });
     </script>
 {% endblock %}

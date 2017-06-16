@@ -5,13 +5,12 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Form\Type\CoasterType;
 use BddBundle\Service\ImageService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 
 /**
@@ -70,34 +69,22 @@ class CoasterController extends Controller
     }
 
     /**
-     * @Route("/coaster/ajax/search/all", name="bdd_ajax_search_all_coaster", options = {"expose" = true})
+     * @Route(
+     *     "/coaster/ajax/search/all",
+     *     name="bdd_ajax_search_all_coaster",
+     *     options = {"expose" = true},
+     *     condition="request.isXmlHttpRequest()"
+     * )
      * @Method({"GET"})
      *
+     * @return JsonResponse
      */
     public function ajaxSearchAction()
     {
         $em = $this->get('doctrine.orm.default_entity_manager');
-        $qb = $em->createQueryBuilder();
 
-//        $qb->select('c.name, c.slug')
-//            ->from('BddBundle:Coaster', 'c')
-//            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-//            ->where(
-//                $qb->expr()->orX(
-//                    $qb->expr()->like('c.name', '?1'),
-//                    $qb->expr()->like('p.name', '?1')
-//                )
-//            )
-//            ->orderBy('c.name', 'ASC')
-//            ->setMaxResults(5)
-//            ->setParameter(1, '%'.$term.'%');
-
-        $qb->select('c.name, c.slug')
-            ->from('BddBundle:Coaster', 'c')
-            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id');
-
-        $result = $qb->getQuery()->getArrayResult();
-
-        return new JsonResponse($result);
+        return new JsonResponse(
+            $em->getRepository('BddBundle:Coaster')->findAllNameAndSlug()
+        );
     }
 }
