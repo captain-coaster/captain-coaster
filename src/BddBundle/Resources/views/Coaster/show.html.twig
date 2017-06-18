@@ -49,7 +49,7 @@
                             <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Système de retenue:</label>
+                            <label class="control-label no-margin text-semibold">Retenue:</label>
                             <div class="pull-right">{{ coaster.builtCoaster.restraint.name }}</div>
                         </div>
                         {% if coaster.builtCoaster.gForce %}
@@ -65,7 +65,7 @@
                             </div>
                         {% endif %}
                         <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Date d'ouverture:</label>
+                            <label class="control-label no-margin text-semibold">Ouverture:</label>
                             <div class="pull-right">
                                 {% if coaster.openingDate|date("dm") == "0101" %}
                                     {{ coaster.openingDate|date("Y") }}
@@ -76,7 +76,7 @@
                         </div>
                         {% if coaster.closingDate %}
                             <div class="form-group">
-                                <label class="control-label no-margin text-semibold">Date de fermeture:</label>
+                                <label class="control-label no-margin text-semibold">Fermeture:</label>
                                 <div class="pull-right">
                                     {% if coaster.closingDate|date("dm") == "0101" %}
                                         {{ coaster.closingDate|date("Y") }}
@@ -211,26 +211,26 @@
                     </div>
                 {% endfor %}
             {% endif %}
-            
-            <div class="row">
-                <div class="col-sm-6">
-                    <!-- Youtube -->
-                    <div class="panel panel-flat">
-                        <div class="panel-heading">
-                            <h5 class="panel-title">Video</h5>
-                        </div>
 
-                        <div class="panel-body">
-                            <div class="content-group-lg">
-                                <div class="embed-responsive embed-responsive-16by9">
-                                    <iframe class="embed-responsive-item"
-                                            src="https://www.youtube.com/embed/vlDzYIIOYmM"
-                                            frameborder="0" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="row">
+                {#<div class="col-sm-6">#}
+                    {#<!-- Youtube -->#}
+                    {#<div class="panel panel-flat">#}
+                        {#<div class="panel-heading">#}
+                            {#<h5 class="panel-title">Video</h5>#}
+                        {#</div>#}
+
+                        {#<div class="panel-body">#}
+                            {#<div class="content-group-lg">#}
+                                {#<div class="embed-responsive embed-responsive-16by9">#}
+                                    {#<iframe class="embed-responsive-item"#}
+                                            {#src="https://www.youtube.com/embed/vlDzYIIOYmM"#}
+                                            {#frameborder="0" allowfullscreen></iframe>#}
+                                {#</div>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                {#</div>#}
                 {% if coaster.latitude and coaster.longitude %}
                     <div class="col-sm-6">
                         <div class="panel panel-flat">
