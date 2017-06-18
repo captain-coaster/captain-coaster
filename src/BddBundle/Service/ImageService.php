@@ -34,11 +34,15 @@ class ImageService
     {
         $urls = [];
 
+        // Absolute path is base_path + base_url
+        // Symlink from web to photo folder
+        $absolutePath = $this->basePath.str_replace(['{coasterId}', '{fileName}'], [$coasterId, ''], $this->baseUrl);
+
         // Find image files on disk
         $finder = new Finder();
         $finder
             ->files()
-            ->in($this->basePath.'/'.$coasterId.'/big')
+            ->in($absolutePath)
             ->name('*.jpg');
 
         // Generate URLs
