@@ -20,6 +20,21 @@ use Symfony\Component\HttpFoundation\Request;
 class CoasterController extends Controller
 {
     /**
+     * @Route("/", name="bdd_index_coaster")
+     * @Method({"GET"})
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function indexAction()
+    {
+        $coaster = $this
+            ->getDoctrine()
+            ->getRepository('BddBundle:Coaster')
+            ->findOneBy(['id' => $this->getParameter('default_coaster_id')]);
+
+        return $this->showAction($coaster);
+    }
+    /**
      * @Route("/coaster/create", name="bdd_create_coaster")
      * @Method({"GET", "POST"})
      *
