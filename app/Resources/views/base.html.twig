@@ -23,7 +23,7 @@
 
 <body class="navbar-top sidebar-xs has-detached-left">
 
-{{ include('::header.html.twig') }}
+{{ include('header.html.twig') }}
 
 <!-- Page container -->
 <div class="page-container">
@@ -39,14 +39,14 @@
         <div class="content-wrapper">
 
             <!-- Page header -->
-            {% include '::page_header.html.twig' with vars %}
+            {{ include('page_header.html.twig', {'title': title, 'subTitle': subTitle}) }}
             <!-- /Page header -->
 
             <!-- Content area -->
             <div class="content">
                 {% block body %}{% endblock %}
 
-                {{ include('::footer.html.twig') }}
+                {{ include('footer.html.twig') }}
             </div>
             <!-- /content area -->
 

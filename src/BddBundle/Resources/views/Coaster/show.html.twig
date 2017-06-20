@@ -2,10 +2,8 @@
 
 {% block title %}{{ coaster.name }} - {{ coaster.park.name }}{% endblock %}
 
-{% set vars = {
-'title': coaster.name,
-'subTitle': coaster.park.name,
-} %}
+{% set title = coaster.name %}
+{% set subTitle = coaster.park.name %}
 
 {% block body %}
     <div class="sidebar-detached">
