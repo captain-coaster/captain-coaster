@@ -3,7 +3,10 @@
 namespace BddBundle\Form\Type;
 
 use BddBundle\Entity\Coaster;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,7 +26,51 @@ class CoasterType extends AbstractType
     {
         $builder
             ->add('name', TextType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Coaster'));
+            ->add('builtCoaster', BuiltCoasterType::class)
+            ->add(
+                'openingDate',
+                DateType::class,
+                [
+                    'widget' => 'text',
+                    'format' => 'dd-MM-yyyy',
+                ]
+            )
+            ->add(
+                'closingDate',
+                DateType::class,
+                [
+                    'widget' => 'text',
+                    'format' => 'dd-MM-yyyy',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'park',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle:Park',
+                    'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('p')
+                            ->orderBy('p.name', 'ASC');
+                    },
+                ]
+            )
+            ->add(
+                'status',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle\Entity\Status',
+                    'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('s')
+                            ->orderBy('s.name', 'ASC');
+                    },
+                ]
+            )
+            ->add('latitude', TextType::class)
+            ->add('longitude', TextType::class)
+            ->add('save', SubmitType::class, array('label' => 'Update Coaster'));
     }
 
     /**

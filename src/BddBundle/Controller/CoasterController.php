@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
 class CoasterController extends Controller
 {
     /**
+     * Shows a specific coaster defined in conf
+     *
      * @Route("/", name="bdd_index_coaster")
      * @Method({"GET"})
      *
@@ -34,14 +36,17 @@ class CoasterController extends Controller
 
         return $this->showAction($coaster);
     }
+
     /**
-     * @Route("/coaster/create", name="bdd_create_coaster")
+     * Create a new coaster
+     *
+     * @Route("/coasters/new", name="bdd_new_coaster")
      * @Method({"GET", "POST"})
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function createAction(Request $request)
+    public function newAction(Request $request)
     {
         $coaster = new Coaster();
 
@@ -64,7 +69,41 @@ class CoasterController extends Controller
     }
 
     /**
-     * @Route("/coaster/{slug}", name="bdd_show_coaster", options = {"expose" = true})
+     * Edit a coaster
+     *
+     * @Route("/coasters/{slug}/edit", name="bdd_edit_coaster")
+     * @Method({"GET", "POST"})
+     *
+     * @param Request $request
+     * @param Coaster $coaster
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function editAction(Request $request, Coaster $coaster)
+    {
+        /** @var Form $form */
+        $form = $this->createForm(CoasterType::class, $coaster);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($coaster);
+            $em->flush();
+
+            return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
+        }
+
+        return $this->render(
+            'BddBundle:Coaster:create.html.twig',
+            array(
+                'form' => $form->createView(),
+            )
+        );
+    }
+
+    /**
+     * Show details of a coaster
+     *
+     * @Route("/coasters/{slug}", name="bdd_show_coaster", options = {"expose" = true})
      * @Method({"GET"})
      *
      * @param Coaster $coaster
@@ -84,8 +123,10 @@ class CoasterController extends Controller
     }
 
     /**
+     * Ajax route for autocomplete search
+     *
      * @Route(
-     *     "/coaster/ajax/search/all",
+     *     "/coasters/ajax/search/all",
      *     name="bdd_ajax_search_all_coaster",
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
