@@ -228,7 +228,7 @@
                 {#</div>#}
                 {#</div>#}
                 {#</div>#}
-                {% if coaster.latitude and coaster.longitude %}
+                {% if coaster.park.latitude and coaster.park.longitude %}
                     <div class="col-sm-6">
                         <div class="panel panel-flat">
                             <div class="panel-heading">
@@ -247,10 +247,10 @@
 {% endblock %}
 
 {% block javascripts %}
-    {% if coaster.latitude and coaster.longitude %}
+    {% if coaster.park.latitude and coaster.park.longitude %}
         <script>
             function initMap() {
-                var uluru = {lat: {{ coaster.latitude }}, lng: {{ coaster.longitude }}};
+                var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
                 var map = new google.maps.Map(document.getElementById('map-coaster'), {
                     zoom: 11,
                     center: uluru

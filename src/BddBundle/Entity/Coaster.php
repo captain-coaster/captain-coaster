@@ -83,20 +83,6 @@ class Coaster
      */
     private $status;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="latitude", type="decimal", precision=8, scale=6, nullable=true)
-     */
-    private $latitude;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="longitude", type="decimal", precision=8, scale=6, nullable=true)
-     */
-    private $longitude;
-
 
     /**
      * Get id
@@ -298,53 +284,5 @@ class Coaster
     public function getStatus()
     {
         return $this->status;
-    }
-
-    /**
-     * Set latitude
-     *
-     * @param string $latitude
-     *
-     * @return Coaster
-     */
-    public function setLatitude($latitude)
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    /**
-     * Get latitude
-     *
-     * @return string
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * Set longitude
-     *
-     * @param string $longitude
-     *
-     * @return Coaster
-     */
-    public function setLongitude($longitude)
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    /**
-     * Get longitude
-     *
-     * @return string
-     */
-    public function getLongitude()
-    {
-        return $this->longitude;
     }
 }

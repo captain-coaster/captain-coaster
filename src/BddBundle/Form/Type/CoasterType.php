@@ -44,18 +44,7 @@ class CoasterType extends AbstractType
                     'required' => false,
                 ]
             )
-            ->add(
-                'park',
-                EntityType::class,
-                [
-                    'class' => 'BddBundle:Park',
-                    'choice_label' => 'name',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('p')
-                            ->orderBy('p.name', 'ASC');
-                    },
-                ]
-            )
+            ->add('park', ParkType::class)
             ->add(
                 'status',
                 EntityType::class,
@@ -68,8 +57,6 @@ class CoasterType extends AbstractType
                     },
                 ]
             )
-            ->add('latitude', TextType::class)
-            ->add('longitude', TextType::class)
             ->add('save', SubmitType::class, array('label' => 'Update Coaster'));
     }
 
