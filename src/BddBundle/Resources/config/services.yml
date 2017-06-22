@@ -1,4 +1,4 @@
 services:
-#    bdd.example:
-#        class: BddBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    BddBundle\EventListener\SlugManager:
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }

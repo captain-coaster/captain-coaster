@@ -4,7 +4,6 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
 use BddBundle\Form\Type\CoasterType;
-use BddBundle\Form\Type\ParkType;
 use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -52,13 +51,15 @@ class CoasterController extends Controller
         $coaster = new Coaster();
 
         /** @var Form $form */
-        $form = $this->createForm(ParkType::class, $coaster);
+        $form = $this->createForm(CoasterType::class, $coaster);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $coaster = $form->getData();
-            dump($coaster);
-            exit;
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($coaster);
+            $em->flush();
+
+            return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
         }
 
         return $this->render(

@@ -62,7 +62,7 @@ class Coaster
     /**
      * @var BuiltCoaster
      *
-     * @ORM\ManyToOne(targetEntity="BuiltCoaster", inversedBy="coasters")
+     * @ORM\ManyToOne(targetEntity="BuiltCoaster", inversedBy="coasters", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $builtCoaster;
