@@ -36,3 +36,7 @@ services:
     BddBundle\Service\ImageService:
         arguments: ['%base_path_images%', '%base_url_images%']
         public: true
+
+    my.custom.user_provider:
+        class: BddBundle\Security\Core\User\CustomUserProvider
+        arguments: ['@fos_user.user_manager', {facebook: facebookId}]

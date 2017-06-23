@@ -24,6 +24,8 @@
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
         "friendsofsymfony/jsrouting-bundle": "^1.6",
+        "friendsofsymfony/user-bundle": "~2.0",
+        "hwi/oauth-bundle": "^0.5.3",
         "incenteev/composer-parameter-handler": "^2.0",
         "liip/imagine-bundle": "^1.8",
         "sensio/distribution-bundle": "^5.0.19",

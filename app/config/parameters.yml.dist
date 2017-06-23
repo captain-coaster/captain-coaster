@@ -24,3 +24,7 @@ parameters:
 
     # Coaster
     default_coaster_id: 1985
+
+    # User / Authentication
+    facebook_client_id:
+    facebook_client_secret:
