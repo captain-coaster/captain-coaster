@@ -46,9 +46,21 @@ class User extends BaseUser
      */
     private $firstName;
 
+    /**
+     * @var RatingCoaster
+     *
+     * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="user")
+     */
+    private $ratings;
+
+    /**
+     * User constructor.
+     */
     public function __construct()
     {
         parent::__construct();
+
+        $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -135,5 +147,39 @@ class User extends BaseUser
     public function getFirstName()
     {
         return $this->firstName;
+    }
+
+    /**
+     * Add rating
+     *
+     * @param \BddBundle\Entity\RatingCoaster $rating
+     *
+     * @return User
+     */
+    public function addRating(\BddBundle\Entity\RatingCoaster $rating)
+    {
+        $this->ratings[] = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Remove rating
+     *
+     * @param \BddBundle\Entity\RatingCoaster $rating
+     */
+    public function removeRating(\BddBundle\Entity\RatingCoaster $rating)
+    {
+        $this->ratings->removeElement($rating);
+    }
+
+    /**
+     * Get ratings
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRatings()
+    {
+        return $this->ratings;
     }
 }

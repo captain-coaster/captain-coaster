@@ -83,6 +83,20 @@ class Coaster
      */
     private $status;
 
+    /**
+     * @var RatingCoaster
+     *
+     * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="coaster")
+     */
+    private $ratings;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -284,5 +298,39 @@ class Coaster
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Add rating
+     *
+     * @param \BddBundle\Entity\RatingCoaster $rating
+     *
+     * @return Coaster
+     */
+    public function addRating(\BddBundle\Entity\RatingCoaster $rating)
+    {
+        $this->ratings[] = $rating;
+
+        return $this;
+    }
+
+    /**
+     * Remove rating
+     *
+     * @param \BddBundle\Entity\RatingCoaster $rating
+     */
+    public function removeRating(\BddBundle\Entity\RatingCoaster $rating)
+    {
+        $this->ratings->removeElement($rating);
+    }
+
+    /**
+     * Get ratings
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRatings()
+    {
+        return $this->ratings;
     }
 }
