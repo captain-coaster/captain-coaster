@@ -7,6 +7,7 @@ use BddBundle\Form\Type\CoasterType;
 use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,6 +43,7 @@ class CoasterController extends Controller
      *
      * @Route("/coasters/new", name="bdd_new_coaster")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_CONTRIBUTOR')")
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -75,6 +77,7 @@ class CoasterController extends Controller
      *
      * @Route("/coasters/{slug}/edit", name="bdd_edit_coaster")
      * @Method({"GET", "POST"})
+     * @Security("has_role('ROLE_CONTRIBUTOR')")
      *
      * @param Request $request
      * @param Coaster $coaster
