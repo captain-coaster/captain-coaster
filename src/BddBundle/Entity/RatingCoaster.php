@@ -3,7 +3,6 @@
 namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Coaster
@@ -41,9 +40,9 @@ class RatingCoaster
     /**
      * @var float
      *
-     * @ORM\Column(name="rating", type="integer", nullable=false)
+     * @ORM\Column(name="rating", type="decimal", precision=2, scale=1, nullable=false)
      */
-    private $rating;
+    private $value;
 
     /**
      * Get id
@@ -62,7 +61,7 @@ class RatingCoaster
      *
      * @return RatingCoaster
      */
-    public function setCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function setCoaster(Coaster $coaster)
     {
         $this->coaster = $coaster;
 
@@ -86,7 +85,7 @@ class RatingCoaster
      *
      * @return RatingCoaster
      */
-    public function setUser(\BddBundle\Entity\User $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
 
@@ -96,7 +95,7 @@ class RatingCoaster
     /**
      * Get user
      *
-     * @return \BddBundle\Entity\Coaster
+     * @return \BddBundle\Entity\User
      */
     public function getUser()
     {
@@ -104,26 +103,26 @@ class RatingCoaster
     }
 
     /**
-     * Set rating
+     * Set value
      *
-     * @param string $rating
+     * @param string $value
      *
      * @return RatingCoaster
      */
-    public function setRating($rating)
+    public function setValue($value)
     {
-        $this->rating = $rating;
+        $this->value = $value;
 
         return $this;
     }
 
     /**
-     * Get rating
+     * Get value
      *
      * @return string
      */
-    public function getRating()
+    public function getValue()
     {
-        return $this->rating;
+        return $this->value;
     }
 }

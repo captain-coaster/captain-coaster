@@ -9,6 +9,17 @@
     <div class="sidebar-detached">
         <div class="sidebar sidebar-default sidebar-separate">
             <div class="sidebar-content">
+                <!-- Coaster Rating -->
+                <div class="panel panel-body border-top-primary text-center">
+                    <h6 class="no-margin text-semibold">Noter ce coaster</h6>
+                    <p class="text-muted content-group-sm">Default light button example</p>
+
+                    {% if is_granted('ROLE_USER') %}
+                        {{ render(controller('BddBundle:RatingCoaster:ajaxEdit', {'id': coaster.id})) }}
+                    {% else %}
+                        You must be logged in !
+                    {% endif %}
+                </div>
                 <!-- Coaster details -->
                 <div class="sidebar-category">
                     <div class="category-title">
