@@ -80,9 +80,9 @@ liip_imagine:
     filter_sets:
           cache: ~
           thumb_coaster:
-              quality: 75
+              quality: 90
               filters:
-                  thumbnail: { size: [200, 150], mode: outbound }
+                  thumbnail: { size: [280, 210], mode: outbound }
 
 fos_user:
     db_driver: orm

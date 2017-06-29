@@ -200,19 +200,11 @@
                         {% for imagePath in row %}
                             <div class="col-lg-3 col-sm-6">
                                 <div class="thumbnail">
-                                    <div class="thumb">
-                                        <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
-                                        <div class="caption-overflow">
-										<span>
-											<a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery"
-                                               class="btn border-white text-white btn-flat btn-icon btn-rounded"><i
-                                                        class="icon-plus3"></i></a>
-											<a href="#"
-                                               class="btn border-white text-white btn-flat btn-icon btn-rounded ml-5"><i
-                                                        class="icon-link2"></i></a>
-										</span>
+                                    <a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery">
+                                        <div class="thumb">
+                                            <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                             </div>
                         {% endfor %}
