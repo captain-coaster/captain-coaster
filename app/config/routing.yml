@@ -11,7 +11,11 @@ hwi_oauth_connect:
 
 hwi_oauth_login:
     resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
-    prefix:   /login
+    prefix:   /{_locale}/login
+    requirements:
+        _locale: "fr"
+    defaults:
+        _locale: "fr"
 
 facebook_login:
     path: /login/check-facebook
