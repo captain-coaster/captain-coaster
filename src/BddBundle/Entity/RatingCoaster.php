@@ -40,7 +40,7 @@ class RatingCoaster
     /**
      * @var float
      *
-     * @ORM\Column(name="rating", type="decimal", precision=2, scale=1, nullable=false)
+     * @ORM\Column(name="rating", type="float", precision=2, scale=1, nullable=false)
      */
     private $value;
 

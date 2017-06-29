@@ -11,13 +11,13 @@
             <div class="sidebar-content">
                 <!-- Coaster Rating -->
                 <div class="panel panel-body border-top-primary text-center">
-                    <h6 class="no-margin text-semibold">Noter ce coaster</h6>
-                    <p class="text-muted content-group-sm">Default light button example</p>
-
+                    <h6 class="no-margin text-semibold">Noter ce coaster !</h6>
+                    <br/>
                     {% if is_granted('ROLE_USER') %}
                         {{ render(controller('BddBundle:RatingCoaster:ajaxEdit', {'id': coaster.id})) }}
                     {% else %}
-                        You must be logged in !
+                        <p class="text-muted content-group-sm">Il faut être connecté pour noter.</p>
+                        <a href="{{ path('hwi_oauth_connect') }}">Se connecter</a>
                     {% endif %}
                 </div>
                 <!-- Coaster details -->
