@@ -18,7 +18,10 @@
 
 <div id="rateit-coaster" style="font-size: 22px;"></div>
 
-{{ form_widget(form.value) }}
+{{ form_start(form) }}
+    {{ form_widget(form.value) }}
+    {{ form_rest(form) }}
+{{ form_end(form) }}
 
 
 
