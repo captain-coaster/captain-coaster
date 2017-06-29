@@ -38,7 +38,6 @@ class CustomUserProvider extends BaseClass
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        dump($response);
         $username = $response->getUsername();
         /** @var User $user */
         $user = $this->userManager->findUserBy(array($this->getProperty($response) => $username));

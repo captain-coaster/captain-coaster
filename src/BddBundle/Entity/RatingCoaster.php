@@ -41,7 +41,7 @@ class RatingCoaster
     /**
      * @var float
      *
-     * @ORM\Column(name="rating", type="decimal", precision=2, scale=1, nullable=false)
+     * @ORM\Column(name="rating", type="integer", nullable=false)
      */
     private $rating;
 
@@ -82,11 +82,11 @@ class RatingCoaster
     /**
      * Set user
      *
-     * @param \BddBundle\Entity\Coaster $user
+     * @param \BddBundle\Entity\User $user
      *
      * @return RatingCoaster
      */
-    public function setUser(\BddBundle\Entity\Coaster $user)
+    public function setUser(\BddBundle\Entity\User $user)
     {
         $this->user = $user;
 

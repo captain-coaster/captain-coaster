@@ -43,7 +43,7 @@ class CoasterController extends Controller
      *
      * @Route("/coasters/new", name="bdd_new_coaster")
      * @Method({"GET", "POST"})
-     * @Security("has_role('ROLE_CONTRIBUTOR')")
+     * @Security("is_granted('ROLE_CONTRIBUTOR')")
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -77,7 +77,7 @@ class CoasterController extends Controller
      *
      * @Route("/coasters/{slug}/edit", name="bdd_edit_coaster")
      * @Method({"GET", "POST"})
-     * @Security("has_role('ROLE_CONTRIBUTOR')")
+     * @Security("is_granted('ROLE_CONTRIBUTOR')")
      *
      * @param Request $request
      * @param Coaster $coaster
