@@ -2,6 +2,7 @@
 
 namespace BddBundle\Service;
 
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
 /**
@@ -38,6 +39,10 @@ class ImageService
         // Symlink from web to photo folder
         $absolutePath = $this->basePath.str_replace(['{coasterId}', '{fileName}'], [$coasterId, ''], $this->baseUrl);
 
+        if(!$this->isDirectory($absolutePath)) {
+            return $urls;
+        }
+
         // Find image files on disk
         $finder = new Finder();
         $finder
@@ -55,5 +60,12 @@ class ImageService
         }
 
         return $urls;
+    }
+
+    public function isDirectory($path)
+    {
+        $fs = new Filesystem();
+
+        return $fs->exists($path);
     }
 }

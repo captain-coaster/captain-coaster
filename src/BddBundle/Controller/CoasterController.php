@@ -116,6 +116,7 @@ class CoasterController extends Controller
      */
     public function showAction(Coaster $coaster)
     {
+        // Display images from file system
         $imageUrls = $this->get(ImageService::class)->getCoasterImagesUrl($coaster->getId());
 
         return $this->render(
