@@ -106,7 +106,7 @@ hwi_oauth:
                 client_id:      '%facebook_client_id%'
                 client_secret:  '%facebook_client_secret%'
                 infos_url:      'https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture'
-                scope:          ''
+                scope:          'email'
                 options:
                     display: popup
                     auth_type: rerequest
