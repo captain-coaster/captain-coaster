@@ -110,3 +110,9 @@ hwi_oauth:
                 options:
                     display: popup
                     auth_type: rerequest
+
+stof_doctrine_extensions:
+    default_locale: fr_FR
+    orm:
+        default:
+            timestampable: true
