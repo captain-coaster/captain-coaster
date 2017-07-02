@@ -85,6 +85,7 @@ class BuiltCoasterType extends AbstractType
                 'duration',
                 TimeType::class,
                 [
+                    'required' => false,
                     'with_seconds' => true,
                 ]
             );
