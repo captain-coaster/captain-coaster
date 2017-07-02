@@ -48,7 +48,7 @@ class SlugManager implements EventSubscriber
             'limit' => null,
             'lowercase' => true,
             'replacements' => array(),
-            'transliterate' => false,
+            'transliterate' => true,
         );
 
         // Merge options
