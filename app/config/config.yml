@@ -89,8 +89,8 @@ fos_user:
     firewall_name: main
     user_class: BddBundle\Entity\User
     from_email:
-        address: "%mailer_user%"
-        sender_name: "%mailer_user%"
+        address: "%mail_from%"
+        sender_name: "%mail_from_name%"
 
 hwi_oauth:
     connect:
