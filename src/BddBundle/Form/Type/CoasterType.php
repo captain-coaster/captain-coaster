@@ -68,7 +68,7 @@ class CoasterType extends AbstractType
                     },
                 ]
             )
-            ->add('save', SubmitType::class, array('label' => 'Update Coaster'));
+            ->add('save', SubmitType::class, array('label' => 'Create/Update'));
     }
 
     /**

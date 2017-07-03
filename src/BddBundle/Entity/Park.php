@@ -34,6 +34,7 @@ class Park
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @Gedmo\Slug(fields={"name"})
      */
     private $slug;
 
@@ -62,14 +63,14 @@ class Park
     /**
      * @var float
      *
-     * @ORM\Column(name="latitude", type="decimal", precision=8, scale=6, nullable=true)
+     * @ORM\Column(name="latitude", type="float", precision=8, scale=6, nullable=true)
      */
     private $latitude;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="longitude", type="decimal", precision=8, scale=6, nullable=true)
+     * @ORM\Column(name="longitude", type="float", precision=8, scale=6, nullable=true)
      */
     private $longitude;
 
