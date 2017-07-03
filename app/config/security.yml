@@ -30,6 +30,11 @@ security:
                 failure_path:      /fr/login
                 oauth_user_provider:
                     service: my.custom.user_provider
+            remember_me:
+                secret:   '%secret%'
+                lifetime: 15552000 # 6 months
+                path:     /
+                always_remember_me: true
             logout:
                 path:   /logout
                 target: /

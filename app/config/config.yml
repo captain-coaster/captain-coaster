@@ -110,6 +110,7 @@ hwi_oauth:
                 options:
                     display: popup
                     auth_type: rerequest
+    #target_path_parameter: _destination
 
 stof_doctrine_extensions:
     default_locale: fr_FR
