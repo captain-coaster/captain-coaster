@@ -3,6 +3,8 @@
 namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
 
 /**
  * Park
@@ -70,6 +72,22 @@ class Park
      * @ORM\Column(name="longitude", type="decimal", precision=8, scale=6, nullable=true)
      */
     private $longitude;
+
+    /**
+     * @var \DateTime $createdAt
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime $updatedAt
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
 
 
     /**
@@ -169,7 +187,7 @@ class Park
      *
      * @return Park
      */
-    public function addCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function addCoaster(Coaster $coaster)
     {
         $this->coasters[] = $coaster;
 
@@ -181,7 +199,7 @@ class Park
      *
      * @param \BddBundle\Entity\Coaster $coaster
      */
-    public function removeCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function removeCoaster(Coaster $coaster)
     {
         $this->coasters->removeElement($coaster);
     }
@@ -203,7 +221,7 @@ class Park
      *
      * @return Park
      */
-    public function setCountry(\BddBundle\Entity\Country $country)
+    public function setCountry(Country $country)
     {
         $this->country = $country;
 
@@ -225,7 +243,7 @@ class Park
      *
      * @param string $latitude
      *
-     * @return Coaster
+     * @return Park
      */
     public function setLatitude($latitude)
     {
@@ -249,7 +267,7 @@ class Park
      *
      * @param string $longitude
      *
-     * @return Coaster
+     * @return Park
      */
     public function setLongitude($longitude)
     {
@@ -266,5 +284,53 @@ class Park
     public function getLongitude()
     {
         return $this->longitude;
+    }
+
+    /**
+     * Set createdAt
+     *
+     * @param \DateTime $createdAt
+     *
+     * @return Park
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt
+     *
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Park
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
     }
 }
