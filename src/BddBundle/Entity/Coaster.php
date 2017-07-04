@@ -85,6 +85,13 @@ class Coaster
     private $status;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="video", type="string", length=255, unique=false)
+     */
+    private $video;
+
+    /**
      * @var RatingCoaster
      *
      * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="coaster")
@@ -397,5 +404,29 @@ class Coaster
     public function getUpdatedAt()
     {
         return $this->updatedAt;
+    }
+    
+    /**
+     * Set video
+     *
+     * @param string $video
+     *
+     * @return Coaster
+     */
+    public function setVideo($video)
+    {
+        $this->video = $video;
+
+        return $this;
+    }
+
+    /**
+     * Get video
+     *
+     * @return string
+     */
+    public function getVideo()
+    {
+        return $this->video;
     }
 }
