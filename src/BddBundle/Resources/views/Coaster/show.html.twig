@@ -259,7 +259,7 @@
             function initMap() {
                 var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
                 var map = new google.maps.Map(document.getElementById('map-coaster'), {
-                    zoom: 11,
+                    zoom: 14,
                     center: uluru
                 });
                 var marker = new google.maps.Marker({
@@ -295,7 +295,8 @@
 
         $('#search-coaster').typeahead({highlight: true}, {
             displayKey: 'name',
-            source: dataSource.ttAdapter()
+            source: dataSource.ttAdapter(),
+            limit: 7,
         }).bind('typeahead:select', function (ev, suggestion) {
             window.location.href = Routing.generate('bdd_show_coaster', {slug: suggestion.slug});
         });
