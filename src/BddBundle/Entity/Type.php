@@ -51,7 +51,15 @@ class Type
     {
         $this->builtCoasters = new \Doctrine\Common\Collections\ArrayCollection();
     }
-    
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     /**
      * Get id
      *

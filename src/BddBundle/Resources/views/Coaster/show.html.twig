@@ -47,9 +47,13 @@
                         <div class="form-group">
                             <label class="control-label no-margin text-semibold">Type:</label>
                             <div class="pull-right">
-                                {% for type in coaster.builtCoaster.types %}
-                                    {{ type.name }}
-                                {% endfor %}
+                                {{ coaster.builtCoaster.types|join(', ') }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label no-margin text-semibold">Lancement:</label>
+                            <div class="pull-right">
+                                {{ coaster.builtCoaster.launchs|join(', ') }}
                             </div>
                         </div>
                         <div class="form-group">

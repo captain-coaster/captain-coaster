@@ -87,7 +87,7 @@ class Coaster
     /**
      * @var string
      *
-     * @ORM\Column(name="video", type="string", length=255, unique=false)
+     * @ORM\Column(name="video", type="string", length=255, unique=false, nullable=true)
      */
     private $video;
 
