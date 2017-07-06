@@ -41,7 +41,7 @@ class RatingService
         $score = $total / count($ratings);
 
         $coaster->setAverageRating($score);
-        $coaster->setTotalRatings($total);
+        $coaster->setTotalRatings(count($ratings));
         $this->em->persist($coaster);
         $this->em->flush();
     }
