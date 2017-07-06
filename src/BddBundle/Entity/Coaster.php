@@ -61,6 +61,13 @@ class Coaster
     private $averageRating;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $totalRatings;
+
+    /**
      * @var BuiltCoaster
      *
      * @ORM\ManyToOne(targetEntity="BuiltCoaster", inversedBy="coasters", cascade={"persist"})
@@ -428,5 +435,29 @@ class Coaster
     public function getVideo()
     {
         return $this->video;
+    }
+
+    /**
+     * Set totalRatings
+     *
+     * @param integer $totalRatings
+     *
+     * @return Coaster
+     */
+    public function setTotalRatings($totalRatings)
+    {
+        $this->totalRatings = $totalRatings;
+
+        return $this;
+    }
+
+    /**
+     * Get totalRatings
+     *
+     * @return integer
+     */
+    public function getTotalRatings()
+    {
+        return $this->totalRatings;
     }
 }

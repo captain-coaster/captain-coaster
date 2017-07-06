@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManager;
  */
 class RatingService
 {
-    const MIN_RATINGS = 10;
+    const MIN_RATINGS = 8;
 
     /**
      * @var EntityManager
@@ -41,6 +41,7 @@ class RatingService
         $score = $total / count($ratings);
 
         $coaster->setAverageRating($score);
+        $coaster->setTotalRatings($total);
         $this->em->persist($coaster);
         $this->em->flush();
     }
