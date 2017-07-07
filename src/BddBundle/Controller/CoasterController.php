@@ -3,6 +3,7 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
+use BddBundle\Entity\User;
 use BddBundle\Form\Type\CoasterType;
 use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -12,7 +13,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-
 
 /**
  * Class CoasterController
@@ -148,5 +148,33 @@ class CoasterController extends Controller
         return new JsonResponse(
             $em->getRepository('BddBundle:Coaster')->findAllNameAndSlug()
         );
+    }
+
+    /**
+     * Ajax route to add a coaster to wishlist
+     *
+     * @Route(
+     *     "/coasters/{id}/wishlist/add",
+     *     name="bdd_coaster_add_wishlist",
+     *     options = {"expose" = true},
+     * )
+     * @Method({"GET"})
+     * @Security("is_granted('ROLE_USER')")
+     *
+     * @param Coaster $coaster
+     * @return JsonResponse
+     */
+
+    public function ajaxWishListAction(Coaster $coaster)
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $user->addWishCoaster($coaster);
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $em->persist($user);
+        $em->flush();
+
+        return new JsonResponse(['state' => 'success']);
     }
 }

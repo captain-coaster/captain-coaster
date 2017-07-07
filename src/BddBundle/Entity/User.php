@@ -54,6 +54,22 @@ class User extends BaseUser
     private $ratings;
 
     /**
+     * @var TopCoaster
+     *
+     * @ORM\OneToMany(targetEntity="TopCoaster", mappedBy="user", cascade={"persist"})
+     * @ORM\OrderBy({"position" = "ASC"})
+     */
+    private $topCoasters;
+
+    /**
+     * @var Coaster
+     *
+     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Coaster", inversedBy="user")
+     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinTable("user_wish_coaster")
+     */
+    private $wishCoasters;
+    /**
      * User constructor.
      */
     public function __construct()
@@ -61,6 +77,7 @@ class User extends BaseUser
         parent::__construct();
 
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->topCoasters = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -181,5 +198,73 @@ class User extends BaseUser
     public function getRatings()
     {
         return $this->ratings;
+    }
+
+    /**
+     * Add topCoaster
+     *
+     * @param \BddBundle\Entity\TopCoaster $topCoaster
+     *
+     * @return User
+     */
+    public function addTopCoaster(\BddBundle\Entity\TopCoaster $topCoaster)
+    {
+        $this->topCoasters[] = $topCoaster;
+
+        return $this;
+    }
+
+    /**
+     * Remove topCoaster
+     *
+     * @param \BddBundle\Entity\TopCoaster $topCoaster
+     */
+    public function removeTopCoaster(\BddBundle\Entity\TopCoaster $topCoaster)
+    {
+        $this->topCoasters->removeElement($topCoaster);
+    }
+
+    /**
+     * Get topCoasters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTopCoasters()
+    {
+        return $this->topCoasters;
+    }
+
+    /**
+     * Add wishCoaster
+     *
+     * @param \BddBundle\Entity\Coaster $wishCoaster
+     *
+     * @return User
+     */
+    public function addWishCoaster(\BddBundle\Entity\Coaster $wishCoaster)
+    {
+        $this->wishCoasters[] = $wishCoaster;
+
+        return $this;
+    }
+
+    /**
+     * Remove wishCoaster
+     *
+     * @param \BddBundle\Entity\Coaster $wishCoaster
+     */
+    public function removeWishCoaster(\BddBundle\Entity\Coaster $wishCoaster)
+    {
+        $this->wishCoasters->removeElement($wishCoaster);
+    }
+
+    /**
+     * Get wishCoasters
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWishCoasters()
+    {
+        return $this->wishCoasters;
     }
 }
