@@ -2,17 +2,16 @@
 
 namespace BddBundle\Controller;
 
-
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RatingCoaster;
 use BddBundle\Form\Type\RatingCoasterType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 
 /**
  * Class RatingCoasterController
@@ -31,6 +30,7 @@ class RatingCoasterController extends Controller
      *     options = {"expose" = true}
      * )
      * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function ajaxEditAction(Request $request, Coaster $coaster)
     {
@@ -39,7 +39,7 @@ class RatingCoasterController extends Controller
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
-        if(!$rating instanceof RatingCoaster) {
+        if (!$rating instanceof RatingCoaster) {
             $rating = new RatingCoaster();
         }
 
