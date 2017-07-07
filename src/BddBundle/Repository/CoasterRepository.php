@@ -14,7 +14,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('CONCAT(c.name, \' (\', p.name, \')\') AS name')
+            ->select('CONCAT(c.name, \' - \', p.name) AS name')
             ->addSelect('c.slug')
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
