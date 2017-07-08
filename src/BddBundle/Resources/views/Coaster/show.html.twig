@@ -9,23 +9,27 @@
     <div class="sidebar-detached">
         <div class="sidebar sidebar-default sidebar-separate">
             <div class="sidebar-content">
-                {% if coaster.averageRating %}
-                    <div class="panel panel-body">
-                        <div class="media no-margin">
-                            <div class="media-body">
-                                <h3 class="no-margin text-semibold text-indigo">{{ coaster.averageRating }}</h3>
-                                <span class="text-uppercase text-size-mini text-muted">
-                                Moyenne des {{ coaster.totalRatings }} notes
-                            </span>
-                            </div>
+                <!-- Average Rating -->
+                <div class="panel panel-body">
+                    <div class="media no-margin">
+                        <div class="media-body">
+                            {% if coaster.averageRating %}
+                                <h3 class="no-margin text-semibold text-indigo">
+                                    {{ coaster.averageRating|number_format(2, ',') }} / 5
+                                </h3>
+                                <span class="text-size-mini text-muted">
+                                Moyenne des {{ coaster.totalRatings }} notes</span>
+                            {% else %}
+                                <span class=" text-size-small text-muted">Pas assez de notes sur ce coaster !</span>
+                            {% endif %}
+                        </div>
 
-                            <div class="media-right media-middle">
-                                <i class="icon-heart6 icon-3x text-danger-400"></i>
-                            </div>
+                        <div class="media-right media-middle">
+                            <i class="icon-heart6 icon-3x text-danger-400"></i>
                         </div>
                     </div>
-                {% endif %}
-                <!-- Coaster Rating -->
+                </div>
+                <!-- Star Rating -->
                 <div class="panel panel-body border-top-primary text-center">
                     <h6 class="no-margin text-semibold">Noter ce coaster !</h6>
                     <br/>
