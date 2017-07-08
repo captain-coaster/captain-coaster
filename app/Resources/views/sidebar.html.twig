@@ -17,7 +17,7 @@
                         <a href="https://forum.coastersworld.fr/"><i class="icon-bubble2"></i> <span>Forum</span></a>
                     </li>
                     <li>
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                             <a href="{{ path('logout') }}"><i class="icon-switch2"></i> <span>Se déconnecter</span></a>
                         {% else %}
                             <a href="{{ path('logout') }}"><i class="icon-lock"></i> <span>Se connecter</span></a>
