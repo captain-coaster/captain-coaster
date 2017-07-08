@@ -42,7 +42,7 @@ class CoasterController extends Controller
     /**
      * Create a new coaster
      *
-     * @Route("/coasters/new", name="bdd_new_coaster")
+     * @Route("/new", name="bdd_new_coaster")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_CONTRIBUTOR')")
      *
@@ -76,7 +76,7 @@ class CoasterController extends Controller
     /**
      * Edit a coaster
      *
-     * @Route("/coasters/{slug}/edit", name="bdd_edit_coaster")
+     * @Route("/{slug}/edit", name="bdd_edit_coaster")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_CONTRIBUTOR')")
      *
@@ -109,7 +109,7 @@ class CoasterController extends Controller
     /**
      * Show details of a coaster
      *
-     * @Route("/coasters/{slug}", name="bdd_show_coaster", options = {"expose" = true})
+     * @Route("/{slug}", name="bdd_show_coaster", options = {"expose" = true})
      * @Method({"GET"})
      *
      * @param Coaster $coaster
@@ -133,7 +133,7 @@ class CoasterController extends Controller
      * Ajax route for autocomplete search
      *
      * @Route(
-     *     "/coasters/ajax/search/all",
+     *     "/ajax/search/all",
      *     name="bdd_ajax_search_all_coaster",
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
@@ -155,7 +155,7 @@ class CoasterController extends Controller
      * Ajax route to add a coaster to wishlist
      *
      * @Route(
-     *     "/coasters/{id}/wishlist/add",
+     *     "/{id}/wishlist/add",
      *     name="bdd_coaster_add_wishlist",
      *     options = {"expose" = true},
      * )
