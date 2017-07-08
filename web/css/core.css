@@ -226,6 +226,9 @@ mark,
   color: #fff;
   border-radius: 2px;
 }
+a.text-muted:hover {
+  color: #333333;
+}
 svg {
   display: block;
 }
@@ -5659,12 +5662,16 @@ a.thumbnail.active {
 .thumb {
   position: relative;
   display: block;
+  text-align: center;
 }
 .thumb img:not(.media-preview) {
   display: inline-block;
   width: 100%;
   max-width: 100%;
   height: auto;
+}
+.thumb.thumb-fixed img {
+  max-width: 240px;
 }
 .thumb:not(.thumb-rounded) img {
   border-radius: 3px;
@@ -5712,6 +5719,7 @@ a.thumbnail.active {
 }
 .caption-overflow span {
   position: absolute;
+  left: 0;
   top: 50%;
   margin-top: -18px;
   width: 100%;
@@ -6096,13 +6104,6 @@ a.thumbnail.active {
     padding-left: 0;
     padding-right: 0;
   }
-  .stack-media-on-mobile .media-left img,
-  .stack-media-on-mobile .media-right img,
-  .stack-media-on-mobile .media-body img {
-    width: 100%;
-    height: auto;
-    max-height: none;
-  }
   .stack-media-on-mobile .media-body,
   .stack-media-on-mobile .media-right {
     margin-top: 15px;
@@ -6110,13 +6111,6 @@ a.thumbnail.active {
   .stack-media-on-mobile .media-heading {
     margin-bottom: 5px;
   }
-}
-.media-left img:not(.media-preview),
-.media-right img:not(.media-preview),
-.thumbnail .media img:not(.media-preview) {
-  width: 40px;
-  height: 40px;
-  max-width: none;
 }
 .media-badge {
   position: absolute;
@@ -6432,6 +6426,9 @@ a.list-group-item-danger:focus {
   max-width: 100%;
   overflow-x: auto;
 }
+.panel.has-bg-image {
+  background-image: url(../images/backgrounds/panel_bg.png);
+}
 .panel-flat > .panel-heading + .table,
 .panel-flat > .panel-heading + .table-responsive {
   border-top: 1px solid #ddd;
@@ -6446,9 +6443,6 @@ a.list-group-item-danger:focus {
 }
 .panel[class*=bg-].panel-flat > .panel-heading {
   border-bottom-color: transparent;
-}
-.panel[class*=bg-] > .panel-body {
-  background-color: inherit;
 }
 .panel[class*=bg-] .panel-title {
   color: #fff;
@@ -6506,6 +6500,12 @@ a.list-group-item-danger:focus {
 .panel-body + .table-responsive,
 .panel-body.has-top-border {
   border-top: 1px solid #ddd;
+}
+.panel[class*=bg-] .panel-body + .panel-body,
+.panel[class*=bg-] .panel-body + .table,
+.panel[class*=bg-] .panel-body + .table-responsive,
+.panel[class*=bg-] .panel-body.has-top-border {
+  border-top-color: rgba(255, 255, 255, 0.5);
 }
 .panel-body-accent {
   background-color: #fcfcfc;

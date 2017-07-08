@@ -60,6 +60,7 @@ class CustomUserProvider extends BaseClass
         $user->setUsername($response->getNickname());
         $user->setEmail($response->getEmail());
         $user->setPassword($response->getUsername());
+        $user->setProfilePicture($response->getProfilePicture());
         $user->setEnabled(true);
         $this->userManager->updateUser($user);
 

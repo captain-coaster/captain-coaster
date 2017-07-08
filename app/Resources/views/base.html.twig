@@ -5,73 +5,59 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %} • Coasters World</title>
-
-    <!-- Global stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+    <!-- global css -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
     <link href="{{ asset('css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/core.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/colors.css') }}" rel="stylesheet" type="text/css">
-    <!-- /global stylesheets -->
-
+    <!-- /global css -->
+    <!-- additional css -->
     {% block stylesheets %}{% endblock %}
-
-    <link rel="icon" sizes="32x32" href="{{ asset('cropped-favicon-32x32.png') }}" />
-
+    <!-- /additional ccss -->
+    <link rel="icon" sizes="32x32" href="{{ asset('cropped-favicon-32x32.png') }}"/>
+    <!-- head js -->
     <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
-
+    <!-- /head js -->
 </head>
-
-<body class="navbar-top sidebar-xs has-detached-left">
-
-{{ include('header.html.twig') }}
-
-<!-- Page container -->
+<body class="navbar-top sidebar-xs">
+<!-- main navbar -->
+{{ include('navbar.html.twig') }}
+<!-- /main navbar -->
+<!-- page container -->
 <div class="page-container">
-
-    <!-- Page content -->
+    <!-- page content -->
     <div class="page-content">
-
-        <!-- Main sidebar -->
-        {#{{ include('::sidebar.html.twig') }}#}
+        <!-- main sidebar -->
+        {{ include('sidebar.html.twig') }}
         <!-- /main sidebar -->
-
-        <!-- Main content -->
+        <!-- main content -->
         <div class="content-wrapper">
-
-            <!-- Page header -->
+            <!-- page header -->
             {{ include('page_header.html.twig', {'title': title, 'subTitle': subTitle}) }}
-            <!-- /Page header -->
-
+            <!-- /page header -->
             <!-- Content area -->
             <div class="content">
                 {% block body %}{% endblock %}
-
                 {{ include('footer.html.twig') }}
             </div>
             <!-- /content area -->
-
         </div>
         <!-- /main content -->
-
     </div>
     <!-- /page content -->
-
 </div>
 <!-- /page container -->
-
 <!-- Core JS files -->
 <script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
 <!-- /core JS files -->
-
 <!-- Theme JS files -->
 <script type="text/javascript" src="{{ asset('js/core/app.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/plugins/ui/ripple.min.js') }}"></script>
 <!-- /theme JS files -->
-
 {% block javascripts %}{% endblock %}
-
 </body>
 </html>
 

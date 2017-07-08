@@ -47,6 +47,13 @@ class User extends BaseUser
     private $firstName;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $profilePicture;
+
+    /**
      * @var RatingCoaster
      *
      * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="user")
@@ -266,5 +273,51 @@ class User extends BaseUser
     public function getWishCoasters()
     {
         return $this->wishCoasters;
+    }
+
+    /**
+     * @param string $profileicture
+     *
+     * @return User
+     */
+    public function setProfileicture($profileicture)
+    {
+        $this->profileicture = $profileicture;
+
+        return $this;
+    }
+
+    /**
+     * Get profileicture
+     *
+     * @return string
+     */
+    public function getProfileicture()
+    {
+        return $this->profileicture;
+    }
+
+    /**
+     * Set profilePicture
+     *
+     * @param string $profilePicture
+     *
+     * @return User
+     */
+    public function setProfilePicture($profilePicture)
+    {
+        $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    /**
+     * Get profilePicture
+     *
+     * @return string
+     */
+    public function getProfilePicture()
+    {
+        return $this->profilePicture;
     }
 }

@@ -62,7 +62,7 @@ class ImageService
         return $urls;
     }
 
-    public function isDirectory($path)
+    private function isDirectory($path)
     {
         $fs = new Filesystem();
 

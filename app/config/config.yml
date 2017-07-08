@@ -110,6 +110,9 @@ hwi_oauth:
                 options:
                     display: popup
                     auth_type: rerequest
+                paths:
+                    email:          email
+                    profilepicture: picture.data.url
     #target_path_parameter: _destination
 
 stof_doctrine_extensions:

@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class CoasterController
  * @package BddBundle\Controller
+ * @Route("/coasters")
  */
 class CoasterController extends Controller
 {

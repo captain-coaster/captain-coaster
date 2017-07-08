@@ -6,265 +6,262 @@
 {% set subTitle = coaster.park.name %}
 
 {% block body %}
-    <div class="sidebar-detached">
-        <div class="sidebar sidebar-default sidebar-separate">
-            <div class="sidebar-content">
-                <!-- Average Rating -->
-                <div class="panel panel-body">
-                    <div class="media no-margin">
-                        <div class="media-body">
-                            {% if coaster.averageRating %}
-                                <h3 class="no-margin text-semibold text-indigo">
-                                    {{ coaster.averageRating|number_format(2, ',') }} / 5
-                                </h3>
-                                <span class="text-size-mini text-muted">
+<div class="row">
+    <div class="col-sm-3">
+        <!-- average rating -->
+        <div class="panel panel-body">
+            <div class="media no-margin">
+                <div class="media-body">
+                    {% if coaster.averageRating %}
+                        <h3 class="no-margin text-semibold text-indigo">
+                            {{ coaster.averageRating|number_format(2, ',') }} / 5
+                        </h3>
+                        <span class="text-size-mini text-muted">
                                 Moyenne des {{ coaster.totalRatings }} notes</span>
-                            {% else %}
-                                <span class=" text-size-small text-muted">Pas assez de notes sur ce coaster !</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="media-right media-middle">
-                            <i class="icon-heart6 icon-3x text-danger-400"></i>
-                        </div>
-                    </div>
-                </div>
-                <!-- Star Rating -->
-                <div class="panel panel-body border-top-primary text-center">
-                    <h6 class="no-margin text-semibold">Noter ce coaster !</h6>
-                    <br/>
-                    {% if is_granted('ROLE_USER') %}
-                        {{ render(controller('BddBundle:RatingCoaster:ajaxEdit', {'id': coaster.id})) }}
                     {% else %}
-                        <p class="text-muted content-group-sm">Il faut être connecté pour noter.</p>
-                        <a href="{{ path('hwi_oauth_connect') }}">Se connecter</a>
+                        <span class=" text-size-small text-muted">Pas assez de notes sur ce coaster !</span>
                     {% endif %}
                 </div>
-                <!-- Coaster details -->
-                <div class="sidebar-category">
-                    <div class="category-title">
-                        <span>Caractéristiques de {{ coaster.name }}</span>
-                        <ul class="icons-list">
-                            <li><a href="#" data-action="collapse"></a></li>
-                        </ul>
-                    </div>
 
-                    <div class="category-content">
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Statut:</label>
-                            <div class="pull-right"><span
-                                        class="label label-{{ coaster.status.type }}">{{ coaster.status.name }}</span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Parc:</label>
-                            <div class="pull-right">{{ coaster.park.name }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Pays:</label>
-                            <div class="pull-right">{{ coaster.park.country.name }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Type:</label>
-                            <div class="pull-right">
-                                {{ coaster.builtCoaster.types|join(', ') }}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Lancement:</label>
-                            <div class="pull-right">
-                                {{ coaster.builtCoaster.launchs|join(', ') }}
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Constructeur:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Retenue:</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.restraint.name }}</div>
-                        </div>
-                        {% if coaster.builtCoaster.gForce %}
-                            <div class="form-group">
-                                <label class="control-label no-margin text-semibold">Forces G:</label>
-                                <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
-                            </div>
-                        {% endif %}
-                        {% if coaster.builtCoaster.duration %}
-                            <div class="form-group">
-                                <label class="control-label no-margin text-semibold">Durée:</label>
-                                <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
-                            </div>
-                        {% endif %}
-                        <div class="form-group">
-                            <label class="control-label no-margin text-semibold">Ouverture:</label>
-                            <div class="pull-right">
-                                {% if coaster.openingDate|date("dm") == "0101" %}
-                                    {{ coaster.openingDate|date("Y") }}
-                                {% else %}
-                                    {{ coaster.openingDate|date("d/m/Y") }}
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% if coaster.closingDate %}
-                            <div class="form-group">
-                                <label class="control-label no-margin text-semibold">Fermeture:</label>
-                                <div class="pull-right">
-                                    {% if coaster.closingDate|date("dm") == "0101" %}
-                                        {{ coaster.closingDate|date("Y") }}
-                                    {% else %}
-                                        {{ coaster.closingDate|date("d/m/Y") }}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!-- /coaster details -->
-                <div class="sidebar-category">
-                    <div class="category-title">
-                        <span>Coasters de {{ coaster.park.name }}
-                            &nbsp;<span class="badge badge-primary">{{ coaster.park.coasters|length }}</span>
-                        </span>
-                        <ul class="icons-list">
-                            <li><a href="#" data-action="collapse"></a></li>
-                        </ul>
-                    </div>
-                    <div class="category-content">
-                        {% for otherCoaster in coaster.park.coasters %}
-                            <div class="form-group">
-                                <a href="{{ path('bdd_show_coaster', {'slug': otherCoaster.slug}) }}">
-                                    {{ otherCoaster.name }}
-                                </a>
-                            </div>
-                        {% endfor %}
-                    </div>
+                <div class="media-right media-middle">
+                    <i class="icon-heart6 icon-3x text-danger-400"></i>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="container-detached">
-        <div class="content-detached">
-            <div class="row">
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-blue-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-body">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.height }} m</h3>
-                                <span class="text-uppercase text-size-mini">Hauteur</span>
-                            </div>
-
-                            <div class="media-right media-middle">
-                                <i class="icon-arrow-up8 icon-3x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-danger-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-body">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.speed }} km/h</h3>
-                                <span class="text-uppercase text-size-mini">Vitesse</span>
-                            </div>
-
-                            <div class="media-right media-middle">
-                                <i class="icon-rocket icon-3x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-success-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-left media-middle">
-                                <i class="icon-rulers icon-3x opacity-75"></i>
-                            </div>
-
-                            <div class="media-body text-right">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.length }} m</h3>
-                                <span class="text-uppercase text-size-mini">Longueur</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-indigo-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-left media-middle">
-                                <i class="icon-spinner11 icon-3x opacity-75"></i>
-                            </div>
-
-                            <div class="media-body text-right">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.inversionsNumber }}</h3>
-                                <span class="text-uppercase text-size-mini">Inversions</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <!-- /average rating -->
+        <!-- star rating -->
+        <div class="panel panel-body border-top-primary text-center">
+            <h6 class="no-margin text-semibold">Noter ce coaster !</h6>
+            <br/>
+            {% if is_granted('ROLE_USER') %}
+                {{ render(controller('BddBundle:RatingCoaster:ajaxEdit', {'id': coaster.id})) }}
+            {% else %}
+                <p class="text-muted content-group-sm">Il faut être connecté pour noter.</p>
+                <a href="{{ path('hwi_oauth_connect') }}">Se connecter</a>
+            {% endif %}
+        </div>
+        <!-- Coaster details -->
+        <div class="panel panel-default panel-body">
+            <div class="category-title">
+                <span>Caractéristiques de {{ coaster.name }}</span>
+                <ul class="icons-list">
+                    <li><a href="#" data-action="collapse"></a></li>
+                </ul>
             </div>
 
-            {% if images|length > 0 %}
-                {% for row in images|batch(4) %}
-                    <div class="row">
-                        {% for imagePath in row %}
-                            <div class="col-lg-3 col-sm-6">
-                                <div class="thumbnail">
-                                    <a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery">
-                                        <div class="thumb">
-                                            <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
+            <div class="category-content">
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Statut:</label>
+                    <div class="pull-right"><span
+                                class="label label-{{ coaster.status.type }}">{{ coaster.status.name }}</span>
                     </div>
-                {% endfor %}
-            {% endif %}
-
-            <div class="row">
-                {#<div class="col-sm-6">#}
-                {#<!-- Youtube -->#}
-                {#<div class="panel panel-flat">#}
-                {#<div class="panel-heading">#}
-                {#<h5 class="panel-title">Video</h5>#}
-                {#</div>#}
-
-                {#<div class="panel-body">#}
-                {#<div class="content-group-lg">#}
-                {#<div class="embed-responsive embed-responsive-16by9">#}
-                {#<iframe class="embed-responsive-item"#}
-                {#src="https://www.youtube.com/embed/vlDzYIIOYmM"#}
-                {#frameborder="0" allowfullscreen></iframe>#}
-                {#</div>#}
-                {#</div>#}
-                {#</div>#}
-                {#</div>#}
-                {#</div>#}
-                {% if coaster.park.latitude and coaster.park.longitude %}
-                    <div class="col-sm-6">
-                        <div class="panel panel-flat">
-                            <div class="panel-heading">
-                                <h5 class="panel-title">Localisation</h5>
-                            </div>
-
-                            <div class="panel-body">
-                                <div id="map-coaster" class="map-container"></div>
-                            </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Parc:</label>
+                    <div class="pull-right">{{ coaster.park.name }}</div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Pays:</label>
+                    <div class="pull-right">{{ coaster.park.country.name }}</div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Type:</label>
+                    <div class="pull-right">
+                        {{ coaster.builtCoaster.types|join(', ') }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Lancement:</label>
+                    <div class="pull-right">
+                        {{ coaster.builtCoaster.launchs|join(', ') }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Constructeur:</label>
+                    <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Retenue:</label>
+                    <div class="pull-right">{{ coaster.builtCoaster.restraint.name }}</div>
+                </div>
+                {% if coaster.builtCoaster.gForce %}
+                    <div class="form-group">
+                        <label class="control-label no-margin text-semibold">Forces G:</label>
+                        <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
+                    </div>
+                {% endif %}
+                {% if coaster.builtCoaster.duration %}
+                    <div class="form-group">
+                        <label class="control-label no-margin text-semibold">Durée:</label>
+                        <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
+                    </div>
+                {% endif %}
+                <div class="form-group">
+                    <label class="control-label no-margin text-semibold">Ouverture:</label>
+                    <div class="pull-right">
+                        {% if coaster.openingDate|date("dm") == "0101" %}
+                            {{ coaster.openingDate|date("Y") }}
+                        {% else %}
+                            {{ coaster.openingDate|date("d/m/Y") }}
+                        {% endif %}
+                    </div>
+                </div>
+                {% if coaster.closingDate %}
+                    <div class="form-group">
+                        <label class="control-label no-margin text-semibold">Fermeture:</label>
+                        <div class="pull-right">
+                            {% if coaster.closingDate|date("dm") == "0101" %}
+                                {{ coaster.closingDate|date("Y") }}
+                            {% else %}
+                                {{ coaster.closingDate|date("d/m/Y") }}
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
             </div>
         </div>
+        <!-- /coaster details -->
+        <div class="panel panel-body">
+            <div class="category-title">
+                        <span>Coasters de {{ coaster.park.name }}
+                            &nbsp;<span class="badge badge-primary">{{ coaster.park.coasters|length }}</span>
+                        </span>
+                <ul class="icons-list">
+                    <li><a href="#" data-action="collapse"></a></li>
+                </ul>
+            </div>
+            <div class="category-content">
+                {% for otherCoaster in coaster.park.coasters %}
+                    <div class="form-group">
+                        <a href="{{ path('bdd_show_coaster', {'slug': otherCoaster.slug}) }}">
+                            {{ otherCoaster.name }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-{% endblock %}
 
-{% block javascripts %}
-    {% if coaster.park.latitude and coaster.park.longitude %}
+    <div class="col-sm-9">
+        <div class="row">
+            <div class="col-sm-6 col-md-3">
+                <div class="panel panel-body bg-blue-400 has-bg-image">
+                    <div class="media no-margin">
+                        <div class="media-body">
+                            <h3 class="no-margin">{{ coaster.builtCoaster.height }} m</h3>
+                            <span class="text-uppercase text-size-mini">Hauteur</span>
+                        </div>
+
+                        <div class="media-right media-middle">
+                            <i class="icon-arrow-up8 icon-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="panel panel-body bg-danger-400 has-bg-image">
+                    <div class="media no-margin">
+                        <div class="media-body">
+                            <h3 class="no-margin">{{ coaster.builtCoaster.speed }} km/h</h3>
+                            <span class="text-uppercase text-size-mini">Vitesse</span>
+                        </div>
+
+                        <div class="media-right media-middle">
+                            <i class="icon-rocket icon-3x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="panel panel-body bg-success-400 has-bg-image">
+                    <div class="media no-margin">
+                        <div class="media-left media-middle">
+                            <i class="icon-rulers icon-3x opacity-75"></i>
+                        </div>
+
+                        <div class="media-body text-right">
+                            <h3 class="no-margin">{{ coaster.builtCoaster.length }} m</h3>
+                            <span class="text-uppercase text-size-mini">Longueur</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3">
+                <div class="panel panel-body bg-indigo-400 has-bg-image">
+                    <div class="media no-margin">
+                        <div class="media-left media-middle">
+                            <i class="icon-spinner11 icon-3x opacity-75"></i>
+                        </div>
+
+                        <div class="media-body text-right">
+                            <h3 class="no-margin">{{ coaster.builtCoaster.inversionsNumber }}</h3>
+                            <span class="text-uppercase text-size-mini">Inversions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if images|length > 0 %}
+            {% for row in images|batch(4) %}
+                <div class="row">
+                    {% for imagePath in row %}
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="thumbnail">
+                                <a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery">
+                                    <div class="thumb">
+                                        <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row">
+            {#<div class="col-sm-6">#}
+                {#<!-- Youtube -->#}
+                {#<div class="panel panel-flat">#}
+                    {#<div class="panel-heading">#}
+                        {#<h5 class="panel-title">Video</h5>#}
+                    {#</div>#}
+
+                    {#<div class="panel-body">#}
+                        {#<div class="content-group-lg">#}
+                            {#<div class="embed-responsive embed-responsive-16by9">#}
+                                {#<iframe class="embed-responsive-item"#}
+                                        {#src="https://www.youtube.com/embed/vlDzYIIOYmM"#}
+                                        {#frameborder="0" allowfullscreen></iframe>#}
+                            {#</div>#}
+                        {#</div>#}
+                    {#</div>#}
+                {#</div>#}
+            {#</div>#}
+            {% if coaster.park.latitude and coaster.park.longitude %}
+                <div class="col-sm-6">
+                    <div class="panel panel-flat">
+                        <div class="panel-heading">
+                            <h5 class="panel-title">Localisation</h5>
+                        </div>
+
+                        <div class="panel-body">
+                            <div id="map-coaster" class="map-container"></div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+    {% endblock %}
+
+    {% block javascripts %}
+        {% if coaster.park.latitude and coaster.park.longitude %}
         <script>
             function initMap() {
                 var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
@@ -281,34 +278,34 @@
         <script async defer
                 src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjmNUFwkxOLEws5nrJmNQudoAM_73uSJw&callback=initMap">
         </script>
-    {% endif %}
+        {% endif %}
 
-    <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
-    <script>
-        $(function () {
-            // Initialize lightbox
-            $('[data-popup="lightbox"]').fancybox({
-                padding: 3
-            })
-        });
-    </script>
-    <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
-    <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-    <script>
-        let url = Routing.generate('bdd_ajax_search_all_coaster');
-        let dataSource = new Bloodhound({
-            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-            queryTokenizer: Bloodhound.tokenizers.whitespace,
-            prefetch: url,
-        });
+        <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
+        <script>
+            $(function () {
+                // Initialize lightbox
+                $('[data-popup="lightbox"]').fancybox({
+                    padding: 3
+                })
+            });
+        </script>
+        <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
+        <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+        <script>
+            let url = Routing.generate('bdd_ajax_search_all_coaster');
+            let dataSource = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                prefetch: url,
+            });
 
-        $('#search-coaster').typeahead({highlight: true}, {
-            displayKey: 'name',
-            source: dataSource.ttAdapter(),
-            limit: 7,
-        }).bind('typeahead:select', function (ev, suggestion) {
-            window.location.href = Routing.generate('bdd_show_coaster', {slug: suggestion.slug});
-        });
-    </script>
-{% endblock %}
+            $('#search-coaster').typeahead({highlight: true}, {
+                displayKey: 'name',
+                source: dataSource.ttAdapter(),
+                limit: 7,
+            }).bind('typeahead:select', function (ev, suggestion) {
+                window.location.href = Routing.generate('bdd_show_coaster', {slug: suggestion.slug});
+            });
+        </script>
+    {% endblock %}
