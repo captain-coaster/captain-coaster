@@ -118,16 +118,6 @@
                                 </div>
                             </div>
                         {% endif %}
-                        {% if coaster.averageRating %}
-                            <div class="form-group">
-                                <label class="control-label no-margin text-semibold">Note:</label>
-                                <div class="pull-right">
-                                    {% for i in 1..coaster.averageRating|round %}
-                                        <i class="icon-star-full2 text-size-base text-warning-300"></i>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        {% endif %}
                     </div>
                 </div>
                 <!-- /coaster details -->
