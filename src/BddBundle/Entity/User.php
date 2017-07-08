@@ -276,28 +276,6 @@ class User extends BaseUser
     }
 
     /**
-     * @param string $profileicture
-     *
-     * @return User
-     */
-    public function setProfileicture($profileicture)
-    {
-        $this->profileicture = $profileicture;
-
-        return $this;
-    }
-
-    /**
-     * Get profileicture
-     *
-     * @return string
-     */
-    public function getProfileicture()
-    {
-        return $this->profileicture;
-    }
-
-    /**
      * Set profilePicture
      *
      * @param string $profilePicture
