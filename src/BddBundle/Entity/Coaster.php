@@ -99,6 +99,13 @@ class Coaster
     private $video;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $price;
+
+    /**
      * @var RatingCoaster
      *
      * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="coaster")
@@ -514,7 +521,7 @@ class Coaster
     /**
      * Get user
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \BddBundle\Entity\User
      */
     public function getUser()
     {
@@ -543,5 +550,29 @@ class Coaster
     public function getTotalRatings()
     {
         return $this->totalRatings;
+    }
+
+    /**
+     * Set price
+     *
+     * @param integer $price
+     *
+     * @return Coaster
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return integer
+     */
+    public function getPrice()
+    {
+        return $this->price;
     }
 }

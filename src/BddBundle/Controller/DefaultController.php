@@ -22,7 +22,7 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $goodCoasters = [1985];
+        $goodCoasters = [1985, 59, 205, 4, 128, 387, 240, 2138, 2197];
         $coasterId = $goodCoasters[array_rand($goodCoasters)];
 
         $ratingFeed = $this

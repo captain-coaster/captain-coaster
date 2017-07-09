@@ -69,6 +69,7 @@ class CoasterType extends AbstractType
                 ]
             )
             ->add('video', TextType::class, ['required' => false])
+            ->add('price', TextType::class, ['required' => false])
             ->add('save', SubmitType::class, array('label' => 'Create/Update'));
     }
 
