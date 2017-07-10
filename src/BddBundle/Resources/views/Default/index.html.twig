@@ -17,10 +17,11 @@
     <!-- /info alert -->
     <div class="row">
         <div class="col-sm-6">
+            {% if images|length > 0 %}
             <!-- Thumbnail with image and button -->
             <div class="thumbnail">
                 <div class="thumb">
-                    <img src="{{ asset(images.0) | imagine_filter('random_index') }}" alt="{{ coaster.name }}">
+                    <img src="{{ asset(random(images)) | imagine_filter('random_index') }}" alt="{{ coaster.name }}">
 
                     <div class="caption-overflow">
                         <span>
@@ -36,6 +37,7 @@
             </div>
             <!-- /thumbnail with image and button -->
         </div>
+        {% endif %}
         <div class="col-sm-6">
             <div class="panel panel-body">
                 <div class="row text-center">
