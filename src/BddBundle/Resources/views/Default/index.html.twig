@@ -5,7 +5,7 @@
 {% set subTitle = '' %}
 
 {% block body %}
-    <!-- Info alert -->
+    <!-- info alert -->
     <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
         <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span>
         </button>
@@ -20,7 +20,7 @@
             <!-- Thumbnail with image and button -->
             <div class="thumbnail">
                 <div class="thumb">
-                    <img src="{{ asset(images.0) }}" alt="">
+                    <img src="{{ asset(images.0) | imagine_filter('random_index') }}" alt="{{ coaster.name }}">
 
                     <div class="caption-overflow">
                         <span>

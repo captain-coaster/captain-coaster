@@ -75,14 +75,18 @@ liip_imagine:
             filesystem:
                 data_root: '%base_path_images%'
     resolvers:
-          default:
-              web_path: ~
+        default:
+            web_path: ~
     filter_sets:
-          cache: ~
-          thumb_coaster:
-              quality: 90
-              filters:
-                  thumbnail: { size: [280, 210], mode: outbound }
+        cache: ~
+        thumb_coaster:
+            quality: 90
+            filters:
+                thumbnail: { size: [280, 210], mode: outbound }
+        random_index:
+            quality: 95
+            filters:
+                thumbnail: { size: [600, 336], mode: outbound }
 
 fos_user:
     db_driver: orm
