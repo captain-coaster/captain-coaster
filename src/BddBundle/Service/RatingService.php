@@ -12,7 +12,7 @@ use Doctrine\ORM\EntityManager;
  */
 class RatingService
 {
-    const MIN_RATINGS = 8;
+    const MIN_RATINGS = 5;
 
     /**
      * @var EntityManager
