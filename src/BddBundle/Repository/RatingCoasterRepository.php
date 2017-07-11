@@ -10,4 +10,13 @@ namespace BddBundle\Repository;
  */
 class RatingCoasterRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function countAll()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:RatingCoaster', 'r')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

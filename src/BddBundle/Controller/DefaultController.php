@@ -43,13 +43,19 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:BuiltCoaster')
             ->getStats();
 
+        $ratingNumber = $this
+            ->getDoctrine()
+            ->getRepository('BddBundle:RatingCoaster')
+            ->countAll();
+
         return $this->render(
             'BddBundle:Default:index.html.twig',
             [
                 'ratingFeed' => $ratingFeed,
                 'images' => $images,
                 'coaster' => $coaster,
-                'stats' => $stats
+                'stats' => $stats,
+                'ratingNumber' => $ratingNumber,
             ]
         );
     }

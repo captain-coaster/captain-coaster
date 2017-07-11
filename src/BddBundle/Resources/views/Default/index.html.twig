@@ -12,48 +12,30 @@
         <h6 class="alert-heading text-semibold">Découvrez, notez et partagez les montagnes russes du monde entier !</h6>
         Space Mountain, c'est vraiment Hyper ? Et les E-powered, c'est vraiment des coasters ? Goudurix, c'est vraiment
         si terrible que ça ? PAS DE PANIQUE, toutes les réponses sont ici !
-        Et pour en profiter, c'est très rapide : <b>2 clics suffisent pour se <a href="{{ path('facebook_login') }}">créer un compte</a> !</b>
+        Et pour en profiter, c'est très rapide : <b>2 clics suffisent pour se <a href="{{ path('facebook_login') }}">créer
+                un compte</a> !</b>
     </div>
     <!-- /info alert -->
     <div class="row">
-        <div class="col-sm-6">
-            {% if images|length > 0 %}
-            <!-- Thumbnail with image and button -->
-            <div class="thumbnail">
-                <div class="thumb">
-                    <img src="{{ asset(random(images)) | imagine_filter('random_index') }}" alt="{{ coaster.name }}">
-
-                    <div class="caption-overflow">
-                        <span>
-                            <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}" class="btn btn-info">voir</a>
-                        </span>
-                    </div>
-                </div>
-
-                <div class="caption text-center">
-                    <h5 class="text-semibold no-margin">{{ coaster.name }}</h5>
-                    <p class="text-muted mb-15 mt-5">{{ coaster.park.name }}</p>
-                </div>
-            </div>
-            <!-- /thumbnail with image and button -->
-        </div>
-        {% endif %}
-        <div class="col-sm-6">
+        <div class="col-sm-12">
             <div class="panel panel-body">
                 <div class="row text-center">
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <p><i class="icon-road icon-2x display-inline-block text-info"></i></p>
                         <h5 class="text-semibold no-margin">{{ stats.1 }}</h5>
                         <span class="text-muted text-size-small">coasters</span>
                     </div>
-
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
+                        <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
+                        <h5 class="text-semibold no-margin">{{ ratingNumber }}</h5>
+                        <span class="text-muted text-size-small">notes</span>
+                    </div>
+                    <div class="col-xs-3">
                         <p><i class="icon-rulers icon-2x display-inline-block text-warning"></i></p>
                         <h5 class="text-semibold no-margin">{{ (stats.2 / 1000)|round }}</h5>
                         <span class="text-muted text-size-small">km de rails</span>
                     </div>
-
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         <p><i class="icon-spinner11 icon-2x display-inline-block text-success"></i></p>
                         <h5 class="text-semibold no-margin">{{ stats.3 }}</h5>
                         <span class="text-muted text-size-small">inversions</span>
@@ -61,6 +43,30 @@
                 </div>
             </div>
         </div>
+        {% if images|length > 0 %}
+            <!-- Thumbnail with image and button -->
+            <div class="col-sm-6">
+                <div class="thumbnail">
+                    <div class="thumb">
+                        <img src="{{ asset(random(images)) | imagine_filter('random_index') }}"
+                             alt="{{ coaster.name }}">
+
+                        <div class="caption-overflow">
+                        <span>
+                            <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}"
+                               class="btn btn-info">voir</a>
+                        </span>
+                        </div>
+                    </div>
+
+                    <div class="caption text-center">
+                        <h5 class="text-semibold no-margin">{{ coaster.name }}</h5>
+                        <p class="text-muted mb-15 mt-5">{{ coaster.park.name }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <!-- /thumbnail with image and button -->
         <div class="col-sm-6">
             <!-- rating feed -->
             <div class="panel panel-flat border-top-teal">
@@ -93,7 +99,7 @@
     <script type="text/javascript" src="{{ asset('js/plugins/timeago/jquery.timeago.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/plugins/timeago/jquery.timeago.fr.js') }}"></script>
     <script type="text/javascript">
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             jQuery("time.timeago").timeago();
         });
     </script>

@@ -32,7 +32,7 @@
 
 {% block body %}
     {#<div class="count">#}
-        {#{{ ratings.getTotalItemCount }}#}
+    {#{{ ratings.getTotalItemCount }}#}
     {#</div>#}
     <div class="panel panel-white">
         <div class="table-responsive" style="display: block;">
@@ -51,7 +51,8 @@
                 {% for rating in ratings %}
                     <tr>
                         <td>
-                            <a href="#" class="text-semibold">{{ rating.coaster.name }}</a>
+                            <a href="{{ path('bdd_show_coaster', {'slug': rating.coaster.slug}) }}"
+                               class="text-semibold">{{ rating.coaster.name }}</a>
                             <div class="text-muted text-size-small">
                                 <span class="status-mark bg-green position-left"></span>
                                 {{ rating.coaster.park.name }}
@@ -73,15 +74,15 @@
                             {{ rating.updatedAt|date("d/m/Y") }}
                         </td>
                         {#<td class="text-center hidden-xs">#}
-                            {#<ul class="icons-list">#}
-                                {#<li class="dropdown">#}
-                                    {#<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i#}
-                                                {#class="icon-menu7"></i></a>#}
-                                    {#<ul class="dropdown-menu dropdown-menu-right">#}
-                                        {#<li><a href="#"><i class="icon-trash"></i> Supprimer la note</a></li>#}
-                                    {#</ul>#}
-                                {#</li>#}
-                            {#</ul>#}
+                        {#<ul class="icons-list">#}
+                        {#<li class="dropdown">#}
+                        {#<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i#}
+                        {#class="icon-menu7"></i></a>#}
+                        {#<ul class="dropdown-menu dropdown-menu-right">#}
+                        {#<li><a href="#"><i class="icon-trash"></i> Supprimer la note</a></li>#}
+                        {#</ul>#}
+                        {#</li>#}
+                        {#</ul>#}
                         {#</td>#}
                     </tr>
                 {% endfor %}
