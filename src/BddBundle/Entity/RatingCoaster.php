@@ -14,9 +14,17 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class RatingCoaster
 {
     /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
      * @var Coaster
      *
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Coaster", inversedBy="ratings")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -25,7 +33,6 @@ class RatingCoaster
     /**
      * @var User
      *
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="BddBundle\Entity\User", inversedBy="ratings")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -53,6 +60,16 @@ class RatingCoaster
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * Set coaster
