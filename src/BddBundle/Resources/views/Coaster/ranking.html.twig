@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Les meilleurs coasters{% endblock %}
+
+{% set title = 'Les meilleurs coasters' %}
+{% set subTitle = '' %}
+
+{% block body %}
+    <ul class="media-list content-group">
+        {% for coaster in coasters %}
+            {% set image = images[coaster.id] %}
+            <li class="media panel panel-body stack-media-on-mobile">
+                <div class="media-left">
+                    <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                        {% if image|length > 0 %}
+                            <img src="{{ asset(random(image)) | imagine_filter('thumb_coaster') }}"
+                                 class="img-rounded"
+                                 style="width:96px;"
+                                 alt="{{ coaster.name }}">
+                        {% endif %}
+                    </a>
+                </div>
+
+                <div class="media-body">
+                    <h2 class="media-heading">
+                        #{{ loop.index }} -
+                        <a style="color:#333;"
+                           href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">{{ coaster.name }}
+                        </a>
+                    </h2>
+                    <ul class="list-inline list-inline-separate text-muted mb-10">
+                        <li>{{ coaster.builtCoaster.manufacturer.name }}</li>
+                        <li>{{ coaster.builtCoaster.types|join(', ') }}</li>
+                        <li>{{ coaster.park.name }}, {{ coaster.park.country.name }}</li>
+                    </ul>
+                </div>
+                <div class="media-right text-center">
+                    <h3 class="no-margin text-semibold text-nowrap">{{ coaster.averageRating|number_format(2, ',') }} /
+                        5</h3>
+                    <div class="text-muted">sur {{ coaster.totalRatings }} notes</div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

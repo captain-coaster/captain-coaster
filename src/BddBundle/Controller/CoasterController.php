@@ -106,6 +106,35 @@ class CoasterController extends Controller
         );
     }
 
+
+    /**
+     * Show ranking of best coasters
+     *
+     * @Route("/ranking", name="coaster_ranking")
+     * @Method({"GET"})
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showRankingAction()
+    {
+        $coasters = $this->getDoctrine()
+            ->getRepository('BddBundle:Coaster')
+            ->findBy([], ['averageRating' => 'desc'], 5);
+
+        $ids = [];
+
+        foreach ($coasters as $coaster) {
+            $ids[] = $coaster->getId();
+        }
+
+        $imageUrls = $this->get(ImageService::class)->getMultipleImagesUrl($ids);
+
+        return $this->render(
+            '@Bdd/Coaster/ranking.html.twig',
+            ['coasters' => $coasters, 'images' => $imageUrls]
+        );
+    }
+
     /**
      * Show details of a coaster
      *

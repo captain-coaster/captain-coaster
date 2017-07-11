@@ -62,6 +62,22 @@ class ImageService
         return $urls;
     }
 
+    /**
+     * Return image paths for multiple coaster ids
+     *
+     * @param array $ids
+     * @return array
+     */
+    public function getMultipleImagesUrl(array $ids): array
+    {
+        $urls = [];
+        foreach ($ids as $id) {
+            $urls[$id] = $this->getCoasterImagesUrl($id);
+        }
+
+        return $urls;
+    }
+
     private function isDirectory($path)
     {
         $fs = new Filesystem();
