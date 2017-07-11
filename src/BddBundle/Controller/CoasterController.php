@@ -119,7 +119,7 @@ class CoasterController extends Controller
     {
         $coasters = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
-            ->findBy([], ['averageRating' => 'desc'], 5);
+            ->findBy([], ['averageRating' => 'desc'], 10);
 
         $ids = [];
 

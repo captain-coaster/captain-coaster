@@ -52,7 +52,7 @@ class BuiltCoaster
     /**
      * @var string
      *
-     * @ORM\Column(name="gForce", type="decimal", precision=3, scale=2, nullable=true)
+     * @ORM\Column(name="gForce", type="float", precision=3, scale=2, nullable=true)
      */
     private $gForce;
 

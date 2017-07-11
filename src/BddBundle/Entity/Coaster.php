@@ -106,6 +106,28 @@ class Coaster
     private $price;
 
     /**
+     * @var Status
+     *
+     * @ORM\ManyToOne(targetEntity="Currency")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $currency;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $vr = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $notes = false;
+
+    /**
      * @var RatingCoaster
      *
      * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="coaster")
@@ -574,5 +596,77 @@ class Coaster
     public function getPrice()
     {
         return $this->price;
+    }
+
+    /**
+     * Set vr
+     *
+     * @param boolean $vr
+     *
+     * @return Coaster
+     */
+    public function setVr($vr)
+    {
+        $this->vr = $vr;
+
+        return $this;
+    }
+
+    /**
+     * Get vr
+     *
+     * @return boolean
+     */
+    public function getVr()
+    {
+        return $this->vr;
+    }
+
+    /**
+     * Set notes
+     *
+     * @param string $notes
+     *
+     * @return Coaster
+     */
+    public function setNotes($notes)
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    /**
+     * Get notes
+     *
+     * @return string
+     */
+    public function getNotes()
+    {
+        return $this->notes;
+    }
+
+    /**
+     * Set currency
+     *
+     * @param \BddBundle\Entity\Currency $currency
+     *
+     * @return Coaster
+     */
+    public function setCurrency(\BddBundle\Entity\Currency $currency)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * Get currency
+     *
+     * @return \BddBundle\Entity\Currency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
     }
 }

@@ -6,9 +6,11 @@ use BddBundle\Entity\Coaster;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -71,6 +73,20 @@ class CoasterType extends AbstractType
             )
             ->add('video', TextType::class, ['required' => false])
             ->add('price', TextType::class, ['required' => false])
+            ->add(
+                'currency',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle\Entity\Currency',
+                    'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('c')
+                            ->orderBy('c.name', 'ASC');
+                    },
+                ]
+            )
+            ->add('vr', CheckboxType::class, ['required' => false])
+            ->add('notes', TextareaType::class, ['required' => false])
             ->add('save', SubmitType::class, array('label' => 'Create/Update'));
     }
 
