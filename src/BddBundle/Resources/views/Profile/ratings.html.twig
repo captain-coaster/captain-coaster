@@ -54,7 +54,7 @@
                             <a href="{{ path('bdd_show_coaster', {'slug': rating.coaster.slug}) }}"
                                class="text-semibold">{{ rating.coaster.name }}</a>
                             <div class="text-muted text-size-small">
-                                <span class="status-mark bg-green position-left"></span>
+                                <span class="status-mark bg-{{ rating.coaster.status.type }} position-left"></span>
                                 {{ rating.coaster.park.name }}
                             </div>
                         </td>

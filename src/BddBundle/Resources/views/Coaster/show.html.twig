@@ -133,6 +133,7 @@
                 <div class="category-content">
                     {% for otherCoaster in coaster.park.coasters %}
                         <div class="form-group">
+                            <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
                             <a href="{{ path('bdd_show_coaster', {'slug': otherCoaster.slug}) }}">
                                 {{ otherCoaster.name }}
                             </a>

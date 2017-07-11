@@ -49,6 +49,7 @@ class Park
      * @var Coaster
      *
      * @ORM\OneToMany(targetEntity="Coaster", mappedBy="park")
+     * @ORM\OrderBy({"status" = "ASC", "name" = "ASC"})
      */
     private $coasters;
 
