@@ -3,8 +3,8 @@
 namespace BddBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class DefaultController
@@ -48,6 +48,13 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:RatingCoaster')
             ->countAll();
 
+        $date = new \DateTime();
+        $date->sub(new \DateInterval('P1D'));
+        $newRatingNumber = $this
+            ->getDoctrine()
+            ->getRepository('BddBundle:RatingCoaster')
+            ->countNew($date);
+
         return $this->render(
             'BddBundle:Default:index.html.twig',
             [
@@ -56,6 +63,7 @@ class DefaultController extends Controller
                 'coaster' => $coaster,
                 'stats' => $stats,
                 'ratingNumber' => $ratingNumber,
+                'newRatingNumber' => $newRatingNumber,
             ]
         );
     }

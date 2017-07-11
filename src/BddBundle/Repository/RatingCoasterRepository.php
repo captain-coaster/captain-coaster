@@ -19,4 +19,16 @@ class RatingCoasterRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function countNew(\DateTime $date)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:RatingCoaster', 'r')
+            ->where('r.updatedAt > ?1')
+            ->setParameter(1, $date)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

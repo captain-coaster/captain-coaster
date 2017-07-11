@@ -27,8 +27,15 @@
                     </div>
                     <div class="col-xs-3">
                         <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
-                        <h5 class="text-semibold no-margin">{{ ratingNumber }}</h5>
+                        <h5 class="text-semibold no-margin">
+                            {{ ratingNumber }}
+                            {% if newRatingNumber > 0 %}
+                                <span class="badge bg-warning-400">+{{ newRatingNumber }}</span>
+                            {% endif %}
+                        </h5>
+
                         <span class="text-muted text-size-small">notes</span>
+
                     </div>
                     <div class="col-xs-3">
                         <p><i class="icon-rulers icon-2x display-inline-block text-warning"></i></p>
