@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CoasterController extends Controller
 {
+    CONST NUMBER_RANKING = 15;
+
     /**
      * Shows a specific coaster defined in conf
      *
@@ -119,7 +121,7 @@ class CoasterController extends Controller
     {
         $coasters = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
-            ->findBy([], ['averageRating' => 'desc'], 10);
+            ->findBy([], ['averageRating' => 'desc'], self::NUMBER_RANKING);
 
         $ids = [];
 
