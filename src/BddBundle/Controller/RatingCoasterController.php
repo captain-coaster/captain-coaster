@@ -67,4 +67,40 @@ class RatingCoasterController extends Controller
             )
         );
     }
+
+    /**
+     * @param Request $request
+     * @param Coaster $coaster
+     * @return JsonResponse
+     *
+     * @Route(
+     *     "/ratings/coasters/{id}/edit",
+     *     name="rating_edit",
+     *     options = {"expose" = true}
+     * )
+     * @Method({"POST"})
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function editAction(Request $request, Coaster $coaster)
+    {
+        $user = $this->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        $rating = $em->getRepository('BddBundle:RatingCoaster')->findOneBy(
+            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+        );
+
+        if (!$rating instanceof RatingCoaster) {
+            $rating = new RatingCoaster();
+            $rating->setUser($user);
+            $rating->setCoaster($coaster);
+        }
+
+        $rating->setValue($request->request->get('value'));
+
+        $em->persist($rating);
+        $em->flush();
+
+        return new JsonResponse(['state' => 'success']);
+    }
 }

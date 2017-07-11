@@ -18,15 +18,17 @@
                 <li class="dropdown dropdown-user">
                     <a class="dropdown-toggle" data-toggle="dropdown">
                         {% if app.user.profilePicture %}
-                            <img src="{{ app.user.profilepicture }}" alt="">
+                            <img src="{{ app.user.profilepicture }}" alt="{{ app.user.firstname }}">
                         {% else %}
-                            <img src="{{ asset('images/default_user.png') }}" alt="">
+                            <img src="{{ asset('images/default_user.png') }}" alt="{{ app.user.firstname }}">
                         {% endif %}
                         <span>{{ app.user.firstname }}</span>
                         <i class="caret"></i>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-right">
+                        <li><a href="{{ path('me_ratings') }}"><i class="icon-stars"></i> Mes notes</a></li>
+                        <li class="divider"></li>
                         <li><a href="{{ path('logout') }}"><i class="icon-switch2"></i> Se déconnecter</a></li>
                     </ul>
                 </li>
