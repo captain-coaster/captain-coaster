@@ -103,4 +103,34 @@ class RatingCoasterController extends Controller
 
         return new JsonResponse(['state' => 'success']);
     }
+
+    /**
+     * @param Coaster $coaster
+     * @return JsonResponse
+     *
+     * @Route(
+     *     "/ratings/coasters/{id}",
+     *     name="rating_delete",
+     *     options = {"expose" = true}
+     * )
+     * @Method({"DELETE"})
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function deleteAction(Coaster $coaster)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $rating = $em->getRepository('BddBundle:RatingCoaster')->findOneBy(
+            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+        );
+
+        if (!$rating instanceof RatingCoaster) {
+            return new JsonResponse(['status' => 'fail']);
+        }
+
+        $em->remove($rating);
+        $em->flush();
+
+        return new JsonResponse(['state' => 'success']);
+    }
 }
