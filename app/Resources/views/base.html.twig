@@ -5,6 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %} • Coasters World</title>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('apple-touch-icon-144x144.png') }}" />
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('apple-touch-icon-152x152.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32" />
+    <link rel="icon" type="image/png" href="{{ asset('favicon-16x16.png') }}" sizes="16x16" />
+    <meta name="application-name" content="Coasters World"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="msapplication-TileImage" content="mstile-144x144.png" />
+    <link rel="manifest" href="/manifest.json">
     <!-- global css -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
           type="text/css">
@@ -17,7 +25,6 @@
     <!-- additional css -->
     {% block stylesheets %}{% endblock %}
     <!-- /additional ccss -->
-    <link rel="icon" sizes="32x32" href="{{ asset('cropped-favicon-32x32.png') }}"/>
     <!-- head js -->
     <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
     <!-- /head js -->

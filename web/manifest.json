@@ -1,0 +1,17 @@
+{
+  "short_name": "CoastersWorld",
+  "name": "BDD Coasters World",
+  "icons": [
+    {
+      "src": "apple-touch-icon-144x144.png",
+      "type": "image/png",
+      "sizes": "144x144"
+    },
+    {
+      "src": "apple-touch-icon-152x152.png",
+      "type": "image/png",
+      "sizes": "152x152"
+    }
+  ],
+  "start_url": "/fr/"
+}
