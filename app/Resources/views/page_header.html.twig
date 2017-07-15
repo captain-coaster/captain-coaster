@@ -2,7 +2,7 @@
 <div class="page-header page-header-default">
     <div class="page-header-content">
         <div class="page-title">
-            <h1><i class="icon-arrow-left52 position-left"></i>
+            <h1><a style="color:#333;" onclick="goBack();"><i class="icon-arrow-left52 position-left"></i></a>
                 <span class="text-semibold">{{ title }}</span>
                 {% if subTitle %} - {{ subTitle }}{% endif %}
             </h1>
@@ -22,3 +22,8 @@
         </div>
     </div>
 </div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>

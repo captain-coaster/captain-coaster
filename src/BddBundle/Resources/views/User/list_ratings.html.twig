@@ -1,0 +1,71 @@
+{% extends "::base.html.twig" %}
+
+{% set title = 'Notes de ' ~ user.username %}
+{% set subTitle = '' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
+    <script type="text/javascript">
+        $('document').ready(function () {
+            $('.rating-coaster').rateit(
+                {max: 5, step: 0.5, resetable: false, mode: 'font', readonly: true}
+            );
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    {#<div class="count">#}
+    {#{{ ratings.getTotalItemCount }}#}
+    {#</div>#}
+    <div class="panel panel-white">
+        <div class="table-responsive" style="display: block;">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>{{ knp_pagination_sortable(ratings, 'Coaster', 'c.name') }}</th>
+                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'Constructeur', ['m.name']) }}</th>
+                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'Ouverture', ['c.openingDate']) }}</th>
+                    <th>{{ knp_pagination_sortable(ratings, 'Note', ['r.value']) }}</th>
+                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'Noté le', 'r.updatedAt') }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rating in ratings %}
+                    <tr id="tr-coaster-{{ rating.coaster.id }}">
+                        <td>
+                            <a href="{{ path('bdd_show_coaster', {'slug': rating.coaster.slug}) }}"
+                               class="text-semibold">{{ rating.coaster.name }}</a>
+                            <div class="text-muted text-size-small">
+                                <span class="status-mark bg-{{ rating.coaster.status.type }} position-left"></span>
+                                {{ rating.coaster.park.name }}
+                            </div>
+                        </td>
+                        <td class="hidden-xs">
+                            {{ rating.coaster.builtCoaster.manufacturer.name }}
+                        </td>
+                        <td class="hidden-xs">
+                            {{ rating.coaster.openingDate|date("Y") }}
+                        </td>
+                        <td>
+                            <div class="rating-coaster"
+                                 data-coaster="{{ rating.coaster.id }}"
+                                 data-rateit-value="{{ rating.value }}"
+                                 style="font-size: 22px;"></div>
+                        </td>
+                        <td class="hidden-xs">
+                            {{ rating.updatedAt|date("d/m/Y") }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{ knp_pagination_render(ratings) }}
+{% endblock %}

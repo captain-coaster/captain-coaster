@@ -1,0 +1,48 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'Palmarès des membres' %}
+{% set subTitle = '' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <!-- info alert -->
+    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span>
+        </button>
+        <h6 class="alert-heading text-semibold">Alors, t'en es où dans tes notes ?</h6>
+        <p>Ce classement te permet de savoir où tu te situes sur l'ensemble des membres qui ont noté des coasters, mais
+        aussi de voir le détail de leurs notes !</p>
+    </div>
+    <!-- /info alert -->
+    <ul class="media-list content-group">
+        {% for user in users %}
+            <div class="col-md-3">
+                <div class="panel panel-body">
+                    <div class="media">
+                        <div class="media-left">
+                            {% if user.0.profilePicture %}
+                                <img src="{{ user.0.profilePicture }}" style="width: 70px; height: 70px;"
+                                     class="img-circle img-md" alt="{{ user.0.username }}">
+                            {% else %}
+                                <img src="{{ asset('images/default_user.png') }}" style="width: 70px; height: 70px;"
+                                     class="img-circle img-md" alt="{{ user.0.username }}">
+                            {% endif %}
+                        </div>
+                        <div class="media-body">
+                            <h6 class="media-heading">{{ user.0.username }}</h6>
+                            <p class="text-muted">
+                                Membre depuis le {{ user.0.createdAt|date("d/m/Y") }}
+                            </p>
+
+                            <h5 class="text-semibold no-margin">
+                                <a href="{{ path('user_ratings', {'id': user.0.id}) }}">
+                                    {{ 'notes'|transchoice(user.total_ratings, [], 'messages', 'fr') }}
+                                </a>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </ul>
+{% endblock %}
