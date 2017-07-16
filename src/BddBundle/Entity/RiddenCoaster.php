@@ -55,7 +55,7 @@ class RiddenCoaster
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=5, nullable=false)
+     * @ORM\Column(type="string", length=5, nullable=true)
      *
      */
     private $language;
@@ -79,7 +79,7 @@ class RiddenCoaster
     /**
      * @var int
      *
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(name="likes", type="integer", nullable=true)
      */
     private $like = 0;
 
