@@ -54,6 +54,7 @@ class RatingCoasterController extends Controller
             $em->flush();
 
             // Update average rating on coaster
+            // switch to event listener ?
             $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
 
             return new JsonResponse(['status' => 'success']);
@@ -101,6 +102,10 @@ class RatingCoasterController extends Controller
         $em->persist($rating);
         $em->flush();
 
+        // Update average rating on coaster
+        // switch to event listener ?
+        $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
+
         return new JsonResponse(['state' => 'success']);
     }
 
@@ -130,6 +135,10 @@ class RatingCoasterController extends Controller
 
         $em->remove($rating);
         $em->flush();
+
+        // Update average rating on coaster
+        // switch to event listener ?
+        $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
 
         return new JsonResponse(['state' => 'success']);
     }
