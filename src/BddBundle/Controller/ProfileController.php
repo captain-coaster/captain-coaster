@@ -22,7 +22,7 @@ class ProfileController extends Controller
     {
         /** @var User $user */
         $user = $this->getUser();
-        $dql = 'SELECT r FROM BddBundle:RatingCoaster r 
+        $dql = 'SELECT r FROM BddBundle:RiddenCoaster r 
                 JOIN r.user u 
                 JOIN r.coaster c 
                 JOIN c.builtCoaster bc 

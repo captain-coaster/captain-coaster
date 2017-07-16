@@ -3,7 +3,7 @@
 namespace BddBundle\Service;
 
 use BddBundle\Entity\Coaster;
-use BddBundle\Entity\RatingCoaster;
+use BddBundle\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -26,7 +26,7 @@ class RatingService
 
     public function manageRatings(Coaster $coaster)
     {
-        /** @var RatingCoaster[] $ratings */
+        /** @var RiddenCoaster[] $ratings */
         $ratings = $coaster->getRatings();
 
         if (count($ratings) < self::MIN_RATINGS) {

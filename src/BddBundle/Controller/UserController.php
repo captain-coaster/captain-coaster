@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function listRatingsAction(User $user, $page = 1)
     {
-        $dql = 'SELECT r FROM BddBundle:RatingCoaster r 
+        $dql = 'SELECT r FROM BddBundle:RiddenCoaster r 
                 JOIN r.user u 
                 JOIN r.coaster c 
                 JOIN c.builtCoaster bc 

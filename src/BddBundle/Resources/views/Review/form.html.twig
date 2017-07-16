@@ -1,0 +1,68 @@
+{% extends "::base.html.twig" %}
+{% set title = 'Avis sur ' ~ coaster.name %}
+{% set subTitle = '' %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
+    <script type="text/javascript">
+        $('document').ready(function () {
+            $('#rateit-coaster').rateit(
+                {max: 5, step: 0.5, backingfld: '#review_value', resetable: false, mode: 'font'}
+            );
+        });
+    </script>
+    <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
+    <script type="text/javascript">
+        $('select').select2({
+            maximumSelectionLength: 3
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h2 class="panel-title">Partage ton expérience avec nous !</h2>
+        </div>
+
+        <div class="panel-body">
+
+            {{ form_start(form) }}
+            <div class="form-group">
+                <label class="control-label is-visible">Il vaut combien, ce crédit ?</label>
+                <span class="text-danger">*</span>
+                <br>
+                {{ form_widget(form.value) }}
+                <div id="rateit-coaster" style="font-size: 30px;"></div>
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.value, "Quels sont les principaux atouts de ce coaster ?", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.positiveKeywords) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.value, 'Et ses principaux défauts ?', {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.negativeKeywords, {'attr': {'class': 'select col-lg-10'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.review, "Envie d'être encore plus précis, raconte-nous ça !", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.review, {'attr': {'class': 'form-control', 'cols': '5', 'rows': '5'}}) }}
+            </div>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">
+                    Envoyer mon avis
+                    <i class="icon-arrow-right14 position-right"></i>
+                </button>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

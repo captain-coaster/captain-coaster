@@ -3,7 +3,7 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
-use BddBundle\Entity\RatingCoaster;
+use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Form\Type\RatingCoasterType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -35,12 +35,12 @@ class RatingCoasterController extends Controller
     public function ajaxEditAction(Request $request, Coaster $coaster)
     {
         $em = $this->getDoctrine()->getManager();
-        $rating = $em->getRepository('BddBundle:RatingCoaster')->findOneBy(
+        $rating = $em->getRepository('BddBundle:RiddenCoaster')->findOneBy(
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
-        if (!$rating instanceof RatingCoaster) {
-            $rating = new RatingCoaster();
+        if (!$rating instanceof RiddenCoaster) {
+            $rating = new RiddenCoaster();
         }
 
         $form = $this->createForm(RatingCoasterType::class, $rating);
@@ -86,12 +86,12 @@ class RatingCoasterController extends Controller
         $user = $this->getUser();
         $em = $this->getDoctrine()->getManager();
 
-        $rating = $em->getRepository('BddBundle:RatingCoaster')->findOneBy(
+        $rating = $em->getRepository('BddBundle:RiddenCoaster')->findOneBy(
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
-        if (!$rating instanceof RatingCoaster) {
-            $rating = new RatingCoaster();
+        if (!$rating instanceof RiddenCoaster) {
+            $rating = new RiddenCoaster();
             $rating->setUser($user);
             $rating->setCoaster($coaster);
         }
@@ -120,11 +120,11 @@ class RatingCoasterController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $rating = $em->getRepository('BddBundle:RatingCoaster')->findOneBy(
+        $rating = $em->getRepository('BddBundle:RiddenCoaster')->findOneBy(
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
-        if (!$rating instanceof RatingCoaster) {
+        if (!$rating instanceof RiddenCoaster) {
             return new JsonResponse(['status' => 'fail']);
         }
 

@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class CoasterController extends Controller
 {
-    CONST NUMBER_RANKING = 15;
+    CONST NUMBER_RANKING = 20;
 
     /**
      * Shows a specific coaster defined in conf
@@ -151,11 +151,17 @@ class CoasterController extends Controller
         // Display images from file system
         $imageUrls = $this->get(ImageService::class)->getCoasterImagesUrl($coaster->getId());
 
+        // Load reviews
+        $reviews = $this->getDoctrine()
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->getReviews($coaster->getId());
+
         return $this->render(
             'BddBundle:Coaster:show.html.twig',
             array(
                 'coaster' => $coaster,
                 'images' => $imageUrls,
+                'reviews' => $reviews
             )
         );
     }

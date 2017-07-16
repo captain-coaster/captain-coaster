@@ -128,9 +128,9 @@ class Coaster
     private $notes = false;
 
     /**
-     * @var RatingCoaster
+     * @var RiddenCoaster
      *
-     * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="coaster")
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\RiddenCoaster", mappedBy="coaster")
      */
     private $ratings;
 
@@ -379,11 +379,11 @@ class Coaster
     /**
      * Add rating
      *
-     * @param \BddBundle\Entity\RatingCoaster $rating
+     * @param \BddBundle\Entity\RiddenCoaster $rating
      *
      * @return Coaster
      */
-    public function addRating(\BddBundle\Entity\RatingCoaster $rating)
+    public function addRating(\BddBundle\Entity\RiddenCoaster $rating)
     {
         $this->ratings[] = $rating;
 
@@ -393,9 +393,9 @@ class Coaster
     /**
      * Remove rating
      *
-     * @param \BddBundle\Entity\RatingCoaster $rating
+     * @param \BddBundle\Entity\RiddenCoaster $rating
      */
-    public function removeRating(\BddBundle\Entity\RatingCoaster $rating)
+    public function removeRating(\BddBundle\Entity\RiddenCoaster $rating)
     {
         $this->ratings->removeElement($rating);
     }

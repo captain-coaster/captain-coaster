@@ -55,9 +55,9 @@ class User extends BaseUser
     private $profilePicture;
 
     /**
-     * @var RatingCoaster
+     * @var RiddenCoaster
      *
-     * @ORM\OneToMany(targetEntity="RatingCoaster", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\RiddenCoaster", mappedBy="user")
      */
     private $ratings;
 
@@ -186,11 +186,11 @@ class User extends BaseUser
     /**
      * Add rating
      *
-     * @param \BddBundle\Entity\RatingCoaster $rating
+     * @param \BddBundle\Entity\RiddenCoaster $rating
      *
      * @return User
      */
-    public function addRating(\BddBundle\Entity\RatingCoaster $rating)
+    public function addRating(\BddBundle\Entity\RiddenCoaster $rating)
     {
         $this->ratings[] = $rating;
 
@@ -200,9 +200,9 @@ class User extends BaseUser
     /**
      * Remove rating
      *
-     * @param \BddBundle\Entity\RatingCoaster $rating
+     * @param \BddBundle\Entity\RiddenCoaster $rating
      */
-    public function removeRating(\BddBundle\Entity\RatingCoaster $rating)
+    public function removeRating(\BddBundle\Entity\RiddenCoaster $rating)
     {
         $this->ratings->removeElement($rating);
     }

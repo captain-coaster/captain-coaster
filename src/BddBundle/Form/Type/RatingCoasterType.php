@@ -2,7 +2,7 @@
 
 namespace BddBundle\Form\Type;
 
-use BddBundle\Entity\RatingCoaster;
+use BddBundle\Entity\RiddenCoaster;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +30,7 @@ class RatingCoasterType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => RatingCoaster::class,
+                'data_class' => RiddenCoaster::class,
             )
         );
     }

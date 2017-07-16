@@ -14,13 +14,12 @@
     <meta name="msapplication-TileImage" content="mstile-144x144.png" />
     <link rel="manifest" href="/manifest.json">
     <!-- global css -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
     <link href="{{ asset('css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/core.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/components.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/colors.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/core.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/components.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/colors.min.css') }}" rel="stylesheet" type="text/css">
     <!-- /global css -->
     <!-- additional css -->
     {% block stylesheets %}{% endblock %}
@@ -29,7 +28,7 @@
     <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
     <!-- /head js -->
 </head>
-<body class="navbar-top sidebar-xs">
+<body class="sidebar-xs">
 <!-- main navbar -->
 {{ include('navbar.html.twig') }}
 <!-- /main navbar -->
@@ -61,8 +60,8 @@
 <script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
 <!-- /core JS files -->
 <!-- Theme JS files -->
-<script type="text/javascript" src="{{ asset('js/core/app.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/plugins/ui/ripple.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/core/app.min.js') }}"></script>
 <!-- /theme JS files -->
 <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>

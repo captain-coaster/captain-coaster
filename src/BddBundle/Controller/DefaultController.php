@@ -27,7 +27,7 @@ class DefaultController extends Controller
 
         $ratingFeed = $this
             ->getDoctrine()
-            ->getRepository('BddBundle:RatingCoaster')
+            ->getRepository('BddBundle:RiddenCoaster')
             ->findBy([], ['updatedAt' => 'DESC'], 6);
 
         $images = $this->get('BddBundle\Service\ImageService')
@@ -45,14 +45,14 @@ class DefaultController extends Controller
 
         $ratingNumber = $this
             ->getDoctrine()
-            ->getRepository('BddBundle:RatingCoaster')
+            ->getRepository('BddBundle:RiddenCoaster')
             ->countAll();
 
         $date = new \DateTime();
         $date->sub(new \DateInterval('P1D'));
         $newRatingNumber = $this
             ->getDoctrine()
-            ->getRepository('BddBundle:RatingCoaster')
+            ->getRepository('BddBundle:RiddenCoaster')
             ->countNew($date);
 
         return $this->render(

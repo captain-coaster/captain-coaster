@@ -1,0 +1,78 @@
+<div class="row">
+    <!-- Comments -->
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h6 class="panel-title text-semiold">Avis</h6>
+            <div class="heading-elements">
+                <ul class="list-inline list-inline-separate heading-text text-muted">
+                    <li>{{ reviews|length }} avis</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <ul class="media-list stack-media-on-mobile">
+                {% for review in reviews %}
+                    <li class="media">
+                        <div class="media-left">
+                            {% if review.user.profilePicture %}
+                                <img src="{{ review.user.profilepicture }}"
+                                     class="img-circle img-sm"
+                                     alt="{{ review.user.firstname }}">
+                            {% else %}
+                                <img src="{{ asset('images/default_user.png') }}"
+                                     alt="{{ review.user.firstname }}"
+                                     class="img-circle img-sm">
+                            {% endif %}
+                        </div>
+
+                        <div class="media-body">
+                            <div class="media-heading">
+                                {{ review.user.username }}
+                                <span class="media-annotation dotted">
+                                            <span class="text-warning">
+                                                {% set low = review.value|round(0, 'floor') %}
+                                                {% for i in 1..low if low > 0 %}
+                                                    <i class="icon-star-full2"></i>
+                                                {% endfor %}
+                                                {% if low < review.value %}
+                                                    <i class="icon-star-half"></i>
+                                                {% endif %}
+                                            </span>
+                                        </span>
+                                <span class="media-annotation dotted">{{ review.updatedAt|date("d/m/Y") }}</span>
+                            </div>
+                            {% if review.positiveKeywords|length > 0 or review.negativeKeywords|length > 0 %}
+                                <p>
+                                    {% for pros in review.positiveKeywords %}
+                                        <span class="label label-success label-rounded">{{ pros.name }}</span>
+                                    {% endfor %}
+                                    {% for cons in review.negativeKeywords %}
+                                        <span class="label label-danger label-rounded">{{ cons.name }}</span>
+                                    {% endfor %}
+                                </p>
+                            {% endif %}
+                            {% if review.review %}
+                                <p>{{ review.review }}</p>
+                            {% endif %}
+                            {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
+                                <ul class="list-inline list-inline-separate text-size-small">
+                                    {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
+                                    {#class="icon-arrow-down22 text-danger"></i></a></li>#}
+                                    <li><a href="{{ path('review_form', {'id': review.coaster.id}) }}">Modifier mon
+                                            avis</a></li>
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="panel-body">
+            <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+                <button type="button" class="btn bg-blue"><i class="icon-plus22"></i> Envoyer un avis</button>
+            </a>
+        </div>
+    </div>
+    <!-- /comments -->
+</div>
