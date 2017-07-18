@@ -41,6 +41,35 @@
                 {% endif %}
             </div>
             <!-- /star rating -->
+            <!-- main carac -->
+            <div class="content-group">
+                <div class="row row-seamless btn-block-group">
+                    <div class="col-xs-6">
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <i class="icon-arrow-up8 text-warning-600"></i>
+                            <span>{{ coaster.builtCoaster.height }} m</span>
+                        </button>
+
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <i class="icon-rocket text-success-400"></i>
+                            <span class="text-bold">{{ coaster.builtCoaster.speed }} km/h</span>
+                        </button>
+                    </div>
+
+                    <div class="col-xs-6">
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <i class="icon-rulers text-blue"></i>
+                            <span>{{ coaster.builtCoaster.length }} m</span>
+                        </button>
+
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <i class="icon-spinner11 text-danger-400"></i>
+                            <span>{{ coaster.builtCoaster.inversionsNumber }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- /main carac -->
             <!-- coaster details -->
             <div class="panel panel-white">
                 <div class="panel-heading">
@@ -170,84 +199,29 @@
         </div>
 
         <div class="col-sm-9">
-            <div class="row">
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-blue-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-body">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.height }} m</h3>
-                                <span class="text-uppercase text-size-mini">Hauteur</span>
-                            </div>
-
-                            <div class="media-right media-middle">
-                                <i class="icon-arrow-up8 icon-3x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-danger-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-body">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.speed }} km/h</h3>
-                                <span class="text-uppercase text-size-mini">Vitesse</span>
-                            </div>
-
-                            <div class="media-right media-middle">
-                                <i class="icon-rocket icon-3x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-success-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-left media-middle">
-                                <i class="icon-rulers icon-3x opacity-75"></i>
-                            </div>
-
-                            <div class="media-body text-right">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.length }} m</h3>
-                                <span class="text-uppercase text-size-mini">Longueur</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-sm-6 col-md-3">
-                    <div class="panel panel-body bg-indigo-400 has-bg-image">
-                        <div class="media no-margin">
-                            <div class="media-left media-middle">
-                                <i class="icon-spinner11 icon-3x opacity-75"></i>
-                            </div>
-
-                            <div class="media-body text-right">
-                                <h3 class="no-margin">{{ coaster.builtCoaster.inversionsNumber }}</h3>
-                                <span class="text-uppercase text-size-mini">Inversions</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {% if images|length > 0 %}
-                {% for row in images|batch(4) %}
-                    <div class="row">
-                        {% for imagePath in row %}
-                            <div class="col-lg-3 col-sm-6">
-                                <div class="thumbnail">
-                                    <a href="{{ asset(imagePath) }}" data-popup="lightbox" rel="gallery">
-                                        <div class="thumb">
-                                            <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}" alt="">
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        {% endfor %}
+                <div class="row">
+                    <div class="panel panel-flat border-top-blue">
+                        <div class="panel-heading">
+                            <h6>Photos</h6>
+                        </div>
+                        <div class="panel-body no-border no-padding-top">
+                            {% for imagePath in images %}
+                                {% if loop.index < 9 %}
+                                    <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
+                                        <a style="margin: 10px;" href="{{ asset(imagePath) }}" data-popup="lightbox"
+                                           rel="gallery">
+                                            <div class="thumb">
+                                                <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}"
+                                                     alt="">
+                                            </div>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
-                {% endfor %}
+                </div>
             {% endif %}
             {% if reviews|length > 0 %}
                 {% include 'BddBundle:Coaster:reviews.html.twig' with {'reviews': reviews} only %}

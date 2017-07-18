@@ -23,12 +23,12 @@
     <!-- /global css -->
     <!-- additional css -->
     {% block stylesheets %}{% endblock %}
-    <!-- /additional ccss -->
+    <!-- /additional css -->
     <!-- head js -->
     <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
     <!-- /head js -->
 </head>
-<body class="sidebar-xs">
+<body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
 <!-- main navbar -->
 {{ include('navbar.html.twig') }}
 <!-- /main navbar -->
@@ -45,7 +45,7 @@
             {{ include(
                 'page_header.html.twig',
                 {'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null)}
-            )}}
+            ) }}
             <!-- /page header -->
             <!-- Content area -->
             <div class="content">
@@ -65,11 +65,12 @@
 <!-- Theme JS files -->
 <script type="text/javascript" src="{{ asset('js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/core/app.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/core/layout_fixed_custom.js') }}"></script>
 <!-- /theme JS files -->
 <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-<script>
+<script type="text/javascript">
     let url = Routing.generate('bdd_ajax_search_all_coaster');
     let dataSource = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
