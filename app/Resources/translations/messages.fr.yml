@@ -1,1 +1,13 @@
+error:
+    404:
+        title: 'Page non trouvée'
+        message: 'Mmmh, mon petit doigt me dit que ce n''est pas le bon chemin...'
+    403:
+        title: 'Accès interdit'
+        message: 'Tu n''es pas autorisé à afficher cette page. Mais un jour peut être...'
+    generic:
+        title: 'Oops, une erreur s''est produite'
+        message: 'Nos meilleurs techniciens sont déjà sur le coup.'
+
+
 notes: 1 note|%count% notes

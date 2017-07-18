@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %} • Coasters World</title>
+    <title>{{ title|default('Bienvenue !') }} • Coasters World</title>
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('apple-touch-icon-144x144.png') }}" />
     <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('apple-touch-icon-152x152.png') }}" />
     <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32" />
@@ -42,7 +42,10 @@
         <!-- main content -->
         <div class="content-wrapper">
             <!-- page header -->
-            {{ include('page_header.html.twig', {'title': title, 'subTitle': subTitle}) }}
+            {{ include(
+                'page_header.html.twig',
+                {'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null)}
+            )}}
             <!-- /page header -->
             <!-- Content area -->
             <div class="content">
