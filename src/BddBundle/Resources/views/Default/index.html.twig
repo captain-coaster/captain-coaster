@@ -1,8 +1,8 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Découvrez, notez et partagez tous les coasters{% endblock %}
-{% set title = 'Bienvenue !' %}
-{% set subTitle = '' %}
+{% set title = 'index.title'|trans %}
+{% set openedSidebar = true %}
+{% block title %}{{ 'index.header.title'|trans }}{% endblock %}
 
 {% block body %}
     <!-- info alert -->
