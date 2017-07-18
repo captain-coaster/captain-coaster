@@ -1,3 +1,8 @@
+index:
+    title: 'Bienvenue !'
+    header:
+        title: 'Découvrez, notez et partagez tous les coasters'
+
 error:
     404:
         title: 'Page non trouvée'
