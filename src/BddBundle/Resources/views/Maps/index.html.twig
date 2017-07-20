@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.get('_locale') }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ 'map_index.title'|trans }} • Coasters World</title>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('apple-touch-icon-144x144.png') }}"/>
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('apple-touch-icon-152x152.png') }}"/>
+    <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="{{ asset('favicon-16x16.png') }}" sizes="16x16"/>
+    <meta name="application-name" content="Coasters World"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF"/>
+    <meta name="msapplication-TileImage" content="mstile-144x144.png"/>
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <!-- global css -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    <link href="{{ asset('css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/core.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/components.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('css/colors.min.css') }}" rel="stylesheet" type="text/css">
+    <!-- /global css -->
+    <!-- additional css -->
+    {% block stylesheets %}{% endblock %}
+    <!-- /additional css -->
+    <!-- head js -->
+    <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
+    <!-- /head js -->
+</head>
+<body class="navbar-top sidebar-xs">
+<!-- main navbar -->
+{{ include('navbar.html.twig') }}
+<!-- /main navbar -->
+<!-- page container -->
+<div class="page-container">
+    <!-- page content -->
+    <div class="page-content">
+        <!-- main sidebar -->
+        {{ include('sidebar.html.twig') }}
+        <!-- /main sidebar -->
+        <div class="sidebar sidebar-secondary sidebar-default">
+            {#{{ dump(markers) }}#}
+            <div class="sidebar-content">
+                <form action="#">
+                    <!-- Sidebar search -->
+                    <div class="sidebar-category">
+                        <div class="category-title">
+                            <span>{{ 'map_index.manufacturer'|trans }}</span>
+                            <ul class="icons-list">
+                                <li><a href="#" data-action="collapse"></a></li>
+                            </ul>
+                        </div>
+
+                        <div class="category-content">
+
+                            <div class="has-feedback has-feedback-left">
+                                <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                                    <option value=""></option>
+                                    <option value="3">Intamin</option>
+                                    <option value="43">B&M</option>
+                                    <option value="9">Mack</option>
+                                    <option value="145">RMC</option>
+                                    <option value="2">Vekoma</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /sidebar search -->
+                    <!-- Filter -->
+                    <div class="sidebar-category">
+                        <div class="category-title">
+                            <span>{{ 'map_index.filter.title'|trans }}</span>
+                        </div>
+
+                        <div class="category-content">
+                            <div class="form-group">
+                                <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                                    <label class="display-block">
+                                        {{ 'map_index.filter.status'|trans }}
+                                        <input name="filters[status]" type="checkbox" class="switchery">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                                    <label class="display-block">
+                                        {{ 'map_index.filter.notridden'|trans }}
+                                        <input name="filters[notridden]" type="checkbox" class="switchery"
+                                               {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /filter -->
+                </form>
+            </div>
+        </div>
+        <!-- main content -->
+        <div class="content-wrapper" id="map">
+            {#<div id="map"></div>#}
+            {#{{ include(#}
+            {#'page_header.html.twig',#}
+            {#{'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null)}#}
+            {#) }}#}
+            {#<!-- /page header -->#}
+            {#<!-- Content area -->#}
+            {#<div class="content">#}
+            {#<div class="row">#}
+            {#<div id="map" style="width:100%; height:600px;"></div>#}
+
+            {#</div>#}
+            {#</div>#}
+        </div>
+        <!-- /main content -->
+    </div>
+    <!-- /page content -->
+</div>
+<!-- /page container -->
+<!-- Core JS files -->
+<script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
+<!-- /core JS files -->
+<!-- Theme JS files -->
+<script type="text/javascript" src="{{ asset('js/core/app.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
+<!-- /theme JS files -->
+<script type="text/javascript">
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+
+    elems.forEach(function (html) {
+        var switchery = new Switchery(html);
+        html.onchange = function () {
+            filterData();
+        };
+    });
+
+    var gmarkers = [];
+    var map;
+    var markers = {{ markers|raw }};
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 5,
+            center: {lat: 48.384098, lng: 7.970846}
+        });
+        setMarkers(map, markers);
+    }
+
+    function setMarkers(map, markers) {
+        // Adds markers to the map.
+        for (var i = 0; i < markers.length; i++) {
+            var beach = markers[i];
+            //console.log(beach)
+            var marker = new google.maps.Marker({
+                position: {lat: beach['latitude'], lng: beach['longitude']},
+                map: map,
+                title: beach['name'],
+                label: beach['nb'],
+                zindex: i
+            });
+            gmarkers.push(marker);
+        }
+    }
+
+    function removeMarkers() {
+        for (i = 0; i < gmarkers.length; i++) {
+            gmarkers[i].setMap(null);
+        }
+    }
+
+    function filterData() {
+        console.log('filtering');
+        $.ajax({
+            url: '/fr/map/markers',
+            type: "GET",
+            data: $("form").serialize()
+        }).done(function (data) {
+            console.log('done ajax');
+            removeMarkers();
+            setMarkers(map, data);
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
+</script>
+</body>
+</html>
+
