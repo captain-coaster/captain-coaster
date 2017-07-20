@@ -13,7 +13,7 @@ hwi_oauth_login:
     resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
     prefix:   /{_locale}/login
     requirements:
-        _locale: "fr"
+        _locale: "fr|en"
     defaults:
         _locale: "fr"
 
@@ -41,6 +41,6 @@ bdd:
     type:     annotation
     prefix:   /{_locale}
     requirements:
-        _locale: "fr"
+        _locale: "fr|en"
     defaults:
         _locale: "fr"

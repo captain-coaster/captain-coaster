@@ -1,0 +1,26 @@
+index:
+    title: 'Welcome !'
+    header:
+        title: 'Discover, rate and share roller coasters'
+
+map_index:
+    title: 'Coaster Map'
+    manufacturer: 'Manufacturer'
+    filter:
+        title: 'Filters'
+        status: 'Operating'
+        notridden: 'Not ridden yet'
+
+error:
+    404:
+        title:
+        message:
+    403:
+        title:
+        message:
+    generic:
+        title:
+        message:
+
+
+notes:
