@@ -2,12 +2,14 @@
 
 namespace BddBundle\Controller;
 
+use BddBundle\Entity\Park;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class MapsController
@@ -45,6 +47,28 @@ class MapsController extends Controller
         $filters = $request->get('filters', []);
 
         return new JsonResponse($this->getMarkers($filters, $user));
+    }
+
+    /**
+     * @param Request $request
+     * @param Park $park
+     * @return Response
+     * @Route("/parks/{id}/coasters", name="map_coasters_ajax", condition="request.isXmlHttpRequest()")
+     * @Method({"GET"})
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
+     */
+    public function getCoastersAction(Request $request, Park $park)
+    {
+        $user = $this->getUser();
+        $filters = $request->get('filters', []);
+
+        $coasters = $this->getDoctrine()->getRepository('BddBundle:Coaster')->getCoastersForMap(
+            $park,
+            $filters,
+            $user
+        );
+
+        return $this->render('@Bdd/Maps/listCoasters.html.twig', ['coasters' => $coasters]);
     }
 
     /**

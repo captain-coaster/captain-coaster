@@ -47,32 +47,10 @@
                     <!-- Sidebar search -->
                     <div class="sidebar-category">
                         <div class="category-title">
-                            <span>{{ 'map_index.manufacturer'|trans }}</span>
+                            <span>{{ 'map_index.filter.title'|trans }}</span>
                             <ul class="icons-list">
                                 <li><a href="#" data-action="collapse"></a></li>
                             </ul>
-                        </div>
-
-                        <div class="category-content">
-
-                            <div class="has-feedback has-feedback-left">
-                                <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
-                                    <option value=""></option>
-                                    <option value="3">Intamin</option>
-                                    <option value="43">B&M</option>
-                                    <option value="9">Mack</option>
-                                    <option value="145">RMC</option>
-                                    <option value="2">Vekoma</option>
-                                </select>
-                            </div>
-
-                        </div>
-                    </div>
-                    <!-- /sidebar search -->
-                    <!-- Filter -->
-                    <div class="sidebar-category">
-                        <div class="category-title">
-                            <span>{{ 'map_index.filter.title'|trans }}</span>
                         </div>
 
                         <div class="category-content">
@@ -93,10 +71,37 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                                    <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
+                                    <option value="3">Intamin</option>
+                                    <option value="43">B&M</option>
+                                    <option value="9">Mack</option>
+                                    <option value="145">RMC</option>
+                                    <option value="2">Vekoma</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select class="form-control" name="filters[averageRating]" onchange="filterData();">
+                                    <option value="">{{ 'map_index.filter.averageRating'|trans }}</option>
+                                    <option value="1">{{ 'map_index.filter.atleast'|trans }} 1</option>
+                                    <option value="2">{{ 'map_index.filter.atleast'|trans }} 2</option>
+                                    <option value="3">{{ 'map_index.filter.atleast'|trans }} 3</option>
+                                    <option value="4">{{ 'map_index.filter.atleast'|trans }} 4</option>
+                                    <option value="5">{{ 'map_index.filter.atleast'|trans }} 5</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <!-- /filter -->
+                    <!-- /sidebar search -->
                 </form>
+                <div class="category-title">
+                    <span>Résultats</span>
+                    <ul class="icons-list">
+                        <li><a href="#" data-action="collapse"></a></li>
+                    </ul>
+                </div>
+                <div id="result-map" class="category-content no-padding"></div>
             </div>
         </div>
         <!-- main content -->
@@ -129,12 +134,11 @@
 <!-- /theme JS files -->
 <script type="text/javascript">
     var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-
     elems.forEach(function (html) {
         var switchery = new Switchery(html);
-        html.onchange = function () {
-            filterData();
-        };
+    });
+    $('input').on("click", function () {
+        filterData();
     });
 
     var gmarkers = [];
@@ -152,16 +156,20 @@
     function setMarkers(map, markers) {
         // Adds markers to the map.
         for (var i = 0; i < markers.length; i++) {
-            var beach = markers[i];
+            var park = markers[i];
             //console.log(beach)
             var marker = new google.maps.Marker({
-                position: {lat: beach['latitude'], lng: beach['longitude']},
+                position: {lat: park['latitude'], lng: park['longitude']},
                 map: map,
-                title: beach['name'],
-                label: beach['nb'],
-                zindex: i
+                title: park['name'],
+                label: park['nb'],
+                zindex: i,
+                parkId: park['id']
             });
             gmarkers.push(marker);
+            marker.addListener('click', function() {
+                displayCoaster(this.parkId);
+            });
         }
     }
 
@@ -169,6 +177,17 @@
         for (i = 0; i < gmarkers.length; i++) {
             gmarkers[i].setMap(null);
         }
+    }
+
+    function displayCoaster(data) {
+        $.ajax({
+            url: '/fr/map/parks/'+data+'/coasters',
+            type: "GET",
+            data: $("form").serialize()
+        }).done(function (coasters) {
+            $('#result-map').html(coasters);
+        });
+
     }
 
     function filterData() {

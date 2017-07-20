@@ -5,11 +5,14 @@ index:
 
 map_index:
     title: 'Carte des coasters'
-    manufacturer: 'Constructeur'
     filter:
         title: 'Filtres'
+        manufacturer: 'Constructeur'
         status: 'En fonctionnement'
         notridden: 'Pas encore ridé'
+        averageRating: 'Note moyenne'
+        atleast: 'au moins'
+    results: 'Résultats'
 
 error:
     404:

@@ -5,11 +5,14 @@ index:
 
 map_index:
     title: 'Coaster Map'
-    manufacturer: 'Manufacturer'
     filter:
         title: 'Filters'
+        manufacturer: 'Manufacturer'
         status: 'Operating'
         notridden: 'Not ridden yet'
+        averageRating: 'Average rating'
+        atleast: 'at least'
+    results: 'Results'
 
 error:
     404:
