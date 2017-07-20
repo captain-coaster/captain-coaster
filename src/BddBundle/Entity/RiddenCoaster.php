@@ -8,7 +8,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * Coaster
  *
- * @ORM\Table(name="rating_coaster")
+ * @ORM\Table(
+ *     name="rating_coaster",
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})}
+ *     )
  * @ORM\Entity(repositoryClass="BddBundle\Repository\RiddenCoasterRepository")
  */
 class RiddenCoaster
