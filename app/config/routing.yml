@@ -1,3 +1,7 @@
+root:
+    path: "/"
+    defaults: { _controller: BddBundle:Default:root }
+
 #fos_user:
 #    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
@@ -13,9 +17,7 @@ hwi_oauth_login:
     resource: "@HWIOAuthBundle/Resources/config/routing/login.xml"
     prefix:   /{_locale}/login
     requirements:
-        _locale: "fr|en"
-    defaults:
-        _locale: "fr"
+        _locale: "%app.locales%"
 
 facebook_login:
     path: /login/check-facebook
@@ -29,18 +31,9 @@ fos_js_routing:
 _liip_imagine:
     resource: "@LiipImagineBundle/Resources/config/routing.xml"
 
-root:
-    path: "/"
-    defaults:
-        _controller: FrameworkBundle:Redirect:urlRedirect
-        path: /%locale%/
-        permanent: true
-
 bdd:
     resource: "@BddBundle/Controller/"
     type:     annotation
     prefix:   /{_locale}
     requirements:
-        _locale: "fr|en"
-    defaults:
-        _locale: "fr"
+        _locale: "%app.locales%"

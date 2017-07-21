@@ -15,6 +15,16 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown language-switch">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    {% if app.request.locale == 'fr' %}Français{% else %}English{% endif %}
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="english" href="{{ path('bdd_index', {'_locale': 'en'}) }}">English</a></li>
+                    <li><a class="french" href="{{ path('bdd_index', {'_locale': 'fr'}) }}">Français</a></li>
+                </ul>
+            </li>
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <li class="dropdown dropdown-user">
                     <a class="dropdown-toggle" data-toggle="dropdown">

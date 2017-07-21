@@ -5,6 +5,7 @@ namespace BddBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class DefaultController
@@ -12,6 +13,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
  */
 class DefaultController extends Controller
 {
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function rootAction(Request $request)
+    {
+        $locale = $request->getPreferredLanguage(['en', 'fr']);
+
+        return $this->redirectToRoute('bdd_index', ['_locale' => $locale], 301);
+    }
+
     /**
      * Index of application
      *
