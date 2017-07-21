@@ -2,10 +2,14 @@
 
 namespace BddBundle\Controller;
 
+use BddBundle\Entity\Coaster;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Tackk\Cartographer\ChangeFrequency;
+use Tackk\Cartographer\Sitemap;
 
 /**
  * Class DefaultController
@@ -78,5 +82,29 @@ class DefaultController extends Controller
                 'newRatingNumber' => $newRatingNumber,
             ]
         );
+    }
+
+    /**
+     * @Route("/sitemap.xml", name="sitemap")
+     * @Method({"GET"})
+     */
+    public function sitemapAction()
+    {
+        $sitemap = new Sitemap();
+        $sitemap->add($this->generateUrl('bdd_index'), null, ChangeFrequency::HOURLY, 1.0);
+
+        $coasters = $this->getDoctrine()->getRepository(Coaster::class)->findAll();
+
+        foreach ($coasters as $coaster) {
+            $sitemap->add(
+                $this->generateUrl('bdd_show_coaster', ['slug' => $coaster->getSlug()]),
+                null,
+                ChangeFrequency::WEEKLY,
+                0.8
+            );
+        }
+
+        // or simply echo it:
+        return new Response($sitemap->toString(), 200, ['Content-Type' => 'text/xml']);
     }
 }
