@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Tackk\Cartographer\ChangeFrequency;
 use Tackk\Cartographer\Sitemap;
 
@@ -91,20 +92,19 @@ class DefaultController extends Controller
     public function sitemapAction()
     {
         $sitemap = new Sitemap();
-        $sitemap->add($this->generateUrl('bdd_index'), null, ChangeFrequency::HOURLY, 1.0);
+        $sitemap->add($this->generateUrl('bdd_index', [], UrlGeneratorInterface::ABSOLUTE_URL), null, ChangeFrequency::HOURLY, 1.0);
 
         $coasters = $this->getDoctrine()->getRepository(Coaster::class)->findAll();
 
         foreach ($coasters as $coaster) {
             $sitemap->add(
-                $this->generateUrl('bdd_show_coaster', ['slug' => $coaster->getSlug()]),
+                $this->generateUrl('bdd_show_coaster', ['slug' => $coaster->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL),
                 null,
                 ChangeFrequency::WEEKLY,
                 0.8
             );
         }
 
-        // or simply echo it:
         return new Response($sitemap->toString(), 200, ['Content-Type' => 'text/xml']);
     }
 }
