@@ -170,8 +170,8 @@ class CoasterController extends Controller
      * Ajax route for autocomplete search
      *
      * @Route(
-     *     "/ajax/search/all",
-     *     name="bdd_ajax_search_all_coaster",
+     *     "/search/all.json",
+     *     name="coaster_search_all_json",
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
