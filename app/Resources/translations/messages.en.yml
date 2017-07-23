@@ -19,6 +19,14 @@ map_index:
         atleast: 'at least'
     results: 'Results'
 
+user_list:
+    title: 'Member''s ranking'
+    info:
+        title: 'Alors, t''en es où dans tes notes ?'
+        text: 'Ce classement te permet de savoir où tu te situes sur l''ensemble des membres qui ont noté des coasters, mais aussi de voir le détail de leurs notes !'
+    member_from: 'Member since'
+    rating: 1 rating|%count% ratings
+
 error:
     404:
         title:
@@ -29,6 +37,3 @@ error:
     generic:
         title:
         message:
-
-
-notes:
