@@ -1,3 +1,8 @@
+app:
+    name: 'Captain Coaster'
+    title:
+        default: 'Welcome !'
+
 index:
     title: 'Welcome !'
     header:
