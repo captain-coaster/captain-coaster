@@ -83,7 +83,10 @@
         source: dataSource.ttAdapter(),
         limit: 7,
     }).bind('typeahead:select', function (ev, suggestion) {
-        window.location.href = Routing.generate('bdd_show_coaster', {slug: suggestion.slug});
+        window.location.href = Routing.generate(
+            'bdd_show_coaster',
+            {slug: suggestion.slug, '_locale': '{{ app.request.locale }}'}
+        );
     });
 </script>
 {% block javascripts %}{% endblock %}
