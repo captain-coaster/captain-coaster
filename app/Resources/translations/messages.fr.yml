@@ -8,6 +8,25 @@ index:
     header:
         title: 'Découvrez, notez et partagez tous les coasters'
 
+coaster:
+    rateit: 'Note ce coaster !'
+    infos:
+        status: 'Statut'
+        park: 'Parc'
+        country: 'Pays'
+        type: 'Type'
+        launch: 'Lancement'
+        manufacturer: 'Constructeur'
+        restraint: 'Retenue'
+        forces: 'Forces G'
+        duration: 'Durée'
+        opening: 'Ouverture'
+        closing: 'Fermeture'
+        vr: 'VR'
+        cost: 'Coût'
+    photos: 'Photos'
+    location: 'Localisation'
+
 map_index:
     title: 'Carte des coasters'
     filter:
@@ -26,6 +45,17 @@ user_list:
         text: 'Ce classement te permet de savoir où tu te situes sur l''ensemble des membres qui ont noté des coasters, mais aussi de voir le détail de leurs notes !'
     member_from: 'Membre depuis le'
     rating: 1 note|%count% notes
+
+coaster_list:
+    top10: 'Le Top 10 Coaster de'
+
+review:
+    share: 'Partage ton expérience avec nous !'
+    value: 'Il vaut combien, ce crédit ?'
+    pros: 'Quels sont les principaux atouts de ce coaster ?'
+    cons: 'Et ses principaux défauts ?'
+    comment: 'Envie d''être encore plus précis, raconte-nous ça !'
+    button: 'Envoyer mon avis'
 
 error:
     404:

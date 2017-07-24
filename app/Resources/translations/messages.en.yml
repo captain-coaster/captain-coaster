@@ -8,8 +8,27 @@ index:
     header:
         title: 'Discover, rate and share roller coasters'
 
+coaster:
+    rateit: 'Rate this coaster !'
+    infos:
+        status: 'Status'
+        park: 'Park'
+        country: 'Country'
+        type: 'Type'
+        launch: 'Launch'
+        manufacturer: 'Manufacturer'
+        restraint: 'Restraint'
+        forces: 'G-forces'
+        duration: 'Duration'
+        opening: 'Opening date'
+        closing: 'Closing date'
+        vr: 'VR'
+        cost: 'Cost'
+    photos: 'Photos'
+    location: 'Location'
+
 map_index:
-    title: 'Coaster Map'
+    title: 'Coasters Map'
     filter:
         title: 'Filters'
         manufacturer: 'Manufacturer'
@@ -27,13 +46,24 @@ user_list:
     member_from: 'Member since'
     rating: 1 rating|%count% ratings
 
+coaster_list:
+    top10: 'Coasters Top 10 of'
+
+review:
+    share: 'Share your opinion with us !'
+    value: 'How many stars for that coaster ?'
+    pros: 'What are its main pros ?'
+    cons: 'And its main cons ?'
+    comment: 'Does it need more precisions ? Tell us !'
+    button: 'Send my opinion'
+
 error:
     404:
-        title:
-        message:
+        title: 'Page not found'
+        message: 'Oops you seem to be lost...'
     403:
-        title:
-        message:
+        title: 'Forbidden Access'
+        message: 'You are not officially authorised to access this page by the Coasters Government !'
     generic:
-        title:
-        message:
+        title: 'Oops, an error occured !'
+        message: 'Calling the maintenance chief department...'

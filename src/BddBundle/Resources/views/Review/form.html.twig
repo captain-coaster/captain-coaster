@@ -28,14 +28,14 @@
 {% block body %}
     <div class="panel panel-flat">
         <div class="panel-heading">
-            <h2 class="panel-title">Partage ton expérience avec nous !</h2>
+            <h2 class="panel-title">{{ 'review.share'|trans }}</h2>
         </div>
 
         <div class="panel-body">
 
             {{ form_start(form) }}
             <div class="form-group">
-                <label class="control-label is-visible">Il vaut combien, ce crédit ?</label>
+                <label class="control-label is-visible">{{ 'review.value'|trans }}</label>
                 <span class="text-danger">*</span>
                 <br>
                 {{ form_widget(form.value) }}
@@ -43,21 +43,21 @@
             </div>
 
             <div class="form-group">
-                {{ form_label(form.value, "Quels sont les principaux atouts de ce coaster ?", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.value, "{{ 'review.pros'|trans }}", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.positiveKeywords) }}
             </div>
             <div class="form-group">
-                {{ form_label(form.value, 'Et ses principaux défauts ?', {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.value, "{{ 'review.cons'|trans }}", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.negativeKeywords, {'attr': {'class': 'select col-lg-10'}}) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.review, "Envie d'être encore plus précis, raconte-nous ça !", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.review, "{{ 'review.comment'|trans }}", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.review, {'attr': {'class': 'form-control', 'cols': '5', 'rows': '5'}}) }}
             </div>
             <div class="text-right">
                 <button type="submit" class="btn btn-primary">
-                    Envoyer mon avis
+                    {{ 'review.button'|trans }}
                     <i class="icon-arrow-right14 position-right"></i>
                 </button>
             </div>
