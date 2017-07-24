@@ -39,7 +39,7 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $goodCoasters = [1985, 59, 205, 4, 128, 387, 240, 2138, 2197];
+        $goodCoasters = [1985, 59, 205, 4, 128, 387, 2138, 2197];
         $coasterId = $goodCoasters[array_rand($goodCoasters)];
 
         $ratingFeed = $this
@@ -72,6 +72,9 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:RiddenCoaster')
             ->countNew($date);
 
+        $reviews = $this->getDoctrine()->getRepository('BddBundle:RiddenCoaster')
+            ->getLastReviewsWithText();
+
         return $this->render(
             'BddBundle:Default:index.html.twig',
             [
@@ -81,6 +84,7 @@ class DefaultController extends Controller
                 'stats' => $stats,
                 'ratingNumber' => $ratingNumber,
                 'newRatingNumber' => $newRatingNumber,
+                'reviews' => $reviews
             ]
         );
     }
@@ -92,13 +96,22 @@ class DefaultController extends Controller
     public function sitemapAction()
     {
         $sitemap = new Sitemap();
-        $sitemap->add($this->generateUrl('bdd_index', [], UrlGeneratorInterface::ABSOLUTE_URL), null, ChangeFrequency::HOURLY, 1.0);
+        $sitemap->add(
+            $this->generateUrl('bdd_index', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            null,
+            ChangeFrequency::HOURLY,
+            1.0
+        );
 
         $coasters = $this->getDoctrine()->getRepository(Coaster::class)->findAll();
 
         foreach ($coasters as $coaster) {
             $sitemap->add(
-                $this->generateUrl('bdd_show_coaster', ['slug' => $coaster->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL),
+                $this->generateUrl(
+                    'bdd_show_coaster',
+                    ['slug' => $coaster->getSlug()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
                 null,
                 ChangeFrequency::WEEKLY,
                 0.8

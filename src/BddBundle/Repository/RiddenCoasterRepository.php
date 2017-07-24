@@ -51,4 +51,23 @@ class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getLastReviewsWithText($limit = 2)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+//            ->addSelect('p')
+//            ->addSelect('c')
+            ->addSelect('u')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->innerJoin('r.user', 'u')
+//            ->leftJoin('r.positiveKeywords', 'p')
+//            ->leftjoin('r.negativeKeywords', 'c')
+            ->where('r.review is not null')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setMaxResults(2)
+            ->getQuery()
+            ->getResult();
+    }
 }
