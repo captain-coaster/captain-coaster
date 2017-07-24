@@ -75,6 +75,31 @@
                 </div>
                 <!-- /thumbnail with image and button -->
             {% endif %}
+            <!-- latest ratings -->
+            <div class="panel panel-flat border-top-teal">
+                <div class="panel-heading">
+                    <h6 class="panel-title">Dernières notes</h6>
+                </div>
+                <div class="panel-body">
+                    <ul class="list-feed">
+                        {% for ratingItem in ratingFeed %}
+                            <li>
+                                <strong>{{ ratingItem.user.firstName }} {{ ratingItem.user.lastName|first }}.</strong>
+                                a mis la note de {{ ratingItem.value }} à
+                                <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
+                                    {{ ratingItem.coaster.name }}
+                                </a>
+                                <div class="text-muted">
+                                    <time class="timeago" datetime="{{ ratingItem.updatedAt|date("c") }}"></time>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <!-- /latests ratings -->
+        </div>
+        <div class="col-sm-6">
             <!-- latest reviews -->
             <div class="panel panel-flat">
                 <div class="panel-heading">
@@ -148,31 +173,6 @@
                 </div>
             </div>
             <!-- /latest reviews -->
-        </div>
-        <div class="col-sm-6">
-            <!-- latest ratings -->
-            <div class="panel panel-flat border-top-teal">
-                <div class="panel-heading">
-                    <h6 class="panel-title">Dernières notes</h6>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-feed">
-                        {% for ratingItem in ratingFeed %}
-                            <li>
-                                <strong>{{ ratingItem.user.firstName }} {{ ratingItem.user.lastName|first }}.</strong>
-                                a mis la note de {{ ratingItem.value }} à
-                                <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
-                                    {{ ratingItem.coaster.name }}
-                                </a>
-                                <div class="text-muted">
-                                    <time class="timeago" datetime="{{ ratingItem.updatedAt|date("c") }}"></time>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            <!-- /latests ratings -->
         </div>
     </div>
 {% endblock %}
