@@ -58,6 +58,7 @@ class CustomUserProvider extends BaseClass
         $user->setFirstName($response->getFirstName());
         $user->setLastName($response->getLastName());
         $user->setUsername($response->getNickname());
+        $user->setDisplayName($response->getNickname());
         $user->setEmail($response->getEmail());
         $user->setPassword($response->getUsername());
         $user->setProfilePicture($response->getProfilePicture());
