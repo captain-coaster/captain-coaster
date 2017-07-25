@@ -46,6 +46,14 @@ user_list:
     member_from: 'Membre depuis le'
     rating: 1 note|%count% notes
 
+me:
+    title: 'Mon Profil'
+    parameters: 'Préférences'
+    form:
+        displayName: 'Je souhaite apparaître en tant que'
+        save: 'OK'
+    badge: 'Badges'
+
 coaster_list:
     top10: 'Le Top 10 Coaster de'
 
@@ -56,6 +64,11 @@ review:
     cons: 'Et ses principaux défauts ?'
     comment: 'Envie d''être encore plus précis, raconte-nous ça !'
     button: 'Envoyer mon avis'
+
+navbar:
+    profile: 'Mon Profil'
+    rating: 'Mes Notes'
+    logout: 'Se déconnecter'
 
 error:
     404:

@@ -7,7 +7,7 @@
 <body>
 {{ form_start(form) }}
 
-<h3>{{ 'coaster_list.top10'|trans }} {{ app.user.firstname }}</h3>
+<h3>{{ 'coaster_list.top10'|trans }} {{ app.user.displayName }}</h3>
 <ul class="top-coaster sortable" data-prototype="{{ form_widget(form.topCoasters.vars.prototype)|e('html_attr') }}">
     {% for topCoaster in form.topCoasters %}
         <li class="drop">{{ form_row(topCoaster) }}</li>

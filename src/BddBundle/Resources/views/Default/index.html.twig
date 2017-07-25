@@ -84,7 +84,7 @@
                     <ul class="list-feed">
                         {% for ratingItem in ratingFeed %}
                             <li>
-                                <strong>{{ ratingItem.user.firstName }} {{ ratingItem.user.lastName|first }}.</strong>
+                                <strong>{{ ratingItem.user.displayName }}</strong>
                                 a mis la note de {{ ratingItem.value }} à
                                 <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
                                     {{ ratingItem.coaster.name }}
@@ -114,10 +114,10 @@
                                     {% if review.user.profilePicture %}
                                         <img src="{{ review.user.profilepicture }}"
                                              class="img-circle img-sm"
-                                             alt="{{ review.user.firstname }}">
+                                             alt="{{ review.user.displayName }}">
                                     {% else %}
                                         <img src="{{ asset('images/default_user.png') }}"
-                                             alt="{{ review.user.firstname }}"
+                                             alt="{{ review.user.displayName }}"
                                              class="img-circle img-sm">
                                     {% endif %}
                                 </div>
@@ -130,7 +130,7 @@
                                             </a>
 
                                         </h6>
-                                        {{ review.user.username }}
+                                        {{ review.user.displayName }}
                                         <span class="media-annotation dotted">
                                             <span class="text-warning">
                                                 {% set low = review.value|round(0, 'floor') %}

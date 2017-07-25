@@ -18,17 +18,17 @@
                             {% if review.user.profilePicture %}
                                 <img src="{{ review.user.profilepicture }}"
                                      class="img-circle img-sm"
-                                     alt="{{ review.user.firstname }}">
+                                     alt="{{ review.user.displayName }}">
                             {% else %}
                                 <img src="{{ asset('images/default_user.png') }}"
-                                     alt="{{ review.user.firstname }}"
+                                     alt="{{ review.user.displayName }}"
                                      class="img-circle img-sm">
                             {% endif %}
                         </div>
 
                         <div class="media-body">
                             <div class="media-heading">
-                                {{ review.user.username }}
+                                {{ review.user.displayName }}
                                 <span class="media-annotation dotted">
                                             <span class="text-warning">
                                                 {% set low = review.value|round(0, 'floor') %}

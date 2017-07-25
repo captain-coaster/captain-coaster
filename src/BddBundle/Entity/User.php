@@ -7,8 +7,8 @@ use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * @ORM\Entity(repositoryClass="BddBundle\Repository\UserRepository")
  * @ORM\Table(name="users")
+ * @ORM\Entity(repositoryClass="BddBundle\Repository\UserRepository")
  */
 class User extends BaseUser
 {
@@ -52,6 +52,13 @@ class User extends BaseUser
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $displayName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $profilePicture;
 
     /**
@@ -60,23 +67,6 @@ class User extends BaseUser
      * @ORM\OneToMany(targetEntity="BddBundle\Entity\RiddenCoaster", mappedBy="user")
      */
     private $ratings;
-
-    /**
-     * @var TopCoaster
-     *
-     * @ORM\OneToMany(targetEntity="TopCoaster", mappedBy="user", cascade={"persist"})
-     * @ORM\OrderBy({"position" = "ASC"})
-     */
-    private $topCoasters;
-
-    /**
-     * @var Coaster
-     *
-     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Coaster", inversedBy="user")
-     * @ORM\JoinColumn(nullable=false)
-     * @ORM\JoinTable("user_wish_coaster")
-     */
-    private $wishCoasters;
 
     /**
      * @var \DateTime $createdAt
@@ -94,7 +84,6 @@ class User extends BaseUser
         parent::__construct();
 
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->topCoasters = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -218,74 +207,6 @@ class User extends BaseUser
     }
 
     /**
-     * Add topCoaster
-     *
-     * @param \BddBundle\Entity\TopCoaster $topCoaster
-     *
-     * @return User
-     */
-    public function addTopCoaster(\BddBundle\Entity\TopCoaster $topCoaster)
-    {
-        $this->topCoasters[] = $topCoaster;
-
-        return $this;
-    }
-
-    /**
-     * Remove topCoaster
-     *
-     * @param \BddBundle\Entity\TopCoaster $topCoaster
-     */
-    public function removeTopCoaster(\BddBundle\Entity\TopCoaster $topCoaster)
-    {
-        $this->topCoasters->removeElement($topCoaster);
-    }
-
-    /**
-     * Get topCoasters
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTopCoasters()
-    {
-        return $this->topCoasters;
-    }
-
-    /**
-     * Add wishCoaster
-     *
-     * @param \BddBundle\Entity\Coaster $wishCoaster
-     *
-     * @return User
-     */
-    public function addWishCoaster(\BddBundle\Entity\Coaster $wishCoaster)
-    {
-        $this->wishCoasters[] = $wishCoaster;
-
-        return $this;
-    }
-
-    /**
-     * Remove wishCoaster
-     *
-     * @param \BddBundle\Entity\Coaster $wishCoaster
-     */
-    public function removeWishCoaster(\BddBundle\Entity\Coaster $wishCoaster)
-    {
-        $this->wishCoasters->removeElement($wishCoaster);
-    }
-
-    /**
-     * Get wishCoasters
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getWishCoasters()
-    {
-        return $this->wishCoasters;
-    }
-
-    /**
      * Set profilePicture
      *
      * @param string $profilePicture
@@ -331,5 +252,29 @@ class User extends BaseUser
     public function getCreatedAt()
     {
         return $this->createdAt;
+    }
+
+    /**
+     * Set displayName
+     *
+     * @param string $displayName
+     *
+     * @return User
+     */
+    public function setDisplayName($displayName)
+    {
+        $this->displayName = $displayName;
+
+        return $this;
+    }
+
+    /**
+     * Get displayName
+     *
+     * @return string
+     */
+    public function getDisplayName()
+    {
+        return $this->displayName;
     }
 }

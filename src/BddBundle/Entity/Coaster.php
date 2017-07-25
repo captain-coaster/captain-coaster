@@ -135,21 +135,6 @@ class Coaster
     private $ratings;
 
     /**
-     * @var TopCoaster
-     *
-     * @ORM\OneToMany(targetEntity="BddBundle\Entity\TopCoaster", mappedBy="coaster")
-     */
-    private $tops;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\User", mappedBy="wishCoasters")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
-
-    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -171,7 +156,6 @@ class Coaster
     public function __construct()
     {
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tops = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -459,40 +443,6 @@ class Coaster
     }
 
     /**
-     * Add top
-     *
-     * @param \BddBundle\Entity\TopCoaster $top
-     *
-     * @return Coaster
-     */
-    public function addTop(TopCoaster $top)
-    {
-        $this->tops[] = $top;
-
-        return $this;
-    }
-
-    /**
-     * Remove top
-     *
-     * @param \BddBundle\Entity\TopCoaster $top
-     */
-    public function removeTop(TopCoaster $top)
-    {
-        $this->tops->removeElement($top);
-    }
-
-    /**
-     * Get tops
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTops()
-    {
-        return $this->tops;
-    }
-
-    /**
      * Set video
      *
      * @param string $video
@@ -514,40 +464,6 @@ class Coaster
     public function getVideo()
     {
         return $this->video;
-    }
-
-    /**
-     * Add user
-     *
-     * @param \BddBundle\Entity\User $user
-     *
-     * @return Coaster
-     */
-    public function addUser(\BddBundle\Entity\User $user)
-    {
-        $this->user[] = $user;
-
-        return $this;
-    }
-
-    /**
-     * Remove user
-     *
-     * @param \BddBundle\Entity\User $user
-     */
-    public function removeUser(\BddBundle\Entity\User $user)
-    {
-        $this->user->removeElement($user);
-    }
-
-    /**
-     * Get user
-     *
-     * @return \BddBundle\Entity\User
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**

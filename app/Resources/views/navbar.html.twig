@@ -38,9 +38,10 @@
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="{{ path('me_ratings') }}"><i class="icon-stars"></i> Mes notes</a></li>
+                        <li><a href="{{ path('me') }}"><i class="icon-profile"></i> {{ 'navbar.profile'|trans }}</a></li>
+                        <li><a href="{{ path('me_ratings') }}"><i class="icon-stars"></i> {{ 'navbar.rating'|trans }}</a></li>
                         <li class="divider"></li>
-                        <li><a href="{{ path('logout') }}"><i class="icon-switch2"></i> Se déconnecter</a></li>
+                        <li><a href="{{ path('logout') }}"><i class="icon-switch2"></i> {{ 'navbar.logout'|trans }}</a></li>
                     </ul>
                 </li>
             {% else %}

@@ -56,7 +56,7 @@
                         <span class="help-block text-center no-margin">Nous ne récupérons que votre nom, votre email et votre photo de profil.</span>
                     {% else %}
                         <div class="text-center">
-                            Déjà connecté en tant que <strong>{{ app.user.username }}</strong>
+                            Déjà connecté en tant que <strong>{{ app.user.displayName }}</strong>
                             <br/><br/>
                             <a href="{{ path('logout') }}" class="btn btn-flat bg-indigo">Se deconnecter ?</a>
                         </div>

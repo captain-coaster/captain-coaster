@@ -43,16 +43,16 @@
             </div>
 
             <div class="form-group">
-                {{ form_label(form.value, "{{ 'review.pros'|trans }}", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.positiveKeywords, "", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.positiveKeywords) }}
             </div>
             <div class="form-group">
-                {{ form_label(form.value, "{{ 'review.cons'|trans }}", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.negativeKeywords, "", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.negativeKeywords, {'attr': {'class': 'select col-lg-10'}}) }}
             </div>
 
             <div class="form-group">
-                {{ form_label(form.review, "{{ 'review.comment'|trans }}", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_label(form.review, "", {'label_attr': {'class': 'control-label'}}) }}
                 {{ form_widget(form.review, {'attr': {'class': 'form-control', 'cols': '5', 'rows': '5'}}) }}
             </div>
             <div class="text-right">

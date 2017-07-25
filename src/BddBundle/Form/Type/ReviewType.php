@@ -37,6 +37,7 @@ class ReviewType extends AbstractType
                         return $er->createQueryBuilder('m')
                             ->orderBy('m.name', 'ASC');
                     },
+                    'label' => 'review.pros'
                 ]
             )
             ->add(
@@ -51,6 +52,7 @@ class ReviewType extends AbstractType
                         return $er->createQueryBuilder('m')
                             ->orderBy('m.name', 'ASC');
                     },
+                    'label' => 'review.cons'
                 ]
             )
             ->add(
@@ -58,6 +60,7 @@ class ReviewType extends AbstractType
                 TextareaType::class,
                 [
                     'required' => false,
+                    'label' => 'review.comment'
                 ]
             );
     }

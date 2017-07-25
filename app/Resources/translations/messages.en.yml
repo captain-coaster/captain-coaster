@@ -46,6 +46,14 @@ user_list:
     member_from: 'Member since'
     rating: 1 rating|%count% ratings
 
+me:
+    title: 'My Profile'
+    parameters: 'Parameters'
+    form:
+        displayName: 'I want to appear as'
+        save: 'Save'
+    badge: 'Badges'
+
 coaster_list:
     top10: 'Coasters Top 10 of'
 
@@ -56,6 +64,11 @@ review:
     cons: 'And its main cons ?'
     comment: 'Does it need more precisions ? Tell us !'
     button: 'Send my opinion'
+
+navbar:
+    profile: 'My profile'
+    rating: 'My ratings'
+    logout: 'Logout'
 
 error:
     404:
