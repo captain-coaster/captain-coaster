@@ -9,8 +9,13 @@ index:
         title: 'Discover, rate and share roller coasters'
 
 coaster:
-    rateit: 'Rate this coaster !'
+    rating:
+        action: 'Rate this coaster !'
+        notenough: 'Not enough ratings for this coaster !'
+        mustlogin: 'You must be logged in to rate.'
+        login: 'Log in'
     infos:
+        title: '%name% features'
         status: 'Status'
         park: 'Park'
         country: 'Country'
@@ -24,6 +29,7 @@ coaster:
         closing: 'Closing date'
         vr: 'VR'
         cost: 'Cost'
+    parkcoaster: 'Also in %name%'
     photos: 'Photos'
     location: 'Location'
 
@@ -58,17 +64,34 @@ coaster_list:
     top10: 'Coasters Top 10 of'
 
 review:
+    title: 'Reviews'
     share: 'Share your opinion with us !'
     value: 'How many stars for that coaster ?'
     pros: 'What are its main pros ?'
     cons: 'And its main cons ?'
     comment: 'Does it need more precisions ? Tell us !'
     button: 'Send my opinion'
+    update: 'Update my review'
+    last: 'Latest reviews'
+
+rating:
+    last: 'Lastest ratings'
+    action: 'rated %value% stars'
 
 navbar:
     profile: 'My profile'
     rating: 'My ratings'
     logout: 'Logout'
+
+sidebar:
+    index: 'Home'
+    coastersRanking: 'Best coasters'
+    users: 'User''s ranking'
+    map: 'Coasters map'
+    news: 'News'
+    forum: 'Forum'
+    logout: 'Logout'
+    login: 'Login'
 
 error:
     404:

@@ -7,37 +7,45 @@
                     <!-- Main -->
                     <li class="active">
                         <a href="{{ path('bdd_index') }}">
-                            <i class="icon-home4"></i> <span>Accueil</span>
+                            <i class="icon-home4"></i> <span>{{ 'sidebar.index'|trans }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ path('coaster_ranking') }}">
-                            <i class="icon-trophy2"></i> <span>Meilleurs coasters</span>
+                            <i class="icon-trophy2"></i> <span>{{ 'sidebar.coastersRanking'|trans }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ path('user_list') }}">
-                            <i class="icon-users4"></i> <span>Palmarès des membres</span>
+                            <i class="icon-users4"></i> <span>{{ 'sidebar.users'|trans }}</span>
                         </a>
                     </li>
                     {% if is_granted('ROLE_PREVIEW_FEATURE') %}
                     <li>
                         <a href="{{ path('map_index') }}">
-                            <i class="icon-location3"></i> <span>Carte des coasters</span>
+                            <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
                         </a>
                     </li>
                     {% endif %}
                     <li>
-                        <a href="https://coastersworld.fr/"><i class="icon-newspaper2"></i> <span>Actualités</span></a>
+                        <a href="https://coastersworld.fr/">
+                            <i class="icon-newspaper2"></i> <span>{{ 'sidebar.news'|trans }}</span>
+                        </a>
                     </li>
                     <li>
-                        <a href="https://forum.coastersworld.fr/"><i class="icon-bubble2"></i> <span>Forum</span></a>
+                        <a href="https://forum.coastersworld.fr/">
+                            <i class="icon-bubble2"></i> <span>{{ 'sidebar.forum'|trans }}</span>
+                        </a>
                     </li>
                     <li>
                         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                            <a href="{{ path('logout') }}"><i class="icon-switch2"></i> <span>Se déconnecter</span></a>
+                            <a href="{{ path('logout') }}">
+                                <i class="icon-switch2"></i> <span>{{ 'sidebar.logout'|trans }}</span>
+                            </a>
                         {% else %}
-                            <a href="{{ path('facebook_login') }}"><i class="icon-lock"></i> <span>Se connecter</span></a>
+                            <a href="{{ path('facebook_login') }}">
+                                <i class="icon-lock"></i> <span>{{ 'sidebar.login'|trans }}</span>
+                            </a>
                         {% endif %}
                     </li>
                 </ul>

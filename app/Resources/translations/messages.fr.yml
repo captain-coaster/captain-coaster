@@ -9,8 +9,13 @@ index:
         title: 'Découvrez, notez et partagez tous les coasters'
 
 coaster:
-    rateit: 'Note ce coaster !'
+    rating:
+        action: 'Note ce coaster !'
+        notenough: 'Pas assez de note sur ce coaster !'
+        mustlogin: 'Il faut être connecté pour noter.'
+        login: 'Se connecter'
     infos:
+        title: 'Caractéristiques de %name%'
         status: 'Statut'
         park: 'Parc'
         country: 'Pays'
@@ -24,6 +29,7 @@ coaster:
         closing: 'Fermeture'
         vr: 'VR'
         cost: 'Coût'
+    parkcoaster: 'Coasters de %name%'
     photos: 'Photos'
     location: 'Localisation'
 
@@ -58,17 +64,34 @@ coaster_list:
     top10: 'Le Top 10 Coaster de'
 
 review:
+    title: 'Avis'
     share: 'Partage ton expérience avec nous !'
     value: 'Il vaut combien, ce crédit ?'
     pros: 'Quels sont les principaux atouts de ce coaster ?'
     cons: 'Et ses principaux défauts ?'
     comment: 'Envie d''être encore plus précis, raconte-nous ça !'
     button: 'Envoyer mon avis'
+    update: 'Modifier mon avis'
+    last: 'Derniers avis'
+
+rating:
+    last: 'Dernières notes'
+    action: 'a mis la note de %value% à'
 
 navbar:
     profile: 'Mon Profil'
     rating: 'Mes Notes'
     logout: 'Se déconnecter'
+
+sidebar:
+    index: 'Accueil'
+    coastersRanking: 'Meilleurs coasters'
+    users: 'Palmarès des membres'
+    map: 'Carte des coasters'
+    news: 'Actualités'
+    forum: 'Forum'
+    logout: 'Se déconnecter'
+    login: 'Se connecter'
 
 error:
     404:

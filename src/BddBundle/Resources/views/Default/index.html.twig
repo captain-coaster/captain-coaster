@@ -9,7 +9,9 @@
     <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
         <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span>
         </button>
-        <h6 class="alert-heading text-semibold">Découvrez, notez et partagez les montagnes russes du monde entier !</h6>
+        <h6 class="alert-heading text-semibold">
+            {{ 'index.header.title'|trans }}
+        </h6>
         Space Mountain, c'est vraiment Hyper ? Et les E-powered, c'est vraiment des coasters ? Goudurix, c'est vraiment
         si terrible que ça ? PAS DE PANIQUE, toutes les réponses sont ici !
         Et pour en profiter, c'est très rapide : <b>2 clics suffisent pour se <a href="{{ path('facebook_login') }}">créer
@@ -78,14 +80,14 @@
             <!-- latest ratings -->
             <div class="panel panel-flat border-top-teal">
                 <div class="panel-heading">
-                    <h6 class="panel-title">Dernières notes</h6>
+                    <h6 class="panel-title">{{ 'rating.last'|trans() }}</h6>
                 </div>
                 <div class="panel-body">
                     <ul class="list-feed">
                         {% for ratingItem in ratingFeed %}
                             <li>
                                 <strong>{{ ratingItem.user.displayName }}</strong>
-                                a mis la note de {{ ratingItem.value }} à
+                                {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
                                 <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
                                     {{ ratingItem.coaster.name }}
                                 </a>
@@ -103,7 +105,7 @@
             <!-- latest reviews -->
             <div class="panel panel-flat">
                 <div class="panel-heading">
-                    <h6 class="panel-title text-semiold">Derniers avis</h6>
+                    <h6 class="panel-title text-semiold">{{ 'review.last'|trans() }}</h6>
                 </div>
 
                 <div class="panel-body">
@@ -147,10 +149,10 @@
                                     {% if review.positiveKeywords|length > 0 or review.negativeKeywords|length > 0 %}
                                         <p>
                                             {% for pros in review.positiveKeywords %}
-                                                <span class="label label-success label-rounded">{{ pros.name }}</span>
+                                                <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
                                             {% endfor %}
                                             {% for cons in review.negativeKeywords %}
-                                                <span class="label label-danger label-rounded">{{ cons.name }}</span>
+                                                <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
                                             {% endfor %}
                                         </p>
                                     {% endif %}
