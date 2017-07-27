@@ -21,7 +21,7 @@
                         </a>
                     </li>
                     {% if is_granted('ROLE_PREVIEW_FEATURE') %}
-                    <li>
+                    <li class="hidden-md">
                         <a href="{{ path('map_index') }}">
                             <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
                         </a>

@@ -28,9 +28,10 @@ class MapsController extends Controller
     {
         return $this->render(
             '@Bdd/Maps/index.html.twig',
-            array(
+            [
                 'markers' => json_encode($this->getMarkers()),
-            )
+                'filters' => $this->getFilters(),
+            ]
         );
     }
 
@@ -81,5 +82,16 @@ class MapsController extends Controller
         return $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
             ->getFilteredMarkers($filters, $user);
+    }
+
+    /**
+     *
+     * @return array
+     */
+    private function getFilters()
+    {
+        return $this->getDoctrine()
+            ->getRepository('BddBundle:Manufacturer')
+            ->findBy([], ["name" => "asc"]);
     }
 }

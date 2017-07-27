@@ -74,11 +74,9 @@
                             <div class="form-group">
                                 <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
                                     <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
-                                    <option value="3">Intamin</option>
-                                    <option value="43">B&M</option>
-                                    <option value="9">Mack</option>
-                                    <option value="145">RMC</option>
-                                    <option value="2">Vekoma</option>
+                                    {% for filter in filters %}
+                                        <option value="{{ filter.id }}">{{ filter.name }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="form-group">
@@ -105,20 +103,8 @@
             </div>
         </div>
         <!-- main content -->
-        <div class="content-wrapper" id="map">
-            {#<div id="map"></div>#}
-            {#{{ include(#}
-            {#'page_header.html.twig',#}
-            {#{'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null)}#}
-            {#) }}#}
-            {#<!-- /page header -->#}
-            {#<!-- Content area -->#}
-            {#<div class="content">#}
-            {#<div class="row">#}
-            {#<div id="map" style="width:100%; height:600px;"></div>#}
-
-            {#</div>#}
-            {#</div>#}
+        <div class="content-wrapper">
+            <div id="map" style="height:100vh;"></div>
         </div>
         <!-- /main content -->
     </div>
@@ -167,7 +153,7 @@
                 parkId: park['id']
             });
             gmarkers.push(marker);
-            marker.addListener('click', function() {
+            marker.addListener('click', function () {
                 displayCoaster(this.parkId);
             });
         }
@@ -181,7 +167,7 @@
 
     function displayCoaster(data) {
         $.ajax({
-            url: '/fr/map/parks/'+data+'/coasters',
+            url: '/fr/map/parks/' + data + '/coasters',
             type: "GET",
             data: $("form").serialize()
         }).done(function (coasters) {
