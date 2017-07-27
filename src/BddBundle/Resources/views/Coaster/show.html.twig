@@ -78,7 +78,7 @@
             <div class="panel panel-white">
                 <div class="panel-heading">
                     <h6>
-                    {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
+                        {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
                     </h6>
                 </div>
 
@@ -96,7 +96,8 @@
                         <div class="pull-right">{{ coaster.park.name }}</div>
                     </div>
                     <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}:</label>
+                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
+                            :</label>
                         <div class="pull-right">{{ coaster.park.country.name|trans([], 'database') }}</div>
                     </div>
                     <div class="list-group-item">
@@ -115,28 +116,33 @@
                         </div>
                     </div>
                     <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}:</label>
+                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
+                            :</label>
                         <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
                     </div>
                     <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}:</label>
+                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
+                            :</label>
                         <div class="pull-right">{{ coaster.builtCoaster.restraint.name|trans([], 'database') }}</div>
                     </div>
                     {% if coaster.builtCoaster.gForce %}
                         <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.forces'|trans }}:</label>
+                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.forces'|trans }}
+                                :</label>
                             <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
                         </div>
                     {% endif %}
                     {% if coaster.builtCoaster.duration %}
                         <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.duration'|trans }}:</label>
+                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.duration'|trans }}
+                                :</label>
                             <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.openingDate %}
                         <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}:</label>
+                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
+                                :</label>
                             <div class="pull-right">
                                 {% if coaster.openingDate|date("dm") == "0101" %}
                                     {{ coaster.openingDate|date("Y") }}
@@ -148,7 +154,8 @@
                     {% endif %}
                     {% if coaster.closingDate %}
                         <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}:</label>
+                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
+                                :</label>
                             <div class="pull-right">
                                 {% if coaster.closingDate|date("dm") == "0101" %}
                                     {{ coaster.closingDate|date("Y") }}
@@ -166,7 +173,8 @@
                     {% endif %}
                     {% if coaster.price %}
                         <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}:</label>
+                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
+                                :</label>
                             <div class="pull-right">
                                 {{ coaster.price|number_format(0, ',', ' ') }}
                                 {{ coaster.currency.symbol }}
@@ -270,5 +278,18 @@
                     padding: 3
                 })
             });
+        </script>
+
+        <script type="application/ld+json">
+            {
+              "@context": "http://schema.org/",
+              "@type": "Product",
+              "name": "{{ coaster.name }}",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "{{ coaster.averageRating }}",
+                "reviewCount": "{{ coaster.ratings|length }}"
+              }
+            }
         </script>
     {% endblock %}
