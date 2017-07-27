@@ -2,7 +2,7 @@
     <li class="navigation-header">{{ coasters.0.park.name }}</li>
     {% for coaster in coasters %}
     <li>
-        <a target="_blank" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+        <a style="min-height:0;padding-top:0;padding-bottom:0;" target="_blank" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
             <span class="status-mark border-{{ coaster.status.type }} position-left"></span>
             {{ coaster.name }}
         </a>
