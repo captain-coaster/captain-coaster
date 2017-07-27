@@ -2,6 +2,10 @@ root:
     path: "/"
     defaults: { _controller: BddBundle:Default:root }
 
+sitemap:
+    path: "/sitemap.xml"
+    defaults: { _controller: BddBundle:Sitemap:index, "_format": "xml" }
+
 #fos_user:
 #    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
