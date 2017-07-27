@@ -80,6 +80,15 @@
                                 </select>
                             </div>
                             <div class="form-group">
+                                <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+                                    <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <select class="form-control" name="filters[averageRating]" onchange="filterData();">
                                     <option value="">{{ 'map_index.filter.averageRating'|trans }}</option>
                                     <option value="1">{{ 'map_index.filter.atleast'|trans }} 1</option>
@@ -94,7 +103,7 @@
                     <!-- /sidebar search -->
                 </form>
                 <div class="category-title">
-                    <span>Résultats</span>
+                    <span>{{ 'map_index.results'|trans }}</span>
                     <ul class="icons-list">
                         <li><a href="#" data-action="collapse"></a></li>
                     </ul>

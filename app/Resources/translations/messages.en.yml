@@ -42,6 +42,7 @@ map_index:
         notridden: 'Not ridden yet'
         averageRating: 'Average rating'
         atleast: 'at least'
+        openingDate: 'Opening date'
     results: 'Results'
 
 user_list:

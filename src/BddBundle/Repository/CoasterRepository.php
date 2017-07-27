@@ -93,6 +93,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->filterOpenedStatus($qb, $filters);
         // Filter by average rating
         $this->filterAverageRating($qb, $filters);
+        // Filter by opening date
+        $this->filterOpeningDate($qb, $filters);
         // Filter by not ridden. User based filter.
         $this->filterByNotRidden($qb, $filters, $user);
     }
@@ -155,6 +157,20 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             $qb
                 ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
                 ->setParameter('userid', $user->getId());
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
+    {
+        // Filter by average rating
+        if (array_key_exists('openingDate', $filters) && $filters['openingDate'] !== '') {
+            $qb
+                ->andWhere('c.openingDate like :date')
+                ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));
         }
     }
 }
