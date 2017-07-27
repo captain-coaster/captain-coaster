@@ -22,7 +22,6 @@ class MapsController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="map_index")
      * @Method({"GET"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      */
     public function indexAction()
     {
@@ -40,7 +39,6 @@ class MapsController extends Controller
      * @return JsonResponse
      * @Route("/markers", name="map_markers_ajax", condition="request.isXmlHttpRequest()")
      * @Method({"GET"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      */
     public function markersAction(Request $request)
     {
@@ -56,7 +54,6 @@ class MapsController extends Controller
      * @return Response
      * @Route("/parks/{id}/coasters", name="map_coasters_ajax", condition="request.isXmlHttpRequest()")
      * @Method({"GET"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      */
     public function getCoastersAction(Request $request, Park $park)
     {

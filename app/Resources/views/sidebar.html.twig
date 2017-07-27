@@ -20,13 +20,11 @@
                             <i class="icon-users4"></i> <span>{{ 'sidebar.users'|trans }}</span>
                         </a>
                     </li>
-                    {% if is_granted('ROLE_PREVIEW_FEATURE') %}
-                    <li class="hidden-md">
+                    <li>
                         <a href="{{ path('map_index') }}">
                             <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
                         </a>
                     </li>
-                    {% endif %}
                     <li>
                         <a href="https://coastersworld.fr/">
                             <i class="icon-newspaper2"></i> <span>{{ 'sidebar.news'|trans }}</span>
