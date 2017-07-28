@@ -39,8 +39,12 @@
         <!-- main sidebar -->
         {{ include('sidebar.html.twig') }}
         <!-- /main sidebar -->
+        <!-- main sidebar -->
+        {% block secondary_sidebar %}{% endblock %}
+        <!-- /main sidebar -->
         <!-- main content -->
         <div class="content-wrapper">
+            {% block wide_body %}
             <!-- page header -->
             {{ include(
                 'page_header.html.twig',
@@ -52,6 +56,7 @@
                 {% block body %}{% endblock %}
                 {{ include('footer.html.twig') }}
             </div>
+            {% endblock %}
             <!-- /content area -->
         </div>
         <!-- /main content -->

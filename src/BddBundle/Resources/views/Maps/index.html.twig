@@ -1,130 +1,86 @@
-<!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ 'map_index.title'|trans }} • Captain Coaster</title>
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('apple-touch-icon-144x144.png') }}"/>
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('apple-touch-icon-152x152.png') }}"/>
-    <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32"/>
-    <link rel="icon" type="image/png" href="{{ asset('favicon-16x16.png') }}" sizes="16x16"/>
-    <meta name="application-name" content="Captain Coaster"/>
-    <meta name="msapplication-TileColor" content="#FFFFFF"/>
-    <meta name="msapplication-TileImage" content="mstile-144x144.png"/>
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <!-- global css -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    <link href="{{ asset('css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/core.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/components.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/colors.min.css') }}" rel="stylesheet" type="text/css">
-    <!-- /global css -->
-    <!-- additional css -->
-    {% block stylesheets %}{% endblock %}
-    <!-- /additional css -->
-    <!-- head js -->
-    <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
-    <!-- /head js -->
-</head>
-<body class="navbar-top sidebar-xs">
-<!-- main navbar -->
-{{ include('navbar.html.twig') }}
-<!-- /main navbar -->
-<!-- page container -->
-<div class="page-container">
-    <!-- page content -->
-    <div class="page-content">
-        <!-- main sidebar -->
-        {{ include('sidebar.html.twig') }}
-        <!-- /main sidebar -->
-        <div class="sidebar sidebar-secondary sidebar-default">
-            {#{{ dump(markers) }}#}
-            <div class="sidebar-content">
-                <form action="#">
-                    <!-- Sidebar search -->
-                    <div class="sidebar-category">
-                        <div class="category-title">
-                            <span>{{ 'map_index.filter.title'|trans }}</span>
-                            <ul class="icons-list">
-                                <li><a href="#" data-action="collapse"></a></li>
-                            </ul>
-                        </div>
+{% extends "base.html.twig" %}
 
-                        <div class="category-content">
-                            <div class="form-group">
-                                <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                                    <label class="display-block">
-                                        {{ 'map_index.filter.status'|trans }}
-                                        <input name="filters[status]" type="checkbox" class="switchery">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                                    <label class="display-block">
-                                        {{ 'map_index.filter.notridden'|trans }}
-                                        <input name="filters[notridden]" type="checkbox" class="switchery"
-                                               {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
-                                    <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
-                                    {% for filter in filters %}
-                                        <option value="{{ filter.id }}">{{ filter.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="filters[openingDate]" onchange="filterData();">
-                                    <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
-                                    <option value="2018">2018</option>
-                                    <option value="2017">2017</option>
-                                    <option value="2016">2016</option>
-                                    <option value="2015">2015</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select class="form-control" name="filters[averageRating]" onchange="filterData();">
-                                    <option value="">{{ 'map_index.filter.averageRating'|trans }}</option>
-                                    <option value="1">{{ 'map_index.filter.atleast'|trans }} 1</option>
-                                    <option value="2">{{ 'map_index.filter.atleast'|trans }} 2</option>
-                                    <option value="3">{{ 'map_index.filter.atleast'|trans }} 3</option>
-                                    <option value="4">{{ 'map_index.filter.atleast'|trans }} 4</option>
-                                    <option value="5">{{ 'map_index.filter.atleast'|trans }} 5</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /sidebar search -->
-                </form>
+{% block title %}{{ 'map_index.title'|trans }}{% endblock %}
+
+{% block secondary_sidebar %}
+<div class="sidebar sidebar-secondary sidebar-default">
+    {#{{ dump(markers) }}#}
+    <div class="sidebar-content">
+        <form action="#">
+            <!-- Sidebar search -->
+            <div class="sidebar-category">
                 <div class="category-title">
-                    <span>{{ 'map_index.results'|trans }}</span>
+                    <span>{{ 'map_index.filter.title'|trans }}</span>
                     <ul class="icons-list">
                         <li><a href="#" data-action="collapse"></a></li>
                     </ul>
                 </div>
-                <div id="result-map" class="category-content no-padding"></div>
+
+                <div class="category-content">
+                    <div class="form-group">
+                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                            <label class="display-block">
+                                {{ 'map_index.filter.status'|trans }}
+                                <input name="filters[status]" type="checkbox" class="switchery">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                            <label class="display-block">
+                                {{ 'map_index.filter.notridden'|trans }}
+                                <input name="filters[notridden]" type="checkbox" class="switchery"
+                                       {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                            <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
+                            {% for filter in filters %}
+                                <option value="{{ filter.id }}">{{ filter.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+                            <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
+                            <option value="2018">2018</option>
+                            <option value="2017">2017</option>
+                            <option value="2016">2016</option>
+                            <option value="2015">2015</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select class="form-control" name="filters[averageRating]" onchange="filterData();">
+                            <option value="">{{ 'map_index.filter.averageRating'|trans }}</option>
+                            <option value="1">{{ 'map_index.filter.atleast'|trans }} 1</option>
+                            <option value="2">{{ 'map_index.filter.atleast'|trans }} 2</option>
+                            <option value="3">{{ 'map_index.filter.atleast'|trans }} 3</option>
+                            <option value="4">{{ 'map_index.filter.atleast'|trans }} 4</option>
+                            <option value="5">{{ 'map_index.filter.atleast'|trans }} 5</option>
+                        </select>
+                    </div>
+                </div>
             </div>
+            <!-- /sidebar search -->
+        </form>
+        <div class="category-title">
+            <span>{{ 'map_index.results'|trans }}</span>
+            <ul class="icons-list">
+                <li><a href="#" data-action="collapse"></a></li>
+            </ul>
         </div>
-        <!-- main content -->
-        <div class="content-wrapper">
-            <div id="map" style="height:100vh;"></div>
-        </div>
-        <!-- /main content -->
+        <div id="result-map" class="category-content no-padding"></div>
     </div>
-    <!-- /page content -->
 </div>
-<!-- /page container -->
-<!-- Core JS files -->
-<script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
-<!-- /core JS files -->
-<!-- Theme JS files -->
-<script type="text/javascript" src="{{ asset('js/core/app.min.js') }}"></script>
+{% endblock %}
+
+{% block wide_body %}
+<div id="map" style="height:100vh;"></div>
+{% endblock %}
+
+{% block javascripts %}
 <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
 <!-- /theme JS files -->
 <script type="text/javascript">
@@ -201,6 +157,4 @@
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
 </script>
-</body>
-</html>
-
+{% endblock %}
