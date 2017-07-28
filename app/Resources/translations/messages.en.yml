@@ -2,11 +2,19 @@ app:
     name: 'Captain Coaster'
     title:
         default: 'Welcome !'
+    header:
+        search: 'Search a roller coaster'
 
 index:
     title: 'Welcome !'
     header:
-        title: 'Discover, rate and share roller coasters'
+        title: 'Discover, rate and share roller coasters.'
+        info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="%link_path%">to connect</a></b>. Follow the Captain !'
+    stats:
+        coasters: 'coasters'
+        ratings: 'ratings'
+        rails: 'km of track'
+        inversions: 'inversions'
 
 coaster:
     rating:

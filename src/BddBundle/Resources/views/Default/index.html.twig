@@ -12,10 +12,7 @@
         <h6 class="alert-heading text-semibold">
             {{ 'index.header.title'|trans }}
         </h6>
-        Space Mountain, c'est vraiment Hyper ? Et les E-powered, c'est vraiment des coasters ? Goudurix, c'est vraiment
-        si terrible que ça ? PAS DE PANIQUE, toutes les réponses sont ici !
-        Et pour en profiter, c'est très rapide : <b>2 clics suffisent pour se <a href="{{ path('facebook_login') }}">créer
-                un compte</a> !</b>
+        {{ 'index.header.info'|trans({'%link_path%': path('facebook_login')})|raw }}
     </div>
     <!-- /info alert -->
     <div class="row">
@@ -25,7 +22,7 @@
                     <div class="col-xs-3">
                         <p><i class="icon-road icon-2x display-inline-block text-info"></i></p>
                         <h5 class="text-semibold no-margin">{{ stats.1 }}</h5>
-                        <span class="text-muted text-size-small">coasters</span>
+                        <span class="text-muted text-size-small">{{ 'index.stats.coasters'|trans }}</span>
                     </div>
                     <div class="col-xs-3">
                         <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
@@ -36,18 +33,18 @@
                             {% endif %}
                         </h5>
 
-                        <span class="text-muted text-size-small">notes</span>
+                        <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
 
                     </div>
                     <div class="col-xs-3">
                         <p><i class="icon-rulers icon-2x display-inline-block text-warning"></i></p>
                         <h5 class="text-semibold no-margin">{{ (stats.2 / 1000)|round }}</h5>
-                        <span class="text-muted text-size-small">km de rails</span>
+                        <span class="text-muted text-size-small">{{ 'index.stats.rails'|trans }}</span>
                     </div>
                     <div class="col-xs-3">
                         <p><i class="icon-spinner11 icon-2x display-inline-block text-success"></i></p>
                         <h5 class="text-semibold no-margin">{{ stats.3 }}</h5>
-                        <span class="text-muted text-size-small">inversions</span>
+                        <span class="text-muted text-size-small">{{ 'index.stats.inversions'|trans }}</span>
                     </div>
                 </div>
             </div>
