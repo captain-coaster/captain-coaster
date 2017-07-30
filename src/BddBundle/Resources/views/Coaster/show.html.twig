@@ -279,8 +279,8 @@
                 })
             });
         </script>
-
-        <script type="application/ld+json">
+        {% if coaster.averageRating is not null %}
+            <script type="application/ld+json">
             {
               "@context": "http://schema.org/",
               "@type": "Product",
@@ -293,5 +293,6 @@
                 "reviewCount": "{{ coaster.ratings|length }}"
               }
             }
-        </script>
+            </script>
+        {% endif %}
     {% endblock %}
