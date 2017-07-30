@@ -51,24 +51,42 @@
                     <div class="col-xs-6">
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <i class="icon-arrow-up8 text-warning-600"></i>
-                            <span>{{ coaster.builtCoaster.height }} m</span>
+                            <span class="text-bold">
+                                {% if coaster.builtCoaster.height is not empty %}
+                                    {{ coaster.builtCoaster.height ~ ' m' }}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </span>
                         </button>
 
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <i class="icon-rocket text-success-400"></i>
-                            <span class="text-bold">{{ coaster.builtCoaster.speed }} km/h</span>
+                            <span class="text-bold">
+                                {% if coaster.builtCoaster.speed is not empty %}
+                                    {{ coaster.builtCoaster.speed ~ ' km/h' }}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </span>
                         </button>
                     </div>
 
                     <div class="col-xs-6">
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <i class="icon-rulers text-blue"></i>
-                            <span>{{ coaster.builtCoaster.length }} m</span>
+                            <span class="text-bold">
+                                {% if coaster.builtCoaster.length is not empty %}
+                                    {{ coaster.builtCoaster.length ~ ' m' }}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </span>
                         </button>
 
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <i class="icon-spinner11 text-danger-400"></i>
-                            <span>{{ coaster.builtCoaster.inversionsNumber }}</span>
+                            <span class="text-bold">{{ coaster.builtCoaster.inversionsNumber|default('0') }}</span>
                         </button>
                     </div>
                 </div>
@@ -293,6 +311,9 @@
                 "reviewCount": "{{ coaster.ratings|length }}"
               }
             }
+
+
+
             </script>
         {% endif %}
     {% endblock %}
