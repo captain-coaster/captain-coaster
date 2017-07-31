@@ -59,7 +59,12 @@ class CustomUserProvider extends BaseClass
         $user->setLastName($response->getLastName());
         $user->setUsername($response->getNickname());
         $user->setDisplayName($response->getNickname());
-        $user->setEmail($response->getEmail());
+
+        if (is_null($response->getEmail())) {
+            $user->setEmail(random_bytes(10).'@notvalid.com');
+        } else {
+            $user->setEmail($response->getEmail());
+        }
         $user->setPassword($response->getUsername());
         $user->setProfilePicture($response->getProfilePicture());
         $user->setEnabled(true);
