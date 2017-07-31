@@ -177,12 +177,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    {# to be refact #}
-    <meta property="og:title" content="Captain Coaster" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://captaincoaster.com/" />
-    <meta property="og:image" content="{{ asset('images/logo_big.png') }}" />
-
     <script type="text/javascript" src="{{ asset('js/plugins/timeago/jquery.timeago.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/plugins/timeago/jquery.timeago.fr.js') }}"></script>
     <script type="text/javascript">
@@ -190,4 +184,13 @@
             jQuery("time.timeago").timeago();
         });
     </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {# to be refact #}
+    <meta name="description" content="{{ 'app.description'|trans }}"/>
+    <meta property="og:title" content="{{ 'app.name'|trans }}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ app.request.uri }}" />
+    <meta property="og:image" content="{{ asset('images/logo_big.png') }}" />
 {% endblock %}

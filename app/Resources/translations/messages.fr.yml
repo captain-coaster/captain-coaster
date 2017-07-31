@@ -1,5 +1,6 @@
 app:
     name: 'Captain Coaster'
+    description: 'Découvrez, notez et partagez des montagnes russes dans le monde entier. Affichez leurs statistiques et décidez si ce sont de bons ou mauvais coasters : une note, un avis. Ca ne prend que quelques secondes !'
     title:
         default: 'Bienvenue !'
     header:

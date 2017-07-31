@@ -1,5 +1,6 @@
 app:
     name: 'Captain Coaster'
+    description: 'Discover rate and share roller coasters of the world. In few seconds, access to their stats and photos, then share your experience on them : rating, pros & cons.'
     title:
         default: 'Welcome !'
     header:
