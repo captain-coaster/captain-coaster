@@ -192,5 +192,5 @@
     <meta property="og:title" content="{{ 'app.name'|trans }}" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ app.request.uri }}" />
-    <meta property="og:image" content="{{ asset('images/logo_big.png') }}" />
+    <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}" />
 {% endblock %}
