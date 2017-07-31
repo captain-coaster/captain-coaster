@@ -3,12 +3,12 @@
   "name": "Captain Coaster",
   "icons": [
     {
-      "src": "favicon-144x144.png",
+      "src": "apple-touch-icon-144x144.png",
       "type": "image/png",
       "sizes": "144x144"
     },
     {
-      "src": "favicon-152x152.png",
+      "src": "apple-touch-icon-152x152.png",
       "type": "image/png",
       "sizes": "152x152"
     }
