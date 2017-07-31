@@ -61,7 +61,7 @@ class CustomUserProvider extends BaseClass
         $user->setDisplayName($response->getNickname());
 
         if (is_null($response->getEmail())) {
-            $user->setEmail(random_bytes(10).'@notvalid.com');
+            $user->setEmail(uniqid(15).'@notvalid.com');
         } else {
             $user->setEmail($response->getEmail());
         }
