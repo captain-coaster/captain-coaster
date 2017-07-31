@@ -66,7 +66,7 @@ class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
 //            ->leftjoin('r.negativeKeywords', 'c')
             ->where('r.review is not null')
             ->orderBy('r.updatedAt', 'desc')
-            ->setMaxResults(2)
+            ->setMaxResults(3)
             ->getQuery()
             ->getResult();
     }
