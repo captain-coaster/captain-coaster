@@ -89,7 +89,7 @@
                                     {{ ratingItem.coaster.name }}
                                 </a>
                                 <div class="text-muted">
-                                    <time class="timeago" datetime="{{ ratingItem.updatedAt|date("c") }}"></time>
+                                    {{ ratingItem.updatedAt|ago }}
                                 </div>
                             </li>
                         {% endfor %}
@@ -141,7 +141,7 @@
                                                 {% endif %}
                                             </span>
                                         </span>
-                                        <span class="media-annotation dotted">{{ review.updatedAt|date("d/m/Y") }}</span>
+                                        <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
                                     </div>
                                     {% if review.positiveKeywords|length > 0 or review.negativeKeywords|length > 0 %}
                                         <p>
@@ -174,16 +174,6 @@
             <!-- /latest reviews -->
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    <script type="text/javascript" src="{{ asset('js/plugins/timeago/jquery.timeago.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/plugins/timeago/jquery.timeago.fr.js') }}"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function () {
-            jQuery("time.timeago").timeago();
-        });
-    </script>
 {% endblock %}
 
 {% block stylesheets %}
