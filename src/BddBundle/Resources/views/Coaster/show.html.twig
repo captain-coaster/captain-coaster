@@ -194,8 +194,7 @@
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
                                 :</label>
                             <div class="pull-right">
-                                {{ coaster.price|number_format(0, ',', ' ') }}
-                                {{ coaster.currency.symbol }}
+                                {{ coaster.price|number_format(0, ',', ' ') }} {{ coaster.currency.symbol }}
                             </div>
                         </div>
                     {% endif %}

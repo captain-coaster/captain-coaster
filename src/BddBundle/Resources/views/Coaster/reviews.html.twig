@@ -38,7 +38,7 @@
                                                 {% endif %}
                                             </span>
                                         </span>
-                                <span class="media-annotation dotted">{{ review.updatedAt|date("d/m/Y") }}</span>
+                                <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
                             </div>
                             {% if review.positiveKeywords|length > 0 or review.negativeKeywords|length > 0 %}
                                 <p>
