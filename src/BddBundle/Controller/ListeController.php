@@ -96,8 +96,8 @@ class ListeController extends Controller
     public function createAction()
     {
         $liste = new Liste();
-        $liste->setName('Top 10');
-        $liste->setType('topten');
+        $liste->setName('Top Coasters');
+        $liste->setType('topcoasters');
         $liste->setUser($this->getUser());
 
         $em = $this->getDoctrine()->getManager();
