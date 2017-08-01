@@ -55,7 +55,7 @@ class ListeController extends Controller
             $em->persist($liste);
             $em->flush();
 
-            return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
+            return $this->redirectToRoute('liste_show', ['id' => $liste->getId()]);
         }
 
         return $this->render(
