@@ -5,9 +5,10 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Form\Type\ReviewType;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,6 +25,7 @@ class ReviewController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/coasters/{id}/form", name="review_form")
+     * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function newAction(Request $request, Coaster $coaster)
@@ -45,6 +47,7 @@ class ReviewController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $review->setLanguage($request->getLocale());
             $em = $this->getDoctrine()->getManager();
             $em->persist($review);
             $em->flush();
@@ -60,15 +63,4 @@ class ReviewController extends Controller
             )
         );
     }
-
-    /**
-     * @Route("/vote")
-     */
-    public function voteAction()
-    {
-        return $this->render('BddBundle:Review:vote.html.twig', array(
-            // ...
-        ));
-    }
-
 }

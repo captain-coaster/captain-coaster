@@ -57,10 +57,9 @@ class RiddenCoaster
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=5, nullable=true)
-     *
+     * @ORM\Column(type="string", length=5, nullable=false)
      */
-    private $language;
+    private $language = 'en';
 
     /**
      * @var PositiveKeyword
