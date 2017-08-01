@@ -2,20 +2,31 @@
 
 namespace BddBundle\Form\Type;
 
-use BddBundle\Entity\TopCoaster;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use BddBundle\Entity\ListeCoaster;
+use BddBundle\Form\DataTransformer\CoasterToIdTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TopCoasterType
+ * Class ListeCoasterType
  * @package BddBundle\Form\Type
  */
-class TopCoasterType extends AbstractType
+class ListeCoasterType extends AbstractType
 {
+    private $transformer;
+
+    /**
+     * ListeCoasterType constructor.
+     * @param CoasterToIdTransformer $transformer
+     */
+    public function __construct(CoasterToIdTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -25,17 +36,14 @@ class TopCoasterType extends AbstractType
         $builder
             ->add(
                 'coaster',
-                EntityType::class,
+                HiddenType::class,
                 [
-                    'class' => 'BddBundle\Entity\Coaster',
-                    'choice_label' => 'name',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                            ->orderBy('c.name', 'ASC');
-                    },
+                    'invalid_message' => 'That is not a valid coaster number',
                 ]
             )
             ->add('position', HiddenType::class);
+
+        $builder->get('coaster')->addModelTransformer($this->transformer);
     }
 
     /**
@@ -44,9 +52,9 @@ class TopCoasterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'data_class' => TopCoaster::class,
-            )
+            [
+                'data_class' => ListeCoaster::class,
+            ]
         );
     }
 }

@@ -69,6 +69,13 @@ class User extends BaseUser
     private $ratings;
 
     /**
+     * @var Liste
+     *
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\Liste", mappedBy="user")
+     */
+    private $listes;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -276,5 +283,39 @@ class User extends BaseUser
     public function getDisplayName()
     {
         return $this->displayName;
+    }
+
+    /**
+     * Add liste
+     *
+     * @param \BddBundle\Entity\Liste $liste
+     *
+     * @return User
+     */
+    public function addListe(\BddBundle\Entity\Liste $liste)
+    {
+        $this->listes[] = $liste;
+
+        return $this;
+    }
+
+    /**
+     * Remove liste
+     *
+     * @param \BddBundle\Entity\Liste $liste
+     */
+    public function removeListe(\BddBundle\Entity\Liste $liste)
+    {
+        $this->listes->removeElement($liste);
+    }
+
+    /**
+     * Get listes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getListes()
+    {
+        return $this->listes;
     }
 }

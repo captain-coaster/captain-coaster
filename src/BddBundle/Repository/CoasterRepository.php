@@ -12,6 +12,23 @@ use Doctrine\ORM\QueryBuilder;
 class CoasterRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
+     * @param string $term
+     * @return array
+     */
+    public function searchByName(string $term)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c.id', 'c.name as coaster', 'p.name as park')
+            ->from('BddBundle:Coaster', 'c')
+            ->join('c.park', 'p')
+            ->where('c.name LIKE :term')
+            ->setParameter('term', sprintf('%%%s%%', $term))
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @return array
      */
     public function findAllNameAndSlug()

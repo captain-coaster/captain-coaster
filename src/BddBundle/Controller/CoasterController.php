@@ -3,7 +3,6 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
-use BddBundle\Entity\User;
 use BddBundle\Form\Type\CoasterType;
 use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -167,16 +166,17 @@ class CoasterController extends Controller
 
         return $this->render(
             'BddBundle:Coaster:show.html.twig',
-            array(
+            [
                 'coaster' => $coaster,
                 'images' => $imageUrls,
-                'reviews' => $reviews
-            )
+                'reviews' => $reviews,
+            ]
         );
     }
 
     /**
      * Ajax route for autocomplete search
+     * (return all coaster)
      *
      * @Route(
      *     "/search/all.json",
@@ -188,7 +188,7 @@ class CoasterController extends Controller
      *
      * @return JsonResponse
      */
-    public function ajaxSearchAction()
+    public function ajaxSearchAllAction()
     {
         $em = $this->get('doctrine.orm.default_entity_manager');
 
@@ -198,30 +198,27 @@ class CoasterController extends Controller
     }
 
     /**
-     * Ajax route to add a coaster to wishlist
+     * Ajax route for autocomplete search
+     * (search "q" parameter)
      *
      * @Route(
-     *     "/{id}/wishlist/add",
-     *     name="bdd_coaster_add_wishlist",
+     *     "/search/coasters.json",
+     *     name="coaster_search_json",
      *     options = {"expose" = true},
      * )
      * @Method({"GET"})
-     * @Security("is_granted('ROLE_USER')")
      *
-     * @param Coaster $coaster
+     * @param Request $request
      * @return JsonResponse
      */
-
-    public function ajaxWishListAction(Coaster $coaster)
+    public function ajaxSearchAction(Request $request)
     {
-        /** @var User $user */
-        $user = $this->getUser();
+        $q = $request->get("q");
 
-        $user->addWishCoaster($coaster);
         $em = $this->get('doctrine.orm.default_entity_manager');
-        $em->persist($user);
-        $em->flush();
 
-        return new JsonResponse(['state' => 'success']);
+        $result = ["items" => $em->getRepository('BddBundle:Coaster')->searchByName($q)];
+
+        return new JsonResponse($result);
     }
 }

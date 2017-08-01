@@ -74,8 +74,12 @@ me:
         save: 'Save'
     badge: 'Badges'
 
-coaster_list:
-    top10: 'Coasters Top 10 of'
+liste:
+    title: 'My Top Coasters'
+    update: 'Update the list'
+    find: 'Find a coaster...'
+    info: 'Start by searching a coaster up there, then the magic happens below. You can even drag and drop lines if you are undecided.'
+
 
 review:
     title: 'Reviews'
@@ -96,6 +100,7 @@ navbar:
     profile: 'My profile'
     rating: 'My ratings'
     logout: 'Logout'
+    topcoasters: 'My Top Coasters'
 
 sidebar:
     index: 'Home'

@@ -28,6 +28,10 @@
                             {{ 'navbar.rating'|trans }}
                             <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
                         </a>
+                        <a href="{{ path('liste_me') }}" class="list-group-item">
+                            <i class="icon-podium"></i>
+                            {{ 'navbar.topcoasters'|trans }}
+                        </a>
                     </div>
                 </div>
                 <!-- /infos user -->
@@ -79,7 +83,5 @@
                 </div>
             </div>
         </div>
-
     </div>
-
 {% endblock %}

@@ -2,7 +2,7 @@
 
 namespace BddBundle\Form\Type;
 
-use BddBundle\Entity\User;
+use BddBundle\Entity\Liste;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -10,10 +10,10 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TopTenType
+ * Class ListeType
  * @package BddBundle\Form\Type
  */
-class TopTenType extends AbstractType
+class ListeType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -23,16 +23,16 @@ class TopTenType extends AbstractType
     {
         $builder
             ->add(
-                'topCoasters',
+                'listeCoasters',
                 CollectionType::class,
                 [
-                    'entry_type' => TopCoasterType::class,
+                    'entry_type' => ListeCoasterType::class,
                     'allow_add' => true,
                     'allow_delete' => true,
                     'by_reference' => false,
+                    'label' => false
                 ]
-            )
-            ->add('save', SubmitType::class, array('label' => 'Create/Update'));
+            );
     }
 
     /**
@@ -41,9 +41,9 @@ class TopTenType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'data_class' => User::class,
-            )
+            [
+                'data_class' => Liste::class,
+            ]
         );
     }
 }
