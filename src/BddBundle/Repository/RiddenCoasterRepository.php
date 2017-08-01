@@ -52,21 +52,20 @@ class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
             ->getResult();
     }
 
-    public function getLastReviewsWithText($limit = 2)
+    public function getLatestReviewsByLocale($locale = 'en', $limit = 3)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
-//            ->addSelect('p')
-//            ->addSelect('c')
+            ->addSelect("CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority")
             ->addSelect('u')
             ->from('BddBundle:RiddenCoaster', 'r')
             ->innerJoin('r.user', 'u')
-//            ->leftJoin('r.positiveKeywords', 'p')
-//            ->leftjoin('r.negativeKeywords', 'c')
             ->where('r.review is not null')
-            ->orderBy('r.updatedAt', 'desc')
-            ->setMaxResults(3)
+            ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.updatedAt', 'desc')
+            ->setMaxResults($limit)
+            ->setParameter('locale', $locale)
             ->getQuery()
             ->getResult();
     }

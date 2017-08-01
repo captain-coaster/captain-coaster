@@ -27,12 +27,13 @@ class DefaultController extends Controller
     /**
      * Index of application
      *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/", name="bdd_index")
      * @Method({"GET"})
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $goodCoasters = [1985, 59, 205, 4, 128, 387, 2138, 2197];
         $coasterId = $goodCoasters[array_rand($goodCoasters)];
@@ -67,8 +68,10 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:RiddenCoaster')
             ->countNew($date);
 
-        $reviews = $this->getDoctrine()->getRepository('BddBundle:RiddenCoaster')
-            ->getLastReviewsWithText();
+        $reviews = $this
+            ->getDoctrine()
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->getLatestReviewsByLocale($request->getLocale());
 
         return $this->render(
             'BddBundle:Default:index.html.twig',
