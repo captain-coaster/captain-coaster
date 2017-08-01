@@ -61,8 +61,8 @@ map_index:
 user_list:
     title: 'Member''s ranking'
     info:
-        title: 'Alors, t''en es où dans tes notes ?'
-        text: 'Ce classement te permet de savoir où tu te situes sur l''ensemble des membres qui ont noté des coasters, mais aussi de voir le détail de leurs notes !'
+        title: 'Where do you rank among our members ?'
+        text: 'This page shows a ranking of our members. Click on them to discover their ratings details!'
     member_from: 'Member since'
     rating: 1 rating|%count% ratings
 
