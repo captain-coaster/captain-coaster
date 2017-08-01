@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ app.request.get('_locale') }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Se connecter • {{ 'app.name'|trans }}</title>
+    <title>{{ 'login.title'|trans }} • {{ 'app.name'|trans }}</title>
 
     <!-- Global stylesheets -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
@@ -17,64 +17,52 @@
     <!-- /global stylesheets -->
 </head>
 
-<body class="login-container login-cover"
-      style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
-
+<body class="login-container login-cover" style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
 <!-- Page container -->
 <div class="page-container">
-
     <!-- Page content -->
     <div class="page-content">
-
         <!-- Main content -->
         <div class="content-wrapper">
-
             <!-- Content area -->
             <div class="content pb-20">
-
                 <!-- Form with validation -->
                 <div class="panel panel-body login-form">
                     <div class="text-center">
                         <div class="icon-object border-indigo-300 text-indigo-300"><i class="icon-lock"></i></div>
-                        <h5 class="content-group">Se connecter à CW</h5>
+                        <h5 class="content-group">{{ 'login.title'|trans }}</h5>
                     </div>
-
                     {#{% if error is defined and error %}#}
                     {#<span>{{ error }}</span>#}
                     {#{% endif %}#}
-
                     {% if not is_granted('ROLE_USER') %}
                         <ul class="list-inline form-group list-inline-condensed text-center">
                             {% for owner in hwi_oauth_resource_owners() %}
                                 <li><a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-flat bg-indigo"><i
-                                                class="icon-facebook position-left"></i> Connexion</a></li>
+                                                class="icon-facebook position-left"></i> {{ 'login.connect'|trans }}</a></li>
                             {% endfor %}
                         </ul>
-
                         <div class="content-divider text-muted form-group">
-                            <span>Connexion via Facebook uniquement</span></div>
-                        <span class="help-block text-center no-margin">Nous ne récupérons que votre nom, votre email et votre photo de profil.</span>
+                            <span>{{ 'login.facebook_only'|trans }}</span></div>
+                        <span class="help-block text-center no-margin">
+                            {{ 'login.info'|trans }}
+                        </span>
                     {% else %}
                         <div class="text-center">
-                            Déjà connecté en tant que <strong>{{ app.user.displayName }}</strong>
+                            {{ 'login.already_connected_as'|trans }} <strong>{{ app.user.displayName }}</strong>
                             <br/><br/>
-                            <a href="{{ path('logout') }}" class="btn btn-flat bg-indigo">Se deconnecter ?</a>
+                            <a href="{{ path('logout') }}" class="btn btn-flat bg-indigo">{{ 'login.logout'|trans }}</a>
                         </div>
                     {% endif %}
                 </div>
                 <!-- /form with validation -->
-
             </div>
             <!-- /content area -->
-
         </div>
         <!-- /main content -->
-
     </div>
     <!-- /page content -->
-
 </div>
 <!-- /page container -->
-
 </body>
 </html>

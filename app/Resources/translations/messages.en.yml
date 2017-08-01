@@ -107,6 +107,14 @@ sidebar:
     logout: 'Logout'
     login: 'Login'
 
+login:
+    title: 'Login to Captain Coaster'
+    connect: 'Connect'
+    facebook_only: 'Facebook connect only'
+    info: 'We only gather your name, email and profile picture.'
+    already_connected_as: 'Already logged in as'
+    logout: 'Logout ?'
+
 error:
     404:
         title: 'Page not found'

@@ -25,9 +25,9 @@ security:
                 resource_owners:
                     facebook:      "/login/check-facebook"
                 # A améliorer
-                login_path:        /fr/login
+                login_path:        /en/login
                 use_forward:       false
-                failure_path:      /fr/login
+                failure_path:      /en/login
                 oauth_user_provider:
                     service: my.custom.user_provider
             remember_me:

@@ -107,6 +107,15 @@ sidebar:
     logout: 'Se déconnecter'
     login: 'Se connecter'
 
+login:
+    title: 'Se connecter'
+    connect: 'Connexion'
+    facebook_only: 'Connexion via Facebook uniquement'
+    info: 'Nous ne récupérons que votre nom, votre email et votre photo de profil.'
+    already_connected_as: 'Déjà connecté en tant que'
+    logout: 'Se deconnecter ?'
+
+
 error:
     404:
         title: 'Page non trouvée'
