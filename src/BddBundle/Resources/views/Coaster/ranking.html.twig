@@ -23,7 +23,7 @@
 
                 <div class="media-body">
                     <h2 class="media-heading">
-                        #{{ loop.index }} -
+                        {{ coasters.getPaginationData.firstItemNumber + loop.index - 1 }} -
                         <a style="color:#333;"
                            href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">{{ coaster.name }}
                         </a>
@@ -42,4 +42,5 @@
             </li>
         {% endfor %}
     </ul>
+    {{ knp_pagination_render(coasters) }}
 {% endblock %}

@@ -69,9 +69,9 @@ class CoasterController extends Controller
 
         return $this->render(
             'BddBundle:Coaster:create.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
-            )
+            ]
         );
     }
 
@@ -102,9 +102,9 @@ class CoasterController extends Controller
 
         return $this->render(
             'BddBundle:Coaster:create.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
-            )
+            ]
         );
     }
 
@@ -112,20 +112,29 @@ class CoasterController extends Controller
     /**
      * Show ranking of best coasters
      *
-     * @Route("/ranking", name="coaster_ranking")
+     * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"})
      * @Method({"GET"})
      *
+     * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showRankingAction()
+    public function showRankingAction($page = 1)
     {
-        $coasters = $this->getDoctrine()
+        $query = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
-            ->findBy([], ['averageRating' => 'desc'], self::NUMBER_RANKING);
+            ->findByRanking();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            20
+        );
 
         $ids = [];
 
-        foreach ($coasters as $coaster) {
+        /** @var Coaster $coaster */
+        foreach ($pagination as $coaster) {
             $ids[] = $coaster->getId();
         }
 
@@ -133,7 +142,7 @@ class CoasterController extends Controller
 
         return $this->render(
             '@Bdd/Coaster/ranking.html.twig',
-            ['coasters' => $coasters, 'images' => $imageUrls]
+            ['coasters' => $pagination, 'images' => $imageUrls]
         );
     }
 
