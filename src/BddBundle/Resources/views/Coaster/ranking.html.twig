@@ -1,9 +1,8 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Les meilleurs coasters{% endblock %}
+{% set title = 'coaster_ranking.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
 
-{% set title = 'Les meilleurs coasters' %}
-{% set subTitle = '' %}
 
 {% block body %}
     <ul class="media-list content-group">
@@ -31,13 +30,15 @@
                     <ul class="list-inline list-inline-separate text-muted mb-10">
                         <li>{{ coaster.builtCoaster.manufacturer.name }}</li>
                         <li>{{ coaster.builtCoaster.types|join(', ') }}</li>
-                        <li>{{ coaster.park.name }}, {{ coaster.park.country.name }}</li>
+                        <li>{{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}</li>
                     </ul>
                 </div>
                 <div class="media-right text-center">
                     <h3 class="no-margin text-semibold text-nowrap">{{ coaster.averageRating|number_format(2, ',') }} /
                         5</h3>
-                    <div class="text-muted">sur {{ coaster.totalRatings }} notes</div>
+                    <div class="text-muted">
+                        {{ 'coaster_ranking.reviews_number'|transchoice(coaster.totalRatings) }}
+                    </div>
                 </div>
             </li>
         {% endfor %}

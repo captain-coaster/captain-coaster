@@ -42,6 +42,10 @@ coaster:
     photos: 'Photos'
     location: 'Location'
 
+coaster_ranking:
+    title: 'Ranking of the best coasters'
+    reviews_number: 1 reviews|%count% reviews
+
 map_index:
     title: 'Coasters Map'
     filter:
