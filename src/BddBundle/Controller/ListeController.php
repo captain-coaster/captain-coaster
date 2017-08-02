@@ -77,6 +77,7 @@ class ListeController extends Controller
                 }
             }
 
+            $liste->setUpdatedAt(new \DateTime());
             $em->persist($liste);
             $em->flush();
 
