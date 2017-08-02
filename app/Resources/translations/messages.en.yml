@@ -75,6 +75,8 @@ me:
     badge: 'Badges'
 
 liste:
+    list:
+        title: 'The lastest Tops'
     title: 'My Top Coasters'
     update: 'Update the list'
     find: 'Find a coaster...'

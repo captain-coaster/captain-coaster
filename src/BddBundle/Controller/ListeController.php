@@ -17,17 +17,42 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Class ListeController
  * @package BddBundle\Controller
- * @Route("/list")
+ * @Route("/lists")
  */
 class ListeController extends Controller
 {
     /**
-     * @Route("/{id}/edit", name="liste_edit")
-     * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
+     * Display all lists
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/", name="liste_list")
+     * @Method({"GET"})
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
+     */
+    public function listAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $listes = $em->getRepository('BddBundle:Liste')->findAll();
+
+        return $this->render(
+            'BddBundle:Liste:list.html.twig',
+            [
+                'listes' => $listes,
+            ]
+        );
+    }
+
+    /**
+     * Allow users to edit their lists
+     *
      * @param Request $request
      * @param Liste $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/{id}/edit", name="liste_edit")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function editAction(Request $request, Liste $liste)
     {
@@ -67,12 +92,14 @@ class ListeController extends Controller
     }
 
     /**
+     * Shortcut to user's personal main list
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/me", name="liste_me")
      * @Method({"GET"})
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function userMainAction()
+    public function mainListAction()
     {
         $user = $this->getUser();
 
@@ -85,13 +112,16 @@ class ListeController extends Controller
             return $this->redirectToRoute('liste_create');
         }
 
-        return $this->showAction($liste);
+        return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
     }
 
     /**
+     * Create new main user's list
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/create", name="liste_create")
      * @Method({"GET"})
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function createAction()
     {
@@ -108,11 +138,13 @@ class ListeController extends Controller
     }
 
     /**
+     * Display a list
+     *
+     * @param Liste $liste
+     * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/{id}", name="liste_show")
      * @Method({"GET"})
-     * @param Liste $liste
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function showAction(Liste $liste)
     {
