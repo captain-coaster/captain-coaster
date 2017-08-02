@@ -28,7 +28,6 @@ class ListeController extends Controller
      *
      * @Route("/", name="liste_list")
      * @Method({"GET"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      */
     public function listAction()
     {
