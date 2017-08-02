@@ -77,6 +77,9 @@ me:
 liste:
     list:
         title: 'The lastest Tops'
+        more: 'See more'
+        updated: 'last updated'
+        by: 'by'
     title: 'My Top Coasters'
     update: 'Update the list'
     find: 'Find a coaster...'
@@ -109,6 +112,7 @@ sidebar:
     coastersRanking: 'Best coasters'
     users: 'User''s ranking'
     map: 'Coasters map'
+    liste: 'Tops Coasters'
     news: 'News'
     forum: 'Forum'
     logout: 'Logout'

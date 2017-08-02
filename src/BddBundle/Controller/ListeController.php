@@ -33,7 +33,7 @@ class ListeController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $listes = $em->getRepository('BddBundle:Liste')->findAll();
+        $listes = $em->getRepository('BddBundle:Liste')->findBy([], ['updatedAt' => 'desc']);
 
         return $this->render(
             'BddBundle:Liste:list.html.twig',
