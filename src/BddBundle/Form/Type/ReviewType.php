@@ -31,6 +31,7 @@ class ReviewType extends AbstractType
                 [
                     'class' => 'BddBundle:PositiveKeyword',
                     'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'required' => false,
                     'query_builder' => function (EntityRepository $er) {
@@ -46,6 +47,7 @@ class ReviewType extends AbstractType
                 [
                     'class' => 'BddBundle:NegativeKeyword',
                     'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'required' => false,
                     'query_builder' => function (EntityRepository $er) {
