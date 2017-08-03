@@ -121,7 +121,7 @@ login:
     title: 'Se connecter'
     connect: 'Connexion'
     info:
-        title: 'Pillule bleue ou pillule rouge ?'
+        title: 'Pilule bleue ou pilule rouge ?'
         text: 'Tu peux te connecter via ton compte Facebook, ou Google. Nous ne collectons que ton nom, ton email et ta photo de profil.'
     already_connected_as: 'Déjà connecté en tant que'
     logout: 'Se deconnecter ?'
