@@ -26,7 +26,7 @@ parameters:
     base_url_images: 'images/coasters/{coasterId}/big/{fileName}'
 
     # Coaster
-    default_coaster_id: 1985
+    default_coaster_id: 2183
 
     # User / Authentication
     facebook_client_id:

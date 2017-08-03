@@ -37,7 +37,7 @@ class CoasterController extends Controller
             ->getRepository('BddBundle:Coaster')
             ->findOneBy(['id' => $this->getParameter('default_coaster_id')]);
 
-        return $this->showAction($coaster);
+        return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
     }
 
     /**
