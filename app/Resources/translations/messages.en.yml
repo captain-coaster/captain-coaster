@@ -121,8 +121,9 @@ sidebar:
 login:
     title: 'Login to Captain Coaster'
     connect: 'Connect'
-    facebook_only: 'Facebook connect only'
-    info: 'We only gather your name, email and profile picture.'
+    info:
+        title: 'Blue pill or red pill ?'
+        text: 'You can login using your Facebook or Google account. We only gather your name, email and profile picture.'
     already_connected_as: 'Already logged in as'
     logout: 'Logout ?'
 

@@ -17,7 +17,8 @@
     <!-- /global stylesheets -->
 </head>
 
-<body class="login-container login-cover" style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
+<body class="login-container login-cover"
+      style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
 <!-- Page container -->
 <div class="page-container">
     <!-- Page content -->
@@ -32,20 +33,25 @@
                         <div class="icon-object border-indigo-300 text-indigo-300"><i class="icon-lock"></i></div>
                         <h5 class="content-group">{{ 'login.title'|trans }}</h5>
                     </div>
-                    {#{% if error is defined and error %}#}
-                    {#<span>{{ error }}</span>#}
-                    {#{% endif %}#}
-                    {% if not is_granted('ROLE_USER') %}
+                    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <ul class="list-inline form-group list-inline-condensed text-center">
-                            {% for owner in hwi_oauth_resource_owners() %}
-                                <li><a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-flat bg-indigo"><i
-                                                class="icon-facebook position-left"></i> {{ 'login.connect'|trans }}</a></li>
-                            {% endfor %}
+                            {#{% for owner in hwi_oauth_resource_owners() %}#}
+                            <li>
+                                <a href="{{ hwi_oauth_login_url('facebook') }}" class="btn btn-flat bg-indigo">
+                                    <i class="icon-facebook position-left"></i> {{ 'login.connect'|trans }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ hwi_oauth_login_url('google') }}" class="btn btn-flat bg-danger-800">
+                                    <i class="icon-google position-left"></i> {{ 'login.connect'|trans }}
+                                </a>
+                            </li>
+                            {#{% endfor %}#}
                         </ul>
                         <div class="content-divider text-muted form-group">
-                            <span>{{ 'login.facebook_only'|trans }}</span></div>
+                            <span>{{ 'login.info.title'|trans }}</span></div>
                         <span class="help-block text-center no-margin">
-                            {{ 'login.info'|trans }}
+                            {{ 'login.info.text'|trans }}
                         </span>
                     {% else %}
                         <div class="text-center">

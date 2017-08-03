@@ -23,7 +23,8 @@ security:
             anonymous: ~
             oauth:
                 resource_owners:
-                    facebook:      "/login/check-facebook"
+                    facebook:   "/login/check-facebook"
+                    google:     "/login/check-google"
                 # A améliorer
                 login_path:        /en/login
                 use_forward:       false

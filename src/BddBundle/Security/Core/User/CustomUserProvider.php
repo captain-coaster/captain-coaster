@@ -39,6 +39,7 @@ class CustomUserProvider extends BaseClass
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         $username = $response->getUsername();
+
         /** @var User $user */
         $user = $this->userManager->findUserBy([$this->getProperty($response) => $username]);
 
@@ -65,6 +66,7 @@ class CustomUserProvider extends BaseClass
         } else {
             $user->setEmail($response->getEmail());
         }
+
         $user->setPassword($response->getUsername());
         $user->setProfilePicture($response->getProfilePicture());
         $user->setEnabled(true);

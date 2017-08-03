@@ -120,8 +120,9 @@ sidebar:
 login:
     title: 'Se connecter'
     connect: 'Connexion'
-    facebook_only: 'Connexion via Facebook uniquement'
-    info: 'Nous ne récupérons que votre nom, votre email et votre photo de profil.'
+    info:
+        title: 'Pillule bleue ou pillule rouge ?'
+        text: 'Tu peux te connecter via ton compte Facebook, ou Google. Nous ne collectons que ton nom, ton email et ta photo de profil.'
     already_connected_as: 'Déjà connecté en tant que'
     logout: 'Se deconnecter ?'
 
