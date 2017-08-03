@@ -151,10 +151,11 @@ class CoasterController extends Controller
      * @Route("/{slug}", name="bdd_show_coaster", options = {"expose" = true})
      * @Method({"GET"})
      *
+     * @param Request $request
      * @param Coaster $coaster
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction(Coaster $coaster)
+    public function showAction(Request $request, Coaster $coaster)
     {
         // Display images from file system
         $imageUrls = $this->get(ImageService::class)->getCoasterImagesUrl($coaster->getId());
@@ -162,7 +163,7 @@ class CoasterController extends Controller
         // Load reviews
         $reviews = $this->getDoctrine()
             ->getRepository('BddBundle:RiddenCoaster')
-            ->getReviews($coaster->getId());
+            ->getReviews($coaster->getId(), $request->getLocale());
 
         return $this->render(
             'BddBundle:Coaster:show.html.twig',

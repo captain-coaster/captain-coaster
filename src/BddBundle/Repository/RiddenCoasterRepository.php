@@ -32,7 +32,7 @@ class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function getReviews(int $coasterId)
+    public function getReviews(int $coasterId, $locale = 'en')
     {
         // add joins to avoid multiple subqueries
         return $this->getEntityManager()
@@ -41,13 +41,16 @@ class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('p')
             ->addSelect('c')
             ->addSelect('u')
+            ->addSelect("CASE WHEN r.language = :locale AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority")
             ->from('BddBundle:RiddenCoaster', 'r')
             ->innerJoin('r.user', 'u')
             ->leftJoin('r.positiveKeywords', 'p')
             ->leftjoin('r.negativeKeywords', 'c')
-            ->where('r.coaster = ?1')
-            ->setParameter(1, $coasterId)
-            ->orderBy('r.updatedAt', 'desc')
+            ->where('r.coaster = :coasterId')
+            ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.updatedAt', 'desc')
+            ->setParameter('coasterId', $coasterId)
+            ->setParameter('locale', $locale)
             ->getQuery()
             ->getResult();
     }
