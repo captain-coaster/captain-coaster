@@ -99,6 +99,13 @@ class RatingCoasterController extends Controller
 
         $rating->setValue($request->request->get('value'));
 
+        $validator = $this->get('validator');
+        $errors = $validator->validate($rating);
+
+        if (count($errors) > 0) {
+            return new JsonResponse(['state' => 'error']);
+        }
+
         $em->persist($rating);
         $em->flush();
 
