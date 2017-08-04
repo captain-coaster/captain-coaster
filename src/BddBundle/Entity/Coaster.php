@@ -14,6 +14,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Coaster
 {
+    // @todo : optimize ?
+    CONST NON_RATEABLE_STATUS = [3, 6];
+
     /**
      * @var int
      *
@@ -106,7 +109,7 @@ class Coaster
     private $price;
 
     /**
-     * @var Status
+     * @var Currency
      *
      * @ORM\ManyToOne(targetEntity="Currency")
      * @ORM\JoinColumn(nullable=true)
@@ -584,5 +587,15 @@ class Coaster
     public function getCurrency()
     {
         return $this->currency;
+    }
+
+    /**
+     * Can we rate this coaster ?
+     *
+     * @return bool
+     */
+    public function isRateable()
+    {
+        return !in_array($this->getStatus()->getId(), self::NON_RATEABLE_STATUS);
     }
 }

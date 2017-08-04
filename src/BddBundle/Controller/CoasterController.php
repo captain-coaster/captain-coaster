@@ -165,12 +165,21 @@ class CoasterController extends Controller
             ->getRepository('BddBundle:RiddenCoaster')
             ->getReviews($coaster->getId(), $request->getLocale());
 
+        $rating = null;
+        if ($this->isGranted('ROLE_USER')) {
+            $em = $this->getDoctrine()->getManager();
+            $rating = $em->getRepository('BddBundle:RiddenCoaster')->findOneBy(
+                ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+            );
+        }
+
         return $this->render(
             'BddBundle:Coaster:show.html.twig',
             [
                 'coaster' => $coaster,
                 'images' => $imageUrls,
                 'reviews' => $reviews,
+                'rating' => $rating
             ]
         );
     }

@@ -8,43 +8,48 @@
 {% block body %}
     <div class="row">
         <div class="col-sm-3">
-            <!-- average rating -->
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        {% if coaster.averageRating %}
-                            <h3 class="no-margin text-semibold text-indigo">
-                                {{ coaster.averageRating|number_format(2, ',') }} / 5
-                            </h3>
-                            <span class="text-size-mini text-muted">
+            {% if coaster.isRateable %}
+                <!-- average rating -->
+                <div class="panel panel-body">
+                    <div class="media no-margin">
+                        <div class="media-body">
+                            {% if coaster.averageRating %}
+                                <h3 class="no-margin text-semibold text-indigo">
+                                    {{ coaster.averageRating|number_format(2, ',') }} / 5
+                                </h3>
+                                <span class="text-size-mini text-muted">
                                 Moyenne des {{ coaster.totalRatings }} notes</span>
-                        {% else %}
-                            <span class=" text-size-small text-muted">
+                            {% else %}
+                                <span class=" text-size-small text-muted">
                                 {{ 'coaster.rating.notenough'|trans() }}
                             </span>
-                        {% endif %}
-                    </div>
+                            {% endif %}
+                        </div>
 
-                    <div class="media-right media-middle">
-                        <i class="icon-heart6 icon-3x text-danger-400"></i>
+                        <div class="media-right media-middle">
+                            <i class="icon-heart6 icon-3x text-danger-400"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- /average rating -->
-            <!-- star rating -->
-            <div class="panel panel-body border-top-primary text-center">
-                <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
-                <br/>
-                {% if is_granted('ROLE_USER') %}
-                    {{ render(controller('BddBundle:RatingCoaster:ajaxEdit', {'id': coaster.id})) }}
-                {% else %}
-                    <p class="text-muted content-group-sm">
-                        {{ 'coaster.rating.mustlogin'|trans() }}
-                    </p>
-                    <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans() }}</a>
-                {% endif %}
-            </div>
-            <!-- /star rating -->
+                <!-- /average rating -->
+                <!-- star rating -->
+                <div class="panel panel-body border-top-primary text-center">
+                    <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
+                    <br/>
+                    {% if is_granted('ROLE_USER') %}
+                        <div class="rating-coaster"
+                             data-coaster="{{ coaster.id }}"
+                             data-rateit-value="{{ rating.value|default(0) }}"
+                             style="font-size: 22px;"></div>
+                    {% else %}
+                        <p class="text-muted content-group-sm">
+                            {{ 'coaster.rating.mustlogin'|trans() }}
+                        </p>
+                        <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans() }}</a>
+                    {% endif %}
+                </div>
+                <!-- /star rating -->
+            {% endif %}
             <!-- main carac -->
             <div class="content-group">
                 <div class="row row-seamless btn-block-group">
@@ -236,6 +241,7 @@
         </div>
 
         <div class="col-sm-9">
+            <!-- photos -->
             {% if images|length > 0 %}
                 <div class="row">
                     <div class="panel panel-flat border-top-blue">
@@ -260,44 +266,62 @@
                     </div>
                 </div>
             {% endif %}
+            <!-- /photos -->
+            <!-- reviews -->
             {% if reviews|length > 0 %}
                 {% include 'BddBundle:Coaster:reviews.html.twig' with {'reviews': reviews} only %}
             {% endif %}
+            <!-- /reviews -->
         </div>
     </div>
 {% endblock %}
 
-    {% block javascripts %}
-        {% if coaster.park.latitude and coaster.park.longitude %}
-            <script>
-                function initMap() {
-                    var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
-                    var map = new google.maps.Map(document.getElementById('map-coaster'), {
-                        zoom: 14,
-                        center: uluru
-                    });
-                    var marker = new google.maps.Marker({
-                        position: uluru,
-                        map: map
-                    });
-                }
-            </script>
-            <script async defer
-                    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
-            </script>
-        {% endif %}
+{% block javascripts %}
+    <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
+    <script type="text/javascript">
+        $('document').ready(function () {
+            $('.rating-coaster').rateit(
+                {max: 5, step: 0.5, resetable: false, mode: 'font'}
+            ).bind('rated', function () {
+                var url = Routing.generate(
+                    'rating_edit',
+                    {'id': this.dataset.coaster, '_locale': '{{ app.request.locale }}'}
+                );
 
-        <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
-        <script>
-            $(function () {
-                // Initialize lightbox
-                $('[data-popup="lightbox"]').fancybox({
-                    padding: 3
-                })
+                $.post(url, {value: $(this).rateit('value')}, function (response) {
+                }, 'JSON');
             });
+        });
+    </script>
+    {% if coaster.park.latitude and coaster.park.longitude %}
+        <script>
+            function initMap() {
+                var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
+                var map = new google.maps.Map(document.getElementById('map-coaster'), {
+                    zoom: 14,
+                    center: uluru
+                });
+                var marker = new google.maps.Marker({
+                    position: uluru,
+                    map: map
+                });
+            }
         </script>
-        {% if coaster.averageRating is not null %}
-            <script type="application/ld+json">
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
+        </script>
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
+    <script>
+        $(function () {
+            // Initialize lightbox
+            $('[data-popup="lightbox"]').fancybox({
+                padding: 3
+            })
+        });
+    </script>
+    {% if coaster.averageRating is not null %}
+        <script type="application/ld+json">
             {
               "@context": "http://schema.org/",
               "@type": "Product",
@@ -310,9 +334,10 @@
                 "reviewCount": "{{ coaster.ratings|length }}"
               }
             }
+        </script>
+    {% endif %}
+{% endblock %}
 
-
-
-            </script>
-        {% endif %}
-    {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+{% endblock %}
