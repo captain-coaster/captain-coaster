@@ -22,7 +22,10 @@
 
                 <div class="media-body">
                     <h2 class="media-heading">
-                        {{ coasters.getPaginationData.firstItemNumber + loop.index - 1 }} -
+                        {% if previousAverageRating is not defined or previousAverageRating != coaster.averageRating %}
+                            {{ coasters.getPaginationData.firstItemNumber + loop.index - 1 }}
+                        {% endif %}
+                        -
                         <a style="color:#333;"
                            href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">{{ coaster.name }}
                         </a>
@@ -41,6 +44,7 @@
                     </div>
                 </div>
             </li>
+            {% set previousAverageRating = coaster.averageRating %}
         {% endfor %}
     </ul>
     {{ knp_pagination_render(coasters) }}
