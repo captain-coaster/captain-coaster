@@ -7,14 +7,15 @@
 {% block body %}
     <!-- info alert -->
     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-        <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span>
-        </button>
-        <h6 class="alert-heading text-semibold">
-            {{ 'index.header.title'|trans }}
-        </h6>
-        {{ 'index.header.info'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
-    </div>
+        <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
+            <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span
+                        class="sr-only">Close</span>
+            </button>
+            <h6 class="alert-heading text-semibold">
+                {{ 'index.header.title'|trans }}
+            </h6>
+            {{ 'index.header.info'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
+        </div>
     {% endif %}
     <!-- /info alert -->
     <div class="row">
@@ -71,7 +72,11 @@
 
                     <div class="caption text-center">
                         <h5 class="text-semibold no-margin">{{ coaster.name }}</h5>
-                        <p class="text-muted mb-15 mt-5">{{ coaster.park.name }}</p>
+                        <p class="text-muted mb-15 mt-5">
+                            <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                                {{ coaster.park.name }}
+                            </a>
+                        </p>
                     </div>
                 </div>
                 <!-- /thumbnail with image and button -->
@@ -127,9 +132,12 @@
                                     <div class="media-heading">
                                         <h6 class="media-heading">
                                             <a href="{{ path('bdd_show_coaster', {'slug': review.coaster.slug}) }}">
-                                                {{ review.coaster.name }} - {{ review.coaster.park.name }}
+                                                {{ review.coaster.name }}
                                             </a>
-
+                                            -
+                                            <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
+                                                {{ review.coaster.park.name }}
+                                            </a>
                                         </h6>
                                         {{ review.user.displayName }}
                                         <span class="media-annotation dotted">
@@ -181,8 +189,8 @@
 {% block stylesheets %}
     {# to be refact #}
     <meta name="description" content="{{ 'app.description'|trans }}"/>
-    <meta property="og:title" content="{{ 'app.name'|trans }}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ app.request.uri }}" />
-    <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}" />
+    <meta property="og:title" content="{{ 'app.name'|trans }}"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="{{ app.request.uri }}"/>
+    <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}"/>
 {% endblock %}

@@ -335,4 +335,11 @@ class Park
     {
         return $this->updatedAt;
     }
+
+    public function getOpenedCoasters()
+    {
+        return $this->getCoasters()->filter(function(Coaster $coaster) {
+            return $coaster->getStatus()->getId() == 1;
+        });
+    }
 }

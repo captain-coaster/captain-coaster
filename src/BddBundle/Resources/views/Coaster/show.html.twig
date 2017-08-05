@@ -116,7 +116,11 @@
                     </div>
                     <div class="list-group-item">
                         <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}:</label>
-                        <div class="pull-right">{{ coaster.park.name }}</div>
+                        <div class="pull-right">
+                            <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                                {{ coaster.park.name }}
+                            </a>
+                        </div>
                     </div>
                     <div class="list-group-item">
                         <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}

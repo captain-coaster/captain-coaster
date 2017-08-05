@@ -43,7 +43,10 @@
                                class="text-semibold">{{ rating.coaster.name }}</a>
                             <div class="text-muted text-size-small">
                                 <span class="status-mark bg-{{ rating.coaster.status.type }} position-left"></span>
-                                {{ rating.coaster.park.name }}
+                                <a class="text-muted" href="{{ path('park_show', {'slug': rating.coaster.park.slug}) }}">
+                                    {{ rating.coaster.park.name }}
+                                </a>
+
                             </div>
                         </td>
                         <td class="hidden-xs">

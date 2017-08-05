@@ -92,6 +92,10 @@ liip_imagine:
             quality: 95
             filters:
                 thumbnail: { size: [96, 96], mode: outbound }
+        coaster_park_show:
+            quality: 95
+            filters:
+                thumbnail: { size: [275, 200], mode: outbound }
 
 fos_user:
     db_driver: orm

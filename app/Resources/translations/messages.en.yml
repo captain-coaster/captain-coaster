@@ -42,9 +42,12 @@ coaster:
     photos: 'Photos'
     location: 'Location'
 
+park:
+    opened_coasters: 'opened coaster|opened coasters'
+
 coaster_ranking:
     title: 'Ranking of the best coasters'
-    reviews_number: 1 reviews|%count% reviews
+    reviews_number: '1 review|%count% reviews'
 
 map_index:
     title: 'Coasters Map'
@@ -64,7 +67,7 @@ user_list:
         title: 'Where do you rank among our members ?'
         text: 'This page shows a ranking of our members. Click on them to discover their ratings details!'
     member_from: 'Member since'
-    rating: 1 rating|%count% ratings
+    rating: '1 rating|%count% ratings'
 
 me:
     title: 'My Profile'

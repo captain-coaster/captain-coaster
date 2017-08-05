@@ -598,4 +598,20 @@ class Coaster
     {
         return !in_array($this->getStatus()->getId(), self::NON_RATEABLE_STATUS);
     }
+
+    /**
+     * @param User $user
+     * @return RiddenCoaster|null
+     */
+    public function getUserRating(User $user)
+    {
+        /** @var RiddenCoaster $rating */
+        foreach ($this->ratings as $rating) {
+            if($rating->getUser() === $user) {
+                return $rating;
+            }
+        }
+
+        return null;
+    }
 }

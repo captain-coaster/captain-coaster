@@ -109,7 +109,7 @@ class CoasterController extends Controller
 
 
     /**
-     * Show ranking of best coasters
+     * Show ranking of best coasters.
      *
      * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"})
      * @Method({"GET"})
