@@ -1,9 +1,8 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ park.name }} - {{ park.country.name }}{% endblock %}
-
 {% set title = park.name %}
-{% set subTitle = park.country.name %}
+{% set subTitle = park.country.name|trans([], 'database') %}
+{% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
 {% block body %}
     <div class="row">

@@ -1,9 +1,8 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ coaster.name }} - {{ coaster.park.name }}{% endblock %}
-
 {% set title = coaster.name %}
 {% set subTitle = coaster.park.name %}
+{% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
 {% block body %}
     <div class="row">
