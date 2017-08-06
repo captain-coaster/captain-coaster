@@ -85,6 +85,7 @@ liste:
         by: 'par'
     title: 'Mon Top Coasters'
     update: 'Modifier la liste'
+    save: 'Sauvegarder la liste'
     find: 'Chercher un coaster...'
     info: 'Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l''ordre si t''es du genre indécis.'
 
