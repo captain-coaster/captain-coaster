@@ -3,9 +3,14 @@
     <div class="panel panel-flat">
         <div class="panel-heading">
             <h6 class="panel-title text-semiold">
-                {{ 'review.title'|trans() }}
+                {{ 'review.title'|trans }}
                 &nbsp;<span class="badge badge-primary">{{ reviews|length }}</span>
             </h6>
+            <div class="pull-right">
+                <a class="text-muted" href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+                    {{ 'review.send'| trans() }}
+                </a>
+            </div>
         </div>
 
         <div class="panel-body">
@@ -73,7 +78,7 @@
             <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
                 <button type="button" class="btn bg-blue">
                     <i class="icon-plus22"></i>
-                    {{ 'review.button'| trans() }}
+                    {{ 'review.send'| trans() }}
                 </button>
             </a>
         </div>

@@ -21,7 +21,7 @@
                                 Moyenne des {{ coaster.totalRatings }} notes</span>
                             {% else %}
                                 <span class=" text-size-small text-muted">
-                                {{ 'coaster.rating.notenough'|trans() }}
+                                {{ 'coaster.rating.notenough'|trans }}
                             </span>
                             {% endif %}
                         </div>
@@ -48,9 +48,9 @@
                         </p>
                     {% else %}
                         <p class="text-muted content-group-sm">
-                            {{ 'coaster.rating.mustlogin'|trans() }}
+                            {{ 'coaster.rating.mustlogin'|trans }}
                         </p>
-                        <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans() }}</a>
+                        <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
                     {% endif %}
                 </div>
                 <!-- /star rating -->

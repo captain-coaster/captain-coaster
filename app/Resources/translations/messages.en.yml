@@ -98,7 +98,7 @@ review:
     pros: 'What are its main pros ?'
     cons: 'And its main cons ?'
     comment: 'Does it need more precisions ? Tell us !'
-    button: 'Send my opinion'
+    send: 'Send my opinion'
     update: 'Update my review'
     last: 'Latest reviews'
 
