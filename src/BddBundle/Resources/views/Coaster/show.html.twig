@@ -41,6 +41,11 @@
                              data-coaster="{{ coaster.id }}"
                              data-rateit-value="{{ rating.value|default(0) }}"
                              style="font-size: 22px;"></div>
+                        <p class="no-margin-bottom mt-10">
+                            <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
+                                {{ 'coaster.rating.sendreview'|trans }}
+                            </a>
+                        </p>
                     {% else %}
                         <p class="text-muted content-group-sm">
                             {{ 'coaster.rating.mustlogin'|trans() }}

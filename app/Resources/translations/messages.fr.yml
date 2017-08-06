@@ -23,6 +23,7 @@ coaster:
         notenough: 'Pas assez de note sur ce coaster !'
         mustlogin: 'Il faut être connecté pour noter.'
         login: 'Se connecter'
+        sendreview: 'ou clique ici pour donner ton avis'
     infos:
         title: 'Caractéristiques de %name%'
         status: 'Statut'

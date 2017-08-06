@@ -23,6 +23,7 @@ coaster:
         notenough: 'Not enough ratings for this coaster !'
         mustlogin: 'You must be logged in to rate.'
         login: 'Log in'
+        sendreview: 'or click here to write a review'
     infos:
         title: '%name% features'
         status: 'Status'
