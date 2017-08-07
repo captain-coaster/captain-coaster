@@ -1,4 +1,2 @@
 services:
-    BddBundle\EventListener\SlugManager:
-        tags:
-            - { name: doctrine.event_subscriber, connection: default }
+

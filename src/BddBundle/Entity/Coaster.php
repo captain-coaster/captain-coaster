@@ -39,6 +39,13 @@ class Coaster
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @Gedmo\Slug(fields={"name"},updatable=true, separator="-", handlers={
+     *      @Gedmo\SlugHandler(class="BddBundle\Handler\CustomRelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="park"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="-")
+     *      })
+     * })
      */
     private $slug;
 
