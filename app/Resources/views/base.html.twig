@@ -53,7 +53,10 @@
             <!-- /page header -->
             <!-- Content area -->
             <div class="content">
+                {{ include('flashes.html.twig') }}
+
                 {% block body %}{% endblock %}
+
                 {{ include('footer.html.twig') }}
             </div>
             {% endblock %}
