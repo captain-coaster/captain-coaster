@@ -72,12 +72,14 @@
 
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-sm-4">
-                                    <img src="{{ asset('images/badges/bienvenue.png') }}"/>
+                                <div class="col-sm-3" style="margin-bottom: 40px;">
+                                    <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
                                 </div>
-                                <div class="col-sm-4">
-                                    <img src="{{ asset('images/badges/more.png') }}"/>
+                                {% for badge in user.badges %}
+                                <div class="col-sm-3" style="margin-bottom: 40px;">
+                                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
                                 </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </div>

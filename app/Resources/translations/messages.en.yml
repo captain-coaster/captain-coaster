@@ -143,6 +143,19 @@ contact:
     flash:
         success: 'Thank you %name%, your message was sent to Captain Coaster staff.'
 
+notif:
+    badge:
+        message: 'Check it out: Captain just gave you the "%name%" badge !'
+
+badge:
+    rating1: '1st rating'
+    rating100: '100th rating'
+    rating250: '250th rating'
+    rating500: '500th rating'
+    rating1000: '1000th rating'
+    teamkatun: 'Team Katun'
+    teamispeed: 'Team iSpeed'
+
 error:
     404:
         title: 'Page not found'

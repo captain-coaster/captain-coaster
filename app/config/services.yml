@@ -40,6 +40,12 @@ services:
     BddBundle\Service\RatingService:
         public: true
 
+    BddBundle\Service\BadgeService:
+        public: true
+
+    BddBundle\Service\NotificationService:
+        public: true
+
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]

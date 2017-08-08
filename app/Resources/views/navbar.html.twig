@@ -16,6 +16,7 @@
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
+            <!-- language switcher -->
             <li class="dropdown language-switch">
                 <a class="dropdown-toggle" data-toggle="dropdown">
                     {# todo: parameters #}
@@ -28,6 +29,40 @@
                     <li><a class="french" href="{{ app.request.uri|replace({'/en/': '/fr/'}) }}">Français</a></li>
                 </ul>
             </li>
+            <!-- /language switcher -->
+            <!-- notifications -->
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                    <i class="icon-bell2"></i>
+                    <span class="visible-xs-inline-block position-right">Activity</span>
+                    <span class="badge bg-warning-400">
+                        {{ app.user.unreadNotifications|length }}
+                    </span>
+                </a>
+
+                <div class="dropdown-menu dropdown-content">
+                    <div class="dropdown-content-heading">Activity</div>
+                    <ul class="media-list dropdown-content-body width-350">
+                        {% for notif in app.user.unreadNotifications %}
+                        <li class="media">
+                            <div class="media-left">
+                                <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">
+                                    <i class="icon-star-full2"></i></a>
+                            </div>
+
+                            <div class="media-body">
+                                <a href="{{ path('notification_read', {'id': notif.id}) }}">
+                                    {{ notif.message|trans({'%name%': notif.parameter|trans}) }}
+                                </a>
+                                <div class="media-annotation">{{ notif.createdAt|ago }}</div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </li>
+            <!-- /notifications -->
+            <!-- user profile -->
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                 <li class="dropdown dropdown-user">
                     <a class="dropdown-toggle" data-toggle="dropdown">
@@ -55,6 +90,7 @@
                     </a>
                 </li>
             {% endif %}
+            <!-- /user profile -->
         </ul>
     </div>
 </div>

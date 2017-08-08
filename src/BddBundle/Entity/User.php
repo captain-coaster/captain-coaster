@@ -88,6 +88,21 @@ class User extends BaseUser
     private $listes;
 
     /**
+     * @var Badge
+     *
+     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Badge", inversedBy="users")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $badges;
+
+    /**
+     * @var Notification
+     *
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\Notification", mappedBy="user")
+     */
+    private $notifications;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -103,6 +118,8 @@ class User extends BaseUser
         parent::__construct();
 
         $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->badges = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -372,5 +389,80 @@ class User extends BaseUser
     public function getListes()
     {
         return $this->listes;
+    }
+
+    /**
+     * Add badge
+     *
+     * @param \BddBundle\Entity\Badge $badge
+     *
+     * @return User
+     */
+    public function addBadge(\BddBundle\Entity\Badge $badge)
+    {
+        $this->badges[] = $badge;
+
+        return $this;
+    }
+
+    /**
+     * Remove badge
+     *
+     * @param \BddBundle\Entity\Badge $badge
+     */
+    public function removeBadge(\BddBundle\Entity\Badge $badge)
+    {
+        $this->badges->removeElement($badge);
+    }
+
+    /**
+     * Get badges
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBadges()
+    {
+        return $this->badges;
+    }
+
+    /**
+     * Add notification
+     *
+     * @param \BddBundle\Entity\Notification $notification
+     *
+     * @return User
+     */
+    public function addNotification(\BddBundle\Entity\Notification $notification)
+    {
+        $this->notifications[] = $notification;
+
+        return $this;
+    }
+
+    /**
+     * Remove notification
+     *
+     * @param \BddBundle\Entity\Notification $notification
+     */
+    public function removeNotification(\BddBundle\Entity\Notification $notification)
+    {
+        $this->notifications->removeElement($notification);
+    }
+
+    /**
+     * Get notifications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getNotifications()
+    {
+        return $this->notifications;
+    }
+
+    public function getUnreadNotifications()
+    {
+        return $this->notifications->filter(function(Notification $notif) {
+            return !$notif->getIsRead();
+        });
     }
 }

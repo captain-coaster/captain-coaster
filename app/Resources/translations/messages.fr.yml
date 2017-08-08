@@ -143,6 +143,19 @@ contact:
     flash:
         success: 'Merci %name%, ton email a été envoyé à l''équipe de Captain Coaster.'
 
+notif:
+    badge:
+        message: 'Wahou, le Captain vient de te décerner le badge "%name%" !'
+
+badge:
+    rating1: '1ère note'
+    rating100: '100ème note'
+    rating250: '100ème note'
+    rating500: '100ème note'
+    rating1000: '100ème note'
+    teamkatun: 'Team Katun'
+    teamispeed: 'Team iSpeed'
+
 error:
     404:
         title: 'Page non trouvée'
