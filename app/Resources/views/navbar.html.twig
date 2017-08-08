@@ -34,29 +34,33 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                     <i class="icon-bell2"></i>
-                    <span class="visible-xs-inline-block position-right">Activity</span>
-                    <span class="badge bg-warning-400">
-                        {{ app.user.unreadNotifications|length }}
-                    </span>
+                    <span class="visible-xs-inline-block position-right">{{ 'notif.title'|trans }}</span>
+                    {% if app.user.unreadNotifications|length > 0 %}
+                        <span class="badge bg-warning-400">
+                            {{ app.user.unreadNotifications|length }}
+                        </span>
+                    {% endif %}
                 </a>
 
                 <div class="dropdown-menu dropdown-content">
                     <div class="dropdown-content-heading">Activity</div>
                     <ul class="media-list dropdown-content-body width-350">
                         {% for notif in app.user.unreadNotifications %}
-                        <li class="media">
-                            <div class="media-left">
-                                <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">
-                                    <i class="icon-star-full2"></i></a>
-                            </div>
+                            <li class="media">
+                                <div class="media-left">
+                                    <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">
+                                        <i class="icon-star-full2"></i></a>
+                                </div>
 
-                            <div class="media-body">
-                                <a href="{{ path('notification_read', {'id': notif.id}) }}">
-                                    {{ notif.message|trans({'%name%': notif.parameter|trans}) }}
-                                </a>
-                                <div class="media-annotation">{{ notif.createdAt|ago }}</div>
-                            </div>
-                        </li>
+                                <div class="media-body">
+                                    <a href="{{ path('notification_read', {'id': notif.id}) }}">
+                                        {{ notif.message|trans({'%name%': notif.parameter|trans}) }}
+                                    </a>
+                                    <div class="media-annotation">{{ notif.createdAt|ago }}</div>
+                                </div>
+                            </li>
+                        {% else %}
+                            <li>{{ 'notif.empty'|trans }}</li>
                         {% endfor %}
                     </ul>
                 </div>
@@ -76,11 +80,15 @@
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-right">
-                        <li><a href="{{ path('me') }}"><i class="icon-profile"></i> {{ 'navbar.profile'|trans }}</a></li>
-                        <li><a href="{{ path('liste_me') }}"><i class="icon-podium"></i> {{ 'navbar.topcoasters'|trans }}</a></li>
-                        <li><a href="{{ path('me_ratings') }}"><i class="icon-stars"></i> {{ 'navbar.rating'|trans }}</a></li>
+                        <li><a href="{{ path('me') }}"><i class="icon-profile"></i> {{ 'navbar.profile'|trans }}</a>
+                        </li>
+                        <li><a href="{{ path('liste_me') }}"><i
+                                        class="icon-podium"></i> {{ 'navbar.topcoasters'|trans }}</a></li>
+                        <li><a href="{{ path('me_ratings') }}"><i class="icon-stars"></i> {{ 'navbar.rating'|trans }}
+                            </a></li>
                         <li class="divider"></li>
-                        <li><a href="{{ path('logout') }}"><i class="icon-switch2"></i> {{ 'navbar.logout'|trans }}</a></li>
+                        <li><a href="{{ path('logout') }}"><i class="icon-switch2"></i> {{ 'navbar.logout'|trans }}</a>
+                        </li>
                     </ul>
                 </li>
             {% else %}

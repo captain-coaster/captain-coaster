@@ -144,6 +144,8 @@ contact:
         success: 'Merci %name%, ton email a été envoyé à l''équipe de Captain Coaster.'
 
 notif:
+    title: 'Activité'
+    empty: 'Rien de spécial pour le moment, va plutôt rider !'
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "%name%" !'
 

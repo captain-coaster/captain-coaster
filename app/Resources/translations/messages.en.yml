@@ -144,6 +144,8 @@ contact:
         success: 'Thank you %name%, your message was sent to Captain Coaster staff.'
 
 notif:
+    title: 'Activity'
+    empty: 'Nothing special right now, go ride some coasters !'
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
 
