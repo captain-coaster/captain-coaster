@@ -141,7 +141,9 @@
                                                 {{ review.coaster.park.name }}
                                             </a>
                                         </h6>
-                                        {{ review.user.displayName }}
+                                        <a href="{{ path('user_profile', {'id': review.user.id}) }}">
+                                            {{ review.user.displayName }}
+                                        </a>
                                         <span class="media-annotation dotted">
                                             <span class="text-warning">
                                                 {% set low = review.value|round(0, 'floor') %}
