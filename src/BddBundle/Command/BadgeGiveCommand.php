@@ -15,9 +15,8 @@ class BadgeGiveCommand extends ContainerAwareCommand
     {
         $this
             ->setName('badge:give')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
+            ->setDescription('Give badges to users')
+            ->addArgument('user', InputArgument::OPTIONAL, 'Argument description')
         ;
     }
 
@@ -27,10 +26,20 @@ class BadgeGiveCommand extends ContainerAwareCommand
         $stopwatch->start('badge');
         $output->writeln('Start giving badges.');
 
-        $users = $this->getContainer()
-            ->get('doctrine.orm.entity_manager')
-            ->getRepository('BddBundle:User')
-            ->findAll();
+        $userId = $input->getArgument('user');
+
+        if (!is_null($userId)) {
+            $users[] = $this->getContainer()
+                ->get('doctrine.orm.entity_manager')
+                ->getRepository('BddBundle:User')
+                ->findOneBy(['id' => $userId]);
+        } else {
+            $users = $this->getContainer()
+                ->get('doctrine.orm.entity_manager')
+                ->getRepository('BddBundle:User')
+                ->findAll();
+        }
+
         $badgeService = $this->getContainer()->get('BddBundle\Service\BadgeService');
 
         foreach ($users as $user) {
