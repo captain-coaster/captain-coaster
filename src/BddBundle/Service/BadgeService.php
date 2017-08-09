@@ -124,7 +124,7 @@ class BadgeService
         if (!empty($katun) && !empty($ispeed)) {
             if ($katun < $ispeed) {
                 $this->addNewBadge($user, self::BADGE_TEAM_KATUN);
-            } elseif ($ispeed > $katun) {
+            } elseif ($ispeed < $katun) {
                 $this->addNewBadge($user, self::BADGE_TEAM_ISPEED);
             }
 

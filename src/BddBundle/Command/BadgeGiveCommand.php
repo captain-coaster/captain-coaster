@@ -5,7 +5,6 @@ namespace BddBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
@@ -16,8 +15,7 @@ class BadgeGiveCommand extends ContainerAwareCommand
         $this
             ->setName('badge:give')
             ->setDescription('Give badges to users')
-            ->addArgument('user', InputArgument::OPTIONAL, 'Argument description')
-        ;
+            ->addArgument('user', InputArgument::OPTIONAL, 'Argument description');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -48,7 +46,7 @@ class BadgeGiveCommand extends ContainerAwareCommand
 
         $output->writeln('End of command.');
         $event = $stopwatch->stop('badge');
-        $output->writeln(($event->getDuration()/1000).' s');
-        $output->writeln(($event->getMemory()/1000/1000).' mo');
+        $output->writeln(($event->getDuration() / 1000).' s');
+        $output->writeln(($event->getMemory() / 1000 / 1000).' mo');
     }
 }
