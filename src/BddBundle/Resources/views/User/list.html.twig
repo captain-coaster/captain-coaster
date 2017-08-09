@@ -27,7 +27,11 @@
                             {% endif %}
                         </div>
                         <div class="media-body">
-                            <h6 class="media-heading">{{ user.0.displayName }}</h6>
+                            <h6 class="media-heading">
+                                <a href="{{ path('user_profile', {'id': user.0.id}) }}">
+                                    {{ user.0.displayName }}
+                                </a>
+                            </h6>
                             <p class="text-muted">
                                 {{ 'user_list.member_from'|trans }} {{ user.0.createdAt|date("d/m/Y") }}
                             </p>

@@ -23,7 +23,9 @@
                                 </h6>
                                 <small class="text-muted">
                                     {{ 'liste.list.by'|trans }}
-                                    <a href="#">{{ liste.user.displayName }}</a>
+                                    <a href="{{ path('user_profile', {'id': liste.user.id}) }}">
+                                        {{ liste.user.displayName }}
+                                    </a>
                                 </small>
                             </div>
                         </div>

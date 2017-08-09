@@ -90,7 +90,9 @@
                     <ul class="list-feed">
                         {% for ratingItem in ratingFeed %}
                             <li>
-                                <strong>{{ ratingItem.user.displayName }}</strong>
+                                <a class="text-bold" href="{{ path('user_profile', {'id': ratingItem.user.id}) }}">
+                                    {{ ratingItem.user.displayName }}
+                                </a>
                                 {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
                                 <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
                                     {{ ratingItem.coaster.name }}

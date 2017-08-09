@@ -92,4 +92,23 @@ class ProfileController extends Controller
             ]
         );
     }
+
+    /**
+     * Display a user's profile page
+     *
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/users/{id}/profile", name="user_profile")
+     * @Method({"GET"})
+     */
+    public function publicProfileAction(User $user)
+    {
+        return $this->render(
+            'BddBundle:Profile:public.html.twig',
+            [
+                'user' => $user,
+            ]
+        );
+    }
 }

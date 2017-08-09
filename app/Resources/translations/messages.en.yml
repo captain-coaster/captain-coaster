@@ -62,6 +62,11 @@ map_index:
         openingDate: 'Opening date'
     results: 'Results'
 
+user_profile:
+    title: '%name% - Profile'
+    ratings: 'Show his ratings'
+    listes: 'Show his Top Coasters'
+
 user_list:
     title: 'Member''s ranking'
     info:

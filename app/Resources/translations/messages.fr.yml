@@ -62,6 +62,11 @@ map_index:
         openingDate: 'Date d''ouverture'
     results: 'Résultats'
 
+user_profile:
+    title: 'Profil de %name%'
+    ratings: 'Voir ses notes'
+    listes: 'Voir son Top Coasters'
+
 user_list:
     title: 'Palmarès des membres'
     info:
