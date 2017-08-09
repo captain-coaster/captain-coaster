@@ -38,21 +38,17 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <div style="margin-top:10px;">
+                        <div class="media">
                             <a href="{{ path('liste_show', {'id': liste.id}) }}">
                                 <i class="icon-circle-right2"></i> {{ 'liste.list.more'|trans }}
                             </a>
                         </div>
-                    </div>
-                    <div class="panel-footer panel-footer-transparent">
-                        <div class="heading-elements">
-                            <ul class="list-inline list-inline-separate heading-text">
-                                <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
-                                <li>
-                                    <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
-                                </li>
-                            </ul>
-                        </div>
+                        <ul class="list-inline media">
+                            <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+                            <li>
+                                <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

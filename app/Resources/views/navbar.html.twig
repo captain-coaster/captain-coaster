@@ -41,9 +41,8 @@
                         </span>
                     {% endif %}
                 </a>
-
                 <div class="dropdown-menu dropdown-content">
-                    <div class="dropdown-content-heading">Activity</div>
+                    <div class="dropdown-content-heading">{{ 'notif.title'|trans }}</div>
                     <ul class="media-list dropdown-content-body width-350">
                         {% for notif in app.user.unreadNotifications %}
                             <li class="media">
