@@ -3,6 +3,7 @@
 namespace BddBundle\Service;
 
 use BddBundle\Entity\Badge;
+use BddBundle\Entity\ListeCoaster;
 use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManager;
@@ -94,15 +95,44 @@ class BadgeService
      */
     private function giveTeamBadge(User $user)
     {
-        $currentBadge =  $user->getBadges()->filter(function (Badge $badge) {
-            return $badge->getType() == self::BADGE_TYPE_TEAM;
-        });
+        // Check for already given Team badge
+        $currentBadge = $user->getBadges()->filter(
+            function (Badge $badge) {
+                return $badge->getType() == self::BADGE_TYPE_TEAM;
+            }
+        );
 
         // You can be only in one team !
         if ($currentBadge->count() == 1) {
             return;
         }
 
+        // Check in Top first (priority)
+        if (!is_null($user->getMainListe())) {
+            /** @var ListeCoaster $listeCoaster */
+            foreach ($user->getMainListe()->getListeCoasters() as $listeCoaster) {
+                if ($listeCoaster->getCoaster()->getName() === 'Katun') {
+                    $katun = $listeCoaster->getPosition();
+                }
+                if ($listeCoaster->getCoaster()->getName() === 'iSpeed') {
+                    $ispeed = $listeCoaster->getPosition();
+                }
+            }
+        }
+
+        // Lowest position wins
+        if (!empty($katun) && !empty($ispeed)) {
+            if ($katun < $ispeed) {
+                $this->addNewBadge($user, self::BADGE_TEAM_KATUN);
+            } elseif ($ispeed > $katun) {
+                $this->addNewBadge($user, self::BADGE_TEAM_ISPEED);
+            }
+
+            // stop here
+            return;
+        }
+
+        // check then in ratings
         /** @var RiddenCoaster $rating */
         foreach ($user->getRatings() as $rating) {
             if ($rating->getCoaster()->getName() === 'Katun') {
@@ -113,6 +143,7 @@ class BadgeService
             }
         }
 
+        // Highest rating wins
         if (!empty($katun) && !empty($ispeed)) {
             if ($katun > $ispeed) {
                 $this->addNewBadge($user, self::BADGE_TEAM_KATUN);

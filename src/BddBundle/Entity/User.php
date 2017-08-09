@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -117,9 +118,10 @@ class User extends BaseUser
     {
         parent::__construct();
 
-        $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->badges = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ratings = new ArrayCollection();
+        $this->listes = new ArrayCollection();
+        $this->badges = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     /**
@@ -258,7 +260,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function addRating(\BddBundle\Entity\RiddenCoaster $rating)
+    public function addRating(RiddenCoaster $rating)
     {
         $this->ratings[] = $rating;
 
@@ -270,7 +272,7 @@ class User extends BaseUser
      *
      * @param \BddBundle\Entity\RiddenCoaster $rating
      */
-    public function removeRating(\BddBundle\Entity\RiddenCoaster $rating)
+    public function removeRating(RiddenCoaster $rating)
     {
         $this->ratings->removeElement($rating);
     }
@@ -364,7 +366,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function addListe(\BddBundle\Entity\Liste $liste)
+    public function addListe(Liste $liste)
     {
         $this->listes[] = $liste;
 
@@ -376,7 +378,7 @@ class User extends BaseUser
      *
      * @param \BddBundle\Entity\Liste $liste
      */
-    public function removeListe(\BddBundle\Entity\Liste $liste)
+    public function removeListe(Liste $liste)
     {
         $this->listes->removeElement($liste);
     }
@@ -392,13 +394,30 @@ class User extends BaseUser
     }
 
     /**
+     * Get main Top Coaster
+     *
+     * @return Liste|null
+     */
+    public function getMainListe()
+    {
+        /** @var Liste $liste */
+        foreach ($this->listes as $liste) {
+            if ($liste->getType() === Liste::MAINT_LISTE) {
+                return $liste;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Add badge
      *
      * @param \BddBundle\Entity\Badge $badge
      *
      * @return User
      */
-    public function addBadge(\BddBundle\Entity\Badge $badge)
+    public function addBadge(Badge $badge)
     {
         $this->badges[] = $badge;
 
@@ -410,7 +429,7 @@ class User extends BaseUser
      *
      * @param \BddBundle\Entity\Badge $badge
      */
-    public function removeBadge(\BddBundle\Entity\Badge $badge)
+    public function removeBadge(Badge $badge)
     {
         $this->badges->removeElement($badge);
     }
@@ -432,7 +451,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function addNotification(\BddBundle\Entity\Notification $notification)
+    public function addNotification(Notification $notification)
     {
         $this->notifications[] = $notification;
 
@@ -444,7 +463,7 @@ class User extends BaseUser
      *
      * @param \BddBundle\Entity\Notification $notification
      */
-    public function removeNotification(\BddBundle\Entity\Notification $notification)
+    public function removeNotification(Notification $notification)
     {
         $this->notifications->removeElement($notification);
     }
@@ -459,10 +478,15 @@ class User extends BaseUser
         return $this->notifications;
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection
+     */
     public function getUnreadNotifications()
     {
-        return $this->notifications->filter(function(Notification $notif) {
-            return !$notif->getIsRead();
-        });
+        return $this->notifications->filter(
+            function (Notification $notif) {
+                return !$notif->getIsRead();
+            }
+        );
     }
 }

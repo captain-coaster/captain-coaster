@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 class BadgeGiveCommand extends ContainerAwareCommand
 {
@@ -22,6 +23,8 @@ class BadgeGiveCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('badge');
         $output->writeln('Start giving badges.');
 
         $users = $this->getContainer()
@@ -35,5 +38,8 @@ class BadgeGiveCommand extends ContainerAwareCommand
         }
 
         $output->writeln('End of command.');
+        $event = $stopwatch->stop('badge');
+        $output->writeln(($event->getDuration()/1000).' s');
+        $output->writeln(($event->getMemory()/1000/1000).' mo');
     }
 }
