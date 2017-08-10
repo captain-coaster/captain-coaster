@@ -5,16 +5,26 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SitemapController extends Controller
 {
     public function indexAction()
     {
+        $cache = new FilesystemAdapter();
+
+        $urls = $cache->getItem('sitemap.xml');
+        if (!$urls->isHit()) {
+            $urls->set($this->getUrls());
+            $urls->expiresAfter(\DateInterval::createFromDateString('1 hour'));
+            $cache->save($urls);
+        }
+
         return $this->render(
             'BddBundle:Sitemap:sitemap.xml.twig',
             [
-                'urls' => $this->getUrls(),
+                'urls' => $urls->get(),
             ]
         );
     }
