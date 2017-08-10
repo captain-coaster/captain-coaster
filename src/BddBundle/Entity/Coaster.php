@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -165,7 +166,7 @@ class Coaster
      */
     public function __construct()
     {
-        $this->ratings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     /**
@@ -305,7 +306,7 @@ class Coaster
      *
      * @return Coaster
      */
-    public function setBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster = null)
+    public function setBuiltCoaster(BuiltCoaster $builtCoaster = null)
     {
         $this->builtCoaster = $builtCoaster;
 
@@ -329,7 +330,7 @@ class Coaster
      *
      * @return Coaster
      */
-    public function setPark(\BddBundle\Entity\Park $park)
+    public function setPark(Park $park)
     {
         $this->park = $park;
 
@@ -353,7 +354,7 @@ class Coaster
      *
      * @return Coaster
      */
-    public function setStatus(\BddBundle\Entity\Status $status)
+    public function setStatus(Status $status)
     {
         $this->status = $status;
 
@@ -377,7 +378,7 @@ class Coaster
      *
      * @return Coaster
      */
-    public function addRating(\BddBundle\Entity\RiddenCoaster $rating)
+    public function addRating(RiddenCoaster $rating)
     {
         $this->ratings[] = $rating;
 
@@ -389,7 +390,7 @@ class Coaster
      *
      * @param \BddBundle\Entity\RiddenCoaster $rating
      */
-    public function removeRating(\BddBundle\Entity\RiddenCoaster $rating)
+    public function removeRating(RiddenCoaster $rating)
     {
         $this->ratings->removeElement($rating);
     }
@@ -579,7 +580,7 @@ class Coaster
      *
      * @return Coaster
      */
-    public function setCurrency(\BddBundle\Entity\Currency $currency)
+    public function setCurrency(Currency $currency)
     {
         $this->currency = $currency;
 
@@ -614,7 +615,7 @@ class Coaster
     {
         /** @var RiddenCoaster $rating */
         foreach ($this->ratings as $rating) {
-            if($rating->getUser() === $user) {
+            if ($rating->getUser() === $user) {
                 return $rating;
             }
         }

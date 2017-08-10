@@ -4,7 +4,10 @@
     <url>
         <loc>{{ url.loc }}</loc>
         {% if url.alternate is defined %}
-        <xhtml:link rel="alternate" hreflang="{{ url.alternate.locale }}" href="{{ url.alternate.loc }}" />
+            <xhtml:link rel="alternate" hreflang="{{ url.alternate.locale }}" href="{{ url.alternate.loc }}" />
+        {% endif %}
+        {% if url.lastmod is defined %}
+            <lastmod>{{ url.lastmod }}</lastmod>
         {% endif %}
         <changefreq>{{ url.changefreq }}</changefreq>
         <priority>{{ url.priority }}</priority>
