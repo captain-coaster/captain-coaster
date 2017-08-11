@@ -67,6 +67,14 @@ user_profile:
     ratings: 'Show his ratings'
     listes: 'Show his Top Coasters'
 
+my_ratings:
+    title: 'My ratings'
+    coaster: 'Coaster'
+    manufacturer: 'Manufacturer'
+    opening_date: 'Opened'
+    rating: 'Rating'
+    rated_at: 'Rated at'
+
 user_list:
     title: 'Member''s ranking'
     info:
@@ -177,3 +185,5 @@ error:
     generic:
         title: 'Oops, an error occured !'
         message: 'Calling the maintenance chief department...'
+
+User account is disabled.: 'User account is disabled. Having multiple accounts is not allowed.'

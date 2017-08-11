@@ -67,6 +67,14 @@ user_profile:
     ratings: 'Voir ses notes'
     listes: 'Voir son Top Coasters'
 
+my_ratings:
+    title: 'Mes notes'
+    coaster: 'Coaster'
+    manufacturer: 'Contructeur'
+    opening_date: 'Ouverture'
+    rating: 'Note'
+    rated_at: 'Noté le'
+
 user_list:
     title: 'Palmarès des membres'
     info:
@@ -177,3 +185,5 @@ error:
     generic:
         title: 'Oops, une erreur s''est produite'
         message: 'Nos meilleurs techniciens sont déjà sur le coup.'
+
+User account is disabled.: 'Le compte est désactivé. Il n''est pas autorisé d''ouvrir plusieurs comptes'

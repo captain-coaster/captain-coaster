@@ -35,7 +35,7 @@
                     </div>
                     {% if error is defined and error %}
                         <div class="alert alert-danger alert-bordered">
-                            {{ error }}
+                            {{ error|trans }}
                         </div>
                     {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}

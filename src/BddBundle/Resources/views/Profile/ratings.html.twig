@@ -1,9 +1,7 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Mes notes{% endblock %}
-
-{% set title = 'Mes notes' %}
-{% set subTitle = '' %}
+{% set title = 'my_ratings.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
@@ -50,11 +48,11 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th>{{ knp_pagination_sortable(ratings, 'Coaster', 'c.name') }}</th>
-                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'Constructeur', ['m.name']) }}</th>
-                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'Ouverture', ['c.openingDate']) }}</th>
-                    <th>{{ knp_pagination_sortable(ratings, 'Note', ['r.value']) }}</th>
-                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'Noté le', 'r.updatedAt') }}</th>
+                    <th>{{ knp_pagination_sortable(ratings, 'my_ratings.coaster'|trans, 'c.name') }}</th>
+                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'my_ratings.manufacturer'|trans, ['m.name']) }}</th>
+                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'my_ratings.opening_date'|trans, ['c.openingDate']) }}</th>
+                    <th>{{ knp_pagination_sortable(ratings, 'my_ratings.rating'|trans, ['r.value']) }}</th>
+                    <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'my_ratings.rated_at'|trans, 'r.updatedAt') }}</th>
                     <th class="text-center hidden-xs" style="width: 20px;"><i class="icon-arrow-down12"></i></th>
                 </tr>
                 </thead>
