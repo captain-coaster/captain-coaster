@@ -132,7 +132,7 @@
 
     function displayCoaster(data) {
         $.ajax({
-            url: '/fr/map/parks/' + data + '/coasters',
+            url: '/{{ app.request.locale }}/map/parks/' + data + '/coasters',
             type: "GET",
             data: $("form").serialize()
         }).done(function (coasters) {
@@ -148,7 +148,6 @@
             type: "GET",
             data: $("form").serialize()
         }).done(function (data) {
-            console.log('done ajax');
             removeMarkers();
             setMarkers(map, data);
         });
