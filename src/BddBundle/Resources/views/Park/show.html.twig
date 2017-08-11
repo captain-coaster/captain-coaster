@@ -108,21 +108,7 @@
         </script>
     {% endif %}
     <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-    <script type="text/javascript">
-        $('document').ready(function () {
-            $('.rating-coaster').rateit(
-                {max: 5, step: 0.5, resetable: false, mode: 'font'}
-            ).bind('rated', function () {
-                var url = Routing.generate(
-                    'rating_edit',
-                    {'id': this.dataset.coaster, '_locale': '{{ app.request.locale }}'}
-                );
-
-                $.post(url, {value: $(this).rateit('value')}, function (response) {
-                }, 'JSON');
-            });
-        });
-    </script>
+    <script src="{{ asset('js/pages/rating.js') }}"></script>
 {% endblock %}
 
 {% block stylesheets %}

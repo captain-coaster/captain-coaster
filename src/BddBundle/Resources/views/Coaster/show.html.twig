@@ -286,33 +286,7 @@
 
 {% block javascripts %}
     <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-    <script type="text/javascript">
-        $('document').ready(function () {
-            $('.rating-coaster').rateit(
-                {max: 5, step: 0.5, resetable: false, mode: 'font'}
-            ).bind('rated', function () {
-                var url = Routing.generate(
-                    'rating_edit',
-                    {'id': this.dataset.coaster, '_locale': '{{ app.request.locale }}'}
-                );
-
-                $.post(url, {value: $(this).rateit('value')}, function (response) {
-                }, 'JSON');
-            });
-        });
-        function deleteRating(id, obj) {
-            var url = Routing.generate(
-                'rating_delete',
-                {'id': id, '_locale': '{{ app.request.locale }}'}
-            );
-            $.ajax({
-                url: url,
-                type: "DELETE",
-            }).done(function () {
-                $(obj).remove();
-            });
-        }
-    </script>
+    <script src="{{ asset('js/pages/rating.js') }}"></script>
     {% if coaster.park.latitude and coaster.park.longitude %}
         <script>
             function initMap() {

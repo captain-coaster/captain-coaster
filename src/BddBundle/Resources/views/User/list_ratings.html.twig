@@ -9,13 +9,7 @@
 
 {% block javascripts %}
     <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-    <script type="text/javascript">
-        $('document').ready(function () {
-            $('.rating-coaster').rateit(
-                {max: 5, step: 0.5, resetable: false, mode: 'font', readonly: true}
-            );
-        });
-    </script>
+    <script src="{{ asset('js/pages/rating.js') }}"></script>
 {% endblock %}
 
 {% block body %}
@@ -59,6 +53,7 @@
                             <div class="rating-coaster"
                                  data-coaster="{{ rating.coaster.id }}"
                                  data-rateit-value="{{ rating.value }}"
+                                 data-rateit-readonly="true"
                                  style="font-size: 22px;"></div>
                         </td>
                         <td class="hidden-xs">

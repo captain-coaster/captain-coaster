@@ -15,11 +15,7 @@
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <!-- global css -->
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/core.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/components.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('css/colors.min.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('build/main.css') }}" rel="stylesheet" />
     <!-- /global css -->
     <!-- additional css -->
     {% block stylesheets %}{% endblock %}
@@ -77,6 +73,7 @@
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script type="text/javascript">
+    locale = '{{ app.request.locale }}';
     let url = Routing.generate('coaster_search_all_json', {'_locale': '{{ app.request.locale }}'});
     let dataSource = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
