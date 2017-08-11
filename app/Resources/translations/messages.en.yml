@@ -85,6 +85,11 @@ user_list:
 
 user_rating:
     title: '%name% - Ratings'
+    coaster: 'Coaster'
+    manufacturer: 'Manufacturer'
+    opening_date: 'Opened'
+    rating: 'Rating'
+    rated_at: 'Rated at'
 
 me:
     title: 'My Profile'

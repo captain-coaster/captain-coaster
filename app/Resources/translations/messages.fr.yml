@@ -85,6 +85,11 @@ user_list:
 
 user_rating:
     title: 'Notes de %name%'
+    coaster: 'Coaster'
+    manufacturer: 'Contructeur'
+    opening_date: 'Ouverture'
+    rating: 'Note'
+    rated_at: 'Noté le'
 
 me:
     title: 'Mon Profil'
