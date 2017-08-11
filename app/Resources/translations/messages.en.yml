@@ -75,6 +75,9 @@ user_list:
     member_from: 'Member since'
     rating: '1 rating|%count% ratings'
 
+user_rating:
+    title: '%name% - Ratings'
+
 me:
     title: 'My Profile'
     parameters: 'Parameters'

@@ -1,7 +1,6 @@
 {% extends "::base.html.twig" %}
 
-{% set title = 'Notes de ' ~ user.displayName %}
-{% set subTitle = '' %}
+{% set title = 'user_rating.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block stylesheets %}

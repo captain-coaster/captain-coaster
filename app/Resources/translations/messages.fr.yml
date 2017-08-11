@@ -75,6 +75,9 @@ user_list:
     member_from: 'Membre depuis le'
     rating: '1 note|%count% notes'
 
+user_rating:
+    title: 'Notes de %name%'
+
 me:
     title: 'Mon Profil'
     parameters: 'Préférences'
