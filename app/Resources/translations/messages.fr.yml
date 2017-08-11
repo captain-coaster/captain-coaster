@@ -103,7 +103,8 @@ review:
     cons: 'Et ses principaux défauts ?'
     comment: 'Envie d''être encore plus précis, raconte-nous ça !'
     send: 'Envoyer mon avis'
-    update: 'Modifier mon avis'
+    update: 'Modifier'
+    delete: 'Supprimer'
     last: 'Derniers avis'
 
 rating:

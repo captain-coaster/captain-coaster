@@ -24,9 +24,6 @@
     <!-- additional css -->
     {% block stylesheets %}{% endblock %}
     <!-- /additional css -->
-    <!-- head js -->
-    <script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
-    <!-- /head js -->
 </head>
 <body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
 <!-- main navbar -->
@@ -68,6 +65,7 @@
 </div>
 <!-- /page container -->
 <!-- Core JS files -->
+<script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
 <!-- /core JS files -->
 <!-- Theme JS files -->

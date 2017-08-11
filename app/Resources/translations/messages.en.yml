@@ -103,7 +103,8 @@ review:
     cons: 'And its main cons ?'
     comment: 'Does it need more precisions ? Tell us !'
     send: 'Send my opinion'
-    update: 'Update my review'
+    update: 'Edit'
+    delete: 'Delete'
     last: 'Latest reviews'
 
 rating:

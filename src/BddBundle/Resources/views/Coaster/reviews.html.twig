@@ -66,7 +66,12 @@
                                     {#class="icon-arrow-down22 text-danger"></i></a></li>#}
                                     <li>
                                         <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                                            {{ 'review.update'|trans() }}
+                                            {{ 'review.update'|trans }}
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a onclick="deleteRating({{ review.coaster.id }}, $(this).closest('li.media'))">
+                                            {{ 'review.delete'|trans }}
                                         </a>
                                     </li>
                                 </ul>
