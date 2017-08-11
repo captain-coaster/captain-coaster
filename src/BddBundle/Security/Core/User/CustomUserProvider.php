@@ -52,6 +52,7 @@ class CustomUserProvider extends BaseClass
         if (null === $user) {
             $user = $this->userManager->createUser();
             $user->$setterId($response->getUsername());
+            $user->setEnabled(true);
         }
 
         $user->$setterToken($response->getAccessToken());
@@ -69,7 +70,7 @@ class CustomUserProvider extends BaseClass
 
         $user->setPassword($response->getUsername());
         $user->setProfilePicture($response->getProfilePicture());
-        $user->setEnabled(true);
+
         $this->userManager->updateUser($user);
 
         return $user;

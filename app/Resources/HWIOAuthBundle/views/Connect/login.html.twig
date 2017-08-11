@@ -33,6 +33,11 @@
                         <div class="icon-object border-indigo-300 text-indigo-300"><i class="icon-lock"></i></div>
                         <h5 class="content-group">{{ 'login.title'|trans }}</h5>
                     </div>
+                    {% if error is defined and error %}
+                        <div class="alert alert-danger alert-bordered">
+                            {{ error }}
+                        </div>
+                    {% endif %}
                     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <ul class="list-inline form-group list-inline-condensed text-center">
                             {#{% for owner in hwi_oauth_resource_owners() %}#}
