@@ -140,9 +140,11 @@ sidebar:
     map: 'Carte des coasters'
     liste: 'Tops Coasters'
     contact: 'Nous contacter'
-    terms: 'Mentions légales'
     logout: 'Se déconnecter'
     login: 'Se connecter'
+
+footer:
+    terms: 'Mentions légales'
 
 login:
     title: 'Se connecter'

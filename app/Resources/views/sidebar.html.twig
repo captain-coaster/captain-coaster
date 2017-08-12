@@ -36,11 +36,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ path('default_terms') }}">
-                            <i class="icon-info22"></i> <span>{{ 'sidebar.terms'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
                         {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                             <a href="{{ path('logout') }}">
                                 <i class="icon-switch2"></i> <span>{{ 'sidebar.logout'|trans }}</span>

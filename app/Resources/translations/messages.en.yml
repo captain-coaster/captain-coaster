@@ -140,9 +140,11 @@ sidebar:
     map: 'Coasters map'
     liste: 'Tops Coasters'
     contact: 'Get in touch'
-    terms: 'Terms of Use'
     logout: 'Logout'
     login: 'Login'
+
+footer:
+    terms: 'Terms of Use'
 
 login:
     title: 'Login to Captain Coaster'
