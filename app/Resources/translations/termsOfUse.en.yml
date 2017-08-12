@@ -1,0 +1,21 @@
+title: 'Terms of Use'
+terms:
+    title: 'Using Captain Coaster'
+    text: '<p>Captain Coaster is a free unofficial community website for Theme Parks and RollerCoasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company. Nobody gets paid to manage it, except with members gratitude.</p>
+           <p>It is opened to anyone : you just need to connect to share your experience on coasters (ratings, tags, reviews). To access these features, you will need a <b>valid</b> Facebook or Google account. <b>Having multiple accounts is definitely forbidden</b> and will lead to a permanent ban.</p>
+           <p>All participative fields are read by team moderators who reserve the right to edit or delete any post. Are forbidden by the French law : violence, racism, threats, insults, homophobia, xenophobia, terrorism apology... Members can be banned temporarily or permanently for any of those reasons.</p>
+           <p>To definitely close your account on Captain Coaster, please <a href="%link_href%">contact us</a>. Your access and personal information will be then deleted by an admin.</p>'
+hosting:
+    title: 'Hosting'
+    text: 'Captain Coaster is hosted by Vultr, whose address is : 14 Cliffwood Avenue, Suite 300, Metropark South, Matawan, NJ 07747. Our servers are located in Paris, France.'
+copyright:
+    title: 'Copyright'
+    text: '<p>The "Captain Coaster" logo belongs to Benjamin R., Captain Coaster has the exclusive rights to use and modify it. Any reproduction without authorization is forbidden.</p>
+           <p>We display images and photos from a lot of sources in our pages. We try as much as we can to credit their author. If we forgot to do so, or if you are the owner of a photo you don’t want to share on Captain Coaster, please <a href="%link_href%">contact us</a> and the media will be removed as soon as possible.</p>'
+cookies:
+    title: 'Cookies'
+    text: '<p>Cookies are small files which are stored on a user''s computer to make your life simpler.</p>
+           <p>Captain Coaster uses a session cookie to remember you when you connect. It avoids you to log each time you visit us. We also use a Google Analytics cookie for statistics. Most browsers have a configuration screen which allows the user to see what cookies have been stored on the computer, and optionally to refuse them.</p>'
+contact:
+    title: 'Contact us'
+    text: '<b>Any questions, or remarks on the Terms of Use ? <a href="%link_href%">Contact us</a>, we don''t bite.</b>'

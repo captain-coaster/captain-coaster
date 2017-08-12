@@ -131,4 +131,15 @@ class DefaultController extends Controller
             ]
         );
     }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/terms", name="default_terms")
+     * @Method({"GET"})
+     */
+    public function termsAction()
+    {
+        return $this->render(
+            'BddBundle:Default:terms.html.twig');
+    }
 }
