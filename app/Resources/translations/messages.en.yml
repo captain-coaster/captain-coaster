@@ -66,6 +66,7 @@ user_profile:
     title: '%name% - Profile'
     ratings: 'Show his ratings'
     listes: 'Show his Top Coasters'
+    map: 'Show his coaster map'
 
 my_ratings:
     title: 'My ratings'
@@ -132,6 +133,7 @@ navbar:
     rating: 'My ratings'
     logout: 'Logout'
     topcoasters: 'My Top Coasters'
+    my_map: 'My map'
 
 sidebar:
     index: 'Home'
