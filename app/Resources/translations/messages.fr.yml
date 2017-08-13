@@ -66,6 +66,7 @@ user_profile:
     title: 'Profil de %name%'
     ratings: 'Voir ses notes'
     listes: 'Voir son Top Coasters'
+    map: 'Voir sa carte'
 
 my_ratings:
     title: 'Mes notes'
@@ -132,6 +133,7 @@ navbar:
     rating: 'Mes Notes'
     logout: 'Se déconnecter'
     topcoasters: 'Mon Top Coasters'
+    my_map: 'Ma carte'
 
 sidebar:
     index: 'Accueil'

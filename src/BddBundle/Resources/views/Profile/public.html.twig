@@ -10,7 +10,7 @@
                 <!-- infos user -->
                 <div class="panel">
                     <div class="panel-body text-center">
-                        <div  class="display-inline-block">
+                        <div class="display-inline-block">
                             <img src="{{ asset(user.profilePicture) }}"
                                  class="img-circle img-responsive"
                                  alt="{{ user.displayName }}"
@@ -29,11 +29,15 @@
                             <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
                         </a>
                         {% if user.listes|length > 0 %}
-                        <a href="{{ path('liste_show', {'id': user.listes.first.id}) }}" class="list-group-item">
-                            <i class="icon-podium"></i>
-                            {{ 'user_profile.listes'|trans }}
-                        </a>
+                            <a href="{{ path('liste_show', {'id': user.listes.first.id}) }}" class="list-group-item">
+                                <i class="icon-podium"></i>
+                                {{ 'user_profile.listes'|trans }}
+                            </a>
                         {% endif %}
+                        <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
+                            <i class="icon-location3"></i>
+                            {{ 'user_profile.map'|trans }}
+                        </a>
                     </div>
                 </div>
                 <!-- /infos user -->

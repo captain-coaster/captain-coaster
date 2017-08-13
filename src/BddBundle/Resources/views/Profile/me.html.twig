@@ -31,6 +31,10 @@
                             <i class="icon-podium"></i>
                             {{ 'navbar.topcoasters'|trans }}
                         </a>
+                        <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
+                            <i class="icon-location3"></i>
+                            {{ 'navbar.my_map'|trans }}
+                        </a>
                     </div>
                 </div>
                 <!-- /infos user -->

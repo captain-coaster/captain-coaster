@@ -16,6 +16,10 @@
                     </ul>
                 </div>
 
+                {% if is_granted('ROLE_USER') %}
+                    <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
+                {% endif %}
+
                 <div class="category-content">
                     <div class="form-group">
                         <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
@@ -37,7 +41,7 @@
                     <div class="form-group">
                         <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
                             <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
-                            {% for filter in filters %}
+                            {% for filter in filters.manufacturer %}
                                 <option value="{{ filter.id }}">{{ filter.name }}</option>
                             {% endfor %}
                         </select>

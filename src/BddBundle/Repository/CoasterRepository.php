@@ -62,10 +62,9 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param array $filters
-     * @param $user User|null
      * @return array
      */
-    public function getFilteredMarkers(array $filters, $user)
+    public function getFilteredMarkers(array $filters)
     {
         $qb = $this
             ->getEntityManager()
@@ -84,7 +83,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('p.longitude is not null')
             ->groupBy('c.park');
 
-        $this->applyFilters($qb, $filters, $user);
+        $this->applyFilters($qb, $filters);
 
         return $qb->getQuery()->getResult();
     }
@@ -92,10 +91,9 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @param Park $park
      * @param array $filters
-     * @param $user User|null
      * @return array
      */
-    public function getCoastersForMap(Park $park, array $filters, $user)
+    public function getCoastersForMap(Park $park, array $filters)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
@@ -109,7 +107,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->where('p.id = :parkId')
             ->setParameter('parkId', $park->getId());
 
-        $this->applyFilters($qb, $filters, $user);
+        $this->applyFilters($qb, $filters);
 
         return $qb->getQuery()->getResult();
     }
@@ -130,7 +128,9 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         // Filter by opening date
         $this->filterOpeningDate($qb, $filters);
         // Filter by not ridden. User based filter.
-        $this->filterByNotRidden($qb, $filters, $user);
+        $this->filterByNotRidden($qb, $filters);
+        // Filter by ridden. User based filter.
+        $this->filterByRidden($qb, $filters);
     }
 
     /**
@@ -176,10 +176,10 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
      * @param array $filters
      * @param User|null $user
      */
-    private function filterByNotRidden(QueryBuilder $qb, array $filters = [], $user = null)
+    private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
         // Filter by not ridden. User based filter.
-        if (array_key_exists('notridden', $filters) && $user instanceof User) {
+        if (array_key_exists('notridden', $filters) && array_key_exists('user', $filters)) {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()
@@ -190,7 +190,30 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
             $qb
                 ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
-                ->setParameter('userid', $user->getId());
+                ->setParameter('userid', $filters['user']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     * @param User|null $user
+     */
+    private function filterByRidden(QueryBuilder $qb, array $filters = [])
+    {
+        // Filter by not ridden. User based filter.
+        if (array_key_exists('ridden', $filters)  && array_key_exists('user', $filters)) {
+            $qb2 = $this
+                ->getEntityManager()
+                ->createQueryBuilder()
+                ->select('c2.id')
+                ->from('BddBundle:RiddenCoaster', 'rc')
+                ->innerJoin('rc.coaster', 'c2', 'WITH', 'rc.coaster = c2.id')
+                ->where('rc.user = :userid');
+
+            $qb
+                ->andWhere($qb->expr()->in('c.id', $qb2->getDQL()))
+                ->setParameter('userid', $filters['user']);
         }
     }
 

@@ -3,9 +3,9 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Park;
+use BddBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
 class MapsController extends Controller
 {
     /**
+     * Map of all coasters, with filters
+     *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/", name="map_index")
      * @Method({"GET"})
      */
@@ -35,6 +38,31 @@ class MapsController extends Controller
     }
 
     /**
+     * Map of coasters ridden by a user
+     *
+     * @param User $user
+     * @return Response
+     *
+     * @Route("/users/{id}", name="map_user")
+     * @Method({"GET"})
+     */
+    public function userMapAction(User $user)
+    {
+        $initialFilters = [
+            "ridden" => "on",
+            "user" => $user->getId(),
+        ];
+
+        return $this->render(
+            '@Bdd/Maps/userMap.html.twig',
+            [
+                'markers' => json_encode($this->getMarkers($initialFilters)),
+                'filters' => $this->getFilters($initialFilters),
+            ]
+        );
+    }
+
+    /**
      * @param Request $request
      * @return JsonResponse
      * @Route("/markers", name="map_markers_ajax", condition="request.isXmlHttpRequest()")
@@ -42,10 +70,9 @@ class MapsController extends Controller
      */
     public function markersAction(Request $request)
     {
-        $user = $this->getUser();
         $filters = $request->get('filters', []);
 
-        return new JsonResponse($this->getMarkers($filters, $user));
+        return new JsonResponse($this->getMarkers($filters));
     }
 
     /**
@@ -57,8 +84,12 @@ class MapsController extends Controller
      */
     public function getCoastersAction(Request $request, Park $park)
     {
-        $user = $this->getUser();
         $filters = $request->get('filters', []);
+
+        $user = $this
+            ->getDoctrine()
+            ->getRepository('BddBundle:User')
+            ->findOneBy(['id' => $filters['user']]);
 
         $coasters = $this->getDoctrine()->getRepository('BddBundle:Coaster')->getCoastersForMap(
             $park,
@@ -71,24 +102,28 @@ class MapsController extends Controller
 
     /**
      * @param array $filters
-     * @param null $user
      * @return array
      */
-    private function getMarkers($filters = [], $user = null)
+    private function getMarkers($filters = [])
     {
         return $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
-            ->getFilteredMarkers($filters, $user);
+            ->getFilteredMarkers($filters);
     }
 
     /**
      *
+     * @param array $initialFilters
      * @return array
      */
-    private function getFilters()
+    private function getFilters(array $initialFilters = [])
     {
-        return $this->getDoctrine()
+        $filters = [];
+
+        $filters['manufacturer'] = $this->getDoctrine()
             ->getRepository('BddBundle:Manufacturer')
             ->findBy([], ["name" => "asc"]);
+
+        return array_merge($filters, $initialFilters);
     }
 }
