@@ -2,7 +2,6 @@
 
 namespace BddBundle\Form\Type;
 
-use BddBundle\Entity\Coaster;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -29,7 +28,6 @@ class CoasterType extends AbstractType
         $builder
             ->add('id', TextType::class, ['disabled' => true])
             ->add('name', TextType::class, ['required' => true])
-            ->add('builtCoaster', BuiltCoasterType::class)
             ->add(
                 'openingDate',
                 DateType::class,
@@ -87,7 +85,7 @@ class CoasterType extends AbstractType
             )
             ->add('vr', CheckboxType::class, ['required' => false])
             ->add('notes', TextareaType::class, ['required' => false])
-            ->add('save', SubmitType::class, array('label' => 'Create/Update'));
+            ->add('save', SubmitType::class, ['label' => 'Create/Update']);
     }
 
     /**
@@ -96,9 +94,9 @@ class CoasterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
-                'data_class' => Coaster::class,
-            )
+            [
+                'inherit_data' => true,
+            ]
         );
     }
 }

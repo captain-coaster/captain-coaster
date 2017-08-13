@@ -24,6 +24,7 @@ class BuiltCoasterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', TextType::class, ['disabled' => true])
             ->add('speed', TextType::class)
             ->add('height', TextType::class)
             ->add('length', TextType::class)
@@ -97,9 +98,9 @@ class BuiltCoasterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(
-            array(
+            [
                 'data_class' => BuiltCoaster::class,
-            )
+            ]
         );
     }
 }

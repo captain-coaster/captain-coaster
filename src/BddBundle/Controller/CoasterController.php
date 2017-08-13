@@ -3,7 +3,8 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
-use BddBundle\Form\Type\CoasterType;
+use BddBundle\Form\Type\CommonCoasterType;
+use BddBundle\Form\Type\RelocationCoasterType;
 use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -55,7 +56,7 @@ class CoasterController extends Controller
         $coaster = new Coaster();
 
         /** @var Form $form */
-        $form = $this->createForm(CoasterType::class, $coaster);
+        $form = $this->createForm(CommonCoasterType::class, $coaster);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -77,7 +78,7 @@ class CoasterController extends Controller
     /**
      * Edit a coaster
      *
-     * @Route("/{slug}/edit", name="bdd_edit_coaster")
+     * @Route("/{slug}/edit", name="coaster_edit")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_CONTRIBUTOR')")
      *
@@ -88,7 +89,41 @@ class CoasterController extends Controller
     public function editAction(Request $request, Coaster $coaster)
     {
         /** @var Form $form */
-        $form = $this->createForm(CoasterType::class, $coaster);
+        $form = $this->createForm(CommonCoasterType::class, $coaster);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($coaster);
+            $em->flush();
+
+            return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
+        }
+
+        return $this->render(
+            'BddBundle:Coaster:create.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Relocate a coaster
+     *
+     * @Route("/reloc", name="coaster_reloc")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_CONTRIBUTOR')")
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function relocAction(Request $request)
+    {
+        $coaster = new Coaster();
+
+        /** @var Form $form */
+        $form = $this->createForm(RelocationCoasterType::class, $coaster);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -127,7 +162,7 @@ class CoasterController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $page,
-            20
+            self::NUMBER_RANKING
         );
 
         $ids = [];
@@ -179,7 +214,7 @@ class CoasterController extends Controller
                 'coaster' => $coaster,
                 'images' => $imageUrls,
                 'reviews' => $reviews,
-                'rating' => $rating
+                'rating' => $rating,
             ]
         );
     }
