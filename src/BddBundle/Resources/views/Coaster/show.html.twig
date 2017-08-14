@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-sm-3">
             {% if coaster.isRateable %}
-                <!-- average rating -->
+                <!-- score -->
                 <div class="panel panel-body">
                     <div class="media no-margin">
                         <div class="media-body">
@@ -36,7 +36,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- /average rating -->
+                <!-- /score -->
                 <!-- star rating -->
                 <div class="panel panel-body border-top-primary text-center">
                     <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
@@ -320,7 +320,7 @@
             })
         });
     </script>
-    {% if coaster.averageRating is not null %}
+    {% if coaster.score is not null %}
         <script type="application/ld+json">
             {
               "@context": "http://schema.org/",
@@ -328,9 +328,9 @@
               "name": "{{ coaster.name }}",
               "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "{{ coaster.averageRating|number_format('2', ',') }}",
+                "ratingValue": "{{ coaster.score|number_format('2', ',') }}",
                 "bestRating": "5",
-                "worstRating": "0,5",
+                "worstRating": "0,2",
                 "reviewCount": "{{ coaster.ratings|length }}"
               }
             }

@@ -52,7 +52,7 @@ coaster_ranking:
     reviews_number: '1 note|%count% notes'
     info:
         title: 'Ici, on ne contente pas de la moyenne de vos notes !'
-        text: 'Découvre notre nouveau classement des coasters, basé sur un algorithme super-complexe de la NASA qui prend en compte l''ensemble des notes de chaque coaster, son placement dans les Top Coasters et quelques ingrédients maison...'
+        text: 'Découvre notre nouveau classement des coasters, basé sur un algorithme utilisé par la NASA, qui prend en compte l''ensemble des notes de chaque coaster, son placement dans les Top Coasters et quelques ingrédients maison...'
 
 map_index:
     title: 'Carte des coasters'
