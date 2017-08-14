@@ -1,6 +1,5 @@
 app:
     name: 'Captain Coaster'
-    description: 'Découvrez, notez et partagez des montagnes russes dans le monde entier. Affichez leurs statistiques et décidez si ce sont de bons ou mauvais coasters : une note, un avis. Ca ne prend que quelques secondes !'
     title:
         default: 'Bienvenue !'
     header:
@@ -8,6 +7,7 @@ app:
 
 index:
     title: 'Bienvenue !'
+    description: 'Guide participatif pour découvrir, noter, et donner ton avis sur toutes les montagnes russes. Trouve les coasters de qualité avec le classement et la carte interactive.'
     header:
         title: 'Découvrez, notez et partagez tous les coasters.'
         info: 'Space Mountain, c''est vraiment Hyper ? Que pensent les connaisseurs d''Oziris au Parc Asterix ? Où sont les Intamin qui ouvriront l''année prochaine ? Pas de panique, toutes les réponses sont ici ! Et pour en profiter, c''est très rapide : <b>2 clics suffisent pour <a href="%link_path%">se connecter</a>.</b> Suivez le Captain !'
@@ -49,6 +49,7 @@ park:
 
 coaster_ranking:
     title: 'Classement des meilleurs coasters'
+    description: 'Classement des meilleurs montagnes russes du monde, par nos utilisateurs. Donne ton avis et met des notes pour participer à ce classement des coasters.'
     reviews_number: '1 note|%count% notes'
     info:
         title: 'Ici, on ne contente pas de la moyenne de vos notes !'
@@ -56,6 +57,7 @@ coaster_ranking:
 
 map_index:
     title: 'Carte des coasters'
+    description: 'Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n''as pas encore ridé sur cette carte interactive.'
     filter:
         title: 'Filtres'
         manufacturer: 'Constructeur'

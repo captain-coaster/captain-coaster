@@ -1,8 +1,17 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'index.title'|trans %}
 {% set openedSidebar = true %}
+
+{% set title = 'index.title'|trans %}
 {% block title %}{{ 'index.header.title'|trans }}{% endblock %}
+
+{% block header %}
+    <meta name="description" content="{{ 'index.description'|trans }}"/>
+    <meta property="og:title" content="{{ 'app.name'|trans }}"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="{{ app.request.uri }}"/>
+    <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}"/>
+{% endblock %}
 
 {% block body %}
     <!-- info alert -->
@@ -193,13 +202,4 @@
             <!-- /latest reviews -->
         </div>
     </div>
-{% endblock %}
-
-{% block stylesheets %}
-    {# to be refact #}
-    <meta name="description" content="{{ 'app.description'|trans }}"/>
-    <meta property="og:title" content="{{ 'app.name'|trans }}"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="{{ app.request.uri }}"/>
-    <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}"/>
 {% endblock %}

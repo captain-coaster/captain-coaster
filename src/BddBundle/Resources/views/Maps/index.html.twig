@@ -2,6 +2,10 @@
 
 {% block title %}{{ 'map_index.title'|trans }}{% endblock %}
 
+{% block header %}
+    <meta name="description" content="{{ 'map_index.description'|trans }}"/>
+{% endblock %}
+
 {% block secondary_sidebar %}
 <div class="sidebar sidebar-secondary sidebar-default">
     {#{{ dump(markers) }}#}

@@ -3,6 +3,9 @@
 {% set title = 'coaster_ranking.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
+{% block header %}
+    <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
+{% endblock %}
 
 {% block body %}
     <!-- info alert -->

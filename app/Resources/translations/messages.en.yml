@@ -1,6 +1,5 @@
 app:
     name: 'Captain Coaster'
-    description: 'Discover rate and share roller coasters of the world. In few seconds, access to their stats and photos, then share your experience on them : rating, pros & cons.'
     title:
         default: 'Welcome !'
     header:
@@ -8,6 +7,7 @@ app:
 
 index:
     title: 'Welcome !'
+    description: 'Participative guide to discover, rate and review roller coasters. Find all best coasters with our ranking and interactive map.'
     header:
         title: 'Discover, rate and share roller coasters'
         info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="%link_path%">to connect</a></b>. Follow the Captain !'
@@ -49,6 +49,7 @@ park:
 
 coaster_ranking:
     title: 'Ranking of the best coasters'
+    description: 'Ranking of the best roller coasters of the world, by our users. Send a review and rate coasters you have ridden to take part of it.'
     reviews_number: '1 review|%count% reviews'
     info:
         title: 'Here at Captain Coaster, we take ranking very seriously.'
@@ -56,6 +57,7 @@ coaster_ranking:
 
 map_index:
     title: 'Coasters Map'
+    description: 'Discover where are the most amazing roller coasters nearby, the next year hits or the B&M you have not ridden yet with this interactive map.'
     filter:
         title: 'Filters'
         manufacturer: 'Manufacturer'

@@ -13,13 +13,10 @@
     <meta name="msapplication-TileColor" content="#FFFFFF" />
     {#<meta name="msapplication-TileImage" content="mstile-144x144.png" />#}
     <link rel="manifest" href="{{ asset('manifest.json') }}">
-    <!-- global css -->
+    {% block header %}{% endblock %}
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
     <link href="{{ asset('build/main.css') }}" rel="stylesheet" />
-    <!-- /global css -->
-    <!-- additional css -->
     {% block stylesheets %}{% endblock %}
-    <!-- /additional css -->
 </head>
 <body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
 <!-- main navbar -->
