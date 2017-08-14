@@ -55,8 +55,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('c.park', 'p')
             ->innerJoin('c.builtCoaster', 'bc')
             ->innerJoin('bc.manufacturer', 'm')
-            ->where('c.averageRating is not null')
-            ->orderBy('c.averageRating', 'desc')
+            ->where('c.score is not null')
+            ->orderBy('c.ranking', 'asc')
             ->getQuery();
     }
 

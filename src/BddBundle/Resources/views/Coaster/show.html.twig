@@ -12,12 +12,18 @@
                 <div class="panel panel-body">
                     <div class="media no-margin">
                         <div class="media-body">
-                            {% if coaster.averageRating %}
+                            {% if coaster.score %}
                                 <h3 class="no-margin text-semibold text-indigo">
-                                    {{ coaster.averageRating|number_format(2, ',') }} / 5
+                                    {{ coaster.score|number_format(2, ',') }} / 5
                                 </h3>
                                 <span class="text-size-mini text-muted">
-                                Moyenne des {{ coaster.totalRatings }} notes</span>
+                                    {{ 'coaster.rating.text'|trans(
+                                        {
+                                            '%count_rating%': coaster.totalRatings,
+                                            '%count_top%': coaster.listed|length
+                                        }
+                                    ) }}
+                                </span>
                             {% else %}
                                 <span class=" text-size-small text-muted">
                                 {{ 'coaster.rating.notenough'|trans }}

@@ -5,6 +5,14 @@
 
 
 {% block body %}
+    <!-- info alert -->
+    {#<div class="alert alert-info alert-styled-left alert-arrow-left alert-component">#}
+        {#<button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span>#}
+        {#</button>#}
+        {#<h6 class="alert-heading text-semibold">{{ 'coaster_ranking.info.title'|trans }}</h6>#}
+        {#<p>{{ 'coaster_ranking.info.text'|trans}}</p>#}
+    {#</div>#}
+    <!-- /info alert -->
     <ul class="media-list content-group">
         {% for coaster in coasters %}
             {% set image = images[coaster.id] %}
@@ -22,9 +30,7 @@
 
                 <div class="media-body">
                     <h2 class="media-heading">
-                        {% if previousAverageRating is not defined or previousAverageRating != coaster.averageRating %}
-                            {{ coasters.getPaginationData.firstItemNumber + loop.index - 1 }}
-                        {% endif %}
+                        {{ coaster.ranking }}
                         -
                         <a style="color:#333;"
                            href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">{{ coaster.name }}
@@ -40,15 +46,14 @@
                         </li>
                     </ul>
                 </div>
-                <div class="media-right text-center">
-                    <h3 class="no-margin text-semibold text-nowrap">{{ coaster.averageRating|number_format(2, ',') }} /
-                        5</h3>
-                    <div class="text-muted">
-                        {{ 'coaster_ranking.reviews_number'|transchoice(coaster.totalRatings) }}
-                    </div>
-                </div>
+                {#<div class="media-right text-center">#}
+                    {#<h3 class="no-margin text-semibold text-nowrap">{{ coaster.averageRating|number_format(2, ',') }} /#}
+                        {#5</h3>#}
+                    {#<div class="text-muted">#}
+                        {#{{ 'coaster_ranking.reviews_number'|transchoice(coaster.totalRatings) }}#}
+                    {#</div>#}
+                {#</div>#}
             </li>
-            {% set previousAverageRating = coaster.averageRating %}
         {% endfor %}
     </ul>
     {{ knp_pagination_render(coasters) }}

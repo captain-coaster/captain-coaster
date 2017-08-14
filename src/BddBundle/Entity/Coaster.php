@@ -79,6 +79,20 @@ class Coaster
     private $totalRatings;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(type="decimal", precision=12, scale=11, nullable=true)
+     */
+    private $score;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $ranking;
+
+    /**
      * @var BuiltCoaster
      *
      * @ORM\ManyToOne(targetEntity="BuiltCoaster", inversedBy="coasters", cascade={"persist"})
@@ -144,6 +158,13 @@ class Coaster
      * @ORM\OneToMany(targetEntity="BddBundle\Entity\RiddenCoaster", mappedBy="coaster")
      */
     private $ratings;
+
+    /**
+     * @var ListeCoaster
+     *
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\ListeCoaster", mappedBy="coaster")
+     */
+    private $listed;
 
     /**
      * @var \DateTime $createdAt
@@ -621,5 +642,87 @@ class Coaster
         }
 
         return null;
+    }
+
+    /**
+     * Set score
+     *
+     * @param string $score
+     *
+     * @return Coaster
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+
+        return $this;
+    }
+
+    /**
+     * Get score
+     *
+     * @return string
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * Set ranking
+     *
+     * @param integer $ranking
+     *
+     * @return Coaster
+     */
+    public function setRanking($ranking)
+    {
+        $this->ranking = $ranking;
+
+        return $this;
+    }
+
+    /**
+     * Get ranking
+     *
+     * @return integer
+     */
+    public function getRanking()
+    {
+        return $this->ranking;
+    }
+
+    /**
+     * Add listed
+     *
+     * @param \BddBundle\Entity\ListeCoaster $listed
+     *
+     * @return Coaster
+     */
+    public function addListed(\BddBundle\Entity\ListeCoaster $listed)
+    {
+        $this->listed[] = $listed;
+
+        return $this;
+    }
+
+    /**
+     * Remove listed
+     *
+     * @param \BddBundle\Entity\ListeCoaster $listed
+     */
+    public function removeListed(\BddBundle\Entity\ListeCoaster $listed)
+    {
+        $this->listed->removeElement($listed);
+    }
+
+    /**
+     * Get listed
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getListed()
+    {
+        return $this->listed;
     }
 }

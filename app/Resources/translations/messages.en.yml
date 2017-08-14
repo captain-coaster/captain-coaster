@@ -24,6 +24,7 @@ coaster:
         mustlogin: 'You must be logged in to rate.'
         login: 'Log in'
         sendreview: 'or click here to write a review'
+        text: 'Score based on %count_rating% ratings and %count_top% tops'
     infos:
         title: '%name% features'
         status: 'Status'
@@ -49,6 +50,9 @@ park:
 coaster_ranking:
     title: 'Ranking of the best coasters'
     reviews_number: '1 review|%count% reviews'
+    info:
+        title: 'Here at Captain Coaster, we take ranking very seriously.'
+        text: 'Check out our new ranking based on super-complex NASA algorithm. It takes into account your ratings for each coaster, its position in your Tops Coasters, and some homemade stuff !'
 
 map_index:
     title: 'Coasters Map'

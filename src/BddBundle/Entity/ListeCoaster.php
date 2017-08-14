@@ -39,7 +39,7 @@ class ListeCoaster
     /**
      * @var Coaster
      *
-     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Coaster")
+     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Coaster", inversedBy="listed")
      * @ORM\JoinColumn(nullable=false)
      */
     private $coaster;
