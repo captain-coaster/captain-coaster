@@ -238,8 +238,7 @@ class CoasterController extends Controller
         $em = $this->get('doctrine.orm.default_entity_manager');
 
         $response = new JsonResponse($em->getRepository('BddBundle:Coaster')->findAllNameAndSlug());
-        $response->setSharedMaxAge(3600);
-        $response->headers->addCacheControlDirective('must-revalidate', true);
+        $response->setMaxAge(3600);
 
         return $response;
     }
