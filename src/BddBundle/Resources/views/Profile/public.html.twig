@@ -32,6 +32,7 @@
                             <a href="{{ path('liste_show', {'id': user.listes.first.id}) }}" class="list-group-item">
                                 <i class="icon-podium"></i>
                                 {{ 'user_profile.listes'|trans }}
+                                <span class="badge bg-teal-400 pull-right">{{ user.mainListe.listeCoasters|length }}</span>
                             </a>
                         {% endif %}
                         <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
