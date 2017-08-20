@@ -81,7 +81,7 @@ class Coaster
     /**
      * @var float
      *
-     * @ORM\Column(type="decimal", precision=12, scale=11, nullable=true)
+     * @ORM\Column(type="decimal", precision=13, scale=11, nullable=true)
      */
     private $score;
 
