@@ -4,6 +4,10 @@
 {% set subTitle = coaster.park.name %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
+{% block header %}
+    <meta name="description" content="{{ coaster.name }} is a {{ coaster.builtCoaster.manufacturer.name }} roller coaster"/>
+{% endblock %}
+
 {% block body %}
     <div class="row">
         <div class="col-sm-3">
@@ -14,7 +18,7 @@
                         <div class="media-body">
                             {% if coaster.score %}
                                 <h3 class="no-margin text-semibold text-indigo">
-                                    {{ coaster.score|number_format(2, ',') }} / 5
+                                    {{ coaster.score|number_format(1, ',') }}
                                 </h3>
                                 <span class="text-size-mini text-muted">
                                     {{ 'coaster.rating.text'|trans(

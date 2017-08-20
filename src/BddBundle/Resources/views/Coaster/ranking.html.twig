@@ -49,13 +49,14 @@
                         </li>
                     </ul>
                 </div>
-                {#<div class="media-right text-center">#}
-                    {#<h3 class="no-margin text-semibold text-nowrap">{{ coaster.averageRating|number_format(2, ',') }} /#}
-                        {#5</h3>#}
-                    {#<div class="text-muted">#}
-                        {#{{ 'coaster_ranking.reviews_number'|transchoice(coaster.totalRatings) }}#}
-                    {#</div>#}
-                {#</div>#}
+                <div class="media-right text-center">
+                    <h3 class="no-margin text-semibold text-nowrap">
+                        {{ coaster.score|number_format(1, ',') }}
+                    </h3>
+                    <div class="text-muted">
+                        {{ 'coaster_ranking.reviews_number'|transchoice(coaster.totalRatings) }}
+                    </div>
+                </div>
             </li>
         {% endfor %}
     </ul>
