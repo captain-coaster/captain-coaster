@@ -184,9 +184,9 @@ notif:
 badge:
     rating1: '1ère note'
     rating100: '100ème note'
-    rating250: '100ème note'
-    rating500: '100ème note'
-    rating1000: '100ème note'
+    rating250: '250ème note'
+    rating500: '500ème note'
+    rating1000: '1000ème note'
     teamkatun: 'Team Katun'
     teamispeed: 'Team iSpeed'
 
