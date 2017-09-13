@@ -52,8 +52,8 @@ coaster_ranking:
     description: 'Ranking of the best roller coasters of the world, by our users. Send a review and rate coasters you have ridden to take part of it.'
     reviews_number: '1 review|%count% reviews'
     info:
-        title: 'Here at Captain Coaster, we take ranking very seriously.'
-        text: 'Check out our new ranking based on super-complex NASA algorithm. It takes into account your ratings for each coaster, its position in your Tops Coasters, and some homemade stuff !'
+        title: 'Check out our new coasters ranking !'
+        text: 'This ranking is based on a new algorithm, more precise and more complex than before. We take into account your ratings for each coaster and its position in your Tops Coasters. Last updated on September 13th.'
 
 map_index:
     title: 'Coasters Map'

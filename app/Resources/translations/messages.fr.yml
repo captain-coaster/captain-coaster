@@ -52,8 +52,8 @@ coaster_ranking:
     description: 'Classement des meilleurs montagnes russes du monde, par nos utilisateurs. Donne ton avis et met des notes pour participer à ce classement des coasters.'
     reviews_number: '1 note|%count% notes'
     info:
-        title: 'Ici, on ne contente pas de la moyenne de vos notes !'
-        text: 'Découvre notre nouveau classement des coasters, basé sur un algorithme utilisé par la NASA, qui prend en compte l''ensemble des notes de chaque coaster, son placement dans les Top Coasters et quelques ingrédients maison...'
+        title: 'Découvre notre nouveau classement des coasters !'
+        text: 'Ce classement est basé sur un algorithme plus précis et plus complexe que la simple moyenne des notes. Nous prenons maintenant en compte les notes et les tops coasters pour arriver à ce résultat. Dernière mise à jour du classement le 13 septembre.'
 
 map_index:
     title: 'Carte des coasters'
