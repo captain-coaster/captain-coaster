@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use BddBundle\Service\RankingService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -90,7 +91,14 @@ class Coaster
      *
      * @ORM\Column(type="integer", nullable=true)
      */
-    private $ranking;
+    private $rank;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $previousRank;
 
     /**
      * @var BuiltCoaster
@@ -623,9 +631,19 @@ class Coaster
      *
      * @return bool
      */
-    public function isRateable()
+    public function isRateable(): bool
     {
         return !in_array($this->getStatus()->getId(), self::NON_RATEABLE_STATUS);
+    }
+
+    /**
+     * Can we rank this coaster ?
+     *
+     * @return bool
+     */
+    public function isRankable(): bool
+    {
+        return (($this->getRatings()->count() + $this->getListed()->count()) >= RankingService::MIN_DUELS);
     }
 
     /**
@@ -669,30 +687,6 @@ class Coaster
     }
 
     /**
-     * Set ranking
-     *
-     * @param integer $ranking
-     *
-     * @return Coaster
-     */
-    public function setRanking($ranking)
-    {
-        $this->ranking = $ranking;
-
-        return $this;
-    }
-
-    /**
-     * Get ranking
-     *
-     * @return integer
-     */
-    public function getRanking()
-    {
-        return $this->ranking;
-    }
-
-    /**
      * Add listed
      *
      * @param \BddBundle\Entity\ListeCoaster $listed
@@ -724,5 +718,53 @@ class Coaster
     public function getListed()
     {
         return $this->listed;
+    }
+
+    /**
+     * Set rank
+     *
+     * @param integer $rank
+     *
+     * @return Coaster
+     */
+    public function setRank($rank)
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+    /**
+     * Get rank
+     *
+     * @return integer
+     */
+    public function getRank()
+    {
+        return $this->rank;
+    }
+
+    /**
+     * Set previousRank
+     *
+     * @param integer $previousRank
+     *
+     * @return Coaster
+     */
+    public function setPreviousRank($previousRank)
+    {
+        $this->previousRank = $previousRank;
+
+        return $this;
+    }
+
+    /**
+     * Get previousRank
+     *
+     * @return integer
+     */
+    public function getPreviousRank()
+    {
+        return $this->previousRank;
     }
 }

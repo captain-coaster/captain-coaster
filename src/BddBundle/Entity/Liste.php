@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Liste
 {
-    CONST MAINT_LISTE = 'topcoasters';
+    CONST MAIN_LISTE = 'topcoasters';
 
     /**
      * @var int

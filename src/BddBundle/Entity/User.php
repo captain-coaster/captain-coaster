@@ -395,19 +395,18 @@ class User extends BaseUser
 
     /**
      * Get main Top Coaster
-     *
-     * @return Liste|null
+     * @return Liste
      */
     public function getMainListe()
     {
         /** @var Liste $liste */
         foreach ($this->listes as $liste) {
-            if ($liste->getType() === Liste::MAINT_LISTE) {
+            if ($liste->getType() === Liste::MAIN_LISTE) {
                 return $liste;
             }
         }
 
-        return null;
+        return new Liste();
     }
 
     /**
