@@ -25,14 +25,15 @@ class ReviewController extends Controller
      * @Route("/{page}", name="review_list", requirements={"page" = "\d+"})
      * @Method({"GET"})
      *
+     * @param Request $request
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAction($page = 1)
+    public function listAction(Request $request, $page = 1)
     {
         $query = $this->getDoctrine()
             ->getRepository('BddBundle:RiddenCoaster')
-            ->findAll();
+            ->findAll($request->getLocale());
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
