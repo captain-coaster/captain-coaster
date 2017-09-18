@@ -72,4 +72,21 @@ class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findAll($locale = 'en')
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->addSelect("CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority")
+            ->addSelect('u')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.review is not null')
+            ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.updatedAt', 'desc')
+            ->setParameter('locale', $locale)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -129,6 +129,10 @@ review:
     update: 'Edit'
     delete: 'Delete'
     last: 'Latest reviews'
+    all: 'See all →'
+
+review_list:
+    title: 'Coaster reviews'
 
 rating:
     last: 'Lastest ratings'
@@ -147,6 +151,7 @@ sidebar:
     users: 'User''s ranking'
     map: 'Coasters map'
     liste: 'Tops Coasters'
+    review: 'Coaster Reviews'
     contact: 'Get in touch'
     logout: 'Logout'
     login: 'Login'

@@ -20,6 +20,34 @@ use Symfony\Component\HttpFoundation\Request;
 class ReviewController extends Controller
 {
     /**
+     * Show a list of reviews
+     *
+     * @Route("/{page}", name="review_list", requirements={"page" = "\d+"})
+     * @Method({"GET"})
+     *
+     * @param int $page
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function listAction($page = 1)
+    {
+        $query = $this->getDoctrine()
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->findAll();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            10
+        );
+
+        return $this->render(
+            '@Bdd/Review/list.html.twig',
+            ['reviews' => $pagination]
+        );
+    }
+
+    /**
      * @param Request $request
      * @param Coaster $coaster
      * @return \Symfony\Component\HttpFoundation\Response
@@ -57,10 +85,10 @@ class ReviewController extends Controller
 
         return $this->render(
             'BddBundle:Review:form.html.twig',
-            array(
+            [
                 'form' => $form->createView(),
                 'coaster' => $coaster,
-            )
+            ]
         );
     }
 }

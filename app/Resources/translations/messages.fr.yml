@@ -129,6 +129,10 @@ review:
     update: 'Modifier'
     delete: 'Supprimer'
     last: 'Derniers avis'
+    all: 'Voir plus →'
+
+review_list:
+    title: 'Tous les avis'
 
 rating:
     last: 'Dernières notes'
@@ -147,6 +151,7 @@ sidebar:
     users: 'Palmarès des membres'
     map: 'Carte des coasters'
     liste: 'Tops Coasters'
+    review: 'Coaster Reviews'
     contact: 'Nous contacter'
     logout: 'Se déconnecter'
     login: 'Se connecter'
