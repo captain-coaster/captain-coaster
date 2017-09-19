@@ -27,17 +27,48 @@ class RankingCommand extends ContainerAwareCommand
 
         if ($input->getOption('debug')) {
             foreach ($result as $coaster) {
-                $message = sprintf(
-                    '%s-%s (%s) %s updated.',
-                    $coaster[1],
-                    $coaster[0],
-                    $coaster[2],
-                    $coaster[3]
-                );
-                $output->writeln('<info>'.$message.'</info>');
+                $output->writeln($this->formatMessage($coaster));
             }
         }
 
         $output->writeln(count($result).' coasters updated.');
+    }
+
+    private function formatMessage(array $coaster):string
+    {
+        if ($coaster[1] < 20) {
+            $message = sprintf(
+                '<error>%s</error>-%s (%s) %s updated.',
+                $coaster[1],
+                $coaster[0],
+                $coaster[2],
+                $coaster[3]
+            );
+        } elseif (is_null($coaster[2])) {
+            $message = sprintf(
+                '%s-%s (<error>new</error>) %s updated.',
+                $coaster[1],
+                $coaster[0],
+                $coaster[3]
+            );
+        } elseif (abs($coaster[1] - $coaster[2]) > 0.1*$coaster[2]) {
+            $message = sprintf(
+                '%s-%s (<error>%s</error>) %s updated.',
+                $coaster[1],
+                $coaster[0],
+                $coaster[2],
+                $coaster[3]
+            );
+        } else {
+            $message = sprintf(
+                '%s-%s (%s) %s updated.',
+                $coaster[1],
+                $coaster[0],
+                $coaster[2],
+                $coaster[3]
+            );
+        }
+
+        return $message;
     }
 }
