@@ -21,10 +21,10 @@ class MapsController extends Controller
     /**
      * Map of all coasters, with filters
      *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @Route("/", name="map_index")
      * @Method({"GET"})
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function indexAction()
     {

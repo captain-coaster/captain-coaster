@@ -115,7 +115,6 @@
         // Adds markers to the map.
         for (var i = 0; i < markers.length; i++) {
             var park = markers[i];
-            //console.log(beach)
             var marker = new google.maps.Marker({
                 position: {lat: park['latitude'], lng: park['longitude']},
                 map: map,
@@ -149,7 +148,6 @@
     }
 
     function filterData() {
-        console.log('filtering');
         $.ajax({
             url: '/fr/map/markers',
             type: "GET",

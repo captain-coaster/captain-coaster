@@ -174,7 +174,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @param QueryBuilder $qb
      * @param array $filters
-     * @param User|null $user
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
@@ -197,7 +196,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @param QueryBuilder $qb
      * @param array $filters
-     * @param User|null $user
      */
     private function filterByRidden(QueryBuilder $qb, array $filters = [])
     {
