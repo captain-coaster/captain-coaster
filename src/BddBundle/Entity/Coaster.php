@@ -158,7 +158,7 @@ class Coaster
      *
      * @ORM\Column(type="text", nullable=true)
      */
-    private $notes = false;
+    private $notes;
 
     /**
      * @var RiddenCoaster

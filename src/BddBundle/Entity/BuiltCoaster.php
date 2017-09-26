@@ -102,6 +102,12 @@ class BuiltCoaster
      */
     private $duration;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $isKiddie = false;
 
     /**
      * Constructor
@@ -109,6 +115,8 @@ class BuiltCoaster
     public function __construct()
     {
         $this->coasters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->launchs = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->types = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -244,11 +252,11 @@ class BuiltCoaster
     /**
      * Add coaster
      *
-     * @param \BddBundle\Entity\Coaster $coaster
+     * @param Coaster $coaster
      *
      * @return BuiltCoaster
      */
-    public function addCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function addCoaster(Coaster $coaster)
     {
         $this->coasters[] = $coaster;
 
@@ -258,9 +266,9 @@ class BuiltCoaster
     /**
      * Remove coaster
      *
-     * @param \BddBundle\Entity\Coaster $coaster
+     * @param Coaster $coaster
      */
-    public function removeCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function removeCoaster(Coaster $coaster)
     {
         $this->coasters->removeElement($coaster);
     }
@@ -278,11 +286,11 @@ class BuiltCoaster
     /**
      * Set manufacturer
      *
-     * @param \BddBundle\Entity\Manufacturer $manufacturer
+     * @param Manufacturer $manufacturer
      *
      * @return BuiltCoaster
      */
-    public function setManufacturer(\BddBundle\Entity\Manufacturer $manufacturer)
+    public function setManufacturer(Manufacturer $manufacturer)
     {
         $this->manufacturer = $manufacturer;
 
@@ -292,7 +300,7 @@ class BuiltCoaster
     /**
      * Get manufacturer
      *
-     * @return \BddBundle\Entity\Manufacturer
+     * @return Manufacturer
      */
     public function getManufacturer()
     {
@@ -302,11 +310,11 @@ class BuiltCoaster
     /**
      * Set restraint
      *
-     * @param \BddBundle\Entity\Restraint $restraint
+     * @param Restraint $restraint
      *
      * @return BuiltCoaster
      */
-    public function setRestraint(\BddBundle\Entity\Restraint $restraint)
+    public function setRestraint(Restraint $restraint)
     {
         $this->restraint = $restraint;
 
@@ -316,7 +324,7 @@ class BuiltCoaster
     /**
      * Get restraint
      *
-     * @return \BddBundle\Entity\Restraint
+     * @return Restraint
      */
     public function getRestraint()
     {
@@ -326,11 +334,11 @@ class BuiltCoaster
     /**
      * Add launch
      *
-     * @param \BddBundle\Entity\Launch $launch
+     * @param Launch $launch
      *
      * @return BuiltCoaster
      */
-    public function addLaunch(\BddBundle\Entity\Launch $launch)
+    public function addLaunch(Launch $launch)
     {
         $this->launchs[] = $launch;
 
@@ -340,9 +348,9 @@ class BuiltCoaster
     /**
      * Remove launch
      *
-     * @param \BddBundle\Entity\Launch $launch
+     * @param Launch $launch
      */
-    public function removeLaunch(\BddBundle\Entity\Launch $launch)
+    public function removeLaunch(Launch $launch)
     {
         $this->launchs->removeElement($launch);
     }
@@ -360,11 +368,11 @@ class BuiltCoaster
     /**
      * Add type
      *
-     * @param \BddBundle\Entity\Type $type
+     * @param Type $type
      *
      * @return BuiltCoaster
      */
-    public function addType(\BddBundle\Entity\Type $type)
+    public function addType(Type $type)
     {
         $this->types[] = $type;
 
@@ -374,9 +382,9 @@ class BuiltCoaster
     /**
      * Remove type
      *
-     * @param \BddBundle\Entity\Type $type
+     * @param Type $type
      */
-    public function removeType(\BddBundle\Entity\Type $type)
+    public function removeType(Type $type)
     {
         $this->types->removeElement($type);
     }
@@ -413,5 +421,30 @@ class BuiltCoaster
     public function getDuration()
     {
         return $this->duration;
+    }
+
+
+    /**
+     * Set isKiddie
+     *
+     * @param boolean $isKiddie
+     *
+     * @return BuiltCoaster
+     */
+    public function setIsKiddie($isKiddie)
+    {
+        $this->isKiddie = $isKiddie;
+
+        return $this;
+    }
+
+    /**
+     * Get isKiddie
+     *
+     * @return boolean
+     */
+    public function getIsKiddie()
+    {
+        return $this->isKiddie;
     }
 }
