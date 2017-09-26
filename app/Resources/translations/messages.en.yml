@@ -62,6 +62,7 @@ map_index:
         title: 'Filters'
         manufacturer: 'Manufacturer'
         status: 'Operating'
+        kiddie: 'Hide kiddies'
         notridden: 'Not ridden yet'
         score: 'Score'
         atleast: 'at least %count%'

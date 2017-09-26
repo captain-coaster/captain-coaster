@@ -131,6 +131,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->filterByNotRidden($qb, $filters);
         // Filter by ridden. User based filter.
         $this->filterByRidden($qb, $filters);
+        // Filter kiddie.
+        $this->filterKiddie($qb, $filters);
     }
 
     /**
@@ -226,6 +228,18 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             $qb
                 ->andWhere('c.openingDate like :date')
                 ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterKiddie(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('kiddie', $filters) && $filters['kiddie'] !== '') {
+            $qb
+                ->andWhere('bc.isKiddie = 0');
         }
     }
 }

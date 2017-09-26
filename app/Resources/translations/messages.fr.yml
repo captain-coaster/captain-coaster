@@ -62,6 +62,7 @@ map_index:
         title: 'Filtres'
         manufacturer: 'Constructeur'
         status: 'En fonctionnement'
+        kiddie: 'Masquer les kiddies'
         notridden: 'Pas encore ridé'
         score: 'Score'
         atleast: 'au moins %count%'
