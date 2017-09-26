@@ -63,8 +63,8 @@ map_index:
         manufacturer: 'Constructeur'
         status: 'En fonctionnement'
         notridden: 'Pas encore ridé'
-        averageRating: 'Note moyenne'
-        atleast: 'au moins'
+        score: 'Score'
+        atleast: 'au moins %count%'
         openingDate: 'Date d''ouverture'
     results: 'Résultats'
 

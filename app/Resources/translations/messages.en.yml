@@ -63,8 +63,8 @@ map_index:
         manufacturer: 'Manufacturer'
         status: 'Operating'
         notridden: 'Not ridden yet'
-        averageRating: 'Average rating'
-        atleast: 'at least'
+        score: 'Score'
+        atleast: 'at least %count%'
         openingDate: 'Opening date'
     results: 'Results'
 

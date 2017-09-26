@@ -124,7 +124,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         // Filter by opened status
         $this->filterOpenedStatus($qb, $filters);
         // Filter by average rating
-        $this->filterAverageRating($qb, $filters);
+        $this->filterScore($qb, $filters);
         // Filter by opening date
         $this->filterOpeningDate($qb, $filters);
         // Filter by not ridden. User based filter.
@@ -161,13 +161,13 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
      * @param QueryBuilder $qb
      * @param array $filters
      */
-    private function filterAverageRating(QueryBuilder $qb, array $filters = [])
+    private function filterScore(QueryBuilder $qb, array $filters = [])
     {
         // Filter by average rating
-        if (array_key_exists('averageRating', $filters) && $filters['averageRating'] !== '') {
+        if (array_key_exists('score', $filters) && $filters['score'] !== '') {
             $qb
-                ->andWhere('c.averageRating >= :rating')
-                ->setParameter('rating', $filters['averageRating']);
+                ->andWhere('c.score >= :rating')
+                ->setParameter('rating', $filters['score']);
         }
     }
 
