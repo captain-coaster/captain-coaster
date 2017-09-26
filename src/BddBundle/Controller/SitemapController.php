@@ -17,7 +17,7 @@ class SitemapController extends Controller
         $urls = $cache->getItem('sitemap.xml');
         if (!$urls->isHit()) {
             $urls->set($this->getUrls());
-            $urls->expiresAfter(\DateInterval::createFromDateString('4 hours'));
+            $urls->expiresAfter(\DateInterval::createFromDateString('12 hours'));
             $cache->save($urls);
         }
 
