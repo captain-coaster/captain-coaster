@@ -8,16 +8,24 @@
     <div class="row">
         <div class="col-sm-3">
             <!-- park stats -->
-            <div class="panel panel-body panel-body-accent">
-                <div class="media no-margin">
-                    <div class="media-left media-middle">
-                        <i class="icon-road icon-3x text-success-400"></i>
-                    </div>
-
-                    <div class="media-body text-right">
-                        <h3 class="no-margin text-semibold">{{ park.openedCoasters|length }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">
+            <div class="panel panel-body">
+                <div class="row text-center">
+                    <div class="col-xs-6">
+                        <p><i class="icon-location3 icon-2x display-inline-block text-info"></i></p>
+                        <h5 class="text-semibold no-margin">
+                            {{ park.openedCoasters|length }}
+                        </h5>
+                        <span class="text-muted text-size-small">
                             {{ 'park.opened_coasters'|transchoice(park.openedCoasters|length) }}
+                        </span>
+                    </div>
+                    <div class="col-xs-6">
+                        <p><i class="icon-puzzle2 icon-2x display-inline-block text-warning"></i></p>
+                        <h5 class="text-semibold no-margin">
+                            {{ park.kiddies|length }}
+                        </h5>
+                        <span class="text-muted text-size-small">
+                            {{ 'park.kiddies'|transchoice(park.kiddies|length) }}
                         </span>
                     </div>
                 </div>

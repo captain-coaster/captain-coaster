@@ -46,6 +46,7 @@ coaster:
 
 park:
     opened_coasters: 'coaster ouvert|coasters ouverts'
+    kiddies: 'kiddie|kiddies'
 
 coaster_ranking:
     title: 'Classement des meilleurs coasters'

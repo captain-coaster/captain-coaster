@@ -342,4 +342,11 @@ class Park
             return $coaster->getStatus()->getId() == 1;
         });
     }
+
+    public function getKiddies()
+    {
+        return $this->getCoasters()->filter(function(Coaster $coaster) {
+            return $coaster->getBuiltCoaster()->getIsKiddie() == 1;
+        });
+    }
 }
