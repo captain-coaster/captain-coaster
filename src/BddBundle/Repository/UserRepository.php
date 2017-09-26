@@ -20,7 +20,6 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
             ->groupBy('r.user')
             ->orderBy('total_ratings', 'desc')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 }

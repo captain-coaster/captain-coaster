@@ -3,6 +3,7 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -15,6 +16,9 @@ class UserController extends Controller
 {
     /**
      * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"})
+     * @param User $user
+     * @param int $page
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function listRatingsAction(User $user, $page = 1)
     {
@@ -41,28 +45,38 @@ class UserController extends Controller
 
         return $this->render(
             'BddBundle:User:list_ratings.html.twig',
-            array(
+            [
                 'ratings' => $pagination,
                 'user' => $user,
-            )
+            ]
         );
     }
 
     /**
-     * @Route("/", name="user_list", requirements={"page" = "\d+"})
+     * @Route("/{page}", name="user_list", requirements={"page" = "\d+"})
+     * @Method({"GET"})
+     * @param int $page
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAction()
+    public function listAction($page = 1)
     {
         $users = $this
             ->getDoctrine()
             ->getRepository('BddBundle:User')
             ->getUserRanking();
 
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $users,
+            $page,
+            21
+        );
+
         return $this->render(
             'BddBundle:User:list.html.twig',
-            array(
-                'users' => $users,
-            )
+            [
+                'users' => $pagination,
+            ]
         );
     }
 }
