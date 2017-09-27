@@ -332,9 +332,9 @@
               "name": "{{ coaster.name }}",
               "aggregateRating": {
                 "@type": "AggregateRating",
-                "ratingValue": "{{ coaster.score|number_format('2', ',') }}",
-                "bestRating": "5",
-                "worstRating": "0,2",
+                "ratingValue": "{{ coaster.score|number_format('1', ',') }}",
+                "bestRating": "100",
+                "worstRating": "0",
                 "reviewCount": "{{ coaster.ratings|length }}"
               }
             }
