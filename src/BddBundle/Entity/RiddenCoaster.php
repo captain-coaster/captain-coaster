@@ -44,7 +44,7 @@ class RiddenCoaster
     /**
      * @var float
      *
-     * @ORM\Column(name="rating", type="float", precision=2, scale=1, nullable=true)
+     * @ORM\Column(name="rating", type="float", precision=2, scale=1, nullable=false)
      * @Assert\Choice({0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5})
      */
     private $value;
