@@ -10,15 +10,4 @@ namespace BddBundle\Repository;
  */
 class BuiltCoasterRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getStats()
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1)')
-            ->addSelect('sum(bc.length)')
-            ->addSelect('sum(bc.inversionsNumber)')
-            ->from('BddBundle:BuiltCoaster', 'bc')
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
 }

@@ -10,4 +10,16 @@ namespace BddBundle\Repository;
  */
 class ListeRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return mixed
+     */
+    public function countAll()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:Liste', 'r')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

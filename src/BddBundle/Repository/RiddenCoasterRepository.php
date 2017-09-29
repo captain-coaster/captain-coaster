@@ -10,16 +10,36 @@ namespace BddBundle\Repository;
  */
 class RiddenCoasterRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return mixed
+     */
     public function countAll()
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('count(1)')
+            ->select('count(1) as nb_rating')
             ->from('BddBundle:RiddenCoaster', 'r')
             ->getQuery()
             ->getSingleScalarResult();
     }
 
+    /**
+     * @return mixed
+     */
+    public function countReviews()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(r.review) as nb_review')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param \DateTime $date
+     * @return mixed
+     */
     public function countNew(\DateTime $date)
     {
         return $this->getEntityManager()

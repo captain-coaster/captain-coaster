@@ -14,8 +14,8 @@ index:
     stats:
         coasters: 'coasters'
         ratings: 'notes'
-        rails: 'km de rails'
-        inversions: 'inversions'
+        reviews: 'coaster reviews'
+        listes: 'top coasters'
 
 coaster:
     rating:
@@ -149,6 +149,7 @@ navbar:
 
 sidebar:
     index: 'Accueil'
+    search: 'Rechercher un coaster'
     coastersRanking: 'Meilleurs coasters'
     users: 'Palmarès des membres'
     map: 'Carte des coasters'

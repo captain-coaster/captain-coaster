@@ -33,15 +33,15 @@
                 <div class="row text-center">
                     <div class="col-xs-3">
                         <p><i class="icon-road icon-2x display-inline-block text-info"></i></p>
-                        <h5 class="text-semibold no-margin">{{ stats.1 }}</h5>
+                        <h5 class="text-semibold no-margin">{{ stats.nb_coasters }}</h5>
                         <span class="text-muted text-size-small">{{ 'index.stats.coasters'|trans }}</span>
                     </div>
                     <div class="col-xs-3">
                         <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
                         <h5 class="text-semibold no-margin">
-                            {{ ratingNumber }}
-                            {% if newRatingNumber > 0 %}
-                                <span class="badge bg-warning-400">+{{ newRatingNumber }}</span>
+                            {{ stats.nb_ratings }}
+                            {% if stats.nb_new_ratings > 0 %}
+                                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
                             {% endif %}
                         </h5>
 
@@ -49,15 +49,20 @@
 
                     </div>
                     <div class="col-xs-3">
-                        <p><i class="icon-rulers icon-2x display-inline-block text-warning"></i></p>
-                        <h5 class="text-semibold no-margin">{{ (stats.2 / 1000)|round }}</h5>
-                        <span class="text-muted text-size-small">{{ 'index.stats.rails'|trans }}</span>
+                        <p><i class="icon-spinner11 icon-2x display-inline-block text-success"></i></p>
+                        <h5 class="text-semibold no-margin">
+                            <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
+                        </h5>
+                        <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
                     </div>
                     <div class="col-xs-3">
-                        <p><i class="icon-spinner11 icon-2x display-inline-block text-success"></i></p>
-                        <h5 class="text-semibold no-margin">{{ stats.3 }}</h5>
-                        <span class="text-muted text-size-small">{{ 'index.stats.inversions'|trans }}</span>
+                        <p><i class="icon-rulers icon-2x display-inline-block text-warning"></i></p>
+                        <h5 class="text-semibold no-margin">
+                            <a href="{{ path('liste_list') }}">{{ stats.nb_listes }}</a>
+                        </h5>
+                        <span class="text-muted text-size-small">{{ 'index.stats.listes'|trans }}</span>
                     </div>
+
                 </div>
             </div>
         </div>

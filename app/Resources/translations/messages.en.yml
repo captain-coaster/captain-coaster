@@ -14,8 +14,8 @@ index:
     stats:
         coasters: 'coasters'
         ratings: 'ratings'
-        rails: 'km of track'
-        inversions: 'inversions'
+        reviews: 'reviews'
+        listes: 'top coasters'
 
 coaster:
     rating:

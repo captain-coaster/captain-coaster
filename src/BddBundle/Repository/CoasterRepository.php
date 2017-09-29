@@ -11,6 +11,20 @@ use Doctrine\ORM\QueryBuilder;
  */
 class CoasterRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @return mixed
+     */
+    public function countAll()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:Coaster', 'c')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * @param string $term
      * @return array

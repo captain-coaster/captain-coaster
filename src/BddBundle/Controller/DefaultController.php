@@ -55,22 +55,8 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:Coaster')
             ->findOneBy(['id' => $coasterId]);
 
-        $stats = $this
-            ->getDoctrine()
-            ->getRepository('BddBundle:BuiltCoaster')
-            ->getStats();
-
-        $ratingNumber = $this
-            ->getDoctrine()
-            ->getRepository('BddBundle:RiddenCoaster')
-            ->countAll();
-
-        $date = new \DateTime();
-        $date->sub(new \DateInterval('P1D'));
-        $newRatingNumber = $this
-            ->getDoctrine()
-            ->getRepository('BddBundle:RiddenCoaster')
-            ->countNew($date);
+        $stats = $this->get('BddBundle\Service\StatService')
+            ->getIndexStats();
 
         $reviews = $this
             ->getDoctrine()
@@ -84,8 +70,6 @@ class DefaultController extends Controller
                 'images' => $images,
                 'coaster' => $coaster,
                 'stats' => $stats,
-                'ratingNumber' => $ratingNumber,
-                'newRatingNumber' => $newRatingNumber,
                 'reviews' => $reviews,
             ]
         );
@@ -140,6 +124,7 @@ class DefaultController extends Controller
     public function termsAction()
     {
         return $this->render(
-            'BddBundle:Default:terms.html.twig');
+            'BddBundle:Default:terms.html.twig'
+        );
     }
 }
