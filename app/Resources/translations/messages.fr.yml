@@ -18,6 +18,10 @@ index:
         listes: 'top coasters'
 
 coaster:
+    score:
+        scoreof: 'Score de'
+        ranked: 'Classé'
+        intheworld: 'mondial'
     rating:
         action: 'Note ce coaster !'
         notenough: 'Pas assez de note sur ce coaster !'

@@ -48,6 +48,23 @@
                             </a>
                         </li>
                     </ul>
+                    {% if coaster.previousRank is empty %}
+                        <span class="label label-warning">new</span>
+                    {% elseif coaster.previousRank < coaster.rank %}
+                        <span class="label label-danger">
+                            <i class="icon-arrow-down5"></i>
+                            - {{ (coaster.rank - coaster.previousRank)|abs }}
+                        </span>
+                    {% elseif coaster.previousRank > coaster.rank %}
+                        <span class="label label-success">
+                            <i class="icon-arrow-up5"></i>
+                            + {{ (coaster.rank - coaster.previousRank)|abs }}
+                        </span>
+                    {% elseif coaster.previousRank == coaster.rank %}
+                        <span class="label label-primary">
+                            <i class="icon-arrow-right5"></i> =
+                        </span>
+                    {% endif %}
                 </div>
                 <div class="media-right text-center">
                     <h3 class="no-margin text-semibold text-nowrap">
