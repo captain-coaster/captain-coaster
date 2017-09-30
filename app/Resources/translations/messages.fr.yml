@@ -58,7 +58,7 @@ coaster_ranking:
     reviews_number: '1 note|%count% notes'
     info:
         title: 'Découvre notre nouveau classement des coasters !'
-        text: 'Ce classement est basé sur un algorithme plus précis et plus complexe que la simple moyenne des notes. Nous prenons maintenant en compte les notes et les tops coasters pour arriver à ce résultat. Dernière mise à jour du classement le 13 septembre.'
+        text: 'Ce classement est basé sur un algorithme plus précis et plus complexe que la simple moyenne des notes. Nous prenons maintenant en compte les notes et les tops coasters pour arriver à ce résultat. Mise à jour du classement chaque mois.'
 
 map_index:
     title: 'Carte des coasters'
@@ -192,6 +192,8 @@ notif:
     empty: 'Rien de spécial pour le moment, va plutôt rider !'
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "%name%" !'
+    ranking:
+        message: 'Le classement des meilleurs coasters vient d''être mis à jour. Va voir le nouveau top 3 mondial.'
 
 badge:
     rating1: '1ère note'

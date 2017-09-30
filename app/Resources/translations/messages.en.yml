@@ -58,7 +58,7 @@ coaster_ranking:
     reviews_number: '1 review|%count% reviews'
     info:
         title: 'Check out our new coasters ranking !'
-        text: 'This ranking is based on a new algorithm, more precise and more complex than before. We take into account your ratings for each coaster and its position in your Tops Coasters. Last updated on September 13th.'
+        text: 'This ranking is based on a new algorithm, more precise and more complex than before. We take into account your ratings for each coaster and its position in your Tops Coasters. Updated every month.'
 
 map_index:
     title: 'Coasters Map'
@@ -153,6 +153,7 @@ navbar:
 
 sidebar:
     index: 'Home'
+    search: 'Search a coaster'
     coastersRanking: 'Best coasters'
     users: 'User''s ranking'
     map: 'Coasters map'
@@ -191,6 +192,9 @@ notif:
     empty: 'Nothing special right now, go ride some coasters !'
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
+    ranking:
+        message: 'Ranking of the world''s best coasters just got updated. Check out the new top 3.'
+
 
 badge:
     rating1: '1st rating'

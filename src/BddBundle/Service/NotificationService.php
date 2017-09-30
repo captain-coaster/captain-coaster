@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Router;
 class NotificationService
 {
     CONST NOTIF_BADGE = 'badge';
+    CONST NOTIF_RANKING = 'ranking';
 
     /**
      * @var EntityManager
@@ -59,6 +60,8 @@ class NotificationService
     {
         if ($notif->getType() == self::NOTIF_BADGE) {
             return $this->router->generate('me');
+        } elseif ($notif->getType() == self::NOTIF_RANKING) {
+            return $this->router->generate('coaster_ranking');
         }
 
         return $this->router->generate('root');
