@@ -24,7 +24,9 @@
                                 <h3 class="no-margin text-semibold text-right" style="color: hsl({{ hue }},50%,50%)">
                                     {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
                                 </h3>
-                                <a href="{{ path('coaster_ranking') }}" class="text-muted">
+                                {# @todo optimize this #}
+                                {% set page = (coaster.rank / 20)|round(0, 'ceil') %}
+                                <a href="{{ path('coaster_ranking', {'page': page}) }}" class="text-muted">
                                     {{ 'coaster.score.ranked'|trans }}
                                     <span class="badge badge-flat border-grey text-grey-600">#{{ coaster.rank }}</span>
                                     {{ 'coaster.score.intheworld'|trans }}
