@@ -24,20 +24,28 @@ class ListeController extends Controller
     /**
      * Display all lists
      *
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @Route("/", name="liste_list")
      * @Method({"GET"})
      */
-    public function listAction()
+    public function listAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $listes = $em->getRepository('BddBundle:Liste')->findBy([], ['updatedAt' => 'desc']);
+        $query = $em->getRepository('BddBundle:Liste')->findAllByUpdatedDate();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->get('page', 1),
+            9,
+            ['wrap-queries' => true]
+        );
 
         return $this->render(
             'BddBundle:Liste:list.html.twig',
             [
-                'listes' => $listes,
+                'listes' => $pagination,
             ]
         );
     }

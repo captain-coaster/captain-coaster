@@ -5,7 +5,7 @@
 
 {% block body %}
     <div class="row">
-        {% for liste in listes if liste.listeCoasters|length > 2 %}
+        {% for liste in listes %}
             <div class="col-lg-4 col-sm-6">
                 <div class="thumbnail">
                     <div class="caption">
@@ -56,5 +56,6 @@
             </div>
         {% endfor %}
     </div>
+    {{ knp_pagination_render(listes) }}
 {% endblock %}
 
