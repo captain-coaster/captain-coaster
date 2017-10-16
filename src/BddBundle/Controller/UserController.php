@@ -22,14 +22,10 @@ class UserController extends Controller
      */
     public function listRatingsAction(User $user, $page = 1)
     {
-        $dql = 'SELECT r FROM BddBundle:RiddenCoaster r 
-                JOIN r.user u 
-                JOIN r.coaster c 
-                JOIN c.builtCoaster bc 
-                JOIN bc.manufacturer m
-                WHERE u.id = ?1';
-        $query = $this->get('doctrine.orm.entity_manager')->createQuery($dql);
-        $query->setParameter(1, $user->getId());
+        $query = $this
+            ->get('doctrine.orm.entity_manager')
+            ->getRepository('BddBundle:User')
+            ->getUserRankings($user->getId());
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(

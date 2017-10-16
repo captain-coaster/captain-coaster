@@ -10,6 +10,9 @@ namespace BddBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @return \Doctrine\ORM\Query
+     */
     public function getUserRanking()
     {
         return $this->getEntityManager()
@@ -20,6 +23,24 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
             ->groupBy('r.user')
             ->orderBy('total_ratings', 'desc')
+            ->getQuery();
+    }
+
+    /**
+     * @param int $userId
+     * @return \Doctrine\ORM\Query
+     */
+    public function getUserRankings(int $userId)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r, c, bc')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->innerJoin('r.user', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.builtCoaster', 'bc')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
             ->getQuery();
     }
 }
