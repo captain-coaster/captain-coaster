@@ -30,7 +30,7 @@ class RatingService
     }
 
     /**
-     * Updates averageRating for a coaster
+     * Update averageRating for a coaster
      *
      * @param Coaster $coaster
      * @return string
@@ -40,21 +40,21 @@ class RatingService
         /** @var RiddenCoaster[] $ratings */
         $ratings = $coaster->getRatings();
 
-        if (count($ratings) < self::MIN_RATINGS) {
-            return $coaster->getAverageRating();
+        $averageRating = null;
+        $totalRatings = count($ratings);
+
+        // Update average value only if we have enough ratings
+        if (count($ratings) >= self::MIN_RATINGS) {
+            $sum = 0;
+            foreach ($ratings as $rating) {
+                $sum += (float)$rating->getValue();
+            }
+
+            $averageRating = number_format(round(($sum / $totalRatings), 3), 3);
         }
 
-        $total = 0;
-        foreach ($ratings as $rating) {
-            $total += (float) $rating->getValue();
-        }
-
-        $score = $total / count($ratings);
-        $score = round($score, 3);
-        $score = number_format($score, 3);
-
-        $coaster->setAverageRating($score);
-        $coaster->setTotalRatings(count($ratings));
+        $coaster->setAverageRating($averageRating);
+        $coaster->setTotalRatings($totalRatings);
         $this->em->persist($coaster);
         $this->em->flush();
 
