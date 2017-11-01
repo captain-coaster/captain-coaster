@@ -81,6 +81,10 @@ class ReviewController extends Controller
             $em->persist($review);
             $em->flush();
 
+            // Update average rating on coaster
+            // switch to event listener ?
+            $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
+
             return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
         }
 
