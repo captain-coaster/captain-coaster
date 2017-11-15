@@ -5,6 +5,7 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Form\Type\ReviewType;
+use BddBundle\Service\RatingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -49,15 +50,17 @@ class ReviewController extends Controller
     }
 
     /**
+     * Create ur update a review
+     *
      * @param Request $request
      * @param Coaster $coaster
+     * @param RatingService $ratingService
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @Route("/coasters/{id}/form", name="review_form")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function newAction(Request $request, Coaster $coaster)
+    public function newAction(Request $request, Coaster $coaster, RatingService $ratingService)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -83,7 +86,7 @@ class ReviewController extends Controller
 
             // Update average rating on coaster
             // switch to event listener ?
-            $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
+            $ratingService->manageRatings($coaster);
 
             return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
         }

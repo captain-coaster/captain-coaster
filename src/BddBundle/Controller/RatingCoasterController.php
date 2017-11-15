@@ -5,6 +5,7 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Form\Type\RatingCoasterType;
+use BddBundle\Service\RatingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -20,12 +21,12 @@ use Symfony\Component\HttpFoundation\Response;
 class RatingCoasterController extends Controller
 {
     /**
-     * Rate a coaster or edit a rating.
+     * Rate a coaster or edit a rating
      *
      * @param Request $request
      * @param Coaster $coaster
+     * @param RatingService $ratingService
      * @return JsonResponse
-     *
      * @Route(
      *     "/ratings/coasters/{id}/edit",
      *     name="rating_edit",
@@ -34,7 +35,7 @@ class RatingCoasterController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function editAction(Request $request, Coaster $coaster)
+    public function editAction(Request $request, Coaster $coaster, RatingService $ratingService)
     {
         $this->denyAccessUnlessGranted('rate', $coaster);
 
@@ -65,17 +66,17 @@ class RatingCoasterController extends Controller
 
         // Update average rating on coaster
         // switch to event listener ?
-        $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
+        $ratingService->manageRatings($coaster);
 
         return new JsonResponse(['state' => 'success']);
     }
 
     /**
-     * Delete a rating.
+     * Delete a rating
      *
      * @param Coaster $coaster
+     * @param RatingService $ratingService
      * @return JsonResponse
-     *
      * @Route(
      *     "/ratings/coasters/{id}",
      *     name="rating_delete",
@@ -85,7 +86,7 @@ class RatingCoasterController extends Controller
      * @Method({"DELETE"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function deleteAction(Coaster $coaster)
+    public function deleteAction(Coaster $coaster, RatingService $ratingService)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -102,7 +103,7 @@ class RatingCoasterController extends Controller
 
         // Update average rating on coaster
         // switch to event listener ?
-        $this->get('BddBundle\Service\RatingService')->manageRatings($coaster);
+        $ratingService->manageRatings($coaster);
 
         return new JsonResponse(['state' => 'success']);
     }

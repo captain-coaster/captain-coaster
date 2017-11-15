@@ -36,9 +36,6 @@ services:
     BddBundle\Service\ImageService:
         arguments: ['%base_path_images%', '%base_url_images%']
 
-    BddBundle\Service\RatingService:
-        public: true
-
     BddBundle\Service\BadgeService:
         public: true
 
