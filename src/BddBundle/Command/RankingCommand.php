@@ -36,15 +36,7 @@ class RankingCommand extends ContainerAwareCommand
 
     private function formatMessage(array $coaster):string
     {
-        if ($coaster[1] < 20) {
-            $message = sprintf(
-                '<error>%s</error>-%s (%s) %s updated.',
-                $coaster[1],
-                $coaster[0],
-                $coaster[2],
-                $coaster[3]
-            );
-        } elseif (is_null($coaster[2])) {
+        if (is_null($coaster[2])) {
             $message = sprintf(
                 '%s-%s (<error>new</error>) %s updated.',
                 $coaster[1],
