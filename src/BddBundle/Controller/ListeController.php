@@ -149,12 +149,12 @@ class ListeController extends Controller
      * Display a list
      *
      * @param Liste $liste
+     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @Route("/{id}", name="liste_show")
      * @Method({"GET"})
      */
-    public function showAction(Liste $liste)
+    public function showAction(Liste $liste, ImageService $imageService)
     {
         $ids = [];
         /** @var ListeCoaster $listeCoaster */
@@ -162,7 +162,7 @@ class ListeController extends Controller
             $ids[] = $listeCoaster->getCoaster()->getId();
         }
 
-        $imageUrls = $this->get(ImageService::class)->getMultipleImagesUrl($ids);
+        $imageUrls = $imageService->getMultipleImagesUrl($ids);
 
         return $this->render(
             'BddBundle:Liste:show.html.twig',

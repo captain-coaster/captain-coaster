@@ -146,13 +146,13 @@ class CoasterController extends Controller
     /**
      * Show ranking of best coasters
      *
+     * @param int $page
+     * @param ImageService $imageService
+     * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"})
      * @Method({"GET"})
-     *
-     * @param int $page
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showRankingAction($page = 1)
+    public function showRankingAction($page = 1, ImageService $imageService)
     {
         $query = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
@@ -172,7 +172,7 @@ class CoasterController extends Controller
             $ids[] = $coaster->getId();
         }
 
-        $imageUrls = $this->get(ImageService::class)->getMultipleImagesUrl($ids);
+        $imageUrls = $imageService->getMultipleImagesUrl($ids);
 
         return $this->render(
             '@Bdd/Coaster/ranking.html.twig',
@@ -185,15 +185,15 @@ class CoasterController extends Controller
      *
      * @Route("/{slug}", name="bdd_show_coaster", options = {"expose" = true})
      * @Method({"GET"})
-     *
      * @param Request $request
      * @param Coaster $coaster
+     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction(Request $request, Coaster $coaster)
+    public function showAction(Request $request, Coaster $coaster, ImageService $imageService)
     {
         // Display images from file system
-        $imageUrls = $this->get(ImageService::class)->getCoasterImagesUrl($coaster->getId());
+        $imageUrls = $imageService->getCoasterImagesUrl($coaster->getId());
 
         // Load reviews
         $reviews = $this->getDoctrine()

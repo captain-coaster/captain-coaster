@@ -3,6 +3,8 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Form\Type\ContactType;
+use BddBundle\Service\ImageService;
+use BddBundle\Service\StatService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -32,12 +34,13 @@ class DefaultController extends Controller
      * Index of application
      *
      * @param Request $request
+     * @param ImageService $imageService
+     * @param StatService $statService
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @Route("/", name="bdd_index")
      * @Method({"GET"})
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, ImageService $imageService, StatService $statService)
     {
         $goodCoasters = $this->getParameter('home_coasters');
         $coasterId = $goodCoasters[array_rand($goodCoasters)];
@@ -47,16 +50,14 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:RiddenCoaster')
             ->findBy([], ['updatedAt' => 'DESC'], 6);
 
-        $images = $this->get('BddBundle\Service\ImageService')
-            ->getCoasterImagesUrl($coasterId);
+        $images = $imageService->getCoasterImagesUrl($coasterId);
 
         $coaster = $this
             ->getDoctrine()
             ->getRepository('BddBundle:Coaster')
             ->findOneBy(['id' => $coasterId]);
 
-        $stats = $this->get('BddBundle\Service\StatService')
-            ->getIndexStats();
+        $stats = $statService->getIndexStats();
 
         $reviews = $this
             ->getDoctrine()

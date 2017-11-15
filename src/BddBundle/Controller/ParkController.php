@@ -87,15 +87,15 @@ class ParkController extends Controller
     }
 
     /**
-     * Show park details.
+     * Show park details
      *
      * @param Park $park
+     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @Route("/parks/{slug}", name="park_show")
      * @Method({"GET", "POST"})
      */
-    public function showAction(Park $park)
+    public function showAction(Park $park, ImageService $imageService)
     {
         $ids = [];
         /** @var Coaster $coaster */
@@ -103,7 +103,7 @@ class ParkController extends Controller
             $ids[] = $coaster->getId();
         }
 
-        $imageUrls = $this->get(ImageService::class)->getMultipleImagesUrl($ids);
+        $imageUrls = $imageService->getMultipleImagesUrl($ids);
 
         return $this->render(
             'BddBundle:Park:show.html.twig',
