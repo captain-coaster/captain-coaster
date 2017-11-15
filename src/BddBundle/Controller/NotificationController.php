@@ -3,9 +3,10 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Notification;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use BddBundle\Service\NotificationService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * Class NotificationController
@@ -15,15 +16,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 class NotificationController extends Controller
 {
     /**
-     * @param Notification $notification
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * Read a notification
      *
+     * @param Notification $notification
+     * @param NotificationService $notifService
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @Route("/{id}/read", name="notification_read")
      * @Method({"GET"})
      */
-    public function readAction(Notification $notification)
+    public function readAction(Notification $notification, NotificationService $notifService)
     {
-        $notifService = $this->get('BddBundle\Service\NotificationService');
         $redirectUrl = $notifService->getRedirectUrl($notification);
 
         $em = $this->getDoctrine()->getManager();

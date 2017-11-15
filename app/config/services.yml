@@ -39,9 +39,6 @@ services:
     BddBundle\Service\BadgeService:
         public: true
 
-    BddBundle\Service\NotificationService:
-        public: true
-
     BddBundle\Service\RankingService:
         public: true
 
