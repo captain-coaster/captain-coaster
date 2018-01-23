@@ -195,6 +195,8 @@ notif:
     ranking:
         message: 'Ranking of the world''s best coasters just got updated. Check out the new top 3.'
 
+search_index:
+    title: 'Search a coaster'
 
 badge:
     rating1: '1st rating'

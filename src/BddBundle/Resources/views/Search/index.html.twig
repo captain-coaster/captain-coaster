@@ -1,0 +1,97 @@
+{% extends "base.html.twig" %}
+
+{% block title %}{{ 'search_index.title'|trans }}{% endblock %}
+
+{% block secondary_sidebar %}
+    <div class="sidebar sidebar-secondary sidebar-default">
+        <div class="sidebar-content">
+            <form action="#">
+                <!-- Sidebar search -->
+                <div class="sidebar-category">
+                    <div class="category-content">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="filters[name]"
+                                   placeholder="Name"
+                                   onkeyup="filterData();">
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+                                <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="filters[score]" onchange="filterData();">
+                                <option value="">{{ 'map_index.filter.score'|trans }}</option>
+                                {% for i in range(10, 90, 10) %}
+                                    <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                                <label class="display-block">
+                                    {{ 'map_index.filter.notridden'|trans }}
+                                    <input name="filters[notridden]" type="checkbox" class="switchery"
+                                           {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                                <option value="">Manufacturer</option>
+                                <option value="43">B&M</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div id="search-result"></div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        function filterData() {
+            $.ajax({
+                url: '/fr/search/coasters',
+                type: "GET",
+                data: $("form").serialize()
+            }).done(function (data) {
+                $('#search-result').html(data);
+                ajaxPager();
+            });
+        }
+        // at loading
+        filterData();
+
+        var ajaxPager = function () {
+            $("ul.pagination a").click(function (e) {
+                e.preventDefault();
+                //$('.orders').html('<img src="' + loadingUrl + '">');
+
+                var pageUrl = $(this).attr('href');
+
+                console.log(pageUrl);
+
+                $.ajax({
+                    url: pageUrl,
+                    type: 'GET',
+                    dataType: 'html'
+                }).done(function (data) {
+                    $('#search-result').html(data);
+                    ajaxPager();
+                });
+            });
+        };
+        // at loading
+        ajaxPager();
+    </script>
+{% endblock %}

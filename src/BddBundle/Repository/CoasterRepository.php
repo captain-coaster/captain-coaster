@@ -14,6 +14,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function countAll()
     {
@@ -147,6 +148,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->filterByRidden($qb, $filters);
         // Filter kiddie.
         $this->filterKiddie($qb, $filters);
+        // Filter name.
+        $this->filterName($qb, $filters);
     }
 
     /**
@@ -255,5 +258,39 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             $qb
                 ->andWhere('bc.isKiddie = 0');
         }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterName(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('name', $filters) && $filters['name'] !== '') {
+            $qb
+                ->andWhere('c.name like :name')
+                ->setParameter('name', sprintf('%%%s%%', $filters['name']));
+        }
+    }
+
+    /**
+     * @param array $filters
+     * @return array
+     */
+    public function getFilteredCoasters(array $filters)
+    {
+        $qb = $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c')
+            ->from('BddBundle:Coaster', 'c')
+            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
+            ->innerJoin('c.builtCoaster', 'bc', 'WITH', 'c.builtCoaster = bc.id')
+            ->innerJoin('bc.manufacturer', 'm', 'WITH', 'bc.manufacturer = m.id')
+            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id');
+
+        $this->applyFilters($qb, $filters);
+
+        return $qb->getQuery()->getResult();
     }
 }

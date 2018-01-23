@@ -1,0 +1,36 @@
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title text-semibold">{{ coasters.getTotalItemCount }} coasters found</h6>
+    </div>
+
+    <ul class="media-list">
+        {% for coaster in coasters %}
+        <li class="media panel-body stack-media-on-mobile">
+            <div class="media-left">
+                <a href="#">
+                    <img src="{{ asset('images/badges/more.png') }}" class="img-rounded img-lg" alt="">
+                </a>
+            </div>
+
+            <div class="media-body">
+                <h6 class="media-heading text-semibold">
+                    <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                        {{ coaster.name }}
+                    </a>
+                    -
+                    <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                        {{ coaster.park.name }}
+                    </a>
+                </h6>
+
+                <ul class="list-inline list-inline-separate text-muted mb-10">
+                    <li><a href="#" class="text-muted">{{ coaster.builtCoaster.types|join(', ') }}</a></li>
+                    <li>{{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}</li>
+                </ul>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{{ knp_pagination_render(coasters) }}
