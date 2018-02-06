@@ -112,7 +112,6 @@ class MapsController extends Controller
     }
 
     /**
-     *
      * @param array $initialFilters
      * @return array
      */
@@ -123,6 +122,10 @@ class MapsController extends Controller
         $filters['manufacturer'] = $this->getDoctrine()
             ->getRepository('BddBundle:Manufacturer')
             ->findBy([], ["name" => "asc"]);
+
+        $filters['openingDate'] = $this->getDoctrine()
+            ->getRepository('BddBundle:Coaster')
+            ->getDistinctOpeningYears();
 
         return array_merge($filters, $initialFilters);
     }

@@ -61,8 +61,8 @@
                     <div class="form-group">
                         <select class="form-control" name="filters[openingDate]" onchange="filterData();">
                             <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
-                            {% for i in 2018..1980 %}
-                                <option value="{{ i }}">{{ i }}</option>
+                            {% for year in filters.openingDate %}
+                                <option value="{{ year.year }}">{{ year.year }}</option>
                             {% endfor %}
                         </select>
                     </div>
