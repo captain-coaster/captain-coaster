@@ -4,6 +4,7 @@ namespace BddBundle\Repository;
 
 use BddBundle\Entity\Park;
 use BddBundle\Entity\User;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -104,7 +105,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param Park $park
+     * @param Park  $park
      * @param array $filters
      * @return array
      */
@@ -129,8 +130,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
-     * @param User|null $user
+     * @param array        $filters
+     * @param User|null    $user
      */
     private function applyFilters(QueryBuilder $qb, array $filters = [], $user = null)
     {
@@ -154,7 +155,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterManufacturer(QueryBuilder $qb, array $filters = [])
     {
@@ -167,7 +168,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
     {
@@ -178,7 +179,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterScore(QueryBuilder $qb, array $filters = [])
     {
@@ -192,7 +193,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
@@ -214,12 +215,12 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterByRidden(QueryBuilder $qb, array $filters = [])
     {
         // Filter by not ridden. User based filter.
-        if (array_key_exists('ridden', $filters)  && array_key_exists('user', $filters)) {
+        if (array_key_exists('ridden', $filters) && array_key_exists('user', $filters)) {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()
@@ -236,7 +237,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
     {
@@ -250,7 +251,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterKiddie(QueryBuilder $qb, array $filters = [])
     {
@@ -262,7 +263,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array $filters
+     * @param array        $filters
      */
     private function filterName(QueryBuilder $qb, array $filters = [])
     {
@@ -292,5 +293,18 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->applyFilters($qb, $filters);
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDistinctOpeningYears()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('year', 'year');
+
+        return $this->getEntityManager()
+            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c ORDER by year DESC', $rsm)
+            ->getScalarResult();
     }
 }
