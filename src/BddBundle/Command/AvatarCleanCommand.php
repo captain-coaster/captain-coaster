@@ -44,9 +44,7 @@ class AvatarCleanCommand extends ContainerAwareCommand
     {
         $this
             ->setName('avatar:clean')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
+            ->setDescription('Cleanup dead link to Facebook or Google avatars.');
     }
 
     /**
