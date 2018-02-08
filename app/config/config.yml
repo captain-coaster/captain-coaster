@@ -152,3 +152,11 @@ knp_paginator:
     template:
         pagination: 'KnpPaginatorBundle:Pagination:sliding.html.twig'     # sliding pagination controls template
         sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
+
+eight_points_guzzle:
+    logging: %kernel.debug%
+    clients:
+        avatar:
+            options:
+                timeout: 3
+                verify: false

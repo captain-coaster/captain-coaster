@@ -23,6 +23,7 @@
         "php": ">=7.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
+        "eightpoints/guzzle-bundle": "^7.3",
         "friendsofsymfony/jsrouting-bundle": "^1.6",
         "friendsofsymfony/user-bundle": "~2.0",
         "hwi/oauth-bundle": "^0.5.3",
