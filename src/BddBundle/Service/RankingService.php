@@ -22,6 +22,11 @@ class RankingService
     private $em;
 
     /**
+     * @var NotificationService
+     */
+    private $notificationService;
+
+    /**
      * @var array
      */
     private $duels = [];
@@ -33,17 +38,22 @@ class RankingService
 
     /**
      * RankingService constructor.
-     * @param EntityManager $em
+     * @param EntityManager       $em
+     * @param NotificationService $notificationService
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, NotificationService $notificationService)
     {
         $this->em = $em;
+        $this->notificationService = $notificationService;
     }
 
     /**
      * Update ranking of coasters
      * @param bool $dryRun
      * @return array
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function updateRanking(bool $dryRun = false): array
     {
@@ -78,6 +88,14 @@ class RankingService
                 $this->em->flush();
                 $this->em->clear();
             }
+        }
+
+        if (!$dryRun) {
+            $this->notificationService->sendMass(
+                'notif.ranking.message',
+                NotificationService::NOTIF_RANKING,
+                true
+            );
         }
 
         return $infos;

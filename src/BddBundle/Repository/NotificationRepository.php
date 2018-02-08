@@ -10,4 +10,20 @@ namespace BddBundle\Repository;
  */
 class NotificationRepository extends \Doctrine\ORM\EntityRepository
 {
+    /**
+     * @param string $type
+     * @return mixed
+     */
+    public function markTypeAsRead(string $type)
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->update('BddBundle:Notification n')
+            ->set('n.isRead', true)
+            ->where('n.type LIKE :type')
+            ->setParameter('type', $type)
+            ->getQuery()
+            ->execute();
+    }
 }

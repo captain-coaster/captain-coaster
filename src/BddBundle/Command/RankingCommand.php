@@ -9,6 +9,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RankingCommand extends ContainerAwareCommand
 {
+    /**
+     *
+     */
     protected function configure()
     {
         $this
@@ -17,6 +20,11 @@ class RankingCommand extends ContainerAwareCommand
             ->addOption('debug', null, InputOption::VALUE_NONE);
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Starting update ranking command.');
@@ -34,7 +42,11 @@ class RankingCommand extends ContainerAwareCommand
         $output->writeln(count($result).' coasters updated.');
     }
 
-    private function formatMessage(array $coaster):string
+    /**
+     * @param array $coaster
+     * @return string
+     */
+    private function formatMessage(array $coaster): string
     {
         if (is_null($coaster[2])) {
             $message = sprintf(
@@ -43,7 +55,7 @@ class RankingCommand extends ContainerAwareCommand
                 $coaster[0],
                 $coaster[3]
             );
-        } elseif (abs($coaster[1] - $coaster[2]) > 0.1*$coaster[2]) {
+        } elseif (abs($coaster[1] - $coaster[2]) > 0.1 * $coaster[2]) {
             $message = sprintf(
                 '%s-%s (<error>%s</error>) %s updated.',
                 $coaster[1],
