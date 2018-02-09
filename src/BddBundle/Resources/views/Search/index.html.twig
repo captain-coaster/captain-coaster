@@ -6,6 +6,9 @@
     <div class="sidebar sidebar-secondary sidebar-default">
         <div class="sidebar-content">
             <form action="#">
+                {% if is_granted('ROLE_USER') %}
+                    <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
+                {% endif %}
                 <!-- Sidebar search -->
                 <div class="sidebar-category">
                     <div class="category-content">
@@ -17,10 +20,9 @@
                         <div class="form-group">
                             <select class="form-control" name="filters[openingDate]" onchange="filterData();">
                                 <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
-                                <option value="2018">2018</option>
-                                <option value="2017">2017</option>
-                                <option value="2016">2016</option>
-                                <option value="2015">2015</option>
+                                {% for filter in filtersForm.openingDate %}
+                                    <option value="{{ filter.year }}">{{ filter.year }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="form-group">
@@ -44,7 +46,9 @@
                         <div class="form-group">
                             <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
                                 <option value="">Manufacturer</option>
-                                <option value="43">B&M</option>
+                                {% for filter in filtersForm.manufacturer %}
+                                    <option value="{{ filter.id }}">{{ filter.name }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                     </div>

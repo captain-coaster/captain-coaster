@@ -32,7 +32,13 @@ class SearchController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('BddBundle:Search:index.html.twig', ['filters' => []]);
+        return $this->render(
+            'BddBundle:Search:index.html.twig',
+            [
+                'filters' => [],
+                'filtersForm' => $this->getFiltersForm()
+            ]
+        );
     }
 
     /**
@@ -61,7 +67,7 @@ class SearchController extends Controller
 
     /**
      * @param array $filters
-     * @param int $page
+     * @param int   $page
      * @return array
      */
     private function getCoasters($filters = [], $page = 1)
@@ -77,5 +83,23 @@ class SearchController extends Controller
             $page,
             30
         );
+    }
+
+    /**
+     * @return array
+     */
+    private function getFiltersForm()
+    {
+        $filters = [];
+
+        $filters['manufacturer'] = $this->getDoctrine()
+            ->getRepository('BddBundle:Manufacturer')
+            ->findBy([], ["name" => "asc"]);
+
+        $filters['openingDate'] = $this->getDoctrine()
+            ->getRepository('BddBundle:Coaster')
+            ->getDistinctOpeningYears();
+
+        return $filters;
     }
 }
