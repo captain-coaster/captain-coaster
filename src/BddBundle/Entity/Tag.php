@@ -5,13 +5,16 @@ namespace BddBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * NegativeKeyword
+ * Tag
  *
  * @ORM\Table
- * @ORM\Entity(repositoryClass="BddBundle\Repository\NegativeKeyword")
+ * @ORM\Entity(repositoryClass="BddBundle\Repository\Tag")
  */
-class NegativeKeyword
+class Tag
 {
+    const PRO = 'pro';
+    const CON = 'con';
+
     /**
      * @var int
      *
@@ -29,9 +32,16 @@ class NegativeKeyword
     private $name;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255)
+     */
+    private $type;
+
+    /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getName();
     }
@@ -41,7 +51,7 @@ class NegativeKeyword
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -51,9 +61,9 @@ class NegativeKeyword
      *
      * @param string $name
      *
-     * @return NegativeKeyword
+     * @return Tag
      */
-    public function setName($name)
+    public function setName($name): Tag
     {
         $this->name = $name;
 
@@ -65,8 +75,32 @@ class NegativeKeyword
      *
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Tag
+     */
+    public function setType($type): Tag
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 }
