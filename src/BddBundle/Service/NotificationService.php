@@ -44,7 +44,7 @@ class NotificationService
      * @param string $parameter
      * @param string $type
      */
-    public function send(User $user, string $message, string $parameter, string $type)
+    public function send(User $user, string $message, string $parameter = null, string $type): void
     {
         $notification = new Notification();
         $notification->setUser($user);
@@ -56,7 +56,11 @@ class NotificationService
         $this->em->flush();
     }
 
-    public function getRedirectUrl(Notification $notif)
+    /**
+     * @param Notification $notif
+     * @return string
+     */
+    public function getRedirectUrl(Notification $notif): string
     {
         if ($notif->getType() == self::NOTIF_BADGE) {
             return $this->router->generate('me');
@@ -65,5 +69,22 @@ class NotificationService
         }
 
         return $this->router->generate('root');
+    }
+
+    /**
+     * @param string $message
+     * @param string $type
+     * @param bool   $markSameTypeRead
+     */
+    public function sendMass(string $message, string $type, bool $markSameTypeRead = true)
+    {
+        if($markSameTypeRead) {
+            $this->em->getRepository('BddBundle:Notification')->markTypeAsRead($type);
+        }
+
+        $users = $this->em->getRepository('BddBundle:User')->findAll();
+        foreach ($users as $user) {
+            $this->send($user, $message, null, $type);
+        }
     }
 }
