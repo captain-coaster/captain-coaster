@@ -174,12 +174,12 @@
                                         </span>
                                         <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
                                     </div>
-                                    {% if review.positiveKeywords|length > 0 or review.negativeKeywords|length > 0 %}
+                                    {% if review.pros|length > 0 or review.cons|length > 0 %}
                                         <p>
-                                            {% for pros in review.positiveKeywords %}
+                                            {% for pros in review.pros %}
                                                 <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
                                             {% endfor %}
-                                            {% for cons in review.negativeKeywords %}
+                                            {% for cons in review.cons %}
                                                 <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
                                             {% endfor %}
                                         </p>

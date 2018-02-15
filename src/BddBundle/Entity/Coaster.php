@@ -41,7 +41,7 @@ class Coaster
      * @var string
      *
      * @ORM\Column(name="slug", type="string", length=255, unique=true)
-     * @Gedmo\Slug(fields={"name"},updatable=true, separator="-", handlers={
+     * @Gedmo\Slug(fields={"name"}, updatable=true, separator="-", handlers={
      *      @Gedmo\SlugHandler(class="BddBundle\Handler\CustomRelativeSlugHandler", options={
      *          @Gedmo\SlugHandlerOption(name="relationField", value="park"),
      *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
@@ -173,6 +173,13 @@ class Coaster
      * @ORM\OneToMany(targetEntity="BddBundle\Entity\ListeCoaster", mappedBy="coaster")
      */
     private $listed;
+
+    /**
+     * @var MainTag
+     *
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\MainTag", mappedBy="coaster")
+     */
+    private $mainTags;
 
     /**
      * @var \DateTime $createdAt
@@ -766,5 +773,15 @@ class Coaster
     public function getPreviousRank()
     {
         return $this->previousRank;
+    }
+
+    /**
+     * Get mainTags
+     *
+     * @return MainTag
+     */
+    public function getMainTags()
+    {
+        return $this->mainTags;
     }
 }

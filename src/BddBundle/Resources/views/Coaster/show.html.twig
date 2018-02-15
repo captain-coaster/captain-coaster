@@ -32,6 +32,17 @@
                                     {{ 'coaster.score.intheworld'|trans }}
                                 </a>
                             </div>
+                            {% if coaster.mainTags|length > 0 %}
+                            <p class="mt-20">
+                                {% for mainTag in coaster.mainTags %}
+                                    {%  if mainTag.tag.type == 'pro' %}
+                                        <span class="label label-success label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
+                                    {% else %}
+                                        <span class="label label-danger label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                            {% endif %}
                         {% else %}
                             <div class="media-body">
                                 <span class="text-size-small text-muted">
