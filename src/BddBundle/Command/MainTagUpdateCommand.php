@@ -70,9 +70,11 @@ class MainTagUpdateCommand extends ContainerAwareCommand
 
             $rank = 1;
             foreach ($stmt->fetchAll() as $mainTag) {
-                if ($rank > 3) {
+                // stop after 3 main tags, or if it's not popular enough
+                if ($rank > 3 || $mainTag['nb'] < 3) {
                     break;
                 }
+
                 $sql = 'INSERT INTO `main_tag` (coaster_id, tag_id, rank) VALUES (:coasterId, :tagId, :rank)';
                 $stmt = $conn->prepare($sql);
                 $stmt->execute(['coasterId' => $coaster->getId(), 'tagId' => (int)$mainTag['id'], 'rank' => $rank]);
