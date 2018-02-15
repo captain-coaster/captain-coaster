@@ -66,6 +66,7 @@ class RiddenCoaster
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Tag")
+     * @ORM\JoinTable(name="ridden_coaster_pro")
      * @ORM\JoinColumn(nullable=true)
      */
     private $pros;
@@ -74,6 +75,7 @@ class RiddenCoaster
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Tag")
+     * @ORM\JoinTable(name="ridden_coaster_con")
      * @ORM\JoinColumn(nullable=true)
      */
     private $cons;
@@ -218,7 +220,7 @@ class RiddenCoaster
      *
      * @return string
      */
-    public function getReview(): string
+    public function getReview(): ?string
     {
         return $this->review;
     }

@@ -39,7 +39,7 @@ class ReviewType extends AbstractType
                         return $er->createQueryBuilder('p')
                             ->where('p.type = :pro')
                             ->setParameter('pro', Tag::PRO)
-                            ->orderBy('m.name', 'ASC');
+                            ->orderBy('p.name', 'ASC');
                     },
                     'label' => 'review.pros',
                 ]
@@ -54,10 +54,10 @@ class ReviewType extends AbstractType
                     'multiple' => true,
                     'required' => false,
                     'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('p')
-                            ->where('p.type = :con')
+                        return $er->createQueryBuilder('c')
+                            ->where('c.type = :con')
                             ->setParameter('con', Tag::CON)
-                            ->orderBy('m.name', 'ASC');
+                            ->orderBy('c.name', 'ASC');
                     },
                     'label' => 'review.pros',
                 ]
