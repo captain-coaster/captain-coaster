@@ -2,16 +2,15 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Coaster
+ * RiddenCoaster
  *
- * @ORM\Table(
- *     uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})}
- *     )
+ * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})})
  * @ORM\Entity(repositoryClass="BddBundle\Repository\RiddenCoasterRepository")
  */
 class RiddenCoaster
@@ -64,20 +63,22 @@ class RiddenCoaster
     private $language = 'en';
 
     /**
-     * @var PositiveKeyword
+     * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\PositiveKeyword")
+     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Tag")
+     * @ORM\JoinTable(name="ridden_coaster_pro")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $positiveKeywords;
+    private $pros;
 
     /**
-     * @var NegativeKeyword
+     * @var ArrayCollection
      *
-     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\NegativeKeyword")
+     * @ORM\ManyToMany(targetEntity="BddBundle\Entity\Tag")
+     * @ORM\JoinTable(name="ridden_coaster_con")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $negativeKeywords;
+    private $cons;
 
     /**
      * @var int
@@ -110,11 +111,20 @@ class RiddenCoaster
     private $updatedAt;
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->pros = new ArrayCollection();
+        $this->cons = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -126,7 +136,7 @@ class RiddenCoaster
      *
      * @return RiddenCoaster
      */
-    public function setCoaster(Coaster $coaster)
+    public function setCoaster(Coaster $coaster): RiddenCoaster
     {
         $this->coaster = $coaster;
 
@@ -138,7 +148,7 @@ class RiddenCoaster
      *
      * @return \BddBundle\Entity\Coaster
      */
-    public function getCoaster()
+    public function getCoaster(): Coaster
     {
         return $this->coaster;
     }
@@ -150,7 +160,7 @@ class RiddenCoaster
      *
      * @return RiddenCoaster
      */
-    public function setUser(User $user)
+    public function setUser(User $user): RiddenCoaster
     {
         $this->user = $user;
 
@@ -162,7 +172,7 @@ class RiddenCoaster
      *
      * @return \BddBundle\Entity\User
      */
-    public function getUser()
+    public function getUser(): User
     {
         return $this->user;
     }
@@ -174,7 +184,7 @@ class RiddenCoaster
      *
      * @return RiddenCoaster
      */
-    public function setValue($value)
+    public function setValue($value): RiddenCoaster
     {
         $this->value = $value;
 
@@ -186,89 +196,9 @@ class RiddenCoaster
      *
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return RiddenCoaster
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return RiddenCoaster
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->positiveKeywords = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->negativeKeywords = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-
-    /**
-     * Set rating
-     *
-     * @param float $rating
-     *
-     * @return RiddenCoaster
-     */
-    public function setRating($rating)
-    {
-        $this->rating = $rating;
-
-        return $this;
-    }
-
-    /**
-     * Get rating
-     *
-     * @return float
-     */
-    public function getRating()
-    {
-        return $this->rating;
     }
 
     /**
@@ -278,7 +208,7 @@ class RiddenCoaster
      *
      * @return RiddenCoaster
      */
-    public function setReview($review)
+    public function setReview($review): RiddenCoaster
     {
         $this->review = $review;
 
@@ -290,7 +220,7 @@ class RiddenCoaster
      *
      * @return string
      */
-    public function getReview()
+    public function getReview(): ?string
     {
         return $this->review;
     }
@@ -302,7 +232,7 @@ class RiddenCoaster
      *
      * @return RiddenCoaster
      */
-    public function setLanguage($language)
+    public function setLanguage($language): RiddenCoaster
     {
         $this->language = $language;
 
@@ -314,9 +244,77 @@ class RiddenCoaster
      *
      * @return string
      */
-    public function getLanguage()
+    public function getLanguage(): string
     {
         return $this->language;
+    }
+
+    /**
+     * Add pro
+     *
+     * @param \BddBundle\Entity\Tag $pro
+     *
+     * @return RiddenCoaster
+     */
+    public function addPro(Tag $pro): RiddenCoaster
+    {
+        $this->pros[] = $pro;
+
+        return $this;
+    }
+
+    /**
+     * Remove pro
+     *
+     * @param \BddBundle\Entity\Tag $pro
+     */
+    public function removePro(Tag $pro): void
+    {
+        $this->pros->removeElement($pro);
+    }
+
+    /**
+     * Get pros
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPros()
+    {
+        return $this->pros;
+    }
+
+    /**
+     * Add con
+     *
+     * @param \BddBundle\Entity\Tag $con
+     *
+     * @return RiddenCoaster
+     */
+    public function addCon(Tag $con): RiddenCoaster
+    {
+        $this->cons[] = $con;
+
+        return $this;
+    }
+
+    /**
+     * Remove con
+     *
+     * @param \BddBundle\Entity\Tag $con
+     */
+    public function removeCon(Tag $con): void
+    {
+        $this->cons->removeElement($con);
+    }
+
+    /**
+     * Get cons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCons()
+    {
+        return $this->cons;
     }
 
     /**
@@ -368,70 +366,50 @@ class RiddenCoaster
     }
 
     /**
-     * Add positiveKeyword
+     * Set createdAt
      *
-     * @param \BddBundle\Entity\PositiveKeyword $positiveKeyword
+     * @param \DateTime $createdAt
      *
      * @return RiddenCoaster
      */
-    public function addPositiveKeyword(\BddBundle\Entity\PositiveKeyword $positiveKeyword)
+    public function setCreatedAt(\DateTime $createdAt): RiddenCoaster
     {
-        $this->positiveKeywords[] = $positiveKeyword;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     /**
-     * Remove positiveKeyword
+     * Get createdAt
      *
-     * @param \BddBundle\Entity\PositiveKeyword $positiveKeyword
+     * @return \DateTime
      */
-    public function removePositiveKeyword(\BddBundle\Entity\PositiveKeyword $positiveKeyword)
+    public function getCreatedAt(): \DateTime
     {
-        $this->positiveKeywords->removeElement($positiveKeyword);
+        return $this->createdAt;
     }
 
     /**
-     * Get positiveKeywords
+     * Set updatedAt
      *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPositiveKeywords()
-    {
-        return $this->positiveKeywords;
-    }
-
-    /**
-     * Add negativeKeyword
-     *
-     * @param \BddBundle\Entity\NegativeKeyword $negativeKeyword
+     * @param \DateTime $updatedAt
      *
      * @return RiddenCoaster
      */
-    public function addNegativeKeyword(\BddBundle\Entity\NegativeKeyword $negativeKeyword)
+    public function setUpdatedAt(\DateTime $updatedAt): RiddenCoaster
     {
-        $this->negativeKeywords[] = $negativeKeyword;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     /**
-     * Remove negativeKeyword
+     * Get updatedAt
      *
-     * @param \BddBundle\Entity\NegativeKeyword $negativeKeyword
+     * @return \DateTime
      */
-    public function removeNegativeKeyword(\BddBundle\Entity\NegativeKeyword $negativeKeyword)
+    public function getUpdatedAt(): \DateTime
     {
-        $this->negativeKeywords->removeElement($negativeKeyword);
-    }
-
-    /**
-     * Get negativeKeywords
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getNegativeKeywords()
-    {
-        return $this->negativeKeywords;
+        return $this->updatedAt;
     }
 }
