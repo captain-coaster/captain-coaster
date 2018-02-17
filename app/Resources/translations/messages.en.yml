@@ -1,3 +1,8 @@
+# Define languages
+fr: Français
+en: English
+es: Español
+
 app:
     name: 'Captain Coaster'
     title:

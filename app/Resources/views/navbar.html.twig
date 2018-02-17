@@ -19,14 +19,20 @@
             <!-- language switcher -->
             <li class="dropdown language-switch">
                 <a class="dropdown-toggle" data-toggle="dropdown">
-                    {# todo: parameters #}
-                    {% if app.request.locale == 'fr' %}Français{% else %}English{% endif %}
+                    {{ app.request.locale|trans }}
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                    {# todo: twig function + parameters #}
-                    <li><a class="english" href="{{ app.request.uri|replace({'/fr/': '/en/'}) }}">English</a></li>
-                    <li><a class="french" href="{{ app.request.uri|replace({'/en/': '/fr/'}) }}">Français</a></li>
+                    {% set route = app.request.attributes.get('_route') %}
+                    {% set route_params = app.request.attributes.get('_route_params') %}
+                    {% set params = route_params|merge(app.request.query.all) %}
+                    {% for locale in locales if locale != app.request.locale %}
+                        <li>
+                            <a href="{{ path(route, params|merge({ _locale: locale })) }}">
+                                {{ locale|trans }}
+                            </a>
+                        </li>
+                    {% endfor %}
                 </ul>
             </li>
             <!-- /language switcher -->
