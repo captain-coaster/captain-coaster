@@ -42,7 +42,7 @@ class ParkController extends Controller
             $em->persist($park);
             $em->flush();
 
-            return $this->redirectToRoute('bdd_index_coaster');
+            return $this->redirectToRoute('park_show', ['slug' => $park->getSlug()]);
         }
 
         return $this->render(
@@ -75,7 +75,7 @@ class ParkController extends Controller
             $em->persist($park);
             $em->flush();
 
-            return $this->redirectToRoute('bdd_index_coaster');
+            return $this->redirectToRoute('park_show', ['slug' => $park->getSlug()]);
         }
 
         return $this->render(
