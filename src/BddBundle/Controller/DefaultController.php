@@ -18,14 +18,14 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     /**
-     * Root of application, redirect to /en or /fr
+     * Root of application, redirect to browser language if defined
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function rootAction(Request $request)
     {
-        $locale = $request->getPreferredLanguage(['en', 'fr']);
+        $locale = $request->getPreferredLanguage($this->getParameter('app.locales.array'));
 
         return $this->redirectToRoute('bdd_index', ['_locale' => $locale], 301);
     }

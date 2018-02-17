@@ -7,8 +7,12 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'fr'
-    app.locales: 'fr|en'
+    locale: 'en'
+    # todo: merge both params ?
+    # used in routing
+    app.locales: 'en|fr|es'
+    # used for templating
+    app.locales.array: ['en', 'fr', 'es']
 
 framework:
     #esi: ~
@@ -38,6 +42,8 @@ framework:
 
 # Twig Configuration
 twig:
+    globals:
+        locales: '%app.locales.array%'
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
 
