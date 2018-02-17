@@ -11,9 +11,15 @@
                     <div class="caption">
                         <div class="content-group-sm media">
                             <div class="media-left">
-                                <img src="{{ liste.user.profilePicture }}"
-                                     class="img-circle img-xs"
-                                     alt="{{ liste.user.displayName }}">
+                                {% if review.user.profilePicture %}
+                                    <img src="{{ liste.user.profilePicture }}"
+                                         class="img-circle img-xs"
+                                         alt="{{ liste.user.displayName }}">
+                                {% else %}
+                                    <img src="{{ asset('images/default_user.png') }}"
+                                         alt="{{ liste.user.displayName }}"
+                                         class="img-circle img-sm">
+                                {% endif %}
                             </div>
                             <div class="media-body">
                                 <h6 class="text-semibold no-margin">
