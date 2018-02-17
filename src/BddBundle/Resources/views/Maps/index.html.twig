@@ -114,6 +114,12 @@
             zoom: 5,
             center: {lat: 48.384098, lng: 7.970846}
         });
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                map.setCenter(initialLocation);
+            });
+        }
         setMarkers(map, markers);
     }
 
