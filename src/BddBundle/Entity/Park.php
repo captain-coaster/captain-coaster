@@ -5,7 +5,6 @@ namespace BddBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-
 /**
  * Park
  *
@@ -76,6 +75,27 @@ class Park
     private $longitude;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(type="decimal", precision=13, scale=11, nullable=true)
+     */
+    private $score;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $rank;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $previousRank;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -90,7 +110,6 @@ class Park
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
-
 
     /**
      * Constructor
@@ -338,15 +357,91 @@ class Park
 
     public function getOpenedCoasters()
     {
-        return $this->getCoasters()->filter(function(Coaster $coaster) {
-            return $coaster->getStatus()->getId() == 1;
-        });
+        return $this->getCoasters()->filter(
+            function (Coaster $coaster) {
+                return $coaster->getStatus()->getId() == 1;
+            }
+        );
     }
 
     public function getKiddies()
     {
-        return $this->getCoasters()->filter(function(Coaster $coaster) {
-            return $coaster->getBuiltCoaster()->getIsKiddie() == 1;
-        });
+        return $this->getCoasters()->filter(
+            function (Coaster $coaster) {
+                return $coaster->getBuiltCoaster()->getIsKiddie() == 1;
+            }
+        );
+    }
+
+    /**
+     * Set score
+     *
+     * @param string $score
+     *
+     * @return Park
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+
+        return $this;
+    }
+
+    /**
+     * Get score
+     *
+     * @return string
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * Set rank
+     *
+     * @param integer $rank
+     *
+     * @return Park
+     */
+    public function setRank($rank)
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+    /**
+     * Get rank
+     *
+     * @return integer
+     */
+    public function getRank()
+    {
+        return $this->rank;
+    }
+
+    /**
+     * Set previousRank
+     *
+     * @param integer $previousRank
+     *
+     * @return Park
+     */
+    public function setPreviousRank($previousRank)
+    {
+        $this->previousRank = $previousRank;
+
+        return $this;
+    }
+
+    /**
+     * Get previousRank
+     *
+     * @return integer
+     */
+    public function getPreviousRank()
+    {
+        return $this->previousRank;
     }
 }

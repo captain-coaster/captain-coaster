@@ -10,4 +10,17 @@ namespace BddBundle\Repository;
  */
 class ParkRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findByRanking()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('p')
+            ->from('BddBundle:Park', 'p')
+//            ->innerJoin('c.park', 'p')
+//            ->innerJoin('c.builtCoaster', 'bc')
+//            ->innerJoin('bc.manufacturer', 'm')
+            ->where('p.rank is not null')
+            ->orderBy('p.rank', 'asc')
+            ->getQuery();
+    }
 }

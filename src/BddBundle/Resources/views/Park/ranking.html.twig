@@ -1,0 +1,74 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'park_ranking.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+    <meta name="description" content="{{ 'park_ranking.description'|trans }}"/>
+{% endblock %}
+
+{% block body %}
+    <!-- info alert -->
+    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
+        <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span>
+        </button>
+        <h6 class="alert-heading text-semibold">{{ 'coaster_ranking.info.title'|trans }}</h6>
+        <p>{{ 'coaster_ranking.info.text'|trans}}</p>
+    </div>
+    <!-- /info alert -->
+    <ul class="media-list content-group">
+        {% for park in parks %}
+            <li class="media panel panel-body stack-media-on-mobile">
+                {#<div class="media-left">#}
+                    {#<a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">#}
+                        {#{% if image|length > 0 %}#}
+                            {#<img src="{{ asset(random(image)) | imagine_filter('coaster_ranking') }}"#}
+                                 {#class="img-rounded"#}
+                                 {#style="width:96px;"#}
+                                 {#alt="{{ coaster.name }}">#}
+                        {#{% endif %}#}
+                    {#</a>#}
+                {#</div>#}
+
+                <div class="media-body">
+                    <h2 class="media-heading">
+                        {{ park.rank }}
+                        -
+                        <a style="color:#333;"
+                           href="{{ path('park_show', {'slug': park.slug}) }}">{{ park.name }}
+                        </a>
+                    </h2>
+                    <ul class="list-inline list-inline-separate text-muted mb-10">
+                        <li>{{ park.country.name }}</li>
+                    </ul>
+                    {% if park.previousRank is empty %}
+                        <span class="label label-warning">new</span>
+                    {% elseif park.previousRank < coaster.rank %}
+                        <span class="label label-danger">
+                            <i class="icon-arrow-down5"></i>
+                            - {{ (coaster.rank - coaster.previousRank)|abs }}
+                        </span>
+                    {% elseif park.previousRank > coaster.rank %}
+                        <span class="label label-success">
+                            <i class="icon-arrow-up5"></i>
+                            + {{ (coaster.rank - coaster.previousRank)|abs }}
+                        </span>
+                    {% elseif park.previousRank == coaster.rank %}
+                        <span class="label label-primary">
+                            <i class="icon-arrow-right5"></i> =
+                        </span>
+                    {% endif %}
+                </div>
+                <div class="media-right text-center">
+                    <h3 class="no-margin text-semibold text-nowrap">
+                        {{ park.score|number_format(1, ',') }}%
+                    </h3>
+                    {#<div class="text-muted">#}
+                        {#{{ 'coaster_ranking.reviews_number'|transchoice(coaster.totalRatings) }}#}
+                    {#</div>#}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    {{ knp_pagination_render(parks) }}
+{% endblock %}

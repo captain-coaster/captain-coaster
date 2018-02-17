@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ParkController extends Controller
 {
+    CONST NUMBER_RANKING = 20;
+
     /**
      * Create a new park.
      *
@@ -83,6 +85,33 @@ class ParkController extends Controller
             [
                 'form' => $form->createView(),
             ]
+        );
+    }
+
+
+    /**
+     * Show parks ranking
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/parks/ranking", name="park_ranking")
+     * @Method({"GET"})
+     */
+    public function rankingAction()
+    {
+        $page = 1;
+        $query = $this->getDoctrine()
+            ->getRepository('BddBundle:Park')
+            ->findByRanking();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            self::NUMBER_RANKING
+        );
+
+        return $this->render(
+            '@Bdd/Park/ranking.html.twig',
+            ['parks' => $pagination]
         );
     }
 

@@ -52,6 +52,10 @@ park:
     opened_coasters: 'opened coaster|opened coasters'
     kiddies: 'kiddie|kiddies'
 
+park_ranking:
+    title: 'Ranking of the best parks'
+    description: 'Ranking of'
+
 coaster_ranking:
     title: 'Ranking of the best coasters'
     description: 'Ranking of the best roller coasters of the world, by our users. Send a review and rate coasters you have ridden to take part of it.'

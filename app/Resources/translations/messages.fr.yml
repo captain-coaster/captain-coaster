@@ -52,6 +52,10 @@ park:
     opened_coasters: 'coaster ouvert|coasters ouverts'
     kiddies: 'kiddie|kiddies'
 
+park_ranking:
+    title: 'Classement des meilleurs parcs'
+    description: 'Classement des'
+
 coaster_ranking:
     title: 'Classement des meilleurs coasters'
     description: 'Classement des meilleurs montagnes russes du monde, par nos utilisateurs. Donne ton avis et met des notes pour participer à ce classement des coasters.'
