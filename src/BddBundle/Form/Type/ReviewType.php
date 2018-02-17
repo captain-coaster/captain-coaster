@@ -59,7 +59,7 @@ class ReviewType extends AbstractType
                             ->setParameter('con', Tag::CON)
                             ->orderBy('c.name', 'ASC');
                     },
-                    'label' => 'review.pros',
+                    'label' => 'review.cons',
                 ]
             )
             ->add(

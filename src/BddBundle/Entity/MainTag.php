@@ -23,7 +23,7 @@ class MainTag
 
     /**
      * @var Coaster
-     * @ORM\ManyToOne(targetEntity="Coaster")
+     * @ORM\ManyToOne(targetEntity="Coaster", inversedBy="mainTags")
      */
     private $coaster;
 
