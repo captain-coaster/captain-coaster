@@ -1,12 +1,12 @@
 app:
     name: 'Captain Coaster'
     title:
-        default: '¡ Bienvenida !'
+        default: '¡ Bienvenido !'
     header:
         search: 'Buscar una montaña rusa'
 
 index:
-    title: '¡ Bienvenida !'
+    title: '¡ Bienvenido !'
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'
@@ -142,7 +142,7 @@ review_list:
 
 rating:
     last: 'Últimas notas'
-    action: 'Calificado %value% estrellas'
+    action: 'calificó %value% estrellas'
 
 navbar:
     profile: 'Mi perfil'
