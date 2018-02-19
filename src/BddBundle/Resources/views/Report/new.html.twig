@@ -1,0 +1,72 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'report.new.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% set openedSidebar = true %}
+
+{% block header %}
+    <meta name="description" content="{{ 'report.new.description'|trans }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
+    <script type="text/javascript">
+        $('select#report_create_park').select2();
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
+        <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span>
+        </button>
+        <h6 class="alert-heading text-semibold">{{ 'report.info.header'|trans }}</h6>
+        <p>{{ 'report.info.text'|trans }}</p>
+    </div>
+
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h2 class="panel-title">{{ 'report.form.first'|trans }}</h2>
+        </div>
+
+        <div class="panel-body">
+
+            {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.park, "", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.park, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(form.language, "", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.language, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(form.visitDate, "", {'label_attr': {'class': 'control-label'}}) }}
+                {{ form_widget(form.visitDate, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <div class="checker">
+                            <span class="checked">
+                                <input type="checkbox" class="styled" checked="checked">
+                            </span>
+                        </div>
+                        {{ 'report.form.conditions'|trans }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">
+                    {{ 'report.form.nextstep'|trans }}
+                    <i class="icon-arrow-right14 position-right"></i>
+                </button>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

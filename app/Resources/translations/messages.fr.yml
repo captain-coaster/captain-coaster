@@ -207,6 +207,25 @@ badge:
     teamkatun: 'Team Katun'
     teamispeed: 'Team iSpeed'
 
+report:
+    new:
+        title: 'Ma visite à...'
+        description: ''
+    info:
+        header: 'Partage ton expérience avec nous ! '
+        text: 'Ta visite dans un parc s''est super bien passée et tu veux partager avec nous ton
+                expérience ? Ou au contraire, c''était un cauchemar ? Raconte-nous tout ! Après nous
+                avoir donné quelques infos sur ta visite, on pourra passer à l''écriture de ton avis.'
+    form:
+        first: 'Avant toute chose :'
+        park: 'Parc visité'
+        visitdate: 'Date de la visite'
+        language: 'Langue du TR'
+        conditions: 'J''accepte les conditions de Captain Coaster.'
+        nextstep: 'Commencer à écrire !'
+
+
+
 error:
     404:
         title: 'Page non trouvée'

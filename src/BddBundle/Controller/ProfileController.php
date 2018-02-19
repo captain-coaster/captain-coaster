@@ -4,6 +4,7 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\User;
 use BddBundle\Form\Type\ProfileType;
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -89,6 +90,25 @@ class ProfileController extends Controller
             'BddBundle:Profile:ratings.html.twig',
             [
                 'ratings' => $pagination,
+            ]
+        );
+    }
+
+    /**
+     * @Route("/me/reports", name="me_reports")
+     * @Method({"GET"})
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function myReportsAction(EntityManager $em)
+    {
+        $reports = $em->getRepository('BddBundle:Report')->findBy(
+            ['user' => $this->getUser()]
+        );
+
+        return $this->render(
+            'BddBundle:Profile:reports.html.twig',
+            [
+                'reports' => $reports,
             ]
         );
     }

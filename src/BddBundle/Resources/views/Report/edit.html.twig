@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'coaster_ranking.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+    <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.quilljs.com/1.3.5/quill.js"></script>
+    <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow'
+        });
+    </script>
+    {#<script src="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/js/medium-editor.min.js"></script>#}
+    {#<script>#}
+    {#var editor = new MediumEditor('.editable');#}
+    {#editor.setContent('{{ report.content|raw }}', 0);#}
+    {#var saveContent = function () {#}
+    {#var content = editor.serialize();#}
+    {#var data = {content: content['element-0'].value};#}
+    {#$.ajax({#}
+    {#url: '/en/reports/1/content',#}
+    {#type: "POST",#}
+    {#data: data#}
+    {#}).done(function (data) {#}
+    {#console.log('done');#}
+    {#});#}
+    {#}#}
+    {#</script>#}
+{% endblock %}
+
+{% block stylesheets %}
+    {#<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@latest/dist/css/medium-editor.min.css"#}
+    type="text/css" media="screen" charset="utf-8">
+    {#<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@5.23.3/dist/css/themes/beagle.min.css"#}
+    type="text/css" media="screen" charset="utf-8">
+    <link href="https://cdn.quilljs.com/1.3.5/quill.snow.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div id="editor">
+        <p>Hello World!</p>
+        <p>Some initial <strong>bold</strong> text</p>
+        <p><br></p>
+    </div>
+    {#<button onclick="saveContent();">Save</button>#}
+    {#{{ form(form) }}#}
+{% endblock %}
