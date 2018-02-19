@@ -1,213 +1,207 @@
 {% extends "base.html.twig" %}
 
+{% import "helper.html.twig" as helper %}
+
 {% set openedSidebar = true %}
 
 {% set title = 'index.title'|trans %}
 {% block title %}{{ 'index.header.title'|trans }}{% endblock %}
 
 {% block header %}
-    <meta name="description" content="{{ 'index.description'|trans }}"/>
-    <meta property="og:title" content="{{ 'app.name'|trans }}"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:url" content="{{ app.request.uri }}"/>
-    <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}"/>
+  <meta name="description" content="{{ 'index.description'|trans }}"/>
+  <meta property="og:title" content="{{ 'app.name'|trans }}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="{{ app.request.uri }}"/>
+  <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}"/>
 {% endblock %}
 
 {% block body %}
-    <!-- info alert -->
-    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-            <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span
-                        class="sr-only">Close</span>
-            </button>
-            <h6 class="alert-heading text-semibold">
-                {{ 'index.header.title'|trans }}
-            </h6>
-            {{ 'index.header.info'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
-        </div>
-    {% endif %}
-    <!-- /info alert -->
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="panel panel-body">
-                <div class="row text-center">
-                    <div class="col-xs-3">
-                        <p><i class="icon-road icon-2x display-inline-block text-info"></i></p>
-                        <h5 class="text-semibold no-margin">{{ stats.nb_coasters }}</h5>
-                        <span class="text-muted text-size-small">{{ 'index.stats.coasters'|trans }}</span>
-                    </div>
-                    <div class="col-xs-3">
-                        <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
-                        <h5 class="text-semibold no-margin">
-                            {{ stats.nb_ratings }}
-                            {% if stats.nb_new_ratings > 0 %}
-                                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
-                            {% endif %}
-                        </h5>
-
-                        <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
-
-                    </div>
-                    <div class="col-xs-3">
-                        <p><i class="icon-megaphone icon-2x display-inline-block text-success"></i></p>
-                        <h5 class="text-semibold no-margin">
-                            <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
-                        </h5>
-                        <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
-                    </div>
-                    <div class="col-xs-3">
-                        <p><i class="icon-podium icon-2x display-inline-block text-warning"></i></p>
-                        <h5 class="text-semibold no-margin">
-                            <a href="{{ path('liste_list') }}">{{ stats.nb_listes }}</a>
-                        </h5>
-                        <span class="text-muted text-size-small">{{ 'index.stats.listes'|trans }}</span>
-                    </div>
-
-                </div>
-            </div>
-        </div>
+  <!-- info alert -->
+  {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
+      <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span
+            class="sr-only">Close</span>
+      </button>
+      <h6 class="alert-heading text-semibold">
+        {{ 'index.header.title'|trans }}
+      </h6>
+      {{ 'index.header.info'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
     </div>
-    <div class="row">
-        <div class="col-sm-6">
-            {% if images|length > 0 %}
-                <!-- Thumbnail with image and button -->
-                <div class="thumbnail">
-                    <div class="thumb">
-                        <img src="{{ asset(random(images)) | imagine_filter('random_index') }}"
-                             alt="{{ coaster.name }}">
+  {% endif %}
+  <!-- /info alert -->
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-body">
+        <div class="row text-center">
+          <div class="col-xs-3">
+            <p><i class="icon-road icon-2x display-inline-block text-info"></i></p>
+            <h5 class="text-semibold no-margin">{{ stats.nb_coasters }}</h5>
+            <span class="text-muted text-size-small">{{ 'index.stats.coasters'|trans }}</span>
+          </div>
+          <div class="col-xs-3">
+            <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
+            <h5 class="text-semibold no-margin">
+              {{ stats.nb_ratings }}
+              {% if stats.nb_new_ratings > 0 %}
+                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
+              {% endif %}
+            </h5>
 
-                        <div class="caption-overflow">
+            <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
+
+          </div>
+          <div class="col-xs-3">
+            <p><i class="icon-megaphone icon-2x display-inline-block text-success"></i></p>
+            <h5 class="text-semibold no-margin">
+              <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
+            </h5>
+            <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
+          </div>
+          <div class="col-xs-3">
+            <p><i class="icon-podium icon-2x display-inline-block text-warning"></i></p>
+            <h5 class="text-semibold no-margin">
+              <a href="{{ path('liste_list') }}">{{ stats.nb_listes }}</a>
+            </h5>
+            <span class="text-muted text-size-small">{{ 'index.stats.listes'|trans }}</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+      {% if images|length > 0 %}
+        <!-- Thumbnail with image and button -->
+        <div class="thumbnail">
+          <div class="thumb">
+            <img src="{{ asset(random(images)) | imagine_filter('random_index') }}"
+                 alt="{{ coaster.name }}">
+
+            <div class="caption-overflow">
                         <span>
                             <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}"
                                class="btn btn-info">voir</a>
                         </span>
-                        </div>
-                    </div>
-
-                    <div class="caption text-center">
-                        <h5 class="text-semibold no-margin">{{ coaster.name }}</h5>
-                        <p class="text-muted mb-15 mt-5">
-                            <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
-                                {{ coaster.park.name }}
-                            </a>
-                        </p>
-                    </div>
-                </div>
-                <!-- /thumbnail with image and button -->
-            {% endif %}
-            <!-- latest ratings -->
-            <div class="panel panel-flat border-top-teal">
-                <div class="panel-heading">
-                    <h6 class="panel-title">{{ 'rating.last'|trans }}</h6>
-                </div>
-                <div class="panel-body">
-                    <ul class="list-feed">
-                        {% for ratingItem in ratingFeed %}
-                            <li>
-                                <a class="text-bold" href="{{ path('user_profile', {'id': ratingItem.user.id}) }}">
-                                    {{ ratingItem.user.displayName }}
-                                </a>
-                                {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
-                                <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
-                                    {{ ratingItem.coaster.name }}
-                                </a>
-                                <div class="text-muted">
-                                    {{ ratingItem.updatedAt|ago }}
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
             </div>
-            <!-- /latests ratings -->
+          </div>
+
+          <div class="caption text-center">
+            <h5 class="text-semibold no-margin">{{ coaster.name }}</h5>
+            <p class="text-muted mb-15 mt-5">
+              <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                {{ coaster.park.name }}
+              </a>
+            </p>
+          </div>
         </div>
-        <div class="col-sm-6">
-            <!-- latest reviews -->
-            <div class="panel panel-flat">
-                <div class="panel-heading">
-                    <h6 class="panel-title text-semiold">{{ 'review.last'|trans }}</h6>
-                    <div class="heading-elements">
-                        <a href="{{ path('review_list') }}" class="heading-text">{{ 'review.all'|trans }}</a>
-                    </div>
+        <!-- /thumbnail with image and button -->
+      {% endif %}
+      <!-- latest ratings -->
+      <div class="panel panel-flat border-top-teal">
+        <div class="panel-heading">
+          <h6 class="panel-title">{{ 'rating.last'|trans }}</h6>
+        </div>
+        <div class="panel-body">
+          <ul class="list-feed">
+            {% for ratingItem in ratingFeed %}
+              <li>
+                <a class="text-bold" href="{{ path('user_profile', {'id': ratingItem.user.id}) }}">
+                  {{ ratingItem.user.displayName }}
+                </a>
+                {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
+                <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
+                  {{ ratingItem.coaster.name }}
+                </a>
+                <div class="text-muted">
+                  {{ ratingItem.updatedAt|ago }}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <!-- /latests ratings -->
+    </div>
+    <div class="col-sm-6">
+      <!-- latest reviews -->
+      <div class="panel panel-flat">
+        <div class="panel-heading">
+          <h6 class="panel-title text-semiold">{{ 'review.last'|trans }}</h6>
+          <div class="heading-elements">
+            <a href="{{ path('review_list') }}" class="heading-text">{{ 'review.all'|trans }}</a>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <ul class="media-list stack-media-on-mobile">
+            {% for review in reviews %}
+              <li class="media">
+                <div class="media-left">
+                  {{ helper.profilePicture(review.user) }}
                 </div>
 
-                <div class="panel-body">
-                    <ul class="media-list stack-media-on-mobile">
-                        {% for review in reviews %}
-                            <li class="media">
-                                <div class="media-left">
-                                    {% if review.user.profilePicture %}
-                                        <img src="{{ review.user.profilepicture }}"
-                                             class="img-circle img-sm"
-                                             alt="{{ review.user.displayName }}">
-                                    {% else %}
-                                        <img src="{{ asset('images/default_user.png') }}"
-                                             alt="{{ review.user.displayName }}"
-                                             class="img-circle img-sm">
-                                    {% endif %}
-                                </div>
-
-                                <div class="media-body">
-                                    <div class="media-heading">
-                                        <h6 class="media-heading">
-                                            <a href="{{ path('bdd_show_coaster', {'slug': review.coaster.slug}) }}">
-                                                {{ review.coaster.name }}
-                                            </a>
-                                            -
-                                            <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
-                                                {{ review.coaster.park.name }}
-                                            </a>
-                                        </h6>
-                                        <a href="{{ path('user_profile', {'id': review.user.id}) }}">
-                                            {{ review.user.displayName }}
-                                        </a>
-                                        <span class="media-annotation dotted">
+                <div class="media-body">
+                  <div class="media-heading">
+                    <h6 class="media-heading">
+                      <a href="{{ path('bdd_show_coaster', {'slug': review.coaster.slug}) }}">
+                        {{ review.coaster.name }}
+                      </a>
+                      -
+                      <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
+                        {{ review.coaster.park.name }}
+                      </a>
+                    </h6>
+                    <a href="{{ path('user_profile', {'id': review.user.id}) }}">
+                      {{ review.user.displayName }}
+                    </a>
+                    <span class="media-annotation dotted">
                                             <span class="text-warning">
                                                 {% set low = review.value|round(0, 'floor') %}
-                                                {% for i in 1..low if low > 0 %}
-                                                    <i class="icon-star-full2"></i>
-                                                {% endfor %}
-                                                {% if low < review.value %}
-                                                    <i class="icon-star-half"></i>
-                                                {% endif %}
+                                              {% for i in 1..low if low > 0 %}
+                                                <i class="icon-star-full2"></i>
+                                              {% endfor %}
+                                              {% if low < review.value %}
+                                                <i class="icon-star-half"></i>
+                                              {% endif %}
                                             </span>
                                         </span>
-                                        <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
-                                    </div>
-                                    {% if review.pros|length > 0 or review.cons|length > 0 %}
-                                        <p>
-                                            {% for pros in review.pros %}
-                                                <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
-                                            {% endfor %}
-                                            {% for cons in review.cons %}
-                                                <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
-                                            {% endfor %}
-                                        </p>
-                                    {% endif %}
-                                    {% if review.review %}
-                                        <p>
-                                            {{ review.review|slice(0, 600) }}
-                                            {% if review.review|length > 600 %}...{% endif %}
-                                        </p>
-                                    {% endif %}
-                                    {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
-                                        <ul class="list-inline list-inline-separate text-size-small">
-                                            {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
-                                            {#class="icon-arrow-down22 text-danger"></i></a></li>#}
-                                            <li>
-                                                <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                                                    Modifier mon avis
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    {% endif %}
-                                </div>
-                            </li>
-                        {% endfor %}
+                    <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
+                  </div>
+                  {% if review.pros|length > 0 or review.cons|length > 0 %}
+                    <p>
+                      {% for pros in review.pros %}
+                        <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
+                      {% endfor %}
+                      {% for cons in review.cons %}
+                        <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
+                      {% endfor %}
+                    </p>
+                  {% endif %}
+                  {% if review.review %}
+                    <p>
+                      {{ review.review|slice(0, 600) }}
+                      {% if review.review|length > 600 %}...{% endif %}
+                    </p>
+                  {% endif %}
+                  {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
+                    <ul class="list-inline list-inline-separate text-size-small">
+                      {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
+                      {#class="icon-arrow-down22 text-danger"></i></a></li>#}
+                      <li>
+                        <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
+                          Modifier mon avis
+                        </a>
+                      </li>
                     </ul>
+                  {% endif %}
                 </div>
-            </div>
-            <!-- /latest reviews -->
+              </li>
+            {% endfor %}
+          </ul>
         </div>
+      </div>
+      <!-- /latest reviews -->
     </div>
+  </div>
 {% endblock %}

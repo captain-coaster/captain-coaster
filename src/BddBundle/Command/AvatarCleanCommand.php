@@ -27,7 +27,7 @@ class AvatarCleanCommand extends ContainerAwareCommand
     /**
      * AvatarCleanCommand constructor.
      * @param EntityManager $em
-     * @param Client        $client
+     * @param Client $client
      */
     public function __construct(EntityManager $em, Client $client)
     {
@@ -48,7 +48,7 @@ class AvatarCleanCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
      * @throws \Doctrine\ORM\ORMException

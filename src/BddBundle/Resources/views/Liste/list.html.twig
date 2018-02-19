@@ -1,67 +1,61 @@
 {% extends "base.html.twig" %}
 
+{% import "helper.html.twig" as helper %}
+
 {% set title = 'liste.list.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="row">
-        {% for liste in listes %}
-            <div class="col-lg-4 col-sm-6">
-                <div class="thumbnail">
-                    <div class="caption">
-                        <div class="content-group-sm media">
-                            <div class="media-left">
-                                {% if liste.user.profilePicture %}
-                                    <img src="{{ liste.user.profilePicture }}"
-                                         class="img-circle img-xs"
-                                         alt="{{ liste.user.displayName }}">
-                                {% else %}
-                                    <img src="{{ asset('images/default_user.png') }}"
-                                         alt="{{ liste.user.displayName }}"
-                                         class="img-circle img-sm">
-                                {% endif %}
-                            </div>
-                            <div class="media-body">
-                                <h6 class="text-semibold no-margin">
-                                    <a href="{{ path('liste_show', {'id': liste.id}) }}" class="text-default">
-                                        {{ liste.name }}
-                                    </a>
-                                </h6>
-                                <small class="text-muted">
-                                    {{ 'liste.list.by'|trans }}
-                                    <a href="{{ path('user_profile', {'id': liste.user.id}) }}">
-                                        {{ liste.user.displayName }}
-                                    </a>
-                                </small>
-                            </div>
-                        </div>
-                        <ul class="list-feed">
-                            {% for listeCoaster in liste.listeCoasters|slice(0,3) %}
-                                <li>
-                                    {{ listeCoaster.position }} -
-                                    <a href="{{ path('bdd_show_coaster', {'slug': listeCoaster.coaster.slug}) }}"
-                                       class="text-default">
-                                        {{ listeCoaster.coaster.name }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        <div class="media">
-                            <a href="{{ path('liste_show', {'id': liste.id}) }}">
-                                <i class="icon-circle-right2"></i> {{ 'liste.list.more'|trans }}
-                            </a>
-                        </div>
-                        <ul class="list-inline media">
-                            <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
-                            <li>
-                                <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+  <div class="row">
+    {% for liste in listes %}
+      <div class="col-lg-4 col-sm-6">
+        <div class="thumbnail">
+          <div class="caption">
+            <div class="content-group-sm media">
+              <div class="media-left">
+                {{ helper.profilePicture(liste.user) }}
+              </div>
+              <div class="media-body">
+                <h6 class="text-semibold no-margin">
+                  <a href="{{ path('liste_show', {'id': liste.id}) }}" class="text-default">
+                    {{ liste.name }}
+                  </a>
+                </h6>
+                <small class="text-muted">
+                  {{ 'liste.list.by'|trans }}
+                  <a href="{{ path('user_profile', {'id': liste.user.id}) }}">
+                    {{ liste.user.displayName }}
+                  </a>
+                </small>
+              </div>
             </div>
-        {% endfor %}
-    </div>
-    {{ knp_pagination_render(listes) }}
+            <ul class="list-feed">
+              {% for listeCoaster in liste.listeCoasters|slice(0,3) %}
+                <li>
+                  {{ listeCoaster.position }} -
+                  <a href="{{ path('bdd_show_coaster', {'slug': listeCoaster.coaster.slug}) }}"
+                     class="text-default">
+                    {{ listeCoaster.coaster.name }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+            <div class="media">
+              <a href="{{ path('liste_show', {'id': liste.id}) }}">
+                <i class="icon-circle-right2"></i> {{ 'liste.list.more'|trans }}
+              </a>
+            </div>
+            <ul class="list-inline media">
+              <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+              <li>
+                <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  {{ knp_pagination_render(listes) }}
 {% endblock %}
 

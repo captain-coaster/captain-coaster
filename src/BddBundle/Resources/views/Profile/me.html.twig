@@ -1,95 +1,94 @@
 {% extends "base.html.twig" %}
 
+{% import "helper.html.twig" as helper %}
+
 {% set title = 'me.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
-            <div class="row">
-                <!-- infos user -->
-                <div class="panel">
-                    <div class="panel-body text-center">
-                        <div class="display-inline-block">
-                            <img src="{{ asset(user.profilePicture) }}"
-                                 class="img-circle img-responsive"
-                                 alt="{{ user.displayName }}"
-                                 style="width: 75px; height: 75px;">
-                        </div>
-                        <h6 class="text-semibold no-margin-bottom">
-                            {{ user.displayName }}
-                        </h6>
-                    </div>
-
-                    <div class="list-group no-border no-padding-top">
-                        <a href="{{ path('me_ratings') }}" class="list-group-item">
-                            <i class="icon-stars"></i>
-                            {{ 'navbar.rating'|trans }}
-                            <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
-                        </a>
-                        <a href="{{ path('liste_me') }}" class="list-group-item">
-                            <i class="icon-podium"></i>
-                            {{ 'navbar.topcoasters'|trans }}
-                        </a>
-                        <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
-                            <i class="icon-location3"></i>
-                            {{ 'navbar.my_map'|trans }}
-                        </a>
-                    </div>
-                </div>
-                <!-- /infos user -->
-                <!-- preferences form -->
-                <div class="panel panel-flat">
-                    <div class="panel-heading">
-                        <h6 class="panel-title">{{ 'me.parameters'|trans }}</h6>
-                    </div>
-                    <div class="panel-body">
-                        {{ form_start(form) }}
-                        <div class="form-group">
-                            {{ form_label(form.displayName) }}
-                            {{ form_widget(form.displayName, {'attr': {'class': 'form-control'}}) }}
-                        </div>
-                        <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
-                            <b><i class="icon-circle-right2"></i></b>
-                            {{ 'me.form.save'|trans }}
-                        </button>
-                        <div class="row">
-                            <div class="col-xs-6 text-right">
-
-                            </div>
-                        </div>
-                        {{ form_rest(form) }}
-                        {{ form_end(form) }}
-                    </div>
-                </div>
-                <!-- /preferences form -->
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="row">
+        <!-- infos user -->
+        <div class="panel">
+          <div class="panel-body text-center">
+            <div class="display-inline-block">
+              {{ helper.profilePicture(user) }}
             </div>
-        </div>
-        <div class="col-sm-9">
-            <div class="row">
-                <div class="col-sm-12">
-                    <!-- badges -->
-                    <div class="panel panel-flat">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">{{ 'me.badge'|trans }}</h3>
-                        </div>
+            <h6 class="text-semibold no-margin-bottom">
+              {{ user.displayName }}
+            </h6>
+          </div>
 
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
-                                    <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
-                                </div>
-                                {% for badge in user.badges %}
-                                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
-                                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /badges -->
-                </div>
-            </div>
+          <div class="list-group no-border no-padding-top">
+            <a href="{{ path('me_ratings') }}" class="list-group-item">
+              <i class="icon-stars"></i>
+              {{ 'navbar.rating'|trans }}
+              <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
+            </a>
+            <a href="{{ path('liste_me') }}" class="list-group-item">
+              <i class="icon-podium"></i>
+              {{ 'navbar.topcoasters'|trans }}
+            </a>
+            <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
+              <i class="icon-location3"></i>
+              {{ 'navbar.my_map'|trans }}
+            </a>
+          </div>
         </div>
+        <!-- /infos user -->
+        <!-- preferences form -->
+        <div class="panel panel-flat">
+          <div class="panel-heading">
+            <h6 class="panel-title">{{ 'me.parameters'|trans }}</h6>
+          </div>
+          <div class="panel-body">
+            {{ form_start(form) }}
+            <div class="form-group">
+              {{ form_label(form.displayName) }}
+              {{ form_widget(form.displayName, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
+              <b><i class="icon-circle-right2"></i></b>
+              {{ 'me.form.save'|trans }}
+            </button>
+            <div class="row">
+              <div class="col-xs-6 text-right">
+
+              </div>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+          </div>
+        </div>
+        <!-- /preferences form -->
+      </div>
     </div>
+    <div class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-12">
+          <!-- badges -->
+          <div class="panel panel-flat">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{ 'me.badge'|trans }}</h3>
+            </div>
+
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
+                  <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
+                </div>
+                {% for badge in user.badges %}
+                  <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
+                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <!-- /badges -->
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}

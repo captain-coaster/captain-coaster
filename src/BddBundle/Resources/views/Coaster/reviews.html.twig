@@ -1,94 +1,90 @@
+{% import "helper.html.twig" as helper %}
+
 <div class="row">
-    <!-- Comments -->
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h6 class="panel-title text-semiold">
-                {{ 'review.title'|trans }}
-                &nbsp;<span class="badge badge-primary">{{ reviews|length }}</span>
-            </h6>
-            <div class="pull-right">
-                <a class="text-muted" href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
-                    {{ 'review.send'|trans() }}
-                </a>
-            </div>
-        </div>
-
-        <div class="panel-body">
-            <ul class="media-list stack-media-on-mobile">
-                {% for review in reviews %}
-                    <li class="media">
-                        <div class="media-left">
-                            {% if review.user.profilePicture %}
-                                <img src="{{ review.user.profilepicture }}"
-                                     class="img-circle img-sm"
-                                     alt="{{ review.user.displayName }}">
-                            {% else %}
-                                <img src="{{ asset('images/default_user.png') }}"
-                                     alt="{{ review.user.displayName }}"
-                                     class="img-circle img-sm">
-                            {% endif %}
-                        </div>
-
-                        <div class="media-body">
-                            <div class="media-heading">
-                                <a href="{{ path('user_profile', {'id': review.user.id}) }}">
-                                    {{ review.user.displayName }}
-                                </a>
-                                <span class="media-annotation dotted">
-                                            <span class="text-warning">
-                                                {% set low = review.value|round(0, 'floor') %}
-                                                {% for i in 1..low if low > 0 %}
-                                                    <i class="icon-star-full2"></i>
-                                                {% endfor %}
-                                                {% if low < review.value %}
-                                                    <i class="icon-star-half"></i>
-                                                {% endif %}
-                                            </span>
-                                        </span>
-                                <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
-                            </div>
-                            {% if review.pros|length > 0 or review.cons|length > 0 %}
-                                <p>
-                                    {% for pros in review.pros %}
-                                        <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
-                                    {% endfor %}
-                                    {% for cons in review.cons %}
-                                        <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                            {% if review.review %}
-                                <p>{{ review.review }}</p>
-                            {% endif %}
-                            {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
-                                <ul class="list-inline list-inline-separate text-size-small">
-                                    {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
-                                    {#class="icon-arrow-down22 text-danger"></i></a></li>#}
-                                    <li>
-                                        <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                                            {{ 'review.update'|trans }}
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a onclick="deleteRating({{ review.coaster.id }}, $(this).closest('li.media'))">
-                                            {{ 'review.delete'|trans }}
-                                        </a>
-                                    </li>
-                                </ul>
-                            {% endif %}
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div class="panel-body">
-            <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
-                <button type="button" class="btn bg-blue">
-                    <i class="icon-plus22"></i>
-                    {{ 'review.send'| trans() }}
-                </button>
-            </a>
-        </div>
+  <!-- Comments -->
+  <div class="panel panel-flat">
+    <div class="panel-heading">
+      <h6 class="panel-title text-semiold">
+        {{ 'review.title'|trans }}
+        &nbsp;<span class="badge badge-primary">{{ reviews|length }}</span>
+      </h6>
+      <div class="pull-right">
+        <a class="text-muted" href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+          {{ 'review.send'|trans() }}
+        </a>
+      </div>
     </div>
-    <!-- /comments -->
+
+    <div class="panel-body">
+      <ul class="media-list stack-media-on-mobile">
+        {% for review in reviews %}
+          <li class="media">
+            <div class="media-left">
+              {{ helper.profilePicture(review.user, 'img-circle img-xs') }}
+            </div>
+
+            <div class="media-body">
+              <div class="media-heading">
+                <a href="{{ path('user_profile', {'id': review.user.id}) }}">
+                  {{ review.user.displayName }}
+                </a>
+                <span class="media-annotation dotted">
+                  <span class="text-warning">
+                      {% set low = review.value|round(0, 'floor') %}
+                    {% for i in 1..low if low > 0 %}
+                      <i class="icon-star-full2"></i>
+                    {% endfor %}
+                    {% if low < review.value %}
+                      <i class="icon-star-half"></i>
+                    {% endif %}
+                  </span>
+                </span>
+                <span class="media-annotation dotted">
+                  {{ review.updatedAt|ago }}
+                </span>
+              </div>
+              {% if review.pros|length > 0 or review.cons|length > 0 %}
+                <p>
+                  {% for pros in review.pros %}
+                    <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
+                  {% endfor %}
+                  {% for cons in review.cons %}
+                    <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
+                  {% endfor %}
+                </p>
+              {% endif %}
+              {% if review.review %}
+                <p>{{ review.review }}</p>
+              {% endif %}
+              {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
+                <ul class="list-inline list-inline-separate text-size-small">
+                  {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
+                  {#class="icon-arrow-down22 text-danger"></i></a></li>#}
+                  <li>
+                    <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
+                      {{ 'review.update'|trans }}
+                    </a>
+                  </li>
+                  <li>
+                    <a onclick="deleteRating({{ review.coaster.id }}, $(this).closest('li.media'))">
+                      {{ 'review.delete'|trans }}
+                    </a>
+                  </li>
+                </ul>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="panel-body">
+      <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+        <button type="button" class="btn bg-blue">
+          <i class="icon-plus22"></i>
+          {{ 'review.send'| trans() }}
+        </button>
+      </a>
+    </div>
+  </div>
+  <!-- /comments -->
 </div>
