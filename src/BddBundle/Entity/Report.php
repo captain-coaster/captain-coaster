@@ -83,6 +83,13 @@ class Report
     private $status = self::STATUS_DRAFT;
 
     /**
+     * @var mixed
+     *
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\LikeReport", mappedBy="report")
+     */
+    private $likes;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="creationDate", type="datetime")
@@ -299,6 +306,25 @@ class Report
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLikes()
+    {
+        return $this->likes;
+    }
+
+    /**
+     * @param mixed $likes
+     * @return Report
+     */
+    public function setLikes($likes): Report
+    {
+        $this->likes = $likes;
+
+        return $this;
     }
 
     /**
