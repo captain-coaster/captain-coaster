@@ -98,11 +98,14 @@ class ProfileController extends Controller
      * @Route("/me/reports", name="me_reports")
      * @Method({"GET"})
      * @Security("is_granted('ROLE_USER')")
+     * @param EntityManager $em
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function myReportsAction(EntityManager $em)
     {
         $reports = $em->getRepository('BddBundle:Report')->findBy(
-            ['user' => $this->getUser()]
+            ['user' => $this->getUser()],
+            ['updateDate' => 'desc']
         );
 
         return $this->render(

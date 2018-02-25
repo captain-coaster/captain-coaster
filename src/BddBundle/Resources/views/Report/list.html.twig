@@ -14,7 +14,7 @@
         <div class="panel panel-flat">
           <div class="panel-body">
             <div class="thumb content-group">
-              <img src="assets/images/placeholder.jpg" alt="" class="img-responsive">
+              <img src="{{ report.cover | imagine_filter('report_list') }}" alt="" class="img-responsive">
               <div class="caption-overflow">
                 <span>
                   <a href="blog_single.html" class="btn btn-flat border-white text-white btn-rounded btn-icon"><i

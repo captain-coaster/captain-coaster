@@ -16,7 +16,8 @@
     {% for report in reports %}
       <li class="media panel panel-body stack-media-on-mobile">
         <div class="media-left">
-          <img src="{{ asset('images/nophoto.png') }}" class="img-rounded"
+          {#<img src="{{ asset('images/nophoto.png') }}" class="img-rounded"#}
+          <img src="{{ asset('uploads/brochures/' ~ report.cover) }}" class="img-rounded"
                style="width:150px;" alt="El Toro">
         </div>
 

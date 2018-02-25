@@ -8,61 +8,96 @@
 {% endblock %}
 
 {% block stylesheets %}
-  <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Roboto+Slab:300" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
   <style>
-    .report p {
+    .panel-body {
+      margin: 0 auto;
+      max-width: 800px;
+    }
+
+    .report h1, .report h2, .report p {
       font-family: 'Crimson Text', serif;
+    }
+
+    .report p {
       font-size: 22px;
       line-height: 1.58;
       letter-spacing: -.003em;
     }
 
     .report h1 {
-      font-family: Georgia, Cambria, "Times New Roman", Times, serif !important;
-      font-style: normal !important;
-      font-weight: 500 !important;
-      font-size: 56px;
-      color: rgba(0, 0, 0, .84);
-      line-height: 64px;
+      font-size: 36px;
       letter-spacing: .023em;
     }
 
     .report h2 {
-      font-family: Georgia, Cambria, "Times New Roman", Times, serif !important;
-      font-style: normal !important;
-      font-weight: 500 !important;
-      font-size: 45px;
-      color: rgba(0, 0, 0, .84);
-      line-height: 64px;
+      font-size: 26px;
       letter-spacing: .023em;
     }
   </style>
 {% endblock %}
 
 {% block wide_body %}
-  <div class="content report">
-    <div class="panel">
-      <div class="panel-body">
-        <div class="content-group-lg">
-          <h1 class="report text-semibold mb-5">
-            {{ report.title }}
-          </h1>
+  <div class="content">
+    <div class="report">
+      <div class="panel">
+        <div class="panel-body">
+          <div class="content-group-lg">
+            <h1 class="report text-semibold mb-5">
+              {{ report.title }}
+            </h1>
 
-          <ul class="list-inline list-inline-separate text-muted content-group">
-            <li>A {{ report.park.name }}, le {{ report.visitDate|date('d/m/Y') }}</li>
-            <li>{{ report.user.displayName }}</li>
-            <li>{{ report.viewsNumber }} views</li>
-            <li class="text-pink">
-              <i class="icon-heart6 text-size-base text-pink position-left"></i>{{ report.likes|length }}
-            </li>
-          </ul>
+            <ul class="list-inline list-inline-separate text-muted content-group">
+              <li>A {{ report.park.name }}, le {{ report.visitDate|date('d/m/Y') }}</li>
+              <li>{{ report.user.displayName }}</li>
+              <li>{{ report.viewsNumber }} views</li>
+              <li class="text-pink">
+                <i class="icon-heart6 text-size-base text-pink position-left"></i>{{ report.likes|length }}
+              </li>
+            </ul>
 
-          <div class="report content-group">
-            {{ report.content|raw }}
+            <div class="content-group text-center">
+              <img
+                  src="{{ report.cover | imagine_filter('report_cover') }}"
+                  class="img-responsive img-rounded"
+                  alt=""
+              >
+            </div>
+
+            <div class="report content-group">
+              {{ report.content|raw }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-6">
+        <div class="panel panel-body">
+          <div class="media">
+            <div class="media-left">
+              <a href="assets/images/demo/images/3.png" data-popup="lightbox">
+                <img src="assets/images/demo/users/face2.jpg" style="width: 70px; height: 70px;" class="img-circle img-md"
+                     alt="">
+              </a>
+            </div>
+
+            <div class="media-body">
+              <h6 class="media-heading">Nathan Jacobson</h6>
+              <p class="text-muted">Lead UX designer</p>
+
+              <ul class="icons-list">
+                <li><a href="#" data-popup="tooltip" title="" data-container="body" data-original-title="Google Drive"><i
+                        class="icon-google-drive"></i></a></li>
+                <li><a href="#" data-popup="tooltip" title="" data-container="body" data-original-title="Twitter"><i
+                        class="icon-twitter"></i></a></li>
+                <li><a href="#" data-popup="tooltip" title="" data-container="body" data-original-title="Github"><i
+                        class="icon-github"></i></a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 {% endblock %}

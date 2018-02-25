@@ -4,6 +4,7 @@ namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Report
@@ -67,6 +68,13 @@ class Report
      * @ORM\Column(name="content", type="text", nullable=true)
      */
     private $content;
+
+    /**
+     * @var string
+     * @ORM\Column(name="cover", type="string", length=255, nullable=true)
+     * @Assert\File(mimeTypes={ "image/jpeg", "image/png" })
+     */
+    private $cover;
 
     /**
      * @var int
@@ -258,6 +266,25 @@ class Report
     public function getContent()
     {
         return $this->content;
+    }
+
+    /**
+     * @param string $cover
+     * @return Report
+     */
+    public function setCover($cover): Report
+    {
+        $this->cover = $cover;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCover()
+    {
+        return $this->cover;
     }
 
     /**

@@ -82,11 +82,13 @@ liip_imagine:
         default:
             filesystem:
                 data_root: '%base_path_images%'
+        report_cover:
+            filesystem:
+                data_root: '%report_cover_directory%'
     resolvers:
         default:
             web_path: ~
     filter_sets:
-        cache: ~
         thumb_coaster:
             quality: 90
             filters:
@@ -103,6 +105,16 @@ liip_imagine:
             quality: 95
             filters:
                 thumbnail: { size: [275, 200], mode: outbound }
+        report_list:
+            data_loader: 'report_cover'
+            quality: 100
+            filters:
+                thumbnail: { size: [334, 250], mode: outbound }
+        report_cover:
+            data_loader: 'report_cover'
+            quality: 100
+            filters:
+                thumbnail: { size: [800, 400], mode: outbound }
 
 fos_user:
     db_driver: orm
