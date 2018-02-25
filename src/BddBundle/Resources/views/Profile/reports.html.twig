@@ -12,69 +12,65 @@
 {% endblock %}
 
 {% block body %}
+  <ul class="media-list">
     {% for report in reports %}
-        <ul class="media-list">
-            <li class="media panel panel-body stack-media-on-mobile">
-                <div class="media-left">
-                    <img src="{{ asset('images/nophoto.png') }}" class="img-rounded"
-                         style="width:150px;" alt="El Toro">
-                </div>
+      <li class="media panel panel-body stack-media-on-mobile">
+        <div class="media-left">
+          <img src="{{ asset('images/nophoto.png') }}" class="img-rounded"
+               style="width:150px;" alt="El Toro">
+        </div>
 
-                <div class="media-body">
-                    <h6 class="media-heading text-semibold">
-                        <a href="#">{{ report.park.name }}</a>
-                    </h6>
-                    <ul class="list-inline list-inline-separate mb-10">
-                        <li><a href="#" class="text-muted">{{ report.language|trans }}</a></li>
-                        <li><a href="#" class="text-muted">{{ report.visitDate|date('d/m/Y') }}</a></li>
-                    </ul>
-                    {% if report.content %}
-                        <p class="content-group-sm">{{ report.content }}</p>
-                    {% endif %}
-                </div>
-
-                <div class="media-right text-center">
-                    {% if report.status == 'draft' %}
-                        <span class="label label-warning label-roundless">Draft</span>
-                    {% endif %}
-                    {#<span class="label label-success label-roundless">Published</span>#}
-                    {#<span class="label label-warning label-roundless">Pending</span>#}
-                </div>
-
-                <div class="panel-footer panel-footer-transparent">
-                    <a class="heading-elements-toggle">
-                        <i class="icon-more"></i>
-                    </a>
-                    <div class="heading-elements no-padding-right">
-                        <ul class="list-inline list-inline-condensed heading-text">
-                            <li>
-                                <i class="icon-eye4 position-left"></i>
-                                {{ report.viewsNumber }}
-                            </li>
-                            <li>
-                                <i class="icon-comment-discussion position-left"></i>
-                                10
-                            </li>
-                            <li>
-                                <i class="icon-thumbs-up2"></i>
-                                24
-                            </li>
-                        </ul>
-                        <span class="heading-btn pull-right">
-                            <a href="{{ path('reports_write', {'id': report.id}) }}">
-                                <button type="button" class="btn bg-primary-400 btn-labeled btn-labeled-right">
-                                    <b><i class="icon-circle-right2"></i></b>
-                                    {% if report.content %}
-                                        Edit report
-                                    {% else %}
-                                        {{ 'report.form.nextstep'|trans }}
-                                    {% endif %}
-                                </button>
-                            </a>
-                        </span>
-                    </div>
-                </div>
+        <div class="media-body">
+          <ul class="list-inline list-inline-separate">
+            <li>
+              {% if report.status == 'draft' %}
+                <span class="label label-warning label-roundless">Draft</span>
+              {% endif %}
             </li>
-        </ul>
+            <li>
+              <h6 class="media-heading text-semibold">
+                <a href="#">{{ report.title }}</a>
+              </h6>
+            </li>
+          </ul>
+          <ul class="text-muted list-inline list-inline-separate mb-10">
+            <li>{{ report.park.name }}</li>
+            <li>{{ report.visitDate|date('d/m/Y') }}</li>
+          </ul>
+          {% if report.content %}
+            <p class="content-group-sm">
+              {{ report.content|striptags|slice(0, 400) }}
+              {% if report.content|length > 400 %}...{% endif %}
+            </p>
+          {% endif %}
+          <ul class="text-muted list-inline list-inline-separate mb-10">
+            <li>
+              <i class="icon-eye4 position-left"></i>{{ report.viewsNumber }}
+            </li>
+            <li>
+              <i class="icon-comment-discussion position-left"></i>
+              10
+            </li>
+            <li>
+              <i class="icon-heart5"></i>
+              {{ report.likes|length }}
+            </li>
+          </ul>
+        </div>
+
+        <div class="media-right text-center">
+          <a href="{{ path('reports_write', {'id': report.id}) }}">
+            <button type="button" class="btn bg-primary-400 btn-labeled btn-labeled-right">
+              <b><i class="icon-circle-right2"></i></b>
+              {% if report.content %}
+                Edit report
+              {% else %}
+                {{ 'report.form.nextstep'|trans }}
+              {% endif %}
+            </button>
+          </a>
+        </div>
+      </li>
     {% endfor %}
+  </ul>
 {% endblock %}

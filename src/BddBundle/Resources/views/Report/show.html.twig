@@ -7,5 +7,62 @@
   <meta name="description" content="{{ 'report.new.description'|trans }}"/>
 {% endblock %}
 
-{% block body %}
+{% block stylesheets %}
+  <link href="https://fonts.googleapis.com/css?family=Crimson+Text|Roboto+Slab:300" rel="stylesheet">
+  <style>
+    .report p {
+      font-family: 'Crimson Text', serif;
+      font-size: 22px;
+      line-height: 1.58;
+      letter-spacing: -.003em;
+    }
+
+    .report h1 {
+      font-family: Georgia, Cambria, "Times New Roman", Times, serif !important;
+      font-style: normal !important;
+      font-weight: 500 !important;
+      font-size: 56px;
+      color: rgba(0, 0, 0, .84);
+      line-height: 64px;
+      letter-spacing: .023em;
+    }
+
+    .report h2 {
+      font-family: Georgia, Cambria, "Times New Roman", Times, serif !important;
+      font-style: normal !important;
+      font-weight: 500 !important;
+      font-size: 45px;
+      color: rgba(0, 0, 0, .84);
+      line-height: 64px;
+      letter-spacing: .023em;
+    }
+  </style>
+{% endblock %}
+
+{% block wide_body %}
+  <div class="content report">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="content-group-lg">
+          <h1 class="report text-semibold mb-5">
+            {{ report.title }}
+          </h1>
+
+          <ul class="list-inline list-inline-separate text-muted content-group">
+            <li>A {{ report.park.name }}, le {{ report.visitDate|date('d/m/Y') }}</li>
+            <li>{{ report.user.displayName }}</li>
+            <li>{{ report.viewsNumber }} views</li>
+            <li class="text-pink">
+              <i class="icon-heart6 text-size-base text-pink position-left"></i>{{ report.likes|length }}
+            </li>
+          </ul>
+
+          <div class="report content-group">
+            {{ report.content|raw }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}

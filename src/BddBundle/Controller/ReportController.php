@@ -114,7 +114,7 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/{id}", requirements={"id" = "\d+"}, name="reports_view")
+     * @Route("/{id}", requirements={"id" = "\d+"}, name="reports_show")
      * @Method({"GET"})
      * @param Report $report
      * @param EntityManagerInterface $em
