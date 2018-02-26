@@ -48,3 +48,7 @@ services:
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]
+
+    BddBundle\Service\FileUploader:
+        arguments:
+            $targetDir: '%report_images_directory%'

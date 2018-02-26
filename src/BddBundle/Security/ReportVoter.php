@@ -11,6 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ReportVoter extends Voter
 {
     const EDIT = 'edit';
+    const LIKE = 'like';
 
     /**
      * @var AccessDecisionManagerInterface
@@ -65,6 +66,8 @@ class ReportVoter extends Voter
         switch ($attribute) {
             case self::EDIT:
                 return $this->canEdit($subject, $user);
+            case self::LIKE:
+                return $this->canLike($subject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -78,5 +81,10 @@ class ReportVoter extends Voter
     private function canEdit(Report $report, User $user)
     {
         return $user === $report->getUser();
+    }
+
+    private function canLike(Report $report, User $user)
+    {
+        return $user !== $report->getUser();
     }
 }
