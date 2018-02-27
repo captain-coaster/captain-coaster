@@ -25,7 +25,7 @@
             </div>
 
             <h5 class="text-semibold mb-5">
-              <a href="{{ path('reports_show', {'id': report.id}) }}" class="text-default">
+              <a href="{{ path('reports_show', {'id': report.id, 'decorativeSlug': report.slug}) }}" class="text-default">
                 {{ report.title }}
               </a>
             </h5>
@@ -48,7 +48,7 @@
                 <li>{{ report.viewsNumber }} views</li>
               </ul>
 
-              <a href="{{ path('reports_show', {'id': report.id}) }}" class="heading-text pull-right">
+              <a href="{{ path('reports_show', {'id': report.id, 'decorativeSlug': report.slug}) }}" class="heading-text pull-right">
                 Read more
                 <i class="icon-arrow-right14 position-right"></i>
               </a>

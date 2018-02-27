@@ -27,7 +27,7 @@ class ReportController extends Controller
     /**
      * @Route("/new", name="reports_new")
      * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
      * @param FileUploader $fileUploader
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -70,7 +70,7 @@ class ReportController extends Controller
     /**
      * @Route("/{id}/write", requirements={"id" = "\d+"}, name="reports_write")
      * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
      * @param Report $report
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -102,7 +102,7 @@ class ReportController extends Controller
     /**
      * @Route("/{id}/content", requirements={"id" = "\d+"}, name="reports_update_content", options = {"expose" = true})
      * @Method({"POST"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
      * @param Report $report
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -122,8 +122,9 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/{id}", requirements={"id" = "\d+"}, name="reports_show")
+     * @Route("/{id}-{decorativeSlug}", requirements={"id" = "\d+", "decorativeSlug" = "[a-z0-9\-]*"}, name="reports_show")
      * @Method({"GET"})
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Report $report
      * @param EntityManagerInterface $em
      * @return Response
@@ -143,7 +144,7 @@ class ReportController extends Controller
     /**
      * @Route("/{id}/like", name="reports_toogle_like")
      * @Method({"GET"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Report $report
      * @param EntityManagerInterface $em
      * @return JsonResponse
@@ -172,6 +173,7 @@ class ReportController extends Controller
 
     /**
      * @Route("/upload", name="reports_upload")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
      * @param FileUploader $fileUploader
      * @return JsonResponse
@@ -187,7 +189,7 @@ class ReportController extends Controller
 
         $fileName = $fileUploader->upload($image);
 
-        $url = 'http://localhost:8000/uploads/reports/images/'.$fileName;
+        $url = $this->get('assets.packages')->getUrl(sprintf('uploads/reports/%s', $fileName));
 
         return new JsonResponse(['url' => $url]);
     }
@@ -195,6 +197,7 @@ class ReportController extends Controller
     /**
      * @Route("/", name="reports_list")
      * @Method({"GET"})
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @return Response
      */
     public function listAction()

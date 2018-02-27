@@ -1,64 +1,71 @@
 <div class="sidebar sidebar-main sidebar-fixed">
-    <div class="sidebar-content">
-        <!-- Main navigation -->
-        <div class="sidebar-category sidebar-category-visible">
-            <div class="category-content no-padding">
-                <ul class="navigation navigation-main navigation-accordion">
-                    <!-- Main -->
-                    <li class="active">
-                        <a href="{{ path('bdd_index') }}">
-                            <i class="icon-home4"></i> <span>{{ 'sidebar.index'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('search_index') }}">
-                            <i class="icon-search4"></i> <span>{{ 'sidebar.search'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('coaster_ranking') }}">
-                            <i class="icon-trophy2"></i> <span>{{ 'sidebar.coastersRanking'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('user_list') }}">
-                            <i class="icon-users4"></i> <span>{{ 'sidebar.users'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('map_index') }}">
-                            <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('liste_list') }}">
-                            <i class="icon-podium"></i> <span>{{ 'sidebar.liste'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('review_list') }}">
-                            <i class="icon-megaphone"></i> <span>{{ 'sidebar.review'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ path('default_contact') }}">
-                            <i class="icon-mail5"></i> <span>{{ 'sidebar.contact'|trans }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                            <a href="{{ path('logout') }}">
-                                <i class="icon-switch2"></i> <span>{{ 'sidebar.logout'|trans }}</span>
-                            </a>
-                        {% else %}
-                            <a href="{{ path('hwi_oauth_connect') }}">
-                                <i class="icon-lock"></i> <span>{{ 'sidebar.login'|trans }}</span>
-                            </a>
-                        {% endif %}
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <!-- /main navigation -->
+  <div class="sidebar-content">
+    <!-- Main navigation -->
+    <div class="sidebar-category sidebar-category-visible">
+      <div class="category-content no-padding">
+        <ul class="navigation navigation-main navigation-accordion">
+          <!-- Main -->
+          <li class="active">
+            <a href="{{ path('bdd_index') }}">
+              <i class="icon-home4"></i> <span>{{ 'sidebar.index'|trans }}</span>
+            </a>
+          </li>
+          {% if is_granted('ROLE_PREVIEW_FEATURE') %}
+            <li>
+              <a href="{{ path('reports_list') }}">
+                <i class="icon-location3"></i> {{ 'sidebar.report'|trans }}
+              </a>
+            </li>
+          {% endif %}
+          <li>
+            <a href="{{ path('search_index') }}">
+              <i class="icon-search4"></i> <span>{{ 'sidebar.search'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('coaster_ranking') }}">
+              <i class="icon-trophy2"></i> <span>{{ 'sidebar.coastersRanking'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('user_list') }}">
+              <i class="icon-users4"></i> <span>{{ 'sidebar.users'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('map_index') }}">
+              <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('liste_list') }}">
+              <i class="icon-podium"></i> <span>{{ 'sidebar.liste'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('review_list') }}">
+              <i class="icon-megaphone"></i> <span>{{ 'sidebar.review'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('default_contact') }}">
+              <i class="icon-mail5"></i> <span>{{ 'sidebar.contact'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+              <a href="{{ path('logout') }}">
+                <i class="icon-switch2"></i> <span>{{ 'sidebar.logout'|trans }}</span>
+              </a>
+            {% else %}
+              <a href="{{ path('hwi_oauth_connect') }}">
+                <i class="icon-lock"></i> <span>{{ 'sidebar.login'|trans }}</span>
+              </a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
     </div>
+    <!-- /main navigation -->
+  </div>
 </div>

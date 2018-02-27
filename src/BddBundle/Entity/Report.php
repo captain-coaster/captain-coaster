@@ -51,6 +51,20 @@ class Report
     /**
      * @var string
      *
+     * @ORM\Column(name="slug", type="string", length=255, unique=false, nullable=false)
+     * @Gedmo\Slug(fields={"title"}, updatable=true, separator="-", handlers={
+     *      @Gedmo\SlugHandler(class="BddBundle\Handler\CustomRelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="park"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="-")
+     *      })
+     * })
+     */
+    private $slug;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="language", type="string", length=255)
      */
     private $language;
@@ -352,6 +366,25 @@ class Report
         $this->likes = $likes;
 
         return $this;
+    }
+
+    /**
+     * @param string $slug
+     * @return Report
+     */
+    public function setSlug(string $slug): Report
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
 
     /**

@@ -155,9 +155,11 @@ navbar:
     logout: 'Logout'
     topcoasters: 'My Top Coasters'
     my_map: 'My map'
+    report: 'My Trip Reports'
 
 sidebar:
     index: 'Home'
+    report: 'Trip Reports'
     search: 'Search a coaster'
     coastersRanking: 'Best coasters'
     users: 'User''s ranking'

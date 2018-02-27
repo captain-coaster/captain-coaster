@@ -150,9 +150,11 @@ navbar:
     logout: 'Se déconnecter'
     topcoasters: 'Mon Top Coasters'
     my_map: 'Ma carte'
+    report: 'Mes Trip Reports'
 
 sidebar:
     index: 'Accueil'
+    report: 'Les Trip Reports'
     search: 'Rechercher un coaster'
     coastersRanking: 'Meilleurs coasters'
     users: 'Palmarès des membres'
