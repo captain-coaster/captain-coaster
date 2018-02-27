@@ -84,7 +84,7 @@ liip_imagine:
                 data_root: '%base_path_images%'
         report_cover:
             filesystem:
-                data_root: '%report_cover_directory%'
+                data_root: '%report_images_directory%'
     resolvers:
         default:
             web_path: ~

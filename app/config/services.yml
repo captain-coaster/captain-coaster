@@ -36,15 +36,6 @@ services:
     BddBundle\Service\ImageService:
         arguments: ['%base_path_images%', '%base_url_images%']
 
-    BddBundle\Service\BadgeService:
-        public: true
-
-    BddBundle\Service\RankingService:
-        public: true
-
-    BddBundle\Service\StatService:
-        public: true
-
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]
