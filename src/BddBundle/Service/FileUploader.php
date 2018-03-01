@@ -4,26 +4,49 @@ namespace BddBundle\Service;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class FileUploader
+abstract class FileUploader
 {
+    /**
+     * @var string
+     */
     private $targetDir;
 
-    public function __construct($targetDir)
+    /**
+     * FileUploader constructor.
+     * @param string $targetDir
+     */
+    public function __construct(string $targetDir)
     {
         $this->targetDir = $targetDir;
     }
 
+    /**
+     * @param UploadedFile $file
+     * @return string
+     */
     public function upload(UploadedFile $file)
     {
-        $fileName = md5(uniqid()).'.'.$file->guessExtension();
+        $fileName = $this->getFileName($file);
 
         $file->move($this->getTargetDir(), $fileName);
 
         return $fileName;
     }
 
+    /**
+     * @return string
+     */
     public function getTargetDir()
     {
         return $this->targetDir;
+    }
+
+    /**
+     * @param UploadedFile $file
+     * @return string
+     */
+    private function getFileName(UploadedFile $file)
+    {
+        return md5(uniqid()).'.'.$file->guessExtension();
     }
 }

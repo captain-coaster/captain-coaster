@@ -25,7 +25,9 @@ parameters:
     # Images
     base_path_images: '/Users/florian/Sites/backup/cw-legacy/photo'
     base_url_images: 'images/coasters/{coasterId}/big/{fileName}'
-    report_images_directory: '%kernel.project_dir%/web/uploads/reports'
+    base_upload_path: '%kernel.project_dir%/web/upload'
+    report_cover_directory: '%base_upload_path%/report/cover'
+    report_image_directory: '%base_upload_path%/report/image'
 
     # Coaster
     default_coaster_id: 2183

@@ -37,6 +37,32 @@
   </style>
 {% endblock %}
 
+{% block javascripts %}
+  <script>
+      function toggleLike(e) {
+          const xhr = new XMLHttpRequest();
+          const url = Routing.generate(
+              'reports_toogle_like',
+              {id: {{ report.id }}, '_locale': '{{ app.request.locale }}'}
+          );
+          xhr.open('GET', url, true);
+          xhr.onload = () => {
+              if (xhr.status === 200) {
+                  var result = JSON.parse(xhr.responseText).like;
+                  if(result) {
+                      e.innerHTML = 'Unlike';
+                  } else {
+                      e.innerHTML = 'Like';
+                  }
+              } else {
+                  console.log('error toggle like');
+              }
+          }
+          xhr.send();
+      }
+  </script>
+{% endblock %}
+
 {% block wide_body %}
   <div class="content">
     <div class="report">
@@ -60,7 +86,7 @@
               <img
                   src="{{ report.cover | imagine_filter('report_cover') }}"
                   class="img-responsive img-rounded"
-                  alt=""
+                  alt="{{ report.title }}"
               >
             </div>
 
@@ -85,6 +111,13 @@
             <div class="media-body">
               <h6 class="media-heading">Nathan Jacobson</h6>
               <p class="text-muted">Lead UX designer</p>
+              <button onclick="toggleLike(this);">
+                {% if report.hasLiked(app.user) %}
+                  Unlike
+                {% else %}
+                  Like
+                {% endif %}
+              </button>
 
               <ul class="icons-list">
                 <li><a href="#" data-popup="tooltip" title="" data-container="body" data-original-title="Google Drive"><i

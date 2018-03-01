@@ -7,6 +7,8 @@ use BddBundle\Entity\Report;
 use BddBundle\Form\Type\ReportCreateType;
 use BddBundle\Form\Type\ReportWriteType;
 use BddBundle\Service\FileUploader;
+use BddBundle\Service\ReportCoverUploader;
+use BddBundle\Service\ReportImageUploader;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -29,10 +31,10 @@ class ReportController extends Controller
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
-     * @param FileUploader $fileUploader
+     * @param ReportCoverUploader $uploader
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function newAction(Request $request, FileUploader $fileUploader)
+    public function newAction(Request $request, ReportCoverUploader $uploader)
     {
         $report = new Report();
         $report->setUser($this->getUser());
@@ -49,7 +51,7 @@ class ReportController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $cover */
             $cover = $report->getCover();
-            $fileName = $fileUploader->upload($cover);
+            $fileName = $uploader->upload($cover);
             $report->setCover($fileName);
 
             $em = $this->getDoctrine()->getManager();
@@ -142,7 +144,7 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/{id}/like", name="reports_toogle_like")
+     * @Route("/{id}/like", name="reports_toogle_like", options = {"expose" = true})
      * @Method({"GET"})
      * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Report $report
@@ -151,7 +153,7 @@ class ReportController extends Controller
      */
     public function toggleLikeAction(Report $report, EntityManagerInterface $em)
     {
-        $this->denyAccessUnlessGranted('like', $report);
+        //$this->denyAccessUnlessGranted('like', $report);
 
         $user = $this->getUser();
         $like = $em->getRepository('BddBundle:LikeReport')->findOneBy(['user' => $user, 'report' => $report]);
@@ -175,19 +177,15 @@ class ReportController extends Controller
      * @Route("/upload", name="reports_upload")
      * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
-     * @param FileUploader $fileUploader
+     * @param ReportImageUploader $uploader
      * @return JsonResponse
      * @throws \Exception
      */
-    public function uploadImageAction(Request $request, FileUploader $fileUploader)
+    public function uploadImageAction(Request $request, ReportImageUploader $uploader)
     {
         $image = $request->files->get('image');
 
-        if (!$image instanceof UploadedFile) {
-            throw new \Exception('error');
-        }
-
-        $fileName = $fileUploader->upload($image);
+        $fileName = $uploader->upload($image);
 
         $url = $this->get('assets.packages')->getUrl(sprintf('uploads/reports/%s', $fileName));
 
@@ -203,7 +201,7 @@ class ReportController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $reports = $em->getRepository('BddBundle:Report')->findBy([], ['updateDate' => 'desc'], 10);
+        $reports = $em->getRepository('BddBundle:Report')->findBy(['status' => 'published'], ['updateDate' => 'desc'], 9);
 
         return $this->render(
             'BddBundle:Report:list.html.twig',

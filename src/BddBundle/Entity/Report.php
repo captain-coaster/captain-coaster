@@ -86,7 +86,12 @@ class Report
     /**
      * @var string
      * @ORM\Column(name="cover", type="string", length=255, nullable=true)
-     * @Assert\File(mimeTypes={ "image/jpeg", "image/png" })
+     * @Assert\Image(
+     *     mimeTypes={"image/jpeg", "image/png"},
+     *     minWidth = 800,
+     *     minHeight = 200
+     * )
+     * @Assert\File(maxSize = "4M")
      */
     private $cover;
 
@@ -433,5 +438,12 @@ class Report
     public function getUpdateDate()
     {
         return $this->updateDate;
+    }
+
+    public function hasLiked(User $user)
+    {
+        return !$this->getLikes(function(LikeReport $like) use ($user) {
+            return $like->getUser() === $user;
+        })->isEmpty();
     }
 }
