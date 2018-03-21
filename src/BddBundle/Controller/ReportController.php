@@ -201,7 +201,8 @@ class ReportController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $reports = $em->getRepository('BddBundle:Report')->findBy(['status' => 'published'], ['updateDate' => 'desc'], 9);
+        $reports = $em->getRepository('BddBundle:Report')->findBy([], ['updateDate' => 'desc'], 9);
+//        $reports = $em->getRepository('BddBundle:Report')->findBy(['status' => 'published'], ['updateDate' => 'desc'], 9);
 
         return $this->render(
             'BddBundle:Report:list.html.twig',

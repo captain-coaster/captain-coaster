@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'report.new.title'|trans %}
+{% set title = 'report.me.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% set openedSidebar = true %}
@@ -12,12 +12,29 @@
 {% endblock %}
 
 {% block body %}
+  <div class="panel panel-body stack-media-on-mobile">
+    <div class="media-left">
+      <a href="#" class="btn btn-link btn-icon text-teal">
+        <i class="icon-question7 icon-2x no-edge-top"></i>
+      </a>
+    </div>
+
+    <div class="media-body media-middle">
+      <h6 class="media-heading text-semibold">Envie de partager ta journée dans un parc ?</h6>
+      Commence à écrire maintenant un nouveau trip report.
+    </div>
+
+    <div class="media-right media-middle">
+      <a href="{{ path('reports_new') }}" class="btn bg-warning-400 btn-lg"><i class="icon-mail5 position-left"></i>
+        Write a new trip report
+      </a>
+    </div>
+  </div>
   <ul class="media-list">
     {% for report in reports %}
       <li class="media panel panel-body stack-media-on-mobile">
         <div class="media-left">
-          {#<img src="{{ asset('images/nophoto.png') }}" class="img-rounded"#}
-          <img src="{{ asset('uploads/brochures/' ~ report.cover) }}" class="img-rounded"
+          <img src="{{ asset(report.cover | imagine_filter('report_thumb')) }}" class="img-rounded"
                style="width:150px;" alt="El Toro">
         </div>
 

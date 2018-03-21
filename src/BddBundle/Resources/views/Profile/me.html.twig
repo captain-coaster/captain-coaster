@@ -27,11 +27,10 @@
               <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
             </a>
             {% if is_granted('ROLE_PREVIEW_FEATURE') %}
-              <li>
-                <a href="{{ path('me_reports') }}">
-                  <i class="icon-location3"></i> {{ 'navbar.report'|trans }}
-                </a>
-              </li>
+              <a href="{{ path('me_reports') }}" class="list-group-item">
+                <i class="icon-location3"></i>
+                {{ 'navbar.report'|trans }}
+              </a>
             {% endif %}
             <a href="{{ path('liste_me') }}" class="list-group-item">
               <i class="icon-podium"></i>

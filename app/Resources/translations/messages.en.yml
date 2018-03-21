@@ -216,8 +216,13 @@ badge:
 
 report:
     new:
-        title: 'My Park Report'
-        description: ''
+        title: 'My new Trip Report'
+    write:
+        title: 'Edit my Trip Report'
+    me:
+        title: 'My Trip Reports'
+    list:
+        title: 'Trip Reports'
     info:
         header: 'Share your visit with us !'
         text: 'You spent a beautiful day in a park and you want to share it with us ? Or was it a

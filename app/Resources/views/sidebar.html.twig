@@ -13,7 +13,7 @@
           {% if is_granted('ROLE_PREVIEW_FEATURE') %}
             <li>
               <a href="{{ path('reports_list') }}">
-                <i class="icon-location3"></i> {{ 'sidebar.report'|trans }}
+                <i class="icon-location3"></i> <span>{{ 'sidebar.report'|trans }}</span>
               </a>
             </li>
           {% endif %}

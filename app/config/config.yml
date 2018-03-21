@@ -78,13 +78,14 @@ swiftmailer:
     spool: { type: memory }
 
 liip_imagine:
+    driver: 'imagick'
     loaders:
         default:
             filesystem:
                 data_root: '%base_path_images%'
         report_cover:
             filesystem:
-                data_root: '%report_images_directory%'
+                data_root: '%report_image_directory%'
     resolvers:
         default:
             web_path: ~
@@ -115,6 +116,11 @@ liip_imagine:
             quality: 100
             filters:
                 thumbnail: { size: [800, 400], mode: outbound }
+        report_thumb:
+            data_loader: 'report_cover'
+            quality: 100
+            filters:
+                thumbnail: { size: [150, 113], mode: outbound }
 
 fos_user:
     db_driver: orm
@@ -172,7 +178,7 @@ knp_paginator:
         sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
 
 eight_points_guzzle:
-    logging: %kernel.debug%
+    logging: '%kernel.debug%'
     clients:
         avatar:
             options:
