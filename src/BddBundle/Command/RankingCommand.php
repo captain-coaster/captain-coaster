@@ -2,6 +2,7 @@
 
 namespace BddBundle\Command;
 
+use BddBundle\Service\RankingService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -10,8 +11,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RankingCommand extends ContainerAwareCommand
 {
     /**
-     *
+     * @var RankingService
      */
+    private $rankingService;
+
+    /**
+     * RankingCommand constructor.
+     * @param RankingService $rankingService
+     */
+    public function __construct(RankingService $rankingService)
+    {
+        parent::__construct();
+
+        $this->rankingService = $rankingService;
+    }
+
     protected function configure()
     {
         $this
@@ -21,17 +35,18 @@ class RankingCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
+     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln('Starting update ranking command.');
 
-        $rankingService = $this->getContainer()->get('BddBundle\Service\RankingService');
-
-        $result = $rankingService->updateRanking($input->getOption('dry-run'));
+        $result = $this->rankingService->updateRanking($input->getOption('dry-run'));
 
         if ($input->getOption('debug')) {
             foreach ($result as $coaster) {

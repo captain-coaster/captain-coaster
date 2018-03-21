@@ -39,7 +39,7 @@ class ImageService
         // Symlink from web to photo folder
         $absolutePath = $this->basePath.str_replace(['{coasterId}', '{fileName}'], [$coasterId, ''], $this->baseUrl);
 
-        if(!$this->isDirectory($absolutePath)) {
+        if (!$this->isDirectory($absolutePath)) {
             return $urls;
         }
 
@@ -78,7 +78,11 @@ class ImageService
         return $urls;
     }
 
-    private function isDirectory($path)
+    /**
+     * @param string $path
+     * @return bool
+     */
+    private function isDirectory(string $path): bool
     {
         $fs = new Filesystem();
 

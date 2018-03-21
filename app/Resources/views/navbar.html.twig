@@ -18,6 +18,9 @@
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
+      <li class="navbar-text">
+        <span id="editor-saved" class="label bg-success"></span>
+      </li>
       <!-- language switcher -->
       <li class="dropdown language-switch">
         <a class="dropdown-toggle" data-toggle="dropdown">
@@ -91,6 +94,13 @@
                 <i class="icon-podium"></i> {{ 'navbar.topcoasters'|trans }}
               </a>
             </li>
+            {% if is_granted('ROLE_PREVIEW_FEATURE') %}
+              <li>
+                <a href="{{ path('me_reports', {'id': app.user.id}) }}">
+                  <i class="icon-location3"></i> {{ 'navbar.report'|trans }}
+                </a>
+              </li>
+            {% endif %}
             <li>
               <a href="{{ path('me_ratings') }}">
                 <i class="icon-stars"></i> {{ 'navbar.rating'|trans }}

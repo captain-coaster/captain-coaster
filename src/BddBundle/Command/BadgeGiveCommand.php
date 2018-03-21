@@ -2,6 +2,7 @@
 
 namespace BddBundle\Command;
 
+use BddBundle\Service\BadgeService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -10,14 +11,35 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class BadgeGiveCommand extends ContainerAwareCommand
 {
+    /**
+     * @var BadgeService
+     */
+    private $badgeService;
+
+    /**
+     * BadgeGiveCommand constructor.
+     * @param BadgeService $badgeService
+     */
+    public function __construct(BadgeService $badgeService)
+    {
+        parent::__construct();
+
+        $this->badgeService = $badgeService;
+    }
+
     protected function configure()
     {
         $this
             ->setName('badge:give')
             ->setDescription('Give badges to users')
-            ->addArgument('user', InputArgument::OPTIONAL, 'Argument description');
+            ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $stopwatch = new Stopwatch();
@@ -38,10 +60,8 @@ class BadgeGiveCommand extends ContainerAwareCommand
                 ->findAll();
         }
 
-        $badgeService = $this->getContainer()->get('BddBundle\Service\BadgeService');
-
         foreach ($users as $user) {
-            $badgeService->give($user);
+            $this->badgeService->give($user);
         }
 
         $output->writeln('End of command.');

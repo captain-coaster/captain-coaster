@@ -50,7 +50,7 @@ class ReviewController extends Controller
     }
 
     /**
-     * Create ur update a review
+     * Create or update a review
      *
      * @param Request $request
      * @param Coaster $coaster

@@ -9,351 +9,353 @@
 {#{% endblock %}#}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
-            {% if coaster.isRateable %}
-                <!-- score -->
-                <div class="panel panel-body">
-                    <div class="media no-margin">
-                        {% if coaster.score %}
-                            {% set hue = coaster.score * 1.2 %}
-                            <div class="media-left">
-                                <i style="color: hsl({{ hue }},50%,50%)" class="icon-heart6 icon-3x"></i>
-                            </div>
-                            <div class="media-body text-right">
-                                <h3 class="no-margin text-semibold text-right" style="color: hsl({{ hue }},50%,50%)">
-                                    {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
-                                </h3>
-                                {# @todo optimize this #}
-                                {% set page = (coaster.rank / 20)|round(0, 'ceil') %}
-                                <a href="{{ path('coaster_ranking', {'page': page}) }}" class="text-muted">
-                                    {{ 'coaster.score.ranked'|trans }}
-                                    <span class="badge badge-flat border-grey text-grey-600">#{{ coaster.rank }}</span>
-                                    {{ 'coaster.score.intheworld'|trans }}
-                                </a>
-                            </div>
-                            {% if coaster.mainTags|length > 0 %}
-                            <p class="mt-20">
-                                {% for mainTag in coaster.mainTags %}
-                                    {%  if mainTag.tag.type == 'pro' %}
-                                        <span class="label label-success label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
-                                    {% else %}
-                                        <span class="label label-danger label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
-                                    {% endif %}
-                                {% endfor %}
-                            </p>
-                            {% endif %}
-                        {% else %}
-                            <div class="media-body">
+  <div class="row">
+    <div class="col-sm-3">
+      {% if coaster.isRateable %}
+        <!-- score -->
+        <div class="panel panel-body">
+          <div class="media no-margin">
+            {% if coaster.score %}
+              {% set hue = coaster.score * 1.2 %}
+              <div class="media-left">
+                <i style="color: hsl({{ hue }},50%,50%)" class="icon-heart6 icon-3x"></i>
+              </div>
+              <div class="media-body text-right">
+                <h3 class="no-margin text-semibold text-right" style="color: hsl({{ hue }},50%,50%)">
+                  {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
+                </h3>
+                {# @todo optimize this #}
+                {% set page = (coaster.rank / 20)|round(0, 'ceil') %}
+                <a href="{{ path('coaster_ranking', {'page': page}) }}" class="text-muted">
+                  {{ 'coaster.score.ranked'|trans }}
+                  <span class="badge badge-flat border-grey text-grey-600">#{{ coaster.rank }}</span>
+                  {{ 'coaster.score.intheworld'|trans }}
+                </a>
+              </div>
+              {% if coaster.mainTags|length > 0 %}
+                <p class="mt-20">
+                  {% for mainTag in coaster.mainTags %}
+                    {% if mainTag.tag.type == 'pro' %}
+                      <span
+                          class="label label-success label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
+                    {% else %}
+                      <span
+                          class="label label-danger label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
+                    {% endif %}
+                  {% endfor %}
+                </p>
+              {% endif %}
+            {% else %}
+              <div class="media-body">
                                 <span class="text-size-small text-muted">
                                     {{ 'coaster.rating.notenough'|trans }}
                                 </span>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <!-- /score -->
-                <!-- star rating -->
-                <div class="panel panel-body border-top-primary text-center">
-                    <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
-                    <br/>
-                    {% if is_granted('ROLE_USER') %}
-                        <div class="rating-coaster"
-                             data-coaster="{{ coaster.id }}"
-                             data-rateit-value="{{ rating.value|default(0) }}"
-                             style="font-size: 22px;"></div>
-                        <p class="no-margin-bottom mt-10">
-                            <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
-                                {{ 'coaster.rating.sendreview'|trans }}
-                            </a>
-                        </p>
-                    {% else %}
-                        <p class="text-muted content-group-sm">
-                            {{ 'coaster.rating.mustlogin'|trans }}
-                        </p>
-                        <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
-                    {% endif %}
-                </div>
-                <!-- /star rating -->
+              </div>
             {% endif %}
-            <!-- main carac -->
-            <div class="content-group">
-                <div class="row row-seamless btn-block-group">
-                    <div class="col-xs-6">
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
-                            <i class="icon-arrow-up8 text-warning-600"></i>
-                            <span class="text-bold">
+          </div>
+        </div>
+        <!-- /score -->
+        <!-- star rating -->
+        <div class="panel panel-body border-top-primary text-center">
+          <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
+          <br/>
+          {% if is_granted('ROLE_USER') %}
+            <div class="rating-coaster"
+                 data-coaster="{{ coaster.id }}"
+                 data-rateit-value="{{ rating.value|default(0) }}"
+                 style="font-size: 22px;"></div>
+            <p class="no-margin-bottom mt-10">
+              <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
+                {{ 'coaster.rating.sendreview'|trans }}
+              </a>
+            </p>
+          {% else %}
+            <p class="text-muted content-group-sm">
+              {{ 'coaster.rating.mustlogin'|trans }}
+            </p>
+            <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
+          {% endif %}
+        </div>
+        <!-- /star rating -->
+      {% endif %}
+      <!-- main carac -->
+      <div class="content-group">
+        <div class="row row-seamless btn-block-group">
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+              <i class="icon-arrow-up8 text-warning-600"></i>
+              <span class="text-bold">
                                 {% if coaster.builtCoaster.height is not empty %}
-                                    {{ coaster.builtCoaster.height ~ ' m' }}
+                                  {{ coaster.builtCoaster.height ~ ' m' }}
                                 {% else %}
-                                    &nbsp;
+                                  &nbsp;
                                 {% endif %}
                             </span>
-                        </button>
+            </button>
 
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
-                            <i class="icon-rocket text-success-400"></i>
-                            <span class="text-bold">
+            <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+              <i class="icon-rocket text-success-400"></i>
+              <span class="text-bold">
                                 {% if coaster.builtCoaster.speed is not empty %}
-                                    {{ coaster.builtCoaster.speed ~ ' km/h' }}
+                                  {{ coaster.builtCoaster.speed ~ ' km/h' }}
                                 {% else %}
-                                    &nbsp;
+                                  &nbsp;
                                 {% endif %}
                             </span>
-                        </button>
-                    </div>
+            </button>
+          </div>
 
-                    <div class="col-xs-6">
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
-                            <i class="icon-rulers text-blue"></i>
-                            <span class="text-bold">
+          <div class="col-xs-6">
+            <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+              <i class="icon-rulers text-blue"></i>
+              <span class="text-bold">
                                 {% if coaster.builtCoaster.length is not empty %}
-                                    {{ coaster.builtCoaster.length ~ ' m' }}
+                                  {{ coaster.builtCoaster.length ~ ' m' }}
                                 {% else %}
-                                    &nbsp;
+                                  &nbsp;
                                 {% endif %}
                             </span>
-                        </button>
+            </button>
 
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
-                            <i class="icon-spinner11 text-danger-400"></i>
-                            <span class="text-bold">{{ coaster.builtCoaster.inversionsNumber|default('0') }}</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <!-- /main carac -->
-            <!-- coaster details -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h6>
-                        {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
-                    </h6>
-                </div>
+            <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+              <i class="icon-spinner11 text-danger-400"></i>
+              <span class="text-bold">{{ coaster.builtCoaster.inversionsNumber|default('0') }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- /main carac -->
+      <!-- coaster details -->
+      <div class="panel panel-white">
+        <div class="panel-heading">
+          <h6>
+            {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
+          </h6>
+        </div>
 
-                <div class="list-group no-border">
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}:</label>
-                        <div class="pull-right">
+        <div class="list-group no-border">
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}:</label>
+            <div class="pull-right">
                             <span class="label label-{{ coaster.status.type }} bg-{{ coaster.status.type }}">
                                 {{ coaster.status.name|trans([], 'database') }}
                             </span>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}:</label>
-                        <div class="pull-right">
-                            <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
-                                {{ coaster.park.name }}
-                            </a>
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
-                            :</label>
-                        <div class="pull-right">{{ coaster.park.country.name|trans([], 'database') }}</div>
-                    </div>
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>
-                        <div class="pull-right">
-                            {{ coaster.builtCoaster.types|join(', ') }}
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}:</label>
-                        <div class="pull-right">
-                            {% for launch in coaster.builtCoaster.launchs %}
-                                {{ launch|trans([], 'database') }}
-                                {% if not loop.last %},{% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
-                            :</label>
-                        <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
-                    </div>
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
-                            :</label>
-                        <div class="pull-right">{{ coaster.builtCoaster.restraint.name|trans([], 'database') }}</div>
-                    </div>
-                    {% if coaster.builtCoaster.gForce %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.forces'|trans }}
-                                :</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
-                        </div>
-                    {% endif %}
-                    {% if coaster.builtCoaster.duration %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.duration'|trans }}
-                                :</label>
-                            <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
-                        </div>
-                    {% endif %}
-                    {% if coaster.openingDate %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
-                                :</label>
-                            <div class="pull-right">
-                                {% if coaster.openingDate|date("dm") == "0101" %}
-                                    {{ coaster.openingDate|date("Y") }}
-                                {% else %}
-                                    {{ coaster.openingDate|date("d/m/Y") }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if coaster.closingDate %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
-                                :</label>
-                            <div class="pull-right">
-                                {% if coaster.closingDate|date("dm") == "0101" %}
-                                    {{ coaster.closingDate|date("Y") }}
-                                {% else %}
-                                    {{ coaster.closingDate|date("d/m/Y") }}
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if coaster.vr %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
-                            <div class="pull-right"><i class="icon-checkmark3"></i></div>
-                        </div>
-                    {% endif %}
-                    {% if coaster.price %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
-                                :</label>
-                            <div class="pull-right">
-                                {{ coaster.price|number_format(0, ',', ' ') }} {{ coaster.currency.symbol }}
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
             </div>
-            <!-- /coaster details -->
-            <!-- coasters in park -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h6>
-                        {{ 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}) }}
-                        &nbsp;<span class="badge badge-primary">{{ coaster.park.coasters|length }}</span>
-                    </h6>
-                </div>
-                <div class="list-group no-border">
-                    {% for otherCoaster in coaster.park.coasters %}
-                        <div class="list-group-item">
-                            <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
-                            <a href="{{ path('bdd_show_coaster', {'slug': otherCoaster.slug}) }}">
-                                {{ otherCoaster.name }}
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
+          </div>
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}:</label>
+            <div class="pull-right">
+              <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                {{ coaster.park.name }}
+              </a>
             </div>
-            <!-- /coasters in park -->
-            <!-- coaster location -->
-            {% if coaster.park.latitude and coaster.park.longitude %}
-                <div class="panel panel-flat">
-                    <div class="panel-heading">
-                        <h5 class="panel-title">{{ 'coaster.location'|trans }}</h5>
-                    </div>
-                    <div class="panel-body">
-                        <div id="map-coaster" class="map-container" style="height:250px;"></div>
-                    </div>
-                </div>
-            {% endif %}
-            <!-- /coaster location -->
+          </div>
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
+              :</label>
+            <div class="pull-right">{{ coaster.park.country.name|trans([], 'database') }}</div>
+          </div>
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>
+            <div class="pull-right">
+              {{ coaster.builtCoaster.types|join(', ') }}
+            </div>
+          </div>
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}:</label>
+            <div class="pull-right">
+              {% for launch in coaster.builtCoaster.launchs %}
+                {{ launch|trans([], 'database') }}
+                {% if not loop.last %},{% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
+              :</label>
+            <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
+          </div>
+          <div class="list-group-item">
+            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
+              :</label>
+            <div class="pull-right">{{ coaster.builtCoaster.restraint.name|trans([], 'database') }}</div>
+          </div>
+          {% if coaster.builtCoaster.gForce %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.forces'|trans }}
+                :</label>
+              <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
+            </div>
+          {% endif %}
+          {% if coaster.builtCoaster.duration %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.duration'|trans }}
+                :</label>
+              <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
+            </div>
+          {% endif %}
+          {% if coaster.openingDate %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
+                :</label>
+              <div class="pull-right">
+                {% if coaster.openingDate|date("dm") == "0101" %}
+                  {{ coaster.openingDate|date("Y") }}
+                {% else %}
+                  {{ coaster.openingDate|date("d/m/Y") }}
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          {% if coaster.closingDate %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
+                :</label>
+              <div class="pull-right">
+                {% if coaster.closingDate|date("dm") == "0101" %}
+                  {{ coaster.closingDate|date("Y") }}
+                {% else %}
+                  {{ coaster.closingDate|date("d/m/Y") }}
+                {% endif %}
+              </div>
+            </div>
+          {% endif %}
+          {% if coaster.vr %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
+              <div class="pull-right"><i class="icon-checkmark3"></i></div>
+            </div>
+          {% endif %}
+          {% if coaster.price %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
+                :</label>
+              <div class="pull-right">
+                {{ coaster.price|number_format(0, ',', ' ') }} {{ coaster.currency.symbol }}
+              </div>
+            </div>
+          {% endif %}
         </div>
-
-        <div class="col-sm-9">
-            <!-- photos -->
-            {% if images|length > 0 %}
-                <div class="row">
-                    <div class="panel panel-flat border-top-blue">
-                        <div class="panel-heading">
-                            <h6>{{ 'coaster.photos'|trans }}</h6>
-                        </div>
-                        <div class="panel-body no-border no-padding-top">
-                            {% for imagePath in images %}
-                                {% if loop.index < 9 %}
-                                    <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
-                                        <a style="margin: 10px;" href="{{ asset(imagePath) }}" data-popup="lightbox"
-                                           rel="gallery">
-                                            <div class="thumb">
-                                                <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}"
-                                                     alt="">
-                                            </div>
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            <!-- /photos -->
-            <!-- reviews -->
-            {% if reviews|length > 0 %}
-                {% include 'BddBundle:Coaster:reviews.html.twig' with {'reviews': reviews} only %}
-            {% endif %}
-            <!-- /reviews -->
+      </div>
+      <!-- /coaster details -->
+      <!-- coasters in park -->
+      <div class="panel panel-white">
+        <div class="panel-heading">
+          <h6>
+            {{ 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}) }}
+            &nbsp;<span class="badge badge-primary">{{ coaster.park.coasters|length }}</span>
+          </h6>
         </div>
+        <div class="list-group no-border">
+          {% for otherCoaster in coaster.park.coasters %}
+            <div class="list-group-item">
+              <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
+              <a href="{{ path('bdd_show_coaster', {'slug': otherCoaster.slug}) }}">
+                {{ otherCoaster.name }}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- /coasters in park -->
+      <!-- coaster location -->
+      {% if coaster.park.latitude and coaster.park.longitude %}
+        <div class="panel panel-flat">
+          <div class="panel-heading">
+            <h5 class="panel-title">{{ 'coaster.location'|trans }}</h5>
+          </div>
+          <div class="panel-body">
+            <div id="map-coaster" class="map-container" style="height:250px;"></div>
+          </div>
+        </div>
+      {% endif %}
+      <!-- /coaster location -->
     </div>
+
+    <div class="col-sm-9">
+      <!-- photos -->
+      {% if images|length > 0 %}
+        <div class="row">
+          <div class="panel panel-flat border-top-blue">
+            <div class="panel-heading">
+              <h6>{{ 'coaster.photos'|trans }}</h6>
+            </div>
+            <div class="panel-body no-border no-padding-top">
+              {% for imagePath in images %}
+                {% if loop.index < 9 %}
+                  <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
+                    <a style="margin: 10px;" href="{{ asset(imagePath) }}" data-popup="lightbox"
+                       rel="gallery">
+                      <div class="thumb">
+                        <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}"
+                             alt="">
+                      </div>
+                    </a>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endif %}
+      <!-- /photos -->
+      <!-- reviews -->
+      {% if reviews|length > 0 %}
+        {% include 'BddBundle:Coaster:reviews.html.twig' with {'reviews': reviews} only %}
+      {% endif %}
+      <!-- /reviews -->
+    </div>
+  </div>
 {% endblock %}
 
 {% block javascripts %}
-    <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-    <script src="{{ asset('js/pages/rating.js') }}"></script>
-    {% if coaster.park.latitude and coaster.park.longitude %}
-        <script>
-            function initMap() {
-                var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
-                var map = new google.maps.Map(document.getElementById('map-coaster'), {
-                    zoom: 14,
-                    center: uluru
-                });
-                var marker = new google.maps.Marker({
-                    position: uluru,
-                    map: map
-                });
-            }
-        </script>
-        <script async defer
-                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
-        </script>
-    {% endif %}
-    <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
+  <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
+  <script src="{{ asset('js/pages/rating.js') }}"></script>
+  {% if coaster.park.latitude and coaster.park.longitude %}
     <script>
-        $(function () {
-            // Initialize lightbox
-            $('[data-popup="lightbox"]').fancybox({
-                padding: 3
-            })
-        });
+        function initMap() {
+            var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
+            var map = new google.maps.Map(document.getElementById('map-coaster'), {
+                zoom: 14,
+                center: uluru
+            });
+            var marker = new google.maps.Marker({
+                position: uluru,
+                map: map
+            });
+        }
     </script>
-    {% if coaster.score is not null %}
-        <script type="application/ld+json">
-            {
-              "@context": "http://schema.org/",
-              "@type": "Product",
-              "name": "{{ coaster.name }}",
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "{{ coaster.score|number_format('1', ',') }}",
-                "bestRating": "100",
-                "worstRating": "0",
-                "reviewCount": "{{ coaster.ratings|length }}"
-              }
-            }
-        </script>
-    {% endif %}
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
+    </script>
+  {% endif %}
+  <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
+  <script>
+      $(function () {
+          // Initialize lightbox
+          $('[data-popup="lightbox"]').fancybox({
+              padding: 3
+          })
+      });
+  </script>
+  {% if coaster.score is not null %}
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org/",
+        "@type": "Product",
+        "name": "{{ coaster.name }}",
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "{{ coaster.score|number_format('1', ',') }}",
+          "bestRating": "100",
+          "worstRating": "0",
+          "reviewCount": "{{ coaster.ratings|length }}"
+        }
+      }
+    </script>
+  {% endif %}
 {% endblock %}
 
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+  <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
 {% endblock %}

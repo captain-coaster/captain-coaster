@@ -2,14 +2,30 @@
 
 namespace BddBundle\Security;
 
-use BddBundle\Entity\Liste;
+use BddBundle\Entity\Report;
 use BddBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ListeVoter extends Voter
+class ReportVoter extends Voter
 {
     const EDIT = 'edit';
+    const LIKE = 'like';
+
+    /**
+     * @var AccessDecisionManagerInterface
+     */
+    private $decisionManager;
+
+    /**
+     * ReportVoter constructor.
+     * @param AccessDecisionManagerInterface $decisionManager
+     */
+    public function __construct(AccessDecisionManagerInterface $decisionManager)
+    {
+        $this->decisionManager = $decisionManager;
+    }
 
     /**
      * @param string $attribute
@@ -22,7 +38,7 @@ class ListeVoter extends Voter
             return false;
         }
 
-        if (!$subject instanceof Liste) {
+        if (!$subject instanceof Report) {
             return false;
         }
 
@@ -43,21 +59,32 @@ class ListeVoter extends Voter
             return false;
         }
 
+        if ($this->decisionManager->decide($token, array('ROLE_SUPER_ADMIN'))) {
+            return true;
+        }
+
         switch ($attribute) {
             case self::EDIT:
                 return $this->canEdit($subject, $user);
+            case self::LIKE:
+                return $this->canLike($subject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
     /**
-     * @param Liste $post
+     * @param Report $report
      * @param User $user
      * @return bool
      */
-    private function canEdit(Liste $post, User $user)
+    private function canEdit(Report $report, User $user)
     {
-        return $user === $post->getUser();
+        return $user === $report->getUser();
+    }
+
+    private function canLike(Report $report, User $user)
+    {
+        return $user !== $report->getUser();
     }
 }
