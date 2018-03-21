@@ -22,6 +22,7 @@
         <span id="editor-saved" class="label bg-success"></span>
       </li>
       <!-- language switcher -->
+      {% if app.request.attributes.get('_route') %}
       <li class="dropdown language-switch">
         <a class="dropdown-toggle" data-toggle="dropdown">
           {{ app.request.locale|trans }}
@@ -33,13 +34,14 @@
           {% set params = route_params|merge(app.request.query.all) %}
           {% for locale in locales if locale != app.request.locale %}
             <li>
-              <a href="{{ path(route, params|merge({ _locale: locale })) }}">
+              <a href="{{ path(route, params|merge({ _locale: 'fr' })) }}">
                 {{ locale|trans }}
               </a>
             </li>
           {% endfor %}
         </ul>
       </li>
+      {% endif %}
       <!-- /language switcher -->
       <!-- notifications -->
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
