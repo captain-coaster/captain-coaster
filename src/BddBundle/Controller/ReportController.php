@@ -107,14 +107,17 @@ class ReportController extends Controller
      * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
      * @param Report $report
+     * @param \HTMLPurifier $purifier
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function updateContentAction(Request $request, Report $report)
+    public function updateContentAction(Request $request, Report $report, \HTMLPurifier $purifier)
     {
         $this->denyAccessUnlessGranted('edit', $report);
 
-        $content = $request->request->get('content');
-        $report->setContent($content);
+        $dangerousContent = $request->request->get('content');
+        $secureContent = $purifier->purify($dangerousContent);
+
+        $report->setContent($secureContent);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($report);
@@ -189,7 +192,7 @@ class ReportController extends Controller
 
         $fileName = $uploader->upload($image);
 
-        $url = $this->get('assets.packages')->getUrl(sprintf('uploads/reports/%s', $fileName));
+        $url = $this->get('assets.packages')->getUrl(sprintf('upload/report/image/%s', $fileName));
 
         return new JsonResponse(['url' => $url]);
     }
