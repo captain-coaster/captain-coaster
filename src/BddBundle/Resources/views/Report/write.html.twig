@@ -160,7 +160,7 @@
 
 {% block body %}
   <div id="editor">
-    {{ report.content|raw|default('Once upon a time...') }}
+    {{ report.content|raw }}
   </div>
   <br/>
   <button type="button" onclick="saveContent();" class="btn btn-primary">
