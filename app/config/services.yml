@@ -39,10 +39,12 @@ services:
     BddBundle\Service\ReportCoverUploader:
         arguments:
             $targetDir: '%report_cover_directory%'
+            $imageManipulator: '@BddBundle\Service\ImageManipulationService'
 
     BddBundle\Service\ReportImageUploader:
         arguments:
             $targetDir: '%report_image_directory%'
+            $imageManipulator: '@BddBundle\Service\ImageManipulationService'
 
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider

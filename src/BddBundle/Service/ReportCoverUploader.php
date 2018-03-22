@@ -7,18 +7,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ReportCoverUploader extends FileUploader
 {
     /**
-     * @var ImageManipulationService
-     */
-    private $imageManipulator;
-
-    /**
      * @param string $targetDir
      * @param ImageManipulationService $imageManipulator
      */
     public function construct(string $targetDir, ImageManipulationService $imageManipulator)
     {
-        parent::__construct($targetDir);
-        $this->imageManipulator = $imageManipulator;
+        parent::__construct($targetDir, $imageManipulator);
     }
 
     /**

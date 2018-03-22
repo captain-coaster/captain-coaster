@@ -9,15 +9,22 @@ abstract class FileUploader
     /**
      * @var string
      */
-    private $targetDir;
+    protected $targetDir;
+
+    /**
+     * @var ImageManipulationService
+     */
+    protected $imageManipulator;
 
     /**
      * FileUploader constructor.
      * @param string $targetDir
+     * @param ImageManipulationService $imageManipulator
      */
-    public function __construct(string $targetDir)
+    public function __construct(string $targetDir, ImageManipulationService $imageManipulator)
     {
         $this->targetDir = $targetDir;
+        $this->imageManipulator = $imageManipulator;
     }
 
     /**
