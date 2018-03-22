@@ -159,12 +159,9 @@
 {% endblock %}
 
 {% block body %}
-  <div id="editor">
-    {{ report.content|raw }}
-  </div>
+  <div id="editor">{{ report.content|raw }}</div>
   <br/>
   <button type="button" onclick="saveContent();" class="btn btn-primary">
     <i class="icon-floppy-disk position-left"></i> Save
   </button>
-  {#{{ form(form) }}#}
 {% endblock %}

@@ -225,6 +225,7 @@ report:
         language: 'Langue du TR'
         conditions: 'J''accepte les conditions de Captain Coaster.'
         nextstep: 'Commencer à écrire !'
+        title: 'Titre'
 
 
 

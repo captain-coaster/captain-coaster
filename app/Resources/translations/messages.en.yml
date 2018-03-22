@@ -235,6 +235,7 @@ report:
         language: 'Language'
         conditions: 'I accept the Conditions of Use of Captain Coaster.'
         nextstep: 'Start writing my review !'
+        title: 'Title'
 
 error:
     404:

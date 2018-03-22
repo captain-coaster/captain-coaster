@@ -153,6 +153,7 @@ class ReportController extends Controller
      */
     public function toggleLikeAction(Report $report, EntityManagerInterface $em)
     {
+        // à réactiver après les tests
         //$this->denyAccessUnlessGranted('like', $report);
 
         $user = $this->getUser();
@@ -174,7 +175,8 @@ class ReportController extends Controller
     }
 
     /**
-     * @Route("/upload", name="reports_upload")
+     * @Route("/upload", name="reports_upload", options = {"expose" = true})
+     * @Method({"POST"})
      * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      * @param Request $request
      * @param ReportImageUploader $uploader
