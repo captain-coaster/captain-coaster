@@ -51,7 +51,10 @@
           fd.append('image', file);
 
           const xhr = new XMLHttpRequest();
-          const url = Routing.generate('reports_upload');
+          const url = Routing.generate(
+              'reports_upload',
+              {'_locale': '{{ app.request.locale }}'}
+          );
           xhr.open('POST', url, true);
           xhr.onload = () => {
               if (xhr.status === 200) {
