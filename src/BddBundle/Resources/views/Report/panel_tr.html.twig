@@ -19,7 +19,7 @@
 
     <ul class="list-inline list-inline-separate text-muted content-group">
       <li>{{ report.user.displayName }}</li>
-      <li>July 20th, 2016</li>
+      <li>{{ report.visitDate|date }}</li>
     </ul>
 
     {{ report.content|striptags|slice(0, 200) }}
