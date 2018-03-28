@@ -34,7 +34,7 @@
           {% set params = route_params|merge(app.request.query.all) %}
           {% for locale in locales if locale != app.request.locale %}
             <li>
-              <a href="{{ path(route, params|merge({ _locale: 'fr' })) }}">
+              <a href="{{ path(route, params|merge({ _locale: locale })) }}">
                 {{ locale|trans }}
               </a>
             </li>
