@@ -46,6 +46,13 @@ services:
             $targetDir: '%report_image_directory%'
             $imageManipulator: '@BddBundle\Service\ImageManipulationService'
 
+    BddBundle\Service\BannerMaker:
+        arguments:
+            $imagine: '@liip_imagine.imagick'
+            $fontPath: '%banner_font_path%'
+            $targetPath: '%banner_target_path%'
+            $backgroundPath: '%banner_background_path%'
+
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]

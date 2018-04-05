@@ -4,6 +4,7 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\User;
 use BddBundle\Form\Type\ProfileType;
+use BddBundle\Service\BannerMaker;
 use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -21,9 +22,12 @@ class ProfileController extends Controller
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function meAction(Request $request)
+    public function meAction(Request $request, BannerMaker $bannerMaker)
     {
         $user = $this->getUser();
+
+        // @todo async
+        $bannerMaker->makeBanner($user);
 
         /** @var Form $form */
         $form = $this->createForm(

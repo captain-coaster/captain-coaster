@@ -116,6 +116,11 @@ me:
         displayName: 'I want to appear as'
         save: 'Save'
     badge: 'Badges'
+    banner:
+        title: 'Personal banner'
+        text: 'Here is your personal banner, to make the World know about your favorites coasters !'
+        getbbcode: 'Copy BBCode (forums)'
+        gethtml: 'Copy html'
 
 liste:
     list:

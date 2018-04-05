@@ -111,7 +111,11 @@ me:
         displayName: 'Je souhaite apparaître en tant que'
         save: 'OK'
     badge: 'Badges'
-
+    banner:
+        title: 'Bannière personnalisée'
+        text: 'Voici ta bannière personnalisée, pour afficher fièrement tes coasters et ton Top !'
+        getbbcode: 'Copier le BBCode (forums)'
+        gethtml: 'Copier en html'
 liste:
     list:
         title: 'Les derniers Tops'

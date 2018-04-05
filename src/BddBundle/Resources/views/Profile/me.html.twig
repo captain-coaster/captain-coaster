@@ -73,6 +73,37 @@
     <div class="col-sm-9">
       <div class="row">
         <div class="col-sm-12">
+
+          <div class="panel">
+            <div class="panel-body">
+              <h4 class="content-group-lg">
+                {{ 'me.banner.title'|trans }}
+                <small class="display-block">{{ 'me.banner.text'|trans }}</small>
+              </h4>
+              <div class="text-center content-group">
+                <img src="{{ asset('images/banners/' ~ user.id ~ '.png') }}"/>
+              </div>
+              <div class="col-sm-12 text-right">
+                <ul class="list-inline no-margin-bottom">
+                  <li>
+                    {% set bbcode = '[url='~ absolute_url(path('user_profile', {'id': user.id})) ~'][img]'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'[/img][/url]' %}
+                    {% set htmlcode = '<a href="'~ absolute_url(path('user_profile', {'id': user.id})) ~'"><img src="'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'"/></a>' %}
+                    <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
+                      <i class="icon-copy position-left"></i>
+                      {{ 'me.banner.getbbcode'|trans }}
+                    </a>
+                  </li>
+                  <li>
+                    <a onclick="copy(this);" class="btn btn-link" data-copy="{{ htmlcode }}">
+                      <i class="icon-copy2 position-left"></i>
+                      {{ 'me.banner.gethtml'|trans }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
           <!-- badges -->
           <div class="panel panel-flat">
             <div class="panel-heading">
@@ -97,4 +128,17 @@
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="application/javascript">
+    function copy(element) {
+        const el = document.createElement('textarea');
+        el.value = element.dataset.copy;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+    }
+  </script>
 {% endblock %}
