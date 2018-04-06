@@ -2,6 +2,7 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
+    # Database
     database_host: 127.0.0.1
     database_port: ~
     database_name: symfony
@@ -10,11 +11,11 @@ parameters:
     # You should uncomment this if you want to use pdo_sqlite
     #database_path: '%kernel.project_dir%/var/data/data.sqlite'
 
+    # Mail
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: ~
     mailer_password: ~
-
     mail_from:
     mail_from_name:
     mail_to:
@@ -30,15 +31,15 @@ parameters:
     report_image_directory: '%base_upload_path%/report/image'
 
     # Banner
-    banner_font_path: '%kernel.project_dir%/web/upload'
+    banner_font_path: '%kernel.project_dir%/web/fonts/OpenSans-Regular.ttf'
     banner_target_path: '%kernel.project_dir%/web/images/banners'
     banner_background_path: '%kernel.project_dir%/web/images/background-banner.png'
 
-    # Coaster
+    # Temp
     default_coaster_id: 2183
     home_coasters: [1985,2197,202,2183,2169,1572,1980,59,2028,2210,2130,196,2219,85,2247,795,2165,2000,2190,62,2192,2138,2370,1980,324,197,2270,620,2206,561,1783,370,170,2111,2209]
 
-    # User / Authentication
+    # Authentication
     facebook_client_id:
     facebook_client_secret:
     google_client_id:

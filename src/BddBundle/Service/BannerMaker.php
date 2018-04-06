@@ -2,18 +2,33 @@
 
 namespace BddBundle\Service;
 
-//use Imagine\Gd\Imagine;
+use BddBundle\Entity\ListeCoaster;
 use BddBundle\Entity\User;
+use Imagine\Exception\InvalidArgumentException;
 use Imagine\Image\Point;
 use Imagine\Imagick\Image;
 use Imagine\Imagick\Imagine;
 
 class BannerMaker
 {
+    /**
+     * @var Imagine
+     */
     private $imagine;
 
+    /**
+     * @var string path to font
+     */
     private $fontPath;
+
+    /**
+     * @var string path target directory
+     */
     private $targetPath;
+
+    /**
+     * @var string path to background image
+     */
     private $backgroundPath;
 
     /**
@@ -21,6 +36,13 @@ class BannerMaker
      */
     private $image;
 
+    /**
+     * BannerMaker constructor.
+     * @param Imagine $imagine
+     * @param $fontPath
+     * @param $targetPath
+     * @param $backgroundPath
+     */
     public function __construct(Imagine $imagine, $fontPath, $targetPath, $backgroundPath)
     {
         $this->imagine = $imagine;
@@ -30,13 +52,18 @@ class BannerMaker
         $this->backgroundPath = $backgroundPath;
     }
 
+    /**
+     * @param User $user
+     * @throws InvalidArgumentException
+     */
     public function makeBanner(User $user)
     {
         $this->createImage();
         $this->writeCoasterCount($user->getRatings()->count());
 
         $top = [];
-        foreach($user->getMainListe()->getListeCoasters()->slice(0, 3) as $listeCoaster) {
+        /** @var ListeCoaster $listeCoaster */
+        foreach ($user->getMainListe()->getListeCoasters()->slice(0, 3) as $listeCoaster) {
             $top[] = $listeCoaster->getCoaster()->getName();
         }
 
@@ -44,21 +71,35 @@ class BannerMaker
         $this->saveImage($user);
     }
 
+    /**
+     * Create new image with background
+     */
     private function createImage()
     {
         $this->image = $this->imagine->open($this->backgroundPath);
     }
 
+    /**
+     * @param User $user
+     */
     private function saveImage(User $user)
     {
         $this->image->save(sprintf('%s/%d.png', $this->targetPath, $user->getId()));
     }
 
+    /**
+     * @param int $count
+     * @throws InvalidArgumentException
+     */
     private function writeCoasterCount(int $count)
     {
         $this->writeText(sprintf($count.' coasters'), 110, 32, 12);
     }
 
+    /**
+     * @param array $top
+     * @throws InvalidArgumentException
+     */
     private function writeTop3(array $top)
     {
         $y = 3;
@@ -70,6 +111,14 @@ class BannerMaker
         }
     }
 
+    /**
+     * @param string $text
+     * @param $x
+     * @param $y
+     * @param int $size
+     * @param string $color
+     * @throws InvalidArgumentException
+     */
     private function writeText(string $text, $x, $y, $size = 10, $color = 'FFFFFF')
     {
         if (!$this->image instanceof Image) {
