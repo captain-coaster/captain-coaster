@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ 'search_index.title'|trans }}{% endblock %}
+{% set title = 'search_index.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block secondary_sidebar %}
     <div class="sidebar sidebar-secondary sidebar-default">
