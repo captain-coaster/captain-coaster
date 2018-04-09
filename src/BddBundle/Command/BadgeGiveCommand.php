@@ -2,6 +2,7 @@
 
 namespace BddBundle\Command;
 
+use BddBundle\Entity\User;
 use BddBundle\Service\BadgeService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -39,6 +40,8 @@ class BadgeGiveCommand extends ContainerAwareCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -49,18 +52,16 @@ class BadgeGiveCommand extends ContainerAwareCommand
         $userId = $input->getArgument('user');
 
         if (!is_null($userId)) {
-            $users[] = $this->getContainer()
-                ->get('doctrine.orm.entity_manager')
-                ->getRepository('BddBundle:User')
+            $users[] = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('BddBundle:User')
                 ->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->getContainer()
-                ->get('doctrine.orm.entity_manager')
-                ->getRepository('BddBundle:User')
-                ->findAll();
+            $users = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('BddBundle:User')
+                ->getUsersWithRecentRatingOrTopUpdate();
         }
 
+        /** @var User $user */
         foreach ($users as $user) {
+            $output->writeln('Checking '.$user->getUsername().'...');
             $this->badgeService->give($user);
         }
 

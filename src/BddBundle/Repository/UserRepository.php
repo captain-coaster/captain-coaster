@@ -43,4 +43,26 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
             ->setParameter('userId', $userId)
             ->getQuery();
     }
+
+    /**
+     * Returns users that have recently up
+     * @param int $sinceHours
+     * @return mixed
+     */
+    public function getUsersWithRecentRatingOrTopUpdate($sinceHours = 1)
+    {
+        $date = new \DateTime('- '.$sinceHours.' hours');
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->from('BddBundle:User', 'u')
+            ->leftJoin('u.ratings', 'r')
+            ->leftJoin('u.listes', 'l')
+            ->where('r.updatedAt > :date')
+            ->orWhere('l.updatedAt > :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+    }
 }

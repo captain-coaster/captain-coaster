@@ -24,6 +24,7 @@ class BadgeService
     CONST BADGE_TYPE_TEAM = 'team';
     CONST BADGE_TEAM_KATUN = 'badge.teamkatun';
     CONST BADGE_TEAM_ISPEED = 'badge.teamispeed';
+
     /**
      * @var EntityManager
      */
@@ -49,6 +50,8 @@ class BadgeService
      * Give badges to User
      *
      * @param User $user
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function give(User $user)
     {
