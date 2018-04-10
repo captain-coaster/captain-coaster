@@ -37,13 +37,14 @@
                     {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
                         <ul class="list-inline form-group list-inline-condensed text-center">
                             {#{% for owner in hwi_oauth_resource_owners() %}#}
+                            {% set referer = app.request.server.get('HTTP_REFERER')|default('/') %}
                             <li>
-                                <a href="{{ hwi_oauth_login_url('facebook') }}" class="btn btn-flat bg-indigo">
+                                <a href="{{ hwi_oauth_login_url('facebook') }}?target_path={{ referer }}" class="btn btn-flat bg-indigo">
                                     <i class="icon-facebook position-left"></i> {{ 'login.connect'|trans }}
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ hwi_oauth_login_url('google') }}" class="btn btn-flat bg-danger-800">
+                                <a href="{{ hwi_oauth_login_url('google') }}?target_path={{ referer }}" class="btn btn-flat bg-danger-800">
                                     <i class="icon-google position-left"></i> {{ 'login.connect'|trans }}
                                 </a>
                             </li>

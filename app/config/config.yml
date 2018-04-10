@@ -131,6 +131,7 @@ fos_user:
         sender_name: "%mail_from_name%"
 
 hwi_oauth:
+    firewall_names: [main]
     connect:
         account_connector: my.custom.user_provider
     fosub:
@@ -138,7 +139,6 @@ hwi_oauth:
         properties:
             facebook:   facebookId
             google:     googleId
-    firewall_names: [main]
     resource_owners:
         facebook:
             type:           'facebook'
@@ -147,16 +147,20 @@ hwi_oauth:
             infos_url:      'https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture'
             scope:          'email'
             options:
-                display: popup
-                auth_type: rerequest
+                display:    'popup'
+                auth_type:  'rerequest'
+                csrf:       true
             paths:
-                email:          email
-                profilepicture: picture.data.url
+                email:          'email'
+                profilepicture: 'picture.data.url'
         google:
             type:                'google'
             client_id:           '%google_client_id%'
             client_secret:       '%google_client_secret%'
             scope:               "email profile"
+            options:
+                csrf: true
+    target_path_parameter: 'target_path'
 
 stof_doctrine_extensions:
     default_locale: fr_FR

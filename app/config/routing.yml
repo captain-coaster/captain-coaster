@@ -1,14 +1,3 @@
-root:
-    path: "/"
-    defaults: { _controller: BddBundle:Default:root }
-
-sitemap:
-    path: "/sitemap.xml"
-    defaults: { _controller: BddBundle:Sitemap:index, "_format": "xml" }
-
-#fos_user:
-#    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
-
 hwi_oauth_redirect:
     resource: "@HWIOAuthBundle/Resources/config/routing/redirect.xml"
     prefix:   /connect
@@ -28,6 +17,17 @@ facebook_login:
 
 google_login:
     path: /login/check-google
+
+root:
+    path: "/"
+    defaults: { _controller: BddBundle:Default:root }
+
+sitemap:
+    path: "/sitemap.xml"
+    defaults: { _controller: BddBundle:Sitemap:index, "_format": "xml" }
+
+#fos_user:
+#    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
 logout:
     path: /logout
