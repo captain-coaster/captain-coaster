@@ -6,7 +6,7 @@ use BddBundle\Entity\Coaster;
 use BddBundle\Entity\Liste;
 use BddBundle\Entity\ListeCoaster;
 use BddBundle\Entity\RiddenCoaster;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class RankingService
@@ -17,7 +17,7 @@ class RankingService
     CONST MIN_DUELS = 5;
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -38,10 +38,10 @@ class RankingService
 
     /**
      * RankingService constructor.
-     * @param EntityManager       $em
+     * @param EntityManagerInterface $em
      * @param NotificationService $notificationService
      */
-    public function __construct(EntityManager $em, NotificationService $notificationService)
+    public function __construct(EntityManagerInterface $em, NotificationService $notificationService)
     {
         $this->em = $em;
         $this->notificationService = $notificationService;

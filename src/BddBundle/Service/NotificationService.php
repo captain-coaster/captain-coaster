@@ -4,8 +4,8 @@ namespace BddBundle\Service;
 
 use BddBundle\Entity\Notification;
 use BddBundle\Entity\User;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Routing\Router;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * Class NotificationService
@@ -17,22 +17,22 @@ class NotificationService
     CONST NOTIF_RANKING = 'ranking';
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
     /**
-     * @var Router
+     * @var RouterInterface
      */
     private $router;
 
     /**
      * NotificationService constructor
      *
-     * @param EntityManager $em
-     * @param Router $router
+     * @param EntityManagerInterface $em
+     * @param RouterInterface $router
      */
-    public function __construct(EntityManager $em, Router $router)
+    public function __construct(EntityManagerInterface $em, RouterInterface $router)
     {
         $this->em = $em;
         $this->router = $router;
@@ -74,11 +74,11 @@ class NotificationService
     /**
      * @param string $message
      * @param string $type
-     * @param bool   $markSameTypeRead
+     * @param bool $markSameTypeRead
      */
     public function sendMass(string $message, string $type, bool $markSameTypeRead = true)
     {
-        if($markSameTypeRead) {
+        if ($markSameTypeRead) {
             $this->em->getRepository('BddBundle:Notification')->markTypeAsRead($type);
         }
 

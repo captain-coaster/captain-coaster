@@ -6,7 +6,7 @@ use BddBundle\Entity\Badge;
 use BddBundle\Entity\ListeCoaster;
 use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Entity\User;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class BadgeService
@@ -26,7 +26,7 @@ class BadgeService
     CONST BADGE_TEAM_ISPEED = 'badge.teamispeed';
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -37,10 +37,10 @@ class BadgeService
 
     /**
      * BadgeService constructor.
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      * @param NotificationService $notifService
      */
-    public function __construct(EntityManager $em, NotificationService $notifService)
+    public function __construct(EntityManagerInterface $em, NotificationService $notifService)
     {
         $this->em = $em;
         $this->notifService = $notifService;

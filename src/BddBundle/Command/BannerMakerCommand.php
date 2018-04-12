@@ -2,13 +2,11 @@
 
 namespace BddBundle\Command;
 
-use BddBundle\Service\BadgeService;
 use BddBundle\Service\BannerMaker;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Stopwatch\Stopwatch;
 
 class BannerMakerCommand extends ContainerAwareCommand
 {

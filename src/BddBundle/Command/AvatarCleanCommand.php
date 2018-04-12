@@ -3,19 +3,17 @@
 namespace BddBundle\Command;
 
 use BddBundle\Entity\User;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class AvatarCleanCommand extends ContainerAwareCommand
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -26,10 +24,10 @@ class AvatarCleanCommand extends ContainerAwareCommand
 
     /**
      * AvatarCleanCommand constructor.
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      * @param Client $client
      */
-    public function __construct(EntityManager $em, Client $client)
+    public function __construct(EntityManagerInterface $em, Client $client)
     {
         parent::__construct();
 
@@ -51,7 +49,6 @@ class AvatarCleanCommand extends ContainerAwareCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
-     * @throws \Doctrine\ORM\ORMException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

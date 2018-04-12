@@ -4,7 +4,7 @@ namespace BddBundle\Service;
 
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * Class RatingService
@@ -15,16 +15,16 @@ class RatingService
     const MIN_RATINGS = 2;
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
     /**
      * RatingService constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
     }

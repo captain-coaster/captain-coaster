@@ -5,7 +5,7 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\User;
 use BddBundle\Form\Type\ProfileType;
 use BddBundle\Service\BannerMaker;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -17,6 +17,7 @@ class ProfileController extends Controller
 {
     /**
      * @param Request $request
+     * @param BannerMaker $bannerMaker
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/me", name="me")
      * @Method({"GET", "POST"})
@@ -102,10 +103,10 @@ class ProfileController extends Controller
      * @Route("/me/reports", name="me_reports")
      * @Method({"GET"})
      * @Security("is_granted('ROLE_USER')")
-     * @param EntityManager $em
+     * @param EntityManagerInterface $em
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function myReportsAction(EntityManager $em)
+    public function myReportsAction(EntityManagerInterface $em)
     {
         $reports = $em->getRepository('BddBundle:Report')->findBy(
             ['user' => $this->getUser()],

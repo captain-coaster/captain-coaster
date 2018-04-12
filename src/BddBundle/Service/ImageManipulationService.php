@@ -2,7 +2,7 @@
 
 namespace BddBundle\Service;
 
-use Imagine\Gd\Imagine;
+use Imagine\Imagick\Imagine;
 use Imagine\Image\Box;
 
 class ImageManipulationService
