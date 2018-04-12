@@ -176,7 +176,12 @@ class CoasterController extends Controller
 
         return $this->render(
             '@Bdd/Coaster/ranking.html.twig',
-            ['coasters' => $pagination, 'images' => $imageUrls]
+            [
+                'coasters' => $pagination,
+                'images' => $imageUrls,
+                'rankingDate' => new \DateTime('first day of this month midnight'),
+                'nextRankingDate' => new \DateTime('first day of next month midnight 1 minute')
+            ]
         );
     }
 

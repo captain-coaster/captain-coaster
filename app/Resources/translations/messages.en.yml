@@ -62,8 +62,8 @@ coaster_ranking:
     description: 'Ranking of the best roller coasters of the world, by our users. Send a review and rate coasters you have ridden to take part of it.'
     reviews_number: '1 review|%count% reviews'
     info:
-        title: 'Check out our new coasters ranking !'
-        text: 'This ranking is based on a new algorithm, more precise and more complex than before. We take into account your ratings for each coaster and its position in your Tops Coasters. Updated every month.'
+        title: 'Join the ranking!'
+        text: 'The ranking of world''s best coasters takes into account every ratings and tops from each user. <a href="%link_path%">Sign in</a> and start rating coasters now to be part of it. The more you rate coasters, the more you weigh on the ranking! Next update %date%.'
 
 map_index:
     title: 'Coasters Map'
