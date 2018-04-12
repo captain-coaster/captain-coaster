@@ -10,11 +10,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SitemapController extends Controller
 {
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function indexAction()
     {
         $cache = new FilesystemAdapter();
+        $urls = $cache->getItem('sitemap_urls');
 
-        $urls = $cache->getItem('sitemap.xml');
         if (!$urls->isHit()) {
             $urls->set($this->getUrls());
             $urls->expiresAfter(\DateInterval::createFromDateString('12 hours'));
@@ -23,26 +26,30 @@ class SitemapController extends Controller
 
         return $this->render(
             'BddBundle:Sitemap:sitemap.xml.twig',
-            [
-                'urls' => $urls->get(),
-            ]
+            ['urls' => $urls->get()]
         );
     }
 
+    /**
+     * @return array
+     */
     public function getUrls()
     {
         $urls = [];
 
         // Latest review
-        $lastestReview = $this->getDoctrine()->getRepository('BddBundle:RiddenCoaster')
+        $latestRating = $this->getDoctrine()->getRepository('BddBundle:RiddenCoaster')
             ->findOneBy([], ['updatedAt' => 'desc'], 1);
-        $date = $lastestReview->getUpdatedAt();
+        $indexUpdateDate = $latestRating->getUpdatedAt();
 
         // Index
-        $indexUrls = $this->getUrlAndAlternates('bdd_index', [], $date, 'daily', 1);
-        foreach ($indexUrls as $url) {
-            $urls[] = $url;
-        }
+        $indexUrls = $this->getUrlAndAlternates('bdd_index', [], $indexUpdateDate, 'daily', 1);
+        $urls = array_merge($urls, $indexUrls);
+
+        // Ranking
+        $rankingUpdateDate = new \DateTime('first day of this month midnight');
+        $rankingUrls = $this->getUrlAndAlternates('coaster_ranking', [], $rankingUpdateDate, 'monthly', 1);
+        $urls = array_merge($urls, $rankingUrls);
 
         // Fiche Coasters
         $coasters = $this->getDoctrine()->getRepository(Coaster::class)->findAll();
@@ -56,23 +63,29 @@ class SitemapController extends Controller
                 $date = $latestReview->getUpdatedAt();
             }
             $coasterUrls = $this->getUrlAndAlternates('bdd_show_coaster', $params, $date, 'weekly', '0.8');
-            foreach ($coasterUrls as $url) {
-                $urls[] = $url;
-            }
+            $urls = array_merge($urls, $coasterUrls);
         }
 
         return $urls;
     }
 
+    /**
+     * @param $route
+     * @param array $params
+     * @param \DateTime|null $lastmod
+     * @param string $changefreq
+     * @param string $priority
+     * @return array
+     */
     private function getUrlAndAlternates(
         $route,
         array $params = [],
         \DateTime $lastmod = null,
         $changefreq = 'weekly',
-        $priority = '0.5',
-        array $locales = ["en", "fr"]
+        $priority = '0.5'
     ) {
         $urls = [];
+        $locales = $this->getParameter('app.locales.array');
 
         foreach ($locales as $locale) {
             $url = [];
@@ -91,8 +104,7 @@ class SitemapController extends Controller
 
             foreach ($locales as $alternateLocale) {
                 if ($alternateLocale !== $locale) {
-                    $url['alternate']['locale'] = $alternateLocale;
-                    $url['alternate']['loc'] = $this->generateUrl(
+                    $url['alternate'][$alternateLocale] = $this->generateUrl(
                         $route,
                         $this->buildRouteParams($params, $alternateLocale),
                         UrlGeneratorInterface::ABSOLUTE_URL
@@ -106,6 +118,11 @@ class SitemapController extends Controller
         return $urls;
     }
 
+    /**
+     * @param array $params
+     * @param $locale
+     * @return array
+     */
     private function buildRouteParams(array $params, $locale)
     {
         return array_merge(

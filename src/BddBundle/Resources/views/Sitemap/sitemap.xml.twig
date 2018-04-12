@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-    {% for url in urls %}
+  {% for url in urls %}
     <url>
-        <loc>{{ url.loc }}</loc>
-        {% if url.alternate is defined %}
-            <xhtml:link rel="alternate" hreflang="{{ url.alternate.locale }}" href="{{ url.alternate.loc }}" />
-        {% endif %}
-        {% if url.lastmod is defined %}
-            <lastmod>{{ url.lastmod }}</lastmod>
-        {% endif %}
-        <changefreq>{{ url.changefreq }}</changefreq>
-        <priority>{{ url.priority }}</priority>
+      <loc>{{ url.loc }}</loc>
+      {% if url.alternate is defined %}
+        {% for altLocale, altUrl in url.alternate %}
+        <xhtml:link rel="alternate" hreflang="{{ altLocale }}" href="{{ altUrl }}"/>
+        {% endfor %}
+      {% endif %}
+      {% if url.lastmod is defined %}
+        <lastmod>{{ url.lastmod }}</lastmod>
+      {% endif %}
+      <changefreq>{{ url.changefreq }}</changefreq>
+      <priority>{{ url.priority }}</priority>
     </url>
-    {% endfor %}
+  {% endfor %}
 </urlset>
