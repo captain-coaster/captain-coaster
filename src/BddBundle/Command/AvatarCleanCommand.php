@@ -4,7 +4,6 @@ namespace BddBundle\Command;
 
 use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use GuzzleHttp\Exception\RequestException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,10 +53,15 @@ class AvatarCleanCommand extends ContainerAwareCommand
                 try {
                     $request = $this->getContainer()->get('httplug.message_factory')
                         ->createRequest('GET', $user->getProfilePicture());
-                    $this->getContainer()->get('httplug.client.avatar')->sendRequest($request);
-                } catch (RequestException $e) {
-                    $user->setProfilePicture(null);
-                    $this->em->persist($user);
+                    $response = $this->getContainer()->get('httplug.client.avatar')
+                        ->sendRequest($request);
+
+                    if ($response->getStatusCode() !== 200) {
+                        $user->setProfilePicture(null);
+                        $this->em->persist($user);
+                    }
+                } catch (\Exception $e) {
+                    continue;
                 }
             }
         }
