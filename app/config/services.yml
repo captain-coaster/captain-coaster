@@ -34,7 +34,9 @@ services:
     #     arguments:
     #         $someArgument: 'some_value'
     BddBundle\Service\ImageService:
-        arguments: ['%base_path_images%', '%base_url_images%']
+        arguments:
+            $basePath: '%base_path_images%'
+            $baseUrl: '%base_url_images%'
 
     BddBundle\Service\ReportCoverUploader:
         arguments:
