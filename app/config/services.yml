@@ -57,6 +57,10 @@ services:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]
 
+    Twig_Extensions_Extension_Intl:
+        class: Twig_Extensions_Extension_Intl
+        tags: [twig.extension]
+
     \HTMLPurifier:
         class: \HTMLPurifier
         public: true

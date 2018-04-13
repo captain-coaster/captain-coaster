@@ -4,7 +4,6 @@ namespace BddBundle\Command;
 
 use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,21 +17,14 @@ class AvatarCleanCommand extends ContainerAwareCommand
     private $em;
 
     /**
-     * @var Client
-     */
-    private $client;
-
-    /**
      * AvatarCleanCommand constructor.
      * @param EntityManagerInterface $em
-     * @param Client $client
      */
-    public function __construct(EntityManagerInterface $em, Client $client)
+    public function __construct(EntityManagerInterface $em)
     {
         parent::__construct();
 
         $this->em = $em;
-        $this->client = $client;
     }
 
     /**
@@ -60,7 +52,9 @@ class AvatarCleanCommand extends ContainerAwareCommand
         foreach ($users as $user) {
             if (!is_null($user->getProfilePicture())) {
                 try {
-                    $this->client->get($user->getProfilePicture());
+                    $request = $this->getContainer()->get('httplug.message_factory')
+                        ->createRequest('GET', $user->getProfilePicture());
+                    $this->getContainer()->get('httplug.client.avatar')->sendRequest($request);
                 } catch (RequestException $e) {
                     $user->setProfilePicture(null);
                     $this->em->persist($user);

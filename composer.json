@@ -23,7 +23,6 @@
         "php": ">=7.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
-        "eightpoints/guzzle-bundle": "^7.3",
         "ezyang/htmlpurifier": "^4.0",
         "friendsofsymfony/jsrouting-bundle": "^1.6",
         "friendsofsymfony/user-bundle": "~2.0",
@@ -41,6 +40,7 @@
         "symfony/polyfill-apcu": "^1.0",
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.4.*",
+        "twig/extensions": "^1.5",
         "twig/twig": "^1.0||^2.0"
     },
     "require-dev": {

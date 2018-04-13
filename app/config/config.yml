@@ -182,10 +182,12 @@ knp_paginator:
         pagination: 'KnpPaginatorBundle:Pagination:sliding.html.twig'     # sliding pagination controls template
         sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
 
-eight_points_guzzle:
-    logging: '%kernel.debug%'
+httplug:
+    plugins:
+        logger: ~
     clients:
         avatar:
-            options:
-                timeout: 3
-                verify: false
+            factory: 'httplug.factory.guzzle6'
+            plugins: ['httplug.plugin.logger']
+            config:
+                timeout: 2
