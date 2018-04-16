@@ -48,7 +48,7 @@ class RiddenCoasterRepository extends EntityRepository
             ->createQueryBuilder()
             ->select('count(1)')
             ->from('BddBundle:RiddenCoaster', 'r')
-            ->where('r.updatedAt > ?1')
+            ->where('r.createdAt > ?1')
             ->setParameter(1, $date)
             ->getQuery()
             ->getSingleScalarResult();

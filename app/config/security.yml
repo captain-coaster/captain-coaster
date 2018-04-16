@@ -39,3 +39,4 @@ security:
             logout:
                 path:   /logout
                 target: /
+            logout_on_user_change: true
