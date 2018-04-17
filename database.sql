@@ -1,5 +1,3 @@
-<-- sql -->
-
 UPDATE launch set name='launch.lift.chain' where id = 1;
 UPDATE launch set name='launch.lift.wheel' where id = 2;
 UPDATE launch set name='launch.lift.cable' where id = 3;
@@ -77,3 +75,39 @@ UPDATE country set name='country.lebanon' where id = 62;
 UPDATE country set name='country.na' where id = 63;
 UPDATE country set name='country.burma' where id = 64;
 UPDATE country set name='country.cyprus' where id = 65;
+
+UPDATE tag set name='pro.airtimes' where id = 1;
+UPDATE tag set name='pro.firstdrop' where id = 2;
+UPDATE tag set name='pro.theming' where id = 3;
+UPDATE tag set name='pro.capacity' where id = 4;
+UPDATE tag set name='pro.lapbar' where id = 5;
+UPDATE tag set name='pro.inversions' where id = 6;
+UPDATE tag set name='pro.nicesurprise' where id = 7;
+UPDATE tag set name='pro.location' where id = 8;
+UPDATE tag set name='pro.comfort' where id = 9;
+UPDATE tag set name='pro.launch' where id = 10;
+UPDATE tag set name='pro.pace' where id = 11;
+UPDATE tag set name='pro.fun' where id = 12;
+UPDATE tag set name='pro.masterpiece' where id = 13;
+UPDATE tag set name='pro.restraints' where id = 14;
+UPDATE tag set name='pro.intensity' where id = 15;
+UPDATE tag set name='pro.smoothness' where id = 16;
+UPDATE tag set name='pro.layout' where id = 17;
+UPDATE tag set name='pro.ejectors' where id = 47;
+
+UPDATE tag set name='con.rattle' where id = 32;
+UPDATE tag set name='con.headbanging' where id = 33;
+UPDATE tag set name='con.short' where id = 34;
+UPDATE tag set name='con.theming' where id = 35;
+UPDATE tag set name='con.capacity' where id = 36;
+UPDATE tag set name='con.restraints' where id = 37;
+UPDATE tag set name='con.inversions' where id = 38;
+UPDATE tag set name='con.disappointing' where id = 39;
+UPDATE tag set name='con.discomfort' where id = 40;
+UPDATE tag set name='con.launch' where id = 41;
+UPDATE tag set name='con.tearitdown' where id = 42;
+UPDATE tag set name='con.pointless' where id = 43;
+UPDATE tag set name='con.airtimes' where id = 44;
+UPDATE tag set name='con.deadspots' where id = 45;
+UPDATE tag set name='con.layout' where id = 46;
+UPDATE tag set name='con.intensity' where id = 48;
