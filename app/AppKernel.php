@@ -23,7 +23,8 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            new Knp\Bundle\TimeBundle\KnpTimeBundle()
+            new Knp\Bundle\TimeBundle\KnpTimeBundle(),
+            new EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

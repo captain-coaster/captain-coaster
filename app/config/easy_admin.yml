@@ -1,0 +1,25 @@
+easy_admin:
+    site_name: 'Captain Coaster'
+    entities:
+        Country:
+            class: BddBundle\Entity\Country
+            edit:
+                fields: ['id', 'name', 'slug']
+            new:
+                fields: ['id', 'name', 'slug']
+        Launch:
+            class: BddBundle\Entity\Launch
+            list:
+                fields: ['id', 'name']
+            edit:
+                fields: ['id', 'name', 'slug']
+            new:
+                fields: ['id', 'name', 'slug']
+        Manufacturer:
+            class: BddBundle\Entity\Manufacturer
+            list:
+                fields: ['id', 'name', 'builtCoasters']
+            edit:
+                fields: ['id', 'name', 'slug', 'website', 'phoneNumber', 'place']
+            new:
+                fields: ['id', 'name', 'slug', 'website', 'phoneNumber', 'place']
