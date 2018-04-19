@@ -2,6 +2,7 @@
 
 namespace BddBundle\Service;
 
+use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -55,6 +56,28 @@ class StatService
         $stats['nb_listes'] = $this->em
             ->getRepository('BddBundle:Liste')
             ->countAll();
+
+        return $stats;
+    }
+
+    /**
+     * @param $user
+     * @return array
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getUserStats(User $user)
+    {
+        $stats = [];
+
+        $stats['nb_coasters'] = $this->em
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->countForUser($user);
+        $stats['nb_park'] = $this->em
+            ->getRepository('BddBundle:Park')
+            ->countForUser($user);
+        $stats['nb_country'] = $this->em
+            ->getRepository('BddBundle:Country')
+            ->countForUser($user);
 
         return $stats;
     }

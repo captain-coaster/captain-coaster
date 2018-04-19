@@ -2,6 +2,7 @@
 
 namespace BddBundle\Repository;
 
+use BddBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -50,6 +51,23 @@ class RiddenCoasterRepository extends EntityRepository
             ->from('BddBundle:RiddenCoaster', 'r')
             ->where('r.createdAt > ?1')
             ->setParameter(1, $date)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param User $user
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countForUser(User $user)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
     }
