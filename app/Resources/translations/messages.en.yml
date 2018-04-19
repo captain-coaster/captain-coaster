@@ -121,6 +121,7 @@ me:
         text: 'Here is your personal banner, to make the World know about your favorites coasters !'
         getbbcode: 'Copy BBCode (forums)'
         gethtml: 'Copy html'
+    stats: 'Coaster ID'
 
 liste:
     list:

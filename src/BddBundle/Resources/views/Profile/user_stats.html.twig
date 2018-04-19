@@ -1,0 +1,49 @@
+<div class="panel">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ 'me.stats'|trans }}</h3>
+  </div>
+  <div class="panel-body">
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-body panel-body-accent">
+        <div class="media no-margin">
+          <div class="media-left media-middle">
+            <i class="icon-shield-check icon-3x text-success-400"></i>
+          </div>
+
+          <div class="media-body text-right">
+            <h3 class="no-margin text-semibold">{{ stats.nb_coasters }}</h3>
+            <span class="text-uppercase text-size-mini text-muted">coasters</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-body panel-body-accent">
+        <div class="media no-margin">
+          <div class="media-left media-middle">
+            <i class="icon-location3 icon-3x text-blue-400"></i>
+          </div>
+
+          <div class="media-body text-right">
+            <h3 class="no-margin text-semibold">{{ stats.nb_park }}</h3>
+            <span class="text-uppercase text-size-mini text-muted">parks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-body panel-body-accent">
+        <div class="media no-margin">
+          <div class="media-left media-middle">
+            <i class="icon-city icon-3x text-indigo-400"></i>
+          </div>
+
+          <div class="media-body text-right">
+            <h3 class="no-margin text-semibold">{{ stats.nb_country }}</h3>
+            <span class="text-uppercase text-size-mini text-muted">countries</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
