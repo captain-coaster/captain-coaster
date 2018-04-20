@@ -89,7 +89,7 @@ my_ratings:
     rated_at: 'Calificado en'
 
 user_list:
-    title: 'Clasificación de los miembros'
+    title: 'Nuestros usuarios'
     info:
         title: '¿ Dónde te clasificas entre nuestros miembros ?'
         text: 'Esta página muestra una clasificación de nuestros miembros. ¡ Hace clic en ellos para descubrir sus clasificación detallados !'
@@ -154,8 +154,8 @@ navbar:
 sidebar:
     index: 'Pagina de inicio'
     search: 'Busca una montaña rusa'
-    coastersRanking: 'Las mejores montañas rusas'
-    users: 'Ranking de usuarios'
+    ranking: 'Las mejores montañas rusas'
+    users: 'Nuestros usuarios'
     map: 'Mapa de las montañas rusas'
     liste: 'Tops Coasters'
     review: 'Reseñas de montaña rusa'
@@ -171,7 +171,7 @@ login:
     connect: 'Conectar'
     info:
         title: '¿ Pastilla azul o pastilla roja ?'
-        text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google.Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
+        text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google. Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
     already_connected_as: 'Ya ha iniciado sesión como'
     logout: '¿ Cerrar sesión ?'
 

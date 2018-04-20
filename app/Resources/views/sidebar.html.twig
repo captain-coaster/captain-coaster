@@ -10,21 +10,24 @@
               <i class="icon-home4"></i> <span>{{ 'sidebar.index'|trans }}</span>
             </a>
           </li>
-          {% if is_granted('ROLE_PREVIEW_FEATURE') %}
-            <li>
-              <a href="{{ path('reports_list') }}">
-                <i class="icon-location3"></i> <span>{{ 'sidebar.report'|trans }}</span>
-              </a>
-            </li>
-          {% endif %}
           <li>
-            <a href="{{ path('search_index') }}">
-              <i class="icon-search4"></i> <span>{{ 'sidebar.search'|trans }}</span>
+            <a href="{{ path('coaster_ranking') }}">
+              <i class="icon-trophy2"></i> <span>{{ 'sidebar.ranking'|trans }}</span>
             </a>
           </li>
           <li>
-            <a href="{{ path('coaster_ranking') }}">
-              <i class="icon-trophy2"></i> <span>{{ 'sidebar.coastersRanking'|trans }}</span>
+            <a href="{{ path('review_list') }}">
+              <i class="icon-megaphone"></i> <span>{{ 'sidebar.review'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('liste_list') }}">
+              <i class="icon-podium"></i> <span>{{ 'sidebar.liste'|trans }}</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ path('search_index') }}">
+              <i class="icon-search4"></i> <span>{{ 'sidebar.search'|trans }}</span>
             </a>
           </li>
           <li>
@@ -35,16 +38,6 @@
           <li>
             <a href="{{ path('map_index') }}">
               <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ path('liste_list') }}">
-              <i class="icon-podium"></i> <span>{{ 'sidebar.liste'|trans }}</span>
-            </a>
-          </li>
-          <li>
-            <a href="{{ path('review_list') }}">
-              <i class="icon-megaphone"></i> <span>{{ 'sidebar.review'|trans }}</span>
             </a>
           </li>
           <li>

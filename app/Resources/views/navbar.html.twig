@@ -23,24 +23,24 @@
       </li>
       <!-- language switcher -->
       {% if app.request.attributes.get('_route') %}
-      <li class="dropdown language-switch">
-        <a class="dropdown-toggle" data-toggle="dropdown">
-          {{ app.request.locale|trans }}
-          <span class="caret"></span>
-        </a>
-        <ul class="dropdown-menu">
-          {% set route = app.request.attributes.get('_route') %}
-          {% set route_params = app.request.attributes.get('_route_params') %}
-          {% set params = route_params|merge(app.request.query.all) %}
-          {% for locale in locales if locale != app.request.locale %}
-            <li>
-              <a href="{{ path(route, params|merge({ _locale: locale })) }}">
-                {{ locale|trans }}
-              </a>
-            </li>
-          {% endfor %}
-        </ul>
-      </li>
+        <li class="dropdown language-switch">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            {{ app.request.locale|trans }}
+            <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            {% set route = app.request.attributes.get('_route') %}
+            {% set route_params = app.request.attributes.get('_route_params') %}
+            {% set params = route_params|merge(app.request.query.all) %}
+            {% for locale in locales if locale != app.request.locale %}
+              <li>
+                <a href="{{ path(route, params|merge({ _locale: locale })) }}">
+                  {{ locale|trans }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </li>
       {% endif %}
       <!-- /language switcher -->
       <!-- notifications -->
@@ -50,9 +50,7 @@
             <i class="icon-bell2"></i>
             <span class="visible-xs-inline-block position-right">{{ 'notif.title'|trans }}</span>
             {% if app.user.unreadNotifications|length > 0 %}
-              <span class="badge bg-warning-400">
-                            {{ app.user.unreadNotifications|length }}
-                        </span>
+              <span class="badge bg-warning-400">{{ app.user.unreadNotifications|length }}</span>
             {% endif %}
           </a>
           <div class="dropdown-menu dropdown-content">
@@ -96,13 +94,6 @@
                 <i class="icon-podium"></i> {{ 'navbar.topcoasters'|trans }}
               </a>
             </li>
-            {% if is_granted('ROLE_PREVIEW_FEATURE') %}
-              <li>
-                <a href="{{ path('me_reports') }}">
-                  <i class="icon-location3"></i> {{ 'navbar.report'|trans }}
-                </a>
-              </li>
-            {% endif %}
             <li>
               <a href="{{ path('me_ratings') }}">
                 <i class="icon-stars"></i> {{ 'navbar.rating'|trans }}

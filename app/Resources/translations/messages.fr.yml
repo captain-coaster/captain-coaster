@@ -89,10 +89,10 @@ my_ratings:
     rated_at: 'Noté le'
 
 user_list:
-    title: 'Palmarès des membres'
+    title: 'Nos riders'
     info:
         title: 'Alors, t''en es où dans tes notes ?'
-        text: 'Ce classement te permet de savoir où tu te situes sur l''ensemble des membres qui ont noté des coasters, mais aussi de voir le détail de leurs notes !'
+        text: 'Cette page présente tous nos riders. Clique sur l''un d''eux pour avoir plus de détails !'
     member_from: 'Membre depuis le'
     rating: '1 note|%count% notes'
 
@@ -160,10 +160,9 @@ navbar:
 
 sidebar:
     index: 'Accueil'
-    report: 'Les Trip Reports'
     search: 'Rechercher un coaster'
-    coastersRanking: 'Meilleurs coasters'
-    users: 'Palmarès des membres'
+    ranking: 'Classement des meilleurs coasters'
+    users: 'Nos riders'
     map: 'Carte des coasters'
     liste: 'Tops Coasters'
     review: 'Coaster Reviews'

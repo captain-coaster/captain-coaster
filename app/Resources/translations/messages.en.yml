@@ -94,10 +94,10 @@ my_ratings:
     rated_at: 'Rated at'
 
 user_list:
-    title: 'Member''s ranking'
+    title: 'Our riders'
     info:
         title: 'Where do you rank among our members ?'
-        text: 'This page shows a ranking of our members. Click on them to discover their ratings details!'
+        text: 'This page shows a list of our riders. Click on them to discover their details!'
     member_from: 'Member since'
     rating: '1 rating|%count% ratings'
 
@@ -165,10 +165,9 @@ navbar:
 
 sidebar:
     index: 'Home'
-    report: 'Trip Reports'
     search: 'Search a coaster'
-    coastersRanking: 'Best coasters'
-    users: 'User''s ranking'
+    ranking: 'Best coasters ranking'
+    users: 'Our riders'
     map: 'Coasters map'
     liste: 'Tops Coasters'
     review: 'Coaster Reviews'

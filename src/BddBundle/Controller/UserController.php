@@ -49,6 +49,7 @@ class UserController extends Controller
     }
 
     /**
+     * User list
      * @Route("/{page}", name="user_list", requirements={"page" = "\d+"})
      * @Method({"GET"})
      * @param int $page
@@ -59,20 +60,11 @@ class UserController extends Controller
         $users = $this
             ->getDoctrine()
             ->getRepository('BddBundle:User')
-            ->getUserRanking();
+            ->getUserList();
 
         $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $users,
-            $page,
-            21
-        );
+        $pagination = $paginator->paginate($users, $page, 21);
 
-        return $this->render(
-            'BddBundle:User:list.html.twig',
-            [
-                'users' => $pagination,
-            ]
-        );
+        return $this->render('BddBundle:User:list.html.twig', ['users' => $pagination]);
     }
 }
