@@ -38,6 +38,17 @@ class ProfileType extends AbstractType
                     ],
                     'label' => 'me.form.displayName',
                 ]
+            )
+            ->add(
+                'emailNotification',
+                ChoiceType::class,
+                [
+                    'choices' => [
+                        'me.form.choices.email' => true,
+                        'me.form.choices.notif' => false,
+                    ],
+                    'label' => 'me.form.notificationPreference',
+                ]
             );
     }
 

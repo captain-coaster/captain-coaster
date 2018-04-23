@@ -91,10 +91,9 @@ class RankingService
         }
 
         if (!$dryRun) {
-            $this->notificationService->sendMass(
+            $this->notificationService->sendAll(
                 'notif.ranking.message',
-                NotificationService::NOTIF_RANKING,
-                true
+                NotificationService::NOTIF_RANKING
             );
         }
 

@@ -119,6 +119,13 @@ class User extends BaseUser
     private $createdAt;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default":true})
+     */
+    private $emailNotification;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -513,5 +520,24 @@ class User extends BaseUser
     public function getReportLikes()
     {
         return $this->reportLikes;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmailNotification(): bool
+    {
+        return $this->emailNotification;
+    }
+
+    /**
+     * @param bool $emailNotification
+     * @return User
+     */
+    public function setEmailNotification(bool $emailNotification): User
+    {
+        $this->emailNotification = $emailNotification;
+
+        return $this;
     }
 }

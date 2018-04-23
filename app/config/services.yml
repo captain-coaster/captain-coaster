@@ -65,3 +65,7 @@ services:
     \HTMLPurifier:
         class: \HTMLPurifier
         public: true
+
+    BddBundle\Service\NotificationService:
+        arguments:
+            $emailFrom: '%mail_from%'

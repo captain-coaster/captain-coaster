@@ -114,6 +114,10 @@ me:
     parameters: 'Parameters'
     form:
         displayName: 'I want to appear as'
+        notificationPreference: 'Notification preferences'
+        choices:
+            email: 'Web & Email'
+            notif: 'Web only'
         save: 'Save'
     badge: 'Badges'
     banner:

@@ -109,6 +109,10 @@ me:
     parameters: 'Préférences'
     form:
         displayName: 'Je souhaite apparaître en tant que'
+        notificationPreference: 'Préférences de notification'
+        choices:
+            email: 'Web & Email'
+            notif: 'Web uniquement'
         save: 'OK'
     badge: 'Badges'
     banner:
@@ -161,11 +165,11 @@ navbar:
 sidebar:
     index: 'Accueil'
     search: 'Rechercher un coaster'
-    ranking: 'Classement des meilleurs coasters'
+    ranking: 'Classement des coasters'
     users: 'Nos riders'
     map: 'Carte des coasters'
-    liste: 'Tops Coasters'
-    review: 'Coaster Reviews'
+    liste: 'Les tops coasters'
+    review: 'Tous les avis'
     contact: 'Nous contacter'
     logout: 'Se déconnecter'
     login: 'Se connecter'
