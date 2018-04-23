@@ -48,6 +48,7 @@ class NotificationService
      * @param EntityManagerInterface $em
      * @param RouterInterface $router
      * @param EngineInterface $templating
+     * @param \Swift_Mailer $mailer
      * @param string $emailFrom
      */
     public function __construct(
@@ -94,9 +95,9 @@ class NotificationService
     {
         switch ($notif->getType()) {
             case self::NOTIF_BADGE:
-                return $this->router->generate('me');
+                return $this->router->generate('me', ['_locale' => 'en']);
             case self::NOTIF_RANKING:
-                return $this->router->generate('coaster_ranking');
+                return $this->router->generate('coaster_ranking', ['_locale' => 'en']);
             default:
                 return $this->router->generate('root');
         }
@@ -136,7 +137,7 @@ class NotificationService
      */
     private function sendEmail(Notification $notification): void
     {
-        $message = (new \Swift_Message('New notification'))
+        $message = (new \Swift_Message('New notification on Captain Coaster'))
             ->setFrom($this->emailFrom)
             ->setTo($notification->getUser()->getEmail())
             ->setBody(

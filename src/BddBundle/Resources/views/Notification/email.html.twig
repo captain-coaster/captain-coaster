@@ -1,6 +1,9 @@
-<p>New notification !</p>
+<p>You just got a new notification on Captain Coaster :</p>
+<p style="font-weight: bold;">{{ notification.message }}</p>
+—
 <p>
---
-<br/>
-To stop receiving this, please change your <a href="#">notification preferences</a>
+View this on <a href="{{ absolute_url(path('notification_read', {'id': notification.id, '_locale': 'en'})) }}">CaptainCoaster.com</a>
+</p>
+<p>
+To stop receiving this, please change your <a href="{{ absolute_url(path('me', {'_locale': 'en'})) }}">notification preferences</a>
 </p>

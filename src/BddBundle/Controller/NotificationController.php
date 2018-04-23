@@ -17,7 +17,6 @@ class NotificationController extends Controller
 {
     /**
      * Read a notification
-     *
      * @param Notification $notification
      * @param NotificationService $notifService
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
