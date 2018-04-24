@@ -40,6 +40,7 @@ class ProfileController extends Controller
             [
                 'firstname' => $user->getFirstname(),
                 'lastname' => $user->getLastName(),
+                'locales' => $this->getParameter('app.locales.array'),
             ]
         );
         $form->handleRequest($request);

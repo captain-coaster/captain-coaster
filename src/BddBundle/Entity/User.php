@@ -129,6 +129,13 @@ class User extends BaseUser
     private $emailNotification = 1;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    private $preferredLocale = 'en';
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -540,6 +547,25 @@ class User extends BaseUser
     public function setEmailNotification(bool $emailNotification): User
     {
         $this->emailNotification = $emailNotification;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPreferredLocale(): string
+    {
+        return $this->preferredLocale;
+    }
+
+    /**
+     * @param string $preferredLocale
+     * @return User
+     */
+    public function setPreferredLocale(string $preferredLocale): User
+    {
+        $this->preferredLocale = $preferredLocale;
 
         return $this;
     }

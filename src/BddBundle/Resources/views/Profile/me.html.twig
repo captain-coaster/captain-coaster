@@ -58,6 +58,10 @@
               {{ form_label(form.emailNotification) }}
               {{ form_widget(form.emailNotification, {'attr': {'class': 'form-control'}}) }}
             </div>
+            <div class="form-group">
+              {{ form_label(form.preferredLocale) }}
+              {{ form_widget(form.preferredLocale, {'attr': {'class': 'form-control'}}) }}
+            </div>
             <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
               <b><i class="icon-circle-right2"></i></b>
               {{ 'me.form.save'|trans }}

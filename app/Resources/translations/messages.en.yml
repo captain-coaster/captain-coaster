@@ -118,6 +118,7 @@ me:
         choices:
             email: 'Web & Email'
             notif: 'Web only'
+        preferredLocale: 'Preferred language'
         save: 'Save'
     badge: 'Badges'
     banner:

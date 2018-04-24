@@ -26,6 +26,7 @@ class ProfileType extends AbstractType
             $options['firstname'],
             substr($options['lastname'], 0, 1)
         );
+        $locales = $options['locales'];
 
         $builder
             ->add(
@@ -49,6 +50,17 @@ class ProfileType extends AbstractType
                     ],
                     'label' => 'me.form.notificationPreference',
                 ]
+            )
+            ->add(
+                'preferredLocale',
+                ChoiceType::class,
+                [
+                    'choices' => $locales,
+                    'choice_label' => function ($value) {
+                        return $value;
+                    },
+                    'label' => 'me.form.preferredLocale',
+                ]
             );
     }
 
@@ -62,6 +74,7 @@ class ProfileType extends AbstractType
                 'data_class' => User::class,
                 'firstname' => null,
                 'lastname' => null,
+                'locales' => [],
             ]
         );
     }
