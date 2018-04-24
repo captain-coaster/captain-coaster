@@ -28,7 +28,7 @@ con.layout: 'Layout'
 con.intensity: 'Intensity'
 
 pro.airtimes: 'Airtimes'
-pro.firstdrop: 'First Drop'
+pro.firstdrop: 'First drop'
 pro.theming: 'Theming'
 pro.capacity: 'Capacity'
 pro.lapbar: 'Lap Bar'
