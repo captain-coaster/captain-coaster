@@ -121,9 +121,12 @@ class User extends BaseUser
     /**
      * @var bool
      *
-     * @ORM\Column(type="boolean", options={"default":true})
+     * @ORM\Column(
+     *     type="boolean",
+     *     options={"default": 1}
+     * )
      */
-    private $emailNotification;
+    private $emailNotification = 1;
 
     /**
      * User constructor.
