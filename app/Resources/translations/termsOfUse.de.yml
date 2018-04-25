@@ -1,0 +1,21 @@
+title: 'Nutzungsbedingungen'
+terms:
+    title: 'Captain Coaster benutzen'
+    text: '<p>Captain Coaster ist eine kostenlose inoffizielle Community-Website für Themenparks und Achterbahnen Enthusiasten. Es ist mit keiner Park-, Hersteller- oder Unterhaltungsindustrie verbunden. Niemand wird bezahlt, es zu verwalten, außer mit Dankbarkeit der Mitglieder.</p>
+           <p>Es ist für jeden geöffnet : du brauchst nur verbinden dein Erfahrungen auf Achterbahnen zu teilen (Bewertungen, Tags, Berichten). Um diese Funktionen zugreifen zu können, benötige einen <b>gültigen</b> Facebook oder Google-Konto. <b>Mehrere Accounts zu haben ist definitiv verboten</b> und wird zu einem dauerhaften Verbot führen.</p>
+           <p>Alle partizipativen Felder werden von Moderatorenteam gelesen, die sich das Recht vorbehalten, Beiträge zu bearbeiten oder zu löschen. Sind durch das französische Gesetz verboten : Gewalt, Rassismus, Drohungen, Beleidigungen, Homophobie, Fremdenfeindlichkeit, Terrorismusentschuldigung... Mitglieder können vorübergehend oder dauerhaft für eines dieser Gründe verboten werden.</p>
+           <p>Um Ihr Konto bei Captain Coaster definitiv zu schließen, <a href="%link_href%">kontaktiere uns</a> bitte. Dein Zugang und persönliche Daten werden dann von einem Administrator gelöscht.</p>'
+hosting:
+    title: 'Hosting'
+    text: 'Captain Coaster wird von Vultr gehostet, dessen Adresse lautet: 14 Cliffwood Avenue, Suite 300, Metropark South, Matawan, NJ 07747. Unsere Server befinden sich in Paris,  France.'
+copyright:
+    title: 'Copyright'
+    text: '<p>Das "Captain Coaster" -Logo gehört Benjamin R., Captain Coaster hat die exklusiven Rechte, es zu benutzen und zu modifizieren. Jede Reproduktion ohne Erlaubnis ist verboten.</p>
+           <p>Wir zeigen Bilder und Fotos aus vielen Quellen auf unseren Seiten. Wir versuchen so viel wie möglich, um ihrem Autor zu danken. Wenn wir dies vergessen haben oder wenn Sie der Besitzer eines Fotos sind, das du nicht auf Captain Coaster teilen möchtest, <a href="%link_href%">kontaktiere uns</a> bitte und die Medien werden so schnell wie möglich entfernt.</p>'
+cookies:
+    title: 'Cookies'
+    text: '<p>Cookies sind kleine Dateien, die auf dem Computer eines Benutzers gespeichert werden, um Ihnen das Leben zu erleichtern.</p>
+           <p>Captain Coaster verwendet ein Session-Cookie, um Sie daran zu erinnern, wenn du eine Verbindung herstellst. Es vermeidet, dass du dich jedes Mal anmelden, wenn Sie uns besuchen. Wir verwenden auch ein Google Analytics-Cookie für Statistiken. Die meisten Browser haben ein Konfigurationsfenster, die dem Benutzer erlaubt, zu sehen, welche Cookies auf dem Computer gespeichert sind, und diese optional abzulehnen.</p>'
+contact:
+    title: 'Kontaktiere uns'
+    text: '<b>Hast du Fragen oder Anmerkungen zu den Nutzungsbedingungen? <a href="%link_href%">Kontaktiere uns</a>, wir beißen nicht.</b>'

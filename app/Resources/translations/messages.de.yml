@@ -1,0 +1,223 @@
+app:
+    name: 'Captain Coaster'
+    title:
+        default: 'Herzlich willkommen!'
+    header:
+        search: 'Suche eine Achterbahn'
+
+index:
+    title: 'Herzlich willkommen!'
+    description: 'Participative guide to discover, rate and review roller coasters. Find all best coasters with our ranking and interactive map.'
+    header:
+        title: 'Entdecke, bewerte und teile du Achterbahnen'
+        info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="%link_path%">to connect</a></b>. Follow the Captain !'
+    stats:
+        coasters: 'Achterbahnen'
+        ratings: 'Bewertungen'
+        reviews: 'Berichten'
+        listes: 'Top-Achterbahnen Liste'
+
+coaster:
+    score:
+        scoreof: 'Wert von'
+        ranked: 'Auf Platz'
+        intheworld: 'der Welt'
+    rating:
+        action: 'Bewerte diese Achterbahn!'
+        notenough: 'Nicht genug Bewertungen für diese Bahn!'
+        mustlogin: 'Sie müssen angemeldet sein um zu bewerten.'
+        login: 'Anmelden'
+        sendreview: 'oder klicken Sie hier, um einen Bericht zu schreiben'
+        text: 'Wert basierend auf %count_rating% Bewertung und %count_top% Top-Listen'
+    infos:
+        title: '%name% Merkmale'
+        status: 'Status'
+        park: 'Park'
+        country: 'Land'
+        type: 'Typ'
+        launch: 'Antrieb'
+        manufacturer: 'Hersteller'
+        restraint: 'Rückhaltesysteme'
+        forces: 'g-Kraft'
+        duration: 'Fahrzeit'
+        opening: 'Eröffnet'
+        closing: 'Geschlossen'
+        vr: 'VR'
+        cost: 'Kosten'
+    parkcoaster: 'Auch in %name%'
+    photos: 'Fotos'
+    location: 'Karte'
+
+park:
+    opened_coasters: 'geöffnete Bahn|geöffnete Bahnen'
+    kiddies: 'Kiddie|Kiddies'
+
+coaster_ranking:
+    title: 'Rangliste der besten Achterbahnen'
+    description: 'Rangliste der besten Achterbahnen der Welt, von unseren Nutzern. Sende eine Bewertung und bewerte Bahnen, die du gefahrt hast, daran teilnehmen.'
+    reviews_number: '1 Bericht|%count% Berichte'
+    info:
+        title: 'Schau dich unsere neue Coasters-Rangliste an!'
+        text: 'Dieses Ranking basiert auf einem neuen Algorithmus, der präziser und komplexer als zuvor ist. Wir berücksichtigen Ihre Bewertungen für jede Achterbahn und ihre Position in deinen Top-Achterbahnen Liste. Jeden Monat aktualisiert.'
+
+map_index:
+    title: 'Achterbahnkarte'
+    description: 'Entdecken Sie, wo die besten Achterbahnen in der Gegend sind, die Hits des nächsten Jahres oder die B&M, die du noch nicht gefahrt hast, mit dieser interaktiven Karte.'
+    filter:
+        title: 'Filter'
+        manufacturer: 'Hersteller'
+        status: 'In Betrieb'
+        kiddie: 'Kiddies verstecken'
+        notridden: 'Noch nicht gefahren'
+        score: 'Wert'
+        atleast: 'mindestens %count%'
+        openingDate: 'Eröffnet'
+    results: 'Ergebnisse'
+
+user_profile:
+    title: '%name% - Profil'
+    ratings: 'Zeige seine Bewertungen'
+    listes: 'Zeige seine Top-Achterbahnen Liste'
+    map: 'Zeige seine Achterbahnkarte'
+
+my_ratings:
+    title: 'Meine Bewertungen'
+    coaster: 'Achterbahn'
+    manufacturer: 'Hersteller'
+    opening_date: 'Geöffnet'
+    rating: 'Bewertung'
+    rated_at: 'Bewertet am'
+
+user_list:
+    title: 'Mitglieder-Rangliste'
+    info:
+        title: 'Wo ordne du unter unseren Mitgliedern??'
+        text: 'Diese Seite zeigt eine Rangliste unserer Mitglieder. Klicke auf sie ihre Bewertungen Details zu entdecken!'
+    member_from: 'Mitglied seit'
+    rating: '1 Bewertung|%count% Bewertungen'
+
+user_rating:
+    title: '%name% - Bewertungen'
+    coaster: 'Achterbahn'
+    manufacturer: 'Hersteller'
+    opening_date: 'Geöffnet'
+    rating: 'Bewertung'
+    rated_at: 'Bewertet am'
+
+me:
+    title: 'Mein Profil'
+    parameters: 'Einstellungen'
+    form:
+        displayName: 'Ich möchte erscheinen als' (real german : Ich möchte als %name% erscheinen)
+        save: 'Sparen'
+    badge: 'Abzeichen'
+
+liste:
+    list:
+        title: 'Die neuesten Tops'
+        more: 'Mehr sehen'
+        updated: 'letzte Aktualisierung'
+        by: 'von'
+    title: 'Meine Top-Bahnen'
+    update: 'Aktualisieren die Liste'
+    save: 'Speichern die Liste'
+    find: 'Finde eine Achterbahn...'
+    info: 'Beginne mit einer Achterbahn dort oben Suche, dann passiert die Magie unten. Du kannst auch per Drag & Drop-Linien ordnen, wenn du unschlüssig bist.'
+
+review:
+    title: 'Berichten'
+    share: 'Teile du uns Ihre Meinung mit !'
+    value: 'Wie viele Sterne für diesen Achterbahn?'
+    pros: 'Was sind seine Hauptvorteile?'
+    cons: 'Und seine wichtigsten Nachteile?'
+    comment: 'Braucht es mehr Präzision? Erzähl uns !'
+    send: 'Sende meine Meinung'
+    update: 'Bearbeiten'
+    delete: 'Löschen'
+    last: 'Neueste Berichten'
+    all: 'Alles sehen →'
+
+review_list:
+    title: 'Achterbahn Berichten'
+
+rating:
+    last: 'Neueste Bewertungen'
+    action: 'Bewertet mit %value% Sternen'
+
+navbar:
+    profile: 'Mein Profil'
+    rating: 'Meine Bewertungen'
+    logout: 'Abmelden'
+    topcoasters: 'Meine Top-Achterbahnen Liste'
+    my_map: 'Meine Karte'
+
+sidebar:
+    index: 'Startseite'
+    search: 'Suche eine Achterbahn.'
+    coastersRanking: 'Beste Achterbahnen'
+    users: 'Mitglieder-Rangliste'
+    map: 'Achterbahnkarte'
+    liste: 'Top-Achterbahnen Liste'
+    review: 'Achterbahnen Berichten'
+    contact: 'Kontact'
+    logout: 'Abmelden'
+    login: 'Anmelden'
+
+footer:
+    terms: 'Nutzungsbedingungen'
+
+login:
+    title: 'Mlden bei Captain Coaster an'
+    connect: 'Verbinden'
+    info:
+        title: 'Blaue Pille oder rote Pille?'
+        text: 'Du kannst dich mit Ihrem Facebook- oder Google-Konto anmelden. Wir sammeln nur Ihren Namen, E-Mail und Profilbild.'
+    already_connected_as: 'Bereits angemeldet als'
+    logout: 'Abmelden?'
+
+contact:
+    title: 'Kontact'
+    send: 'Die Nachricht senden'
+    form:
+        name: 'Dein Name'
+        email: 'Gibe deine E-Mail hier ein, wenn du möchtest, dass wir antworten'
+        message: 'Deine Nachricht'
+    email:
+        title: 'Formular Kontakt Captain Coaster'
+    flash:
+        success: 'Vielen Dank %name%, deine Nachricht wurde an die Mitarbeiter von Captain Coaster gesendet.'
+
+notif:
+    title: 'Aktivität'
+    empty: 'Nichts besonderes jetzt, fahr mal auf Achterbahnen!'
+    badge:
+        message: 'Check it out: Captain hat dir nur das "%name%"-Abzeichen gegeben!'
+    ranking:
+        message: 'Ranking der weltweit besten Achterbahnen wurde gerade aktualisiert. Check out die neuen Top 3.'
+
+search_index:
+    title: 'Suche eine Achterbahn'
+    title: 'Suche eine Achterbahn'
+    title: 'Suche eine Achterbahn'
+
+badge:
+    rating1: '1. Bewertung'
+    rating100: '100. Bewertung'
+    rating250: '250. Bewertung'
+    rating500: '500. Bewertung'
+    rating1000: '1000. Bewertung'
+    teamkatun: 'Team Katun'
+    teamispeed: 'Team iSpeed'
+
+error:
+    404:
+        title: 'Seite nicht gefunden'
+        message: 'Huch du scheinst verloren zu sein...'
+    403:
+        title: 'Verbotener Zugriff'
+        message: 'Du bist nicht offiziell für den Zugriff auf diese Seite von der Achterbahn-Regierung autorisiert!'
+    generic:
+        title: 'Huch, ein Fehler ist aufgetreten !'
+        message: 'Der Wartungsleiter ist dran...'
+
+User account is disabled.: 'Benutzerkonto ist deaktiviert. Mehrere Konten sind nicht erlaubt.'
