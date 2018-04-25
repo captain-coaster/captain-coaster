@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class RankingService
 {
     CONST MIN_DUELS = 5;
+    CONST MIN_LOCAL_COMPARISONS = 2;
 
     /**
      * @var EntityManagerInterface
@@ -172,6 +173,8 @@ class RankingService
                         $this->setWinner($coaster, $duelCoaster);
                     } elseif ($rating->getValue() < $duelRating->getValue()) {
                         $this->setLooser($coaster, $duelCoaster);
+                    } else {
+                        $this->setTie($coaster, $duelCoaster);
                     }
                 }
             }
@@ -184,20 +187,21 @@ class RankingService
     private function computeScore()
     {
         foreach ($this->duels as $coasterId => $duels) {
-            $duelScores = array_map(
-                function ($value) {
-                    if ($value == 0) {
-                        return 50;
-                    } elseif ($value > 0) {
-                        return 100;
+            $duelScoresSum = 0;
+            foreach ($duels as $duelCoasterId => $duel) {
+                if ($duel[0] + $duel[1] >= MIN_LOCAL_COMPARISONS) {
+                    if ($duel[0] == $duel[1]) {
+                        $duelScoresSum += 50;
+                    } elseif ($duel[0] > $duel[1]) {
+                        $duelScoresSum += 100;
                     } else {
-                        return 0;
-                    }
-                },
-                $duels
-            );
-
-            $this->ranking[$coasterId] = array_sum($duelScores) / count($duelScores);
+                        $duelScoresSum += 0;
+                    };
+                    $duelScoresCount += 1;
+                };
+            };
+            
+            $this->ranking[$coasterId] = $duelScoresSum / $duelScoresCount;
         }
 
         // Tri décroissant
@@ -223,6 +227,16 @@ class RankingService
     {
         $this->setDuelResult($coaster, $duelCoaster, -1);
     }
+    
+    /**
+     * Set duel value for tie duel
+     * @param $coaster
+     * @param $duelCoaster
+     */
+    private function setTie(Coaster $coaster, Coaster $duelCoaster): void
+    {
+        $this->setDuelResult($coaster, $duelCoaster, 0);
+    }
 
     /**
      * Set duel value
@@ -240,9 +254,11 @@ class RankingService
         }
 
         if (!array_key_exists($duelCoasterId, $this->duels[$coasterId])) {
-            $this->duels[$coasterId][$duelCoasterId] = $value;
+            $this->duels[$coasterId][$duelCoasterId][0] = (1 + $value) / 2;
+            $this->duels[$coasterId][$duelCoasterId][1] = (1 - $value) / 2;
         } else {
-            $this->duels[$coasterId][$duelCoasterId] += $value;
+            $this->duels[$coasterId][$duelCoasterId][0] = (1 + $value) / 2;
+            $this->duels[$coasterId][$duelCoasterId][1] = (1 - $value) / 2;
         }
     }
 }
