@@ -645,6 +645,7 @@ class Coaster
 
     /**
      * Can we rank this coaster ?
+     * Only if ratings number + tops number > MIN_DUELS
      *
      * @return bool
      */

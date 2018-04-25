@@ -51,9 +51,6 @@ class RankingService
      * Update ranking of coasters
      * @param bool $dryRun
      * @return array
-     * @throws \Doctrine\Common\Persistence\Mapping\MappingException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function updateRanking(bool $dryRun = false): array
     {
@@ -71,6 +68,7 @@ class RankingService
 
             $rank++;
 
+            // used just for command output
             $infos[] = [
                 $coaster->getName(),
                 $coaster->getRank(),
@@ -90,6 +88,7 @@ class RankingService
             }
         }
 
+        // send notifications to everyone
         if (!$dryRun) {
             $this->notificationService->sendAll(
                 'notif.ranking.message',
@@ -157,14 +156,14 @@ class RankingService
         /** @var RiddenCoaster $rating */
         foreach ($ratings as $rating) {
             $coaster = $rating->getCoaster();
-            if (!$coaster->isRankable()) {
+            if (!$coaster->isRankable() || $rating->isAberrantRating()) {
                 continue;
             }
 
             /** @var RiddenCoaster $duelRating */
             foreach ($ratings as $duelRating) {
                 $duelCoaster = $duelRating->getCoaster();
-                if (!$duelCoaster->isRankable()) {
+                if (!$duelCoaster->isRankable() || $duelRating->isAberrantRating()) {
                     continue;
                 }
 

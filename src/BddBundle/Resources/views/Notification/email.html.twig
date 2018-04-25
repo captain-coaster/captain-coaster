@@ -1,9 +1,6 @@
-<p>You just got a new notification on Captain Coaster :</p>
-<p style="font-weight: bold;">{{ notification.message }}</p>
+{% set locale = notification.user.preferredLocale %}
+<p>{{ 'notif.email.gotnotif'|trans({}, 'messages', locale) }}</p>
+<p style="font-weight: bold;">{{ notification.message|trans({}, 'messages', locale) }}</p>
 —
-<p>
-View this on <a href="{{ absolute_url(path('notification_read', {'id': notification.id, '_locale': 'en'})) }}">CaptainCoaster.com</a>
-</p>
-<p>
-To stop receiving this, please change your <a href="{{ absolute_url(path('me', {'_locale': 'en'})) }}">notification preferences</a>
-</p>
+<p>{{ 'notif.email.view'|trans({'%link_path%': absolute_url(path('notification_read', {'id': notification.id, '_locale': locale}))}, 'messages', locale)|raw }}</p>
+<p>{{ 'notif.email.unsubscribe'|trans({'%link_path%': absolute_url(path('me', {'_locale': locale}))}, 'messages', locale)|raw }}</p>

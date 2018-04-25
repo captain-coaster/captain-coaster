@@ -412,4 +412,16 @@ class RiddenCoaster
     {
         return $this->updatedAt;
     }
+
+    /**
+     * Ignore rating if too different from other ratings
+     *
+     * @return bool
+     */
+    public function isAberrantRating(): bool
+    {
+        // disable for now
+        return false;
+        // return (abs((float)$this->getCoaster()->getAverageRating() - (float)$this->getValue()) > 3);
+    }
 }

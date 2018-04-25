@@ -210,7 +210,12 @@ notif:
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
     ranking:
-        message: 'Ranking of the world''s best coasters just got updated. Check out the new top 3.'
+        message: 'Ranking of the world''s best coasters just got updated. Check out the new top 10 !'
+    email:
+        title: '🎢 New notification on Captain Coaster'
+        gotnotif: 'You just received a new notification on Captain Coaster :'
+        view: 'View this on <a href="%link_path%">CaptainCoaster.com</a>'
+        unsubscribe: 'To stop receiving this, please change your <a href="%link_path%">notification preferences</a>.'
 
 search_index:
     title: 'Search a coaster'

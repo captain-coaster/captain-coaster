@@ -7,6 +7,7 @@ use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class NotificationService
@@ -38,6 +39,11 @@ class NotificationService
     private $mailer;
 
     /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var string
      */
     private $emailFrom;
@@ -49,6 +55,7 @@ class NotificationService
      * @param RouterInterface $router
      * @param EngineInterface $templating
      * @param \Swift_Mailer $mailer
+     * @param TranslatorInterface $translator
      * @param string $emailFrom
      */
     public function __construct(
@@ -56,12 +63,14 @@ class NotificationService
         RouterInterface $router,
         EngineInterface $templating,
         \Swift_Mailer $mailer,
+        TranslatorInterface $translator,
         string $emailFrom
     ) {
         $this->em = $em;
         $this->router = $router;
         $this->templating = $templating;
         $this->mailer = $mailer;
+        $this->translator = $translator;
         $this->emailFrom = $emailFrom;
     }
 
@@ -95,9 +104,9 @@ class NotificationService
     {
         switch ($notif->getType()) {
             case self::NOTIF_BADGE:
-                return $this->router->generate('me', ['_locale' => 'en']);
+                return $this->router->generate('me');
             case self::NOTIF_RANKING:
-                return $this->router->generate('coaster_ranking', ['_locale' => 'en']);
+                return $this->router->generate('coaster_ranking');
             default:
                 return $this->router->generate('root');
         }
@@ -137,15 +146,21 @@ class NotificationService
      */
     private function sendEmail(Notification $notification): void
     {
-        $message = (new \Swift_Message('New notification on Captain Coaster'))
+        $subject = $this->translator->trans(
+            'notif.email.title',
+            [],
+            'messages',
+            $notification->getUser()->getPreferredLocale()
+        );
+
+        $message = (new \Swift_Message($subject))
             ->setFrom($this->emailFrom)
             ->setTo($notification->getUser()->getEmail())
             ->setBody(
                 $this->templating->render(
                     '@Bdd/Notification/email.html.twig',
                     [
-                        'notification' => $notification,
-                        'url' => $this->getRedirectUrl($notification),
+                        'notification' => $notification
                     ]
                 ),
                 'text/html'

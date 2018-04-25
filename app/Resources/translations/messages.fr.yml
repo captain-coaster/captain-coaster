@@ -205,7 +205,12 @@ notif:
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "%name%" !'
     ranking:
-        message: 'Le classement des meilleurs coasters vient d''être mis à jour. Va voir le nouveau top 3 mondial.'
+        message: 'Le classement des meilleurs coasters vient d''être mis à jour. Va voir le nouveau top 10 mondial !'
+    email:
+        title: '🎢 Nouvelle notification sur Captain Coaster'
+        gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'
+        view: 'Afficher ceci sur <a href="%link_path%">CaptainCoaster.com</a>'
+        unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="%link_path%">préférences de notification</a>.'
 
 search_index:
     title: 'Rechercher un coaster'
