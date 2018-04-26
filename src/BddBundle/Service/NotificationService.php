@@ -49,6 +49,11 @@ class NotificationService
     private $emailFrom;
 
     /**
+     * @var string
+     */
+    private $emailFromName;
+
+    /**
      * NotificationService constructor
      *
      * @param EntityManagerInterface $em
@@ -57,6 +62,7 @@ class NotificationService
      * @param \Swift_Mailer $mailer
      * @param TranslatorInterface $translator
      * @param string $emailFrom
+     * @param string $emailFromName
      */
     public function __construct(
         EntityManagerInterface $em,
@@ -64,7 +70,8 @@ class NotificationService
         EngineInterface $templating,
         \Swift_Mailer $mailer,
         TranslatorInterface $translator,
-        string $emailFrom
+        string $emailFrom,
+        string $emailFromName
     ) {
         $this->em = $em;
         $this->router = $router;
@@ -72,6 +79,7 @@ class NotificationService
         $this->mailer = $mailer;
         $this->translator = $translator;
         $this->emailFrom = $emailFrom;
+        $this->emailFromName = $emailFromName;
     }
 
     /**
@@ -154,7 +162,7 @@ class NotificationService
         );
 
         $message = (new \Swift_Message($subject))
-            ->setFrom($this->emailFrom)
+            ->setFrom([$this->emailFrom => $this->emailFromName])
             ->setTo($notification->getUser()->getEmail())
             ->setBody(
                 $this->templating->render(

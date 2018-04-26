@@ -70,3 +70,4 @@ services:
     BddBundle\Service\NotificationService:
         arguments:
             $emailFrom: '%mail_from%'
+            $emailFromName: '%mail_from_name%'
