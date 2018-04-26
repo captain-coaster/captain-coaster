@@ -166,6 +166,6 @@ class NotificationService
                 'text/html'
             );
 
-//        $this->mailer->send($message);
+        $this->mailer->send($message);
     }
 }
