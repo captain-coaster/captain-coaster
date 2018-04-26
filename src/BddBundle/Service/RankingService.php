@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class RankingService
 {
     CONST MIN_DUELS = 5;
+    CONST MIN_LOCAL_COMPARISONS = 2;
 
     /**
      * @var EntityManagerInterface
@@ -151,6 +152,9 @@ class RankingService
         }
     }
 
+    /**
+     * @param $ratings
+     */
     private function processDuelsInRatings($ratings)
     {
         /** @var RiddenCoaster $rating */
@@ -172,6 +176,8 @@ class RankingService
                         $this->setWinner($coaster, $duelCoaster);
                     } elseif ($rating->getValue() < $duelRating->getValue()) {
                         $this->setLooser($coaster, $duelCoaster);
+                    } else {
+                        $this->setTie($coaster, $duelCoaster);
                     }
                 }
             }
@@ -183,24 +189,35 @@ class RankingService
      */
     private function computeScore()
     {
-        foreach ($this->duels as $coasterId => $duels) {
-            $duelScores = array_map(
-                function ($value) {
-                    if ($value == 0) {
-                        return 50;
-                    } elseif ($value > 0) {
-                        return 100;
-                    } else {
-                        return 0;
-                    }
-                },
-                $duels
-            );
+        foreach ($this->duels as $coasterId => $coasterDuels) {
+            $duelScoreSum = 0;
+            $duelCount = 0;
+            foreach ($coasterDuels as $duelCoasterId => $duelValue) {
+                $oppositeDuelValue = $this->duels[$duelCoasterId][$coasterId];
 
-            $this->ranking[$coasterId] = array_sum($duelScores) / count($duelScores);
+                // don't take into account if too few comparisons
+                // $duelValue + $oppositeDuelValue always equals vote number
+                if ($duelValue + $oppositeDuelValue >= self::MIN_LOCAL_COMPARISONS) {
+                    $duelCount++;
+
+                    // same win & loose numbers
+                    if ($duelValue === $oppositeDuelValue) {
+                        $duelScoreSum += 50;
+                    // $coaster has more wins
+                    } elseif ($duelValue > $oppositeDuelValue) {
+                        $duelScoreSum += 100;
+                    // $coaster has less wins
+                    } else {
+                        $duelScoreSum += 0;
+                    }
+                }
+            }
+
+            // final score is between 0 and 100
+            $this->ranking[$coasterId] = $duelScoreSum / $duelCount;
         }
 
-        // Tri décroissant
+        // sort in reverse order (higher score is first)
         arsort($this->ranking);
     }
 
@@ -221,7 +238,17 @@ class RankingService
      */
     private function setLooser(Coaster $coaster, Coaster $duelCoaster): void
     {
-        $this->setDuelResult($coaster, $duelCoaster, -1);
+        $this->setDuelResult($coaster, $duelCoaster, 0);
+    }
+
+    /**
+     * Set duel value for tie duel
+     * @param $coaster
+     * @param $duelCoaster
+     */
+    private function setTie(Coaster $coaster, Coaster $duelCoaster): void
+    {
+        $this->setDuelResult($coaster, $duelCoaster, 0.5);
     }
 
     /**
@@ -230,7 +257,7 @@ class RankingService
      * @param $duelCoaster
      * @param $value
      */
-    private function setDuelResult(Coaster $coaster, Coaster $duelCoaster, int $value): void
+    private function setDuelResult(Coaster $coaster, Coaster $duelCoaster, float $value): void
     {
         $coasterId = $coaster->getId();
         $duelCoasterId = $duelCoaster->getId();
