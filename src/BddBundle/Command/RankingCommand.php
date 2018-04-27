@@ -31,7 +31,7 @@ class RankingCommand extends ContainerAwareCommand
         $this
             ->setName('ranking:update')
             ->addOption('dry-run', null, InputOption::VALUE_NONE)
-            ->addOption('debug', null, InputOption::VALUE_NONE);
+            ->addOption('output', null, InputOption::VALUE_NONE);
     }
 
     /**
@@ -41,17 +41,32 @@ class RankingCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $stopwatch = $this->getContainer()->get('debug.stopwatch');
+        $stopwatch->start('ranking');
+
         $output->writeln('Starting update ranking command.');
 
-        $result = $this->rankingService->updateRanking($input->getOption('dry-run'));
+        $dryRun = $input->getOption('dry-run');
 
-        if ($input->getOption('debug')) {
+        if ((new \DateTime())->format('j') !== '1' && !$dryRun) {
+            $output->writeln('We are not first day of month. We do it dry-run anyway.');
+            $dryRun = true;
+        }
+
+        $result = $this->rankingService->updateRanking($dryRun);
+
+        if ($input->getOption('output')) {
             foreach ($result as $coaster) {
                 $output->writeln($this->formatMessage($coaster));
             }
         }
 
         $output->writeln(count($result).' coasters updated.');
+
+        $event = $stopwatch->stop('ranking');
+        $output->writeln((round($event->getDuration() / 1000)).' seconds');
+        $output->writeln((round($event->getMemory() / (1000 * 1000))).' Mo');
+        $output->writeln('Dry-run: '.$dryRun);
     }
 
     /**

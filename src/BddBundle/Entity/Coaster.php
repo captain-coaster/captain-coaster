@@ -75,9 +75,23 @@ class Coaster
     /**
      * @var int
      *
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="integer", nullable=false)
      */
-    private $totalRatings;
+    private $totalRatings = 0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="decimal", precision=4, scale=1, nullable=true)
+     */
+    private $averageTopRank;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $totalTopsIn = 0;
 
     /**
      * @var float
@@ -166,13 +180,6 @@ class Coaster
      * @ORM\OneToMany(targetEntity="BddBundle\Entity\RiddenCoaster", mappedBy="coaster")
      */
     private $ratings;
-
-    /**
-     * @var ListeCoaster
-     *
-     * @ORM\OneToMany(targetEntity="BddBundle\Entity\ListeCoaster", mappedBy="coaster")
-     */
-    private $listed;
 
     /**
      * @var MainTag
@@ -651,7 +658,7 @@ class Coaster
      */
     public function isRankable(): bool
     {
-        return (($this->getRatings()->count() + $this->getListed()->count()) >= RankingService::MIN_DUELS);
+        return (($this->getTotalRatings() + $this->getTotalTopsIn()) >= RankingService::MIN_DUELS);
     }
 
     /**
@@ -692,40 +699,6 @@ class Coaster
     public function getScore()
     {
         return $this->score;
-    }
-
-    /**
-     * Add listed
-     *
-     * @param \BddBundle\Entity\ListeCoaster $listed
-     *
-     * @return Coaster
-     */
-    public function addListed(\BddBundle\Entity\ListeCoaster $listed)
-    {
-        $this->listed[] = $listed;
-
-        return $this;
-    }
-
-    /**
-     * Remove listed
-     *
-     * @param \BddBundle\Entity\ListeCoaster $listed
-     */
-    public function removeListed(\BddBundle\Entity\ListeCoaster $listed)
-    {
-        $this->listed->removeElement($listed);
-    }
-
-    /**
-     * Get listed
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getListed()
-    {
-        return $this->listed;
     }
 
     /**
@@ -784,5 +757,43 @@ class Coaster
     public function getMainTags()
     {
         return $this->mainTags;
+    }
+
+    /**
+     * @param int $totalTopsIn
+     * @return Coaster
+     */
+    public function setTotalTopsIn(int $totalTopsIn): Coaster
+    {
+        $this->totalTopsIn = $totalTopsIn;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalTopsIn(): int
+    {
+        return $this->totalTopsIn;
+    }
+
+    /**
+     * @param int $averageTopRank
+     * @return Coaster
+     */
+    public function setAverageTopRank(int $averageTopRank): Coaster
+    {
+        $this->averageTopRank = $averageTopRank;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAverageTopRank(): int
+    {
+        return $this->averageTopRank;
     }
 }

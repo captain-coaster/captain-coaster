@@ -1,11 +1,4 @@
-ALTER TABLE users ADD preferred_locale VARCHAR(255) NOT NULL;
-
-update users u set preferred_locale = 'en' where preferred_locale = '';
-
-update users u
-  left join ridden_coaster r on r.user_id = u.id
-set u.preferred_locale = r.language;
-
+ALTER TABLE coaster ADD average_top_rank NUMERIC(4, 1) DEFAULT NULL, ADD total_tops_in INT NOT NULL, CHANGE total_ratings total_ratings INT NOT NULL;
 
 # user number
 select count(1) from users;

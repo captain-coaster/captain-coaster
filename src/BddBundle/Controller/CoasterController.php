@@ -180,7 +180,7 @@ class CoasterController extends Controller
                 'coasters' => $pagination,
                 'images' => $imageUrls,
                 'rankingDate' => new \DateTime('first day of this month midnight'),
-                'nextRankingDate' => new \DateTime('first day of next month midnight 1 minute')
+                'nextRankingDate' => new \DateTime('first day of next month midnight 1 minute'),
             ]
         );
     }
@@ -203,7 +203,7 @@ class CoasterController extends Controller
         // Load reviews
         $reviews = $this->getDoctrine()
             ->getRepository('BddBundle:RiddenCoaster')
-            ->getReviews($coaster->getId(), $request->getLocale());
+            ->getReviews($coaster, $request->getLocale());
 
         $rating = null;
         if ($this->isGranted('ROLE_USER')) {

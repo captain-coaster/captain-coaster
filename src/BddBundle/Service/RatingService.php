@@ -3,7 +3,6 @@
 namespace BddBundle\Service;
 
 use BddBundle\Entity\Coaster;
-use BddBundle\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -37,26 +36,14 @@ class RatingService
      */
     public function manageRatings(Coaster $coaster)
     {
-        /** @var RiddenCoaster[] $ratings */
-        $ratings = $coaster->getRatings();
+        $repo = $this->em->getRepository('BddBundle:RiddenCoaster');
 
-        $averageRating = null;
-        $totalRatings = count($ratings);
-
-        // Update average value only if we have enough ratings
-        if (count($ratings) >= self::MIN_RATINGS) {
-            $sum = 0;
-            foreach ($ratings as $rating) {
-                $sum += (float)$rating->getValue();
-            }
-
-            $averageRating = number_format(round(($sum / $totalRatings), 3), 3);
+        if ($repo->countForCoaster($coaster) >= self::MIN_RATINGS) {
+            $repo->updateAverageRating($coaster);
+            $this->em->refresh($coaster);
         }
 
-        $coaster->setAverageRating($averageRating);
-        $coaster->setTotalRatings($totalRatings);
-        $this->em->persist($coaster);
-        $this->em->flush();
+        $repo->updateTotalRating($coaster);
 
         return $coaster->getAverageRating();
     }
