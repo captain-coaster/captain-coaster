@@ -4,22 +4,22 @@ easy_admin:
         Country:
             class: BddBundle\Entity\Country
             edit:
-                fields: ['id', 'name', 'slug']
+                fields: ['name', 'slug']
             new:
-                fields: ['id', 'name', 'slug']
+                fields: ['name', 'slug']
         Launch:
             class: BddBundle\Entity\Launch
             list:
                 fields: ['id', 'name']
             edit:
-                fields: ['id', 'name', 'slug']
+                fields: ['name', 'slug']
             new:
-                fields: ['id', 'name', 'slug']
+                fields: ['name', 'slug']
         Manufacturer:
             class: BddBundle\Entity\Manufacturer
             list:
                 fields: ['id', 'name', 'builtCoasters']
             edit:
-                fields: ['id', 'name', 'slug', 'website', 'phoneNumber', 'place']
+                fields: ['name', 'slug', 'website', 'phoneNumber', 'place']
             new:
-                fields: ['id', 'name', 'slug', 'website', 'phoneNumber', 'place']
+                fields: ['name', 'slug', 'website', 'phoneNumber', 'place']
