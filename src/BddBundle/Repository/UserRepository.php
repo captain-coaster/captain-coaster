@@ -41,6 +41,7 @@ class UserRepository extends EntityRepository
             ->innerJoin('r.user', 'u')
             ->innerJoin('r.coaster', 'c')
             ->innerJoin('c.builtCoaster', 'bc')
+            ->innerJoin('bc.manufacturer', 'm')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
             ->getQuery();
