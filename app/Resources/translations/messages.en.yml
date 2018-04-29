@@ -60,7 +60,8 @@ park:
 coaster_ranking:
     title: 'Ranking of the best coasters - %rankingMonth%'
     description: 'Ranking of the best roller coasters of the world, by our users. Write reviews and rate coasters you have ridden to be a part of it.'
-    reviews_number: '1 review|%count% reviews'
+    rating_number: '1 rating|%count% ratings'
+    top_number: '1 top|%count% tops'
     info:
         title: 'Join the ranking!'
         text: 'The ranking of world''s best coasters takes into account every ratings and tops from each user. <a href="%link_path%">Sign in</a> and start rating coasters now to be part of it. The more you rate coasters, the more you weigh on the ranking! Next update %date%.'

@@ -5,10 +5,33 @@
        alt="{{ user.displayName }}">
 {% endmacro %}
 
+{# Display a coaster related date #}
 {% macro displayDate(date) %}
   {% if date|date("dm") == "0101" %}
     {{ date|date("Y") }}
   {% else %}
     {{ date|localizeddate('short', 'none') }}
+  {% endif %}
+{% endmacro %}
+
+{# Color magic for ratings #}
+{% macro ratingColor(score) %}
+  hsl({{ score * 1.2 }}, 50%, 50%)
+{% endmacro %}
+
+{# Display coaster rank variation #}
+{% macro variation(coaster) %}
+  {% if coaster.previousRank is empty %}
+    <span class="badge badge-flat border-warning-600 text-warning-600">new</span>
+  {% elseif coaster.previousRank < coaster.rank %}
+    <span class="badge badge-flat border-danger-600 text-danger-600">
+      <i class="icon-arrow-down5"></i> {{ (coaster.rank - coaster.previousRank)|abs }}
+    </span>
+  {% elseif coaster.previousRank > coaster.rank %}
+    <span class="badge badge-flat border-success-600 text-success-600">
+      <i class="icon-arrow-up5"></i> {{ (coaster.rank - coaster.previousRank)|abs }}
+    </span>
+  {% elseif coaster.previousRank == coaster.rank %}
+    <span class="badge badge-flat border-primary-600 text-primary-600"><i class="icon-arrow-right5"></i></span>
   {% endif %}
 {% endmacro %}

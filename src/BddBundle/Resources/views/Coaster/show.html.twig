@@ -18,12 +18,11 @@
         <div class="panel panel-body">
           <div class="media no-margin">
             {% if coaster.score %}
-              {% set hue = coaster.score * 1.2 %}
               <div class="media-left">
-                <i style="color: hsl({{ hue }},50%,50%)" class="icon-heart6 icon-3x"></i>
+                <i style="color: {{ helper.ratingColor(coaster.score) }};" class="icon-heart6 icon-3x"></i>
               </div>
               <div class="media-body text-right">
-                <h3 class="no-margin text-semibold text-right" style="color: hsl({{ hue }},50%,50%)">
+                <h3 class="no-margin text-semibold text-right" style="color: {{ helper.ratingColor(coaster.score) }};">
                   {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
                 </h3>
                 {# @todo optimize this #}
