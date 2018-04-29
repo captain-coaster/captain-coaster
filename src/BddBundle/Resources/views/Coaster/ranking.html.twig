@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'coaster_ranking.title'|trans %}
+{% set rankingMonth = date()|localizeddate('none', 'none', null, null, 'MMMM Y')|capitalize %}
+{% set title = 'coaster_ranking.title'|trans({'%rankingMonth%': rankingMonth}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
@@ -10,8 +11,7 @@
 {% block body %}
   <!-- info alert -->
   <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span>
-    </button>
+    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
     <h6 class="alert-heading text-semibold">{{ 'coaster_ranking.info.title'|trans }}</h6>
     <p>{{ 'coaster_ranking.info.text'|trans({'%date%': nextRankingDate|ago, '%link_path%': path('hwi_oauth_connect')})|raw }}</p>
   </div>

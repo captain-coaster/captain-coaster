@@ -53,12 +53,12 @@ park:
     kiddies: 'Montaña rusa infantil|Montaña rusa infantil'
 
 coaster_ranking:
-    title: 'Clasificación de las mejores montañas rusas'
+    title: 'Clasificación de las mejores montañas rusas - %rankingMonth%'
     description: 'Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.'
     reviews_number: '1 reseña|%count% reseñas'
     info:
         title: '¡ Mira nuestra nueva clasificación de montañas rusas !'
-        text: 'Esta clasificación se basa en un nuevo algoritmo, más preciso y más complejo que antes. Tomamos en cuenta vuestros calificaciones para cada montaña rusa y su posición en vuestros Tops Coasters. Actualizado cada mes.'
+        text: 'Esta clasificación se basa en un nuevo algoritmo, más preciso y más complejo que antes. Tomamos en cuenta vuestros calificaciones para cada montaña rusa y su posición en vuestros Tops Coasters. Próxima actualización %date%.'
 
 map_index:
     title: 'Mapa de montañas rusas'

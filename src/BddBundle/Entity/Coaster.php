@@ -54,14 +54,14 @@ class Coaster
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="openingDate", type="datetime", nullable=true)
+     * @ORM\Column(name="openingDate", type="date", nullable=true)
      */
     private $openingDate;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="closingDate", type="datetime", nullable=true)
+     * @ORM\Column(name="closingDate", type="date", nullable=true)
      */
     private $closingDate;
 

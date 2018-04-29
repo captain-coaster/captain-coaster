@@ -30,7 +30,7 @@
                   </a>
                 </h6>
                 <p class="text-muted">
-                  {{ 'user_list.member_from'|trans }} {{ user.0.createdAt|date("d/m/Y") }}
+                  {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
                 </p>
 
                 <h5 class="text-semibold no-margin">

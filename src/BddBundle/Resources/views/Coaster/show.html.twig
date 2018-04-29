@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% import "helper.html.twig" as helper %}
+
 {% set title = coaster.name %}
 {% set subTitle = coaster.park.name %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
@@ -199,11 +201,7 @@
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
                 :</label>
               <div class="pull-right">
-                {% if coaster.openingDate|date("dm") == "0101" %}
-                  {{ coaster.openingDate|date("Y") }}
-                {% else %}
-                  {{ coaster.openingDate|date("d/m/Y") }}
-                {% endif %}
+                {{ helper.displayDate(coaster.openingDate) }}
               </div>
             </div>
           {% endif %}
@@ -212,11 +210,7 @@
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
                 :</label>
               <div class="pull-right">
-                {% if coaster.closingDate|date("dm") == "0101" %}
-                  {{ coaster.closingDate|date("Y") }}
-                {% else %}
-                  {{ coaster.closingDate|date("d/m/Y") }}
-                {% endif %}
+                {{ helper.displayDate(coaster.closingDate) }}
               </div>
             </div>
           {% endif %}
@@ -352,6 +346,7 @@
           "reviewCount": "{{ coaster.ratings|length }}"
         }
       }
+
     </script>
   {% endif %}
 {% endblock %}

@@ -58,8 +58,8 @@ park:
     kiddies: 'kiddie|kiddies'
 
 coaster_ranking:
-    title: 'Ranking of the best coasters'
-    description: 'Ranking of the best roller coasters of the world, by our users. Send a review and rate coasters you have ridden to take part of it.'
+    title: 'Ranking of the best coasters - %rankingMonth%'
+    description: 'Ranking of the best roller coasters of the world, by our users. Write reviews and rate coasters you have ridden to be a part of it.'
     reviews_number: '1 review|%count% reviews'
     info:
         title: 'Join the ranking!'

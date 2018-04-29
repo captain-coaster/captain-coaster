@@ -53,7 +53,7 @@ park:
     kiddies: 'kiddie|kiddies'
 
 coaster_ranking:
-    title: 'Classement des meilleurs coasters'
+    title: 'Classement des meilleurs coasters - %rankingMonth%'
     description: 'Classement des meilleurs montagnes russes du monde, par nos utilisateurs. Donne ton avis et met des notes pour participer à ce classement des coasters.'
     reviews_number: '1 note|%count% notes'
     info:
