@@ -154,6 +154,11 @@ class NotificationService
      */
     private function sendEmail(Notification $notification): void
     {
+        // @todo temp hack
+        if (strpos($notification->getUser()->getEmail(), 'notvalid')) {
+            return;
+        }
+
         $subject = $this->translator->trans(
             'notif.email.title',
             [],
