@@ -1,3 +1,8 @@
+# Define languages
+fr: Français
+en: English
+es: Español
+
 app:
     name: 'Captain Coaster'
     title:
@@ -162,7 +167,6 @@ navbar:
     logout: 'Se déconnecter'
     topcoasters: 'Mon Top Coasters'
     my_map: 'Ma carte'
-    report: 'Mes Trip Reports'
 
 sidebar:
     index: 'Accueil'
@@ -224,26 +228,6 @@ badge:
     rating1000: '1000ème note'
     teamkatun: 'Team Katun'
     teamispeed: 'Team iSpeed'
-
-report:
-    new:
-        title: 'Ma visite à...'
-        description: ''
-    info:
-        header: 'Partage ton expérience avec nous ! '
-        text: 'Ta visite dans un parc s''est super bien passée et tu veux partager avec nous ton
-                expérience ? Ou au contraire, c''était un cauchemar ? Raconte-nous tout ! Après nous
-                avoir donné quelques infos sur ta visite, on pourra passer à l''écriture de ton avis.'
-    form:
-        first: 'Avant toute chose :'
-        park: 'Parc visité'
-        visitdate: 'Date de la visite'
-        language: 'Langue du TR'
-        conditions: 'J''accepte les conditions de Captain Coaster.'
-        nextstep: 'Commencer à écrire !'
-        title: 'Titre'
-
-
 
 error:
     404:

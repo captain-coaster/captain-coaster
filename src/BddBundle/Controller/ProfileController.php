@@ -105,28 +105,6 @@ class ProfileController extends Controller
     }
 
     /**
-     * @Route("/me/reports", name="me_reports")
-     * @Method({"GET"})
-     * @Security("is_granted('ROLE_USER')")
-     * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function myReportsAction(EntityManagerInterface $em)
-    {
-        $reports = $em->getRepository('BddBundle:Report')->findBy(
-            ['user' => $this->getUser()],
-            ['updateDate' => 'desc']
-        );
-
-        return $this->render(
-            'BddBundle:Profile:reports.html.twig',
-            [
-                'reports' => $reports,
-            ]
-        );
-    }
-
-    /**
      * Display a user's profile page
      *
      * @param User $user

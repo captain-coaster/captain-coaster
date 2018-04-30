@@ -104,13 +104,6 @@ class User extends BaseUser
     private $notifications;
 
     /**
-     * @var mixed
-     *
-     * @ORM\OneToMany(targetEntity="BddBundle\Entity\LikeReport", mappedBy="user")
-     */
-    private $reportLikes;
-
-    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -511,25 +504,6 @@ class User extends BaseUser
                 return !$notif->getIsRead();
             }
         );
-    }
-
-    /**
-     * @param mixed $reportLikes
-     * @return User
-     */
-    public function setReportLikes($reportLikes)
-    {
-        $this->reportLikes = $reportLikes;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getReportLikes()
-    {
-        return $this->reportLikes;
     }
 
     /**
