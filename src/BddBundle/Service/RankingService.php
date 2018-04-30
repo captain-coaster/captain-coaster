@@ -14,8 +14,11 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class RankingService
 {
-    CONST MIN_DUELS = 5;
-    CONST MIN_LOCAL_COMPARISONS = 2;
+    // @todo renommer autrement
+    CONST MIN_DUELS = 6;
+    CONST MIN_LOCAL_COMPARISONS = 3;
+    // @todo renommer duels
+    CONST MIN_GLOBAL_COMPARISONS = 125;
 
     /**
      * @var EntityManagerInterface
@@ -213,8 +216,10 @@ class RankingService
                 }
             }
 
-            // final score is between 0 and 100
-            $this->ranking[$coasterId] = $duelScoreSum / $duelCount;
+            if ($duelCount > self::MIN_GLOBAL_COMPARISONS) {
+                // final score is between 0 and 100
+                $this->ranking[$coasterId] = $duelScoreSum / $duelCount;
+            }
         }
 
         // sort in reverse order (higher score is first)
