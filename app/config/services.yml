@@ -30,24 +30,10 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    # add more services, or override services that need manual wiring
-    # AppBundle\Service\ExampleService:
-    #     arguments:
-    #         $someArgument: 'some_value'
     BddBundle\Service\ImageService:
         arguments:
             $basePath: '%base_path_images%'
             $baseUrl: '%base_url_images%'
-
-    BddBundle\Service\ReportCoverUploader:
-        arguments:
-            $targetDir: '%report_cover_directory%'
-            $imageManipulator: '@BddBundle\Service\ImageManipulationService'
-
-    BddBundle\Service\ReportImageUploader:
-        arguments:
-            $targetDir: '%report_image_directory%'
-            $imageManipulator: '@BddBundle\Service\ImageManipulationService'
 
     BddBundle\Service\BannerMaker:
         arguments:
@@ -56,18 +42,14 @@ services:
             $targetPath: '%banner_target_path%'
             $backgroundPath: '%banner_background_path%'
 
+    BddBundle\Service\NotificationService:
+        arguments:
+            $emailFrom: '%mail_from%'
+            $emailFromName: '%mail_from_name%'
+
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]
 
     Twig\Extensions\IntlExtension:
         tags: [twig.extension]
-
-    \HTMLPurifier:
-        class: \HTMLPurifier
-        public: true
-
-    BddBundle\Service\NotificationService:
-        arguments:
-            $emailFrom: '%mail_from%'
-            $emailFromName: '%mail_from_name%'

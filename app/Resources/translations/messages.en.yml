@@ -167,7 +167,6 @@ navbar:
     logout: 'Logout'
     topcoasters: 'My Top Coasters'
     my_map: 'My map'
-    report: 'My Trip Reports'
 
 sidebar:
     index: 'Home'
@@ -229,29 +228,6 @@ badge:
     rating1000: '1000th rating'
     teamkatun: 'Team Katun'
     teamispeed: 'Team iSpeed'
-
-report:
-    new:
-        title: 'My new Trip Report'
-    write:
-        title: 'Edit my Trip Report'
-    me:
-        title: 'My Trip Reports'
-    list:
-        title: 'Trip Reports'
-    info:
-        header: 'Share your visit with us !'
-        text: 'You spent a beautiful day in a park and you want to share it with us ? Or was it a
-                total nightmare ? Tell us everything you liked and disliked about your visit. After
-                you gave us some infos, we will go to the next step.'
-    form:
-        first: 'First of all :'
-        park: 'Park visited'
-        visitdate: 'Date of the visit'
-        language: 'Language'
-        conditions: 'I accept the Conditions of Use of Captain Coaster.'
-        nextstep: 'Start writing my review !'
-        title: 'Title'
 
 error:
     404:

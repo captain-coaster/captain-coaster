@@ -31,8 +31,6 @@ parameters:
     base_path_images: '/Users/florian/Sites/backup/cw-legacy/photo'
     base_url_images: 'images/coasters/{coasterId}/big/{fileName}'
     base_upload_path: '%kernel.project_dir%/web/upload'
-    report_cover_directory: '%base_upload_path%/report/cover'
-    report_image_directory: '%base_upload_path%/report/image'
 
     # Banner
     banner_font_path: '%kernel.project_dir%/web/fonts/OpenSans-Regular.ttf'
