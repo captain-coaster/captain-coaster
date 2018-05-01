@@ -24,8 +24,8 @@ class UserController extends Controller
     {
         $query = $this
             ->get('doctrine.orm.entity_manager')
-            ->getRepository('BddBundle:User')
-            ->getUserRankings($user->getId());
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->getUserRatings($user);
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(

@@ -155,6 +155,25 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
+     * @param User $user
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getUserRatings(User $user)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'm', 'c', 'bc', 'p')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->join('r.user', 'u')
+            ->join('r.coaster', 'c')
+            ->join('c.builtCoaster', 'bc')
+            ->join('bc.manufacturer', 'm')
+            ->join('c.park', 'p')
+            ->where('r.user = :user')
+            ->setParameter('user', $user);
+    }
+
+    /**
      * Get all reviews ordered by language
      * @param string $locale
      * @return array|mixed

@@ -49,7 +49,7 @@
               {{ rating.coaster.builtCoaster.manufacturer.name }}
             </td>
             <td class="hidden-xs">
-              {{ rating.coaster.openingDate|date("Y") }}
+              {{ rating.coaster.openingDate is empty ? '-' : rating.coaster.openingDate|date('Y') }}
             </td>
             <td>
               <div class="rating-coaster"

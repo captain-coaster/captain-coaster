@@ -29,25 +29,6 @@ class UserRepository extends EntityRepository
     }
 
     /**
-     * @param int $userId
-     * @return \Doctrine\ORM\Query
-     */
-    public function getUserRankings(int $userId)
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r, c, bc')
-            ->from('BddBundle:RiddenCoaster', 'r')
-            ->innerJoin('r.user', 'u')
-            ->innerJoin('r.coaster', 'c')
-            ->innerJoin('c.builtCoaster', 'bc')
-            ->innerJoin('bc.manufacturer', 'm')
-            ->where('u.id = :userId')
-            ->setParameter('userId', $userId)
-            ->getQuery();
-    }
-
-    /**
      * Returns users that have recently up
      * @param int $sinceHours
      * @return mixed
