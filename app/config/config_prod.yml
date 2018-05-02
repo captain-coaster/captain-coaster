@@ -24,7 +24,7 @@ monolog:
         mail:
             type: fingers_crossed
             action_level: critical
-            handler: depuplicated
+            handler: deduplicated
         deduplicated:
             type:    deduplication
             time: 120
