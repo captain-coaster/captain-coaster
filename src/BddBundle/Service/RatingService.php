@@ -2,7 +2,6 @@
 
 namespace BddBundle\Service;
 
-use BddBundle\Entity\Coaster;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -29,22 +28,16 @@ class RatingService
     }
 
     /**
-     * Update averageRating for a coaster
+     * Update averageRating for all coasters
      *
-     * @param Coaster $coaster
-     * @return string
+     * @return int
      */
-    public function manageRatings(Coaster $coaster)
+    public function updateRatings(): int
     {
         $repo = $this->em->getRepository('BddBundle:RiddenCoaster');
 
-        if ($repo->countForCoaster($coaster) >= self::MIN_RATINGS) {
-            $repo->updateAverageRating($coaster);
-            $this->em->refresh($coaster);
-        }
+        $repo->updateTotalRatings();
 
-        $repo->updateTotalRating($coaster);
-
-        return $coaster->getAverageRating();
+        return $repo->updateAverageRatings(self::MIN_RATINGS);
     }
 }

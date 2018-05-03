@@ -2,7 +2,6 @@
 
 namespace BddBundle\Service;
 
-use BddBundle\Entity\Coaster;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -11,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class TopService
 {
-    CONST MIN_TOPS = 2;
+    CONST MIN_TOPS_IN = 2;
 
     /**
      * @var EntityManagerInterface
@@ -29,17 +28,16 @@ class TopService
     }
 
     /**
-     * Update totalTopsIn & averageTopRank for a coaster
-     * @param Coaster $coaster
+     * Update totalTopsIn & averageTopRank for all coasters
+     *
+     * @return int
      */
-    public function updateTopStats(Coaster $coaster): void
+    public function updateTopStats(): int
     {
         $repo = $this->em->getRepository('BddBundle:ListeCoaster');
 
-        if ($repo->countForCoaster($coaster) >= self::MIN_TOPS) {
-            $repo->updateAverageTopRank($coaster);
-        }
+        $repo->updateTotalTopsIn();
 
-        $repo->updateTotalTopsIn($coaster);
+        return $repo->updateAverageTopRanks(self::MIN_TOPS_IN);
     }
 }

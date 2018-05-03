@@ -33,11 +33,11 @@ class ListeCoasterRepository extends EntityRepository
     }
 
     /**
-     * Update totalTopsIn for a specific coaster
-     * @param Coaster $coaster
+     * Update totalTopsIn for all coasters
+     *
      * @return bool
      */
-    public function updateTotalTopsIn(Coaster $coaster)
+    public function updateTotalTopsIn()
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -49,12 +49,10 @@ class ListeCoasterRepository extends EntityRepository
             ) c2
             ON c2.id = c.id
             SET c.total_tops_in = c2.nb
-            WHERE c.id = :coasterId
             ';
 
         try {
-            $statement = $connection->prepare($sql);
-            $statement->execute(['coasterId' => $coaster->getId()]);
+            $connection->executeQuery($sql);
         } catch (DBALException $e) {
             return false;
         }
@@ -63,11 +61,12 @@ class ListeCoasterRepository extends EntityRepository
     }
 
     /**
-     * Update averageTopRank for a specific coaster
-     * @param Coaster $coaster
+     * Update averageTopRank for all coasters
+     *
+     * @param int $minTopsIn
      * @return bool
      */
-    public function updateAverageTopRank(Coaster $coaster)
+    public function updateAverageTopRanks(int $minTopsIn)
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -79,16 +78,16 @@ class ListeCoasterRepository extends EntityRepository
             ) c2
             ON c2.id = c.id
             SET c.average_top_rank = c2.average
-            WHERE c.id = :coasterId
+            WHERE c.total_tops_in >= :minTopsIn
             ';
 
         try {
             $statement = $connection->prepare($sql);
-            $statement->execute(['coasterId' => $coaster->getId()]);
+            $statement->execute(['minTopsIn' => $minTopsIn]);
+
+            return $statement->rowCount();
         } catch (DBALException $e) {
             return false;
         }
-
-        return true;
     }
 }

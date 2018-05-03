@@ -82,7 +82,7 @@ class Coaster
     /**
      * @var float
      *
-     * @ORM\Column(type="decimal", precision=4, scale=1, nullable=true)
+     * @ORM\Column(type="decimal", precision=6, scale=3, nullable=true)
      */
     private $averageTopRank;
 

@@ -196,11 +196,11 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
-     * Update totalRating for a specific coaster
-     * @param Coaster $coaster
+     * Update totalRating for all coasters
+     *
      * @return bool
      */
-    public function updateTotalRating(Coaster $coaster)
+    public function updateTotalRatings()
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -212,12 +212,10 @@ class RiddenCoasterRepository extends EntityRepository
             ) c2
             ON c2.id = c.id
             SET c.total_ratings = c2.nb
-            WHERE c.id = :coasterId
             ';
 
         try {
-            $statement = $connection->prepare($sql);
-            $statement->execute(['coasterId' => $coaster->getId()]);
+            $connection->executeQuery($sql);
         } catch (DBALException $e) {
             return false;
         }
@@ -226,11 +224,12 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
-     * Update averageRating for a specific coaster
-     * @param Coaster $coaster
-     * @return bool
+     * Update averageRating for all coasters
+     *
+     * @param int $minRatings
+     * @return bool|int
      */
-    public function updateAverageRating(Coaster $coaster)
+    public function updateAverageRatings(int $minRatings)
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -242,16 +241,16 @@ class RiddenCoasterRepository extends EntityRepository
             ) c2
             ON c2.id = c.id
             SET c.averageRating = c2.average
-            WHERE c.id = :coasterId
+            WHERE c.total_ratings >= :minRatings
             ';
 
         try {
             $statement = $connection->prepare($sql);
-            $statement->execute(['coasterId' => $coaster->getId()]);
+            $statement->execute(['minRatings' => $minRatings]);
+
+            return $statement->rowCount();
         } catch (DBALException $e) {
             return false;
         }
-
-        return true;
     }
 }

@@ -86,7 +86,7 @@ class ReviewController extends Controller
 
             // Update average rating on coaster
             // switch to event listener ?
-            $ratingService->manageRatings($coaster);
+            $ratingService->updateRatings();
 
             return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
         }

@@ -66,7 +66,7 @@ class RatingCoasterController extends Controller
 
         // Update average rating on coaster
         // switch to event listener ?
-        $ratingService->manageRatings($coaster);
+        $ratingService->updateRatings();
 
         return new JsonResponse(['state' => 'success']);
     }
@@ -103,7 +103,7 @@ class RatingCoasterController extends Controller
 
         // Update average rating on coaster
         // switch to event listener ?
-        $ratingService->manageRatings($coaster);
+        $ratingService->updateRatings();
 
         return new JsonResponse(['state' => 'success']);
     }
