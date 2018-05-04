@@ -58,3 +58,6 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
+
+    Gedmo\Sluggable\SluggableListener:
+        alias: stof_doctrine_extensions.listener.sluggable

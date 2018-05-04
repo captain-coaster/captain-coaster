@@ -13,7 +13,7 @@ parameters:
     app.locales: 'en|fr|es'
     # used for templating and sitemap
     app.locales.array: ['en', 'fr', 'es']
-#    container.autowiring.strict_mode: true
+    container.autowiring.strict_mode: true
 
 framework:
     #esi: ~

@@ -64,10 +64,6 @@ class RatingCoasterController extends Controller
         $em->persist($rating);
         $em->flush();
 
-        // Update average rating on coaster
-        // switch to event listener ?
-        $ratingService->updateRatings();
-
         return new JsonResponse(['state' => 'success']);
     }
 
@@ -100,10 +96,6 @@ class RatingCoasterController extends Controller
 
         $em->remove($rating);
         $em->flush();
-
-        // Update average rating on coaster
-        // switch to event listener ?
-        $ratingService->updateRatings();
 
         return new JsonResponse(['state' => 'success']);
     }
