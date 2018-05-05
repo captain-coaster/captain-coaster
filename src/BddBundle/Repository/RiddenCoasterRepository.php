@@ -7,6 +7,7 @@ use BddBundle\Entity\User;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 /**
  * RiddenCoasterRepository
@@ -251,6 +252,36 @@ class RiddenCoasterRepository extends EntityRepository
             return $statement->rowCount();
         } catch (DBALException $e) {
             return false;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @return mixed
+     */
+    public function findMostRiddenCountry(User $user)
+    {
+        $default = ['name' => '-'];
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('co.name as name')
+                ->addSelect('count(1) as HIDDEN nb1')
+                ->from('BddBundle:RiddenCoaster', 'r')
+                ->join('r.coaster', 'c')
+                ->join('c.park', 'p')
+                ->join('p.country', 'co')
+                ->where('r.user = :user')
+                ->groupBy('co.id')
+                ->orderBy('nb1', 'desc')
+                ->setParameter('user', $user)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException $e) {
+            return $default;
+        } catch (NonUniqueResultException $e) {
+            return $default;
         }
     }
 }

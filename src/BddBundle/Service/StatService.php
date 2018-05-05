@@ -69,6 +69,10 @@ class StatService
     {
         $stats = [];
 
+        if ($this->em->getRepository('BddBundle:RiddenCoaster')->countForUser($user) === '0') {
+            return $stats;
+        }
+
         $stats['nb_coasters'] = $this->em
             ->getRepository('BddBundle:RiddenCoaster')
             ->countForUser($user);
@@ -78,6 +82,9 @@ class StatService
         $stats['nb_country'] = $this->em
             ->getRepository('BddBundle:Country')
             ->countForUser($user);
+        $stats['country'] = $this->em
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->findMostRiddenCountry($user);
 
         return $stats;
     }

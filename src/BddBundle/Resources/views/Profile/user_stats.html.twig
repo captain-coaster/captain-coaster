@@ -1,3 +1,4 @@
+{% if stats|length > 0 %}
 <div class="panel">
   <div class="panel-heading">
     <h3 class="panel-title">{{ 'me.stats'|trans }}</h3>
@@ -45,5 +46,20 @@
         </div>
       </div>
     </div>
+    <div class="col-sm-6 col-md-4">
+      <div class="panel panel-body panel-body-accent">
+        <div class="media no-margin">
+          <div class="media-left media-middle">
+            <i class="icon-earth icon-3x text-warning-400"></i>
+          </div>
+
+          <div class="media-body text-right">
+            <h3 class="no-margin text-semibold">{{ stats.country.name|trans([], 'database') }}</h3>
+            <span class="text-uppercase text-size-mini text-muted">Most ridden in</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
+{% endif %}
