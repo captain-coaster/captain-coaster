@@ -26,6 +26,7 @@ con.airtimes: 'Airtimes'
 con.deadspots: 'Dead spots'
 con.layout: 'Layout'
 con.intensity: 'Intensity'
+con.reliability: 'Reliability'
 
 pro.airtimes: 'Airtimes'
 pro.firstdrop: 'First Drop'
