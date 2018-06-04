@@ -86,6 +86,10 @@ class StatService
             ->getRepository('BddBundle:RiddenCoaster')
             ->findMostRiddenCountry($user);
 
+        $stats['top_100'] = $this->em
+            ->getRepository('BddBundle:RiddenCoaster')
+            ->countTop100ForUser($user);
+
         return $stats;
     }
 }

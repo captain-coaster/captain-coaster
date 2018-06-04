@@ -226,7 +226,6 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Update averageRating for all coasters
-     *
      * @param int $minRatings
      * @return bool|int
      */
@@ -256,6 +255,7 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
+     * Get country where a user rode the most
      * @param User $user
      * @return mixed
      */
@@ -282,6 +282,28 @@ class RiddenCoasterRepository extends EntityRepository
             return $default;
         } catch (NonUniqueResultException $e) {
             return $default;
+        }
+    }
+
+    /**
+     * Count ridden coasters for a user in Top 100
+     * @param User $user
+     * @return mixed
+     */
+    public function countTop100ForUser(User $user)
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1) as nb_top100')
+                ->from('BddBundle:RiddenCoaster', 'r')
+                ->join('r.coaster', 'c')
+                ->where('r.user = :user')
+                ->andWhere('c.rank <= 100')
+                ->setParameter('user', $user)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
         }
     }
 }
