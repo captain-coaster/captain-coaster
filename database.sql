@@ -1,9 +1,7 @@
-INSERT INTO `continent` (`name`, `slug`) VALUES ('continent.europe', 'europe');
-INSERT INTO `continent` (`name`, `slug`) VALUES ('continent.america', 'america');
-INSERT INTO `continent` (`name`, `slug`) VALUES ('continent.asia', 'Asia');
-INSERT INTO `continent` (`name`, `slug`) VALUES ('continent.africa', 'Africa');
-INSERT INTO `continent` (`name`, `slug`) VALUES ('continent.oceania', 'oceania');
+ALTER TABLE liste ADD main TINYINT(1) NOT NULL;
+update liste set `main` = 1, `type` = 'main';
 
+# to check
 ALTER TABLE coaster ADD average_top_rank NUMERIC(4, 1) DEFAULT NULL, ADD total_tops_in INT NOT NULL, CHANGE total_ratings total_ratings INT NOT NULL;
 
 # user number

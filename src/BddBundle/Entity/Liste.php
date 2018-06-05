@@ -2,22 +2,19 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use BddBundle\Validator\Constraints as CaptainConstraints;
 
 /**
- * Liste
+ * Liste (not "list" because it's a reserved keyword)
  *
  * @ORM\Table
  * @ORM\Entity(repositoryClass="BddBundle\Repository\ListeRepository")
- *
- * List is a reserved keyword :(
  */
 class Liste
 {
-    CONST MAIN_LISTE = 'topcoasters';
-
     /**
      * @var int
      *
@@ -37,7 +34,7 @@ class Liste
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, unique=false)
+     * @ORM\Column(type="string", length=255, unique=false, nullable=false)
      */
     private $type;
 
@@ -57,6 +54,12 @@ class Liste
      * @CaptainConstraints\UniqueCoaster
      */
     private $listeCoasters;
+
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $main = false;
 
     /**
      * @var \DateTime $createdAt
@@ -79,7 +82,7 @@ class Liste
      */
     public function __construct()
     {
-        $this->listeCoasters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->listeCoasters = new ArrayCollection();
     }
 
     /**
@@ -143,11 +146,11 @@ class Liste
     /**
      * Set user
      *
-     * @param \BddBundle\Entity\User $user
+     * @param User $user
      *
      * @return Liste
      */
-    public function setUser(\BddBundle\Entity\User $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
 
@@ -157,7 +160,7 @@ class Liste
     /**
      * Get user
      *
-     * @return \BddBundle\Entity\User
+     * @return User
      */
     public function getUser()
     {
@@ -167,11 +170,11 @@ class Liste
     /**
      * Add listeCoster
      *
-     * @param \BddBundle\Entity\ListeCoaster $listeCoaster
+     * @param ListeCoaster $listeCoaster
      *
      * @return Liste
      */
-    public function addListeCoaster(\BddBundle\Entity\ListeCoaster $listeCoaster)
+    public function addListeCoaster(ListeCoaster $listeCoaster)
     {
         $listeCoaster->setListe($this);
 
@@ -183,9 +186,9 @@ class Liste
     /**
      * Remove listeCoaster
      *
-     * @param \BddBundle\Entity\ListeCoaster $listeCoaster
+     * @param ListeCoaster $listeCoaster
      */
-    public function removeListeCoaster(\BddBundle\Entity\ListeCoaster $listeCoaster)
+    public function removeListeCoaster(ListeCoaster $listeCoaster)
     {
         $this->listeCoasters->removeElement($listeCoaster);
     }
@@ -198,6 +201,25 @@ class Liste
     public function getListeCoasters()
     {
         return $this->listeCoasters;
+    }
+
+    /**
+     * @param bool $main
+     * @return Liste
+     */
+    public function setMain(bool $main): Liste
+    {
+        $this->main = $main;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMain(): bool
+    {
+        return $this->main;
     }
 
     /**

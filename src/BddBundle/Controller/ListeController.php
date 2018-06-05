@@ -4,6 +4,7 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\Liste;
 use BddBundle\Entity\ListeCoaster;
+use BddBundle\Form\Type\ListeCustomType;
 use BddBundle\Form\Type\ListeType;
 use BddBundle\Service\ImageService;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,18 +17,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class ListeController
+ *
  * @package BddBundle\Controller
  * @Route("/lists")
  */
 class ListeController extends Controller
 {
     /**
-     * Display all lists
+     * Displays all lists
+     *
+     * @Route("/", name="liste_list")
+     * @Method({"GET"})
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/", name="liste_list")
-     * @Method({"GET"})
      */
     public function listAction(Request $request)
     {
@@ -51,15 +54,110 @@ class ListeController extends Controller
     }
 
     /**
-     * Allow users to edit their lists
+     * Creates a new custom list
+     *
+     * @Route("/new", name="liste_new")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_USER')")
+     *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function newAction(Request $request)
+    {
+        $liste = new Liste();
+
+        /** @var Form $form */
+        $form = $this->createForm(ListeCustomType::class, $liste);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $liste->setMain(false);
+            $liste->setUser($this->getUser());
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($liste);
+            $em->flush();
+
+            return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
+        }
+
+        return $this->render(
+            'BddBundle:Liste:new.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Edits details of a list (name...)
+     *
+     * @Route("/{id}/edit-details", name="liste_edit_details")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
      * @param Liste $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function editDetailsAction(Request $request, Liste $liste)
+    {
+        $this->denyAccessUnlessGranted('edit', $liste);
+
+        /** @var Form $form */
+        $form = $this->createForm(ListeCustomType::class, $liste);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($liste);
+            $em->flush();
+
+            return $this->redirectToRoute('liste_show', ['id' => $liste->getId()]);
+        }
+
+        return $this->render(
+            'BddBundle:Liste:edit-details.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
+     * Create new main user's list
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/create", name="liste_create")
+     * @Method({"GET"})
+     */
+    public function createAction()
+    {
+        $liste = new Liste();
+        $liste->setName('Top Coasters');
+        $liste->setType('topcoasters');
+        $liste->setUser($this->getUser());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($liste);
+        $em->flush();
+
+        return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
+    }
+
+    /**
+     * Edits a list
      *
      * @Route("/{id}/edit", name="liste_edit")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
+     *
+     * @param Request $request
+     * @param Liste $liste
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function editAction(Request $request, Liste $liste)
     {
@@ -84,7 +182,6 @@ class ListeController extends Controller
                 }
             }
 
-            $liste->setUpdatedAt(new \DateTime());
             $em->persist($liste);
             $em->flush();
 
@@ -95,6 +192,7 @@ class ListeController extends Controller
             'BddBundle:Liste:edit.html.twig',
             [
                 'form' => $form->createView(),
+                'listName' => $liste->getName(),
             ]
         );
     }
@@ -119,28 +217,6 @@ class ListeController extends Controller
         if (!$liste instanceof Liste) {
             return $this->redirectToRoute('liste_create');
         }
-
-        return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
-    }
-
-    /**
-     * Create new main user's list
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @Route("/create", name="liste_create")
-     * @Method({"GET"})
-     */
-    public function createAction()
-    {
-        $liste = new Liste();
-        $liste->setName('Top Coasters');
-        $liste->setType('topcoasters');
-        $liste->setUser($this->getUser());
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($liste);
-        $em->flush();
 
         return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
     }

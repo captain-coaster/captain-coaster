@@ -1,0 +1,81 @@
+{# Display all user Listes #}
+{% extends 'base.html.twig' %}
+
+{% import "helper.html.twig" as helper %}
+
+{% set title = 'users.lists.title'|trans({'%name%': user.displayName}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <div class="panel panel-body stack-media-on-mobile">
+    <div class="media-left">
+      <a href="#" class="btn btn-link btn-icon text-teal">
+        <i class="icon-clipboard3 icon-2x no-edge-top"></i>
+      </a>
+    </div>
+    <div class="media-body media-middle">
+      <h6 class="media-heading text-semibold">{{ 'liste.list.infotitle'|trans }}</h6>
+      {{ 'liste.list.info'|trans }}
+    </div>
+    <div class="media-right media-middle">
+      <a href="{{ path('liste_new') }}" class="btn bg-teal-400 btn-lg"><i class="icon-add position-left"></i> Créer une
+        liste</a>
+    </div>
+  </div>
+
+  <div class="row">
+    {% for liste in listes %}
+      <div class="col-lg-4 col-sm-6">
+        <div class="thumbnail">
+          <div class="caption">
+            <div class="content-group-sm media">
+              <div class="media-left">
+                {{ helper.profilePicture(liste.user) }}
+              </div>
+              <div class="media-body">
+                <h6 class="text-semibold no-margin">
+                  <a href="{{ path('liste_show', {'id': liste.id}) }}" class="text-default">
+                    {{ liste.name }}
+                  </a>
+                </h6>
+                {#<small class="text-muted">#}
+                {#{{ 'liste.list.by'|trans }}#}
+                {#<a href="{{ path('user_profile', {'id': liste.user.id}) }}">#}
+                {#{{ liste.user.displayName }}#}
+                {#</a>#}
+                {#</small>#}
+              </div>
+            </div>
+            <ul class="list-feed">
+              {% for i in 0..2 %}
+                {% if liste.listeCoasters[i] is defined %}
+                  <li>
+                    {{ i + 1 }} -
+                    <a href="{{ path('bdd_show_coaster', {'slug': liste.listeCoasters[i].coaster.slug}) }}"
+                       class="text-default">
+                      {{ liste.listeCoasters[i].coaster.name }}
+                    </a>
+                  </li>
+                {% else %}
+                  <li>&nbsp;</li>
+                {% endif %}
+              {% endfor %}
+            </ul>
+            <div class="media">
+              <a href="{{ path('liste_show', {'id': liste.id}) }}">
+                <i class="icon-circle-right2"></i> {{ 'liste.list.more'|trans }}
+              </a>
+            </div>
+            <ul class="list-inline media">
+              <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+              <li>
+                <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+

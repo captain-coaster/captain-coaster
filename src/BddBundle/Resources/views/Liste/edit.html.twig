@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'liste.title'|trans %}
+{% set title = listName %}
 {% block title %}{{ title }}{% endblock %}
 
 {% form_theme form _self %}
@@ -107,7 +107,7 @@
             });
         }
 
-        let urlSearch = Routing.generate('coaster_search_json', {'_locale': '{{ app.request.locale }}'});
+        var urlSearch = Routing.generate('coaster_search_json', {'_locale': '{{ app.request.locale }}'});
         $("select").select2({
             ajax: {
                 url: urlSearch,

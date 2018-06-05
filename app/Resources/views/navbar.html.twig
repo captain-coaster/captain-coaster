@@ -95,6 +95,11 @@
               </a>
             </li>
             <li>
+              <a href="{{ path('user_lists', {'id': app.user.id}) }}">
+                <i class="icon-clipboard3"></i> {{ 'navbar.lists'|trans }}
+              </a>
+            </li>
+            <li>
               <a href="{{ path('me_ratings') }}">
                 <i class="icon-stars"></i> {{ 'navbar.rating'|trans }}
               </a>

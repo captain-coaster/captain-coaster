@@ -102,14 +102,6 @@ user_list:
     member_from: 'Miembro desde'
     rating: '1 clasificación|%count% clasificación'
 
-user_rating:
-    title: '%name% - Clasificación'
-    coaster: 'Montaña rusa'
-    manufacturer: 'Fabricante'
-    opening_date: 'Abierto'
-    rating: 'Nota'
-    rated_at: 'Calificado en'
-
 me:
     title: 'Mi perfil'
     parameters: 'Parámetros'
@@ -142,6 +134,17 @@ review:
     delete: 'Borrar'
     last: 'Últimas reseñas'
     all: 'Ver todo →'
+
+users:
+    lists:
+        title: '%name% - Lists'
+    ratings:
+        title: '%name% - Clasificación'
+        coaster: 'Montaña rusa'
+        manufacturer: 'Fabricante'
+        opening_date: 'Abierto'
+        rating: 'Nota'
+        rated_at: 'Calificado en'
 
 review_list:
     title: 'Reseñas de montañas rusas'

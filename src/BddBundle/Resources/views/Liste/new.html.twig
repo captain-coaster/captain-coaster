@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% set title = 'liste.new.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+  {{ form_start(form) }}
+  {{ form_row(form.name) }}
+  {{ form_row(form.type) }}
+  {{ form_row(form.save, {'label': 'liste.new.form.submit'}) }}
+  {{ form_rest(form) }}
+  {{ form_end(form) }}
+{% endblock %}

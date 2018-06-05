@@ -83,7 +83,8 @@ map_index:
 user_profile:
     title: 'Profil de %name%'
     ratings: 'Voir ses notes'
-    listes: 'Voir son Top Coasters'
+    listes: 'Voir son Top Coaster'
+    custom_listes: 'Voir ses listes'
     map: 'Voir sa carte'
 
 my_ratings:
@@ -101,14 +102,6 @@ user_list:
         text: 'Cette page présente tous nos riders. Clique sur l''un d''eux pour avoir plus de détails !'
     member_from: 'Membre depuis le'
     rating: '1 note|%count% notes'
-
-user_rating:
-    title: 'Notes de %name%'
-    coaster: 'Coaster'
-    manufacturer: 'Contructeur'
-    opening_date: 'Ouverture'
-    rating: 'Note'
-    rated_at: 'Noté le'
 
 me:
     title: 'Mon Profil'
@@ -130,11 +123,27 @@ me:
     stats: 'Coaster ID'
 
 liste:
-    list:
+    new:
+        title: 'Créer une liste'
+        form:
+            name: 'Nom de la liste :'
+            type: 'Ce sera un Top ou un Flop ?'
+            flop: 'Flop (les pires sont placés en premier)'
+            top: 'Top (les meilleurs sont placés en premier)'
+            submit: 'Créer la liste'
+    editDetails:
+        title: 'Modifier une liste'
+        form:
+            submit: 'Modifier la liste'
+    top:
         title: 'Les derniers Tops'
+    list:
+        title: 'Les dernières Listes'
         more: 'Voir le détail'
         updated: 'mis à jour'
         by: 'par'
+        infotitle: 'Toutes tes listes sont ici !'
+        info: 'Les listes, ça permet de faire connaître aux autres ses goûts, comme les meilleurs RMC de la planète, ou les pires kiddies d’Espagne, ou peut-être les meilleurs water coasters bleus avec launch magnétique ! Tout est possible, et chaque liste peut ensuite être partagée.'
     title: 'Mon Top Coasters'
     update: 'Modifier la liste'
     save: 'Sauvegarder la liste'
@@ -154,6 +163,17 @@ review:
     last: 'Derniers avis'
     all: 'Voir plus →'
 
+users:
+    lists:
+        title: 'Listes de %name%'
+    ratings:
+        title: 'Notes de %name%'
+        coaster: 'Coaster'
+        manufacturer: 'Contructeur'
+        opening_date: 'Ouverture'
+        rating: 'Note'
+        rated_at: 'Noté le'
+
 review_list:
     title: 'Tous les avis'
 
@@ -165,7 +185,8 @@ navbar:
     profile: 'Mon Profil'
     rating: 'Mes Notes'
     logout: 'Se déconnecter'
-    topcoasters: 'Mon Top Coasters'
+    topcoasters: 'Mon Top Coaster'
+    lists: 'Mes listes'
     my_map: 'Ma carte'
 
 sidebar:
@@ -174,7 +195,7 @@ sidebar:
     ranking: 'Classement des coasters'
     users: 'Nos riders'
     map: 'Carte des coasters'
-    liste: 'Les tops coasters'
+    liste: 'Les Tops'
     review: 'Tous les avis'
     contact: 'Nous contacter'
     logout: 'Se déconnecter'

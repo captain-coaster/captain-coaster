@@ -15,7 +15,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 class UserController extends Controller
 {
     /**
+     * List of users
+     *
+     * @Route("/{page}", name="user_list", requirements={"page" = "\d+"})
+     * @Method({"GET"})
+     *
+     * @param int $page
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function listAction($page = 1)
+    {
+        $users = $this
+            ->getDoctrine()
+            ->getRepository('BddBundle:User')
+            ->getUserList();
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($users, $page, 21);
+
+        return $this->render('BddBundle:User:list.html.twig', ['users' => $pagination]);
+    }
+
+    /**
+     * User's ratings
+     *
      * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"})
+     * @Method({"GET"})
+     *
      * @param User $user
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
@@ -49,22 +75,27 @@ class UserController extends Controller
     }
 
     /**
-     * User list
-     * @Route("/{page}", name="user_list", requirements={"page" = "\d+"})
+     * Show all user's lists
+     *
+     * @Route("/{id}/lists", name="user_lists", requirements={"page" = "\d+"})
      * @Method({"GET"})
-     * @param int $page
+     *
+     * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAction($page = 1)
+    public function listsAction(User $user)
     {
-        $users = $this
-            ->getDoctrine()
-            ->getRepository('BddBundle:User')
-            ->getUserList();
+        $listes = $this
+            ->get('doctrine.orm.entity_manager')
+            ->getRepository('BddBundle:Liste')
+            ->findAllByUser($user);
 
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate($users, $page, 21);
-
-        return $this->render('BddBundle:User:list.html.twig', ['users' => $pagination]);
+        return $this->render(
+            'BddBundle:User:lists.html.twig',
+            [
+                'listes' => $listes,
+                'user' => $user
+            ]
+        );
     }
 }

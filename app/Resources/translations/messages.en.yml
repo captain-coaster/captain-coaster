@@ -83,7 +83,8 @@ map_index:
 user_profile:
     title: '%name% - Profile'
     ratings: 'Show his ratings'
-    listes: 'Show his Top Coasters'
+    listes: 'Show his Top Coaster'
+    custom_listes: 'Show his lists'
     map: 'Show his coaster map'
 
 my_ratings:
@@ -101,14 +102,6 @@ user_list:
         text: 'This page shows a list of our riders. Click on them to discover their details!'
     member_from: 'Member since'
     rating: '1 rating|%count% ratings'
-
-user_rating:
-    title: '%name% - Ratings'
-    coaster: 'Coaster'
-    manufacturer: 'Manufacturer'
-    opening_date: 'Opened'
-    rating: 'Rating'
-    rated_at: 'Rated at'
 
 me:
     title: 'My Profile'
@@ -130,11 +123,27 @@ me:
     stats: 'Coaster ID'
 
 liste:
-    list:
+    new:
+        title: 'Create a new list'
+        form:
+            name: 'Name of your list :'
+            type: 'Is it a Top or a Flop ?'
+            flop: 'Flop (lower is better)'
+            top: 'Top (higher is better)'
+            submit: 'Create new list'
+    editDetails:
+        title: 'Update a list'
+        form:
+            submit: 'Update the list'
+    top:
         title: 'The latest Tops'
+    list:
+        title: 'The lastest Lists'
         more: 'See more'
         updated: 'last updated'
         by: 'by'
+        infotitle: 'All you lists are on this page !'
+        info: 'Lists are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
     title: 'My Top Coasters'
     update: 'Update the list'
     save: 'Save the list'
@@ -154,6 +163,17 @@ review:
     last: 'Latest reviews'
     all: 'See all →'
 
+users:
+    lists:
+        title: '%name% - Lists'
+    ratings:
+        title: '%name% - Ratings'
+        coaster: 'Coaster'
+        manufacturer: 'Manufacturer'
+        opening_date: 'Opened'
+        rating: 'Rating'
+        rated_at: 'Rated at'
+
 review_list:
     title: 'Coaster reviews'
 
@@ -165,7 +185,8 @@ navbar:
     profile: 'My profile'
     rating: 'My ratings'
     logout: 'Logout'
-    topcoasters: 'My Top Coasters'
+    topcoasters: 'My Top Coaster'
+    lists: 'My lists'
     my_map: 'My map'
 
 sidebar:
@@ -174,7 +195,7 @@ sidebar:
     ranking: 'Best coasters ranking'
     users: 'Our riders'
     map: 'Coasters map'
-    liste: 'Tops Coasters'
+    liste: 'Tops'
     review: 'Coaster Reviews'
     contact: 'Get in touch'
     logout: 'Logout'

@@ -2,6 +2,8 @@
 
 namespace BddBundle\Repository;
 
+use BddBundle\Entity\User;
+
 /**
  * ListeRepository
  *
@@ -12,6 +14,7 @@ class ListeRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
      * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function countAll()
     {
@@ -23,6 +26,9 @@ class ListeRepository extends \Doctrine\ORM\EntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @return \Doctrine\ORM\Query
+     */
     public function findAllByUpdatedDate()
     {
         return $this->getEntityManager()
@@ -35,5 +41,24 @@ class ListeRepository extends \Doctrine\ORM\EntityRepository
             ->having('nb > 2')
             ->orderBy('l.updatedAt', 'desc')
             ->getQuery();
+    }
+
+    /**
+     * Return all lists for a user
+     *
+     * @param User $user
+     * @return mixed
+     */
+    public function findAllByUser(User $user)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('l')
+            ->from('BddBundle:Liste', 'l')
+            ->where('l.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('l.updatedAt', 'desc')
+            ->getQuery()
+            ->getResult();
     }
 }
