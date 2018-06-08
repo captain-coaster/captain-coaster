@@ -10,7 +10,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class ReviewType
@@ -18,6 +21,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ReviewType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface
+     */
+    protected $translator;
+
+    /**
+     * ReviewType constructor.
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -38,8 +55,7 @@ class ReviewType extends AbstractType
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('p')
                             ->where('p.type = :pro')
-                            ->setParameter('pro', Tag::PRO)
-                            ->orderBy('p.name', 'ASC');
+                            ->setParameter('pro', Tag::PRO);
                     },
                     'label' => 'review.pros',
                 ]
@@ -56,8 +72,7 @@ class ReviewType extends AbstractType
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('c')
                             ->where('c.type = :con')
-                            ->setParameter('con', Tag::CON)
-                            ->orderBy('c.name', 'ASC');
+                            ->setParameter('con', Tag::CON);
                     },
                     'label' => 'review.cons',
                 ]
@@ -73,6 +88,17 @@ class ReviewType extends AbstractType
     }
 
     /**
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     */
+    public function finishView(FormView $view, FormInterface $form, array $options)
+    {
+        $this->sortTranslatedChoices($view->children['pros']->vars['choices']);
+        $this->sortTranslatedChoices($view->children['cons']->vars['choices']);
+    }
+
+    /**
      * @param OptionsResolver $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
@@ -81,6 +107,23 @@ class ReviewType extends AbstractType
             [
                 'data_class' => RiddenCoaster::class,
             ]
+        );
+    }
+
+    /**
+     * @param array $choices
+     */
+    private function sortTranslatedChoices(array &$choices)
+    {
+        usort(
+            $choices,
+            function ($a, $b) {
+                // could also use \Collator() to compare the two strings
+                return strcmp(
+                    $this->translator->trans($a->label, array(), 'database'),
+                    $this->translator->trans($b->label, array(), 'database')
+                );
+            }
         );
     }
 }
