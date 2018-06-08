@@ -8,7 +8,7 @@ app:
     title:
         default: 'Welcome !'
     header:
-        search: 'Search a roller coaster'
+        search: 'Cedar Point, Tatsu...'
 
 index:
     title: 'Welcome !'
@@ -143,12 +143,12 @@ liste:
 
 review:
     title: 'Reviews'
-    share: 'Share your opinion with us !'
-    value: 'How many stars for that coaster ?'
-    pros: 'What are its main pros ?'
-    cons: 'And its main cons ?'
-    comment: 'Does it need more precisions ? Tell us !'
-    send: 'Send my opinion'
+    share: 'Share your opinion with us!'
+    value: 'How many stars for this coaster?'
+    pros: 'What are its main pros?'
+    cons: 'And its main cons?'
+    comment: 'Want to tell us more about your ride?'
+    send: 'Send my review'
     update: 'Edit'
     delete: 'Delete'
     last: 'Latest reviews'

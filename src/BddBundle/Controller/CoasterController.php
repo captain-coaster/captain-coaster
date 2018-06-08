@@ -226,36 +226,13 @@ class CoasterController extends Controller
 
     /**
      * Ajax route for autocomplete search
-     * (return all coaster)
-     *
-     * @Route(
-     *     "/search/all.json",
-     *     name="coaster_search_all_json",
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     * @Method({"GET"})
-     *
-     * @return JsonResponse
-     */
-    public function ajaxSearchAllAction()
-    {
-        $em = $this->get('doctrine.orm.default_entity_manager');
-
-        $response = new JsonResponse($em->getRepository('BddBundle:Coaster')->findAllNameAndSlug());
-        $response->setMaxAge(3600);
-
-        return $response;
-    }
-
-    /**
-     * Ajax route for autocomplete search
      * (search "q" parameter)
      *
      * @Route(
      *     "/search/coasters.json",
      *     name="coaster_search_json",
      *     options = {"expose" = true},
+     *     condition="request.isXmlHttpRequest()"
      * )
      * @Method({"GET"})
      *

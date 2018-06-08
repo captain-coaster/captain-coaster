@@ -92,8 +92,8 @@ class ParkController extends Controller
      * @param Park $park
      * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/parks/{slug}", name="park_show")
-     * @Method({"GET", "POST"})
+     * @Route("/parks/{slug}", name="park_show", options = {"expose" = true})
+     * @Method({"GET"})
      */
     public function showAction(Park $park, ImageService $imageService)
     {

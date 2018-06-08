@@ -8,7 +8,7 @@ app:
     title:
         default: 'Bienvenue !'
     header:
-        search: 'Rechercher un coaster'
+        search: 'Le Pal, Wildfire...'
 
 index:
     title: 'Bienvenue !'

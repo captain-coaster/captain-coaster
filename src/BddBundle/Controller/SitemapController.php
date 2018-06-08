@@ -4,6 +4,7 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -12,6 +13,7 @@ class SitemapController extends Controller
 {
     /**
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws InvalidArgumentException
      */
     public function indexAction()
     {

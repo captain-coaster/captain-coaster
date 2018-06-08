@@ -8,7 +8,7 @@ app:
     title:
         default: '¡ Bienvenido !'
     header:
-        search: 'Buscar una montaña rusa'
+        search: 'Mirabilandia, Shambhala...'
 
 index:
     title: '¡ Bienvenido !'

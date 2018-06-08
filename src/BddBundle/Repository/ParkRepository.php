@@ -31,4 +31,15 @@ class ParkRepository extends EntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function findAllNameAndSlug()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('p.name')
+            ->addSelect('p.slug')
+            ->from('BddBundle:Park', 'p')
+            ->getQuery()
+            ->getResult();
+    }
 }

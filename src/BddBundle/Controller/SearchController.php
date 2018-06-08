@@ -2,9 +2,12 @@
 
 namespace BddBundle\Controller;
 
+use BddBundle\Service\SearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -15,18 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends Controller
 {
     /**
-     * @Route("/autocomplete/all.json", name="search_autocomplete_all")
-     * @Method({"GET"})
-     */
-    public function autocompleteAll()
-    {
-        $searchService = $this->get('BddBundle\Service\SearchService');
-
-        return $searchService->searchAllJson();
-    }
-
-
-    /**
      * @Route("/", name="search_index")
      * @Method({"GET"})
      */
@@ -36,7 +27,7 @@ class SearchController extends Controller
             'BddBundle:Search:index.html.twig',
             [
                 'filters' => [],
-                'filtersForm' => $this->getFiltersForm()
+                'filtersForm' => $this->getFiltersForm(),
             ]
         );
     }
@@ -66,8 +57,33 @@ class SearchController extends Controller
     }
 
     /**
+     * @Route(
+     *     "/main.json",
+     *     name="ajax_main_search",
+     *     options = {"expose" = true},
+     *     condition="request.isXmlHttpRequest()"
+     * )
+     * @Method({"GET"})
+     * @param SearchService $searchService
+     * @return JsonResponse
+     */
+    public function ajaxMainSearch(SearchService $searchService)
+    {
+        $cache = new FilesystemAdapter();
+        $searchItems = $cache->getItem('main_autocomplete');
+
+        if (!$searchItems->isHit()) {
+            $searchItems->set($searchService->getAutocompleteValues());
+            $searchItems->expiresAfter(\DateInterval::createFromDateString('4 hours'));
+            $cache->save($searchItems);
+        }
+
+        return new JsonResponse($searchItems->get());
+    }
+
+    /**
      * @param array $filters
-     * @param int   $page
+     * @param int $page
      * @return array
      */
     private function getCoasters($filters = [], $page = 1)

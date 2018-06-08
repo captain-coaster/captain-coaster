@@ -71,21 +71,21 @@
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script type="text/javascript">
     locale = '{{ app.request.locale }}';
-    let url = Routing.generate('coaster_search_all_json', {'_locale': '{{ app.request.locale }}'});
+    let url = Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'});
     let dataSource = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('n'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: url,
     });
 
     $('#search-coaster').typeahead({highlight: true}, {
-        displayKey: 'name',
+        displayKey: 'n',
         source: dataSource.ttAdapter(),
         limit: 7,
     }).bind('typeahead:select', function (ev, suggestion) {
         window.location.href = Routing.generate(
-            'bdd_show_coaster',
-            {slug: suggestion.slug, '_locale': '{{ app.request.locale }}'}
+            suggestion.r,
+            {slug: suggestion.s, '_locale': '{{ app.request.locale }}'}
         );
     });
 </script>
