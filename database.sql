@@ -1,3 +1,6 @@
+ALTER TABLE `liste_coaster` ADD UNIQUE `unique_coaster_liste`(`liste_id`, `coaster_id`);
+ALTER TABLE `liste_coaster` ADD UNIQUE `unique_position_liste`(`liste_id`, `position`);
+
 ALTER TABLE coaster ADD average_top_rank NUMERIC(4, 1) DEFAULT NULL, ADD total_tops_in INT NOT NULL, CHANGE total_ratings total_ratings INT NOT NULL;
 
 # user number

@@ -4,6 +4,7 @@ namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use BddBundle\Validator\Constraints as CaptainConstraints;
 
 /**
  * Liste
@@ -53,6 +54,7 @@ class Liste
      *
      * @ORM\OneToMany(targetEntity="BddBundle\Entity\ListeCoaster", mappedBy="liste", cascade={"persist"})
      * @ORM\OrderBy({"position" = "ASC"})
+     * @CaptainConstraints\UniqueCoaster
      */
     private $listeCoasters;
 
