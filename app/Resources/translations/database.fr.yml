@@ -113,3 +113,8 @@ country.na: 'N/A'
 country.burma: 'Birmanie'
 country.cyprus: 'Chypre'
 
+continent.europe: 'Europe'
+continent.america: 'Amérique'
+continent.asia: 'Asie'
+continent.africa: 'Afrique'
+continent.oceania: 'Océanie'

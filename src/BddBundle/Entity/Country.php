@@ -36,18 +36,18 @@ class Country
     private $slug;
 
     /**
-     * @var Park
+     * @var Continent
      *
-     * @ORM\OneToMany(targetEntity="Park", mappedBy="country")
+     * @ORM\ManyToOne(targetEntity="Continent")
+     * @ORM\JoinColumn(nullable=true)
      */
-    private $parks;
+    private $continent;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->parks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -109,36 +109,21 @@ class Country
     }
 
     /**
-     * Add park
-     *
-     * @param \BddBundle\Entity\Park $park
-     *
+     * @param Continent $continent
      * @return Country
      */
-    public function addPark(\BddBundle\Entity\Park $park)
+    public function setContinent(Continent $continent): Country
     {
-        $this->parks[] = $park;
+        $this->continent = $continent;
 
         return $this;
     }
 
     /**
-     * Remove park
-     *
-     * @param \BddBundle\Entity\Park $park
+     * @return Continent
      */
-    public function removePark(\BddBundle\Entity\Park $park)
+    public function getContinent(): Continent
     {
-        $this->parks->removeElement($park);
-    }
-
-    /**
-     * Get parks
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getParks()
-    {
-        return $this->parks;
+        return $this->continent;
     }
 }

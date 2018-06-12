@@ -5,9 +5,9 @@ namespace BddBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ListCoaster
+ * ListeCoaster
  *
- * @ORM\Table
+ * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="unique_coaster_liste", columns={"liste_id", "coaster_id"})})
  * @ORM\Entity(repositoryClass="BddBundle\Repository\ListeCoasterRepository")
  */
 class ListeCoaster
