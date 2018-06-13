@@ -12,9 +12,9 @@ app:
 
 index:
     title: 'Bienvenue !'
-    description: 'Guide participatif pour découvrir, noter, et donner ton avis sur toutes les montagnes russes. Trouve les coasters de qualité avec le classement et la carte interactive.'
+    description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
     header:
-        title: 'Découvrez, notez et partagez tous les coasters.'
+        title: 'Notes, avis et classement des meilleurs coasters'
         info: 'Space Mountain, c''est vraiment Hyper ? Que pensent les connaisseurs d''Oziris au Parc Asterix ? Où sont les Intamin qui ouvriront l''année prochaine ? Pas de panique, toutes les réponses sont ici ! Et pour en profiter, c''est très rapide : <b>2 clics suffisent pour <a href="%link_path%">se connecter</a>.</b> Suivez le Captain !'
     stats:
         coasters: 'coasters'

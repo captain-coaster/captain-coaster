@@ -12,9 +12,9 @@ app:
 
 index:
     title: 'Welcome !'
-    description: 'Participative guide to discover, rate and review roller coasters. Find all best coasters with our ranking and interactive map.'
+    description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
     header:
-        title: 'Discover, rate and share roller coasters'
+        title: 'Review, rate and rank roller coasters'
         info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="%link_path%">to connect</a></b>. Follow the Captain !'
     stats:
         coasters: 'coasters'
