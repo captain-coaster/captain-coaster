@@ -420,8 +420,6 @@ class RiddenCoaster
      */
     public function isAberrantRating(): bool
     {
-        // disable temporarily
-        return false;
-//        return (abs((float)$this->getCoaster()->getAverageRating() - (float)$this->getValue()) > 3);
+        return (abs((float)$this->getCoaster()->getAverageRating() - (float)$this->getValue()) > 3);
     }
 }

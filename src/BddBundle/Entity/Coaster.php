@@ -660,13 +660,16 @@ class Coaster
 
     /**
      * Can we rank this coaster ?
-     * Only if ratings number + tops number > MIN_DUELS
+     * Only if ratings number + tops number > MIN_RATINGS_PLUS_TOPS
      *
      * @return bool
      */
     public function isRankable(): bool
     {
-        return (($this->getTotalRatings() + $this->getTotalTopsIn()) >= RankingService::MIN_DUELS);
+        return (
+            $this->getBuiltCoaster()->getIsKiddie() === false &&
+            ($this->getTotalRatings() + $this->getTotalTopsIn()) >= RankingService::MIN_RATINGS_PLUS_TOPS
+        );
     }
 
     /**
