@@ -46,3 +46,6 @@ parameters:
     facebook_client_secret:
     google_client_id:
     google_client_secret:
+
+    # Discord
+    discord_url:

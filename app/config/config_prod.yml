@@ -37,3 +37,10 @@ monolog:
             level:      debug
             formatter:  monolog.formatter.html
             content_type: text/html
+        discord:
+            type: fingers_crossed
+            action_level: error
+            handler: custom_discord
+        custom_discord:
+            type: 'service'
+            id: 'BddBundle\Service\DiscordMonologHandler'

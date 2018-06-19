@@ -39,6 +39,7 @@ class AvatarCleanCommand extends ContainerAwareCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
+     * @throws \Http\Client\Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -59,6 +60,7 @@ class AvatarCleanCommand extends ContainerAwareCommand
 
     /**
      * @param User $user
+     * @throws \Http\Client\Exception
      */
     private function updateFacebookAvatar(User $user)
     {
@@ -89,6 +91,7 @@ class AvatarCleanCommand extends ContainerAwareCommand
 
     /**
      * @param User $user
+     * @throws \Http\Client\Exception
      */
     private function removeDeadAvatar(User $user)
     {

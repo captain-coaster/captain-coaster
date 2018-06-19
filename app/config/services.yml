@@ -59,5 +59,12 @@ services:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
 
+    BddBundle\Service\DiscordMonologHandler:
+        arguments:
+            $client: '@httplug.client.avatar'
+            $factory: '@httplug.message_factory'
+            $url: '%discord_url%'
+        public: true
+
     Gedmo\Sluggable\SluggableListener:
         alias: stof_doctrine_extensions.listener.sluggable
