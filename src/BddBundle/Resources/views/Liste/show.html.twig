@@ -5,65 +5,77 @@
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
 {% block body %}
-    <div class="panel panel-white">
-        <div class="panel-heading">
-            <ul class="list-inline text-right no-margin">
-                <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
-                <li>
-                    <i class="icon-alarm position-left"></i>
-                    {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
-                </li>
-            </ul>
-        </div>
-
-        <ul class="media-list">
-    {% for listeCoaster in liste.listeCoasters %}
-        {% set coaster = listeCoaster.coaster %}
-        {% set image = images[coaster.id] %}
-            <li class="media panel-body stack-media-on-mobile">
-                <div class="media-left">
-                    <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                        {% if image|length > 0 %}
-                            <img src="{{ asset(random(image)) | imagine_filter('thumb_coaster') }}"
-                                 class="img-rounded"
-                                 style="width:96px;"
-                                 alt="{{ coaster.name }}">
-                        {% endif %}
-                    </a>
-                </div>
-
-                <div class="media-body">
-                    <h2 class="media-heading text-semibold">
-                        {{ listeCoaster.position }} -
-                        <a style="color:#333;"
-                           href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">{{ coaster.name }}
-                        </a>
-                    </h2>
-
-                    <ul class="list-inline list-inline-separate text-muted mb-10">
-                        <li>{{ coaster.builtCoaster.manufacturer.name }}</li>
-                        <li>{{ coaster.builtCoaster.types|join(', ') }}</li>
-                        <li>
-                            <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
-                                {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {#<div class="media-right text-nowrap">#}
-                    {#<span class="label bg-blue">New</span>#}
-                {#</div>#}
-            </li>
-        {% endfor %}
-        </ul>
+  <div class="panel panel-white">
+    <div class="panel-heading">
+      <ul class="list-inline text-right no-margin">
+        <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+        <li>
+          <i class="icon-alarm position-left"></i>
+          {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+        </li>
+      </ul>
     </div>
 
-    {% if is_granted('edit', liste) %}
-        <a href="{{ path('liste_edit', {'id': liste.id}) }}">
-            <button type="button" class="btn bg-teal-400 btn-labeled pull-right">
-                <b><i class="icon-pencil3"></i></b> {{ 'liste.update'|trans }}
-            </button>
-        </a>
-    {% endif %}
+    <ul class="media-list">
+      {% for listeCoaster in liste.listeCoasters %}
+        {% set coaster = listeCoaster.coaster %}
+        {% set image = images[coaster.id] %}
+        <li class="media panel-body stack-media-on-mobile">
+          <div class="media-left">
+            <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+              {% if image|length > 0 %}
+                <img src="{{ asset(random(image)) | imagine_filter('thumb_coaster') }}"
+                     class="img-rounded"
+                     style="width:96px;"
+                     alt="{{ coaster.name }}">
+              {% endif %}
+            </a>
+          </div>
+
+          <div class="media-body">
+            <h2 class="media-heading text-semibold">
+              {{ listeCoaster.position }} -
+              <a style="color:#333;"
+                 href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">{{ coaster.name }}
+              </a>
+            </h2>
+
+            <ul class="list-inline list-inline-separate text-muted mb-10">
+              <li>{{ coaster.builtCoaster.manufacturer.name }}</li>
+              <li>{{ coaster.builtCoaster.types|join(', ') }}</li>
+              <li>
+                <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                  {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {#<div class="media-right text-nowrap">#}
+          {#<span class="label bg-blue">New</span>#}
+          {#</div>#}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  {% if is_granted('edit', liste) %}
+    <div class="mr-10 pull-right">
+      <a href="{{ path('liste_edit', {'id': liste.id}) }}">
+        <button type="button" class="btn bg-primary btn-labeled">
+          <b><i class="icon-pencil3"></i></b> {{ 'liste.update'|trans }}
+        </button>
+      </a>
+    </div>
+  {% endif %}
+  {% if is_granted('edit-details', liste) %}
+    <div class="mr-10 pull-right">
+      <a href="{{ path('liste_edit_details', {'id': liste.id}) }}">
+        <button type="button" class="btn bg-primary btn-labeled">
+          <b><i class="icon-pencil3"></i></b> {{ 'liste.update_details'|trans }}
+        </button>
+      </a>
+    </div>
+  {% endif %}
+
 {% endblock %}

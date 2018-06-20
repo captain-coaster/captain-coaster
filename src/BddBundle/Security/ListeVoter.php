@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class ListeVoter extends Voter
 {
     const EDIT = 'edit';
+    const EDIT_DETAILS = 'edit-details';
 
     /**
      * @param string $attribute
@@ -18,7 +19,7 @@ class ListeVoter extends Voter
      */
     protected function supports($attribute, $subject)
     {
-        if (!in_array($attribute, [self::EDIT])) {
+        if (!in_array($attribute, [self::EDIT, self::EDIT_DETAILS])) {
             return false;
         }
 
@@ -46,18 +47,30 @@ class ListeVoter extends Voter
         switch ($attribute) {
             case self::EDIT:
                 return $this->canEdit($subject, $user);
+            case self::EDIT_DETAILS:
+                return $this->canEditDetails($subject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
     /**
-     * @param Liste $post
+     * @param Liste $liste
      * @param User $user
      * @return bool
      */
-    private function canEdit(Liste $post, User $user)
+    private function canEdit(Liste $liste, User $user)
     {
-        return $user === $post->getUser();
+        return $user === $liste->getUser();
+    }
+
+    /**
+     * @param Liste $liste
+     * @param User $user
+     * @return bool
+     */
+    private function canEditDetails(Liste $liste, User $user)
+    {
+        return $user === $liste->getUser() && $liste->isMain() === false;
     }
 }

@@ -103,7 +103,7 @@ class ListeController extends Controller
      */
     public function editDetailsAction(Request $request, Liste $liste)
     {
-        $this->denyAccessUnlessGranted('edit', $liste);
+        $this->denyAccessUnlessGranted('edit-details', $liste);
 
         /** @var Form $form */
         $form = $this->createForm(ListeCustomType::class, $liste);
