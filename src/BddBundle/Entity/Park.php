@@ -56,7 +56,7 @@ class Park
     /**
      * @var Country
      *
-     * @ORM\ManyToOne(targetEntity="Country", inversedBy="parks")
+     * @ORM\ManyToOne(targetEntity="Country")
      * @ORM\JoinColumn(nullable=false)
      */
     private $country;

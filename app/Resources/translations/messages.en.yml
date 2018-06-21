@@ -122,6 +122,10 @@ me:
         gethtml: 'Copy html'
     stats: 'Coaster ID'
 
+top:
+    list:
+        title: 'The latest tops'
+
 liste:
     new:
         title: 'Create a new list'
@@ -135,10 +139,8 @@ liste:
         title: 'Update a list'
         form:
             submit: 'Update the list'
-    top:
-        title: 'The latest Tops'
     list:
-        title: 'The lastest Lists'
+        title: 'The latest lists'
         more: 'See more'
         updated: 'last updated'
         by: 'by'
@@ -146,8 +148,9 @@ liste:
         info: 'Lists are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
         create: 'Create a new list'
     title: 'My Top Coasters'
-    update: 'Update list'
+    update: 'Update'
     update_details: 'Change name'
+    delete: 'Delete'
     save: 'Save the list'
     find: 'Find a coaster...'
     info: 'Start by searching a coaster up there, then the magic happens below. You can even drag and drop lines if you are undecided.'
@@ -180,7 +183,7 @@ review_list:
     title: 'Coaster reviews'
 
 rating:
-    last: 'Lastest ratings'
+    last: 'Latest ratings'
     action: 'rated %value% stars'
 
 navbar:
@@ -197,7 +200,8 @@ sidebar:
     ranking: 'Best coasters ranking'
     users: 'Our riders'
     map: 'Coasters map'
-    liste: 'Tops'
+    top: 'Tops'
+    liste: 'Lists'
     review: 'Coaster Reviews'
     contact: 'Get in touch'
     logout: 'Logout'

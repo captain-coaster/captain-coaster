@@ -2,10 +2,10 @@
 
 namespace BddBundle\Entity;
 
+use BddBundle\Validator\Constraints as CaptainConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use BddBundle\Validator\Constraints as CaptainConstraints;
 
 /**
  * Liste (not "list" because it's a reserved keyword)
@@ -49,7 +49,7 @@ class Liste
     /**
      * @var ListeCoaster
      *
-     * @ORM\OneToMany(targetEntity="BddBundle\Entity\ListeCoaster", mappedBy="liste", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\ListeCoaster", mappedBy="liste", cascade={"persist", "remove"})
      * @ORM\OrderBy({"position" = "ASC"})
      * @CaptainConstraints\UniqueCoaster
      */

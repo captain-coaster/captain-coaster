@@ -21,22 +21,22 @@ monolog:
         console:
             type: console
             process_psr_3_messages: false
-        mail:
-            type: fingers_crossed
-            action_level: critical
-            handler: deduplicated
-        deduplicated:
-            type:    deduplication
-            time: 120
-            handler: swift
-        swift:
-            type:       swift_mailer
-            from_email: '%mail_from%'
-            to_email:   '%mail_to%'
-            subject:    'An Error Occurred! %%message%%'
-            level:      debug
-            formatter:  monolog.formatter.html
-            content_type: text/html
+#        mail:
+#            type: fingers_crossed
+#            action_level: critical
+#            handler: deduplicated
+#        deduplicated:
+#            type:    deduplication
+#            time: 120
+#            handler: swift
+#        swift:
+#            type:       swift_mailer
+#            from_email: '%mail_from%'
+#            to_email:   '%mail_to%'
+#            subject:    'An Error Occurred! %%message%%'
+#            level:      debug
+#            formatter:  monolog.formatter.html
+#            content_type: text/html
         discord:
             type: fingers_crossed
             action_level: error

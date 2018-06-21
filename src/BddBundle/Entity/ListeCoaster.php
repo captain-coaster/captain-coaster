@@ -82,11 +82,11 @@ class ListeCoaster
     /**
      * Set liste
      *
-     * @param \BddBundle\Entity\Liste $liste
+     * @param Liste $liste
      *
      * @return ListeCoaster
      */
-    public function setListe(\BddBundle\Entity\Liste $liste)
+    public function setListe(Liste $liste)
     {
         $this->liste = $liste;
 
@@ -96,7 +96,7 @@ class ListeCoaster
     /**
      * Get liste
      *
-     * @return \BddBundle\Entity\Liste
+     * @return Liste
      */
     public function getListe()
     {
@@ -106,11 +106,11 @@ class ListeCoaster
     /**
      * Set coaster
      *
-     * @param \BddBundle\Entity\Coaster $coaster
+     * @param Coaster $coaster
      *
      * @return ListeCoaster
      */
-    public function setCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function setCoaster(Coaster $coaster)
     {
         $this->coaster = $coaster;
 
@@ -120,7 +120,7 @@ class ListeCoaster
     /**
      * Get coaster
      *
-     * @return \BddBundle\Entity\Coaster
+     * @return Coaster
      */
     public function getCoaster()
     {

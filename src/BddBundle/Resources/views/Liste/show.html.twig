@@ -77,5 +77,14 @@
       </a>
     </div>
   {% endif %}
+  {% if is_granted('delete', liste) %}
+    <div class="mr-10 pull-right">
+      <a href="{{ path('liste_delete', {'id': liste.id}) }}">
+        <button type="button" class="btn bg-red btn-labeled">
+          <b><i class="icon-pencil3"></i></b> {{ 'liste.delete'|trans }}
+        </button>
+      </a>
+    </div>
+  {% endif %}
 
 {% endblock %}

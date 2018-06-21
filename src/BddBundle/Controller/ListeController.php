@@ -35,7 +35,7 @@ class ListeController extends Controller
     public function listAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $query = $em->getRepository('BddBundle:Liste')->findAllByUpdatedDate();
+        $query = $em->getRepository('BddBundle:Liste')->findAllCustomLists();
 
         $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
@@ -219,6 +219,26 @@ class ListeController extends Controller
         }
 
         return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
+    }
+
+    /**
+     * Deletes a custom list
+     *
+     * @param Liste $liste
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     * @Route("/{id}/delete", name="liste_delete")
+     * @Method({"GET"})
+     */
+    public function deleteAction(Liste $liste)
+    {
+        $this->denyAccessUnlessGranted('delete', $liste);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($liste);
+        $em->flush();
+
+        return $this->redirectToRoute('me');
     }
 
     /**

@@ -122,6 +122,10 @@ me:
         gethtml: 'Copier en html'
     stats: 'Coaster ID'
 
+top:
+    list:
+        title: 'Les derniers tops'
+
 liste:
     new:
         title: 'Créer une liste'
@@ -135,10 +139,8 @@ liste:
         title: 'Modifier une liste'
         form:
             submit: 'Modifier la liste'
-    top:
-        title: 'Les derniers Tops'
     list:
-        title: 'Les dernières Listes'
+        title: 'Les dernières listes'
         more: 'Voir le détail'
         updated: 'mis à jour'
         by: 'par'
@@ -146,8 +148,9 @@ liste:
         info: 'Les listes, ça permet de faire connaître aux autres ses goûts, comme les meilleurs RMC de la planète, ou les pires kiddies d’Espagne, ou peut-être les meilleurs water coasters bleus avec launch magnétique ! Tout est possible, et chaque liste peut ensuite être partagée.'
         create: 'Créer une liste'
     title: 'Mon Top Coasters'
-    update: 'Modifier la liste'
-    update_details: 'Modifier le nom'
+    update: 'Modifier'
+    update_details: 'Changer le nom'
+    delete: 'Supprimer'
     save: 'Sauvegarder la liste'
     find: 'Chercher un coaster...'
     info: 'Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l''ordre si t''es du genre indécis.'
@@ -197,7 +200,8 @@ sidebar:
     ranking: 'Classement des coasters'
     users: 'Nos riders'
     map: 'Carte des coasters'
-    liste: 'Les Tops'
+    top: 'Les tops'
+    liste: 'Les listes'
     review: 'Tous les avis'
     contact: 'Nous contacter'
     logout: 'Se déconnecter'
