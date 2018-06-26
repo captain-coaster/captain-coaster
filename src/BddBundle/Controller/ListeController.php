@@ -138,7 +138,8 @@ class ListeController extends Controller
     {
         $liste = new Liste();
         $liste->setName('Top Coasters');
-        $liste->setType('topcoasters');
+        $liste->setType('main');
+        $liste->setMain(true);
         $liste->setUser($this->getUser());
 
         $em = $this->getDoctrine()->getManager();
