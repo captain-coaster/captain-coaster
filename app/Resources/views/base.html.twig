@@ -75,17 +75,16 @@
     let dataSource = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('n'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: url,
+        prefetch: url
     });
-
     $('#search-coaster').typeahead({highlight: true}, {
         displayKey: 'n',
         source: dataSource.ttAdapter(),
-        limit: 7,
+        limit: 7
     }).bind('typeahead:select', function (ev, suggestion) {
         window.location.href = Routing.generate(
             suggestion.r,
-            {slug: suggestion.s, '_locale': '{{ app.request.locale }}'}
+            {'slug': suggestion.s, '_locale': '{{ app.request.locale }}'}
         );
     });
 </script>

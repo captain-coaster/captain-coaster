@@ -16,6 +16,11 @@ class SearchService
         'route' => 'park_show',
     ];
 
+    const USER =[
+        'emoji' => '👦',
+        'route' => 'user_show'
+    ];
+
     /**
      * @var EntityManagerInterface
      */
@@ -35,13 +40,16 @@ class SearchService
      */
     public function getAutocompleteValues(): array
     {
-        $coasters = $this->em->getRepository('BddBundle:Coaster')->findAllNameAndSlug();
+        $coasters = $this->em->getRepository('BddBundle:Coaster')->findAllForSearch();
         $coasters = $this->formatValues($coasters, self::COASTER);
 
-        $parks = $this->em->getRepository('BddBundle:Park')->findAllNameAndSlug();
+        $parks = $this->em->getRepository('BddBundle:Park')->findAllForSearch();
         $parks = $this->formatValues($parks, self::PARK);
 
-        return array_merge($parks, $coasters);
+        $users = $this->em->getRepository('BddBundle:User')->getAllForSearch();
+        $users = $this->formatValues($users, self::USER);
+
+        return array_merge($parks, $coasters, $users);
     }
 
     /**

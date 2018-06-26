@@ -23,7 +23,7 @@
                 </h6>
                 <small class="text-muted">
                   {{ 'liste.list.by'|trans }}
-                  <a href="{{ path('user_profile', {'id': liste.user.id}) }}">
+                  <a href="{{ path('user_show', {'slug': liste.user.slug}) }}">
                     {{ liste.user.displayName }}
                   </a>
                 </small>

@@ -70,6 +70,14 @@ class User extends BaseUser
     /**
      * @var string
      *
+     * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @Gedmo\Slug(fields={"displayName"})
+     */
+    private $slug;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $profilePicture;
@@ -543,5 +551,24 @@ class User extends BaseUser
         $this->preferredLocale = $preferredLocale;
 
         return $this;
+    }
+
+    /**
+     * @param string $slug
+     * @return User
+     */
+    public function setSlug(?string $slug): User
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
     }
 }

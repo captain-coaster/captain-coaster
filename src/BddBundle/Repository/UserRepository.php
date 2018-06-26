@@ -49,4 +49,18 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAllForSearch()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u.displayName as name')
+            ->addSelect('u.slug')
+            ->from('BddBundle:User', 'u')
+            ->getQuery()
+            ->getResult();
+    }
 }

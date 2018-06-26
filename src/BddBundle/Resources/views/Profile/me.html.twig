@@ -95,8 +95,8 @@
               <div class="col-sm-12 text-right">
                 <ul class="list-inline no-margin-bottom">
                   <li>
-                    {% set bbcode = '[url='~ absolute_url(path('user_profile', {'id': user.id})) ~'][img]'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'[/img][/url]' %}
-                    {% set htmlcode = '<a href="'~ absolute_url(path('user_profile', {'id': user.id})) ~'"><img src="'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'"/></a>' %}
+                    {% set bbcode = '[url='~ absolute_url(path('user_show', {'slug': user.slug})) ~'][img]'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'[/img][/url]' %}
+                    {% set htmlcode = '<a href="'~ absolute_url(path('user_show', {'slug': user.slug})) ~'"><img src="'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'"/></a>' %}
                     <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
                       <i class="icon-copy position-left"></i>
                       {{ 'me.banner.getbbcode'|trans }}

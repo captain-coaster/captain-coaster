@@ -6,7 +6,6 @@ use BddBundle\Entity\User;
 use BddBundle\Form\Type\ProfileType;
 use BddBundle\Service\BannerMaker;
 use BddBundle\Service\StatService;
-use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -58,7 +57,7 @@ class ProfileController extends Controller
             [
                 'user' => $this->getUser(),
                 'form' => $form->createView(),
-                'stats' => $statService->getUserStats($user)
+                'stats' => $statService->getUserStats($user),
             ]
         );
     }
@@ -96,27 +95,6 @@ class ProfileController extends Controller
             'BddBundle:Profile:ratings.html.twig',
             [
                 'ratings' => $pagination,
-            ]
-        );
-    }
-
-    /**
-     * Display a user's profile page
-     *
-     * @param User $user
-     * @param StatService $statService
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @Route("/users/{id}/profile", name="user_profile")
-     * @Method({"GET"})
-     */
-    public function publicProfileAction(User $user, StatService $statService)
-    {
-        return $this->render(
-            'BddBundle:Profile:public.html.twig',
-            [
-                'user' => $user,
-                'stats' => $statService->getUserStats($user)
             ]
         );
     }

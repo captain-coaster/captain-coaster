@@ -32,7 +32,10 @@ class ParkRepository extends EntityRepository
             ->getSingleScalarResult();
     }
 
-    public function findAllNameAndSlug()
+    /**
+     * @return mixed
+     */
+    public function findAllForSearch()
     {
         return $this->getEntityManager()
             ->createQueryBuilder()

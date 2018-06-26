@@ -47,7 +47,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     /**
      * @return array
      */
-    public function findAllNameAndSlug()
+    public function findAllForSearch()
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
