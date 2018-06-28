@@ -5,6 +5,7 @@ namespace BddBundle\Service;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\Liste;
 use BddBundle\Entity\ListeCoaster;
+use BddBundle\Entity\Ranking;
 use BddBundle\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -41,6 +42,11 @@ class RankingService
      * @var array
      */
     private $ranking = [];
+
+    /**
+     * @var integer
+     */
+    private $totalComparisonNumber = 0;
 
     /**
      * RankingService constructor
@@ -96,10 +102,12 @@ class RankingService
             }
         }
 
-        // send notifications to everyone
         if (!$dryRun) {
+            // create new ranking entry in database
+            $this->createRankingEntry();
+            // remove coasters not ranked anymore
             $this->disableNonRankedCoasters();
-
+            // send notifications to everyone
             $this->notificationService->sendAll(
                 'notif.ranking.message',
                 NotificationService::NOTIF_RANKING
@@ -217,6 +225,7 @@ class RankingService
                 // don't take into account if too few comparisons
                 // $comparisonResult + $reverseComparisonResult always equals vote number
                 if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
+                    $this->totalComparisonNumber += ($comparisonResult + $reverseComparisonResult);
                     $duelCount++;
 
                     // same win & loose numbers
@@ -315,5 +324,23 @@ class RankingService
         } catch (\Exception $e) {
             // do nothing
         }
+    }
+
+    /**
+     *
+     */
+    private function createRankingEntry()
+    {
+        $ranking = new Ranking();
+
+        $ranking->setRatingNumber($this->em->getRepository('BddBundle:RiddenCoaster')->countAll());
+        $ranking->setTopNumber($this->em->getRepository('BddBundle:Liste')->countTops());
+        $ranking->setUserNumber($this->em->getRepository('BddBundle:User')->count([]));
+        $ranking->setCoasterInTopNumber($this->em->getRepository('BddBundle:ListeCoaster')->countAllInTops());
+        $ranking->setComparisonNumber($this->totalComparisonNumber);
+        $ranking->setRankedCoasterNumber(count($this->ranking));
+
+        $this->em->persist($ranking);
+        $this->em->flush();
     }
 }

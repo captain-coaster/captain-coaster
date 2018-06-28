@@ -16,17 +16,21 @@ class RiddenCoasterRepository extends EntityRepository
 {
     /**
      * Count all ratings
+     *
      * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function countAll()
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1) as nb_rating')
-            ->from('BddBundle:RiddenCoaster', 'r')
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1) as nb_rating')
+                ->from('BddBundle:RiddenCoaster', 'r')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
     /**

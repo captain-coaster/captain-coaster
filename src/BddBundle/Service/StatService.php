@@ -53,9 +53,9 @@ class StatService
             ->getRepository('BddBundle:RiddenCoaster')
             ->countReviews();
 
-        $stats['nb_listes'] = $this->em
+        $stats['nb_tops'] = $this->em
             ->getRepository('BddBundle:Liste')
-            ->countAll();
+            ->countTops();
 
         return $stats;
     }

@@ -33,6 +33,27 @@ class ListeCoasterRepository extends EntityRepository
     }
 
     /**
+     * Count all coasters inside Tops only
+     *
+     * @return mixed
+     */
+    public function countAllInTops()
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1)')
+                ->from('BddBundle:ListeCoaster', 'l')
+                ->join('l.liste', 'li')
+                ->where('li.main = 1')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
+    }
+
+    /**
      * Update totalTopsIn for all coasters
      *
      * @return bool

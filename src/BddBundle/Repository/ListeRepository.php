@@ -3,6 +3,7 @@
 namespace BddBundle\Repository;
 
 use BddBundle\Entity\User;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * ListeRepository
@@ -13,17 +14,23 @@ use BddBundle\Entity\User;
 class ListeRepository extends \Doctrine\ORM\EntityRepository
 {
     /**
-     * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return int|mixed
+     *
+     * @todo do not count lists with less than 3 items
      */
-    public function countAll()
+    public function countTops()
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1)')
-            ->from('BddBundle:Liste', 'l')
-            ->getQuery()
-            ->getSingleScalarResult();
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1)')
+                ->from('BddBundle:Liste', 'l')
+                ->where('l.main = 1')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 
     /**
