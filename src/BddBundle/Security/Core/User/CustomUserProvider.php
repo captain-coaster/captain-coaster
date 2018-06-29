@@ -16,20 +16,23 @@ class CustomUserProvider extends BaseClass
     {
         $property = $this->getProperty($response);
         $username = $response->getUsername();
-        //on connect - get the access token and the user ID
+
+        // on connect - get the access token and the user ID
         $service = $response->getResourceOwner()->getName();
-        $setter = 'set'.ucfirst($service);
-        $setter_id = $setter.'Id';
-        $setter_token = $setter.'AccessToken';
-        //we "disconnect" previously connected users
+        $setterId = sprintf('set%sId', ucfirst($service));
+        $setterToken = sprintf('set%sAccessToken', ucfirst($service));
+
+        // we "disconnect" previously connected users
         if (null !== $previousUser = $this->userManager->findUserBy([$property => $username])) {
-            $previousUser->$setter_id(null);
-            $previousUser->$setter_token(null);
+            $previousUser->$setterId(null);
+            $previousUser->$setterToken(null);
             $this->userManager->updateUser($previousUser);
         }
-        //we connect current user
-        $user->$setter_id($username);
-        $user->$setter_token($response->getAccessToken());
+
+        // we connect current user
+        $user->$setterId($username);
+        $user->$setterToken($response->getAccessToken());
+
         $this->userManager->updateUser($user);
     }
 
@@ -38,25 +41,36 @@ class CustomUserProvider extends BaseClass
      */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
-        $username = $response->getUsername();
+        $service = $response->getResourceOwner()->getName();
+        $setterId = sprintf('set%sId', ucfirst($service));
+        $setterToken = sprintf('set%sAccessToken', ucfirst($service));
+        // in symfony the method is getUsername but it's a facebook or google ID
+        $identifier = $response->getUsername();
 
         /** @var User $user */
-        $user = $this->userManager->findUserBy([$this->getProperty($response) => $username]);
+        $user = $this->userManager->findUserBy([$this->getProperty($response) => $identifier]);
 
-        $service = $response->getResourceOwner()->getName();
-        $setter = 'set'.ucfirst($service);
-        $setterId = $setter.'Id';
-        $setterToken = $setter.'AccessToken';
-
-        // Auto register user
+        // no user found with identifier
         if (null === $user) {
-            $user = $this->userManager->createUser();
-            $user->$setterId($response->getUsername());
-            $user->setEnabled(true);
+            // if user has email
+            if (null !== $response->getEmail()) {
+                // another try with with email
+                $user = $this->userManager->findUserBy(['email' => $response->getEmail()]);
+            }
+
+            // if not found again, create a new user
+            if (null === $user) {
+                $user = $this->userManager->createUser();
+                // enable only new users
+                $user->setEnabled(true);
+            }
+
+            $user->$setterId($identifier);
         }
 
         $user->$setterToken($response->getAccessToken());
 
+        // set or reset name
         $user->setFirstName($response->getFirstName());
         $user->setLastName($response->getLastName());
         $user->setUsername($response->getNickname());
@@ -68,7 +82,7 @@ class CustomUserProvider extends BaseClass
             $user->setEmail($response->getEmail());
         }
 
-        $user->setPassword($response->getUsername());
+        $user->setPassword($identifier);
         $user->setProfilePicture($response->getProfilePicture());
 
         $this->userManager->updateUser($user);
