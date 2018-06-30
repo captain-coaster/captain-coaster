@@ -174,13 +174,22 @@ class CoasterController extends Controller
 
         $imageUrls = $imageService->getMultipleImagesUrl($ids);
 
+        $nextRankingDate = new \DateTime('first day of next month midnight 1 minute');
+        if ($nextRankingDate->diff(new \DateTime('now'), true)->format('%h') < 1) {
+            $nextRankingDate = null;
+        }
+
+        $em = $this->get('doctrine.orm.default_entity_manager');
+        $ranking = $em->getRepository('BddBundle:Ranking')->findCurrent();
+
         return $this->render(
             '@Bdd/Coaster/ranking.html.twig',
             [
                 'coasters' => $pagination,
                 'images' => $imageUrls,
                 'rankingDate' => new \DateTime('first day of this month midnight'),
-                'nextRankingDate' => new \DateTime('first day of next month midnight 1 minute'),
+                'nextRankingDate' => $nextRankingDate,
+                'ranking' => $ranking
             ]
         );
     }

@@ -15,7 +15,22 @@
   <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
     <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
     <h6 class="alert-heading text-semibold">{{ 'coaster_ranking.info.title'|trans }}</h6>
-    <p>{{ 'coaster_ranking.info.text'|trans({'%date%': nextRankingDate|ago, '%link_path%': path('hwi_oauth_connect')})|raw }}</p>
+    <p>
+      {% if ranking %}
+      {{ 'coaster_ranking.info.stats'|trans(
+        {
+          '%ratings%': ranking.ratingNumber,
+          '%tops%': ranking.topNumber,
+          '%users%': ranking.userNumber,
+          '%comparisons%': ranking.comparisonNumber,
+          '%coasters%': ranking.rankedCoasterNumber
+        }
+      ) }}
+      {% else %}
+        {{ 'coaster_ranking.info.desc'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
+      {% endif %}
+      {% if nextRankingDate %}{{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}{% endif %}
+    </p>
   </div>
   <!-- /info alert -->
   <ul class="media-list content-group">

@@ -9,7 +9,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Ranking
  *
  * @ORM\Table(name="ranking")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BddBundle\Repository\RankingRepository")
  */
 class Ranking
 {

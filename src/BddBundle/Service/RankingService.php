@@ -314,8 +314,8 @@ class RankingService
     {
         $conn = $this->em->getConnection();
         $sql = 'update coaster c
-                set c.rank = NULL and c.previous_rank = NULL
-                where c.updated_at < DATE_SUB(NOW(), INTERVAL 3 WEEK)
+                set c.rank = NULL, c.previous_rank = NULL, c.score = NULL 
+                where c.updated_at < DATE_SUB(NOW(), INTERVAL 4 HOUR)
                 and c.rank is not NULL;';
 
         try {
@@ -327,7 +327,7 @@ class RankingService
     }
 
     /**
-     *
+     * Add a row for Ranking entity in database
      */
     private function createRankingEntry()
     {
