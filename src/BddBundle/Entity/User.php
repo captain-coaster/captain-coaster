@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Table(name="users")
@@ -56,14 +57,16 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="firstName", type="string", length=255, nullable=true)
+     * @ORM\Column(name="firstName", type="string", length=255, nullable=false)
+     * @Assert\NotBlank()
      */
     private $firstName;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=false)
+     * @Assert\NotBlank()
      */
     private $displayName;
 

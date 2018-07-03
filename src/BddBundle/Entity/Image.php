@@ -3,6 +3,7 @@
 namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Badge
@@ -42,6 +43,11 @@ class Image
      * @ORM\Column(type="boolean")
      */
     private $optimized = false;
+
+    /**
+     * @Assert\File(mimeTypes={"image/jpeg"})
+     */
+    private $file;
 
     /**
      * @return int
@@ -114,5 +120,24 @@ class Image
     public function getPath()
     {
         return sprintf('%s/%s', substr($this->filename, 0, 1), $this->filename);
+    }
+
+    /**
+     * @param mixed $file
+     * @return Image
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFile()
+    {
+        return $this->file;
     }
 }

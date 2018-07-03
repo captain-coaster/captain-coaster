@@ -3,7 +3,9 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
+use BddBundle\Entity\Image;
 use BddBundle\Form\Type\CommonCoasterType;
+use BddBundle\Form\Type\ImageUploadType;
 use BddBundle\Form\Type\RelocationCoasterType;
 use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -109,6 +111,44 @@ class CoasterController extends Controller
     }
 
     /**
+     * Uploads an image for a coaster
+     *
+     * @Route("/{slug}/images/upload", name="coaster_images_upload")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_CONTRIBUTOR')")
+     *
+     * @param Request $request
+     * @param Coaster $coaster
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function imageUpload(Request $request, Coaster $coaster)
+    {
+        $image = new Image();
+        $image->setCoaster($coaster);
+
+        /** @var Form $form */
+        $form = $this->createForm(ImageUploadType::class, $image);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($image);
+            $em->flush();
+
+            $this->addFlash('info', 'Image uploaded !');
+
+            return $this->redirectToRoute('coaster_images_upload', ['slug' => $coaster->getSlug()]);
+        }
+
+        return $this->render(
+            'BddBundle:Coaster:image-upload.html.twig',
+            [
+                'form' => $form->createView(),
+            ]
+        );
+    }
+
+    /**
      * Relocate a coaster
      *
      * @Route("/reloc", name="coaster_reloc")
@@ -189,7 +229,7 @@ class CoasterController extends Controller
                 'images' => $imageUrls,
                 'rankingDate' => new \DateTime('first day of this month midnight'),
                 'nextRankingDate' => $nextRankingDate,
-                'ranking' => $ranking
+                'ranking' => $ranking,
             ]
         );
     }

@@ -35,6 +35,10 @@ services:
             $basePath: '%base_path_images%'
             $baseUrl: '%base_url_images%'
 
+    BddBundle\Service\ImageUploader:
+        arguments:
+            $basePath: '%base_path_images%'
+
     BddBundle\Service\BannerMaker:
         arguments:
             $imagine: '@liip_imagine.imagick'
@@ -58,6 +62,10 @@ services:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: preUpdate }
+
+    BddBundle\Doctrine\ImageListener:
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
 
     BddBundle\Service\DiscordMonologHandler:
         arguments:

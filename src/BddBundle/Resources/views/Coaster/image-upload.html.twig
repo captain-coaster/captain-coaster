@@ -1,0 +1,15 @@
+<html>
+<head></head>
+<body>
+<h2>upload</h2>
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="flash-{{ label }}">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endfor %}
+{{ form_errors(form) }}
+{{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}
+</body>
+</html>
