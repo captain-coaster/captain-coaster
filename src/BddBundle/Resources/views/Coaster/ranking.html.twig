@@ -35,12 +35,12 @@
   <!-- /info alert -->
   <ul class="media-list content-group">
     {% for coaster in coasters %}
-      {% set image = images[coaster.id] %}
       <li class="media panel panel-body stack-media-on-mobile">
         <div class="media-left">
           <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-            {% if image|length > 0 %}
-              <img src="{{ asset(random(image)) | imagine_filter('coaster_ranking') }}"
+            {% if coaster.images|length > 0 %}
+              {% set image = random(coaster.images) %}
+              <img src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('coaster_ranking') }}"
                    class="img-rounded"
                    style="width:96px;"
                    alt="{{ coaster.name }}">

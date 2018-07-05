@@ -29,7 +29,6 @@ parameters:
 
     # Images
     base_path_images: '/Users/florian/Sites/backup/cw-legacy/photo'
-    base_url_images: 'images/coasters/{coasterId}/big/{fileName}'
     base_upload_path: '%kernel.project_dir%/web/upload'
 
     # Banner
@@ -39,7 +38,6 @@ parameters:
 
     # Temp
     default_coaster_id: 2183
-    home_coasters: [1985,2197,202,2183,2169,1572,1980,59,2028,2210,2130,196,2219,85,2247,795,2165,2000,2190,62,2192,2138,2370,1980,324,197,2270,620,2206,561,1783,370,170,2111,2209]
 
     # Authentication
     facebook_client_id:

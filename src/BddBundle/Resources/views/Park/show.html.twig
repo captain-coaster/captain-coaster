@@ -47,13 +47,13 @@
         <div class="col-sm-9">
             <div class="row">
                 {% for coaster in park.coasters %}
-                    {% set image = images[coaster.id] %}
                     <div class="col-sm-4">
                         <div class="thumbnail border-bottom-xlg border-bottom-{{ coaster.status.type }}">
                             <div class="thumb">
                                 <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                                    <img {% if image|length > 0 %}
-                                        src="{{ asset(image.0) | imagine_filter('coaster_park_show') }}"
+                                    <img {% if coaster.images|length > 0 %}
+                                      {% set image = random(coaster.images) %}
+                                        src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('coaster_park_show') }}"
                                     {% else %}
                                         src="{{ asset('images/nophoto.png') }}"
                                     {% endif %}

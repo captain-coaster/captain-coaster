@@ -267,20 +267,20 @@
 
     <div class="col-sm-9">
       <!-- photos -->
-      {% if images|length > 0 %}
+      {% if coaster.images|length > 0 %}
         <div class="row">
           <div class="panel panel-flat border-top-blue">
             <div class="panel-heading">
               <h6>{{ 'coaster.photos'|trans }}</h6>
             </div>
             <div class="panel-body no-border no-padding-top">
-              {% for imagePath in images %}
+              {% for image in coaster.images %}
                 {% if loop.index < 9 %}
                   <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
-                    <a style="margin: 10px;" href="{{ asset(imagePath) }}" data-popup="lightbox"
+                    <a style="margin: 10px;" href="{{ asset('/coasters/' ~ image.path) }}" data-popup="lightbox"
                        rel="gallery">
                       <div class="thumb">
-                        <img src="{{ asset(imagePath) | imagine_filter('thumb_coaster') }}"
+                        <img src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('thumb_coaster') }}"
                              alt="">
                       </div>
                     </a>
@@ -342,7 +342,7 @@
           "ratingValue": "{{ coaster.score|number_format('1', ',') }}",
           "bestRating": "100",
           "worstRating": "0",
-          "reviewCount": "{{ coaster.ratings|length }}"
+          "ratingCount": "{{ coaster.ratings|length }}"
         }
       }
 

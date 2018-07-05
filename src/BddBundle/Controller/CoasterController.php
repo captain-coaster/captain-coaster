@@ -7,7 +7,6 @@ use BddBundle\Entity\Image;
 use BddBundle\Form\Type\CommonCoasterType;
 use BddBundle\Form\Type\ImageUploadType;
 use BddBundle\Form\Type\RelocationCoasterType;
-use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -187,12 +186,11 @@ class CoasterController extends Controller
      * Show ranking of best coasters
      *
      * @param int $page
-     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"})
      * @Method({"GET"})
      */
-    public function showRankingAction($page = 1, ImageService $imageService)
+    public function showRankingAction($page = 1)
     {
         $query = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
@@ -212,8 +210,6 @@ class CoasterController extends Controller
             $ids[] = $coaster->getId();
         }
 
-        $imageUrls = $imageService->getMultipleImagesUrl($ids);
-
         $nextRankingDate = new \DateTime('first day of next month midnight 1 minute');
         if ($nextRankingDate->diff(new \DateTime('now'), true)->format('%h') < 1) {
             $nextRankingDate = null;
@@ -226,7 +222,6 @@ class CoasterController extends Controller
             '@Bdd/Coaster/ranking.html.twig',
             [
                 'coasters' => $pagination,
-                'images' => $imageUrls,
                 'rankingDate' => new \DateTime('first day of this month midnight'),
                 'nextRankingDate' => $nextRankingDate,
                 'ranking' => $ranking,
@@ -241,14 +236,10 @@ class CoasterController extends Controller
      * @Method({"GET"})
      * @param Request $request
      * @param Coaster $coaster
-     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction(Request $request, Coaster $coaster, ImageService $imageService)
+    public function showAction(Request $request, Coaster $coaster)
     {
-        // Display images from file system
-        $imageUrls = $imageService->getCoasterImagesUrl($coaster->getId());
-
         // Load reviews
         $reviews = $this->getDoctrine()
             ->getRepository('BddBundle:RiddenCoaster')
@@ -266,7 +257,6 @@ class CoasterController extends Controller
             'BddBundle:Coaster:show.html.twig',
             [
                 'coaster' => $coaster,
-                'images' => $imageUrls,
                 'reviews' => $reviews,
                 'rating' => $rating,
             ]

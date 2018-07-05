@@ -71,32 +71,30 @@
   </div>
   <div class="row">
     <div class="col-sm-6">
-      {% if images|length > 0 %}
-        <!-- Thumbnail with image and button -->
-        <div class="thumbnail">
+      <!-- Thumbnail with image and button -->
+      <div class="thumbnail">
+        <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}" class="btn btn-info">
           <div class="thumb">
-            <img src="{{ asset(random(images)) | imagine_filter('random_index') }}"
-                 alt="{{ coaster.name }}">
-
-            <div class="caption-overflow">
-                        <span>
-                            <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}"
-                               class="btn btn-info">voir</a>
-                        </span>
-            </div>
+            <img src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('random_index') }}"
+                 alt="{{ image.coaster.name }}">
+            <div class="caption-overflow"></div>
           </div>
+        </a>
 
-          <div class="caption text-center">
-            <h5 class="text-semibold no-margin">{{ coaster.name }}</h5>
-            <p class="text-muted mb-15 mt-5">
-              <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
-                {{ coaster.park.name }}
-              </a>
-            </p>
-          </div>
+        <div class="caption text-center">
+          <h5 class="text-semibold no-margin">
+            <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}" class="btn btn-info">
+              {{ image.coaster.name }}
+            </a>
+          </h5>
+          <p class="text-muted mb-15 mt-5">
+            <a class="text-muted" href="{{ path('park_show', {'slug': image.coaster.park.slug}) }}">
+              {{ image.coaster.park.name }}
+            </a>
+          </p>
         </div>
-        <!-- /thumbnail with image and button -->
-      {% endif %}
+      </div>
+      <!-- /thumbnail with image and button -->
       <!-- latest ratings -->
       <div class="panel panel-flat border-top-teal">
         <div class="panel-heading">

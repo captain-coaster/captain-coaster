@@ -6,7 +6,6 @@ use BddBundle\Entity\Liste;
 use BddBundle\Entity\ListeCoaster;
 use BddBundle\Form\Type\ListeCustomType;
 use BddBundle\Form\Type\ListeType;
-use BddBundle\Service\ImageService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -246,12 +245,11 @@ class ListeController extends Controller
      * Display a list
      *
      * @param Liste $liste
-     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/{id}", name="liste_show")
      * @Method({"GET"})
      */
-    public function showAction(Liste $liste, ImageService $imageService)
+    public function showAction(Liste $liste)
     {
         $ids = [];
         /** @var ListeCoaster $listeCoaster */
@@ -259,13 +257,10 @@ class ListeController extends Controller
             $ids[] = $listeCoaster->getCoaster()->getId();
         }
 
-        $imageUrls = $imageService->getMultipleImagesUrl($ids);
-
         return $this->render(
             'BddBundle:Liste:show.html.twig',
             [
                 'liste' => $liste,
-                'images' => $imageUrls,
             ]
         );
     }

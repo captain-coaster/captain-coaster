@@ -5,7 +5,6 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\Park;
 use BddBundle\Form\Type\ParkType;
-use BddBundle\Service\ImageService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -90,12 +89,11 @@ class ParkController extends Controller
      * Show park details
      *
      * @param Park $park
-     * @param ImageService $imageService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/parks/{slug}", name="park_show", options = {"expose" = true})
      * @Method({"GET"})
      */
-    public function showAction(Park $park, ImageService $imageService)
+    public function showAction(Park $park)
     {
         $ids = [];
         /** @var Coaster $coaster */
@@ -103,13 +101,10 @@ class ParkController extends Controller
             $ids[] = $coaster->getId();
         }
 
-        $imageUrls = $imageService->getMultipleImagesUrl($ids);
-
         return $this->render(
             'BddBundle:Park:show.html.twig',
             [
                 'park' => $park,
-                'images' => $imageUrls,
             ]
         );
     }

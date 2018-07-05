@@ -3,7 +3,6 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Form\Type\ContactType;
-use BddBundle\Service\ImageService;
 use BddBundle\Service\StatService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -34,28 +33,23 @@ class DefaultController extends Controller
      * Index of application
      *
      * @param Request $request
-     * @param ImageService $imageService
      * @param StatService $statService
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      * @Route("/", name="bdd_index")
      * @Method({"GET"})
      */
-    public function indexAction(Request $request, ImageService $imageService, StatService $statService)
+    public function indexAction(Request $request, StatService $statService)
     {
-        $goodCoasters = $this->getParameter('home_coasters');
-        $coasterId = $goodCoasters[array_rand($goodCoasters)];
-
         $ratingFeed = $this
             ->getDoctrine()
             ->getRepository('BddBundle:RiddenCoaster')
             ->findBy([], ['updatedAt' => 'DESC'], 6);
 
-        $images = $imageService->getCoasterImagesUrl($coasterId);
-
-        $coaster = $this
+        $image = $this
             ->getDoctrine()
-            ->getRepository('BddBundle:Coaster')
-            ->findOneBy(['id' => $coasterId]);
+            ->getRepository('BddBundle:Image')
+            ->findLatestImage();
 
         $stats = $statService->getIndexStats();
 
@@ -68,8 +62,7 @@ class DefaultController extends Controller
             'BddBundle:Default:index.html.twig',
             [
                 'ratingFeed' => $ratingFeed,
-                'images' => $images,
-                'coaster' => $coaster,
+                'image' => $image,
                 'stats' => $stats,
                 'reviews' => $reviews,
             ]

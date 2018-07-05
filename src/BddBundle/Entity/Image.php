@@ -3,13 +3,14 @@
 namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Badge
  *
  * @ORM\Table(name="image")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="BddBundle\Repository\ImageRepository")
  */
 class Image
 {
@@ -32,7 +33,7 @@ class Image
     /**
      * @var Coaster
      *
-     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Coaster")
+     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Coaster", inversedBy="images")
      * @ORM\JoinColumn(nullable=false)
      */
     private $coaster;
@@ -43,6 +44,29 @@ class Image
      * @ORM\Column(type="boolean")
      */
     private $optimized = false;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled = true;
+
+    /**
+     * @var \DateTime $createdAt
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var \DateTime $updatedAt
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
 
     /**
      * @Assert\File(mimeTypes={"image/jpeg"})
@@ -139,5 +163,62 @@ class Image
     public function getFile()
     {
         return $this->file;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return Image
+     */
+    public function setEnabled(bool $enabled): Image
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     * @return Image
+     */
+    public function setCreatedAt(\DateTime $createdAt): Image
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     * @return Image
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): Image
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
     }
 }

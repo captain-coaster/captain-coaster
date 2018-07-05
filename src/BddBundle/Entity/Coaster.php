@@ -205,6 +205,14 @@ class Coaster
     private $updatedAt;
 
     /**
+     * @var Image
+     *
+     * @ORM\OneToMany(targetEntity="Image", mappedBy="coaster")
+     * @ORM\OrderBy({"updatedAt" = "DESC"})
+     */
+    private $images;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -806,5 +814,24 @@ class Coaster
     public function getAverageTopRank(): int
     {
         return $this->averageTopRank;
+    }
+
+    /**
+     * @param Image $images
+     * @return Coaster
+     */
+    public function setImages(Image $images): Coaster
+    {
+        $this->images = $images;
+
+        return $this;
+    }
+
+    /**
+     * @return Image
+     */
+    public function getImages()
+    {
+        return $this->images;
     }
 }
