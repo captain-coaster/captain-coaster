@@ -1,10 +1,40 @@
 easy_admin:
     site_name: 'Captain Coaster'
     entities:
+        Park:
+            class: BddBundle\Entity\Park
+            list:
+                fields: ['id', 'name', 'coasters']
+            edit:
+                fields: ['name', 'website', 'country', 'latitude', 'longitude']
+            new:
+                fields: ['name', 'website', 'country', 'latitude', 'longitude']
+        OpeningCoasters:
+            class: BddBundle\Entity\Coaster
+            label: 'Opening of coasters'
+            disabled_actions: ['new']
+            list:
+                fields:
+                    - name
+                    - park
+                    - {property: 'status', trans: true, domain: 'database', type_options: {translation_domain: 'database'}}
+                    - openingDate
+                dql_filter: 'entity.openingDate < CURRENT_DATE() AND entity.status = 3'
+                sort: ['openingDate', 'DESC']
+            edit:
+                fields:
+                    - name
+                    - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                    - openingDate
         Country:
             class: BddBundle\Entity\Country
+            list:
+                fields:
+                    - name
+                    - slug
             edit:
-                fields: ['name', 'slug']
+                fields:
+                    - {property: 'name', type_options: {disabled: true}}
             new:
                 fields: ['name', 'slug']
         Launch:

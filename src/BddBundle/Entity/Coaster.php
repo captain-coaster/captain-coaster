@@ -811,7 +811,7 @@ class Coaster
     /**
      * @return int
      */
-    public function getAverageTopRank(): int
+    public function getAverageTopRank():? int
     {
         return $this->averageTopRank;
     }
