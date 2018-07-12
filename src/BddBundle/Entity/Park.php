@@ -2,9 +2,9 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-
 
 /**
  * Park
@@ -97,7 +97,7 @@ class Park
      */
     public function __construct()
     {
-        $this->coasters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->coasters = new ArrayCollection();
     }
 
     /**
@@ -105,7 +105,7 @@ class Park
      */
     public function __toString()
     {
-        return (string) $this->name;
+        return $this->name;
     }
 
     /**
@@ -346,15 +346,19 @@ class Park
 
     public function getOpenedCoasters()
     {
-        return $this->getCoasters()->filter(function(Coaster $coaster) {
-            return $coaster->getStatus()->getId() == 1;
-        });
+        return $this->getCoasters()->filter(
+            function (Coaster $coaster) {
+                return $coaster->getStatus()->getId() == 1;
+            }
+        );
     }
 
     public function getKiddies()
     {
-        return $this->getCoasters()->filter(function(Coaster $coaster) {
-            return $coaster->getBuiltCoaster()->getIsKiddie() == 1;
-        });
+        return $this->getCoasters()->filter(
+            function (Coaster $coaster) {
+                return $coaster->getBuiltCoaster()->getIsKiddie() == 1;
+            }
+        );
     }
 }

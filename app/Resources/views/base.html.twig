@@ -15,7 +15,7 @@
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     {% block header %}{% endblock %}
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-    <link href="{{ asset('build/main.css') }}" rel="stylesheet" />
+    <link href="{{ asset('build/main.css') }}" rel="stylesheet"/>
     {% block stylesheets %}{% endblock %}
 </head>
 <body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
@@ -71,8 +71,8 @@
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script type="text/javascript">
     locale = '{{ app.request.locale }}';
-    let url = Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'});
-    let dataSource = new Bloodhound({
+    var url = Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'});
+    var dataSource = new Bloodhound({
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('n'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: url
@@ -98,7 +98,6 @@
 
     ga('create', 'UA-37300594-3', 'auto');
     ga('send', 'pageview');
-
 </script>
 {% endif %}
 </body>

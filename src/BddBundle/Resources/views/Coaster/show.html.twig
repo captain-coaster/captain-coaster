@@ -4,7 +4,7 @@
 
 {% set title = coaster.name %}
 {% set subTitle = coaster.park.name %}
-{% block title %}{{ title }} - {{ subTitle }}{% endblock %}
+{% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 
 {#{% block header %}#}
     {#<meta name="description" content="{{ coaster.name }} is a {{ coaster.builtCoaster.manufacturer.name }} roller coaster"/>#}
@@ -47,10 +47,8 @@
                 </p>
               {% endif %}
             {% else %}
-              <div class="media-body">
-                                <span class="text-size-small text-muted">
-                                    {{ 'coaster.rating.notenough'|trans }}
-                                </span>
+              <div class="media-body text-size-small text-muted">
+                {{ 'coaster.rating.notenough'|trans }}
               </div>
             {% endif %}
           </div>
@@ -135,52 +133,70 @@
         </div>
 
         <div class="list-group no-border">
+          {% if coaster.status %}
           <div class="list-group-item">
             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}:</label>
             <div class="pull-right">
-                            <span class="label label-{{ coaster.status.type }} bg-{{ coaster.status.type }}">
-                                {{ coaster.status.name|trans([], 'database') }}
-                            </span>
+              <span class="label label-{{ coaster.status.type }} bg-{{ coaster.status.type }}">
+                  {{ coaster.status.name|trans([], 'database') }}
+              </span>
             </div>
           </div>
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}:</label>
-            <div class="pull-right">
-              <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
-                {{ coaster.park.name }}
-              </a>
+          {% endif %}
+          {% if coaster.park %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}:</label>
+              <div class="pull-right">
+                <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                  {{ coaster.park.name }}
+                </a>
+              </div>
             </div>
-          </div>
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
-              :</label>
-            <div class="pull-right">{{ coaster.park.country.name|trans([], 'database') }}</div>
-          </div>
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>
-            <div class="pull-right">
-              {{ coaster.builtCoaster.types|join(', ') }}
+          {% endif %}
+          {% if coaster.park.country %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}:</label>
+              <div class="pull-right">{{ coaster.park.country.name|trans([], 'database') }}</div>
             </div>
-          </div>
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}:</label>
-            <div class="pull-right">
-              {% for launch in coaster.builtCoaster.launchs %}
-                {{ launch|trans([], 'database') }}
-                {% if not loop.last %},{% endif %}
-              {% endfor %}
+          {% endif %}
+          {% if coaster.builtCoaster.manufacturer %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}:</label>
+              <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
             </div>
-          </div>
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
-              :</label>
-            <div class="pull-right">{{ coaster.builtCoaster.manufacturer.name }}</div>
-          </div>
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
-              :</label>
-            <div class="pull-right">{{ coaster.builtCoaster.restraint.name|trans([], 'database') }}</div>
-          </div>
+          {% endif %}
+          {% if coaster.builtCoaster.types %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>
+              <div class="pull-right">
+                {{ coaster.builtCoaster.types|join(', ') }}
+              </div>
+            </div>
+          {% endif %}
+          {% if coaster.builtCoaster.isKiddie %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}:</label>
+              <div class="pull-right"><i class="icon-checkmark3"></i></div>
+            </div>
+          {% endif %}
+          {% if coaster.builtCoaster.launchs %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}:</label>
+              <div class="pull-right">
+                {% for launch in coaster.builtCoaster.launchs %}
+                  {{ launch|trans([], 'database') }}
+                  {% if not loop.last %},{% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+          {% if coaster.builtCoaster.restraint %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
+                :</label>
+              <div class="pull-right">{{ coaster.builtCoaster.restraint.name|trans([], 'database') }}</div>
+            </div>
+          {% endif %}
           {% if coaster.builtCoaster.gForce %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.forces'|trans }}
@@ -221,8 +237,7 @@
           {% endif %}
           {% if coaster.price %}
             <div class="list-group-item">
-              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
-                :</label>
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}:</label>
               <div class="pull-right">
                 {{ coaster.price|number_format(0, ',', ' ') }} {{ coaster.currency.symbol }}
               </div>
@@ -277,10 +292,10 @@
               {% for image in coaster.images %}
                 {% if loop.index < 9 %}
                   <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
-                    <a style="margin: 10px;" href="{{ asset('/coasters/' ~ image.path) }}" data-popup="lightbox"
+                    <a style="margin: 10px;" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
                        rel="gallery">
                       <div class="thumb">
-                        <img src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('thumb_coaster') }}"
+                        <img src="{{ asset(image.path) | imagine_filter('thumb_coaster') }}"
                              alt="">
                       </div>
                     </a>

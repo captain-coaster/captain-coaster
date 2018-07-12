@@ -40,7 +40,7 @@
           <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
             {% if coaster.images|length > 0 %}
               {% set image = random(coaster.images) %}
-              <img src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('coaster_ranking') }}"
+              <img src="{{ asset(image.path) | imagine_filter('coaster_ranking') }}"
                    class="img-rounded"
                    style="width:96px;"
                    alt="{{ coaster.name }}">

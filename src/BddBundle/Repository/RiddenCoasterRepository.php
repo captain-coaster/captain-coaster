@@ -185,19 +185,26 @@ class RiddenCoasterRepository extends EntityRepository
      */
     public function findAll(string $locale = 'en')
     {
+        $count = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->where('r.review is not null')
+            ->getQuery()
+            ->getSingleScalarResult();
+
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r')
+            ->select('r, u')
             ->addSelect("CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority")
-            ->addSelect('u')
             ->from('BddBundle:RiddenCoaster', 'r')
-            ->innerJoin('r.user', 'u')
+            ->join('r.user', 'u')
             ->where('r.review is not null')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('locale', $locale)
             ->getQuery()
-            ->getResult();
+            ->setHint('knp_paginator.count', $count);
     }
 
     /**

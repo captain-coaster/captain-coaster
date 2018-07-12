@@ -49,6 +49,7 @@ coaster:
         closing: 'Closing date'
         vr: 'VR'
         cost: 'Cost'
+        kiddie: 'Kiddie'
     parkcoaster: 'Also in %name%'
     photos: 'Photos'
     location: 'Location'

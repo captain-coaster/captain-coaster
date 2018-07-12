@@ -73,9 +73,9 @@
     <div class="col-sm-6">
       <!-- Thumbnail with image and button -->
       <div class="thumbnail">
-        <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}" class="btn btn-info">
+        <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}">
           <div class="thumb">
-            <img src="{{ asset('images/coasters/' ~ image.path) | imagine_filter('random_index') }}"
+            <img src="{{ asset(image.path) | imagine_filter('random_index') }}"
                  alt="{{ image.coaster.name }}">
             <div class="caption-overflow"></div>
           </div>

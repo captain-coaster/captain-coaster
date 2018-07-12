@@ -1,6 +1,3 @@
-ALTER TABLE users ADD slug VARCHAR(255) NOT NULL;
-CREATE UNIQUE INDEX UNIQ_1483A5E9989D9B62 ON users (slug);
-
 ALTER TABLE liste ADD main TINYINT(1) NOT NULL;
 update liste set `main` = 1, `type` = 'main';
 

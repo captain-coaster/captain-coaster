@@ -49,6 +49,7 @@ coaster:
         closing: 'Fermeture'
         vr: 'VR'
         cost: 'Coût'
+        kiddie: 'Kiddie'
     parkcoaster: 'Coasters de %name%'
     photos: 'Photos'
     location: 'Localisation'
