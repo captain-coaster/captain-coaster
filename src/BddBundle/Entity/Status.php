@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Status
 {
+    CONST OPERATING = 'status.operating';
+
     /**
      * @var int
      *
@@ -49,13 +52,18 @@ class Status
      */
     private $coasters;
 
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private $isRateable;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->coasters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->coasters = new ArrayCollection();
     }
 
     /**
@@ -127,11 +135,11 @@ class Status
     /**
      * Add coaster
      *
-     * @param \BddBundle\Entity\Coaster $coaster
+     * @param Coaster $coaster
      *
      * @return Status
      */
-    public function addCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function addCoaster(Coaster $coaster)
     {
         $this->coasters[] = $coaster;
 
@@ -141,9 +149,9 @@ class Status
     /**
      * Remove coaster
      *
-     * @param \BddBundle\Entity\Coaster $coaster
+     * @param Coaster $coaster
      */
-    public function removeCoaster(\BddBundle\Entity\Coaster $coaster)
+    public function removeCoaster(Coaster $coaster)
     {
         $this->coasters->removeElement($coaster);
     }
@@ -180,5 +188,24 @@ class Status
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @param bool $isRateable
+     * @return Status
+     */
+    public function setIsRateable(bool $isRateable): Status
+    {
+        $this->isRateable = $isRateable;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRateable(): bool
+    {
+        return $this->isRateable;
     }
 }

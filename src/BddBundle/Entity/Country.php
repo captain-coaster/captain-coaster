@@ -123,7 +123,7 @@ class Country
     /**
      * @return Continent
      */
-    public function getContinent():? Continent
+    public function getContinent(): ?Continent
     {
         return $this->continent;
     }

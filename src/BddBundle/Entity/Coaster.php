@@ -16,9 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Coaster
 {
-    // @todo : optimize ?
-    CONST NON_RATEABLE_STATUS = [3, 6];
-
     /**
      * @var int
      *
@@ -663,7 +660,7 @@ class Coaster
      */
     public function isRateable(): bool
     {
-        return !in_array($this->getStatus()->getId(), self::NON_RATEABLE_STATUS);
+        return $this->status->isRateable();
     }
 
     /**
@@ -811,7 +808,7 @@ class Coaster
     /**
      * @return int
      */
-    public function getAverageTopRank():? int
+    public function getAverageTopRank(): ?int
     {
         return $this->averageTopRank;
     }

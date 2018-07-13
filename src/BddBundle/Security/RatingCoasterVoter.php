@@ -11,6 +11,11 @@ class RatingCoasterVoter extends Voter
 {
     const RATE = 'rate';
 
+    /**
+     * @param string $attribute
+     * @param mixed $subject
+     * @return bool
+     */
     protected function supports($attribute, $subject)
     {
         if (!in_array($attribute, [self::RATE])) {
@@ -24,6 +29,12 @@ class RatingCoasterVoter extends Voter
         return true;
     }
 
+    /**
+     * @param string $attribute
+     * @param mixed $subject
+     * @param TokenInterface $token
+     * @return bool
+     */
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
     {
         $user = $token->getUser();
@@ -43,6 +54,11 @@ class RatingCoasterVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
+    /**
+     * @param Coaster $coaster
+     * @param User $user
+     * @return bool
+     */
     private function canRate(Coaster $coaster, User $user)
     {
         return $coaster->isRateable();

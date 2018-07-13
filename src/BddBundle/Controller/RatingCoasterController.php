@@ -4,15 +4,14 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
-use BddBundle\Form\Type\RatingCoasterType;
-use BddBundle\Service\RatingService;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class RatingCoasterController
@@ -25,8 +24,10 @@ class RatingCoasterController extends Controller
      *
      * @param Request $request
      * @param Coaster $coaster
-     * @param RatingService $ratingService
+     * @param EntityManagerInterface $em
+     * @param ValidatorInterface $validator
      * @return JsonResponse
+     *
      * @Route(
      *     "/ratings/coasters/{id}/edit",
      *     name="rating_edit",
@@ -35,26 +36,28 @@ class RatingCoasterController extends Controller
      * )
      * @Method({"POST"})
      */
-    public function editAction(Request $request, Coaster $coaster, RatingService $ratingService)
-    {
+    public function editAction(
+        Request $request,
+        Coaster $coaster,
+        EntityManagerInterface $em,
+        ValidatorInterface $validator
+    ) {
         $this->denyAccessUnlessGranted('rate', $coaster);
 
         $user = $this->getUser();
-        $em = $this->getDoctrine()->getManager();
 
         $rating = $em->getRepository('BddBundle:RiddenCoaster')->findOneBy(
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
         if (!$rating instanceof RiddenCoaster) {
-            $rating = new RiddenCoaster();
-            $rating->setUser($user);
-            $rating->setCoaster($coaster);
+        $rating = new RiddenCoaster();
+        $rating->setUser($user);
+        $rating->setCoaster($coaster);
         }
 
         $rating->setValue($request->request->get('value'));
 
-        $validator = $this->get('validator');
         $errors = $validator->validate($rating);
 
         if (count($errors) > 0) {
@@ -71,7 +74,6 @@ class RatingCoasterController extends Controller
      * Delete a rating
      *
      * @param Coaster $coaster
-     * @param RatingService $ratingService
      * @return JsonResponse
      * @Route(
      *     "/ratings/coasters/{id}",
@@ -82,7 +84,7 @@ class RatingCoasterController extends Controller
      * @Method({"DELETE"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function deleteAction(Coaster $coaster, RatingService $ratingService)
+    public function deleteAction(Coaster $coaster)
     {
         $em = $this->getDoctrine()->getManager();
 

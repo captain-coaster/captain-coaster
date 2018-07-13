@@ -5,7 +5,6 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Form\Type\ReviewType;
-use BddBundle\Service\RatingService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -54,13 +53,12 @@ class ReviewController extends Controller
      *
      * @param Request $request
      * @param Coaster $coaster
-     * @param RatingService $ratingService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/coasters/{id}/form", name="review_form")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function newAction(Request $request, Coaster $coaster, RatingService $ratingService)
+    public function newAction(Request $request, Coaster $coaster)
     {
         $em = $this->getDoctrine()->getManager();
 

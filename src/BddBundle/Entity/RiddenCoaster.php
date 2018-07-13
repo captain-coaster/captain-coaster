@@ -6,12 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * RiddenCoaster
  *
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})})
  * @ORM\Entity(repositoryClass="BddBundle\Repository\RiddenCoasterRepository")
+ * @UniqueEntity({"coaster", "user"})
  */
 class RiddenCoaster
 {
@@ -43,8 +45,8 @@ class RiddenCoaster
     /**
      * @var float
      *
-     * @ORM\Column(name="rating", type="float", precision=2, scale=1, nullable=false)
-     * @Assert\Choice({0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5})
+     * @ORM\Column(name="rating", type="float", nullable=false)
+     * @Assert\Choice({0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0}, strict=true)
      */
     private $value;
 
@@ -180,11 +182,11 @@ class RiddenCoaster
     /**
      * Set value
      *
-     * @param string $value
+     * @param float $value
      *
      * @return RiddenCoaster
      */
-    public function setValue($value): RiddenCoaster
+    public function setValue(float $value): RiddenCoaster
     {
         $this->value = $value;
 
@@ -194,9 +196,9 @@ class RiddenCoaster
     /**
      * Get value
      *
-     * @return string
+     * @return float
      */
-    public function getValue(): ?string
+    public function getValue(): ?float
     {
         return $this->value;
     }
