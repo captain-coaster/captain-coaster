@@ -42,4 +42,4 @@ security:
             logout_on_user_change: true
 
     access_control:
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/team, roles: ROLE_CONTRIBUTOR }

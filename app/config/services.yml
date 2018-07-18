@@ -61,6 +61,7 @@ services:
     BddBundle\Doctrine\ImageListener:
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preRemove }
 
     BddBundle\Service\DiscordMonologHandler:
         arguments:

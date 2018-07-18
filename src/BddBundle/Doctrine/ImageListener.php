@@ -38,6 +38,16 @@ class ImageListener
     }
 
     /**
+     * @param LifecycleEventArgs $args
+     */
+    public function preRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        $this->removeFile($entity);
+    }
+
+    /**
      * @param $entity
      */
     private function uploadFile($entity)
@@ -54,5 +64,18 @@ class ImageListener
             $fileName = $this->uploader->upload($file);
             $entity->setFilename($fileName);
         }
+    }
+
+    /**
+     * @param $entity
+     */
+    private function removeFile($entity)
+    {
+        // upload only works for Image entities
+        if (!$entity instanceof Image) {
+            return;
+        }
+
+        $this->uploader->remove($entity->getFilename());
     }
 }
