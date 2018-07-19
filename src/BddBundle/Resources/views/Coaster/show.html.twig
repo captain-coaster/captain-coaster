@@ -295,7 +295,7 @@
                     <a style="margin: 10px;" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
                        rel="gallery">
                       <div class="thumb">
-                        <img src="{{ asset(image.path) | imagine_filter('thumb_coaster') }}"
+                        <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
                              alt="">
                       </div>
                     </a>

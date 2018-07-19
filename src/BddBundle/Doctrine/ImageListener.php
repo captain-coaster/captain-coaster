@@ -3,7 +3,7 @@
 namespace BddBundle\Doctrine;
 
 use BddBundle\Entity\Image;
-use BddBundle\Service\ImageUploader;
+use BddBundle\Service\ImageManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -14,17 +14,17 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ImageListener
 {
     /**
-     * @var ImageUploader
+     * @var ImageManager
      */
-    private $uploader;
+    private $imageManager;
 
     /**
      * ImageUploadListener constructor.
-     * @param ImageUploader $uploader
+     * @param ImageManager $imageManager
      */
-    public function __construct(ImageUploader $uploader)
+    public function __construct(ImageManager $imageManager)
     {
-        $this->uploader = $uploader;
+        $this->imageManager = $imageManager;
     }
 
     /**
@@ -61,7 +61,7 @@ class ImageListener
 
         // only upload new files
         if ($file instanceof UploadedFile) {
-            $fileName = $this->uploader->upload($file);
+            $fileName = $this->imageManager->upload($file);
             $entity->setFilename($fileName);
         }
     }
@@ -76,6 +76,6 @@ class ImageListener
             return;
         }
 
-        $this->uploader->remove($entity->getFilename());
+        $this->imageManager->remove($entity->getFilename());
     }
 }

@@ -75,7 +75,7 @@
       <div class="thumbnail">
         <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}">
           <div class="thumb">
-            <img src="{{ asset(image.path) | imagine_filter('random_index') }}"
+            <img src="{{ image.path | imagine_filter('random_index') }}"
                  alt="{{ image.coaster.name }}">
             <div class="caption-overflow"></div>
           </div>

@@ -30,7 +30,7 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    BddBundle\Service\ImageUploader:
+    BddBundle\Service\ImageManager:
         arguments:
             $basePath: '%base_path_images%'
 

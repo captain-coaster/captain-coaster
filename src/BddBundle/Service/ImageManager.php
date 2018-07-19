@@ -6,7 +6,7 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class ImageUploader
+class ImageManager
 {
 
     /**
