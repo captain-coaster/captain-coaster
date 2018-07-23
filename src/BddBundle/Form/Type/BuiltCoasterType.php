@@ -6,8 +6,8 @@ use BddBundle\Entity\BuiltCoaster;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -48,6 +48,7 @@ class BuiltCoasterType extends AbstractType
                 [
                     'class' => 'BddBundle:Restraint',
                     'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('r')
                             ->orderBy('r.name', 'ASC');
@@ -60,6 +61,7 @@ class BuiltCoasterType extends AbstractType
                 [
                     'class' => 'BddBundle:Launch',
                     'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'expanded' => true,
                     'query_builder' => function (EntityRepository $er) {
@@ -82,14 +84,7 @@ class BuiltCoasterType extends AbstractType
                     },
                 ]
             )
-            ->add(
-                'duration',
-                TimeType::class,
-                [
-                    'required' => false,
-                    'with_seconds' => true,
-                ]
-            );
+            ->add('kiddie', CheckboxType::class);
     }
 
     /**

@@ -240,7 +240,7 @@ notif:
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
     ranking:
-        message: 'Ranking of the world''s best coasters just got updated. From this month, kiddie coasters are no longer ranked.'
+        message: 'Ranking of the world''s best coasters just got updated !'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'

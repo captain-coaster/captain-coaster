@@ -357,7 +357,7 @@ class Park
     {
         return $this->getCoasters()->filter(
             function (Coaster $coaster) {
-                return $coaster->getBuiltCoaster()->getIsKiddie() == 1;
+                return $coaster->getBuiltCoaster()->isKiddie() == 1;
             }
         );
     }

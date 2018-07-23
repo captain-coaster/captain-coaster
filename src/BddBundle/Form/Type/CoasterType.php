@@ -63,6 +63,7 @@ class CoasterType extends AbstractType
                 [
                     'class' => 'BddBundle\Entity\Status',
                     'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('s')
                             ->orderBy('s.name', 'ASC');

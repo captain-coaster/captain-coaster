@@ -51,9 +51,9 @@ class RatingCoasterController extends Controller
         );
 
         if (!$rating instanceof RiddenCoaster) {
-        $rating = new RiddenCoaster();
-        $rating->setUser($user);
-        $rating->setCoaster($coaster);
+            $rating = new RiddenCoaster();
+            $rating->setUser($user);
+            $rating->setCoaster($coaster);
         }
 
         $rating->setValue($request->request->get('value'));

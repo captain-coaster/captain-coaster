@@ -105,7 +105,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param Park  $park
+     * @param Park $park
      * @param array $filters
      * @return array
      */
@@ -130,8 +130,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
-     * @param User|null    $user
+     * @param array $filters
+     * @param User|null $user
      */
     private function applyFilters(QueryBuilder $qb, array $filters = [], $user = null)
     {
@@ -155,7 +155,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterManufacturer(QueryBuilder $qb, array $filters = [])
     {
@@ -168,7 +168,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
     {
@@ -179,7 +179,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterScore(QueryBuilder $qb, array $filters = [])
     {
@@ -193,7 +193,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
@@ -215,7 +215,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterByRidden(QueryBuilder $qb, array $filters = [])
     {
@@ -237,7 +237,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
     {
@@ -251,19 +251,18 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterKiddie(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('kiddie', $filters) && $filters['kiddie'] !== '') {
-            $qb
-                ->andWhere('bc.isKiddie = 0');
+            $qb->andWhere('bc.kiddie = 0');
         }
     }
 
     /**
      * @param QueryBuilder $qb
-     * @param array        $filters
+     * @param array $filters
      */
     private function filterName(QueryBuilder $qb, array $filters = [])
     {

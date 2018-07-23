@@ -53,11 +53,6 @@ services:
     Twig\Extensions\IntlExtension:
         tags: [twig.extension]
 
-    BddBundle\Doctrine\BuiltCoasterListener:
-        tags:
-            - { name: doctrine.event_listener, event: prePersist }
-            - { name: doctrine.event_listener, event: preUpdate }
-
     BddBundle\Doctrine\ImageListener:
         tags:
             - { name: doctrine.event_listener, event: prePersist }

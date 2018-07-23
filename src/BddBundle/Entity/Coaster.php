@@ -672,7 +672,7 @@ class Coaster
     public function isRankable(): bool
     {
         return (
-            $this->getBuiltCoaster()->getIsKiddie() === false &&
+            $this->getBuiltCoaster()->isKiddie() === false &&
             ($this->getTotalRatings() + $this->getTotalTopsIn()) >= RankingService::MIN_RATINGS_PLUS_TOPS
         );
     }

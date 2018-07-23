@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -103,20 +104,20 @@ class BuiltCoaster
     private $duration;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(type="boolean", nullable=false)
+     * @ORM\Column(name="is_kiddie", type="boolean", nullable=false)
      */
-    private $isKiddie = false;
+    private $kiddie = false;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->coasters = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->launchs = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->types = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->coasters = new ArrayCollection();
+        $this->launchs = new ArrayCollection();
+        $this->types = new ArrayCollection();
     }
 
     /**
@@ -423,28 +424,22 @@ class BuiltCoaster
         return $this->duration;
     }
 
-
     /**
-     * Set isKiddie
-     *
-     * @param boolean $isKiddie
-     *
+     * @param bool $kiddie
      * @return BuiltCoaster
      */
-    public function setIsKiddie($isKiddie)
+    public function setKiddie(bool $kiddie): BuiltCoaster
     {
-        $this->isKiddie = $isKiddie;
+        $this->kiddie = $kiddie;
 
         return $this;
     }
 
     /**
-     * Get isKiddie
-     *
-     * @return boolean
+     * @return bool
      */
-    public function getIsKiddie()
+    public function isKiddie(): bool
     {
-        return $this->isKiddie;
+        return $this->kiddie;
     }
 }
