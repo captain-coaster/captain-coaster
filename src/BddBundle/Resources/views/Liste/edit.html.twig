@@ -6,138 +6,143 @@
 {% form_theme form _self %}
 
 {% block _liste_listeCoasters_entry_widget %}
-    <li class="media">
-        {{ form_widget(form) }}
+  <li class="media">
+    {{ form_widget(form) }}
 
-        <div class="media-left media-middle" style="cursor: hand;">
-            <i class="icon-three-bars"></i>
-        </div>
-        <div class="media-left media-middle">
-            <span class="position label label-rounded label-primary">
-                {% if form.vars.data is not null %}
-                    {{ form.vars.data.position }}
-                {% endif %}
-            </span>
-        </div>
+    <div class="media-left media-middle" style="cursor: hand;">
+      <i class="icon-three-bars"></i>
+    </div>
+    <div class="media-left media-middle">
+      <span class="position label label-rounded label-primary">
+          {% if form.vars.data is not null %}
+            {{ form.vars.data.position }}
+          {% endif %}
+      </span>
+    </div>
 
-        <div class="media-body">
-            <h4>
-                {{ form.vars.data.coaster.name|default('__coastername__') }}
-            </h4>
-        </div>
+    <div class="media-body">
+      <h4>
+        {{ form.vars.data.coaster.name|default('__coastername__') }}
+        {% if form.vars.data is not null %}
+        -
+        {{ form.vars.data.coaster.park.name|default('') }}
+        ({{ form.vars.data.coaster.userRating(app.user).value }})
+        {% endif %}
+      </h4>
+    </div>
 
-        <div class="media-right media-middle">
-            <a class="remove-line"><i class="icon-cross3"></i></a>
-        </div>
-    </li>
+    <div class="media-right media-middle">
+      <a class="remove-line"><i class="icon-cross3"></i></a>
+    </div>
+  </li>
 {% endblock %}
 
 {% block body %}
-    <div class="panel panel-flat">
-        <select class="js-data-example-ajax"></select>
-    </div>
-    {{ form_start(form) }}
-    <div class="panel panel-flat">
-        <div class="panel-heading">
+  <div class="panel panel-flat">
+    <select class="js-data-example-ajax"></select>
+  </div>
+  {{ form_start(form) }}
+  <div class="panel panel-flat">
+    <div class="panel-heading">
             <span class="panel-title">
                 {{ 'liste.info'|trans }}
             </span>
-        </div>
-        <div class="panel-body">
-            <ul id="liste-coaster"
-                data-prototype="{{ form_widget(form.listeCoasters.vars.prototype)|e('html_attr') }}"
-                class="media-list media-list-container ui-sortable">
-                {% for coaster in form.listeCoasters %}
-                    {{ form_widget(coaster) }}
-                {% endfor %}
-            </ul>
-        </div>
     </div>
-    <button type="submit" class="btn bg-teal-400 btn-labeled pull-right">
-        <b><i class="icon-pencil3"></i></b> {{ 'liste.save'|trans }}
-    </button>
-    {{ form_rest(form) }}
-    {{ form_end(form) }}
+    <div class="panel-body">
+      <ul id="liste-coaster"
+          data-prototype="{{ form_widget(form.listeCoasters.vars.prototype)|e('html_attr') }}"
+          class="media-list media-list-container ui-sortable">
+        {% for coaster in form.listeCoasters %}
+          {{ form_widget(coaster) }}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <button type="submit" class="btn bg-teal-400 btn-labeled pull-right">
+    <b><i class="icon-pencil3"></i></b> {{ 'liste.save'|trans }}
+  </button>
+  {{ form_rest(form) }}
+  {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
-    <script type="text/javascript">
-        var $collectionHolder;
+  <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
+  <script type="text/javascript">
+      var $collectionHolder;
 
-        jQuery(document).ready(function () {
-            // Get the ul that holds the collection of tags
-            $collectionHolder = $('ul#liste-coaster');
-            $collectionHolder.data('index', $collectionHolder.find('li').length);
+      jQuery(document).ready(function () {
+          // Get the ul that holds the collection of tags
+          $collectionHolder = $('ul#liste-coaster');
+          $collectionHolder.data('index', $collectionHolder.find('li').length);
 
-            $(".ui-sortable").sortable({
-                update: function (event, ui) {
-                    updatePosition();
-                }
-            });
-        });
+          $(".ui-sortable").sortable({
+              update: function (event, ui) {
+                  updatePosition();
+              }
+          });
+      });
 
-        function addTagForm($collectionHolder, data) {
-            var prototype = $collectionHolder.data('prototype');
-            var index = $collectionHolder.data('index');
-            var newForm = prototype.replace(/__name__/g, index);
-            newForm = newForm.replace(/__coastername__/g, data.text);
-            $collectionHolder.data('index', index + 1);
-            $collectionHolder.append(newForm);
+      function addTagForm($collectionHolder, data) {
+          var prototype = $collectionHolder.data('prototype');
+          var index = $collectionHolder.data('index');
+          var newForm = prototype.replace(/__name__/g, index);
+          newForm = newForm.replace(/__coastername__/g, data.text);
+          $collectionHolder.data('index', index + 1);
+          $collectionHolder.append(newForm);
 
-            $("#liste_listeCoasters_" + index + "_coaster").val(data.id);
+          $("#liste_listeCoasters_" + index + "_coaster").val(data.id);
 
-            updatePosition();
-        }
+          updatePosition();
+      }
 
-        $(".remove-line").on('click', function (e) {
-            $(this).closest('li').remove();
-            updatePosition();
-        });
+      $(".remove-line").on('click', function (e) {
+          $(this).closest('li').remove();
+          updatePosition();
+      });
 
-        function updatePosition() {
-            $("input[id$='position']").each(function (i) {
-                i++;
-                $(this).val(i);
-            });
-            $("span.position").each(function (i) {
-                i++;
-                $(this).html(i);
-            });
-        }
+      function updatePosition() {
+          $("input[id$='position']").each(function (i) {
+              i++;
+              $(this).val(i);
+          });
+          $("span.position").each(function (i) {
+              i++;
+              $(this).html(i);
+          });
+      }
 
-        var urlSearch = Routing.generate('coaster_search_json', {'_locale': '{{ app.request.locale }}'});
-        $("select").select2({
-            ajax: {
-                url: urlSearch,
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        q: params.term,
-                        page: params.page
-                    };
-                },
-                processResults: function (data) {
-                    return {
-                        results: $.map(data.items, function (item) {
-                            return {
-                                text: item.coaster + ' - ' + item.park,
-                                id: item.id
-                            }
-                        })
-                    };
-                },
-                cache: true,
-            },
-            minimumInputLength: 2,
-            placeholder: "{{ 'liste.find'|trans }}"
-        });
+      var urlSearch = Routing.generate('coaster_search_json', {'_locale': '{{ app.request.locale }}'});
+      $("select").select2({
+          ajax: {
+              url: urlSearch,
+              dataType: 'json',
+              delay: 250,
+              data: function (params) {
+                  return {
+                      q: params.term,
+                      page: params.page
+                  };
+              },
+              processResults: function (data) {
+                  return {
+                      results: $.map(data.items, function (item) {
+                          return {
+                              text: item.coaster + ' - ' + item.park,
+                              id: item.id
+                          }
+                      })
+                  };
+              },
+              cache: true,
+          },
+          minimumInputLength: 2,
+          placeholder: "{{ 'liste.find'|trans }}"
+      });
 
-        jQuery("select").on("select2:select", function (evt) {
-            addTagForm($collectionHolder, evt.params.data);
-        });
-    </script>
-    <script type="text/javascript" src="{{ asset('js/plugins/touch-punch/jquery.ui.touch-punch.min.js') }}"></script>
+      jQuery("select").on("select2:select", function (evt) {
+          addTagForm($collectionHolder, evt.params.data);
+      });
+  </script>
+  <script type="text/javascript" src="{{ asset('js/plugins/touch-punch/jquery.ui.touch-punch.min.js') }}"></script>
 {% endblock %}

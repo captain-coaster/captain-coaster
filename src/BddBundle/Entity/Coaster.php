@@ -122,7 +122,7 @@ class Coaster
     /**
      * @var Park
      *
-     * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters")
+     * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $park;

@@ -2,6 +2,7 @@
 
 namespace BddBundle\Repository;
 
+use BddBundle\Entity\Liste;
 use BddBundle\Entity\User;
 use Doctrine\ORM\NonUniqueResultException;
 
@@ -86,5 +87,31 @@ class ListeRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('l.updatedAt', 'desc')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param Liste $liste
+     * @return mixed
+     * @throws NonUniqueResultException
+     * @throws \Doctrine\ORM\NoResultException
+     */
+    public function getListeWithData(Liste $liste)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('l', 'lc', 'c', 'i', 'bc', 'm', 'p', 'co', 't')
+            ->from('BddBundle:Liste', 'l')
+            ->join('l.listeCoasters', 'lc')
+            ->join('lc.coaster', 'c')
+            ->join('c.builtCoaster', 'bc')
+            ->join('c.images', 'i')
+            ->join('c.park', 'p')
+            ->join('p.country', 'co')
+            ->join('bc.manufacturer', 'm')
+            ->join('bc.types', 't')
+            ->where('l = :liste')
+            ->setParameter('liste', $liste)
+            ->getQuery()
+            ->getSingleResult();
     }
 }
