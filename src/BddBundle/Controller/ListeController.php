@@ -7,6 +7,7 @@ use BddBundle\Form\Type\ListeCustomType;
 use BddBundle\Form\Type\ListeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NoResultException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -247,14 +248,17 @@ class ListeController extends Controller
      * @param Liste $liste
      * @param EntityManagerInterface $em
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @Route("/{id}", name="liste_show")
      * @Method({"GET"})
      */
     public function showAction(Liste $liste, EntityManagerInterface $em)
     {
-        $liste = $em->getRepository('BddBundle:Liste')->getListeWithData($liste);
+        try {
+            $liste = $em->getRepository('BddBundle:Liste')->getListeWithData($liste);
+        } catch (NoResultException $e) {
+            // if we cannot get Liste with all data, $liste is still defined
+        }
 
         return $this->render(
             'BddBundle:Liste:show.html.twig',
