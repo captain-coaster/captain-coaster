@@ -59,10 +59,9 @@ class ImageGenerateCacheCommand extends ContainerAwareCommand
             );
 
             $greetInput = new ArrayInput($arguments);
-            $returnCode = $command->run($greetInput, $output);
+            $command->run($greetInput, $output);
 
-            sleep(2);
-            break;
+            sleep(5);
         }
 
         $output->writeln('End of command.');
