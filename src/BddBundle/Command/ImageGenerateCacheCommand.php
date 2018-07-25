@@ -55,18 +55,18 @@ class ImageGenerateCacheCommand extends ContainerAwareCommand
             $path = $image->getPath();
             $arguments = array(
                 'command' => 'liip:imagine:cache:resolve',
-                'paths' => $path,
+                'paths' => [$path],
             );
 
             $greetInput = new ArrayInput($arguments);
             $returnCode = $command->run($greetInput, $output);
 
-            // testings
+            sleep(2);
             break;
         }
 
         $output->writeln('End of command.');
-        $event = $stopwatch->stop('badge');
+        $event = $stopwatch->stop('cache-image');
         $output->writeln(($event->getDuration() / 1000).' s');
         $output->writeln(($event->getMemory() / 1000 / 1000).' mo');
     }

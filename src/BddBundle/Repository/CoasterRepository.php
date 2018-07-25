@@ -4,6 +4,7 @@ namespace BddBundle\Repository;
 
 use BddBundle\Entity\Park;
 use BddBundle\Entity\User;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 
@@ -29,17 +30,21 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * @param string $term
+     * @param User $user
      * @return array
      */
-    public function searchByName(string $term)
+    public function suggestCoasterForListe(string $term, User $user)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('c.id', 'c.name as coaster', 'p.name as park')
+            ->select('c.id', 'c.name as coaster', 'p.name as park', 'r.value as rating')
             ->from('BddBundle:Coaster', 'c')
             ->join('c.park', 'p')
+            ->leftJoin('c.ratings', 'r', Expr\Join::WITH, 'r.user = :user')
             ->where('c.name LIKE :term')
             ->setParameter('term', sprintf('%%%s%%', $term))
+            ->setParameter('user', $user)
+            ->setMaxResults(15)
             ->getQuery()
             ->getResult();
     }

@@ -128,7 +128,7 @@
                   return {
                       results: $.map(data.items, function (item) {
                           return {
-                              text: item.coaster + ' - ' + item.park,
+                              text: item.coaster + ' - ' + item.park + ' (' + (item.rating || 'N/A') + ')',
                               id: item.id
                           }
                       })

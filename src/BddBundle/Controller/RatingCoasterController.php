@@ -35,6 +35,7 @@ class RatingCoasterController extends Controller
      *     condition="request.isXmlHttpRequest()"
      * )
      * @Method({"POST"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function editAction(
         Request $request,
@@ -75,6 +76,7 @@ class RatingCoasterController extends Controller
      *
      * @param Coaster $coaster
      * @return JsonResponse
+     * 
      * @Route(
      *     "/ratings/coasters/{id}",
      *     name="rating_delete",

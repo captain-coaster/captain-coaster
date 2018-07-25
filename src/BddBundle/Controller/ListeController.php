@@ -3,6 +3,7 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Entity\Liste;
+use BddBundle\Entity\User;
 use BddBundle\Form\Type\ListeCustomType;
 use BddBundle\Form\Type\ListeType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -13,6 +14,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -26,11 +28,11 @@ class ListeController extends Controller
     /**
      * Displays all lists
      *
-     * @Route("/", name="liste_list")
-     * @Method({"GET"})
-     *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/", name="liste_list")
+     * @Method({"GET"})
      */
     public function listAction(Request $request)
     {
@@ -56,12 +58,12 @@ class ListeController extends Controller
     /**
      * Creates a new custom list
      *
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
      * @Route("/new", name="liste_new")
      * @Method({"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(Request $request)
     {
@@ -93,13 +95,13 @@ class ListeController extends Controller
     /**
      * Edits details of a list (name...)
      *
-     * @Route("/{id}/edit-details", name="liste_edit_details")
-     * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
-     *
      * @param Request $request
      * @param Liste $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/{id}/edit-details", name="liste_edit_details")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function editDetailsAction(Request $request, Liste $liste)
     {
@@ -132,7 +134,8 @@ class ListeController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/create", name="liste_create")
-     * @Method({"GET"})
+     * @Method({"GET"}).
+     * @Security("is_granted('ROLE_USER')")
      */
     public function createAction()
     {
@@ -152,13 +155,13 @@ class ListeController extends Controller
     /**
      * Edits a list
      *
-     * @Route("/{id}/edit", name="liste_edit")
-     * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
-     *
      * @param Request $request
      * @param Liste $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/{id}/edit", name="liste_edit")
+     * @Method({"GET", "POST"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function editAction(Request $request, Liste $liste)
     {
@@ -205,6 +208,7 @@ class ListeController extends Controller
      *
      * @Route("/me", name="liste_me")
      * @Method({"GET"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function mainListAction()
     {
@@ -230,6 +234,7 @@ class ListeController extends Controller
      *
      * @Route("/{id}/delete", name="liste_delete")
      * @Method({"GET"})
+     * @Security("is_granted('ROLE_USER')")
      */
     public function deleteAction(Liste $liste)
     {
@@ -249,6 +254,7 @@ class ListeController extends Controller
      * @param EntityManagerInterface $em
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NonUniqueResultException
+     *
      * @Route("/{id}", name="liste_show")
      * @Method({"GET"})
      */
@@ -264,6 +270,38 @@ class ListeController extends Controller
             'BddBundle:Liste:show.html.twig',
             [
                 'liste' => $liste,
+            ]
+        );
+    }
+
+    /**
+     * Ajax route for autocomplete search (search "q" parameter)
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return JsonResponse
+     *
+     * @Route(
+     *     "/search/coasters.json",
+     *     name="coaster_search_json",
+     *     options = {"expose" = true},
+     *     condition="request.isXmlHttpRequest()"
+     * )
+     * @Method({"GET"})
+     * @Security("is_granted('ROLE_USER')")
+     */
+    public function ajaxSearchAction(Request $request, EntityManagerInterface $em)
+    {
+        if (!$request->get("q")) {
+            return new JsonResponse([]);
+        }
+
+        return new JsonResponse(
+            [
+                "items" => $em->getRepository('BddBundle:Coaster')->suggestCoasterForListe(
+                    $request->get("q"),
+                    $this->getUser()
+                ),
             ]
         );
     }
