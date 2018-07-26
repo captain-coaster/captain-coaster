@@ -35,7 +35,7 @@ class UniqueCoasterValidator extends ConstraintValidator
 
             if (in_array($element->getCoaster(), $collectionElements, true)) {
                 $this->context->buildViolation($constraint->message)
-                    ->setParameter('{{ coaster }}', $this->formatValue($element->getCoaster(), 2))
+                    ->setParameter('%coaster%', $this->formatValue($element->getCoaster(), 2))
                     ->addViolation();
 
                 return;

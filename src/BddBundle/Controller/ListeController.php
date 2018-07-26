@@ -186,6 +186,8 @@ class ListeController extends Controller
                 }
             }
 
+            // need to update manually because only ListeCoaster changes
+            $liste->setUpdatedAt(new \DateTime());
             $em->persist($liste);
             $em->flush();
 

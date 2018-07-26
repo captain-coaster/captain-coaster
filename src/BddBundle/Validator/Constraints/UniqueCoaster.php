@@ -9,5 +9,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueCoaster extends Constraint
 {
-    public $message = '"{{ coaster }}" appears several times. Please remove duplicates.';
+    public $message = 'liste_coaster.duplicate';
 }
