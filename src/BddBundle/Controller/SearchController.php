@@ -57,6 +57,12 @@ class SearchController extends Controller
     }
 
     /**
+     * All data for main search service
+     *
+     * @param SearchService $searchService
+     * @return JsonResponse
+     * @throws \Psr\Cache\InvalidArgumentException
+     *
      * @Route(
      *     "/main.json",
      *     name="ajax_main_search",
@@ -64,8 +70,6 @@ class SearchController extends Controller
      *     condition="request.isXmlHttpRequest()"
      * )
      * @Method({"GET"})
-     * @param SearchService $searchService
-     * @return JsonResponse
      */
     public function ajaxMainSearch(SearchService $searchService)
     {
@@ -78,7 +82,11 @@ class SearchController extends Controller
             $cache->save($searchItems);
         }
 
-        return new JsonResponse($searchItems->get());
+        $response = new JsonResponse($searchItems->get());
+        $response->setMaxAge('3600');
+        $response->setPublic();
+
+        return $response;
     }
 
     /**

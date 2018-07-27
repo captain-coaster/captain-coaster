@@ -3,12 +3,24 @@
 namespace BddBundle\Security\Core\User;
 
 use BddBundle\Entity\User;
+use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CustomUserProvider extends BaseClass
 {
+    private $validator;
+
+    public function __construct(UserManagerInterface $userManager, array $properties, ValidatorInterface $validator)
+    {
+        parent::__construct($userManager, $properties);
+
+        $this->validator = $validator;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -84,6 +96,14 @@ class CustomUserProvider extends BaseClass
 
         $user->setPassword($identifier);
         $user->setProfilePicture($response->getProfilePicture());
+
+        $errors = $this->validator->validate($user);
+
+        if (count($errors) > 0) {
+            throw new CustomUserMessageAuthenticationException(
+                "Your $service username cannot be empty. Please update your $service profile, and try again."
+            );
+        }
 
         $this->userManager->updateUser($user);
 

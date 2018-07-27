@@ -48,7 +48,10 @@ services:
 
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
-        arguments: ['@fos_user.user_manager', {facebook: facebookId, google: googleId}]
+        arguments:
+            $userManager: '@fos_user.user_manager'
+            $properties: {facebook: facebookId, google: googleId}
+            $validator: '@validator'
 
     Twig\Extensions\IntlExtension:
         tags: [twig.extension]
