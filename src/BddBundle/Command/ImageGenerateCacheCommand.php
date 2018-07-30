@@ -48,7 +48,7 @@ class ImageGenerateCacheCommand extends ContainerAwareCommand
         $stopwatch->start('cache-image');
         $output->writeln('Start generating cache');
 
-        $images = $this->em->getRepository('BddBundle:Image')->findAll();
+        $images = $this->em->getRepository('BddBundle:Image')->findBy([], ['updatedAt' => 'desc']);
         $command = $this->getApplication()->find('liip:imagine:cache:resolve');
 
         foreach ($images as $image) {
@@ -60,8 +60,7 @@ class ImageGenerateCacheCommand extends ContainerAwareCommand
 
             $greetInput = new ArrayInput($arguments);
             $command->run($greetInput, $output);
-
-            sleep(5);
+            sleep(2);
         }
 
         $output->writeln('End of command.');

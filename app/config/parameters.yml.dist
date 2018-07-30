@@ -30,6 +30,8 @@ parameters:
     # Images
     base_path_images: '/Users/florian/Sites/backup/cw-legacy/photo'
     base_upload_path: '%kernel.project_dir%/web/upload'
+    watermark_path: '%kernel.project_dir%/web/images/watermark-cc.png'
+    jpegoptim_path: '/usr/local/bin/jpegoptim'
 
     # Banner
     banner_font_path: '%kernel.project_dir%/web/fonts/OpenSans-Regular.ttf'

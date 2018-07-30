@@ -38,9 +38,8 @@
       <li class="media panel panel-body stack-media-on-mobile">
         <div class="media-left">
           <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-            {% if coaster.images|length > 0 %}
-              {% set image = random(coaster.images) %}
-              <img src="{{ image.path | imagine_filter('coaster_ranking') }}"
+            {% if coaster.mainImage is not null %}
+              <img src="{{ coaster.mainImage.path | imagine_filter('coaster_ranking') }}"
                    class="img-rounded"
                    style="width:96px;"
                    alt="{{ coaster.name }}">

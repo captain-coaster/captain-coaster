@@ -4,6 +4,7 @@ namespace BddBundle\Entity;
 
 use BddBundle\Service\RankingService;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -205,9 +206,16 @@ class Coaster
      * @var Image
      *
      * @ORM\OneToMany(targetEntity="Image", mappedBy="coaster")
-     * @ORM\OrderBy({"updatedAt" = "DESC"})
      */
     private $images;
+
+    /**
+     * @var Image
+     *
+     * @ORM\OneToOne(targetEntity="Image", fetch="EAGER")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     */
+    private $mainImage;
 
     /**
      * Constructor
@@ -829,6 +837,29 @@ class Coaster
      */
     public function getImages()
     {
-        return $this->images;
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('enabled', true))
+            ->orderBy(['updatedAt' => Criteria::DESC]);
+
+        return $this->images->matching($criteria);
+    }
+
+    /**
+     * @param Image $mainImage
+     * @return Coaster
+     */
+    public function setMainImage(Image $mainImage): Coaster
+    {
+        $this->mainImage = $mainImage;
+
+        return $this;
+    }
+
+    /**
+     * @return Image
+     */
+    public function getMainImage(): ?Image
+    {
+        return $this->mainImage;
     }
 }

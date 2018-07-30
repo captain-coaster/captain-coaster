@@ -12,7 +12,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -124,6 +123,8 @@ class CoasterController extends Controller
     {
         $image = new Image();
         $image->setCoaster($coaster);
+        $image->setWatermark('cc');
+        $image->setCredit($this->getUser()->getDisplayName());
 
         /** @var Form $form */
         $form = $this->createForm(ImageUploadType::class, $image);

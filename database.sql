@@ -1,3 +1,9 @@
+update coaster c
+inner join
+( select id, coaster_id from image i where enabled = 1 order by updated_at desc, id desc ) as i2 on i2.coaster_id = c.id
+set c.main_image_id = i2.id;
+
+
 ALTER TABLE liste ADD main TINYINT(1) NOT NULL;
 update liste set `main` = 1, `type` = 'main';
 

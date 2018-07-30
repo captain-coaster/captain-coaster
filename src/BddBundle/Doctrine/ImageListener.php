@@ -48,6 +48,17 @@ class ImageListener
     }
 
     /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+
+        // @todo faire mieux
+        $this->imageManager->setMainImages();
+    }
+
+    /**
      * @param $entity
      */
     private function uploadFile($entity)

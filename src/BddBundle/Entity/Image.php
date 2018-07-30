@@ -50,7 +50,21 @@ class Image
      *
      * @ORM\Column(type="boolean")
      */
-    private $enabled = true;
+    private $enabled = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=2, unique=false, nullable=true)
+     */
+    private $watermark;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, unique=false, nullable=true)
+     */
+    private $credit;
 
     /**
      * @var \DateTime $createdAt
@@ -69,7 +83,10 @@ class Image
     private $updatedAt;
 
     /**
-     * @Assert\File(mimeTypes={"image/jpeg"})
+     * @Assert\File(
+     *     mimeTypes = {"image/jpeg"},
+     *     maxSize = "5M"
+     * )
      */
     private $file;
 
@@ -220,5 +237,43 @@ class Image
     public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @param null|string $watermark
+     * @return Image
+     */
+    public function setWatermark(?string $watermark): Image
+    {
+        $this->watermark = $watermark;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getWatermark(): ?string
+    {
+        return $this->watermark;
+    }
+
+    /**
+     * @param null|string $credit
+     * @return Image
+     */
+    public function setCredit(?string $credit): Image
+    {
+        $this->credit = $credit;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getCredit(): ?string
+    {
+        return $this->credit;
     }
 }
