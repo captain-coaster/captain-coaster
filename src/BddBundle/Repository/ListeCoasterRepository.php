@@ -66,6 +66,8 @@ class ListeCoasterRepository extends EntityRepository
             JOIN (
                 SELECT lc.coaster_id AS id, COUNT(1) AS nb
                 FROM liste_coaster lc
+                JOIN liste l ON l.id = lc.liste_id
+                WHERE l.main = 1
                 GROUP BY lc.coaster_id
             ) c2
             ON c2.id = c.id

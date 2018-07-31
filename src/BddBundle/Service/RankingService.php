@@ -16,7 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class RankingService
 {
     // Total ratings + tops for a coaster
-    CONST MIN_RATINGS_PLUS_TOPS = 4;
+    CONST MIN_RATINGS_PLUS_TOPS = 7;
     // Minimum comparison number between coaster A and B
     CONST MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of
