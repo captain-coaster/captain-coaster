@@ -15,10 +15,12 @@
     <div class="panel-heading has-visible-elements">
       <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans }}</h6>
       <div class="heading-elements visible-elements">
-        <span class="heading-text">
-          <i class="icon-history text-warning position-left"></i>
-          {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
-        </span>
+        {% if nextRankingDate %}
+          <span class="heading-text">
+            <i class="icon-history text-warning position-left"></i>
+            {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
+          </span>
+        {% endif %}
       </div>
     </div>
     <div class="panel-body text-center">
