@@ -8,7 +8,7 @@ app:
     title:
         default: 'Welcome !'
     header:
-        search: 'Cedar Point, Tatsu...'
+        search: 'Kings Dominion, Wicker Man...'
 
 index:
     title: 'Welcome !'
@@ -64,10 +64,12 @@ coaster_ranking:
     rating_number: '1 rating|%count% ratings'
     top_number: '1 top|%count% tops'
     info:
-        title: 'Join the ranking!'
-        desc: 'The ranking of world''s best coasters takes into account every ratings and tops from each user. <a href="%link_path%">Sign in</a> and start rating coasters now to be part of it. The more you rate coasters, the more you weigh on the ranking!'
-        next:  'Next update %date%.'
-        stats: 'This month, the roller coaster ranking was built from %ratings% ratings and %tops% Top Coasters, created by %users% users. From all this, the algorithm analyzed %comparisons% comparisons between coasters to rank %coasters% of them.'
+        title: 'What is this ranking made of'
+        next:  'Next update %date%'
+        coasters_ranked: 'ranked coasters'
+        ratings: 'ratings'
+        comparisons: 'analyzed comparisons'
+        in_tops: 'coasters in Tops'
 
 map_index:
     title: 'Coasters Map'

@@ -64,10 +64,12 @@ coaster_ranking:
     rating_number: '1 note|%count% notes'
     top_number: '1 top|%count% tops'
     info:
-        title: 'Participe au classement !'
-        desc: 'Le classement des meilleurs coasters prend en compte les notes et les tops de tous les utilisateurs. <a href="%link_path%">Connecte toi</a> et commence à noter des coasters pour y participer. Plus tu as de notes et plus ton avis va peser dans le classement !'
-        next: 'Prochaine mise à jour %date%.'
-        stats: 'Ce mois-ci, le classement des meilleurs coasters du monde a été construit à partir des %ratings% notes et %tops% Top Coasters créés par %users% utilisateurs. A partir de cela, l''algortihme a analysé %comparisons% comparaisons entre coasters pour en classer %coasters%.'
+        title: 'Ce qui a fait le classement ce mois-ci'
+        next: 'Prochaine mise à jour %date%'
+        coasters_ranked: 'coasters classés'
+        ratings: 'notes'
+        comparisons: 'comparaisons analysées'
+        in_tops: 'coasters dans les Tops'
 
 map_index:
     title: 'Carte des coasters'

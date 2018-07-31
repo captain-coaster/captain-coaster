@@ -2,6 +2,7 @@
 
 namespace BddBundle\Command;
 
+use BddBundle\Entity\Coaster;
 use BddBundle\Service\RankingService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -70,36 +71,28 @@ class RankingCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param array $coaster
+     * @param Coaster $coaster
      * @return string
      */
-    private function formatMessage(array $coaster): string
+    private function formatMessage(Coaster $coaster): string
     {
-        if (is_null($coaster[2])) {
-            $message = sprintf(
-                '%s-%s (<error>new</error>) %s updated.',
-                $coaster[1],
-                $coaster[0],
-                $coaster[3]
-            );
-        } elseif (abs($coaster[1] - $coaster[2]) > 0.1 * $coaster[2]) {
-            $message = sprintf(
-                '%s-%s (<error>%s</error>) %s updated.',
-                $coaster[1],
-                $coaster[0],
-                $coaster[2],
-                $coaster[3]
-            );
-        } else {
-            $message = sprintf(
-                '%s-%s (%s) %s updated.',
-                $coaster[1],
-                $coaster[0],
-                $coaster[2],
-                $coaster[3]
-            );
+        $format = '[%s] %s - %s (%s) %s updated.';
+
+        if (is_null($coaster->getPreviousRank())) {
+            $format = '[%s] <error>%s</error> - %s (%s) %s updated.';
+        } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.25 * $coaster->getPreviousRank()) {
+            $format = '[%s] <comment>%s</comment> - %s (%s) %s updated.';
+        } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.1 * $coaster->getPreviousRank()) {
+            $format = '[%s] <info>%s</info> - %s (%s) %s updated.';
         }
 
-        return $message;
+        return sprintf(
+            $format,
+            $coaster->getRank(),
+            $coaster->getName(),
+            $coaster->getPark()->getName(),
+            $coaster->getPreviousRank() ?? 'new',
+            number_format($coaster->getScore(), 2)
+        );
     }
 }

@@ -11,26 +11,49 @@
 {% endblock %}
 
 {% block body %}
-  <!-- info alert -->
-  <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-    <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
-    <h6 class="alert-heading text-semibold">{{ 'coaster_ranking.info.title'|trans }}</h6>
-    <p>
-      {% if ranking %}
-      {{ 'coaster_ranking.info.stats'|trans(
-        {
-          '%ratings%': ranking.ratingNumber,
-          '%tops%': ranking.topNumber,
-          '%users%': ranking.userNumber,
-          '%comparisons%': ranking.comparisonNumber,
-          '%coasters%': ranking.rankedCoasterNumber
-        }
-      ) }}
-      {% else %}
-        {{ 'coaster_ranking.info.desc'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
-      {% endif %}
-      {% if nextRankingDate %}{{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}{% endif %}
-    </p>
+  <div class="panel panel-flat">
+    <div class="panel-heading has-visible-elements">
+      <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans }}</h6>
+      <div class="heading-elements visible-elements">
+        <span class="heading-text">
+          <i class="icon-history text-warning position-left"></i>
+          {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
+        </span>
+      </div>
+    </div>
+    <div class="panel-body text-center">
+      <div class="col-xs-3">
+        <div class="content-group">
+          <h6 class="text-semibold no-margin">
+            <i class="icon-comments position-left text-slate"></i>&nbsp;{{ ranking.rankedCoasterNumber }}&nbsp;
+          </h6>
+          <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked'|trans }}</span>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="content-group">
+          <h6 class="text-semibold no-margin">
+            <i class="icon-stars position-left text-slate"></i> {{ ranking.ratingNumber|shortNum }}
+          </h6>
+          <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.ratings'|trans }}</span>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="content-group">
+          <h6 class="text-semibold no-margin">
+            <i class="icon-podium position-left text-slate"></i> {{ ranking.coasterInTopNumber|shortNum }}
+          </h6>
+          <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.in_tops'|trans }}</span>
+        </div>
+      </div>
+      <div class="col-xs-3">
+        <div class="content-group">
+          <h6 class="text-semibold no-margin"><i
+                class="icon-git-compare position-left text-slate"></i> {{ ranking.comparisonNumber|shortNum }}</h6>
+          <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.comparisons'|trans }}</span>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- /info alert -->
   <ul class="media-list content-group">
