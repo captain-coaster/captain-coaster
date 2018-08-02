@@ -228,7 +228,10 @@ class ImageManager
         $watermark = $this->imagine->open($this->watermarkPath);
         $fullPath = $this->getFullPath($image->getFilename(), true);
         $file = $this->imagine->open($fullPath);
+        // do a backup before watermarking
+        $file->save($this->getFullBackupPath($image->getFilename(), true));
 
+        $file = $this->imagine->open($fullPath);
         $size = $file->getSize();
         $wSize = $watermark->getSize();
 
@@ -274,6 +277,26 @@ class ImageManager
     private function getFullPath(string $filename, bool $includeFilename = false): string
     {
         $path = sprintf('%s/%s', $this->basePath, substr($filename, 0, 1));
+
+        if ($includeFilename) {
+            return sprintf('%s/%s', $path, $filename);
+        }
+
+        return $path;
+    }
+
+    /**
+     * Get full backup path like /var/www/image/8f52b371-1c2d-4a08-95f7-48cff34a1fc6.jpeg
+     *
+     * @param string $filename
+     * @param bool $includeFilename
+     * @return string
+     *
+     * @todo faire mieux
+     */
+    private function getFullBackupPath(string $filename, bool $includeFilename = false): string
+    {
+        $path = sprintf('%s/backup/%s', $this->basePath, substr($filename, 0, 1));
 
         if ($includeFilename) {
             return sprintf('%s/%s', $path, $filename);
