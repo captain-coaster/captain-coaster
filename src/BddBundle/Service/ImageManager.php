@@ -5,12 +5,13 @@ namespace BddBundle\Service;
 use BddBundle\Entity\Image;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Imagine\Filter\Basic\Autorotate;
 use Imagine\Filter\Basic\Resize;
 use Imagine\Filter\Transformation;
-use Imagine\Imagick\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Metadata\ExifMetadataReader;
 use Imagine\Image\Point;
+use Imagine\Imagick\Imagine;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -193,7 +194,7 @@ class ImageManager
         $file = $this->imagine->setMetadataReader(new ExifMetadataReader())->open($fullPath);
 
         $transformation = new Transformation();
-        $transformation->add(new \Imagine\Filter\Basic\Autorotate());
+        $transformation->add(new Autorotate());
 
         $height = $file->getSize()->getHeight();
         $width = $file->getSize()->getWidth();
@@ -210,7 +211,7 @@ class ImageManager
             $transformation->add(new Resize($box));
         }
 
-        $transformation->apply($file)->save($fullPath);
+        $transformation->apply($file)->save($fullPath, ['jpeg_quality' => 100]);
 
         return true;
     }
@@ -229,7 +230,7 @@ class ImageManager
         $fullPath = $this->getFullPath($image->getFilename(), true);
         $file = $this->imagine->open($fullPath);
         // do a backup before watermarking
-        $file->save($this->getFullBackupPath($image->getFilename(), true));
+        $file->save($this->getFullBackupPath($image->getFilename(), true), ['jpeg_quality' => 100]);
 
         $file = $this->imagine->open($fullPath);
         $size = $file->getSize();
@@ -238,7 +239,7 @@ class ImageManager
         $bottomLeft = new Point(30, $size->getHeight() - $wSize->getHeight() - 30);
 
         $file->paste($watermark, $bottomLeft);
-        $file->save($fullPath);
+        $file->save($fullPath, ['jpeg_quality' => 100]);
 
         return true;
     }
