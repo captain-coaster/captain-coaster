@@ -21,6 +21,7 @@ class ImageRepository extends EntityRepository
             ->select('i')
             ->from('BddBundle:Image', 'i')
             ->where('i.enabled = 1')
+            ->andWhere('i.credit is not null')
             ->orderBy('i.updatedAt', 'DESC')
             ->setMaxResults(1)
             ->getQuery()

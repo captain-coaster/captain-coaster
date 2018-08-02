@@ -7,7 +7,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Imagine\Filter\Basic\Resize;
 use Imagine\Filter\Transformation;
-use Imagine\Gd\Imagine;
+use Imagine\Imagick\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\Metadata\ExifMetadataReader;
 use Imagine\Image\Point;

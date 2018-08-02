@@ -35,7 +35,9 @@ class DefaultController extends Controller
      * @param Request $request
      * @param StatService $statService
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      * @Route("/", name="bdd_index")
      * @Method({"GET"})
      */
