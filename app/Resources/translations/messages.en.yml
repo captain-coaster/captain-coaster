@@ -252,6 +252,9 @@ notif:
 search_index:
     title: 'Search a coaster'
 
+image:
+    credit: 'Credit: %name%'
+
 badge:
     rating1: '1st rating'
     rating100: '100th rating'

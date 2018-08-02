@@ -87,11 +87,7 @@
               {{ image.coaster.name }}
             </a>
           </h5>
-          <p class="text-muted mb-15 mt-5">
-            <a class="text-muted" href="{{ path('park_show', {'slug': image.coaster.park.slug}) }}">
-              {{ image.coaster.park.name }}
-            </a>
-          </p>
+          <p class="text-muted mb-15 mt-5">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
         </div>
       </div>
       <!-- /thumbnail with image and button -->

@@ -2,11 +2,10 @@
 
 namespace BddBundle\Command;
 
-use BddBundle\Entity\Image;
 use BddBundle\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
@@ -25,6 +24,7 @@ class ImageProcessCommand extends ContainerAwareCommand
 
     /**
      * ImageGenerateCacheCommand constructor.
+     *
      * @param EntityManagerInterface $em
      * @param ImageManager $imageManager
      */
@@ -39,8 +39,7 @@ class ImageProcessCommand extends ContainerAwareCommand
     {
         $this
             ->setName('image:process')
-            ->setDescription('Process an image after upload.')
-            ->addArgument('image-id', InputArgument::OPTIONAL, 'ID of image');
+            ->setDescription('Process an image after upload (autorotate, resize, watermark, optimize).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -49,41 +48,41 @@ class ImageProcessCommand extends ContainerAwareCommand
         $stopwatch->start('process-image');
         $output->writeln('Start processing image');
 
-//        $argument = $input->getArgument('argument');
-
-        $image = $this->em->getRepository('BddBundle:Image')->findOneBy(
-            ['enabled' => false, 'optimized' => false],
-            ['updatedAt' => 'asc']
+        $images = $this->em->getRepository('BddBundle:Image')->findBy(
+            ['optimized' => false],
+            ['updatedAt' => 'asc'],
+            3
         );
 
-        if (!$image instanceof Image) {
-            $output->writeln('No image to process.');
+        $command = $this->getApplication()->find('liip:imagine:cache:resolve');
 
-            return;
+        foreach ($images as $image) {
+            $output->writeln('Processing '.$image->getFilename());
+
+            if (!$this->imageManager->process($image)) {
+                $output->writeln('Problem during image process.');
+                continue;
+            }
+
+            $path = $image->getPath();
+            $arguments = [
+                'command' => 'liip:imagine:cache:resolve',
+                'paths' => [$path],
+                '--force' => true,
+            ];
+
+            $output->writeln('Generating cache for '.$image->getFilename());
+            try {
+                $command->run(new ArrayInput($arguments), $output);
+            } catch (\Exception $e) {
+                $output->writeln('Unable to generate cache');
+            }
+
+            $this->imageManager->enableImage($image);
+            $output->writeln('Image processed and enabled !');
+
+            sleep(2);
         }
-
-        // Resize image
-        $output->writeln('Resizing '.$image->getFilename());
-        if (!$this->imageManager->resize($image)) {
-            $output->writeln('Not resized.');
-        }
-
-        // Add watermark if needed
-        $output->writeln('Watermarking '.$image->getFilename());
-        if (!$this->imageManager->watermark($image)) {
-            $output->writeln('Not watermarked.');
-        }
-
-        // Optimize image
-        $output->writeln('Optimizing '.$image->getFilename());
-        if (!$this->imageManager->optimize($image)) {
-            $output->writeln('Not optimized.');
-        }
-
-//        $this->generateCache($image);
-
-        $this->imageManager->enableImage($image);
-        $output->writeln('Image processed and enabled !');
 
         $event = $stopwatch->stop('process-image');
         $output->writeln(($event->getDuration() / 1000).' s');

@@ -261,6 +261,9 @@ badge:
     teamkatun: 'Team Katun'
     teamispeed: 'Team iSpeed'
 
+image:
+    credit: 'Crédit: %name%'
+
 error:
     404:
         title: 'Page non trouvée'

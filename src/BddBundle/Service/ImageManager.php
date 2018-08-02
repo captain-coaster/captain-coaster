@@ -5,9 +5,13 @@ namespace BddBundle\Service;
 use BddBundle\Entity\Image;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Imagine\Filter\Basic\Resize;
+use Imagine\Filter\Transformation;
+use Imagine\Gd\Imagine;
 use Imagine\Image\Box;
+use Imagine\Image\Metadata\ExifMetadataReader;
 use Imagine\Image\Point;
-use Imagine\Imagick\Imagine;
+use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -52,26 +56,33 @@ class ImageManager
     private $em;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * ImageUploader constructor.
      * @param string $basePath
      * @param string $watermarkPath
      * @param string $jpegoptimPath
      * @param Imagine $imagine
      * @param EntityManagerInterface $em
+     * @param LoggerInterface $logger
      */
     public function __construct(
         string $basePath,
         string $watermarkPath,
         string $jpegoptimPath,
         Imagine $imagine,
-        EntityManagerInterface $em
-
+        EntityManagerInterface $em,
+        LoggerInterface $logger
     ) {
         $this->basePath = $basePath;
         $this->watermarkPath = $watermarkPath;
         $this->jpegoptimPath = $jpegoptimPath;
         $this->imagine = $imagine;
         $this->em = $em;
+        $this->logger = $logger;
     }
 
     /**
@@ -114,90 +125,23 @@ class ImageManager
 
     /**
      * @param Image $image
+     * @return bool
      */
-    public function enableImage(Image $image)
+    public function process(Image $image)
     {
+        try {
+            $this->resize($image);
+            $this->watermark($image);
+            $this->optimize($image);
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
+
+            return false;
+        }
+
         $image->setOptimized(true);
-        $image->setEnabled(true);
         $this->em->persist($image);
         $this->em->flush();
-
-        $this->setMainImages();
-    }
-
-    /**
-     * @param Image $image
-     * @param int $maxSize
-     * @return bool
-     */
-    public function resize(Image $image, int $maxSize = self::MAX_SIZE)
-    {
-        $fullPath = $this->getFullPath($image->getFilename(), true);
-        $file = $this->imagine->open($fullPath);
-
-        $height = $file->getSize()->getHeight();
-        $width = $file->getSize()->getWidth();
-
-        if ($width > $height && $width > $maxSize) {
-            $ratio = $maxSize / $width;
-            $box = new Box($maxSize, $height * $ratio);
-        } elseif ($height > $width && $height > $maxSize) {
-            $ratio = $maxSize / $height;
-            $box = new Box($width * $ratio, $height);
-        } else {
-            return false;
-        }
-
-        $file->resize($box)->save($fullPath);
-
-        return true;
-    }
-
-    /**
-     * @param Image $image
-     * @return bool
-     */
-    public function watermark(Image $image)
-    {
-        if ($image->getWatermark() !== self::WATERMARK_CC) {
-            return false;
-        }
-
-        $watermark = $this->imagine->open($this->watermarkPath);
-        $fullPath = $this->getFullPath($image->getFilename(), true);
-        $file = $this->imagine->open($fullPath);
-
-        $size = $file->getSize();
-        $wSize = $watermark->getSize();
-
-        $bottomLeft = new Point(30, $size->getHeight() - $wSize->getHeight() - 30);
-
-        $file->paste($watermark, $bottomLeft);
-        $file->save($fullPath);
-
-        return true;
-    }
-
-    /**
-     * @param Image $image
-     * @return bool
-     */
-    public function optimize(Image $image)
-    {
-        $process = new Process([$this->jpegoptimPath, '--help']);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            return false;
-        }
-
-        $fullPath = $this->getFullPath($image->getFilename(), true);
-        $process = new Process("$this->jpegoptimPath -s $fullPath");
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
 
         return true;
     }
@@ -224,6 +168,100 @@ class ImageManager
             $stmt->execute();
         } catch (DBALException $e) {
         }
+    }
+
+    /**
+     * @param Image $image
+     */
+    public function enableImage(Image $image)
+    {
+        $image->setEnabled(true);
+        $this->em->persist($image);
+        $this->em->flush();
+
+        $this->setMainImages();
+    }
+
+    /**
+     * @param Image $image
+     * @param int $maxSize
+     * @return bool
+     */
+    private function resize(Image $image, int $maxSize = self::MAX_SIZE)
+    {
+        $fullPath = $this->getFullPath($image->getFilename(), true);
+        $file = $this->imagine->setMetadataReader(new ExifMetadataReader())->open($fullPath);
+
+        $transformation = new Transformation();
+        $transformation->add(new \Imagine\Filter\Basic\Autorotate());
+
+        $height = $file->getSize()->getHeight();
+        $width = $file->getSize()->getWidth();
+
+        if ($width > $maxSize || $height > $maxSize) {
+            if ($width > $height) {
+                $ratio = $maxSize / $width;
+                $box = new Box($maxSize, $height * $ratio);
+            } else {
+                $ratio = $maxSize / $height;
+                $box = new Box($width * $ratio, $height);
+            }
+
+            $transformation->add(new Resize($box));
+        }
+
+        $transformation->apply($file)->save($fullPath);
+
+        return true;
+    }
+
+    /**
+     * @param Image $image
+     * @return bool
+     */
+    private function watermark(Image $image)
+    {
+        if ($image->getWatermark() !== self::WATERMARK_CC) {
+            return false;
+        }
+
+        $watermark = $this->imagine->open($this->watermarkPath);
+        $fullPath = $this->getFullPath($image->getFilename(), true);
+        $file = $this->imagine->open($fullPath);
+
+        $size = $file->getSize();
+        $wSize = $watermark->getSize();
+
+        $bottomLeft = new Point(30, $size->getHeight() - $wSize->getHeight() - 30);
+
+        $file->paste($watermark, $bottomLeft);
+        $file->save($fullPath);
+
+        return true;
+    }
+
+    /**
+     * @param Image $image
+     * @return bool
+     */
+    private function optimize(Image $image)
+    {
+        $process = new Process([$this->jpegoptimPath, '--help']);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            return false;
+        }
+
+        $fullPath = $this->getFullPath($image->getFilename(), true);
+        $process = new Process("$this->jpegoptimPath -s $fullPath");
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            throw new ProcessFailedException($process);
+        }
+
+        return true;
     }
 
     /**
