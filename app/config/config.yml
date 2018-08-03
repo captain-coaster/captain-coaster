@@ -92,18 +92,26 @@ liip_imagine:
             quality: 90
             filters:
                 thumbnail: { size: [280, 210], mode: outbound }
+            post_processors:
+                jpegoptim: { strip_all: true }
         random_index:
             quality: 95
             filters:
                 thumbnail: { size: [600, 336], mode: outbound }
+            post_processors:
+                jpegoptim: { strip_all: true }
         coaster_ranking:
             quality: 95
             filters:
                 thumbnail: { size: [96, 96], mode: outbound }
+            post_processors:
+                jpegoptim: { strip_all: true }
         coaster_park_show:
             quality: 95
             filters:
                 thumbnail: { size: [275, 200], mode: outbound }
+            post_processors:
+                jpegoptim: { strip_all: true }
 
 fos_user:
     db_driver: orm

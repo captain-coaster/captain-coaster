@@ -5,13 +5,12 @@ namespace BddBundle\Service;
 use BddBundle\Entity\Image;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
-use Imagine\Filter\Basic\Autorotate;
-use Imagine\Filter\Basic\Resize;
-use Imagine\Filter\Transformation;
+use Imagine\Filter;
+use Imagine\Imagick\Imagine;
 use Imagine\Image\Box;
+use Imagine\Image\BoxInterface;
 use Imagine\Image\Metadata\ExifMetadataReader;
 use Imagine\Image\Point;
-use Imagine\Imagick\Imagine;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -125,14 +124,30 @@ class ImageManager
     }
 
     /**
+     * Process a new image
+     *
      * @param Image $image
      * @return bool
      */
     public function process(Image $image)
     {
+        $this->backupFile($image);
+
+        $this->autoRotate($image);
+
+        $fullPath = $this->getFullPath($image->getFilename(), true);
+        $file = $this->imagine->open($fullPath);
+        $transformation = new Filter\Transformation();
+        $newSize = $this->getResizedBox($file->getSize());
+        $transformation->add(new Filter\Basic\Resize($newSize));
+
+        $paste = $this->getPasteWatermark($image, $newSize);
+        if ($paste instanceof Filter\Basic\Paste) {
+            $transformation->add($paste);
+        }
+
         try {
-            $this->resize($image);
-            $this->watermark($image);
+            $transformation->apply($file)->save($fullPath, ['jpeg_quality' => 80]);
             $this->optimize($image);
         } catch (\Exception $e) {
             $this->logger->critical($e->getMessage());
@@ -140,11 +155,21 @@ class ImageManager
             return false;
         }
 
-        $image->setOptimized(true);
+        $this->setOptimized($image);
+
+        return true;
+    }
+
+    /**
+     * @param Image $image
+     */
+    public function enable(Image $image)
+    {
+        $image->setEnabled(true);
         $this->em->persist($image);
         $this->em->flush();
 
-        return true;
+        $this->setMainImages();
     }
 
     /**
@@ -168,80 +193,93 @@ class ImageManager
             $stmt = $conn->prepare($sql);
             $stmt->execute();
         } catch (DBALException $e) {
+            // do nothing
         }
     }
 
     /**
      * @param Image $image
-     */
-    public function enableImage(Image $image)
-    {
-        $image->setEnabled(true);
-        $this->em->persist($image);
-        $this->em->flush();
-
-        $this->setMainImages();
-    }
-
-    /**
-     * @param Image $image
-     * @param int $maxSize
      * @return bool
      */
-    private function resize(Image $image, int $maxSize = self::MAX_SIZE)
+    private function autoRotate(Image $image)
     {
         $fullPath = $this->getFullPath($image->getFilename(), true);
         $file = $this->imagine->setMetadataReader(new ExifMetadataReader())->open($fullPath);
+        $transformation = new Filter\Transformation();
+        $transformation->add(new Filter\Basic\Autorotate());
 
-        $transformation = new Transformation();
-        $transformation->add(new Autorotate());
+        try {
+            $transformation->apply($file)->save($fullPath, ['jpeg_quality' => 80]);
+        } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
 
-        $height = $file->getSize()->getHeight();
-        $width = $file->getSize()->getWidth();
-
-        if ($width > $maxSize || $height > $maxSize) {
-            if ($width > $height) {
-                $ratio = $maxSize / $width;
-                $box = new Box($maxSize, $height * $ratio);
-            } else {
-                $ratio = $maxSize / $height;
-                $box = new Box($width * $ratio, $height);
-            }
-
-            $transformation->add(new Resize($box));
+            return false;
         }
-
-        $transformation->apply($file)->save($fullPath, ['jpeg_quality' => 100]);
 
         return true;
     }
 
     /**
      * @param Image $image
-     * @return bool
      */
-    private function watermark(Image $image)
+    private function setOptimized(Image $image)
+    {
+        $image->setOptimized(true);
+        $this->em->persist($image);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Image $image
+     */
+    private function backupFile(Image $image)
+    {
+        $fs = new Filesystem();
+        $fs->copy(
+            $this->getFullPath($image->getFilename(), true),
+            $this->getFullBackupPath($image->getFilename(), true),
+            true
+        );
+    }
+
+    /**
+     * @param BoxInterface $size
+     * @param int $maxSize
+     * @return Box|BoxInterface
+     */
+    private function getResizedBox(BoxInterface $size, int $maxSize = self::MAX_SIZE)
+    {
+        $width = $size->getWidth();
+        $height = $size->getHeight();
+
+        if ($width <= $maxSize || $height <= $maxSize) {
+            return $size;
+        }
+
+        if ($width > $height) {
+            return new Box($maxSize, $height * $maxSize / $width);
+        } else {
+            return new Box($width * $maxSize / $height, $maxSize);
+        }
+    }
+
+    /**
+     * @param Image $image
+     * @param BoxInterface $size
+     * @return bool|Filter\Basic\Paste
+     */
+    private function getPasteWatermark(Image $image, BoxInterface $size)
     {
         if ($image->getWatermark() !== self::WATERMARK_CC) {
             return false;
         }
 
         $watermark = $this->imagine->open($this->watermarkPath);
-        $fullPath = $this->getFullPath($image->getFilename(), true);
-        $file = $this->imagine->open($fullPath);
-        // do a backup before watermarking
-        $file->save($this->getFullBackupPath($image->getFilename(), true), ['jpeg_quality' => 100]);
-
-        $file = $this->imagine->open($fullPath);
-        $size = $file->getSize();
         $wSize = $watermark->getSize();
 
         $bottomLeft = new Point(30, $size->getHeight() - $wSize->getHeight() - 30);
 
-        $file->paste($watermark, $bottomLeft);
-        $file->save($fullPath, ['jpeg_quality' => 100]);
-
-        return true;
+        return new Filter\Basic\Paste($watermark, $bottomLeft);
     }
 
     /**
@@ -250,15 +288,9 @@ class ImageManager
      */
     private function optimize(Image $image)
     {
-        $process = new Process([$this->jpegoptimPath, '--help']);
-        $process->run();
-
-        if (!$process->isSuccessful()) {
-            return false;
-        }
-
         $fullPath = $this->getFullPath($image->getFilename(), true);
-        $process = new Process("$this->jpegoptimPath -s $fullPath");
+        $backupFullPath = $this->getFullBackupPath($image->getFilename(), true);
+        $process = new Process("$this->jpegoptimPath -s $fullPath $backupFullPath");
         $process->run();
 
         if (!$process->isSuccessful()) {
