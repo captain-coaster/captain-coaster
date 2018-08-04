@@ -100,6 +100,9 @@ class ImageManager
             $filename
         );
 
+        $fs = new Filesystem();
+        $fs->chmod($this->getFullPath($filename, true), 0660);
+
         return $filename;
     }
 
