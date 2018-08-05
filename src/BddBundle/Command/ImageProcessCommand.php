@@ -51,7 +51,7 @@ class ImageProcessCommand extends ContainerAwareCommand
         $images = $this->em->getRepository('BddBundle:Image')->findBy(
             ['optimized' => false],
             ['updatedAt' => 'asc'],
-            3
+            10
         );
 
         $command = $this->getApplication()->find('liip:imagine:cache:resolve');
