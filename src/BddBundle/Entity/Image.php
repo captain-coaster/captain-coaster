@@ -85,7 +85,7 @@ class Image
     /**
      * @Assert\File(
      *     mimeTypes = {"image/jpeg"},
-     *     maxSize = "5M"
+     *     maxSize = "8M"
      * )
      */
     private $file;
