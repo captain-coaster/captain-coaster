@@ -78,7 +78,6 @@ class ImageProcessCommand extends ContainerAwareCommand
                 $output->writeln('Unable to generate cache');
             }
 
-            $this->imageManager->enable($image);
             $output->writeln('Image processed and enabled !');
 
             sleep(2);

@@ -1,14 +1,11 @@
-update coaster c
-inner join
-( select id, coaster_id from image i where enabled = 1 order by updated_at desc, id desc ) as i2 on i2.coaster_id = c.id
-set c.main_image_id = i2.id;
-
-
-ALTER TABLE liste ADD main TINYINT(1) NOT NULL;
-update liste set `main` = 1, `type` = 'main';
-
-# to check
-ALTER TABLE coaster ADD average_top_rank NUMERIC(4, 1) DEFAULT NULL, ADD total_tops_in INT NOT NULL, CHANGE total_ratings total_ratings INT NOT NULL;
+#############
+ALTER TABLE image ADD uploader_id INT DEFAULT NULL, ADD watermarked TINYINT(1) NOT NULL, CHANGE credit credit VARCHAR(255) NOT NULL;
+ALTER TABLE image ADD CONSTRAINT FK_C53D045F16678C77 FOREIGN KEY (uploader_id) REFERENCES users (id);
+CREATE INDEX IDX_C53D045F16678C77 ON image (uploader_id);
+UPDATE image SET watermarked = 1 WHERE watermark IS NOT NULL;
+ALTER TABLE image DROP watermark;
+ALTER TABLE manufacturer DROP website, DROP phoneNumber, DROP place;
+#############
 
 # user number
 select count(1) from users;
@@ -122,5 +119,3 @@ select count(distinct(p.id)) as nb from ridden_coaster r
   join park p on p.id = c.park_id
 where r.user_id = 90
 order by nb desc;
-
-

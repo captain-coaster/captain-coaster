@@ -134,14 +134,14 @@
 
         <div class="list-group no-border">
           {% if coaster.status %}
-          <div class="list-group-item">
-            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}:</label>
-            <div class="pull-right">
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}:</label>
+              <div class="pull-right">
               <span class="label label-{{ coaster.status.type }} bg-{{ coaster.status.type }}">
                   {{ coaster.status.name|trans([], 'database') }}
               </span>
+              </div>
             </div>
-          </div>
           {% endif %}
           {% if coaster.park %}
             <div class="list-group-item">
@@ -289,19 +289,28 @@
               <h6>{{ 'coaster.photos'|trans }}</h6>
             </div>
             <div class="panel-body no-border no-padding-top">
-              {% for image in coaster.images %}
-                {% if loop.index < 9 %}
-                  <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
-                    <a style="margin: 10px;" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
-                       rel="gallery">
-                      <div class="thumb">
-                        <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
-                             alt="">
-                      </div>
-                    </a>
-                  </div>
-                {% endif %}
+              {% for image in coaster.images|slice(0, 9) %}
+                <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
+                  <a style="margin: 10px;" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
+                     rel="gallery">
+                    <div class="thumb">
+                      <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
+                           alt="{{ coaster.name }}">
+                    </div>
+                  </a>
+                </div>
               {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="row">
+          <div class="panel panel-flat border-top-blue">
+            <div class="panel-heading">
+              <h6>{{ 'coaster.photos'|trans }}</h6>
+            </div>
+            <div class="panel-body no-border no-padding-top">
+              <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">Upload a picture[@todo]</a>
             </div>
           </div>
         </div>
@@ -354,8 +363,8 @@
         "name": "{{ coaster.name }}",
         "aggregateRating": {
           "@type": "AggregateRating",
-          "ratingValue": "{{ coaster.score|number_format('1', ',') }}",
-          "bestRating": "100",
+          "ratingValue": "{{ (coaster.score * 5 / 100)|number_format('1', ',') }}",
+          "bestRating": "5",
           "worstRating": "0",
           "ratingCount": "{{ coaster.ratings|length }}"
         }

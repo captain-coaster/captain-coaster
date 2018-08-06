@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -36,40 +37,11 @@ class Manufacturer
     private $slug;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="website", type="string", length=255, nullable=true)
-     */
-    private $website;
-
-    /**
-     * @var BuiltCoaster
-     *
-     * @ORM\OneToMany(targetEntity="BuiltCoaster", mappedBy="manufacturer")
-     */
-    private $builtCoasters;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="phoneNumber", type="string", length=255)
-     */
-    private $phoneNumber;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="place", type="string", length=255)
-     */
-    private $place;
-
-
-    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->builtCoasters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->builtCoasters = new ArrayCollection();
     }
 
     /**
@@ -128,111 +100,5 @@ class Manufacturer
     public function getSlug()
     {
         return $this->slug;
-    }
-
-    /**
-     * Set website
-     *
-     * @param string $website
-     *
-     * @return Manufacturer
-     */
-    public function setWebsite($website)
-    {
-        $this->website = $website;
-
-        return $this;
-    }
-
-    /**
-     * Get website
-     *
-     * @return string
-     */
-    public function getWebsite()
-    {
-        return $this->website;
-    }
-
-    /**
-     * Add builtCoaster
-     *
-     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
-     *
-     * @return Manufacturer
-     */
-    public function addBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
-    {
-        $this->builtCoasters[] = $builtCoaster;
-
-        return $this;
-    }
-
-    /**
-     * Remove builtCoaster
-     *
-     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
-     */
-    public function removeBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
-    {
-        $this->builtCoasters->removeElement($builtCoaster);
-    }
-
-    /**
-     * Get builtCoasters
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBuiltCoasters()
-    {
-        return $this->builtCoasters;
-    }
-
-    /**
-     * Set phoneNumber
-     *
-     * @param string $phoneNumber
-     *
-     * @return Manufacturer
-     */
-    public function setPhoneNumber($phoneNumber)
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    /**
-     * Get phoneNumber
-     *
-     * @return string
-     */
-    public function getPhoneNumber()
-    {
-        return $this->phoneNumber;
-    }
-
-    /**
-     * Set place
-     *
-     * @param string $place
-     *
-     * @return Manufacturer
-     */
-    public function setPlace($place)
-    {
-        $this->place = $place;
-
-        return $this;
-    }
-
-    /**
-     * Get place
-     *
-     * @return string
-     */
-    public function getPlace()
-    {
-        return $this->place;
     }
 }

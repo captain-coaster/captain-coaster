@@ -30,12 +30,24 @@ easy_admin:
         Images:
             class: BddBundle\Entity\Image
             label: 'Images'
-            disabled_actions: ['new', 'edit', 'show']
+            disabled_actions: ['new', 'show']
             list:
                 fields:
                     - id
                     - coaster
+                    - credit
+                    - { property: 'enabled', type: 'toggle' }
                     - { property: 'path', type: 'image', base_path: '/images/coasters/' }
+            edit:
+                fields:
+                    - { property: 'filename', type_options: { disabled: true } }
+                    - coaster
+                    - credit
+                    - uploader
+                    - enabled
+                    - { property: 'optimized', type_options: { disabled: true } }
+                    - { property: 'watermarked', type_options: { disabled: true } }
+                dql_filter: 'entity.optimized = 1'
                 sort: ['updatedAt', 'DESC']
             search:
                 fields: ['coaster.name']

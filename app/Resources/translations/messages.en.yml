@@ -52,7 +52,22 @@ coaster:
         kiddie: 'Kiddie'
     parkcoaster: 'Also in %name%'
     photos: 'Photos'
+    no_photos: 'No photos yet!'
     location: 'Location'
+
+image_upload:
+    title: 'Upload a picture of %coaster%'
+    form:
+        file:
+            label: 'Select a picture'
+            helper: 'The file must be in JPEG format and less than 8MB in size.'
+        credit:
+            label: 'Who took this picture?'
+            helper: 'Credit will be displayed under the picture.'
+        watermark:
+            label: 'Watermark "Captain Coaster"'
+            helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'
+        upload: 'Submit my picture'
 
 park:
     opened_coasters: 'opened coaster|opened coasters'

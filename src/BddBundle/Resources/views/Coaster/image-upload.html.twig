@@ -1,15 +1,50 @@
-<html>
-<head></head>
-<body>
-<h2>upload</h2>
-{% for label, messages in app.flashes %}
-  {% for message in messages %}
-    <div class="flash-{{ label }}">
-      {{ message }}
-    </div>
+{% extends "base.html.twig" %}
+
+{% set title = 'image_upload.title'|trans({'%coaster%': coaster.name}) %}
+{% set openedSidebar = true %}
+{% block title %}{{ title }}{% endblock %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="flash-{{ label }}">
+        {{ message }}
+      </div>
+    {% endfor %}
   {% endfor %}
-{% endfor %}
-{{ form_errors(form) }}
-{{ form(form, {'attr': {'novalidate': 'novalidate'}}) }}
-</body>
-</html>
+  <div class="panel panel-flat">
+    {#<div class="panel-heading">#}
+      {#<h5 class="panel-title">Basic form inputs<a class="heading-elements-toggle"><i class="icon-more"></i></a></h5>#}
+    {#</div>#}
+    <div class="panel-body">
+      {{ form_start(form) }}
+      {{ form_errors(form) }}
+      <div class="form-group">
+        {{ form_label(form.file, "", {'label_attr': {'class': 'control-label col-lg-2'}}) }}
+        <div class="col-lg-10">
+          {{ form_widget(form.file) }}
+          <span class="help-block">{{ 'image_upload.form.file.helper'|trans }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form_label(form.credit, "", {'label_attr': {'class': 'control-label col-lg-2'}}) }}
+        <div class="col-lg-10">
+          {{ form_widget(form.credit) }}
+          <span class="help-block">{{ 'image_upload.form.credit.helper'|trans }}</span>
+        </div>
+      </div>
+      <div class="form-group">
+        {{ form_label(form.watermarked, "", {'label_attr': {'class': 'control-label col-lg-2'}}) }}
+          {{ form_widget(form.watermarked) }}
+          <span class="help-block">{{ 'image_upload.form.watermark.helper'|trans }}</span>
+      </div>
+      <div class="form-group">
+        {{ form_widget(form.upload, {'attr': {'class': 'btn btn-primary'}}) }}
+      </div>
+      {{ form_rest(form) }}
+      {{ form_end(form) }}
+    </div>
+  </div>
+{% endblock %}

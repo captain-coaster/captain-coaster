@@ -7,7 +7,7 @@ use BddBundle\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class RatingCoasterVoter extends Voter
+class CoasterVoter extends Voter
 {
     const RATE = 'rate';
 
@@ -48,7 +48,7 @@ class RatingCoasterVoter extends Voter
 
         switch ($attribute) {
             case self::RATE:
-                return $this->canRate($coaster, $user);
+                return $this->canRate($coaster);
         }
 
         throw new \LogicException('This code should not be reached!');
@@ -56,10 +56,9 @@ class RatingCoasterVoter extends Voter
 
     /**
      * @param Coaster $coaster
-     * @param User $user
      * @return bool
      */
-    private function canRate(Coaster $coaster, User $user)
+    private function canRate(Coaster $coaster)
     {
         return $coaster->isRateable();
     }

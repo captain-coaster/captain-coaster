@@ -113,7 +113,7 @@ class CoasterController extends Controller
      *
      * @Route("/{slug}/images/upload", name="coaster_images_upload")
      * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_CONTRIBUTOR')")
+     * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
      * @param Coaster $coaster
@@ -121,10 +121,13 @@ class CoasterController extends Controller
      */
     public function imageUpload(Request $request, Coaster $coaster)
     {
+//        $this->denyAccessUnlessGranted('upload', $coaster);
+
         $image = new Image();
         $image->setCoaster($coaster);
-        $image->setWatermark('cc');
+        $image->setWatermarked(true);
         $image->setCredit($this->getUser()->getDisplayName());
+        $image->setUploader($this->getUser());
 
         /** @var Form $form */
         $form = $this->createForm(ImageUploadType::class, $image);
@@ -144,6 +147,7 @@ class CoasterController extends Controller
             'BddBundle:Coaster:image-upload.html.twig',
             [
                 'form' => $form->createView(),
+                'coaster' => $coaster,
             ]
         );
     }

@@ -52,6 +52,7 @@ coaster:
         kiddie: 'Kiddie'
     parkcoaster: 'Coasters de %name%'
     photos: 'Photos'
+    no_photos: 'Pas de photo'
     location: 'Localisation'
 
 park:

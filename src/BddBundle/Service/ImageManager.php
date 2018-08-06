@@ -26,11 +26,6 @@ class ImageManager
     CONST MAX_SIZE = 1440;
 
     /**
-     * Watermark name
-     */
-    CONST WATERMARK_CC = 'cc';
-
-    /**
      * @var string
      */
     private $basePath;
@@ -90,6 +85,7 @@ class ImageManager
      *
      * @param UploadedFile $file
      * @return string
+     * @throws \Exception
      */
     public function upload(UploadedFile $file)
     {
@@ -273,7 +269,7 @@ class ImageManager
      */
     private function getPasteWatermark(Image $image, BoxInterface $size)
     {
-        if ($image->getWatermark() !== self::WATERMARK_CC) {
+        if (!$image->isWatermarked()) {
             return false;
         }
 
@@ -346,6 +342,7 @@ class ImageManager
      *
      * @param UploadedFile $file
      * @return string
+     * @throws \Exception
      */
     private function generateFilename(UploadedFile $file): string
     {

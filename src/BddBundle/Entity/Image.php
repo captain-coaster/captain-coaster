@@ -41,28 +41,35 @@ class Image
     /**
      * @var boolean
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=false)
      */
     private $optimized = false;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", nullable=false)
      */
     private $enabled = false;
 
     /**
-     * @var string
+     * @var boolean
      *
-     * @ORM\Column(type="string", length=2, unique=false, nullable=true)
+     * @ORM\Column(type="boolean", nullable=false)
      */
-    private $watermark;
+    private $watermarked;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\User")
+     */
+    private $uploader;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, unique=false, nullable=true)
+     * @ORM\Column(type="string", length=255, unique=false, nullable=false)
      */
     private $credit;
 
@@ -240,25 +247,6 @@ class Image
     }
 
     /**
-     * @param null|string $watermark
-     * @return Image
-     */
-    public function setWatermark(?string $watermark): Image
-    {
-        $this->watermark = $watermark;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getWatermark(): ?string
-    {
-        return $this->watermark;
-    }
-
-    /**
      * @param null|string $credit
      * @return Image
      */
@@ -275,5 +263,43 @@ class Image
     public function getCredit(): ?string
     {
         return $this->credit;
+    }
+
+    /**
+     * @param bool $watermarked
+     * @return Image
+     */
+    public function setWatermarked(bool $watermarked): Image
+    {
+        $this->watermarked = $watermarked;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWatermarked(): bool
+    {
+        return $this->watermarked;
+    }
+
+    /**
+     * @param User $uploader
+     * @return Image
+     */
+    public function setUploader(User $uploader): Image
+    {
+        $this->uploader = $uploader;
+
+        return $this;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUploader(): ?User
+    {
+        return $this->uploader;
     }
 }
