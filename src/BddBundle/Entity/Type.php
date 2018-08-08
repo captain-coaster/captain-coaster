@@ -2,7 +2,9 @@
 
 namespace BddBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Type
@@ -24,14 +26,15 @@ class Type
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
+     * @Gedmo\Slug(fields={"name"})
      */
     private $slug;
 
@@ -43,13 +46,12 @@ class Type
      */
     private $builtCoasters;
 
-
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->builtCoasters = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->builtCoasters = new ArrayCollection();
     }
 
     /**
@@ -57,7 +59,7 @@ class Type
      */
     public function __toString()
     {
-        return $this->getName();
+        return $this->name;
     }
 
     /**
@@ -121,11 +123,11 @@ class Type
     /**
      * Add builtCoaster
      *
-     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
+     * @param BuiltCoaster $builtCoaster
      *
      * @return Type
      */
-    public function addBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
+    public function addBuiltCoaster(BuiltCoaster $builtCoaster)
     {
         $this->builtCoasters[] = $builtCoaster;
 
@@ -135,9 +137,9 @@ class Type
     /**
      * Remove builtCoaster
      *
-     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
+     * @param BuiltCoaster $builtCoaster
      */
-    public function removeBuiltCoaster(\BddBundle\Entity\BuiltCoaster $builtCoaster)
+    public function removeBuiltCoaster(BuiltCoaster $builtCoaster)
     {
         $this->builtCoasters->removeElement($builtCoaster);
     }

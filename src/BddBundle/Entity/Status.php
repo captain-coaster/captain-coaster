@@ -4,6 +4,7 @@ namespace BddBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Status
@@ -27,21 +28,22 @@ class Status
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
+     * @Gedmo\Slug(fields={"name"})
      */
     private $slug;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="type", type="string", length=255, unique=false)
+     * @ORM\Column(name="type", type="string", length=255, unique=false, nullable=false)
      */
     private $type;
 

@@ -5,6 +5,8 @@ CREATE INDEX IDX_C53D045F16678C77 ON image (uploader_id);
 UPDATE image SET watermarked = 1 WHERE watermark IS NOT NULL;
 ALTER TABLE image DROP watermark;
 ALTER TABLE manufacturer DROP website, DROP phoneNumber, DROP place;
+ALTER TABLE built_coaster DROP duration;
+ALTER TABLE park DROP website;
 #############
 
 # user number

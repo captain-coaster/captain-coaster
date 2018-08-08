@@ -2,8 +2,8 @@
 
 namespace BddBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Manufacturer
@@ -25,24 +25,17 @@ class Manufacturer
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
+     * @Gedmo\Slug(fields={"name"})
      */
     private $slug;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->builtCoasters = new ArrayCollection();
-    }
 
     /**
      * Get id

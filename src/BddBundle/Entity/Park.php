@@ -26,24 +26,17 @@ class Park
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
+     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
      * @Gedmo\Slug(fields={"name"})
      */
     private $slug;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="website", type="string", length=255, nullable=true)
-     */
-    private $website;
 
     /**
      * @var Coaster
@@ -90,7 +83,6 @@ class Park
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
-
 
     /**
      * Constructor
@@ -164,30 +156,6 @@ class Park
     public function getSlug()
     {
         return $this->slug;
-    }
-
-    /**
-     * Set website
-     *
-     * @param string $website
-     *
-     * @return Park
-     */
-    public function setWebsite($website)
-    {
-        $this->website = $website;
-
-        return $this;
-    }
-
-    /**
-     * Get website
-     *
-     * @return string
-     */
-    public function getWebsite()
-    {
-        return $this->website;
     }
 
     /**
@@ -344,6 +312,9 @@ class Park
         return $this->updatedAt;
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
     public function getOpenedCoasters()
     {
         return $this->getCoasters()->filter(
@@ -353,6 +324,9 @@ class Park
         );
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
     public function getKiddies()
     {
         return $this->getCoasters()->filter(

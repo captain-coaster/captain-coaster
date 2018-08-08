@@ -67,7 +67,7 @@ class BuiltCoaster
     /**
      * @var Manufacturer
      *
-     * @ORM\ManyToOne(targetEntity="Manufacturer", inversedBy="builtCoasters")
+     * @ORM\ManyToOne(targetEntity="Manufacturer")
      * @ORM\JoinColumn(nullable=false)
      */
     private $manufacturer;
@@ -95,13 +95,6 @@ class BuiltCoaster
      * @ORM\JoinColumn(nullable=false)
      */
     private $types;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="duration", type="time", unique=false, nullable=true)
-     */
-    private $duration;
 
     /**
      * @var boolean
@@ -398,30 +391,6 @@ class BuiltCoaster
     public function getTypes()
     {
         return $this->types;
-    }
-
-    /**
-     * Set duration
-     *
-     * @param \DateTime $duration
-     *
-     * @return BuiltCoaster
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return \DateTime
-     */
-    public function getDuration()
-    {
-        return $this->duration;
     }
 
     /**

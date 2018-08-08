@@ -1,83 +1,172 @@
 easy_admin:
     site_name: 'Captain Coaster'
     entities:
-        Park:
-            class: BddBundle\Entity\Park
-            disabled_actions: ['delete']
+        Coaster:
+            class: BddBundle\Entity\Coaster
+            disabled_actions: ['new', 'delete', 'show', 'edit']
             list:
-                fields: ['id', 'name', 'coasters']
-            edit:
-                fields: ['name', 'website', 'country', 'latitude', 'longitude']
-            new:
-                fields: ['name', 'website', 'country', 'latitude', 'longitude']
-        OpeningCoasters:
+                fields:
+                - id
+                - name
+                - park
+                - ratings
+                - {property: 'status', type: 'string', trans: true, domain: 'database'}
+                sort: ['updatedAt', 'DESC']
+        OpeningCoaster:
             class: BddBundle\Entity\Coaster
             label: 'Opening of coasters'
             disabled_actions: ['new', 'delete', 'show']
             list:
                 fields:
-                    - name
-                    - park
-                    - {property: 'status', trans: true, domain: 'database', type_options: {translation_domain: 'database'}}
-                    - openingDate
+                - name
+                - park
+                - {property: 'status', type: 'string', trans: true, domain: 'database'}
+                - openingDate
                 dql_filter: 'entity.openingDate < CURRENT_DATE() AND entity.status = 3'
                 sort: ['openingDate', 'DESC']
             edit:
                 fields:
-                    - name
-                    - {property: 'status', type_options: {choice_translation_domain: 'database'}}
-                    - openingDate
-        Images:
+                - name
+                - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                - openingDate
+        Image:
             class: BddBundle\Entity\Image
             label: 'Images'
             disabled_actions: ['new', 'show']
             list:
                 fields:
-                    - id
-                    - coaster
-                    - credit
-                    - { property: 'enabled', type: 'toggle' }
-                    - { property: 'path', type: 'image', base_path: '/images/coasters/' }
+                - id
+                - coaster
+                - credit
+                - {property: 'enabled', type: 'toggle'}
+                - {property: 'path', type: 'image', base_path: '/images/coasters/'}
             edit:
                 fields:
-                    - { property: 'filename', type_options: { disabled: true } }
-                    - coaster
-                    - credit
-                    - uploader
-                    - enabled
-                    - { property: 'optimized', type_options: { disabled: true } }
-                    - { property: 'watermarked', type_options: { disabled: true } }
+                - {property: 'filename', type_options: {disabled: true}}
+                - coaster
+                - credit
+                - uploader
+                - enabled
+                - {property: 'optimized', type_options: {disabled: true}}
+                - {property: 'watermarked', type_options: {disabled: true}}
                 dql_filter: 'entity.optimized = 1'
                 sort: ['updatedAt', 'DESC']
             search:
                 fields: ['coaster.name']
+        Park:
+            class: BddBundle\Entity\Park
+            disabled_actions: ['delete']
+            list:
+                fields:
+                - id
+                - name
+                - {property: 'country', type: 'string', trans: true, domain: 'database'}
+                - coasters
+            edit:
+                fields:
+                - name
+                - {property: 'country', type_options: {choice_translation_domain: 'database'}}
+                - {property: 'slug', type_options: {disabled: true}}
+                - latitude
+                - longitude
+            new:
+                fields:
+                - name
+                - {property: 'country', type_options: {choice_translation_domain: 'database'}}
+                - latitude
+                - longitude
         Country:
             class: BddBundle\Entity\Country
             disabled_actions: ['delete']
             list:
                 fields:
-                    - name
-                    - slug
+                - id
+                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                - {property: 'continent', type: 'string', trans: true, domain: 'database'}
             edit:
                 fields:
-                    - {property: 'name', type_options: {disabled: true}}
+                - name
+                - {property: 'continent', type_options: {choice_translation_domain: 'database'}}
+                - {property: 'slug', type_options: {disabled: true}}
             new:
-                fields: ['name', 'slug']
-        Launch:
-            class: BddBundle\Entity\Launch
-            disabled_actions: ['delete']
-            list:
-                fields: ['id', 'name']
-            edit:
-                fields: ['name', 'slug']
-            new:
-                fields: ['name', 'slug']
+                fields:
+                - name
+                - {property: 'continent', type_options: {choice_translation_domain: 'database'}}
         Manufacturer:
             class: BddBundle\Entity\Manufacturer
             disabled_actions: ['delete']
             list:
-                fields: ['id', 'name', 'builtCoasters']
+                fields:
+                - id
+                - {property: 'name', type: 'string', trans: true, domain: 'database'}
             edit:
-                fields: ['name', 'slug', 'website', 'phoneNumber', 'place']
+                fields:
+                - name
+                - {property: 'slug', type_options: {disabled: true}}
             new:
-                fields: ['name', 'slug', 'website', 'phoneNumber', 'place']
+                fields:
+                - name
+        Launch:
+            class: BddBundle\Entity\Launch
+            disabled_actions: ['delete']
+            list:
+                fields:
+                - id
+                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                - builtCoasters
+            edit:
+                fields:
+                - name
+                - {property: 'slug', type_options: {disabled: true}}
+            new:
+                fields:
+                - name
+        Type:
+            class: BddBundle\Entity\Type
+            disabled_actions: ['delete']
+            list:
+                fields:
+                - id
+                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                - builtCoasters
+            edit:
+                fields:
+                - name
+                - {property: 'slug', type_options: {disabled: true}}
+            new:
+                fields:
+                - name
+        Restraint:
+            class: BddBundle\Entity\Restraint
+            disabled_actions: ['delete']
+            list:
+                fields:
+                - id
+                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                - builtCoasters
+            edit:
+                fields:
+                - name
+                - {property: 'slug', type_options: {disabled: true}}
+            new:
+                fields:
+                - name
+        Status:
+            class: BddBundle\Entity\Status
+            disabled_actions: ['delete']
+            list:
+                fields:
+                - id
+                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                - coasters
+            edit:
+                fields:
+                - name
+                - {property: 'slug', type_options: {disabled: true}}
+                - type
+                - isRateable
+            new:
+                fields:
+                - name
+                - type
+                - isRateable
