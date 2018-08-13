@@ -133,6 +133,9 @@ me:
             email: 'Web & Email'
             notif: 'Web only'
         preferredLocale: 'Preferred language'
+        homePark:
+            label: 'My home park'
+            placeholder: 'Choose one'
         save: 'Save'
     badge: 'Badges'
     banner:

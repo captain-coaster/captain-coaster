@@ -119,6 +119,9 @@ me:
             email: 'Web & Email'
             notif: 'Web uniquement'
         preferredLocale: 'Langue préférée'
+        homePark:
+            label: 'Mon home park'
+            placeholder: 'Choisis un parc'
         save: 'OK'
     badge: 'Badges'
     banner:

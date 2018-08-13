@@ -140,6 +140,14 @@ class User extends BaseUser
     private $preferredLocale = 'en';
 
     /**
+     * @var Park
+     *
+     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Park")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $homePark;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -573,5 +581,24 @@ class User extends BaseUser
     public function getSlug(): ?string
     {
         return $this->slug;
+    }
+
+    /**
+     * @param Park $homePark
+     * @return User
+     */
+    public function setHomePark(?Park $homePark): User
+    {
+        $this->homePark = $homePark;
+
+        return $this;
+    }
+
+    /**
+     * @return Park|null
+     */
+    public function getHomePark(): ?Park
+    {
+        return $this->homePark;
     }
 }

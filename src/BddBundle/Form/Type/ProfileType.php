@@ -2,7 +2,10 @@
 
 namespace BddBundle\Form\Type;
 
+use BddBundle\Entity\Park;
 use BddBundle\Entity\User;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,6 +63,20 @@ class ProfileType extends AbstractType
                         return $value;
                     },
                     'label' => 'me.form.preferredLocale',
+                ]
+            )
+            ->add(
+                'homePark',
+                EntityType::class,
+                [
+                    'required' => false,
+                    'label' => 'me.form.homePark.label',
+                    'class' => Park::class,
+                    'placeholder' => 'me.form.homePark.placeholder',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('p')
+                            ->orderBy('p.name', 'ASC');
+                    },
                 ]
             );
     }
