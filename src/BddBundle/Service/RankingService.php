@@ -15,13 +15,11 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class RankingService
 {
-    // Total ratings + tops for a coaster
-    CONST MIN_RATINGS_PLUS_TOPS = 7;
     // Minimum comparison number between coaster A and B
     CONST MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of
     // other coasters to be compared with
-    CONST MIN_DUELS = 180;
+    CONST MIN_DUELS = 230;
 
     /**
      * @var EntityManagerInterface
@@ -47,6 +45,11 @@ class RankingService
      * @var integer
      */
     private $totalComparisonNumber = 0;
+
+    /**
+     * @var array
+     */
+    private $userComparisons = [];
 
     /**
      * RankingService constructor
@@ -75,15 +78,16 @@ class RankingService
 
         foreach ($this->ranking as $coasterId => $score) {
             $coaster = $this->em->getRepository('BddBundle:Coaster')->find($coasterId);
-            $coaster->setScore($score);
 
+            $coaster->setScore($score);
             $coaster->setPreviousRank($coaster->getRank());
             $coaster->setRank($rank);
-
-            $rank++;
+            $coaster->setUpdatedAt(new \DateTime());
 
             // used just for command output
             $infos[] = $coaster;
+
+            $rank++;
 
             if ($dryRun) {
                 continue;
@@ -120,6 +124,9 @@ class RankingService
         $users = $this->em->getRepository('BddBundle:User')->findAll();
 
         foreach ($users as $user) {
+            // reset before each new user
+            $this->userComparisons = [];
+
             /** @var Liste $top */
             $top = $user->getMainListe();
             $this->processComparisonsInTop($top);
@@ -156,6 +163,9 @@ class RankingService
                 }
 
                 if ($coaster !== $comparedCoaster) {
+                    // add this comparison to user comparisons array
+                    $this->userComparisons[$coaster->getId().'-'.$comparedCoaster->getId()] = 1;
+
                     if ($listeCoaster->getPosition() < $comparedListeCoaster->getPosition()) {
                         $this->setWinner($coaster, $comparedCoaster);
                     } else {
@@ -191,6 +201,11 @@ class RankingService
                 }
 
                 if ($coaster !== $comparedCoaster) {
+                    // check if comparison alreay exists in Top for this user
+                    if (array_key_exists($coaster->getId().'-'.$comparedCoaster->getId(), $this->userComparisons)) {
+                        continue;
+                    }
+
                     if ($rating->getValue() > $comparedRating->getValue()) {
                         $this->setWinner($coaster, $comparedCoaster);
                     } elseif ($rating->getValue() < $comparedRating->getValue()) {
@@ -209,6 +224,9 @@ class RankingService
      */
     private function computeScore()
     {
+        $this->ranking = [];
+        $this->totalComparisonNumber = 0;
+
         foreach ($this->duels as $coasterId => $coasterDuels) {
             $duelScoreSum = 0;
             $duelCount = 0;

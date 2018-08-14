@@ -2,7 +2,6 @@
 
 namespace BddBundle\Entity;
 
-use BddBundle\Service\RankingService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
@@ -672,17 +671,13 @@ class Coaster
     }
 
     /**
-     * Can we rank this coaster ?
-     * Only if ratings number + tops number > MIN_RATINGS_PLUS_TOPS
+     * We don't rank kiddie coasters
      *
      * @return bool
      */
     public function isRankable(): bool
     {
-        return (
-            $this->getBuiltCoaster()->isKiddie() === false &&
-            ($this->getTotalRatings() + $this->getTotalTopsIn()) >= RankingService::MIN_RATINGS_PLUS_TOPS
-        );
+        return !$this->getBuiltCoaster()->isKiddie();
     }
 
     /**
