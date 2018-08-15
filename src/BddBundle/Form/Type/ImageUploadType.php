@@ -32,9 +32,21 @@ class ImageUploadType extends AbstractType
                     'label' => 'image_upload.form.file.label',
                 ]
             )
-            ->add('watermarked', CheckboxType::class, ['label' => 'image_upload.form.watermark.label'])
-            ->add('credit', TextType::class, ['required' => true, 'label' => 'image_upload.form.credit.label'])
-            ->add('upload', SubmitType::class, ['label' => 'image_upload.form.upload']);
+            ->add(
+                'watermarked',
+                CheckboxType::class,
+                ['label' => 'image_upload.form.watermark.label', 'required' => false]
+            )
+            ->add(
+                'credit',
+                TextType::class,
+                ['required' => true, 'label' => 'image_upload.form.credit.label']
+            )
+            ->add(
+                'upload',
+                SubmitType::class,
+                ['label' => 'image_upload.form.upload']
+            );
     }
 
     /**
