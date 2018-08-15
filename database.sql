@@ -1,17 +1,3 @@
-#############
-ALTER TABLE image ADD uploader_id INT DEFAULT NULL, ADD watermarked TINYINT(1) NOT NULL, CHANGE credit credit VARCHAR(255) NOT NULL;
-ALTER TABLE image ADD CONSTRAINT FK_C53D045F16678C77 FOREIGN KEY (uploader_id) REFERENCES users (id);
-CREATE INDEX IDX_C53D045F16678C77 ON image (uploader_id);
-UPDATE image SET watermarked = 1 WHERE watermark IS NOT NULL;
-ALTER TABLE image DROP watermark;
-ALTER TABLE manufacturer DROP website, DROP phoneNumber, DROP place;
-ALTER TABLE built_coaster DROP duration;
-ALTER TABLE park DROP website;
-ALTER TABLE users ADD home_park_id INT DEFAULT NULL;
-ALTER TABLE users ADD CONSTRAINT FK_1483A5E9F1B9C77D FOREIGN KEY (home_park_id) REFERENCES park (id);
-CREATE INDEX IDX_1483A5E9F1B9C77D ON users (home_park_id);
-#############
-
 # user number
 select count(1) from users;
 

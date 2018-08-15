@@ -69,6 +69,7 @@ image_upload:
             label: 'Watermark "Captain Coaster"'
             helper: 'Tu peux mettre un watermark Captain Coaster sur la photo, pour éviter la réutilisation sur d''autres sites.'
         upload: 'Envoyer ma photo'
+        back: 'Retour au coaster'
         success: 'La photo a été envoyée. Elle sera validée par un administrateur avant affichage.'
 
 park:
