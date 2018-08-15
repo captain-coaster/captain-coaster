@@ -15,9 +15,9 @@
     <div class="col-sm-3">
       {% if coaster.isRateable %}
         <!-- score -->
-        <div class="panel panel-body">
-          <div class="media no-margin">
-            {% if coaster.score %}
+        {% if coaster.score %}
+          <div class="panel panel-body">
+            <div class="media no-margin">
               <div class="media-left">
                 <i style="color: {{ helper.ratingColor(coaster.score) }};" class="icon-heart6 icon-3x"></i>
               </div>
@@ -46,13 +46,9 @@
                   {% endfor %}
                 </p>
               {% endif %}
-            {% else %}
-              <div class="media-body text-size-small text-muted">
-                {{ 'coaster.rating.notenough'|trans }}
-              </div>
-            {% endif %}
+            </div>
           </div>
-        </div>
+        {% endif %}
         <!-- /score -->
         <!-- star rating -->
         <div class="panel panel-body border-top-primary text-center">
@@ -204,13 +200,6 @@
               <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
             </div>
           {% endif %}
-          {% if coaster.builtCoaster.duration %}
-            <div class="list-group-item">
-              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.duration'|trans }}
-                :</label>
-              <div class="pull-right">{{ coaster.builtCoaster.duration|date("i\\m s\\s") }}</div>
-            </div>
-          {% endif %}
           {% if coaster.openingDate %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
@@ -286,10 +275,17 @@
         <div class="row">
           <div class="panel panel-flat border-top-blue">
             <div class="panel-heading">
-              <h6>{{ 'coaster.photos'|trans }}</h6>
+              <h6>{{ 'coaster.photos.title'|trans }}</h6>
+              {% if coaster.images|length < 8 %}
+                <div class="pull-right">
+                  <a class="text-muted" href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">
+                    {{ 'coaster.photos.button'|trans }}
+                  </a>
+                </div>
+              {% endif %}
             </div>
             <div class="panel-body no-border no-padding-top">
-              {% for image in coaster.images|slice(0, 9) %}
+              {% for image in coaster.images|slice(0, 8) %}
                 <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
                   <a style="margin: 10px;" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
                      rel="gallery">
@@ -298,6 +294,13 @@
                            alt="{{ coaster.name }}">
                     </div>
                   </a>
+                  <span class="text-size-small text-muted pull-right">
+                    {% if image.credit %}
+                      by {{ image.credit }}
+                    {% else %}
+                      &nbsp;
+                    {% endif %}
+                  </span>
                 </div>
               {% endfor %}
             </div>
@@ -307,10 +310,13 @@
         <div class="row">
           <div class="panel panel-flat border-top-blue">
             <div class="panel-heading">
-              <h6>{{ 'coaster.photos'|trans }}</h6>
+              <h6>{{ 'coaster.photos.title'|trans }}</h6>
             </div>
-            <div class="panel-body no-border no-padding-top">
-              <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">Upload a picture[@todo]</a>
+            <div class="panel-body text-center">
+              <p class="mb-15">{{ 'coaster.photos.empty'|trans }}</p>
+              <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn bg-primary-400">
+                {{ 'coaster.photos.button'|trans }}
+              </a>
             </div>
           </div>
         </div>
@@ -369,6 +375,12 @@
           "ratingCount": "{{ coaster.ratings|length }}"
         }
       }
+
+
+
+
+
+
 
     </script>
   {% endif %}

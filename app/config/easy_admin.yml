@@ -40,6 +40,7 @@ easy_admin:
                 - credit
                 - {property: 'enabled', type: 'toggle'}
                 - {property: 'path', type: 'image', base_path: '/images/coasters/'}
+                dql_filter: 'entity.optimized = 1'
             edit:
                 fields:
                 - {property: 'filename', type_options: {disabled: true}}
@@ -49,7 +50,6 @@ easy_admin:
                 - enabled
                 - {property: 'optimized', type_options: {disabled: true}}
                 - {property: 'watermarked', type_options: {disabled: true}}
-                dql_filter: 'entity.optimized = 1'
                 sort: ['updatedAt', 'DESC']
             search:
                 fields: ['coaster.name']

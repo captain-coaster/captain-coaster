@@ -26,7 +26,7 @@ class Image
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, unique=false)
+     * @ORM\Column(type="string", length=255, unique=false, nullable=false)
      */
     private $filename;
 
@@ -63,6 +63,7 @@ class Image
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="BddBundle\Entity\User")
+     * @Assert\NotBlank()
      */
     private $uploader;
 
@@ -70,6 +71,7 @@ class Image
      * @var string
      *
      * @ORM\Column(type="string", length=255, unique=false, nullable=false)
+     * @Assert\NotBlank()
      */
     private $credit;
 
@@ -94,6 +96,7 @@ class Image
      *     mimeTypes = {"image/jpeg"},
      *     maxSize = "8M"
      * )
+     * @Assert\NotBlank()
      */
     private $file;
 

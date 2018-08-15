@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class CoasterController
@@ -117,9 +118,10 @@ class CoasterController extends Controller
      *
      * @param Request $request
      * @param Coaster $coaster
+     * @param TranslatorInterface $translator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function imageUpload(Request $request, Coaster $coaster)
+    public function imageUpload(Request $request, Coaster $coaster, TranslatorInterface $translator)
     {
 //        $this->denyAccessUnlessGranted('upload', $coaster);
 
@@ -138,7 +140,7 @@ class CoasterController extends Controller
             $em->persist($image);
             $em->flush();
 
-            $this->addFlash('info', 'Image uploaded !');
+            $this->addFlash('success', $translator->trans('image_upload.form.success'));
 
             return $this->redirectToRoute('coaster_images_upload', ['slug' => $coaster->getSlug()]);
         }

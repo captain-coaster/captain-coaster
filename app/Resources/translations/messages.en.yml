@@ -44,15 +44,16 @@ coaster:
         manufacturer: 'Manufacturer'
         restraint: 'Restraint'
         forces: 'G-forces'
-        duration: 'Duration'
         opening: 'Opening date'
         closing: 'Closing date'
         vr: 'VR'
         cost: 'Cost'
         kiddie: 'Kiddie'
     parkcoaster: 'Also in %name%'
-    photos: 'Photos'
-    no_photos: 'No photos yet!'
+    photos:
+        title: 'Photos'
+        empty: 'Oops, we don''t have any photos yet for this coaster, but you can send yours!'
+        button: 'Upload a picture'
     location: 'Location'
 
 image_upload:
@@ -68,6 +69,7 @@ image_upload:
             label: 'Watermark "Captain Coaster"'
             helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'
         upload: 'Submit my picture'
+        success: 'Picture was uploaded. It will be reviewed by an administrator before display.'
 
 park:
     opened_coasters: 'opened coaster|opened coasters'

@@ -15,30 +15,27 @@
     {% endfor %}
   {% endfor %}
   <div class="panel panel-flat">
-    {#<div class="panel-heading">#}
-      {#<h5 class="panel-title">Basic form inputs<a class="heading-elements-toggle"><i class="icon-more"></i></a></h5>#}
-    {#</div>#}
     <div class="panel-body">
-      {{ form_start(form) }}
-      {{ form_errors(form) }}
-      <div class="form-group">
-        {{ form_label(form.file, "", {'label_attr': {'class': 'control-label col-lg-2'}}) }}
+      {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+      <div class="form-group {% if form.file.vars.errors|length > 0 %}has-error{% endif %}">
+        {{ form_label(form.file, "", {'label_attr': {'class': 'text-bold col-lg-2'}}) }}
         <div class="col-lg-10">
-          {{ form_widget(form.file) }}
+          {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
+          <span{{ form_errors(form.file) }}
           <span class="help-block">{{ 'image_upload.form.file.helper'|trans }}</span>
         </div>
       </div>
-      <div class="form-group">
-        {{ form_label(form.credit, "", {'label_attr': {'class': 'control-label col-lg-2'}}) }}
+      <div class="form-group {% if form.credit.vars.errors|length > 0 %}has-error{% endif %}">
+        {{ form_label(form.credit, "", {'label_attr': {'class': 'text-bold col-lg-2'}}) }}
         <div class="col-lg-10">
           {{ form_widget(form.credit) }}
+          {{ form_errors(form.credit) }}
           <span class="help-block">{{ 'image_upload.form.credit.helper'|trans }}</span>
         </div>
       </div>
       <div class="form-group">
-        {{ form_label(form.watermarked, "", {'label_attr': {'class': 'control-label col-lg-2'}}) }}
-          {{ form_widget(form.watermarked) }}
-          <span class="help-block">{{ 'image_upload.form.watermark.helper'|trans }}</span>
+        {{ form_widget(form.watermarked) }}
+        <span class="help-block">{{ 'image_upload.form.watermark.helper'|trans }}</span>
       </div>
       <div class="form-group">
         {{ form_widget(form.upload, {'attr': {'class': 'btn btn-primary'}}) }}
