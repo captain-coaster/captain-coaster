@@ -116,4 +116,12 @@ country.na: 'N/A'
 country.burma: 'Birmania'
 country.cyprus: 'Chipre'
 country.ireland: 'Irlanda'
+country.mongolia: 'Mongolia'
+country.czech: 'República Checa'
+
+continent.europe: 'Europa'
+continent.america: 'América'
+continent.asia: 'Asia'
+continent.africa: 'África'
+continent.oceania: 'Oceanía'
 
