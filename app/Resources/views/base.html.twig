@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="{{ app.request.get('_locale') }}">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{{ 'app.title.default'|trans }}{% endblock %} • {{ 'app.name'|trans }}</title>
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('apple-touch-icon-144x144.png') }}" />
-    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('apple-touch-icon-152x152.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32" />
-    <link rel="icon" type="image/png" href="{{ asset('favicon-16x16.png') }}" sizes="16x16" />
-    <meta name="application-name" content="{{ 'app.name'|trans }}"/>
-    <meta name="msapplication-TileColor" content="#FFFFFF" />
-    {#<meta name="msapplication-TileImage" content="mstile-144x144.png" />#}
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
-    {% block header %}{% endblock %}
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-    <link href="{{ asset('build/main.css') }}" rel="stylesheet"/>
-    {% block stylesheets %}{% endblock %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ 'app.title.default'|trans }}{% endblock %} • {{ 'app.name'|trans }}</title>
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ asset('apple-touch-icon-144x144.png') }}"/>
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ asset('apple-touch-icon-152x152.png') }}"/>
+  <link rel="icon" type="image/png" href="{{ asset('favicon-32x32.png') }}" sizes="32x32"/>
+  <link rel="icon" type="image/png" href="{{ asset('favicon-16x16.png') }}" sizes="16x16"/>
+  <meta name="application-name" content="{{ 'app.name'|trans }}"/>
+  <meta name="msapplication-TileColor" content="#FFFFFF"/>
+  {#<meta name="msapplication-TileImage" content="mstile-144x144.png" />#}
+  <link rel="manifest" href="{{ asset('manifest.json') }}">
+  {% block header %}{% endblock %}
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+  <link href="{{ asset('build/main.css') }}" rel="stylesheet"/>
+  {% block stylesheets %}{% endblock %}
 </head>
 <body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
 <!-- main navbar -->
@@ -24,37 +24,37 @@
 <!-- /main navbar -->
 <!-- page container -->
 <div class="page-container">
-    <!-- page content -->
-    <div class="page-content">
-        <!-- main sidebar -->
-        {{ include('sidebar.html.twig') }}
-        <!-- /main sidebar -->
-        <!-- main sidebar -->
-        {% block secondary_sidebar %}{% endblock %}
-        <!-- /main sidebar -->
-        <!-- main content -->
-        <div class="content-wrapper">
-            {% block wide_body %}
-            <!-- page header -->
-            {{ include(
-                'page_header.html.twig',
-                {'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null)}
-            ) }}
-            <!-- /page header -->
-            <!-- Content area -->
-            <div class="content">
-                {{ include('flashes.html.twig') }}
+  <!-- page content -->
+  <div class="page-content">
+    <!-- main sidebar -->
+    {{ include('sidebar.html.twig') }}
+    <!-- /main sidebar -->
+    <!-- main sidebar -->
+    {% block secondary_sidebar %}{% endblock %}
+    <!-- /main sidebar -->
+    <!-- main content -->
+    <div class="content-wrapper">
+      {% block wide_body %}
+        <!-- page header -->
+        {{ include(
+          'page_header.html.twig',
+          {'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null)}
+        ) }}
+        <!-- /page header -->
+        <!-- Content area -->
+        <div class="content">
+          {{ include('flashes.html.twig') }}
 
-                {% block body %}{% endblock %}
+          {% block body %}{% endblock %}
 
-                {{ include('footer.html.twig') }}
-            </div>
-            {% endblock %}
-            <!-- /content area -->
+          {{ include('footer.html.twig') }}
         </div>
-        <!-- /main content -->
+      {% endblock %}
+      <!-- /content area -->
     </div>
-    <!-- /page content -->
+    <!-- /main content -->
+  </div>
+  <!-- /page content -->
 </div>
 <!-- /page container -->
 <!-- Core JS files -->
@@ -73,15 +73,20 @@
     locale = '{{ app.request.locale }}';
     var url = Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'});
     var dataSource = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('n'),
+        datumTokenizer: Bloodhound.tokenizers.obj.nonword('n', 's'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         prefetch: url
     });
-    $('#search-coaster').typeahead({highlight: true}, {
-        displayKey: 'n',
-        source: dataSource.ttAdapter(),
-        limit: 7
-    }).bind('typeahead:select', function (ev, suggestion) {
+    $('#search-coaster').typeahead(
+        {
+            highlight: true,
+            hint: true,
+            autoselect: true
+        }, {
+            display: 'n',
+            source: dataSource.ttAdapter(),
+            limit: 7
+        }).bind('typeahead:select', function (ev, suggestion) {
         window.location.href = Routing.generate(
             suggestion.r,
             {'slug': suggestion.s, '_locale': '{{ app.request.locale }}'}
