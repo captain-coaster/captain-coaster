@@ -67,14 +67,14 @@ easy_admin:
                 - name
                 - {property: 'country', type_options: {choice_translation_domain: 'database'}}
                 - {property: 'slug', type_options: {disabled: true}}
-                - latitude
-                - longitude
+                - {property: 'latitude', type: 'text'}
+                - {property: 'longitude', type: 'text'}
             new:
                 fields:
                 - name
                 - {property: 'country', type_options: {choice_translation_domain: 'database'}}
-                - latitude
-                - longitude
+                - {property: 'latitude', type: 'text'}
+                - {property: 'longitude', type: 'text'}
         Country:
             class: BddBundle\Entity\Country
             disabled_actions: ['delete']
