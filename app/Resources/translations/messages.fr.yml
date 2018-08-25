@@ -146,7 +146,14 @@ me:
         text: 'Voici ta bannière personnalisée, pour afficher fièrement tes coasters et ton Top !'
         getbbcode: 'Copier le BBCode (forums)'
         gethtml: 'Copier en html'
-    stats: 'Coaster ID'
+    stats:
+        title: 'Statistiques'
+        coasters: 'coasters'
+        parks: 'parcs'
+        countries: 'pays'
+        most_country: 'le plus ridé'
+        top_100: 'fait dans le top 100'
+        manufacturer: 'le plus ridé'
 
 top:
     list:

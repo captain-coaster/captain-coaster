@@ -1,9 +1,3 @@
-# user number
-select count(1) from users;
-
-# rating number
-select count(1) from ridden_coaster;
-
 # manufacturer with rating = 5
 select count(1), m.name from ridden_coaster r
   join coaster c on c.id = r.coaster_id
@@ -53,15 +47,6 @@ where r.user_id = 6
 group by t.id
 order by nb desc;
 
-# most ridden manufacturer (always Vekoma)
-select count(1) as nb, m.name from ridden_coaster r
-  join coaster c on c.id = r.coaster_id
-  join built_coaster bc on bc.id = c.built_coaster_id
-  join manufacturer m on m.id = bc.manufacturer_id
-where r.user_id = 25
-group by m.id
-order by nb desc;
-
 # most pro main tags in top (always airtimes)
 select count(1) as nb, sum((1 / lc.position)*10) as nbpoint, t.name from liste l
   join liste_coaster lc on lc.liste_id = l.id
@@ -79,34 +64,4 @@ select count(1) as nb, t.name from ridden_coaster r
   join tag t on t.id = mt.tag_id
 where r.user_id = 25 and rating = 5 and t.`type` = 'pro'
 group by t.id
-order by nb desc;
-
-# pourcentage du top 100 mondial
-select count(1) as nb from ridden_coaster r
-  join coaster c on c.id = r.coaster_id
-where r.user_id = 93
-      and c.rank < 100;
-
-# country where I ride the most
-select count(1) as nb, co.name from ridden_coaster r
-  join coaster c on c.id = r.coaster_id
-  join park p on p.id = c.park_id
-  join country co on co.id = p.country_id
-where r.user_id = 90
-group by co.id
-order by nb desc;
-
-# nombre de pays
-select count(distinct(co.id)) as nb from ridden_coaster r
-  join coaster c on c.id = r.coaster_id
-  join park p on p.id = c.park_id
-  join country co on co.id = p.country_id
-where r.user_id = 1
-order by nb desc;
-
-# nombre de parks
-select count(distinct(p.id)) as nb from ridden_coaster r
-  join coaster c on c.id = r.coaster_id
-  join park p on p.id = c.park_id
-where r.user_id = 90
 order by nb desc;

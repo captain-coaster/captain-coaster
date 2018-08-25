@@ -182,6 +182,7 @@ class RiddenCoasterRepository extends EntityRepository
      * Get all reviews ordered by language
      * @param string $locale
      * @return array|mixed
+     * @throws NonUniqueResultException
      */
     public function findAll(string $locale = 'en')
     {
@@ -315,6 +316,34 @@ class RiddenCoasterRepository extends EntityRepository
                 ->getQuery()
                 ->getSingleScalarResult();
         } catch (NonUniqueResultException $e) {
+            return 0;
+        }
+    }
+
+    /**
+     * @param User $user
+     * @return mixed|string
+     */
+    public function getMostRiddenManufacturer(User $user)
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1) as nb')
+                ->addSelect('m.name as name')
+                ->from('BddBundle:RiddenCoaster', 'r')
+                ->join('r.coaster', 'c')
+                ->join('c.builtCoaster', 'bc')
+                ->join('bc.manufacturer', 'm')
+                ->where('r.user = :user')
+                ->setParameter('user', $user)
+                ->groupBy('m.id')
+                ->orderBy('nb', 'desc')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (\Exception $e) {
+            return ['nb' => 0, 'name' => 'Unknown'];
         }
     }
 }

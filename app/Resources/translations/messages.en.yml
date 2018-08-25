@@ -146,7 +146,14 @@ me:
         text: 'Here is your personal banner, to make the World know about your favorites coasters !'
         getbbcode: 'Copy BBCode (forums)'
         gethtml: 'Copy html'
-    stats: 'Coaster ID'
+    stats:
+        title: 'Overview'
+        coasters: 'coasters'
+        parks: 'parks'
+        countries: 'countries'
+        most_country: 'most ridden in'
+        top_100: 'ridden in top 100'
+        manufacturer: 'most ridden'
 
 top:
     list:
