@@ -29,6 +29,7 @@ class ImageListener
 
     /**
      * @param LifecycleEventArgs $args
+     * @throws \Exception
      */
     public function prePersist(LifecycleEventArgs $args)
     {
@@ -48,18 +49,24 @@ class ImageListener
     }
 
     /**
-     * @param LifecycleEventArgs $args
+     * Update main image of a coaster after remove.
      */
-    public function postRemove(LifecycleEventArgs $args)
+    public function postRemove()
     {
-        $entity = $args->getEntity();
+        $this->imageManager->setMainImages();
+    }
 
-        // @todo faire mieux
+    /**
+     * Update main image of a coaster after update.
+     */
+    public function postUpdate()
+    {
         $this->imageManager->setMainImages();
     }
 
     /**
      * @param $entity
+     * @throws \Exception
      */
     private function uploadFile($entity)
     {

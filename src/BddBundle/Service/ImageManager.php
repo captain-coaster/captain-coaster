@@ -6,11 +6,11 @@ use BddBundle\Entity\Image;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Imagine\Filter;
-use Imagine\Imagick\Imagine;
 use Imagine\Image\Box;
 use Imagine\Image\BoxInterface;
 use Imagine\Image\Metadata\ExifMetadataReader;
 use Imagine\Image\Point;
+use Imagine\Imagick\Imagine;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -160,19 +160,7 @@ class ImageManager
     }
 
     /**
-     * @param Image $image
-     */
-    public function enable(Image $image)
-    {
-        $image->setEnabled(true);
-        $this->em->persist($image);
-        $this->em->flush();
-
-        $this->setMainImages();
-    }
-
-    /**
-     * Reset main image shortcut
+     * Update main image property of all coasters
      * @todo faire mieux :)
      */
     public function setMainImages()
