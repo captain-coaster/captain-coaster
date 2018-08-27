@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * ListeCoaster
  *
- * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="unique_coaster_liste", columns={"liste_id", "coaster_id"})})
+ * @ORM\Table()
  * @ORM\Entity(repositoryClass="BddBundle\Repository\ListeCoasterRepository")
  */
 class ListeCoaster
