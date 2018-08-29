@@ -1,28 +1,18 @@
 <div class="page-header page-header-default">
-    <div class="page-header-content">
-        <div class="page-title">
-            <h1><a style="color:#333;" onclick="goBack();"><i class="icon-arrow-left52 position-left"></i></a>
-                <span class="text-semibold">{{ title }}</span>
-                {% if subTitle %} - {{ subTitle }}{% endif %}
-            </h1>
-        </div>
-        <div class="heading-elements visible-elements">
-            <form class="heading-form" action="#">
-                <div class="form-group">
-                    <div class="has-feedback">
-                        <input id="search-coaster" type="search" class="form-control border-blue-600 border-lg"
-                               placeholder="{{ 'app.header.search'|trans }}">
-                        <div class="form-control-feedback">
-                            <i class="icon-search4 text-size-small text-muted"></i>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
+  <div class="page-header-content">
+    <div class="page-title">
+      <h1><a style="color:#333;" onclick="window.history.back();"><i class="icon-arrow-left52 position-left"></i></a>
+        <span class="text-semibold">{{ title }}</span>{% if subTitle %} • {{ subTitle }}{% endif %}
+      </h1>
     </div>
+    <div class="heading-elements visible-elements">
+      <div class="form-group">
+        <div class="has-feedback">
+          <input id="search-coaster" type="search" class="form-control border-blue-600 border-lg"
+                 placeholder="{{ 'app.header.search'|trans }}">
+          <div class="form-control-feedback"><i class="icon-search4 text-size-small text-muted"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<script type="text/javascript">
-    function goBack() {
-        window.history.back();
-    }
-</script>

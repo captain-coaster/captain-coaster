@@ -8,7 +8,9 @@
     <ul class="nav navbar-nav visible-xs-block">
       <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
       <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
-      <li><a class="sidebar-mobile-secondary-toggle"><i class="icon-more"></i></a></li>
+      {% if pageHasFilters is defined %}
+      <li><a class="sidebar-mobile-secondary-toggle"><i class="icon-filter3"></i></a></li>
+      {% endif %}
     </ul>
   </div>
   <div class="navbar-collapse collapse" id="navbar-mobile">

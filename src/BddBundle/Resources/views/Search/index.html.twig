@@ -3,102 +3,104 @@
 {% set title = 'search_index.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
+{% set pageHasFilters = true %}
+
 {% block secondary_sidebar %}
-    <div class="sidebar sidebar-secondary sidebar-default">
-        <div class="sidebar-content">
-            <form action="#">
-                {% if is_granted('ROLE_USER') %}
-                    <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
-                {% endif %}
-                <!-- Sidebar search -->
-                <div class="sidebar-category">
-                    <div class="category-content">
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="filters[name]"
-                                   placeholder="Name"
-                                   onkeyup="filterData();">
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="filters[openingDate]" onchange="filterData();">
-                                <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
-                                {% for filter in filtersForm.openingDate %}
-                                    <option value="{{ filter.year }}">{{ filter.year }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="filters[score]" onchange="filterData();">
-                                <option value="">{{ 'map_index.filter.score'|trans }}</option>
-                                {% for i in range(10, 90, 10) %}
-                                    <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                                <label class="display-block">
-                                    {{ 'map_index.filter.notridden'|trans }}
-                                    <input name="filters[notridden]" type="checkbox" class="switchery"
-                                           onchange="filterData();"
-                                           {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
-                                <option value="">Manufacturer</option>
-                                {% for filter in filtersForm.manufacturer %}
-                                    <option value="{{ filter.id }}">{{ filter.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </form>
+  <div class="sidebar sidebar-secondary sidebar-default">
+    <div class="sidebar-content">
+      <form action="#">
+        {% if is_granted('ROLE_USER') %}
+          <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
+        {% endif %}
+        <!-- Sidebar search -->
+        <div class="sidebar-category">
+          <div class="category-content">
+            <div class="form-group">
+              <input type="text" class="form-control" name="filters[name]"
+                     placeholder="Name"
+                     onkeyup="filterData();">
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+                <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
+                {% for filter in filtersForm.openingDate %}
+                  <option value="{{ filter.year }}">{{ filter.year }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="filters[score]" onchange="filterData();">
+                <option value="">{{ 'map_index.filter.score'|trans }}</option>
+                {% for i in range(10, 90, 10) %}
+                  <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                <label class="display-block">
+                  {{ 'map_index.filter.notridden'|trans }}
+                  <input name="filters[notridden]" type="checkbox" class="switchery"
+                         onchange="filterData();"
+                         {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                <option value="">Manufacturer</option>
+                {% for filter in filtersForm.manufacturer %}
+                  <option value="{{ filter.id }}">{{ filter.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
         </div>
+      </form>
     </div>
+  </div>
 {% endblock %}
 
 {% block body %}
-    <div id="search-result"></div>
+  <div id="search-result"></div>
 {% endblock %}
 
 {% block javascripts %}
-    <script type="text/javascript">
-        function filterData() {
-            $.ajax({
-                url: '/fr/search/coasters',
-                type: "GET",
-                data: $("form").serialize()
-            }).done(function (data) {
-                $('#search-result').html(data);
-                ajaxPager();
-            });
-        }
+  <script type="text/javascript">
+      function filterData() {
+          $.ajax({
+              url: '/fr/search/coasters',
+              type: "GET",
+              data: $("form").serialize()
+          }).done(function (data) {
+              $('#search-result').html(data);
+              ajaxPager();
+          });
+      }
 
-        // at loading
-        filterData();
+      // at loading
+      filterData();
 
-        var ajaxPager = function () {
-            $("ul.pagination a").click(function (e) {
-                e.preventDefault();
-                //$('.orders').html('<img src="' + loadingUrl + '">');
+      var ajaxPager = function () {
+          $("ul.pagination a").click(function (e) {
+              e.preventDefault();
+              //$('.orders').html('<img src="' + loadingUrl + '">');
 
-                var pageUrl = $(this).attr('href');
+              var pageUrl = $(this).attr('href');
 
-                console.log(pageUrl);
+              console.log(pageUrl);
 
-                $.ajax({
-                    url: pageUrl,
-                    type: 'GET',
-                    dataType: 'html'
-                }).done(function (data) {
-                    $('#search-result').html(data);
-                    ajaxPager();
-                });
-            });
-        };
-        // at loading
-        ajaxPager();
-    </script>
+              $.ajax({
+                  url: pageUrl,
+                  type: 'GET',
+                  dataType: 'html'
+              }).done(function (data) {
+                  $('#search-result').html(data);
+                  ajaxPager();
+              });
+          });
+      };
+      // at loading
+      ajaxPager();
+  </script>
 {% endblock %}

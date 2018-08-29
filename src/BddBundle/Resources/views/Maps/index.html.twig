@@ -3,174 +3,176 @@
 {% block title %}{{ 'map_index.title'|trans }}{% endblock %}
 
 {% block header %}
-    <meta name="description" content="{{ 'map_index.description'|trans }}"/>
+  <meta name="description" content="{{ 'map_index.description'|trans }}"/>
 {% endblock %}
 
+{% set pageHasFilters = true %}
+
 {% block secondary_sidebar %}
-<div class="sidebar sidebar-secondary sidebar-default">
+  <div class="sidebar sidebar-secondary sidebar-default">
     {#{{ dump(markers) }}#}
     <div class="sidebar-content">
-        <form action="#">
-            <!-- Sidebar search -->
-            <div class="sidebar-category">
-                <div class="category-title">
-                    <span>{{ 'map_index.filter.title'|trans }}</span>
-                    <ul class="icons-list">
-                        <li><a href="#" data-action="collapse"></a></li>
-                    </ul>
-                </div>
-
-                {% if is_granted('ROLE_USER') %}
-                    <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
-                {% endif %}
-
-                <div class="category-content">
-                    <div class="form-group">
-                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                            <label class="display-block">
-                                {{ 'map_index.filter.status'|trans }}
-                                <input name="filters[status]" type="checkbox" class="switchery">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                            <label class="display-block">
-                                {{ 'map_index.filter.kiddie'|trans }}
-                                <input name="filters[kiddie]" type="checkbox" class="switchery">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                            <label class="display-block">
-                                {{ 'map_index.filter.notridden'|trans }}
-                                <input name="filters[notridden]" type="checkbox" class="switchery"
-                                       {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
-                            <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
-                            {% for filter in filters.manufacturer %}
-                                <option value="{{ filter.id }}">{{ filter.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-control" name="filters[openingDate]" onchange="filterData();">
-                            <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
-                            {% for year in filters.openingDate %}
-                                <option value="{{ year.year }}">{{ year.year }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <select class="form-control" name="filters[score]" onchange="filterData();">
-                            <option value="">{{ 'map_index.filter.score'|trans }}</option>
-                            {% for i in range(10, 90, 10) %}
-                                <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <!-- /sidebar search -->
-        </form>
-        <div class="category-title">
-            <span>{{ 'map_index.results'|trans }}</span>
+      <form action="#">
+        <!-- Sidebar search -->
+        <div class="sidebar-category">
+          <div class="category-title">
+            <span>{{ 'map_index.filter.title'|trans }}</span>
             <ul class="icons-list">
-                <li><a href="#" data-action="collapse"></a></li>
+              <li><a href="#" data-action="collapse"></a></li>
             </ul>
+          </div>
+
+          {% if is_granted('ROLE_USER') %}
+            <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
+          {% endif %}
+
+          <div class="category-content">
+            <div class="form-group">
+              <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                <label class="display-block">
+                  {{ 'map_index.filter.status'|trans }}
+                  <input name="filters[status]" type="checkbox" class="switchery">
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                <label class="display-block">
+                  {{ 'map_index.filter.kiddie'|trans }}
+                  <input name="filters[kiddie]" type="checkbox" class="switchery">
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                <label class="display-block">
+                  {{ 'map_index.filter.notridden'|trans }}
+                  <input name="filters[notridden]" type="checkbox" class="switchery"
+                         {% if not is_granted('ROLE_USER') %}disabled="disabled"{% endif %}>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
+                {% for filter in filters.manufacturer %}
+                  <option value="{{ filter.id }}">{{ filter.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+                <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
+                {% for year in filters.openingDate %}
+                  <option value="{{ year.year }}">{{ year.year }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <select class="form-control" name="filters[score]" onchange="filterData();">
+                <option value="">{{ 'map_index.filter.score'|trans }}</option>
+                {% for i in range(10, 90, 10) %}
+                  <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
         </div>
-        <div id="result-map" class="category-content no-padding"></div>
+        <!-- /sidebar search -->
+      </form>
+      <div class="category-title">
+        <span>{{ 'map_index.results'|trans }}</span>
+        <ul class="icons-list">
+          <li><a href="#" data-action="collapse"></a></li>
+        </ul>
+      </div>
+      <div id="result-map" class="category-content no-padding"></div>
     </div>
-</div>
+  </div>
 {% endblock %}
 
 {% block wide_body %}
-<div id="map" style="height:100vh;"></div>
+  <div id="map" style="height:100vh;"></div>
 {% endblock %}
 
 {% block javascripts %}
-<script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
-<!-- /theme JS files -->
-<script type="text/javascript">
-    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-    elems.forEach(function (html) {
-        var switchery = new Switchery(html);
-    });
-    $('input').on("click", function () {
-        filterData();
-    });
+  <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
+  <!-- /theme JS files -->
+  <script type="text/javascript">
+      var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+      elems.forEach(function (html) {
+          var switchery = new Switchery(html);
+      });
+      $('input').on("click", function () {
+          filterData();
+      });
 
-    var gmarkers = [];
-    var map;
-    var markers = {{ markers|raw }};
+      var gmarkers = [];
+      var map;
+      var markers = {{ markers|raw }};
 
-    function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 5,
-            center: {lat: 48.384098, lng: 7.970846}
-        });
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function (position) {
-                initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                map.setCenter(initialLocation);
-            });
-        }
-        setMarkers(map, markers);
-    }
+      function initMap() {
+          map = new google.maps.Map(document.getElementById('map'), {
+              zoom: 5,
+              center: {lat: 48.384098, lng: 7.970846}
+          });
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(function (position) {
+                  initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                  map.setCenter(initialLocation);
+              });
+          }
+          setMarkers(map, markers);
+      }
 
-    function setMarkers(map, markers) {
-        // Adds markers to the map.
-        for (var i = 0; i < markers.length; i++) {
-            var park = markers[i];
-            var marker = new google.maps.Marker({
-                position: {lat: park['latitude'], lng: park['longitude']},
-                map: map,
-                title: park['name'],
-                label: park['nb'],
-                zindex: i,
-                parkId: park['id']
-            });
-            gmarkers.push(marker);
-            marker.addListener('click', function () {
-                displayCoaster(this.parkId);
-            });
-        }
-    }
+      function setMarkers(map, markers) {
+          // Adds markers to the map.
+          for (var i = 0; i < markers.length; i++) {
+              var park = markers[i];
+              var marker = new google.maps.Marker({
+                  position: {lat: park['latitude'], lng: park['longitude']},
+                  map: map,
+                  title: park['name'],
+                  label: park['nb'],
+                  zindex: i,
+                  parkId: park['id']
+              });
+              gmarkers.push(marker);
+              marker.addListener('click', function () {
+                  displayCoaster(this.parkId);
+              });
+          }
+      }
 
-    function removeMarkers() {
-        for (i = 0; i < gmarkers.length; i++) {
-            gmarkers[i].setMap(null);
-        }
-    }
+      function removeMarkers() {
+          for (i = 0; i < gmarkers.length; i++) {
+              gmarkers[i].setMap(null);
+          }
+      }
 
-    function displayCoaster(data) {
-        $.ajax({
-            url: '/{{ app.request.locale }}/map/parks/' + data + '/coasters',
-            type: "GET",
-            data: $("form").serialize()
-        }).done(function (coasters) {
-            $('#result-map').html(coasters);
-        });
+      function displayCoaster(data) {
+          $.ajax({
+              url: '/{{ app.request.locale }}/map/parks/' + data + '/coasters',
+              type: "GET",
+              data: $("form").serialize()
+          }).done(function (coasters) {
+              $('#result-map').html(coasters);
+          });
 
-    }
+      }
 
-    function filterData() {
-        $.ajax({
-            url: '/fr/map/markers',
-            type: "GET",
-            data: $("form").serialize()
-        }).done(function (data) {
-            removeMarkers();
-            setMarkers(map, data);
-        });
-    }
-</script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
-</script>
+      function filterData() {
+          $.ajax({
+              url: '/fr/map/markers',
+              type: "GET",
+              data: $("form").serialize()
+          }).done(function (data) {
+              removeMarkers();
+              setMarkers(map, data);
+          });
+      }
+  </script>
+  <script async defer
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
+  </script>
 {% endblock %}
