@@ -76,6 +76,8 @@ class MapsController extends Controller
     }
 
     /**
+     * Display coasters when you click on a park
+     *
      * @param Request $request
      * @param Park $park
      * @return Response
@@ -86,15 +88,9 @@ class MapsController extends Controller
     {
         $filters = $request->get('filters', []);
 
-        $user = $this
-            ->getDoctrine()
-            ->getRepository('BddBundle:User')
-            ->findOneBy(['id' => $filters['user']]);
-
         $coasters = $this->getDoctrine()->getRepository('BddBundle:Coaster')->getCoastersForMap(
             $park,
-            $filters,
-            $user
+            $filters
         );
 
         return $this->render('@Bdd/Maps/listCoasters.html.twig', ['coasters' => $coasters]);

@@ -13,7 +13,6 @@ use Doctrine\ORM\QueryBuilder;
  */
 class CoasterRepository extends \Doctrine\ORM\EntityRepository
 {
-
     /**
      * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
@@ -134,11 +133,35 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * Return coasters for nearby page
+     *
+     * @param array $filters
+     * @return \Doctrine\ORM\Query
+     */
+    public function getSearchCoasters(array $filters)
+    {
+        $qb = $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c AS item')
+            ->from('BddBundle:Coaster', 'c')
+            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
+            ->innerJoin('c.builtCoaster', 'bc', 'WITH', 'c.builtCoaster = bc.id')
+            ->innerJoin('bc.manufacturer', 'm', 'WITH', 'bc.manufacturer = m.id')
+            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
+            ->where('p.latitude is not null')
+            ->andWhere('p.longitude is not null');
+
+        $this->applyFilters($qb, $filters);
+
+        return $qb->getQuery();
+    }
+
+    /**
      * @param QueryBuilder $qb
      * @param array $filters
-     * @param User|null $user
      */
-    private function applyFilters(QueryBuilder $qb, array $filters = [], $user = null)
+    private function applyFilters(QueryBuilder $qb, array $filters = [])
     {
         // Filter by manufacturer
         $this->filterManufacturer($qb, $filters);
@@ -156,6 +179,26 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->filterKiddie($qb, $filters);
         // Filter name.
         $this->filterName($qb, $filters);
+        // Order by
+        $this->orderBy($qb, $filters);
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function orderBy(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('latitude', $filters) && $filters['latitude'] !== '') {
+            $qb->addSelect(
+                'POWER(POWER(111.2 * (p.latitude - :latitude), 2) + POWER(111.2 * (:longitude - p.longitude) * COS(p.latitude / 57.3), 2), 0.5) AS distance'
+            )
+                ->orderBy('distance', 'asc')
+                ->setParameter('latitude', $filters['latitude'])
+                ->setParameter('longitude', $filters['longitude']);
+        } else {
+            $qb->orderBy('c.updatedAt', 'desc');
+        }
     }
 
     /**
@@ -197,12 +240,13 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * Filter coasters user has not ridden. User based filter.
+     *
      * @param QueryBuilder $qb
      * @param array $filters
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
-        // Filter by not ridden. User based filter.
         if (array_key_exists('notridden', $filters) && array_key_exists('user', $filters)) {
             $qb2 = $this
                 ->getEntityManager()
@@ -276,27 +320,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
                 ->andWhere('c.name like :name')
                 ->setParameter('name', sprintf('%%%s%%', $filters['name']));
         }
-    }
-
-    /**
-     * @param array $filters
-     * @return array
-     */
-    public function getFilteredCoasters(array $filters)
-    {
-        $qb = $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('c')
-            ->from('BddBundle:Coaster', 'c')
-            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->innerJoin('c.builtCoaster', 'bc', 'WITH', 'c.builtCoaster = bc.id')
-            ->innerJoin('bc.manufacturer', 'm', 'WITH', 'bc.manufacturer = m.id')
-            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id');
-
-        $this->applyFilters($qb, $filters);
-
-        return $qb->getQuery()->getResult();
     }
 
     /**

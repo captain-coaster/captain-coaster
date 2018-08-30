@@ -36,6 +36,7 @@ class SearchController extends Controller
      * @Route(
      *     "/coasters",
      *     name="search_coasters_ajax",
+     *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
      * @Method({"GET"})
@@ -98,14 +99,15 @@ class SearchController extends Controller
     {
         $query = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
-            ->getFilteredCoasters($filters);
+            ->getSearchCoasters($filters);
 
         $paginator = $this->get('knp_paginator');
 
         return $paginator->paginate(
             $query,
             $page,
-            30
+            20,
+            ['wrap-queries' => true]
         );
     }
 

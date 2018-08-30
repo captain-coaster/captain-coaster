@@ -229,7 +229,7 @@ navbar:
 
 sidebar:
     index: 'Home'
-    search: 'Search a coaster'
+    search: 'Find coasters nearby'
     ranking: 'Best coasters ranking'
     users: 'Our riders'
     map: 'Coasters map'
@@ -278,7 +278,11 @@ notif:
         unsubscribe: 'To stop receiving this, please change your <a href="%link_path%">notification preferences</a>.'
 
 search_index:
-    title: 'Search a coaster'
+    title: 'Find coasters nearby'
+    num_found: '%num% coasters found'
+    geo_on: 'Geolocation enabled'
+    geo_off: 'Geolocation not enabled'
+    km_away: '%num% km away'
 
 image:
     credit: 'Credit: %name%'

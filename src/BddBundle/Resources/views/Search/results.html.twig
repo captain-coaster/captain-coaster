@@ -1,36 +1,45 @@
 <div class="panel panel-white">
-    <div class="panel-heading">
-        <h6 class="panel-title text-semibold">{{ coasters.getTotalItemCount }} coasters found</h6>
-    </div>
+  <div class="panel-heading">
+    <h6 class="panel-title text-semibold">{{ 'search_index.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
+      {% if coasters.0 is defined and coasters.0.distance is defined %}
+        <span class="pull-right text-green text-size-small">{{ 'search_index.geo_on'|trans }}</span>
+      {% else %}
+        <span class="pull-right text-danger text-size-small">{{ 'search_index.geo_off'|trans }}</span>
+      {% endif %}
+    </h6>
+  </div>
 
-    <ul class="media-list">
-        {% for coaster in coasters %}
-        <li class="media panel-body stack-media-on-mobile">
-            <div class="media-left">
-                <a href="#">
-                    <img src="{{ asset('images/badges/more.png') }}" class="img-rounded img-lg" alt="">
-                </a>
-            </div>
+  <ul class="media-list">
+    {% for coaster in coasters %}
+      <li class="media panel-body stack-media-on-mobile">
+        <div class="media-left">
+          {% if coaster.item.mainImage is not null %}
+            <img src="{{ coaster.item.mainImage.path | imagine_filter('coaster_ranking') }}"
+                 class="img-rounded"
+                 style="width:96px;"
+                 alt="{{ coaster.item.name }}">
+          {% endif %}
+        </div>
 
-            <div class="media-body">
-                <h6 class="media-heading text-semibold">
-                    <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                        {{ coaster.name }}
-                    </a>
-                    -
-                    <a href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
-                        {{ coaster.park.name }}
-                    </a>
-                </h6>
+        <div class="media-body">
+          <h6 class="media-heading text-semibold">
+            <a href="{{ path('bdd_show_coaster', {'slug': coaster.item.slug}) }}">
+              {{ coaster.item.name }}
+            </a>
+            -
+            <a href="{{ path('park_show', {'slug': coaster.item.park.slug}) }}">
+              {{ coaster.item.park.name }}
+            </a>
+          </h6>
 
-                <ul class="list-inline list-inline-separate text-muted mb-10">
-                    <li><a href="#" class="text-muted">{{ coaster.builtCoaster.types|join(', ') }}</a></li>
-                    <li>{{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}</li>
-                </ul>
-            </div>
-        </li>
-        {% endfor %}
-    </ul>
+          <ul class="list-inline list-inline-separate text-muted mb-10">
+            <li>{{ coaster.item.builtcoaster.types|join(', ') }}</li>
+            <li>{% if coaster.distance is defined %}{{ 'search_index.km_away'|trans({'%num%': coaster.distance|number_format(0)}) }}{% endif %}</li>
+          </ul>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
 </div>
 
 {{ knp_pagination_render(coasters) }}

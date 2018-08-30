@@ -12,6 +12,8 @@
         {% if is_granted('ROLE_USER') %}
           <input name="filters[user]" type="hidden" value="{{ app.user.id }}">
         {% endif %}
+        <input id="form-latitude" name="filters[latitude]" type="hidden">
+        <input id="form-longitude" name="filters[longitude]" type="hidden">
         <!-- Sidebar search -->
         <div class="sidebar-category">
           <div class="category-content">
@@ -67,9 +69,23 @@
 
 {% block javascripts %}
   <script type="text/javascript">
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(function (position) {
+              $("#form-latitude").val(position.coords.latitude);
+              $("#form-longitude").val(position.coords.longitude);
+              filterData();
+          }, function (position) {
+              console.log(position);
+              filterData();
+          });
+      } else {
+          filterData();
+      }
+
       function filterData() {
+          var url = Routing.generate('search_coasters_ajax', {'_locale': '{{ app.request.locale }}'});
           $.ajax({
-              url: '/fr/search/coasters',
+              url: url,
               type: "GET",
               data: $("form").serialize()
           }).done(function (data) {
@@ -78,17 +94,10 @@
           });
       }
 
-      // at loading
-      filterData();
-
       var ajaxPager = function () {
           $("ul.pagination a").click(function (e) {
               e.preventDefault();
-              //$('.orders').html('<img src="' + loadingUrl + '">');
-
               var pageUrl = $(this).attr('href');
-
-              console.log(pageUrl);
 
               $.ajax({
                   url: pageUrl,
@@ -100,7 +109,5 @@
               });
           });
       };
-      // at loading
-      ajaxPager();
   </script>
 {% endblock %}

@@ -229,7 +229,7 @@ navbar:
 
 sidebar:
     index: 'Accueil'
-    search: 'Rechercher un coaster'
+    search: 'Coasters à proximité'
     ranking: 'Classement des coasters'
     users: 'Nos riders'
     map: 'Carte des coasters'
@@ -278,7 +278,11 @@ notif:
         unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="%link_path%">préférences de notification</a>.'
 
 search_index:
-    title: 'Rechercher un coaster'
+    title: 'Coasters à proximité'
+    num_found: '%num% coasters trouvés'
+    geo_on: 'Localisation activée'
+    geo_off: 'Localisation désactivée'
+    km_away: '%num% km'
 
 badge:
     rating1: '1ère note'
