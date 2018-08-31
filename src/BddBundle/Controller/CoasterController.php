@@ -237,6 +237,17 @@ class CoasterController extends Controller
     }
 
     /**
+     * Learn more on the ranking
+     *
+     * @Route("/ranking/learn-more", name="coaster_ranking_learn")
+     * @Method({"GET"})
+     */
+    public function learnRanking()
+    {
+        return $this->render('@Bdd/Coaster/learn_more.html.twig');
+    }
+
+    /**
      * Show details of a coaster
      *
      * @Route("/{slug}", name="bdd_show_coaster", options = {"expose" = true})

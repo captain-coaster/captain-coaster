@@ -88,6 +88,8 @@ coaster_ranking:
         ratings: 'notes'
         comparisons: 'comparaisons analysées'
         in_tops: 'coasters dans les Tops'
+    learn:
+        title: 'Comment fonctionne le classement?'
 
 map_index:
     title: 'Carte des coasters'

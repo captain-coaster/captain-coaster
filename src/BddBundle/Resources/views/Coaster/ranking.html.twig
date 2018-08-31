@@ -16,11 +16,15 @@
       <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans }}</h6>
       <div class="heading-elements visible-elements">
         {% if nextRankingDate %}
-          <span class="heading-text">
+          <span class="heading-text text-muted">
             <i class="icon-history text-warning position-left"></i>
             {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
           </span>
         {% endif %}
+        <span class="heading-text text-muted">
+          <i class="icon-plus2 text-warning position-left"></i>
+          <a class="text-muted" href="{{ path('coaster_ranking_learn') }}">Learn more about the ranking</a>
+        </span>
       </div>
     </div>
     <div class="panel-body text-center">
@@ -50,8 +54,10 @@
       </div>
       <div class="col-xs-3">
         <div class="content-group">
-          <h6 class="text-semibold no-margin"><i
-                class="icon-git-compare position-left text-slate"></i> {{ ranking.comparisonNumber|shortNum }}</h6>
+          <h6 class="text-semibold no-margin">
+            <i class="icon-git-compare position-left text-slate"></i>&nbsp;&nbsp;
+            {{ ranking.comparisonNumber|shortNum }}
+          </h6>
           <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.comparisons'|trans }}</span>
         </div>
       </div>
