@@ -31,6 +31,10 @@ sitemap:
     path: "/sitemap.xml"
     defaults: { _controller: BddBundle:Sitemap:index, "_format": "xml" }
 
+sitemap_image:
+    path: "/sitemap_image.xml"
+    defaults: { _controller: BddBundle:Sitemap:image, "_format": "xml" }
+
 #fos_user:
 #    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 

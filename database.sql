@@ -1,13 +1,3 @@
-SELECT c.name as cname, p.name as pname, p.latitude, p.longitude, SQRT(
-    POW(111.2 * (latitude - 48.827252), 2) +
-    POW(111.2 * (2.3309263 - longitude) * COS(latitude / 57.3), 2)) AS distance
-FROM coaster c
-JOIN park p ON p.id = c.park_id
-WHERE latitude IS NOT NULL
-AND longitude IS NOT NULL
-ORDER BY distance ASC
-LIMIT 0, 30;
-
 # manufacturer with rating = 5
 select count(1), m.name from ridden_coaster r
   join coaster c on c.id = r.coaster_id

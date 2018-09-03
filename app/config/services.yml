@@ -49,6 +49,24 @@ services:
             $emailFrom: '%mail_from%'
             $emailFromName: '%mail_from_name%'
 
+    BddBundle\Service\SitemapService:
+        arguments:
+            $locales: '%app.locales.array%'
+
+    BddBundle\Service\DiscordMonologHandler:
+        arguments:
+            $client: '@httplug.client.avatar'
+            $factory: '@httplug.message_factory'
+            $url: '%discord_url%'
+        public: true
+
+    BddBundle\Doctrine\ImageListener:
+        tags:
+        - {name: doctrine.event_listener, event: prePersist, lazy: true}
+        - {name: doctrine.event_listener, event: postUpdate, lazy: true}
+        - {name: doctrine.event_listener, event: preRemove, lazy: true}
+        - {name: doctrine.event_listener, event: postRemove, lazy: true}
+
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments:
@@ -58,20 +76,6 @@ services:
 
     Twig\Extensions\IntlExtension:
         tags: [twig.extension]
-
-    BddBundle\Doctrine\ImageListener:
-        tags:
-            - {name: doctrine.event_listener, event: prePersist, lazy: true}
-            - {name: doctrine.event_listener, event: postUpdate, lazy: true}
-            - {name: doctrine.event_listener, event: preRemove, lazy: true}
-            - {name: doctrine.event_listener, event: postRemove, lazy: true}
-
-    BddBundle\Service\DiscordMonologHandler:
-        arguments:
-            $client: '@httplug.client.avatar'
-            $factory: '@httplug.message_factory'
-            $url: '%discord_url%'
-        public: true
 
     Gedmo\Sluggable\SluggableListener:
         alias: stof_doctrine_extensions.listener.sluggable
