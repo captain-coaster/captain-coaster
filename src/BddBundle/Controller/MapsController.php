@@ -32,7 +32,7 @@ class MapsController extends Controller
             '@Bdd/Maps/index.html.twig',
             [
                 'markers' => json_encode($this->getMarkers()),
-                'filters' => $this->getFilters(),
+                'filters' => $this->getFilters(["status" => "on"]),
             ]
         );
     }

@@ -31,7 +31,8 @@
               <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
                 <label class="display-block">
                   {{ 'map_index.filter.status'|trans }}
-                  <input name="filters[status]" type="checkbox" class="switchery">
+                  <input name="filters[status]" type="checkbox" class="switchery"
+                         {% if filters.status == "on" %}checked{% endif %}>
                 </label>
               </div>
             </div>

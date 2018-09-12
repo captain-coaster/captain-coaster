@@ -215,6 +215,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * Filter only operating coasters
+     *
      * @param QueryBuilder $qb
      * @param array $filters
      */

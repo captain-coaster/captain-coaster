@@ -1,3 +1,9 @@
+# users and home parks
+select p.name, u.username from users u
+join park p on p.id = u.home_park_id
+where home_park_id is not null
+order by p.country_id, p.name;
+
 # manufacturer with rating = 5
 select count(1), m.name from ridden_coaster r
   join coaster c on c.id = r.coaster_id
