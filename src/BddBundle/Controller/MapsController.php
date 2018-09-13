@@ -28,11 +28,13 @@ class MapsController extends Controller
      */
     public function indexAction()
     {
+        $filters = ["status" => "on"];
+
         return $this->render(
             '@Bdd/Maps/index.html.twig',
             [
-                'markers' => json_encode($this->getMarkers()),
-                'filters' => $this->getFilters(["status" => "on"]),
+                'markers' => json_encode($this->getMarkers($filters)),
+                'filters' => $this->getFilters($filters),
             ]
         );
     }

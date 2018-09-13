@@ -124,6 +124,8 @@
               });
           }
           setMarkers(map, markers);
+
+          var markerCluster = new MarkerClusterer(map, gmarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
       }
 
       function setMarkers(map, markers) {
@@ -173,6 +175,8 @@
           });
       }
   </script>
+  <script
+      src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
   <script async defer
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
   </script>
