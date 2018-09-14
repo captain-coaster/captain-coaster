@@ -81,13 +81,6 @@
         </div>
         <!-- /sidebar search -->
       </form>
-      <div class="category-title">
-        <span>{{ 'map_index.results'|trans }}</span>
-        <ul class="icons-list">
-          <li><a href="#" data-action="collapse"></a></li>
-        </ul>
-      </div>
-      <div id="result-map" class="category-content no-padding"></div>
     </div>
   </div>
 {% endblock %}
@@ -124,11 +117,10 @@
               });
           }
           setMarkers(map, markers);
-
-          var markerCluster = new MarkerClusterer(map, gmarkers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
       }
 
       function setMarkers(map, markers) {
+          var infoWindow = new google.maps.InfoWindow();
           // Adds markers to the map.
           for (var i = 0; i < markers.length; i++) {
               var park = markers[i];
@@ -142,7 +134,17 @@
               });
               gmarkers.push(marker);
               marker.addListener('click', function () {
-                  displayCoaster(this.parkId);
+                  infoWindow.setContent('Loading...');
+                  infoWindow.open(map, this);
+
+                  $.ajax({
+                      url: Routing.generate('map_coasters_ajax', {'id': this.parkId, '_locale': '{{ app.request.locale }}'}),
+                      type: "GET",
+                      data: $("form").serialize()
+                  }).done(function (coasters) {
+                      // $('#result-map').html(coasters);
+                      infoWindow.setContent(coasters);
+                  });
               });
           }
       }
@@ -151,17 +153,6 @@
           for (i = 0; i < gmarkers.length; i++) {
               gmarkers[i].setMap(null);
           }
-      }
-
-      function displayCoaster(data) {
-          $.ajax({
-              url: '/{{ app.request.locale }}/map/parks/' + data + '/coasters',
-              type: "GET",
-              data: $("form").serialize()
-          }).done(function (coasters) {
-              $('#result-map').html(coasters);
-          });
-
       }
 
       function filterData() {
@@ -175,8 +166,6 @@
           });
       }
   </script>
-  <script
-      src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
   <script async defer
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
   </script>

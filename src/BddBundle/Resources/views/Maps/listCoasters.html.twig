@@ -1,13 +1,13 @@
 <ul class="navigation navigation-alt navigation-accordion">
     <li class="navigation-header">
-        <a style="min-height:0;padding-top:0;padding-bottom:0;"
+        <a style="min-height:0;padding-top:0;padding-bottom:0;color: #000000;"
            href="{{ path('park_show', {'slug': coasters.0.park.slug}) }}">
             {{ coasters.0.park.name }}
         </a>
     </li>
     {% for coaster in coasters %}
         <li>
-            <a style="min-height:0;padding-top:0;padding-bottom:0;" target="_blank"
+            <a style="min-height:0;padding-top:0;padding-bottom:0;color: #000000;" target="_blank"
                href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                 <span class="status-mark border-{{ coaster.status.type }} position-left"></span>
                 {{ coaster.name }}

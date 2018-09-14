@@ -83,7 +83,11 @@ class MapsController extends Controller
      * @param Request $request
      * @param Park $park
      * @return Response
-     * @Route("/parks/{id}/coasters", name="map_coasters_ajax", condition="request.isXmlHttpRequest()")
+     * @Route("/parks/{id}/coasters",
+     *     name="map_coasters_ajax",
+     *     condition="request.isXmlHttpRequest()",
+     *     options = {"expose" = true}
+     *     )
      * @Method({"GET"})
      */
     public function getCoastersAction(Request $request, Park $park)
