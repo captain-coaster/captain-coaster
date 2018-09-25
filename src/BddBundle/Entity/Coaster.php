@@ -91,6 +91,13 @@ class Coaster
     private $totalTopsIn = 0;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $validDuels = 0;
+
+    /**
      * @var float
      *
      * @ORM\Column(type="decimal", precision=14, scale=11, nullable=true)
@@ -856,5 +863,24 @@ class Coaster
     public function getMainImage(): ?Image
     {
         return $this->mainImage;
+    }
+
+    /**
+     * @param int $validDuels
+     * @return Coaster
+     */
+    public function setValidDuels(int $validDuels): Coaster
+    {
+        $this->validDuels = $validDuels;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getValidDuels(): int
+    {
+        return $this->validDuels;
     }
 }

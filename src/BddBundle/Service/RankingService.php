@@ -258,6 +258,9 @@ class RankingService
                 // final score is between 0 and 100
                 $this->ranking[$coasterId] = $duelScoreSum / $duelCount;
             }
+
+            // update duel stat
+            $this->updateDuelStat($coasterId, $duelCount);
         }
 
         // sort in reverse order (higher score is first)
@@ -355,5 +358,28 @@ class RankingService
 
         $this->em->persist($ranking);
         $this->em->flush();
+    }
+
+    /**
+     * Update "validDuels" column for a coaster
+     *
+     * @param int $coasterId
+     * @param int $duelCount
+     */
+    private function updateDuelStat(int $coasterId, int $duelCount)
+    {
+        $conn = $this->em->getConnection();
+        $sql = 'update coaster c
+                set c.valid_duels = :count
+                where c.id = :id;';
+
+        try {
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':count', $duelCount);
+            $stmt->bindParam(':id', $coasterId);
+            $stmt->execute();
+        } catch (\Exception $e) {
+            // do nothing
+        }
     }
 }
