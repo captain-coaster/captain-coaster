@@ -86,7 +86,11 @@ class CustomUserProvider extends BaseClass
         $user->setFirstName($response->getFirstName());
         $user->setLastName($response->getLastName());
         $user->setUsername($response->getNickname());
-        $user->setDisplayName($response->getNickname());
+
+        // don't override display name at every login
+        if (is_null($user->getDisplayName())) {
+            $user->setDisplayName($response->getNickname());
+        }
 
         if (is_null($response->getEmail())) {
             $user->setEmail(uniqid(15).'@notvalid.com');
