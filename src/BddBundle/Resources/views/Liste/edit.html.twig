@@ -3,13 +3,15 @@
 {% set title = listName %}
 {% block title %}{{ title }}{% endblock %}
 
+{% set showSearchBar = 0 %}
+
 {% form_theme form _self %}
 
 {% block _liste_listeCoasters_entry_widget %}
   <li class="media">
     {{ form_widget(form) }}
 
-    <div class="media-left media-middle" style="cursor: hand;">
+    <div class="media-left media-middle ui-handle" style="cursor: grab;">
       <i class="icon-three-bars"></i>
     </div>
     <div class="media-left media-middle">
@@ -84,7 +86,8 @@
           $(".ui-sortable").sortable({
               update: function (event, ui) {
                   updatePosition();
-              }
+              },
+              handle: ".ui-handle",
           });
       });
 

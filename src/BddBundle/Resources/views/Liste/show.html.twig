@@ -5,15 +5,32 @@
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
 {% block body %}
-  <div class="panel panel-white">
+  <div class="panel panel-white panel-flat">
     <div class="panel-heading">
-      <ul class="list-inline text-right no-margin">
+      <ul class="list-inline no-margin">
         <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
         <li>
           <i class="icon-alarm position-left"></i>
           {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
         </li>
       </ul>
+      <div class="heading-elements visible-elements">
+        {% if is_granted('edit', liste) %}
+          <a class="heading-text" href="{{ path('liste_edit', {'id': liste.id}) }}">
+            {{ 'liste.update'|trans }}
+          </a>
+        {% endif %}
+        {% if is_granted('edit-details', liste) %}
+          <a class="heading-text" href="{{ path('liste_edit_details', {'id': liste.id}) }}">
+            {{ 'liste.update_details'|trans }}
+          </a>
+        {% endif %}
+        {% if is_granted('delete', liste) %}
+          <a class="heading-text" href="{{ path('liste_delete', {'id': liste.id}) }}">
+            {{ 'liste.delete'|trans }}
+          </a>
+        {% endif %}
+      </div>
     </div>
 
     <ul class="media-list">
@@ -80,7 +97,7 @@
     <div class="mr-10 pull-right">
       <a href="{{ path('liste_delete', {'id': liste.id}) }}">
         <button type="button" class="btn bg-red btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'liste.delete'|trans }}
+          <b><i class="icon-cross3"></i></b> {{ 'liste.delete'|trans }}
         </button>
       </a>
     </div>

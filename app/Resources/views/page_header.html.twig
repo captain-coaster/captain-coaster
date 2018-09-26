@@ -1,11 +1,11 @@
 <div class="page-header page-header-default">
   <div class="page-header-content">
-    <div class="page-title">
-      <h1><a style="color:#333;" onclick="window.history.back();"><i class="icon-arrow-left52 position-left"></i></a>
+    <div class="page-title{% if hideTitle|default(false) == true %} hidden-xs{% endif %}">
+      <h1>
         <span class="text-semibold">{{ title }}</span>{% if subTitle %} • {{ subTitle }}{% endif %}
       </h1>
     </div>
-    <div class="heading-elements visible-elements">
+    <div class="heading-elements {% if showSearchBar|default(true) == true %}visible-elements{% endif %}">
       <form class="heading-form" action="#">
         <div class="form-group">
           <div class="has-feedback">

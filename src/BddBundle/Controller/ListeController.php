@@ -225,7 +225,7 @@ class ListeController extends Controller
             return $this->redirectToRoute('liste_create');
         }
 
-        return $this->redirectToRoute('liste_edit', ['id' => $liste->getId()]);
+        return $this->redirectToRoute('liste_show', ['id' => $liste->getId()]);
     }
 
     /**
