@@ -97,62 +97,69 @@
       elems.forEach(function (html) {
           var switchery = new Switchery(html);
       });
+  </script>
+  <script type="text/javascript">
+      var gmarkers = [];
+      var map;
+
       $('input').on("click", function () {
           filterData();
       });
-
-      var gmarkers = [];
-      var map;
-      var markers = {{ markers|raw }};
 
       function initMap() {
           map = new google.maps.Map(document.getElementById('map'), {
               zoom: 5,
               center: {lat: 48.384098, lng: 7.970846}
           });
+
           if (navigator.geolocation) {
               navigator.geolocation.getCurrentPosition(function (position) {
                   initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                   map.setCenter(initialLocation);
               });
           }
-          setMarkers(map, markers);
+
+          setInterval(setMarkers(map, {{ markers|raw }}), 200);
       }
 
       function setMarkers(map, markers) {
-          var infoWindow = new google.maps.InfoWindow();
+          var infowindow = new google.maps.InfoWindow();
+
           // Adds markers to the map.
-          for (var i = 0; i < markers.length; i++) {
-              var park = markers[i];
+          markers.forEach(function (park) {
               var marker = new google.maps.Marker({
                   position: {lat: park['latitude'], lng: park['longitude']},
                   map: map,
                   title: park['name'],
-                  label: park['nb'],
-                  zindex: i,
-                  parkId: park['id']
+                  parkId: park['id'],
               });
               gmarkers.push(marker);
               marker.addListener('click', function () {
-                  infoWindow.setContent('Loading...');
-                  infoWindow.open(map, this);
+                  infowindow.setContent('Loading...');
+                  infowindow.open(map, this);
 
                   $.ajax({
-                      url: Routing.generate('map_coasters_ajax', {'id': this.parkId, '_locale': '{{ app.request.locale }}'}),
+                      url: Routing.generate('map_coasters_ajax', {
+                          'id': this.parkId,
+                          '_locale': '{{ app.request.locale }}'
+                      }),
                       type: "GET",
                       data: $("form").serialize()
                   }).done(function (coasters) {
-                      // $('#result-map').html(coasters);
-                      infoWindow.setContent(coasters);
+                      infowindow.setContent(coasters);
                   });
               });
-          }
+          });
+
+          google.maps.event.addListener(map, "click", function () {
+              infowindow.close();
+          });
       }
 
       function removeMarkers() {
-          for (i = 0; i < gmarkers.length; i++) {
-              gmarkers[i].setMap(null);
-          }
+          gmarkers.forEach(function (park) {
+              park.setMap(null);
+          });
       }
 
       function filterData() {
