@@ -186,6 +186,7 @@ liste:
     update: 'Update'
     update_details: 'Change name'
     delete: 'Delete'
+    delete_confirmation: 'Delete ?'
     save: 'Save the list'
     find: 'Find a coaster...'
     info: 'Start by searching a coaster up there, then the magic happens below. You can even drag and drop lines if you are undecided.'
@@ -272,7 +273,7 @@ notif:
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
     ranking:
-        message: 'Ranking of the world''s best coasters just got updated !'
+        message: 'Ranking updated! Hurray, Twisted Timbers is finally here!'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'
