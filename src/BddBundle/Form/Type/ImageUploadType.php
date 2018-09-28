@@ -27,10 +27,7 @@ class ImageUploadType extends AbstractType
             ->add(
                 'file',
                 FileType::class,
-                [
-                    'required' => true,
-                    'label' => 'image_upload.form.file.label',
-                ]
+                ['label' => 'image_upload.form.file.label', 'required' => true]
             )
             ->add(
                 'watermarked',
@@ -40,7 +37,7 @@ class ImageUploadType extends AbstractType
             ->add(
                 'credit',
                 TextType::class,
-                ['required' => true, 'label' => 'image_upload.form.credit.label']
+                ['label' => 'image_upload.form.credit.label', 'required' => true]
             )
             ->add(
                 'upload',

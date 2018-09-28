@@ -2,9 +2,10 @@
 
 namespace BddBundle\Command;
 
+use BddBundle\Entity\Coaster;
 use BddBundle\Entity\Status;
+use BddBundle\Service\DiscordService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,20 +18,20 @@ class CoasterOpenCommand extends ContainerAwareCommand
     private $em;
 
     /**
-     * @var LoggerInterface
+     * @var DiscordService
      */
-    private $logger;
+    private $discord;
 
     /**
      * CoasterOpenCommand constructor.
      * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
+     * @param DiscordService $discord
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    public function __construct(EntityManagerInterface $em, DiscordService $discord)
     {
         parent::__construct();
         $this->em = $em;
-        $this->logger = $logger;
+        $this->discord = $discord;
     }
 
     protected function configure()
@@ -65,12 +66,13 @@ class CoasterOpenCommand extends ContainerAwareCommand
             ['name' => Status::OPERATING]
         );
 
+        /** @var Coaster $coaster */
         foreach ($openingCoasters as $coaster) {
             $coaster->setStatus($operatingStatus);
             $this->em->persist($coaster);
             $this->em->flush();
 
-            $this->logger->critical('We just opened '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🎉');
+            $this->discord->notify('We just opened '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🎉');
         }
     }
 

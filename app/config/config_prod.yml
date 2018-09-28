@@ -43,4 +43,4 @@ monolog:
             handler: custom_discord
         custom_discord:
             type: 'service'
-            id: 'BddBundle\Service\DiscordMonologHandler'
+            id: 'BddBundle\Handler\DiscordMonologHandler'

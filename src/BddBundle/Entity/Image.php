@@ -70,7 +70,7 @@ class Image
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255, unique=false, nullable=false)
+     * @ORM\Column(type="string", length=255, unique=false, nullable=true)
      * @Assert\NotBlank()
      */
     private $credit;
@@ -94,7 +94,7 @@ class Image
     /**
      * @Assert\File(
      *     mimeTypes = {"image/jpeg"},
-     *     maxSize = "8M"
+     *     maxSize = "13M"
      * )
      * @Assert\NotBlank()
      */

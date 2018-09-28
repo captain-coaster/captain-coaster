@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class SearchController extends Controller
 {
+    CONST CACHE_AUTOCOMPLETE = 'main_autocomplete';
     /**
      * @Route("/", name="search_index")
      * @Method({"GET"})
@@ -75,17 +76,18 @@ class SearchController extends Controller
     public function ajaxMainSearch(SearchService $searchService)
     {
         $cache = new FilesystemAdapter();
-        $searchItems = $cache->getItem('main_autocomplete');
+        $searchItems = $cache->getItem(self::CACHE_AUTOCOMPLETE);
 
         if (!$searchItems->isHit()) {
             $searchItems->set($searchService->getAutocompleteValues());
-            $searchItems->expiresAfter(\DateInterval::createFromDateString('4 hours'));
+            $searchItems->expiresAfter(\DateInterval::createFromDateString('24 hours'));
             $cache->save($searchItems);
         }
 
         $response = new JsonResponse($searchItems->get());
-        $response->setMaxAge('3600');
-        $response->setPublic();
+        // disable temporarily
+        //$response->setMaxAge('3600');
+        //$response->setPublic();
 
         return $response;
     }

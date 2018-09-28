@@ -22,8 +22,6 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class CoasterController extends Controller
 {
-    CONST NUMBER_RANKING = 20;
-
     /**
      * Shows a specific coaster defined in conf
      *
@@ -207,7 +205,7 @@ class CoasterController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $page,
-            self::NUMBER_RANKING
+            20
         );
 
         $ids = [];

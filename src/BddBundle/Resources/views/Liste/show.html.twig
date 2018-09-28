@@ -26,7 +26,8 @@
           </a>
         {% endif %}
         {% if is_granted('delete', liste) %}
-          <a class="heading-text" href="{{ path('liste_delete', {'id': liste.id}) }}">
+          <a class="heading-text" href="{{ path('liste_delete', {'id': liste.id}) }}"
+             onclick="return confirm('{{ 'liste.delete_confirmation'|trans }}');">
             {{ 'liste.delete'|trans }}
           </a>
         {% endif %}
