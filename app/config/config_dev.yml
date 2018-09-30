@@ -38,4 +38,7 @@ monolog:
         #    level: info
 
 swiftmailer:
-    disable_delivery: true
+    transport: gmail
+    username:  '%mailer_user%'
+    password:  '%mailer_password%'
+    delivery_addresses: ['%mailer_user%']

@@ -263,7 +263,7 @@ contact:
         email: 'Enter your email here if you want us to answer'
         message: 'Your message'
     email:
-        title: 'Form contact Captain Coaster'
+        title: 'Contact Form - Captain Coaster'
     flash:
         success: 'Thank you %name%, your message was sent to Captain Coaster staff.'
 

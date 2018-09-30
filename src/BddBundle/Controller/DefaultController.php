@@ -3,6 +3,7 @@
 namespace BddBundle\Controller;
 
 use BddBundle\Form\Type\ContactType;
+use BddBundle\Service\DiscordService;
 use BddBundle\Service\StatService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -76,11 +77,12 @@ class DefaultController extends Controller
      *
      * @param Request $request
      * @param \Swift_Mailer $mailer
+     * @param DiscordService $discord
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @Route("/contact", name="default_contact")
      * @Method({"GET", "POST"})
      */
-    public function contactAction(Request $request, \Swift_Mailer $mailer)
+    public function contactAction(Request $request, \Swift_Mailer $mailer, DiscordService $discord)
     {
         /** @var Form $form */
         $form = $this->createForm(ContactType::class, null);
@@ -90,11 +92,22 @@ class DefaultController extends Controller
             $data = $form->getData();
 
             $message = (new \Swift_Message($this->get('translator')->trans('contact.email.title')))
-                ->setFrom($this->getParameter('mail_from'))
+                ->setFrom($this->getParameter('mail_from'), $this->getParameter('mail_from_name'))
                 ->setTo($this->getParameter('mail_to'))
                 ->setReplyTo($data['email'])
-                ->setBody($data['name']."\n".$data['message']);
+                ->setBody(
+                    $this->renderView(
+                        '@Bdd/Default/contact_mail.txt.twig',
+                        [
+                            'name' => $data['name'],
+                            'message' => $data['message'],
+                        ]
+                    )
+                );
             $mailer->send($message);
+
+            // send notification
+            $discord->notify('We just received new message from '.$data['name']."\n\n".$data['message']);
 
             $this->addFlash(
                 'success',

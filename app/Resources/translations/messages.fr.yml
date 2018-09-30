@@ -263,7 +263,7 @@ contact:
         email: 'Indique ici un email si tu souhaites recevoir une réponse'
         message: 'Ecris nous ton poème juste en dessous'
     email:
-        title: 'Form contact Captain Coaster'
+        title: 'Contact - Captain Coaster'
     flash:
         success: 'Merci %name%, ton email a été envoyé à l''équipe de Captain Coaster.'
 
