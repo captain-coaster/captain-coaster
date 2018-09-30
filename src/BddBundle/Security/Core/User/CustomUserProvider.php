@@ -62,7 +62,7 @@ class CustomUserProvider extends BaseClass
         /** @var User $user */
         $user = $this->userManager->findUserBy([$this->getProperty($response) => $identifier]);
 
-        // no user found with identifier
+        // no user found with identifier (google_id or facebook_id)
         if (null === $user) {
             // if user has email
             if (null !== $response->getEmail()) {
@@ -72,6 +72,17 @@ class CustomUserProvider extends BaseClass
 
             // if not found again, create a new user
             if (null === $user) {
+                // check username
+                if (!is_null($this->userManager->findUserBy(['usernameCanonical' => $response->getNickname()]))) {
+                    throw new CustomUserMessageAuthenticationException(
+                        sprintf(
+                            'We already have an account for %s connected with a different %s account. Please contact us.',
+                            $response->getNickname(),
+                            $service
+                        )
+                    );
+                }
+
                 $user = $this->userManager->createUser();
                 // enable only new users
                 $user->setEnabled(true);
