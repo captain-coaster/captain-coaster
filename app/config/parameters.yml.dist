@@ -49,6 +49,4 @@ parameters:
     google_client_secret:
 
     # Discord
-    discord_channels:
-        log:
-        notify:
+    discord_url:
