@@ -34,7 +34,7 @@ class CoasterListener
      * @param LifecycleEventArgs $args
      * @throws \Exception
      */
-    public function postDelete(LifecycleEventArgs $args)
+    public function postRemove(LifecycleEventArgs $args)
     {
         $this->invalidateCache();
     }

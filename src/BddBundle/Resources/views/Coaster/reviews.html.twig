@@ -58,8 +58,6 @@
               {% endif %}
               {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
                 <ul class="list-inline list-inline-separate text-size-small">
-                  {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
-                  {#class="icon-arrow-down22 text-danger"></i></a></li>#}
                   <li>
                     <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
                       {{ 'review.update'|trans }}

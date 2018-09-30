@@ -13,14 +13,16 @@ $('document').ready(function () {
 });
 
 function deleteRating(id, obj) {
-    var url = Routing.generate(
-        'rating_delete',
-        {'id': id, '_locale': locale}
-    );
-    $.ajax({
-        url: url,
-        type: "DELETE",
-    }).done(function () {
-        $(obj).remove();
-    });
+    if (confirm('Delete ?')) {
+        var url = Routing.generate(
+            'rating_delete',
+            {'id': id, '_locale': locale}
+        );
+        $.ajax({
+            url: url,
+            type: "DELETE",
+        }).done(function () {
+            $(obj).remove();
+        });
+    }
 }
