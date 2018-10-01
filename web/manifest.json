@@ -1,6 +1,9 @@
 {
-  "short_name": "CaptainCoaster",
   "name": "Captain Coaster",
+  "short_name": "Capt Coaster",
+  "display": "standalone",
+  "lang": "en",
+  "dir": "ltr",
   "icons": [
     {
       "src": "apple-touch-icon-144x144.png",
@@ -13,5 +16,5 @@
       "sizes": "152x152"
     }
   ],
-  "start_url": "/fr/"
+  "start_url": "/?utm_source=pwa"
 }

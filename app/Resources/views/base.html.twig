@@ -70,35 +70,35 @@
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <script type="text/javascript">
-    locale = '{{ app.request.locale }}';
-    var url = Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'});
-    var dataSource = new Bloodhound({
-        datumTokenizer: Bloodhound.tokenizers.obj.nonword('n', 's'),
-        queryTokenizer: Bloodhound.tokenizers.whitespace,
-        prefetch: url
+  locale = '{{ app.request.locale }}';
+  var url = Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'});
+  var dataSource = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.nonword('n', 's'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: url,
+  });
+  $('#search-coaster').typeahead(
+      {
+        highlight: true,
+        hint: true,
+        autoselect: true,
+      }, {
+        display: 'n',
+        source: dataSource.ttAdapter(),
+        limit: 7,
+      }).bind('typeahead:select', function(ev, suggestion) {
+    window.location.href = Routing.generate(
+        suggestion.r,
+        {'slug': suggestion.s, '_locale': '{{ app.request.locale }}'},
+    );
+  });
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', {scope: '/'}).then(function() {
+      console.log('Service Worker Registered');
+    }).catch(function(e) {
+      console.log('Error during Service Worker registration : ', e);
     });
-    $('#search-coaster').typeahead(
-        {
-            highlight: true,
-            hint: true,
-            autoselect: true
-        }, {
-            display: 'n',
-            source: dataSource.ttAdapter(),
-            limit: 7
-        }).bind('typeahead:select', function (ev, suggestion) {
-        window.location.href = Routing.generate(
-            suggestion.r,
-            {'slug': suggestion.s, '_locale': '{{ app.request.locale }}'}
-        );
-    });
-    // if ('serviceWorker' in navigator) {
-    //     navigator.serviceWorker
-    //         .register('sw.js', { scope: '/' })
-    //         .then(() => { console.log('Service Worker Registered'); })
-    //         .catch(error => { console.log('Error during Service Worker registration : ', error);
-    // });
-    // }
+  }
 </script>
 {% block javascripts %}{% endblock %}
 {% if app.environment != 'dev' %}
@@ -107,7 +107,6 @@
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
         m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
     })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
     ga('create', 'UA-37300594-3', 'auto');
     ga('send', 'pageview');
 </script>
