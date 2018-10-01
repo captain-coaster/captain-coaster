@@ -31,7 +31,7 @@ class DiscordService
     protected $channels;
 
     /**
-     * DiscordMonologHandler constructor.
+     * DiscordService constructor.
      * @param HttpClient $client
      * @param MessageFactory $factory
      * @param array $channels

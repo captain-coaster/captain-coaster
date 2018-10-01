@@ -79,8 +79,7 @@ park:
 coaster_ranking:
     title: 'Classement des meilleurs coasters - %rankingMonth%'
     description: 'Classement des meilleurs montagnes russes du monde, par nos utilisateurs. Donne ton avis et met des notes pour participer à ce classement des coasters.'
-    rating_number: '1 note|%count% notes'
-    top_number: '1 top|%count% tops'
+    duel_number: '1 duel|%count% duels'
     info:
         title: 'Ce qui a fait le classement ce mois-ci'
         next: 'Prochaine mise à jour %date%'

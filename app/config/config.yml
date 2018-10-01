@@ -177,11 +177,8 @@ knp_paginator:
         sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
 
 httplug:
-    plugins:
-        logger: ~
     clients:
         avatar:
             factory: 'httplug.factory.guzzle6'
-            plugins: ['httplug.plugin.logger']
             config:
                 timeout: 2

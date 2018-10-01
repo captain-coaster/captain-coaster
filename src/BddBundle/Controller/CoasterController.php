@@ -227,7 +227,6 @@ class CoasterController extends Controller
             '@Bdd/Coaster/ranking.html.twig',
             [
                 'coasters' => $pagination,
-                'rankingDate' => new \DateTime('first day of this month midnight'),
                 'nextRankingDate' => $nextRankingDate,
                 'ranking' => $ranking,
             ]

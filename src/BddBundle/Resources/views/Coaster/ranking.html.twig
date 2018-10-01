@@ -2,8 +2,7 @@
 
 {% import "helper.html.twig" as helper %}
 
-{% set rankingMonth = date()|localizeddate('none', 'none', null, null, 'MMMM Y')|capitalize %}
-{% set title = 'coaster_ranking.title'|trans({'%rankingMonth%': rankingMonth}) %}
+{% set title = 'coaster_ranking.title'|trans({'%rankingMonth%': ranking.computedAt|localizeddate('none', 'none', null, null, 'MMMM Y')|capitalize}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
@@ -100,10 +99,9 @@
           <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
             {{ coaster.score|number_format(1, ',') }}%
           </h3>
-          <ul class="list-unstyled text-muted mb-10 mt-10 text-nowrap">
-            <li>{{ 'coaster_ranking.rating_number'|transchoice(coaster.totalRatings) }}</li>
-            <li>{{ 'coaster_ranking.top_number'|transchoice(coaster.totalTopsin) }}</li>
-          </ul>
+          <span class="text-muted mb-10 mt-10 text-nowrap">
+            {{ 'coaster_ranking.duel_number'|transchoice(coaster.validDuels) }}
+          </span>
         </div>
       </li>
     {% endfor %}

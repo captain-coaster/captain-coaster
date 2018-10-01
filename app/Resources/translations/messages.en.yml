@@ -79,8 +79,7 @@ park:
 coaster_ranking:
     title: 'Ranking of the best coasters - %rankingMonth%'
     description: 'Ranking of the best roller coasters of the world, by our users. Write reviews and rate coasters you have ridden to be a part of it.'
-    rating_number: '1 rating|%count% ratings'
-    top_number: '1 top|%count% tops'
+    duel_number: '1 duel|%count% duels'
     info:
         title: 'What is this ranking made of'
         next:  'Next update %date%'
