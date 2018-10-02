@@ -167,7 +167,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->filterManufacturer($qb, $filters);
         // Filter by opened status
         $this->filterOpenedStatus($qb, $filters);
-        // Filter by average rating
+        // Filter by score
         $this->filterScore($qb, $filters);
         // Filter by opening date
         $this->filterOpeningDate($qb, $filters);

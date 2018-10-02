@@ -102,6 +102,7 @@ map_index:
         score: 'Score'
         atleast: 'at least %count%'
         openingDate: 'Opening date'
+        name: 'Name'
     results: 'Results'
 
 user_profile:

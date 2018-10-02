@@ -1,0 +1,78 @@
+<div class="sidebar sidebar-secondary sidebar-default">
+  <div class="sidebar-content">
+    <form id="form-filter" action="#">
+      <div class="sidebar-category">
+
+        <div class="category-title">
+          <span>{{ 'map_index.filter.title'|trans }}</span>
+        </div>
+
+        {% if is_granted('ROLE_USER') %}
+          <input id="form-user" name="filters[user]" type="hidden" value="{{ app.user.id }}">
+        {% endif %}
+        <input id="form-latitude" name="filters[latitude]" type="hidden">
+        <input id="form-longitude" name="filters[longitude]" type="hidden">
+
+        <div class="category-content">
+          <div class="form-group">
+            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+              <label class="display-block">
+                {{ 'map_index.filter.status'|trans }}
+                <input name="filters[status]" type="checkbox"
+                       class="switchery" {% if filters.status is defined and filters.status == "on" %} checked{% endif %}>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+              <label class="display-block">
+                {{ 'map_index.filter.kiddie'|trans }}
+                <input name="filters[kiddie]" type="checkbox" class="switchery"
+                       class="switchery" {% if filters.kiddie is defined and filters.kiddie == "on" %} checked{% endif %}>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+              <label class="display-block">
+                {{ 'map_index.filter.notridden'|trans }}
+                <input name="filters[notridden]" type="checkbox" class="switchery"
+                    {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
+                    {% if filters.notridden is defined and filters.notridden == "on" %} checked{% endif %}>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="filters[name]"
+                   placeholder="{{ 'map_index.filter.name'|trans }}"
+                   onkeyup="filterData();">
+          </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+              <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
+              {% for manufacturer in filtersForm.manufacturer %}
+                <option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+              <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
+              {% for openingDate in filtersForm.openingDate %}
+                <option value="{{ openingDate.year }}">{{ openingDate.year }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[score]" onchange="filterData();">
+              <option value="">{{ 'map_index.filter.score'|trans }}</option>
+              {% for i in range(10, 90, 10) %}
+                <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -61,13 +61,11 @@ class BadgeGiveCommand extends ContainerAwareCommand
 
         /** @var User $user */
         foreach ($users as $user) {
-            $output->writeln('Checking '.$user->getUsername().'...');
+            $output->writeln('Checking ' . $user->getUsername() . '...');
             $this->badgeService->give($user);
         }
 
         $output->writeln('End of command.');
-        $event = $stopwatch->stop('badge');
-        $output->writeln(($event->getDuration() / 1000).' s');
-        $output->writeln(($event->getMemory() / 1000 / 1000).' mo');
+        $output->writeln((string)$stopwatch->stop('badge'));
     }
 }

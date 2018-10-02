@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SearchController extends Controller
 {
     CONST CACHE_AUTOCOMPLETE = 'main_autocomplete';
+
     /**
      * @Route("/", name="search_index")
      * @Method({"GET"})
@@ -27,7 +28,7 @@ class SearchController extends Controller
         return $this->render(
             'BddBundle:Search:index.html.twig',
             [
-                'filters' => [],
+                'filters' => ["status" => "on"],
                 'filtersForm' => $this->getFiltersForm(),
             ]
         );
@@ -114,20 +115,22 @@ class SearchController extends Controller
     }
 
     /**
+     * Get data to display filter form (mainly <select> data)
+     *
      * @return array
      */
     private function getFiltersForm()
     {
-        $filters = [];
+        $filtersForm = [];
 
-        $filters['manufacturer'] = $this->getDoctrine()
+        $filtersForm['manufacturer'] = $this->getDoctrine()
             ->getRepository('BddBundle:Manufacturer')
             ->findBy([], ["name" => "asc"]);
 
-        $filters['openingDate'] = $this->getDoctrine()
+        $filtersForm['openingDate'] = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
             ->getDistinctOpeningYears();
 
-        return $filters;
+        return $filtersForm;
     }
 }

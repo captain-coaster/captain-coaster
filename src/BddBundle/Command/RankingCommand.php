@@ -64,9 +64,7 @@ class RankingCommand extends ContainerAwareCommand
 
         $output->writeln(count($result).' coasters updated.');
 
-        $event = $stopwatch->stop('ranking');
-        $output->writeln((round($event->getDuration() / 1000)).' seconds');
-        $output->writeln((round($event->getMemory() / (1000 * 1000))).' Mo');
+        $output->writeln((string)$stopwatch->stop('ranking'));
         $output->writeln('Dry-run: '.$dryRun);
     }
 

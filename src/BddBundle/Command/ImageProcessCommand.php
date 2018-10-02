@@ -83,8 +83,6 @@ class ImageProcessCommand extends ContainerAwareCommand
             sleep(2);
         }
 
-        $event = $stopwatch->stop('process-image');
-        $output->writeln(($event->getDuration() / 1000).' s');
-        $output->writeln(($event->getMemory() / 1000 / 1000).' mo');
+        $output->writeln((string)$stopwatch->stop('process-image'));
     }
 }

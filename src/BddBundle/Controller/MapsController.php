@@ -28,13 +28,14 @@ class MapsController extends Controller
      */
     public function indexAction()
     {
-        $filters = ["status" => "on"];
+        $initialFilters = ["status" => "on"];
 
         return $this->render(
             '@Bdd/Maps/index.html.twig',
             [
-                'markers' => json_encode($this->getMarkers($filters)),
-                'filters' => $this->getFilters($filters),
+                'markers' => json_encode($this->getMarkers($initialFilters)),
+                'filters' => $initialFilters,
+                'filtersForm' => $this->getFiltersForm(),
             ]
         );
     }
@@ -59,26 +60,31 @@ class MapsController extends Controller
             '@Bdd/Maps/userMap.html.twig',
             [
                 'markers' => json_encode($this->getMarkers($initialFilters)),
-                'filters' => $this->getFilters($initialFilters),
+                'filters' => $initialFilters,
+                'filtersForm' => $this->getFiltersForm(),
             ]
         );
     }
 
     /**
+     * Returns json data with markers filtered
+     *
      * @param Request $request
      * @return JsonResponse
-     * @Route("/markers", name="map_markers_ajax", condition="request.isXmlHttpRequest()")
+     * @Route("/markers",
+     *     name="map_markers_ajax",
+     *     condition="request.isXmlHttpRequest()",
+     *     options = {"expose" = true}
+     * )
      * @Method({"GET"})
      */
     public function markersAction(Request $request)
     {
-        $filters = $request->get('filters', []);
-
-        return new JsonResponse($this->getMarkers($filters));
+        return new JsonResponse($this->getMarkers($request->get('filters', [])));
     }
 
     /**
-     * Display coasters when you click on a park
+     * Get coasters data (when user clicks on a marker)
      *
      * @param Request $request
      * @param Park $park
@@ -103,6 +109,8 @@ class MapsController extends Controller
     }
 
     /**
+     * Return array of markers, filtered
+     *
      * @param array $filters
      * @return array
      */
@@ -114,21 +122,22 @@ class MapsController extends Controller
     }
 
     /**
-     * @param array $initialFilters
+     * Get data to display filter form (mainly <select> data)
+     *
      * @return array
      */
-    private function getFilters(array $initialFilters = [])
+    private function getFiltersForm()
     {
-        $filters = [];
+        $filtersForm = [];
 
-        $filters['manufacturer'] = $this->getDoctrine()
+        $filtersForm['manufacturer'] = $this->getDoctrine()
             ->getRepository('BddBundle:Manufacturer')
             ->findBy([], ["name" => "asc"]);
 
-        $filters['openingDate'] = $this->getDoctrine()
+        $filtersForm['openingDate'] = $this->getDoctrine()
             ->getRepository('BddBundle:Coaster')
             ->getDistinctOpeningYears();
 
-        return array_merge($filters, $initialFilters);
+        return $filtersForm;
     }
 }

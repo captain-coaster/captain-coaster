@@ -5,146 +5,94 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  <div class="sidebar sidebar-secondary sidebar-default">
-    <div class="sidebar-content">
-      <form action="#">
-        <!-- Sidebar search -->
-        <div class="sidebar-category">
-          <div class="category-title">
-            <span>{{ 'map_index.filter.title'|trans }}</span>
-            <ul class="icons-list">
-              <li><a href="#" data-action="collapse"></a></li>
-            </ul>
-          </div>
-
-          <input name="filters[ridden]" type="hidden" value="{{ filters.ridden|default('') }}">
-          <input name="filters[user]" type="hidden" value="{{ filters.user|default('') }}">
-
-          <div class="category-content">
-            <div class="form-group">
-              <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
-                <label class="display-block">
-                  {{ 'map_index.filter.status'|trans }}
-                  <input name="filters[status]" type="checkbox" class="switchery">
-                </label>
-              </div>
-            </div>
-            <div class="form-group">
-              <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
-                <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
-                {% for filter in filters.manufacturer %}
-                  <option value="{{ filter.id }}">{{ filter.name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="form-group">
-              <select class="form-control" name="filters[openingDate]" onchange="filterData();">
-                <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
-                <option value="2018">2018</option>
-                <option value="2017">2017</option>
-                <option value="2016">2016</option>
-                <option value="2015">2015</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <select class="form-control" name="filters[score]" onchange="filterData();">
-                <option value="">{{ 'map_index.filter.score'|trans }}</option>
-                {% for i in range(10, 90, 10) %}
-                  <option value="{{ i }}">{{ 'map_index.filter.atleast'|transchoice(i) }}</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-        </div>
-        <!-- /sidebar search -->
-      </form>
-      <div class="category-title">
-        <span>{{ 'map_index.results'|trans }}</span>
-        <ul class="icons-list">
-          <li><a href="#" data-action="collapse"></a></li>
-        </ul>
-      </div>
-      <div id="result-map" class="category-content no-padding"></div>
-    </div>
-  </div>
+  {% include '@Bdd/Includes/filter_sidebar.html.twig' with {'filters': filters, 'filtersForm': filtersForm} only %}
 {% endblock %}
 
 {% block wide_body %}
-  <div id="map" style="height:100vh;"></div>
+  <div id="map" style="height:94vh;"></div>
 {% endblock %}
 
 {% block javascripts %}
   <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
-  <!-- /theme JS files -->
   <script type="text/javascript">
-      var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-      elems.forEach(function (html) {
-          var switchery = new Switchery(html);
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+    elems.forEach(function(html) {
+      var switchery = new Switchery(html);
+      html.addEventListener('click', function() {
+        filterData();
       });
-      $('input').on("click", function () {
-          filterData();
+    });
+  </script>
+  <script type="text/javascript">
+    var gmarkers = [];
+    var map;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 5,
+        center: {lat: 48.384098, lng: 7.970846},
       });
 
-      var gmarkers = [];
-      var map;
-      var markers = {{ markers|raw }};
-
-      function initMap() {
-          map = new google.maps.Map(document.getElementById('map'), {
-              zoom: 5,
-              center: {lat: 48.384098, lng: 7.970846}
-          });
-          setMarkers(map, markers);
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          initialLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          map.setCenter(initialLocation);
+        });
       }
 
-      function setMarkers(map, markers) {
-          // Adds markers to the map.
-          for (var i = 0; i < markers.length; i++) {
-              var park = markers[i];
-              //console.log(beach)
-              var marker = new google.maps.Marker({
-                  position: {lat: park['latitude'], lng: park['longitude']},
-                  map: map,
-                  title: park['name'],
-                  label: park['nb'],
-                  zindex: i,
-                  parkId: park['id']
-              });
-              gmarkers.push(marker);
-              marker.addListener('click', function () {
-                  displayCoaster(this.parkId);
-              });
-          }
-      }
+      setInterval(setMarkers(map, {{ markers|raw }}), 50);
+    }
 
-      function removeMarkers() {
-          for (i = 0; i < gmarkers.length; i++) {
-              gmarkers[i].setMap(null);
-          }
-      }
+    function setMarkers(map, markers) {
+      var infowindow = new google.maps.InfoWindow();
 
-      function displayCoaster(data) {
+      // Adds markers to the map.
+      markers.forEach(function(park) {
+        var marker = new google.maps.Marker({
+          position: {lat: park['latitude'], lng: park['longitude']},
+          map: map,
+          title: park['name'],
+          parkId: park['id'],
+        });
+        gmarkers.push(marker);
+        marker.addListener('click', function() {
+          infowindow.setContent('Loading...');
+          infowindow.open(map, this);
+
           $.ajax({
-              url: '/{{ app.request.locale }}/map/parks/' + data + '/coasters',
-              type: "GET",
-              data: $("form").serialize()
-          }).done(function (coasters) {
-              $('#result-map').html(coasters);
+            url: Routing.generate('map_coasters_ajax', {
+              'id': this.parkId,
+              '_locale': '{{ app.request.locale }}',
+            }),
+            type: 'GET',
+            data: $('form').serialize(),
+          }).done(function(coasters) {
+            infowindow.setContent(coasters);
           });
+        });
+      });
 
-      }
+      google.maps.event.addListener(map, 'click', function() {
+        infowindow.close();
+      });
+    }
 
-      function filterData() {
-          console.log('filtering');
-          $.ajax({
-              url: '/fr/map/markers',
-              type: "GET",
-              data: $("form").serialize()
-          }).done(function (data) {
-              removeMarkers();
-              setMarkers(map, data);
-          });
-      }
+    function removeMarkers() {
+      gmarkers.forEach(function(park) {
+        park.setMap(null);
+      });
+    }
+
+    function filterData() {
+      $.ajax({
+        url: Routing.generate('map_markers_ajax', {'_locale': '{{ app.request.locale }}'}),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(data) {
+        removeMarkers();
+        setMarkers(map, data);
+      });
+    }
   </script>
   <script async defer
           src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">

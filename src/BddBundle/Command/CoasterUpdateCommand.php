@@ -59,8 +59,6 @@ class CoasterUpdateCommand extends ContainerAwareCommand
         $topNumber = $this->topService->updateTopStats();
         $output->writeln("$topNumber tops updated.");
 
-        $event = $stopwatch->stop('command');
-        $output->writeln($event->getDuration().' ms');
-        $output->writeln((round($event->getMemory() / (1000 * 1000))).' Mo');
+        $output->writeln((string)$stopwatch->stop('command'));
     }
 }

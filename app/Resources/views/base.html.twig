@@ -92,13 +92,6 @@
         {'slug': suggestion.s, '_locale': '{{ app.request.locale }}'},
     );
   });
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', {scope: '/'}).then(function() {
-      console.log('Service Worker Registered');
-    }).catch(function(e) {
-      console.log('Error during Service Worker registration : ', e);
-    });
-  }
 </script>
 {% block javascripts %}{% endblock %}
 {% if app.environment != 'dev' %}
