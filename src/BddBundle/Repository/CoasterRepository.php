@@ -249,7 +249,9 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('notridden', $filters) && array_key_exists('user', $filters)) {
+        if (array_key_exists('notridden', $filters)
+            && array_key_exists('user', $filters)
+            && $filters['notridden'] === 'on') {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()
@@ -271,7 +273,9 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     private function filterByRidden(QueryBuilder $qb, array $filters = [])
     {
         // Filter by not ridden. User based filter.
-        if (array_key_exists('ridden', $filters) && array_key_exists('user', $filters)) {
+        if (array_key_exists('ridden', $filters)
+            && array_key_exists('user', $filters)
+            && $filters['ridden'] === 'on') {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()

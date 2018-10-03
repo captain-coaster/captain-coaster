@@ -1,0 +1,54 @@
+{% if coaster.images|length > 0 %}
+  <div id="coaster-photos" class="row">
+    <div class="panel panel-flat border-top-blue">
+      <div class="panel-heading">
+        <h6>{{ 'coaster.photos.title'|trans }}</h6>
+        <div class="pull-right text-muted">
+          <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">
+            {{ 'coaster.photos.button'|trans }}
+          </a>
+          {% if number < coaster.images|length %}
+          &nbsp;•&nbsp;
+          <a id="show-all">
+            {{ 'coaster.photos.all'|trans }}
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <div class="panel-body no-border no-padding-top">
+        {% for image in coaster.images|slice(0, number) %}
+          <div class="col-sm-3">
+            <a class="m-10" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
+               rel="gallery">
+              <div class="thumb">
+                <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
+                     alt="{{ coaster.name }}">
+              </div>
+            </a>
+            <span class="text-size-small text-muted pull-right">
+                    {% if image.credit %}
+                      by {{ image.credit }}
+                    {% else %}
+                      &nbsp;
+                    {% endif %}
+                  </span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div class="row">
+    <div class="panel panel-flat border-top-blue">
+      <div class="panel-heading">
+        <h6>{{ 'coaster.photos.title'|trans }}</h6>
+      </div>
+      <div class="panel-body text-center">
+        <p class="mb-15">{{ 'coaster.photos.empty'|trans }}</p>
+        <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn bg-primary-400">
+          {{ 'coaster.photos.button'|trans }}
+        </a>
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -7,9 +7,8 @@
           <span>{{ 'map_index.filter.title'|trans }}</span>
         </div>
 
-        {% if is_granted('ROLE_USER') %}
-          <input id="form-user" name="filters[user]" type="hidden" value="{{ app.user.id }}">
-        {% endif %}
+        <input id="form-user" name="filters[user]" type="hidden" value="{{ filters.user|default(app.user.id|default('')) }}">
+        <input id="form-ridden" name="filters[ridden]" type="hidden" value="{{ filters.ridden|default('') }}">
         <input id="form-latitude" name="filters[latitude]" type="hidden">
         <input id="form-longitude" name="filters[longitude]" type="hidden">
 

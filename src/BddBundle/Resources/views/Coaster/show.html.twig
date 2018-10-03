@@ -271,56 +271,7 @@
 
     <div class="col-sm-9">
       <!-- photos -->
-      {% if coaster.images|length > 0 %}
-        <div class="row">
-          <div class="panel panel-flat border-top-blue">
-            <div class="panel-heading">
-              <h6>{{ 'coaster.photos.title'|trans }}</h6>
-              {% if coaster.images|length < 8 %}
-                <div class="pull-right">
-                  <a class="text-muted" href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">
-                    {{ 'coaster.photos.button'|trans }}
-                  </a>
-                </div>
-              {% endif %}
-            </div>
-            <div class="panel-body no-border no-padding-top">
-              {% for image in coaster.images|slice(0, 8) %}
-                <div class="col-sm-3 {% if loop.index > 2 %}hidden-xs{% endif %}">
-                  <a style="margin: 10px;" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
-                     rel="gallery">
-                    <div class="thumb">
-                      <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
-                           alt="{{ coaster.name }}">
-                    </div>
-                  </a>
-                  <span class="text-size-small text-muted pull-right">
-                    {% if image.credit %}
-                      by {{ image.credit }}
-                    {% else %}
-                      &nbsp;
-                    {% endif %}
-                  </span>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        </div>
-      {% else %}
-        <div class="row">
-          <div class="panel panel-flat border-top-blue">
-            <div class="panel-heading">
-              <h6>{{ 'coaster.photos.title'|trans }}</h6>
-            </div>
-            <div class="panel-body text-center">
-              <p class="mb-15">{{ 'coaster.photos.empty'|trans }}</p>
-              <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn bg-primary-400">
-                {{ 'coaster.photos.button'|trans }}
-              </a>
-            </div>
-          </div>
-        </div>
-      {% endif %}
+      <div id="coaster-photos" class="row"></div>
       <!-- /photos -->
       <!-- reviews -->
       {% if reviews|length > 0 %}
@@ -336,30 +287,47 @@
   <script src="{{ asset('js/pages/rating.js') }}"></script>
   {% if coaster.park.latitude and coaster.park.longitude %}
     <script>
-        function initMap() {
-            var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
-            var map = new google.maps.Map(document.getElementById('map-coaster'), {
-                zoom: 14,
-                center: uluru
-            });
-            var marker = new google.maps.Marker({
-                position: uluru,
-                map: map
-            });
-        }
+      function initMap() {
+        var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
+        var map = new google.maps.Map(document.getElementById('map-coaster'), {
+          zoom: 14,
+          center: uluru,
+        });
+        var marker = new google.maps.Marker({
+          position: uluru,
+          map: map,
+        });
+      }
     </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
     </script>
   {% endif %}
   <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
-  <script>
-      $(function () {
-          // Initialize lightbox
-          $('[data-popup="lightbox"]').fancybox({
-              padding: 3
-          })
+  <script type="text/javascript">
+    var loadImage = function(number) {
+      if (screen.width < 769 && number === undefined) {
+        number = 2;
+      }
+      $.ajax({
+        url: Routing.generate('coaster_images_ajax_load', {
+          'slug': '{{ coaster.slug }}',
+          'imageNumber': number || 8,
+          '_locale': '{{ app.request.locale }}',
+        }),
+        type: 'GET',
+      }).done(function(data) {
+        $('#coaster-photos').replaceWith(data);
+        $('[data-popup="lightbox"]').fancybox({
+          padding: 3,
+        });
+        $('#show-all').on('click', function() {
+          loadImage({{ coaster.images|length }});
+        });
       });
+    };
+
+    loadImage();
   </script>
   {% if coaster.score is not null %}
     <script type="application/ld+json">
@@ -375,13 +343,6 @@
           "ratingCount": "{{ coaster.ratings|length }}"
         }
       }
-
-
-
-
-
-
-
     </script>
   {% endif %}
 {% endblock %}

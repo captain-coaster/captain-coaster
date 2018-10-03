@@ -96,7 +96,9 @@ class Image
      *     mimeTypes = {"image/jpeg"},
      *     maxSize = "13M"
      * )
-     * @Assert\NotBlank()
+     * @Assert\Image(
+     *     minPixels = 1000000
+     * )
      */
     private $file;
 

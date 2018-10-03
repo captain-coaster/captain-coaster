@@ -54,6 +54,7 @@ coaster:
         title: 'Photos'
         empty: 'Oups, nous n''avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes!'
         button: 'Envoyer une photo'
+        all: 'Voir toutes les photos'
     location: 'Localisation'
 
 image_upload:
@@ -61,7 +62,7 @@ image_upload:
     form:
         file:
             label: 'Choisis une photo'
-            helper: 'Le fichier doit être au format JPEG et faire moins de 8Mo.'
+            helper: 'Le fichier doit être au format JPEG et faire moins de 13Mo. Une image trop petite peut être rejetée.'
         credit:
             label: 'Qui a pris cette photo ?'
             helper: 'Le crédit sera affiché sous la photo.'

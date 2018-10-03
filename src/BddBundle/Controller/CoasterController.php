@@ -153,6 +153,32 @@ class CoasterController extends Controller
     }
 
     /**
+     * Async loads images for a coaster
+     *
+     * @Route(
+     *     "/{slug}/images/ajax/{imageNumber}",
+     *     name="coaster_images_ajax_load",
+     *     options = {"expose" = true},
+     *     condition="request.isXmlHttpRequest()"
+     * )
+     * @Method({"GET"})
+     *
+     * @param Coaster $coaster
+     * @param int $imageNumber
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function ajaxLoadImages(Coaster $coaster, int $imageNumber = 8)
+    {
+        return $this->render(
+            'BddBundle:Coaster:image-ajax.html.twig',
+            [
+                'coaster' => $coaster,
+                'number' => $imageNumber
+            ]
+        );
+    }
+
+    /**
      * Relocate a coaster
      *
      * @Route("/reloc", name="coaster_reloc")
