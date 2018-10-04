@@ -242,6 +242,29 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterByRidden(QueryBuilder $qb, array $filters = [])
+    {
+        // Filter by not ridden. User based filter.
+        if (array_key_exists('ridden', $filters) && $filters['ridden'] === 'on'
+            && array_key_exists('user', $filters) && !empty($filters['user'])) {
+            $qb2 = $this
+                ->getEntityManager()
+                ->createQueryBuilder()
+                ->select('c1.id')
+                ->from('BddBundle:RiddenCoaster', 'rc1')
+                ->innerJoin('rc1.coaster', 'c1', 'WITH', 'rc1.coaster = c1.id')
+                ->where('rc1.user = :userid');
+
+            $qb
+                ->andWhere($qb->expr()->in('c.id', $qb2->getDQL()))
+                ->setParameter('userid', $filters['user']);
+        }
+    }
+
+    /**
      * Filter coasters user has not ridden. User based filter.
      *
      * @param QueryBuilder $qb
@@ -249,43 +272,18 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('notridden', $filters)
-            && array_key_exists('user', $filters)
-            && $filters['notridden'] === 'on') {
+        if (array_key_exists('notridden', $filters) && $filters['notridden'] === 'on'
+            && array_key_exists('user', $filters) && !empty($filters['user'])) {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()
                 ->select('c2.id')
-                ->from('BddBundle:RiddenCoaster', 'rc')
-                ->innerJoin('rc.coaster', 'c2', 'WITH', 'rc.coaster = c2.id')
-                ->where('rc.user = :userid');
+                ->from('BddBundle:RiddenCoaster', 'rc2')
+                ->innerJoin('rc2.coaster', 'c2', 'WITH', 'rc2.coaster = c2.id')
+                ->where('rc2.user = :userid');
 
             $qb
                 ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
-                ->setParameter('userid', $filters['user']);
-        }
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterByRidden(QueryBuilder $qb, array $filters = [])
-    {
-        // Filter by not ridden. User based filter.
-        if (array_key_exists('ridden', $filters)
-            && array_key_exists('user', $filters)
-            && $filters['ridden'] === 'on') {
-            $qb2 = $this
-                ->getEntityManager()
-                ->createQueryBuilder()
-                ->select('c2.id')
-                ->from('BddBundle:RiddenCoaster', 'rc')
-                ->innerJoin('rc.coaster', 'c2', 'WITH', 'rc.coaster = c2.id')
-                ->where('rc.user = :userid');
-
-            $qb
-                ->andWhere($qb->expr()->in('c.id', $qb2->getDQL()))
                 ->setParameter('userid', $filters['user']);
         }
     }
