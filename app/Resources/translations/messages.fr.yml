@@ -42,6 +42,7 @@ coaster:
         type: 'Type'
         launch: 'Lancement'
         manufacturer: 'Constructeur'
+        materialType: 'Type'
         restraint: 'Retenue'
         forces: 'Forces G'
         opening: 'Ouverture'

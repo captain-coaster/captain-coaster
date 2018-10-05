@@ -1,3 +1,47 @@
+INSERT INTO `material_type` (`name`, `slug`) VALUES ('Steel', 'steel');
+INSERT INTO `material_type` (`name`, `slug`) VALUES ('Wooden', 'wooden');
+INSERT INTO `material_type` (`name`, `slug`) VALUES ('Hybrid', 'hybrid');
+
+update coaster c
+join built_coaster bc on bc.id = c.built_coaster_id
+join built_coaster_type bct on bct.built_coaster_id = bc.id
+join type t on t.id = bct.type_id
+set c.material_type_id = 1
+where t.name like 'Steel';
+
+update coaster c
+join built_coaster bc on bc.id = c.built_coaster_id
+join built_coaster_type bct on bct.built_coaster_id = bc.id
+join type t on t.id = bct.type_id
+set c.material_type_id = 2
+where t.name like 'Wooden';
+
+update coaster c
+join built_coaster bc on bc.id = c.built_coaster_id
+join built_coaster_type bct on bct.built_coaster_id = bc.id
+join type t on t.id = bct.type_id
+set c.material_type_id = 3
+where t.name like 'Hybrid';
+
+delete from built_coaster_type
+where type_id in (64,65,66);
+
+delete from type
+where id in (64,65,66);
+
+
+
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (1, 'Sit Down', 'sit-down');
+
+update coaster c
+join built_coaster bc on bc.id = c.built_coaster_id
+join built_coaster_type bct on bct.built_coaster_id = bc.id
+join type t on t.id = bct.type_id
+set c.seating_type_id = 1
+where t.name like 'Sit Down';
+
+#################
+
 # users and home parks
 select p.name, u.username from users u
 join park p on p.id = u.home_park_id

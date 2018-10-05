@@ -49,6 +49,30 @@ class Coaster
     private $slug;
 
     /**
+     * @var MaterialType
+     *
+     * @ORM\ManyToOne(targetEntity="MaterialType")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $materialType;
+
+    /**
+     * @var SeatingType
+     *
+     * @ORM\ManyToOne(targetEntity="SeatingType")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $seatingType;
+
+    /**
+     * @var Model
+     *
+     * @ORM\ManyToOne(targetEntity="Model")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $model;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="openingDate", type="date", nullable=true)
@@ -172,6 +196,13 @@ class Coaster
     private $vr = false;
 
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $indoor = false;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="text", nullable=true)
@@ -181,16 +212,31 @@ class Coaster
     /**
      * @var RiddenCoaster
      *
-     * @ORM\OneToMany(targetEntity="BddBundle\Entity\RiddenCoaster", mappedBy="coaster")
+     * @ORM\OneToMany(targetEntity="RiddenCoaster", mappedBy="coaster")
      */
     private $ratings;
 
     /**
      * @var MainTag
      *
-     * @ORM\OneToMany(targetEntity="BddBundle\Entity\MainTag", mappedBy="coaster")
+     * @ORM\OneToMany(targetEntity="MainTag", mappedBy="coaster")
      */
     private $mainTags;
+
+    /**
+     * @var Image
+     *
+     * @ORM\OneToMany(targetEntity="Image", mappedBy="coaster")
+     */
+    private $images;
+
+    /**
+     * @var Image
+     *
+     * @ORM\OneToOne(targetEntity="Image", fetch="EAGER")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     */
+    private $mainImage;
 
     /**
      * @var \DateTime $createdAt
@@ -209,26 +255,13 @@ class Coaster
     private $updatedAt;
 
     /**
-     * @var Image
-     *
-     * @ORM\OneToMany(targetEntity="Image", mappedBy="coaster")
-     */
-    private $images;
-
-    /**
-     * @var Image
-     *
-     * @ORM\OneToOne(targetEntity="Image", fetch="EAGER")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     */
-    private $mainImage;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
         $this->ratings = new ArrayCollection();
+        $this->mainTags = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -882,5 +915,81 @@ class Coaster
     public function getValidDuels(): int
     {
         return $this->validDuels;
+    }
+
+    /**
+     * @param MaterialType $materialType
+     * @return Coaster
+     */
+    public function setMaterialType(MaterialType $materialType): Coaster
+    {
+        $this->materialType = $materialType;
+
+        return $this;
+    }
+
+    /**
+     * @return MaterialType
+     */
+    public function getMaterialType():? MaterialType
+    {
+        return $this->materialType;
+    }
+
+    /**
+     * @param SeatingType $seatingType
+     * @return Coaster
+     */
+    public function setSeatingType(SeatingType $seatingType): Coaster
+    {
+        $this->seatingType = $seatingType;
+
+        return $this;
+    }
+
+    /**
+     * @return SeatingType
+     */
+    public function getSeatingType():? SeatingType
+    {
+        return $this->seatingType;
+    }
+
+    /**
+     * @param Model $model
+     * @return Coaster
+     */
+    public function setModel(Model $model): Coaster
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @return Model
+     */
+    public function getModel():? Model
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param bool $indoor
+     * @return Coaster
+     */
+    public function setIndoor(bool $indoor): Coaster
+    {
+        $this->indoor = $indoor;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIndoor(): bool
+    {
+        return $this->indoor;
     }
 }
