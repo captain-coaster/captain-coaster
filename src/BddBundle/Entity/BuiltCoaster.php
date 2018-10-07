@@ -51,13 +51,6 @@ class BuiltCoaster
     private $inversionsNumber;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="gForce", type="float", precision=3, scale=2, nullable=true)
-     */
-    private $gForce;
-
-    /**
      * @var Coaster
      *
      * @ORM\OneToMany(targetEntity="Coaster", mappedBy="builtCoaster")
@@ -217,30 +210,6 @@ class BuiltCoaster
     public function getInversionsNumber()
     {
         return $this->inversionsNumber;
-    }
-
-    /**
-     * Set gForce
-     *
-     * @param string $gForce
-     *
-     * @return BuiltCoaster
-     */
-    public function setGForce($gForce)
-    {
-        $this->gForce = $gForce;
-
-        return $this;
-    }
-
-    /**
-     * Get gForce
-     *
-     * @return string
-     */
-    public function getGForce()
-    {
-        return $this->gForce;
     }
 
     /**

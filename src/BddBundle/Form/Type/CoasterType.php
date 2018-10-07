@@ -29,6 +29,15 @@ class CoasterType extends AbstractType
             ->add('id', TextType::class, ['disabled' => true])
             ->add('name', TextType::class, ['required' => true])
             ->add(
+                'materialType',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle\Entity\MaterialType',
+                    'choice_label' => 'name',
+                    'required' => true,
+                ]
+            )
+            ->add(
                 'openingDate',
                 DateType::class,
                 [

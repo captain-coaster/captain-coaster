@@ -29,7 +29,6 @@ class BuiltCoasterType extends AbstractType
             ->add('height', TextType::class)
             ->add('length', TextType::class)
             ->add('inversionsNumber', TextType::class, ['data' => 0])
-            ->add('gForce', TextType::class)
             ->add(
                 'manufacturer',
                 EntityType::class,

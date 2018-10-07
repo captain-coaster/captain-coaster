@@ -167,7 +167,7 @@
               <div class="pull-right">{{ coaster.materialType.name }}</div>
             </div>
           {% endif %}
-          {% if coaster.builtCoaster.types %}
+          {% if coaster.builtCoaster.types|length > 0 %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>
               <div class="pull-right">
@@ -181,7 +181,7 @@
               <div class="pull-right"><i class="icon-checkmark3"></i></div>
             </div>
           {% endif %}
-          {% if coaster.builtCoaster.launchs %}
+          {% if coaster.builtCoaster.launchs|length > 0 %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}:</label>
               <div class="pull-right">
@@ -197,13 +197,6 @@
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
                 :</label>
               <div class="pull-right">{{ coaster.builtCoaster.restraint.name|trans([], 'database') }}</div>
-            </div>
-          {% endif %}
-          {% if coaster.builtCoaster.gForce %}
-            <div class="list-group-item">
-              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.forces'|trans }}
-                :</label>
-              <div class="pull-right">{{ coaster.builtCoaster.gForce }}G</div>
             </div>
           {% endif %}
           {% if coaster.openingDate %}
