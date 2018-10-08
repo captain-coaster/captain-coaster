@@ -8,13 +8,14 @@ easy_admin:
                 fields:
                 - id
                 - name
+                - manufacturer
                 - park
-                - ratings
                 - {property: 'status', type: 'string', trans: true, domain: 'database'}
+                - ratings
                 sort: ['updatedAt', 'DESC']
         OpeningCoaster:
             class: BddBundle\Entity\Coaster
-            label: 'Opening of coasters'
+            label: 'Coaster Openings'
             disabled_actions: ['new', 'delete', 'show']
             list:
                 fields:
@@ -113,7 +114,7 @@ easy_admin:
                 fields:
                 - id
                 - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - builtCoasters
+                - coasters
             edit:
                 fields:
                 - name
@@ -128,7 +129,7 @@ easy_admin:
                 fields:
                 - id
                 - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - builtCoasters
+                - coasters
             edit:
                 fields:
                 - name
@@ -143,7 +144,7 @@ easy_admin:
                 fields:
                 - id
                 - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - builtCoasters
+                - coasters
             edit:
                 fields:
                 - name

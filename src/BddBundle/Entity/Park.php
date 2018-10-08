@@ -39,7 +39,7 @@ class Park
     private $slug;
 
     /**
-     * @var Coaster
+     * @var Coaster[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Coaster", mappedBy="park")
      * @ORM\OrderBy({"status" = "ASC", "name" = "ASC"})
@@ -101,8 +101,6 @@ class Park
     }
 
     /**
-     * Get id
-     *
      * @return int
      */
     public function getId()
@@ -111,10 +109,7 @@ class Park
     }
 
     /**
-     * Set name
-     *
      * @param string $name
-     *
      * @return Park
      */
     public function setName($name)
@@ -125,8 +120,6 @@ class Park
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -135,10 +128,7 @@ class Park
     }
 
     /**
-     * Set slug
-     *
      * @param string $slug
-     *
      * @return Park
      */
     public function setSlug($slug)
@@ -149,8 +139,6 @@ class Park
     }
 
     /**
-     * Get slug
-     *
      * @return string
      */
     public function getSlug()
@@ -159,10 +147,7 @@ class Park
     }
 
     /**
-     * Add coaster
-     *
-     * @param \BddBundle\Entity\Coaster $coaster
-     *
+     * @param Coaster $coaster
      * @return Park
      */
     public function addCoaster(Coaster $coaster)
@@ -173,9 +158,7 @@ class Park
     }
 
     /**
-     * Remove coaster
-     *
-     * @param \BddBundle\Entity\Coaster $coaster
+     * @param Coaster $coaster
      */
     public function removeCoaster(Coaster $coaster)
     {
@@ -183,9 +166,7 @@ class Park
     }
 
     /**
-     * Get coasters
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Coaster[]|ArrayCollection
      */
     public function getCoasters()
     {
@@ -193,10 +174,7 @@ class Park
     }
 
     /**
-     * Set country
-     *
-     * @param \BddBundle\Entity\Country $country
-     *
+     * @param Country $country
      * @return Park
      */
     public function setCountry(Country $country)
@@ -207,9 +185,7 @@ class Park
     }
 
     /**
-     * Get country
-     *
-     * @return \BddBundle\Entity\Country
+     * @return Country
      */
     public function getCountry()
     {
@@ -217,10 +193,7 @@ class Park
     }
 
     /**
-     * Set latitude
-     *
      * @param string $latitude
-     *
      * @return Park
      */
     public function setLatitude($latitude)
@@ -231,8 +204,6 @@ class Park
     }
 
     /**
-     * Get latitude
-     *
      * @return string
      */
     public function getLatitude()
@@ -241,10 +212,7 @@ class Park
     }
 
     /**
-     * Set longitude
-     *
      * @param string $longitude
-     *
      * @return Park
      */
     public function setLongitude($longitude)
@@ -255,8 +223,6 @@ class Park
     }
 
     /**
-     * Get longitude
-     *
      * @return string
      */
     public function getLongitude()
@@ -265,10 +231,7 @@ class Park
     }
 
     /**
-     * Set createdAt
-     *
      * @param \DateTime $createdAt
-     *
      * @return Park
      */
     public function setCreatedAt($createdAt)
@@ -279,8 +242,6 @@ class Park
     }
 
     /**
-     * Get createdAt
-     *
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -289,10 +250,7 @@ class Park
     }
 
     /**
-     * Set updatedAt
-     *
      * @param \DateTime $updatedAt
-     *
      * @return Park
      */
     public function setUpdatedAt($updatedAt)
@@ -303,8 +261,6 @@ class Park
     }
 
     /**
-     * Get updatedAt
-     *
      * @return \DateTime
      */
     public function getUpdatedAt()
@@ -313,7 +269,7 @@ class Park
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getOpenedCoasters()
     {
@@ -325,13 +281,13 @@ class Park
     }
 
     /**
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getKiddies()
     {
         return $this->getCoasters()->filter(
             function (Coaster $coaster) {
-                return $coaster->getBuiltCoaster()->isKiddie() == 1;
+                return $coaster->isKiddie() == 1;
             }
         );
     }

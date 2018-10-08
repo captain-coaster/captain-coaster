@@ -39,23 +39,21 @@ class Restraint
     private $slug;
 
     /**
-     * @var BuiltCoaster
+     * @var Coaster[]|ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="BuiltCoaster", mappedBy="restraint")
+     * @ORM\OneToMany(targetEntity="Coaster", mappedBy="restraint")
      */
-    private $builtCoasters;
+    private $coasters;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->builtCoasters = new ArrayCollection();
+        $this->coasters = new ArrayCollection();
     }
 
     /**
-     * Get id
-     *
      * @return int
      */
     public function getId()
@@ -64,10 +62,7 @@ class Restraint
     }
 
     /**
-     * Set name
-     *
      * @param string $name
-     *
      * @return Restraint
      */
     public function setName($name)
@@ -78,8 +73,6 @@ class Restraint
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -88,10 +81,7 @@ class Restraint
     }
 
     /**
-     * Set slug
-     *
      * @param string $slug
-     *
      * @return Restraint
      */
     public function setSlug($slug)
@@ -102,8 +92,6 @@ class Restraint
     }
 
     /**
-     * Get slug
-     *
      * @return string
      */
     public function getSlug()
@@ -112,36 +100,29 @@ class Restraint
     }
 
     /**
-     * Add builtCoaster
-     *
-     * @param BuiltCoaster $builtCoaster
-     *
+     * @param Coaster $coaster
      * @return Restraint
      */
-    public function addBuiltCoaster(BuiltCoaster $builtCoaster)
+    public function addCoaster(Coaster $coaster)
     {
-        $this->builtCoasters[] = $builtCoaster;
+        $this->coasters[] = $coaster;
 
         return $this;
     }
 
     /**
-     * Remove builtCoaster
-     *
-     * @param BuiltCoaster $builtCoaster
+     * @param Coaster $coaster
      */
-    public function removeBuiltCoaster(BuiltCoaster $builtCoaster)
+    public function removeCoaster(Coaster $coaster)
     {
-        $this->builtCoasters->removeElement($builtCoaster);
+        $this->coasters->removeElement($coaster);
     }
 
     /**
-     * Get builtCoasters
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Coaster[]|ArrayCollection
      */
-    public function getBuiltCoasters()
+    public function getCoasters()
     {
-        return $this->builtCoasters;
+        return $this->coasters;
     }
 }

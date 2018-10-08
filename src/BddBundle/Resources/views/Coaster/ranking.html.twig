@@ -91,11 +91,11 @@
             <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
           </ul>
           <ul class="list-inline list-inline-separate text-muted mb-5">
-            <li>{{ coaster.builtCoaster.manufacturer.name }}</li>
+            <li>{{ coaster.manufacturer.name }}</li>
             {% if coaster.maTerialType %}
               <li>{{ coaster.materialType }}</li>{% endif %}
-            {% if coaster.builtCoaster.types|length > 0 %}
-              <li>{{ coaster.builtCoaster.types|join(', ') }}</li>
+            {% if coaster.types|length > 0 %}
+              <li>{{ coaster.types|join(', ') }}</li>
             {% endif %}
           </ul>
         </div>

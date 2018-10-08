@@ -33,7 +33,7 @@
           </h6>
 
           <ul class="list-inline list-inline-separate text-muted mb-10">
-            <li>{{ coaster.item.builtcoaster.types|join(', ') }}</li>
+            <li>{{ coaster.item.types|join(', ') }}</li>
             <li>{% if coaster.distance is defined %}{{ 'search_index.km_away'|trans({'%num%': coaster.distance|number_format(0)}) }}{% endif %}</li>
           </ul>
         </div>

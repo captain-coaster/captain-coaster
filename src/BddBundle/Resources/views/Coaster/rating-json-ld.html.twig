@@ -1,0 +1,18 @@
+{% if coaster.score is not null %}
+{%- spaceless -%}
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org/",
+    "@type": "Product",
+    "name": "{{ coaster.name }}",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "{{ (coaster.score * 5 / 100)|number_format('1', ',') }}",
+      "bestRating": "5",
+      "worstRating": "0",
+      "ratingCount": "{{ coaster.ratings|length }}"
+    }
+  }
+</script>
+{%- endspaceless -%}
+{% endif %}

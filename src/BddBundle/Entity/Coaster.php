@@ -3,6 +3,7 @@
 namespace BddBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -73,6 +74,103 @@ class Coaster
     private $model;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(name="speed", type="integer", nullable=true)
+     */
+    private $speed;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="height", type="integer", nullable=true)
+     */
+    private $height;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="length", type="integer", nullable=true)
+     */
+    private $length;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="inversions_number", type="integer", nullable=true)
+     */
+    private $inversionsNumber = 0;
+
+    /**
+     * @var Manufacturer
+     *
+     * @ORM\ManyToOne(targetEntity="Manufacturer")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $manufacturer;
+
+    /**
+     * @var Restraint
+     *
+     * @ORM\ManyToOne(targetEntity="Restraint", inversedBy="coasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $restraint;
+
+    /**
+     * @var ArrayCollection|Launch[]
+     *
+     * @ORM\ManyToMany(targetEntity="Launch", inversedBy="coasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $launchs;
+
+    /**
+     * @var ArrayCollection|Type[]
+     *
+     * @ORM\ManyToMany(targetEntity="Type", inversedBy="coasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $types;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="is_kiddie", type="boolean", nullable=false)
+     */
+    private $kiddie = false;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $vr = false;
+
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $indoor = false;
+
+    /**
+     * @var Park
+     *
+     * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $park;
+
+    /**
+     * @var Status
+     *
+     * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $status;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="openingDate", type="date", nullable=true)
@@ -85,6 +183,28 @@ class Coaster
      * @ORM\Column(name="closingDate", type="date", nullable=true)
      */
     private $closingDate;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="video", type="string", length=255, unique=false, nullable=true)
+     */
+    private $video;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $price;
+
+    /**
+     * @var Currency
+     *
+     * @ORM\ManyToOne(targetEntity="Currency")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $currency;
 
     /**
      * @var float
@@ -143,88 +263,21 @@ class Coaster
     private $previousRank;
 
     /**
-     * @var BuiltCoaster
-     *
-     * @ORM\ManyToOne(targetEntity="BuiltCoaster", inversedBy="coasters", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $builtCoaster;
-
-    /**
-     * @var Park
-     *
-     * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $park;
-
-    /**
-     * @var Status
-     *
-     * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $status;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="video", type="string", length=255, unique=false, nullable=true)
-     */
-    private $video;
-
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $price;
-
-    /**
-     * @var Currency
-     *
-     * @ORM\ManyToOne(targetEntity="Currency")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $currency;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $vr = false;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $indoor = false;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="text", nullable=true)
-     */
-    private $notes;
-
-    /**
-     * @var RiddenCoaster
+     * @var ArrayCollection|RiddenCoaster[]
      *
      * @ORM\OneToMany(targetEntity="RiddenCoaster", mappedBy="coaster")
      */
     private $ratings;
 
     /**
-     * @var MainTag
+     * @var ArrayCollection|MainTag[]
      *
      * @ORM\OneToMany(targetEntity="MainTag", mappedBy="coaster")
      */
     private $mainTags;
 
     /**
-     * @var Image
+     * @var ArrayCollection|Image[]
      *
      * @ORM\OneToMany(targetEntity="Image", mappedBy="coaster")
      */
@@ -259,6 +312,8 @@ class Coaster
      */
     public function __construct()
     {
+        $this->launchs = new ArrayCollection();
+        $this->types = new ArrayCollection();
         $this->ratings = new ArrayCollection();
         $this->mainTags = new ArrayCollection();
         $this->images = new ArrayCollection();
@@ -331,10 +386,327 @@ class Coaster
     }
 
     /**
-     * Set openingDate
-     *
+     * @param MaterialType $materialType
+     * @return Coaster
+     */
+    public function setMaterialType(MaterialType $materialType): Coaster
+    {
+        $this->materialType = $materialType;
+
+        return $this;
+    }
+
+    /**
+     * @return MaterialType
+     */
+    public function getMaterialType(): ?MaterialType
+    {
+        return $this->materialType;
+    }
+
+    /**
+     * @param SeatingType $seatingType
+     * @return Coaster
+     */
+    public function setSeatingType(SeatingType $seatingType): Coaster
+    {
+        $this->seatingType = $seatingType;
+
+        return $this;
+    }
+
+    /**
+     * @return SeatingType
+     */
+    public function getSeatingType(): ?SeatingType
+    {
+        return $this->seatingType;
+    }
+
+    /**
+     * @param Model $model
+     * @return Coaster
+     */
+    public function setModel(Model $model): Coaster
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @return Model
+     */
+    public function getModel(): ?Model
+    {
+        return $this->model;
+    }
+
+    /**
+     * @param integer $speed
+     * @return Coaster
+     */
+    public function setSpeed($speed)
+    {
+        $this->speed = $speed;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSpeed()
+    {
+        return $this->speed;
+    }
+
+    /**
+     * @param integer $height
+     * @return Coaster
+     */
+    public function setHeight($height)
+    {
+        $this->height = $height;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHeight()
+    {
+        return $this->height;
+    }
+
+    /**
+     * @param integer $length
+     * @return Coaster
+     */
+    public function setLength($length)
+    {
+        $this->length = $length;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLength()
+    {
+        return $this->length;
+    }
+
+    /**
+     * @param integer $inversionsNumber
+     * @return Coaster
+     */
+    public function setInversionsNumber($inversionsNumber)
+    {
+        $this->inversionsNumber = $inversionsNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInversionsNumber()
+    {
+        return $this->inversionsNumber;
+    }
+
+    /**
+     * @param Manufacturer $manufacturer
+     * @return Coaster
+     */
+    public function setManufacturer(Manufacturer $manufacturer)
+    {
+        $this->manufacturer = $manufacturer;
+
+        return $this;
+    }
+
+    /**
+     * @return Manufacturer
+     */
+    public function getManufacturer()
+    {
+        return $this->manufacturer;
+    }
+
+    /**
+     * @param Restraint $restraint
+     * @return Coaster
+     */
+    public function setRestraint(Restraint $restraint)
+    {
+        $this->restraint = $restraint;
+
+        return $this;
+    }
+
+    /**
+     * @return Restraint
+     */
+    public function getRestraint()
+    {
+        return $this->restraint;
+    }
+
+    /**
+     * @param Launch $launch
+     * @return Coaster
+     */
+    public function addLaunch(Launch $launch)
+    {
+        $this->launchs[] = $launch;
+
+        return $this;
+    }
+
+    /**
+     * @param Launch $launch
+     */
+    public function removeLaunch(Launch $launch)
+    {
+        $this->launchs->removeElement($launch);
+    }
+
+    /**
+     * @return Launch[]|ArrayCollection
+     */
+    public function getLaunchs()
+    {
+        return $this->launchs;
+    }
+
+    /**
+     * @param Type $type
+     * @return Coaster
+     */
+    public function addType(Type $type)
+    {
+        $this->types[] = $type;
+
+        return $this;
+    }
+
+    /**
+     * @param Type $type
+     */
+    public function removeType(Type $type)
+    {
+        $this->types->removeElement($type);
+    }
+
+    /**
+     * @return Type[]|ArrayCollection
+     */
+    public function getTypes()
+    {
+        return $this->types;
+    }
+
+    /**
+     * @param bool $kiddie
+     * @return Coaster
+     */
+    public function setKiddie(bool $kiddie): Coaster
+    {
+        $this->kiddie = $kiddie;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isKiddie(): bool
+    {
+        return $this->kiddie;
+    }
+
+    /**
+     * @param boolean $vr
+     * @return Coaster
+     */
+    public function setVr($vr)
+    {
+        $this->vr = $vr;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getVr()
+    {
+        return $this->vr;
+    }
+
+    /**
+     * @param bool $indoor
+     * @return Coaster
+     */
+    public function setIndoor(bool $indoor): Coaster
+    {
+        $this->indoor = $indoor;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIndoor(): bool
+    {
+        return $this->indoor;
+    }
+
+    /**
+     * @param Park $park
+     * @return Coaster
+     */
+    public function setPark(Park $park): Coaster
+    {
+        $this->park = $park;
+
+        return $this;
+    }
+
+    /**
+     * @return Park
+     */
+    public function getPark(): Park
+    {
+        return $this->park;
+    }
+
+    /**
+     * @param Status $status
+     * @return Coaster
+     */
+    public function setStatus(Status $status): Coaster
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Status
+     */
+    public function getStatus(): Status
+    {
+        return $this->status;
+    }
+
+    /**
      * @param \DateTime $openingDate
-     *
      * @return Coaster
      */
     public function setOpeningDate($openingDate)
@@ -345,8 +717,6 @@ class Coaster
     }
 
     /**
-     * Get openingDate
-     *
      * @return \DateTime
      */
     public function getOpeningDate()
@@ -355,10 +725,7 @@ class Coaster
     }
 
     /**
-     * Set closingDate
-     *
      * @param \DateTime $closingDate
-     *
      * @return Coaster
      */
     public function setClosingDate($closingDate)
@@ -369,8 +736,6 @@ class Coaster
     }
 
     /**
-     * Get closingDate
-     *
      * @return \DateTime
      */
     public function getClosingDate()
@@ -379,10 +744,64 @@ class Coaster
     }
 
     /**
-     * Set averageRating
-     *
+     * @param string $video
+     * @return Coaster
+     */
+    public function setVideo($video): Coaster
+    {
+        $this->video = $video;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVideo()
+    {
+        return $this->video;
+    }
+
+    /**
+     * @param integer $price
+     * @return Coaster
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param Currency $currency
+     * @return Coaster
+     */
+    public function setCurrency(Currency $currency)
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * @return Currency
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
      * @param string $averageRating
-     *
      * @return Coaster
      */
     public function setAverageRating($averageRating)
@@ -393,8 +812,6 @@ class Coaster
     }
 
     /**
-     * Get averageRating
-     *
      * @return string
      */
     public function getAverageRating()
@@ -403,82 +820,140 @@ class Coaster
     }
 
     /**
-     * Set builtCoaster
-     *
-     * @param \BddBundle\Entity\BuiltCoaster $builtCoaster
-     *
+     * @param integer $totalRatings
      * @return Coaster
      */
-    public function setBuiltCoaster(BuiltCoaster $builtCoaster = null)
+    public function setTotalRatings($totalRatings)
     {
-        $this->builtCoaster = $builtCoaster;
+        $this->totalRatings = $totalRatings;
 
         return $this;
     }
 
     /**
-     * Get builtCoaster
-     *
-     * @return \BddBundle\Entity\BuiltCoaster
+     * @return integer
      */
-    public function getBuiltCoaster()
+    public function getTotalRatings()
     {
-        return $this->builtCoaster;
+        return $this->totalRatings;
     }
 
     /**
-     * Set park
-     *
-     * @param \BddBundle\Entity\Park $park
-     *
+     * @param int $averageTopRank
      * @return Coaster
      */
-    public function setPark(Park $park)
+    public function setAverageTopRank(int $averageTopRank): Coaster
     {
-        $this->park = $park;
+        $this->averageTopRank = $averageTopRank;
 
         return $this;
     }
 
     /**
-     * Get park
-     *
-     * @return \BddBundle\Entity\Park
+     * @return int
      */
-    public function getPark()
+    public function getAverageTopRank(): ?int
     {
-        return $this->park;
+        return $this->averageTopRank;
     }
 
     /**
-     * Set status
-     *
-     * @param \BddBundle\Entity\Status $status
-     *
+     * @param int $totalTopsIn
      * @return Coaster
      */
-    public function setStatus(Status $status)
+    public function setTotalTopsIn(int $totalTopsIn): Coaster
     {
-        $this->status = $status;
+        $this->totalTopsIn = $totalTopsIn;
 
         return $this;
     }
 
     /**
-     * Get status
-     *
-     * @return \BddBundle\Entity\Status
+     * @return int
      */
-    public function getStatus()
+    public function getTotalTopsIn(): int
     {
-        return $this->status;
+        return $this->totalTopsIn;
     }
 
     /**
-     * Add rating
-     *
-     * @param \BddBundle\Entity\RiddenCoaster $rating
-     *
+     * @param int $validDuels
+     * @return Coaster
+     */
+    public function setValidDuels(int $validDuels): Coaster
+    {
+        $this->validDuels = $validDuels;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getValidDuels(): int
+    {
+        return $this->validDuels;
+    }
+
+    /**
+     * @param string $score
+     * @return Coaster
+     */
+    public function setScore($score)
+    {
+        $this->score = $score;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScore()
+    {
+        return $this->score;
+    }
+
+    /**
+     * @param integer $rank
+     * @return Coaster
+     */
+    public function setRank($rank)
+    {
+        $this->rank = $rank;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getRank()
+    {
+        return $this->rank;
+    }
+
+    /**
+     * @param integer $previousRank
+     * @return Coaster
+     */
+    public function setPreviousRank($previousRank)
+    {
+        $this->previousRank = $previousRank;
+
+        return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getPreviousRank()
+    {
+        return $this->previousRank;
+    }
+
+    /**
+     * @param RiddenCoaster $rating
      * @return Coaster
      */
     public function addRating(RiddenCoaster $rating)
@@ -489,9 +964,7 @@ class Coaster
     }
 
     /**
-     * Remove rating
-     *
-     * @param \BddBundle\Entity\RiddenCoaster $rating
+     * @param RiddenCoaster $rating
      */
     public function removeRating(RiddenCoaster $rating)
     {
@@ -499,13 +972,61 @@ class Coaster
     }
 
     /**
-     * Get ratings
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return RiddenCoaster[]|ArrayCollection
      */
     public function getRatings()
     {
         return $this->ratings;
+    }
+
+    /**
+     * @return MainTag[]|ArrayCollection
+     */
+    public function getMainTags()
+    {
+        return $this->mainTags;
+    }
+
+    /**
+     * @param Image $images
+     * @return Coaster
+     */
+    public function setImages(Image $images): Coaster
+    {
+        $this->images = $images;
+
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|Collection
+     */
+    public function getImages()
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('enabled', true))
+            ->orderBy(['updatedAt' => Criteria::DESC]);
+
+        return $this->images->matching($criteria);
+    }
+
+    /**
+     * @param Image $mainImage
+     * @return Coaster
+     */
+    public function setMainImage(Image $mainImage): Coaster
+    {
+        $this->mainImage = $mainImage;
+
+        return $this;
+    }
+
+    /**
+     * @return Image
+     */
+    public function getMainImage(): ?Image
+    {
+        return $this->mainImage;
     }
 
     /**
@@ -557,150 +1078,6 @@ class Coaster
     }
 
     /**
-     * Set video
-     *
-     * @param string $video
-     *
-     * @return Coaster
-     */
-    public function setVideo($video)
-    {
-        $this->video = $video;
-
-        return $this;
-    }
-
-    /**
-     * Get video
-     *
-     * @return string
-     */
-    public function getVideo()
-    {
-        return $this->video;
-    }
-
-    /**
-     * Set totalRatings
-     *
-     * @param integer $totalRatings
-     *
-     * @return Coaster
-     */
-    public function setTotalRatings($totalRatings)
-    {
-        $this->totalRatings = $totalRatings;
-
-        return $this;
-    }
-
-    /**
-     * Get totalRatings
-     *
-     * @return integer
-     */
-    public function getTotalRatings()
-    {
-        return $this->totalRatings;
-    }
-
-    /**
-     * Set price
-     *
-     * @param integer $price
-     *
-     * @return Coaster
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    /**
-     * Get price
-     *
-     * @return integer
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    /**
-     * Set vr
-     *
-     * @param boolean $vr
-     *
-     * @return Coaster
-     */
-    public function setVr($vr)
-    {
-        $this->vr = $vr;
-
-        return $this;
-    }
-
-    /**
-     * Get vr
-     *
-     * @return boolean
-     */
-    public function getVr()
-    {
-        return $this->vr;
-    }
-
-    /**
-     * Set notes
-     *
-     * @param string $notes
-     *
-     * @return Coaster
-     */
-    public function setNotes($notes)
-    {
-        $this->notes = $notes;
-
-        return $this;
-    }
-
-    /**
-     * Get notes
-     *
-     * @return string
-     */
-    public function getNotes()
-    {
-        return $this->notes;
-    }
-
-    /**
-     * Set currency
-     *
-     * @param \BddBundle\Entity\Currency $currency
-     *
-     * @return Coaster
-     */
-    public function setCurrency(Currency $currency)
-    {
-        $this->currency = $currency;
-
-        return $this;
-    }
-
-    /**
-     * Get currency
-     *
-     * @return \BddBundle\Entity\Currency
-     */
-    public function getCurrency()
-    {
-        return $this->currency;
-    }
-
-    /**
      * Can we rate this coaster ?
      *
      * @return bool
@@ -717,7 +1094,7 @@ class Coaster
      */
     public function isRankable(): bool
     {
-        return !$this->getBuiltCoaster()->isKiddie();
+        return !$this->isKiddie();
     }
 
     /**
@@ -734,262 +1111,5 @@ class Coaster
         }
 
         return null;
-    }
-
-    /**
-     * Set score
-     *
-     * @param string $score
-     *
-     * @return Coaster
-     */
-    public function setScore($score)
-    {
-        $this->score = $score;
-
-        return $this;
-    }
-
-    /**
-     * Get score
-     *
-     * @return string
-     */
-    public function getScore()
-    {
-        return $this->score;
-    }
-
-    /**
-     * Set rank
-     *
-     * @param integer $rank
-     *
-     * @return Coaster
-     */
-    public function setRank($rank)
-    {
-        $this->rank = $rank;
-
-        return $this;
-    }
-
-    /**
-     * Get rank
-     *
-     * @return integer
-     */
-    public function getRank()
-    {
-        return $this->rank;
-    }
-
-    /**
-     * Set previousRank
-     *
-     * @param integer $previousRank
-     *
-     * @return Coaster
-     */
-    public function setPreviousRank($previousRank)
-    {
-        $this->previousRank = $previousRank;
-
-        return $this;
-    }
-
-    /**
-     * Get previousRank
-     *
-     * @return integer
-     */
-    public function getPreviousRank()
-    {
-        return $this->previousRank;
-    }
-
-    /**
-     * Get mainTags
-     *
-     * @return MainTag
-     */
-    public function getMainTags()
-    {
-        return $this->mainTags;
-    }
-
-    /**
-     * @param int $totalTopsIn
-     * @return Coaster
-     */
-    public function setTotalTopsIn(int $totalTopsIn): Coaster
-    {
-        $this->totalTopsIn = $totalTopsIn;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTotalTopsIn(): int
-    {
-        return $this->totalTopsIn;
-    }
-
-    /**
-     * @param int $averageTopRank
-     * @return Coaster
-     */
-    public function setAverageTopRank(int $averageTopRank): Coaster
-    {
-        $this->averageTopRank = $averageTopRank;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAverageTopRank(): ?int
-    {
-        return $this->averageTopRank;
-    }
-
-    /**
-     * @param Image $images
-     * @return Coaster
-     */
-    public function setImages(Image $images): Coaster
-    {
-        $this->images = $images;
-
-        return $this;
-    }
-
-    /**
-     * @return Image
-     */
-    public function getImages()
-    {
-        $criteria = Criteria::create()
-            ->where(Criteria::expr()->eq('enabled', true))
-            ->orderBy(['updatedAt' => Criteria::DESC]);
-
-        return $this->images->matching($criteria);
-    }
-
-    /**
-     * @param Image $mainImage
-     * @return Coaster
-     */
-    public function setMainImage(Image $mainImage): Coaster
-    {
-        $this->mainImage = $mainImage;
-
-        return $this;
-    }
-
-    /**
-     * @return Image
-     */
-    public function getMainImage(): ?Image
-    {
-        return $this->mainImage;
-    }
-
-    /**
-     * @param int $validDuels
-     * @return Coaster
-     */
-    public function setValidDuels(int $validDuels): Coaster
-    {
-        $this->validDuels = $validDuels;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getValidDuels(): int
-    {
-        return $this->validDuels;
-    }
-
-    /**
-     * @param MaterialType $materialType
-     * @return Coaster
-     */
-    public function setMaterialType(MaterialType $materialType): Coaster
-    {
-        $this->materialType = $materialType;
-
-        return $this;
-    }
-
-    /**
-     * @return MaterialType
-     */
-    public function getMaterialType():? MaterialType
-    {
-        return $this->materialType;
-    }
-
-    /**
-     * @param SeatingType $seatingType
-     * @return Coaster
-     */
-    public function setSeatingType(SeatingType $seatingType): Coaster
-    {
-        $this->seatingType = $seatingType;
-
-        return $this;
-    }
-
-    /**
-     * @return SeatingType
-     */
-    public function getSeatingType():? SeatingType
-    {
-        return $this->seatingType;
-    }
-
-    /**
-     * @param Model $model
-     * @return Coaster
-     */
-    public function setModel(Model $model): Coaster
-    {
-        $this->model = $model;
-
-        return $this;
-    }
-
-    /**
-     * @return Model
-     */
-    public function getModel():? Model
-    {
-        return $this->model;
-    }
-
-    /**
-     * @param bool $indoor
-     * @return Coaster
-     */
-    public function setIndoor(bool $indoor): Coaster
-    {
-        $this->indoor = $indoor;
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isIndoor(): bool
-    {
-        return $this->indoor;
     }
 }

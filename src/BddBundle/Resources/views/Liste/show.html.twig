@@ -58,8 +58,8 @@
             </h2>
 
             <ul class="list-inline list-inline-separate text-muted mb-10">
-              <li>{{ coaster.builtCoaster.manufacturer.name }}</li>
-              <li>{{ coaster.builtCoaster.types|join(', ') }}</li>
+              <li>{{ coaster.manufacturer.name }}</li>
+              <li>{{ coaster.types|join(', ') }}</li>
               <li>
                 <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
                   {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}

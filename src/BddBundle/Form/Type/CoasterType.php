@@ -2,13 +2,13 @@
 
 namespace BddBundle\Form\Type;
 
+use BddBundle\Entity\Coaster;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -37,6 +37,67 @@ class CoasterType extends AbstractType
                     'required' => true,
                 ]
             )
+            ->add('speed', TextType::class, ['required' => false])
+            ->add('height', TextType::class, ['required' => false])
+            ->add('length', TextType::class, ['required' => false])
+            ->add('inversionsNumber', TextType::class, ['data' => 0, 'required' => true])
+            ->add(
+                'manufacturer',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle:Manufacturer',
+                    'choice_label' => 'name',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('m')
+                            ->orderBy('m.name', 'ASC');
+                    },
+                ]
+            )
+            ->add(
+                'restraint',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle:Restraint',
+                    'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('r')
+                            ->orderBy('r.name', 'ASC');
+                    },
+                ]
+            )
+            ->add(
+                'launchs',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle:Launch',
+                    'choice_label' => 'name',
+                    'choice_translation_domain' => 'database',
+                    'multiple' => true,
+                    'expanded' => true,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('l')
+                            ->orderBy('l.name', 'ASC');
+                    },
+                ]
+            )
+            ->add(
+                'types',
+                EntityType::class,
+                [
+                    'class' => 'BddBundle:Type',
+                    'choice_label' => 'name',
+                    'multiple' => true,
+                    'expanded' => true,
+                    'query_builder' => function (EntityRepository $er) {
+                        return $er->createQueryBuilder('t')
+                            ->orderBy('t.name', 'ASC');
+                    },
+                ]
+            )
+            ->add('indoor', CheckboxType::class, ['required' => false])
+            ->add('kiddie', CheckboxType::class, ['required' => false])
+            ->add('vr', CheckboxType::class, ['required' => false])
             ->add(
                 'openingDate',
                 DateType::class,
@@ -93,8 +154,6 @@ class CoasterType extends AbstractType
                     },
                 ]
             )
-            ->add('vr', CheckboxType::class, ['required' => false])
-            ->add('notes', TextareaType::class, ['required' => false])
             ->add('save', SubmitType::class, ['label' => 'Create/Update']);
     }
 
@@ -105,7 +164,7 @@ class CoasterType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'inherit_data' => true,
+                'data_class' => Coaster::class,
             ]
         );
     }

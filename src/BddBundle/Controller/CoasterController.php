@@ -4,9 +4,8 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\Image;
-use BddBundle\Form\Type\CommonCoasterType;
+use BddBundle\Form\Type\CoasterType;
 use BddBundle\Form\Type\ImageUploadType;
-use BddBundle\Form\Type\RelocationCoasterType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -55,7 +54,7 @@ class CoasterController extends Controller
         $coaster = new Coaster();
 
         /** @var Form $form */
-        $form = $this->createForm(CommonCoasterType::class, $coaster);
+        $form = $this->createForm(CoasterType::class, $coaster);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -88,7 +87,7 @@ class CoasterController extends Controller
     public function editAction(Request $request, Coaster $coaster)
     {
         /** @var Form $form */
-        $form = $this->createForm(CommonCoasterType::class, $coaster);
+        $form = $this->createForm(CoasterType::class, $coaster);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -173,45 +172,10 @@ class CoasterController extends Controller
             'BddBundle:Coaster:image-ajax.html.twig',
             [
                 'coaster' => $coaster,
-                'number' => $imageNumber
+                'number' => $imageNumber,
             ]
         );
     }
-
-    /**
-     * Relocate a coaster
-     *
-     * @Route("/reloc", name="coaster_reloc")
-     * @Method({"GET", "POST"})
-     * @Security("is_granted('ROLE_CONTRIBUTOR')")
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function relocAction(Request $request)
-    {
-        $coaster = new Coaster();
-
-        /** @var Form $form */
-        $form = $this->createForm(RelocationCoasterType::class, $coaster);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($coaster);
-            $em->flush();
-
-            return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
-        }
-
-        return $this->render(
-            'BddBundle:Coaster:create.html.twig',
-            [
-                'form' => $form->createView(),
-            ]
-        );
-    }
-
 
     /**
      * Show ranking of best coasters

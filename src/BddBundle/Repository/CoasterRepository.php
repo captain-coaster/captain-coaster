@@ -70,11 +70,10 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('c', 'p', 'bc', 'm')
+            ->select('c', 'p', 'm')
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p')
-            ->innerJoin('c.builtCoaster', 'bc')
-            ->innerJoin('bc.manufacturer', 'm')
+            ->innerJoin('c.manufacturer', 'm')
             ->where('c.rank is not null')
             ->orderBy('c.rank', 'asc')
             ->getQuery();
@@ -96,8 +95,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('p.id as id')
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->innerJoin('c.builtCoaster', 'bc', 'WITH', 'c.builtCoaster = bc.id')
-            ->innerJoin('bc.manufacturer', 'm', 'WITH', 'bc.manufacturer = m.id')
+            ->innerJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
             ->where('p.latitude is not null')
             ->andWhere('p.longitude is not null')
@@ -121,8 +119,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->select(['c', 's', 'p'])
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->innerJoin('c.builtCoaster', 'bc', 'WITH', 'c.builtCoaster = bc.id')
-            ->innerJoin('bc.manufacturer', 'm', 'WITH', 'bc.manufacturer = m.id')
+            ->innerJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
             ->where('p.id = :parkId')
             ->setParameter('parkId', $park->getId());
@@ -146,8 +143,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->select('c AS item')
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->innerJoin('c.builtCoaster', 'bc', 'WITH', 'c.builtCoaster = bc.id')
-            ->innerJoin('bc.manufacturer', 'm', 'WITH', 'bc.manufacturer = m.id')
+            ->innerJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
             ->where('p.latitude is not null')
             ->andWhere('p.longitude is not null');
@@ -309,7 +305,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     private function filterKiddie(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('kiddie', $filters) && $filters['kiddie'] !== '') {
-            $qb->andWhere('bc.kiddie = 0');
+            $qb->andWhere('c.kiddie = 0');
         }
     }
 
