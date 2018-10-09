@@ -1,0 +1,13 @@
+title: 'How the ranking works?'
+brief:
+    title: 'Captain’s ranking in brief'
+    text: '<p>Captain Coaster’s ranking is based on a <b>pairwise comparison system</b>. The comparisons are deduced from your Tops and Ratings. The more detailed they are, the better!</p>
+        <p>The Top is more precise whereas ratings are faster to use. In order to improve your influence on the ranking, we recommend you to <b>rate all your ridden coasters</b>, and then to <b>order your highest rated coasters</b> in your Top.</p>'
+principles:
+    title: 'Ranking principles'
+    text: '<p><b>For each coaster in the ranking, we compute a duel with all other coasters</b> in the database to find out which one is the best.</p>
+           <p>Only mutual riders can say whether they prefer one or the other as they have ridden both. This piece of information can be supplied by rating both or ordering both in your Top. <b>The duel is won by the coaster getting a majority of positive comparisons.</b><br/>Then the results of these duels are computed to designate the winner. If a coaster wins all its duels, it will be number 1. Another losing against n°1 and winning against all others will be the number 2, etc. The score reflects this proportion.</p>
+           <p>The algorithm is built to <b>reflect the real tendency and tastes of all riders</b> involved.<br/>First there is no mass effect: the amount of ratings for a coaster has no influence. It is not a popularity contest! Rare coasters have the same opportunity to be well ranked than most popular.</p>
+           <p>For your information, ranking 1 coaster brings 0 comparisons, which means no influence at all. Ranking 10 coasters brings 45 comparisons, ranking 20 coasters brings 190 comparisons, etc.</p>
+           <p>As a consequence the more you ride (and then rate) coasters, the more comparisons you bring and therefore the more you weigh on the ranking. This encourages you, firstly to rate all your ridden coasters, secondly to ride more and more coasters!</p>
+           <p>Please note that <b>a single person cannot disrupt the whole ranking.</b> Everyone has influence, but one person alone with an antagonistic point of view on a coaster will not change its score by 100%, it’s always the majority point of view that matters.</p>'

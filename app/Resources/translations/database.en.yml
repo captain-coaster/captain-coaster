@@ -127,3 +127,5 @@ continent.america: 'America'
 continent.asia: 'Asia'
 continent.africa: 'Africa'
 continent.oceania: 'Oceania'
+
+data.unknown: 'Unknown'

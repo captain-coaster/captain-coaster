@@ -41,6 +41,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->join('c.park', 'p')
             ->leftJoin('c.ratings', 'r', Expr\Join::WITH, 'r.user = :user')
             ->where('c.name LIKE :term')
+            ->orWhere('p.name LIKE :term')
             ->setParameter('term', sprintf('%%%s%%', $term))
             ->setParameter('user', $user)
             ->setMaxResults(15)

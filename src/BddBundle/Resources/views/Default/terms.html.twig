@@ -3,57 +3,54 @@
 {% set title = 'title'|trans([], 'termsOfUse') %}
 {% block title %}{{ title }}{% endblock %}
 
-
 {% block body %}
-    {{ ''|trans([], 'termsOfUse') }}
+  <div class="panel">
+    <div class="panel-body">
+      <div class="content-group-lg">
+        <h3 class="text-semibold mb-5">
+          {{ 'terms.title'|trans([], 'termsOfUse') }}
+        </h3>
 
-    <div class="panel">
-        <div class="panel-body">
-            <div class="content-group-lg">
-                <h3 class="text-semibold mb-5">
-                    {{ 'terms.title'|trans([], 'termsOfUse') }}
-                </h3>
-
-                <div class="content-group">
-                    {{ 'terms.text'|trans({'%link_href%': path('default_contact')}, 'termsOfUse')|raw }}
-                </div>
-            </div>
-            <div class="content-group-lg">
-                <h3 class="text-semibold mb-5">
-                    {{ 'hosting.title'|trans([], 'termsOfUse') }}
-                </h3>
-
-                <div class="content-group">
-                    {{ 'hosting.text'|trans([], 'termsOfUse')|raw }}
-                </div>
-            </div>
-            <div class="content-group-lg">
-                <h3 class="text-semibold mb-5">
-                    {{ 'copyright.title'|trans([], 'termsOfUse') }}
-                </h3>
-
-                <div class="content-group">
-                    {{ 'copyright.text'|trans({'%link_href%': path('default_contact')}, 'termsOfUse')|raw }}
-                </div>
-            </div>
-            <div class="content-group-lg">
-                <h3 class="text-semibold mb-5">
-                    {{ 'cookies.title'|trans([], 'termsOfUse') }}
-                </h3>
-
-                <div class="content-group">
-                    {{ 'cookies.text'|trans([], 'termsOfUse')|raw }}
-                </div>
-            </div>
-            <div class="content-group-lg">
-                <h3 class="text-semibold mb-5">
-                    {{ 'contact.title'|trans([], 'termsOfUse') }}
-                </h3>
-
-                <div class="content-group">
-                    {{ 'contact.text'|trans({'%link_href%': path('default_contact')}, 'termsOfUse')|raw }}
-                </div>
-            </div>
+        <div class="content-group">
+          {{ 'terms.text'|trans({'%link_href%': path('default_contact')}, 'termsOfUse')|raw }}
         </div>
+      </div>
+      <div class="content-group-lg">
+        <h3 class="text-semibold mb-5">
+          {{ 'hosting.title'|trans([], 'termsOfUse') }}
+        </h3>
+
+        <div class="content-group">
+          {{ 'hosting.text'|trans([], 'termsOfUse')|raw }}
+        </div>
+      </div>
+      <div class="content-group-lg">
+        <h3 class="text-semibold mb-5">
+          {{ 'copyright.title'|trans([], 'termsOfUse') }}
+        </h3>
+
+        <div class="content-group">
+          {{ 'copyright.text'|trans({'%link_href%': path('default_contact')}, 'termsOfUse')|raw }}
+        </div>
+      </div>
+      <div class="content-group-lg">
+        <h3 class="text-semibold mb-5">
+          {{ 'cookies.title'|trans([], 'termsOfUse') }}
+        </h3>
+
+        <div class="content-group">
+          {{ 'cookies.text'|trans([], 'termsOfUse')|raw }}
+        </div>
+      </div>
+      <div class="content-group-lg">
+        <h3 class="text-semibold mb-5">
+          {{ 'contact.title'|trans([], 'termsOfUse') }}
+        </h3>
+
+        <div class="content-group">
+          {{ 'contact.text'|trans({'%link_href%': path('default_contact')}, 'termsOfUse')|raw }}
+        </div>
+      </div>
     </div>
+  </div>
 {% endblock %}

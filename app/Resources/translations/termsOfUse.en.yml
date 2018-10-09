@@ -1,10 +1,10 @@
 title: 'Terms of Use'
 terms:
     title: 'Using Captain Coaster'
-    text: '<p>Captain Coaster is a free unofficial community website for Theme Parks and RollerCoasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company. Nobody gets paid to manage it, except with members gratitude.</p>
+    text: '<p>Captain Coaster is a free unofficial community website for theme parks and roller coasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company. Nobody gets paid to manage it, except with members gratitude.</p>
            <p>It is opened to anyone : you just need to connect to share your experience on coasters (ratings, tags, reviews). To access these features, you will need a <b>valid</b> Facebook or Google account. <b>Having multiple accounts is definitely forbidden</b> and will lead to a permanent ban.</p>
            <p>All participative fields are read by team moderators who reserve the right to edit or delete any post. Are forbidden by the French law : violence, racism, threats, insults, homophobia, xenophobia, terrorism apology... Members can be banned temporarily or permanently for any of those reasons.</p>
-           <p>To definitely close your account on Captain Coaster, please <a href="%link_href%">contact us</a>. Your access and personal information will be then deleted by an admin.</p>'
+           <p>To definitely close your account on Captain Coaster, please <a href="%link_href%">contact us</a>. Your access and personal information will then be deleted by an admin.</p>'
 hosting:
     title: 'Hosting'
     text: 'Captain Coaster is hosted by Amazon Web Services, whose headquarters are in Seattle, Washington, United States. Our servers are located in Paris, France.'

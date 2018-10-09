@@ -89,8 +89,6 @@ coaster_ranking:
         ratings: 'ratings'
         comparisons: 'analyzed comparisons'
         in_tops: 'coasters in Tops'
-    learn:
-        title: 'How the ranking works?'
 
 map_index:
     title: 'Coasters Map'
@@ -275,7 +273,7 @@ notif:
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
     ranking:
-        message: 'Ranking updated! Hurray, Twisted Timbers is finally here!'
+        message: 'Ranking of the best coaster updated!'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'

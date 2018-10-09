@@ -105,7 +105,7 @@ class Coaster
      * @var Manufacturer
      *
      * @ORM\ManyToOne(targetEntity="Manufacturer")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $manufacturer;
 
@@ -113,7 +113,7 @@ class Coaster
      * @var Restraint
      *
      * @ORM\ManyToOne(targetEntity="Restraint", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $restraint;
 
@@ -121,7 +121,7 @@ class Coaster
      * @var ArrayCollection|Launch[]
      *
      * @ORM\ManyToMany(targetEntity="Launch", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $launchs;
 
@@ -129,7 +129,7 @@ class Coaster
      * @var ArrayCollection|Type[]
      *
      * @ORM\ManyToMany(targetEntity="Type", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $types;
 
@@ -681,7 +681,7 @@ class Coaster
     /**
      * @return Park
      */
-    public function getPark(): Park
+    public function getPark(): ?Park
     {
         return $this->park;
     }
@@ -700,7 +700,7 @@ class Coaster
     /**
      * @return Status
      */
-    public function getStatus(): Status
+    public function getStatus(): ?Status
     {
         return $this->status;
     }

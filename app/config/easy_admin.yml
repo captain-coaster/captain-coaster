@@ -3,7 +3,7 @@ easy_admin:
     entities:
         Coaster:
             class: BddBundle\Entity\Coaster
-            disabled_actions: ['new', 'delete', 'show', 'edit']
+            disabled_actions: ['delete', 'show']
             list:
                 fields:
                 - id
@@ -13,6 +13,48 @@ easy_admin:
                 - {property: 'status', type: 'string', trans: true, domain: 'database'}
                 - ratings
                 sort: ['updatedAt', 'DESC']
+            edit:
+                fields:
+                - name
+                - park
+                - materialType
+                - speed
+                - height
+                - length
+                - inversionsNumber
+                - manufacturer
+                - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
+                - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
+                - types
+                - kiddie
+                - vr
+                - indoor
+                - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                - {property: 'openingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                - price
+                - currency
+            new:
+                fields:
+                - name
+                - park
+                - materialType
+                - speed
+                - height
+                - length
+                - inversionsNumber
+                - manufacturer
+                - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
+                - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
+                - types
+                - kiddie
+                - vr
+                - indoor
+                - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                - {property: 'openingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                - price
+                - currency
         OpeningCoaster:
             class: BddBundle\Entity\Coaster
             label: 'Coaster Openings'

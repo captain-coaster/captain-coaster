@@ -1,0 +1,13 @@
+title: 'Comment fonctionne le classement ?'
+brief:
+    title: 'Le classement Captain Coaster en bref'
+    text: '<p>Le classement de captain coaster est fondé sur un algorithme de <b>comparaison par paires</b>. Ces comparaisons sont obtenues via les Tops et les Notes des riders. Plus ils sont détaillés, meilleur sera le classement !</p>
+        <p>Les notes sont très rapides à donner tandis que le top est plus précis. Pour améliorer ton influence sur le classement, nous te recommandons de <b>noter tous tes coasters ridés</b>, et ensuite de <b>classer dans ton top ceux avec les meilleures notes.</b></p>'
+principles:
+    title: 'Les principes du classement'
+    text: '<p><b>Pour chaque coaster classé, nous formons un duel avec chaque autre coaster de la base</b> pour déterminer lequel est le meilleur.</p>
+           <p>Seuls les riders ayant testé les deux coasters peuvent apporter une comparaison pour ce duel. Cette comparaison provient de du top ou des notes si les deux coasters y sont présents. <b>Le duel est gagné par le coaster ayant remporté la majorité des comparaisons.</b><br/>Ensuite nous rassemblons les résultats de ces duels pour calculer le classement. Si un coaster gagne tous ses duels, il sera premier. Un autre perdant contre le n°1, mais gagnant contre les autres sera n°2, etc. Le score répercute cette proportion de duels gagnés contre les autres coasters.</p>
+           <p>L''algorithme essaie de <b>refléter au maximum la vraie tendance et les goûts des riders</b> participants.<br/>Tout d''abord, il n''y a pas d''effet de masse: le nombre de notes d''un coaster n''a pas d''influence. Ce n''est pas un concours de popularité ! Les coasters rares tout comme les coasters populaires ont les mêmes chances d''être bien classés.</p>
+           <p>A titre informatif, ne noter qu''un seul coaster apporte 0 comparaison, c''est à dire aucune influence. Pour 10 coasters, on obtient 45 comparaisons, pour 20 coasters 190 comparaisons, etc.</p>
+           <p>Par conséquent, plus tu rides (et donc mets des notes), plus tu apporteras des comparaisons et donc plus ton influence sur le classement grandira. Cela devrait t''encourager à d''abord noter tous tes coasters ridés, et ensuite à rider toujours plus de coasters !</p>
+           <p>Précisons encore qu''<b>une seule personne ne peut pas bouleverser tout le classement.</b> Tout le monde a une influence, mais une personne seule avec un point de vue contradictoire sur un coaster ne va pas changer son score du tout au tout, c''est toujours le point de vue majoritaire qui va l''emporter.</p>'
