@@ -2,11 +2,15 @@
 
 namespace BddBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -14,6 +18,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="coaster")
  * @ORM\Entity(repositoryClass="BddBundle\Repository\CoasterRepository")
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read"}},
+ *         "denormalization_context"={"groups"={"write"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
+ * @ApiFilter(SearchFilter::class, properties={"id": "exact", "name": "partial", "manufacturer": "exact"})
  */
 class Coaster
 {
@@ -23,6 +36,7 @@ class Coaster
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"read"})
      */
     private $id;
 
@@ -30,8 +44,8 @@ class Coaster
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     *
      * @Assert\NotBlank()
+     * @Groups({"read"})
      */
     private $name;
 
@@ -54,6 +68,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="MaterialType")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"read"})
      */
     private $materialType;
 
@@ -77,6 +92,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="speed", type="integer", nullable=true)
+     * @Groups({"read"})
      */
     private $speed;
 
@@ -84,6 +100,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="height", type="integer", nullable=true)
+     * @Groups({"read"})
      */
     private $height;
 
@@ -91,6 +108,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="length", type="integer", nullable=true)
+     * @Groups({"read"})
      */
     private $length;
 
@@ -98,6 +116,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="inversions_number", type="integer", nullable=true)
+     * @Groups({"read"})
      */
     private $inversionsNumber = 0;
 
@@ -106,6 +125,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Manufacturer")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"read"})
      */
     private $manufacturer;
 
@@ -167,6 +187,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private $status;
 

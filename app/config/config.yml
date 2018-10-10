@@ -25,7 +25,7 @@ framework:
     form: ~
     csrf_protection: ~
     validation: { enable_annotations: true }
-    #serializer: { enable_annotations: true }
+    serializer: { enable_annotations: true }
     templating:
         engines: ['twig']
     default_locale: '%locale%'
@@ -182,3 +182,8 @@ httplug:
             factory: 'httplug.factory.guzzle6'
             config:
                 timeout: 2
+
+api_platform:
+    title: 'Captain Coaster API'
+    description: 'Captain Coaster structured data'
+    version: '0.0.1'

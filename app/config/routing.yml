@@ -47,9 +47,14 @@ fos_js_routing:
 _liip_imagine:
     resource: "@LiipImagineBundle/Resources/config/routing.xml"
 
-bdd:
+web:
     resource: "@BddBundle/Controller/"
     type:     annotation
     prefix:   /{_locale}
     requirements:
         _locale: "%app.locales%"
+
+api:
+    resource: '.'
+    type:     'api_platform'
+    prefix:   '/api'

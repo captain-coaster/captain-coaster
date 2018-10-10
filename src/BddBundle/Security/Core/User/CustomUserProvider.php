@@ -6,6 +6,7 @@ use BddBundle\Entity\User;
 use FOS\UserBundle\Model\UserManagerInterface;
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -98,7 +99,12 @@ class CustomUserProvider extends BaseClass
         $user->setLastName($response->getLastName());
         $user->setUsername($response->getNickname());
 
-        // don't override display name at every login
+        // don't override apiKey at every login
+        if (is_null($user->getApiKey())) {
+            $user->setApiKey(Uuid::uuid4()->toString());
+        }
+
+        // don't override displayName at every login
         if (is_null($user->getDisplayName())) {
             $user->setDisplayName($response->getNickname());
         }

@@ -4,6 +4,7 @@ namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Manufacturer
@@ -19,6 +20,7 @@ class Manufacturer
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"read"})
      */
     private $id;
 
@@ -26,6 +28,7 @@ class Manufacturer
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Groups({"read"})
      */
     private $name;
 

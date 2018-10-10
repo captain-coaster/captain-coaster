@@ -10,14 +10,25 @@ security:
 
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        fos_userbundle:
-            id: fos_user.user_provider.username_email
+        api_user_provider:
+            entity:
+                class: BddBundle:User
+                property: apiKey
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+
+        api:
+            guard:
+                authenticators:
+                - BddBundle\Security\TokenAuthenticator
+            provider: api_user_provider
+            stateless: true
+            pattern: ^/api/
 
         main:
             anonymous: ~
@@ -42,4 +53,5 @@ security:
             logout_on_user_change: true
 
     access_control:
-        - { path: ^/team, roles: ROLE_CONTRIBUTOR }
+    - { path: ^/team, roles: ROLE_CONTRIBUTOR }
+    - { path: ^/api, roles: ROLE_USER }

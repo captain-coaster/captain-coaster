@@ -148,6 +148,13 @@ class User extends BaseUser
     private $homePark;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", unique=true, nullable=true)
+     */
+    private $apiKey;
+
+    /**
      * User constructor.
      */
     public function __construct()
@@ -600,5 +607,24 @@ class User extends BaseUser
     public function getHomePark(): ?Park
     {
         return $this->homePark;
+    }
+
+    /**
+     * @param string $apiKey
+     * @return User
+     */
+    public function setApiKey(string $apiKey): User
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getApiKey(): ?string
+    {
+        return $this->apiKey;
     }
 }
