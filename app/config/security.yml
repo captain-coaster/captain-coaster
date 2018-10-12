@@ -14,6 +14,8 @@ security:
             entity:
                 class: BddBundle:User
                 property: apiKey
+        oauth_provider:
+            id: my.custom.user_provider
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -21,8 +23,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api_home:
+            pattern: ^/api$
+            security: false
 
-        api:
+        api_secured:
             guard:
                 authenticators:
                 - BddBundle\Security\TokenAuthenticator
@@ -31,6 +36,8 @@ security:
             pattern: ^/api/
 
         main:
+            # used for remember_me
+            provider: oauth_provider
             anonymous: ~
             oauth:
                 resource_owners:
