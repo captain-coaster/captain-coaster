@@ -3,6 +3,7 @@
 namespace BddBundle\Repository;
 
 use BddBundle\Entity\Park;
+use BddBundle\Entity\Status;
 use BddBundle\Entity\User;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\ResultSetMapping;
@@ -96,6 +97,8 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
             ->addSelect('p.id as id')
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
+            ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
+            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
             ->where('p.latitude is not null')
             ->andWhere('p.longitude is not null')
             ->groupBy('c.park');
@@ -218,7 +221,9 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('status', $filters)) {
-            $qb->andWhere('s.id = 1');
+            $qb
+                ->andWhere('s.name = :operating')
+                ->setParameter('operating', Status::OPERATING);
         }
     }
 
