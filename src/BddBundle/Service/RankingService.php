@@ -52,6 +52,11 @@ class RankingService
     private $userComparisons = [];
 
     /**
+     * @var array
+     */
+    private $rejectedCoasters = [];
+
+    /**
      * RankingService constructor
      *
      * @param EntityManagerInterface $em
@@ -224,6 +229,17 @@ class RankingService
      */
     private function computeScore()
     {
+        $this->rejectedCoasters = [];
+
+        $this->computeRejectedCoasters();
+
+        $i = 1;
+        while (count($this->rejectedCoasters) > 0 || $i > 5) {
+            $this->removeRejectedCoasters();
+            $this->computeRejectedCoasters();
+            $i++;
+        }
+
         $this->ranking = [];
         $this->totalComparisonNumber = 0;
 
@@ -254,7 +270,7 @@ class RankingService
                 }
             }
 
-            if ($duelCount > self::MIN_DUELS) {
+            if ($duelCount >= self::MIN_DUELS) {
                 // final score is between 0 and 100
                 $this->ranking[$coasterId] = $duelScoreSum / $duelCount;
             }
@@ -265,6 +281,46 @@ class RankingService
 
         // sort in reverse order (higher score is first)
         arsort($this->ranking);
+    }
+
+    /**
+     * Compute a list of coaster that does not meet the comparison & duel requirements
+     */
+    private function computeRejectedCoasters() {
+        foreach ($this->duels as $coasterId => $coasterDuels) {
+            $duelCount = 0;
+            foreach ($coasterDuels as $duelCoasterId => $comparisonResult) {
+                // if $comparisonResult is result of A compared to B
+                // $reverseComparisonResult is result of B compared to A
+                $reverseComparisonResult = $this->duels[$duelCoasterId][$coasterId];
+
+                // don't take into account if too few comparisons
+                // $comparisonResult + $reverseComparisonResult always equals vote number
+                if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
+                    $duelCount++;
+                }
+            }
+
+            if ($duelCount < self::MIN_DUELS) {
+                $this->rejectedCoasters[] = $coasterId;
+            }
+        }
+    }
+
+    /**
+     * Remove all duels from rejected coasters
+     */
+    private function removeRejectedCoasters() {
+        foreach ($this->rejectedCoasters as $idRejected) {
+            unset($this->duels[$idRejected]);
+            foreach ($this->duels as $checkCurrentId => $checkDuels) {
+                if (array_key_exists($idRejected, $checkDuels)) {
+                    unset($this->duels[$checkCurrentId][$idRejected]);
+                }
+            }
+        }
+
+        $this->rejectedCoasters = [];
     }
 
     /**
@@ -330,7 +386,7 @@ class RankingService
     {
         $conn = $this->em->getConnection();
         $sql = 'update coaster c
-                set c.rank = NULL, c.previous_rank = NULL, c.score = NULL 
+                set c.rank = NULL, c.previous_rank = NULL, c.score = NULL, c.valid_duels = NULL
                 where c.updated_at < DATE_SUB(NOW(), INTERVAL 4 HOUR)
                 and c.rank is not NULL;';
 
