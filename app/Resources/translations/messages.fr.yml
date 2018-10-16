@@ -8,7 +8,7 @@ app:
     title:
         default: 'Bienvenue !'
     header:
-        search: 'Le Pal, Wildfire...'
+        search: 'Toverland, Taiga...'
 
 index:
     title: 'Bienvenue !'
@@ -89,6 +89,8 @@ coaster_ranking:
         ratings: 'notes'
         comparisons: 'comparaisons analysées'
         in_tops: 'coasters dans les Tops'
+    filter:
+        continent: 'Monde'
 
 map_index:
     title: 'Carte des coasters'

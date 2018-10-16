@@ -1,0 +1,21 @@
+<div class="sidebar sidebar-secondary sidebar-default">
+  <div class="sidebar-content">
+    <form id="form-filter" action="#">
+      <div class="sidebar-category">
+        <div class="category-title">
+          <span>{{ 'map_index.filter.title'|trans }}</span>
+        </div>
+        <div class="category-content">
+          <div class="form-group">
+            <select class="form-control" name="filters[continent]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.continent'|trans }}</option>
+              {% for continent in filtersForm.continent %}
+                <option value="{{ continent.id }}">{{ continent.name|trans({}, 'database') }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

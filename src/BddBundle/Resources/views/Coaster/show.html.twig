@@ -27,7 +27,7 @@
                 </h3>
                 {# @todo optimize this #}
                 {% set page = (coaster.rank / 20)|round(0, 'ceil') %}
-                <a href="{{ path('coaster_ranking', {'page': page}) }}" class="text-muted">
+                <a href="{{ path('ranking_index', {'page': page}) }}" class="text-muted">
                   {{ 'coaster.score.ranked'|trans }}
                   <span class="badge badge-flat border-grey text-grey-600">#{{ coaster.rank }}</span>
                   {{ 'coaster.score.intheworld'|trans }}

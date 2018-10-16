@@ -66,22 +66,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @return \Doctrine\ORM\Query
-     */
-    public function findByRanking()
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('c', 'p', 'm')
-            ->from('BddBundle:Coaster', 'c')
-            ->innerJoin('c.park', 'p')
-            ->innerJoin('c.manufacturer', 'm')
-            ->where('c.rank is not null')
-            ->orderBy('c.rank', 'asc')
-            ->getQuery();
-    }
-
-    /**
      * @param array $filters
      * @return array
      */

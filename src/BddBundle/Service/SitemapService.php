@@ -72,7 +72,7 @@ class SitemapService
 
         // Ranking
         $rankingUpdateDate = new \DateTime('first day of this month midnight');
-        $rankingUrls = $this->getUrlAndAlternates('coaster_ranking', [], $rankingUpdateDate, 'monthly', 1);
+        $rankingUrls = $this->getUrlAndAlternates('ranking_index', [], $rankingUpdateDate, 'monthly', 1);
         $urls = array_merge($urls, $rankingUrls);
 
         // Fiche Coasters

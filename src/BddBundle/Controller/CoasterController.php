@@ -105,7 +105,7 @@ class CoasterController extends Controller
     }
 
     /**
-     * Show ranking of best coasters
+     * Keep redirection for a while
      *
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
@@ -114,51 +114,7 @@ class CoasterController extends Controller
      */
     public function showRankingAction($page = 1)
     {
-        $query = $this->getDoctrine()
-            ->getRepository('BddBundle:Coaster')
-            ->findByRanking();
-
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $query,
-            $page,
-            20
-        );
-
-        $ids = [];
-
-        /** @var Coaster $coaster */
-        foreach ($pagination as $coaster) {
-            $ids[] = $coaster->getId();
-        }
-
-        $nextRankingDate = new \DateTime('first day of next month midnight 1 minute');
-        if ($nextRankingDate->diff(new \DateTime('now'), true)->format('%h') < 1) {
-            $nextRankingDate = null;
-        }
-
-        $em = $this->get('doctrine.orm.default_entity_manager');
-        $ranking = $em->getRepository('BddBundle:Ranking')->findCurrent();
-
-        return $this->render(
-            '@Bdd/Coaster/ranking.html.twig',
-            [
-                'coasters' => $pagination,
-                'nextRankingDate' => $nextRankingDate,
-                'ranking' => $ranking,
-            ]
-        );
-    }
-
-    /**
-     * Learn more on the ranking
-     *
-     * @Route("/ranking/learn-more", name="coaster_ranking_learn")
-     * @Method({"GET"})
-     */
-    public function learnRanking()
-    {
-        return $this->render('@Bdd/Coaster/learn_more.html.twig');
+        return $this->redirectToRoute('ranking_index', ['page' => $page], 301);
     }
 
     /**

@@ -114,7 +114,7 @@ class NotificationService
             case self::NOTIF_BADGE:
                 return $this->router->generate('me');
             case self::NOTIF_RANKING:
-                return $this->router->generate('coaster_ranking');
+                return $this->router->generate('ranking_index');
             default:
                 return $this->router->generate('root');
         }

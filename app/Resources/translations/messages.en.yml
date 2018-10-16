@@ -8,7 +8,7 @@ app:
     title:
         default: 'Welcome !'
     header:
-        search: 'Kings Dominion, Wicker Man...'
+        search: 'Dollywood, Yukon Striker...'
 
 index:
     title: 'Welcome !'
@@ -89,6 +89,8 @@ coaster_ranking:
         ratings: 'ratings'
         comparisons: 'analyzed comparisons'
         in_tops: 'coasters in Tops'
+    filter:
+        continent: 'World'
 
 map_index:
     title: 'Coasters Map'

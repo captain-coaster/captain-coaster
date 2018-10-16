@@ -56,7 +56,7 @@ class RankingHistoryManagerCommand extends ContainerAwareCommand
         }
 
         /** @var Coaster $coaster */
-        foreach ($this->em->getRepository('BddBundle:Coaster')->findByRanking()->getResult() as $coaster) {
+        foreach ($this->em->getRepository('BddBundle:Ranking')->findCoastersRanked()->getResult() as $coaster) {
             $rankedCoaster = new RankingHistory();
             $rankedCoaster->setCoaster($coaster);
             $rankedCoaster->setRank($coaster->getRank());

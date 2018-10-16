@@ -1,0 +1,54 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'coaster_ranking.title'|trans({'%rankingMonth%': ranking.computedAt|localizeddate('none', 'none', null, null, 'MMMM Y')|capitalize}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+  <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
+{% endblock %}
+
+{% set pageHasFilters = true %}
+
+{% block secondary_sidebar %}
+  {% include '@Bdd/Ranking/filters.html.twig' %}
+{% endblock %}
+
+{% block body %}
+  {% include '@Bdd/Ranking/info.html.twig' with {'ranking': ranking, 'nextRankingDate': nextRankingDate} only %}
+  <div id="ranking-result"></div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript">
+    var containerId = 'ranking-result';
+    function filterData() {
+      $.ajax({
+        url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(data) {
+        $('#'+containerId).html(data);
+        ajaxPager();
+      });
+    }
+
+    function ajaxPager() {
+      $('ul.pagination a').click(function(e) {
+        e.preventDefault();
+        var pageUrl = $(this).attr('href');
+
+        $.ajax({
+          url: pageUrl,
+          type: 'GET',
+          dataType: 'html',
+        }).done(function(data) {
+          $('#'+containerId).html(data);
+          document.getElementById(containerId).scrollIntoView();
+          ajaxPager();
+        });
+      });
+    };
+
+    filterData();
+  </script>
+{% endblock %}
