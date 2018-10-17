@@ -60,6 +60,7 @@ class RankingRepository extends EntityRepository
     private function applyFilters(QueryBuilder $qb, array $filters = [])
     {
         $this->filterContinent($qb, $filters);
+        $this->filterMaterialType($qb, $filters);
     }
 
     /**
@@ -74,6 +75,20 @@ class RankingRepository extends EntityRepository
                 ->join('co.continent', 'ct')
                 ->andWhere('ct.id = :continent')
                 ->setParameter('continent', $filters['continent']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterMaterialType(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('materialType', $filters) && $filters['materialType'] !== '') {
+            $qb
+                ->join('c.materialType', 'mt')
+                ->andWhere('mt.id = :materialType')
+                ->setParameter('materialType', $filters['materialType']);
         }
     }
 }

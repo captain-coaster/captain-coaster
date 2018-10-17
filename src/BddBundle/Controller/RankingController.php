@@ -112,6 +112,10 @@ class RankingController extends Controller
             ->getRepository('BddBundle:Continent')
             ->findBy([], ["name" => "asc"]);
 
+        $filtersForm['materialType'] = $this->getDoctrine()
+            ->getRepository('BddBundle:MaterialType')
+            ->findAll();
+
         return $filtersForm;
     }
 }

@@ -2,8 +2,10 @@
 
 namespace BddBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -11,6 +13,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="image")
  * @ORM\Entity(repositoryClass="BddBundle\Repository\ImageRepository")
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read_image"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
  */
 class Image
 {
@@ -35,6 +44,7 @@ class Image
      *
      * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Coaster", inversedBy="images")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read_image"})
      */
     private $coaster;
 
@@ -72,6 +82,7 @@ class Image
      *
      * @ORM\Column(type="string", length=255, unique=false, nullable=true)
      * @Assert\NotBlank()
+     * @Groups({"read_image"})
      */
     private $credit;
 
@@ -101,6 +112,13 @@ class Image
      * )
      */
     private $file;
+
+    /**
+     * @var string
+     *
+     * @Groups({"read", "read_image"})
+     */
+    private $path;
 
     /**
      * @return int

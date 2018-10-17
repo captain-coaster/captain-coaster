@@ -185,5 +185,5 @@ httplug:
 
 api_platform:
     title: 'Captain Coaster API'
-    description: 'Captain Coaster structured data'
-    version: '0.0.1'
+    description: 'Contact us to get an API token.'
+    version: '0.0.2'

@@ -14,6 +14,14 @@
               {% endfor %}
             </select>
           </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[materialType]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.materialType'|trans }}</option>
+              {% for type in filtersForm.materialType %}
+                <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
     </form>

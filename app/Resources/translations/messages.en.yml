@@ -91,6 +91,7 @@ coaster_ranking:
         in_tops: 'coasters in Tops'
     filter:
         continent: 'World'
+        materialType: 'Type'
 
 map_index:
     title: 'Coasters Map'

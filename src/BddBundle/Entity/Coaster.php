@@ -179,6 +179,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read"})
      */
     private $park;
 
@@ -273,6 +274,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(type="integer", nullable=true)
+     * @Groups({"read"})
      */
     private $rank;
 
@@ -309,6 +311,7 @@ class Coaster
      *
      * @ORM\OneToOne(targetEntity="Image", fetch="EAGER")
      * @ORM\JoinColumn(onDelete="SET NULL")
+     * @Groups({"read"})
      */
     private $mainImage;
 
