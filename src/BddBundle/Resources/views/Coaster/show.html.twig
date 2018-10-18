@@ -153,6 +153,12 @@
               <div class="pull-right">{{ coaster.materialType.name }}</div>
             </div>
           {% endif %}
+          {% if coaster.seatingType %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.seatingType'|trans }}:</label>
+              <div class="pull-right">{{ coaster.seatingType.name }}</div>
+            </div>
+          {% endif %}
           {% if coaster.types|length > 0 %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>

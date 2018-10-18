@@ -25,7 +25,7 @@
       $.ajax({
         url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
         type: 'GET',
-        data: $('form').serialize(),
+        data: $('form').serialize() + '&page=' + {{ app.request.query.get('page')|default(1) }},
       }).done(function(data) {
         $('#'+containerId).html(data);
         ajaxPager();

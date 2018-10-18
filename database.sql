@@ -1,26 +1,78 @@
-ALTER TABLE coaster CHANGE restraint_id restraint_id INT DEFAULT NULL, CHANGE manufacturer_id manufacturer_id INT DEFAULT NULL;
-
-update coaster set restraint_id = NULL where restraint_id = 6;
-delete from restraint where id = 6;
-
-update coaster set manufacturer_id = NULL where manufacturer_id = 147;
-delete from manufacturer where id = 147;
-
-
-
-
-
 INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (1, 'Sit Down', 'sit-down');
-
-
 update coaster c
-join built_coaster bc on bc.id = c.built_coaster_id
-join built_coaster_type bct on bct.built_coaster_id = bc.id
-join type t on t.id = bct.type_id
+join coaster_type ct on ct.coaster_id = c.id
 set c.seating_type_id = 1
-where t.name like 'Sit Down';
+where ct.type_id = 41;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (2, 'Inverted', 'inverted');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 2
+where ct.type_id = 12;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (3, 'Stand Up', 'stand-up');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 3
+where ct.type_id = 24;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (4, 'Flying', 'flying');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 4
+where ct.type_id = 8;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (5, 'Floorless', 'floorless');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 5
+where ct.type_id = 7;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (6, 'Suspended', 'suspended');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 6
+where ct.type_id = 25;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (7, 'Wing', 'wing');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 7
+where ct.type_id = 52;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (8, 'Spinning', 'spinning');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 8
+where ct.type_id = 21;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (9, 'Motorbike', 'motorbike');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 9
+where ct.type_id = 36;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (10, 'Bobsleigh', 'bobsleigh');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 10
+where ct.type_id = 4;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (11, '4th Dimension', '4th-dimension');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 11
+where ct.type_id = 2;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (12, 'Pipeline', 'pipeline');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 12
+where ct.type_id = 17;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (13, 'Alpine', 'alpine');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 13
+where ct.type_id = 57;
+INSERT INTO `seating_type` (`id`, `name`, `slug`) VALUES (14, 'Water Coaster', 'water-coaster');
+update coaster c
+join coaster_type ct on ct.coaster_id = c.id
+set c.seating_type_id = 14
+where ct.type_id = 27;
 
-#################
+delete from coaster_type where type_id IN (41,12,24,8,7,25,52,21,36,4,2,17,57,27);
+delete from type where id IN (41,12,24,8,7,25,52,21,36,4,2,17,57,27);
+
+###
 
 # users and home parks
 select p.name, u.username from users u

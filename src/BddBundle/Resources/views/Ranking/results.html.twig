@@ -34,11 +34,8 @@
         </ul>
         <ul class="list-inline list-inline-separate text-muted mb-5">
           <li>{{ coaster.manufacturer.name }}</li>
-          {% if coaster.maTerialType %}
-            <li>{{ coaster.materialType }}</li>{% endif %}
-          {% if coaster.types|length > 0 %}
-            <li>{{ coaster.types|join(', ') }}</li>
-          {% endif %}
+          {% if coaster.materialType %}<li>{{ coaster.materialType }}</li>{% endif %}
+          {% if coaster.seatingType %}<li>{{ coaster.seatingType }}</li>{% endif %}
         </ul>
       </div>
       <div class="media-right text-center">

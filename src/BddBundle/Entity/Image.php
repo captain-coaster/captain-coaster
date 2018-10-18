@@ -108,7 +108,7 @@ class Image
      *     maxSize = "13M"
      * )
      * @Assert\Image(
-     *     minPixels = 1000000
+     *     minPixels = 768000
      * )
      */
     private $file;
