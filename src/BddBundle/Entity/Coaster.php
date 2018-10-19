@@ -20,8 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="BddBundle\Repository\CoasterRepository")
  * @ApiResource(
  *     attributes={
- *         "normalization_context"={"groups"={"read"}},
- *         "denormalization_context"={"groups"={"write"}}
+ *         "normalization_context"={"groups"={"read_coaster"}}
  *     },
  *     collectionOperations={"get"={"method"="GET"}},
  *     itemOperations={"get"={"method"="GET"}}
@@ -36,7 +35,7 @@ class Coaster
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $id;
 
@@ -45,7 +44,7 @@ class Coaster
      *
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $name;
 
@@ -68,7 +67,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="MaterialType")
      * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $materialType;
 
@@ -77,6 +76,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="SeatingType")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $seatingType;
 
@@ -92,7 +92,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="speed", type="integer", nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $speed;
 
@@ -100,7 +100,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="height", type="integer", nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $height;
 
@@ -108,7 +108,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="length", type="integer", nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $length;
 
@@ -116,7 +116,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(name="inversions_number", type="integer", nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $inversionsNumber = 0;
 
@@ -125,7 +125,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Manufacturer")
      * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $manufacturer;
 
@@ -179,7 +179,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $park;
 
@@ -188,7 +188,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $status;
 
@@ -239,6 +239,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(type="integer", nullable=false)
+     * @Groups({"read_coaster"})
      */
     private $totalRatings = 0;
 
@@ -260,6 +261,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(type="integer", nullable=false)
+     * @Groups({"read_coaster"})
      */
     private $validDuels = 0;
 
@@ -267,6 +269,7 @@ class Coaster
      * @var float
      *
      * @ORM\Column(type="decimal", precision=14, scale=11, nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $score;
 
@@ -274,7 +277,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $rank;
 
@@ -311,7 +314,7 @@ class Coaster
      *
      * @ORM\OneToOne(targetEntity="Image", fetch="EAGER")
      * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"read"})
+     * @Groups({"read_coaster"})
      */
     private $mainImage;
 

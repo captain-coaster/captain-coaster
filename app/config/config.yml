@@ -186,4 +186,4 @@ httplug:
 api_platform:
     title: 'Captain Coaster API'
     description: 'Contact us to get an API token.'
-    version: '0.0.2'
+    version: '0.0.3'

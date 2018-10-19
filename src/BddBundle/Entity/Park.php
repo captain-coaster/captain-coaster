@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -12,6 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ORM\Table(name="park")
  * @ORM\Entity(repositoryClass="BddBundle\Repository\ParkRepository")
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read_park"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
  */
 class Park
 {
@@ -21,6 +29,7 @@ class Park
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"read_park"})
      */
     private $id;
 
@@ -28,7 +37,7 @@ class Park
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @Groups({"read"})
+     * @Groups({"read_coaster", "read_park"})
      */
     private $name;
 
@@ -53,6 +62,7 @@ class Park
      *
      * @ORM\ManyToOne(targetEntity="Country")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"read_park"})
      */
     private $country;
 
@@ -60,6 +70,7 @@ class Park
      * @var float
      *
      * @ORM\Column(name="latitude", type="float", precision=8, scale=6, nullable=true)
+     * @Groups({"read_park"})
      */
     private $latitude;
 
@@ -67,6 +78,7 @@ class Park
      * @var float
      *
      * @ORM\Column(name="longitude", type="float", precision=8, scale=6, nullable=true)
+     * @Groups({"read_park"})
      */
     private $longitude;
 

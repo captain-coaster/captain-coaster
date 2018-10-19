@@ -2,6 +2,7 @@
 
 namespace BddBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -12,6 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *
  * @ORM\Table(name="status")
  * @ORM\Entity(repositoryClass="BddBundle\Repository\StatusRepository")
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read_status"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
  */
 class Status
 {
@@ -23,6 +31,7 @@ class Status
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"read_status"})
      */
     private $id;
 
@@ -30,7 +39,7 @@ class Status
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"read"})
+     * @Groups({"read_coaster", "read_status"})
      */
     private $name;
 
@@ -59,6 +68,7 @@ class Status
     /**
      * @var bool
      * @ORM\Column(type="boolean", nullable=false)
+     * @Groups({"read_status"})
      */
     private $isRateable;
 

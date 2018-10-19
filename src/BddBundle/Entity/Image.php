@@ -116,7 +116,7 @@ class Image
     /**
      * @var string
      *
-     * @Groups({"read", "read_image"})
+     * @Groups({"read_coaster", "read_image"})
      */
     private $path;
 

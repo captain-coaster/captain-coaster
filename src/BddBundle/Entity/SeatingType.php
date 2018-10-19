@@ -4,6 +4,7 @@ namespace BddBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Status
@@ -26,6 +27,7 @@ class SeatingType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
+     * @Groups({"read_coaster"})
      */
     private $name;
 
