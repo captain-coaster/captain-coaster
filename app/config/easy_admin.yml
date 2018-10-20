@@ -18,6 +18,7 @@ easy_admin:
                 - name
                 - park
                 - materialType
+                - seatingType
                 - speed
                 - height
                 - length
@@ -39,6 +40,7 @@ easy_admin:
                 - name
                 - park
                 - materialType
+                - seatingType
                 - speed
                 - height
                 - length
