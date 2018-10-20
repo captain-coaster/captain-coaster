@@ -44,7 +44,7 @@ class RankingRepository extends EntityRepository
             ->select('c', 'p', 'm')
             ->from('BddBundle:Coaster', 'c')
             ->innerJoin('c.park', 'p')
-            ->innerJoin('c.manufacturer', 'm')
+            ->leftJoin('c.manufacturer', 'm')
             ->where('c.rank is not null')
             ->orderBy('c.rank', 'asc');
 
