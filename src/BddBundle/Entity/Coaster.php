@@ -2,8 +2,10 @@
 
 namespace BddBundle\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -26,6 +28,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     itemOperations={"get"={"method"="GET"}}
  * )
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "name": "partial", "manufacturer": "exact"})
+ * @ApiFilter(RangeFilter::class, properties={"totalRatings"})
+ * @ApiFilter(ExistsFilter::class, properties={"mainImage"})
  */
 class Coaster
 {

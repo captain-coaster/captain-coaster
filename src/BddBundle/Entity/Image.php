@@ -2,7 +2,9 @@
 
 namespace BddBundle\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -20,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     collectionOperations={"get"={"method"="GET"}},
  *     itemOperations={"get"={"method"="GET"}}
  * )
+ * @ApiFilter(SearchFilter::class, properties={"coaster": "exact"})
  */
 class Image
 {
