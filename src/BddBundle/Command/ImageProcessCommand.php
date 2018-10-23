@@ -2,6 +2,7 @@
 
 namespace BddBundle\Command;
 
+use BddBundle\Service\DiscordService;
 use BddBundle\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -23,16 +24,23 @@ class ImageProcessCommand extends ContainerAwareCommand
     private $imageManager;
 
     /**
+     * @var DiscordService
+     */
+    private $discord;
+
+    /**
      * ImageGenerateCacheCommand constructor.
      *
      * @param EntityManagerInterface $em
      * @param ImageManager $imageManager
+     * @param DiscordService $discord
      */
-    public function __construct(EntityManagerInterface $em, ImageManager $imageManager)
+    public function __construct(EntityManagerInterface $em, ImageManager $imageManager, DiscordService $discord)
     {
         parent::__construct();
         $this->em = $em;
         $this->imageManager = $imageManager;
+        $this->discord = $discord;
     }
 
     protected function configure()
@@ -55,6 +63,7 @@ class ImageProcessCommand extends ContainerAwareCommand
         );
 
         $command = $this->getApplication()->find('liip:imagine:cache:resolve');
+        $newImages = false;
 
         foreach ($images as $image) {
             $output->writeln('Processing '.$image->getFilename());
@@ -79,8 +88,13 @@ class ImageProcessCommand extends ContainerAwareCommand
             }
 
             $output->writeln('Image processed');
+            $newImages = true;
 
             sleep(2);
+        }
+
+        if ($newImages) {
+            $this->discord->notify('New images to review!');
         }
 
         $output->writeln((string)$stopwatch->stop('process-image'));

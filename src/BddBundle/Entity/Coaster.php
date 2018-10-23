@@ -816,7 +816,7 @@ class Coaster
      * @param Currency $currency
      * @return Coaster
      */
-    public function setCurrency(Currency $currency)
+    public function setCurrency(?Currency $currency): Coaster
     {
         $this->currency = $currency;
 
@@ -826,7 +826,7 @@ class Coaster
     /**
      * @return Currency
      */
-    public function getCurrency()
+    public function getCurrency(): ?Currency
     {
         return $this->currency;
     }
