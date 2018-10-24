@@ -30,7 +30,7 @@
                 </a>
                 <span class="media-annotation dotted">
                   <span class="text-warning">
-                      {% set low = review.value|round(0, 'floor') %}
+                    {% set low = review.value|round(0, 'floor') %}
                     {% for i in 1..low if low > 0 %}
                       <i class="icon-star-full2"></i>
                     {% endfor %}
@@ -53,7 +53,7 @@
                   {% endfor %}
                 </p>
               {% endif %}
-              {% if review.review %}
+              {% if review.review and review.language == app.request.locale %}
                 <p>{{ review.review }}</p>
               {% endif %}
               {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}

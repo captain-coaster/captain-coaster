@@ -2,6 +2,10 @@ update coaster c
 set currency_id = NULL
 where price is NULL;
 
+update image
+set enabled = 0
+where credit = '';
+
 # users and home parks
 select p.name, u.username from users u
 join park p on p.id = u.home_park_id

@@ -28,6 +28,7 @@ class ReviewController extends Controller
      * @param Request $request
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function listAction(Request $request, $page = 1)
     {

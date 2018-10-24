@@ -115,10 +115,7 @@ class RiddenCoasterRepository extends EntityRepository
         // add joins to avoid multiple subqueries
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r')
-            ->addSelect('p')
-            ->addSelect('c')
-            ->addSelect('u')
+            ->select('r', 'p', 'c', 'u')
             ->addSelect(
                 "CASE WHEN r.language = :locale AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority"
             )

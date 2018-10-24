@@ -178,7 +178,7 @@
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}:</label>
               <div class="pull-right">
                 {% for launch in coaster.launchs %}
-                  {{ launch|trans([], 'database')|join(', ') }}
+                  {{ launch|trans([], 'database') }}
                   {% if not loop.last %}, {% endif %}
                 {% endfor %}
               </div>
@@ -253,14 +253,10 @@
       <!-- /coaster location -->
     </div>
     <div class="col-sm-9">
-      <!-- photos -->
       <div id="coaster-photos" class="row"></div>
-      <!-- /photos -->
-      <!-- reviews -->
       {% if reviews|length > 0 %}
         {% include 'BddBundle:Coaster:reviews.html.twig' with {'reviews': reviews} only %}
       {% endif %}
-      <!-- /reviews -->
     </div>
   </div>
 {% endblock %}

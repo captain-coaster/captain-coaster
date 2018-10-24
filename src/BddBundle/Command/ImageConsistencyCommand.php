@@ -37,8 +37,8 @@ class ImageConsistencyCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $stopwatch = new Stopwatch();
-        $stopwatch->start('cache-image');
-        $output->writeln('Start generating cache');
+        $stopwatch->start('consistency-image');
+        $output->writeln('Start checking consistency');
 
         $images = $this->em->getRepository('BddBundle:Image')->findBy([], ['updatedAt' => 'desc']);
 
@@ -55,6 +55,8 @@ class ImageConsistencyCommand extends ContainerAwareCommand
             }
         }
 
+        $output->writeln(count($filenames) . ' images in database.');
+
         // search for orphan files
         $finder = new Finder();
         $finder->files()->in(sprintf('%s/%s', $basePath, '*/*'));
@@ -63,5 +65,9 @@ class ImageConsistencyCommand extends ContainerAwareCommand
                 $output->writeln('Orphan file '.$file->getFilename());
             }
         }
+
+        $output->writeln($finder->count() . ' images on disk.');
+        $output->writeln('End of command.');
+        $output->writeln((string)$stopwatch->stop('consistency-image'));
     }
 }
