@@ -341,4 +341,25 @@ class RiddenCoasterRepository extends EntityRepository
             return ['nb' => 0, 'name' => 'Unknown'];
         }
     }
+
+    /**
+     * @param User $user
+     * @param int $max
+     * @return mixed
+     */
+    public function findCoastersWithNoImage(User $user, int $max = 5)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from('BddBundle:RiddenCoaster', 'r')
+            ->join('r.coaster', 'c')
+            ->where('r.user = :user')
+            ->andWhere('c.mainImage IS NULL')
+            ->orderBy('c.totalRatings', 'desc')
+            ->setMaxResults($max)
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -48,7 +48,7 @@
       <div class="row">
         {% for coaster in park.coasters %}
           <div class="col-sm-4">
-            <div class="thumbnail border-bottom-xlg border-bottom-{{ coaster.status.type }}" style="height:350px;">
+            <div class="thumbnail border-bottom-xlg border-bottom-{{ coaster.status.type }}">
               <div class="thumb">
                 <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                   <img {% if coaster.images|length > 0 %}
@@ -60,7 +60,7 @@
                       class="img-responsive img-rounded" alt="{{ coaster.name }}">
                 </a>
               </div>
-              <div class="caption text-center">
+              <div class="caption text-center" style="height: 140px;">
                 <div class="content-group-sm media">
                   <div class="media-body">
                     <h6 class="text-semibold no-margin">

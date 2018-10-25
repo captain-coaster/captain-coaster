@@ -2,6 +2,7 @@
 
 namespace BddBundle\Controller;
 
+use BddBundle\Entity\User;
 use BddBundle\Form\Type\ContactType;
 use BddBundle\Service\DiscordService;
 use BddBundle\Service\StatService;
@@ -61,6 +62,14 @@ class DefaultController extends Controller
             ->getRepository('BddBundle:RiddenCoaster')
             ->getLatestReviewsByLocale($request->getLocale());
 
+        $missingImages = [];
+        if ($user = $this->getUser() instanceof User) {
+            $missingImages = $this
+                ->getDoctrine()
+                ->getRepository('BddBundle:RiddenCoaster')
+                ->findCoastersWithNoImage($this->getUser());
+        }
+
         return $this->render(
             'BddBundle:Default:index.html.twig',
             [
@@ -68,6 +77,7 @@ class DefaultController extends Controller
                 'image' => $image,
                 'stats' => $stats,
                 'reviews' => $reviews,
+                'missingImages' => $missingImages,
             ]
         );
     }

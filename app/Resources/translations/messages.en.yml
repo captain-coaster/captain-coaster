@@ -21,6 +21,7 @@ index:
         ratings: 'ratings'
         reviews: 'reviews'
         listes: 'top coasters'
+    missingCoasters: 'We are looking for pictures of these coasters!'
 
 coaster:
     score:

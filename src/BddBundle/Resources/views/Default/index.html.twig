@@ -150,17 +150,15 @@
                     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
                       {{ review.user.displayName }}
                     </a>
-                    <span class="media-annotation dotted">
-                                            <span class="text-warning">
-                                                {% set low = review.value|round(0, 'floor') %}
-                                              {% for i in 1..low if low > 0 %}
-                                                <i class="icon-star-full2"></i>
-                                              {% endfor %}
-                                              {% if low < review.value %}
-                                                <i class="icon-star-half"></i>
-                                              {% endif %}
-                                            </span>
-                                        </span>
+                    <span class="media-annotation dotted text-warning">
+                      {% set low = review.value|round(0, 'floor') %}
+                      {% for i in 1..low if low > 0 %}
+                        <i class="icon-star-full2"></i>
+                      {% endfor %}
+                      {% if low < review.value %}
+                        <i class="icon-star-half"></i>
+                      {% endif %}
+                    </span>
                     <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
                   </div>
                   {% if review.pros|length > 0 or review.cons|length > 0 %}
@@ -196,7 +194,27 @@
         </div>
       </div>
       <!-- /latest reviews -->
+      <!-- no images -->
+      {% if missingImages|length > 1 %}
+      <div class="panel panel-flat border-top-teal">
+        <div class="panel-heading">
+          <h6 class="panel-title">{{ 'index.missingCoasters'|trans }}</h6>
+        </div>
+        <div class="panel-body">
+          <ul class="list-feed">
+            {% for rating in missingImages %}
+              <li>
+                <a href="{{ path('coaster_images_upload', {'slug': rating.coaster.slug}) }}">
+                  {{ rating.coaster.name }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
     </div>
+    {% endif %}
+    <!-- /no images -->
   </div>
 {% endblock %}
 
@@ -207,6 +225,7 @@
         console.log('Service Worker Registered');
       }).catch(function(e) {
         console.log('Error during Service Worker registration : ', e);
-      })}
+      });
+    }
   </script>
 {% endblock %}
