@@ -59,7 +59,7 @@ class ImageConsistencyCommand extends ContainerAwareCommand
 
         // search for orphan files
         $finder = new Finder();
-        $finder->files()->in(sprintf('%s/%s', $basePath, '*/*'));
+        $finder->files()->in(sprintf('%s/%s', $basePath, '*'));
         foreach ($finder as $file) {
             if (!in_array($file->getFilename(), $filenames)) {
                 $output->writeln('Orphan file '.$file->getFilename());
