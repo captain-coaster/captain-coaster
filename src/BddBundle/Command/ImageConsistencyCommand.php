@@ -5,6 +5,7 @@ namespace BddBundle\Command;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -31,7 +32,8 @@ class ImageConsistencyCommand extends ContainerAwareCommand
     {
         $this
             ->setName('image:consistency')
-            ->setDescription('Check consisteny between database and filesystem');
+            ->setDescription('Check consisteny between database and filesystem')
+            ->addOption('remove', null, InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -51,22 +53,27 @@ class ImageConsistencyCommand extends ContainerAwareCommand
             $filenames[] = $image->getFilename();
 
             if (!$fs->exists(sprintf('%s/%s', $basePath, $image->getPath()))) {
-                $output->writeln('Missing file '. $image->getPath());
+                $output->writeln('Missing file '.$image->getPath());
             }
         }
 
-        $output->writeln(count($filenames) . ' images in database.');
+        $output->writeln(count($filenames).' images in database.');
 
         // search for orphan files
         $finder = new Finder();
         $finder->files()->in(sprintf('%s/%s', $basePath, '*'));
         foreach ($finder as $file) {
             if (!in_array($file->getFilename(), $filenames)) {
-                $output->writeln('Orphan file '.$file->getFilename());
+                $output->writeln('Orphan file '.$file->getRealPath());
+                if ($input->getOption('remove')) {
+                    $fs = new Filesystem();
+                    $fs->remove($file->getRealPath());
+                    $output->writeln('Deleted.');
+                }
             }
         }
 
-        $output->writeln($finder->count() . ' images on disk.');
+        $output->writeln($finder->count().' images on disk.');
         $output->writeln('End of command.');
         $output->writeln((string)$stopwatch->stop('consistency-image'));
     }
