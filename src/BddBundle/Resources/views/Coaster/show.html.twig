@@ -285,9 +285,6 @@
   <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
   <script type="text/javascript">
     var loadImage = function(number) {
-      console.log('screen width ', screen.width);
-      console.log('window.innerWidth ', window.innerWidth);
-      console.log('document.documentElement.clientWidth ', document.documentElement.clientWidth);
       if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) < 769
           && number === undefined
       ) {

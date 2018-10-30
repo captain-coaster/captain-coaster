@@ -17,9 +17,8 @@ class RankingService
 {
     // Minimum comparison number between coaster A and B
     CONST MIN_COMPARISONS = 3;
-    // Minimum duels for a coaster, i.e. minimum number of
-    // other coasters to be compared with
-    CONST MIN_DUELS = 240;
+    // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
+    CONST MIN_DUELS = 250;
 
     /**
      * @var EntityManagerInterface

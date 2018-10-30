@@ -5,6 +5,7 @@ namespace BddBundle\Controller;
 use BddBundle\Entity\Coaster;
 use BddBundle\Entity\Image;
 use BddBundle\Form\Type\ImageUploadType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -89,15 +90,29 @@ class CoasterController extends Controller
      * )
      * @Method({"GET"})
      *
+     * @param EntityManagerInterface $em
      * @param Coaster $coaster
      * @param int $imageNumber
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function ajaxLoadImages(Coaster $coaster, int $imageNumber = 8)
+    public function ajaxLoadImages(EntityManagerInterface $em, Coaster $coaster, int $imageNumber = 8)
     {
+        $userLikes = [];
+        if ($user = $this->getUser()) {
+            $em->getConfiguration()->addCustomHydrationMode(
+                'COLUMN_HYDRATOR',
+                'BddBundle\Doctrine\Hydrator\ColumnHydrator'
+            );
+            $userLikes = $em
+                ->getRepository('BddBundle:LikedImage')
+                ->findUserLikes($user)
+                ->getResult('COLUMN_HYDRATOR');
+        }
+
         return $this->render(
             'BddBundle:Coaster:image-ajax.html.twig',
             [
+                'userLikes' => $userLikes,
                 'coaster' => $coaster,
                 'number' => $imageNumber,
             ]

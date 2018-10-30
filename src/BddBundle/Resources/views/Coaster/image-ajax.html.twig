@@ -8,10 +8,7 @@
             {{ 'coaster.photos.button'|trans }}
           </a>
           {% if number < coaster.images|length %}
-          &nbsp;•&nbsp;
-          <a id="show-all">
-            {{ 'coaster.photos.all'|trans }}
-          </a>
+            &nbsp;•&nbsp;<a id="show-all">{{ 'coaster.photos.all'|trans }}</a>
           {% endif %}
         </div>
       </div>
@@ -25,13 +22,16 @@
                      alt="{{ coaster.name }}">
               </div>
             </a>
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+              <i
+                  onclick="toggleLike(this, '{{ image.id }}');"
+                  style="cursor: pointer;"
+                  class="{% if image.id in userLikes %}icon-heart5{% else %}icon-heart6{% endif %} text-muted like-image">
+              </i>
+            {% endif %}
             <span class="text-size-small text-muted pull-right">
-                    {% if image.credit %}
-                      by {{ image.credit }}
-                    {% else %}
-                      &nbsp;
-                    {% endif %}
-                  </span>
+              {% if image.credit %}by {{ image.credit }}{% else %}&nbsp;{% endif %}
+            </span>
           </div>
         {% endfor %}
       </div>
@@ -52,3 +52,17 @@
     </div>
   </div>
 {% endif %}
+<script>
+  function toggleLike(element, id) {
+    $.ajax({
+      url: Routing.generate('like_image_async', {
+        'id': id,
+        '_locale': '{{ app.request.locale }}',
+      }),
+      type: 'GET',
+    }).done(function(data) {
+      element.classList.toggle('icon-heart5');
+      element.classList.toggle('icon-heart6');
+    });
+  }
+</script>
