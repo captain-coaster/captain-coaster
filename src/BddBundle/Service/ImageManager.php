@@ -190,6 +190,30 @@ class ImageManager
     }
 
     /**
+     * Update like counters for all images
+     */
+    public function updateLikeCounters()
+    {
+        $conn = $this->em->getConnection();
+
+        $sql = 'update image i1
+            join (
+                select i.id, count(li.image_id) as nb from image i
+                left join liked_image li on li.image_id = i.id
+                group by i.id
+            ) as i2
+            on i2.id = i1.id
+            set i1.like_counter = i2.nb;';
+
+        try {
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+        } catch (DBALException $e) {
+            // do nothing
+        }
+    }
+
+    /**
      * @param Image $image
      * @return bool
      */

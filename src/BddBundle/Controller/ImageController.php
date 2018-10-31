@@ -26,6 +26,12 @@ class ImageController extends Controller
      */
     public function toggleLikeAction(Image $image, EntityManagerInterface $em)
     {
+        // avoid redirects to login...
+        // @todo
+        if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
+            return new JsonResponse([], 403);
+        }
+
         $user = $this->getUser();
         $likedImage = $em->getRepository('BddBundle:LikedImage')->findOneBy(['user' => $user, 'image' => $image]);
 

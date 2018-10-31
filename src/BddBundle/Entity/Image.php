@@ -90,6 +90,13 @@ class Image
     private $credit;
 
     /**
+     * @var int
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $likeCounter = 0;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -111,7 +118,7 @@ class Image
      *     maxSize = "13M"
      * )
      * @Assert\Image(
-     *     minPixels = 768000
+     *     minPixels = 720000
      * )
      */
     private $file;
@@ -327,5 +334,24 @@ class Image
     public function getUploader(): ?User
     {
         return $this->uploader;
+    }
+
+    /**
+     * @param int $likeCounter
+     * @return Image
+     */
+    public function setLikeCounter(int $likeCounter): Image
+    {
+        $this->likeCounter = $likeCounter;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLikeCounter(): int
+    {
+        return $this->likeCounter;
     }
 }

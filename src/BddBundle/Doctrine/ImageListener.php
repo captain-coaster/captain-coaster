@@ -50,17 +50,29 @@ class ImageListener
 
     /**
      * Update main image of a coaster after remove.
+     *
+     * @param LifecycleEventArgs $args
      */
-    public function postRemove()
+    public function postRemove(LifecycleEventArgs $args)
     {
+        if (!$args->getEntity() instanceof Image) {
+            return;
+        }
+
         $this->imageManager->setMainImages();
     }
 
     /**
      * Update main image of a coaster after update.
+     *
+     * @param LifecycleEventArgs $args
      */
-    public function postUpdate()
+    public function postUpdate(LifecycleEventArgs $args)
     {
+        if (!$args->getEntity() instanceof Image) {
+            return;
+        }
+
         $this->imageManager->setMainImages();
     }
 
@@ -70,7 +82,6 @@ class ImageListener
      */
     private function uploadFile($entity)
     {
-        // upload only works for Image entities
         if (!$entity instanceof Image) {
             return;
         }
@@ -89,7 +100,6 @@ class ImageListener
      */
     private function removeFile($entity)
     {
-        // upload only works for Image entities
         if (!$entity instanceof Image) {
             return;
         }

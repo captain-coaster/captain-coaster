@@ -1036,7 +1036,7 @@ class Coaster
     {
         $criteria = Criteria::create()
             ->where(Criteria::expr()->eq('enabled', true))
-            ->orderBy(['updatedAt' => Criteria::DESC]);
+            ->orderBy(['likeCounter' => Criteria::DESC, 'updatedAt' => Criteria::DESC]);
 
         return $this->images->matching($criteria);
     }

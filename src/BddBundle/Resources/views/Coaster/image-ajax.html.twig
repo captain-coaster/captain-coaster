@@ -22,16 +22,14 @@
                      alt="{{ coaster.name }}">
               </div>
             </a>
-            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <div class="text-size-small text-muted">
               <i
                   onclick="toggleLike(this, '{{ image.id }}');"
                   style="cursor: pointer;"
                   class="{% if image.id in userLikes %}icon-heart5{% else %}icon-heart6{% endif %} text-muted like-image">
-              </i>
-            {% endif %}
-            <span class="text-size-small text-muted pull-right">
-              {% if image.credit %}by {{ image.credit }}{% else %}&nbsp;{% endif %}
-            </span>
+              </i>&nbsp;{{ image.likeCounter }}
+              {% if image.credit %}&nbsp;{{ image.credit }}{% endif %}
+            </div>
           </div>
         {% endfor %}
       </div>

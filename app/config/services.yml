@@ -71,6 +71,11 @@ services:
         - {name: doctrine.event_listener, event: postUpdate, lazy: true}
         - {name: doctrine.event_listener, event: postRemove, lazy: true}
 
+    BddBundle\Doctrine\LikedImageListener:
+        tags:
+        - {name: doctrine.event_listener, event: postPersist, lazy: true}
+        - {name: doctrine.event_listener, event: postRemove, lazy: true}
+
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments:
