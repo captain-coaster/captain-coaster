@@ -33,7 +33,7 @@ class LikedImage
      * @var Image
      *
      * @ORM\ManyToOne(targetEntity="BddBundle\Entity\Image")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $image;
 
