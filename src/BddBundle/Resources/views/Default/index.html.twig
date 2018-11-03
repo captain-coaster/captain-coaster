@@ -205,7 +205,7 @@
             {% for rating in missingImages %}
               <li>
                 <a href="{{ path('coaster_images_upload', {'slug': rating.coaster.slug}) }}">
-                  {{ rating.coaster.name }}
+                  {{ rating.coaster.name }} • {{ rating.coaster.park.name }}
                 </a>
               </li>
             {% endfor %}

@@ -357,6 +357,7 @@ class RiddenCoasterRepository extends EntityRepository
             ->where('r.user = :user')
             ->andWhere('c.mainImage IS NULL')
             ->orderBy('c.totalRatings', 'desc')
+            ->setFirstResult(rand(0, $max * 2))
             ->setMaxResults($max)
             ->setParameter('user', $user)
             ->getQuery()
