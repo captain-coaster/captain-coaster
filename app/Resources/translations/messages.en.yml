@@ -17,10 +17,10 @@ index:
         title: 'Review, rate and rank roller coasters'
         info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="%link_path%">to connect</a></b>. Follow the Captain !'
     stats:
-        coasters: 'coasters'
         ratings: 'ratings'
         reviews: 'reviews'
-        listes: 'top coasters'
+        listes: 'in tops'
+        images: 'pictures'
     missingCoasters: 'We are looking for pictures of these coasters!'
 
 coaster:

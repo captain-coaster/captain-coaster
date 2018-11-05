@@ -35,10 +35,6 @@ class StatService
     {
         $stats = [];
 
-        $stats['nb_coasters'] = $this->em
-            ->getRepository('BddBundle:Coaster')
-            ->countAll();
-
         $stats['nb_ratings'] = $this->em
             ->getRepository('BddBundle:RiddenCoaster')
             ->countAll();
@@ -56,6 +52,10 @@ class StatService
         $stats['nb_tops'] = $this->em
             ->getRepository('BddBundle:Liste')
             ->countTops();
+
+        $stats['nb_images'] = $this->em
+            ->getRepository('BddBundle:Image')
+            ->countAll();
 
         return $stats;
     }

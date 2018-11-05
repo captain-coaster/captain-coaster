@@ -17,10 +17,10 @@ index:
         title: 'Notes, avis et classement des meilleurs coasters'
         info: 'Space Mountain, c''est vraiment Hyper ? Que pensent les connaisseurs d''Oziris au Parc Asterix ? Où sont les Intamin qui ouvriront l''année prochaine ? Pas de panique, toutes les réponses sont ici ! Et pour en profiter, c''est très rapide : <b>2 clics suffisent pour <a href="%link_path%">se connecter</a>.</b> Suivez le Captain !'
     stats:
-        coasters: 'coasters'
         ratings: 'notes'
-        reviews: 'coaster reviews'
-        listes: 'top coasters'
+        reviews: 'avis'
+        listes: 'tops'
+        images: 'photos'
     missingCoasters: 'Nous recherchons des photos pour ces coasters !'
 
 coaster:

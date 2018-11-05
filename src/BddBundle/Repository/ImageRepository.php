@@ -27,4 +27,19 @@ class ImageRepository extends EntityRepository
             ->getQuery()
             ->getSingleResult();
     }
+
+    /**
+     * @return mixed
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countAll()
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from('BddBundle:Image', 'i')
+            ->where('i.enabled = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

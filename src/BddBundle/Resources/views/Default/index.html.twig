@@ -35,11 +35,6 @@
       <div class="panel panel-body">
         <div class="row text-center">
           <div class="col-xs-3">
-            <p><i class="icon-road icon-2x display-inline-block text-info"></i></p>
-            <h5 class="text-semibold no-margin">{{ stats.nb_coasters }}</h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.coasters'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
             <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
             <h5 class="text-semibold no-margin">
               {{ stats.nb_ratings }}
@@ -47,9 +42,7 @@
                 <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
               {% endif %}
             </h5>
-
             <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
-
           </div>
           <div class="col-xs-3">
             <p><i class="icon-megaphone icon-2x display-inline-block text-success"></i></p>
@@ -65,7 +58,11 @@
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.listes'|trans }}</span>
           </div>
-
+          <div class="col-xs-3">
+            <p><i class="icon-camera icon-2x display-inline-block text-info"></i></p>
+            <h5 class="text-semibold no-margin">{{ stats.nb_images }}</h5>
+            <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
+          </div>
         </div>
       </div>
     </div>
