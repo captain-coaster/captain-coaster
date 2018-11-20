@@ -84,6 +84,7 @@ coaster_ranking:
     title: 'Classement des meilleurs coasters - %rankingMonth%'
     description: 'Classement des meilleurs montagnes russes du monde, par nos utilisateurs. Donne ton avis et met des notes pour participer à ce classement des coasters.'
     duel_number: '1 duel|%count% duels'
+    no_results: 'Pas de coaster'
     info:
         title: 'Ce qui a fait le classement ce mois-ci'
         next: 'Prochaine mise à jour %date%'
@@ -93,7 +94,9 @@ coaster_ranking:
         in_tops: 'coasters dans les Tops'
     filter:
         continent: 'Monde'
+        country: 'Pays'
         materialType: 'Type'
+        seatingType: 'Train'
 
 map_index:
     title: 'Carte des coasters'

@@ -47,6 +47,10 @@
           </span>
       </div>
     </li>
+  {% else %}
+    <li class="media panel panel-body stack-media-on-mobile">
+      <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
+    </li>
   {% endfor %}
 </ul>
 {{ knp_pagination_render(coasters) }}

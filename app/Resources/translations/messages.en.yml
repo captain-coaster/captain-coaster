@@ -84,6 +84,7 @@ coaster_ranking:
     title: 'Ranking of the best coasters - %rankingMonth%'
     description: 'Ranking of the best roller coasters of the world, by our users. Write reviews and rate coasters you have ridden to be a part of it.'
     duel_number: '1 duel|%count% duels'
+    no_results: 'No coasters found!'
     info:
         title: 'What is this ranking made of'
         next:  'Next update %date%'
@@ -93,7 +94,9 @@ coaster_ranking:
         in_tops: 'coasters in Tops'
     filter:
         continent: 'World'
+        country: 'Country'
         materialType: 'Type'
+        seatingType: 'Train'
 
 map_index:
     title: 'Coasters Map'

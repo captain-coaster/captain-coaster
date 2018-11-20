@@ -60,7 +60,9 @@ class RankingRepository extends EntityRepository
     private function applyFilters(QueryBuilder $qb, array $filters = [])
     {
         $this->filterContinent($qb, $filters);
+        $this->filterCountry($qb, $filters);
         $this->filterMaterialType($qb, $filters);
+        $this->filterSeatingType($qb, $filters);
     }
 
     /**
@@ -82,6 +84,20 @@ class RankingRepository extends EntityRepository
      * @param QueryBuilder $qb
      * @param array $filters
      */
+    private function filterCountry(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('country', $filters) && $filters['country'] !== '') {
+            $qb
+                ->join('p.country', 'co')
+                ->andWhere('co.id = :country')
+                ->setParameter('country', $filters['country']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
     private function filterMaterialType(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('materialType', $filters) && $filters['materialType'] !== '') {
@@ -89,6 +105,20 @@ class RankingRepository extends EntityRepository
                 ->join('c.materialType', 'mt')
                 ->andWhere('mt.id = :materialType')
                 ->setParameter('materialType', $filters['materialType']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterSeatingType(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('seatingType', $filters) && $filters['seatingType'] !== '') {
+            $qb
+                ->join('c.seatingType', 'st')
+                ->andWhere('st.id = :seatingType')
+                ->setParameter('seatingType', $filters['seatingType']);
         }
     }
 }

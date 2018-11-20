@@ -15,9 +15,25 @@
             </select>
           </div>
           <div class="form-group">
+            <select class="form-control" name="filters[country]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.country'|trans }}</option>
+              {% for country in filtersForm.country %}
+                <option value="{{ country.id }}">{{ country.name|trans({}, 'database') }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
             <select class="form-control" name="filters[materialType]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.materialType'|trans }}</option>
               {% for type in filtersForm.materialType %}
+                <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[seatingType]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.seatingType'|trans }}</option>
+              {% for type in filtersForm.seatingType %}
                 <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
               {% endfor %}
             </select>
