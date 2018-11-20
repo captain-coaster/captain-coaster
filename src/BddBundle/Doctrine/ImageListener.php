@@ -28,42 +28,66 @@ class ImageListener
     }
 
     /**
+     * Before persist:
+     *  - upload file
+     *
      * @param LifecycleEventArgs $args
      * @throws \Exception
      */
     public function prePersist(LifecycleEventArgs $args)
     {
-        $entity = $args->getEntity();
+        $image = $args->getEntity();
+        if (!$image instanceof Image) {
+            return;
+        }
 
-        $this->uploadFile($entity);
+        $file = $image->getFile();
+
+        // only upload new files
+        if ($file instanceof UploadedFile) {
+            $fileName = $this->imageManager->upload($file);
+            $image->setFilename($fileName);
+        }
     }
 
     /**
+     * Before remove :
+     *  - remove image file on disk
+     *
      * @param LifecycleEventArgs $args
      */
     public function preRemove(LifecycleEventArgs $args)
     {
-        $entity = $args->getEntity();
+        $image = $args->getEntity();
+        if (!$image instanceof Image) {
+            return;
+        }
 
-        $this->removeFile($entity);
+        $this->imageManager->remove($image->getFilename());
     }
 
     /**
-     * Update main image of a coaster after remove.
+     * After remove :
+     *  - update main images
+     *  - remove cache
      *
      * @param LifecycleEventArgs $args
      */
     public function postRemove(LifecycleEventArgs $args)
     {
-        if (!$args->getEntity() instanceof Image) {
+        $image = $args->getEntity();
+        if (!$image instanceof Image) {
             return;
         }
 
         $this->imageManager->setMainImages();
+
+        $this->imageManager->removeCache($image);
     }
 
     /**
-     * Update main image of a coaster after update.
+     * After update:
+     *  - update main images
      *
      * @param LifecycleEventArgs $args
      */
@@ -74,36 +98,5 @@ class ImageListener
         }
 
         $this->imageManager->setMainImages();
-    }
-
-    /**
-     * @param $entity
-     * @throws \Exception
-     */
-    private function uploadFile($entity)
-    {
-        if (!$entity instanceof Image) {
-            return;
-        }
-
-        $file = $entity->getFile();
-
-        // only upload new files
-        if ($file instanceof UploadedFile) {
-            $fileName = $this->imageManager->upload($file);
-            $entity->setFilename($fileName);
-        }
-    }
-
-    /**
-     * @param $entity
-     */
-    private function removeFile($entity)
-    {
-        if (!$entity instanceof Image) {
-            return;
-        }
-
-        $this->imageManager->remove($entity->getFilename());
     }
 }

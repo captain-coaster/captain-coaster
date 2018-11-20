@@ -38,7 +38,7 @@ class UserController extends Controller
     }
 
     /**
-     * User's ratings
+     * Show all user's ratings
      *
      * @param User $user
      * @param int $page
@@ -78,7 +78,7 @@ class UserController extends Controller
     /**
      * Show all user's lists
      *
-     * @Route("/{id}/lists", name="user_lists", requirements={"page" = "\d+"})
+     * @Route("/{id}/lists", name="user_lists")
      * @Method({"GET"})
      *
      * @param User $user

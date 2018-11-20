@@ -36,6 +36,7 @@ services:
             $watermarkPath: '%watermark_path%'
             $jpegoptimPath: '%jpegoptim_path%'
             $imagine: '@liip_imagine.imagick'
+            $cacheManager: '@liip_imagine.cache.manager'
 
     BddBundle\Service\BannerMaker:
         arguments:

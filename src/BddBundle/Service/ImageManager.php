@@ -11,6 +11,7 @@ use Imagine\Image\BoxInterface;
 use Imagine\Image\Metadata\ExifMetadataReader;
 use Imagine\Image\Point;
 use Imagine\Imagick\Imagine;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Filesystem\Filesystem;
@@ -56,6 +57,11 @@ class ImageManager
     private $logger;
 
     /**
+     * @var CacheManager
+     */
+    private $cacheManager;
+
+    /**
      * ImageUploader constructor.
      * @param string $basePath
      * @param string $watermarkPath
@@ -63,6 +69,7 @@ class ImageManager
      * @param Imagine $imagine
      * @param EntityManagerInterface $em
      * @param LoggerInterface $logger
+     * @param CacheManager $cacheManager
      */
     public function __construct(
         string $basePath,
@@ -70,7 +77,8 @@ class ImageManager
         string $jpegoptimPath,
         Imagine $imagine,
         EntityManagerInterface $em,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        CacheManager $cacheManager
     ) {
         $this->basePath = $basePath;
         $this->watermarkPath = $watermarkPath;
@@ -78,6 +86,7 @@ class ImageManager
         $this->imagine = $imagine;
         $this->em = $em;
         $this->logger = $logger;
+        $this->cacheManager = $cacheManager;
     }
 
     /**
@@ -211,6 +220,14 @@ class ImageManager
         } catch (DBALException $e) {
             // do nothing
         }
+    }
+
+    /**
+     * @param Image $image
+     */
+    public function removeCache(Image $image)
+    {
+        $this->cacheManager->remove($image->getPath());
     }
 
     /**
