@@ -59,8 +59,7 @@ class RankingRepository extends EntityRepository
      */
     private function applyFilters(QueryBuilder $qb, array $filters = [])
     {
-        $this->filterContinent($qb, $filters);
-        $this->filterCountry($qb, $filters);
+        $this->filterLocation($qb, $filters);
         $this->filterMaterialType($qb, $filters);
         $this->filterSeatingType($qb, $filters);
     }
@@ -69,28 +68,19 @@ class RankingRepository extends EntityRepository
      * @param QueryBuilder $qb
      * @param array $filters
      */
-    private function filterContinent(QueryBuilder $qb, array $filters = [])
-    {
-        if (array_key_exists('continent', $filters) && $filters['continent'] !== '') {
-            $qb
-                ->join('p.country', 'co')
-                ->join('co.continent', 'ct')
-                ->andWhere('ct.id = :continent')
-                ->setParameter('continent', $filters['continent']);
-        }
-    }
-
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterCountry(QueryBuilder $qb, array $filters = [])
+    private function filterLocation(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('country', $filters) && $filters['country'] !== '') {
             $qb
                 ->join('p.country', 'co')
                 ->andWhere('co.id = :country')
                 ->setParameter('country', $filters['country']);
+        } elseif (array_key_exists('continent', $filters) && $filters['continent'] !== '') {
+            $qb
+                ->join('p.country', 'co')
+                ->join('co.continent', 'ct')
+                ->andWhere('ct.id = :continent')
+                ->setParameter('continent', $filters['continent']);
         }
     }
 
