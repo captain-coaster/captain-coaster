@@ -159,12 +159,10 @@
               <div class="pull-right">{{ coaster.seatingType.name }}</div>
             </div>
           {% endif %}
-          {% if coaster.types|length > 0 %}
+          {% if coaster.model %}
             <div class="list-group-item">
-              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.type'|trans }}:</label>
-              <div class="pull-right">
-                {{ coaster.types|join(', ') }}
-              </div>
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.model'|trans }}:</label>
+              <div class="pull-right">{{ coaster.model.name }}</div>
             </div>
           {% endif %}
           {% if coaster.kiddie %}

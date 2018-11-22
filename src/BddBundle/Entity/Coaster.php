@@ -150,14 +150,6 @@ class Coaster
     private $launchs;
 
     /**
-     * @var ArrayCollection|Type[]
-     *
-     * @ORM\ManyToMany(targetEntity="Type", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $types;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(name="is_kiddie", type="boolean", nullable=false)
@@ -344,7 +336,6 @@ class Coaster
     public function __construct()
     {
         $this->launchs = new ArrayCollection();
-        $this->types = new ArrayCollection();
         $this->ratings = new ArrayCollection();
         $this->mainTags = new ArrayCollection();
         $this->images = new ArrayCollection();
@@ -612,33 +603,6 @@ class Coaster
     public function getLaunchs()
     {
         return $this->launchs;
-    }
-
-    /**
-     * @param Type $type
-     * @return Coaster
-     */
-    public function addType(Type $type)
-    {
-        $this->types[] = $type;
-
-        return $this;
-    }
-
-    /**
-     * @param Type $type
-     */
-    public function removeType(Type $type)
-    {
-        $this->types->removeElement($type);
-    }
-
-    /**
-     * @return Type[]|ArrayCollection
-     */
-    public function getTypes()
-    {
-        return $this->types;
     }
 
     /**

@@ -45,6 +45,7 @@ coaster:
         manufacturer: 'Manufacturer'
         materialType: 'Type'
         seatingType: 'Train'
+        model: 'Model'
         restraint: 'Restraint'
         forces: 'G-forces'
         opening: 'Opening date'
