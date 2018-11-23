@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% import "helper.html.twig" as helper %}
+
+{% set title = 'users.images.title'|trans({'%name%': user.displayName}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  {% if images|length > 0 %}
+    <div id="coaster-photos" class="row">
+      <div class="panel panel-flat border-top-blue">
+        <div class="panel-body no-border no-padding-top">
+          {% for image in images %}
+            <div class="col-sm-3">
+              <a class="m-10" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
+                 rel="gallery">
+                <div class="thumb">
+                  <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
+                       alt="{{ image.coaster.name }}">
+                </div>
+              </a>
+              <div class="text-size-small text-muted">
+                <i
+                    onclick="toggleLike(this, '{{ image.id }}');"
+                    style="cursor: pointer;"
+                    class="{% if image.id in userLikes %}icon-heart5{% else %}icon-heart6{% endif %} text-muted like-image">
+                </i>&nbsp;{{ image.likeCounter }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {{ knp_pagination_render(images) }}
+  {% else %}
+    No photos
+  {% endif %}
+  <script>
+    function toggleLike(element, id) {
+      $.ajax({
+        url: Routing.generate('like_image_async', {
+          'id': id,
+          '_locale': '{{ app.request.locale }}',
+        }),
+        type: 'GET',
+      }).done(function(data) {
+        element.classList.toggle('icon-heart5');
+        element.classList.toggle('icon-heart6');
+      });
+    }
+  </script>
+{% endblock %}

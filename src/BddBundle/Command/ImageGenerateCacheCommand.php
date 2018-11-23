@@ -33,7 +33,7 @@ class ImageGenerateCacheCommand extends ContainerAwareCommand
     {
         $this
             ->setName('image:generate-cache')
-            ->setDescription('Generate caches for images');
+            ->setDescription('Generate cache files for all images');
     }
 
     /**

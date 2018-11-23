@@ -75,7 +75,7 @@ class Image
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="BddBundle\Entity\User", inversedBy="images")
      * @Assert\NotBlank()
      */
     private $uploader;

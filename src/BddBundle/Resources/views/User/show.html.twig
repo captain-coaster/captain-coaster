@@ -34,6 +34,13 @@
                 <span class="badge bg-teal-400 pull-right">{{ user.mainListe.listeCoasters|length }}</span>
               </a>
             {% endif %}
+            {% if user.images| length > 0 %}
+              <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
+                <i class="icon-camera"></i>
+                {{ 'user_profile.pictures'|trans }}
+                <span class="badge bg-teal-400 pull-right">{{ user.images|length }}</span>
+              </a>
+            {% endif %}
             <a href="{{ path('user_lists', {'id': user.id}) }}" class="list-group-item">
               <i class="icon-clipboard3"></i>
               {{ 'user_profile.custom_listes'|trans }}

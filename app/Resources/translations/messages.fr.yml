@@ -120,6 +120,7 @@ user_profile:
     listes: 'Voir son Top Coaster'
     custom_listes: 'Voir ses listes'
     map: 'Voir sa carte'
+    pictures: 'Voir ses photos'
 
 my_ratings:
     title: 'Mes notes'
@@ -223,6 +224,8 @@ users:
         opening_date: 'Ouverture'
         rating: 'Note'
         rated_at: 'Noté le'
+    images:
+        title: 'Photos de %name%'
 
 review_list:
     title: 'Tous les avis'

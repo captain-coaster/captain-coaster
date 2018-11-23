@@ -4,9 +4,11 @@ namespace BddBundle\Controller;
 
 use BddBundle\Entity\User;
 use BddBundle\Service\StatService;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class UserController
@@ -101,20 +103,55 @@ class UserController extends Controller
     }
 
     /**
-     * Deprecated - Display a user
-     * Need to keep it for banners links
+     * Show all user's pictures
      *
-     * @param User $user
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @Route("/{id}/profile", name="user_profile")
+     * @Route("/{id}/pictures", name="user_pictures", requirements={"page" = "\d+"})
      * @Method({"GET"})
      *
-     * @deprecated
+     * @param User $user
+     * @param EntityManagerInterface $em
+     * @param int $page
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function deprecatedShowAction(User $user)
+    public function picturesAction(Request $request, User $user, EntityManagerInterface $em)
     {
-        return $this->redirectToRoute('user_show', ['slug' => $user->getSlug()]);
+        $page = $request->get('page', 1);
+        $query = $em
+            ->getRepository('BddBundle:Image')
+            ->findUserImages($user);
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            30,
+            [
+                'wrap-queries' => true,
+                'defaultSortFieldName' => 'i.likeCounter',
+                'defaultSortDirection' => 'desc',
+            ]
+        );
+
+        $userLikes = [];
+        if ($loggedInUser = $this->getUser()) {
+            $em->getConfiguration()->addCustomHydrationMode(
+                'COLUMN_HYDRATOR',
+                'BddBundle\Doctrine\Hydrator\ColumnHydrator'
+            );
+            $userLikes = $em
+                ->getRepository('BddBundle:LikedImage')
+                ->findUserLikes($loggedInUser)
+                ->getResult('COLUMN_HYDRATOR');
+        }
+
+        return $this->render(
+            'BddBundle:User:images.html.twig',
+            [
+                'images' => $pagination,
+                'user' => $user,
+                'userLikes' => $userLikes,
+            ]
+        );
     }
 
     /**
@@ -138,5 +175,22 @@ class UserController extends Controller
                 'stats' => $statService->getUserStats($user),
             ]
         );
+    }
+
+    /**
+     * Deprecated - Display a user
+     * Need to keep it for banners links
+     *
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @Route("/{id}/profile", name="user_profile")
+     * @Method({"GET"})
+     *
+     * @deprecated
+     */
+    public function deprecatedShowAction(User $user)
+    {
+        return $this->redirectToRoute('user_show', ['slug' => $user->getSlug()]);
     }
 }

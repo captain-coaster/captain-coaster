@@ -120,6 +120,7 @@ user_profile:
     listes: 'Show his Top Coaster'
     custom_listes: 'Show his lists'
     map: 'Show his coaster map'
+    pictures: 'Show his pictures'
 
 my_ratings:
     title: 'My ratings'
@@ -223,6 +224,8 @@ users:
         opening_date: 'Opened'
         rating: 'Rating'
         rated_at: 'Rated at'
+    images:
+        title: '%name% - Pictures'
 
 review_list:
     title: 'Coaster reviews'

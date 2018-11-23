@@ -163,7 +163,9 @@ class ImageManager
             return false;
         }
 
-        $this->setOptimized($image);
+        $image->setOptimized(true);
+        $this->em->persist($image);
+        $this->em->flush();
 
         return true;
     }
@@ -250,16 +252,6 @@ class ImageManager
         }
 
         return true;
-    }
-
-    /**
-     * @param Image $image
-     */
-    private function setOptimized(Image $image)
-    {
-        $image->setOptimized(true);
-        $this->em->persist($image);
-        $this->em->flush();
     }
 
     /**
