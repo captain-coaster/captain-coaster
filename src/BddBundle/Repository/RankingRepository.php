@@ -62,6 +62,7 @@ class RankingRepository extends EntityRepository
         $this->filterLocation($qb, $filters);
         $this->filterMaterialType($qb, $filters);
         $this->filterSeatingType($qb, $filters);
+        $this->filterManufacturer($qb, $filters);
     }
 
     /**
@@ -109,6 +110,19 @@ class RankingRepository extends EntityRepository
                 ->join('c.seatingType', 'st')
                 ->andWhere('st.id = :seatingType')
                 ->setParameter('seatingType', $filters['seatingType']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterManufacturer(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('manufacturer', $filters) && $filters['manufacturer'] !== '') {
+            $qb
+                ->andWhere('m.id = :manufacturer')
+                ->setParameter('manufacturer', $filters['manufacturer']);
         }
     }
 }

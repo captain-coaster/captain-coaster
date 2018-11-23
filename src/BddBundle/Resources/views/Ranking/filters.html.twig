@@ -38,6 +38,14 @@
               {% endfor %}
             </select>
           </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.manufacturer'|trans }}</option>
+              {% for type in filtersForm.manufacturer %}
+                <option value="{{ type.id }}">{{ type.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
       </div>
     </form>

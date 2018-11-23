@@ -3,6 +3,7 @@
 namespace BddBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -115,6 +116,13 @@ class User extends BaseUser
     private $notifications;
 
     /**
+     * @var Image
+     *
+     * @ORM\OneToMany(targetEntity="BddBundle\Entity\Image", mappedBy="uploader")
+     */
+    private $images;
+
+    /**
      * @var \DateTime $createdAt
      *
      * @Gedmo\Timestampable(on="create")
@@ -165,6 +173,7 @@ class User extends BaseUser
         $this->listes = new ArrayCollection();
         $this->badges = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -626,5 +635,39 @@ class User extends BaseUser
     public function getApiKey(): ?string
     {
         return $this->apiKey;
+    }
+
+    /**
+     * Add image
+     *
+     * @param Image $image
+     *
+     * @return User
+     */
+    public function addImage(Image $image)
+    {
+        $this->images[] = $image;
+
+        return $this;
+    }
+
+    /**
+     * Remove image
+     *
+     * @param Image $image
+     */
+    public function removeImage(Image $image)
+    {
+        $this->images->removeElement($image);
+    }
+
+    /**
+     * Get images
+     *
+     * @return Collection
+     */
+    public function getImages(): ?Collection
+    {
+        return $this->images;
     }
 }

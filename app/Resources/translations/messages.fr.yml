@@ -98,6 +98,7 @@ coaster_ranking:
         country: 'Pays'
         materialType: 'Type'
         seatingType: 'Train'
+        manufacturer: 'Constructeur'
 
 map_index:
     title: 'Carte des coasters'

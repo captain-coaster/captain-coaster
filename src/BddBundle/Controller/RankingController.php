@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -22,6 +23,7 @@ class RankingController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="ranking_index")
      * @Method({"GET"})
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     public function indexAction(EntityManagerInterface $em)
     {
@@ -103,27 +105,40 @@ class RankingController extends Controller
      * Get data to display filter form (mainly <select> data)
      *
      * @return array
+     * @throws \Psr\Cache\InvalidArgumentException
      */
     private function getFiltersForm()
     {
-        $filtersForm = [];
+        $cache = new FilesystemAdapter();
+        $filtersForm = $cache->getItem('ranking_filters_form');
 
-        $filtersForm['continent'] = $this->getDoctrine()
-            ->getRepository('BddBundle:Continent')
-            ->findBy([], ["name" => "asc"]);
+        if (!$filtersForm->isHit()) {
+            $data = [];
+            $data['continent'] = $this->getDoctrine()
+                ->getRepository('BddBundle:Continent')
+                ->findBy([], ["name" => "asc"]);
 
-        $filtersForm['country'] = $this->getDoctrine()
-            ->getRepository('BddBundle:Country')
-            ->findBy([], ["name" => "asc"]);
+            $data['country'] = $this->getDoctrine()
+                ->getRepository('BddBundle:Country')
+                ->findBy([], ["name" => "asc"]);
 
-        $filtersForm['materialType'] = $this->getDoctrine()
-            ->getRepository('BddBundle:MaterialType')
-            ->findAll();
+            $data['materialType'] = $this->getDoctrine()
+                ->getRepository('BddBundle:MaterialType')
+                ->findAll();
 
-        $filtersForm['seatingType'] = $this->getDoctrine()
-            ->getRepository('BddBundle:SeatingType')
-            ->findAll();
+            $data['seatingType'] = $this->getDoctrine()
+                ->getRepository('BddBundle:SeatingType')
+                ->findAll();
 
-        return $filtersForm;
+            $data['manufacturer'] = $this->getDoctrine()
+                ->getRepository('BddBundle:Manufacturer')
+                ->findBy([], ["name" => "asc"]);
+
+            $filtersForm->set($data);
+            $filtersForm->expiresAfter(\DateInterval::createFromDateString('7 days'));
+            $cache->save($filtersForm);
+        }
+
+        return $filtersForm->get();
     }
 }
