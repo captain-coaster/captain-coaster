@@ -19,6 +19,7 @@ easy_admin:
                 - park
                 - materialType
                 - seatingType
+                - model
                 - speed
                 - height
                 - length
@@ -26,7 +27,6 @@ easy_admin:
                 - manufacturer
                 - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
                 - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
-                - types
                 - kiddie
                 - vr
                 - indoor
@@ -41,6 +41,7 @@ easy_admin:
                 - park
                 - materialType
                 - seatingType
+                - model
                 - speed
                 - height
                 - length
@@ -48,7 +49,6 @@ easy_admin:
                 - manufacturer
                 - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
                 - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
-                - types
                 - kiddie
                 - vr
                 - indoor
@@ -166,13 +166,13 @@ easy_admin:
             new:
                 fields:
                 - name
-        Type:
-            class: BddBundle\Entity\Type
+        Model:
+            class: BddBundle\Entity\Model
             disabled_actions: ['delete']
             list:
                 fields:
                 - id
-                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                - name
                 - coasters
             edit:
                 fields:
