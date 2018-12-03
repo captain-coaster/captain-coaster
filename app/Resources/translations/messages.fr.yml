@@ -214,6 +214,7 @@ review:
     delete: 'Supprimer'
     last: 'Derniers avis'
     all: 'Voir plus →'
+    ridden_at: 'Date du ride'
 
 users:
     lists:

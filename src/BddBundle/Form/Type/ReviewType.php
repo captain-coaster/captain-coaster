@@ -7,6 +7,7 @@ use BddBundle\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -83,6 +84,16 @@ class ReviewType extends AbstractType
                 [
                     'required' => false,
                     'label' => 'review.comment',
+                ]
+            )
+            ->add(
+                'riddenAt',
+                DateType::class,
+                [
+                    'required' => false,
+                    'label' => 'review.ridden_at',
+                    'widget' => 'single_text',
+                    'html5' => false,
                 ]
             );
     }

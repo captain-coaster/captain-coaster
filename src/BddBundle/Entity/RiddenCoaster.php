@@ -113,6 +113,13 @@ class RiddenCoaster
     private $updatedAt;
 
     /**
+     * @var \DateTime $riddenAt
+     *
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $riddenAt;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -423,5 +430,24 @@ class RiddenCoaster
     public function isAberrantRating(): bool
     {
         return (abs((float)$this->getCoaster()->getAverageRating() - (float)$this->getValue()) > 3);
+    }
+
+    /**
+     * @param mixed $riddenAt
+     * @return RiddenCoaster
+     */
+    public function setRiddenAt(?\DateTime $riddenAt): RiddenCoaster
+    {
+        $this->riddenAt = $riddenAt;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRiddenAt(): ?\DateTime
+    {
+        return $this->riddenAt;
     }
 }
