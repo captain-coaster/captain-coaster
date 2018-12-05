@@ -6,17 +6,23 @@
 
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 
+{% block stylesheets %}
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}
+
 {% block body %}
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
-    {{ form_rest(form) }}
-    <div class="text-right">
-        <button type="submit" class="btn btn-primary">
-            {{ 'contact.send'|trans }}
-            <i class="icon-arrow-right14 position-right"></i>
-        </button>
-    </div>
-    {{ form_end(form) }}
+  {{ form_errors(form) }}
+  {{ form_start(form) }}
+  {{ form_row(form.name) }}
+  {{ form_row(form.email) }}
+  {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
+  {{ form_rest(form) }}
+  <div class="g-recaptcha" data-sitekey="6LdTx34UAAAAAP41CdaFZoDO7ELffKrUuVQB3pdU"></div>
+  <div class="text-right">
+    <button type="submit" class="btn btn-primary">
+      {{ 'contact.send'|trans }}
+      <i class="icon-arrow-right14 position-right"></i>
+    </button>
+  </div>
+  {{ form_end(form) }}
 {% endblock %}

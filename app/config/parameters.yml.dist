@@ -39,9 +39,6 @@ parameters:
     banner_target_path: '%kernel.project_dir%/web/images/banners'
     banner_background_path: '%kernel.project_dir%/web/images/background-banner.png'
 
-    # Temp
-    default_coaster_id: 2183
-
     # Authentication
     facebook_client_id:
     facebook_client_secret:
@@ -52,3 +49,6 @@ parameters:
     discord_channels:
         log:
         notify:
+
+    # Recaptcha
+    recaptcha_secret:

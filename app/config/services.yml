@@ -77,6 +77,11 @@ services:
         - {name: doctrine.event_listener, event: postPersist, lazy: true}
         - {name: doctrine.event_listener, event: postRemove, lazy: true}
 
+    BddBundle\Validator\Constraints\ReCaptchaValidator:
+        arguments:
+            $hostname: '%router.request_context.base_url%'
+            $secret: '%recaptcha_secret%'
+
     my.custom.user_provider:
         class: BddBundle\Security\Core\User\CustomUserProvider
         arguments:
