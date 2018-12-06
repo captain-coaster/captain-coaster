@@ -79,7 +79,7 @@ services:
 
     BddBundle\Validator\Constraints\ReCaptchaValidator:
         arguments:
-            $hostname: '%router.request_context.base_url%'
+            $hostname: '%context_host%'
             $secret: '%recaptcha_secret%'
 
     my.custom.user_provider:
