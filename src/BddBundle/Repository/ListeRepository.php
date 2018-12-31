@@ -26,7 +26,6 @@ class ListeRepository extends \Doctrine\ORM\EntityRepository
                 ->createQueryBuilder()
                 ->select('count(1)')
                 ->from('BddBundle:Liste', 'l')
-                ->join('l.listeCoasters', 'lc')
                 ->where('l.main = 1')
                 ->getQuery()
                 ->getSingleScalarResult();

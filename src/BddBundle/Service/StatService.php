@@ -2,6 +2,11 @@
 
 namespace BddBundle\Service;
 
+use BddBundle\Entity\Country;
+use BddBundle\Entity\Image;
+use BddBundle\Entity\ListeCoaster;
+use BddBundle\Entity\Park;
+use BddBundle\Entity\RiddenCoaster;
 use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -28,7 +33,6 @@ class StatService
 
     /**
      * @return array
-     * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Exception
      */
     public function getIndexStats()
@@ -36,25 +40,25 @@ class StatService
         $stats = [];
 
         $stats['nb_ratings'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->countAll();
 
         $date = new \DateTime();
         $date->sub(new \DateInterval('P1D'));
         $stats['nb_new_ratings'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->countNew($date);
 
         $stats['nb_reviews'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->countReviews();
 
-        $stats['nb_tops'] = $this->em
-            ->getRepository('BddBundle:Liste')
-            ->countTops();
+        $stats['nb_in_tops'] = $this->em
+            ->getRepository(ListeCoaster::class)
+            ->countAllInTops();
 
         $stats['nb_images'] = $this->em
-            ->getRepository('BddBundle:Image')
+            ->getRepository(Image::class)
             ->countAll();
 
         return $stats;
@@ -63,33 +67,32 @@ class StatService
     /**
      * @param $user
      * @return array
-     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function getUserStats(User $user)
     {
         $stats = [];
 
-        if ($this->em->getRepository('BddBundle:RiddenCoaster')->countForUser($user) === '0') {
+        if ($this->em->getRepository(RiddenCoaster::class)->countForUser($user) === '0') {
             return $stats;
         }
 
         $stats['nb_coasters'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->countForUser($user);
         $stats['nb_park'] = $this->em
-            ->getRepository('BddBundle:Park')
+            ->getRepository(Park::class)
             ->countForUser($user);
         $stats['nb_country'] = $this->em
-            ->getRepository('BddBundle:Country')
+            ->getRepository(Country::class)
             ->countForUser($user);
         $stats['country'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->findMostRiddenCountry($user);
         $stats['top_100'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->countTop100ForUser($user);
         $stats['manufacturer'] = $this->em
-            ->getRepository('BddBundle:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->getMostRiddenManufacturer($user);
 
         return $stats;

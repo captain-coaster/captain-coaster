@@ -39,10 +39,26 @@
             </select>
           </div>
           <div class="form-group">
+            <select class="form-control" name="filters[model]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.model'|trans }}</option>
+              {% for model in filtersForm.model %}
+                <option value="{{ model.id }}">{{ model.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
             <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.manufacturer'|trans }}</option>
               {% for type in filtersForm.manufacturer %}
                 <option value="{{ type.id }}">{{ type.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+              <option value="">{{ 'coaster_ranking.filter.openingDate'|trans }}</option>
+              {% for openingDate in filtersForm.openingDate %}
+                <option value="{{ openingDate.year }}">{{ openingDate.year }}</option>
               {% endfor %}
             </select>
           </div>

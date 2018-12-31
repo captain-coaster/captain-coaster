@@ -62,7 +62,9 @@ class RankingRepository extends EntityRepository
         $this->filterLocation($qb, $filters);
         $this->filterMaterialType($qb, $filters);
         $this->filterSeatingType($qb, $filters);
+        $this->filterModel($qb, $filters);
         $this->filterManufacturer($qb, $filters);
+        $this->filterOpeningDate($qb, $filters);
     }
 
     /**
@@ -117,12 +119,40 @@ class RankingRepository extends EntityRepository
      * @param QueryBuilder $qb
      * @param array $filters
      */
+    private function filterModel(QueryBuilder $qb, array $filters = [])
+    {
+        if (array_key_exists('model', $filters) && $filters['model'] !== '') {
+            $qb
+                ->join('c.model', 'mo')
+                ->andWhere('mo.id = :model')
+                ->setParameter('model', $filters['model']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
     private function filterManufacturer(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('manufacturer', $filters) && $filters['manufacturer'] !== '') {
             $qb
                 ->andWhere('m.id = :manufacturer')
                 ->setParameter('manufacturer', $filters['manufacturer']);
+        }
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param array $filters
+     */
+    private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
+    {
+        // Filter by average rating
+        if (array_key_exists('openingDate', $filters) && $filters['openingDate'] !== '') {
+            $qb
+                ->andWhere('c.openingDate like :date')
+                ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));
         }
     }
 }

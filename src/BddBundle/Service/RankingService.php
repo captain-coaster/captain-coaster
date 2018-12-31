@@ -7,6 +7,7 @@ use BddBundle\Entity\Liste;
 use BddBundle\Entity\ListeCoaster;
 use BddBundle\Entity\Ranking;
 use BddBundle\Entity\RiddenCoaster;
+use BddBundle\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -72,6 +73,7 @@ class RankingService
      *
      * @param bool $dryRun
      * @return array
+     * @throws \Exception
      */
     public function updateRanking(bool $dryRun = false): array
     {
@@ -127,6 +129,7 @@ class RankingService
     {
         $users = $this->em->getRepository('BddBundle:User')->findAll();
 
+        /** @var User $user */
         foreach ($users as $user) {
             // reset before each new user
             $this->userComparisons = [];

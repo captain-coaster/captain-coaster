@@ -2,6 +2,13 @@
 
 namespace BddBundle\Controller;
 
+use BddBundle\Entity\Coaster;
+use BddBundle\Entity\Continent;
+use BddBundle\Entity\Country;
+use BddBundle\Entity\Manufacturer;
+use BddBundle\Entity\MaterialType;
+use BddBundle\Entity\Model;
+use BddBundle\Entity\SeatingType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -24,6 +31,7 @@ class RankingController extends Controller
      * @Route("/", name="ranking_index")
      * @Method({"GET"})
      * @throws \Psr\Cache\InvalidArgumentException
+     * @throws \Exception
      */
     public function indexAction(EntityManagerInterface $em)
     {
@@ -83,6 +91,7 @@ class RankingController extends Controller
             ->findCoastersRanked($filters);
 
         $paginator = $this->get('knp_paginator');
+
         return $paginator->paginate(
             $query,
             $page,
@@ -115,24 +124,32 @@ class RankingController extends Controller
         if (!$filtersForm->isHit()) {
             $data = [];
             $data['continent'] = $this->getDoctrine()
-                ->getRepository('BddBundle:Continent')
+                ->getRepository(Continent::class)
                 ->findBy([], ["name" => "asc"]);
 
             $data['country'] = $this->getDoctrine()
-                ->getRepository('BddBundle:Country')
+                ->getRepository(Country::class)
                 ->findBy([], ["name" => "asc"]);
 
             $data['materialType'] = $this->getDoctrine()
-                ->getRepository('BddBundle:MaterialType')
-                ->findAll();
+                ->getRepository(MaterialType::class)
+                ->findBy([], ["name" => "asc"]);
 
             $data['seatingType'] = $this->getDoctrine()
-                ->getRepository('BddBundle:SeatingType')
-                ->findAll();
+                ->getRepository(SeatingType::class)
+                ->findBy([], ["name" => "asc"]);
+
+            $data['model'] = $this->getDoctrine()
+                ->getRepository(Model::class)
+                ->findBy([], ['name' => 'asc']);
 
             $data['manufacturer'] = $this->getDoctrine()
-                ->getRepository('BddBundle:Manufacturer')
+                ->getRepository(Manufacturer::class)
                 ->findBy([], ["name" => "asc"]);
+
+            $data['openingDate'] = $this->getDoctrine()
+                ->getRepository(Coaster::class)
+                ->getDistinctOpeningYears();
 
             $filtersForm->set($data);
             $filtersForm->expiresAfter(\DateInterval::createFromDateString('7 days'));

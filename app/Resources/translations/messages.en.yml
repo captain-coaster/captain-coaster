@@ -75,7 +75,7 @@ image_upload:
             helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'
         upload: 'Submit my picture'
         back: 'Back to coaster'
-        success: 'Picture was uploaded. It will be reviewed by an administrator before display.'
+        success: 'Picture has been uploaded successfully. It will be reviewed by an administrator before display.'
 
 park:
     opened_coasters: 'opened coaster|opened coasters'
@@ -87,7 +87,7 @@ coaster_ranking:
     duel_number: '1 duel|%count% duels'
     no_results: 'No coasters found!'
     info:
-        title: 'What is this ranking made of'
+        title: 'This month'
         next:  'Next update %date%'
         coasters_ranked: 'ranked coasters'
         ratings: 'ratings'
@@ -98,7 +98,9 @@ coaster_ranking:
         country: 'Country'
         materialType: 'Type'
         seatingType: 'Train'
+        model: 'Model'
         manufacturer: 'Manufacturer'
+        openingDate: 'Opening Date'
 
 map_index:
     title: 'Coasters Map'
@@ -287,7 +289,7 @@ notif:
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge !'
     ranking:
-        message: 'Ranking of the best coaster updated!'
+        message: 'First ranking of 2019 is here!'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'

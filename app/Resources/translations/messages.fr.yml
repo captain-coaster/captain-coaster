@@ -87,7 +87,7 @@ coaster_ranking:
     duel_number: '1 duel|%count% duels'
     no_results: 'Pas de coaster'
     info:
-        title: 'Ce qui a fait le classement ce mois-ci'
+        title: 'Ce mois-ci'
         next: 'Prochaine mise à jour %date%'
         coasters_ranked: 'coasters classés'
         ratings: 'notes'
@@ -98,7 +98,9 @@ coaster_ranking:
         country: 'Pays'
         materialType: 'Type'
         seatingType: 'Train'
+        model: 'Modèle'
         manufacturer: 'Constructeur'
+        openingDate: 'Date d''ouverture'
 
 map_index:
     title: 'Carte des coasters'
@@ -287,7 +289,7 @@ notif:
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "%name%" !'
     ranking:
-        message: 'Mise à jour du classement des coasters !'
+        message: 'Le premier classement de 2019 est sorti !'
     email:
         title: '🎢 Nouvelle notification sur Captain Coaster'
         gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'
