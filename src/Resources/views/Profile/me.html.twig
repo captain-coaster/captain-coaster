@@ -1,0 +1,156 @@
+{% extends "base.html.twig" %}
+
+{% import "helper.html.twig" as helper %}
+
+{% set title = 'me.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <div class="row">
+    <div class="col-sm-3">
+      <div class="row">
+        <!-- infos user -->
+        <div class="panel">
+          <div class="panel-body text-center">
+            <div class="display-inline-block">
+              {{ helper.profilePicture(user) }}
+            </div>
+            <h6 class="text-semibold no-margin-bottom">
+              {{ user.displayName }}
+            </h6>
+          </div>
+
+          <div class="list-group no-border no-padding-top">
+            <a href="{{ path('me_ratings') }}" class="list-group-item">
+              <i class="icon-stars"></i>
+              {{ 'navbar.rating'|trans }}
+              <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
+            </a>
+            <a href="{{ path('liste_me') }}" class="list-group-item">
+              <i class="icon-podium"></i>
+              {{ 'navbar.topcoasters'|trans }}
+            </a>
+            <a href="{{ path('user_lists', {'id': user.id}) }}" class="list-group-item">
+              <i class="icon-clipboard3"></i>
+              {{ 'navbar.lists'|trans }}
+            </a>
+            <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
+              <i class="icon-location3"></i>
+              {{ 'navbar.my_map'|trans }}
+            </a>
+          </div>
+        </div>
+        <!-- /infos user -->
+        <!-- preferences form -->
+        <div class="panel panel-flat">
+          <div class="panel-heading">
+            <h6 class="panel-title">{{ 'me.parameters'|trans }}</h6>
+          </div>
+          <div class="panel-body">
+            {{ form_start(form) }}
+            <div class="form-group">
+              {{ form_label(form.displayName) }}
+              {{ form_widget(form.displayName, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+              {{ form_label(form.emailNotification) }}
+              {{ form_widget(form.emailNotification, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+              {{ form_label(form.preferredLocale) }}
+              {{ form_widget(form.preferredLocale, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <div class="form-group">
+              {{ form_label(form.homePark) }}
+              {{ form_widget(form.homePark, {'attr': {'class': 'form-control'}}) }}
+            </div>
+            <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
+              <b><i class="icon-circle-right2"></i></b>
+              {{ 'me.form.save'|trans }}
+            </button>
+            <div class="row">
+              <div class="col-xs-6 text-right">
+
+              </div>
+            </div>
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+          </div>
+        </div>
+        <!-- /preferences form -->
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <div class="row">
+        <div class="col-sm-12">
+          <!-- stats -->
+          {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
+          <!-- stats -->
+          <!-- banner -->
+          <div class="panel">
+            <div class="panel-body">
+              <h4 class="content-group-lg">
+                {{ 'me.banner.title'|trans }}
+                <small class="display-block">{{ 'me.banner.text'|trans }}</small>
+              </h4>
+              <div class="text-center content-group">
+                <img src="{{ asset('images/banners/' ~ user.id ~ '.png') }}" class="img-responsive"/>
+              </div>
+              <div class="col-sm-12 text-right">
+                <ul class="list-inline no-margin-bottom">
+                  <li>
+                    {% set bbcode = '[url='~ absolute_url(path('user_show', {'slug': user.slug})) ~'][img]'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'[/img][/url]' %}
+                    {% set htmlcode = '<a href="'~ absolute_url(path('user_show', {'slug': user.slug})) ~'"><img src="'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'"/></a>' %}
+                    <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
+                      <i class="icon-copy position-left"></i>
+                      {{ 'me.banner.getbbcode'|trans }}
+                    </a>
+                  </li>
+                  <li>
+                    <a onclick="copy(this);" class="btn btn-link" data-copy="{{ htmlcode }}">
+                      <i class="icon-copy2 position-left"></i>
+                      {{ 'me.banner.gethtml'|trans }}
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- banner -->
+          <!-- badges -->
+          <div class="panel panel-flat">
+            <div class="panel-heading">
+              <h3 class="panel-title">{{ 'me.badge'|trans }}</h3>
+            </div>
+            <div class="panel-body">
+              <div class="row">
+                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
+                  <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
+                </div>
+                {% for badge in user.badges %}
+                  <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
+                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          <!-- /badges -->
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="application/javascript">
+    function copy(element) {
+      const el = document.createElement('textarea');
+      el.value = element.dataset.copy;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+    }
+  </script>
+{% endblock %}

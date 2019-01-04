@@ -1,0 +1,32 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    #default_locale: en
+    #csrf_protection: true
+    #http_method_override: true
+
+    # Enables session support. Note that the session will ONLY be started if you read or write from it.
+    # Remove or comment this section to explicitly disable session support.
+    session:
+        handler_id: ~
+        cookie_secure: auto
+        cookie_samesite: lax
+
+    #esi: true
+    #fragments: true
+    php_errors:
+        log: true
+
+    translator: { fallbacks: ['%locale%'] }
+    form: ~
+    csrf_protection: ~
+    validation: { enable_annotations: true }
+    serializer: { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale: '%locale%'
+    trusted_hosts: ~
+    fragments: ~
+    http_method_override: true
+    assets:
+        json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+    ide: 'phpstorm'

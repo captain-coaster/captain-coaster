@@ -1,0 +1,6 @@
+api_platform:
+    title: 'Captain Coaster API'
+    description: 'Contact us to get an API token.'
+    version: '0.0.3'
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']

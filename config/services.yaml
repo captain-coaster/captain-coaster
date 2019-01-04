@@ -1,0 +1,111 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: 'en'
+    # todo: merge both params ?
+    # used in routing
+    app_locales: 'en|fr|es'
+    # used for templating and sitemap
+    app_locales_array: ['en', 'fr', 'es']
+    app_mail_from: 'contact@captaincoaster.com'
+    app_contact_mail_to: '%app_mail_from%'
+    app_mail_from_name: 'Captain Coaster'
+    google_recaptcha_site_key: '%env(GOOGLE_RECAPTCHA_SITE_KEY)%'
+    app_base_path_images: '%env(APP_BASE_PATH_IMAGES)%'
+    app_watermark_path: '%kernel.project_dir%/public/images/watermark-cc.png'
+    app_banner_font_path: '%kernel.project_dir%/public/upload'
+    app_banner_target_path: '%kernel.project_dir%/public/images/banners'
+    app_banner_background_path: '%kernel.project_dir%/public/images/background-banner.png'
+    liip_imagine.jpegoptim.binary: '%env(APP_JPEGOPTIM_PATH)%'
+    router.request_context.host: '%env(APP_CONTEXT_HOST)%'
+    router.request_context.scheme: '%env(APP_CONTEXT_SCHEME)%'
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    App\Service\ImageManager:
+        arguments:
+            $basePath: '%app_base_path_images%'
+            $watermarkPath: '%app_watermark_path%'
+            $jpegoptimPath: '%env(APP_JPEGOPTIM_PATH)%'
+            $imagine: '@liip_imagine.imagick'
+            $cacheManager: '@liip_imagine.cache.manager'
+
+    App\Service\BannerMaker:
+        arguments:
+            $imagine: '@liip_imagine.imagick'
+            $fontPath: '%app_banner_font_path%'
+            $targetPath: '%app_banner_target_path%'
+            $backgroundPath: '%app_banner_background_path%'
+
+    App\Service\NotificationService:
+        arguments:
+            $emailFrom: '%app_mail_from%'
+            $emailFromName: '%app_mail_from_name%'
+
+    App\Service\SitemapService:
+        arguments:
+            $locales: '%app_locales_array%'
+
+    App\Service\DiscordService:
+        arguments:
+            $channels:
+                log: '%env(APP_DISCORD_LOG)%'
+                notify: '%env(APP_DISCORD_NOTIFY)%'
+        public: true
+
+    App\Doctrine\ImageListener:
+        tags:
+            - {name: doctrine.event_listener, event: prePersist, lazy: true}
+            - {name: doctrine.event_listener, event: postUpdate, lazy: true}
+            - {name: doctrine.event_listener, event: preRemove, lazy: true}
+            - {name: doctrine.event_listener, event: postRemove, lazy: true}
+
+    App\Doctrine\CoasterListener:
+        tags:
+            - {name: doctrine.event_listener, event: postPersist, lazy: true}
+            - {name: doctrine.event_listener, event: postUpdate, lazy: true}
+            - {name: doctrine.event_listener, event: postRemove, lazy: true}
+
+    App\Doctrine\LikedImageListener:
+        tags:
+            - {name: doctrine.event_listener, event: postPersist, lazy: true}
+            - {name: doctrine.event_listener, event: postRemove, lazy: true}
+
+    App\Validator\Constraints\ReCaptchaValidator:
+        arguments:
+            $hostname: '%env(APP_CONTEXT_HOST)%'
+            $secret: '%env(GOOGLE_RECAPTCHA_SECRET)%'
+
+    my.custom.user_provider:
+        class: App\Security\Core\User\CustomUserProvider
+        arguments:
+            $userManager: '@fos_user.user_manager'
+            $properties: {facebook: facebookId, google: googleId}
+            $validator: '@validator'
+
+    Twig\Extensions\IntlExtension:
+        tags: [twig.extension]
+
+    Gedmo\Sluggable\SluggableListener:
+        alias: stof_doctrine_extensions.listener.sluggable

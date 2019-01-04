@@ -1,0 +1,27 @@
+root:
+    path: '/'
+    defaults: { _controller: 'App\Controller\DefaultController::rootAction' }
+
+facebook_login:
+    path: '/login/check-facebook'
+
+google_login:
+    path: '/login/check-google'
+
+logout:
+    path: '/logout'
+
+sitemap:
+    path: '/sitemap.xml'
+    defaults: { _controller: 'App\Controller\SitemapController::indexAction', _format: 'xml' }
+
+sitemap_image:
+    path: '/sitemap_image.xml'
+    defaults: { _controller: 'App\Controller\SitemapController::imageAction', _format: 'xml' }
+
+web:
+    resource: '../../src/Controller/'
+    type: 'annotation'
+    prefix: '/{_locale}'
+    requirements:
+        _locale: '%app_locales%'
