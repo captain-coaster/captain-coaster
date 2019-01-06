@@ -77,7 +77,6 @@ class ImageProcessCommand extends ContainerAwareCommand
             $arguments = [
                 'command' => 'liip:imagine:cache:resolve',
                 'paths' => [$path],
-                '--force' => true,
             ];
 
             $output->writeln('Generating cache for '.$image->getFilename());
@@ -85,6 +84,7 @@ class ImageProcessCommand extends ContainerAwareCommand
                 $command->run(new ArrayInput($arguments), $output);
             } catch (\Exception $e) {
                 $output->writeln('Unable to generate cache');
+                $output->writeln($e->getMessage());
             }
 
             $output->writeln('Image processed');
