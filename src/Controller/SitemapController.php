@@ -4,10 +4,10 @@ namespace App\Controller;
 
 use App\Service\SitemapService;
 use Psr\Cache\InvalidArgumentException;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-class SitemapController extends Controller
+class SitemapController extends AbstractController
 {
     /**
      * Create sitemap for pages

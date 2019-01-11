@@ -6,9 +6,8 @@ use App\Entity\User;
 use App\Form\Type\ContactType;
 use App\Service\DiscordService;
 use App\Service\StatService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
  * Class DefaultController
  * @package App\Controller
  */
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     /**
      * Root of application, redirect to browser language if defined
@@ -40,8 +39,7 @@ class DefaultController extends Controller
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Exception
-     * @Route("/", name="bdd_index")
-     * @Method({"GET"})
+     * @Route("/", name="bdd_index", methods={"GET"})
      */
     public function indexAction(Request $request, StatService $statService)
     {
@@ -89,8 +87,7 @@ class DefaultController extends Controller
      * @param \Swift_Mailer $mailer
      * @param DiscordService $discord
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @Route("/contact", name="default_contact")
-     * @Method({"GET", "POST"})
+     * @Route("/contact", name="default_contact", methods={"GET", "POST"})
      */
     public function contactAction(Request $request, \Swift_Mailer $mailer, DiscordService $discord)
     {
@@ -137,8 +134,7 @@ class DefaultController extends Controller
 
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/terms", name="default_terms")
-     * @Method({"GET"})
+     * @Route("/terms", name="default_terms", methods={"GET"})
      */
     public function termsAction()
     {

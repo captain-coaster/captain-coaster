@@ -4,24 +4,22 @@ namespace App\Controller;
 
 use App\Entity\Notification;
 use App\Service\NotificationService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * Class NotificationController
  * @package App\Controller
  * @Route("/notifications")
  */
-class NotificationController extends Controller
+class NotificationController extends AbstractController
 {
     /**
      * Read a notification
      * @param Notification $notification
      * @param NotificationService $notifService
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @Route("/{id}/read", name="notification_read")
-     * @Method({"GET"})
+     * @Route("/{id}/read", name="notification_read", methods={"GET"})
      */
     public function readAction(Notification $notification, NotificationService $notifService)
     {

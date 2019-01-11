@@ -2,9 +2,8 @@
 
 namespace App\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -12,13 +11,12 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Route("/tops")
  */
-class TopController extends Controller
+class TopController extends AbstractController
 {
     /**
      * Displays all tops
      *
-     * @Route("/", name="top_list")
-     * @Method({"GET"})
+     * @Route("/", name="top_list", methods={"GET"})
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response

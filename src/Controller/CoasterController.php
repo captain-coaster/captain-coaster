@@ -6,10 +6,9 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Form\Type\ImageUploadType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -19,13 +18,12 @@ use Symfony\Component\Translation\TranslatorInterface;
  * @package App\Controller
  * @Route("/coasters")
  */
-class CoasterController extends Controller
+class CoasterController extends AbstractController
 {
     /**
      * Redirects to index
      *
-     * @Route("/", name="bdd_index_coaster")
-     * @Method({"GET"})
+     * @Route("/", name="bdd_index_coaster", methods={"GET"})
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -37,8 +35,7 @@ class CoasterController extends Controller
     /**
      * Uploads an image for a coaster
      *
-     * @Route("/{slug}/images/upload", name="coaster_images_upload")
-     * @Method({"GET", "POST"})
+     * @Route("/{slug}/images/upload", name="coaster_images_upload", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
@@ -85,10 +82,10 @@ class CoasterController extends Controller
      * @Route(
      *     "/{slug}/images/ajax/{imageNumber}",
      *     name="coaster_images_ajax_load",
+     *     methods={"GET"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"GET"})
      *
      * @param EntityManagerInterface $em
      * @param Coaster $coaster
@@ -124,8 +121,7 @@ class CoasterController extends Controller
      *
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"})
-     * @Method({"GET"})
+     * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function showRankingAction($page = 1)
     {
@@ -135,8 +131,7 @@ class CoasterController extends Controller
     /**
      * Show details of a coaster
      *
-     * @Route("/{slug}", name="bdd_show_coaster", options = {"expose" = true})
-     * @Method({"GET"})
+     * @Route("/{slug}", name="bdd_show_coaster", methods={"GET"}, options = {"expose" = true})
      * @param Request $request
      * @param Coaster $coaster
      * @return \Symfony\Component\HttpFoundation\Response

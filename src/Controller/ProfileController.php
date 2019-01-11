@@ -6,22 +6,20 @@ use App\Entity\User;
 use App\Form\Type\ProfileType;
 use App\Service\BannerMaker;
 use App\Service\StatService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
-class ProfileController extends Controller
+class ProfileController extends AbstractController
 {
     /**
      * @param Request $request
      * @param BannerMaker $bannerMaker
      * @param StatService $statService
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/me", name="me")
-     * @Method({"GET", "POST"})
+     * @Route("/me", name="me", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -66,8 +64,7 @@ class ProfileController extends Controller
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/me/ratings/{page}", name="me_ratings", requirements={"page" = "\d+"})
-     * @Method({"GET"})
+     * @Route("/me/ratings/{page}", name="me_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function ratingsAction($page = 1)

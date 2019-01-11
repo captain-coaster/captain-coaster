@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Service\SearchService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,13 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Route("/search")
  */
-class SearchController extends Controller
+class SearchController extends AbstractController
 {
     CONST CACHE_AUTOCOMPLETE = 'main_autocomplete';
 
     /**
-     * @Route("/", name="search_index")
-     * @Method({"GET"})
+     * @Route("/", name="search_index", methods={"GET"})
      */
     public function indexAction()
     {
@@ -38,10 +36,10 @@ class SearchController extends Controller
      * @Route(
      *     "/coasters",
      *     name="search_coasters_ajax",
+     *     methods={"GET"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"GET"})
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -69,10 +67,10 @@ class SearchController extends Controller
      * @Route(
      *     "/main.json",
      *     name="ajax_main_search",
+     *     methods={"GET"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"GET"})
      */
     public function ajaxMainSearch(SearchService $searchService)
     {

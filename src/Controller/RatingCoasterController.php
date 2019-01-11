@@ -5,10 +5,9 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -17,7 +16,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * Class RatingCoasterController
  * @package App\Controller
  */
-class RatingCoasterController extends Controller
+class RatingCoasterController extends AbstractController
 {
     /**
      * Rate a coaster or edit a rating
@@ -31,10 +30,10 @@ class RatingCoasterController extends Controller
      * @Route(
      *     "/ratings/coasters/{id}/edit",
      *     name="rating_edit",
+     *     methods={"POST"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"POST"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function editAction(
@@ -76,14 +75,14 @@ class RatingCoasterController extends Controller
      *
      * @param Coaster $coaster
      * @return JsonResponse
-     * 
+     *
      * @Route(
      *     "/ratings/coasters/{id}",
      *     name="rating_delete",
+     *     methods={"DELETE"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"DELETE"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function deleteAction(Coaster $coaster)

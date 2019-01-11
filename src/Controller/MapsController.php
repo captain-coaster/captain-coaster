@@ -4,9 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Park;
 use App\Entity\User;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,13 +15,12 @@ use Symfony\Component\HttpFoundation\Response;
  * @package App\Controller
  * @Route("/map")
  */
-class MapsController extends Controller
+class MapsController extends AbstractController
 {
     /**
      * Map of all coasters, with filters
      *
-     * @Route("/", name="map_index")
-     * @Method({"GET"})
+     * @Route("/", name="map_index", methods={"GET"})
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -46,8 +44,7 @@ class MapsController extends Controller
      * @param User $user
      * @return Response
      *
-     * @Route("/users/{id}", name="map_user")
-     * @Method({"GET"})
+     * @Route("/users/{id}", name="map_user", methods={"GET"})
      */
     public function userMapAction(User $user)
     {
@@ -73,10 +70,10 @@ class MapsController extends Controller
      * @return JsonResponse
      * @Route("/markers",
      *     name="map_markers_ajax",
+     *     methods={"GET"},
      *     condition="request.isXmlHttpRequest()",
      *     options = {"expose" = true}
      * )
-     * @Method({"GET"})
      */
     public function markersAction(Request $request)
     {
@@ -91,10 +88,10 @@ class MapsController extends Controller
      * @return Response
      * @Route("/parks/{id}/coasters",
      *     name="map_coasters_ajax",
+     *     methods={"GET"},
      *     condition="request.isXmlHttpRequest()",
      *     options = {"expose" = true}
      *     )
-     * @Method({"GET"})
      */
     public function getCoastersAction(Request $request, Park $park)
     {

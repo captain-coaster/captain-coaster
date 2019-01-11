@@ -5,10 +5,9 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,13 +16,12 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Route("/reviews")
  */
-class ReviewController extends Controller
+class ReviewController extends AbstractController
 {
     /**
      * Show a list of reviews
      *
-     * @Route("/{page}", name="review_list", requirements={"page" = "\d+"})
-     * @Method({"GET"})
+     * @Route("/{page}", name="review_list", requirements={"page" = "\d+"}, methods={"GET"})
      *
      * @param Request $request
      * @param int $page
@@ -55,8 +53,7 @@ class ReviewController extends Controller
      * @param Request $request
      * @param Coaster $coaster
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/coasters/{id}/form", name="review_form")
-     * @Method({"GET", "POST"})
+     * @Route("/coasters/{id}/form", name="review_form", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function newAction(Request $request, Coaster $coaster)

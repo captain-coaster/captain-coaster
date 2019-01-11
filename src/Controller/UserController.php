@@ -5,9 +5,8 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -15,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Route("/users")
  */
-class UserController extends Controller
+class UserController extends AbstractController
 {
     /**
      * List all users
@@ -23,8 +22,7 @@ class UserController extends Controller
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/{page}", name="user_list", requirements={"page" = "\d+"})
-     * @Method({"GET"})
+     * @Route("/{page}", name="user_list", requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listAction($page = 1)
     {
@@ -46,8 +44,7 @@ class UserController extends Controller
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"})
-     * @Method({"GET"})
+     * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
     public function listRatingsAction(User $user, $page = 1)
     {
@@ -80,8 +77,7 @@ class UserController extends Controller
     /**
      * Show all user's lists
      *
-     * @Route("/{id}/lists", name="user_lists")
-     * @Method({"GET"})
+     * @Route("/{id}/lists", name="user_lists", methods={"GET"})
      *
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
@@ -105,12 +101,11 @@ class UserController extends Controller
     /**
      * Show all user's pictures
      *
-     * @Route("/{id}/pictures", name="user_pictures", requirements={"page" = "\d+"})
-     * @Method({"GET"})
+     * @Route("/{id}/pictures", name="user_pictures", requirements={"page" = "\d+"}, methods={"GET"})
      *
+     * @param Request $request
      * @param User $user
      * @param EntityManagerInterface $em
-     * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function picturesAction(Request $request, User $user, EntityManagerInterface $em)
@@ -162,8 +157,7 @@ class UserController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      *
-     * @Route("/{slug}", name="user_show", options={"expose" = true})
-     * @Method({"GET"})
+     * @Route("/{slug}", name="user_show", methods={"GET"}, options={"expose" = true})
      */
     public function showAction(User $user, StatService $statService)
     {
@@ -184,8 +178,7 @@ class UserController extends Controller
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/{id}/profile", name="user_profile")
-     * @Method({"GET"})
+     * @Route("/{id}/profile", name="user_profile", methods={"GET"})
      *
      * @deprecated
      */

@@ -9,10 +9,9 @@ use App\Form\Type\ListeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Route("/lists")
  */
-class ListeController extends Controller
+class ListeController extends AbstractController
 {
     /**
      * Displays all lists
@@ -31,8 +30,7 @@ class ListeController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/", name="liste_list")
-     * @Method({"GET"})
+     * @Route("/", name="liste_list", methods={"GET"})
      */
     public function listAction(Request $request)
     {
@@ -61,8 +59,7 @@ class ListeController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/new", name="liste_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="liste_new", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function newAction(Request $request)
@@ -99,8 +96,7 @@ class ListeController extends Controller
      * @param Liste $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/{id}/edit-details", name="liste_edit_details")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit-details", name="liste_edit_details", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function editDetailsAction(Request $request, Liste $liste)
@@ -133,8 +129,7 @@ class ListeController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/create", name="liste_create")
-     * @Method({"GET"}).
+     * @Route("/create", name="liste_create", methods={"GET"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function createAction()
@@ -156,12 +151,12 @@ class ListeController extends Controller
      * Edits a list
      *
      * @param Request $request
-     * @param Liste $liste
+     * @param Liste   $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/{id}/edit", name="liste_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="liste_edit", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
+     * @throws \Exception
      */
     public function editAction(Request $request, Liste $liste)
     {
@@ -208,8 +203,7 @@ class ListeController extends Controller
      *
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/me", name="liste_me")
-     * @Method({"GET"})
+     * @Route("/me", name="liste_me", methods={"GET"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function mainListAction()
@@ -234,8 +228,7 @@ class ListeController extends Controller
      * @param Liste $liste
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
-     * @Route("/{id}/delete", name="liste_delete")
-     * @Method({"GET"})
+     * @Route("/{id}/delete", name="liste_delete", methods={"GET"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function deleteAction(Liste $liste)
@@ -257,8 +250,7 @@ class ListeController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      *
-     * @Route("/{id}", name="liste_show")
-     * @Method({"GET"})
+     * @Route("/{id}", name="liste_show", methods={"GET"})
      */
     public function showAction(Liste $liste, EntityManagerInterface $em)
     {
@@ -286,10 +278,10 @@ class ListeController extends Controller
      * @Route(
      *     "/search/coasters.json",
      *     name="coaster_search_json",
+     *     methods={"GET"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"GET"})
      * @Security("is_granted('ROLE_USER')")
      */
     public function ajaxSearchAction(Request $request, EntityManagerInterface $em)

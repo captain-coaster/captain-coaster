@@ -5,21 +5,20 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ImageController extends Controller
+class ImageController extends AbstractController
 {
     /**
      * @Route(
      *     "/toggleLike/{id}",
      *     name="like_image_async",
+     *     methods={"GET"}),
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"GET"})
      * @param Image $image
      * @param EntityManagerInterface $em
      * @return JsonResponse

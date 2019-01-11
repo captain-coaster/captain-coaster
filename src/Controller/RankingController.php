@@ -10,9 +10,8 @@ use App\Entity\MaterialType;
 use App\Entity\Model;
 use App\Entity\SeatingType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,15 +20,14 @@ use Symfony\Component\HttpFoundation\Request;
  * @package App\Controller
  * @Route("/ranking")
  */
-class RankingController extends Controller
+class RankingController extends AbstractController
 {
     /**
      * Show ranking of best coasters
      *
      * @param EntityManagerInterface $em
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/", name="ranking_index")
-     * @Method({"GET"})
+     * @Route("/", name="ranking_index", methods={"GET"})
      * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Exception
      */
@@ -56,10 +54,10 @@ class RankingController extends Controller
      * @Route(
      *     "/coasters",
      *     name="ranking_search_async",
+     *     methods={"GET"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Method({"GET"})
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -80,6 +78,16 @@ class RankingController extends Controller
     }
 
     /**
+     * Learn more on the ranking
+     *
+     * @Route("/learn-more", name="ranking_learn_more", methods={"GET"})
+     */
+    public function learnMore()
+    {
+        return $this->render('Ranking/learn_more.html.twig');
+    }
+
+    /**
      * @param array $filters
      * @param int $page
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
@@ -97,17 +105,6 @@ class RankingController extends Controller
             $page,
             20
         );
-    }
-
-    /**
-     * Learn more on the ranking
-     *
-     * @Route("/learn-more", name="ranking_learn_more")
-     * @Method({"GET"})
-     */
-    public function learnMore()
-    {
-        return $this->render('Ranking/learn_more.html.twig');
     }
 
     /**
