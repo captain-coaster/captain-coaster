@@ -2,12 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
+use App\Entity\LikedImage;
+use App\Entity\Liste;
+use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class UserController
@@ -19,19 +24,19 @@ class UserController extends AbstractController
     /**
      * List all users
      *
+     * @param PaginatorInterface $paginator
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/{page}", name="user_list", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listAction($page = 1)
+    public function listAction(PaginatorInterface $paginator, $page = 1)
     {
         $users = $this
             ->getDoctrine()
-            ->getRepository('App:User')
+            ->getRepository(User::class)
             ->getUserList();
 
-        $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate($users, $page, 21);
 
         return $this->render('User/list.html.twig', ['users' => $pagination]);
@@ -40,20 +45,20 @@ class UserController extends AbstractController
     /**
      * Show all user's ratings
      *
+     * @param PaginatorInterface $paginator
      * @param User $user
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listRatingsAction(User $user, $page = 1)
+    public function listRatingsAction(PaginatorInterface $paginator, User $user, $page = 1)
     {
         $query = $this
-            ->get('doctrine.orm.entity_manager')
-            ->getRepository('App:RiddenCoaster')
+            ->getDoctrine()
+            ->getRepository(RiddenCoaster::class)
             ->getUserRatings($user);
 
-        $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $page,
@@ -85,8 +90,8 @@ class UserController extends AbstractController
     public function listsAction(User $user)
     {
         $listes = $this
-            ->get('doctrine.orm.entity_manager')
-            ->getRepository('App:Liste')
+            ->getDoctrine()
+            ->getRepository(Liste::class)
             ->findAllByUser($user);
 
         return $this->render(
@@ -106,16 +111,20 @@ class UserController extends AbstractController
      * @param Request $request
      * @param User $user
      * @param EntityManagerInterface $em
+     * @param PaginatorInterface $paginator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function picturesAction(Request $request, User $user, EntityManagerInterface $em)
-    {
+    public function picturesAction(
+        Request $request,
+        User $user,
+        EntityManagerInterface $em,
+        PaginatorInterface $paginator
+    ) {
         $page = $request->get('page', 1);
         $query = $em
-            ->getRepository('App:Image')
+            ->getRepository(Image::class)
             ->findUserImages($user);
 
-        $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $page,
@@ -134,7 +143,7 @@ class UserController extends AbstractController
                 'App\Doctrine\Hydrator\ColumnHydrator'
             );
             $userLikes = $em
-                ->getRepository('App:LikedImage')
+                ->getRepository(LikedImage::class)
                 ->findUserLikes($loggedInUser)
                 ->getResult('COLUMN_HYDRATOR');
         }
@@ -155,8 +164,6 @@ class UserController extends AbstractController
      * @param User $user
      * @param StatService $statService
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     *
      * @Route("/{slug}", name="user_show", methods={"GET"}, options={"expose" = true})
      */
     public function showAction(User $user, StatService $statService)

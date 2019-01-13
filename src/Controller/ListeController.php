@@ -9,6 +9,7 @@ use App\Form\Type\ListeType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NoResultException;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,16 +29,16 @@ class ListeController extends AbstractController
      * Displays all lists
      *
      * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/", name="liste_list", methods={"GET"})
      */
-    public function listAction(Request $request)
+    public function listAction(Request $request, PaginatorInterface $paginator)
     {
         $em = $this->getDoctrine()->getManager();
-        $query = $em->getRepository('App:Liste')->findAllCustomLists();
+        $query = $em->getRepository(Liste::class)->findAllCustomLists();
 
-        $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $request->get('page', 1),

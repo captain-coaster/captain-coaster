@@ -6,10 +6,11 @@ use App\Entity\User;
 use App\Form\Type\ContactType;
 use App\Service\DiscordService;
 use App\Service\StatService;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class DefaultController
@@ -86,11 +87,16 @@ class DefaultController extends AbstractController
      * @param Request $request
      * @param \Swift_Mailer $mailer
      * @param DiscordService $discord
+     * @param TranslatorInterface $translator
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @Route("/contact", name="default_contact", methods={"GET", "POST"})
      */
-    public function contactAction(Request $request, \Swift_Mailer $mailer, DiscordService $discord)
-    {
+    public function contactAction(
+        Request $request,
+        \Swift_Mailer $mailer,
+        DiscordService $discord,
+        TranslatorInterface $translator
+    ) {
         /** @var Form $form */
         $form = $this->createForm(ContactType::class, null);
         $form->handleRequest($request);
@@ -98,7 +104,7 @@ class DefaultController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $message = (new \Swift_Message($this->get('translator')->trans('contact.email.title')))
+            $message = (new \Swift_Message($translator->trans('contact.email.title')))
                 ->setFrom($this->getParameter('app_mail_from'), $this->getParameter('app_mail_from_name'))
                 ->setTo($this->getParameter('app_contact_mail_to'))
                 ->setReplyTo($data['email'])
@@ -118,7 +124,7 @@ class DefaultController extends AbstractController
 
             $this->addFlash(
                 'success',
-                $this->get('translator')->trans('contact.flash.success', ['%name%' => $data['name']])
+                $translator->trans('contact.flash.success', ['%name%' => $data['name']])
             );
 
             return $this->redirectToRoute('default_contact');

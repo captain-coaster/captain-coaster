@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,17 +25,17 @@ class ReviewController extends AbstractController
      * @Route("/{page}", name="review_list", requirements={"page" = "\d+"}, methods={"GET"})
      *
      * @param Request $request
+     * @param PaginatorInterface $paginator
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function listAction(Request $request, $page = 1)
+    public function listAction(Request $request, PaginatorInterface $paginator, $page = 1)
     {
         $query = $this->getDoctrine()
-            ->getRepository('App:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->findAll($request->getLocale());
 
-        $paginator = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
             $page,

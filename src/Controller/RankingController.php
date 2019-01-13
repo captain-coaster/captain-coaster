@@ -8,12 +8,14 @@ use App\Entity\Country;
 use App\Entity\Manufacturer;
 use App\Entity\MaterialType;
 use App\Entity\Model;
+use App\Entity\Ranking;
 use App\Entity\SeatingType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class RankingController
@@ -22,6 +24,20 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RankingController extends AbstractController
 {
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    /**
+     * RankingController constructor.
+     * @param PaginatorInterface $paginator
+     */
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
+
     /**
      * Show ranking of best coasters
      *
@@ -95,12 +111,10 @@ class RankingController extends AbstractController
     private function getCoasters($filters = [], $page = 1)
     {
         $query = $this->getDoctrine()
-            ->getRepository('App:Ranking')
+            ->getRepository(Ranking::class)
             ->findCoastersRanked($filters);
 
-        $paginator = $this->get('knp_paginator');
-
-        return $paginator->paginate(
+        return $this->paginator->paginate(
             $query,
             $page,
             20

@@ -20,6 +20,7 @@
 ###< symfony/web-server-bundle ###
 
 /public/images/banners/*
+!/public/images/banners/.gitkeep
 /public/images/coasters
 /.idea/
 /node_modules

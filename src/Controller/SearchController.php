@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Coaster;
 use App\Service\SearchService;
-use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class SearchController
@@ -92,17 +94,16 @@ class SearchController extends AbstractController
     }
 
     /**
+     * @param PaginatorInterface $paginator
      * @param array $filters
      * @param int $page
-     * @return array
+     * @return \Knp\Component\Pager\Pagination\PaginationInterface
      */
-    private function getCoasters($filters = [], $page = 1)
+    private function getCoasters(PaginatorInterface $paginator, $filters = [], $page = 1)
     {
         $query = $this->getDoctrine()
-            ->getRepository('App:Coaster')
+            ->getRepository(Coaster::class)
             ->getSearchCoasters($filters);
-
-        $paginator = $this->get('knp_paginator');
 
         return $paginator->paginate(
             $query,
