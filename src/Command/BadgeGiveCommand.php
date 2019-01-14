@@ -4,13 +4,14 @@ namespace App\Command;
 
 use App\Entity\User;
 use App\Service\BadgeService;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class BadgeGiveCommand extends ContainerAwareCommand
+class BadgeGiveCommand extends Command
 {
     /**
      * @var BadgeService
@@ -18,14 +19,20 @@ class BadgeGiveCommand extends ContainerAwareCommand
     private $badgeService;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
      * BadgeGiveCommand constructor.
      * @param BadgeService $badgeService
+     * @param EntityManagerInterface $em
      */
-    public function __construct(BadgeService $badgeService)
+    public function __construct(BadgeService $badgeService, EntityManagerInterface $em)
     {
         parent::__construct();
-
         $this->badgeService = $badgeService;
+        $this->em = $em;
     }
 
     protected function configure()
@@ -52,16 +59,14 @@ class BadgeGiveCommand extends ContainerAwareCommand
         $userId = $input->getArgument('user');
 
         if (!is_null($userId)) {
-            $users[] = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('App:User')
-                ->findOneBy(['id' => $userId]);
+            $users[] = $this->em->getRepository(User::class)->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->getContainer()->get('doctrine.orm.entity_manager')->getRepository('App:User')
-                ->getUsersWithRecentRatingOrTopUpdate();
+            $users = $this->em->getRepository(User::class)->getUsersWithRecentRatingOrTopUpdate();
         }
 
         /** @var User $user */
         foreach ($users as $user) {
-            $output->writeln('Checking ' . $user->getUsername() . '...');
+            $output->writeln("Checking $user...");
             $this->badgeService->give($user);
         }
 

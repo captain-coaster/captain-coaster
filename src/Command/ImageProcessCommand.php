@@ -2,16 +2,17 @@
 
 namespace App\Command;
 
+use App\Entity\Image;
 use App\Service\DiscordService;
 use App\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class ImageProcessCommand extends ContainerAwareCommand
+class ImageProcessCommand extends Command
 {
     /**
      * @var EntityManagerInterface
@@ -56,7 +57,7 @@ class ImageProcessCommand extends ContainerAwareCommand
         $stopwatch->start('process-image');
         $output->writeln('Start processing image');
 
-        $images = $this->em->getRepository('App:Image')->findBy(
+        $images = $this->em->getRepository(Image::class)->findBy(
             ['optimized' => false],
             ['updatedAt' => 'asc'],
             10

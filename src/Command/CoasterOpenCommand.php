@@ -6,11 +6,11 @@ use App\Entity\Coaster;
 use App\Entity\Status;
 use App\Service\DiscordService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CoasterOpenCommand extends ContainerAwareCommand
+class CoasterOpenCommand extends Command
 {
     /**
      * @var EntityManagerInterface
@@ -45,6 +45,7 @@ class CoasterOpenCommand extends ContainerAwareCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
+     * @throws \Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -56,13 +57,13 @@ class CoasterOpenCommand extends ContainerAwareCommand
             return;
         }
 
-        $openingCoasters = $this->em->getRepository('App:Coaster')->findBy(
+        $openingCoasters = $this->em->getRepository(Coaster::class)->findBy(
             [
                 'openingDate' => $today,
             ]
         );
 
-        $operatingStatus = $this->em->getRepository('App:Status')->findOneBy(
+        $operatingStatus = $this->em->getRepository(Status::class)->findOneBy(
             ['name' => Status::OPERATING]
         );
 

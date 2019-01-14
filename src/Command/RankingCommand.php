@@ -4,13 +4,13 @@ namespace App\Command;
 
 use App\Entity\Coaster;
 use App\Service\RankingService;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class RankingCommand extends ContainerAwareCommand
+class RankingCommand extends Command
 {
     /**
      * @var RankingService
@@ -24,7 +24,6 @@ class RankingCommand extends ContainerAwareCommand
     public function __construct(RankingService $rankingService)
     {
         parent::__construct();
-
         $this->rankingService = $rankingService;
     }
 

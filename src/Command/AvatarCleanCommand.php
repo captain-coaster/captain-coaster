@@ -4,13 +4,16 @@ namespace App\Command;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Http\Client\HttpClient;
+use Http\Message\MessageFactory;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 
-class AvatarCleanCommand extends ContainerAwareCommand
+class AvatarCleanCommand extends Command
 {
-    const API_FB_PICTURE = 'https://graph.facebook.com/v2.12/%d/picture';
+    const API_FB_PICTURE = 'https://graph.facebook.com/v3.2/%d/picture';
 
     /**
      * @var EntityManagerInterface
@@ -18,14 +21,27 @@ class AvatarCleanCommand extends ContainerAwareCommand
     private $em;
 
     /**
+     * @var HttpClient
+     */
+    protected $client;
+
+    /**
+     * @var MessageFactory
+     */
+    protected $factory;
+
+    /**
      * AvatarCleanCommand constructor.
      * @param EntityManagerInterface $em
+     * @param HttpClient $client
+     * @param MessageFactory $factory
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, HttpClient $client, MessageFactory $factory)
     {
         parent::__construct();
-
         $this->em = $em;
+        $this->client = $client;
+        $this->factory = $factory;
     }
 
     protected function configure()
@@ -43,26 +59,32 @@ class AvatarCleanCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('avatar');
+        $output->writeln('Cleaning avatars...');
+
         $users = $this->em
             ->getRepository('App:User')
             ->findAll();
 
         /** @var User $user */
         foreach ($users as $user) {
-            $this->updateFacebookAvatar($user);
-            $this->removeDeadAvatar($user);
+            $this->updateFacebookAvatar($user, $output);
+            $this->removeDeadAvatar($user, $output);
         }
 
         $this->em->flush();
 
         $output->writeln('End.');
+        $output->writeln((string)$stopwatch->stop('avatar'));
     }
 
     /**
      * @param User $user
+     * @param OutputInterface $output
      * @throws \Http\Client\Exception
      */
-    private function updateFacebookAvatar(User $user)
+    private function updateFacebookAvatar(User $user, OutputInterface $output)
     {
         if (is_null($user->getFacebookId())) {
             return;
@@ -70,18 +92,19 @@ class AvatarCleanCommand extends ContainerAwareCommand
 
         try {
             $request = $this
-                ->getContainer()
-                ->get('httplug.message_factory')
+                ->factory
                 ->createRequest('GET', sprintf(self::API_FB_PICTURE, $user->getFacebookId()));
             $response = $this
-                ->getContainer()
-                ->get('httplug.client.avatar')
+                ->client
                 ->sendRequest($request);
 
+
             if ($response->getStatusCode() === 302) {
-                if (count($response->getHeader('Location')) === 1) {
+                if ($response->hasHeader('Location')) {
                     $user->setProfilePicture($response->getHeader('Location')[0]);
                     $this->em->persist($user);
+
+                    $output->writeln("Updating $user");
                 }
             }
         } catch (\Exception $e) {
@@ -91,25 +114,28 @@ class AvatarCleanCommand extends ContainerAwareCommand
 
     /**
      * @param User $user
+     * @param OutputInterface $output
      * @throws \Http\Client\Exception
      */
-    private function removeDeadAvatar(User $user)
+    private function removeDeadAvatar(User $user, OutputInterface $output)
     {
         if (is_null($user->getProfilePicture())) {
             return;
         }
 
         try {
-            $request = $this->getContainer()
-                ->get('httplug.message_factory')
+            $request = $this
+                ->factory
                 ->createRequest('GET', $user->getProfilePicture());
-            $response = $this->getContainer()
-                ->get('httplug.client.avatar')
+            $response = $this
+                ->client
                 ->sendRequest($request);
 
             if ($response->getStatusCode() !== 200) {
                 $user->setProfilePicture(null);
                 $this->em->persist($user);
+
+                $output->writeln("Removing avatar for $user");
             }
         } catch (\Exception $e) {
             return;

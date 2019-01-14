@@ -2,22 +2,31 @@
 
 namespace App\Command;
 
+use App\Entity\User;
 use App\Service\BannerMaker;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class BannerMakerCommand extends ContainerAwareCommand
+class BannerMakerCommand extends Command
 {
-
+    /**
+     * @var BannerMaker
+     */
     private $bannerMakerService;
 
-    public function __construct(BannerMaker $bannerMakerService)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    public function __construct(BannerMaker $bannerMakerService, EntityManagerInterface $em)
     {
         parent::__construct();
-
         $this->bannerMakerService = $bannerMakerService;
+        $this->em = $em;
     }
 
     protected function configure()
@@ -40,15 +49,9 @@ class BannerMakerCommand extends ContainerAwareCommand
         $userId = $input->getArgument('user');
 
         if (!is_null($userId)) {
-            $users[] = $this->getContainer()
-                ->get('doctrine.orm.entity_manager')
-                ->getRepository('App:User')
-                ->findOneBy(['id' => $userId]);
+            $users[] = $this->em->getRepository(User::class)->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->getContainer()
-                ->get('doctrine.orm.entity_manager')
-                ->getRepository('App:User')
-                ->findAll();
+            $users = $this->em->getRepository(User::class)->findAll();
         }
 
         foreach ($users as $user) {

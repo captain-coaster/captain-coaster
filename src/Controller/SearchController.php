@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Coaster;
+use App\Entity\Manufacturer;
 use App\Service\SearchService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,6 +20,20 @@ use Symfony\Component\Routing\Annotation\Route;
 class SearchController extends AbstractController
 {
     CONST CACHE_AUTOCOMPLETE = 'main_autocomplete';
+
+    /**
+     * @var PaginatorInterface
+     */
+    protected $paginator;
+
+    /**
+     * RankingController constructor.
+     * @param PaginatorInterface $paginator
+     */
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
 
     /**
      * @Route("/", name="search_index", methods={"GET"})
@@ -94,18 +109,17 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @param PaginatorInterface $paginator
      * @param array $filters
      * @param int $page
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
      */
-    private function getCoasters(PaginatorInterface $paginator, $filters = [], $page = 1)
+    private function getCoasters($filters = [], $page = 1)
     {
         $query = $this->getDoctrine()
             ->getRepository(Coaster::class)
             ->getSearchCoasters($filters);
 
-        return $paginator->paginate(
+        return $this->paginator->paginate(
             $query,
             $page,
             20,
@@ -123,11 +137,11 @@ class SearchController extends AbstractController
         $filtersForm = [];
 
         $filtersForm['manufacturer'] = $this->getDoctrine()
-            ->getRepository('App:Manufacturer')
+            ->getRepository(Manufacturer::class)
             ->findBy([], ["name" => "asc"]);
 
         $filtersForm['openingDate'] = $this->getDoctrine()
-            ->getRepository('App:Coaster')
+            ->getRepository(Coaster::class)
             ->getDistinctOpeningYears();
 
         return $filtersForm;

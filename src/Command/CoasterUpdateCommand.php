@@ -4,12 +4,12 @@ namespace App\Command;
 
 use App\Service\RatingService;
 use App\Service\TopService;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-class CoasterUpdateCommand extends ContainerAwareCommand
+class CoasterUpdateCommand extends Command
 {
     /**
      * @var RatingService
@@ -30,7 +30,6 @@ class CoasterUpdateCommand extends ContainerAwareCommand
     public function __construct(RatingService $ratingService, TopService $topService)
     {
         parent::__construct();
-
         $this->ratingService = $ratingService;
         $this->topService = $topService;
     }

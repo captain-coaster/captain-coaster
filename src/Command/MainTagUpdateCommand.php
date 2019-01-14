@@ -2,12 +2,14 @@
 
 namespace App\Command;
 
+use App\Entity\Coaster;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Stopwatch\Stopwatch;
 
-class MainTagUpdateCommand extends ContainerAwareCommand
+class MainTagUpdateCommand extends Command
 {
     /**
      * @var EntityManagerInterface
@@ -42,8 +44,12 @@ class MainTagUpdateCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $stopwatch = new Stopwatch();
+        $stopwatch->start('main-tag');
+        $output->writeln('Start updating main tags');
+
         $conn = $this->em->getConnection();
-        $coasters = $this->em->getRepository('App:Coaster')->findAll();
+        $coasters = $this->em->getRepository(Coaster::class)->findAll();
 
         $sql = 'truncate table main_tag';
         $stmt = $conn->prepare($sql);
@@ -52,6 +58,7 @@ class MainTagUpdateCommand extends ContainerAwareCommand
         foreach ($coasters as $coaster) {
             $conn = $this->em->getConnection();
 
+            /** @noinspection SqlDialectInspection */
             $sql = 'SELECT t.id, count(*) AS nb FROM ridden_coaster r 
             INNER JOIN ridden_coaster_con rc ON rc.ridden_coaster_id = r.id
             INNER JOIN tag t ON t.id = rc.tag_id
@@ -81,5 +88,7 @@ class MainTagUpdateCommand extends ContainerAwareCommand
                 $rank++;
             }
         }
+
+        $output->writeln((string)$stopwatch->stop('main-tag'));
     }
 }

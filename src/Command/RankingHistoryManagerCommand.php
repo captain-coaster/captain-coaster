@@ -7,13 +7,13 @@ use App\Entity\Ranking;
 use App\Entity\RankingHistory;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class RankingHistoryManagerCommand extends ContainerAwareCommand
+class RankingHistoryManagerCommand extends Command
 {
     /**
      * @var EntityManagerInterface
@@ -28,7 +28,7 @@ class RankingHistoryManagerCommand extends ContainerAwareCommand
     /**
      * RankingHistoryManagerCommand constructor.
      * @param EntityManagerInterface $em
-     * @param LoggerInterface        $logger
+     * @param LoggerInterface $logger
      */
     public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
     {
@@ -50,13 +50,13 @@ class RankingHistoryManagerCommand extends ContainerAwareCommand
     {
         $output->writeln('Start ranking history.');
 
-        $currentRanking = $this->em->getRepository('App:Ranking')->findCurrent();
+        $currentRanking = $this->em->getRepository(Ranking::class)->findCurrent();
         if (!$currentRanking instanceof Ranking) {
             $this->logger->critical('Cannot find current ranking!');
         }
 
         /** @var Coaster $coaster */
-        foreach ($this->em->getRepository('App:Ranking')->findCoastersRanked()->getResult() as $coaster) {
+        foreach ($this->em->getRepository(Ranking::class)->findCoastersRanked()->getResult() as $coaster) {
             $rankedCoaster = new RankingHistory();
             $rankedCoaster->setCoaster($coaster);
             $rankedCoaster->setRank($coaster->getRank());
