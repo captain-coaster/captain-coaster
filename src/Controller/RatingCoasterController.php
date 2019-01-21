@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -35,6 +36,7 @@ class RatingCoasterController extends AbstractController
      *     condition="request.isXmlHttpRequest()"
      * )
      * @Security("is_granted('ROLE_USER')")
+     * @throws \Exception
      */
     public function editAction(
         Request $request,
@@ -44,6 +46,7 @@ class RatingCoasterController extends AbstractController
     ) {
         $this->denyAccessUnlessGranted('rate', $coaster);
 
+        /** @var User $user */
         $user = $this->getUser();
 
         $rating = $em->getRepository('App:RiddenCoaster')->findOneBy(
@@ -54,6 +57,10 @@ class RatingCoasterController extends AbstractController
             $rating = new RiddenCoaster();
             $rating->setUser($user);
             $rating->setCoaster($coaster);
+
+            if($user->isAddTodayDateWhenRating()) {
+                $rating->setRiddenAt(new \DateTime());
+            }
         }
 
         $rating->setValue($request->request->get('value'));

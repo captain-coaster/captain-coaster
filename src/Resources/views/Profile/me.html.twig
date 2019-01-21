@@ -101,6 +101,10 @@
               {{ form_label(form.homePark) }}
               {{ form_widget(form.homePark, {'attr': {'class': 'form-control'}}) }}
             </div>
+            <div class="form-group">
+              {{ form_widget(form.addTodayDateWhenRating) }}
+              {{ form_label(form.addTodayDateWhenRating) }}
+            </div>
             <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
               <b><i class="icon-circle-right2"></i></b>
               {{ 'me.form.save'|trans }}

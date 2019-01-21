@@ -133,10 +133,7 @@ class User extends BaseUser
     /**
      * @var bool
      *
-     * @ORM\Column(
-     *     type="boolean",
-     *     options={"default": 1}
-     * )
+     * @ORM\Column(type="boolean", options={"default": 1})
      */
     private $emailNotification = 1;
 
@@ -161,6 +158,15 @@ class User extends BaseUser
      * @ORM\Column(type="string", unique=true, nullable=true)
      */
     private $apiKey;
+
+    /**
+     * Auto add today's date when I rate a coaster
+     *
+     * @var bool
+     *
+     * @ORM\Column(type="boolean", options={"default": 0})
+     */
+    private $addTodayDateWhenRating;
 
     /**
      * User constructor.
@@ -669,5 +675,24 @@ class User extends BaseUser
     public function getImages(): ?Collection
     {
         return $this->images;
+    }
+
+    /**
+     * @param bool $addTodayDateWhenRating
+     * @return User
+     */
+    public function setAddTodayDateWhenRating(bool $addTodayDateWhenRating): User
+    {
+        $this->addTodayDateWhenRating = $addTodayDateWhenRating;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAddTodayDateWhenRating(): bool
+    {
+        return $this->addTodayDateWhenRating;
     }
 }

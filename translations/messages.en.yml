@@ -154,6 +154,8 @@ me:
         homePark:
             label: 'My home park'
             placeholder: 'Choose one'
+        addTodayDateWhenRating:
+            label: 'Add today''s date on a new rating'
         save: 'Save'
     badge: 'Badges'
     banner:

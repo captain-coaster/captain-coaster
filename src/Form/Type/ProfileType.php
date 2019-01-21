@@ -7,6 +7,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,11 +25,7 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $completeName = sprintf('%s %s', $options['firstname'], $options['lastname']);
-        $partialName = sprintf(
-            '%s %s.',
-            $options['firstname'],
-            substr($options['lastname'], 0, 1)
-        );
+        $partialName = sprintf('%s %s.', $options['firstname'], substr($options['lastname'], 0, 1));
         $locales = $options['locales'];
 
         $builder
@@ -77,6 +74,14 @@ class ProfileType extends AbstractType
                         return $er->createQueryBuilder('p')
                             ->orderBy('p.name', 'ASC');
                     },
+                ]
+            )
+            ->add(
+                'addTodayDateWhenRating',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'label' => 'me.form.addTodayDateWhenRating.label'
                 ]
             );
     }
