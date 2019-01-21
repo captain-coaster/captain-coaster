@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,18 +20,14 @@ class ProfileController extends AbstractController
 {
     /**
      * @param Request $request
-     * @param BannerMaker $bannerMaker
      * @param StatService $statService
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/me", name="me", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function meAction(Request $request, BannerMaker $bannerMaker, StatService $statService)
+    public function meAction(Request $request, StatService $statService)
     {
         $user = $this->getUser();
-
-        // @todo async
-        $bannerMaker->makeBanner($user);
 
         /** @var Form $form */
         $form = $this->createForm(
@@ -96,6 +93,29 @@ class ProfileController extends AbstractController
             [
                 'ratings' => $ratings,
             ]
+        );
+    }
+
+    /**
+     * @Route(
+     *     "/banner",
+     *     name="profile_banner",
+     *     methods={"GET"},
+     *     options = {"expose" = true},
+     *     condition="request.isXmlHttpRequest()"
+     * )
+     * @Security("is_granted('ROLE_USER')")
+     *
+     * @param BannerMaker $bannerMaker
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getBanner(BannerMaker $bannerMaker)
+    {
+        $user = $this->getUser();
+        $bannerMaker->makeBanner($user);
+
+        return $this->render(
+            'Profile/banner.html.twig', ['user' => $user]
         );
     }
 }

@@ -6,6 +6,43 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
+  <style>
+    .lds-ripple {
+      display: inline-block;
+      position: relative;
+      width: 64px;
+      height: 64px;
+    }
+
+    .lds-ripple div {
+      position: absolute;
+      border: 4px solid #000;
+      opacity: 1;
+      border-radius: 50%;
+      animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    .lds-ripple div:nth-child(2) {
+      animation-delay: -0.5s;
+    }
+
+    @keyframes lds-ripple {
+      0% {
+        top: 28px;
+        left: 28px;
+        width: 0;
+        height: 0;
+        opacity: 1;
+      }
+      100% {
+        top: -1px;
+        left: -1px;
+        width: 58px;
+        height: 58px;
+        opacity: 0;
+      }
+    }
+  </style>
   <div class="row">
     <div class="col-sm-3">
       <div class="row">
@@ -93,26 +130,12 @@
                 {{ 'me.banner.title'|trans }}
                 <small class="display-block">{{ 'me.banner.text'|trans }}</small>
               </h4>
-              <div class="text-center content-group">
-                <img src="{{ asset('images/banners/' ~ user.id ~ '.png') }}" class="img-responsive"/>
-              </div>
-              <div class="col-sm-12 text-right">
-                <ul class="list-inline no-margin-bottom">
-                  <li>
-                    {% set bbcode = '[url='~ absolute_url(path('user_show', {'slug': user.slug})) ~'][img]'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'[/img][/url]' %}
-                    {% set htmlcode = '<a href="'~ absolute_url(path('user_show', {'slug': user.slug})) ~'"><img src="'~ absolute_url(asset('images/banners/' ~ user.id ~ '.png')) ~'"/></a>' %}
-                    <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
-                      <i class="icon-copy position-left"></i>
-                      {{ 'me.banner.getbbcode'|trans }}
-                    </a>
-                  </li>
-                  <li>
-                    <a onclick="copy(this);" class="btn btn-link" data-copy="{{ htmlcode }}">
-                      <i class="icon-copy2 position-left"></i>
-                      {{ 'me.banner.gethtml'|trans }}
-                    </a>
-                  </li>
-                </ul>
+              <div id="my-banner" class="text-center content-group">
+                {# loader css #}
+                <div class="lds-ripple">
+                  <div></div>
+                  <div></div>
+                </div>
               </div>
             </div>
           </div>
@@ -144,13 +167,14 @@
 
 {% block javascripts %}
   <script type="application/javascript">
-    function copy(element) {
-      const el = document.createElement('textarea');
-      el.value = element.dataset.copy;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-    }
+      function loadBanner() {
+          $.ajax({
+              url: Routing.generate('profile_banner', {'_locale': '{{ app.request.locale }}'}),
+              type: 'GET'
+          }).done(function (data) {
+              $('#my-banner').html(data);
+          });
+      }
+      loadBanner();
   </script>
 {% endblock %}
