@@ -25,8 +25,8 @@
                 <h3 class="no-margin text-semibold text-right" style="color: {{ helper.ratingColor(coaster.score) }};">
                   {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
                 </h3>
-                {# @todo optimize this #}
-                {% set page = (coaster.rank / 20)|round(0, 'ceil') %}
+                {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
+                {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
                 <a href="{{ path('ranking_index', {'page': page}) }}" class="text-muted">
                   {{ 'coaster.score.ranked'|trans }}
                   <span class="badge badge-flat border-grey text-grey-600">#{{ coaster.rank }}</span>
@@ -59,6 +59,14 @@
                  data-coaster="{{ coaster.id }}"
                  data-rateit-value="{{ rating.value|default(0) }}"
                  style="font-size: 22px;"></div>
+            <div id="rating-date" class="input-group input-group-xs" style="display:none;">
+              {% if not rating.user.isAddTodayDateWhenRating %}
+                <span class="input-group-addon"><i class="icon-calendar"></i></span>
+                <input type="text" id="rating-date-input" class="form-control datepicker"
+                       placeholder="Ride date" data-coaster="{{ coaster.id }}"
+                       {% if rating.riddenAt is not null %}value="{{ rating.riddenAt|date('Y-m-d') }}"{% endif %}>
+              {% endif %}
+            </div>
             <p class="no-margin-bottom mt-10">
               <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
                 {{ 'coaster.rating.sendreview'|trans }}
@@ -264,17 +272,36 @@
   <script src="{{ asset('js/pages/rating.js') }}"></script>
   {% if coaster.park.latitude and coaster.park.longitude %}
     <script>
-      function initMap() {
-        var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
-        var map = new google.maps.Map(document.getElementById('map-coaster'), {
-          zoom: 14,
-          center: uluru,
+        function initMap() {
+            var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
+            var map = new google.maps.Map(document.getElementById('map-coaster'), {
+                zoom: 14,
+                center: uluru,
+            });
+            var marker = new google.maps.Marker({
+                position: uluru,
+                map: map,
+            });
+        }
+    </script>
+    <script src="{{ asset('js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+    <script type="text/javascript">
+        $('document').ready(function () {
+            $('.datepicker')
+                .datepicker({format: 'yyyy-mm-dd', autoclose: true})
+                .on('changeDate', function (e) {
+                    var url = Routing.generate(
+                        'rating_edit',
+                        {'id': e.target.dataset.coaster, '_locale': locale}
+                    );
+                    $.post(url, {riddenAt: e.target.value}, function (response) {
+                    }, 'JSON').done(function () {
+                        $('#rating-date').addClass('has-success');
+                    }).fail(function () {
+                        $('#rating-date').addClass('has-error');
+                    });
+                });
         });
-        var marker = new google.maps.Marker({
-          position: uluru,
-          map: map,
-        });
-      }
     </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
@@ -282,35 +309,36 @@
   {% endif %}
   <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
   <script type="text/javascript">
-    var loadImage = function(number) {
-      if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) < 769
-          && number === undefined
-      ) {
-        number = 2;
-      }
-      $.ajax({
-        url: Routing.generate('coaster_images_ajax_load', {
-          'slug': '{{ coaster.slug }}',
-          'imageNumber': number || 8,
-          '_locale': '{{ app.request.locale }}',
-        }),
-        type: 'GET',
-      }).done(function(data) {
-        $('#coaster-photos').replaceWith(data);
-        $('[data-popup="lightbox"]').fancybox({
-          padding: 3,
-        });
-        $('#show-all').on('click', function() {
-          loadImage({{ coaster.images|length }});
-        });
-      });
-    };
+      var loadImage = function (number) {
+          if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) < 769
+              && number === undefined
+          ) {
+              number = 2;
+          }
+          $.ajax({
+              url: Routing.generate('coaster_images_ajax_load', {
+                  'slug': '{{ coaster.slug }}',
+                  'imageNumber': number || 8,
+                  '_locale': '{{ app.request.locale }}',
+              }),
+              type: 'GET',
+          }).done(function (data) {
+              $('#coaster-photos').replaceWith(data);
+              $('[data-popup="lightbox"]').fancybox({
+                  padding: 3,
+              });
+              $('#show-all').on('click', function () {
+                  loadImage({{ coaster.images|length }});
+              });
+          });
+      };
 
-    loadImage();
+      loadImage();
   </script>
   {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}
 
 {% block stylesheets %}
   <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+  <link rel="stylesheet" href="{{ asset('js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
 {% endblock %}

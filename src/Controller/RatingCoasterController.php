@@ -49,7 +49,7 @@ class RatingCoasterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $rating = $em->getRepository('App:RiddenCoaster')->findOneBy(
+        $rating = $em->getRepository(RiddenCoaster::class)->findOneBy(
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
@@ -63,7 +63,14 @@ class RatingCoasterController extends AbstractController
             }
         }
 
-        $rating->setValue($request->request->get('value'));
+        if($request->request->has('value')) {
+            $rating->setValue($request->request->get('value'));
+        }
+
+        if($request->request->has('riddenAt')) {
+            $date = new \DateTime($request->request->get('riddenAt'));
+            $rating->setRiddenAt($date);
+        }
 
         $errors = $validator->validate($rating);
 

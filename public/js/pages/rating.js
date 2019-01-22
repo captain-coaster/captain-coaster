@@ -8,7 +8,9 @@ $('document').ready(function () {
         );
 
         $.post(url, {value: $(this).rateit('value')}, function (response) {
-        }, 'JSON');
+        }, 'JSON').done(function () {
+            $('#rating-date').show();
+        });
     });
 });
 

@@ -12,7 +12,7 @@
     $('document').ready(function() {
       $('.rating-coaster').rateit({max: 5, step: 0.5, backingfld: '#review_value', resetable: false, mode: 'font'});
       $('select').select2({maximumSelectionLength: 3});
-      $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
+      $('.datepicker').datepicker({format: 'yyyy-mm-dd', autoclose: true});
     });
   </script>
 {% endblock %}

@@ -24,6 +24,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RankingController extends AbstractController
 {
+    const  COASTERS_PER_PAGE = 20;
+
     /**
      * @var PaginatorInterface
      */
@@ -49,7 +51,7 @@ class RankingController extends AbstractController
      */
     public function indexAction(EntityManagerInterface $em)
     {
-        $ranking = $em->getRepository('App:Ranking')->findCurrent();
+        $ranking = $em->getRepository(Ranking::class)->findCurrent();
 
         $nextRankingDate = new \DateTime('first day of next month midnight 1 minute');
         if ($nextRankingDate->diff(new \DateTime('now'), true)->format('%h') < 1) {
@@ -117,7 +119,7 @@ class RankingController extends AbstractController
         return $this->paginator->paginate(
             $query,
             $page,
-            20
+            self::COASTERS_PER_PAGE
         );
     }
 
