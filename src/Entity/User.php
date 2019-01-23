@@ -166,7 +166,7 @@ class User extends BaseUser
      *
      * @ORM\Column(type="boolean", options={"default": 0})
      */
-    private $addTodayDateWhenRating;
+    private $addTodayDateWhenRating = 0;
 
     /**
      * User constructor.
