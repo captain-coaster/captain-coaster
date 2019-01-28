@@ -57,6 +57,32 @@ easy_admin:
                 - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
                 - price
                 - currency
+        Reviews:
+            class: App\Entity\RiddenCoaster
+            disabled_actions: ['new', 'delete']
+            list:
+                fields:
+                    - id
+                    - user
+                    - coaster
+                    - value
+                    - language
+                    - review
+            sort: ['updatedAt', 'DESC']
+            edit:
+                fields:
+                    - user
+                    - coaster
+                    - value
+                    - review
+                    - language
+                    - {property: 'riddenAt', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                    - {property: 'pros', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'cons', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'like', type_options: {disabled: true}}
+                    - {property: 'dislike', type_options: {disabled: true}}
+                    - {property: 'createdAt', type_options: {disabled: true}}
+                    - {property: 'updatedAt', type_options: {disabled: true}}
         OpeningCoaster:
             class: App\Entity\Coaster
             label: 'Coaster Openings'
