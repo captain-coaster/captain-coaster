@@ -60,11 +60,11 @@
                  data-rateit-value="{{ rating.value|default(0) }}"
                  style="font-size: 22px;"></div>
             <div id="rating-date" class="input-group input-group-xs" style="display:none;">
-              {% if not rating.user.isAddTodayDateWhenRating %}
+              {% if user and not user.isAddTodayDateWhenRating %}
                 <span class="input-group-addon"><i class="icon-calendar"></i></span>
                 <input type="text" id="rating-date-input" class="form-control datepicker"
                        placeholder="Ride date" data-coaster="{{ coaster.id }}"
-                       {% if rating.riddenAt is not null %}value="{{ rating.riddenAt|date('Y-m-d') }}"{% endif %}>
+                       {% if rating and rating.riddenAt is not null %}value="{{ rating.riddenAt|date('Y-m-d') }}"{% endif %}>
               {% endif %}
             </div>
             <p class="no-margin-bottom mt-10">

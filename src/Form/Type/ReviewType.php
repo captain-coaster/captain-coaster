@@ -7,6 +7,7 @@ use App\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -79,6 +80,18 @@ class ReviewType extends AbstractType
                 ]
             )
             ->add(
+                'language',
+                ChoiceType::class,
+                [
+                    'choices' => $options['locales'],
+                    'choice_label' => function ($value) {
+                        return $value;
+                    },
+                    'required' => true,
+                    'label' => 'review.language',
+                ]
+            )
+            ->add(
                 'review',
                 TextareaType::class,
                 [
@@ -117,6 +130,7 @@ class ReviewType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => RiddenCoaster::class,
+                'locales' => [],
             ]
         );
     }

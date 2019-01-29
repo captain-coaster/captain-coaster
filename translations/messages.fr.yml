@@ -213,6 +213,7 @@ review:
     pros: 'Quels sont les principaux atouts de ce coaster ?'
     cons: 'Et ses principaux défauts ?'
     comment: 'Envie d''être encore plus précis, raconte-nous ça !'
+    language: 'Langue de cet avis'
     send: 'Envoyer mon avis'
     update: 'Modifier'
     delete: 'Supprimer'

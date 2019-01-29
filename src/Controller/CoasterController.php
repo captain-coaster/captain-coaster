@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\Image;
+use App\Entity\RiddenCoaster;
 use App\Form\Type\ImageUploadType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -140,14 +141,16 @@ class CoasterController extends AbstractController
     {
         // Load reviews
         $reviews = $this->getDoctrine()
-            ->getRepository('App:RiddenCoaster')
+            ->getRepository(RiddenCoaster::class)
             ->getReviews($coaster, $request->getLocale());
 
         $rating = null;
+        $user = null;
         if ($this->isGranted('ROLE_USER')) {
+            $user = $this->getUser();
             $em = $this->getDoctrine()->getManager();
             $rating = $em->getRepository('App:RiddenCoaster')->findOneBy(
-                ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+                ['coaster' => $coaster, 'user' => $user]
             );
         }
 
@@ -157,6 +160,7 @@ class CoasterController extends AbstractController
                 'coaster' => $coaster,
                 'reviews' => $reviews,
                 'rating' => $rating,
+                'user' => $user,
             ]
         );
     }

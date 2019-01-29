@@ -57,6 +57,7 @@ class RatingCoasterController extends AbstractController
             $rating = new RiddenCoaster();
             $rating->setUser($user);
             $rating->setCoaster($coaster);
+            $rating->setLanguage($request->getLocale());
 
             if($user->isAddTodayDateWhenRating()) {
                 $rating->setRiddenAt(new \DateTime());

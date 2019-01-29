@@ -69,14 +69,20 @@ class ReviewController extends AbstractController
             $review = new RiddenCoaster();
             $review->setCoaster($coaster);
             $review->setUser($this->getUser());
+            $review->setLanguage($request->getLocale());
         }
 
         /** @var Form $form */
-        $form = $this->createForm(ReviewType::class, $review);
+        $form = $this->createForm(
+            ReviewType::class,
+            $review,
+            [
+                'locales' => $this->getParameter('app_locales_array'),
+            ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $review->setLanguage($request->getLocale());
             $em = $this->getDoctrine()->getManager();
             $em->persist($review);
             $em->flush();

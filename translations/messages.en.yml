@@ -213,6 +213,7 @@ review:
     pros: 'What are its main pros?'
     cons: 'And its main cons?'
     comment: 'Want to tell us more about your ride?'
+    language: 'Language of the review'
     send: 'Send my review'
     update: 'Edit'
     delete: 'Delete'

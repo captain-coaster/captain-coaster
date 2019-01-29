@@ -52,6 +52,10 @@
         {{ form_label(form.review, "", {'label_attr': {'class': 'control-label'}}) }}
         {{ form_widget(form.review, {'attr': {'class': 'form-control', 'cols': '5', 'rows': '5'}}) }}
       </div>
+      <div class="form-group">
+        {{ form_label(form.language, "", {'label_attr': {'class': 'control-label'}}) }}
+        {{ form_widget(form.language) }}
+      </div>
       <div class="text-right">
         <button type="submit" class="btn btn-primary">
           {{ 'review.send'|trans }}
