@@ -63,7 +63,7 @@
               {% if user and not user.isAddTodayDateWhenRating %}
                 <span class="input-group-addon"><i class="icon-calendar"></i></span>
                 <input type="text" id="rating-date-input" class="form-control datepicker"
-                       placeholder="Ride date" data-coaster="{{ coaster.id }}"
+                       placeholder="Ride Date (YYYY-MM-DD)" data-coaster="{{ coaster.id }}"
                        {% if rating and rating.riddenAt is not null %}value="{{ rating.riddenAt|date('Y-m-d') }}"{% endif %}>
               {% endif %}
             </div>
@@ -284,29 +284,29 @@
             });
         }
     </script>
-    <script src="{{ asset('js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <script type="text/javascript">
-        $('document').ready(function () {
-            $('.datepicker')
-                .datepicker({format: 'yyyy-mm-dd', autoclose: true})
-                .on('changeDate', function (e) {
-                    var url = Routing.generate(
-                        'rating_edit',
-                        {'id': e.target.dataset.coaster, '_locale': locale}
-                    );
-                    $.post(url, {riddenAt: e.target.value}, function (response) {
-                    }, 'JSON').done(function () {
-                        $('#rating-date').addClass('has-success');
-                    }).fail(function () {
-                        $('#rating-date').addClass('has-error');
-                    });
-                });
-        });
-    </script>
     <script async defer
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">
     </script>
   {% endif %}
+  <script src="{{ asset('js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+  <script type="text/javascript">
+      $('document').ready(function () {
+          $('.datepicker')
+              .datepicker({format: 'yyyy-mm-dd', autoclose: true})
+              .on('changeDate', function (e) {
+                  var url = Routing.generate(
+                      'rating_edit',
+                      {'id': e.target.dataset.coaster, '_locale': locale}
+                  );
+                  $.post(url, {riddenAt: e.target.value}, function (response) {
+                  }, 'JSON').done(function () {
+                      $('#rating-date').removeClass('has-error').addClass('has-success');
+                  }).fail(function () {
+                      $('#rating-date').removeClass('has-success').addClass('has-error');
+                  });
+              });
+      });
+  </script>
   <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
   <script type="text/javascript">
       var loadImage = function (number) {

@@ -69,7 +69,11 @@ class RatingCoasterController extends AbstractController
         }
 
         if($request->request->has('riddenAt')) {
-            $date = new \DateTime($request->request->get('riddenAt'));
+            try {
+                $date = new \DateTime($request->request->get('riddenAt'));
+            } catch (\Exception $e) {
+                throw new \Exception('DateTime error: '. $request->request->get('riddenAt'));
+            }
             $rating->setRiddenAt($date);
         }
 
