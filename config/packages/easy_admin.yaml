@@ -6,61 +6,79 @@ easy_admin:
             disabled_actions: ['delete', 'show']
             list:
                 fields:
-                - id
-                - name
-                - manufacturer
-                - park
-                - {property: 'status', type: 'string', trans: true, domain: 'database'}
-                - ratings
+                    - id
+                    - name
+                    - manufacturer
+                    - park
+                    - {property: 'status', type: 'string', trans: true, domain: 'database'}
+                    - ratings
                 sort: ['updatedAt', 'DESC']
             edit:
                 fields:
-                - name
-                - park
-                - materialType
-                - seatingType
-                - model
-                - speed
-                - height
-                - length
-                - inversionsNumber
-                - manufacturer
-                - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
-                - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
-                - kiddie
-                - vr
-                - indoor
-                - {property: 'status', type_options: {choice_translation_domain: 'database'}}
-                - {property: 'openingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
-                - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
-                - price
-                - currency
+                    - name
+                    - park
+                    - materialType
+                    - seatingType
+                    - model
+                    - speed
+                    - height
+                    - length
+                    - inversionsNumber
+                    - manufacturer
+                    - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
+                    - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
+                    - kiddie
+                    - vr
+                    - indoor
+                    - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'openingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                    - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                    - price
+                    - currency
             new:
                 fields:
-                - name
-                - park
-                - materialType
-                - seatingType
-                - model
-                - speed
-                - height
-                - length
-                - inversionsNumber
-                - manufacturer
-                - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
-                - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
-                - kiddie
-                - vr
-                - indoor
-                - {property: 'status', type_options: {choice_translation_domain: 'database'}}
-                - {property: 'openingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
-                - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
-                - price
-                - currency
+                    - name
+                    - park
+                    - materialType
+                    - seatingType
+                    - model
+                    - speed
+                    - height
+                    - length
+                    - inversionsNumber
+                    - manufacturer
+                    - {property: 'restraint', type_options: {choice_translation_domain: 'database', placeholder: '-'}}
+                    - {property: 'launchs', type_options: {choice_translation_domain: 'database'}}
+                    - kiddie
+                    - vr
+                    - indoor
+                    - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'openingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                    - {property: 'closingDate', type_options: {widget: 'single_text', format: 'd/M/yyyy'}}
+                    - price
+                    - currency
+        OpeningCoaster:
+            class: App\Entity\Coaster
+            label: 'Coaster Openings'
+            disabled_actions: ['new', 'delete', 'show']
+            list:
+                fields:
+                    - name
+                    - park
+                    - {property: 'status', type: 'string', trans: true, domain: 'database'}
+                    - openingDate
+                dql_filter: 'entity.openingDate < CURRENT_DATE() AND entity.status = 3'
+                sort: ['openingDate', 'DESC']
+            edit:
+                fields:
+                    - name
+                    - {property: 'status', type_options: {choice_translation_domain: 'database'}}
+                    - openingDate
         Reviews:
             class: App\Entity\RiddenCoaster
             disabled_actions: ['new', 'delete']
             list:
+                max_results: 30
                 fields:
                     - id
                     - user
@@ -83,44 +101,54 @@ easy_admin:
                     - {property: 'dislike', type_options: {disabled: true}}
                     - {property: 'createdAt', type_options: {disabled: true}}
                     - {property: 'updatedAt', type_options: {disabled: true}}
-        OpeningCoaster:
-            class: App\Entity\Coaster
-            label: 'Coaster Openings'
-            disabled_actions: ['new', 'delete', 'show']
+        Users:
+            class: App\Entity\User
+            disabled_actions: ['new', 'delete']
             list:
+                max_results: 30
                 fields:
-                - name
-                - park
-                - {property: 'status', type: 'string', trans: true, domain: 'database'}
-                - openingDate
-                dql_filter: 'entity.openingDate < CURRENT_DATE() AND entity.status = 3'
-                sort: ['openingDate', 'DESC']
+                    - id
+                    - firstname
+                    - lastname
+                    - ratings
+                    - listes
+                    - createdAt
+            sort: ['createdAt', 'DESC']
             edit:
                 fields:
-                - name
-                - {property: 'status', type_options: {choice_translation_domain: 'database'}}
-                - openingDate
+                    - {property: 'lastname', type_options: {disabled: true}, type: 'text'}
+                    - {property: 'firstname', type_options: {disabled: true}, type: 'text'}
+                    - {property: 'email', type_options: {disabled: true}}
+                    - displayName
+                    - googleId
+                    - facebookId
+                    - preferredLocale
+                    - homePark
+                    - emailNotification
+                    - addTodayDateWhenRating
+                    - {property: 'apiKey', type_options: {disabled: true}}
+                    - {property: 'createdAt', type_options: {disabled: true}}
         Image:
             class: App\Entity\Image
             label: 'Images'
             disabled_actions: ['new', 'show']
             list:
                 fields:
-                - id
-                - coaster
-                - credit
-                - {property: 'enabled', type: 'toggle'}
-                - {property: 'path', type: 'image', base_path: '/images/coasters/'}
+                    - id
+                    - coaster
+                    - credit
+                    - {property: 'enabled', type: 'toggle'}
+                    - {property: 'path', type: 'image', base_path: '/images/coasters/'}
                 dql_filter: 'entity.optimized = 1'
             edit:
                 fields:
-                - {property: 'filename', type_options: {disabled: true}}
-                - coaster
-                - credit
-                - uploader
-                - enabled
-                - {property: 'optimized', type_options: {disabled: true}}
-                - {property: 'watermarked', type_options: {disabled: true}}
+                    - {property: 'filename', type_options: {disabled: true}}
+                    - coaster
+                    - credit
+                    - uploader
+                    - enabled
+                    - {property: 'optimized', type_options: {disabled: true}}
+                    - {property: 'watermarked', type_options: {disabled: true}}
                 sort: ['updatedAt', 'DESC']
             search:
                 fields: ['coaster.name']
@@ -129,115 +157,115 @@ easy_admin:
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - name
-                - {property: 'country', type: 'string', trans: true, domain: 'database'}
-                - coasters
+                    - id
+                    - name
+                    - {property: 'country', type: 'string', trans: true, domain: 'database'}
+                    - coasters
             edit:
                 fields:
-                - name
-                - {property: 'country', type_options: {choice_translation_domain: 'database'}}
-                - {property: 'slug', type_options: {disabled: true}}
-                - {property: 'latitude', type: 'text'}
-                - {property: 'longitude', type: 'text'}
+                    - name
+                    - {property: 'country', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'slug', type_options: {disabled: true}}
+                    - {property: 'latitude', type: 'text'}
+                    - {property: 'longitude', type: 'text'}
             new:
                 fields:
-                - name
-                - {property: 'country', type_options: {choice_translation_domain: 'database'}}
-                - {property: 'latitude', type: 'text'}
-                - {property: 'longitude', type: 'text'}
+                    - name
+                    - {property: 'country', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'latitude', type: 'text'}
+                    - {property: 'longitude', type: 'text'}
         Country:
             class: App\Entity\Country
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - {property: 'continent', type: 'string', trans: true, domain: 'database'}
+                    - id
+                    - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                    - {property: 'continent', type: 'string', trans: true, domain: 'database'}
             edit:
                 fields:
-                - name
-                - {property: 'continent', type_options: {choice_translation_domain: 'database'}}
-                - {property: 'slug', type_options: {disabled: true}}
+                    - name
+                    - {property: 'continent', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'slug', type_options: {disabled: true}}
             new:
                 fields:
-                - name
-                - {property: 'continent', type_options: {choice_translation_domain: 'database'}}
+                    - name
+                    - {property: 'continent', type_options: {choice_translation_domain: 'database'}}
         Manufacturer:
             class: App\Entity\Manufacturer
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                    - id
+                    - {property: 'name', type: 'string', trans: true, domain: 'database'}
             edit:
                 fields:
-                - name
-                - {property: 'slug', type_options: {disabled: true}}
+                    - name
+                    - {property: 'slug', type_options: {disabled: true}}
             new:
                 fields:
-                - name
+                    - name
         Launch:
             class: App\Entity\Launch
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - coasters
+                    - id
+                    - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                    - coasters
             edit:
                 fields:
-                - name
-                - {property: 'slug', type_options: {disabled: true}}
+                    - name
+                    - {property: 'slug', type_options: {disabled: true}}
             new:
                 fields:
-                - name
+                    - name
         Model:
             class: App\Entity\Model
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - name
-                - coasters
+                    - id
+                    - name
+                    - coasters
             edit:
                 fields:
-                - name
-                - {property: 'slug', type_options: {disabled: true}}
+                    - name
+                    - {property: 'slug', type_options: {disabled: true}}
             new:
                 fields:
-                - name
+                    - name
         Restraint:
             class: App\Entity\Restraint
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - coasters
+                    - id
+                    - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                    - coasters
             edit:
                 fields:
-                - name
-                - {property: 'slug', type_options: {disabled: true}}
+                    - name
+                    - {property: 'slug', type_options: {disabled: true}}
             new:
                 fields:
-                - name
+                    - name
         Status:
             class: App\Entity\Status
             disabled_actions: ['delete']
             list:
                 fields:
-                - id
-                - {property: 'name', type: 'string', trans: true, domain: 'database'}
-                - coasters
+                    - id
+                    - {property: 'name', type: 'string', trans: true, domain: 'database'}
+                    - coasters
             edit:
                 fields:
-                - name
-                - {property: 'slug', type_options: {disabled: true}}
-                - type
-                - isRateable
+                    - name
+                    - {property: 'slug', type_options: {disabled: true}}
+                    - type
+                    - isRateable
             new:
                 fields:
-                - name
-                - type
-                - isRateable
+                    - name
+                    - type
+                    - isRateable
