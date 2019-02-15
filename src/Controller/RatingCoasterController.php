@@ -92,11 +92,12 @@ class RatingCoasterController extends AbstractController
     /**
      * Delete a rating
      *
-     * @param Coaster $coaster
+     * @param RiddenCoaster $rating
+     * @param EntityManagerInterface $em
      * @return JsonResponse
      *
      * @Route(
-     *     "/ratings/coasters/{id}",
+     *     "/ratings/{id}",
      *     name="rating_delete",
      *     methods={"DELETE"},
      *     options = {"expose" = true},
@@ -104,17 +105,9 @@ class RatingCoasterController extends AbstractController
      * )
      * @Security("is_granted('ROLE_USER')")
      */
-    public function deleteAction(Coaster $coaster)
+    public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $rating = $em->getRepository('App:RiddenCoaster')->findOneBy(
-            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
-        );
-
-        if (!$rating instanceof RiddenCoaster) {
-            return new JsonResponse(['status' => 'fail']);
-        }
+        $this->denyAccessUnlessGranted('delete', $rating);
 
         $em->remove($rating);
         $em->flush();

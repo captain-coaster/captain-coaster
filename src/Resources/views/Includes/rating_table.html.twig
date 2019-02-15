@@ -42,7 +42,7 @@
           </td>
           {% if allowDelete %}
           <td class="text-center hidden-xs">
-            <a onclick="deleteRating({{ rating.coaster.id }}, $(this).closest('tr'));"><i class="icon-trash"></i></a>
+            <a onclick="deleteRating({{ rating.id }}, $(this).closest('tr'));"><i class="icon-trash"></i></a>
           </td>
           {% endif %}
         </tr>
