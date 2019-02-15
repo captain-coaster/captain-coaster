@@ -179,17 +179,14 @@ class UserController extends AbstractController
     }
 
     /**
-     * Deprecated - Display a user
-     * Need to keep it for banners links
+     * Permalink to user profile
      *
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @Route("/{id}/profile", name="user_profile", methods={"GET"})
-     *
-     * @deprecated
      */
-    public function deprecatedShowAction(User $user)
+    public function permalinkProfile(User $user)
     {
         return $this->redirectToRoute('user_show', ['slug' => $user->getSlug()]);
     }
