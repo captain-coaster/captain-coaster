@@ -59,20 +59,20 @@ class RatingCoasterController extends AbstractController
             $rating->setCoaster($coaster);
             $rating->setLanguage($request->getLocale());
 
-            if($user->isAddTodayDateWhenRating()) {
+            if ($user->isAddTodayDateWhenRating()) {
                 $rating->setRiddenAt(new \DateTime());
             }
         }
 
-        if($request->request->has('value')) {
+        if ($request->request->has('value')) {
             $rating->setValue($request->request->get('value'));
         }
 
-        if($request->request->has('riddenAt')) {
+        if ($request->request->has('riddenAt')) {
             try {
                 $date = new \DateTime($request->request->get('riddenAt'));
             } catch (\Exception $e) {
-                throw new \Exception('DateTime error: '. $request->request->get('riddenAt'));
+                throw new \Exception('DateTime error: '.$request->request->get('riddenAt'));
             }
             $rating->setRiddenAt($date);
         }

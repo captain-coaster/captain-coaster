@@ -125,14 +125,6 @@ user_profile:
     map: 'Show his coaster map'
     pictures: 'Show his pictures'
 
-my_ratings:
-    title: 'My ratings'
-    coaster: 'Coaster'
-    manufacturer: 'Manufacturer'
-    opening_date: 'Opened'
-    rating: 'Rating'
-    rated_at: 'Rated at'
-
 user_list:
     title: 'Our riders'
     info:
@@ -230,7 +222,9 @@ users:
         manufacturer: 'Manufacturer'
         opening_date: 'Opened'
         rating: 'Rating'
-        rated_at: 'Rated at'
+        ridden_at: 'Ridden at'
+    my_ratings:
+        title: 'My ratings'
     images:
         title: '%name% - Pictures'
 

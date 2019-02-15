@@ -81,14 +81,6 @@ user_profile:
     listes: 'Mostrar su Top Coasters'
     map: 'Mostrar su coaster map'
 
-my_ratings:
-    title: 'Mis notas'
-    coaster: 'Montaña rusa'
-    manufacturer: 'Fabricante'
-    opening_date: 'Abierto'
-    rating: 'Nota'
-    rated_at: 'Calificado en'
-
 user_list:
     title: 'Nuestros usuarios'
     info:
@@ -139,7 +131,9 @@ users:
         manufacturer: 'Fabricante'
         opening_date: 'Abierto'
         rating: 'Nota'
-        rated_at: 'Calificado en'
+        ridden_at: 'Ridden at'
+    my_ratings:
+        title: 'Mis notas'
 
 review_list:
     title: 'Reseñas de montañas rusas'

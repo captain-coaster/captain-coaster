@@ -125,14 +125,6 @@ user_profile:
     map: 'Voir sa carte'
     pictures: 'Voir ses photos'
 
-my_ratings:
-    title: 'Mes notes'
-    coaster: 'Coaster'
-    manufacturer: 'Contructeur'
-    opening_date: 'Ouverture'
-    rating: 'Note'
-    rated_at: 'Noté le'
-
 user_list:
     title: 'Nos riders'
     info:
@@ -230,7 +222,9 @@ users:
         manufacturer: 'Contructeur'
         opening_date: 'Ouverture'
         rating: 'Note'
-        rated_at: 'Noté le'
+        ridden_at: 'Ridé le'
+    my_ratings:
+        title: 'Mes notes'
     images:
         title: 'Photos de %name%'
 

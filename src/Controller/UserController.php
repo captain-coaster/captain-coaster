@@ -65,7 +65,7 @@ class UserController extends AbstractController
             30,
             [
                 'wrap-queries' => true,
-                'defaultSortFieldName' => 'r.value',
+                'defaultSortFieldName' => 'r.riddenAt',
                 'defaultSortDirection' => 'desc',
             ]
         );
