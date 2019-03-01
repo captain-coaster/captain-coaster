@@ -15,7 +15,7 @@ class ImageController extends AbstractController
      * @Route(
      *     "/toggleLike/{id}",
      *     name="like_image_async",
-     *     methods={"GET"}),
+     *     methods={"GET"},
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
