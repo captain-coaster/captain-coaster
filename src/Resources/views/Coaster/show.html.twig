@@ -292,7 +292,7 @@
   <script type="text/javascript">
       $('document').ready(function () {
           $('.datepicker')
-              .datepicker({format: 'yyyy-mm-dd', autoclose: true})
+              .datepicker({format: 'yyyy-mm-dd', autoclose: true, todayBtn: "linked"})
               .on('changeDate', function (e) {
                   var url = Routing.generate(
                       'rating_edit',

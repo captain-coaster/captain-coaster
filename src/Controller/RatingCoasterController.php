@@ -72,7 +72,7 @@ class RatingCoasterController extends AbstractController
             try {
                 $date = new \DateTime($request->request->get('riddenAt'));
             } catch (\Exception $e) {
-                throw new \Exception('DateTime error: '.$request->request->get('riddenAt'));
+                return new JsonResponse(['state' => 'error'], 500);
             }
             $rating->setRiddenAt($date);
         }
