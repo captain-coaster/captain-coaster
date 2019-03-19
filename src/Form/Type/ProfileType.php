@@ -9,6 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -82,6 +83,15 @@ class ProfileType extends AbstractType
                 [
                     'required' => false,
                     'label' => 'me.form.addTodayDateWhenRating.label'
+                ]
+            )
+            ->add(
+                'apiKey',
+                TextType::class,
+                [
+                    'required' => false,
+                    'disabled' => true,
+                    'label' => 'me.form.apiKey.label'
                 ]
             );
     }

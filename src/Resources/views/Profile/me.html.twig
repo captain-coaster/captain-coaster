@@ -105,6 +105,13 @@
               {{ form_widget(form.addTodayDateWhenRating) }}
               {{ form_label(form.addTodayDateWhenRating) }}
             </div>
+            <fieldset class="content-group">
+              <legend>{{ 'me.form.advanced'|trans }}</legend>
+              <div class="form-group">
+                {{ form_label(form.apiKey) }}
+                {{ form_widget(form.apiKey, {'attr': {'class': 'form-control'}}) }}
+              </div>
+            </fieldset>
             <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
               <b><i class="icon-circle-right2"></i></b>
               {{ 'me.form.save'|trans }}

@@ -147,7 +147,10 @@ me:
             label: 'Mon home park'
             placeholder: 'Choisis un parc'
         addTodayDateWhenRating:
-            label: 'Date du jour auto pour une nouvelle note'
+            label: 'Ajouter la date du jour quand je note un nouveau coaster'
+        apiKey:
+            label: 'API Key'
+        advanced: 'Avancé'
         save: 'OK'
     badge: 'Badges'
     banner:

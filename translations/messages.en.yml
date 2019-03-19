@@ -148,6 +148,9 @@ me:
             placeholder: 'Choose one'
         addTodayDateWhenRating:
             label: 'Add today''s date on a new rating'
+        apiKey:
+            label: 'API Key'
+        advanced: 'Advanced'
         save: 'Save'
     badge: 'Badges'
     banner:
