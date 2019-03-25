@@ -31,3 +31,4 @@ doctrine:
             numeric_functions:
                 cos: DoctrineExtensions\Query\Mysql\Cos
                 power: DoctrineExtensions\Query\Mysql\Power
+                rand: DoctrineExtensions\Query\Mysql\Rand

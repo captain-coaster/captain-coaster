@@ -36,6 +36,7 @@ class RankingRepository extends EntityRepository
     /**
      * @param array $filters
      * @return \Doctrine\ORM\Query
+     * @throws \Exception
      */
     public function findCoastersRanked(array $filters = [])
     {
@@ -45,8 +46,14 @@ class RankingRepository extends EntityRepository
             ->from('App:Coaster', 'c')
             ->innerJoin('c.park', 'p')
             ->leftJoin('c.manufacturer', 'm')
-            ->where('c.rank is not null')
-            ->orderBy('c.rank', 'asc');
+            ->where('c.rank is not null');
+
+        // april fools
+        if ((new \DateTime())->format('jn') === '14') {
+            $qb->orderBy('RAND()');
+        } else {
+            $qb->orderBy('c.rank', 'asc');
+        }
 
         $this->applyFilters($qb, $filters);
 
