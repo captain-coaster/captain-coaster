@@ -25,10 +25,11 @@
       $.ajax({
         url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
         type: 'GET',
-        data: $('form').serialize() + '&page=' + {{ app.request.query.get('page')|default(1) }},
+        data: $('form').serialize(),
       }).done(function(data) {
         $('#'+containerId).html(data);
         ajaxPager();
+        changeBrowserUrl();
       });
     }
 
@@ -45,9 +46,18 @@
           $('#'+containerId).html(data);
           document.getElementById(containerId).scrollIntoView();
           ajaxPager();
+          changeBrowserUrl();
         });
       });
     };
+
+    function changeBrowserUrl() {
+        window.history.pushState(
+            {"html":'Ranking',"pageTitle":'Ranking'},
+            "",
+            window.location.pathname + '?' + $('form').serialize()
+        );
+    }
 
     filterData();
   </script>

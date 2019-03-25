@@ -1,3 +1,4 @@
+{% set qS = app.request.query.all %}
 <div class="sidebar sidebar-secondary sidebar-default">
   <div class="sidebar-content">
     <form id="form-filter" action="#">
@@ -10,7 +11,10 @@
             <select class="form-control" name="filters[continent]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.continent'|trans }}</option>
               {% for continent in filtersForm.continent %}
-                <option value="{{ continent.id }}">{{ continent.name|trans({}, 'database') }}</option>
+                <option value="{{ continent.id }}"
+                        {% if qS.filters.continent is defined and qS.filters.continent == continent.id %}selected{% endif %}>
+                  {{ continent.name|trans({}, 'database') }}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -18,7 +22,10 @@
             <select class="form-control" name="filters[country]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.country'|trans }}</option>
               {% for country in filtersForm.country %}
-                <option value="{{ country.id }}">{{ country.name|trans({}, 'database') }}</option>
+                <option value="{{ country.id }}"
+                        {% if qS.filters.country is defined and qS.filters.country == country.id %}selected{% endif %}>
+                  {{ country.name|trans({}, 'database') }}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -26,7 +33,10 @@
             <select class="form-control" name="filters[materialType]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.materialType'|trans }}</option>
               {% for type in filtersForm.materialType %}
-                <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
+                <option value="{{ type.id }}"
+                        {% if qS.filters.materialType is defined and qS.filters.materialType == type.id %}selected{% endif %}>
+                  {{ type.name|trans({}, 'database') }}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -34,7 +44,10 @@
             <select class="form-control" name="filters[seatingType]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.seatingType'|trans }}</option>
               {% for type in filtersForm.seatingType %}
-                <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
+                <option value="{{ type.id }}"
+                        {% if qS.filters.seatingType is defined and qS.filters.seatingType == type.id %}selected{% endif %}>
+                  {{ type.name|trans({}, 'database') }}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -42,7 +55,10 @@
             <select class="form-control" name="filters[model]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.model'|trans }}</option>
               {% for model in filtersForm.model %}
-                <option value="{{ model.id }}">{{ model.name }}</option>
+                <option value="{{ model.id }}"
+                        {% if qS.filters.model is defined and qS.filters.model == model.id %}selected{% endif %}>
+                  {{ model.name }}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -50,7 +66,10 @@
             <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.manufacturer'|trans }}</option>
               {% for type in filtersForm.manufacturer %}
-                <option value="{{ type.id }}">{{ type.name }}</option>
+                <option value="{{ type.id }}"
+                        {% if qS.filters.manufacturer is defined and qS.filters.manufacturer == type.id %}selected{% endif %}>
+                  {{ type.name }}
+                </option>
               {% endfor %}
             </select>
           </div>
@@ -58,7 +77,10 @@
             <select class="form-control" name="filters[openingDate]" onchange="filterData();">
               <option value="">{{ 'coaster_ranking.filter.openingDate'|trans }}</option>
               {% for openingDate in filtersForm.openingDate %}
-                <option value="{{ openingDate.year }}">{{ openingDate.year }}</option>
+                <option value="{{ openingDate.year }}"
+                        {% if qS.filters.openingDate is defined and qS.filters.openingDate == openingDate.year %}selected{% endif %}>
+                  {{ openingDate.year }}
+                </option>
               {% endfor %}
             </select>
           </div>
