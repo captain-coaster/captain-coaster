@@ -1,6 +1,6 @@
 api_platform:
     title: 'Captain Coaster API'
-    description: 'Contact us to get an API token.'
+    description: 'API Keys can be found in your profile page. API keys to be used as an X-AUTH-TOKEN header in your request. Contact us to get support.'
     version: '0.0.3'
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
