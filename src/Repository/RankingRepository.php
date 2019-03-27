@@ -49,7 +49,7 @@ class RankingRepository extends EntityRepository
             ->where('c.rank is not null');
 
         // april fools
-        if ((new \DateTime())->format('jn') === '14') {
+        if ((new \DateTime())->format('jn') === '14' && $this->findCurrent()->getComputedAt()->format('jn') === '14') {
             $qb->orderBy('RAND()');
         } else {
             $qb->orderBy('c.rank', 'asc');
