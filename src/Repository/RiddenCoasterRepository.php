@@ -168,7 +168,7 @@ class RiddenCoasterRepository extends EntityRepository
             ->from('App:RiddenCoaster', 'r')
             ->join('r.user', 'u')
             ->join('r.coaster', 'c')
-            ->join('c.manufacturer', 'm')
+            ->leftJoin('c.manufacturer', 'm')
             ->join('c.park', 'p')
             ->where('r.user = :user')
             ->setParameter('user', $user);

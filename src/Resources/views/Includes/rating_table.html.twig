@@ -8,7 +8,7 @@
         <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.opening_date'|trans, ['c.openingDate']) }}</th>
         <th>{{ knp_pagination_sortable(ratings, 'users.ratings.rating'|trans, ['r.value']) }}</th>
         <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt') }}</th>
-        {% if allowDelete %}
+        {% if is_granted('delete', ratings|first) %}
           <th class="text-center hidden-xs" style="width: 20px;"><i class="icon-arrow-down12"></i></th>
         {% endif %}
       </tr>
@@ -25,7 +25,7 @@
             </div>
           </td>
           <td class="hidden-xs">
-            {{ rating.coaster.manufacturer.name }}
+            {{ rating.coaster.manufacturer.name|default('-') }}
           </td>
           <td class="hidden-xs">
             {{ rating.coaster.openingDate is empty ? '-' : rating.coaster.openingDate|date('Y') }}
@@ -34,13 +34,13 @@
             <div class="rating-coaster"
                  data-coaster="{{ rating.coaster.id }}"
                  data-rateit-value="{{ rating.value }}"
-                 {% if not is_granted('rate', rating.coaster) %}data-rateit-readonly="true"{% endif %}
+                 {% if not is_granted('update', rating) %}data-rateit-readonly="true"{% endif %}
                  style="font-size: 22px;"></div>
           </td>
           <td class="hidden-xs">
             {{ rating.riddenAt is empty ? '-' : rating.riddenAt|localizeddate('short', 'none') }}
           </td>
-          {% if allowDelete %}
+          {% if is_granted('delete', rating) %}
           <td class="text-center hidden-xs">
             <a onclick="deleteRating({{ rating.id }}, $(this).closest('tr'));"><i class="icon-trash"></i></a>
           </td>

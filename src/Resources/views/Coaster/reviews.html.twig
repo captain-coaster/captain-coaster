@@ -56,7 +56,7 @@
               {% if review.review and review.language == app.request.locale %}
                 <p>{{ review.review }}</p>
               {% endif %}
-              {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
+              {% if is_granted('update', review) %}
                 <ul class="list-inline list-inline-separate text-size-small">
                   <li>
                     <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
