@@ -16,8 +16,11 @@
       <div class="media-body">
         <h2 class="media-heading mb-10">
           <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-            {{ loop.index + (20 * (coasters.currentPageNumber - 1)) }}&nbsp;-&nbsp;{{ coaster.name }}
-            {% if filtered %} (#{{ coaster.rank }}){% endif %}
+            {% if not filtered %}
+              {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
+            {% else %}
+              {{ firstRank + loop.index0 }}&nbsp;-&nbsp;{{ coaster.name }} (#{{ coaster.rank }})
+            {% endif %}
           </a>
           {{ helper.variation(coaster) }}
         </h2>

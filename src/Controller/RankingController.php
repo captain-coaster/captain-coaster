@@ -91,6 +91,7 @@ class RankingController extends AbstractController
                 'coasters' => $this->getCoasters($filters, $page),
                 // array_filter removes empty filters e.g. ['continent' => '']
                 'filtered' => count(array_filter($filters, "strlen")) > 0,
+                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1
             ]
         );
     }

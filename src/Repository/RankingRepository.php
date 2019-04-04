@@ -48,12 +48,7 @@ class RankingRepository extends EntityRepository
             ->leftJoin('c.manufacturer', 'm')
             ->where('c.rank is not null');
 
-        // april fools
-        if ((new \DateTime())->format('jn') === '14' && $this->findCurrent()->getComputedAt()->format('jn') === '14') {
-            $qb->orderBy('RAND()');
-        } else {
-            $qb->orderBy('c.rank', 'asc');
-        }
+        $qb->orderBy('c.rank', 'asc');
 
         $this->applyFilters($qb, $filters);
 
