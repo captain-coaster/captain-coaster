@@ -264,10 +264,11 @@ footer:
 
 login:
     title: 'Login to Captain Coaster'
-    connect: 'Connect'
+    facebook_connect: 'Login with Facebook'
+    google_connect: 'Login with Google'
     info:
         title: 'Blue pill or red pill ?'
-        text: 'You can login using your Facebook or Google account. We only gather your name, email and profile picture.'
+        text: 'You can login using your Facebook or Google account. We only gather your name, email and profile picture. We do not publish on Facebook.'
     already_connected_as: 'Already logged in as'
     logout: 'Logout ?'
 

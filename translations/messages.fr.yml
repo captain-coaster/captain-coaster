@@ -264,10 +264,11 @@ footer:
 
 login:
     title: 'Se connecter'
-    connect: 'Connexion'
+    facebook_connect: 'Connexion avec Facebook'
+    google_connect: 'Connexion avec Google'
     info:
         title: 'Pilule bleue ou pilule rouge ?'
-        text: 'Tu peux te connecter via ton compte Facebook, ou Google. Nous ne collectons que ton nom, ton email et ta photo de profil.'
+        text: 'Tu peux te connecter via ton compte Facebook, ou Google. Nous ne collectons que ton nom, ton email et ta photo de profil. Nous ne publions pas sur Facebook.'
     already_connected_as: 'Déjà connecté en tant que'
     logout: 'Se deconnecter ?'
 

@@ -166,7 +166,6 @@ footer:
 
 login:
     title: 'Iniciar sesión en Captain Coaster'
-    connect: 'Conectar'
     info:
         title: '¿ Pastilla azul o pastilla roja ?'
         text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google. Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
