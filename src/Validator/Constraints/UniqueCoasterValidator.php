@@ -2,7 +2,7 @@
 
 namespace App\Validator\Constraints;
 
-use App\Entity\ListeCoaster;
+use App\Entity\TopCoaster;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -27,9 +27,9 @@ class UniqueCoasterValidator extends ConstraintValidator
         }
 
         $collectionElements = array();
-        /** @var ListeCoaster $element */
+        /** @var TopCoaster $element */
         foreach ($value as $element) {
-            if (!$element instanceof ListeCoaster) {
+            if (!$element instanceof TopCoaster) {
                 throw new UnexpectedTypeException($element, 'IteratorAggregate');
             }
 

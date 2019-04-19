@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% if create == true %}
+  {% set title = 'top.new.title'|trans %}
+  {% set submitLabel = 'top.new.form.submit' %}
+{% else %}
+  {% set title = 'top.editDetails.title'|trans %}
+  {% set submitLabel = 'top.editDetails.form.submit' %}
+{% endif %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+  <div class="panel panel-flat">
+    <div class="panel-body">
+      {{ form_start(form) }}
+      {{ form_row(form.name) }}
+      {{ form_row(form.type) }}
+      {{ form_row(form.save, {'label': submitLabel}) }}
+      {{ form_rest(form) }}
+      {{ form_end(form) }}
+    </div>
+  </div>
+{% endblock %}

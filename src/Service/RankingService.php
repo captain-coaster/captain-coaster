@@ -3,10 +3,10 @@
 namespace App\Service;
 
 use App\Entity\Coaster;
-use App\Entity\Liste;
-use App\Entity\ListeCoaster;
 use App\Entity\Ranking;
 use App\Entity\RiddenCoaster;
+use App\Entity\Top;
+use App\Entity\TopCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -83,7 +83,7 @@ class RankingService
         $infos = [];
 
         foreach ($this->ranking as $coasterId => $score) {
-            $coaster = $this->em->getRepository('App:Coaster')->find($coasterId);
+            $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
 
             $coaster->setScore($score);
             $coaster->setPreviousRank($coaster->getRank());
@@ -127,15 +127,14 @@ class RankingService
      */
     public function computeRanking(): void
     {
-        $users = $this->em->getRepository('App:User')->findAll();
+        $users = $this->em->getRepository(User::class)->findAll();
 
         /** @var User $user */
         foreach ($users as $user) {
             // reset before each new user
             $this->userComparisons = [];
 
-            /** @var Liste $top */
-            $top = $user->getMainListe();
+            $top = $user->getMainTop();
             $this->processComparisonsInTop($top);
 
             $ratings = $user->getRatings();
@@ -149,21 +148,19 @@ class RankingService
      * Process all comparisons inside a top
      * and set all results in duels array
      *
-     * @param Liste $top
+     * @param Top $top
      */
-    private function processComparisonsInTop(Liste $top): void
+    private function processComparisonsInTop(Top $top): void
     {
-        /** @var ListeCoaster $listeCoaster */
-        foreach ($top->getListeCoasters() as $listeCoaster) {
-            $coaster = $listeCoaster->getCoaster();
+        foreach ($top->getTopCoasters() as $topCoaster) {
+            $coaster = $topCoaster->getCoaster();
 
             if (!$coaster->isRankable()) {
                 continue;
             }
 
-            foreach ($top->getListeCoasters() as $comparedListeCoaster) {
-                /** @var Coaster $comparedCoaster */
-                $comparedCoaster = $comparedListeCoaster->getCoaster();
+            foreach ($top->getTopCoasters() as $comparedTopCoaster) {
+                $comparedCoaster = $comparedTopCoaster->getCoaster();
 
                 if (!$comparedCoaster->isRankable()) {
                     continue;
@@ -173,7 +170,7 @@ class RankingService
                     // add this comparison to user comparisons array
                     $this->userComparisons[$coaster->getId().'-'.$comparedCoaster->getId()] = 1;
 
-                    if ($listeCoaster->getPosition() < $comparedListeCoaster->getPosition()) {
+                    if ($topCoaster->getPosition() < $comparedTopCoaster->getPosition()) {
                         $this->setWinner($coaster, $comparedCoaster);
                     } else {
                         $this->setLooser($coaster, $comparedCoaster);
@@ -288,7 +285,8 @@ class RankingService
     /**
      * Compute a list of coaster that does not meet the comparison & duel requirements
      */
-    private function computeRejectedCoasters() {
+    private function computeRejectedCoasters()
+    {
         foreach ($this->duels as $coasterId => $coasterDuels) {
             $duelCount = 0;
             foreach ($coasterDuels as $duelCoasterId => $comparisonResult) {
@@ -312,7 +310,8 @@ class RankingService
     /**
      * Remove all duels from rejected coasters
      */
-    private function removeRejectedCoasters() {
+    private function removeRejectedCoasters()
+    {
         foreach ($this->rejectedCoasters as $idRejected) {
             unset($this->duels[$idRejected]);
             foreach ($this->duels as $checkCurrentId => $checkDuels) {
@@ -407,10 +406,10 @@ class RankingService
     {
         $ranking = new Ranking();
 
-        $ranking->setRatingNumber($this->em->getRepository('App:RiddenCoaster')->countAll());
-        $ranking->setTopNumber($this->em->getRepository('App:Liste')->countTops());
-        $ranking->setUserNumber($this->em->getRepository('App:User')->count([]));
-        $ranking->setCoasterInTopNumber($this->em->getRepository('App:ListeCoaster')->countAllInTops());
+        $ranking->setRatingNumber($this->em->getRepository(RiddenCoaster::class)->countAll());
+        $ranking->setTopNumber($this->em->getRepository(Top::class)->countTops());
+        $ranking->setUserNumber($this->em->getRepository(User::class)->count([]));
+        $ranking->setCoasterInTopNumber($this->em->getRepository(TopCoaster::class)->countAllInTops());
         $ranking->setComparisonNumber($this->totalComparisonNumber);
         $ranking->setRankedCoasterNumber(count($this->ranking));
 

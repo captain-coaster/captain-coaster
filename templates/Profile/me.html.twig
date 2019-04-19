@@ -60,20 +60,16 @@
           <div class="list-group no-border no-padding-top">
             <a href="{{ path('me_ratings') }}" class="list-group-item">
               <i class="icon-stars"></i>
-              {{ 'navbar.rating'|trans }}
+              {{ 'me.menu.ratings'|trans }}
               <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
             </a>
-            <a href="{{ path('liste_me') }}" class="list-group-item">
-              <i class="icon-podium"></i>
-              {{ 'navbar.topcoasters'|trans }}
-            </a>
-            <a href="{{ path('user_lists', {'id': user.id}) }}" class="list-group-item">
+            <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
               <i class="icon-clipboard3"></i>
-              {{ 'navbar.lists'|trans }}
+              {{ 'me.menu.tops'|trans }}
             </a>
             <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
               <i class="icon-location3"></i>
-              {{ 'navbar.my_map'|trans }}
+              {{ 'me.menu.map'|trans }}
             </a>
           </div>
         </div>

@@ -42,7 +42,7 @@ class UserRepository extends EntityRepository
             ->select('u')
             ->from('App:User', 'u')
             ->leftJoin('u.ratings', 'r')
-            ->leftJoin('u.listes', 'l')
+            ->leftJoin('u.tops', 'l')
             ->where('r.updatedAt > :date')
             ->orWhere('l.updatedAt > :date')
             ->setParameter('date', $date)

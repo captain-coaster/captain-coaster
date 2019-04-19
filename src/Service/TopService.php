@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\TopCoaster;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -34,7 +35,7 @@ class TopService
      */
     public function updateTopStats(): int
     {
-        $repo = $this->em->getRepository('App:ListeCoaster');
+        $repo = $this->em->getRepository(TopCoaster::class);
 
         $repo->updateTotalTopsIn();
 

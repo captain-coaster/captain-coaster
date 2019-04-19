@@ -5,12 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * ListeCoaster
+ * TopCoaster - ranked coaster in a top
  *
- * @ORM\Table()
- * @ORM\Entity(repositoryClass="App\Repository\ListeCoasterRepository")
+ * @ORM\Table(name="liste_coaster")
+ * @ORM\Entity(repositoryClass="App\Repository\TopCoasterRepository")
  */
-class ListeCoaster
+class TopCoaster
 {
     /**
      * @var int
@@ -29,12 +29,12 @@ class ListeCoaster
     private $position;
 
     /**
-     * @var Liste
+     * @var Top
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Liste", inversedBy="listeCoasters")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Top", inversedBy="topCoasters")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $liste;
+    private $top;
 
     /**
      * @var Coaster
@@ -60,7 +60,7 @@ class ListeCoaster
      *
      * @param integer $position
      *
-     * @return ListeCoaster
+     * @return TopCoaster
      */
     public function setPosition($position)
     {
@@ -80,27 +80,27 @@ class ListeCoaster
     }
 
     /**
-     * Set liste
+     * Set top
      *
-     * @param Liste $liste
+     * @param Top $top
      *
-     * @return ListeCoaster
+     * @return TopCoaster
      */
-    public function setListe(Liste $liste)
+    public function setTop(Top $top)
     {
-        $this->liste = $liste;
+        $this->top = $top;
 
         return $this;
     }
 
     /**
-     * Get liste
+     * Get top
      *
-     * @return Liste
+     * @return Top
      */
-    public function getListe()
+    public function getTop()
     {
-        return $this->liste;
+        return $this->top;
     }
 
     /**
@@ -108,7 +108,7 @@ class ListeCoaster
      *
      * @param Coaster $coaster
      *
-     * @return ListeCoaster
+     * @return TopCoaster
      */
     public function setCoaster(Coaster $coaster)
     {

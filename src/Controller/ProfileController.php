@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -115,7 +114,8 @@ class ProfileController extends AbstractController
         $bannerMaker->makeBanner($user);
 
         return $this->render(
-            'Profile/banner.html.twig', ['user' => $user]
+            'Profile/banner.html.twig',
+            ['user' => $user]
         );
     }
 }

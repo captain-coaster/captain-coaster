@@ -2,18 +2,17 @@
 
 namespace App\Form\Type;
 
-use App\Entity\Liste;
+use App\Entity\Top;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ListeType
+ * Class TopType
  * @package App\Form\Type
  */
-class ListeType extends AbstractType
+class TopType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -23,14 +22,14 @@ class ListeType extends AbstractType
     {
         $builder
             ->add(
-                'listeCoasters',
+                'topCoasters',
                 CollectionType::class,
                 [
-                    'entry_type' => ListeCoasterType::class,
+                    'entry_type' => TopCoasterType::class,
                     'allow_add' => true,
                     'allow_delete' => true,
                     'by_reference' => false,
-                    'label' => false
+                    'label' => false,
                 ]
             );
     }
@@ -42,7 +41,7 @@ class ListeType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => Liste::class,
+                'data_class' => Top::class,
             ]
         );
     }

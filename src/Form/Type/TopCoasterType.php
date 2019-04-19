@@ -2,24 +2,23 @@
 
 namespace App\Form\Type;
 
-use App\Entity\ListeCoaster;
+use App\Entity\TopCoaster;
 use App\Form\DataTransformer\CoasterToIdTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class ListeCoasterType
+ * Class TopCoasterType
  * @package App\Form\Type
  */
-class ListeCoasterType extends AbstractType
+class TopCoasterType extends AbstractType
 {
     private $transformer;
 
     /**
-     * ListeCoasterType constructor.
+     * TopCoasterType constructor.
      * @param CoasterToIdTransformer $transformer
      */
     public function __construct(CoasterToIdTransformer $transformer)
@@ -53,7 +52,7 @@ class ListeCoasterType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => ListeCoaster::class,
+                'data_class' => TopCoaster::class,
             ]
         );
     }

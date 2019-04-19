@@ -94,11 +94,11 @@ class User extends BaseUser
     private $ratings;
 
     /**
-     * @var Liste
+     * @var Top[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Liste", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Top", mappedBy="user")
      */
-    private $listes;
+    private $tops;
 
     /**
      * @var Badge
@@ -176,7 +176,7 @@ class User extends BaseUser
         parent::__construct();
 
         $this->ratings = new ArrayCollection();
-        $this->listes = new ArrayCollection();
+        $this->tops = new ArrayCollection();
         $this->badges = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->images = new ArrayCollection();
@@ -418,54 +418,51 @@ class User extends BaseUser
     }
 
     /**
-     * Add liste
+     * Add top
      *
-     * @param \App\Entity\Liste $liste
+     * @param Top $top
      *
      * @return User
      */
-    public function addListe(Liste $liste)
+    public function addTop(Top $top)
     {
-        $this->listes[] = $liste;
+        $this->tops[] = $top;
 
         return $this;
     }
 
     /**
-     * Remove liste
+     * Remove top
      *
-     * @param \App\Entity\Liste $liste
+     * @param \App\Entity\Top $top
      */
-    public function removeListe(Liste $liste)
+    public function removeTop(Top $top)
     {
-        $this->listes->removeElement($liste);
+        $this->tops->removeElement($top);
     }
 
     /**
-     * Get listes
+     * Get tops
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getListes()
+    public function getTops()
     {
-        return $this->listes;
+        return $this->tops;
     }
 
     /**
-     * Get main liste (i.e. Top Coaster)
+     * Get main top
      *
-     * @return Liste
+     * @return Top
      */
-    public function getMainListe()
+    public function getMainTop()
     {
-        /** @var Liste $liste */
-        foreach ($this->listes as $liste) {
-            if ($liste->isMain() === true) {
-                return $liste;
+        foreach ($this->tops as $top) {
+            if ($top->isMain() === true) {
+                return $top;
             }
         }
-
-        return new Liste();
     }
 
     /**

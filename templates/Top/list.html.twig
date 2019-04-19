@@ -7,48 +7,49 @@
 
 {% block body %}
   <div class="row">
-    {% for liste in listes %}
+    {% for top in tops %}
       <div class="col-lg-4 col-sm-6">
         <div class="thumbnail">
           <div class="caption">
             <div class="content-group-sm media">
               <div class="media-left">
-                {{ helper.profilePicture(liste.user) }}
+                {{ helper.profilePicture(top.user) }}
               </div>
               <div class="media-body">
                 <h6 class="text-semibold no-margin">
-                  <a href="{{ path('liste_show', {'id': liste.id}) }}" class="text-default">
-                    {{ liste.name }}
+                  {% if top.main %}<i class="icon-checkmark3 text-size-mini position-left"></i>{% endif %}
+                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
+                    {{ top.name }}
                   </a>
                 </h6>
                 <small class="text-muted">
-                  {{ 'liste.list.by'|trans }}
-                  <a href="{{ path('user_show', {'slug': liste.user.slug}) }}">
-                    {{ liste.user.displayName }}
+                  {{ 'top.list.by'|trans }}
+                  <a href="{{ path('user_show', {'slug': top.user.slug}) }}">
+                    {{ top.user.displayName }}
                   </a>
                 </small>
               </div>
             </div>
             <ul class="list-feed">
-              {% for listeCoaster in liste.listeCoasters|slice(0,3) %}
+              {% for topCoaster in top.topCoasters|slice(0,3) %}
                 <li>
-                  {{ listeCoaster.position }} -
-                  <a href="{{ path('bdd_show_coaster', {'slug': listeCoaster.coaster.slug}) }}"
+                  {{ topCoaster.position }} -
+                  <a href="{{ path('bdd_show_coaster', {'slug': topCoaster.coaster.slug}) }}"
                      class="text-default">
-                    {{ listeCoaster.coaster.name }}
+                    {{ topCoaster.coaster.name }}
                   </a>
                 </li>
               {% endfor %}
             </ul>
             <div class="media">
-              <a href="{{ path('liste_show', {'id': liste.id}) }}">
-                <i class="icon-circle-right2"></i> {{ 'liste.list.more'|trans }}
+              <a href="{{ path('top_show', {'id': top.id}) }}">
+                <i class="icon-circle-right2"></i> {{ 'top.list.more'|trans }}
               </a>
             </div>
             <ul class="list-inline media">
-              <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+              <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
               <li>
-                <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+                <i class="icon-alarm position-left"></i> {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
               </li>
             </ul>
           </div>
@@ -56,6 +57,6 @@
       </div>
     {% endfor %}
   </div>
-  {{ knp_pagination_render(listes) }}
+  {{ knp_pagination_render(tops) }}
 {% endblock %}
 

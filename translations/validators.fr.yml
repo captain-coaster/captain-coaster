@@ -1,2 +1,2 @@
-liste_coaster.duplicate: "%coaster% est présent plusieurs fois. Merci de supprimer les doublons."
+top_coaster.duplicate: "%coaster% est présent plusieurs fois. Merci de supprimer les doublons."
 contact.recaptcha: "Vous devez cocher la case 'Je ne suis pas un robot'"

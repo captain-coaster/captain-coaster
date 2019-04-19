@@ -79,6 +79,7 @@ class RankingController extends AbstractController
      *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
      */
     public function searchAsyncAction(Request $request)
     {
@@ -110,6 +111,7 @@ class RankingController extends AbstractController
      * @param array $filters
      * @param int $page
      * @return \Knp\Component\Pager\Pagination\PaginationInterface
+     * @throws \Exception
      */
     private function getCoasters($filters = [], $page = 1)
     {

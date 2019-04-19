@@ -20,7 +20,6 @@ index:
         coasters: 'coaster'
         ratings: 'notas'
         reviews: 'reseñas'
-        listes: 'top coaster'
 
 coaster:
     score:
@@ -78,7 +77,6 @@ map_index:
 user_profile:
     title: '%name% - Perfil'
     ratings: 'Mostrar sus notas'
-    listes: 'Mostrar su Top Coasters'
     map: 'Mostrar su coaster map'
 
 user_list:
@@ -97,18 +95,6 @@ me:
         save: 'Salvar'
     badge: 'Insignias'
 
-liste:
-    list:
-        title: 'Los últimos Tops'
-        more: 'Ver más'
-        updated: 'Última actualización'
-        by: 'por'
-    title: 'My Top Coasters'
-    update: 'Actualiza la lista'
-    save: 'Salva la lista'
-    find: 'Encuentre una montaña rusa...'
-    info: 'Comience por buscar una montaña rusa aquí, entonces la magia pasa debajo. Incluso puede arrastrar y soltar líneas si no está decidido.'
-
 review:
     title: 'Reseñas'
     share: 'Comparte tu opinión con nosotros !'
@@ -123,8 +109,6 @@ review:
     all: 'Ver todo →'
 
 users:
-    lists:
-        title: '%name% - Lists'
     ratings:
         title: '%name% - Clasificación'
         coaster: 'Montaña rusa'
@@ -155,7 +139,6 @@ sidebar:
     ranking: 'Las mejores montañas rusas'
     users: 'Nuestros usuarios'
     map: 'Mapa de las montañas rusas'
-    liste: 'Tops Coasters'
     review: 'Reseñas de montaña rusa'
     contact: 'Estar en contacto'
     logout: 'Cerrar sesión'

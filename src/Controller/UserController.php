@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Entity\LikedImage;
-use App\Entity\Liste;
+use App\Entity\Top;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Service\StatService;
@@ -80,24 +80,24 @@ class UserController extends AbstractController
     }
 
     /**
-     * Show all user's lists
+     * Show all user's top
      *
-     * @Route("/{id}/lists", name="user_lists", methods={"GET"})
+     * @Route("/{id}/tops", name="user_tops", methods={"GET"})
      *
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listsAction(User $user)
+    public function listTops(User $user)
     {
-        $listes = $this
+        $tops = $this
             ->getDoctrine()
-            ->getRepository(Liste::class)
+            ->getRepository(Top::class)
             ->findAllByUser($user);
 
         return $this->render(
-            'User/lists.html.twig',
+            'User/tops.html.twig',
             [
-                'listes' => $listes,
+                'tops' => $tops,
                 'user' => $user,
             ]
         );

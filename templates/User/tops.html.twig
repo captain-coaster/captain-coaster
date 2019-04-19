@@ -1,9 +1,8 @@
-{# Display all user Listes #}
 {% extends 'base.html.twig' %}
 
 {% import "helper.html.twig" as helper %}
 
-{% set title = 'users.lists.title'|trans({'%name%': user.displayName}) %}
+{% set title = 'users.tops.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
@@ -14,41 +13,41 @@
       </a>
     </div>
     <div class="media-body media-middle">
-      <h6 class="media-heading text-semibold">{{ 'liste.list.infotitle'|trans }}</h6>
-      {{ 'liste.list.info'|trans }}
+      <h6 class="media-heading text-semibold">{{ 'top.list.infotitle'|trans }}</h6>
+      {{ 'top.list.info'|trans }}
     </div>
     <div class="media-right media-middle">
-      <a href="{{ path('liste_new') }}" class="btn bg-teal-400 btn-lg"><i class="icon-add position-left"></i>
-        {{ 'liste.list.create'|trans }}
+      <a href="{{ path('top_new') }}" class="btn bg-teal-400 btn-lg"><i class="icon-add position-left"></i>
+        {% if tops|length == 0 %}{{ 'top.list.create_first'|trans }}{% else %}{{ 'top.list.create'|trans }}{% endif %}
       </a>
     </div>
   </div>
 
   <div class="row">
-    {% for liste in listes %}
+    {% for top in tops %}
       <div class="col-lg-4 col-sm-6">
         <div class="thumbnail">
           <div class="caption">
             <div class="content-group-sm media">
               <div class="media-left">
-                {{ helper.profilePicture(liste.user) }}
+                {{ helper.profilePicture(top.user) }}
               </div>
               <div class="media-body">
                 <h6 class="text-semibold no-margin">
-                  <a href="{{ path('liste_show', {'id': liste.id}) }}" class="text-default">
-                    {{ liste.name }}
+                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
+                    {{ top.name }}
                   </a>
                 </h6>
               </div>
             </div>
             <ul class="list-feed">
               {% for i in 0..2 %}
-                {% if liste.listeCoasters[i] is defined %}
+                {% if top.topCoasters[i] is defined %}
                   <li>
                     {{ i + 1 }} -
-                    <a href="{{ path('bdd_show_coaster', {'slug': liste.listeCoasters[i].coaster.slug}) }}"
+                    <a href="{{ path('bdd_show_coaster', {'slug': top.topCoasters[i].coaster.slug}) }}"
                        class="text-default">
-                      {{ liste.listeCoasters[i].coaster.name }}
+                      {{ top.topCoasters[i].coaster.name }}
                     </a>
                   </li>
                 {% else %}
@@ -57,14 +56,14 @@
               {% endfor %}
             </ul>
             <div class="media">
-              <a href="{{ path('liste_show', {'id': liste.id}) }}">
-                <i class="icon-circle-right2"></i> {{ 'liste.list.more'|trans }}
+              <a href="{{ path('top_show', {'id': top.id}) }}">
+                <i class="icon-circle-right2"></i> {{ 'top.list.more'|trans }}
               </a>
             </div>
             <ul class="list-inline media">
-              <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+              <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
               <li>
-                <i class="icon-alarm position-left"></i> {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+                <i class="icon-alarm position-left"></i> {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
               </li>
             </ul>
           </div>

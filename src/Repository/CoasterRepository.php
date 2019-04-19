@@ -19,7 +19,7 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
      * @param User $user
      * @return array
      */
-    public function suggestCoasterForListe(string $term, User $user)
+    public function suggestCoasterForTop(string $term, User $user)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()

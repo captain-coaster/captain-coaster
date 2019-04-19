@@ -2,12 +2,12 @@
 
 namespace App\Security;
 
-use App\Entity\Liste;
+use App\Entity\Top;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class ListeVoter extends Voter
+class TopVoter extends Voter
 {
     const EDIT = 'edit';
     const EDIT_DETAILS = 'edit-details';
@@ -24,7 +24,7 @@ class ListeVoter extends Voter
             return false;
         }
 
-        if (!$subject instanceof Liste) {
+        if (!$subject instanceof Top) {
             return false;
         }
 
@@ -58,32 +58,32 @@ class ListeVoter extends Voter
     }
 
     /**
-     * @param Liste $liste
+     * @param Top $top
      * @param User $user
      * @return bool
      */
-    private function canEdit(Liste $liste, User $user)
+    private function canEdit(Top $top, User $user)
     {
-        return $user === $liste->getUser();
+        return $user === $top->getUser();
     }
 
     /**
-     * @param Liste $liste
+     * @param Top $top
      * @param User $user
      * @return bool
      */
-    private function canEditDetails(Liste $liste, User $user)
+    private function canEditDetails(Top $top, User $user)
     {
-        return $user === $liste->getUser() && $liste->isMain() === false;
+        return $user === $top->getUser() && $top->isMain() === false;
     }
 
     /**
-     * @param Liste $liste
+     * @param Top $top
      * @param User $user
      * @return bool
      */
-    private function canDelete(Liste $liste, User $user)
+    private function canDelete(Top $top, User $user)
     {
-        return $user === $liste->getUser() && $liste->isMain() === false;
+        return $user === $top->getUser() && $top->isMain() === false;
     }
 }

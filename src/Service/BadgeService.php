@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Badge;
-use App\Entity\ListeCoaster;
+use App\Entity\TopCoaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
@@ -111,14 +111,14 @@ class BadgeService
         }
 
         // Check in Top first (priority)
-        if (!is_null($user->getMainListe())) {
-            /** @var ListeCoaster $listeCoaster */
-            foreach ($user->getMainListe()->getListeCoasters() as $listeCoaster) {
-                if ($listeCoaster->getCoaster()->getName() === 'Katun') {
-                    $katun = $listeCoaster->getPosition();
+        if (!is_null($user->getMainTop())) {
+            /** @var TopCoaster $topCoaster */
+            foreach ($user->getMainTop()->getTopCoasters() as $topCoaster) {
+                if ($topCoaster->getCoaster()->getName() === 'Katun') {
+                    $katun = $topCoaster->getPosition();
                 }
-                if ($listeCoaster->getCoaster()->getName() === 'iSpeed') {
-                    $ispeed = $listeCoaster->getPosition();
+                if ($topCoaster->getCoaster()->getName() === 'iSpeed') {
+                    $ispeed = $topCoaster->getPosition();
                 }
             }
         }

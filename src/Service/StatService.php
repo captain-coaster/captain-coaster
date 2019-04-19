@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Country;
 use App\Entity\Image;
-use App\Entity\ListeCoaster;
+use App\Entity\TopCoaster;
 use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
@@ -54,7 +54,7 @@ class StatService
             ->countReviews();
 
         $stats['nb_in_tops'] = $this->em
-            ->getRepository(ListeCoaster::class)
+            ->getRepository(TopCoaster::class)
             ->countAllInTops();
 
         $stats['nb_images'] = $this->em

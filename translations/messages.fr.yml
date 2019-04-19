@@ -19,7 +19,7 @@ index:
     stats:
         ratings: 'notes'
         reviews: 'avis'
-        listes: 'tops'
+        tops: 'tops'
         images: 'photos'
     missingCoasters: 'Nous recherchons des photos pour ces coasters !'
 
@@ -120,8 +120,8 @@ map_index:
 user_profile:
     title: 'Profil de %name%'
     ratings: 'Voir ses notes'
-    listes: 'Voir son Top Coaster'
-    custom_listes: 'Voir ses listes'
+    main_top: 'Voir son Top Coasters'
+    tops: 'Voir ses autres tops'
     map: 'Voir sa carte'
     pictures: 'Voir ses photos'
 
@@ -135,6 +135,10 @@ user_list:
 
 me:
     title: 'Mon Profil'
+    menu:
+        ratings: 'Mes notes'
+        tops: 'Mes tops'
+        map: 'Ma carte'
     parameters: 'Préférences'
     form:
         displayName: 'Je souhaite apparaître en tant que'
@@ -168,36 +172,33 @@ me:
         manufacturer: 'le plus ridé'
 
 top:
-    list:
-        title: 'Les derniers tops'
-
-liste:
     new:
-        title: 'Créer une liste'
+        title: 'Créer un top'
         form:
-            name: 'Nom de la liste :'
+            name: 'Nom du top :'
             type: 'Ce sera un Top ou un Flop ?'
             flop: 'Flop (les pires sont placés en premier)'
             top: 'Top (les meilleurs sont placés en premier)'
-            submit: 'Créer la liste'
+            submit: 'Créer le top'
     editDetails:
-        title: 'Modifier une liste'
+        title: 'Modifier un top'
         form:
-            submit: 'Modifier la liste'
+            submit: 'Modifier le top'
     list:
-        title: 'Les dernières listes'
+        title: 'Les derniers tops'
         more: 'Voir le détail'
         updated: 'mis à jour'
         by: 'par'
-        infotitle: 'Toutes tes listes sont ici !'
-        info: 'Les listes, ça permet de faire connaître aux autres ses goûts, comme les meilleurs RMC de la planète, ou les pires kiddies d’Espagne, ou peut-être les meilleurs water coasters bleus avec launch magnétique ! Tout est possible, et chaque liste peut ensuite être partagée.'
-        create: 'Créer une liste'
+        infotitle: 'Toutes tes tops sont ici !'
+        info: 'Les tops, ça permet de faire connaître aux autres ses goûts, comme les meilleurs RMC de la planète, ou les pires kiddies d’Espagne, ou peut-être les meilleurs water coasters bleus avec launch magnétique ! Tout est possible, et chaque top peut ensuite être partagé.'
+        create_first: 'Create mon premier Top Coasters'
+        create: 'Créer un nouveau top'
     title: 'Mon Top Coasters'
     update: 'Modifier'
     update_details: 'Changer le nom'
     delete: 'Supprimer'
     delete_confirmation: 'Supprimer ?'
-    save: 'Sauvegarder la liste'
+    save: 'Sauvegarder le top'
     find: 'Chercher un coaster...'
     info: 'Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l''ordre si t''es du genre indécis.'
 
@@ -217,8 +218,8 @@ review:
     ridden_at: 'Date du ride'
 
 users:
-    lists:
-        title: 'Listes de %name%'
+    tops:
+        title: 'Tops de %name%'
     ratings:
         title: 'Notes de %name%'
         coaster: 'Coaster'
@@ -242,8 +243,7 @@ navbar:
     profile: 'Mon Profil'
     rating: 'Mes Notes'
     logout: 'Se déconnecter'
-    topcoasters: 'Mon Top Coaster'
-    lists: 'Mes listes'
+    tops: 'Mes tops'
     my_map: 'Ma carte'
 
 sidebar:
@@ -253,7 +253,6 @@ sidebar:
     users: 'Nos riders'
     map: 'Carte des coasters'
     top: 'Les tops'
-    liste: 'Les listes'
     review: 'Tous les avis'
     contact: 'Nous contacter'
     logout: 'Se déconnecter'

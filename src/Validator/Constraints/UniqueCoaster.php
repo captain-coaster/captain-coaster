@@ -9,5 +9,5 @@ use Symfony\Component\Validator\Constraint;
  */
 class UniqueCoaster extends Constraint
 {
-    public $message = 'liste_coaster.duplicate';
+    public $message = 'top_coaster.duplicate';
 }

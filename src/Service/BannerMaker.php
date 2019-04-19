@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\ListeCoaster;
+use App\Entity\TopCoaster;
 use App\Entity\User;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Image\Point;
@@ -62,9 +62,9 @@ class BannerMaker
         $this->writeCoasterCount($user->getRatings()->count());
 
         $top = [];
-        /** @var ListeCoaster $listeCoaster */
-        foreach ($user->getMainListe()->getListeCoasters()->slice(0, 3) as $listeCoaster) {
-            $top[] = $listeCoaster->getCoaster()->getName();
+        /** @var TopCoaster $topCoaster */
+        foreach ($user->getMainTop()->getTopCoasters()->slice(0, 3) as $topCoaster) {
+            $top[] = $topCoaster->getCoaster()->getName();
         }
 
         $this->writeTop3($top);

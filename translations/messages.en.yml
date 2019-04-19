@@ -19,7 +19,7 @@ index:
     stats:
         ratings: 'ratings'
         reviews: 'reviews'
-        listes: 'in tops'
+        tops: 'in tops'
         images: 'pictures'
     missingCoasters: 'We are looking for pictures of these coasters!'
 
@@ -120,8 +120,8 @@ map_index:
 user_profile:
     title: '%name% - Profile'
     ratings: 'Show his ratings'
-    listes: 'Show his Top Coaster'
-    custom_listes: 'Show his lists'
+    main_top: 'Show his Top Coasters'
+    tops: 'Show his other tops'
     map: 'Show his coaster map'
     pictures: 'Show his pictures'
 
@@ -135,6 +135,10 @@ user_list:
 
 me:
     title: 'My Profile'
+    menu:
+        ratings: 'My ratings'
+        tops: 'My tops'
+        map: 'My map'
     parameters: 'Parameters'
     form:
         displayName: 'I want to appear as'
@@ -168,36 +172,33 @@ me:
         manufacturer: 'most ridden'
 
 top:
-    list:
-        title: 'The latest tops'
-
-liste:
     new:
-        title: 'Create a new list'
+        title: 'Create a new top'
         form:
-            name: 'Name of your list :'
+            name: 'Name of your top :'
             type: 'Is it a Top or a Flop ?'
             flop: 'Flop (lower is better)'
             top: 'Top (higher is better)'
-            submit: 'Create new list'
+            submit: 'Create new top'
     editDetails:
-        title: 'Update a list'
+        title: 'Update a top'
         form:
-            submit: 'Update the list'
+            submit: 'Update the top'
     list:
-        title: 'The latest lists'
+        title: 'The latest tops'
         more: 'See more'
         updated: 'last updated'
         by: 'by'
-        infotitle: 'All you lists are on this page !'
-        info: 'Lists are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
-        create: 'Create a new list'
+        infotitle: 'All your tops are on this page !'
+        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
+        create_first: 'Create my first Top Coasters'
+        create: 'Create a custom top'
     title: 'My Top Coasters'
     update: 'Update'
     update_details: 'Change name'
     delete: 'Delete'
     delete_confirmation: 'Delete ?'
-    save: 'Save the list'
+    save: 'Save the top'
     find: 'Find a coaster...'
     info: 'Start by searching a coaster up there, then the magic happens below. You can even drag and drop lines if you are undecided.'
 
@@ -217,8 +218,8 @@ review:
     ridden_at: 'Ride date'
 
 users:
-    lists:
-        title: '%name% - Lists'
+    tops:
+        title: '%name%''s tops'
     ratings:
         title: '%name% - Ratings'
         coaster: 'Coaster'
@@ -242,8 +243,7 @@ navbar:
     profile: 'My profile'
     rating: 'My ratings'
     logout: 'Logout'
-    topcoasters: 'My Top Coaster'
-    lists: 'My lists'
+    tops: 'My tops'
     my_map: 'My map'
 
 sidebar:
@@ -253,7 +253,6 @@ sidebar:
     users: 'Our riders'
     map: 'Coasters map'
     top: 'Tops'
-    liste: 'Lists'
     review: 'Coaster Reviews'
     contact: 'Get in touch'
     logout: 'Logout'

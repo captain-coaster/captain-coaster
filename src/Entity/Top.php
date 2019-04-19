@@ -8,12 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Liste (not "list" because it's a reserved keyword)
+ * Top (rename mysql table later)
  *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\ListeRepository")
+ * @ORM\Table(name="liste")
+ * @ORM\Entity(repositoryClass="App\Repository\TopRepository")
  */
-class Liste
+class Top
 {
     /**
      * @var int
@@ -41,19 +41,19 @@ class Liste
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="listes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tops")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
 
     /**
-     * @var ListeCoaster
+     * @var TopCoaster[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ListeCoaster", mappedBy="liste", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="TopCoaster", mappedBy="top", cascade={"persist", "remove"})
      * @ORM\OrderBy({"position" = "ASC"})
      * @CaptainConstraints\UniqueCoaster
      */
-    private $listeCoasters;
+    private $topCoasters;
 
     /**
      * @var bool
@@ -82,7 +82,7 @@ class Liste
      */
     public function __construct()
     {
-        $this->listeCoasters = new ArrayCollection();
+        $this->topCoasters = new ArrayCollection();
     }
 
     /**
@@ -100,7 +100,7 @@ class Liste
      *
      * @param string $name
      *
-     * @return Liste
+     * @return Top
      */
     public function setName($name)
     {
@@ -124,7 +124,7 @@ class Liste
      *
      * @param string $type
      *
-     * @return Liste
+     * @return Top
      */
     public function setType($type)
     {
@@ -148,7 +148,7 @@ class Liste
      *
      * @param User $user
      *
-     * @return Liste
+     * @return Top
      */
     public function setUser(User $user)
     {
@@ -168,46 +168,44 @@ class Liste
     }
 
     /**
-     * Add listeCoster
+     * Add topCoaster
      *
-     * @param ListeCoaster $listeCoaster
+     * @param TopCoaster $topCoaster
      *
-     * @return Liste
+     * @return Top
      */
-    public function addListeCoaster(ListeCoaster $listeCoaster)
+    public function addTopCoaster(TopCoaster $topCoaster)
     {
-        $listeCoaster->setListe($this);
+        $topCoaster->setTop($this);
 
-        $this->listeCoasters->add($listeCoaster);
+        $this->topCoasters->add($topCoaster);
 
         return $this;
     }
 
     /**
-     * Remove listeCoaster
+     * Remove topCoaster
      *
-     * @param ListeCoaster $listeCoaster
+     * @param TopCoaster $topCoaster
      */
-    public function removeListeCoaster(ListeCoaster $listeCoaster)
+    public function removeTopCoaster(TopCoaster $topCoaster)
     {
-        $this->listeCoasters->removeElement($listeCoaster);
+        $this->topCoasters->removeElement($topCoaster);
     }
 
     /**
-     * Get listeCoasters
-     *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return TopCoaster[]|ArrayCollection
      */
-    public function getListeCoasters()
+    public function getTopCoasters()
     {
-        return $this->listeCoasters;
+        return $this->topCoasters;
     }
 
     /**
      * @param bool $main
-     * @return Liste
+     * @return Top
      */
-    public function setMain(bool $main): Liste
+    public function setMain(bool $main): Top
     {
         $this->main = $main;
 
@@ -227,7 +225,7 @@ class Liste
      *
      * @param \DateTime $createdAt
      *
-     * @return Liste
+     * @return Top
      */
     public function setCreatedAt($createdAt)
     {
@@ -251,7 +249,7 @@ class Liste
      *
      * @param \DateTime $updatedAt
      *
-     * @return Liste
+     * @return Top
      */
     public function setUpdatedAt($updatedAt)
     {

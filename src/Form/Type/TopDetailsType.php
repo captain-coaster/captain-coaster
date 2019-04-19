@@ -2,7 +2,7 @@
 
 namespace App\Form\Type;
 
-use App\Entity\Liste;
+use App\Entity\Top;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -12,10 +12,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class ListeCustomType
+ * Class TopDetailsType
  * @package App\Form\Type
  */
-class ListeCustomType extends AbstractType
+class TopDetailsType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -29,7 +29,7 @@ class ListeCustomType extends AbstractType
                 TextType::class,
                 [
                     'required' => true,
-                    'label' => 'liste.new.form.name',
+                    'label' => 'top.new.form.name',
                     'translation_domain' => 'messages',
                     'constraints' => [
                         new NotBlank(),
@@ -41,13 +41,13 @@ class ListeCustomType extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => [
-                        'liste.new.form.top' => 'top',
-                        'liste.new.form.flop' => 'flop',
+                        'top.new.form.top' => 'top',
+                        'top.new.form.flop' => 'flop',
                     ],
                     'choice_translation_domain' => 'messages',
                     'expanded' => true,
                     'required' => true,
-                    'label' => 'liste.new.form.type',
+                    'label' => 'top.new.form.type',
                     'translation_domain' => 'messages',
                     'constraints' => [
                         new NotBlank(),
@@ -64,7 +64,7 @@ class ListeCustomType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => Liste::class,
+                'data_class' => Top::class,
             ]
         );
     }

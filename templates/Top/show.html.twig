@@ -1,42 +1,42 @@
 {% extends "base.html.twig" %}
 
-{% set title = liste.name %}
-{% set subTitle = liste.user.displayName %}
+{% set title = top.name %}
+{% set subTitle = top.user.displayName %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
 {% block body %}
   <div class="panel panel-white panel-flat">
     <div class="panel-heading">
       <ul class="list-inline no-margin">
-        <li><i class="icon-stack3 position-left"></i> {{ liste.listeCoasters|length }}</li>
+        <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
         <li>
           <i class="icon-alarm position-left"></i>
-          {{ 'liste.list.updated'|trans }} {{ liste.updatedAt|ago }}
+          {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
         </li>
       </ul>
       <div class="heading-elements visible-elements">
-        {% if is_granted('edit', liste) %}
-          <a class="heading-text" href="{{ path('liste_edit', {'id': liste.id}) }}">
-            {{ 'liste.update'|trans }}
+        {% if is_granted('edit', top) %}
+          <a class="heading-text" href="{{ path('top_edit', {'id': top.id}) }}">
+            {{ 'top.update'|trans }}
           </a>
         {% endif %}
-        {% if is_granted('edit-details', liste) %}
-          <a class="heading-text" href="{{ path('liste_edit_details', {'id': liste.id}) }}">
-            {{ 'liste.update_details'|trans }}
+        {% if is_granted('edit-details', top) %}
+          <a class="heading-text" href="{{ path('top_edit_details', {'id': top.id}) }}">
+            {{ 'top.update_details'|trans }}
           </a>
         {% endif %}
-        {% if is_granted('delete', liste) %}
-          <a class="heading-text" href="{{ path('liste_delete', {'id': liste.id}) }}"
-             onclick="return confirm('{{ 'liste.delete_confirmation'|trans }}');">
-            {{ 'liste.delete'|trans }}
+        {% if is_granted('delete', top) %}
+          <a class="heading-text" href="{{ path('top_delete', {'id': top.id}) }}"
+             onclick="return confirm('{{ 'top.delete_confirmation'|trans }}');">
+            {{ 'top.delete'|trans }}
           </a>
         {% endif %}
       </div>
     </div>
 
     <ul class="media-list">
-      {% for listeCoaster in liste.listeCoasters %}
-        {% set coaster = listeCoaster.coaster %}
+      {% for topCoaster in top.topCoasters %}
+        {% set coaster = topCoaster.coaster %}
         <li class="media panel-body stack-media-on-mobile">
           <div class="media-left">
             <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
@@ -52,12 +52,14 @@
           <div class="media-body">
             <h2 class="media-heading text-semibold">
               <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                {{ listeCoaster.position }}&nbsp;-&nbsp;{{ coaster.name }}
+                {{ topCoaster.position }}&nbsp;-&nbsp;{{ coaster.name }}
               </a>
             </h2>
 
             <ul class="list-inline list-inline-separate text-muted mb-10">
-              <li>{{ coaster.manufacturer.name }}</li>
+              {% if coaster.manufacturer %}
+                <li>{{ coaster.manufacturer.name }}</li>
+              {% endif %}
               <li>
                 <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
                   {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
@@ -69,30 +71,30 @@
       {% endfor %}
     </ul>
   </div>
-  {% if is_granted('edit', liste) %}
+  {% if is_granted('edit', top) %}
     <div class="mr-10 mb-10 pull-right">
-      <a href="{{ path('liste_edit', {'id': liste.id}) }}">
+      <a href="{{ path('top_edit', {'id': top.id}) }}">
         <button type="button" class="btn bg-primary btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'liste.update'|trans }}
+          <b><i class="icon-pencil3"></i></b> {{ 'top.update'|trans }}
         </button>
       </a>
     </div>
   {% endif %}
-  {% if is_granted('edit-details', liste) %}
+  {% if is_granted('edit-details', top) %}
     <div class="mr-10 mb-10 pull-right">
-      <a href="{{ path('liste_edit_details', {'id': liste.id}) }}">
+      <a href="{{ path('top_edit_details', {'id': top.id}) }}">
         <button type="button" class="btn bg-primary btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'liste.update_details'|trans }}
+          <b><i class="icon-pencil3"></i></b> {{ 'top.update_details'|trans }}
         </button>
       </a>
     </div>
   {% endif %}
-  {% if is_granted('delete', liste) %}
+  {% if is_granted('delete', top) %}
     <div class="mr-10 mb-10 pull-right">
-      <a href="{{ path('liste_delete', {'id': liste.id}) }}"
-         onclick="return confirm('{{ 'liste.delete_confirmation'|trans }}');">
+      <a href="{{ path('top_delete', {'id': top.id}) }}"
+         onclick="return confirm('{{ 'top.delete_confirmation'|trans }}');">
         <button type="button" class="btn bg-danger btn-labeled">
-          <b><i class="icon-cross3"></i></b> {{ 'liste.delete'|trans }}
+          <b><i class="icon-cross3"></i></b> {{ 'top.delete'|trans }}
         </button>
       </a>
     </div>

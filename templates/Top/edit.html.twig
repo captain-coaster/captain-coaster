@@ -1,13 +1,13 @@
 {% extends "base.html.twig" %}
 
-{% set title = listName %}
+{% set title = topName %}
 {% block title %}{{ title }}{% endblock %}
 
 {% set showSearchBar = 0 %}
 
 {% form_theme form _self %}
 
-{% block _liste_listeCoasters_entry_widget %}
+{% block _top_topCoasters_entry_widget %}
   <li class="media">
     {{ form_widget(form) }}
 
@@ -47,7 +47,7 @@
   <div class="panel panel-flat">
     <div class="panel-heading">
       <span class="panel-title">
-        {{ 'liste.info'|trans }}
+        {{ 'top.info'|trans }}
       </span>
       {% if form.vars.errors is not empty %}
         <div class="alert alert-danger alert-styled-left alert-dismissible">
@@ -56,17 +56,17 @@
       {% endif %}
     </div>
     <div class="panel-body">
-      <ul id="liste-coaster"
-          data-prototype="{{ form_widget(form.listeCoasters.vars.prototype)|e('html_attr') }}"
+      <ul id="top-coaster"
+          data-prototype="{{ form_widget(form.topCoasters.vars.prototype)|e('html_attr') }}"
           class="media-list media-list-container ui-sortable">
-        {% for coaster in form.listeCoasters %}
+        {% for coaster in form.topCoasters %}
           {{ form_widget(coaster) }}
         {% endfor %}
       </ul>
     </div>
   </div>
   <button type="submit" class="btn bg-teal-400 btn-labeled pull-right">
-    <b><i class="icon-pencil3"></i></b> {{ 'liste.save'|trans }}
+    <b><i class="icon-pencil3"></i></b> {{ 'top.save'|trans }}
   </button>
   {{ form_rest(form) }}
   {{ form_end(form) }}
@@ -80,7 +80,7 @@
 
       jQuery(document).ready(function () {
           // Get the ul that holds the collection of tags
-          $collectionHolder = $('ul#liste-coaster');
+          $collectionHolder = $('ul#top-coaster');
           $collectionHolder.data('index', $collectionHolder.find('li').length);
 
           $(".ui-sortable").sortable({
@@ -99,7 +99,7 @@
           $collectionHolder.data('index', index + 1);
           $collectionHolder.append(newForm);
 
-          $("#liste_listeCoasters_" + index + "_coaster").val(data.id);
+          $("#top_topCoasters_" + index + "_coaster").val(data.id);
 
           updatePosition();
       }
@@ -120,7 +120,7 @@
           });
       }
 
-      var urlSearch = Routing.generate('coaster_search_json', {'_locale': '{{ app.request.locale }}'});
+      var urlSearch = Routing.generate('top_ajax_search', {'_locale': '{{ app.request.locale }}'});
       $("select").select2({
           ajax: {
               url: urlSearch,
@@ -145,7 +145,7 @@
               cache: true,
           },
           minimumInputLength: 2,
-          placeholder: "{{ 'liste.find'|trans }}"
+          placeholder: "{{ 'top.find'|trans }}"
       });
 
       jQuery("select").on("select2:select", function (evt) {

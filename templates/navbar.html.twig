@@ -6,10 +6,10 @@
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
     <ul class="nav navbar-nav visible-xs-block">
-      <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+      <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-user"></i></a></li>
       <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
       {% if pageHasFilters is defined %}
-      <li><a class="sidebar-mobile-secondary-toggle"><i class="icon-filter3"></i></a></li>
+        <li><a class="sidebar-mobile-secondary-toggle"><i class="icon-filter3"></i></a></li>
       {% endif %}
     </ul>
   </div>
@@ -92,18 +92,13 @@
               <a href="{{ path('me') }}"><i class="icon-profile"></i> {{ 'navbar.profile'|trans }}</a>
             </li>
             <li>
-              <a href="{{ path('liste_me') }}">
-                <i class="icon-podium"></i> {{ 'navbar.topcoasters'|trans }}
-              </a>
-            </li>
-            <li>
-              <a href="{{ path('user_lists', {'id': app.user.id}) }}">
-                <i class="icon-clipboard3"></i> {{ 'navbar.lists'|trans }}
-              </a>
-            </li>
-            <li>
               <a href="{{ path('me_ratings') }}">
                 <i class="icon-stars"></i> {{ 'navbar.rating'|trans }}
+              </a>
+            </li>
+            <li>
+              <a href="{{ path('user_tops', {'id': app.user.id}) }}">
+                <i class="icon-clipboard3"></i> {{ 'navbar.tops'|trans }}
               </a>
             </li>
             <li>

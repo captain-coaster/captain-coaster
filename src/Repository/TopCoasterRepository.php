@@ -8,9 +8,9 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**
- * ListCoasterRepository
+ * TopCoasterRepository
  */
-class ListeCoasterRepository extends EntityRepository
+class TopCoasterRepository extends EntityRepository
 {
     /**
      * @param Coaster $coaster
@@ -22,7 +22,7 @@ class ListeCoasterRepository extends EntityRepository
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1)')
-                ->from('App:ListeCoaster', 'l')
+                ->from('App:TopCoaster', 'l')
                 ->where('l.coaster = :coaster')
                 ->setParameter('coaster', $coaster)
                 ->getQuery()
@@ -33,7 +33,7 @@ class ListeCoasterRepository extends EntityRepository
     }
 
     /**
-     * Count all coasters inside Tops only
+     * Count all coasters inside main tops only
      *
      * @return mixed
      */
@@ -43,9 +43,9 @@ class ListeCoasterRepository extends EntityRepository
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1)')
-                ->from('App:ListeCoaster', 'l')
-                ->join('l.liste', 'li')
-                ->where('li.main = 1')
+                ->from('App:TopCoaster', 'tc')
+                ->join('tc.top', 't')
+                ->where('t.main = 1')
                 ->getQuery()
                 ->getSingleScalarResult();
         } catch (NonUniqueResultException $e) {
@@ -66,7 +66,7 @@ class ListeCoasterRepository extends EntityRepository
             JOIN (
                 SELECT lc.coaster_id AS id, COUNT(1) AS nb
                 FROM liste_coaster lc
-                JOIN liste l ON l.id = lc.liste_id
+                JOIN liste l ON l.id = lc.top_id
                 WHERE l.main = 1
                 GROUP BY lc.coaster_id
             ) c2
