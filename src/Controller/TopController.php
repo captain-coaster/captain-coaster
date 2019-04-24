@@ -35,11 +35,11 @@ class TopController extends AbstractController
      */
     public function newAction(Request $request, EntityManagerInterface $em)
     {
-        $top = $em->getRepository(Top::class)->findOneBy(['user' => $this->getUser(), 'main' => true]);
+        $top = new Top();
+        $mainTop = $em->getRepository(Top::class)->findOneBy(['user' => $this->getUser(), 'main' => true]);
 
         // Very first top, redirect to main top edit
-        if (!$top instanceof Top) {
-            $top = new Top();
+        if (!$mainTop instanceof Top) {
             $top->setName('Top Coasters');
             $top->setType('main');
             $top->setMain(true);

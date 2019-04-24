@@ -463,6 +463,9 @@ class User extends BaseUser
                 return $top;
             }
         }
+
+        // always return top object
+        return new Top();
     }
 
     /**
