@@ -4,15 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\Image;
+use App\Entity\LikedImage;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ImageUploadType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class CoasterController
@@ -24,11 +25,11 @@ class CoasterController extends AbstractController
     /**
      * Redirects to index
      *
-     * @Route("/", name="bdd_index_coaster", methods={"GET"})
+     * @Route("/", name="coaster_index", methods={"GET"})
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function index()
     {
         return $this->redirectToRoute('bdd_index');
     }
@@ -102,7 +103,7 @@ class CoasterController extends AbstractController
                 'App\Doctrine\Hydrator\ColumnHydrator'
             );
             $userLikes = $em
-                ->getRepository('App:LikedImage')
+                ->getRepository(LikedImage::class)
                 ->findUserLikes($user)
                 ->getResult('COLUMN_HYDRATOR');
         }

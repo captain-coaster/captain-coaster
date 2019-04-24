@@ -41,7 +41,6 @@ class TopController extends AbstractController
         // Very first top, redirect to main top edit
         if (!$mainTop instanceof Top) {
             $top->setName('Top Coasters');
-            $top->setType('main');
             $top->setMain(true);
             $top->setUser($this->getUser());
 

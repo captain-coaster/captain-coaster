@@ -1,6 +1,30 @@
 easy_admin:
     site_name: 'Captain Coaster'
     entities:
+        ParkToApprove:
+            class: App\Entity\Park
+            label: 'Park to approve'
+            disabled_actions: ['new']
+            list:
+                fields:
+                    - id
+                    - name
+                    - {property: 'country', type: 'string', trans: true, domain: 'database'}
+                    - enabled
+                dql_filter: 'entity.enabled = false'
+            edit:
+                fields:
+                    - name
+                    - {property: 'country', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'slug', type_options: {disabled: true}}
+                    - {property: 'latitude', type: 'text'}
+                    - {property: 'longitude', type: 'text'}
+            new:
+                fields:
+                    - name
+                    - {property: 'country', type_options: {choice_translation_domain: 'database'}}
+                    - {property: 'latitude', type: 'text'}
+                    - {property: 'longitude', type: 'text'}
         Coaster:
             class: App\Entity\Coaster
             disabled_actions: ['delete', 'show']

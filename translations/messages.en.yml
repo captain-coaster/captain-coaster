@@ -327,3 +327,14 @@ error:
         message: 'Calling the maintenance chief department...'
 
 User account is disabled.: 'User account is disabled. Having multiple accounts is not allowed.'
+
+missing:
+    step1:
+        title: 'Add a missing coaster'
+        subtitle: 'Step 1'
+        choose_description: 'Select an existing park below'
+        create_description: 'Or simply create a new park'
+        form:
+            choose_btn: 'Select this park'
+            park_name: 'Enter park name'
+            country: 'Select its country below'

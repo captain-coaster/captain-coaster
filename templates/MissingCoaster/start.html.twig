@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% set title = 'missing.step1.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{% form_theme chooseForm 'bootstrap_3_layout.html.twig' %}
+
+{% block body %}
+  <div class="panel panel-flat">
+    <div class="panel-heading">
+      <h5 class="panel-title">
+        {{ 'missing.step1.subtitle'|trans }}<a class="heading-elements-toggle"><i class="icon-more"></i></a></h5>
+    </div>
+    <div class="panel-body">
+      <fieldset class="content-group">
+        <legend class="text-bold">{{ 'missing.step1.choose_description'|trans }}</legend>
+        {{ form_start(chooseForm) }}
+        {{ form_row(chooseForm.existingPark) }}
+        {{ form_row(chooseForm.chooseParkSubmit, {'attr': {'class': 'btn-primary'}}) }}
+        {{ form_rest(chooseForm) }}
+        {{ form_end(chooseForm) }}
+      </fieldset>
+      <fieldset class="content-group">
+        <legend class="text-bold">{{ 'missing.step1.create_description'|trans }}</legend>
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.country) }}
+        <input type="submit" class="btn btn-primary" value="Create"/>
+        {{ form_rest(form) }}
+        {{ form_end(form) }}
+      </fieldset>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
+  <script type="text/javascript">
+      $('document').ready(function () {
+          $('select').select2();
+      });
+  </script>
+{% endblock %}

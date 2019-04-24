@@ -34,6 +34,7 @@
               </div>
               <div class="media-body">
                 <h6 class="text-semibold no-margin">
+                  {% if top.main %}<i class="icon-checkmark3 text-size-mini position-left"></i>{% endif %}
                   <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
                     {{ top.name }}
                   </a>

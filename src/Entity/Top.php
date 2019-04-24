@@ -36,7 +36,7 @@ class Top
      *
      * @ORM\Column(type="string", length=255, unique=false, nullable=false)
      */
-    private $type;
+    private $type = 'top';
 
     /**
      * @var User

@@ -99,6 +99,13 @@ class Park
     private $updatedAt;
 
     /**
+     * @var boolean $enabled
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled = false;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -304,5 +311,24 @@ class Park
                 return $coaster->isKiddie() == 1;
             }
         );
+    }
+
+    /**
+     * @param bool $enabled
+     * @return Park
+     */
+    public function setEnabled(bool $enabled): Park
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
     }
 }

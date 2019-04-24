@@ -35,7 +35,7 @@
               </a>
             {% endif %}
             {% if user.tops|length > 1 %}
-              <a href="{{ path('top_list') }}" class="list-group-item">
+              <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
                 <i class="icon-podium"></i>
                 {{ 'user_profile.tops'|trans }}
                 <span class="badge bg-teal-400 pull-right">{{ user.tops|length }}</span>
@@ -48,10 +48,6 @@
                 <span class="badge bg-teal-400 pull-right">{{ user.images|length }}</span>
               </a>
             {% endif %}
-            <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
-              <i class="icon-clipboard3"></i>
-              {{ 'user_profile.custom_listes'|trans }}
-            </a>
             <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
               <i class="icon-location3"></i>
               {{ 'user_profile.map'|trans }}

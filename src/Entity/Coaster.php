@@ -331,6 +331,13 @@ class Coaster
     private $updatedAt;
 
     /**
+     * @var boolean $enabled
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $enabled = false;
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -1106,5 +1113,24 @@ class Coaster
         }
 
         return null;
+    }
+
+    /**
+     * @param bool $enabled
+     * @return Coaster
+     */
+    public function setEnabled(bool $enabled): Coaster
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
     }
 }
