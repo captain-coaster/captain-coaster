@@ -185,6 +185,7 @@ class ImageManager
             inner join (
               select max(updated_at) as max_date, coaster_id
               from image 
+              where i.enabled = 1
               group by coaster_id
             ) i2
             on i2.coaster_id = i.coaster_id and i2.max_date = i.updated_at

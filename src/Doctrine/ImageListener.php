@@ -86,7 +86,7 @@ class ImageListener
     }
 
     /**
-     * After update:
+     * After update (enabled set to 1 is an update)
      *  - update main images
      *
      * @param LifecycleEventArgs $args
