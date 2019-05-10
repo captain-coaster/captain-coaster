@@ -2,10 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Image;
+use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Form\Type\ContactType;
 use App\Service\DiscordService;
 use App\Service\StatService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,46 +39,27 @@ class DefaultController extends AbstractController
      *
      * @param Request $request
      * @param StatService $statService
+     * @param EntityManagerInterface $em
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Exception
      * @Route("/", name="bdd_index", methods={"GET"})
      */
-    public function indexAction(Request $request, StatService $statService)
+    public function indexAction(Request $request, StatService $statService, EntityManagerInterface $em)
     {
-        $ratingFeed = $this
-            ->getDoctrine()
-            ->getRepository('App:RiddenCoaster')
-            ->findBy([], ['updatedAt' => 'DESC'], 6);
-
-        $image = $this
-            ->getDoctrine()
-            ->getRepository('App:Image')
-            ->findLatestImage();
-
-        $stats = $statService->getIndexStats();
-
-        $reviews = $this
-            ->getDoctrine()
-            ->getRepository('App:RiddenCoaster')
-            ->getLatestReviewsByLocale($request->getLocale());
-
         $missingImages = [];
-        if ($user = $this->getUser() instanceof User) {
-            $missingImages = $this
-                ->getDoctrine()
-                ->getRepository('App:RiddenCoaster')
-                ->findCoastersWithNoImage($this->getUser());
+        if (($user = $this->getUser()) instanceof User) {
+            $missingImages = $em->getRepository(RiddenCoaster::class)->findCoastersWithNoImage($user);
         }
 
         return $this->render(
             'Default/index.html.twig',
             [
-                'ratingFeed' => $ratingFeed,
-                'image' => $image,
-                'stats' => $stats,
-                'reviews' => $reviews,
+                'ratingFeed' => $em->getRepository(RiddenCoaster::class)->findBy([], ['updatedAt' => 'DESC'], 6),
+                'image' => $em->getRepository(Image::class)->findLatestImage(),
+                'stats' => $statService->getIndexStats(),
+                'reviews' => $em->getRepository(RiddenCoaster::class)->getLatestReviewsByLocale($request->getLocale()),
                 'missingImages' => $missingImages,
             ]
         );
@@ -130,12 +114,7 @@ class DefaultController extends AbstractController
             return $this->redirectToRoute('default_contact');
         }
 
-        return $this->render(
-            'Default/contact.html.twig',
-            [
-                'form' => $form->createView(),
-            ]
-        );
+        return $this->render('Default/contact.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -144,8 +123,6 @@ class DefaultController extends AbstractController
      */
     public function termsAction()
     {
-        return $this->render(
-            'Default/terms.html.twig'
-        );
+        return $this->render('Default/terms.html.twig');
     }
 }
