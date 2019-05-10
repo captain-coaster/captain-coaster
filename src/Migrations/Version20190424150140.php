@@ -23,7 +23,9 @@ final class Version20190424150140 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
         $this->addSql('ALTER TABLE park ADD enabled TINYINT(1) NOT NULL');
+        $this->addSql('UPDATE park set enabled = 1');
         $this->addSql('ALTER TABLE coaster ADD enabled TINYINT(1) NOT NULL');
+        $this->addSql('UPDATE coaster set enabled = 1');
     }
 
     public function down(Schema $schema) : void

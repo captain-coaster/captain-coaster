@@ -24,7 +24,7 @@ class MissingCoasterController extends AbstractController
      * Starts missing coaster procedure
      *
      * @Route("/start", name="missingcoaster_start", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Request $request
      * @param EntityManagerInterface $em
@@ -68,7 +68,7 @@ class MissingCoasterController extends AbstractController
      * Main form to add a missing coaster
      *
      * @Route("/park/{id}/add", name="missingcoaster_add", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Request $request
      * @param Park $park
@@ -91,30 +91,20 @@ class MissingCoasterController extends AbstractController
             return $this->redirectToRoute('missingcoaster_success', ['coaster' => $coaster]);
         }
 
-        return $this->render(
-            'MissingCoaster/create.html.twig',
-            [
-                'form' => $form->createView(),
-            ]
-        );
+        return $this->render('MissingCoaster/create.html.twig', ['form' => $form->createView()]);
     }
 
     /**
      * Recap message for the user
      *
      * @Route("/success", name="missingcoaster_success", methods={"GET"})
-     * @Security("is_granted('ROLE_USER')")
+     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Coaster $coaster
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function success(Coaster $coaster)
     {
-        return $this->render(
-            'MissingCoaster/success.html.twig',
-            [
-                'coaster' => $coaster,
-            ]
-        );
+        return $this->render('MissingCoaster/success.html.twig', ['coaster' => $coaster]);
     }
 }
