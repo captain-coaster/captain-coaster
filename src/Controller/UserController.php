@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -26,7 +27,7 @@ class UserController extends AbstractController
      *
      * @param PaginatorInterface $paginator
      * @param int $page
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @Route("/{page}", name="user_list", requirements={"page" = "\d+"}, methods={"GET"})
      */
@@ -48,7 +49,7 @@ class UserController extends AbstractController
      * @param PaginatorInterface $paginator
      * @param User $user
      * @param int $page
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
@@ -80,12 +81,49 @@ class UserController extends AbstractController
     }
 
     /**
+     * Show all user's reviews
+     *
+     * @param PaginatorInterface $paginator
+     * @param User $user
+     * @param int $page
+     * @return Response
+     *
+     * @Route("/{id}/reviews/{page}", name="user_reviews", requirements={"page" = "\d+"}, methods={"GET"})
+     */
+    public function listReviews(PaginatorInterface $paginator, User $user, $page = 1)
+    {
+        $query = $this
+            ->getDoctrine()
+            ->getRepository(RiddenCoaster::class)
+            ->getUserReviews($user);
+
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            30,
+            [
+                'wrap-queries' => true,
+                'defaultSortFieldName' => 'r.riddenAt',
+                'defaultSortDirection' => 'desc',
+            ]
+        );
+
+        return $this->render(
+            'Review/list.html.twig',
+            [
+                'reviews' => $pagination,
+                'user' => $user,
+            ]
+        );
+    }
+
+    /**
      * Show all user's top
      *
      * @Route("/{id}/tops", name="user_tops", methods={"GET"})
      *
      * @param User $user
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function listTops(User $user)
     {
@@ -112,7 +150,7 @@ class UserController extends AbstractController
      * @param User $user
      * @param EntityManagerInterface $em
      * @param PaginatorInterface $paginator
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function picturesAction(
         Request $request,
@@ -163,7 +201,7 @@ class UserController extends AbstractController
      *
      * @param User $user
      * @param StatService $statService
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @Route("/{slug}", name="user_show", methods={"GET"}, options={"expose" = true})
      */
     public function showAction(User $user, StatService $statService)
@@ -182,7 +220,7 @@ class UserController extends AbstractController
      * Permalink to user profile
      *
      * @param User $user
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @Route("/{id}/profile", name="user_profile", methods={"GET"})
      */

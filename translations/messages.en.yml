@@ -120,6 +120,7 @@ map_index:
 user_profile:
     title: '%name% - Profile'
     ratings: 'Show his ratings'
+    reviews: 'Show his reviews'
     main_top: 'Show his Top Coasters'
     tops: 'Show his other tops'
     map: 'Show his coaster map'
@@ -229,6 +230,8 @@ users:
         ridden_at: 'Ridden at'
     my_ratings:
         title: 'My ratings'
+    reviews:
+        title: '%name% - Reviews'
     images:
         title: '%name% - Pictures'
 

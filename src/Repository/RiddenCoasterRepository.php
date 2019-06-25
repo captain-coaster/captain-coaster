@@ -8,6 +8,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * RiddenCoasterRepository
@@ -36,7 +37,7 @@ class RiddenCoasterRepository extends EntityRepository
     /**
      * Count all ratings with text review
      * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function countReviews()
     {
@@ -52,7 +53,7 @@ class RiddenCoasterRepository extends EntityRepository
      * Count all new ratings since date passed in parameter
      * @param \DateTime $date
      * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function countNew(\DateTime $date)
     {
@@ -70,7 +71,7 @@ class RiddenCoasterRepository extends EntityRepository
      * Count all ratings for a specific user passed in parameter
      * @param User $user
      * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function countForUser(User $user)
     {
@@ -158,7 +159,7 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * @param User $user
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
     public function getUserRatings(User $user)
     {
@@ -171,6 +172,25 @@ class RiddenCoasterRepository extends EntityRepository
             ->leftJoin('c.manufacturer', 'm')
             ->join('c.park', 'p')
             ->where('r.user = :user')
+            ->setParameter('user', $user);
+    }
+
+    /**
+     * @param User $user
+     * @return QueryBuilder
+     */
+    public function getUserReviews(User $user)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'm', 'c', 'p')
+            ->from('App:RiddenCoaster', 'r')
+            ->join('r.user', 'u')
+            ->join('r.coaster', 'c')
+            ->leftJoin('c.manufacturer', 'm')
+            ->join('c.park', 'p')
+            ->where('r.user = :user')
+            ->andWhere('r.review is not null')
             ->setParameter('user', $user);
     }
 

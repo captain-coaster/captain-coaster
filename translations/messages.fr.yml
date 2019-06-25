@@ -120,6 +120,7 @@ map_index:
 user_profile:
     title: 'Profil de %name%'
     ratings: 'Voir ses notes'
+    reviews: 'Voir ses avis'
     main_top: 'Voir son Top Coasters'
     tops: 'Voir ses autres tops'
     map: 'Voir sa carte'
@@ -229,6 +230,8 @@ users:
         ridden_at: 'Ridé le'
     my_ratings:
         title: 'Mes notes'
+    reviews:
+        title: 'Avis de %name%'
     images:
         title: 'Photos de %name%'
 

@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
+use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,8 +29,8 @@ class ReviewController extends AbstractController
      * @param Request $request
      * @param PaginatorInterface $paginator
      * @param int $page
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return Response
+     * @throws NonUniqueResultException
      */
     public function listAction(Request $request, PaginatorInterface $paginator, $page = 1)
     {
@@ -53,7 +55,7 @@ class ReviewController extends AbstractController
      *
      * @param Request $request
      * @param Coaster $coaster
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @Route("/coasters/{id}/form", name="review_form", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */

@@ -27,7 +27,11 @@
               {{ 'user_profile.ratings'|trans }}
               <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
             </a>
-            {% if user.mainTop %}
+            <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
+              <i class="icon-megaphone"></i>
+              {{ 'user_profile.reviews'|trans }}
+            </a>
+            {% if user.mainTop.id %}
               <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" class="list-group-item">
                 <i class="icon-podium"></i>
                 {{ 'user_profile.main_top'|trans }}

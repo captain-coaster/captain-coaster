@@ -21,7 +21,7 @@
         {{ form_label(form.file, "", {'label_attr': {'class': 'text-bold col-lg-2'}}) }}
         <div class="col-lg-10">
           {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
-          <span{{ form_errors(form.file) }}
+          {{ form_errors(form.file) }}
           <span class="help-block">{{ 'image_upload.form.file.helper'|trans }}</span>
         </div>
       </div>

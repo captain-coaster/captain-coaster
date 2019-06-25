@@ -10,7 +10,9 @@ use App\Form\Type\CreateParkType;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,7 +30,7 @@ class MissingCoasterController extends AbstractController
      *
      * @param Request $request
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     public function start(Request $request, EntityManagerInterface $em)
     {
@@ -73,7 +75,7 @@ class MissingCoasterController extends AbstractController
      * @param Request $request
      * @param Park $park
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     public function addCoaster(Request $request, Park $park, EntityManagerInterface $em)
     {
@@ -101,7 +103,7 @@ class MissingCoasterController extends AbstractController
      * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Coaster $coaster
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function success(Coaster $coaster)
     {
