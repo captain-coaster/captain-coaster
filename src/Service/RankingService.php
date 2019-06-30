@@ -20,6 +20,9 @@ class RankingService
     CONST MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
     CONST MIN_DUELS = 250;
+    // For elite coaster, we need more comparisons
+    CONST ELITE_SCORE = 99;
+    CONST MIN_DUELS_ELITE_SCORE = 500;
 
     /**
      * @var EntityManagerInterface
@@ -271,7 +274,12 @@ class RankingService
 
             if ($duelCount >= self::MIN_DUELS) {
                 // final score is between 0 and 100
-                $this->ranking[$coasterId] = $duelScoreSum / $duelCount;
+                $finalScore = $duelScoreSum / $duelCount;
+
+                // Elite coaster has specific minimum duels
+                if ($finalScore < self::ELITE_SCORE || $duelCount >= self::MIN_DUELS_ELITE_SCORE) {
+                    $this->ranking[$coasterId] = $finalScore;
+                }
             }
 
             // update duel stat
