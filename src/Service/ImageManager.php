@@ -179,19 +179,15 @@ class ImageManager
         $conn = $this->em->getConnection();
 
         $sql = 'update coaster c
-          left join
-          (
-            select i.id, i.coaster_id from image i
-            inner join (
-              select max(updated_at) as max_date, coaster_id
-              from image ii
-              where ii.enabled = 1
-              group by coaster_id
-            ) i2
-            on i2.coaster_id = i.coaster_id and i2.max_date = i.updated_at
-            where i.enabled = 1
-          ) as i3 on i3.coaster_id = c.id
-          set c.main_image_id = i3.id;';
+            left join (
+	            select sub.id, sub.coaster_id from (
+		            select * from image
+		            where enabled = 1
+		            order by like_counter desc, updated_at desc 
+		            limit 18446744073709551615) as sub
+	            group by coaster_id
+            ) as i on i.coaster_id = c.id
+            set c.main_image_id = i.id;';
 
         try {
             $stmt = $conn->prepare($sql);
