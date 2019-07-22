@@ -22,7 +22,7 @@ class RankingService
     CONST MIN_DUELS = 250;
     // For elite coaster, we need more comparisons
     CONST ELITE_SCORE = 99;
-    CONST MIN_DUELS_ELITE_SCORE = 500;
+    CONST MIN_DUELS_ELITE_SCORE = 400;
 
     /**
      * @var EntityManagerInterface
@@ -255,7 +255,8 @@ class RankingService
 
                 // don't take into account if too few comparisons
                 // $comparisonResult + $reverseComparisonResult always equals vote number
-                if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
+                if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS ||
+                    max($comparisonResult, $reverseComparisonResult) >= (intdiv(self::MIN_COMPARISONS, 2) + 1)) {
                     $this->totalComparisonNumber += ($comparisonResult + $reverseComparisonResult);
                     $duelCount++;
 
