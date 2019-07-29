@@ -292,7 +292,7 @@ notif:
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "%name%" !'
     ranking:
-        message: 'Nouveau classement ! 50 nouveaux coasters font leur entrée !'
+        message: 'Untamed et Hakugei entrent dans le classement ce mois-ci !'
     email:
         title: '🎢 Nouvelle notification sur Captain Coaster'
         gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'

@@ -288,11 +288,11 @@ contact:
 
 notif:
     title: 'Activity'
-    empty: 'Nothing special right now, go ride some coasters !'
+    empty: 'Nothing special right now, go ride some coasters!'
     badge:
-        message: 'Check it out: Captain just gave you the "%name%" badge !'
+        message: 'Check it out: Captain just gave you the "%name%" badge!'
     ranking:
-        message: 'Ranking updated! 50 new coasters just entered this month!'
+        message: 'Untamed & Hakugei are entering the ranking this month!'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'
