@@ -11,10 +11,12 @@ use App\Entity\Model;
 use App\Entity\Ranking;
 use App\Entity\SeatingType;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -24,7 +26,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class RankingController extends AbstractController
 {
-    const  COASTERS_PER_PAGE = 20;
+    const COASTERS_PER_PAGE = 20;
 
     /**
      * @var PaginatorInterface
@@ -44,17 +46,17 @@ class RankingController extends AbstractController
      * Show ranking of best coasters
      *
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @Route("/", name="ranking_index", methods={"GET"})
-     * @throws \Psr\Cache\InvalidArgumentException
      * @throws \Exception
      */
     public function indexAction(EntityManagerInterface $em)
     {
+        /** @var Ranking $ranking */
         $ranking = $em->getRepository(Ranking::class)->findCurrent();
 
-        $nextRankingDate = new \DateTime('first day of next month midnight 1 minute');
-        if ($nextRankingDate->diff(new \DateTime('now'), true)->format('%h') < 1) {
+        $nextRankingDate = $ranking->getComputedAt()->modify('first day of next month midnight 1 minute');
+        if ($nextRankingDate->getTimestamp() - (new \DateTime())->getTimestamp() < 3600) {
             $nextRankingDate = null;
         }
 
@@ -78,7 +80,7 @@ class RankingController extends AbstractController
      * )
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Exception
      */
     public function searchAsyncAction(Request $request)
@@ -92,7 +94,7 @@ class RankingController extends AbstractController
                 'coasters' => $this->getCoasters($filters, $page),
                 // array_filter removes empty filters e.g. ['continent' => '']
                 'filtered' => count(array_filter($filters, "strlen")) > 0,
-                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1
+                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );
     }
@@ -110,7 +112,7 @@ class RankingController extends AbstractController
     /**
      * @param array $filters
      * @param int $page
-     * @return \Knp\Component\Pager\Pagination\PaginationInterface
+     * @return PaginationInterface
      * @throws \Exception
      */
     private function getCoasters($filters = [], $page = 1)
@@ -130,7 +132,6 @@ class RankingController extends AbstractController
      * Get data to display filter form (mainly <select> data)
      *
      * @return array
-     * @throws \Psr\Cache\InvalidArgumentException
      */
     private function getFiltersForm()
     {
