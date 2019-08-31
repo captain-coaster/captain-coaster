@@ -55,7 +55,8 @@ class RankingController extends AbstractController
         /** @var Ranking $ranking */
         $ranking = $em->getRepository(Ranking::class)->findCurrent();
 
-        $nextRankingDate = $ranking->getComputedAt()->modify('first day of next month midnight 1 minute');
+        $rankingDate = clone $ranking->getComputedAt();
+        $nextRankingDate = $rankingDate->modify('first day of next month midnight 1 minute');
         if ($nextRankingDate->getTimestamp() - (new \DateTime())->getTimestamp() < 3600) {
             $nextRankingDate = null;
         }
