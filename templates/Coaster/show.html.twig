@@ -246,16 +246,7 @@
       </div>
       <!-- /coasters in park -->
       <!-- coaster location -->
-{#      {% if coaster.park.latitude and coaster.park.longitude %}#}
-{#        <div class="panel panel-flat">#}
-{#          <div class="panel-heading">#}
-{#            <h5 class="panel-title">{{ 'coaster.location'|trans }}</h5>#}
-{#          </div>#}
-{#          <div class="panel-body">#}
-{#            <div id="map-coaster" class="map-container" style="height:250px;"></div>#}
-{#          </div>#}
-{#        </div>#}
-{#      {% endif %}#}
+      <!-- removed until open street maps -->
       <!-- /coaster location -->
     </div>
     <div class="col-sm-9">
@@ -270,24 +261,6 @@
 {% block javascripts %}
   <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
   <script src="{{ asset('js/pages/rating.js') }}"></script>
-  {% if coaster.park.latitude and coaster.park.longitude %}
-    <script>
-        function initMap() {
-            var uluru = {lat: {{ coaster.park.latitude }}, lng: {{ coaster.park.longitude }}};
-            var map = new google.maps.Map(document.getElementById('map-coaster'), {
-                zoom: 14,
-                center: uluru,
-            });
-            var marker = new google.maps.Marker({
-                position: uluru,
-                map: map,
-            });
-        }
-    </script>
-{#    <script async defer#}
-{#            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9GhjdRtYf1BNtxx-rLJJwNl2n2CDUev4&callback=initMap">#}
-{#    </script>#}
-  {% endif %}
   <script src="{{ asset('js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
   <script type="text/javascript">
       $('document').ready(function () {
