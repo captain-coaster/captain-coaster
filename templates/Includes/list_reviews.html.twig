@@ -23,20 +23,10 @@
               <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
                 {{ review.user.displayName }}
               </a>
+              {{ helper.starRating(review.value) }}
               <span class="media-annotation dotted">
-                    <span class="text-warning">
-                        {% set low = review.value|round(0, 'floor') %}
-                      {% for i in 1..low if low > 0 %}
-                        <i class="icon-star-full2"></i>
-                      {% endfor %}
-                      {% if low < review.value %}
-                        <i class="icon-star-half"></i>
-                      {% endif %}
-                    </span>
-                  </span>
-              <span class="media-annotation dotted">
-                    {{ review.updatedAt|ago }}
-                  </span>
+                {{ review.updatedAt|ago }}
+              </span>
             </div>
             {% if review.pros|length > 0 or review.cons|length > 0 %}
               <p>
@@ -49,18 +39,13 @@
               </p>
             {% endif %}
             {% if review.review %}
-              <p>
-                {{ review.review|slice(0, 600) }}
-                {% if review.review|length > 600 %}...{% endif %}
-              </p>
+              <p>{{ review.review }}</p>
             {% endif %}
-            {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
+            {% if is_granted('update', review) %}
               <ul class="list-inline list-inline-separate text-size-small">
-                {#<li>114 <a href="#"><i class="icon-arrow-up22 text-success"></i></a><a href="#"><i#}
-                {#class="icon-arrow-down22 text-danger"></i></a></li>#}
                 <li>
                   <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                    Modifier mon avis
+                    {{ 'review.update'|trans }}
                   </a>
                 </li>
               </ul>

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Coaster;
+use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
@@ -184,7 +185,7 @@ class RiddenCoasterRepository extends EntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r', 'm', 'c', 'p')
-            ->from('App:RiddenCoaster', 'r')
+            ->from(RiddenCoaster::class, 'r')
             ->join('r.user', 'u')
             ->join('r.coaster', 'c')
             ->leftJoin('c.manufacturer', 'm')

@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Entity\LikedImage;
-use App\Entity\Top;
 use App\Entity\RiddenCoaster;
+use App\Entity\Top;
 use App\Entity\User;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -103,7 +103,7 @@ class UserController extends AbstractController
             30,
             [
                 'wrap-queries' => true,
-                'defaultSortFieldName' => 'r.riddenAt',
+                'defaultSortFieldName' => 'r.updatedAt',
                 'defaultSortDirection' => 'desc',
             ]
         );

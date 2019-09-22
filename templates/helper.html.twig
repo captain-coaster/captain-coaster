@@ -35,3 +35,18 @@
     <span class="badge badge-flat border-primary-600 text-primary-600"><i class="icon-arrow-right5"></i></span>
   {% endif %}
 {% endmacro %}
+
+{# Display star rating #}
+{% macro starRating(rating) %}
+  <span class="media-annotation dotted">
+    <span class="text-warning">
+      {% set low = rating|round(0, 'floor') %}
+      {% for i in 1..low if low > 0 %}
+        <i class="icon-star-full2"></i>
+      {% endfor %}
+      {% if low < rating %}
+        <i class="icon-star-half"></i>
+      {% endif %}
+    </span>
+  </span>
+{% endmacro %}
