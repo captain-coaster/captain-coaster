@@ -206,7 +206,6 @@ class UserController extends AbstractController
      */
     public function showAction(User $user, StatService $statService)
     {
-
         return $this->render(
             'User/show.html.twig',
             [

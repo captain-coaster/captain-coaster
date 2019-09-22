@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class TopService
 {
-    CONST MIN_TOPS_IN = 2;
+    const MIN_TOPS_IN = 2;
 
     /**
      * @var EntityManagerInterface

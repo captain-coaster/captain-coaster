@@ -38,7 +38,6 @@ class MissingCoasterController extends AbstractController
         $chooseForm->handleRequest($request);
 
         if ($chooseForm->isSubmitted() && $chooseForm->isValid()) {
-
             return $this->redirectToRoute(
                 'missingcoaster_add',
                 ['id' => $chooseForm->get('existingPark')->getData()->getId()]

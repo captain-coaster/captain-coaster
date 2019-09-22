@@ -24,3 +24,4 @@
 /public/images/coasters
 /.idea/
 /node_modules
+.php_cs.cache

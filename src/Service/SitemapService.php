@@ -114,7 +114,8 @@ class SitemapService
 
             $imageXML = [];
 
-            $imageXML['loc'] = sprintf('%s://%s/%s/%s',
+            $imageXML['loc'] = sprintf(
+                '%s://%s/%s/%s',
                 $this->router->getContext()->getScheme(),
                 $this->router->getContext()->getHost(),
                 'images/coasters',

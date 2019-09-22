@@ -21,7 +21,7 @@ class ShortNumberExtension extends AbstractExtension
      * @param int $precision
      * @return float
      */
-    function formatNumber($n, $precision = 1)
+    public function formatNumber($n, $precision = 1)
     {
         if ($n >= 0 && $n < 1000) {
             // 1 - 999

@@ -13,7 +13,7 @@ use Http\Message\MessageFactory;
  */
 class DiscordService
 {
-    CONST BASE_URL = 'https://discordapp.com/api/webhooks';
+    const BASE_URL = 'https://discordapp.com/api/webhooks';
 
     /**
      * @var HttpClient

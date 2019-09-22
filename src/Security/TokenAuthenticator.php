@@ -13,7 +13,7 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
-    CONST HEADER = 'X-AUTH-TOKEN';
+    const HEADER = 'X-AUTH-TOKEN';
 
     /**
      * @param Request $request

@@ -14,16 +14,16 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class BadgeService
 {
-    CONST BADGE_TYPE_RATING = 'rating';
-    CONST BADGE_RATING_1 = 'badge.rating1';
-    CONST BADGE_RATING_100 = 'badge.rating100';
-    CONST BADGE_RATING_250 = 'badge.rating250';
-    CONST BADGE_RATING_500 = 'badge.rating500';
-    CONST BADGE_RATING_1000 = 'badge.rating1000';
+    const BADGE_TYPE_RATING = 'rating';
+    const BADGE_RATING_1 = 'badge.rating1';
+    const BADGE_RATING_100 = 'badge.rating100';
+    const BADGE_RATING_250 = 'badge.rating250';
+    const BADGE_RATING_500 = 'badge.rating500';
+    const BADGE_RATING_1000 = 'badge.rating1000';
 
-    CONST BADGE_TYPE_TEAM = 'team';
-    CONST BADGE_TEAM_KATUN = 'badge.teamkatun';
-    CONST BADGE_TEAM_ISPEED = 'badge.teamispeed';
+    const BADGE_TYPE_TEAM = 'team';
+    const BADGE_TEAM_KATUN = 'badge.teamkatun';
+    const BADGE_TEAM_ISPEED = 'badge.teamispeed';
 
     /**
      * @var EntityManagerInterface

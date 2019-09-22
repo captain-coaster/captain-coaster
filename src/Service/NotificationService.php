@@ -15,8 +15,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class NotificationService
 {
-    CONST NOTIF_BADGE = 'badge';
-    CONST NOTIF_RANKING = 'ranking';
+    const NOTIF_BADGE = 'badge';
+    const NOTIF_RANKING = 'ranking';
 
     /**
      * @var EntityManagerInterface

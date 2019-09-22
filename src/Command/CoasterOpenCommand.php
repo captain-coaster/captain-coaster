@@ -76,5 +76,4 @@ class CoasterOpenCommand extends Command
             $this->discord->notify('We just opened '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🎉');
         }
     }
-
 }

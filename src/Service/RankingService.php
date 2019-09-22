@@ -17,12 +17,12 @@ use Doctrine\ORM\EntityManagerInterface;
 class RankingService
 {
     // Minimum comparison number between coaster A and B
-    CONST MIN_COMPARISONS = 3;
+    const MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
-    CONST MIN_DUELS = 275;
+    const MIN_DUELS = 275;
     // For elite coaster, we need more comparisons
-    CONST ELITE_SCORE = 99;
-    CONST MIN_DUELS_ELITE_SCORE = 350;
+    const ELITE_SCORE = 99;
+    const MIN_DUELS_ELITE_SCORE = 350;
 
     /**
      * @var EntityManagerInterface
@@ -262,10 +262,10 @@ class RankingService
                     // same win & loose numbers
                     if ($comparisonResult === $reverseComparisonResult) {
                         $duelScoreSum += 50;
-                        // $coaster has more wins
+                    // $coaster has more wins
                     } elseif ($comparisonResult > $reverseComparisonResult) {
                         $duelScoreSum += 100;
-                        // $coaster has less wins
+                    // $coaster has less wins
                     } else {
                         $duelScoreSum += 0;
                     }

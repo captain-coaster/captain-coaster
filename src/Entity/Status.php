@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 class Status
 {
-    CONST OPERATING = 'status.operating';
+    const OPERATING = 'status.operating';
 
     /**
      * @var int

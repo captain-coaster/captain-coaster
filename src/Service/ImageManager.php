@@ -24,7 +24,7 @@ class ImageManager
     /**
      * Image max size
      */
-    CONST MAX_SIZE = 1440;
+    const MAX_SIZE = 1440;
 
     /**
      * @var string

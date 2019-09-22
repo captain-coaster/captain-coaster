@@ -36,7 +36,6 @@ class ImageController extends AbstractController
 
         if ($likedImage instanceof LikedImage) {
             $em->remove($likedImage);
-
         } else {
             $likedImage = new LikedImage();
             $likedImage->setUser($user);
