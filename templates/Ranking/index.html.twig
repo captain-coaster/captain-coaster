@@ -37,6 +37,9 @@
       $('ul.pagination a').click(function(e) {
         e.preventDefault();
         var pageUrl = $(this).attr('href');
+        var queryString = pageUrl.split('?')[1];
+        var urlParams = new URLSearchParams(queryString);
+        $('#form-filter input#filter-page').val(urlParams.get('page'));
 
         $.ajax({
           url: pageUrl,
