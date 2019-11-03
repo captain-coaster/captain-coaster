@@ -1,5 +1,5 @@
 {% extends "base.html.twig" %}
-{% set title = 'Avis sur ' ~ coaster.name %}
+{% set title = 'review.form.title'|trans({'%name%': coaster.name}) %}
 {% set subTitle = '' %}
 {% block title %}{{ title }}{% endblock %}
 

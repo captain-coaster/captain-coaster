@@ -217,6 +217,8 @@ review:
     last: 'Derniers avis'
     all: 'Voir plus →'
     ridden_at: 'Date du ride'
+    form:
+        title: 'Avis sur %name%'
 
 users:
     tops:
