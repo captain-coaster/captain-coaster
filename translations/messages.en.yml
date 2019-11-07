@@ -119,12 +119,12 @@ map_index:
 
 user_profile:
     title: '%name% - Profile'
-    ratings: 'Show his ratings'
-    reviews: 'Show his reviews'
-    main_top: 'Show his Top Coasters'
-    tops: 'Show his other tops'
-    map: 'Show his coaster map'
-    pictures: 'Show his pictures'
+    ratings: 'Show their ratings'
+    reviews: 'Show their reviews'
+    main_top: 'Show their Top Coasters'
+    tops: 'Show their other tops'
+    map: 'Show their coaster map'
+    pictures: 'Show their pictures'
 
 user_list:
     title: 'Our riders'
