@@ -7,7 +7,11 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class NotificationService
@@ -58,7 +62,7 @@ class NotificationService
      *
      * @param EntityManagerInterface $em
      * @param RouterInterface $router
-     * @param EngineInterface $templating
+     * @param Environment $templating
      * @param \Swift_Mailer $mailer
      * @param TranslatorInterface $translator
      * @param string $emailFrom
@@ -67,7 +71,7 @@ class NotificationService
     public function __construct(
         EntityManagerInterface $em,
         RouterInterface $router,
-        EngineInterface $templating,
+        Environment $templating,
         \Swift_Mailer $mailer,
         TranslatorInterface $translator,
         string $emailFrom,
@@ -87,8 +91,11 @@ class NotificationService
      * @param string $message
      * @param string $parameter
      * @param string $type
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function send(User $user, string $message, string $parameter = null, string $type): void
+    public function send(User $user, string $message, string $parameter = null, string $type = null): void
     {
         $notification = new Notification();
         $notification->setUser($user);
@@ -125,14 +132,17 @@ class NotificationService
      * @param string $message
      * @param string $type
      * @param bool $markSameTypeRead
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function sendAll(string $message, string $type, bool $markSameTypeRead = true)
     {
         if ($markSameTypeRead) {
-            $this->em->getRepository('App:Notification')->markTypeAsRead($type);
+            $this->em->getRepository(Notification::class)->markTypeAsRead($type);
         }
 
-        $users = $this->em->getRepository('App:User')->findAll();
+        $users = $this->em->getRepository(User::class)->findAll();
         foreach ($users as $user) {
             $this->send($user, $message, null, $type);
         }
@@ -151,6 +161,9 @@ class NotificationService
     /**
      * Send an email
      * @param Notification $notification
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     private function sendEmail(Notification $notification): void
     {
@@ -173,7 +186,7 @@ class NotificationService
                 $this->templating->render(
                     'Notification/email.html.twig',
                     [
-                        'notification' => $notification
+                        'notification' => $notification,
                     ]
                 ),
                 'text/html'

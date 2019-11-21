@@ -57,7 +57,6 @@ security:
             logout:
                 path: '/logout'
                 target: '/'
-            logout_on_user_change: true
 
     access_control:
         - { path: ^/team, roles: ROLE_CONTRIBUTOR }

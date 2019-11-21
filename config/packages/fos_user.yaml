@@ -5,3 +5,5 @@ fos_user:
     from_email:
         address: '%app_mail_from%'
         sender_name: '%app_mail_from_name%'
+    service:
+        mailer: fos_user.mailer.twig_swift
