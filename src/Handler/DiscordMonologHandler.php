@@ -31,7 +31,7 @@ class DiscordMonologHandler extends AbstractProcessingHandler
      * @param array $record
      * @throws \Exception
      */
-    public function write(array $record)
+    public function write(array $record): void
     {
         $this->discordService->log(
             sprintf('%s: `%s`', Logger::getLevelName($record['level']), $record['message'])
