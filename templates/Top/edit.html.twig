@@ -28,7 +28,7 @@
         {% if form.vars.data is not null %}
           -
           {{ form.vars.data.coaster.park.name|default('') }}
-          ({{ form.vars.data.coaster.userRating(app.user).value|default('N/A') }})
+          ({{ app.user.rating(form.vars.data.coaster).value|default('N/A') }})
         {% endif %}
       </h4>
     </div>

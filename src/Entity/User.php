@@ -314,7 +314,7 @@ class User extends BaseUser
     /**
      * Add rating
      *
-     * @param \App\Entity\RiddenCoaster $rating
+     * @param RiddenCoaster $rating
      *
      * @return User
      */
@@ -328,7 +328,7 @@ class User extends BaseUser
     /**
      * Remove rating
      *
-     * @param \App\Entity\RiddenCoaster $rating
+     * @param RiddenCoaster $rating
      */
     public function removeRating(RiddenCoaster $rating)
     {
@@ -338,11 +338,27 @@ class User extends BaseUser
     /**
      * Get ratings
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getRatings()
     {
         return $this->ratings;
+    }
+
+    /**
+     * @param Coaster $coaster
+     * @return RiddenCoaster|null
+     */
+    public function getRating(Coaster $coaster): ?RiddenCoaster
+    {
+        /** @var RiddenCoaster $rating */
+        foreach ($this->ratings as $rating) {
+            if ($rating->getCoaster() === $coaster) {
+                return $rating;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -444,7 +460,7 @@ class User extends BaseUser
     /**
      * Get tops
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getTops()
     {
@@ -495,7 +511,7 @@ class User extends BaseUser
     /**
      * Get badges
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getBadges()
     {
@@ -529,7 +545,7 @@ class User extends BaseUser
     /**
      * Get notifications
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getNotifications()
     {
@@ -537,7 +553,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\ArrayCollection|Collection
      */
     public function getUnreadNotifications()
     {
