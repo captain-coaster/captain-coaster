@@ -312,7 +312,7 @@ class ImageManager
     {
         $fullPath = $this->getFullPath($image->getFilename(), true);
         $backupFullPath = $this->getFullBackupPath($image->getFilename(), true);
-        $process = new Process("$this->jpegoptimPath -s $fullPath $backupFullPath");
+        $process = new Process(["$this->jpegoptimPath -s $fullPath $backupFullPath"]);
         $process->run();
 
         if (!$process->isSuccessful()) {
