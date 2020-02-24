@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -40,7 +41,7 @@ class DefaultController extends AbstractController
      * @param Request $request
      * @param StatService $statService
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Exception
@@ -72,7 +73,7 @@ class DefaultController extends AbstractController
      * @param \Swift_Mailer $mailer
      * @param DiscordService $discord
      * @param TranslatorInterface $translator
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @Route("/contact", name="default_contact", methods={"GET", "POST"})
      */
     public function contactAction(
@@ -118,11 +119,11 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/terms", name="default_terms", methods={"GET"})
+     * @return Response
+     * @Route("/privacy-policy", name="default_privacy_policy", methods={"GET"})
      */
-    public function termsAction()
+    public function privacyPolicy()
     {
-        return $this->render('Default/terms.html.twig');
+        return $this->render('Default/policy.html.twig');
     }
 }
