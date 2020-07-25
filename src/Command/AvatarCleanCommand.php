@@ -13,7 +13,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class AvatarCleanCommand extends Command
 {
-    const API_FB_PICTURE = 'https://graph.facebook.com/v3.2/%d/picture';
+    const API_FB_PICTURE = 'https://graph.facebook.com/v7.0/%d/picture';
 
     /**
      * @var EntityManagerInterface
