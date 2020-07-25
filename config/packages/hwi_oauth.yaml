@@ -9,11 +9,14 @@ hwi_oauth:
             google:     'googleId'
     resource_owners:
         facebook:
-            type:           'facebook'
-            client_id:      '%env(FB_ID)%'
-            client_secret:  '%env(FB_SECRET)%'
-            infos_url:      'https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture'
-            scope:          'email'
+            type: 'facebook'
+            client_id: '%env(FB_ID)%'
+            client_secret: '%env(FB_SECRET)%'
+            infos_url: 'https://graph.facebook.com/v7.0/me?fields=id,name,email,first_name,last_name,picture'
+            authorization_url: 'https://www.facebook.com/v7.0/dialog/oauth'
+            access_token_url: 'https://graph.facebook.com/v7.0/oauth/access_token'
+            revoke_token_url: 'https://graph.facebook.com/v7.0/me/permissions'
+            scope: 'email'
             options:
                 display:    'popup'
                 auth_type:  'rerequest'
