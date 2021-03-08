@@ -208,6 +208,12 @@
               </div>
             </div>
           {% endif %}
+          {% if coaster.indoor %}
+            <div class="list-group-item">
+              <label class="control-label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}:</label>
+              <div class="pull-right"><i class="icon-checkmark3"></i></div>
+            </div>
+          {% endif %}
           {% if coaster.vr %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
