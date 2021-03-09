@@ -47,6 +47,7 @@ coaster:
         opening: 'Apertura'
         closing: 'clausura'
         vr: 'VR'
+        indoor: 'Indoor'
         cost: 'Coste'
     parkcoaster: 'También en %name%'
     photos: 'Fotos'

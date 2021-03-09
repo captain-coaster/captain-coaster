@@ -53,6 +53,7 @@ coaster:
         vr: 'VR'
         cost: 'Cost'
         kiddie: 'Kiddie'
+        indoor: 'Indoor'
     parkcoaster: 'Also in %name%'
     photos:
         title: 'Photos'
