@@ -8,11 +8,13 @@
         {{ 'review.title'|trans }}
         &nbsp;<span class="badge badge-primary">{{ reviews|length }}</span>
       </h6>
-      <div class="pull-right">
-        <a class="text-muted" href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
-          {{ 'review.send'|trans() }}
-        </a>
-      </div>
+      {% if coaster.isRateable %}
+        <div class="pull-right">
+          <a class="text-muted" href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+            {{ 'review.send'|trans() }}
+          </a>
+        </div>
+      {% endif %}
     </div>
 
     <div class="panel-body">
@@ -75,14 +77,16 @@
         {% endfor %}
       </ul>
     </div>
-    <div class="panel-body">
-      <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
-        <button type="button" class="btn bg-blue">
-          <i class="icon-plus22"></i>
-          {{ 'review.send'| trans() }}
-        </button>
-      </a>
-    </div>
+    {% if coaster.isRateable %}
+      <div class="panel-body">
+        <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+          <button type="button" class="btn bg-blue">
+            <i class="icon-plus22"></i>
+            {{ 'review.send'| trans() }}
+          </button>
+        </a>
+      </div>
+    {% endif %}
   </div>
   <!-- /comments -->
 </div>
