@@ -258,7 +258,7 @@
     <div class="col-sm-9">
       <div id="coaster-photos" class="row"></div>
       {% if reviews|length > 0 %}
-        {% include 'Coaster/reviews.html.twig' with {'reviews': reviews} only %}
+        {% include 'Coaster/reviews.html.twig' with {'reviews': reviews, 'coaster': coaster} only %}
       {% endif %}
     </div>
   </div>
