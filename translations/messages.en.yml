@@ -8,7 +8,7 @@ app:
     title:
         default: 'Welcome !'
     header:
-        search: 'Dollywood, Yukon Striker...'
+        search: 'Iron Gwazi, Busch Gardens...'
 
 index:
     title: 'Welcome !'
