@@ -100,7 +100,7 @@ easy_admin:
                     - openingDate
         Reviews:
             class: App\Entity\RiddenCoaster
-            disabled_actions: ['new', 'delete']
+            disabled_actions: ['new']
             list:
                 max_results: 30
                 fields:
