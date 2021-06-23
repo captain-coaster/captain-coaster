@@ -134,46 +134,38 @@ class RankingService
 
         /** @var User $user */
         foreach ($users as $user) {
-            // reset before each new user
+            // reset before each user
             $this->userComparisons = [];
 
-            $top = $user->getMainTop();
-            $this->processComparisonsInTop($top);
-
-            $ratings = $user->getRatings();
-            $this->processComparisonsInRatings($ratings);
+            $this->processComparisonsInTop(
+                $this->em->getRepository(Top::class)->findUserTopForRanking($user->getId())
+            );
+            $this->processComparisonsInRatings(
+                $this->em->getRepository(RiddenCoaster::class)->findUserRatingsForRanking($user->getId())
+            );
         }
 
         $this->computeScore();
     }
 
     /**
-     * Process all comparisons inside a top
-     * and set all results in duels array
+     * Process all comparisons inside a top and set all results in duels array
      *
-     * @param Top $top
+     * @param array $top
      */
-    private function processComparisonsInTop(Top $top): void
+    private function processComparisonsInTop(array $top): void
     {
-        foreach ($top->getTopCoasters() as $topCoaster) {
-            $coaster = $topCoaster->getCoaster();
+        foreach ($top as $topCoaster) {
+            $coaster = $topCoaster['coaster'];
 
-            if (!$coaster->isRankable()) {
-                continue;
-            }
-
-            foreach ($top->getTopCoasters() as $comparedTopCoaster) {
-                $comparedCoaster = $comparedTopCoaster->getCoaster();
-
-                if (!$comparedCoaster->isRankable()) {
-                    continue;
-                }
+            foreach ($top as $comparedTopCoaster) {
+                $comparedCoaster = $comparedTopCoaster['coaster'];
 
                 if ($coaster !== $comparedCoaster) {
                     // add this comparison to user comparisons array
-                    $this->userComparisons[$coaster->getId().'-'.$comparedCoaster->getId()] = 1;
+                    $this->userComparisons[$coaster . '-' . $comparedCoaster] = 1;
 
-                    if ($topCoaster->getPosition() < $comparedTopCoaster->getPosition()) {
+                    if ($topCoaster['position'] < $comparedTopCoaster['position']) {
                         $this->setWinner($coaster, $comparedCoaster);
                     } else {
                         $this->setLooser($coaster, $comparedCoaster);
@@ -184,38 +176,27 @@ class RankingService
     }
 
     /**
-     * Process all comparisons of all rated coaster for a user
-     * and set all results in duels array
+     * Process all comparisons of all rated coaster for a user and set all results in duels array
      *
-     * @param $ratings
+     * @param array $ratings
      */
-    private function processComparisonsInRatings(iterable $ratings)
+    private function processComparisonsInRatings(array $ratings)
     {
-        /** @var RiddenCoaster $rating */
         foreach ($ratings as $rating) {
-            $coaster = $rating->getCoaster();
+            $coaster = $rating['coaster'];
 
-            if (!$coaster->isRankable()) {
-                continue;
-            }
-
-            /** @var RiddenCoaster $comparedRating */
             foreach ($ratings as $comparedRating) {
-                $comparedCoaster = $comparedRating->getCoaster();
-
-                if (!$comparedCoaster->isRankable()) {
-                    continue;
-                }
+                $comparedCoaster = $comparedRating['coaster'];
 
                 if ($coaster !== $comparedCoaster) {
-                    // check if comparison alreay exists in Top for this user
-                    if (array_key_exists($coaster->getId().'-'.$comparedCoaster->getId(), $this->userComparisons)) {
+                    // check if comparison already exists in Top for this user
+                    if (array_key_exists($coaster . '-' . $comparedCoaster, $this->userComparisons)) {
                         continue;
                     }
 
-                    if ($rating->getValue() > $comparedRating->getValue()) {
+                    if ($rating['rating'] > $comparedRating['rating']) {
                         $this->setWinner($coaster, $comparedCoaster);
-                    } elseif ($rating->getValue() < $comparedRating->getValue()) {
+                    } elseif ($rating['rating'] < $comparedRating['rating']) {
                         $this->setLooser($coaster, $comparedCoaster);
                     } else {
                         $this->setTie($coaster, $comparedCoaster);
@@ -262,10 +243,10 @@ class RankingService
                     // same win & loose numbers
                     if ($comparisonResult === $reverseComparisonResult) {
                         $duelScoreSum += 50;
-                    // $coaster has more wins
+                        // $coaster has more wins
                     } elseif ($comparisonResult > $reverseComparisonResult) {
                         $duelScoreSum += 100;
-                    // $coaster has less wins
+                        // $coaster has less wins
                     } else {
                         $duelScoreSum += 0;
                     }
@@ -335,56 +316,49 @@ class RankingService
     /**
      * Set result for winning comparison
      *
-     * @param $coaster
-     * @param $comparedCoaster
+     * @param int $coasterId
+     * @param int $comparedCoasterId
      */
-    private function setWinner(Coaster $coaster, Coaster $comparedCoaster): void
+    private function setWinner(int $coasterId, int $comparedCoasterId): void
     {
-        $this->setComparisonResult($coaster, $comparedCoaster, 1);
+        $this->setComparisonResult($coasterId, $comparedCoasterId, 1);
     }
 
     /**
      * Set result for losing comparison
      *
-     * @param $coaster
-     * @param $comparedCoaster
+     * @param int $coasterId
+     * @param int $comparedCoasterId
      */
-    private function setLooser(Coaster $coaster, Coaster $comparedCoaster): void
+    private function setLooser(int $coasterId, int $comparedCoasterId): void
     {
-        $this->setComparisonResult($coaster, $comparedCoaster, 0);
+        $this->setComparisonResult($coasterId, $comparedCoasterId, 0);
     }
 
     /**
      * Set result for tie comparison (same rating)
      *
-     * @param $coaster
-     * @param $comparedCoaster
+     * @param int $coasterId
+     * @param int $comparedCoasterId
      */
-    private function setTie(Coaster $coaster, Coaster $comparedCoaster): void
+    private function setTie(int $coasterId, int $comparedCoasterId): void
     {
-        $this->setComparisonResult($coaster, $comparedCoaster, 0.5);
+        $this->setComparisonResult($coasterId, $comparedCoasterId, 0.5);
     }
 
     /**
      * Set comparison result
      *
-     * @param $coaster
-     * @param $comparedCoaster
-     * @param $value
+     * @param int $coasterId
+     * @param int $comparedCoasterId
+     * @param float $value
      */
-    private function setComparisonResult(Coaster $coaster, Coaster $comparedCoaster, float $value): void
+    private function setComparisonResult(int $coasterId, int $comparedCoasterId, float $value): void
     {
-        $coasterId = $coaster->getId();
-        $duelCoasterId = $comparedCoaster->getId();
-
-        if (!array_key_exists($coasterId, $this->duels)) {
-            $this->duels[$coasterId] = [];
-        }
-
-        if (!array_key_exists($duelCoasterId, $this->duels[$coasterId])) {
-            $this->duels[$coasterId][$duelCoasterId] = $value;
+        if (!isset($this->duels[$coasterId][$comparedCoasterId])) {
+            $this->duels[$coasterId][$comparedCoasterId] = $value;
         } else {
-            $this->duels[$coasterId][$duelCoasterId] += $value;
+            $this->duels[$coasterId][$comparedCoasterId] += $value;
         }
     }
 

@@ -384,4 +384,24 @@ class RiddenCoasterRepository extends EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Get user ratings for monthly ranking update
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function findUserRatingsForRanking(int $userId): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT r.value AS rating, c.id AS coaster
+            FROM App:RiddenCoaster r
+            JOIN r.coaster c
+            WHERE r.user = :id
+            AND c.kiddie = 0
+        ');
+        $query->setParameter('id', $userId);
+
+        return $query->getResult();
+    }
 }

@@ -112,4 +112,26 @@ class TopRepository extends EntityRepository
             ->getQuery()
             ->getSingleResult();
     }
+
+    /**
+     * Get user main top coasters for monthly ranking update
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function findUserTopForRanking(int $userId): array
+    {
+        $query = $this->getEntityManager()->createQuery('
+            SELECT tc.position AS position, c.id AS coaster
+            FROM App:Top t
+            JOIN t.topCoasters tc
+            JOIN tc.coaster c
+            WHERE t.main = true
+            AND t.user = :id
+            AND c.kiddie = 0
+        ');
+        $query->setParameter('id', $userId);
+
+        return $query->getResult();
+    }
 }
