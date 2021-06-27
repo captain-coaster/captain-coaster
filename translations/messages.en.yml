@@ -19,7 +19,7 @@ index:
     stats:
         ratings: 'ratings'
         reviews: 'reviews'
-        tops: 'in tops'
+        users: 'users'
         images: 'pictures'
     missingCoasters: 'We are looking for pictures of these coasters!'
 
@@ -83,17 +83,17 @@ park:
     kiddies: 'kiddie|kiddies'
 
 coaster_ranking:
-    title: 'Ranking of the best coasters - %rankingMonth%'
-    description: 'Ranking of the best roller coasters of the world, by our users. Write reviews and rate coasters you have ridden to be a part of it.'
+    title: 'World Roller Coaster Rankings'
+    description: 'Discover the world''s best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide.'
     duel_number: '1 duel|%count% duels'
     no_results: 'No coasters found!'
     info:
-        title: 'This month'
+        title: 'Last Updated: %rankingMonth%'
         next:  'Next update %date%'
         coasters_ranked: 'ranked coasters'
         ratings: 'ratings'
         comparisons: 'analyzed comparisons'
-        in_tops: 'coasters in Tops'
+        users: 'voters'
     filter:
         continent: 'World'
         country: 'Country'
@@ -255,7 +255,7 @@ navbar:
 sidebar:
     index: 'Home'
     search: 'Find coasters nearby'
-    ranking: 'Best coasters ranking'
+    ranking: 'World Roller Coaster Rankings'
     users: 'Our riders'
     map: 'Coasters map'
     top: 'Tops'
@@ -295,7 +295,8 @@ notif:
     badge:
         message: 'Check it out: Captain just gave you the "%name%" badge!'
     ranking:
-        message: 'Ranking of the world best coasters was updated!'
+        message: 'World Roller Coaster Rankings have just been updated!'
+        messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. %name% has been added to the ranking!'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * UserRepository
@@ -62,5 +63,24 @@ class UserRepository extends EntityRepository
             ->from('App:User', 'u')
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * Count all users
+     *
+     * @return mixed
+     */
+    public function countAll()
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1) as nb_users')
+                ->from('App:User', 'u')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (NonUniqueResultException $e) {
+            return 0;
+        }
     }
 }

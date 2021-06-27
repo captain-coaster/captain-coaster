@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'coaster_ranking.title'|trans({'%rankingMonth%': ranking.computedAt|localizeddate('none', 'none', null, null, 'MMMM Y')|capitalize}) %}
+{% set title = 'coaster_ranking.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}

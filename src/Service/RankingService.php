@@ -84,9 +84,14 @@ class RankingService
 
         $rank = 1;
         $infos = [];
+        $newCoaster = null;
 
         foreach ($this->ranking as $coasterId => $score) {
             $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
+
+            if ($coaster->getRank() === null && $rank < 300 && $newCoaster === null) {
+                $newCoaster = $coaster->getName();
+            }
 
             $coaster->setScore($score);
             $coaster->setPreviousRank($coaster->getRank());
@@ -116,10 +121,11 @@ class RankingService
             // remove coasters not ranked anymore
             $this->disableNonRankedCoasters();
             // send notifications to everyone
-            $this->notificationService->sendAll(
-                'notif.ranking.message',
-                NotificationService::NOTIF_RANKING
-            );
+            if ($newCoaster) {
+                $this->notificationService->sendAll('notif.ranking.messageWithNewCoaster', NotificationService::NOTIF_RANKING, $newCoaster);
+            } else {
+                $this->notificationService->sendAll('notif.ranking.message', NotificationService::NOTIF_RANKING);
+            }
         }
 
         return $infos;

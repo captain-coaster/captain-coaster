@@ -112,6 +112,7 @@ class User extends BaseUser
      * @var Notification
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      */
     private $notifications;
 

@@ -1,6 +1,6 @@
 <div class="panel panel-flat">
   <div class="panel-heading has-visible-elements">
-    <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans }}</h6>
+    <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|localizeddate('long', 'none')}) }}</h6>
     <div class="heading-elements visible-elements">
       {% if nextRankingDate %}
         <span class="heading-text text-muted">
@@ -34,9 +34,9 @@
     <div class="col-xs-3">
       <div class="content-group">
         <h6 class="text-semibold no-margin">
-          <i class="icon-podium position-left text-slate"></i><br/>{{ ranking.coasterInTopNumber|shortNum }}
+          <i class="icon-users position-left text-slate"></i><br/>{{ ranking.userNumber }}
         </h6>
-        <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.in_tops'|trans }}</span>
+        <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.users'|trans }}</span>
       </div>
     </div>
     <div class="col-xs-3">

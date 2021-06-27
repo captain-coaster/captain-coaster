@@ -53,9 +53,9 @@ class StatService
             ->getRepository(RiddenCoaster::class)
             ->countReviews();
 
-        $stats['nb_in_tops'] = $this->em
-            ->getRepository(TopCoaster::class)
-            ->countAllInTops();
+        $stats['nb_users'] = $this->em
+            ->getRepository(User::class)
+            ->countAll();
 
         $stats['nb_images'] = $this->em
             ->getRepository(Image::class)

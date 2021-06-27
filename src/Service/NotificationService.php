@@ -76,7 +76,8 @@ class NotificationService
         TranslatorInterface $translator,
         string $emailFrom,
         string $emailFromName
-    ) {
+    )
+    {
         $this->em = $em;
         $this->router = $router;
         $this->templating = $templating;
@@ -131,12 +132,13 @@ class NotificationService
      * Send notification to everyone
      * @param string $message
      * @param string $type
+     * @param string|null $parameter
      * @param bool $markSameTypeRead
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
      */
-    public function sendAll(string $message, string $type, bool $markSameTypeRead = true)
+    public function sendAll(string $message, string $type, string $parameter = null, bool $markSameTypeRead = true)
     {
         if ($markSameTypeRead) {
             $this->em->getRepository(Notification::class)->markTypeAsRead($type);
@@ -144,7 +146,7 @@ class NotificationService
 
         $users = $this->em->getRepository(User::class)->findAll();
         foreach ($users as $user) {
-            $this->send($user, $message, null, $type);
+            $this->send($user, $message, $parameter, $type);
         }
     }
 
