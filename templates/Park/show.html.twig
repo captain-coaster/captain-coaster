@@ -81,12 +81,19 @@
                         </a>
                     </div>
                     <div class="media-body" style="vertical-align: middle;">
-                        <h2 class="media-heading mb-10">
+                        <h2 class="media-heading mb-2 center" style="margin-bottom: -4px;">
                             <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                                 {{ coaster.name }}
                             </a>
                         </h2>
-                        <ul class="list-inline list-inline-separate text-muted mb-5">
+                        <h4 class="media-heading score-responsive mb-20 center" style="color: {{ helper.ratingColor(coaster.score) }};">
+                            {% if coaster.score %}
+                                {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </h4>
+                        <ul class="list-inline list-inline-separate text-muted mb-10 pt-15">
                             {% if coaster.manufacturer %}
                                 <li>
                                     <a class="text-muted"
@@ -123,7 +130,9 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="media-right text-center" style="vertical-align: middle;">
+
+                    <div class="media-right text-center note-responsive" style="vertical-align: middle;">
+
                         {% if coaster.isRateable %}
                             {% if is_granted('ROLE_USER') %}
                                 <div class="rating-coaster center"
@@ -141,6 +150,7 @@
             {% endfor %}
         </ul>
     </div>
+</div>
 
     <!--<div class="col-sm-9">
       <div class="row">
@@ -202,4 +212,5 @@
 
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/plugins/round-circle/roundcircle.css') }}">
     {% endblock %}
