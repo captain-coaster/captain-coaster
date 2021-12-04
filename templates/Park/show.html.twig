@@ -48,7 +48,7 @@
     <div class="col-sm-9">
         <ul class="media-list content-group">
             {% for coaster in park.coasters %}
-                <li class="media panel panel-body stack-media-on-mobile">
+                <li class="media panel panel-body stack-media-on-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">
                     <div class="media-left">
                         <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                             <img {% if coaster.images|length > 0 %}
