@@ -38,6 +38,26 @@
                         <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
                     </div>
                 {% endif %}
+
+            </div>
+        </div>
+        <div class="panel panel-white">
+            <div class="panel-heading">
+                <h6>
+                    {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}
+                </h6>
+            </div>
+            <div class="content-group-sm media col-xs-offset-2">
+            <ul class="list-feed">
+                {% for infoPark in closestParks %}
+                    <li>
+                        <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
+                            {{ infoPark.name }}
+                        </a>
+                        {{ ' - ' ~ infoPark.distance ~ ' km'}}
+                    </li>
+                {% endfor %}
+            </ul>
             </div>
         </div>
         <!-- /park stats -->

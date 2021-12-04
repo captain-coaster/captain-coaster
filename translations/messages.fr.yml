@@ -37,6 +37,7 @@ coaster:
         text: 'Score basé sur %count_rating% notes et %count_top% tops'
     infos:
         title: 'Caractéristiques de %name%'
+        closeParksTitle: 'Les meilleurs parcs d''attractions proche de %parkName%'
         status: 'Statut'
         park: 'Parc'
         country: 'Pays'
