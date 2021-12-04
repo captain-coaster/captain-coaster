@@ -77,11 +77,10 @@
                             {% endif %}
                             {% if coaster.openingDate %}
                                 <li>
-                                    {% if coaster.openingDate is not empty %}
+                                    <a class="text-muted"
+                                       href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y')}) }}">
                                         {{ coaster.openingDate|date('Y') }}
-                                    {% else %}
-                                        &nbsp;
-                                    {% endif %}
+                                    </a>
                                 </li>
                             {% endif %}
                         </ul>
