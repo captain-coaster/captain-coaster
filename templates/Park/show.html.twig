@@ -57,10 +57,10 @@
                             {% else %}
                                 src="{{ asset('images/nophoto.png') }}"
                             {% endif %}
-                                    class="img-rounded" style="width:128px;" alt="{{ coaster.name }}">
+                                    class="img-rounded" style="width:200px;" alt="{{ coaster.name }}">
                         </a>
                     </div>
-                    <div class="media-body">
+                    <div class="media-body" style="vertical-align: middle;">
                         <h2 class="media-heading mb-10">
                             <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                                 {{ coaster.name }}
