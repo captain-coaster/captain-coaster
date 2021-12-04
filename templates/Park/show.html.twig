@@ -6,134 +6,124 @@
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
 {% block body %}
-  <div class="row">
+<div class="row">
     <div class="col-sm-3">
-      <!-- park stats -->
-      <div class="panel panel-body">
-        <div class="row text-center">
-          <div class="col-xs-6">
-            <p><i class="icon-location3 icon-2x display-inline-block text-info"></i></p>
-            <h5 class="text-semibold no-margin">
-              {{ park.openedCoasters|length }}
-            </h5>
-            <div class="text-muted text-size-small">
-              {{ 'park.opened_coasters'|transchoice(park.openedCoasters|length) }}
+        <!-- park stats -->
+        <div class="panel panel-body">
+            <div class="row text-center">
+                <div class="col-xs-6">
+                    <p><i class="icon-location3 icon-2x display-inline-block text-info"></i></p>
+                    <h5 class="text-semibold no-margin">
+                        {{ park.openedCoasters|length }}
+                    </h5>
+                    <div class="text-muted text-size-small">
+                        {{ 'park.opened_coasters'|transchoice(park.openedCoasters|length) }}
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <p><i class="icon-puzzle2 icon-2x display-inline-block text-warning"></i></p>
+                    <h5 class="text-semibold no-margin">
+                        {{ park.kiddies|length }}
+                    </h5>
+                    <div class="text-muted text-size-small">
+                        {{ 'park.kiddies'|transchoice(park.kiddies|length) }}
+                    </div>
+                </div>
+                {% if not is_granted('ROLE_USER') %}
+                    &nbsp;
+                    <div class="row">
+                        <p class="text-muted content-group-sm">
+                            {{ 'coaster.rating.mustlogin'|trans }}
+                        </p>
+                        <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
+                    </div>
+                {% endif %}
             </div>
-          </div>
-          <div class="col-xs-6">
-            <p><i class="icon-puzzle2 icon-2x display-inline-block text-warning"></i></p>
-            <h5 class="text-semibold no-margin">
-              {{ park.kiddies|length }}
-            </h5>
-            <div class="text-muted text-size-small">
-              {{ 'park.kiddies'|transchoice(park.kiddies|length) }}
-            </div>
-          </div>
         </div>
-      </div>
-      <!-- /park stats -->
-      <!-- coaster location -->
-      <!-- removed until open street maps -->
-      <!-- /coaster location -->
+        <!-- /park stats -->
+        <!-- coaster location -->
+        <!-- removed until open street maps -->
+        <!-- /coaster location -->
     </div>
     <div class="col-sm-9">
         <ul class="media-list content-group">
-          {% for coaster in park.coasters %}
-            <li class="media panel panel-body stack-media-on-mobile">
-              <div class="media-left">
-                <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                  {% if coaster.mainImage is not null %}
-                    <img src="{{ coaster.mainImage.path | imagine_filter('coaster_ranking') }}"
-                         class="img-rounded"
-                         style="width:96px;"
-                         alt="{{ coaster.name }}">
-                  {% endif %}
-                </a>
-              </div>
-              <div class="media-body">
-                <h2 class="media-heading mb-10">
-                  <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                      {{ coaster.name }}
-                  </a>
-                </h2>
-                  <ul class="list-inline list-inline-separate text-muted mb-5">
-                      {% if coaster.manufacturer %}
-                          <li>
-                              <a class="text-muted" href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
-                                  {{ coaster.manufacturer.name }}
-                              </a>
-                          </li>
-                      {% endif %}
-                      {% if coaster.openingDate %}
-                          <li>
-                              {% if coaster.openingDate is not empty %}
-                                  {{ coaster.openingDate|date('Y') }}
-                              {% else %}
-                                  &nbsp;
-                              {% endif %}
-                          </li>
-                      {% endif %}
-                  </ul>
-                <ul class="list-inline list-inline-separate text-muted mb-5">
-                  <li>
-                          <i class="icon-arrow-up8 text-warning-600"></i>
-                          {% if coaster.height is not empty %}
-                              {{ coaster.height ~ ' m' }}
-                          {% else %}
-                              &nbsp;
-                          {% endif %}
-                  </li>
-                    <li>
-                        <i class="icon-rocket text-success-400"></i>
-                        {% if coaster.speed is not empty %}
-                            {{ coaster.speed ~ ' km/h' }}
-                        {% else %}
-                            &nbsp;
+            {% for coaster in park.coasters %}
+                <li class="media panel panel-body stack-media-on-mobile">
+                    <div class="media-left">
+                        <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                            <img {% if coaster.images|length > 0 %}
+                                {% set image = random(coaster.images) %}
+                                src="{{ image.path | imagine_filter('coaster_park_show') }}"
+                            {% else %}
+                                src="{{ asset('images/nophoto.png') }}"
+                            {% endif %}
+                                    class="img-rounded" style="width:128px;" alt="{{ coaster.name }}">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h2 class="media-heading mb-10">
+                            <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                                {{ coaster.name }}
+                            </a>
+                        </h2>
+                        <ul class="list-inline list-inline-separate text-muted mb-5">
+                            {% if coaster.manufacturer %}
+                                <li>
+                                    <a class="text-muted"
+                                       href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
+                                        {{ coaster.manufacturer.name }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if coaster.openingDate %}
+                                <li>
+                                    {% if coaster.openingDate is not empty %}
+                                        {{ coaster.openingDate|date('Y') }}
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <ul class="list-inline list-inline-separate text-muted mb-5">
+                            <li>
+                                <i class="icon-arrow-up8 text-warning-600"></i>
+                                {{ coaster.height|default('data.unknown'|trans([], 'database')) }}{% if coaster.height|length %} m{% endif %}
+                            </li>
+                            <li>
+                                <i class="icon-rocket text-success-400"></i>
+                                {{ coaster.speed|default('data.unknown'|trans([], 'database')) }}{% if coaster.speed|length %} km/h{% endif %}
+                            </li>
+                            <li>
+                                <i class="icon-rulers text-blue"></i>
+                                {{ coaster.length|default('data.unknown'|trans([], 'database')) }}{% if coaster.length|length %} m{% endif %}
+                            </li>
+                            <li>
+                                <i class="icon-spinner11 text-danger-400"></i>
+                                &nbsp;{{ coaster.inversionsNumber|default('0') }}
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="media-right text-center" style="vertical-align: middle;">
+                        {% if coaster.isRateable %}
+                            {% if is_granted('ROLE_USER') %}
+                                <div class="rating-coaster center"
+                                     data-coaster="{{ coaster.id }}"
+                                     data-rateit-value="{{ coaster.userRating(app.user).value|default(0) }}"
+                                     style="font-size: 22px;"></div>
+                            {% endif %}
                         {% endif %}
-                    </li>
-                    <li>
-                        <i class="icon-rulers text-blue"></i>
-                        {% if coaster.length is not empty %}
-                            {{ coaster.length ~ ' m' }}
-                        {% else %}
-                            &nbsp;
-                        {% endif %}
-                    </li>
-                    <li>
-                        <i class="icon-spinner11 text-danger-400"></i>
-                        &nbsp;{{ coaster.inversionsNumber|default('0') }}
-                    </li>
-                </ul>
-
-              </div>
-
-              <div class="media-right text-center">
-                <!--<h3 style="color: {\{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
-                  {{ coaster.score|number_format(1, ',') }}%
-                </h3>
-                <span class="text-muted mb-10 mt-10 text-nowrap">
-                {{ 'coaster_ranking.duel_number'|transchoice(coaster.validDuels) }}
-              </span>
-              -->
-                  {% if not coaster.isKiddie %}
-                    <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
-                      #{{ coaster.rank }}
-                    </h3>
-                  {% else %}
-                    <i class="icon-puzzle2 icon-3x display-inline-block text-warning"></i>
-                  {% endif %}
-              </div>
-
-            </li>
-          {% else %}
-            <li class="media panel panel-body stack-media-on-mobile">
-              <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
-            </li>
-          {% endfor %}
+                    </div>
+                </li>
+            {% else %}
+                <li class="media panel panel-body stack-media-on-mobile">
+                    <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
+                </li>
+            {% endfor %}
         </ul>
     </div>
 
-      <!--<div class="col-sm-9">
+    <!--<div class="col-sm-9">
       <div class="row">
         {% for coaster in park.coasters %}
           <div class="col-sm-4">
@@ -184,13 +174,13 @@
       </div>
     </div>
   </div>-->
-{% endblock %}
+    {% endblock %}
 
-{% block javascripts %}
-  <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-  <script src="{{ asset('js/pages/rating.js') }}"></script>
-{% endblock %}
+    {% block javascripts %}
+        <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
+        <script src="{{ asset('js/pages/rating.js') }}"></script>
+    {% endblock %}
 
-{% block stylesheets %}
-  <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
-{% endblock %}
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+    {% endblock %}
