@@ -32,3 +32,7 @@ doctrine:
                 cos: DoctrineExtensions\Query\Mysql\Cos
                 power: DoctrineExtensions\Query\Mysql\Power
                 rand: DoctrineExtensions\Query\Mysql\Rand
+                round: DoctrineExtensions\Query\Mysql\Round
+                acos: DoctrineExtensions\Query\Mysql\Acos
+                radians: DoctrineExtensions\Query\Mysql\Radians
+                sin: DoctrineExtensions\Query\Mysql\Sin
