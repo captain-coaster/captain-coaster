@@ -20,13 +20,29 @@ class MapsController extends AbstractController
     /**
      * Map of all coasters, with filters
      *
+     * @param Request $request
      * @Route("/", name="map_index", methods={"GET"})
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $initialFilters = ["status" => "on"];
+
+        $lat = 48.384098;
+        $lng = 7.970846;
+        $zoom = 5;
+        $parkId = 0;
+        $slug = $request->query->get("parkslug");
+        if($slug) {
+            $park = $this->getDoctrine()->getRepository(Park::class)->findBy(['slug' => $slug]);
+            if(!empty($park)) {
+                $lat = $park[0]->getLatitude();
+                $lng = $park[0]->getLongitude();
+                $parkId = $park[0]->getId();
+                $zoom = 9;
+            }
+        }
 
         return $this->render(
             'Maps/index.html.twig',
@@ -34,6 +50,10 @@ class MapsController extends AbstractController
                 'markers' => json_encode($this->getMarkers($initialFilters)),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
+                'lat' => $lat,
+                'lng' => $lng,
+                'zoom' => $zoom,
+                'parkId' => $parkId,
             ]
         );
     }
