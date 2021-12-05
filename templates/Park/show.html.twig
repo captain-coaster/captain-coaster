@@ -107,6 +107,14 @@
                                     </a>
                                 </li>
                             {% endif %}
+                            {% if coaster.seatingType %}
+                                <li>
+                                    <a class="text-muted"
+                                       href="{{ path('ranking_index', {'filters[seatingType]': coaster.seatingType.id}) }}">
+                                        {{ coaster.seatingType.name }}
+                                    </a>
+                                </li>
+                            {% endif %}
                             {% if coaster.openingDate %}
                                 <li>
                                     <a class="text-muted"
