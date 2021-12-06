@@ -15,11 +15,7 @@
       <i class="icon-three-bars"></i>
     </div>
     <div class="media-left media-middle">
-      <span class="position label label-rounded label-primary">
-          {% if form.vars.data is not null %}
-            {{ form.vars.data.position }}
-          {% endif %}
-      </span>
+      <textarea class="position label label-rounded label-primary" style="resize:none; height: 22px; width: 23px;">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% endif %}</textarea>
     </div>
 
     <div class="media-body">
@@ -109,14 +105,36 @@
           updatePosition();
       });
 
+      $('ul#top-coaster').on('blur', '.position', function(e) {
+          let textValue = parseInt($(this)[0].value.trim());
+          let pos = textValue - 2;
+
+          if(textValue > $('ul#top-coaster li').length) {
+              pos = $('ul#top-coaster li').length - 1;
+              $(this).val($('ul#top-coaster li').length);
+          }
+          else if(textValue > $(this).closest('li').index()) {
+              pos = textValue - 1;
+          }
+
+          if(pos < 0) {
+              $('ul#top-coaster').prepend($(this).closest('li'));
+          }
+          else {
+              $(this).closest('li').insertAfter("ul#top-coaster li:eq(" + pos + ")");
+          }
+
+          updatePosition();
+      });
+
       function updatePosition() {
           $("input[id$='position']").each(function (i) {
               i++;
               $(this).val(i);
           });
-          $("span.position").each(function (i) {
+          $("textarea.position").each(function (i) {
               i++;
-              $(this).html(i);
+              $(this).val(i);
           });
       }
 
@@ -150,6 +168,17 @@
 
       jQuery("select").on("select2:select", function (evt) {
           addTagForm($collectionHolder, evt.params.data);
+      });
+
+      $('textarea').keypress(function(e) {
+          var a = [];
+          var k = e.which;
+
+          for (i = 48; i < 58; i++)
+              a.push(i);
+
+          if (!(a.indexOf(k)>=0))
+              e.preventDefault();
       });
   </script>
   <script type="text/javascript" src="{{ asset('js/plugins/touch-punch/jquery.ui.touch-punch.min.js') }}"></script>
