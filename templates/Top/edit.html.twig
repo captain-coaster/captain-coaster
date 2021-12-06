@@ -104,7 +104,7 @@
           updatePosition();
       }
 
-      $(".remove-line").on('click', function (e) {
+      $('ul#top-coaster').on('click', '.remove-line', function(e) {
           $(this).closest('li').remove();
           updatePosition();
       });
