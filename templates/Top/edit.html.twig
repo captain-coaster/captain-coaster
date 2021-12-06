@@ -15,7 +15,7 @@
       <i class="icon-three-bars"></i>
     </div>
     <div class="media-left media-middle">
-      <textarea class="position label label-rounded label-primary" style="resize:none; height: 22px; width: 23px;">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% endif %}</textarea>
+        <textarea class="position label label-rounded label-primary" style="resize:none; height: 22px; width: 50px;">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}empty{% endif %}</textarea>
     </div>
 
     <div class="media-body">

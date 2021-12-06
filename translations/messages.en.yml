@@ -202,7 +202,7 @@ top:
     delete_confirmation: 'Delete ?'
     save: 'Save the top'
     find: 'Find a coaster...'
-    info: 'Start by searching a coaster up there, then the magic happens below. You can even drag and drop lines if you are undecided.'
+    info: 'Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle.'
 
 review:
     title: 'Reviews'
