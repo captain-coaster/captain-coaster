@@ -62,6 +62,30 @@
         );
     }
 
+    window.onpopstate = function(event) {
+      var pageUrl = window.location.href;
+      var queryString = pageUrl.split('?')[1];
+      var urlParams = new URLSearchParams(queryString);
+
+      urlParams.forEach(function(value, key) {
+        if(key == "page") {
+          $('#form-filter input#filter-page').val(urlParams.get('page'));
+        }
+        else {
+          document.getElementsByName(key)[0].value = value;
+        }
+      });
+
+      $.ajax({
+        url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(data) {
+        $('#'+containerId).html(data);
+        ajaxPager();
+      });
+    };
+
     filterData();
   </script>
 {% endblock %}
