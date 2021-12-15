@@ -34,8 +34,8 @@
 
     function initMap() {
       map = new google.maps.Map(document.getElementById('map'), {
-        zoom: {{ zoom }},
-        center: {lat: {{ lat }}, lng: {{ lng }}},
+        zoom: 5,
+        center: {lat: 48.384098, lng: 7.970846},
       });
 
       if (navigator.geolocation) {
@@ -45,18 +45,41 @@
         });
       }
 
-      setInterval(setMarkers(map, {{ markers|raw }}), 50);
+      var infowindow = new google.maps.InfoWindow();
+      setInterval(generateMarkers(map, {{ markers|raw }}, infowindow), 50);
 
-      if ("{{ parkId }}" !== "0") {
-        var found = gmarkers.find(function (element) {
+      {% if parkId is not empty %}
+        var park = gmarkers.find(function (element) {
           return element.parkId === {{ parkId }};
         });
-        google.maps.event.trigger(found, 'click');
-      }
+        map.setCenter(new google.maps.LatLng(park.getPosition().lat(), park.getPosition().lng()));
+        map.setZoom(9);
+        loadParkData(map, park, infowindow);
+      {% endif %}
     }
 
-    function setMarkers(map, markers) {
-      var infowindow = new google.maps.InfoWindow();
+    function loadParkData(map, marker, infowindow) {
+      infowindow.setContent('Loading...');
+      infowindow.open(map, marker);
+
+      $.ajax({
+        url: Routing.generate('map_coasters_ajax', {
+          'id': marker.parkId,
+          '_locale': '{{ app.request.locale }}',
+        }),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(coasters) {
+        infowindow.setContent(coasters);
+        marker.setAnimation(null);
+      });
+
+      google.maps.event.addListener(map, 'click', function() {
+        infowindow.close();
+      });
+    }
+
+    function generateMarkers(map, markers, infowindow) {
 
       // Adds markers to the map.
       markers.forEach(function(park) {
@@ -66,26 +89,12 @@
           title: park['name'],
           parkId: park['id'],
         });
+
         gmarkers.push(marker);
         marker.addListener('click', function() {
-          infowindow.setContent('Loading...');
-          infowindow.open(map, this);
-
-          $.ajax({
-            url: Routing.generate('map_coasters_ajax', {
-              'id': this.parkId,
-              '_locale': '{{ app.request.locale }}',
-            }),
-            type: 'GET',
-            data: $('form').serialize(),
-          }).done(function(coasters) {
-            infowindow.setContent(coasters);
-          });
+          marker.setAnimation(google.maps.Animation.BOUNCE);
+          loadParkData(map, marker, infowindow);
         });
-      });
-
-      google.maps.event.addListener(map, 'click', function() {
-        infowindow.close();
       });
     }
 
@@ -93,16 +102,18 @@
       gmarkers.forEach(function(park) {
         park.setMap(null);
       });
+      gmarkers = [];
     }
 
     function filterData() {
+      var infowindow = new google.maps.InfoWindow();
       $.ajax({
         url: Routing.generate('map_markers_ajax', {'_locale': '{{ app.request.locale }}'}),
         type: 'GET',
         data: $('form').serialize(),
       }).done(function(data) {
         removeMarkers();
-        setMarkers(map, data);
+        generateMarkers(map, data, infowindow);
       });
     }
   </script>

@@ -28,19 +28,13 @@ class MapsController extends AbstractController
     public function indexAction(Request $request)
     {
         $initialFilters = ["status" => "on"];
+        $parkId = "";
 
-        $lat = 48.384098;
-        $lng = 7.970846;
-        $zoom = 5;
-        $parkId = 0;
         $slug = $request->query->get("parkslug");
         if($slug) {
-            $park = $this->getDoctrine()->getRepository(Park::class)->findBy(['slug' => $slug]);
+            $park = $this->getDoctrine()->getRepository(Park::class)->findOneBy(['slug' => $slug]);
             if(!empty($park)) {
-                $lat = $park[0]->getLatitude();
-                $lng = $park[0]->getLongitude();
-                $parkId = $park[0]->getId();
-                $zoom = 9;
+                $parkId = $park->getId();
             }
         }
 
@@ -50,9 +44,6 @@ class MapsController extends AbstractController
                 'markers' => json_encode($this->getMarkers($initialFilters)),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
-                'lat' => $lat,
-                'lng' => $lng,
-                'zoom' => $zoom,
                 'parkId' => $parkId,
             ]
         );
