@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Park;
+use App\Repository\ParkRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -21,6 +22,10 @@ class ParkController extends AbstractController
      */
     public function showAction(Park $park)
     {
-        return $this->render('Park/show.html.twig', ['park' => $park]);
+        $closestParks = $this->getDoctrine()
+            ->getRepository(Park::class)
+            ->getClosestParks($park, 80, 300);
+
+        return $this->render('Park/show.html.twig', ['park' => $park, 'closestParks' => $closestParks]);
     }
 }

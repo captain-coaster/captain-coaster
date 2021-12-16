@@ -37,6 +37,7 @@ coaster:
         text: 'Score based on %count_rating% ratings and %count_top% tops'
     infos:
         title: '%name% features'
+        closeParksTitle: 'Best amusement parks near %parkName%'
         status: 'Status'
         park: 'Park'
         country: 'Country'

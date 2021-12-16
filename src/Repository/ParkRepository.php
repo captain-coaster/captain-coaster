@@ -3,7 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Park;
 use Doctrine\ORM\EntityRepository;
+
 
 /**
  * ParkRepository
@@ -30,6 +32,45 @@ class ParkRepository extends EntityRepository
             ->setParameter('user', $user)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @param Park $park
+     * @param int $minScore
+     * @param int $maxDistance
+     * @return mixed
+     */
+    public function getClosestParks(Park $park, int $minScore, int $maxDistance)
+    {
+        $parkLatitude = $park->getLatitude();
+        $parkLongitude = $park->getLongitude();
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('distinct p.name as name, ROUND(( 6371 * acos( cos( radians(:parkLatitude) ) 
+              * cos( radians( p.latitude ) ) 
+              * cos( radians( p.longitude ) - radians(:parkLongitude) ) 
+              + sin( radians(:parkLatitude) ) 
+              * sin( radians( p.latitude ) ) ) ) ) AS distance, p.slug as slug')
+            ->from('App:Park', 'p')
+            ->join('p.coasters', 'c')
+            ->where('p.latitude between :parkLatitudeMin and :parkLatitudeMax')
+            ->andwhere('p.longitude between :parkLongitudeMin and :parkLongitudeMax')
+            ->andwhere('c.score > :minScore')
+            ->andwhere('p.id != :parkId')
+            ->having('distance < :maxDistance')
+            ->orderBy('distance')
+            ->setParameter('parkLatitude', $parkLatitude)
+            ->setParameter('parkLongitude', $parkLongitude)
+            ->setParameter('parkLatitudeMin', $parkLatitude - 3)
+            ->setParameter('parkLatitudeMax', $parkLatitude + 3)
+            ->setParameter('parkLongitudeMin', $parkLongitude - 3)
+            ->setParameter('parkLongitudeMax', $parkLongitude + 3)
+            ->setParameter('minScore', $minScore)
+            ->setParameter('parkId', $park->getId())
+            ->setParameter('maxDistance', $maxDistance)
+            ->getQuery()
+            ->getResult();
     }
 
     /**
