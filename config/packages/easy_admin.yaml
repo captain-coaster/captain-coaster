@@ -152,6 +152,7 @@ easy_admin:
                     - addTodayDateWhenRating
                     - {property: 'apiKey', type_options: {disabled: true}}
                     - {property: 'createdAt', type_options: {disabled: true}}
+                    - enabled
         Image:
             class: App\Entity\Image
             label: 'Images'
