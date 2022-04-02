@@ -47,7 +47,10 @@
         "symfony/web-server-bundle": "^4.4"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
     },
     "autoload": {
         "psr-4": {
