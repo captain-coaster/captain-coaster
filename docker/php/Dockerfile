@@ -1,14 +1,7 @@
 FROM php:7.4-fpm-alpine
 
-#RUN apk add --update-cache --no-cache \
-#    php7-zip \
-#    php7-intl \
-#    php7-pecl-apcu \
-#    php7-gd \
-#    php7-pecl-imagick \
-#    php7-opcache \
-#    php7-pecl-redis \
-#    php7-pdo_mysql
+# Install Git
+RUN apk add --no-cache git
 
 # Install PHP extensions
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
