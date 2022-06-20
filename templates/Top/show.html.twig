@@ -8,11 +8,17 @@
   <div class="panel panel-white panel-flat">
     <div class="panel-heading">
       <ul class="list-inline no-margin">
+
         <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
+        <li class="position-right">
+          <i class="icon-user-check position-left"></i>
+          <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
+        </li>
         <li>
           <i class="icon-alarm position-left"></i>
           {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
         </li>
+
       </ul>
       <div class="heading-elements visible-elements">
         {% if is_granted('edit', top) %}
