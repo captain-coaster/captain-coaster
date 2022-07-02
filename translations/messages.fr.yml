@@ -203,7 +203,7 @@ top:
     delete_confirmation: 'Supprimer ?'
     save: 'Sauvegarder le top'
     find: 'Chercher un coaster...'
-    info: 'Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l''ordre si t''es du genre indécis.'
+    info: 'Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l''ordre en déplaçant la ligne ou en écrivant sa position dans le rond bleu.'
 
 review:
     title: 'Avis'
