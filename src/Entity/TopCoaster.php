@@ -44,6 +44,13 @@ class TopCoaster
      */
     private $coaster;
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return (string) $this->coaster . ' (' . $this->position . ')';
+    }
 
     /**
      * Get id

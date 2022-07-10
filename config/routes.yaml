@@ -25,3 +25,7 @@ web:
     prefix: '/{_locale}'
     requirements:
         _locale: '%app_locales%'
+
+admin:
+    path: /team
+    controller: App\Controller\Admin\DashboardController::index
