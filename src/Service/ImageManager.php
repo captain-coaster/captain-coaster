@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Image;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Imagine\Filter;
 use Imagine\Image\Box;
@@ -183,7 +182,7 @@ class ImageManager
 	            select sub.id, sub.coaster_id from (
 		            select * from image
 		            where enabled = 1
-		            order by like_counter desc, updated_at desc 
+		            order by like_counter desc, updated_at desc
 		            limit 18446744073709551615) as sub
 	            group by coaster_id
             ) as i on i.coaster_id = c.id
@@ -191,9 +190,9 @@ class ImageManager
 
         try {
             $stmt = $conn->prepare($sql);
-            $stmt->execute();
-        } catch (DBALException $e) {
-            // do nothing
+            $stmt->executeStatement();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
         }
     }
 
@@ -215,9 +214,9 @@ class ImageManager
 
         try {
             $stmt = $conn->prepare($sql);
-            $stmt->execute();
-        } catch (DBALException $e) {
-            // do nothing
+            $stmt->executeStatement();
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
         }
     }
 
