@@ -7,7 +7,7 @@
     </li>
     {% for coaster in coasters %}
         <li>
-            <a style="min-height:0;padding-top:0;padding-bottom:0;color: #000000;" target="_blank"
+            <a style="min-height:0;padding-top:0;padding-bottom:0;color: #000000; font-weight: bold" target="_blank"
                href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                 <span class="status-mark border-{{ coaster.status.type }} position-left"></span>
                 {{ coaster.name }}
