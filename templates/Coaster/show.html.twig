@@ -68,9 +68,14 @@
               {% endif %}
             </div>
             <p class="no-margin-bottom mt-10">
-              <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
-                {{ 'coaster.rating.sendreview'|trans }}
-              </a>
+            {% if rating %}
+              <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">{{ 'coaster.rating.updatereview'|trans }}</a>
+              •
+              <a class="text-muted" onclick="deleteRating({{ rating.id }});">{{ 'coaster.rating.delete'|trans }}</a>
+            {% else %}
+                <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">{{ 'coaster.rating.sendreview'|trans }}</a>
+                <div id="review-delete"></div>
+            {% endif %}
             </p>
           {% else %}
             <p class="text-muted content-group-sm">

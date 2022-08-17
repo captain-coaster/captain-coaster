@@ -34,6 +34,8 @@ coaster:
         mustlogin: 'You must be logged in to rate.'
         login: 'Log in'
         sendreview: 'or click here to write a review'
+        updatereview: 'update my review'
+        delete: 'delete'
         text: 'Score based on %count_rating% ratings and %count_top% tops'
     infos:
         title: '%name% features'

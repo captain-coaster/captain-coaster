@@ -61,14 +61,10 @@
               {% if is_granted('update', review) %}
                 <ul class="list-inline list-inline-separate text-size-small">
                   <li>
-                    <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                      {{ 'review.update'|trans }}
-                    </a>
+                    <a href="{{ path('review_form', {'id': review.coaster.id}) }}">{{ 'review.update'|trans }}</a>
                   </li>
                   <li>
-                    <a onclick="deleteRating({{ review.id }}, $(this).closest('li.media'))">
-                      {{ 'review.delete'|trans }}
-                    </a>
+                    <a onclick="deleteRating({{ review.id }})">{{ 'review.delete'|trans }}</a>
                   </li>
                 </ul>
               {% endif %}

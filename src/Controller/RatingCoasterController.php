@@ -86,7 +86,10 @@ class RatingCoasterController extends AbstractController
         $em->persist($rating);
         $em->flush();
 
-        return new JsonResponse(['state' => 'success']);
+        return new JsonResponse([
+            'state' => 'success',
+            'id' => $rating->getId()
+        ]);
     }
 
     /**

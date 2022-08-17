@@ -8,13 +8,14 @@ $('document').ready(function () {
         );
 
         $.post(url, {value: $(this).rateit('value')}, function (response) {
-        }, 'JSON').done(function () {
+        }, 'JSON').done(function (data) {
             $('#rating-date').show();
+            $('#review-delete').html('<a class="text-muted" onclick="deleteRating(' + data.id + ');">delete</a>');
         });
     });
 });
 
-function deleteRating(id, obj) {
+function deleteRating(id) {
     if (confirm('Delete ?')) {
         var url = Routing.generate(
             'rating_delete',
@@ -24,7 +25,7 @@ function deleteRating(id, obj) {
             url: url,
             type: "DELETE",
         }).done(function () {
-            $(obj).remove();
+            location.reload();
         });
     }
 }
