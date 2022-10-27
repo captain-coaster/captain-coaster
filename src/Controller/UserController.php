@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class UserController
@@ -153,11 +154,12 @@ class UserController extends AbstractController
      * @return Response
      */
     public function picturesAction(
-        Request $request,
-        User $user,
+        Request                $request,
+        User                   $user,
         EntityManagerInterface $em,
-        PaginatorInterface $paginator
-    ) {
+        PaginatorInterface     $paginator
+    )
+    {
         $page = $request->get('page', 1);
         $query = $em
             ->getRepository(Image::class)
@@ -206,6 +208,10 @@ class UserController extends AbstractController
      */
     public function showAction(User $user, StatService $statService)
     {
+        if (!$user->isEnabled()) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->render(
             'User/show.html.twig',
             [

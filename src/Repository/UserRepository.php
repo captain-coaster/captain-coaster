@@ -23,6 +23,7 @@ class UserRepository extends EntityRepository
             ->select('u')
             ->addSelect('count(r.id) as total_ratings')
             ->from('App:User', 'u')
+            ->where('u.enabled = 1')
             ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
             ->groupBy('r.user')
             ->orderBy('total_ratings', 'desc')
@@ -61,6 +62,7 @@ class UserRepository extends EntityRepository
             ->select('u.displayName as name')
             ->addSelect('u.slug')
             ->from('App:User', 'u')
+            ->where('u.enabled = 1')
             ->getQuery()
             ->getResult();
     }
