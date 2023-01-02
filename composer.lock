@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c615150135ef6eab38d70898b232ddb2",
+    "content-hash": "e80a64ff13653e5830b5472da8b62062",
     "packages": [
         {
             "name": "api-platform/core",
@@ -2068,6 +2068,66 @@
                 }
             ],
             "time": "2022-06-18T20:57:19+00:00"
+        },
+        {
+            "name": "excelwebzone/recaptcha-bundle",
+            "version": "v1.5.36",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/excelwebzone/EWZRecaptchaBundle.git",
+                "reference": "05ee477b0f153e4091fcdad55b9aa499e7477ed1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/excelwebzone/EWZRecaptchaBundle/zipball/05ee477b0f153e4091fcdad55b9aa499e7477ed1",
+                "reference": "05ee477b0f153e4091fcdad55b9aa499e7477ed1",
+                "shasum": ""
+            },
+            "require": {
+                "google/recaptcha": "^1.1",
+                "php": "^7.1 || ^8.0",
+                "symfony/form": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "symfony/framework-bundle": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "symfony/security-bundle": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "symfony/validator": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "symfony/yaml": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "twig/twig": "^1.40 || ^2.9 || ^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7 || ^8 || ^9.5"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "symfony": {
+                    "allow-contrib": "true"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EWZ\\Bundle\\RecaptchaBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael H. Arieli",
+                    "email": "excelwebzone@gmail.com",
+                    "homepage": "http://excelwebzone.com/"
+                }
+            ],
+            "description": "This bundle provides easy reCAPTCHA form field integration",
+            "homepage": "https://github.com/excelwebzone/EWZRecaptchaBundle",
+            "keywords": [
+                "recaptcha"
+            ],
+            "support": {
+                "issues": "https://github.com/excelwebzone/EWZRecaptchaBundle/issues",
+                "source": "https://github.com/excelwebzone/EWZRecaptchaBundle/tree/v1.5.36"
+            },
+            "time": "2022-12-02T14:58:24+00:00"
         },
         {
             "name": "friendsofphp/proxy-manager-lts",

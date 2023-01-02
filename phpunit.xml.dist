@@ -24,14 +24,6 @@
         <!-- Configure your db driver and server_version in config/packages/doctrine.yaml -->
         <env name="DATABASE_URL" value="mysql://db_user:db_password@127.0.0.1:3306/db_name"/>
         <!-- ###- doctrine/doctrine-bundle ### -->
-
-        <!-- ###+ google/recaptcha ### -->
-        <!-- To use Google Recaptcha, you must register a site on Recaptcha's admin panel: -->
-        <!-- https://www.google.com/recaptcha/admin -->
-        <env name="GOOGLE_RECAPTCHA_SITE_KEY" value=""/>
-        <env name="GOOGLE_RECAPTCHA_SECRET" value=""/>
-        <!-- ###- google/recaptcha ### -->
-
         <!-- ###+ hwi/oauth-bundle ### -->
         <env name="FB_ID" value=""/>
         <env name="FB_SECRET" value=""/>

@@ -2,13 +2,13 @@
 
 namespace App\Form\Type;
 
-use App\Validator\Constraints\ReCaptcha;
+use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
+use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -61,19 +61,22 @@ class ContactType extends AbstractType
                     ],
                 ]
             );
-    }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(
-            [
-                'constraints' => [
-                    new ReCaptcha(),
-                ],
-            ]
-        );
+        $builder->add('recaptcha', EWZRecaptchaType::class, array(
+            'attr' => array(
+                'options' => array(
+                    'theme' => 'light',
+                    'type' => 'image',
+                    'size' => 'invisible',
+                    'defer' => true,
+                    'async' => true,
+                    'bind' => 'contact_btn',
+                )
+            ),
+            'mapped' => false,
+            'constraints' => array(
+                new RecaptchaTrue()
+            )
+        ));
     }
 }
