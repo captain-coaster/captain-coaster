@@ -1,2 +1,3 @@
 ewz_recaptcha:
     enabled: true
+    hide_badge: false

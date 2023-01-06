@@ -2,8 +2,8 @@
 
 namespace App\Form\Type;
 
-use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaType;
-use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrue as RecaptchaTrue;
+use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaV3Type;
+use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrueV3;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -62,20 +62,10 @@ class ContactType extends AbstractType
                 ]
             );
 
-        $builder->add('recaptcha', EWZRecaptchaType::class, array(
-            'attr' => array(
-                'options' => array(
-                    'theme' => 'light',
-                    'type' => 'image',
-                    'size' => 'invisible',
-                    'defer' => true,
-                    'async' => true,
-                    'bind' => 'contact_btn',
-                )
-            ),
+        $builder->add('recaptcha', EWZRecaptchaV3Type::class, array(
             'mapped' => false,
             'constraints' => array(
-                new RecaptchaTrue()
+                new IsTrueV3()
             )
         ));
     }
