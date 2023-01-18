@@ -45,6 +45,7 @@ class MapsController extends AbstractController
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
                 'parkId' => $parkId,
+                'meta_description' => 'map_index.description',
             ]
         );
     }
@@ -65,11 +66,12 @@ class MapsController extends AbstractController
         ];
 
         return $this->render(
-            'Maps/userMap.html.twig',
+            'Maps/index.html.twig',
             [
                 'markers' => json_encode($this->getMarkers($initialFilters)),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
+                'parkId' => '',
             ]
         );
     }

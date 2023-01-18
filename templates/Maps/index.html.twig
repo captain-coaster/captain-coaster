@@ -3,7 +3,9 @@
 {% block title %}{{ 'map_index.title'|trans }}{% endblock %}
 
 {% block header %}
-  <meta name="description" content="{{ 'map_index.description'|trans }}"/>
+  {% if meta_description is defined %}
+    <meta name="description" content="{{ meta_description|trans }}"/>
+  {% endif %}
 {% endblock %}
 
 {% set pageHasFilters = true %}
