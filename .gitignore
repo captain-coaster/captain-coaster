@@ -14,11 +14,6 @@
 ###> phpunit/phpunit ###
 /phpunit.xml
 ###< phpunit/phpunit ###
-
-###> symfony/web-server-bundle ###
-/.web-server-pid
-###< symfony/web-server-bundle ###
-
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 # Commit build files for now
