@@ -151,7 +151,6 @@ class NotificationService
         $users = $this->em->getRepository(User::class)->findAll();
         foreach ($users as $user) {
             $this->send($user, $message, $parameter, $type);
-            exit;
         }
     }
 
