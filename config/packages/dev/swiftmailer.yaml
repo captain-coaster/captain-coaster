@@ -1,4 +1,0 @@
-# See https://symfony.com/doc/current/email/dev_environment.html
-swiftmailer:
-    url: '%env(MAILER_URL)%'
-    delivery_addresses: ['%env(APP_DELIVERY_ADDRESSES)%']
