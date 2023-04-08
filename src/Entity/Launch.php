@@ -2,15 +2,24 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Launch
  *
  * @ORM\Table(name="launch")
  * @ORM\Entity(repositoryClass="App\Repository\LaunchRepository")
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read_launch"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
  */
 class Launch
 {
@@ -27,6 +36,7 @@ class Launch
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
+     * @Groups({"read_launch", "read_coaster"})
      */
     private $name;
 
