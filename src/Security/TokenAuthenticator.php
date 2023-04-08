@@ -13,103 +13,70 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
-    const HEADER = 'X-AUTH-TOKEN';
+    const HEADER = 'Authorization';
+    const DEPRECATED_HEADER = 'X-AUTH-TOKEN';
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    public function supports(Request $request)
+    public function supports(Request $request): bool
     {
-        return $request->headers->has(self::HEADER);
+        return $request->headers->has(self::HEADER) || $request->headers->has(self::DEPRECATED_HEADER);
     }
 
-    /**
-     * @param Request $request
-     * @return array|mixed
-     */
-    public function getCredentials(Request $request)
+    public function getCredentials(Request $request): array
     {
-        return [
-            'token' => $request->headers->get(self::HEADER),
-        ];
+        if ($request->headers->has(self::HEADER)) {
+            $token = $request->headers->get(self::HEADER);
+
+            if (str_starts_with($token, 'Bearer ')) {
+                $token = str_replace('Bearer ', '', $token);
+            }
+
+            return ['token' => $token];
+        }
+
+
+        return ['token' => $request->headers->get(self::DEPRECATED_HEADER)];
     }
 
-    /**
-     * @param mixed $credentials
-     * @param UserProviderInterface $userProvider
-     * @return null|UserInterface
-     */
-    public function getUser($credentials, UserProviderInterface $userProvider)
+    public function getUser($credentials, UserProviderInterface $userProvider): ?UserInterface
     {
         $apiKey = $credentials['token'];
 
         if (null === $apiKey) {
-            return;
+            return null;
         }
 
         // if a User object, checkCredentials() is called
         return $userProvider->loadUserByUsername($apiKey);
     }
 
-    /**
-     * @param mixed $credentials
-     * @param UserInterface $user
-     * @return bool
-     */
-    public function checkCredentials($credentials, UserInterface $user)
+    public function checkCredentials($credentials, UserInterface $user): bool
     {
         // apiKey found means OK
         return true;
     }
 
-    /**
-     * @param Request $request
-     * @param TokenInterface $token
-     * @param string $providerKey
-     * @return null|Response
-     */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey): ?Response
     {
         return null;
     }
 
-    /**
-     * @param Request $request
-     * @param AuthenticationException $exception
-     * @return null|JsonResponse|Response
-     */
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception)
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
-        $data = array(
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData())
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
+        return new JsonResponse(
+            ['message' => strtr($exception->getMessageKey(), $exception->getMessageData())],
+            Response::HTTP_FORBIDDEN
         );
-
-        return new JsonResponse($data, Response::HTTP_FORBIDDEN);
     }
 
-    /**
-     * @param Request $request
-     * @param AuthenticationException|null $authException
-     * @return JsonResponse|Response
-     */
-    public function start(Request $request, AuthenticationException $authException = null)
+    public function start(Request $request, AuthenticationException $authException = null): JsonResponse
     {
-        $data = array(
-            // you might translate this message
-            'message' => 'Authentication Required',
+        return new JsonResponse(
+            ['message' => 'Authentication Required'],
+            Response::HTTP_UNAUTHORIZED
         );
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
     }
 
-    /**
-     * @return bool
-     */
-    public function supportsRememberMe()
+    public function supportsRememberMe(): bool
     {
         return false;
     }
