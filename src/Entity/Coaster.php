@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     attributes={
  *         "normalization_context"={"groups"={"list_coaster","read_coaster"}}
  *     },
- *     collectionOperations={"get"={"method"="GET","normalization_context"={"groups"={"list_coaster"}}}},
+ *     collectionOperations={"get"={"method"="GET"},"normalization_context"={"groups"={"list_coaster"}}},
  *     itemOperations={"get"={"method"="GET"},"normalization_context"={"groups"={"read_coaster"}}}
  * )
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "name": "partial", "manufacturer": "exact"})
