@@ -192,6 +192,7 @@ class Coaster
      * @var \DateTime
      *
      * @ORM\Column(name="openingDate", type="date", nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $openingDate;
 
