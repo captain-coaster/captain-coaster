@@ -14,7 +14,7 @@
       <li class="media panel-body stack-media-on-mobile">
         <div class="media-left">
           {% if coaster.item.mainImage is not null %}
-            <img src="{{ coaster.item.mainImage.path | imagine_filter('coaster_ranking') }}"
+            <img src="{{ pictures_cdn }}/96x96/{{ coaster.item.mainImage.filename }}"
                  class="img-rounded"
                  style="width:96px;"
                  alt="{{ coaster.item.name }}">

@@ -11,7 +11,7 @@ RUN install-php-extensions apcu gd imagick opcache redis zip intl pdo_mysql
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-COPY ./conf.d/docker-php-memory.ini /usr/local/etc/php/conf.d/
+COPY ./conf.d/docker-php.ini /usr/local/etc/php/conf.d/
 
 WORKDIR /var/www
 

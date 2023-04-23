@@ -6,7 +6,7 @@
       <div class="media-left">
         <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
           {% if coaster.mainImage is not null %}
-            <img src="{{ coaster.mainImage.path | imagine_filter('coaster_ranking') }}"
+            <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
                  class="img-rounded"
                  style="width:96px;"
                  alt="{{ coaster.name }}">

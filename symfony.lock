@@ -204,6 +204,18 @@
     "nikic/php-parser": {
         "version": "v4.1.1"
     },
+    "oneup/flysystem-bundle": {
+        "version": "4.4",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "4.0",
+            "ref": "3ae1b83985e89138f5443bbc2d9b8c074b497d49"
+        },
+        "files": [
+            "config/packages/oneup_flysystem.yaml"
+        ]
+    },
     "paragonie/random_compat": {
         "version": "v2.0.17"
     },
