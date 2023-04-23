@@ -18,6 +18,7 @@ parameters:
     app_banner_background_path: '%kernel.project_dir%/public/images/background-banner.png'
     router.request_context.host: '%env(APP_CONTEXT_HOST)%'
     router.request_context.scheme: '%env(APP_CONTEXT_SCHEME)%'
+    pictures_cdn_host: '%env(PICTURES_CDN)%'
 
 services:
     # default configuration for services in *this* file
