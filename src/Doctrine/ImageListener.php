@@ -3,6 +3,7 @@
 namespace App\Doctrine;
 
 use App\Entity\Image;
+use App\Service\DiscordService;
 use App\Service\ImageManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use League\Flysystem\FilesystemException;
@@ -15,10 +16,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class ImageListener
 {
     private ImageManager $imageManager;
+    private DiscordService $discordService;
 
-    public function __construct(ImageManager $imageManager)
+    public function __construct(ImageManager $imageManager, DiscordService $discordService)
     {
         $this->imageManager = $imageManager;
+        $this->discordService = $discordService;
     }
 
     /**
@@ -40,6 +43,8 @@ class ImageListener
             $fileName = $this->imageManager->upload($file, $image->getCoaster()->getSlug());
             $image->setFilename($fileName);
         }
+
+        $this->discordService->notify('A new picture of ' . $image->getCoaster()->getName() . 'is waiting for review');
     }
 
     /**
