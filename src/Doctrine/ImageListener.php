@@ -44,7 +44,7 @@ class ImageListener
             $image->setFilename($fileName);
         }
 
-        $this->discordService->notify('A new picture of ' . $image->getCoaster()->getName() . 'is waiting for review');
+        $this->discordService->notify('A new picture of ' . $image->getCoaster()->getName() . ' is waiting for review');
     }
 
     /**

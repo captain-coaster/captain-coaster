@@ -43,6 +43,7 @@ services:
     App\Service\ImageManager:
         arguments:
             $distributionId: '%env(AWS_CF_DISTRIBUTION_ID)%'
+            $s3CacheBucket: '%env(AWS_S3_CACHE_BUCKET_NAME)%'
 
     App\Service\BannerMaker:
         arguments:
