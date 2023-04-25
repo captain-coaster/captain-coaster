@@ -47,15 +47,19 @@ class UserController extends AbstractController
     /**
      * Show all user's ratings
      *
-     * @param PaginatorInterface $paginator
-     * @param User $user
-     * @param int $page
-     * @return Response
-     *
      * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listRatingsAction(PaginatorInterface $paginator, User $user, $page = 1)
+    public function listRatingsAction(Request $request, PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
+        // crappy fix for camelCase issues...
+        if($request->query->has('sort') && $request->query->get('sort') == 'r.riddenat') {
+            $request->query->set('sort', 'r.riddenAt');
+        }
+
+        if($request->query->has('sort') && $request->query->get('sort') == 'c.openingdate') {
+            $request->query->set('sort', 'c.openingDate');
+        }
+
         $query = $this
             ->getDoctrine()
             ->getRepository(RiddenCoaster::class)
@@ -66,7 +70,6 @@ class UserController extends AbstractController
             $page,
             30,
             [
-                'wrap-queries' => true,
                 'defaultSortFieldName' => 'r.riddenAt',
                 'defaultSortDirection' => 'desc',
             ]
