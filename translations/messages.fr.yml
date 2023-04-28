@@ -93,9 +93,13 @@ coaster_ranking:
     info:
         title: 'Mis à jour: %rankingMonth%'
         next: 'Prochaine mise à jour %date%'
-        coasters_ranked: 'coasters classés'
+        coasters_ranked:
+            short: 'coasters'
+            long: 'coasters classés'
         ratings: 'notes'
-        comparisons: 'comparaisons analysées'
+        comparisons:
+            short: 'paires'
+            long: 'paires analysées'
         users: 'votants'
     filter:
         continent: 'Monde'
