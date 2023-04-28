@@ -26,9 +26,27 @@ class RankingRepository extends EntityRepository
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException $e) {
+        } catch (NoResultException|NonUniqueResultException $e) {
             return null;
-        } catch (NonUniqueResultException $e) {
+        }
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function findPrevious()
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('r')
+                ->from('App:Ranking', 'r')
+                ->orderBy('r.computedAt', 'desc')
+                ->setMaxResults(1)
+                ->setFirstResult(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (NoResultException|NonUniqueResultException $e) {
             return null;
         }
     }

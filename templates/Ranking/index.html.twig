@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block body %}
-  {% include 'Ranking/info.html.twig' with {'ranking': ranking, 'nextRankingDate': nextRankingDate} only %}
+  {% include 'Ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
   <div id="ranking-result"></div>
 {% endblock %}
 
