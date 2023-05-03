@@ -190,14 +190,17 @@ badge:
     teamispeed: 'Equipo iSpeed'
 
 error:
+    400:
+        title: 'Bad request'
+        message: 'Bad request'
     404:
         title: 'Página no encontrada'
-        message: 'Vaya, parece que estás perdido...'
+        message: 'Página no encontrada'
     403:
         title: 'Acceso Prohibido'
-        message: '¡ Usted no está autorizado oficialmente para acceder a esta página por el gobierno de las montañas rusas !'
+        message: 'Acceso Prohibido'
     generic:
-        title: 'Vaya, se produjo un error.'
-        message: 'Llamando al departamento jefe de mantenimiento...'
+        title: 'Se ha producido un error'
+        message: 'Se ha producido un error'
 
-User account is disabled.: 'La cuenta de usuario está deshabilitada. Tener múltiples cuentas no está permitido.'
+User account is disabled.: 'Esta cuenta está inhabilitada porque no cumple con nuestras políticas. Póngase en contacto con nosotros para obtener más información.'

@@ -14,7 +14,7 @@ framework:
     #esi: true
     #fragments: true
     php_errors:
-        log: true
+        log: 8191 # php -r "echo E_ALL & ~E_USER_DEPRECATED & ~E_DEPRECATED;"
 
     translator: { fallbacks: ['%locale%'] }
     form: ~

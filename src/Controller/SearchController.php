@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\Manufacturer;
 use App\Service\SearchService;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -57,11 +60,8 @@ class SearchController extends AbstractController
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function searchAction(Request $request)
+    public function searchAction(Request $request): Response
     {
         $filters = $request->get('filters', []);
         $page = $request->get('page', 1);
@@ -109,22 +109,24 @@ class SearchController extends AbstractController
     }
 
     /**
-     * @param array $filters
-     * @param int $page
-     * @return \Knp\Component\Pager\Pagination\PaginationInterface
+     *
      */
-    private function getCoasters($filters = [], $page = 1)
+    private function getCoasters(array $filters = [], int $page = 1): PaginationInterface
     {
         $query = $this->getDoctrine()
             ->getRepository(Coaster::class)
             ->getSearchCoasters($filters);
 
-        return $this->paginator->paginate(
-            $query,
-            $page,
-            20,
-            ['wrap-queries' => true]
-        );
+        try {
+            return $this->paginator->paginate(
+                $query,
+                $page,
+                20,
+                ['wrap-queries' => true]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
     }
 
     /**

@@ -330,14 +330,17 @@ image:
     credit: 'Crédit: %name%'
 
 error:
+    400:
+        title: 'Bad request'
+        message: 'Bad request'
     404:
-        title: 'Page non trouvée'
-        message: 'Mmmh, mon petit doigt me dit que ce n''est pas le bon chemin...'
+        title: 'Page introuvable'
+        message: 'Cette page n''existe pas'
     403:
         title: 'Accès interdit'
-        message: 'Tu n''es pas autorisé à afficher cette page. Mais un jour peut être...'
+        message: 'L''accès à cette page est interdit'
     generic:
         title: 'Oops, une erreur s''est produite'
-        message: 'Nos meilleurs techniciens sont déjà sur le coup.'
+        message: 'Une erreur s''est produite. Contactez-nous si le problème persiste'
 
-User account is disabled.: 'Le compte est désactivé. Il n''est pas autorisé d''ouvrir plusieurs comptes'
+User account is disabled.: 'Ce compte est désactivé car il ne respecte pas nos règles d''utilisation. Contactez-nous pour avoir plus d''informations.'

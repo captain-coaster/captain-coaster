@@ -1,25 +1,24 @@
 monolog:
-    handlers:
-        main:
-            type: 'fingers_crossed'
-            action_level: 'error'
-            handler: 'nested'
-            excluded_404s:
-                # regex: exclude all 404 errors from the logs
-                - '^/'
-        nested:
-            type: 'rotating_file'
-            path: '%kernel.logs_dir%/%kernel.environment%.log'
-            max_files: 10
-            level: 'debug'
-        console:
-            type: 'console'
-            process_psr_3_messages: false
-            channels: ['!event', '!doctrine']
-        discord:
-            type: 'fingers_crossed'
-            action_level: 'error'
-            handler: 'custom_discord'
-        custom_discord:
-            type: 'service'
-            id: 'App\Handler\DiscordMonologHandler'
+  handlers:
+    main:
+      type: 'fingers_crossed'
+      action_level: 'error'
+      handler: 'nested'
+      excluded_http_codes: [404]
+    nested:
+      type: 'rotating_file'
+      path: '%kernel.logs_dir%/%kernel.environment%.log'
+      max_files: 10
+      level: 'debug'
+    console:
+      type: 'console'
+      process_psr_3_messages: false
+      channels: [ '!event', '!doctrine' ]
+    discord:
+      type: 'fingers_crossed'
+      action_level: 'error'
+      handler: 'custom_discord'
+      excluded_http_codes: [400, 403, 404]
+    custom_discord:
+      type: 'service'
+      id: 'App\Handler\DiscordMonologHandler'

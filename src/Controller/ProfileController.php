@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfileController extends AbstractController
@@ -67,15 +68,6 @@ class ProfileController extends AbstractController
      */
     public function ratingsAction(Request $request, EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
     {
-        // crappy fix for camelCase issues...
-        if($request->query->has('sort') && $request->query->get('sort') == 'r.riddenat') {
-            $request->query->set('sort', 'r.riddenAt');
-        }
-
-        if($request->query->has('sort') && $request->query->get('sort') == 'c.openingdate') {
-            $request->query->set('sort', 'c.openingDate');
-        }
-
         /** @var User $user */
         $user = $this->getUser();
 
@@ -83,15 +75,19 @@ class ProfileController extends AbstractController
             ->getRepository(RiddenCoaster::class)
             ->getUserRatings($user);
 
-        $ratings = $paginator->paginate(
-            $query,
-            $page,
-            30,
-            [
-                'defaultSortFieldName' => 'r.updatedAt',
-                'defaultSortDirection' => 'desc',
-            ]
-        );
+        try {
+            $ratings = $paginator->paginate(
+                $query,
+                $page,
+                30,
+                [
+                    'defaultSortFieldName' => 'r.updatedAt',
+                    'defaultSortDirection' => 'desc',
+                ]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render(
             'Profile/ratings.html.twig',

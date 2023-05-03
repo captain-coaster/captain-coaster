@@ -14,6 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -28,7 +30,7 @@ class TopController extends AbstractController
      *
      * @param Request $request
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @Route("/new", name="top_new", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
@@ -72,20 +74,19 @@ class TopController extends AbstractController
      * Displays all tops
      *
      * @Route("/", name="top_list", methods={"GET"})
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function list(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em)
+    public function list(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
     {
-        $pagination = $paginator->paginate(
-            $em->getRepository(Top::class)->findAllTops(),
-            $request->get('page', 1),
-            9,
-            ['wrap-queries' => true]
-        );
+        try {
+            $pagination = $paginator->paginate(
+                $em->getRepository(Top::class)->findAllTops(),
+                $request->get('page', 1),
+                9,
+                ['wrap-queries' => true]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render(
             'Top/list.html.twig',
@@ -100,7 +101,7 @@ class TopController extends AbstractController
      *
      * @param Top $top
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @Route("/{id}", name="top_show", methods={"GET"})
@@ -121,7 +122,7 @@ class TopController extends AbstractController
      * @param Request $request
      * @param Top $top
      * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @throws \Exception
      * @Route("/{id}/edit", name="top_edit", methods={"GET", "POST"})
@@ -169,7 +170,7 @@ class TopController extends AbstractController
      *
      * @param Request $request
      * @param Top $top
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @Route("/{id}/edit-details", name="top_edit_details", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
