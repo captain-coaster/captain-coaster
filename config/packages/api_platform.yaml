@@ -3,14 +3,14 @@ api_platform:
     description: 'Welcome to Captain Coaster API! API Keys for authentication can be found in your profile page. Contact us to get support.'
     version: '1.0.1'
     mapping:
-        paths: ['%kernel.project_dir%/src/Entity']
+        paths: [ '%kernel.project_dir%/src/Entity' ]
     http_cache:
         public: true
     defaults:
         cache_headers:
             max_age: 3600
             shared_max_age: 3600
-            vary: ['Content-Type']
+            vary: [ 'Content-Type' ]
     swagger:
         api_keys:
             Use your personal API Key (in your profile page) in Authorization header:

@@ -23,79 +23,17 @@ use Twig\Error\SyntaxError;
  */
 class NotificationService
 {
-    const NOTIF_BADGE = 'badge';
-    const NOTIF_RANKING = 'ranking';
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templating;
-
-    /**
-     * @var MailerInterface
-     */
-    private $mailer;
-
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * @var string
-     */
-    private $emailFrom;
-
-    /**
-     * @var string
-     */
-    private $emailFromName;
+    final public const NOTIF_BADGE = 'badge';
+    final public const NOTIF_RANKING = 'ranking';
 
     /**
      * NotificationService constructor
-     *
-     * @param EntityManagerInterface $em
-     * @param RouterInterface $router
-     * @param Environment $templating
-     * @param MailerInterface $mailer
-     * @param TranslatorInterface $translator
-     * @param string $emailFrom
-     * @param string $emailFromName
      */
-    public function __construct(
-        EntityManagerInterface $em,
-        RouterInterface        $router,
-        Environment            $templating,
-        MailerInterface        $mailer,
-        TranslatorInterface    $translator,
-        string                 $emailFrom,
-        string                 $emailFromName
-    )
+    public function __construct(private readonly EntityManagerInterface $em, private readonly RouterInterface        $router, private readonly Environment            $templating, private readonly MailerInterface        $mailer, private readonly TranslatorInterface    $translator, private readonly string                 $emailFrom, private readonly string                 $emailFromName, private readonly \App\Repository\UserRepository $userRepository)
     {
-        $this->em = $em;
-        $this->router = $router;
-        $this->templating = $templating;
-        $this->mailer = $mailer;
-        $this->translator = $translator;
-        $this->emailFrom = $emailFrom;
-        $this->emailFromName = $emailFromName;
     }
 
     /**
-     * @param User $user
-     * @param string $message
-     * @param string $parameter
-     * @param string $type
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -117,27 +55,19 @@ class NotificationService
 
     /**
      * Where to redirect when a notification is clicked
-     * @param Notification $notif
-     * @return string
      */
     public function getRedirectUrl(Notification $notif): string
     {
-        switch ($notif->getType()) {
-            case self::NOTIF_BADGE:
-                return $this->router->generate('me');
-            case self::NOTIF_RANKING:
-                return $this->router->generate('ranking_index');
-            default:
-                return $this->router->generate('root');
-        }
+        return match ($notif->getType()) {
+            self::NOTIF_BADGE => $this->router->generate('me'),
+            self::NOTIF_RANKING => $this->router->generate('ranking_index'),
+            default => $this->router->generate('root'),
+        };
     }
 
     /**
      * Send notification to everyone
-     * @param string $message
-     * @param string $type
      * @param string|null $parameter
-     * @param bool $markSameTypeRead
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -148,7 +78,7 @@ class NotificationService
             $this->em->getRepository(Notification::class)->markTypeAsRead($type);
         }
 
-        $users = $this->em->getRepository(User::class)->findAll();
+        $users = $this->userRepository->findAll();
         foreach ($users as $user) {
             $this->send($user, $message, $parameter, $type);
         }
@@ -156,7 +86,6 @@ class NotificationService
 
     /**
      * "Send" notification (i.e.: persist it)
-     * @param Notification $notification
      */
     private function sendNotification(Notification $notification): void
     {
@@ -166,7 +95,6 @@ class NotificationService
 
     /**
      * Send an email
-     * @param Notification $notification
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError|TransportExceptionInterface
@@ -174,7 +102,7 @@ class NotificationService
     private function sendEmail(Notification $notification): void
     {
         // @todo temp hack
-        if (strpos($notification->getUser()->getEmail(), 'notvalid')) {
+        if (strpos((string) $notification->getUser()->getEmail(), 'notvalid')) {
             return;
         }
 

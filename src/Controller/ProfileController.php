@@ -19,11 +19,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfileController extends AbstractController
 {
     /**
-     * @param Request $request
-     * @param StatService $statService
      * @return Response
-     * @Route("/me", name="me", methods={"GET", "POST"})
      */
+    #[Route(path: '/me', name: 'me', methods: ['GET', 'POST'])]
     public function meAction(Request $request, StatService $statService)
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -54,7 +52,7 @@ class ProfileController extends AbstractController
             'Profile/me.html.twig',
             [
                 'user' => $this->getUser(),
-                'form' => $form->createView(),
+                'form' => $form,
                 'stats' => $statService->getUserStats($user),
             ]
         );
@@ -62,10 +60,9 @@ class ProfileController extends AbstractController
 
     /**
      * Show my ratings
-     *
-     * @Route("/me/ratings/{page}", name="me_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function ratingsAction(Request $request, EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
+    #[Route(path: '/me/ratings/{page}', name: 'me_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function ratingsAction(EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
@@ -86,7 +83,7 @@ class ProfileController extends AbstractController
                     'defaultSortDirection' => 'desc',
                 ]
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
@@ -98,19 +95,8 @@ class ProfileController extends AbstractController
         );
     }
 
-    /**
-     * @Route(
-     *     "/banner",
-     *     name="profile_banner",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     *
-     * @param BannerMaker $bannerMaker
-     * @return Response
-     */
-    public function getBanner(BannerMaker $bannerMaker)
+    #[Route(path: '/banner', name: 'profile_banner', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    public function getBanner(BannerMaker $bannerMaker): \Symfony\Component\HttpFoundation\Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 

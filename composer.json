@@ -1,63 +1,76 @@
 {
-    "name": "florian/cw-app",
+    "name": "captain-coaster/captain-coaster",
+    "license": "MIT",
     "type": "project",
-    "license": "proprietary",
+    "description": "Participative guide to discover, rate and review roller coasters",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
     "require": {
-        "php": "^8.0",
+        "php": ">=8.2",
         "ext-json": "*",
-        "api-platform/core": "^2.1",
+        "api-platform/core": "^3.0",
         "aws/aws-sdk-php": "^3.263",
-        "beberlei/doctrineextensions": "^1.1",
+        "beberlei/doctrineextensions": "^1.3",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^2.9",
         "easycorp/easyadmin-bundle": "^4.0",
         "excelwebzone/recaptcha-bundle": "^1.5",
         "friendsofsymfony/jsrouting-bundle": "^3.0",
-        "friendsofsymfony/user-bundle": "^3.1",
         "http-interop/http-factory-guzzle": "*",
-        "hwi/oauth-bundle": "2.0.0-BETA2",
-        "incenteev/composer-parameter-handler": "^2.0",
-        "knplabs/knp-paginator-bundle": "^5",
+        "knplabs/knp-paginator-bundle": "^5.0",
         "knplabs/knp-time-bundle": "^1.7",
+        "knpuniversity/oauth2-client-bundle": "^2.15",
         "league/flysystem-aws-s3-v3": "^2.5",
+        "league/oauth2-facebook": "^2.2",
+        "league/oauth2-google": "^4.0",
         "liip/imagine-bundle": "^2.0",
         "oneup/flysystem-bundle": "^4",
-        "php-http/guzzle6-adapter": "^2.0.2",
-        "php-http/httplug-bundle": "^1.10",
-        "ramsey/uuid": "^3.7",
         "stof/doctrine-extensions-bundle": "^1.2",
-        "symfony/asset": "^6",
-        "symfony/cache": "^6",
-        "symfony/dotenv": "^6",
-        "symfony/expression-language": "^6",
+        "symfony/asset": "^6.0",
+        "symfony/cache": "^6.0",
+        "symfony/dotenv": "^6.0",
+        "symfony/expression-language": "^6.0",
         "symfony/flex": "^2.0",
-        "symfony/form": "^6",
-        "symfony/mailer": "^6",
+        "symfony/form": "^6.0",
+        "symfony/http-client": "^6.0",
+        "symfony/mailer": "^6.0",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/polyfill-apcu": "^1.0",
-        "symfony/security-bundle": "^6",
-        "symfony/stopwatch": "^6",
-        "symfony/translation": "^6",
-        "symfony/twig-bundle": "^6",
-        "symfony/validator": "^6",
+        "symfony/runtime": "^6.0",
+        "symfony/security-bundle": "^6.0",
+        "symfony/stopwatch": "^6.0",
+        "symfony/translation": "^6.0",
+        "symfony/twig-bundle": "^6.0",
+        "symfony/validator": "^6.0",
         "symfony/webpack-encore-bundle": "^1.0",
-        "twig/extensions": "^1.5"
+        "twig/extra-bundle": "^3.6",
+        "twig/intl-extra": "^3.6"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/extension-installer": "^1.3",
+        "phpstan/phpstan-doctrine": "^1.3",
+        "phpstan/phpstan-symfony": "^1.3",
         "phpunit/phpunit": "^10.0",
+        "rector/rector": "^0.16.0",
+        "symfony/debug-bundle": "^6.0",
         "symfony/maker-bundle": "^1.0",
-        "symfony/web-profiler-bundle": "^6"
+        "symfony/phpunit-bridge": "^6.2",
+        "symfony/web-profiler-bundle": "^6.0"
     },
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
             "symfony/flex": true,
-            "php-http/discovery": true
+            "symfony/runtime": true,
+            "phpstan/extension-installer": true
         },
         "platform": {
             "php": "8.2.5"
-        }
+        },
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
     },
     "autoload": {
         "psr-4": {
@@ -80,15 +93,16 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "phpstan": "vendor/bin/phpstan -c phpstan.neon"
     },
     "conflict": {
         "symfony/symfony": "*"
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
-            "require": "^6.0"
+            "allow-contrib": true,
+            "require": "6.2.*"
         }
     }
 }

@@ -6,48 +6,43 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TopCoaster - ranked coaster in a top
- *
- * @ORM\Table(name="liste_coaster")
- * @ORM\Entity(repositoryClass="App\Repository\TopCoasterRepository")
  */
-class TopCoaster
+#[ORM\Table(name: 'liste_coaster')]
+#[ORM\Entity(repositoryClass: \App\Repository\TopCoasterRepository::class)]
+class TopCoaster implements \Stringable
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="position", type="integer", nullable=true)
      */
-    private $position;
+    #[ORM\Column(name: 'position', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $position = null;
 
     /**
      * @var Top
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Top", inversedBy="topCoasters")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $top;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Top::class, inversedBy: 'topCoasters')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\Top $top = null;
 
     /**
      * @var Coaster
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Coaster", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $coaster;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Coaster::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\Coaster $coaster = null;
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->coaster . ' (' . $this->position . ')';
     }
@@ -89,7 +84,6 @@ class TopCoaster
     /**
      * Set top
      *
-     * @param Top $top
      *
      * @return TopCoaster
      */
@@ -113,7 +107,6 @@ class TopCoaster
     /**
      * Set coaster
      *
-     * @param Coaster $coaster
      *
      * @return TopCoaster
      */

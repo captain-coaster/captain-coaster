@@ -62,11 +62,6 @@ class ContactType extends AbstractType
                 ]
             );
 
-        $builder->add('recaptcha', EWZRecaptchaV3Type::class, array(
-            'mapped' => false,
-            'constraints' => array(
-                new IsTrueV3()
-            )
-        ));
+        $builder->add('recaptcha', EWZRecaptchaV3Type::class, ['mapped' => false, 'constraints' => [new IsTrueV3()]]);
     }
 }

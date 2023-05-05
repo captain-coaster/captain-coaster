@@ -6,56 +6,49 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Badge
- *
- * @ORM\Table(name="badge")
- * @ORM\Entity(repositoryClass="App\Repository\BadgeRepository")
  */
+#[ORM\Table(name: 'badge')]
+#[ORM\Entity(repositoryClass: \App\Repository\BadgeRepository::class)]
 class Badge
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=false)
      */
-    private $name;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $name = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=false)
      */
-    private $type;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $type = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $filenameFr;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    private ?string $filenameFr = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=true)
      */
-    private $filenameEn;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    private ?string $filenameEn = null;
 
     /**
-     * @var User
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="badges")
-     * @ORM\JoinColumn(nullable=true)
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\User>
      */
-    private $users;
+    #[ORM\ManyToMany(targetEntity: \App\Entity\User::class, mappedBy: 'badges')]
+    #[ORM\JoinColumn]
+    private \Doctrine\Common\Collections\Collection $users;
 
     /**
      * Get id
@@ -149,7 +142,6 @@ class Badge
     /**
      * Add user
      *
-     * @param \App\Entity\User $user
      *
      * @return Badge
      */
@@ -162,8 +154,6 @@ class Badge
 
     /**
      * Remove user
-     *
-     * @param \App\Entity\User $user
      */
     public function removeUser(\App\Entity\User $user)
     {
@@ -206,7 +196,7 @@ class Badge
 
     public function getFilename($locale = 'en')
     {
-        $method = sprintf('getFilename%s', ucfirst($locale));
+        $method = sprintf('getFilename%s', ucfirst((string) $locale));
 
         if (method_exists($this, $method)) {
             return $this->$method();

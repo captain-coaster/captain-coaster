@@ -35,7 +35,7 @@
                         <p class="text-muted content-group-sm">
                             {{ 'coaster.rating.mustlogin'|trans }}
                         </p>
-                        <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
+                        <a href="{{ path('login') }}">{{ 'coaster.rating.login'|trans }}</a>
                     </div>
                 {% endif %}
 
@@ -163,14 +163,14 @@
         </ul>
     </div>
 </div>
-    {% endblock %}
+{% endblock %}
 
-    {% block javascripts %}
-        <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-        <script src="{{ asset('js/pages/rating.js') }}"></script>
-    {% endblock %}
+{% block javascripts %}
+    <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
+    <script src="{{ asset('js/pages/rating.js') }}"></script>
+{% endblock %}
 
-    {% block stylesheets %}
-        <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
-        <link rel="stylesheet" href="{{ asset('js/plugins/round-circle/roundcircle.css') }}">
-    {% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+    <link rel="stylesheet" href="{{ asset('js/plugins/round-circle/roundcircle.css') }}">
+{% endblock %}

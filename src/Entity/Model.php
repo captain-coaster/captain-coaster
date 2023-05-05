@@ -2,59 +2,49 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
-
 /**
  * Status
  *
- * @ORM\Table(name="model")
- * @ORM\Entity
- * @ApiResource(
- *     attributes={
- *         "normalization_context"={"groups"={"read_model"}}
- *     },
- *     collectionOperations={"get"={"method"="GET"}},
- *     itemOperations={"get"={"method"="GET"}}
- * )
  */
-class Model
+#[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_model']])]
+#[ORM\Table(name: 'model')]
+#[ORM\Entity]
+class Model implements \Stringable
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
-
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"read_model", "read_coaster"})
      */
-    private $name;
-
+    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Groups(['read_model', 'read_coaster'])]
+    private ?string $name = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
      */
-    private $slug;
-
+    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
-        return $this->name;
+        return (string) $this->name;
     }
-
     /**
      * Get id
      *
@@ -64,7 +54,6 @@ class Model
     {
         return $this->id;
     }
-
     /**
      * Set name
      *
@@ -75,10 +64,8 @@ class Model
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
-
     /**
      * Get name
      *
@@ -88,7 +75,6 @@ class Model
     {
         return $this->name;
     }
-
     /**
      * Set slug
      *
@@ -99,10 +85,8 @@ class Model
     public function setSlug($slug)
     {
         $this->slug = $slug;
-
         return $this;
     }
-
     /**
      * Get slug
      *

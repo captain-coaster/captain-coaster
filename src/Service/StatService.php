@@ -17,18 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 class StatService
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
      * RatingService constructor.
-     *
-     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
     }
 
     /**

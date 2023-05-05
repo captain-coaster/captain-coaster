@@ -12,33 +12,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CoasterOpenCommand extends Command
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var DiscordService
-     */
-    private $discord;
-
+    public $repository;
+    protected static $defaultName = 'coaster:open';
     /**
      * CoasterOpenCommand constructor.
      * @param EntityManagerInterface $em
      * @param DiscordService $discord
      */
-    public function __construct(EntityManagerInterface $em, DiscordService $discord)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly DiscordService $discord, private readonly \App\Repository\CoasterRepository $coasterRepository, private readonly \App\Repository\StatusRepository $statusRepository)
     {
         parent::__construct();
-        $this->em = $em;
-        $this->discord = $discord;
     }
 
     protected function configure()
     {
-        $this
-            ->setName('coaster:open')
-            ->setDescription('Checks if a coaster opens today and change its status.');
+        $this->setDescription('Checks if a coaster opens today and change its status.');
     }
 
     /**
@@ -57,13 +45,13 @@ class CoasterOpenCommand extends Command
             return;
         }
 
-        $openingCoasters = $this->em->getRepository(Coaster::class)->findBy(
+        $openingCoasters = $this->repository->findBy(
             [
                 'openingDate' => $today,
             ]
         );
 
-        $operatingStatus = $this->em->getRepository(Status::class)->findOneBy(
+        $operatingStatus = $this->repository->findOneBy(
             ['name' => Status::OPERATING]
         );
 

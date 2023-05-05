@@ -20,15 +20,14 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class UserController
  * @package App\Controller
- * @Route("/users")
  */
+#[Route(path: '/users')]
 class UserController extends AbstractController
 {
     /**
      * List all users
-     *
-     * @Route("/{page}", name="user_list", requirements={"page" = "\d+"}, methods={"GET"})
      */
+    #[Route(path: '/{page}', name: 'user_list', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listAction(PaginatorInterface $paginator, int $page = 1): Response
     {
         try {
@@ -37,7 +36,7 @@ class UserController extends AbstractController
                 $page,
                 21
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
@@ -46,10 +45,9 @@ class UserController extends AbstractController
 
     /**
      * Show all user's ratings
-     *
-     * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listRatingsAction(Request $request, PaginatorInterface $paginator, User $user, int $page = 1): Response
+    #[Route(path: '/{id}/ratings/{page}', name: 'user_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function listRatingsAction(PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -70,7 +68,7 @@ class UserController extends AbstractController
                     'defaultSortDirection' => 'desc',
                 ]
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
@@ -85,9 +83,8 @@ class UserController extends AbstractController
 
     /**
      * Show all user's reviews
-     *
-     * @Route("/{id}/reviews/{page}", name="user_reviews", requirements={"page" = "\d+"}, methods={"GET"})
      */
+    #[Route(path: '/{id}/reviews/{page}', name: 'user_reviews', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listReviews(PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
         if (!$user->isEnabled()) {
@@ -110,7 +107,7 @@ class UserController extends AbstractController
                     'defaultSortDirection' => 'desc',
                 ]
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
@@ -126,12 +123,9 @@ class UserController extends AbstractController
     /**
      * Show all user's top
      *
-     * @Route("/{id}/tops", name="user_tops", methods={"GET"})
-     *
-     * @param User $user
-     * @return Response
      */
-    public function listTops(User $user)
+    #[Route(path: '/{id}/tops', name: 'user_tops', methods: ['GET'])]
+    public function listTops(User $user): \Symfony\Component\HttpFoundation\Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -153,9 +147,8 @@ class UserController extends AbstractController
 
     /**
      * Show all user's pictures
-     *
-     * @Route("/{id}/pictures", name="user_pictures", requirements={"page" = "\d+"}, methods={"GET"})
      */
+    #[Route(path: '/{id}/pictures', name: 'user_pictures', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function picturesAction(Request $request, User $user, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
         if (!$user->isEnabled()) {
@@ -173,15 +166,15 @@ class UserController extends AbstractController
                     'defaultSortDirection' => 'desc',
                 ]
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
         $userLikes = [];
-        if ($loggedInUser = $this->getUser()) {
+        if (($loggedInUser = $this->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             $em->getConfiguration()->addCustomHydrationMode(
                 'COLUMN_HYDRATOR',
-                'App\Doctrine\Hydrator\ColumnHydrator'
+                \App\Doctrine\Hydrator\ColumnHydrator::class
             );
             $userLikes = $em
                 ->getRepository(LikedImage::class)
@@ -201,13 +194,9 @@ class UserController extends AbstractController
 
     /**
      * Display a user
-     *
-     * @param User $user
-     * @param StatService $statService
-     * @return Response
-     * @Route("/{slug}", name="user_show", methods={"GET"}, options={"expose" = true})
      */
-    public function showAction(User $user, StatService $statService)
+    #[Route(path: '/{slug}', name: 'user_show', methods: ['GET'], options: ['expose' => true])]
+    public function showAction(User $user, StatService $statService): \Symfony\Component\HttpFoundation\Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -225,12 +214,10 @@ class UserController extends AbstractController
     /**
      * Permalink to user profile
      *
-     * @param User $user
      * @return Response
-     *
-     * @Route("/{id}/profile", name="user_profile", methods={"GET"})
      */
-    public function permalinkProfile(User $user)
+    #[Route(path: '/{id}/profile', name: 'user_profile', methods: ['GET'])]
+    public function permalinkProfile(User $user): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->redirectToRoute('user_show', ['slug' => $user->getSlug()]);
     }

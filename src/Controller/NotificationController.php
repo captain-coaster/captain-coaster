@@ -10,18 +10,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 /**
  * Class NotificationController
  * @package App\Controller
- * @Route("/notifications")
  */
+#[Route(path: '/notifications')]
 class NotificationController extends AbstractController
 {
     /**
      * Read a notification
-     * @param Notification $notification
-     * @param NotificationService $notifService
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @Route("/{id}/read", name="notification_read", methods={"GET"})
      */
-    public function readAction(Notification $notification, NotificationService $notifService)
+    #[Route(path: '/{id}/read', name: 'notification_read', methods: ['GET'])]
+    public function readAction(Notification $notification, NotificationService $notifService): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         $redirectUrl = $notifService->getRedirectUrl($notification);
 

@@ -26,7 +26,7 @@ class UniqueCoasterValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, 'IteratorAggregate');
         }
 
-        $collectionElements = array();
+        $collectionElements = [];
         /** @var TopCoaster $element */
         foreach ($value as $element) {
             if (!$element instanceof TopCoaster) {

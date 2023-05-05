@@ -15,15 +15,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class TopCoasterType extends AbstractType
 {
-    private $transformer;
-
     /**
      * TopCoasterType constructor.
-     * @param CoasterToIdTransformer $transformer
      */
-    public function __construct(CoasterToIdTransformer $transformer)
+    public function __construct(private readonly CoasterToIdTransformer $transformer)
     {
-        $this->transformer = $transformer;
     }
 
     /**

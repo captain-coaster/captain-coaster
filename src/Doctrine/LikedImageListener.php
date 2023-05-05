@@ -9,17 +9,10 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 class LikedImageListener
 {
     /**
-     * @var ImageManager
-     */
-    private $imageManager;
-
-    /**
      * ImageUploadListener constructor.
-     * @param ImageManager $imageManager
      */
-    public function __construct(ImageManager $imageManager)
+    public function __construct(private readonly ImageManager $imageManager)
     {
-        $this->imageManager = $imageManager;
     }
 
     public function postPersist(LifecycleEventArgs $args)

@@ -14,42 +14,27 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class BadgeService
 {
-    const BADGE_TYPE_RATING = 'rating';
-    const BADGE_RATING_1 = 'badge.rating1';
-    const BADGE_RATING_100 = 'badge.rating100';
-    const BADGE_RATING_250 = 'badge.rating250';
-    const BADGE_RATING_500 = 'badge.rating500';
-    const BADGE_RATING_1000 = 'badge.rating1000';
+    final public const BADGE_TYPE_RATING = 'rating';
+    final public const BADGE_RATING_1 = 'badge.rating1';
+    final public const BADGE_RATING_100 = 'badge.rating100';
+    final public const BADGE_RATING_250 = 'badge.rating250';
+    final public const BADGE_RATING_500 = 'badge.rating500';
+    final public const BADGE_RATING_1000 = 'badge.rating1000';
 
-    const BADGE_TYPE_TEAM = 'team';
-    const BADGE_TEAM_KATUN = 'badge.teamkatun';
-    const BADGE_TEAM_ISPEED = 'badge.teamispeed';
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var NotificationService
-     */
-    private $notifService;
+    final public const BADGE_TYPE_TEAM = 'team';
+    final public const BADGE_TEAM_KATUN = 'badge.teamkatun';
+    final public const BADGE_TEAM_ISPEED = 'badge.teamispeed';
 
     /**
      * BadgeService constructor.
-     * @param EntityManagerInterface $em
-     * @param NotificationService $notifService
      */
     public function __construct(EntityManagerInterface $em, NotificationService $notifService)
     {
-        $this->em = $em;
-        $this->notifService = $notifService;
     }
 
     /**
      * Give badges to User
      *
-     * @param User $user
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
@@ -67,8 +52,6 @@ class BadgeService
 
     /**
      * Give rating badges to User
-     *
-     * @param User $user
      */
     private function giveRatingBadge(User $user)
     {
@@ -93,16 +76,12 @@ class BadgeService
 
     /**
      * Give team badges to User
-     *
-     * @param User $user
      */
     private function giveTeamBadge(User $user)
     {
         // Check for already given Team badge
         $currentBadge = $user->getBadges()->filter(
-            function (Badge $badge) {
-                return $badge->getType() == self::BADGE_TYPE_TEAM;
-            }
+            fn(Badge $badge) => $badge->getType() == self::BADGE_TYPE_TEAM
         );
 
         // You can be only in one team !
@@ -158,13 +137,10 @@ class BadgeService
 
     /**
      * Helper to add only new badge
-     *
-     * @param User $user
-     * @param string $badgeName
      */
     private function addNewBadge(User $user, string $badgeName)
     {
-        $badge = $this->em->getRepository('App:Badge')->findOneBy(['name' => $badgeName]);
+        $badge = $this->Repository->findOneBy(['name' => $badgeName]);
 
         if (!$user->getBadges()->contains($badge)) {
             $user->addBadge($badge);

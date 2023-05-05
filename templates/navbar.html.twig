@@ -34,7 +34,7 @@
             {% set route = app.request.attributes.get('_route') %}
             {% set route_params = app.request.attributes.get('_route_params') %}
             {% set params = route_params|merge(app.request.query.all) %}
-            {% for locale in locales if locale != app.request.locale %}
+            {% for locale in locales|filter(v => v != app.request.locale) %}
               <li>
                 <a href="{{ path(route, params|merge({ _locale: locale })) }}">
                   {{ locale|trans }}
@@ -113,7 +113,7 @@
         </li>
       {% else %}
         <li>
-          <a href="{{ path('hwi_oauth_connect') }}" data-popup="tooltip" title="Login">
+          <a href="{{ path('login') }}" data-popup="tooltip" title="Login">
             <i class="icon-lock display-block"></i>
           </a>
         </li>

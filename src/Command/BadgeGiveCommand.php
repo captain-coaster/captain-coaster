@@ -13,33 +13,21 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class BadgeGiveCommand extends Command
 {
-    /**
-     * @var BadgeService
-     */
-    private $badgeService;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
+    public $repository;
+    protected static $defaultName = 'badge:give';
     /**
      * BadgeGiveCommand constructor.
      * @param BadgeService $badgeService
      * @param EntityManagerInterface $em
      */
-    public function __construct(BadgeService $badgeService, EntityManagerInterface $em)
+    public function __construct(private readonly BadgeService $badgeService, private readonly EntityManagerInterface $em, private readonly \App\Repository\UserRepository $userRepository)
     {
         parent::__construct();
-        $this->badgeService = $badgeService;
-        $this->em = $em;
     }
 
     protected function configure()
     {
-        $this
-            ->setName('badge:give')
-            ->setDescription('Give badges to users')
+        $this->setDescription('Give badges to users')
             ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
@@ -52,6 +40,7 @@ class BadgeGiveCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $users = [];
         $stopwatch = new Stopwatch();
         $stopwatch->start('badge');
         $output->writeln('Start giving badges.');
@@ -59,7 +48,7 @@ class BadgeGiveCommand extends Command
         $userId = $input->getArgument('user');
 
         if (!is_null($userId)) {
-            $users[] = $this->em->getRepository(User::class)->findOneBy(['id' => $userId]);
+            $users[] = $this->repository->findOneBy(['id' => $userId]);
         } else {
             $users = $this->em->getRepository(User::class)->getUsersWithRecentRatingOrTopUpdate();
         }

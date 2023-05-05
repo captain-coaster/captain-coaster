@@ -9,21 +9,16 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TopVoter extends Voter
 {
-    const EDIT = 'edit';
-    const EDIT_DETAILS = 'edit-details';
-    const DELETE = 'delete';
+    final public const EDIT = 'edit';
+    final public const EDIT_DETAILS = 'edit-details';
+    final public const DELETE = 'delete';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         if (!in_array($attribute, [self::EDIT, self::EDIT_DETAILS, self::DELETE])) {
             return false;
         }
-
-        if (!$subject instanceof Top) {
-            return false;
-        }
-
-        return true;
+        return $subject instanceof Top;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -33,17 +28,12 @@ class TopVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-
-        switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($subject, $user);
-            case self::EDIT_DETAILS:
-                return $this->canEditDetails($subject, $user);
-            case self::DELETE:
-                return $this->canDelete($subject, $user);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::EDIT => $this->canEdit($subject, $user),
+            self::EDIT_DETAILS => $this->canEditDetails($subject, $user),
+            self::DELETE => $this->canDelete($subject, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     private function canEdit(Top $top, User $user): bool
@@ -53,11 +43,11 @@ class TopVoter extends Voter
 
     private function canEditDetails(Top $top, User $user): bool
     {
-        return $user === $top->getUser() && $top->isMain() === false;
+        return $user === $top->getUser() && !$top->isMain();
     }
 
     private function canDelete(Top $top, User $user): bool
     {
-        return $user === $top->getUser() && $top->isMain() === false;
+        return $user === $top->getUser() && !$top->isMain();
     }
 }

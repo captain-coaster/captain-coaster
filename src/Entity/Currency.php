@@ -7,45 +7,43 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Currency
- *
- * @ORM\Table(name="currency")
- * @ORM\Entity(repositoryClass="App\Repository\CurrencyRepository")
  */
-class Currency
+#[ORM\Table(name: 'currency')]
+#[ORM\Entity(repositoryClass: \App\Repository\CurrencyRepository::class)]
+class Currency implements \Stringable
 {
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=255)
      *
-     * @Assert\NotBlank()
      */
-    private $name;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Assert\NotBlank]
+    private ?string $name = null;
 
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=10)
      *
-     * @Assert\NotBlank()
      */
-    private $symbol;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 10)]
+    #[Assert\NotBlank]
+    private ?string $symbol = null;
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**

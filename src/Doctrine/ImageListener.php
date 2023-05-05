@@ -15,13 +15,8 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ImageListener
 {
-    private ImageManager $imageManager;
-    private DiscordService $discordService;
-
-    public function __construct(ImageManager $imageManager, DiscordService $discordService)
+    public function __construct(private readonly ImageManager $imageManager, private readonly DiscordService $discordService)
     {
-        $this->imageManager = $imageManager;
-        $this->discordService = $discordService;
     }
 
     /**

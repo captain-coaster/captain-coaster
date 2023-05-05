@@ -5,17 +5,23 @@ namespace App\Repository;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * RiddenCoasterRepository
  */
-class RiddenCoasterRepository extends EntityRepository
+class RiddenCoasterRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, RiddenCoaster::class);
+    }
     /**
      * Count all ratings
      *
@@ -30,7 +36,7 @@ class RiddenCoasterRepository extends EntityRepository
                 ->from('App:RiddenCoaster', 'r')
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }
@@ -52,7 +58,6 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Count all new ratings since date passed in parameter
-     * @param \DateTime $date
      * @return mixed
      * @throws NonUniqueResultException
      */
@@ -70,7 +75,6 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Count all ratings for a specific user passed in parameter
-     * @param User $user
      * @return mixed
      * @throws NonUniqueResultException
      */
@@ -87,7 +91,6 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
-     * @param Coaster $coaster
      * @return mixed
      */
     public function countForCoaster(Coaster $coaster)
@@ -101,15 +104,13 @@ class RiddenCoasterRepository extends EntityRepository
                 ->setParameter('coaster', $coaster)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }
 
     /**
      * Get ratings for a specific coaster ordered by language preference, text review and date
-     * @param Coaster $coaster
-     * @param string $locale
      * @return mixed
      */
     public function getReviews(Coaster $coaster, string $locale = 'en')
@@ -136,8 +137,6 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Get latest text reviews ordered by language
-     * @param string $locale
-     * @param int $limit
      * @return mixed
      */
     public function getLatestReviewsByLocale(string $locale = 'en', int $limit = 3)
@@ -159,7 +158,6 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
-     * @param User $user
      * @return QueryBuilder
      */
     public function getUserRatings(User $user)
@@ -178,7 +176,6 @@ class RiddenCoasterRepository extends EntityRepository
     }
 
     /**
-     * @param User $user
      * @return QueryBuilder
      */
     public function getUserReviews(User $user)
@@ -228,10 +225,8 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Update totalRating for all coasters
-     *
-     * @return bool
      */
-    public function updateTotalRatings()
+    public function updateTotalRatings(): bool
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -247,7 +242,7 @@ class RiddenCoasterRepository extends EntityRepository
 
         try {
             $connection->executeQuery($sql);
-        } catch (DBALException $e) {
+        } catch (DBALException) {
             return false;
         }
 
@@ -256,10 +251,8 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Update averageRating for all coasters
-     * @param int $minRatings
-     * @return bool|int
      */
-    public function updateAverageRatings(int $minRatings)
+    public function updateAverageRatings(int $minRatings): bool|int
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -279,14 +272,13 @@ class RiddenCoasterRepository extends EntityRepository
             $statement->execute(['minRatings' => $minRatings]);
 
             return $statement->rowCount();
-        } catch (DBALException $e) {
+        } catch (DBALException) {
             return false;
         }
     }
 
     /**
      * Get country where a user rode the most
-     * @param User $user
      * @return mixed
      */
     public function findMostRiddenCountry(User $user)
@@ -308,16 +300,13 @@ class RiddenCoasterRepository extends EntityRepository
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException $e) {
-            return $default;
-        } catch (NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return $default;
         }
     }
 
     /**
      * Count ridden coasters for a user in Top 100
-     * @param User $user
      * @return mixed
      */
     public function countTop100ForUser(User $user)
@@ -333,13 +322,12 @@ class RiddenCoasterRepository extends EntityRepository
                 ->setParameter('user', $user)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }
 
     /**
-     * @param User $user
      * @return mixed|string
      */
     public function getMostRiddenManufacturer(User $user)
@@ -359,14 +347,12 @@ class RiddenCoasterRepository extends EntityRepository
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return ['nb' => 0, 'name' => 'Unknown'];
         }
     }
 
     /**
-     * @param User $user
-     * @param int $max
      * @return mixed
      */
     public function findCoastersWithNoImage(User $user, int $max = 5)
@@ -379,7 +365,7 @@ class RiddenCoasterRepository extends EntityRepository
             ->where('r.user = :user')
             ->andWhere('c.mainImage IS NULL')
             ->orderBy('c.totalRatings', 'desc')
-            ->setFirstResult(rand(0, $max * 2))
+            ->setFirstResult(random_int(0, $max * 2))
             ->setMaxResults($max)
             ->setParameter('user', $user)
             ->getQuery()
@@ -388,9 +374,6 @@ class RiddenCoasterRepository extends EntityRepository
 
     /**
      * Get user ratings for monthly ranking update
-     *
-     * @param int $userId
-     * @return array
      */
     public function findUserRatingsForRanking(int $userId): array
     {

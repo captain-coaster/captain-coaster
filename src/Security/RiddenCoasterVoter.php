@@ -10,20 +10,15 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class RiddenCoasterVoter extends Voter
 {
-    const UPDATE = 'update';
-    const DELETE = 'delete';
+    final public const UPDATE = 'update';
+    final public const DELETE = 'delete';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         if (!in_array($attribute, [self::UPDATE, self::DELETE])) {
             return false;
         }
-
-        if (!$subject instanceof RiddenCoaster) {
-            return false;
-        }
-
-        return true;
+        return $subject instanceof RiddenCoaster;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -36,15 +31,11 @@ class RiddenCoasterVoter extends Voter
 
         /** @var RiddenCoaster $review */
         $review = $subject;
-
-        switch ($attribute) {
-            case self::UPDATE:
-                return $this->canUpdate($review, $user);
-            case self::DELETE:
-                return $this->canDelete($review, $user);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::UPDATE => $this->canUpdate($review, $user),
+            self::DELETE => $this->canDelete($review, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
     private function canUpdate(RiddenCoaster $review, User $user): bool

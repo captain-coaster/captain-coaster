@@ -21,7 +21,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  */
 class CustomRelativeSlugHandler implements SlugHandlerInterface
 {
-    const SEPARATOR = '/';
+    final public const SEPARATOR = '/';
 
     /**
      * @var ObjectManager
@@ -68,7 +68,7 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
     {
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
-        $this->usedOptions = $config['handlers'][get_called_class()];
+        $this->usedOptions = $config['handlers'][static::class];
         if (!isset($this->usedOptions['separator'])) {
             $this->usedOptions['separator'] = self::SEPARATOR;
         }
@@ -86,7 +86,7 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
-        $this->sluggable->setTransliterator([$this, 'transliterate']);
+        $this->sluggable->setTransliterator(fn(string $text, string $separator, object $object): string => $this->transliterate($text, $separator, $object));
     }
 
     /**

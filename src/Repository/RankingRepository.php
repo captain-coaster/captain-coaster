@@ -4,19 +4,23 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Ranking;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * RankingRepository
  */
-class RankingRepository extends EntityRepository
+class RankingRepository extends ServiceEntityRepository
 {
-    /**
-     * @return mixed|null
-     */
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Ranking::class);
+    }
+
     public function findCurrent()
     {
         try {
@@ -28,7 +32,7 @@ class RankingRepository extends EntityRepository
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return null;
         }
     }
@@ -48,13 +52,12 @@ class RankingRepository extends EntityRepository
                 ->setFirstResult(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return null;
         }
     }
 
     /**
-     * @param array $filters
      * @return \Doctrine\ORM\Query
      * @throws \Exception
      */
@@ -75,10 +78,6 @@ class RankingRepository extends EntityRepository
         return $qb->getQuery();
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function applyFilters(QueryBuilder $qb, array $filters = [])
     {
         $this->filterLocation($qb, $filters);
@@ -89,10 +88,6 @@ class RankingRepository extends EntityRepository
         $this->filterOpeningDate($qb, $filters);
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterLocation(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('country', $filters) && $filters['country'] !== '') {
@@ -109,10 +104,6 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterMaterialType(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('materialType', $filters) && $filters['materialType'] !== '') {
@@ -123,10 +114,6 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterSeatingType(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('seatingType', $filters) && $filters['seatingType'] !== '') {
@@ -137,10 +124,6 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterModel(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('model', $filters) && $filters['model'] !== '') {
@@ -151,10 +134,6 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterManufacturer(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('manufacturer', $filters) && $filters['manufacturer'] !== '') {
@@ -164,10 +143,6 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
     {
         // Filter by average rating

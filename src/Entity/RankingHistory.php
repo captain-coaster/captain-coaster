@@ -6,85 +6,68 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * RankingHistory
- *
- * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="unique_coaster_per_ranking_history", columns={"ranking_id", "coaster_id"})})
- * @ORM\Entity(repositoryClass="App\Repository\RankingHistoryRepository")
  */
+#[ORM\UniqueConstraint(name: 'unique_coaster_per_ranking_history', columns: ['ranking_id', 'coaster_id'])]
+#[ORM\Entity(repositoryClass: \App\Repository\RankingHistoryRepository::class)]
 class RankingHistory
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var Ranking
-     *
-     * @ORM\ManyToOne(targetEntity="Ranking")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $ranking;
+    #[ORM\ManyToOne(targetEntity: 'Ranking')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?\App\Entity\Ranking $ranking = null;
 
-    /**
-     * @var Coaster
-     *
-     * @ORM\ManyToOne(targetEntity="Coaster")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $coaster;
+    #[ORM\ManyToOne(targetEntity: 'Coaster')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?\App\Entity\Coaster $coaster = null;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="rank", type="integer")
      */
-    private $rank;
+    #[ORM\Column(name: 'rank', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $rank = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="score", type="decimal", precision=14, scale=11)
      */
-    private $score;
+    #[ORM\Column(name: 'score', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 14, scale: 11)]
+    private ?string $score = null;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="validDuels", type="integer")
      */
-    private $validDuels;
+    #[ORM\Column(name: 'validDuels', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $validDuels = null;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="totalTopsIn", type="integer", nullable=true)
      */
-    private $totalTopsIn;
+    #[ORM\Column(name: 'totalTopsIn', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $totalTopsIn = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="averageTopRank", type="decimal", precision=6, scale=3, nullable=true)
      */
-    private $averageTopRank;
+    #[ORM\Column(name: 'averageTopRank', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
+    private ?string $averageTopRank = null;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="totalRatings", type="integer", nullable=true)
      */
-    private $totalRatings;
+    #[ORM\Column(name: 'totalRatings', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $totalRatings = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="averageRating", type="decimal", precision=5, scale=3, nullable=true)
      */
-    private $averageRating;
+    #[ORM\Column(name: 'averageRating', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
+    private ?string $averageRating = null;
 
 
     /**
@@ -265,10 +248,6 @@ class RankingHistory
         return $this->averageRating;
     }
 
-    /**
-     * @param Ranking $ranking
-     * @return RankingHistory
-     */
     public function setRanking(Ranking $ranking): RankingHistory
     {
         $this->ranking = $ranking;
@@ -276,18 +255,11 @@ class RankingHistory
         return $this;
     }
 
-    /**
-     * @return Ranking
-     */
     public function getRanking(): Ranking
     {
         return $this->ranking;
     }
 
-    /**
-     * @param Coaster $coaster
-     * @return RankingHistory
-     */
     public function setCoaster(Coaster $coaster): RankingHistory
     {
         $this->coaster = $coaster;
@@ -295,9 +267,6 @@ class RankingHistory
         return $this;
     }
 
-    /**
-     * @return Coaster
-     */
     public function getCoaster(): Coaster
     {
         return $this->coaster;

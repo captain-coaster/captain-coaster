@@ -1,14 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\Image;
-use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Form\Type\ContactType;
+use App\Repository\ImageRepository;
+use App\Repository\RiddenCoasterRepository;
 use App\Service\DiscordService;
 use App\Service\StatService;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,19 +25,12 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class DefaultController
- * @package App\Controller
- */
 class DefaultController extends AbstractController
 {
     /**
-     * Root of application, redirect to browser language if defined
-     *
-     * @param Request $request
-     * @return RedirectResponse
+     * Root of application without locale, redirect to browser language if defined.
      */
-    public function rootAction(Request $request)
+    public function root(Request $request): RedirectResponse
     {
         $locale = $request->getPreferredLanguage($this->getParameter('app_locales_array'));
 
@@ -41,49 +38,53 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * Index of application
+     * Index of application.
      *
-     * @param Request $request
-     * @param StatService $statService
-     * @param EntityManagerInterface $em
-     * @return Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
+     * @throws NoResultException
      * @throws \Exception
-     * @Route("/", name="bdd_index", methods={"GET"})
      */
-    public function indexAction(Request $request, StatService $statService, EntityManagerInterface $em)
+    #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
+    public function index(
+        Request                 $request,
+        StatService             $statService,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        ImageRepository         $imageRepository
+    ): Response
     {
         $missingImages = [];
         if (($user = $this->getUser()) instanceof User) {
-            $missingImages = $em->getRepository(RiddenCoaster::class)->findCoastersWithNoImage($user);
+            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
         return $this->render(
             'Default/index.html.twig',
             [
-                'ratingFeed' => $em->getRepository(RiddenCoaster::class)->findBy([], ['updatedAt' => 'DESC'], 6),
-                'image' => $em->getRepository(Image::class)->findLatestImage(),
+                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+                'image' => $imageRepository->findLatestImage(),
                 'stats' => $statService->getIndexStats(),
-                'reviews' => $em->getRepository(RiddenCoaster::class)->getLatestReviewsByLocale($request->getLocale()),
+                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
                 'missingImages' => $missingImages,
             ]
         );
     }
 
+    public function logout()
+    {
+    }
+
     /**
-     * Contact form
+     * Contact form.
      *
-     * @return RedirectResponse|Response
-     * @Route("/contact", name="default_contact", methods={"GET", "POST"})
      * @throws TransportExceptionInterface
      */
+    #[Route(path: '/contact', name: 'default_contact', methods: ['GET', 'POST'])]
     public function contactAction(
         Request             $request,
         MailerInterface     $mailer,
         DiscordService      $discord,
         TranslatorInterface $translator
-    )
+    ): RedirectResponse|Response
     {
         /** @var Form $form */
         $form = $this->createForm(ContactType::class, null);
@@ -93,7 +94,7 @@ class DefaultController extends AbstractController
             $data = $form->getData();
 
             $message = (new Email())
-                ->from(new Address($this->getParameter('app_mail_from'),$this->getParameter('app_mail_from_name') ))
+                ->from(new Address($this->getParameter('app_mail_from'), $this->getParameter('app_mail_from_name')))
                 ->to($this->getParameter('app_contact_mail_to'))
                 ->replyTo($data['email'])
                 ->subject($translator->trans('contact.email.title'))
@@ -112,15 +113,64 @@ class DefaultController extends AbstractController
             return $this->redirectToRoute('default_contact');
         }
 
-        return $this->render('Default/contact.html.twig', ['form' => $form->createView()]);
+        return $this->render('Default/contact.html.twig', ['form' => $form]);
+    }
+
+    #[Route(path: '/privacy-policy', name: 'default_privacy_policy', methods: ['GET'])]
+    public function privacyPolicy(): Response
+    {
+        return $this->render('Default/policy.html.twig');
     }
 
     /**
-     * @return Response
-     * @Route("/privacy-policy", name="default_privacy_policy", methods={"GET"})
+     * Link to this controller to start the "connect" process.
      */
-    public function privacyPolicy()
+    #[Route(path: '/connect/google', name: 'connect_google_start', methods: ['GET'])]
+    public function connectGoogleStart(ClientRegistry $clientRegistry): RedirectResponse
     {
-        return $this->render('Default/policy.html.twig');
+        // will redirect to Google!
+        return $clientRegistry->getClient('google')->redirect([], []);
+    }
+
+    /**
+     * After going to Google, you're redirected back here
+     * because this is the "redirect_route" you configured
+     * in config/packages/knpu_oauth2_client.yaml.
+     */
+    #[Route('/login/check-google', name: 'connect_google_check')]
+    public function connectGoogleCheck(Request $request)
+    {
+        // ** if you want to *authenticate* the user, then
+        // leave this method blank and create a Guard authenticator
+    }
+
+    #[Route('/protected', name: 'protected')]
+    public function protected(
+        Request $request,
+        StatService $statService,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        ImageRepository $imageRepository
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+        $missingImages = [];
+        if (($user = $this->getUser()) instanceof User) {
+            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
+        }
+
+        return $this->render(
+            'Default/index.html.twig',
+            [
+                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+                'image' => $imageRepository->findLatestImage(),
+                'stats' => $statService->getIndexStats(),
+                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
+                'missingImages' => $missingImages,
+            ]
+        );
+    }
+
+    #[Route(path: '/login', name: 'login', methods: ['GET'])]
+    public function login(){
+        return $this->render('Connect/login.html.twig');
     }
 }

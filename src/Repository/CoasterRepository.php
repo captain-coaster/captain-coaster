@@ -2,21 +2,27 @@
 
 namespace App\Repository;
 
+use App\Entity\Coaster;
 use App\Entity\Park;
 use App\Entity\Status;
 use App\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * CoasterRepository
  */
-class CoasterRepository extends \Doctrine\ORM\EntityRepository
+class CoasterRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Coaster::class);
+    }
+
     /**
-     * @param string $term
-     * @param User $user
      * @return array
      */
     public function suggestCoasterForTop(string $term, User $user)
@@ -55,7 +61,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param array $filters
      * @return array
      */
     public function getFilteredMarkers(array $filters)
@@ -82,8 +87,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
-     * @param Park $park
-     * @param array $filters
      * @return array
      */
     public function getCoastersForMap(Park $park, array $filters)
@@ -107,7 +110,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
     /**
      * Return coasters for nearby page
      *
-     * @param array $filters
      * @return \Doctrine\ORM\Query
      */
     public function getSearchCoasters(array $filters)
@@ -128,10 +130,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         return $qb->getQuery();
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function applyFilters(QueryBuilder $qb, array $filters = [])
     {
         // Filter by manufacturer
@@ -154,10 +152,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         $this->orderBy($qb, $filters);
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function orderBy(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('latitude', $filters) && $filters['latitude'] !== '') {
@@ -172,10 +166,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterManufacturer(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('manufacturer', $filters) && $filters['manufacturer'] !== '') {
@@ -187,9 +177,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Filter only operating coasters
-     *
-     * @param QueryBuilder $qb
-     * @param array $filters
      */
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
     {
@@ -200,10 +187,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterScore(QueryBuilder $qb, array $filters = [])
     {
         // Filter by average rating
@@ -214,10 +197,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterByRidden(QueryBuilder $qb, array $filters = [])
     {
         // Filter by not ridden. User based filter.
@@ -239,9 +218,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
 
     /**
      * Filter coasters user has not ridden. User based filter.
-     *
-     * @param QueryBuilder $qb
-     * @param array $filters
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
@@ -261,10 +237,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
     {
         // Filter by average rating
@@ -275,10 +247,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterKiddie(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('kiddie', $filters) && $filters['kiddie'] !== '') {
@@ -286,10 +254,6 @@ class CoasterRepository extends \Doctrine\ORM\EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
     private function filterName(QueryBuilder $qb, array $filters = [])
     {
         if (array_key_exists('name', $filters) && $filters['name'] !== '') {

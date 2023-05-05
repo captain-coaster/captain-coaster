@@ -13,8 +13,8 @@ use Symfony\Component\Security\Guard\AbstractGuardAuthenticator;
 
 class TokenAuthenticator extends AbstractGuardAuthenticator
 {
-    const HEADER = 'Authorization';
-    const DEPRECATED_HEADER = 'X-AUTH-TOKEN';
+    final public const HEADER = 'Authorization';
+    final public const DEPRECATED_HEADER = 'X-AUTH-TOKEN';
 
     public function supports(Request $request): bool
     {

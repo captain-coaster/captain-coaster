@@ -14,23 +14,15 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class RankingCommand extends Command
 {
-    private RankingService $rankingService;
-    private NotificationService $notificationService;
-    private DiscordService $discordService;
-
-    public function __construct(RankingService $rankingService, NotificationService $notificationService, DiscordService $discordService)
+    protected static $defaultName = 'ranking:update';
+    public function __construct(private readonly RankingService $rankingService, private readonly NotificationService $notificationService, private readonly DiscordService $discordService)
     {
         parent::__construct();
-        $this->rankingService = $rankingService;
-        $this->notificationService = $notificationService;
-        $this->discordService = $discordService;
     }
 
     protected function configure()
     {
-        $this
-            ->setName('ranking:update')
-            ->addOption('dry-run', null, InputOption::VALUE_NONE)
+        $this->addOption('dry-run', null, InputOption::VALUE_NONE)
             ->addOption('send-discord', null, InputOption::VALUE_NONE)
             ->addOption('send-email', null, InputOption::VALUE_NONE);
     }
@@ -129,7 +121,7 @@ class RankingCommand extends Command
                 $discordText = '';
             }
 
-            $discordText = $discordText.$text;
+            $discordText .= $text;
         }
 
         $this->discordService->log($discordText);

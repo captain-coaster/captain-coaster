@@ -6,37 +6,32 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Tag
- *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
  */
-class Tag
+#[ORM\Entity(repositoryClass: \App\Repository\TagRepository::class)]
+class Tag implements \Stringable
 {
-    const PRO = 'pro';
-    const CON = 'con';
+    final public const PRO = 'pro';
+    final public const CON = 'con';
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
      */
-    private $name;
+    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $name = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255)
      */
-    private $type;
+    #[ORM\Column(name: 'type', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $type = null;
 
     /**
      * @return string
@@ -48,8 +43,6 @@ class Tag
 
     /**
      * Get id
-     *
-     * @return int
      */
     public function getId(): int
     {
@@ -60,8 +53,6 @@ class Tag
      * Set name
      *
      * @param string $name
-     *
-     * @return Tag
      */
     public function setName($name): Tag
     {
@@ -72,8 +63,6 @@ class Tag
 
     /**
      * Get name
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -84,8 +73,6 @@ class Tag
      * Set type
      *
      * @param string $type
-     *
-     * @return Tag
      */
     public function setType($type): Tag
     {
@@ -96,8 +83,6 @@ class Tag
 
     /**
      * Get type
-     *
-     * @return string
      */
     public function getType(): string
     {

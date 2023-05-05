@@ -16,13 +16,12 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class SearchController
- * @package App\Controller
- * @Route("/search")
+ * Class SearchController.
  */
+#[Route(path: '/search')]
 class SearchController extends AbstractController
 {
-    const CACHE_AUTOCOMPLETE = 'main_autocomplete';
+    final public const CACHE_AUTOCOMPLETE = 'main_autocomplete';
 
     /**
      * @var PaginatorInterface
@@ -31,36 +30,25 @@ class SearchController extends AbstractController
 
     /**
      * RankingController constructor.
-     * @param PaginatorInterface $paginator
      */
     public function __construct(PaginatorInterface $paginator)
     {
         $this->paginator = $paginator;
     }
 
-    /**
-     * @Route("/", name="search_index", methods={"GET"})
-     */
-    public function indexAction()
+    #[Route(path: '/', name: 'search_index', methods: ['GET'])]
+    public function indexAction(): Response
     {
         return $this->render(
             'Search/index.html.twig',
             [
-                'filters' => ["status" => "on"],
+                'filters' => ['status' => 'on'],
                 'filtersForm' => $this->getFiltersForm(),
             ]
         );
     }
 
-    /**
-     * @Route(
-     *     "/coasters",
-     *     name="search_coasters_ajax",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     */
+    #[Route(path: '/coasters', name: 'search_coasters_ajax', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function searchAction(Request $request): Response
     {
         $filters = $request->get('filters', []);
@@ -75,20 +63,13 @@ class SearchController extends AbstractController
     }
 
     /**
-     * All data for main search service
+     * All data for main search service.
      *
-     * @param SearchService $searchService
      * @return JsonResponse
-     * @throws \Psr\Cache\InvalidArgumentException
      *
-     * @Route(
-     *     "/main.json",
-     *     name="ajax_main_search",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
+     * @throws \Psr\Cache\InvalidArgumentException
      */
+    #[Route(path: '/main.json', name: 'ajax_main_search', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function ajaxMainSearch(SearchService $searchService)
     {
         $cache = new FilesystemAdapter();
@@ -109,9 +90,6 @@ class SearchController extends AbstractController
         return $response;
     }
 
-    /**
-     *
-     */
     private function getCoasters(array $filters = [], int $page = 1): PaginationInterface
     {
         $query = $this->getDoctrine()
@@ -125,28 +103,22 @@ class SearchController extends AbstractController
                 20,
                 ['wrap-queries' => true]
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
     }
 
     /**
-     * Get data to display filter form (mainly <select> data)
+     * Get data to display filter form (mainly <select> data).
      *
      * @return array
      */
     private function getFiltersForm()
     {
-        $filtersForm = [];
-
-        $filtersForm['manufacturer'] = $this->getDoctrine()
+        return ['manufacturer' => $this->getDoctrine()
             ->getRepository(Manufacturer::class)
-            ->findBy([], ["name" => "asc"]);
-
-        $filtersForm['openingDate'] = $this->getDoctrine()
+            ->findBy([], ['name' => 'asc']), 'openingDate' => $this->getDoctrine()
             ->getRepository(Coaster::class)
-            ->getDistinctOpeningYears();
-
-        return $filtersForm;
+            ->getDistinctOpeningYears()];
     }
 }

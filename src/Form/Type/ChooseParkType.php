@@ -21,10 +21,8 @@ class ChooseParkType extends AbstractType
                     'required' => true,
                     'class' => Park::class,
                     'mapped' => false,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('p')
-                            ->orderBy('p.name', 'ASC');
-                    },
+                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('p')
+                        ->orderBy('p.name', 'ASC'),
                 ]
             )
             ->add(

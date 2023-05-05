@@ -7,38 +7,28 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SearchService
 {
-    const COASTER = [
+    final public const COASTER = [
         'emoji' => '🎢',
         'route' => 'bdd_show_coaster',
     ];
 
-    const PARK = [
+    final public const PARK = [
         'emoji' => '🎡',
         'route' => 'park_show',
     ];
 
-    const USER =[
+    final public const USER =[
         'emoji' => '👦',
         'route' => 'user_show'
     ];
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
      * SearchService constructor.
-     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
     }
 
-    /**
-     * @return array
-     */
     public function getAutocompleteValues(): array
     {
         $coasters = $this->em->getRepository(Coaster::class)->findAllForSearch();
@@ -61,13 +51,11 @@ class SearchService
     private function formatValues($results, $options)
     {
         return array_map(
-            function ($result) use ($options) {
-                return [
-                    'n' => $options['emoji'].' '.$result['name'],
-                    'r' => $options['route'],
-                    's' => $result['slug'],
-                ];
-            },
+            fn($result) => [
+                'n' => $options['emoji'].' '.$result['name'],
+                'r' => $options['route'],
+                's' => $result['slug'],
+            ],
             $results
         );
     }

@@ -26,7 +26,7 @@ class ProfileType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $completeName = sprintf('%s %s', $options['firstname'], $options['lastname']);
-        $partialName = sprintf('%s %s.', $options['firstname'], substr($options['lastname'], 0, 1));
+        $partialName = sprintf('%s %s.', $options['firstname'], substr((string) $options['lastname'], 0, 1));
         $locales = $options['locales'];
 
         $builder
@@ -57,9 +57,7 @@ class ProfileType extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => $locales,
-                    'choice_label' => function ($value) {
-                        return $value;
-                    },
+                    'choice_label' => fn($value) => $value,
                     'label' => 'me.form.preferredLocale',
                 ]
             )
@@ -71,10 +69,8 @@ class ProfileType extends AbstractType
                     'label' => 'me.form.homePark.label',
                     'class' => Park::class,
                     'placeholder' => 'me.form.homePark.placeholder',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('p')
-                            ->orderBy('p.name', 'ASC');
-                    },
+                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('p')
+                        ->orderBy('p.name', 'ASC'),
                 ]
             )
             ->add(
