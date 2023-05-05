@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Coaster;
+use App\Entity\Manufacturer;
 use App\Entity\Park;
 use App\Entity\User;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -113,7 +115,7 @@ class MapsController extends AbstractController
     {
         $filters = $request->get('filters', []);
 
-        $coasters = $this->getDoctrine()->getRepository('App:Coaster')->getCoastersForMap(
+        $coasters = $this->getDoctrine()->getRepository(Coaster::class)->getCoastersForMap(
             $park,
             $filters
         );
@@ -130,7 +132,7 @@ class MapsController extends AbstractController
     private function getMarkers($filters = [])
     {
         return $this->getDoctrine()
-            ->getRepository('App:Coaster')
+            ->getRepository(Coaster::class)
             ->getFilteredMarkers($filters);
     }
 
@@ -144,11 +146,11 @@ class MapsController extends AbstractController
         $filtersForm = [];
 
         $filtersForm['manufacturer'] = $this->getDoctrine()
-            ->getRepository('App:Manufacturer')
+            ->getRepository(Manufacturer::class)
             ->findBy([], ["name" => "asc"]);
 
         $filtersForm['openingDate'] = $this->getDoctrine()
-            ->getRepository('App:Coaster')
+            ->getRepository(Coaster::class)
             ->getDistinctOpeningYears();
 
         return $filtersForm;

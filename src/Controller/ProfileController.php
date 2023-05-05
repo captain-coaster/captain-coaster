@@ -9,7 +9,6 @@ use App\Service\BannerMaker;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,10 +23,11 @@ class ProfileController extends AbstractController
      * @param StatService $statService
      * @return Response
      * @Route("/me", name="me", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      */
     public function meAction(Request $request, StatService $statService)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $user = $this->getUser();
 
         /** @var Form $form */
@@ -64,10 +64,11 @@ class ProfileController extends AbstractController
      * Show my ratings
      *
      * @Route("/me/ratings/{page}", name="me_ratings", requirements={"page" = "\d+"}, methods={"GET"})
-     * @Security("is_granted('ROLE_USER')")
      */
     public function ratingsAction(Request $request, EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -105,13 +106,14 @@ class ProfileController extends AbstractController
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Security("is_granted('ROLE_USER')")
      *
      * @param BannerMaker $bannerMaker
      * @return Response
      */
     public function getBanner(BannerMaker $bannerMaker)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $user = $this->getUser();
         $bannerMaker->makeBanner($user);
 

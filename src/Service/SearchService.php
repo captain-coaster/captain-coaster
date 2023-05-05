@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Coaster;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SearchService
@@ -40,7 +41,7 @@ class SearchService
      */
     public function getAutocompleteValues(): array
     {
-        $coasters = $this->em->getRepository('App:Coaster')->findAllForSearch();
+        $coasters = $this->em->getRepository(Coaster::class)->findAllForSearch();
         $coasters = $this->formatValues($coasters, self::COASTER);
 
         $parks = $this->em->getRepository('App:Park')->findAllForSearch();

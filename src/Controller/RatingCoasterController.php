@@ -7,7 +7,6 @@ use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +34,6 @@ class RatingCoasterController extends AbstractController
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Security("is_granted('ROLE_USER')")
      * @throws \Exception
      */
     public function editAction(
@@ -106,7 +104,6 @@ class RatingCoasterController extends AbstractController
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Security("is_granted('ROLE_USER')")
      */
     public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em)
     {

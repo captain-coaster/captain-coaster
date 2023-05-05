@@ -4,6 +4,7 @@ namespace App\Security;
 
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
+use JetBrains\PhpStorm\Pure;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -12,12 +13,7 @@ class RiddenCoasterVoter extends Voter
     const UPDATE = 'update';
     const DELETE = 'delete';
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @return bool
-     */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
         if (!in_array($attribute, [self::UPDATE, self::DELETE])) {
             return false;
@@ -30,13 +26,7 @@ class RiddenCoasterVoter extends Voter
         return true;
     }
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -57,22 +47,12 @@ class RiddenCoasterVoter extends Voter
         throw new \LogicException('This code should not be reached!');
     }
 
-    /**
-     * @param RiddenCoaster $review
-     * @param User $user
-     * @return bool
-     */
-    private function canUpdate(RiddenCoaster $review, User $user)
+    private function canUpdate(RiddenCoaster $review, User $user): bool
     {
         return $user === $review->getUser();
     }
 
-    /**
-     * @param RiddenCoaster $review
-     * @param User $user
-     * @return bool
-     */
-    private function canDelete(RiddenCoaster $review, User $user)
+    private function canDelete(RiddenCoaster $review, User $user): bool
     {
         return $user === $review->getUser();
     }

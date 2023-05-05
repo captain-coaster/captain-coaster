@@ -8,7 +8,6 @@ use App\Entity\LikedImage;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ImageUploadType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,7 +37,6 @@ class CoasterController extends AbstractController
      * Uploads an image for a coaster
      *
      * @Route("/{slug}/images/upload", name="coaster_images_upload", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      *
      * @param Request $request
      * @param Coaster $coaster
@@ -47,7 +45,7 @@ class CoasterController extends AbstractController
      */
     public function imageUpload(Request $request, Coaster $coaster, TranslatorInterface $translator)
     {
-//        $this->denyAccessUnlessGranted('upload', $coaster);
+        $this->denyAccessUnlessGranted('upload', $coaster);
 
         $image = new Image();
         $image->setCoaster($coaster);

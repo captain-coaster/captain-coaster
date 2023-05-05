@@ -9,7 +9,6 @@ use App\Form\Type\TopType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,10 +32,11 @@ class TopController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @Route("/new", name="top_new", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      */
     public function newAction(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $top = new Top();
         $mainTop = $em->getRepository(Top::class)->findOneBy(['user' => $this->getUser(), 'main' => true]);
 
@@ -126,7 +126,6 @@ class TopController extends AbstractController
      *
      * @throws \Exception
      * @Route("/{id}/edit", name="top_edit", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      */
     public function edit(Request $request, Top $top, EntityManagerInterface $em)
     {
@@ -173,7 +172,6 @@ class TopController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      *
      * @Route("/{id}/edit-details", name="top_edit_details", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      */
     public function editDetails(Request $request, Top $top)
     {
@@ -202,7 +200,6 @@ class TopController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      *
      * @Route("/{id}/delete", name="top_delete", methods={"GET"})
-     * @Security("is_granted('ROLE_USER')")
      */
     public function delete(Top $top, EntityManagerInterface $em)
     {
@@ -228,10 +225,11 @@ class TopController extends AbstractController
      *     options = {"expose" = true},
      *     condition="request.isXmlHttpRequest()"
      * )
-     * @Security("is_granted('ROLE_USER')")
      */
     public function ajaxSearch(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if (!$request->get('q')) {
             return new JsonResponse([]);
         }
