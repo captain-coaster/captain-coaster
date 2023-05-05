@@ -10,27 +10,17 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class RatingService
 {
-    const MIN_RATINGS = 2;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    final public const MIN_RATINGS = 2;
 
     /**
      * RatingService constructor.
-     *
-     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
     }
 
     /**
      * Update averageRating for all coasters
-     *
-     * @return int
      */
     public function updateRatings(): int
     {

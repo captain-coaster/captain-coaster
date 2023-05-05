@@ -6,44 +6,35 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * MainTag
- *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\MainTagRepository")
  */
+#[ORM\Entity(repositoryClass: \App\Repository\MainTagRepository::class)]
 class MainTag
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var Coaster
-     * @ORM\ManyToOne(targetEntity="Coaster", inversedBy="mainTags")
-     */
-    private $coaster;
+    #[ORM\ManyToOne(targetEntity: 'Coaster', inversedBy: 'mainTags')]
+    private ?\App\Entity\Coaster $coaster = null;
 
     /**
      * @var Tag
-     * @ORM\ManyToOne(targetEntity="Tag")
      */
+    #[ORM\ManyToOne(targetEntity: 'Tag')]
     private $tag;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="rank", type="integer", nullable=false)
      */
-    private $rank;
+    #[ORM\Column(name: 'rank', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $rank = null;
 
     /**
      * Get id
-     *
-     * @return int
      */
     public function getId(): int
     {
@@ -53,9 +44,7 @@ class MainTag
     /**
      * Set coaster
      *
-     * @param \App\Entity\Coaster $coaster
      *
-     * @return MainTag
      */
     public function setCoaster(Coaster $coaster): MainTag
     {
@@ -66,8 +55,6 @@ class MainTag
 
     /**
      * Get coaster
-     *
-     * @return \App\Entity\Coaster
      */
     public function getCoaster(): Coaster
     {

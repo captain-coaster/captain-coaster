@@ -16,42 +16,22 @@ use Symfony\Component\Translation\TranslatorInterface;
 class SitemapService
 {
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
-
-    /**
      * @var TranslatorInterface
      */
     private $translator;
 
     /**
-     * @var array
-     */
-    private $locales;
-
-    /**
      * SitemapService constructor.
-     * @param EntityManagerInterface $em
-     * @param UrlGeneratorInterface $router
      * @param TranslatorInterface $translator
-     * @param array $locales
      */
     public function __construct(
-        EntityManagerInterface $em,
-        UrlGeneratorInterface $router,
+        private readonly EntityManagerInterface $em,
+        private readonly UrlGeneratorInterface $router,
         TranslatorInterface $translator,
-        array $locales
+        private readonly array $locales,
+        private readonly \Unknown_Repository_Class $Repository
     ) {
-        $this->em = $em;
-        $this->router = $router;
         $this->translator = $translator;
-        $this->locales = $locales;
     }
 
     /**
@@ -62,7 +42,7 @@ class SitemapService
         $urls = [];
 
         // Latest review
-        $latestRating = $this->em->getRepository('App:RiddenCoaster')
+        $latestRating = $this->Repository
             ->findOneBy([], ['updatedAt' => 'desc'], 1);
         $indexUpdateDate = $latestRating->getUpdatedAt();
 
@@ -81,7 +61,7 @@ class SitemapService
             $params = ['slug' => $coaster->getSlug()];
             $date = null;
             // Latest review
-            $latestReview = $this->em->getRepository('App:RiddenCoaster')
+            $latestReview = $this->Repository
                 ->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc'], 1);
             if ($latestReview instanceof RiddenCoaster) {
                 $date = $latestReview->getUpdatedAt();
@@ -101,7 +81,7 @@ class SitemapService
         $urls = [];
 
         // Latest review
-        $images = $this->em->getRepository('App:Image')
+        $images = $this->Repository
             ->findBy(['watermarked' => true]);
 
         foreach ($images as $image) {
@@ -139,7 +119,6 @@ class SitemapService
 
     /**
      * @param $route
-     * @param array $params
      * @param \DateTime|null $lastmod
      * @param string $changefreq
      * @param string $priority
@@ -186,7 +165,6 @@ class SitemapService
     }
 
     /**
-     * @param array $params
      * @param $locale
      * @return array
      */

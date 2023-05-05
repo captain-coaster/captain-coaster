@@ -2,12 +2,14 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -17,335 +19,220 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Coaster
- *
- * @ORM\Table(name="coaster")
- * @ORM\Entity(repositoryClass="App\Repository\CoasterRepository")
- * @ApiResource(
- *     attributes={
- *         "normalization_context"={"groups"={"list_coaster","read_coaster"}}
- *     },
- *     collectionOperations={"get"={"method"="GET","normalization_context"={"groups"={"list_coaster"}}}},
- *     itemOperations={"get"={"method"="GET","normalization_context"={"groups"={"read_coaster"}}}}
- * )
- * @ApiFilter(SearchFilter::class, properties={"id": "exact", "name": "partial", "manufacturer": "exact"})
- * @ApiFilter(OrderFilter::class, properties={"id", "rank": {"nulls_comparison": OrderFilter::NULLS_LARGEST}}, arguments={"orderParameterName"="order"})
- * @ApiFilter(RangeFilter::class, properties={"rank", "totalRatings"})
- * @ApiFilter(ExistsFilter::class, properties={"mainImage"})
+ * Coaster.
  */
-class Coaster
+#[ApiResource(operations: [new Get(normalizationContext: ['groups' => ['read_coaster']]), new GetCollection(normalizationContext: ['groups' => ['list_coaster']])], normalizationContext: ['groups' => ['list_coaster', 'read_coaster']])]
+#[ORM\Table(name: 'coaster')]
+#[ORM\Entity(repositoryClass: \App\Repository\CoasterRepository::class)]
+#[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'manufacturer' => 'exact'])]
+#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'rank' => ['nulls_comparison' => 'nulls_largest']], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(filterClass: RangeFilter::class, properties: ['rank', 'totalRatings'])]
+#[ApiFilter(filterClass: ExistsFilter::class, properties: ['mainImage'])]
+class Coaster implements \Stringable
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"list_coaster", "read_coaster"})
      */
-    private $id;
-
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[Groups(['list_coaster', 'read_coaster'])]
+    private ?int $id = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank()
-     * @Groups({"list_coaster", "read_coaster"})
      */
-    private $name;
-
+    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Assert\NotBlank]
+    #[Groups(['list_coaster', 'read_coaster'])]
+    private ?string $name = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
-     * @Gedmo\Slug(fields={"name"}, updatable=true, separator="-", handlers={
-     *      @Gedmo\SlugHandler(class="App\Handler\CustomRelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationField", value="park"),
-     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="slug"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="-")
-     *      })
-     * })
      */
-    private $slug;
-
-    /**
-     * @var MaterialType
-     *
-     * @ORM\ManyToOne(targetEntity="MaterialType")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read_coaster"})
-     */
-    private $materialType;
-
-    /**
-     * @var SeatingType
-     *
-     * @ORM\ManyToOne(targetEntity="SeatingType")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read_coaster"})
-     */
-    private $seatingType;
-
-    /**
-     * @var Model
-     *
-     * @ORM\ManyToOne(targetEntity="Model")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read_coaster"})
-     */
-    private $model;
-
+    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'], updatable: true, separator: '-', handlers: [new Gedmo\SlugHandler(class: \App\Handler\CustomRelativeSlugHandler::class, options: [new Gedmo\SlugHandlerOption(name: 'relationField', value: 'park'), new Gedmo\SlugHandlerOption(name: 'relationSlugField', value: 'slug'), new Gedmo\SlugHandlerOption(name: 'separator', value: '-')])])]
+    private ?string $slug = null;
+    #[ORM\ManyToOne(targetEntity: 'MaterialType')]
+    #[ORM\JoinColumn]
+    #[Groups(['read_coaster'])]
+    private ?\App\Entity\MaterialType $materialType = null;
+    #[ORM\ManyToOne(targetEntity: 'SeatingType')]
+    #[ORM\JoinColumn]
+    #[Groups(['read_coaster'])]
+    private ?\App\Entity\SeatingType $seatingType = null;
+    #[ORM\ManyToOne(targetEntity: 'Model')]
+    #[ORM\JoinColumn]
+    #[Groups(['read_coaster'])]
+    private ?\App\Entity\Model $model = null;
     /**
      * @var int
-     *
-     * @ORM\Column(name="speed", type="integer", nullable=true)
-     * @Groups({"read_coaster"})
      */
-    private $speed;
-
+    #[ORM\Column(name: 'speed', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?int $speed = null;
     /**
      * @var int
-     *
-     * @ORM\Column(name="height", type="integer", nullable=true)
-     * @Groups({"read_coaster"})
      */
-    private $height;
-
+    #[ORM\Column(name: 'height', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?int $height = null;
     /**
      * @var int
-     *
-     * @ORM\Column(name="length", type="integer", nullable=true)
-     * @Groups({"read_coaster"})
      */
-    private $length;
-
+    #[ORM\Column(name: 'length', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?int $length = null;
     /**
      * @var int
-     *
-     * @ORM\Column(name="inversions_number", type="integer", nullable=true)
-     * @Groups({"read_coaster"})
      */
-    private $inversionsNumber = 0;
-
+    #[ORM\Column(name: 'inversions_number', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?int $inversionsNumber = 0;
+    #[ORM\ManyToOne(targetEntity: 'Manufacturer')]
+    #[ORM\JoinColumn]
+    #[Groups(['read_coaster'])]
+    private ?\App\Entity\Manufacturer $manufacturer = null;
+    #[ORM\ManyToOne(targetEntity: 'Restraint', inversedBy: 'coasters')]
+    #[ORM\JoinColumn]
+    #[Groups(['read_coaster'])]
+    private ?\App\Entity\Restraint $restraint = null;
     /**
-     * @var Manufacturer
-     *
-     * @ORM\ManyToOne(targetEntity="Manufacturer")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read_coaster"})
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Launch>
      */
-    private $manufacturer;
-
-    /**
-     * @var Restraint
-     *
-     * @ORM\ManyToOne(targetEntity="Restraint", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read_coaster"})
-     */
-    private $restraint;
-
-    /**
-     * @var ArrayCollection|Launch[]
-     *
-     * @ORM\ManyToMany(targetEntity="Launch", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=true)
-     * @Groups({"read_coaster"})
-     */
-    private $launchs;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="is_kiddie", type="boolean", nullable=false)
-     */
-    private $kiddie = false;
-
+    #[ORM\ManyToMany(targetEntity: 'Launch', inversedBy: 'coasters')]
+    #[ORM\JoinColumn]
+    #[Groups(['read_coaster'])]
+    private \Doctrine\Common\Collections\Collection $launchs;
     /**
      * @var bool
-     *
-     * @ORM\Column(type="boolean", nullable=true)
      */
-    private $vr = false;
-
+    #[ORM\Column(name: 'is_kiddie', type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    private ?bool $kiddie = false;
     /**
      * @var bool
-     *
-     * @ORM\Column(type="boolean", nullable=true)
      */
-    private $indoor = false;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, nullable: true)]
+    private ?bool $vr = false;
     /**
-     * @var Park
-     *
-     * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"list_coaster", "read_coaster"})
+     * @var bool
      */
-    private $park;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, nullable: true)]
+    private ?bool $indoor = false;
+    #[ORM\ManyToOne(targetEntity: 'Park', inversedBy: 'coasters', fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['list_coaster', 'read_coaster'])]
+    private ?\App\Entity\Park $park = null;
+    #[ORM\ManyToOne(targetEntity: 'Status', inversedBy: 'coasters')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['list_coaster', 'read_coaster'])]
+    private ?\App\Entity\Status $status = null;
     /**
-     * @var Status
-     *
-     * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"list_coaster", "read_coaster"})
+     * @var \DateTimeInterface
      */
-    private $status;
-
+    #[ORM\Column(name: 'openingDate', type: \Doctrine\DBAL\Types\Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?\DateTimeInterface $openingDate = null;
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="openingDate", type="date", nullable=true)
-     * @Groups({"read_coaster"})
+     * @var \DateTimeInterface
      */
-    private $openingDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="closingDate", type="date", nullable=true)
-     * @Groups({"read_coaster"})
-     */
-    private $closingDate;
-
+    #[ORM\Column(name: 'closingDate', type: \Doctrine\DBAL\Types\Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?\DateTimeInterface $closingDate = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="video", type="string", length=255, unique=false, nullable=true)
      */
-    private $video;
-
+    #[ORM\Column(name: 'video', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    private ?string $video = null;
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
-    private $price;
-
-    /**
-     * @var Currency
-     *
-     * @ORM\ManyToOne(targetEntity="Currency")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $currency;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $price = null;
+    #[ORM\ManyToOne(targetEntity: 'Currency')]
+    #[ORM\JoinColumn]
+    private ?\App\Entity\Currency $currency = null;
     /**
      * @var float
-     *
-     * @ORM\Column(name="averageRating", type="decimal", precision=5, scale=3, nullable=true)
      */
-    private $averageRating;
-
+    #[ORM\Column(name: 'averageRating', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
+    private ?string $averageRating = null;
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     * @Groups({"read_coaster"})
      */
-    private $totalRatings = 0;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[Groups(['read_coaster'])]
+    private ?int $totalRatings = 0;
     /**
      * @var float
-     *
-     * @ORM\Column(type="decimal", precision=6, scale=3, nullable=true)
      */
-    private $averageTopRank;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
+    private ?string $averageTopRank = null;
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
      */
-    private $totalTopsIn = 0;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    private ?int $totalTopsIn = 0;
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     * @Groups({"read_coaster"})
      */
-    private $validDuels = 0;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[Groups(['read_coaster'])]
+    private ?int $validDuels = 0;
     /**
      * @var float
-     *
-     * @ORM\Column(type="decimal", precision=14, scale=11, nullable=true)
-     * @Groups({"read_coaster"})
      */
-    private $score;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 14, scale: 11, nullable: true)]
+    #[Groups(['read_coaster'])]
+    private ?string $score = null;
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"list_coaster", "read_coaster"})
      */
-    private $rank;
-
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[Groups(['list_coaster', 'read_coaster'])]
+    private ?int $rank = null;
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
-    private $previousRank;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $previousRank = null;
+    /**
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\RiddenCoaster>
+     */
+    #[ORM\OneToMany(targetEntity: 'RiddenCoaster', mappedBy: 'coaster')]
+    private \Doctrine\Common\Collections\Collection $ratings;
+    /**
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\MainTag>
+     */
+    #[ORM\OneToMany(targetEntity: 'MainTag', mappedBy: 'coaster')]
+    private \Doctrine\Common\Collections\Collection $mainTags;
+    /**
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Image>
+     */
+    #[ORM\OneToMany(targetEntity: 'Image', mappedBy: 'coaster')]
+    private \Doctrine\Common\Collections\Collection $images;
+    #[ORM\OneToOne(targetEntity: 'Image', fetch: 'EAGER')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    #[Groups(['read_coaster'])]
+    private ?\App\Entity\Image $mainImage = null;
+    /**
+     * @var \DateTimeInterface $createdAt
+     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $createdAt = null;
+    /**
+     * @var \DateTimeInterface $updatedAt
+     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'update')]
+    private ?\DateTimeInterface $updatedAt = null;
+    /**
+     * @var bool $enabled
+     */
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    private ?bool $enabled = false;
 
     /**
-     * @var ArrayCollection|RiddenCoaster[]
-     *
-     * @ORM\OneToMany(targetEntity="RiddenCoaster", mappedBy="coaster")
-     */
-    private $ratings;
-
-    /**
-     * @var ArrayCollection|MainTag[]
-     *
-     * @ORM\OneToMany(targetEntity="MainTag", mappedBy="coaster")
-     */
-    private $mainTags;
-
-    /**
-     * @var ArrayCollection|Image[]
-     *
-     * @ORM\OneToMany(targetEntity="Image", mappedBy="coaster")
-     */
-    private $images;
-
-    /**
-     * @var Image
-     *
-     * @ORM\OneToOne(targetEntity="Image", fetch="EAGER")
-     * @ORM\JoinColumn(onDelete="SET NULL")
-     * @Groups({"read_coaster"})
-     */
-    private $mainImage;
-
-    /**
-     * @var \DateTime $createdAt
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime $updatedAt
-     *
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
-     */
-    private $updatedAt;
-
-    /**
-     * @var boolean $enabled
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private $enabled = false;
-
-    /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -355,16 +242,13 @@ class Coaster
         $this->images = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -374,7 +258,7 @@ class Coaster
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -388,7 +272,7 @@ class Coaster
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -398,7 +282,7 @@ class Coaster
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -412,7 +296,7 @@ class Coaster
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */
@@ -421,10 +305,6 @@ class Coaster
         return $this->slug;
     }
 
-    /**
-     * @param MaterialType $materialType
-     * @return Coaster
-     */
     public function setMaterialType(MaterialType $materialType): Coaster
     {
         $this->materialType = $materialType;
@@ -440,10 +320,6 @@ class Coaster
         return $this->materialType;
     }
 
-    /**
-     * @param SeatingType $seatingType
-     * @return Coaster
-     */
     public function setSeatingType(SeatingType $seatingType): Coaster
     {
         $this->seatingType = $seatingType;
@@ -472,7 +348,8 @@ class Coaster
     }
 
     /**
-     * @param integer $speed
+     * @param int $speed
+     *
      * @return Coaster
      */
     public function setSpeed($speed)
@@ -491,7 +368,8 @@ class Coaster
     }
 
     /**
-     * @param integer $height
+     * @param int $height
+     *
      * @return Coaster
      */
     public function setHeight($height)
@@ -510,7 +388,8 @@ class Coaster
     }
 
     /**
-     * @param integer $length
+     * @param int $length
+     *
      * @return Coaster
      */
     public function setLength($length)
@@ -529,7 +408,8 @@ class Coaster
     }
 
     /**
-     * @param integer $inversionsNumber
+     * @param int $inversionsNumber
+     *
      * @return Coaster
      */
     public function setInversionsNumber($inversionsNumber)
@@ -560,7 +440,6 @@ class Coaster
     }
 
     /**
-     * @param Restraint $restraint
      * @return Coaster
      */
     public function setRestraint(Restraint $restraint)
@@ -579,7 +458,6 @@ class Coaster
     }
 
     /**
-     * @param Launch $launch
      * @return Coaster
      */
     public function addLaunch(Launch $launch)
@@ -589,9 +467,6 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @param Launch $launch
-     */
     public function removeLaunch(Launch $launch)
     {
         $this->launchs->removeElement($launch);
@@ -600,15 +475,11 @@ class Coaster
     /**
      * @return Launch[]|ArrayCollection
      */
-    public function getLaunchs()
+    public function getLaunchs(): array|ArrayCollection
     {
         return $this->launchs;
     }
 
-    /**
-     * @param bool $kiddie
-     * @return Coaster
-     */
     public function setKiddie(bool $kiddie): Coaster
     {
         $this->kiddie = $kiddie;
@@ -616,16 +487,14 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isKiddie(): bool
     {
         return $this->kiddie;
     }
 
     /**
-     * @param boolean $vr
+     * @param bool $vr
+     *
      * @return Coaster
      */
     public function setVr($vr)
@@ -636,17 +505,13 @@ class Coaster
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getVr()
     {
         return $this->vr;
     }
 
-    /**
-     * @param bool $indoor
-     * @return Coaster
-     */
     public function setIndoor(bool $indoor): Coaster
     {
         $this->indoor = $indoor;
@@ -654,18 +519,11 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isIndoor(): bool
     {
         return $this->indoor;
     }
 
-    /**
-     * @param Park $park
-     * @return Coaster
-     */
     public function setPark(Park $park): Coaster
     {
         $this->park = $park;
@@ -681,10 +539,6 @@ class Coaster
         return $this->park;
     }
 
-    /**
-     * @param Status $status
-     * @return Coaster
-     */
     public function setStatus(Status $status): Coaster
     {
         $this->status = $status;
@@ -702,6 +556,7 @@ class Coaster
 
     /**
      * @param \DateTime $openingDate
+     *
      * @return Coaster
      */
     public function setOpeningDate($openingDate)
@@ -721,6 +576,7 @@ class Coaster
 
     /**
      * @param \DateTime $closingDate
+     *
      * @return Coaster
      */
     public function setClosingDate($closingDate)
@@ -740,7 +596,6 @@ class Coaster
 
     /**
      * @param string $video
-     * @return Coaster
      */
     public function setVideo($video): Coaster
     {
@@ -758,7 +613,8 @@ class Coaster
     }
 
     /**
-     * @param integer $price
+     * @param int $price
+     *
      * @return Coaster
      */
     public function setPrice($price)
@@ -769,7 +625,7 @@ class Coaster
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPrice()
     {
@@ -778,7 +634,6 @@ class Coaster
 
     /**
      * @param Currency $currency
-     * @return Coaster
      */
     public function setCurrency(?Currency $currency): Coaster
     {
@@ -797,6 +652,7 @@ class Coaster
 
     /**
      * @param string $averageRating
+     *
      * @return Coaster
      */
     public function setAverageRating($averageRating)
@@ -815,7 +671,8 @@ class Coaster
     }
 
     /**
-     * @param integer $totalRatings
+     * @param int $totalRatings
+     *
      * @return Coaster
      */
     public function setTotalRatings($totalRatings)
@@ -826,17 +683,13 @@ class Coaster
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getTotalRatings()
     {
         return $this->totalRatings;
     }
 
-    /**
-     * @param int $averageTopRank
-     * @return Coaster
-     */
     public function setAverageTopRank(int $averageTopRank): Coaster
     {
         $this->averageTopRank = $averageTopRank;
@@ -852,10 +705,6 @@ class Coaster
         return $this->averageTopRank;
     }
 
-    /**
-     * @param int $totalTopsIn
-     * @return Coaster
-     */
     public function setTotalTopsIn(int $totalTopsIn): Coaster
     {
         $this->totalTopsIn = $totalTopsIn;
@@ -863,18 +712,11 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTotalTopsIn(): int
     {
         return $this->totalTopsIn;
     }
 
-    /**
-     * @param int $validDuels
-     * @return Coaster
-     */
     public function setValidDuels(int $validDuels): Coaster
     {
         $this->validDuels = $validDuels;
@@ -882,9 +724,6 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getValidDuels(): int
     {
         return $this->validDuels;
@@ -892,6 +731,7 @@ class Coaster
 
     /**
      * @param string $score
+     *
      * @return Coaster
      */
     public function setScore($score)
@@ -910,7 +750,8 @@ class Coaster
     }
 
     /**
-     * @param integer $rank
+     * @param int $rank
+     *
      * @return Coaster
      */
     public function setRank($rank)
@@ -921,7 +762,7 @@ class Coaster
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getRank()
     {
@@ -929,7 +770,8 @@ class Coaster
     }
 
     /**
-     * @param integer $previousRank
+     * @param int $previousRank
+     *
      * @return Coaster
      */
     public function setPreviousRank($previousRank)
@@ -940,7 +782,7 @@ class Coaster
     }
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPreviousRank()
     {
@@ -948,7 +790,6 @@ class Coaster
     }
 
     /**
-     * @param RiddenCoaster $rating
      * @return Coaster
      */
     public function addRating(RiddenCoaster $rating)
@@ -958,9 +799,6 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @param RiddenCoaster $rating
-     */
     public function removeRating(RiddenCoaster $rating)
     {
         $this->ratings->removeElement($rating);
@@ -969,7 +807,7 @@ class Coaster
     /**
      * @return RiddenCoaster[]|ArrayCollection
      */
-    public function getRatings()
+    public function getRatings(): array|ArrayCollection
     {
         return $this->ratings;
     }
@@ -977,15 +815,11 @@ class Coaster
     /**
      * @return MainTag[]|ArrayCollection
      */
-    public function getMainTags()
+    public function getMainTags(): array|ArrayCollection
     {
         return $this->mainTags;
     }
 
-    /**
-     * @param Image $images
-     * @return Coaster
-     */
     public function setImages(Image $images): Coaster
     {
         $this->images = $images;
@@ -993,22 +827,13 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @return ArrayCollection|Collection
-     */
-    public function getImages()
+    public function getImages(): ArrayCollection|Collection
     {
-        $criteria = Criteria::create()
-            ->where(Criteria::expr()->eq('enabled', true))
-            ->orderBy(['likeCounter' => Criteria::DESC, 'updatedAt' => Criteria::DESC]);
+        $criteria = Criteria::create()->where(Criteria::expr()->eq('enabled', true))->orderBy(['likeCounter' => Criteria::DESC, 'updatedAt' => Criteria::DESC]);
 
         return $this->images->matching($criteria);
     }
 
-    /**
-     * @param Image $mainImage
-     * @return Coaster
-     */
     public function setMainImage(Image $mainImage): Coaster
     {
         $this->mainImage = $mainImage;
@@ -1025,7 +850,7 @@ class Coaster
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -1039,7 +864,7 @@ class Coaster
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -1049,7 +874,7 @@ class Coaster
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -1063,7 +888,7 @@ class Coaster
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -1074,8 +899,6 @@ class Coaster
 
     /**
      * Can we rate this coaster ?
-     *
-     * @return bool
      */
     public function isRateable(): bool
     {
@@ -1083,20 +906,14 @@ class Coaster
     }
 
     /**
-     * We don't rank kiddie coasters
-     *
-     * @return bool
+     * We don't rank kiddie coasters.
      */
     public function isRankable(): bool
     {
         return !$this->isKiddie();
     }
 
-    /**
-     * @param User $user
-     * @return RiddenCoaster|null
-     */
-    public function getUserRating(User $user)
+    public function getUserRating(User $user): ?RiddenCoaster
     {
         /** @var RiddenCoaster $rating */
         foreach ($this->ratings as $rating) {
@@ -1108,10 +925,6 @@ class Coaster
         return null;
     }
 
-    /**
-     * @param bool $enabled
-     * @return Coaster
-     */
     public function setEnabled(bool $enabled): Coaster
     {
         $this->enabled = $enabled;
@@ -1119,9 +932,6 @@ class Coaster
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isEnabled(): bool
     {
         return $this->enabled;

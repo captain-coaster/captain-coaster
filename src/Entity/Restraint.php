@@ -2,59 +2,48 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
-
 /**
  * Restraint
  *
- * @ORM\Table(name="restraint")
- * @ORM\Entity(repositoryClass="App\Repository\RestraintRepository")
- * @ApiResource(
- *     attributes={
- *         "normalization_context"={"groups"={"read_restraint"}}
- *     },
- *     collectionOperations={"get"={"method"="GET"}},
- *     itemOperations={"get"={"method"="GET"}}
- * )
  */
-class Restraint
+#[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_restraint']])]
+#[ORM\Table(name: 'restraint')]
+#[ORM\Entity(repositoryClass: \App\Repository\RestraintRepository::class)]
+class Restraint implements \Stringable
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
-
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"read_restraint", "read_coaster"})
      */
-    private $name;
-
+    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Groups(['read_restraint', 'read_coaster'])]
+    private ?string $name = null;
     /**
      * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
      */
-    private $slug;
-
+    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
     /**
-     * @var Coaster[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Coaster", mappedBy="restraint")
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Coaster>
      */
-    private $coasters;
-
+    #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'restraint')]
+    private \Doctrine\Common\Collections\Collection $coasters;
     /**
      * Constructor
      */
@@ -62,15 +51,13 @@ class Restraint
     {
         $this->coasters = new ArrayCollection();
     }
-
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString() : string
     {
-        return $this->name;
+        return (string) $this->name;
     }
-
     /**
      * @return int
      */
@@ -78,7 +65,6 @@ class Restraint
     {
         return $this->id;
     }
-
     /**
      * @param string $name
      * @return Restraint
@@ -86,10 +72,8 @@ class Restraint
     public function setName($name)
     {
         $this->name = $name;
-
         return $this;
     }
-
     /**
      * @return string
      */
@@ -97,7 +81,6 @@ class Restraint
     {
         return $this->name;
     }
-
     /**
      * @param string $slug
      * @return Restraint
@@ -105,10 +88,8 @@ class Restraint
     public function setSlug($slug)
     {
         $this->slug = $slug;
-
         return $this;
     }
-
     /**
      * @return string
      */
@@ -116,30 +97,22 @@ class Restraint
     {
         return $this->slug;
     }
-
     /**
-     * @param Coaster $coaster
      * @return Restraint
      */
     public function addCoaster(Coaster $coaster)
     {
         $this->coasters[] = $coaster;
-
         return $this;
     }
-
-    /**
-     * @param Coaster $coaster
-     */
     public function removeCoaster(Coaster $coaster)
     {
         $this->coasters->removeElement($coaster);
     }
-
     /**
      * @return Coaster[]|ArrayCollection
      */
-    public function getCoasters()
+    public function getCoasters() : array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->coasters;
     }

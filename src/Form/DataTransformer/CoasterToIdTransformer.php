@@ -9,11 +9,9 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class CoasterToIdTransformer implements DataTransformerInterface
 {
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public $repository;
+    public function __construct(private readonly EntityManagerInterface $em, private readonly \App\Repository\CoasterRepository $coasterRepository)
     {
-        $this->em = $em;
     }
 
     /**
@@ -24,7 +22,7 @@ class CoasterToIdTransformer implements DataTransformerInterface
      */
     public function transform($coaster)
     {
-        if (null === $coaster) {
+        if (!$coaster instanceof \App\Entity\Coaster) {
             return '';
         }
 
@@ -41,12 +39,11 @@ class CoasterToIdTransformer implements DataTransformerInterface
     public function reverseTransform($coasterId)
     {
         // no issue number? It's optional, so that's ok
-        if (!$coasterId) {
+        if ($coasterId === '' || $coasterId === '0') {
             return;
         }
 
-        $issue = $this->em
-            ->getRepository(Coaster::class)
+        $issue = $this->repository
             ->find($coasterId);
 
         if (null === $issue) {

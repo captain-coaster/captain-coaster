@@ -12,28 +12,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BannerMakerCommand extends Command
 {
-    /**
-     * @var BannerMaker
-     */
-    private $bannerMakerService;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    public function __construct(BannerMaker $bannerMakerService, EntityManagerInterface $em)
+    public $repository;
+    protected static $defaultName = 'banner:make';
+    public function __construct(private readonly BannerMaker $bannerMakerService, private readonly EntityManagerInterface $em, private readonly \App\Repository\UserRepository $userRepository)
     {
         parent::__construct();
-        $this->bannerMakerService = $bannerMakerService;
-        $this->em = $em;
     }
 
     protected function configure()
     {
-        $this
-            ->setName('banner:make')
-            ->setDescription('Generate banners for users')
+        $this->setDescription('Generate banners for users')
             ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
@@ -44,14 +32,15 @@ class BannerMakerCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $users = [];
         $output->writeln('Start making banners.');
 
         $userId = $input->getArgument('user');
 
         if (!is_null($userId)) {
-            $users[] = $this->em->getRepository(User::class)->findOneBy(['id' => $userId]);
+            $users[] = $this->repository->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->em->getRepository(User::class)->findAll();
+            $users = $this->repository->findAll();
         }
 
         foreach ($users as $user) {

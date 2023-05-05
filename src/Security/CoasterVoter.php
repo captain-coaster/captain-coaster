@@ -9,19 +9,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CoasterVoter extends Voter
 {
-    const RATE = 'rate';
+    final public const RATE = 'rate';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         if ($attribute != self::RATE) {
             return false;
         }
-
-        if (!$subject instanceof Coaster) {
-            return false;
-        }
-
-        return true;
+        return $subject instanceof Coaster;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool

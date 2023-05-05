@@ -7,64 +7,56 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Notification
- *
- * @ORM\Table(name="notification")
- * @ORM\Entity(repositoryClass="App\Repository\NotificationRepository")
  */
+#[ORM\Table(name: 'notification')]
+#[ORM\Entity(repositoryClass: \App\Repository\NotificationRepository::class)]
 class Notification
 {
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255)
      */
-    private $message;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $message = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $parameter;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    private ?string $parameter = null;
 
     /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="create")
+     * @var \DateTimeInterface
      */
-    private $createdAt;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $createdAt = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255)
      */
-    private $type;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $type = null;
 
     /**
      * @var boolean
-     *
-     * @ORM\Column(type="boolean")
      */
-    private $isRead = false;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    private ?bool $isRead = false;
 
     /**
      * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class, inversedBy: 'notifications')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\User $user = null;
 
     /**
      * Get id
@@ -175,7 +167,6 @@ class Notification
     /**
      * Set user
      *
-     * @param \App\Entity\User $user
      *
      * @return Notification
      */

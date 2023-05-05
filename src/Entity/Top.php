@@ -9,73 +9,66 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Top (rename mysql table later)
- *
- * @ORM\Table(name="liste")
- * @ORM\Entity(repositoryClass="App\Repository\TopRepository")
  */
+#[ORM\Table(name: 'liste')]
+#[ORM\Entity(repositoryClass: \App\Repository\TopRepository::class)]
 class Top
 {
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=false)
      */
-    private $name;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $name = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=255, unique=false, nullable=false)
      */
-    private $type = 'top';
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private ?string $type = 'top';
 
     /**
      * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="tops")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class, inversedBy: 'tops')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\User $user = null;
 
     /**
-     * @var TopCoaster[]
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\TopCoaster>
      *
-     * @ORM\OneToMany(targetEntity="TopCoaster", mappedBy="top", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"position" = "ASC"})
      * @CaptainConstraints\UniqueCoaster
      */
-    private $topCoasters;
+    #[ORM\OneToMany(targetEntity: 'TopCoaster', mappedBy: 'top', cascade: ['persist', 'remove'])]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    private \Doctrine\Common\Collections\Collection $topCoasters;
 
     /**
      * @var bool
-     * @ORM\Column(type="boolean", nullable=false)
      */
-    private $main = false;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    private ?bool $main = false;
 
     /**
-     * @var \DateTime $createdAt
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @var \DateTimeInterface $createdAt
      */
-    private $createdAt;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $createdAt = null;
 
     /**
-     * @var \DateTime $updatedAt
-     *
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @var \DateTimeInterface $updatedAt
      */
-    private $updatedAt;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'update')]
+    private ?\DateTimeInterface $updatedAt = null;
 
     /**
      * Constructor
@@ -146,7 +139,6 @@ class Top
     /**
      * Set user
      *
-     * @param User $user
      *
      * @return Top
      */
@@ -170,7 +162,6 @@ class Top
     /**
      * Add topCoaster
      *
-     * @param TopCoaster $topCoaster
      *
      * @return Top
      */
@@ -185,8 +176,6 @@ class Top
 
     /**
      * Remove topCoaster
-     *
-     * @param TopCoaster $topCoaster
      */
     public function removeTopCoaster(TopCoaster $topCoaster)
     {
@@ -196,15 +185,11 @@ class Top
     /**
      * @return TopCoaster[]|ArrayCollection
      */
-    public function getTopCoasters()
+    public function getTopCoasters(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->topCoasters;
     }
 
-    /**
-     * @param bool $main
-     * @return Top
-     */
     public function setMain(bool $main): Top
     {
         $this->main = $main;
@@ -212,9 +197,6 @@ class Top
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isMain(): bool
     {
         return $this->main;

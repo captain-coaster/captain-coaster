@@ -33,10 +33,8 @@ class CreateParkType extends AbstractType
                     'class' => Country::class,
                     'choice_translation_domain' => 'database',
                     'label' => 'missing.step1.form.country',
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                            ->orderBy('c.name', 'ASC');
-                    },
+                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC'),
                 ]
             );
     }

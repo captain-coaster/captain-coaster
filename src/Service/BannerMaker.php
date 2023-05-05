@@ -11,49 +11,36 @@ use Imagine\Imagick\Imagine;
 
 class BannerMaker
 {
-    /**
-     * @var Imagine
-     */
-    private $imagine;
-
-    /**
-     * @var string path to font
-     */
-    private $fontPath;
-
-    /**
-     * @var string path target directory
-     */
-    private $targetPath;
-
-    /**
-     * @var string path to background image
-     */
-    private $backgroundPath;
-
-    /**
-     * @var Image
-     */
-    private $image;
+    private ?\Imagine\Image\ImageInterface $image = null;
 
     /**
      * BannerMaker constructor.
-     * @param Imagine $imagine
      * @param $fontPath
      * @param $targetPath
      * @param $backgroundPath
+     * @param string $fontPath
+     * @param string $targetPath
+     * @param string $backgroundPath
      */
-    public function __construct(Imagine $imagine, $fontPath, $targetPath, $backgroundPath)
+    public function __construct(
+        private readonly Imagine $imagine,
+        /**
+         * @var string path to font
+         */
+        private $fontPath,
+        /**
+         * @var string path target directory
+         */
+        private $targetPath,
+        /**
+         * @var string path to background image
+         */
+        private $backgroundPath
+    )
     {
-        $this->imagine = $imagine;
-
-        $this->fontPath = $fontPath;
-        $this->targetPath = $targetPath;
-        $this->backgroundPath = $backgroundPath;
     }
 
     /**
-     * @param User $user
      * @throws InvalidArgumentException
      */
     public function makeBanner(User $user)
@@ -79,25 +66,20 @@ class BannerMaker
         $this->image = $this->imagine->open($this->backgroundPath);
     }
 
-    /**
-     * @param User $user
-     */
     private function saveImage(User $user)
     {
         $this->image->save(sprintf('%s/%d.png', $this->targetPath, $user->getId()));
     }
 
     /**
-     * @param int $count
      * @throws InvalidArgumentException
      */
     private function writeCoasterCount(int $count)
     {
-        $this->writeText(sprintf($count.' coasters'), 110, 32, 12);
+        $this->writeText($count.' coasters', 110, 32, 12);
     }
 
     /**
-     * @param array $top
      * @throws InvalidArgumentException
      */
     private function writeTop3(array $top)
@@ -106,13 +88,12 @@ class BannerMaker
         $position = 1;
         foreach ($top as $coaster) {
             $this->writeText(sprintf('%d - %s', $position, $coaster), 240, $y, 10);
-            $y = $y + 19;
+            $y += 19;
             $position++;
         }
     }
 
     /**
-     * @param string $text
      * @param $x
      * @param $y
      * @param int $size

@@ -18,24 +18,18 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class RatingCoasterController extends AbstractController
 {
+    public $repository;
+    public function __construct(private readonly \App\Repository\RiddenCoasterRepository $riddenCoasterRepository)
+    {
+    }
     /**
      * Rate a coaster or edit a rating
      *
-     * @param Request $request
-     * @param Coaster $coaster
-     * @param EntityManagerInterface $em
-     * @param ValidatorInterface $validator
      * @return JsonResponse
      *
-     * @Route(
-     *     "/ratings/coasters/{id}/edit",
-     *     name="rating_edit",
-     *     methods={"POST"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
      * @throws \Exception
      */
+    #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', methods: ['POST'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function editAction(
         Request $request,
         Coaster $coaster,
@@ -47,7 +41,7 @@ class RatingCoasterController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $rating = $em->getRepository(RiddenCoaster::class)->findOneBy(
+        $rating = $this->repository->findOneBy(
             ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
         );
 
@@ -69,8 +63,8 @@ class RatingCoasterController extends AbstractController
         if ($request->request->has('riddenAt')) {
             try {
                 $date = new \DateTime($request->request->get('riddenAt'));
-            } catch (\Exception $e) {
-                return new JsonResponse(['state' => 'error'], 500);
+            } catch (\Exception) {
+                return new JsonResponse(['state' => 'error'], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             $rating->setRiddenAt($date);
         }
@@ -93,18 +87,9 @@ class RatingCoasterController extends AbstractController
     /**
      * Delete a rating
      *
-     * @param RiddenCoaster $rating
-     * @param EntityManagerInterface $em
      * @return JsonResponse
-     *
-     * @Route(
-     *     "/ratings/{id}",
-     *     name="rating_delete",
-     *     methods={"DELETE"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
      */
+    #[Route(path: '/ratings/{id}', name: 'rating_delete', methods: ['DELETE'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em)
     {
         $this->denyAccessUnlessGranted('delete', $rating);

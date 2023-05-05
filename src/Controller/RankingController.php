@@ -23,11 +23,11 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class RankingController
  * @package App\Controller
- * @Route("/ranking")
  */
+#[Route(path: '/ranking')]
 class RankingController extends AbstractController
 {
-    const COASTERS_PER_PAGE = 20;
+    final public const COASTERS_PER_PAGE = 20;
 
     /**
      * @var PaginatorInterface
@@ -36,7 +36,6 @@ class RankingController extends AbstractController
 
     /**
      * RankingController constructor.
-     * @param PaginatorInterface $paginator
      */
     public function __construct(PaginatorInterface $paginator)
     {
@@ -46,11 +45,9 @@ class RankingController extends AbstractController
     /**
      * Show ranking of best coasters
      *
-     * @param EntityManagerInterface $em
-     * @return Response
-     * @Route("/", name="ranking_index", methods={"GET"})
      * @throws \Exception
      */
+    #[Route(path: '/', name: 'ranking_index', methods: ['GET'])]
     public function indexAction(EntityManagerInterface $em): Response
     {
         return $this->render(
@@ -64,19 +61,11 @@ class RankingController extends AbstractController
     }
 
     /**
-     * @Route(
-     *     "/coasters",
-     *     name="ranking_search_async",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
      *
-     * @param Request $request
-     * @return Response
      * @throws \Exception
      */
-    public function searchAsyncAction(Request $request)
+    #[Route(path: '/coasters', name: 'ranking_search_async', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    public function searchAsyncAction(Request $request): \Symfony\Component\HttpFoundation\Response
     {
         $filters = $request->get('filters', []);
         $page = $request->get('page', 1);
@@ -86,7 +75,7 @@ class RankingController extends AbstractController
             [
                 'coasters' => $this->getCoasters($filters, $page),
                 // array_filter removes empty filters e.g. ['continent' => '']
-                'filtered' => count(array_filter($filters, "strlen")) > 0,
+                'filtered' => (array) array_filter($filters, "strlen") !== [],
                 'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );
@@ -94,10 +83,9 @@ class RankingController extends AbstractController
 
     /**
      * Learn more on the ranking
-     *
-     * @Route("/learn-more", name="ranking_learn_more", methods={"GET"})
      */
-    public function learnMore()
+    #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
+    public function learnMore(): \Symfony\Component\HttpFoundation\Response
     {
         return $this->render('Ranking/learn_more.html.twig');
     }
@@ -113,7 +101,7 @@ class RankingController extends AbstractController
                 $page,
                 self::COASTERS_PER_PAGE
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
     }

@@ -15,33 +15,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RankingHistoryManagerCommand extends Command
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
+    protected static $defaultName = 'app:ranking:history:add';
     /**
      * RankingHistoryManagerCommand constructor.
      * @param EntityManagerInterface $em
      * @param LoggerInterface $logger
      */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly LoggerInterface $logger)
     {
         parent::__construct();
-        $this->em = $em;
-        $this->logger = $logger;
     }
 
     protected function configure()
     {
-        $this
-            ->setName('app:ranking:history:add')
-            ->setDescription('Saves current ranking stats.')
+        $this->setDescription('Saves current ranking stats.')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
     }

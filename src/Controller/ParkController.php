@@ -15,12 +15,9 @@ class ParkController extends AbstractController
 {
     /**
      * Show park details
-     *
-     * @param Park $park
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/parks/{slug}", name="park_show", methods={"GET"}, options = {"expose" = true})
      */
-    public function showAction(Park $park)
+    #[Route(path: '/parks/{slug}', name: 'park_show', methods: ['GET'], options: ['expose' => true])]
+    public function showAction(Park $park): \Symfony\Component\HttpFoundation\Response
     {
         $closestParks = $this->getDoctrine()
             ->getRepository(Park::class)

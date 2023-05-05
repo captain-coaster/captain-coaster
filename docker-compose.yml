@@ -17,8 +17,8 @@ services:
       - .:/var/www
     user: "1000:1000"
     tmpfs:
-      - /tmp
-      - /.composer
+      - /tmp:rw
+      - /.composer:rw
   db:
     image: mariadb:10.11
     container_name: db-captain

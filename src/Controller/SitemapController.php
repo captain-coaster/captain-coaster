@@ -12,7 +12,6 @@ class SitemapController extends AbstractController
     /**
      * Create sitemap for pages
      *
-     * @param SitemapService $sitemapService
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws InvalidArgumentException
      */
@@ -36,7 +35,6 @@ class SitemapController extends AbstractController
     /**
      * Create sitemap for images
      *
-     * @param SitemapService $sitemapService
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws InvalidArgumentException
      */

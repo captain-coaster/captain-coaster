@@ -4,68 +4,39 @@ namespace App\Command;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Http\Client\HttpClient;
-use Http\Message\MessageFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AvatarCleanCommand extends Command
 {
-    const API_FB_PICTURE = 'https://graph.facebook.com/v7.0/%d/picture';
+    public $repository;
+    protected static $defaultName = 'avatar:clean';
+    final public const API_FB_PICTURE = 'https://graph.facebook.com/v7.0/%d/picture';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var HttpClient
-     */
-    protected $client;
-
-    /**
-     * @var MessageFactory
-     */
-    protected $factory;
-
-    /**
-     * AvatarCleanCommand constructor.
-     * @param EntityManagerInterface $em
-     * @param HttpClient $client
-     * @param MessageFactory $factory
-     */
-    public function __construct(EntityManagerInterface $em, HttpClient $client, MessageFactory $factory)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly HttpClientInterface $client,
+        private readonly \App\Repository\UserRepository $userRepository,
+    ) {
         parent::__construct();
-        $this->em = $em;
-        $this->client = $client;
-        $this->factory = $factory;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('avatar:clean')
-            ->setDescription('Update Facebook avatar and cleanup dead avatars.');
+        $this->setDescription('Update Facebook avatar and cleanup dead avatars.');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Http\Client\Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('avatar');
         $output->writeln('Cleaning avatars...');
 
-        $users = $this->em
-            ->getRepository('App:User')
-            ->findAll();
+        $users = $this->repository->findAll();
 
         /** @var User $user */
         foreach ($users as $user) {
@@ -76,69 +47,45 @@ class AvatarCleanCommand extends Command
         $this->em->flush();
 
         $output->writeln('End.');
-        $output->writeln((string)$stopwatch->stop('avatar'));
+        $output->writeln((string) $stopwatch->stop('avatar'));
     }
 
-    /**
-     * @param User $user
-     * @param OutputInterface $output
-     * @throws \Http\Client\Exception
-     */
-    private function updateFacebookAvatar(User $user, OutputInterface $output)
+    private function updateFacebookAvatar(User $user, OutputInterface $output): void
     {
         if (is_null($user->getFacebookId())) {
             return;
         }
 
         try {
-            $request = $this
-                ->factory
-                ->createRequest('GET', sprintf(self::API_FB_PICTURE, $user->getFacebookId()));
-            $response = $this
-                ->client
-                ->sendRequest($request);
+            $response = $this->client->request('GET', sprintf(self::API_FB_PICTURE, $user->getFacebookId()));
 
-
-            if ($response->getStatusCode() === 302) {
-                if ($response->hasHeader('Location')) {
-                    $user->setProfilePicture($response->getHeader('Location')[0]);
-                    $this->em->persist($user);
-
-                    $output->writeln("Updating $user");
-                }
+            if (302 === $response->getStatusCode() && $response->hasHeader('Location')) {
+                $user->setProfilePicture($response->getHeader('Location')[0]);
+                $this->em->persist($user);
+                $output->writeln("Updating $user");
             }
-        } catch (\Exception $e) {
-            return;
+        } catch (TransportExceptionInterface) {
         }
     }
 
-    /**
-     * @param User $user
-     * @param OutputInterface $output
-     * @throws \Http\Client\Exception
-     */
-    private function removeDeadAvatar(User $user, OutputInterface $output)
+    private function removeDeadAvatar(User $user, OutputInterface $output): void
     {
         if (is_null($user->getProfilePicture())) {
             return;
         }
 
         try {
-            $request = $this
-                ->factory
-                ->createRequest('GET', $user->getProfilePicture());
-            $response = $this
-                ->client
-                ->sendRequest($request);
+            $response = $this->client->request('GET', $user->getProfilePicture());
 
-            if ($response->getStatusCode() !== 200) {
+            if (200 !== $response->getStatusCode()) {
                 $user->setProfilePicture(null);
                 $this->em->persist($user);
 
                 $output->writeln("Removing avatar for $user");
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return;
+        } catch (TransportExceptionInterface) {
         }
     }
 }

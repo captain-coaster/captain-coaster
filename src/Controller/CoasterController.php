@@ -17,18 +17,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Class CoasterController
  * @package App\Controller
- * @Route("/coasters")
  */
+#[Route(path: '/coasters')]
 class CoasterController extends AbstractController
 {
     /**
      * Redirects to index
      *
-     * @Route("/", name="coaster_index", methods={"GET"})
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index()
+    #[Route(path: '/', name: 'coaster_index', methods: ['GET'])]
+    public function index(): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->redirectToRoute('bdd_index');
     }
@@ -36,13 +36,10 @@ class CoasterController extends AbstractController
     /**
      * Uploads an image for a coaster
      *
-     * @Route("/{slug}/images/upload", name="coaster_images_upload", methods={"GET", "POST"})
      *
-     * @param Request $request
-     * @param Coaster $coaster
-     * @param TranslatorInterface $translator
      * @return \Symfony\Component\HttpFoundation\Response
      */
+    #[Route(path: '/{slug}/images/upload', name: 'coaster_images_upload', methods: ['GET', 'POST'])]
     public function imageUpload(Request $request, Coaster $coaster, TranslatorInterface $translator)
     {
         $this->denyAccessUnlessGranted('upload', $coaster);
@@ -70,7 +67,7 @@ class CoasterController extends AbstractController
         return $this->render(
             'Coaster/image-upload.html.twig',
             [
-                'form' => $form->createView(),
+                'form' => $form,
                 'coaster' => $coaster,
             ]
         );
@@ -79,26 +76,15 @@ class CoasterController extends AbstractController
     /**
      * Async loads images for a coaster
      *
-     * @Route(
-     *     "/{slug}/images/ajax/{imageNumber}",
-     *     name="coaster_images_ajax_load",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     *
-     * @param EntityManagerInterface $em
-     * @param Coaster $coaster
-     * @param int $imageNumber
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function ajaxLoadImages(EntityManagerInterface $em, Coaster $coaster, int $imageNumber = 8)
+    #[Route(path: '/{slug}/images/ajax/{imageNumber}', name: 'coaster_images_ajax_load', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    public function ajaxLoadImages(EntityManagerInterface $em, Coaster $coaster, int $imageNumber = 8): \Symfony\Component\HttpFoundation\Response
     {
         $userLikes = [];
-        if ($user = $this->getUser()) {
+        if (($user = $this->getUser()) instanceof \Symfony\Component\Security\Core\User\UserInterface) {
             $em->getConfiguration()->addCustomHydrationMode(
                 'COLUMN_HYDRATOR',
-                'App\Doctrine\Hydrator\ColumnHydrator'
+                \App\Doctrine\Hydrator\ColumnHydrator::class
             );
             $userLikes = $em
                 ->getRepository(LikedImage::class)
@@ -121,22 +107,18 @@ class CoasterController extends AbstractController
      *
      * @param int $page
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/ranking/{page}", name="coaster_ranking", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function showRankingAction($page = 1)
+    #[Route(path: '/ranking/{page}', name: 'coaster_ranking', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function showRankingAction($page = 1): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         return $this->redirectToRoute('ranking_index', ['page' => $page], 301);
     }
 
     /**
      * Show details of a coaster
-     *
-     * @Route("/{slug}", name="bdd_show_coaster", methods={"GET"}, options = {"expose" = true})
-     * @param Request $request
-     * @param Coaster $coaster
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function showAction(Request $request, Coaster $coaster)
+    #[Route(path: '/{slug}', name: 'bdd_show_coaster', methods: ['GET'], options: ['expose' => true])]
+    public function showAction(Request $request, Coaster $coaster): \Symfony\Component\HttpFoundation\Response
     {
         // Load reviews
         $reviews = $this->getDoctrine()

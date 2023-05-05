@@ -15,19 +15,12 @@ use Monolog\LogRecord;
 class DiscordMonologHandler extends AbstractProcessingHandler
 {
     /**
-     * @var DiscordService
-     */
-    protected DiscordService $discordService;
-
-    /**
      * DiscordMonologHandler constructor.
      * @param DiscordService $discordService
      */
-    public function __construct(DiscordService $discordService)
+    public function __construct(protected DiscordService $discordService)
     {
         parent::__construct(Level::Critical, true);
-
-        $this->discordService = $discordService;
     }
 
     /**

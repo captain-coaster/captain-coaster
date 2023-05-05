@@ -11,19 +11,16 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class MainTagUpdateCommand extends Command
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    public $repository;
+    protected static $defaultName = 'main-tag:update';
 
     /**
      * MainTagUpdateCommand constructor.
      * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly \App\Repository\CoasterRepository $coasterRepository)
     {
         parent::__construct();
-        $this->em = $em;
     }
 
     /**
@@ -31,9 +28,7 @@ class MainTagUpdateCommand extends Command
      */
     protected function configure()
     {
-        $this
-            ->setName('main-tag:update')
-            ->setDescription('Update main tags for all coasters');
+        $this->setDescription('Update main tags for all coasters');
     }
 
     /**
@@ -49,7 +44,7 @@ class MainTagUpdateCommand extends Command
         $output->writeln('Start updating main tags');
 
         $conn = $this->em->getConnection();
-        $coasters = $this->em->getRepository(Coaster::class)->findAll();
+        $coasters = $this->repository->findAll();
 
         $sql = 'truncate table main_tag';
         $stmt = $conn->prepare($sql);

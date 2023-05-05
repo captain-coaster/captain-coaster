@@ -12,25 +12,14 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageManager
 {
-    private EntityManagerInterface $em;
-    private LoggerInterface $logger;
-    private Filesystem $filesystem;
-    private S3Client $s3Client;
-    private string $s3CacheBucket;
-
     public function __construct(
-        EntityManagerInterface $em,
-        LoggerInterface        $logger,
-        Filesystem             $filesystem,
-        S3Client               $s3Client,
-        string                 $s3CacheBucket
+        private readonly EntityManagerInterface $em,
+        private readonly LoggerInterface        $logger,
+        private readonly Filesystem             $filesystem,
+        private readonly S3Client               $s3Client,
+        private readonly string                 $s3CacheBucket
     )
     {
-        $this->em = $em;
-        $this->logger = $logger;
-        $this->filesystem = $filesystem;
-        $this->s3Client = $s3Client;
-        $this->s3CacheBucket = $s3CacheBucket;
     }
 
     /**

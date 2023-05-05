@@ -10,7 +10,7 @@
   {% if date|date("dm") == "0101" %}
     {{ date|date("Y") }}
   {% else %}
-    {{ date|localizeddate('short', 'none') }}
+    {{ date|format_datetime('short', 'none') }}
   {% endif %}
 {% endmacro %}
 
@@ -41,7 +41,7 @@
   <span class="media-annotation dotted">
     <span class="text-warning">
       {% set low = rating|round(0, 'floor') %}
-      {% for i in 1..low if low > 0 %}
+      {% for i in 1..low %}
         <i class="icon-star-full2"></i>
       {% endfor %}
       {% if low < rating %}

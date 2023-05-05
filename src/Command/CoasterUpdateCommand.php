@@ -11,6 +11,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class CoasterUpdateCommand extends Command
 {
+    protected static $defaultName = 'coaster:update';
     /**
      * @var RatingService
      */
@@ -36,9 +37,7 @@ class CoasterUpdateCommand extends Command
 
     protected function configure()
     {
-        $this
-            ->setName('coaster:update')
-            ->setDescription('Update average rating and total ratings calculated values for all coasters');
+        $this->setDescription('Update average rating and total ratings calculated values for all coasters');
     }
 
     /**

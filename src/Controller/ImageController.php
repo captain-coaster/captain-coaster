@@ -12,27 +12,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ImageController extends AbstractController
 {
     /**
-     * @Route(
-     *     "/toggleLike/{id}",
-     *     name="like_image_async",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     * @param Image $image
-     * @param EntityManagerInterface $em
      * @return JsonResponse
      */
+    #[Route(path: '/toggleLike/{id}', name: 'like_image_async', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function toggleLikeAction(Image $image, EntityManagerInterface $em)
     {
         // avoid redirects to login...
         // @todo
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
-            return new JsonResponse([], 403);
+            return new JsonResponse([], \Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
         }
 
         $user = $this->getUser();
-        $likedImage = $em->getRepository('App:LikedImage')->findOneBy(['user' => $user, 'image' => $image]);
+        $likedImage = $this->Repository->findOneBy(['user' => $user, 'image' => $image]);
 
         if ($likedImage instanceof LikedImage) {
             $em->remove($likedImage);

@@ -6,36 +6,32 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * LikedImage
- *
- * @ORM\Table(name="liked_image")
- * @ORM\Entity(repositoryClass="App\Repository\LikedImageRepository")
  */
+#[ORM\Table(name: 'liked_image')]
+#[ORM\Entity(repositoryClass: \App\Repository\LikedImageRepository::class)]
 class LikedImage
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\User $user = null;
 
     /**
      * @var Image
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Image")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $image;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Image::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\Image $image = null;
 
     /**
      * Get id.
@@ -47,10 +43,6 @@ class LikedImage
         return $this->id;
     }
 
-    /**
-     * @param User $user
-     * @return LikedImage
-     */
     public function setUser(User $user): LikedImage
     {
         $this->user = $user;
@@ -58,18 +50,11 @@ class LikedImage
         return $this;
     }
 
-    /**
-     * @return User
-     */
     public function getUser(): User
     {
         return $this->user;
     }
 
-    /**
-     * @param Image $image
-     * @return LikedImage
-     */
     public function setImage(Image $image): LikedImage
     {
         $this->image = $image;
@@ -77,9 +62,6 @@ class LikedImage
         return $this;
     }
 
-    /**
-     * @return Image
-     */
     public function getImage(): Image
     {
         return $this->image;

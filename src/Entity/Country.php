@@ -8,51 +8,43 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Country
- *
- * @ORM\Table(name="country")
- * @ORM\Entity(repositoryClass="App\Repository\CountryRepository")
  */
-class Country
+#[ORM\Table(name: 'country')]
+#[ORM\Entity(repositoryClass: \App\Repository\CountryRepository::class)]
+class Country implements \Stringable
 {
     /**
      * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @Groups({"read_coaster", "read_park"})
      */
-    private $name;
+    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[Groups(['read_coaster', 'read_park'])]
+    private ?string $name = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
      */
-    private $slug;
+    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
 
-    /**
-     * @var Continent
-     *
-     * @ORM\ManyToOne(targetEntity="Continent")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $continent;
+    #[ORM\ManyToOne(targetEntity: 'Continent')]
+    #[ORM\JoinColumn]
+    private ?\App\Entity\Continent $continent = null;
 
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
@@ -113,10 +105,6 @@ class Country
         return $this->slug;
     }
 
-    /**
-     * @param Continent $continent
-     * @return Country
-     */
     public function setContinent(Continent $continent): Country
     {
         $this->continent = $continent;

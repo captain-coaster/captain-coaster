@@ -11,27 +11,17 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class TopService
 {
-    const MIN_TOPS_IN = 2;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    final public const MIN_TOPS_IN = 2;
 
     /**
      * TopService constructor.
-     *
-     * @param EntityManagerInterface $em
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
     }
 
     /**
      * Update totalTopsIn & averageTopRank for all coasters
-     *
-     * @return int
      */
     public function updateTopStats(): int
     {

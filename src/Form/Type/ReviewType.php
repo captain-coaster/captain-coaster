@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ReviewType
@@ -23,18 +23,8 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class ReviewType extends AbstractType
 {
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * ReviewType constructor.
-     * @param TranslatorInterface $translator
-     */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(protected TranslatorInterface $translator)
     {
-        $this->translator = $translator;
     }
 
     /**
@@ -54,11 +44,9 @@ class ReviewType extends AbstractType
                     'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'required' => false,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('p')
-                            ->where('p.type = :pro')
-                            ->setParameter('pro', Tag::PRO);
-                    },
+                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('p')
+                        ->where('p.type = :pro')
+                        ->setParameter('pro', Tag::PRO),
                     'label' => 'review.pros',
                 ]
             )
@@ -71,11 +59,9 @@ class ReviewType extends AbstractType
                     'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'required' => false,
-                    'query_builder' => function (EntityRepository $er) {
-                        return $er->createQueryBuilder('c')
-                            ->where('c.type = :con')
-                            ->setParameter('con', Tag::CON);
-                    },
+                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('c')
+                        ->where('c.type = :con')
+                        ->setParameter('con', Tag::CON),
                     'label' => 'review.cons',
                 ]
             )
@@ -84,9 +70,7 @@ class ReviewType extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => $options['locales'],
-                    'choice_label' => function ($value) {
-                        return $value;
-                    },
+                    'choice_label' => fn($value) => $value,
                     'required' => true,
                     'label' => 'review.language',
                 ]
@@ -135,20 +119,15 @@ class ReviewType extends AbstractType
         );
     }
 
-    /**
-     * @param array $choices
-     */
     private function sortTranslatedChoices(array &$choices)
     {
         usort(
             $choices,
-            function ($a, $b) {
-                // could also use \Collator() to compare the two strings
-                return strcmp(
-                    $this->translator->trans($a->label, array(), 'database'),
-                    $this->translator->trans($b->label, array(), 'database')
-                );
-            }
+            fn($a, $b): int => // could also use \Collator() to compare the two strings
+strcmp(
+                $this->translator->trans($a->label, [], 'database'),
+                $this->translator->trans($b->label, [], 'database')
+            )
         );
     }
 }

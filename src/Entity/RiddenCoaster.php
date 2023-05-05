@@ -10,117 +10,101 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * RiddenCoaster
- *
- * @ORM\Table(
- *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"},
- *     uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})}
- *     )
- * @ORM\Entity(repositoryClass="App\Repository\RiddenCoasterRepository")
- * @UniqueEntity({"coaster", "user"})
  */
+#[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
+#[ORM\Entity(repositoryClass: \App\Repository\RiddenCoasterRepository::class)]
+#[UniqueEntity(['coaster', 'user'])]
+#[Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class RiddenCoaster
 {
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
     /**
      * @var Coaster
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Coaster", inversedBy="ratings")
-     * @ORM\JoinColumn(nullable=false)
      */
-    private $coaster;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\Coaster::class, inversedBy: 'ratings')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?\App\Entity\Coaster $coaster = null;
 
     /**
      * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="ratings")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class, inversedBy: 'ratings')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\User $user = null;
 
     /**
      * @var float
-     *
-     * @ORM\Column(name="rating", type="float", nullable=false)
-     * @Assert\Choice({0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0}, strict=true)
      */
-    private $value;
+    #[ORM\Column(name: 'rating', type: \Doctrine\DBAL\Types\Types::FLOAT)]
+    #[Assert\Choice(['0.5', '1.0', '1.5', '2.0', '2.5', '3.0', '3.5', '4.0', '4.5', '5.0'], strict: true)]
+    private ?float $value = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="text", nullable=true, options={"collation":"utf8mb4_unicode_ci"})
      */
-    private $review;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::TEXT, nullable: true, options: ['collation' => 'utf8mb4_unicode_ci'])]
+    private ?string $review = null;
 
     /**
      * @var string
-     *
-     * @ORM\Column(type="string", length=5, nullable=false)
      */
-    private $language = 'en';
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 5)]
+    private ?string $language = 'en';
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
-     * @ORM\JoinTable(name="ridden_coaster_pro")
-     * @ORM\JoinColumn(nullable=true)
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Tag>
      */
-    private $pros;
+    #[ORM\JoinTable(name: 'ridden_coaster_pro')]
+    #[ORM\ManyToMany(targetEntity: \App\Entity\Tag::class)]
+    #[ORM\JoinColumn]
+    private \Doctrine\Common\Collections\Collection $pros;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag")
-     * @ORM\JoinTable(name="ridden_coaster_con")
-     * @ORM\JoinColumn(nullable=true)
+     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Tag>
      */
-    private $cons;
+    #[ORM\JoinTable(name: 'ridden_coaster_con')]
+    #[ORM\ManyToMany(targetEntity: \App\Entity\Tag::class)]
+    #[ORM\JoinColumn]
+    private \Doctrine\Common\Collections\Collection $cons;
 
     /**
      * @var int
-     *
-     * @ORM\Column(name="likes", type="integer", nullable=true)
      */
-    private $like = 0;
+    #[ORM\Column(name: 'likes', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $like = 0;
 
     /**
      * @var int
-     *
-     * @ORM\Column(type="integer", nullable=true)
      */
-    private $dislike = 0;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    private ?int $dislike = 0;
 
     /**
-     * @var \DateTime $createdAt
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @var \DateTimeInterface $createdAt
      */
-    private $createdAt;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $createdAt = null;
 
     /**
-     * @var \DateTime $updatedAt
-     *
-     * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @var \DateTimeInterface $updatedAt
      */
-    private $updatedAt;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'update')]
+    private ?\DateTimeInterface $updatedAt = null;
 
     /**
-     * @var \DateTime $riddenAt
-     *
-     * @ORM\Column(type="date", nullable=true)
+     * @var \DateTimeInterface $riddenAt
      */
-    private $riddenAt;
+    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $riddenAt = null;
 
     /**
      * Constructor
@@ -133,8 +117,6 @@ class RiddenCoaster
 
     /**
      * Get id
-     *
-     * @return int
      */
     public function getId(): int
     {
@@ -144,9 +126,7 @@ class RiddenCoaster
     /**
      * Set coaster
      *
-     * @param \App\Entity\Coaster $coaster
      *
-     * @return RiddenCoaster
      */
     public function setCoaster(Coaster $coaster): RiddenCoaster
     {
@@ -157,8 +137,6 @@ class RiddenCoaster
 
     /**
      * Get coaster
-     *
-     * @return \App\Entity\Coaster
      */
     public function getCoaster(): Coaster
     {
@@ -168,9 +146,7 @@ class RiddenCoaster
     /**
      * Set user
      *
-     * @param \App\Entity\User $user
      *
-     * @return RiddenCoaster
      */
     public function setUser(User $user): RiddenCoaster
     {
@@ -181,8 +157,6 @@ class RiddenCoaster
 
     /**
      * Get user
-     *
-     * @return \App\Entity\User
      */
     public function getUser(): User
     {
@@ -192,9 +166,7 @@ class RiddenCoaster
     /**
      * Set value
      *
-     * @param float $value
      *
-     * @return RiddenCoaster
      */
     public function setValue(float $value): RiddenCoaster
     {
@@ -217,8 +189,6 @@ class RiddenCoaster
      * Set review
      *
      * @param string $review
-     *
-     * @return RiddenCoaster
      */
     public function setReview($review): RiddenCoaster
     {
@@ -241,8 +211,6 @@ class RiddenCoaster
      * Set language
      *
      * @param string $language
-     *
-     * @return RiddenCoaster
      */
     public function setLanguage($language): RiddenCoaster
     {
@@ -253,8 +221,6 @@ class RiddenCoaster
 
     /**
      * Get language
-     *
-     * @return string
      */
     public function getLanguage(): string
     {
@@ -264,9 +230,7 @@ class RiddenCoaster
     /**
      * Add pro
      *
-     * @param \App\Entity\Tag $pro
      *
-     * @return RiddenCoaster
      */
     public function addPro(Tag $pro): RiddenCoaster
     {
@@ -277,8 +241,6 @@ class RiddenCoaster
 
     /**
      * Remove pro
-     *
-     * @param \App\Entity\Tag $pro
      */
     public function removePro(Tag $pro): void
     {
@@ -298,9 +260,7 @@ class RiddenCoaster
     /**
      * Add con
      *
-     * @param \App\Entity\Tag $con
      *
-     * @return RiddenCoaster
      */
     public function addCon(Tag $con): RiddenCoaster
     {
@@ -311,8 +271,6 @@ class RiddenCoaster
 
     /**
      * Remove con
-     *
-     * @param \App\Entity\Tag $con
      */
     public function removeCon(Tag $con): void
     {
@@ -380,9 +338,7 @@ class RiddenCoaster
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
      *
-     * @return RiddenCoaster
      */
     public function setCreatedAt(\DateTime $createdAt): RiddenCoaster
     {
@@ -393,8 +349,6 @@ class RiddenCoaster
 
     /**
      * Get createdAt
-     *
-     * @return \DateTime
      */
     public function getCreatedAt(): \DateTime
     {
@@ -404,9 +358,7 @@ class RiddenCoaster
     /**
      * Set updatedAt
      *
-     * @param \DateTime $updatedAt
      *
-     * @return RiddenCoaster
      */
     public function setUpdatedAt(\DateTime $updatedAt): RiddenCoaster
     {
@@ -417,8 +369,6 @@ class RiddenCoaster
 
     /**
      * Get updatedAt
-     *
-     * @return \DateTime
      */
     public function getUpdatedAt(): \DateTime
     {
@@ -427,8 +377,6 @@ class RiddenCoaster
 
     /**
      * Ignore rating if too different from other ratings
-     *
-     * @return bool
      */
     public function isAberrantRating(): bool
     {
@@ -437,7 +385,6 @@ class RiddenCoaster
 
     /**
      * @param mixed $riddenAt
-     * @return RiddenCoaster
      */
     public function setRiddenAt(?\DateTime $riddenAt): RiddenCoaster
     {

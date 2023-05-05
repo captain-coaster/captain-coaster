@@ -17,16 +17,16 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Class ReviewController
  * @package App\Controller
- * @Route("/reviews")
  */
+#[Route(path: '/reviews')]
 class ReviewController extends AbstractController
 {
     /**
      * Show a list of reviews
      *
-     * @Route("/{page}", name="review_list", requirements={"page" = "\d+"}, methods={"GET"})
      * @throws NonUniqueResultException
      */
+    #[Route(path: '/{page}', name: 'review_list', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listAction(Request $request, PaginatorInterface $paginator, int $page = 1): Response
     {
         $query = $this->getDoctrine()
@@ -39,7 +39,7 @@ class ReviewController extends AbstractController
                 $page,
                 10
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
@@ -51,9 +51,8 @@ class ReviewController extends AbstractController
 
     /**
      * Create or update a review
-     *
-     * @Route("/coasters/{id}/form", name="review_form", methods={"GET", "POST"})
      */
+    #[Route(path: '/coasters/{id}/form', name: 'review_form', methods: ['GET', 'POST'])]
     public function newAction(Request $request, Coaster $coaster): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
@@ -92,7 +91,7 @@ class ReviewController extends AbstractController
         return $this->render(
             'Review/form.html.twig',
             [
-                'form' => $form->createView(),
+                'form' => $form,
                 'coaster' => $coaster,
             ]
         );
