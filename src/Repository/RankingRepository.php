@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Coaster;
+use App\Entity\Ranking;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -21,7 +23,7 @@ class RankingRepository extends EntityRepository
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('r')
-                ->from('App:Ranking', 'r')
+                ->from(Ranking::class, 'r')
                 ->orderBy('r.computedAt', 'desc')
                 ->setMaxResults(1)
                 ->getQuery()
@@ -40,7 +42,7 @@ class RankingRepository extends EntityRepository
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('r')
-                ->from('App:Ranking', 'r')
+                ->from(Ranking::class, 'r')
                 ->orderBy('r.computedAt', 'desc')
                 ->setMaxResults(1)
                 ->setFirstResult(1)
@@ -61,7 +63,7 @@ class RankingRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('c', 'p', 'm')
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p')
             ->leftJoin('c.manufacturer', 'm')
             ->where('c.rank is not null');

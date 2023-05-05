@@ -8,7 +8,6 @@ use App\Form\Type\ChooseParkType;
 use App\Form\Type\CreateCoasterType;
 use App\Form\Type\CreateParkType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,7 +25,6 @@ class MissingCoasterController extends AbstractController
      * Starts missing coaster procedure
      *
      * @Route("/start", name="missingcoaster_start", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Request $request
      * @param EntityManagerInterface $em
@@ -34,6 +32,8 @@ class MissingCoasterController extends AbstractController
      */
     public function start(Request $request, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         $chooseForm = $this->createForm(ChooseParkType::class);
         $chooseForm->handleRequest($request);
 
@@ -69,7 +69,6 @@ class MissingCoasterController extends AbstractController
      * Main form to add a missing coaster
      *
      * @Route("/park/{id}/add", name="missingcoaster_add", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Request $request
      * @param Park $park
@@ -78,6 +77,8 @@ class MissingCoasterController extends AbstractController
      */
     public function addCoaster(Request $request, Park $park, EntityManagerInterface $em)
     {
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         $coaster = new Coaster();
         $coaster->setPark($park);
 
@@ -99,13 +100,14 @@ class MissingCoasterController extends AbstractController
      * Recap message for the user
      *
      * @Route("/success", name="missingcoaster_success", methods={"GET"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
      *
      * @param Coaster $coaster
      * @return Response
      */
     public function success(Coaster $coaster)
     {
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         return $this->render('MissingCoaster/success.html.twig', ['coaster' => $coaster]);
     }
 }

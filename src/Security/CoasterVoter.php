@@ -11,14 +11,9 @@ class CoasterVoter extends Voter
 {
     const RATE = 'rate';
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @return bool
-     */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::RATE])) {
+        if ($attribute != self::RATE) {
             return false;
         }
 
@@ -29,13 +24,7 @@ class CoasterVoter extends Voter
         return true;
     }
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -46,19 +35,14 @@ class CoasterVoter extends Voter
         /** @var Coaster $coaster */
         $coaster = $subject;
 
-        switch ($attribute) {
-            case self::RATE:
-                return $this->canRate($coaster);
+        if ($attribute == self::RATE) {
+            return $this->canRate($coaster);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    /**
-     * @param Coaster $coaster
-     * @return bool
-     */
-    private function canRate(Coaster $coaster)
+    private function canRate(Coaster $coaster): bool
     {
         return $coaster->isRateable();
     }

@@ -17,9 +17,6 @@
     "clue/stream-filter": {
         "version": "v1.4.0"
     },
-    "composer/package-versions-deprecated": {
-        "version": "1.11.99.2"
-    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -53,9 +50,6 @@
             "ref": "453e89b78ded666f351617baca5ae40d20622351"
         }
     },
-    "doctrine/doctrine-cache-bundle": {
-        "version": "1.3.5"
-    },
     "doctrine/doctrine-migrations-bundle": {
         "version": "1.2",
         "recipe": {
@@ -85,9 +79,6 @@
     },
     "doctrine/persistence": {
         "version": "v1.1.0"
-    },
-    "doctrine/reflection": {
-        "version": "v1.0.0"
     },
     "easycorp/easyadmin-bundle": {
         "version": "1.17",
@@ -170,9 +161,6 @@
     },
     "incenteev/composer-parameter-handler": {
         "version": "v2.1.3"
-    },
-    "jdorn/sql-formatter": {
-        "version": "v1.2.17"
     },
     "knplabs/knp-components": {
         "version": "v1.3.10"
@@ -261,18 +249,6 @@
     "php-http/stopwatch-plugin": {
         "version": "1.1.0"
     },
-    "phpdocumentor/reflection-common": {
-        "version": "1.0.1"
-    },
-    "phpdocumentor/reflection-docblock": {
-        "version": "4.3.0"
-    },
-    "phpdocumentor/type-resolver": {
-        "version": "0.4.0"
-    },
-    "phpspec/prophecy": {
-        "version": "1.8.0"
-    },
     "phpunit/php-code-coverage": {
         "version": "6.1.4"
     },
@@ -284,9 +260,6 @@
     },
     "phpunit/php-timer": {
         "version": "2.0.0"
-    },
-    "phpunit/php-token-stream": {
-        "version": "3.0.1"
     },
     "phpunit/phpunit": {
         "version": "4.7",
@@ -344,9 +317,6 @@
     },
     "sebastian/recursion-context": {
         "version": "3.0.0"
-    },
-    "sebastian/resource-operations": {
-        "version": "2.0.1"
     },
     "sebastian/version": {
         "version": "2.0.1"
@@ -436,13 +406,23 @@
         "version": "v4.2.1"
     },
     "symfony/framework-bundle": {
-        "version": "4.2",
+        "version": "6.2",
         "recipe": {
             "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "4.2",
-            "ref": "99d0a737bb3a14a25530fc8c528aa2a632f43079"
-        }
+            "branch": "main",
+            "version": "6.2",
+            "ref": "af47254c5e4cd543e6af3e4508298ffebbdaddd3"
+        },
+        "files": [
+            "config/packages/cache.yaml",
+            "config/packages/framework.yaml",
+            "config/preload.php",
+            "config/routes/framework.yaml",
+            "config/services.yaml",
+            "public/index.php",
+            "src/Controller/.gitignore",
+            "src/Kernel.php"
+        ]
     },
     "symfony/http-client-contracts": {
         "version": "v2.4.0"
@@ -680,9 +660,6 @@
     },
     "twig/twig": {
         "version": "v2.6.0"
-    },
-    "webmozart/assert": {
-        "version": "1.4.0"
     },
     "willdurand/jsonp-callback-validator": {
         "version": "v1.1.0"

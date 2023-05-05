@@ -7,7 +7,6 @@ use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,14 +52,12 @@ class ReviewController extends AbstractController
     /**
      * Create or update a review
      *
-     * @param Request $request
-     * @param Coaster $coaster
-     * @return Response
      * @Route("/coasters/{id}/form", name="review_form", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      */
-    public function newAction(Request $request, Coaster $coaster)
+    public function newAction(Request $request, Coaster $coaster): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $em = $this->getDoctrine()->getManager();
 
         $review = $em->getRepository('App:RiddenCoaster')->findOneBy(
