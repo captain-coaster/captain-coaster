@@ -1,10 +1,10 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,87 +14,79 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
 class User implements UserInterface
 {
+    private const ROLE_DEFAULT = 'ROLE_USER';
+
     #[ORM\Id]
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     protected ?int $id = null;
 
-    #[ORM\Column(name: 'facebookId', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'facebookId', type: Types::STRING, length: 255, nullable: true)]
     private ?string $facebookId = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $googleId = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: false)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
     private ?string $email = null;
 
-    #[ORM\Column(name: 'lastName', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(name: 'lastName', type: Types::STRING, length: 255, nullable: true)]
     private ?string $lastName = null;
 
-    #[ORM\Column(name: 'firstName', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'firstName', type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     private ?string $firstName = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     private ?string $displayName = null;
 
-    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['displayName'])]
     private ?string $slug = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 1024, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 1024, nullable: true)]
     private ?string $profilePicture = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class)]
-    private \Doctrine\Common\Collections\Collection $ratings;
+    private Collection $ratings;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class)]
-    private \Doctrine\Common\Collections\Collection $tops;
+    private Collection $tops;
 
     #[ORM\ManyToMany(targetEntity: \App\Entity\Badge::class, inversedBy: 'users')]
     #[ORM\JoinColumn]
-    private \Doctrine\Common\Collections\Collection $badges;
+    private Collection $badges;
 
     #[ORM\OneToMany(targetEntity: \App\Entity\Notification::class, mappedBy: 'user')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
-    private \Doctrine\Common\Collections\Collection $notifications;
+    private Collection $notifications;
 
     #[ORM\OneToMany(targetEntity: \App\Entity\Image::class, mappedBy: 'uploader')]
-    private \Doctrine\Common\Collections\Collection $images;
+    private Collection $images;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => 1])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private ?bool $emailNotification = true;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $preferredLocale = 'en';
 
-    /**
-     * @var Park
-     *
-     *
-     */
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Park::class)]
+    #[ORM\ManyToOne(targetEntity: Park::class)]
     #[ORM\JoinColumn]
-    private ?\App\Entity\Park $homePark = null;
+    private ?Park $homePark = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, unique: true, nullable: true)]
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
     private ?string $apiKey = null;
 
-    /**
-     * Auto add today's date when I rate a coaster.
-     *
-     * @var bool
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN, options: ['default' => 0])]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private ?bool $addTodayDateWhenRating = false;
+
+    #[ORM\Column(type: Types::ARRAY, options: ['default' => 0])]
+    private ?array $roles = [];
 
     public function __construct()
     {
@@ -107,19 +99,19 @@ class User implements UserInterface
 
     public function __toString(): string
     {
-        return (string) $this->displayName;
+        return (string)$this->displayName;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
     /**
-         * @param string $facebookId
-         *
-         * @return User
-         */
+     * @param string $facebookId
+     *
+     * @return User
+     */
     public function setFacebookId($facebookId)
     {
         $this->facebookId = $facebookId;
@@ -262,7 +254,7 @@ class User implements UserInterface
     /**
      * Remove rating.
      */
-    public function removeRating(RiddenCoaster $rating)
+    public function removeRating(RiddenCoaster $rating): void
     {
         $this->ratings->removeElement($rating);
     }
@@ -327,12 +319,7 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * Get createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -376,7 +363,7 @@ class User implements UserInterface
     /**
      * Remove top.
      */
-    public function removeTop(Top $top)
+    public function removeTop(Top $top): void
     {
         $this->tops->removeElement($top);
     }
@@ -424,7 +411,7 @@ class User implements UserInterface
     /**
      * Remove badge.
      */
-    public function removeBadge(Badge $badge)
+    public function removeBadge(Badge $badge): void
     {
         $this->badges->removeElement($badge);
     }
@@ -455,7 +442,7 @@ class User implements UserInterface
     /**
      * Remove notification.
      */
-    public function removeNotification(Notification $notification)
+    public function removeNotification(Notification $notification): void
     {
         $this->notifications->removeElement($notification);
     }
@@ -473,7 +460,7 @@ class User implements UserInterface
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection|Collection
      */
-    public function getUnreadNotifications(): \Doctrine\Common\Collections\ArrayCollection|\Doctrine\Common\Collections\Collection
+    public function getUnreadNotifications(): \Doctrine\Common\Collections\ArrayCollection|Collection
     {
         return $this->notifications->filter(
             fn(Notification $notif) => !$notif->getIsRead()
@@ -485,7 +472,7 @@ class User implements UserInterface
         return $this->emailNotification;
     }
 
-    public function setEmailNotification(bool $emailNotification): User
+    public function setEmailNotification(bool $emailNotification): self
     {
         $this->emailNotification = $emailNotification;
 
@@ -497,7 +484,7 @@ class User implements UserInterface
         return $this->preferredLocale;
     }
 
-    public function setPreferredLocale(string $preferredLocale): User
+    public function setPreferredLocale(string $preferredLocale): self
     {
         $this->preferredLocale = $preferredLocale;
 
@@ -507,7 +494,7 @@ class User implements UserInterface
     /**
      * @param string $slug
      */
-    public function setSlug(?string $slug): User
+    public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
 
@@ -525,7 +512,7 @@ class User implements UserInterface
     /**
      * @param Park $homePark
      */
-    public function setHomePark(?Park $homePark): User
+    public function setHomePark(?Park $homePark): self
     {
         $this->homePark = $homePark;
 
@@ -537,7 +524,7 @@ class User implements UserInterface
         return $this->homePark;
     }
 
-    public function setApiKey(string $apiKey): User
+    public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
 
@@ -564,7 +551,7 @@ class User implements UserInterface
     /**
      * Remove image.
      */
-    public function removeImage(Image $image)
+    public function removeImage(Image $image): void
     {
         $this->images->removeElement($image);
     }
@@ -579,7 +566,7 @@ class User implements UserInterface
         return $this->images;
     }
 
-    public function setAddTodayDateWhenRating(bool $addTodayDateWhenRating): User
+    public function setAddTodayDateWhenRating(bool $addTodayDateWhenRating): self
     {
         $this->addTodayDateWhenRating = $addTodayDateWhenRating;
 
@@ -593,15 +580,36 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        return ['ROLE_USER'];
+        $roles = $this->roles;
+
+        // we need to make sure to have at least one role
+        $roles[] = static::ROLE_DEFAULT;
+
+        return array_values(array_unique($roles));
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string|null $email
+     */
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
     }
 }

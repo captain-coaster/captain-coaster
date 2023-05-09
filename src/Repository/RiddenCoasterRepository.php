@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -6,12 +6,11 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * RiddenCoasterRepository
@@ -22,6 +21,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, RiddenCoaster::class);
     }
+
     /**
      * Count all ratings
      *
@@ -242,7 +242,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         try {
             $connection->executeQuery($sql);
-        } catch (DBALException) {
+        } catch (\Exception) {
             return false;
         }
 
@@ -272,7 +272,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             $statement->execute(['minRatings' => $minRatings]);
 
             return $statement->rowCount();
-        } catch (DBALException) {
+        } catch (\Exception) {
             return false;
         }
     }
@@ -355,7 +355,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * @return mixed
      */
-    public function findCoastersWithNoImage(User $user, int $max = 5)
+    public function findCoastersWithNoImage(UserInterface $user, int $max = 5): mixed
     {
         return $this->getEntityManager()
             ->createQueryBuilder()

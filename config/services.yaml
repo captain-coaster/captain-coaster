@@ -5,11 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     locale: 'en'
-    # todo: merge both params ?
-    # used in routing
-    app_locales: 'en|fr|es'
-    # used for templating and sitemap
     app_locales_array: ['en', 'fr', 'es']
+    # @todo delete
     app_mail_from: 'contact@captaincoaster.com'
     app_contact_mail_to: '%app_mail_from%'
     app_mail_from_name: 'Captain Coaster'
