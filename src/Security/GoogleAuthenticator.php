@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Security;
 
@@ -9,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\GoogleUser;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,17 +28,17 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     use TargetPathTrait;
 
     public function __construct(
-        private readonly ClientRegistry $clientRegistry,
+        private readonly ClientRegistry         $clientRegistry,
         private readonly EntityManagerInterface $entityManager,
-        private readonly RouterInterface $router)
+        private readonly RouterInterface        $router,
+        private readonly LoggerInterface        $logger
+    )
     {
     }
 
     public function supports(Request $request): ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
-        dump($request->attributes->get('_route'));
-
         return 'connect_google_check' === $request->attributes->get('_route');
     }
 
@@ -53,10 +52,11 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 /** @var GoogleUser $googleUser */
                 $googleUser = $client->fetchUserFromToken($accessToken);
 
-                // 1) have they logged in with Facebook before? Easy!
+                // try to find a user based on its Google ID
                 $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['googleId' => $googleUser->getId()]);
 
                 if ($existingUser) {
+                    $this->logger->info('Found Google ID ' . $googleUser->getId());
                     return $existingUser;
                 }
 

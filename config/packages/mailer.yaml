@@ -1,3 +1,13 @@
 framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
+        envelope:
+            sender: '%env(MAILER_SENDER)%'
+        headers:
+            Reply-to: '%env(MAILER_REPLY_TO)%'
+
+when@dev:
+    framework:
+        mailer:
+            envelope:
+                recipients: ['%env(APP_DELIVERY_ADDRESSES)%']

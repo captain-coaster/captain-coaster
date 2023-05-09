@@ -1,10 +1,7 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Form\Type\ContactType;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
@@ -12,7 +9,6 @@ use App\Service\DiscordService;
 use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,6 +21,9 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Controller for index pages
+ */
 class DefaultController extends AbstractController
 {
     /**
@@ -53,7 +52,7 @@ class DefaultController extends AbstractController
     ): Response
     {
         $missingImages = [];
-        if (($user = $this->getUser()) instanceof User) {
+        if ($user = $this->getUser()) {
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
@@ -67,10 +66,6 @@ class DefaultController extends AbstractController
                 'missingImages' => $missingImages,
             ]
         );
-    }
-
-    public function logout()
-    {
     }
 
     /**
@@ -87,7 +82,7 @@ class DefaultController extends AbstractController
     ): RedirectResponse|Response
     {
         /** @var Form $form */
-        $form = $this->createForm(ContactType::class, null);
+        $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -98,7 +93,8 @@ class DefaultController extends AbstractController
                 ->to($this->getParameter('app_contact_mail_to'))
                 ->replyTo($data['email'])
                 ->subject($translator->trans('contact.email.title'))
-                ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']])
+                ->html(
+                    $this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']])
                 );
             $mailer->send($message);
 
@@ -120,57 +116,5 @@ class DefaultController extends AbstractController
     public function privacyPolicy(): Response
     {
         return $this->render('Default/policy.html.twig');
-    }
-
-    /**
-     * Link to this controller to start the "connect" process.
-     */
-    #[Route(path: '/connect/google', name: 'connect_google_start', methods: ['GET'])]
-    public function connectGoogleStart(ClientRegistry $clientRegistry): RedirectResponse
-    {
-        // will redirect to Google!
-        return $clientRegistry->getClient('google')->redirect([], []);
-    }
-
-    /**
-     * After going to Google, you're redirected back here
-     * because this is the "redirect_route" you configured
-     * in config/packages/knpu_oauth2_client.yaml.
-     */
-    #[Route('/login/check-google', name: 'connect_google_check')]
-    public function connectGoogleCheck(Request $request)
-    {
-        // ** if you want to *authenticate* the user, then
-        // leave this method blank and create a Guard authenticator
-    }
-
-    #[Route('/protected', name: 'protected')]
-    public function protected(
-        Request $request,
-        StatService $statService,
-        RiddenCoasterRepository $riddenCoasterRepository,
-        ImageRepository $imageRepository
-    ): Response {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        $missingImages = [];
-        if (($user = $this->getUser()) instanceof User) {
-            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
-        }
-
-        return $this->render(
-            'Default/index.html.twig',
-            [
-                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
-                'image' => $imageRepository->findLatestImage(),
-                'stats' => $statService->getIndexStats(),
-                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
-                'missingImages' => $missingImages,
-            ]
-        );
-    }
-
-    #[Route(path: '/login', name: 'login', methods: ['GET'])]
-    public function login(){
-        return $this->render('Connect/login.html.twig');
     }
 }

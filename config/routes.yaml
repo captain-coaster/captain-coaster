@@ -15,15 +15,19 @@ controllers:
 
 logout:
     path: '/logout'
-    controller: App\Controller\DefaultController::logout
+    controller: App\Controller\ConnectController::logout
 
 connect_google_start:
     path: '/connect/google'
-    controller: App\Controller\DefaultController::connectGoogleStart
+    controller: App\Controller\ConnectController::connectGoogleStart
 
 connect_google_check:
-    path: '/login/check-google'
-    controller: App\Controller\DefaultController::connectGoogleCheck
+    path: '/connect/google/check'
+    controller: App\Controller\ConnectController::connectGoogleCheck
+
+login_check:
+    path: '/login/check'
+    controller: App\Controller\ConnectController::loginCheck
 
 sitemap:
     path: '/sitemap.xml'

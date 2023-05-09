@@ -55,6 +55,10 @@
                         <span class="help-block text-center no-margin">
                             {{ 'login.info.text'|trans }}
                         </span>
+                        <form action="{{ path('login_link_start') }}" method="POST">
+                            <input type="email" name="email">
+                            <button type="submit">Send Login Link</button>
+                        </form>
                     {% else %}
                         <div class="text-center">
                             {{ 'login.already_connected_as'|trans }} <strong>{{ app.user.displayName }}</strong>
