@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -8,11 +8,12 @@ use App\Entity\Country;
 use App\Entity\Manufacturer;
 use App\Entity\MaterialType;
 use App\Entity\Model;
-use App\Entity\Ranking;
 use App\Entity\SeatingType;
+use App\Repository\RankingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,53 +30,53 @@ class RankingController extends AbstractController
 {
     final public const COASTERS_PER_PAGE = 20;
 
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
-
-    /**
-     * RankingController constructor.
-     */
-    public function __construct(PaginatorInterface $paginator)
+    public function __construct(
+        private readonly PaginatorInterface $paginator,
+        private readonly RankingRepository  $rankingRepository,
+        private readonly EntityManagerInterface $em,
+    )
     {
-        $this->paginator = $paginator;
     }
 
     /**
      * Show ranking of best coasters
      *
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/', name: 'ranking_index', methods: ['GET'])]
-    public function indexAction(EntityManagerInterface $em): Response
+    public function indexAction(): Response
     {
         return $this->render(
-            'Ranking/index.html.twig',
+            'ranking/index.html.twig',
             [
-                'ranking' => $em->getRepository(Ranking::class)->findCurrent(),
-                'previousRanking' => $em->getRepository(Ranking::class)->findPrevious(),
+                'ranking' => $this->rankingRepository->findCurrent(),
+                'previousRanking' => $this->rankingRepository->findPrevious(),
                 'filtersForm' => $this->getFiltersForm(),
             ]
         );
     }
 
     /**
-     *
      * @throws \Exception
      */
-    #[Route(path: '/coasters', name: 'ranking_search_async', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
-    public function searchAsyncAction(Request $request): \Symfony\Component\HttpFoundation\Response
+    #[Route(
+        path: '/coasters',
+        name: 'ranking_search_async',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function searchAsyncAction(Request $request): Response
     {
         $filters = $request->get('filters', []);
         $page = $request->get('page', 1);
 
         return $this->render(
-            'Ranking/results.html.twig',
+            'ranking/results.html.twig',
             [
                 'coasters' => $this->getCoasters($filters, $page),
                 // array_filter removes empty filters e.g. ['continent' => '']
-                'filtered' => (array) array_filter($filters, "strlen") !== [],
+                'filtered' => (array)array_filter($filters, 'strlen') !== [],
                 'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );
@@ -85,9 +86,9 @@ class RankingController extends AbstractController
      * Learn more on the ranking
      */
     #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
-    public function learnMore(): \Symfony\Component\HttpFoundation\Response
+    public function learnMore(): Response
     {
-        return $this->render('Ranking/learn_more.html.twig');
+        return $this->render('ranking/learn_more.html.twig');
     }
 
     /**
@@ -97,7 +98,7 @@ class RankingController extends AbstractController
     {
         try {
             return $this->paginator->paginate(
-                $this->getDoctrine()->getRepository(Ranking::class)->findCoastersRanked($filters),
+                $this->rankingRepository->findCoastersRanked($filters),
                 $page,
                 self::COASTERS_PER_PAGE
             );
@@ -109,42 +110,22 @@ class RankingController extends AbstractController
     /**
      * Get data to display filter form (mainly <select> data)
      *
-     * @return array
+     * @throws InvalidArgumentException
      */
-    private function getFiltersForm()
+    private function getFiltersForm(): array
     {
         $cache = new FilesystemAdapter();
         $filtersForm = $cache->getItem('ranking_filters_form');
 
         if (!$filtersForm->isHit()) {
             $data = [];
-            $data['continent'] = $this->getDoctrine()
-                ->getRepository(Continent::class)
-                ->findBy([], ["name" => "asc"]);
-
-            $data['country'] = $this->getDoctrine()
-                ->getRepository(Country::class)
-                ->findBy([], ["name" => "asc"]);
-
-            $data['materialType'] = $this->getDoctrine()
-                ->getRepository(MaterialType::class)
-                ->findBy([], ["name" => "asc"]);
-
-            $data['seatingType'] = $this->getDoctrine()
-                ->getRepository(SeatingType::class)
-                ->findBy([], ["name" => "asc"]);
-
-            $data['model'] = $this->getDoctrine()
-                ->getRepository(Model::class)
-                ->findBy([], ['name' => 'asc']);
-
-            $data['manufacturer'] = $this->getDoctrine()
-                ->getRepository(Manufacturer::class)
-                ->findBy([], ["name" => "asc"]);
-
-            $data['openingDate'] = $this->getDoctrine()
-                ->getRepository(Coaster::class)
-                ->getDistinctOpeningYears();
+            $data['continent'] = $this->em->getRepository(Continent::class)->findBy([], ['name' => 'asc']);
+            $data['country'] = $this->em->getRepository(Country::class)->findBy([], ['name' => 'asc']);
+            $data['materialType'] = $this->em->getRepository(MaterialType::class)->findBy([], ['name' => 'asc']);
+            $data['seatingType'] = $this->em->getRepository(SeatingType::class)->findBy([], ['name' => 'asc']);
+            $data['model'] = $this->em->getRepository(Model::class)->findBy([], ['name' => 'asc']);
+            $data['manufacturer'] = $this->em->getRepository(Manufacturer::class)->findBy([], ['name' => 'asc']);
+            $data['openingDate'] = $this->em->getRepository(Coaster::class)->getDistinctOpeningYears();
 
             $filtersForm->set($data);
             $filtersForm->expiresAfter(\DateInterval::createFromDateString('7 days'));

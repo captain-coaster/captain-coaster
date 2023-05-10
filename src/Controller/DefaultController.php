@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\Type\ContactType;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
@@ -18,6 +19,8 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -77,7 +80,7 @@ class DefaultController extends AbstractController
     public function contactAction(
         Request             $request,
         MailerInterface     $mailer,
-        DiscordService      $discord,
+        ChatterInterface    $chatter,
         TranslatorInterface $translator
     ): RedirectResponse|Response
     {
@@ -99,7 +102,9 @@ class DefaultController extends AbstractController
             $mailer->send($message);
 
             // send notification
-            $discord->notify('We just received new message from ' . $data['name'] . "\n\n" . $data['message']);
+            $chatter->send(
+                (new ChatMessage('We just received new message from ' . $data['name'] . "\n\n" . $data['message']))->transport('discord_notif')
+            );
 
             $this->addFlash(
                 'success',
@@ -116,5 +121,31 @@ class DefaultController extends AbstractController
     public function privacyPolicy(): Response
     {
         return $this->render('Default/policy.html.twig');
+    }
+
+    #[Route('/protected', name: 'protected')]
+    public function protected(
+        Request                 $request,
+        StatService             $statService,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        ImageRepository         $imageRepository,
+        ChatterInterface        $chatter
+    ): Response
+    {
+        $missingImages = [];
+        if (($user = $this->getUser()) instanceof User) {
+            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
+        }
+
+        return $this->render(
+            'Default/index.html.twig',
+            [
+                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+                'image' => $imageRepository->findLatestImage(),
+                'stats' => $statService->getIndexStats(),
+                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
+                'missingImages' => $missingImages,
+            ]
+        );
     }
 }

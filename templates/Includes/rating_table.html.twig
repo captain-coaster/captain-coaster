@@ -38,7 +38,7 @@
                  style="font-size: 22px;"></div>
           </td>
           <td class="hidden-xs">
-            {{ rating.riddenAt is empty ? '-' : rating.riddenAt|localizeddate('short', 'none') }}
+            {{ rating.riddenAt is empty ? '-' : rating.riddenAt|format_datetime('short', 'none') }}
           </td>
           {% if is_granted('delete', rating) %}
           <td class="text-center hidden-xs">

@@ -1,26 +1,32 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Command;
 
 use App\Entity\Coaster;
-use App\Service\DiscordService;
 use App\Service\NotificationService;
 use App\Service\RankingService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class RankingCommand extends Command
 {
     protected static $defaultName = 'ranking:update';
-    public function __construct(private readonly RankingService $rankingService, private readonly NotificationService $notificationService, private readonly DiscordService $discordService)
+
+    public function __construct(
+        private readonly RankingService      $rankingService,
+        private readonly NotificationService $notificationService,
+        private readonly ChatterInterface    $chatter,
+    )
     {
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('dry-run', null, InputOption::VALUE_NONE)
             ->addOption('send-discord', null, InputOption::VALUE_NONE)
@@ -33,7 +39,7 @@ class RankingCommand extends Command
      * @return void
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('ranking');
@@ -86,12 +92,12 @@ class RankingCommand extends Command
     private function formatCoasterForConsole(Coaster $coaster): string
     {
         $format = '[%d] %s - %s (%s)';
-        if (is_null($coaster->getPreviousRank())) {
-            $format = '<error>'.$format.'</error>';
+        if (null === $coaster->getPreviousRank()) {
+            $format = '<error>' . $format . '</error>';
         } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.25 * $coaster->getPreviousRank()) {
-            $format = '<comment>'.$format.'</comment>';
+            $format = '<comment>' . $format . '</comment>';
         } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.1 * $coaster->getPreviousRank()) {
-            $format = '<info>'.$format.'</info>';
+            $format = '<info>' . $format . '</info>';
         }
 
         return sprintf(
@@ -99,11 +105,11 @@ class RankingCommand extends Command
             $coaster->getRank(),
             $coaster->getName(),
             $coaster->getPark()->getName(),
-            is_null($coaster->getPreviousRank()) ? 'new' : sprintf("%+d", ($coaster->getPreviousRank() - $coaster->getRank()))
+            null === $coaster->getPreviousRank() ? 'new' : sprintf("%+d", ($coaster->getPreviousRank() - $coaster->getRank()))
         );
     }
 
-    private function notifyDiscord($coasterList)
+    private function notifyDiscord($coasterList): void
     {
         $discordText = '';
 
@@ -111,19 +117,23 @@ class RankingCommand extends Command
             $text = sprintf(
                 "[%d] %s - %s (%s)\n",
                 $coaster->getRank(),
-                (is_null($coaster->getPreviousRank())) ? '**'.$coaster->getName().'**' : $coaster->getName(),
+                (null === $coaster->getPreviousRank()) ? '**' . $coaster->getName() . '**' : $coaster->getName(),
                 $coaster->getPark()->getName(),
-                is_null($coaster->getPreviousRank()) ? 'new' : sprintf("%+d", ($coaster->getPreviousRank() - $coaster->getRank()))
+                null === $coaster->getPreviousRank() ? 'new' : sprintf("%+d", ($coaster->getPreviousRank() - $coaster->getRank()))
             );
 
-            if (strlen($discordText) + strlen($text) > 2000) {
-                $this->discordService->log($discordText);
+            if (\strlen($discordText) + \strlen($text) > 2000) {
+                $this->chatter->send(
+                    (new ChatMessage($discordText))->transport('discord_log')
+                );
                 $discordText = '';
             }
 
             $discordText .= $text;
         }
 
-        $this->discordService->log($discordText);
+        $this->chatter->send(
+            (new ChatMessage($discordText))->transport('discord_log')
+        );
     }
 }

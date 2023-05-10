@@ -93,30 +93,4 @@ class ConnectController extends AbstractController
 
         return $this->render('connect/login.html.twig');
     }
-
-    #[Route('/protected', name: 'protected')]
-    public function protected(
-        Request                 $request,
-        StatService             $statService,
-        RiddenCoasterRepository $riddenCoasterRepository,
-        ImageRepository         $imageRepository
-    ): Response
-    {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-        $missingImages = [];
-        if (($user = $this->getUser()) instanceof User) {
-            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
-        }
-
-        return $this->render(
-            'Default/index.html.twig',
-            [
-                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
-                'image' => $imageRepository->findLatestImage(),
-                'stats' => $statService->getIndexStats(),
-                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
-                'missingImages' => $missingImages,
-            ]
-        );
-    }
 }
