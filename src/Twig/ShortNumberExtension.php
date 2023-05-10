@@ -1,43 +1,45 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
+/**
+ * Twig extension to convert large positive numbers in to short form like 1K+, 100K+, 199K+, 1M+, 10M+, 1B+ etc
+ */
 class ShortNumberExtension extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
-        return [new TwigFilter('shortNum', fn($n, int $precision = 1): float => $this->formatNumber($n, $precision))];
+        return [new TwigFilter(
+            'shortNum',
+            fn($n, int $precision = 1): string => $this->formatNumber($n, $precision)
+        )];
     }
 
     /**
      * Use to convert large positive numbers in to short form like 1K+, 100K+, 199K+, 1M+, 10M+, 1B+ etc
-     *
-     * @param $n
-     * @param int $precision
-     * @return float
      */
-    public function formatNumber($n, $precision = 1)
+    public function formatNumber($n, int $precision = 1): string
     {
         if ($n >= 0 && $n < 1000) {
             // 1 - 999
-            return (float) number_format($n, $precision);
+            return number_format($n, $precision);
         } elseif ($n < 1_000_000) {
             // 1k-999k
-            return (float) number_format($n / 1000, $precision).'K';
+            return number_format($n / 1000, $precision) . 'K';
         } elseif ($n < 1_000_000_000) {
             // 1m-999m
-            return (float) number_format($n / 1_000_000, $precision).'M';
+            return number_format($n / 1_000_000, $precision) . 'M';
         } elseif ($n < 1_000_000_000_000) {
             // 1b-999b
-            return (float) number_format($n / 1_000_000_000, $precision).'B';
+            return number_format($n / 1_000_000_000, $precision) . 'B';
         } elseif ($n >= 1_000_000_000_000) {
             // 1t+
-            return (float) number_format($n / 1_000_000_000_000, $precision).'T';
+            return number_format($n / 1_000_000_000_000, $precision) . 'T';
         } else {
-            return 0;
+            return '0';
         }
     }
 }

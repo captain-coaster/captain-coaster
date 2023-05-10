@@ -57,13 +57,6 @@ services:
         arguments:
             $locales: '%app_locales_array%'
 
-    App\Service\DiscordService:
-        arguments:
-            $channels:
-                log: '%env(APP_DISCORD_LOG)%'
-                notify: '%env(APP_DISCORD_NOTIFY)%'
-        public: true
-
     App\Doctrine\ImageListener:
         tags:
             - {name: doctrine.event_listener, event: prePersist, lazy: true}

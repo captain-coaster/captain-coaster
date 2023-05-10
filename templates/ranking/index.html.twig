@@ -10,11 +10,11 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Ranking/filters.html.twig' %}
+  {% include 'ranking/filters.html.twig' %}
 {% endblock %}
 
 {% block body %}
-  {% include 'Ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
+  {% include 'ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
   <div id="ranking-result"></div>
 {% endblock %}
 

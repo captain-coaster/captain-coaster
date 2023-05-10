@@ -1,13 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Doctrine;
 
 use App\Entity\Image;
-use App\Service\DiscordService;
 use App\Service\ImageManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use League\Flysystem\FilesystemException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
+use Symfony\Component\Notifier\Message\ChatMessage;
 
 /**
  * Class ImageListener
@@ -15,7 +17,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ImageListener
 {
-    public function __construct(private readonly ImageManager $imageManager, private readonly DiscordService $discordService)
+    public function __construct(private readonly ImageManager $imageManager, private readonly ChatterInterface $chatter)
     {
     }
 
@@ -23,8 +25,9 @@ class ImageListener
      * Before persist:
      *  - upload file
      * @throws FilesystemException
+     * @throws TransportExceptionInterface
      */
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $image = $args->getEntity();
         if (!$image instanceof Image) {
@@ -39,7 +42,9 @@ class ImageListener
             $image->setFilename($fileName);
         }
 
-        $this->discordService->notify('A new picture of ' . $image->getCoaster()->getName() . ' is waiting for review');
+        $this->chatter->send(
+            (new ChatMessage('A new picture of ' . $image->getCoaster()->getName() . ' is waiting for review'))->transport('discord_notif')
+        );
     }
 
     /**
@@ -47,7 +52,7 @@ class ImageListener
      *  - remove image file on disk
      * @throws FilesystemException
      */
-    public function preRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args): void
     {
         $image = $args->getEntity();
         if (!$image instanceof Image) {
@@ -62,7 +67,7 @@ class ImageListener
      *  - update main images
      *  - remove cache
      */
-    public function postRemove(LifecycleEventArgs $args)
+    public function postRemove(LifecycleEventArgs $args): void
     {
         $image = $args->getEntity();
         if (!$image instanceof Image) {
@@ -77,7 +82,7 @@ class ImageListener
      * After update (enabled set to 1 is an update)
      *  - update main images
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         if (!$args->getEntity() instanceof Image) {
             return;
