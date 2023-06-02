@@ -103,7 +103,7 @@ class SearchController extends AbstractController
         $response = new JsonResponse($searchItems->get());
 
         $response->setPublic();
-        $response->setMaxAge('600');
+        $response->setMaxAge(600);
 
         return $response;
     }
