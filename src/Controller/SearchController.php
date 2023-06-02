@@ -101,9 +101,9 @@ class SearchController extends AbstractController
         }
 
         $response = new JsonResponse($searchItems->get());
-        // disable temporarily
-        //$response->setMaxAge('3600');
-        //$response->setPublic();
+
+        $response->setPublic();
+        $response->setMaxAge('600');
 
         return $response;
     }
