@@ -101,6 +101,7 @@ class SearchController extends AbstractController
         }
 
         $response = new JsonResponse($searchItems->get());
+        $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
 
         $response->setPublic();
         $response->setMaxAge(600);
