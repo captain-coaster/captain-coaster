@@ -62,7 +62,7 @@ class Notification
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $user;
 
