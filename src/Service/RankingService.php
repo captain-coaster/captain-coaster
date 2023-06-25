@@ -19,10 +19,10 @@ class RankingService
     // Minimum comparison number between coaster A and B
     const MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
-    const MIN_DUELS = 280;
+    const MIN_DUELS = 300;
     // For elite coaster, we need more comparisons
-    const ELITE_SCORE = 99;
-    const MIN_DUELS_ELITE_SCORE = 375;
+    const ELITE_SCORE = 95;
+    const MIN_DUELS_ELITE_SCORE = 400;
 
     private EntityManagerInterface $em;
     private array $duels = [];
