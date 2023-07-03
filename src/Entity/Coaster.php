@@ -459,20 +459,13 @@ class Coaster
         return $this->seatingType;
     }
 
-    /**
-     * @param Model $model
-     * @return Coaster
-     */
-    public function setModel(Model $model): Coaster
+    public function setModel(?Model $model): Coaster
     {
         $this->model = $model;
 
         return $this;
     }
 
-    /**
-     * @return Model
-     */
     public function getModel(): ?Model
     {
         return $this->model;
