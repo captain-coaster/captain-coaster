@@ -554,21 +554,14 @@ class Coaster
         return $this->inversionsNumber;
     }
 
-    /**
-     * @param Manufacturer $manufacturer
-     * @return Coaster
-     */
-    public function setManufacturer(Manufacturer $manufacturer)
+    public function setManufacturer(?Manufacturer $manufacturer): Coaster
     {
         $this->manufacturer = $manufacturer;
 
         return $this;
     }
 
-    /**
-     * @return Manufacturer
-     */
-    public function getManufacturer()
+    public function getManufacturer(): ?Manufacturer
     {
         return $this->manufacturer;
     }
