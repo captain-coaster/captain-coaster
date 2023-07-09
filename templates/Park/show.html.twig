@@ -76,9 +76,8 @@
                 <li class="media panel panel-body stack-media-on-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">
                     <div class="media-left">
                         <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                            <img {% if coaster.images|length > 0 %}
-                                {% set image = random(coaster.images) %}
-                                src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                            <img {% if coaster.mainImage %}
+                                src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
                             {% else %}
                                 src="{{ asset('images/nophoto.png') }}"
                             {% endif %}
@@ -164,58 +163,6 @@
         </ul>
     </div>
 </div>
-
-    <!--<div class="col-sm-9">
-      <div class="row">
-        {% for coaster in park.coasters %}
-          <div class="col-sm-4">
-            <div class="thumbnail border-bottom-xlg border-bottom-{{ coaster.status.type }}">
-              <div class="thumb">
-                <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                  <img {% if coaster.images|length > 0 %}
-                    {% set image = random(coaster.images) %}
-                    src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
-                  {% else %}
-                    src="{{ asset('images/nophoto.png') }}"
-                  {% endif %}
-                      class="img-responsive img-rounded" alt="{{ coaster.name }}">
-                </a>
-              </div>
-              <div class="caption text-center" style="height: 140px;">
-                <div class="content-group-sm media">
-                  <div class="media-body">
-                    <h6 class="text-semibold no-margin">
-                      <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}" class="text-default">
-                        {{ coaster.name }}
-                      </a>
-                    </h6>
-                    <ul class="list-inline list-inline-separate text-muted mb-10">
-                      {% if coaster.seatingType %}
-                        <li>{{ coaster.seatingType }}</li>
-                      {% endif %}
-                    </ul>
-                  </div>
-                </div>
-                {% if coaster.isRateable %}
-                  {% if is_granted('ROLE_USER') %}
-                    <div class="rating-coaster"
-                         data-coaster="{{ coaster.id }}"
-                         data-rateit-value="{{ coaster.userRating(app.user).value|default(0) }}"
-                         style="font-size: 22px;"></div>
-                  {% else %}
-                    <p class="text-muted content-group-sm">
-                      {{ 'coaster.rating.mustlogin'|trans }}
-                    </p>
-                    <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
-                  {% endif %}
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-  </div>-->
     {% endblock %}
 
     {% block javascripts %}

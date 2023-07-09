@@ -53,7 +53,7 @@ class Park
      * @var Coaster[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Coaster", mappedBy="park")
-     * @ORM\OrderBy({"status" = "ASC", "name" = "ASC"})
+     * @ORM\OrderBy({"status" = "ASC", "score" = "DESC"})
      */
     private $coasters;
 
