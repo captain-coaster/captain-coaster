@@ -12,11 +12,9 @@
         <div class="panel-body no-border no-padding-top">
           {% for image in images %}
             <div class="col-sm-3">
-              <a class="m-10" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
-                 rel="gallery">
+              <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-popup="lightbox" rel="gallery">
                 <div class="thumb">
-                  <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
-                       alt="{{ image.coaster.name }}">
+                  <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" alt="{{ image.coaster.name }}">
                 </div>
               </a>
               <div class="text-size-small text-muted">
@@ -48,5 +46,14 @@
         element.classList.toggle('icon-heart6');
       });
     }
+  </script>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
+  <script type="text/javascript">
+        $('[data-popup="lightbox"]').fancybox({
+          padding: 3,
+        });
   </script>
 {% endblock %}
