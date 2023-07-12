@@ -42,7 +42,6 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Service\ImageManager:
         arguments:
-            $distributionId: '%env(AWS_CF_DISTRIBUTION_ID)%'
             $s3CacheBucket: '%env(AWS_S3_CACHE_BUCKET_NAME)%'
 
     App\Service\BannerMaker:
@@ -103,15 +102,6 @@ services:
         arguments:
             -
                 version: '2006-03-01'
-                region: 'eu-west-3'
-                credentials:
-                    key: '%env(AWS_S3_ACCESS_ID)%'
-                    secret: '%env(AWS_S3_ACCESS_SECRET)%'
-
-    Aws\CloudFront\CloudFrontClient:
-        arguments:
-            -
-                version: 'latest'
                 region: 'eu-west-3'
                 credentials:
                     key: '%env(AWS_S3_ACCESS_ID)%'

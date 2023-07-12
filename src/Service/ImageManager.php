@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Image;
-use Aws\CloudFront\CloudFrontClient;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\Filesystem;
@@ -17,8 +16,6 @@ class ImageManager
     private LoggerInterface $logger;
     private Filesystem $filesystem;
     private S3Client $s3Client;
-    private CloudFrontClient $cloudFrontClient;
-    private string $distributionId;
     private string $s3CacheBucket;
 
     public function __construct(
@@ -26,8 +23,6 @@ class ImageManager
         LoggerInterface        $logger,
         Filesystem             $filesystem,
         S3Client               $s3Client,
-        CloudFrontClient       $cloudFrontClient,
-        string                 $distributionId,
         string                 $s3CacheBucket
     )
     {
@@ -35,8 +30,6 @@ class ImageManager
         $this->logger = $logger;
         $this->filesystem = $filesystem;
         $this->s3Client = $s3Client;
-        $this->cloudFrontClient = $cloudFrontClient;
-        $this->distributionId = $distributionId;
         $this->s3CacheBucket = $s3CacheBucket;
     }
 
@@ -66,7 +59,7 @@ class ImageManager
     }
 
     /**
-     * Remove file from S3 Cache Bucket & CloudFront cache
+     * Remove file from S3 Cache Bucket
      */
     public function removeCache(Image $image)
     {
@@ -78,23 +71,6 @@ class ImageManager
                     ['Key' => '600x336/' . $image->getFilename()],
                     ['Key' => '280x210/' . $image->getFilename()],
                     ['Key' => '96x96/' . $image->getFilename()]
-                ]
-            ]
-        ]);
-
-        $this->cloudFrontClient->createInvalidation([
-            'DistributionId' => $this->distributionId,
-            'InvalidationBatch' => [
-                'CallerReference' => uniqid(),
-                'Paths' => [
-                    'Items' => [
-                        // cannot use a wildcard at the beginning
-                        '/1440x1440/' . $image->getFilename(),
-                        '/600x336/' . $image->getFilename(),
-                        '/280x210/' . $image->getFilename(),
-                        '/96x96/' . $image->getFilename()
-                    ],
-                    'Quantity' => 4
                 ]
             ]
         ]);
