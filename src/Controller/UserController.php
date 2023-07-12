@@ -51,6 +51,10 @@ class UserController extends AbstractController
      */
     public function listRatingsAction(Request $request, PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
+        if (!$user->isEnabled()) {
+            throw new NotFoundHttpException();
+        }
+
         $query = $this
             ->getDoctrine()
             ->getRepository(RiddenCoaster::class)
@@ -86,6 +90,10 @@ class UserController extends AbstractController
      */
     public function listReviews(PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
+        if (!$user->isEnabled()) {
+            throw new NotFoundHttpException();
+        }
+
         $query = $this
             ->getDoctrine()
             ->getRepository(RiddenCoaster::class)
@@ -125,6 +133,10 @@ class UserController extends AbstractController
      */
     public function listTops(User $user)
     {
+        if (!$user->isEnabled()) {
+            throw new NotFoundHttpException();
+        }
+
         $tops = $this
             ->getDoctrine()
             ->getRepository(Top::class)
@@ -146,6 +158,10 @@ class UserController extends AbstractController
      */
     public function picturesAction(Request $request, User $user, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
+        if (!$user->isEnabled()) {
+            throw new NotFoundHttpException();
+        }
+
         try {
             $pagination = $paginator->paginate(
                 $em->getRepository(Image::class)->findUserImages($user),
