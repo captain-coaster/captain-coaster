@@ -82,7 +82,7 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(type="string", length=500, nullable=true)
+     * @ORM\Column(type="string", length=1024, nullable=true)
      */
     private $profilePicture;
 
