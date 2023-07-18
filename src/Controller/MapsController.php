@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Park;
 use App\Entity\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -59,6 +60,10 @@ class MapsController extends AbstractController
      */
     public function userMapAction(User $user)
     {
+        if (!$user->isEnabled()) {
+            throw new NotFoundHttpException();
+        }
+
         $initialFilters = [
             "ridden" => "on",
             "user" => $user->getId(),
