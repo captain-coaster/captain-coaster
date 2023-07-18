@@ -17,7 +17,7 @@ services:
       - .:/var/www
       - /home/florian/projects/images:/var/www/images/coasters
   db:
-    image: mariadb:10.1
+    image: mariadb:10.11
     container_name: db-captain
     volumes:
       - datamaria:/var/lib/mysql

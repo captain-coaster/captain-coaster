@@ -11,7 +11,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * RiddenCoaster
  *
- * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})})
+ * @ORM\Table(
+ *     options={"collate"="utf8mb4_unicode_ci", "charset"="utf8mb4"},
+ *     uniqueConstraints={@ORM\UniqueConstraint(name="user_coaster_unique", columns={"coaster_id", "user_id"})}
+ *     )
  * @ORM\Entity(repositoryClass="App\Repository\RiddenCoasterRepository")
  * @UniqueEntity({"coaster", "user"})
  */
@@ -53,7 +56,7 @@ class RiddenCoaster
     /**
      * @var string
      *
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true, options={"collation":"utf8mb4_unicode_ci"})
      */
     private $review;
 
