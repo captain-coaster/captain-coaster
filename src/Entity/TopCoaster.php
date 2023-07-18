@@ -32,7 +32,7 @@ class TopCoaster
      * @var Top
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Top", inversedBy="topCoasters")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $top;
 
@@ -40,7 +40,7 @@ class TopCoaster
      * @var Coaster
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Coaster", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      */
     private $coaster;
 
