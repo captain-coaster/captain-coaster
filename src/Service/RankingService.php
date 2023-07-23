@@ -51,7 +51,7 @@ class RankingService
      */
     public function updateRanking(bool $dryRun = false): array
     {
-        $this->computeRanking();
+        $this->computeRanking($dryRun);
 
         $rank = 1;
         $coasterList = [];
@@ -98,7 +98,7 @@ class RankingService
     /**
      * Compute ranking in ranking array
      */
-    public function computeRanking(): void
+    public function computeRanking(bool $dryRun): void
     {
         $users = $this->em->getRepository(User::class)->findAll();
 
@@ -115,7 +115,7 @@ class RankingService
             );
         }
 
-        $this->computeScore();
+        $this->computeScore($dryRun);
     }
 
     /**
@@ -188,7 +188,7 @@ class RankingService
      * Compute score based on duels array
      * A duel is the result of all comparisons for coaster A and B
      */
-    private function computeScore()
+    private function computeScore(bool $dryRun)
     {
         $this->rejectedCoasters = [];
 
@@ -241,8 +241,10 @@ class RankingService
                 }
             }
 
-            // update duel stat
-            $this->updateDuelStat($coasterId, $duelCount);
+            if (!$dryRun) {
+                // update duel stat
+                $this->updateDuelStat($coasterId, $duelCount);
+            }
         }
 
         // sort in reverse order (higher score is first)
@@ -351,8 +353,8 @@ class RankingService
                 and c.rank is not NULL;';
 
         try {
-            $this->em->getConnection()->prepare($sql)->executeQuery();
-        } catch (\Doctrine\DBAL\Driver\Exception|\Doctrine\DBAL\Exception $e) {
+            $this->em->getConnection()->prepare($sql)->executeStatement();
+        } catch (\Throwable $e) {
             // todo log
         }
     }
@@ -389,10 +391,11 @@ class RankingService
 
         try {
             $this->em->getConnection()->prepare($sql)
-                ->bindParam(':count', $duelCount)
-                ->bindParam(':id', $coasterId)
-                ->executeQuery();
-        } catch (\Doctrine\DBAL\Driver\Exception|\Doctrine\DBAL\Exception $e) {
+                ->executeStatement([
+                    ':count' => $duelCount,
+                    ':id' => $coasterId
+                ]);
+        } catch (\Throwable $e) {
             // todo log
         }
     }
