@@ -345,17 +345,15 @@ class RankingService
      */
     private function disableNonRankedCoasters()
     {
-        $conn = $this->em->getConnection();
         $sql = 'update coaster c
-                set c.rank = NULL, c.previous_rank = NULL, c.score = NULL, c.valid_duels = NULL
+                set c.rank = NULL, c.previous_rank = NULL, c.score = NULL, c.valid_duels = 0
                 where c.updated_at < DATE_SUB(NOW(), INTERVAL 4 HOUR)
                 and c.rank is not NULL;';
 
         try {
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
-        } catch (\Exception $e) {
-            // do nothing
+            $this->em->getConnection()->prepare($sql)->executeQuery();
+        } catch (\Doctrine\DBAL\Driver\Exception|\Doctrine\DBAL\Exception $e) {
+            // todo log
         }
     }
 
@@ -385,18 +383,17 @@ class RankingService
      */
     private function updateDuelStat(int $coasterId, int $duelCount)
     {
-        $conn = $this->em->getConnection();
         $sql = 'update coaster c
                 set c.valid_duels = :count
                 where c.id = :id;';
 
         try {
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':count', $duelCount);
-            $stmt->bindParam(':id', $coasterId);
-            $stmt->execute();
-        } catch (\Exception $e) {
-            // do nothing
+            $this->em->getConnection()->prepare($sql)
+                ->bindParam(':count', $duelCount)
+                ->bindParam(':id', $coasterId)
+                ->executeQuery();
+        } catch (\Doctrine\DBAL\Driver\Exception|\Doctrine\DBAL\Exception $e) {
+            // todo log
         }
     }
 }
