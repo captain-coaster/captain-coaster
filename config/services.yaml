@@ -38,7 +38,6 @@ services:
     # as action arguments even if you don't extend any base controller class
     App\Service\ImageManager:
         arguments:
-            $distributionId: '%env(AWS_CF_DISTRIBUTION_ID)%'
             $s3CacheBucket: '%env(AWS_S3_CACHE_BUCKET_NAME)%'
 
     App\Service\BannerMaker:
