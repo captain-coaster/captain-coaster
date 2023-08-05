@@ -69,6 +69,7 @@ status.closed.temporarily: 'Fermé temporairement'
 status.unknown: 'Inconnu'
 status.retracked: 'Retracké'
 status.rumored: 'Rumeur'
+status.soft.opening: 'Pré-ouverture'
 
 country.spain: 'Espagne'
 country.italy: 'Italie'

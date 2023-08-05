@@ -39,7 +39,7 @@ class Status
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"read_coaster", "read_status"})
+     * @Groups({"list_coaster", "read_coaster", "read_status"})
      */
     private $name;
 

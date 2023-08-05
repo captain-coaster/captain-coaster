@@ -189,7 +189,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Status", inversedBy="coasters")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read_coaster"})
+     * @Groups({"list_coaster", "read_coaster"})
      */
     private $status;
 
