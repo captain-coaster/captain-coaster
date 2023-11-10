@@ -1,17 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\TopCoaster;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * TopCoasterRepository
+ * TopCoasterRepository.
  */
 class TopCoasterRepository extends ServiceEntityRepository
 {
@@ -19,6 +20,7 @@ class TopCoasterRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, TopCoaster::class);
     }
+
     /**
      * @return mixed|null
      */
@@ -39,9 +41,7 @@ class TopCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count all coasters inside main tops only
-     *
-     * @return mixed
+     * Count all coasters inside main tops only.
      */
     public function countAllInTops()
     {
@@ -60,7 +60,7 @@ class TopCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Update totalTopsIn for all coasters
+     * Update totalTopsIn for all coasters.
      */
     public function updateTotalTopsIn(): bool
     {
@@ -88,7 +88,7 @@ class TopCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Update averageTopRank for all coasters
+     * Update averageTopRank for all coasters.
      *
      * @return bool
      */

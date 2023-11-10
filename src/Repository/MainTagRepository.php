@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
-use App\Entity\Coaster;
 use App\Entity\MainTag;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * MainTagRepository
+ * MainTagRepository.
  */
 class MainTagRepository extends ServiceEntityRepository
 {

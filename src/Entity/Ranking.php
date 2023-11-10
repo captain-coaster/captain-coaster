@@ -1,7 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\RankingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -9,57 +11,33 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Ranking
  */
 #[ORM\Table(name: 'ranking')]
-#[ORM\Entity(repositoryClass: \App\Repository\RankingRepository::class)]
+#[ORM\Entity(repositoryClass: RankingRepository::class)]
 class Ranking
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $ratingNumber = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $topNumber = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $coasterInTopNumber = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $comparisonNumber = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $userNumber = null;
 
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private ?int $rankedCoasterNumber = null;
 
-    /**
-     * @var \DateTimeInterface $computedAt
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $computedAt = null;
 
@@ -73,7 +51,7 @@ class Ranking
         return $this->ratingNumber;
     }
 
-    public function setRatingNumber(int $ratingNumber): Ranking
+    public function setRatingNumber(int $ratingNumber): self
     {
         $this->ratingNumber = $ratingNumber;
 
@@ -85,7 +63,7 @@ class Ranking
         return $this->topNumber;
     }
 
-    public function setTopNumber(int $topNumber): Ranking
+    public function setTopNumber(int $topNumber): self
     {
         $this->topNumber = $topNumber;
 
@@ -97,7 +75,7 @@ class Ranking
         return $this->coasterInTopNumber;
     }
 
-    public function setCoasterInTopNumber(int $coasterInTopNumber): Ranking
+    public function setCoasterInTopNumber(int $coasterInTopNumber): self
     {
         $this->coasterInTopNumber = $coasterInTopNumber;
 
@@ -109,7 +87,7 @@ class Ranking
         return $this->comparisonNumber;
     }
 
-    public function setComparisonNumber(int $comparisonNumber): Ranking
+    public function setComparisonNumber(int $comparisonNumber): self
     {
         $this->comparisonNumber = $comparisonNumber;
 
@@ -121,7 +99,7 @@ class Ranking
         return $this->userNumber;
     }
 
-    public function setUserNumber(int $userNumber): Ranking
+    public function setUserNumber(int $userNumber): self
     {
         $this->userNumber = $userNumber;
 
@@ -133,7 +111,7 @@ class Ranking
         return $this->computedAt;
     }
 
-    public function setComputedAt(\DateTime $computedAt): Ranking
+    public function setComputedAt(\DateTime $computedAt): self
     {
         $this->computedAt = $computedAt;
 
@@ -145,7 +123,7 @@ class Ranking
         return $this->rankedCoasterNumber;
     }
 
-    public function setRankedCoasterNumber(int $rankedCoasterNumber): Ranking
+    public function setRankedCoasterNumber(int $rankedCoasterNumber): self
     {
         $this->rankedCoasterNumber = $rankedCoasterNumber;
 

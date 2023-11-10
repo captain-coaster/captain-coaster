@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\User;
@@ -13,12 +15,11 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class BadgeGiveCommand extends Command
 {
-    public $repository;
     protected static $defaultName = 'badge:give';
+    public $repository;
+
     /**
      * BadgeGiveCommand constructor.
-     * @param BadgeService $badgeService
-     * @param EntityManagerInterface $em
      */
     public function __construct(private readonly BadgeService $badgeService, private readonly EntityManagerInterface $em, private readonly \App\Repository\UserRepository $userRepository)
     {
@@ -32,9 +33,8 @@ class BadgeGiveCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
+     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
@@ -47,7 +47,7 @@ class BadgeGiveCommand extends Command
 
         $userId = $input->getArgument('user');
 
-        if (!is_null($userId)) {
+        if (null !== $userId) {
             $users[] = $this->repository->findOneBy(['id' => $userId]);
         } else {
             $users = $this->em->getRepository(User::class)->getUsersWithRecentRatingOrTopUpdate();
@@ -60,6 +60,6 @@ class BadgeGiveCommand extends Command
         }
 
         $output->writeln('End of command.');
-        $output->writeln((string)$stopwatch->stop('badge'));
+        $output->writeln((string) $stopwatch->stop('badge'));
     }
 }

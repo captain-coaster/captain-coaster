@@ -27,23 +27,23 @@
         "liip/imagine-bundle": "^2.0",
         "oneup/flysystem-bundle": "^4",
         "stof/doctrine-extensions-bundle": "^1.2",
-        "symfony/asset": "6.2.*",
-        "symfony/cache": "6.2.*",
-        "symfony/discord-notifier": "6.2.*",
-        "symfony/dotenv": "6.2.*",
-        "symfony/expression-language": "6.2.*",
+        "symfony/asset": "6.3.*",
+        "symfony/cache": "6.3.*",
+        "symfony/discord-notifier": "6.3.*",
+        "symfony/dotenv": "6.3.*",
+        "symfony/expression-language": "6.3.*",
         "symfony/flex": "^2.0",
-        "symfony/form": "6.2.*",
-        "symfony/http-client": "6.2.*",
-        "symfony/mailer": "6.2.*",
+        "symfony/form": "6.3.*",
+        "symfony/http-client": "6.3.*",
+        "symfony/mailer": "6.3.*",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/notifier": "6.2.*",
-        "symfony/runtime": "6.2.*",
-        "symfony/security-bundle": "6.2.*",
-        "symfony/stopwatch": "6.2.*",
-        "symfony/translation": "6.2.*",
-        "symfony/twig-bundle": "6.2.*",
-        "symfony/validator": "6.2.*",
+        "symfony/notifier": "6.3.*",
+        "symfony/runtime": "6.3.*",
+        "symfony/security-bundle": "6.3.*",
+        "symfony/stopwatch": "6.3.*",
+        "symfony/translation": "6.3.*",
+        "symfony/twig-bundle": "6.3.*",
+        "symfony/validator": "6.3.*",
         "symfony/webpack-encore-bundle": "^1.0",
         "twig/cssinliner-extra": "*",
         "twig/extra-bundle": "*",
@@ -51,16 +51,15 @@
         "twig/intl-extra": "^3.6"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan-doctrine": "^1.3",
         "phpstan/phpstan-symfony": "^1.3",
         "phpunit/phpunit": "^10.0",
         "rector/rector": "^0.16.0",
-        "symfony/debug-bundle": "6.2.*",
+        "symfony/debug-bundle": "6.3.*",
         "symfony/maker-bundle": "^1.0",
-        "symfony/phpunit-bridge": "^6.2",
-        "symfony/web-profiler-bundle": "6.2.*"
+        "symfony/phpunit-bridge": "^6.3",
+        "symfony/web-profiler-bundle": "6.3.*"
     },
     "config": {
         "allow-plugins": {
@@ -106,7 +105,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "6.2.*"
+            "require": "6.3.*"
         }
     }
 }

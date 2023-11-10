@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Coaster;
@@ -29,9 +31,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DashboardController extends AbstractDashboardController
 {
-    public function __construct(private readonly \EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator)
     {
     }
+
     public function index(): Response
     {
         // redirect to some CRUD controller
@@ -52,7 +55,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        //yield MenuItem::linkToDashboard('Dashboard', 'fa fa-dashboard');
+        // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-dashboard');
         yield MenuItem::linkToCrud('Coaster', 'fas fa-sleigh', Coaster::class);
         yield MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class);
         yield MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class);

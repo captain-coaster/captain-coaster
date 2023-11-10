@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\TopCoaster;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Class TopService
- * @package App\Service
+ * Class TopService.
  */
 class TopService
 {
@@ -21,7 +22,7 @@ class TopService
     }
 
     /**
-     * Update totalTopsIn & averageTopRank for all coasters
+     * Update totalTopsIn & averageTopRank for all coasters.
      */
     public function updateTopStats(): int
     {

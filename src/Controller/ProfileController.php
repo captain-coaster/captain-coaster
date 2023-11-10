@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\RiddenCoaster;
@@ -59,7 +61,7 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * Show my ratings
+     * Show my ratings.
      */
     #[Route(path: '/me/ratings/{page}', name: 'me_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function ratingsAction(EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
@@ -96,7 +98,7 @@ class ProfileController extends AbstractController
     }
 
     #[Route(path: '/banner', name: 'profile_banner', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
-    public function getBanner(BannerMaker $bannerMaker): \Symfony\Component\HttpFoundation\Response
+    public function getBanner(BannerMaker $bannerMaker): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 

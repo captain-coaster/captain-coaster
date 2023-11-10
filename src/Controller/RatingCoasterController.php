@@ -1,29 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class RatingCoasterController
- * @package App\Controller
+ * Class RatingCoasterController.
  */
 class RatingCoasterController extends AbstractController
 {
     public $repository;
+
     public function __construct(private readonly \App\Repository\RiddenCoasterRepository $riddenCoasterRepository)
     {
     }
+
     /**
-     * Rate a coaster or edit a rating
+     * Rate a coaster or edit a rating.
      *
      * @return JsonResponse
      *
@@ -71,7 +74,7 @@ class RatingCoasterController extends AbstractController
 
         $errors = $validator->validate($rating);
 
-        if (count($errors) > 0) {
+        if (\count($errors) > 0) {
             return new JsonResponse(['state' => 'error']);
         }
 
@@ -80,12 +83,12 @@ class RatingCoasterController extends AbstractController
 
         return new JsonResponse([
             'state' => 'success',
-            'id' => $rating->getId()
+            'id' => $rating->getId(),
         ]);
     }
 
     /**
-     * Delete a rating
+     * Delete a rating.
      *
      * @return JsonResponse
      */

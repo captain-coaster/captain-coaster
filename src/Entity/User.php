@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -11,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'users')]
-#[ORM\Entity(repositoryClass: \App\Repository\UserRepository::class)]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface
 {
     private const ROLE_DEFAULT = 'ROLE_USER';
@@ -54,15 +55,15 @@ class User implements UserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class)]
     private Collection $tops;
 
-    #[ORM\ManyToMany(targetEntity: \App\Entity\Badge::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
     #[ORM\JoinColumn]
     private Collection $badges;
 
-    #[ORM\OneToMany(targetEntity: \App\Entity\Notification::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
-    #[ORM\OneToMany(targetEntity: \App\Entity\Image::class, mappedBy: 'uploader')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'uploader')]
     private Collection $images;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -88,6 +89,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::ARRAY, options: ['default' => 0])]
     private ?array $roles = [];
 
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
+    private ?bool $enabled = false;
+
     public function __construct()
     {
         $this->ratings = new ArrayCollection();
@@ -108,6 +112,14 @@ class User implements UserInterface
     }
 
     /**
+     * @return string
+     */
+    public function getFacebookId()
+    {
+        return $this->facebookId;
+    }
+
+    /**
      * @param string $facebookId
      *
      * @return User
@@ -117,14 +129,6 @@ class User implements UserInterface
         $this->facebookId = $facebookId;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFacebookId()
-    {
-        return $this->facebookId;
     }
 
     /**
@@ -148,6 +152,16 @@ class User implements UserInterface
     }
 
     /**
+     * Get googleId.
+     *
+     * @return string
+     */
+    public function getGoogleId()
+    {
+        return $this->googleId;
+    }
+
+    /**
      * Set googleId.
      *
      * @param string $googleId
@@ -159,16 +173,6 @@ class User implements UserInterface
         $this->googleId = $googleId;
 
         return $this;
-    }
-
-    /**
-     * Get googleId.
-     *
-     * @return string
-     */
-    public function getGoogleId()
-    {
-        return $this->googleId;
     }
 
     /**
@@ -192,6 +196,16 @@ class User implements UserInterface
     }
 
     /**
+     * Get lastName.
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
      * Set lastName.
      *
      * @param string $lastName
@@ -206,13 +220,13 @@ class User implements UserInterface
     }
 
     /**
-     * Get lastName.
+     * Get firstName.
      *
      * @return string
      */
-    public function getLastName()
+    public function getFirstName()
     {
-        return $this->lastName;
+        return $this->firstName;
     }
 
     /**
@@ -227,16 +241,6 @@ class User implements UserInterface
         $this->firstName = $firstName;
 
         return $this;
-    }
-
-    /**
-     * Get firstName.
-     *
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
     }
 
     /**
@@ -282,6 +286,16 @@ class User implements UserInterface
     }
 
     /**
+     * Get profilePicture.
+     *
+     * @return string
+     */
+    public function getProfilePicture()
+    {
+        return $this->profilePicture;
+    }
+
+    /**
      * Set profilePicture.
      *
      * @param string $profilePicture
@@ -295,14 +309,9 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * Get profilePicture.
-     *
-     * @return string
-     */
-    public function getProfilePicture()
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->profilePicture;
+        return $this->createdAt;
     }
 
     /**
@@ -319,9 +328,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    /**
+     * Get displayName.
+     *
+     * @return string
+     */
+    public function getDisplayName()
     {
-        return $this->createdAt;
+        return $this->displayName;
     }
 
     /**
@@ -336,16 +350,6 @@ class User implements UserInterface
         $this->displayName = $displayName;
 
         return $this;
-    }
-
-    /**
-     * Get displayName.
-     *
-     * @return string
-     */
-    public function getDisplayName()
-    {
-        return $this->displayName;
     }
 
     /**
@@ -457,10 +461,7 @@ class User implements UserInterface
         return $this->notifications;
     }
 
-    /**
-     * @return \Doctrine\Common\Collections\ArrayCollection|Collection
-     */
-    public function getUnreadNotifications(): \Doctrine\Common\Collections\ArrayCollection|Collection
+    public function getUnreadNotifications(): ArrayCollection|Collection
     {
         return $this->notifications->filter(
             fn(Notification $notif) => !$notif->getIsRead()
@@ -491,30 +492,14 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @param string $slug
-     */
-    public function setSlug(?string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
     public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    /**
-     * @param Park $homePark
-     */
-    public function setHomePark(?Park $homePark): self
+    public function setSlug(?string $slug): self
     {
-        $this->homePark = $homePark;
+        $this->slug = $slug;
 
         return $this;
     }
@@ -524,9 +509,9 @@ class User implements UserInterface
         return $this->homePark;
     }
 
-    public function setApiKey(string $apiKey): self
+    public function setHomePark(?Park $homePark): self
     {
-        $this->apiKey = $apiKey;
+        $this->homePark = $homePark;
 
         return $this;
     }
@@ -534,6 +519,13 @@ class User implements UserInterface
     public function getApiKey(): ?string
     {
         return $this->apiKey;
+    }
+
+    public function setApiKey(string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
     }
 
     /**
@@ -597,17 +589,11 @@ class User implements UserInterface
         return (string)$this->email;
     }
 
-    /**
-     * @return string|null
-     */
     public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    /**
-     * @param string|null $email
-     */
     public function setEmail(?string $email): void
     {
         $this->email = $email;

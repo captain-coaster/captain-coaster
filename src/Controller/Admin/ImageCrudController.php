@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Image;
@@ -44,7 +46,7 @@ class ImageCrudController extends AbstractCrudController
             AssociationField::new('uploader'),
             AssociationField::new('coaster'),
             TextField::new('credit'),
-            ImageField::new('path', 'Image')->setBasePath($this->getParameter('pictures_cdn_host') . '/1440x1440/')->onlyOnIndex(),
+            ImageField::new('path', 'Image')->setBasePath($this->getParameter('pictures_cdn_host').'/1440x1440/')->onlyOnIndex(),
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             BooleanField::new('watermarked')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
@@ -52,7 +54,6 @@ class ImageCrudController extends AbstractCrudController
             IntegerField::new('likeCounter')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
-
         ];
     }
 }

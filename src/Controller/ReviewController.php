@@ -1,41 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
+use App\Repository\RiddenCoasterRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class ReviewController
- * @package App\Controller
- */
 #[Route(path: '/reviews')]
 class ReviewController extends AbstractController
 {
     /**
-     * Show a list of reviews
+     * Show a list of reviews.
      *
      * @throws NonUniqueResultException
      */
     #[Route(path: '/{page}', name: 'review_list', requirements: ['page' => '\d+'], methods: ['GET'])]
-    public function listAction(Request $request, PaginatorInterface $paginator, int $page = 1): Response
+    public function listAction(
+        Request $request,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        PaginatorInterface $paginator,
+        int $page = 1): Response
     {
-        $query = $this->getDoctrine()
-            ->getRepository(RiddenCoaster::class)
-            ->findAll($request->getLocale());
-
         try {
             $pagination = $paginator->paginate(
-                $query,
+                $riddenCoasterRepository->findAll($request->getLocale()),
                 $page,
                 10
             );
@@ -50,17 +49,15 @@ class ReviewController extends AbstractController
     }
 
     /**
-     * Create or update a review
+     * Create or update a review.
      */
     #[Route(path: '/coasters/{id}/form', name: 'review_form', methods: ['GET', 'POST'])]
-    public function newAction(Request $request, Coaster $coaster): Response
+    public function newAction(Request $request, Coaster $coaster, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $em = $this->getDoctrine()->getManager();
-
-        $review = $em->getRepository('App:RiddenCoaster')->findOneBy(
-            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+        $review = $entityManager->getRepository('App:RiddenCoaster')->findOneBy(
+            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getUserIdentifier()]
         );
 
         if (!$review instanceof RiddenCoaster) {
@@ -70,7 +67,6 @@ class ReviewController extends AbstractController
             $review->setLanguage($request->getLocale());
         }
 
-        /** @var Form $form */
         $form = $this->createForm(
             ReviewType::class,
             $review,
@@ -81,9 +77,8 @@ class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($review);
-            $em->flush();
+            $entityManager->persist($review);
+            $entityManager->flush();
 
             return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
         }

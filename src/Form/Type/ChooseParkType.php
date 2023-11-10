@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form\Type;
 
 use App\Entity\Park;
@@ -21,7 +23,7 @@ class ChooseParkType extends AbstractType
                     'required' => true,
                     'class' => Park::class,
                     'mapped' => false,
-                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('p')
+                    'query_builder' => fn (EntityRepository $er) => $this->repository->createQueryBuilder('p')
                         ->orderBy('p.name', 'ASC'),
                 ]
             )

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\Coaster;
@@ -13,9 +15,10 @@ class CoasterVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if ($attribute != self::RATE) {
+        if (self::RATE != $attribute) {
             return false;
         }
+
         return $subject instanceof Coaster;
     }
 
@@ -30,7 +33,7 @@ class CoasterVoter extends Voter
         /** @var Coaster $coaster */
         $coaster = $subject;
 
-        if ($attribute == self::RATE) {
+        if (self::RATE == $attribute) {
             return $this->canRate($coaster);
         }
 

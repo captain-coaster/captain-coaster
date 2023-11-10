@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Form\Type;
 
@@ -27,11 +27,7 @@ class ReviewType extends AbstractType
     {
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('value', TextType::class, ['required' => true])
@@ -95,21 +91,13 @@ class ReviewType extends AbstractType
             );
     }
 
-    /**
-     * @param FormView $view
-     * @param FormInterface $form
-     * @param array $options
-     */
-    public function finishView(FormView $view, FormInterface $form, array $options)
+    public function finishView(FormView $view, FormInterface $form, array $options): void
     {
         $this->sortTranslatedChoices($view->children['pros']->vars['choices']);
         $this->sortTranslatedChoices($view->children['cons']->vars['choices']);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [
@@ -119,12 +107,12 @@ class ReviewType extends AbstractType
         );
     }
 
-    private function sortTranslatedChoices(array &$choices)
+    private function sortTranslatedChoices(array &$choices): void
     {
         usort(
             $choices,
             fn($a, $b): int => // could also use \Collator() to compare the two strings
-strcmp(
+            strcmp(
                 $this->translator->trans($a->label, [], 'database'),
                 $this->translator->trans($b->label, [], 'database')
             )

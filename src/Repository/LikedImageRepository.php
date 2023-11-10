@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\Coaster;
 use App\Entity\LikedImage;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -14,6 +13,7 @@ class LikedImageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, LikedImage::class);
     }
+
     public function findUserLikes(User $user)
     {
         return $this->getEntityManager()

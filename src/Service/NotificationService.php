@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Notification;
@@ -10,7 +12,6 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Templating\EngineInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -18,8 +19,7 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
 /**
- * Class NotificationService
- * @package App\Service
+ * Class NotificationService.
  */
 class NotificationService
 {
@@ -27,9 +27,9 @@ class NotificationService
     final public const NOTIF_RANKING = 'ranking';
 
     /**
-     * NotificationService constructor
+     * NotificationService constructor.
      */
-    public function __construct(private readonly EntityManagerInterface $em, private readonly RouterInterface        $router, private readonly Environment            $templating, private readonly MailerInterface        $mailer, private readonly TranslatorInterface    $translator, private readonly string                 $emailFrom, private readonly string                 $emailFromName, private readonly \App\Repository\UserRepository $userRepository)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly RouterInterface $router, private readonly Environment $templating, private readonly MailerInterface $mailer, private readonly TranslatorInterface $translator, private readonly string $emailFrom, private readonly string $emailFromName, private readonly \App\Repository\UserRepository $userRepository)
     {
     }
 
@@ -54,7 +54,7 @@ class NotificationService
     }
 
     /**
-     * Where to redirect when a notification is clicked
+     * Where to redirect when a notification is clicked.
      */
     public function getRedirectUrl(Notification $notif): string
     {
@@ -66,8 +66,8 @@ class NotificationService
     }
 
     /**
-     * Send notification to everyone
-     * @param string|null $parameter
+     * Send notification to everyone.
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -85,7 +85,7 @@ class NotificationService
     }
 
     /**
-     * "Send" notification (i.e.: persist it)
+     * "Send" notification (i.e.: persist it).
      */
     private function sendNotification(Notification $notification): void
     {
@@ -94,7 +94,8 @@ class NotificationService
     }
 
     /**
-     * Send an email
+     * Send an email.
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError|TransportExceptionInterface

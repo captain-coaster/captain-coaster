@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Class RatingService
- * @package App\Service
+ * Class RatingService.
  */
 class RatingService
 {
@@ -20,7 +21,7 @@ class RatingService
     }
 
     /**
-     * Update averageRating for all coasters
+     * Update averageRating for all coasters.
      */
     public function updateRatings(): int
     {

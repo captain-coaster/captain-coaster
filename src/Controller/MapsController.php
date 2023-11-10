@@ -1,40 +1,39 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\Manufacturer;
 use App\Entity\Park;
 use App\Entity\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class MapsController
- * @package App\Controller
+ * Class MapsController.
  */
 #[Route(path: '/map')]
 class MapsController extends AbstractController
 {
     /**
-     * Map of all coasters, with filters
-     *
-     *
+     * Map of all coasters, with filters.
      */
     #[Route(path: '/', name: 'map_index', methods: ['GET'])]
-    public function indexAction(Request $request): \Symfony\Component\HttpFoundation\Response
+    public function indexAction(Request $request): Response
     {
-        $initialFilters = ["status" => "on"];
-        $parkId = "";
+        $initialFilters = ['status' => 'on'];
+        $parkId = '';
 
-        $slug = $request->query->get("parkslug");
-        if($slug) {
+        $slug = $request->query->get('parkslug');
+        if ($slug) {
             $park = $this->getDoctrine()->getRepository(Park::class)->findOneBy(['slug' => $slug]);
-            if(!empty($park)) {
+            if (!empty($park)) {
                 $parkId = $park->getId();
             }
         }
@@ -42,7 +41,7 @@ class MapsController extends AbstractController
         return $this->render(
             'Maps/index.html.twig',
             [
-                'markers' => json_encode($this->getMarkers($initialFilters), JSON_THROW_ON_ERROR),
+                'markers' => json_encode($this->getMarkers($initialFilters), \JSON_THROW_ON_ERROR),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
                 'parkId' => $parkId,
@@ -51,24 +50,24 @@ class MapsController extends AbstractController
     }
 
     /**
-     * Map of coasters ridden by a user
+     * Map of coasters ridden by a user.
      */
     #[Route(path: '/users/{id}', name: 'map_user', methods: ['GET'])]
-    public function userMapAction(User $user): \Symfony\Component\HttpFoundation\Response
+    public function userMapAction(User $user): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
         }
 
         $initialFilters = [
-            "ridden" => "on",
-            "user" => $user->getId(),
+            'ridden' => 'on',
+            'user' => $user->getId(),
         ];
 
         return $this->render(
             'Maps/userMap.html.twig',
             [
-                'markers' => json_encode($this->getMarkers($initialFilters), JSON_THROW_ON_ERROR),
+                'markers' => json_encode($this->getMarkers($initialFilters), \JSON_THROW_ON_ERROR),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
             ]
@@ -76,7 +75,7 @@ class MapsController extends AbstractController
     }
 
     /**
-     * Returns json data with markers filtered
+     * Returns json data with markers filtered.
      *
      * @return JsonResponse
      */
@@ -87,10 +86,10 @@ class MapsController extends AbstractController
     }
 
     /**
-     * Get coasters data (when user clicks on a marker)
+     * Get coasters data (when user clicks on a marker).
      */
     #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', methods: ['GET'], condition: 'request.isXmlHttpRequest()', options: ['expose' => true])]
-    public function getCoastersAction(Request $request, Park $park): \Symfony\Component\HttpFoundation\Response
+    public function getCoastersAction(Request $request, Park $park): Response
     {
         $filters = $request->get('filters', []);
 
@@ -103,9 +102,10 @@ class MapsController extends AbstractController
     }
 
     /**
-     * Return array of markers, filtered
+     * Return array of markers, filtered.
      *
      * @param array $filters
+     *
      * @return array
      */
     private function getMarkers($filters = [])
@@ -116,7 +116,7 @@ class MapsController extends AbstractController
     }
 
     /**
-     * Get data to display filter form (mainly <select> data)
+     * Get data to display filter form (mainly <select> data).
      *
      * @return array
      */
@@ -124,7 +124,7 @@ class MapsController extends AbstractController
     {
         return ['manufacturer' => $this->getDoctrine()
             ->getRepository(Manufacturer::class)
-            ->findBy([], ["name" => "asc"]), 'openingDate' => $this->getDoctrine()
+            ->findBy([], ['name' => 'asc']), 'openingDate' => $this->getDoctrine()
             ->getRepository(Coaster::class)
             ->getDistinctOpeningYears()];
     }
