@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Form\Type;
 
@@ -19,14 +19,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ProfileType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $completeName = sprintf('%s %s', $options['firstname'], $options['lastname']);
-        $partialName = sprintf('%s %s.', $options['firstname'], substr((string) $options['lastname'], 0, 1));
+        $partialName = sprintf('%s %s.', $options['firstname'], substr((string)$options['lastname'], 0, 1));
         $locales = $options['locales'];
 
         $builder
@@ -78,7 +74,7 @@ class ProfileType extends AbstractType
                 CheckboxType::class,
                 [
                     'required' => false,
-                    'label' => 'me.form.addTodayDateWhenRating.label'
+                    'label' => 'me.form.addTodayDateWhenRating.label',
                 ]
             )
             ->add(
@@ -87,15 +83,12 @@ class ProfileType extends AbstractType
                 [
                     'required' => false,
                     'disabled' => true,
-                    'label' => 'me.form.apiKey.label'
+                    'label' => 'me.form.apiKey.label',
                 ]
             );
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(
             [

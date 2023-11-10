@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
- * Badge
- *
+ * Badge.
  */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_image']])]
 #[ORM\Table(name: 'image')]
@@ -58,111 +59,146 @@ class Image
     private $file;
     #[Groups(['read_coaster', 'read_image'])]
     private string $path;
-    public function getId() : int
+
+    public function getId(): int
     {
         return $this->id;
     }
-    public function setFilename(string $filename) : Image
-    {
-        $this->filename = $filename;
-        return $this;
-    }
-    public function getFilename() : string
+
+    public function getFilename(): string
     {
         return $this->filename;
     }
-    public function setOptimized(bool $optimized) : Image
+
+    public function setFilename(string $filename): self
     {
-        $this->optimized = $optimized;
+        $this->filename = $filename;
+
         return $this;
     }
-    public function isOptimized() : bool
+
+    public function isOptimized(): bool
     {
         return $this->optimized;
     }
-    public function setCoaster(Coaster $coaster) : Image
+
+    public function setOptimized(bool $optimized): self
     {
-        $this->coaster = $coaster;
+        $this->optimized = $optimized;
+
         return $this;
     }
-    public function getCoaster() : Coaster
+
+    public function getCoaster(): Coaster
     {
         return $this->coaster;
     }
-    public function getPath() : string
+
+    public function setCoaster(Coaster $coaster): self
+    {
+        $this->coaster = $coaster;
+
+        return $this;
+    }
+
+    public function getPath(): string
     {
         return $this->filename;
     }
-    public function setFile($file) : Image
-    {
-        $this->file = $file;
-        return $this;
-    }
+
     public function getFile()
     {
         return $this->file;
     }
-    public function setEnabled(bool $enabled) : Image
+
+    public function setFile($file): self
     {
-        $this->enabled = $enabled;
+        $this->file = $file;
+
         return $this;
     }
-    public function isEnabled() : bool
+
+    public function isEnabled(): bool
     {
         return $this->enabled;
     }
-    public function setCreatedAt(\DateTime $createdAt) : Image
+
+    public function setEnabled(bool $enabled): self
     {
-        $this->createdAt = $createdAt;
+        $this->enabled = $enabled;
+
         return $this;
     }
-    public function getCreatedAt() : \DateTime
+
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }
-    public function setUpdatedAt(\DateTime $updatedAt) : Image
+
+    public function setCreatedAt(\DateTime $createdAt): self
     {
-        $this->updatedAt = $updatedAt;
+        $this->createdAt = $createdAt;
+
         return $this;
     }
-    public function getUpdatedAt() : \DateTime
+
+    public function getUpdatedAt(): \DateTime
     {
         return $this->updatedAt;
     }
-    public function setCredit(?string $credit) : Image
+
+    public function setUpdatedAt(\DateTime $updatedAt): self
     {
-        $this->credit = $credit;
+        $this->updatedAt = $updatedAt;
+
         return $this;
     }
-    public function getCredit() : ?string
+
+    public function getCredit(): ?string
     {
         return $this->credit;
     }
-    public function setWatermarked(bool $watermarked) : Image
+
+    public function setCredit(?string $credit): self
     {
-        $this->watermarked = $watermarked;
+        $this->credit = $credit;
+
         return $this;
     }
-    public function isWatermarked() : bool
+
+    public function isWatermarked(): bool
     {
         return $this->watermarked;
     }
-    public function setUploader(User $uploader) : Image
+
+    public function setWatermarked(bool $watermarked): self
     {
-        $this->uploader = $uploader;
+        $this->watermarked = $watermarked;
+
         return $this;
     }
-    public function getUploader() : ?User
+
+    public function getUploader(): ?User
     {
         return $this->uploader;
     }
-    public function setLikeCounter(int $likeCounter) : Image
+
+    public function setUploader(User $uploader): self
     {
-        $this->likeCounter = $likeCounter;
+        $this->uploader = $uploader;
+
         return $this;
     }
-    public function getLikeCounter() : int
+
+    public function getLikeCounter(): int
     {
         return $this->likeCounter;
+    }
+
+    public function setLikeCounter(int $likeCounter): self
+    {
+        $this->likeCounter = $likeCounter;
+
+        return $this;
     }
 }

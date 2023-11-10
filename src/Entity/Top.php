@@ -1,171 +1,98 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\TopRepository;
 use App\Validator\Constraints as CaptainConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-/**
- * Top (rename mysql table later)
- */
 #[ORM\Table(name: 'liste')]
-#[ORM\Entity(repositoryClass: \App\Repository\TopRepository::class)]
+#[ORM\Entity(repositoryClass: TopRepository::class)]
 class Top
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\Column(type: Types::INTEGER), ORM\Id, ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
-    private ?string $name = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $name;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
-    private ?string $type = 'top';
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $type = 'top';
 
-    /**
-     * @var User
-     */
-    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class, inversedBy: 'tops')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tops')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\User $user = null;
+    private User $user;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection<\App\Entity\TopCoaster>
-     *
-     * @CaptainConstraints\UniqueCoaster
-     */
-    #[ORM\OneToMany(targetEntity: 'TopCoaster', mappedBy: 'top', cascade: ['persist', 'remove'])]
+    /** @var Collection<TopCoaster> */
+    #[ORM\OneToMany(mappedBy: 'top', targetEntity: 'TopCoaster', cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
-    private \Doctrine\Common\Collections\Collection $topCoasters;
+    #[CaptainConstraints\UniqueCoaster]
+    private Collection $topCoasters;
 
-    /**
-     * @var bool
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
-    private ?bool $main = false;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $main = false;
 
-    /**
-     * @var \DateTimeInterface $createdAt
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private ?\DateTimeInterface $createdAt = null;
+    private \DateTimeInterface $createdAt;
 
-    /**
-     * @var \DateTimeInterface $updatedAt
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private ?\DateTimeInterface $updatedAt = null;
+    private \DateTimeInterface $updatedAt;
 
-    /**
-     * Constructor
-     */
     public function __construct()
     {
         $this->topCoasters = new ArrayCollection();
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int|null
     {
         return $this->id;
     }
 
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Top
-     */
-    public function setName($name)
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name
-     *
-     * @return string
-     */
-    public function getName()
+    public function getType(): string
     {
-        return $this->name;
+        return $this->type;
     }
 
-    /**
-     * Set type
-     *
-     * @param string $type
-     *
-     * @return Top
-     */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Get type
-     *
-     * @return string
-     */
-    public function getType()
+    public function getUser(): User
     {
-        return $this->type;
+        return $this->user;
     }
 
-    /**
-     * Set user
-     *
-     *
-     * @return Top
-     */
-    public function setUser(User $user)
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * Get user
-     *
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * Add topCoaster
-     *
-     *
-     * @return Top
-     */
-    public function addTopCoaster(TopCoaster $topCoaster)
+    public function addTopCoaster(TopCoaster $topCoaster): static
     {
         $topCoaster->setTop($this);
 
@@ -174,27 +101,14 @@ class Top
         return $this;
     }
 
-    /**
-     * Remove topCoaster
-     */
-    public function removeTopCoaster(TopCoaster $topCoaster)
+    public function removeTopCoaster(TopCoaster $topCoaster): void
     {
         $this->topCoasters->removeElement($topCoaster);
     }
 
-    /**
-     * @return TopCoaster[]|ArrayCollection
-     */
-    public function getTopCoasters(): array|\Doctrine\Common\Collections\ArrayCollection
+    public function getTopCoasters(): Collection
     {
         return $this->topCoasters;
-    }
-
-    public function setMain(bool $main): Top
-    {
-        $this->main = $main;
-
-        return $this;
     }
 
     public function isMain(): bool
@@ -202,51 +116,34 @@ class Top
         return $this->main;
     }
 
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Top
-     */
-    public function setCreatedAt($createdAt)
+    public function setMain(bool $main): static
+    {
+        $this->main = $main;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): \DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+    public function getUpdatedAt(): \DateTimeInterface
     {
-        return $this->createdAt;
+        return $this->updatedAt;
     }
 
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Top
-     */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
         return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
     }
 }

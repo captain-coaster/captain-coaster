@@ -1,18 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Country;
 use App\Entity\Image;
-use App\Entity\TopCoaster;
 use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Class StatService
- * @package App\Service
+ * Class StatService.
  */
 class StatService
 {
@@ -25,6 +25,7 @@ class StatService
 
     /**
      * @return array
+     *
      * @throws \Exception
      */
     public function getIndexStats()
@@ -57,14 +58,13 @@ class StatService
     }
 
     /**
-     * @param $user
      * @return array
      */
     public function getUserStats(User $user)
     {
         $stats = [];
 
-        if ($this->em->getRepository(RiddenCoaster::class)->countForUser($user) === '0') {
+        if ('0' === $this->em->getRepository(RiddenCoaster::class)->countForUser($user)) {
             return $stats;
         }
 

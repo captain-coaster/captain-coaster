@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\Coaster;
@@ -16,10 +18,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RankingHistoryManagerCommand extends Command
 {
     protected static $defaultName = 'app:ranking:history:add';
+
     /**
      * RankingHistoryManagerCommand constructor.
-     * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
      */
     public function __construct(private readonly EntityManagerInterface $em, private readonly LoggerInterface $logger)
     {

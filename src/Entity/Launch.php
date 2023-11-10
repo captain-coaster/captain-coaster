@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
+
 /**
  * Launch
  *
@@ -20,22 +21,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: \App\Repository\LaunchRepository::class)]
 class Launch implements \Stringable
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     #[Groups(['read_launch', 'read_coaster'])]
     private ?string $name = null;
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
@@ -45,6 +37,7 @@ class Launch implements \Stringable
     #[ORM\ManyToMany(targetEntity: 'Coaster', mappedBy: 'launchs')]
     #[ORM\JoinColumn(nullable: false)]
     private \Doctrine\Common\Collections\Collection $coasters;
+
     /**
      * Constructor
      */
@@ -52,13 +45,12 @@ class Launch implements \Stringable
     {
         $this->coasters = new ArrayCollection();
     }
-    /**
-     * @return string
-     */
-    public function __toString() : string
+
+    public function __toString(): string
     {
         return $this->getName();
     }
+
     /**
      * @return int
      */
@@ -66,6 +58,7 @@ class Launch implements \Stringable
     {
         return $this->id;
     }
+
     /**
      * @param string $name
      * @return Launch
@@ -75,6 +68,7 @@ class Launch implements \Stringable
         $this->name = $name;
         return $this;
     }
+
     /**
      * @return string
      */
@@ -82,6 +76,7 @@ class Launch implements \Stringable
     {
         return $this->name;
     }
+
     /**
      * @param string $slug
      * @return Launch
@@ -91,6 +86,7 @@ class Launch implements \Stringable
         $this->slug = $slug;
         return $this;
     }
+
     /**
      * @return string
      */
@@ -98,6 +94,7 @@ class Launch implements \Stringable
     {
         return $this->slug;
     }
+
     /**
      * @return Launch
      */
@@ -106,14 +103,16 @@ class Launch implements \Stringable
         $this->coasters[] = $coaster;
         return $this;
     }
-    public function removeCoaster(Coaster $coaster)
+
+    public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
+
     /**
      * @return Coaster[]|ArrayCollection
      */
-    public function getCoasters() : array|\Doctrine\Common\Collections\ArrayCollection
+    public function getCoasters(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->coasters;
     }

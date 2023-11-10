@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Notification;
 use App\Service\NotificationService;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class NotificationController
- * @package App\Controller
+ * Class NotificationController.
  */
 #[Route(path: '/notifications')]
 class NotificationController extends AbstractController
 {
     /**
-     * Read a notification
+     * Read a notification.
      */
     #[Route(path: '/{id}/read', name: 'notification_read', methods: ['GET'])]
     public function readAction(Notification $notification, NotificationService $notifService): \Symfony\Component\HttpFoundation\RedirectResponse

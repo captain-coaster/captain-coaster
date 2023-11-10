@@ -1,17 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Asset\UrlPackage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class SitemapService
- * @package App\Service
+ * Class SitemapService.
  */
 class SitemapService
 {
@@ -22,7 +22,6 @@ class SitemapService
 
     /**
      * SitemapService constructor.
-     * @param TranslatorInterface $translator
      */
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -118,10 +117,9 @@ class SitemapService
     }
 
     /**
-     * @param $route
-     * @param \DateTime|null $lastmod
      * @param string $changefreq
      * @param string $priority
+     *
      * @return array
      */
     private function getUrlAndAlternates(
@@ -144,7 +142,7 @@ class SitemapService
             $url['changefreq'] = $changefreq;
             $url['priority'] = $priority;
 
-            if (!is_null($lastmod)) {
+            if (null !== $lastmod) {
                 $url['lastmod'] = $lastmod->format(\DateTime::W3C);
             }
 
@@ -165,7 +163,6 @@ class SitemapService
     }
 
     /**
-     * @param $locale
      * @return array
      */
     private function buildRouteParams(array $params, $locale)

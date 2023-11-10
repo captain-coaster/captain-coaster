@@ -1,256 +1,191 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\ParkRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
-/**
- * Park
- *
- */
+
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_park']])]
 #[ORM\Table(name: 'park')]
-#[ORM\Entity(repositoryClass: \App\Repository\ParkRepository::class)]
+#[ORM\Entity(repositoryClass: ParkRepository::class)]
 class Park implements \Stringable
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
+    #[ORM\Id, ORM\Column(name: 'id', type: Types::INTEGER), ORM\GeneratedValue]
     #[Groups(['read_park'])]
-    private ?int $id = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    private int|null $id = null;
+
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Groups(['list_coaster', 'read_coaster', 'read_park'])]
-    private ?string $name = null;
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    private string $name;
+
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private ?string $slug = null;
-    /**
-     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Coaster>
-     */
-    #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'park')]
-    #[ORM\OrderBy(['status' => 'ASC', 'score' => 'DESC'])]
-    private \Doctrine\Common\Collections\Collection $coasters;
-    #[ORM\ManyToOne(targetEntity: 'Country')]
-    #[ORM\JoinColumn(nullable: false)]
+    private string $slug;
+
+    /** @var Collection<Coaster> */
+    #[ORM\OneToMany(mappedBy: 'park', targetEntity: 'Coaster'), ORM\OrderBy(['status' => 'ASC', 'score' => 'DESC'])]
+    private Collection $coasters;
+
+    #[ORM\ManyToOne(targetEntity: 'Country'), ORM\JoinColumn(nullable: false)]
     #[Groups(['read_coaster', 'read_park'])]
-    private ?\App\Entity\Country $country = null;
-    /**
-     * @var float
-     */
-    #[ORM\Column(name: 'latitude', type: \Doctrine\DBAL\Types\Types::FLOAT, precision: 8, scale: 6, nullable: true)]
+    private Country|null $country = null;
+
+    #[ORM\Column(name: 'latitude', type: Types::FLOAT, precision: 8, scale: 6, nullable: true)]
     #[Groups(['read_park'])]
-    private ?float $latitude = null;
-    /**
-     * @var float
-     */
-    #[ORM\Column(name: 'longitude', type: \Doctrine\DBAL\Types\Types::FLOAT, precision: 8, scale: 6, nullable: true)]
+    private float|null $latitude = null;
+
+    #[ORM\Column(name: 'longitude', type: Types::FLOAT, precision: 8, scale: 6, nullable: true)]
     #[Groups(['read_park'])]
-    private ?float $longitude = null;
-    /**
-     * @var \DateTimeInterface $createdAt
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private float|null $longitude = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private ?\DateTimeInterface $createdAt = null;
-    /**
-     * @var \DateTimeInterface $updatedAt
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    private \DateTimeInterface|null $createdAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private ?\DateTimeInterface $updatedAt = null;
-    /**
-     * @var boolean $enabled
-     */
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
-    private ?bool $enabled = false;
-    /**
-     * Constructor
-     */
+    private \DateTimeInterface|null $updatedAt = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $enabled = false;
+
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
     }
-    /**
-     * @return string
-     */
-    public function __toString() : string
+
+    public function __toString(): string
     {
-        return (string) $this->name;
+        return $this->name;
     }
-    /**
-     * @return int
-     */
-    public function getId()
+
+    public function getName(): string
     {
-        return $this->id;
+        return $this->name;
     }
-    /**
-     * @param string $name
-     * @return Park
-     */
-    public function setName($name)
+
+    public function setName(string $name): static
     {
         $this->name = $name;
         return $this;
     }
-    /**
-     * @return string
-     */
-    public function getName()
+
+    public function getSlug(): string
     {
-        return $this->name;
+        return $this->slug;
     }
-    /**
-     * @param string $slug
-     * @return Park
-     */
-    public function setSlug($slug)
+
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
         return $this;
     }
-    /**
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-    /**
-     * @return Park
-     */
-    public function addCoaster(Coaster $coaster)
+
+    public function addCoaster(Coaster $coaster): static
     {
         $this->coasters[] = $coaster;
         return $this;
     }
-    public function removeCoaster(Coaster $coaster)
+
+    public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
-    /**
-     * @return Coaster[]|ArrayCollection
-     */
-    public function getCoasters() : array|\Doctrine\Common\Collections\ArrayCollection
+
+    public function getCountry(): Country|null
     {
-        return $this->coasters;
+        return $this->country;
     }
-    /**
-     * @return Park
-     */
-    public function setCountry(Country $country)
+
+    public function setCountry(Country $country): static
     {
         $this->country = $country;
         return $this;
     }
-    /**
-     * @return Country
-     */
-    public function getCountry()
+
+    public function getLatitude(): float|null
     {
-        return $this->country;
+        return $this->latitude;
     }
-    /**
-     * @param string $latitude
-     * @return Park
-     */
-    public function setLatitude($latitude)
+
+    public function setLatitude(float|null $latitude): static
     {
         $this->latitude = $latitude;
         return $this;
     }
-    /**
-     * @return string
-     */
-    public function getLatitude()
+
+    public function getLongitude(): float|null
     {
-        return $this->latitude;
+        return $this->longitude;
     }
-    /**
-     * @param string $longitude
-     * @return Park
-     */
-    public function setLongitude($longitude)
+
+    public function setLongitude(float|null $longitude): static
     {
         $this->longitude = $longitude;
         return $this;
     }
-    /**
-     * @return string
-     */
-    public function getLongitude()
+
+    public function getCreatedAt(): \DateTimeInterface|null
     {
-        return $this->longitude;
+        return $this->createdAt;
     }
-    /**
-     * @param \DateTime $createdAt
-     * @return Park
-     */
-    public function setCreatedAt($createdAt)
+
+    public function setCreatedAt(\DateTimeInterface|null $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
-    /**
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+
+    public function getUpdatedAt(): \DateTimeInterface|null
     {
-        return $this->createdAt;
+        return $this->updatedAt;
     }
-    /**
-     * @param \DateTime $updatedAt
-     * @return Park
-     */
-    public function setUpdatedAt($updatedAt)
+
+    public function setUpdatedAt(\DateTimeInterface|null $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
     }
-    /**
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-    /**
-     * @return ArrayCollection
-     */
-    public function getOpenedCoasters()
+
+    /** @return Collection<Coaster> */
+    public function getOpenedCoasters(): Collection
     {
         return $this->getCoasters()->filter(fn(Coaster $coaster) => $coaster->getStatus()->getId() == 1);
     }
-    /**
-     * @return ArrayCollection
-     */
-    public function getKiddies()
+
+    /** @return Collection<Coaster> */
+    public function getCoasters(): Collection
+    {
+        return $this->coasters;
+    }
+
+    public function getId(): int|null
+    {
+        return $this->id;
+    }
+
+    /** @return Collection<Coaster> */
+    public function getKiddies(): Collection
     {
         return $this->getCoasters()->filter(fn(Coaster $coaster) => $coaster->isKiddie() == 1);
     }
-    public function setEnabled(bool $enabled) : Park
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
         return $this;
-    }
-    public function isEnabled() : bool
-    {
-        return $this->enabled;
     }
 }

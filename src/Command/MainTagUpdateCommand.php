@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Command;
 
@@ -23,10 +23,7 @@ class MainTagUpdateCommand extends Command
         parent::__construct();
     }
 
-    /**
-     *
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Update main tags for all coasters');
     }
@@ -54,13 +51,13 @@ class MainTagUpdateCommand extends Command
             $conn = $this->em->getConnection();
 
             /** @noinspection SqlDialectInspection */
-            $sql = 'SELECT t.id, count(*) AS nb FROM ridden_coaster r 
+            $sql = 'SELECT t.id, count(*) AS nb FROM ridden_coaster r
             INNER JOIN ridden_coaster_con rc ON rc.ridden_coaster_id = r.id
             INNER JOIN tag t ON t.id = rc.tag_id
             WHERE coaster_id = :coasterId
             GROUP BY t.id
             UNION
-            SELECT t.id, count(*) AS nb FROM ridden_coaster r 
+            SELECT t.id, count(*) AS nb FROM ridden_coaster r
             INNER JOIN ridden_coaster_pro rp ON rp.ridden_coaster_id = r.id
             INNER JOIN tag t ON t.id = rp.tag_id
             WHERE coaster_id = :coasterId

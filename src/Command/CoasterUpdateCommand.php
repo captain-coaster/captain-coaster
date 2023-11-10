@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Service\RatingService;
@@ -24,9 +26,6 @@ class CoasterUpdateCommand extends Command
 
     /**
      * RatingUpdateCommand constructor.
-     *
-     * @param RatingService $ratingService
-     * @param TopService $topService
      */
     public function __construct(RatingService $ratingService, TopService $topService)
     {
@@ -41,9 +40,7 @@ class CoasterUpdateCommand extends Command
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
+     * @return int|void|null
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -58,6 +55,6 @@ class CoasterUpdateCommand extends Command
         $topNumber = $this->topService->updateTopStats();
         $output->writeln("$topNumber tops updated.");
 
-        $output->writeln((string)$stopwatch->stop('command'));
+        $output->writeln((string) $stopwatch->stop('command'));
     }
 }

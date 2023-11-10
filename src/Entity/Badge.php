@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -11,35 +11,20 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\BadgeRepository::class)]
 class Badge
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     private ?string $name = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     private ?string $type = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
     private ?string $filenameFr = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
     private ?string $filenameEn = null;
 
@@ -131,6 +116,7 @@ class Badge
     {
         return $this->filenameEn;
     }
+
     /**
      * Constructor
      */
@@ -155,7 +141,7 @@ class Badge
     /**
      * Remove user
      */
-    public function removeUser(\App\Entity\User $user)
+    public function removeUser(\App\Entity\User $user): void
     {
         $this->users->removeElement($user);
     }
@@ -196,7 +182,7 @@ class Badge
 
     public function getFilename($locale = 'en')
     {
-        $method = sprintf('getFilename%s', ucfirst((string) $locale));
+        $method = sprintf('getFilename%s', ucfirst((string)$locale));
 
         if (method_exists($this, $method)) {
             return $this->$method();

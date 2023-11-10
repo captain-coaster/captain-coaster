@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Service\SitemapService;
@@ -10,9 +12,10 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 class SitemapController extends AbstractController
 {
     /**
-     * Create sitemap for pages
+     * Create sitemap for pages.
      *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws InvalidArgumentException
      */
     public function indexAction(SitemapService $sitemapService)
@@ -33,9 +36,10 @@ class SitemapController extends AbstractController
     }
 
     /**
-     * Create sitemap for images
+     * Create sitemap for images.
      *
      * @return \Symfony\Component\HttpFoundation\Response
+     *
      * @throws InvalidArgumentException
      */
     public function imageAction(SitemapService $sitemapService)

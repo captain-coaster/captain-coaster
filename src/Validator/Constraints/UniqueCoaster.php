@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 
-/**
- * @Annotation
- */
+#[\Attribute]
 class UniqueCoaster extends Constraint
 {
-    public $message = 'top_coaster.duplicate';
+    public string $message = 'top_coaster.duplicate';
 }

@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Service;
 
 use App\Entity\Coaster;
+use App\Entity\Park;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SearchService
@@ -17,9 +19,9 @@ class SearchService
         'route' => 'park_show',
     ];
 
-    final public const USER =[
+    final public const USER = [
         'emoji' => '👦',
-        'route' => 'user_show'
+        'route' => 'user_show',
     ];
 
     /**
@@ -34,25 +36,20 @@ class SearchService
         $coasters = $this->em->getRepository(Coaster::class)->findAllForSearch();
         $coasters = $this->formatValues($coasters, self::COASTER);
 
-        $parks = $this->em->getRepository('App:Park')->findAllForSearch();
+        $parks = $this->em->getRepository(Park::class)->findAllForSearch();
         $parks = $this->formatValues($parks, self::PARK);
 
-        $users = $this->em->getRepository('App:User')->getAllForSearch();
+        $users = $this->em->getRepository(User::class)->getAllForSearch();
         $users = $this->formatValues($users, self::USER);
 
         return array_merge($parks, $coasters, $users);
     }
 
-    /**
-     * @param $results
-     * @param $options
-     * @return array
-     */
-    private function formatValues($results, $options)
+    private function formatValues($results, $options): array
     {
         return array_map(
             fn($result) => [
-                'n' => $options['emoji'].' '.$result['name'],
+                'n' => $options['emoji'] . ' ' . $result['name'],
                 'r' => $options['route'],
                 's' => $result['slug'],
             ],

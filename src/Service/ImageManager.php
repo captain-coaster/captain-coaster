@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Image;
@@ -14,16 +16,16 @@ class ImageManager
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly LoggerInterface        $logger,
-        private readonly Filesystem             $filesystem,
-        private readonly S3Client               $s3Client,
-        private readonly string                 $s3CacheBucket
-    )
-    {
+        private readonly LoggerInterface $logger,
+        private readonly Filesystem $filesystem,
+        private readonly S3Client $s3Client,
+        private readonly string $s3CacheBucket
+    ) {
     }
 
     /**
-     * Create file on abstracted filesystem (currently S3)
+     * Create file on abstracted filesystem (currently S3).
+     *
      * @throws FilesystemException
      */
     public function upload(UploadedFile $file, string $coasterSlug = null): string
@@ -39,7 +41,8 @@ class ImageManager
     }
 
     /**
-     * Remove file from abstracted filesystem (currently S3)
+     * Remove file from abstracted filesystem (currently S3).
+     *
      * @throws FilesystemException
      */
     public function remove(string $filename)
@@ -48,7 +51,7 @@ class ImageManager
     }
 
     /**
-     * Remove file from S3 Cache Bucket
+     * Remove file from S3 Cache Bucket.
      */
     public function removeCache(Image $image)
     {
@@ -56,25 +59,18 @@ class ImageManager
             'Bucket' => $this->s3CacheBucket,
             'Delete' => [
                 'Objects' => [
-                    ['Key' => '1440x1440/' . $image->getFilename()],
-                    ['Key' => '600x336/' . $image->getFilename()],
-                    ['Key' => '280x210/' . $image->getFilename()],
-                    ['Key' => '96x96/' . $image->getFilename()]
-                ]
-            ]
+                    ['Key' => '1440x1440/'.$image->getFilename()],
+                    ['Key' => '600x336/'.$image->getFilename()],
+                    ['Key' => '280x210/'.$image->getFilename()],
+                    ['Key' => '96x96/'.$image->getFilename()],
+                ],
+            ],
         ]);
     }
 
     /**
-     * Generates a filename like fury-325-carowinds-64429c62b6b23.jpg
-     */
-    private function generateFilename(UploadedFile $file, string $coasterSlug = null): string
-    {
-        return sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
-    }
-
-    /**
-     * Update main image property of all coasters
+     * Update main image property of all coasters.
+     *
      * @todo faire mieux :)
      */
     public function setMainImages()
@@ -101,7 +97,8 @@ class ImageManager
     }
 
     /**
-     * Update like counters for all images
+     * Update like counters for all images.
+     *
      * @todo faire mieux :)
      */
     public function updateLikeCounters()
@@ -123,5 +120,13 @@ class ImageManager
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
+    }
+
+    /**
+     * Generates a filename like fury-325-carowinds-64429c62b6b23.jpg.
+     */
+    private function generateFilename(UploadedFile $file, string $coasterSlug = null): string
+    {
+        return sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form\DataTransformer;
 
 use App\Entity\Coaster;
@@ -10,6 +12,7 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 class CoasterToIdTransformer implements DataTransformerInterface
 {
     public $repository;
+
     public function __construct(private readonly EntityManagerInterface $em, private readonly \App\Repository\CoasterRepository $coasterRepository)
     {
     }
@@ -17,7 +20,8 @@ class CoasterToIdTransformer implements DataTransformerInterface
     /**
      * Transforms an object (Coaster) to a string (id).
      *
-     * @param  Coaster|null $coaster
+     * @param Coaster|null $coaster
+     *
      * @return string
      */
     public function transform($coaster)
@@ -32,14 +36,16 @@ class CoasterToIdTransformer implements DataTransformerInterface
     /**
      * Transforms a string (id) to an object (Coaster).
      *
-     * @param  string $coasterId
+     * @param string $coasterId
+     *
      * @return Coaster|null
-     * @throws TransformationFailedException if object (issue) is not found.
+     *
+     * @throws TransformationFailedException if object (issue) is not found
      */
     public function reverseTransform($coasterId)
     {
         // no issue number? It's optional, so that's ok
-        if ($coasterId === '' || $coasterId === '0') {
+        if ('' === $coasterId || '0' === $coasterId) {
             return;
         }
 
@@ -47,12 +53,7 @@ class CoasterToIdTransformer implements DataTransformerInterface
             ->find($coasterId);
 
         if (null === $issue) {
-            throw new TransformationFailedException(
-                sprintf(
-                    'A coaster with id "%s" does not exist!',
-                    $coasterId
-                )
-            );
+            throw new TransformationFailedException(sprintf('A coaster with id "%s" does not exist!', $coasterId));
         }
 
         return $issue;

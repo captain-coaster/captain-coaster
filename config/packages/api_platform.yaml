@@ -13,6 +13,6 @@ api_platform:
             vary: [ 'Content-Type' ]
     swagger:
         api_keys:
-            Use your personal API Key (in your profile page) in Authorization header:
+            key:
                 name: 'Authorization'
                 type: 'header'

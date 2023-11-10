@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Validator\Constraints;
 
 use App\Entity\TopCoaster;
@@ -9,9 +11,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class UniqueCoasterValidator extends ConstraintValidator
 {
-    /**
-     * {@inheritdoc}
-     */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof UniqueCoaster) {
@@ -22,7 +21,7 @@ class UniqueCoasterValidator extends ConstraintValidator
             return;
         }
 
-        if (!is_array($value) && !$value instanceof \IteratorAggregate) {
+        if (!\is_array($value) && !$value instanceof \IteratorAggregate) {
             throw new UnexpectedTypeException($value, 'IteratorAggregate');
         }
 
@@ -33,7 +32,7 @@ class UniqueCoasterValidator extends ConstraintValidator
                 throw new UnexpectedTypeException($element, 'IteratorAggregate');
             }
 
-            if (in_array($element->getCoaster(), $collectionElements, true)) {
+            if (\in_array($element->getCoaster(), $collectionElements, true)) {
                 $this->context->buildViolation($constraint->message)
                     ->setParameter('%coaster%', $this->formatValue($element->getCoaster(), 2))
                     ->addViolation();

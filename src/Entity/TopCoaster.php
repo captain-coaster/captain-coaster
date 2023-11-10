@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -11,40 +11,25 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\TopCoasterRepository::class)]
 class TopCoaster implements \Stringable
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'position', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
     private ?int $position = null;
 
-    /**
-     * @var Top
-     */
     #[ORM\ManyToOne(targetEntity: \App\Entity\Top::class, inversedBy: 'topCoasters')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?\App\Entity\Top $top = null;
 
-    /**
-     * @var Coaster
-     */
     #[ORM\ManyToOne(targetEntity: \App\Entity\Coaster::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?\App\Entity\Coaster $coaster = null;
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
-        return (string) $this->coaster . ' (' . $this->position . ')';
+        return (string)$this->coaster . ' (' . $this->position . ')';
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
-use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * ImageRepository
+ * ImageRepository.
  */
 class ImageRepository extends ServiceEntityRepository
 {
@@ -18,8 +18,8 @@ class ImageRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Image::class);
     }
+
     /**
-     * @return mixed
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
@@ -37,9 +37,6 @@ class ImageRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    /**
-     * @return mixed
-     */
     public function findUserImages(User $user)
     {
         return $this->getEntityManager()
@@ -54,7 +51,6 @@ class ImageRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return mixed
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function countAll()

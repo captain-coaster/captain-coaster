@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\Top;
@@ -15,9 +17,10 @@ class TopVoter extends Voter
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::EDIT, self::EDIT_DETAILS, self::DELETE])) {
+        if (!\in_array($attribute, [self::EDIT, self::EDIT_DETAILS, self::DELETE])) {
             return false;
         }
+
         return $subject instanceof Top;
     }
 
@@ -28,6 +31,7 @@ class TopVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
+
         return match ($attribute) {
             self::EDIT => $this->canEdit($subject, $user),
             self::EDIT_DETAILS => $this->canEditDetails($subject, $user),

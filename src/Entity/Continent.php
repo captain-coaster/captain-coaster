@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -11,32 +12,20 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Continent implements \Stringable
 {
-    /**
-     * @var int
-     */
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    /**
-     * @var string
-     */
-    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     private ?string $slug = null;
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
 
     public function getId(): int
@@ -44,21 +33,14 @@ class Continent implements \Stringable
         return $this->id;
     }
 
-    public function setName(string $name): Continent
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function setSlug(string $slug): Continent
+    public function setName(string $name): self
     {
-        $this->slug = $slug;
+        $this->name = $name;
 
         return $this;
     }
@@ -66,5 +48,12 @@ class Continent implements \Stringable
     public function getSlug(): string
     {
         return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
     }
 }

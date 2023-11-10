@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
@@ -15,20 +17,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class MissingCoasterController
- * @package App\Controller
+ * Class MissingCoasterController.
  */
 #[Route(path: '/missing-coaster')]
 class MissingCoasterController extends AbstractController
 {
     /**
-     * Starts missing coaster procedure
-     *
-     *
-     * @return RedirectResponse|Response
+     * Starts missing coaster procedure.
      */
     #[Route(path: '/start', name: 'missingcoaster_start', methods: ['GET', 'POST'])]
-    public function start(Request $request, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function start(Request $request, EntityManagerInterface $em): RedirectResponse|Response
     {
         $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
 
@@ -64,13 +62,10 @@ class MissingCoasterController extends AbstractController
     }
 
     /**
-     * Main form to add a missing coaster
-     *
-     *
-     * @return RedirectResponse|Response
+     * Main form to add a missing coaster.
      */
     #[Route(path: '/park/{id}/add', name: 'missingcoaster_add', methods: ['GET', 'POST'])]
-    public function addCoaster(Request $request, Park $park, EntityManagerInterface $em): \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+    public function addCoaster(Request $request, Park $park, EntityManagerInterface $em): RedirectResponse|Response
     {
         $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
 
@@ -92,11 +87,10 @@ class MissingCoasterController extends AbstractController
     }
 
     /**
-     * Recap message for the user
-     *
+     * Recap message for the user.
      */
     #[Route(path: '/success', name: 'missingcoaster_success', methods: ['GET'])]
-    public function success(Coaster $coaster): \Symfony\Component\HttpFoundation\Response
+    public function success(Coaster $coaster): Response
     {
         $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
 

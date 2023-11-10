@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -32,7 +34,6 @@ class TokenAuthenticator extends AbstractGuardAuthenticator
 
             return ['token' => $token];
         }
-
 
         return ['token' => $request->headers->get(self::DEPRECATED_HEADER)];
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Image;
@@ -18,14 +20,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class UserController
- * @package App\Controller
+ * Class UserController.
  */
 #[Route(path: '/users')]
 class UserController extends AbstractController
 {
     /**
-     * List all users
+     * List all users.
      */
     #[Route(path: '/{page}', name: 'user_list', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listAction(PaginatorInterface $paginator, int $page = 1): Response
@@ -44,7 +45,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * Show all user's ratings
+     * Show all user's ratings.
      */
     #[Route(path: '/{id}/ratings/{page}', name: 'user_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listRatingsAction(PaginatorInterface $paginator, User $user, int $page = 1): Response
@@ -82,7 +83,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * Show all user's reviews
+     * Show all user's reviews.
      */
     #[Route(path: '/{id}/reviews/{page}', name: 'user_reviews', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listReviews(PaginatorInterface $paginator, User $user, int $page = 1): Response
@@ -121,11 +122,10 @@ class UserController extends AbstractController
     }
 
     /**
-     * Show all user's top
-     *
+     * Show all user's top.
      */
     #[Route(path: '/{id}/tops', name: 'user_tops', methods: ['GET'])]
-    public function listTops(User $user): \Symfony\Component\HttpFoundation\Response
+    public function listTops(User $user): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -146,7 +146,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * Show all user's pictures
+     * Show all user's pictures.
      */
     #[Route(path: '/{id}/pictures', name: 'user_pictures', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function picturesAction(Request $request, User $user, EntityManagerInterface $em, PaginatorInterface $paginator): Response
@@ -193,10 +193,10 @@ class UserController extends AbstractController
     }
 
     /**
-     * Display a user
+     * Display a user.
      */
     #[Route(path: '/{slug}', name: 'user_show', methods: ['GET'], options: ['expose' => true])]
-    public function showAction(User $user, StatService $statService): \Symfony\Component\HttpFoundation\Response
+    public function showAction(User $user, StatService $statService): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -212,7 +212,7 @@ class UserController extends AbstractController
     }
 
     /**
-     * Permalink to user profile
+     * Permalink to user profile.
      *
      * @return Response
      */

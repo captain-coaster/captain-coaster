@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -11,20 +13,15 @@ use App\Entity\Model;
 use App\Entity\SeatingType;
 use App\Repository\RankingRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class RankingController
- * @package App\Controller
- */
 #[Route(path: '/ranking')]
 class RankingController extends AbstractController
 {
@@ -32,14 +29,13 @@ class RankingController extends AbstractController
 
     public function __construct(
         private readonly PaginatorInterface $paginator,
-        private readonly RankingRepository  $rankingRepository,
+        private readonly RankingRepository $rankingRepository,
         private readonly EntityManagerInterface $em,
-    )
-    {
+    ) {
     }
 
     /**
-     * Show ranking of best coasters
+     * Show ranking of best coasters.
      *
      * @throws InvalidArgumentException
      */
@@ -57,58 +53,7 @@ class RankingController extends AbstractController
     }
 
     /**
-     * @throws \Exception
-     */
-    #[Route(
-        path: '/coasters',
-        name: 'ranking_search_async',
-        options: ['expose' => true],
-        methods: ['GET'],
-        condition: 'request.isXmlHttpRequest()'
-    )]
-    public function searchAsyncAction(Request $request): Response
-    {
-        $filters = $request->get('filters', []);
-        $page = $request->get('page', 1);
-
-        return $this->render(
-            'ranking/results.html.twig',
-            [
-                'coasters' => $this->getCoasters($filters, $page),
-                // array_filter removes empty filters e.g. ['continent' => '']
-                'filtered' => (array)array_filter($filters, 'strlen') !== [],
-                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
-            ]
-        );
-    }
-
-    /**
-     * Learn more on the ranking
-     */
-    #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
-    public function learnMore(): Response
-    {
-        return $this->render('ranking/learn_more.html.twig');
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function getCoasters(array $filters = [], int $page = 1): PaginationInterface
-    {
-        try {
-            return $this->paginator->paginate(
-                $this->rankingRepository->findCoastersRanked($filters),
-                $page,
-                self::COASTERS_PER_PAGE
-            );
-        } catch (\UnexpectedValueException) {
-            throw new BadRequestHttpException();
-        }
-    }
-
-    /**
-     * Get data to display filter form (mainly <select> data)
+     * Get data to display filter form (mainly <select> data).
      *
      * @throws InvalidArgumentException
      */
@@ -133,5 +78,47 @@ class RankingController extends AbstractController
         }
 
         return $filtersForm->get();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    #[Route(
+        path: '/coasters',
+        name: 'ranking_search_async',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function searchAsyncAction(#[MapQueryParameter] array $filters = [], #[MapQueryParameter] int $page = 1): Response
+    {
+        try {
+            $pagination = $this->paginator->paginate(
+                $this->rankingRepository->findCoastersRanked($filters),
+                $page,
+                self::COASTERS_PER_PAGE
+            );
+        } catch (\Exception) {
+            throw new BadRequestHttpException();
+        }
+
+        return $this->render(
+            'ranking/results.html.twig',
+            [
+                'coasters' => $pagination,
+                // array_filter removes empty filters e.g. ['continent' => '']
+                'filtered' => [] !== array_filter($filters, 'strlen'),
+                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
+            ]
+        );
+    }
+
+    /**
+     * Learn more on the ranking.
+     */
+    #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
+    public function learnMore(): Response
+    {
+        return $this->render('ranking/learn_more.html.twig');
     }
 }

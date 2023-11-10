@@ -1,65 +1,67 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\Coaster;
-use App\Entity\Manufacturer;
+use App\Repository\CoasterRepository;
+use App\Repository\ManufacturerRepository;
 use App\Service\SearchService;
-use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class SearchController.
- */
 #[Route(path: '/search')]
 class SearchController extends AbstractController
 {
     final public const CACHE_AUTOCOMPLETE = 'main_autocomplete';
 
-    /**
-     * @var PaginatorInterface
-     */
-    protected $paginator;
+    protected PaginatorInterface $paginator;
 
-    /**
-     * RankingController constructor.
-     */
     public function __construct(PaginatorInterface $paginator)
     {
         $this->paginator = $paginator;
     }
 
     #[Route(path: '/', name: 'search_index', methods: ['GET'])]
-    public function indexAction(): Response
+    public function indexAction(ManufacturerRepository $manufacturerRepository, CoasterRepository $coasterRepository): Response
     {
         return $this->render(
             'Search/index.html.twig',
             [
                 'filters' => ['status' => 'on'],
-                'filtersForm' => $this->getFiltersForm(),
+                'filtersForm' => [
+                    'manufacturer' => $manufacturerRepository->findBy([], ['name' => 'asc']),
+                    'openingDate' => $coasterRepository->getDistinctOpeningYears(),
+                ],
             ]
         );
     }
 
-    #[Route(path: '/coasters', name: 'search_coasters_ajax', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
-    public function searchAction(Request $request): Response
+    #[Route(path: '/coasters', name: 'search_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
+    public function searchAction(
+        CoasterRepository $coasterRepository,
+        #[MapQueryParameter] array $filters = [],
+        #[MapQueryParameter] int $page = 1): Response
     {
-        $filters = $request->get('filters', []);
-        $page = $request->get('page', 1);
+        try {
+            $pagination = $this->paginator->paginate(
+                $coasterRepository->getSearchCoasters($filters),
+                $page,
+                20,
+                ['wrap-queries' => true]
+            );
+        } catch (\Exception) {
+            throw new BadRequestHttpException();
+        }
 
-        return $this->render(
-            'Search/results.html.twig',
-            [
-                'coasters' => $this->getCoasters($filters, $page),
-            ]
-        );
+        return $this->render('Search/results.html.twig', ['coasters' => $pagination]);
     }
 
     /**
@@ -67,7 +69,7 @@ class SearchController extends AbstractController
      *
      * @return JsonResponse
      *
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     #[Route(path: '/main.json', name: 'ajax_main_search', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function ajaxMainSearch(SearchService $searchService)
@@ -82,30 +84,12 @@ class SearchController extends AbstractController
         }
 
         $response = new JsonResponse($searchItems->get());
-        $response->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+        $response->setEncodingOptions(\JSON_UNESCAPED_UNICODE);
 
         $response->setPublic();
         $response->setMaxAge(600);
 
         return $response;
-    }
-
-    private function getCoasters(array $filters = [], int $page = 1): PaginationInterface
-    {
-        $query = $this->getDoctrine()
-            ->getRepository(Coaster::class)
-            ->getSearchCoasters($filters);
-
-        try {
-            return $this->paginator->paginate(
-                $query,
-                $page,
-                20,
-                ['wrap-queries' => true]
-            );
-        } catch (\UnexpectedValueException) {
-            throw new BadRequestHttpException();
-        }
     }
 
     /**
@@ -115,10 +99,6 @@ class SearchController extends AbstractController
      */
     private function getFiltersForm()
     {
-        return ['manufacturer' => $this->getDoctrine()
-            ->getRepository(Manufacturer::class)
-            ->findBy([], ['name' => 'asc']), 'openingDate' => $this->getDoctrine()
-            ->getRepository(Coaster::class)
-            ->getDistinctOpeningYears()];
+        return;
     }
 }

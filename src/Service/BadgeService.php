@@ -1,16 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Badge;
-use App\Entity\TopCoaster;
 use App\Entity\RiddenCoaster;
+use App\Entity\TopCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Class BadgeService
- * @package App\Service
+ * Class BadgeService.
  */
 class BadgeService
 {
@@ -33,7 +34,7 @@ class BadgeService
     }
 
     /**
-     * Give badges to User
+     * Give badges to User.
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
@@ -51,11 +52,11 @@ class BadgeService
     }
 
     /**
-     * Give rating badges to User
+     * Give rating badges to User.
      */
     private function giveRatingBadge(User $user)
     {
-        $ratingNumber = count($user->getRatings());
+        $ratingNumber = \count($user->getRatings());
 
         if ($ratingNumber >= 1) {
             $this->addNewBadge($user, self::BADGE_RATING_1);
@@ -75,28 +76,28 @@ class BadgeService
     }
 
     /**
-     * Give team badges to User
+     * Give team badges to User.
      */
     private function giveTeamBadge(User $user)
     {
         // Check for already given Team badge
         $currentBadge = $user->getBadges()->filter(
-            fn(Badge $badge) => $badge->getType() == self::BADGE_TYPE_TEAM
+            fn (Badge $badge) => self::BADGE_TYPE_TEAM == $badge->getType()
         );
 
         // You can be only in one team !
-        if ($currentBadge->count() == 1) {
+        if (1 == $currentBadge->count()) {
             return;
         }
 
         // Check in Top first (priority)
-        if (!is_null($user->getMainTop())) {
+        if (null !== $user->getMainTop()) {
             /** @var TopCoaster $topCoaster */
             foreach ($user->getMainTop()->getTopCoasters() as $topCoaster) {
-                if ($topCoaster->getCoaster()->getName() === 'Katun') {
+                if ('Katun' === $topCoaster->getCoaster()->getName()) {
                     $katun = $topCoaster->getPosition();
                 }
-                if ($topCoaster->getCoaster()->getName() === 'iSpeed') {
+                if ('iSpeed' === $topCoaster->getCoaster()->getName()) {
                     $ispeed = $topCoaster->getPosition();
                 }
             }
@@ -117,10 +118,10 @@ class BadgeService
         // check then in ratings
         /** @var RiddenCoaster $rating */
         foreach ($user->getRatings() as $rating) {
-            if ($rating->getCoaster()->getName() === 'Katun') {
+            if ('Katun' === $rating->getCoaster()->getName()) {
                 $katun = $rating->getValue();
             }
-            if ($rating->getCoaster()->getName() === 'iSpeed') {
+            if ('iSpeed' === $rating->getCoaster()->getName()) {
                 $ispeed = $rating->getValue();
             }
         }
@@ -136,7 +137,7 @@ class BadgeService
     }
 
     /**
-     * Helper to add only new badge
+     * Helper to add only new badge.
      */
     private function addNewBadge(User $user, string $badgeName)
     {

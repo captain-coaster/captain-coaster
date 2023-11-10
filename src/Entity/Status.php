@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
+
 /**
  * Status
  *
@@ -20,30 +21,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: \App\Repository\StatusRepository::class)]
 class Status implements \Stringable
 {
-    public final const OPERATING = 'status.operating';
-    /**
-     * @var int
-     */
+    final public const OPERATING = 'status.operating';
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['read_status'])]
     private ?int $id = null;
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
     #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
     private ?string $name = null;
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'type', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     private ?string $type = null;
     /**
@@ -51,12 +40,10 @@ class Status implements \Stringable
      */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
     private \Doctrine\Common\Collections\Collection $coasters;
-    /**
-     * @var bool
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
     #[Groups(['read_status'])]
     private ?bool $isRateable = null;
+
     /**
      * Constructor
      */
@@ -64,13 +51,12 @@ class Status implements \Stringable
     {
         $this->coasters = new ArrayCollection();
     }
-    /**
-     * @return string
-     */
-    public function __toString() : string
+
+    public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
+
     /**
      * Get id
      *
@@ -80,6 +66,7 @@ class Status implements \Stringable
     {
         return $this->id;
     }
+
     /**
      * Set name
      *
@@ -92,6 +79,7 @@ class Status implements \Stringable
         $this->name = $name;
         return $this;
     }
+
     /**
      * Get name
      *
@@ -101,6 +89,7 @@ class Status implements \Stringable
     {
         return $this->name;
     }
+
     /**
      * Set slug
      *
@@ -113,6 +102,7 @@ class Status implements \Stringable
         $this->slug = $slug;
         return $this;
     }
+
     /**
      * Get slug
      *
@@ -122,6 +112,7 @@ class Status implements \Stringable
     {
         return $this->slug;
     }
+
     /**
      * Add coaster
      *
@@ -133,13 +124,15 @@ class Status implements \Stringable
         $this->coasters[] = $coaster;
         return $this;
     }
+
     /**
      * Remove coaster
      */
-    public function removeCoaster(Coaster $coaster)
+    public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
+
     /**
      * Get coasters
      *
@@ -149,6 +142,7 @@ class Status implements \Stringable
     {
         return $this->coasters;
     }
+
     /**
      * Set type
      *
@@ -161,6 +155,7 @@ class Status implements \Stringable
         $this->type = $type;
         return $this;
     }
+
     /**
      * Get type
      *
@@ -170,12 +165,14 @@ class Status implements \Stringable
     {
         return $this->type;
     }
-    public function setIsRateable(bool $isRateable) : Status
+
+    public function setIsRateable(bool $isRateable): self
     {
         $this->isRateable = $isRateable;
         return $this;
     }
-    public function isRateable() : bool
+
+    public function isRateable(): bool
     {
         return $this->isRateable;
     }

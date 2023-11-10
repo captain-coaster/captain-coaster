@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
-use App\Entity\Coaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -30,7 +31,7 @@ class UserRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('u')
             ->addSelect('count(r.id) as total_ratings')
-            ->from('App:User', 'u')
+            ->from(User::class, 'u')
             ->where('u.enabled = 1')
             ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
             ->groupBy('r.user')
@@ -42,8 +43,6 @@ class UserRepository extends ServiceEntityRepository
      * Returns users that have recently up.
      *
      * @param int $sinceHours
-     *
-     * @return mixed
      */
     public function getUsersWithRecentRatingOrTopUpdate($sinceHours = 1)
     {
@@ -52,7 +51,7 @@ class UserRepository extends ServiceEntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('u')
-            ->from('App:User', 'u')
+            ->from(User::class, 'u')
             ->leftJoin('u.ratings', 'r')
             ->leftJoin('u.tops', 'l')
             ->where('r.updatedAt > :date')
@@ -62,16 +61,13 @@ class UserRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return mixed
-     */
     public function getAllForSearch()
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('u.displayName as name')
             ->addSelect('u.slug')
-            ->from('App:User', 'u')
+            ->from(User::class, 'u')
             ->where('u.enabled = 1')
             ->getQuery()
             ->getResult();
@@ -79,8 +75,6 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * Count all users.
-     *
-     * @return mixed
      */
     public function countAll()
     {
@@ -88,7 +82,7 @@ class UserRepository extends ServiceEntityRepository
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb_users')
-                ->from('App:User', 'u')
+                ->from(User::class, 'u')
                 ->getQuery()
                 ->getSingleScalarResult();
         } catch (NonUniqueResultException) {

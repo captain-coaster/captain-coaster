@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\Status;
@@ -42,7 +44,7 @@ class StatusCrudController extends AbstractCrudController
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             TextField::new('type'),
             BooleanField::new('isRateable'),
-            AssociationField::new('coasters')->onlyOnIndex()
+            AssociationField::new('coasters')->onlyOnIndex(),
         ];
     }
 }

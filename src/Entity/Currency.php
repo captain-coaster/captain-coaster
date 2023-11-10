@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -12,38 +12,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: \App\Repository\CurrencyRepository::class)]
 class Currency implements \Stringable
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     *
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
     #[Assert\NotBlank]
     private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     *
-     */
     #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 10)]
     #[Assert\NotBlank]
     private ?string $symbol = null;
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
-        return (string) $this->name;
+        return (string)$this->name;
     }
 
     /**

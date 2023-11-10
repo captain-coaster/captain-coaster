@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use Doctrine\Persistence\Mapping\ClassMetadata;
@@ -14,7 +16,7 @@ use Gedmo\Tool\Wrapper\AbstractWrapper;
  * Sluggable handler which should be used in order to prefix
  * a slug of related object. For instance user may belong to a company
  * in this case user slug could look like 'company-name/user-firstname'
- * where path separator separates the relative slug
+ * where path separator separates the relative slug.
  *
  * @author Gediminas Morkevicius <gediminas.morkevicius@gmail.com>
  * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
@@ -34,7 +36,7 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
     protected $sluggable;
 
     /**
-     * Used options
+     * Used options.
      *
      * @var array
      */
@@ -42,7 +44,7 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
 
     /**
      * Callable of original transliterator
-     * which is used by sluggable
+     * which is used by sluggable.
      *
      * @var callable
      */
@@ -61,9 +63,13 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable = $sluggable;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    public static function validate(array $options, ClassMetadata $meta)
+    {
+        if (!$meta->isSingleValuedAssociation($options['relationField'])) {
+            throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}");
+        }
+    }
+
     public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
     {
         $this->om = $ea->getObjectManager();
@@ -80,37 +86,19 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
-        $this->sluggable->setTransliterator(fn(string $text, string $separator, object $object): string => $this->transliterate($text, $separator, $object));
+        $this->sluggable->setTransliterator(fn (string $text, string $separator, object $object): string => $this->transliterate($text, $separator, $object));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public static function validate(array $options, ClassMetadata $meta)
-    {
-        if (!$meta->isSingleValuedAssociation($options['relationField'])) {
-            throw new InvalidMappingException(
-                "Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}"
-            );
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
     {
     }
 
     /**
      * Transliterates the slug and prefixes the slug
-     * by relative one
+     * by relative one.
      *
      * @param string $text
      * @param string $separator
@@ -120,7 +108,7 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
      */
     public function transliterate($text, $separator, $object)
     {
-        $result = call_user_func_array(
+        $result = \call_user_func_array(
             $this->originalTransliterator,
             [$text, $separator, $object]
         );
@@ -131,7 +119,7 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
             $slug = $wrappedRelation->getPropertyValue($this->usedOptions['relationSlugField']);
 
             if (isset($this->usedOptions['urilize']) && $this->usedOptions['urilize']) {
-                $slug = call_user_func_array(
+                $slug = \call_user_func_array(
                     $this->originalTransliterator,
                     [$slug, $separator, $object]
                 );
@@ -144,9 +132,6 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
         return $result;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function handlesUrlization()
     {
         return true;

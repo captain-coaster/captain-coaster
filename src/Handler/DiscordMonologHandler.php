@@ -1,22 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use App\Service\DiscordService;
-use Exception;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\LogRecord;
 
 /**
- * Monolog Handler to log into a discord channel
+ * Monolog Handler to log into a discord channel.
  */
 class DiscordMonologHandler extends AbstractProcessingHandler
 {
     /**
      * DiscordMonologHandler constructor.
-     * @param DiscordService $discordService
      */
     public function __construct(protected DiscordService $discordService)
     {
@@ -24,7 +24,7 @@ class DiscordMonologHandler extends AbstractProcessingHandler
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function write(LogRecord $record): void
     {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -10,9 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\MainTagRepository::class)]
 class MainTag
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,9 +24,6 @@ class MainTag
     #[ORM\ManyToOne(targetEntity: 'Tag')]
     private $tag;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'rank', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private ?int $rank = null;
 
@@ -46,7 +40,7 @@ class MainTag
      *
      *
      */
-    public function setCoaster(Coaster $coaster): MainTag
+    public function setCoaster(Coaster $coaster): self
     {
         $this->coaster = $coaster;
 

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -11,9 +11,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: \App\Repository\RankingHistoryRepository::class)]
 class RankingHistory
 {
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,45 +24,24 @@ class RankingHistory
     #[ORM\JoinColumn(nullable: false)]
     private ?\App\Entity\Coaster $coaster = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'rank', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private ?int $rank = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'score', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 14, scale: 11)]
     private ?string $score = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'validDuels', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     private ?int $validDuels = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'totalTopsIn', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
     private ?int $totalTopsIn = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'averageTopRank', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
     private ?string $averageTopRank = null;
 
-    /**
-     * @var int
-     */
     #[ORM\Column(name: 'totalRatings', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
     private ?int $totalRatings = null;
 
-    /**
-     * @var string
-     */
     #[ORM\Column(name: 'averageRating', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
     private ?string $averageRating = null;
 
@@ -248,7 +224,7 @@ class RankingHistory
         return $this->averageRating;
     }
 
-    public function setRanking(Ranking $ranking): RankingHistory
+    public function setRanking(Ranking $ranking): self
     {
         $this->ranking = $ranking;
 
@@ -260,7 +236,7 @@ class RankingHistory
         return $this->ranking;
     }
 
-    public function setCoaster(Coaster $coaster): RankingHistory
+    public function setCoaster(Coaster $coaster): self
     {
         $this->coaster = $coaster;
 

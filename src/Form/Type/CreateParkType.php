@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form\Type;
 
 use App\Entity\Country;
@@ -7,7 +9,6 @@ use App\Entity\Park;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -33,7 +34,7 @@ class CreateParkType extends AbstractType
                     'class' => Country::class,
                     'choice_translation_domain' => 'database',
                     'label' => 'missing.step1.form.country',
-                    'query_builder' => fn(EntityRepository $er) => $this->repository->createQueryBuilder('c')
+                    'query_builder' => fn (EntityRepository $er) => $this->repository->createQueryBuilder('c')
                         ->orderBy('c.name', 'ASC'),
                 ]
             );

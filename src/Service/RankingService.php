@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Coaster;
@@ -11,8 +13,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Class RankingService
- * @package App\Service
+ * Class RankingService.
  */
 class RankingService
 {
@@ -31,14 +32,14 @@ class RankingService
     private ?string $highlightedNewCoaster = null;
 
     /**
-     * RankingService constructor
+     * RankingService constructor.
      */
     public function __construct(private readonly EntityManagerInterface $em, private readonly \App\Repository\UserRepository $userRepository)
     {
     }
 
     /**
-     * Update ranking of coasters
+     * Update ranking of coasters.
      *
      * @throws \Exception
      */
@@ -52,7 +53,7 @@ class RankingService
         foreach ($this->ranking as $coasterId => $score) {
             $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
 
-            if ($coaster->getRank() === null && $rank < 300 && $this->highlightedNewCoaster === null) {
+            if (null === $coaster->getRank() && $rank < 300 && null === $this->highlightedNewCoaster) {
                 $this->highlightedNewCoaster = $coaster->getName();
             }
 
@@ -64,7 +65,7 @@ class RankingService
             // used just for command output
             $coasterList[] = $coaster;
 
-            $rank++;
+            ++$rank;
 
             if ($dryRun) {
                 continue;
@@ -72,7 +73,7 @@ class RankingService
 
             $this->em->persist($coaster);
 
-            if ($rank % 20 !== 0) {
+            if (0 !== $rank % 20) {
                 $this->em->flush();
                 $this->em->clear();
             }
@@ -89,7 +90,7 @@ class RankingService
     }
 
     /**
-     * Compute ranking in ranking array
+     * Compute ranking in ranking array.
      */
     public function computeRanking(bool $dryRun): void
     {
@@ -117,7 +118,7 @@ class RankingService
     }
 
     /**
-     * Process all comparisons inside a top and set all results in duels array
+     * Process all comparisons inside a top and set all results in duels array.
      */
     private function processComparisonsInTop(array $top): void
     {
@@ -129,7 +130,7 @@ class RankingService
 
                 if ($coaster !== $comparedCoaster) {
                     // add this comparison to user comparisons array
-                    $this->userComparisons[$coaster . '-' . $comparedCoaster] = 1;
+                    $this->userComparisons[$coaster.'-'.$comparedCoaster] = 1;
 
                     if ($topCoaster['position'] < $comparedTopCoaster['position']) {
                         $this->setWinner($coaster, $comparedCoaster);
@@ -142,7 +143,7 @@ class RankingService
     }
 
     /**
-     * Process all comparisons of all rated coaster for a user and set all results in duels array
+     * Process all comparisons of all rated coaster for a user and set all results in duels array.
      */
     private function processComparisonsInRatings(array $ratings)
     {
@@ -154,7 +155,7 @@ class RankingService
 
                 if ($coaster !== $comparedCoaster) {
                     // check if comparison already exists in Top for this user
-                    if (array_key_exists($coaster . '-' . $comparedCoaster, $this->userComparisons)) {
+                    if (\array_key_exists($coaster.'-'.$comparedCoaster, $this->userComparisons)) {
                         continue;
                     }
 
@@ -172,7 +173,7 @@ class RankingService
 
     /**
      * Compute score based on duels array
-     * A duel is the result of all comparisons for coaster A and B
+     * A duel is the result of all comparisons for coaster A and B.
      */
     private function computeScore(bool $dryRun)
     {
@@ -181,10 +182,10 @@ class RankingService
         $this->computeRejectedCoasters();
 
         $i = 1;
-        while ($this->rejectedCoasters !== [] || $i > 5) {
+        while ([] !== $this->rejectedCoasters || $i > 5) {
             $this->removeRejectedCoasters();
             $this->computeRejectedCoasters();
-            $i++;
+            ++$i;
         }
 
         $this->ranking = [];
@@ -202,15 +203,15 @@ class RankingService
                 // $comparisonResult + $reverseComparisonResult always equals vote number
                 if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
                     $this->totalComparisonNumber += ($comparisonResult + $reverseComparisonResult);
-                    $duelCount++;
+                    ++$duelCount;
 
                     // same win & loose numbers
                     if ($comparisonResult === $reverseComparisonResult) {
                         $duelScoreSum += 50;
-                        // $coaster has more wins
+                    // $coaster has more wins
                     } elseif ($comparisonResult > $reverseComparisonResult) {
                         $duelScoreSum += 100;
-                        // $coaster has less wins
+                    // $coaster has less wins
                     } else {
                         $duelScoreSum += 0;
                     }
@@ -238,7 +239,7 @@ class RankingService
     }
 
     /**
-     * Compute a list of coaster that does not meet the comparison & duel requirements
+     * Compute a list of coaster that does not meet the comparison & duel requirements.
      */
     private function computeRejectedCoasters()
     {
@@ -252,7 +253,7 @@ class RankingService
                 // don't take into account if too few comparisons
                 // $comparisonResult + $reverseComparisonResult always equals vote number
                 if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
-                    $duelCount++;
+                    ++$duelCount;
                 }
             }
 
@@ -263,14 +264,14 @@ class RankingService
     }
 
     /**
-     * Remove all duels from rejected coasters
+     * Remove all duels from rejected coasters.
      */
     private function removeRejectedCoasters()
     {
         foreach ($this->rejectedCoasters as $idRejected) {
             unset($this->duels[$idRejected]);
             foreach ($this->duels as $checkCurrentId => $checkDuels) {
-                if (array_key_exists($idRejected, $checkDuels)) {
+                if (\array_key_exists($idRejected, $checkDuels)) {
                     unset($this->duels[$checkCurrentId][$idRejected]);
                 }
             }
@@ -280,7 +281,7 @@ class RankingService
     }
 
     /**
-     * Set result for winning comparison
+     * Set result for winning comparison.
      */
     private function setWinner(int $coasterId, int $comparedCoasterId): void
     {
@@ -288,7 +289,7 @@ class RankingService
     }
 
     /**
-     * Set result for losing comparison
+     * Set result for losing comparison.
      */
     private function setLooser(int $coasterId, int $comparedCoasterId): void
     {
@@ -296,7 +297,7 @@ class RankingService
     }
 
     /**
-     * Set result for tie comparison (same rating)
+     * Set result for tie comparison (same rating).
      */
     private function setTie(int $coasterId, int $comparedCoasterId): void
     {
@@ -304,7 +305,7 @@ class RankingService
     }
 
     /**
-     * Set comparison result
+     * Set comparison result.
      */
     private function setComparisonResult(int $coasterId, int $comparedCoasterId, float $value): void
     {
@@ -316,7 +317,7 @@ class RankingService
     }
 
     /**
-     * Remove rank and previous_rank fields for coaster not ranked anymore
+     * Remove rank and previous_rank fields for coaster not ranked anymore.
      */
     private function disableNonRankedCoasters()
     {
@@ -333,7 +334,7 @@ class RankingService
     }
 
     /**
-     * Add a row for Ranking entity in database
+     * Add a row for Ranking entity in database.
      */
     private function createRankingEntry()
     {
@@ -344,14 +345,14 @@ class RankingService
         $ranking->setUserNumber($this->userRepository->count([]));
         $ranking->setCoasterInTopNumber($this->em->getRepository(TopCoaster::class)->countAllInTops());
         $ranking->setComparisonNumber($this->totalComparisonNumber);
-        $ranking->setRankedCoasterNumber(count($this->ranking));
+        $ranking->setRankedCoasterNumber(\count($this->ranking));
 
         $this->em->persist($ranking);
         $this->em->flush();
     }
 
     /**
-     * Update "validDuels" column for a coaster
+     * Update "validDuels" column for a coaster.
      */
     private function updateDuelStat(int $coasterId, int $duelCount)
     {
@@ -363,7 +364,7 @@ class RankingService
             $this->em->getConnection()->prepare($sql)
                 ->executeStatement([
                     ':count' => $duelCount,
-                    ':id' => $coasterId
+                    ':id' => $coasterId,
                 ]);
         } catch (\Throwable $e) {
             // todo log

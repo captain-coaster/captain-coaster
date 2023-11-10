@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Coaster;
@@ -13,7 +15,7 @@ use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * CoasterRepository
+ * CoasterRepository.
  */
 class CoasterRepository extends ServiceEntityRepository
 {
@@ -108,7 +110,7 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Return coasters for nearby page
+     * Return coasters for nearby page.
      *
      * @return \Doctrine\ORM\Query
      */
@@ -128,6 +130,16 @@ class CoasterRepository extends ServiceEntityRepository
         $this->applyFilters($qb, $filters);
 
         return $qb->getQuery();
+    }
+
+    public function getDistinctOpeningYears()
+    {
+        $rsm = new ResultSetMapping();
+        $rsm->addScalarResult('year', 'year');
+
+        return $this->getEntityManager()
+            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c ORDER by year DESC', $rsm)
+            ->getScalarResult();
     }
 
     private function applyFilters(QueryBuilder $qb, array $filters = [])
@@ -154,7 +166,7 @@ class CoasterRepository extends ServiceEntityRepository
 
     private function orderBy(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('latitude', $filters) && $filters['latitude'] !== '') {
+        if (\array_key_exists('latitude', $filters) && '' !== $filters['latitude']) {
             $qb->addSelect(
                 'POWER(POWER(111.2 * (p.latitude - :latitude), 2) + POWER(111.2 * (:longitude - p.longitude) * COS(p.latitude / 57.3), 2), 0.5) AS distance'
             )
@@ -168,7 +180,7 @@ class CoasterRepository extends ServiceEntityRepository
 
     private function filterManufacturer(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('manufacturer', $filters) && $filters['manufacturer'] !== '') {
+        if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
             $qb
                 ->andWhere('m.id = :manufacturer')
                 ->setParameter('manufacturer', $filters['manufacturer']);
@@ -176,11 +188,11 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Filter only operating coasters
+     * Filter only operating coasters.
      */
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('status', $filters)) {
+        if (\array_key_exists('status', $filters)) {
             $qb
                 ->andWhere('s.name = :operating')
                 ->setParameter('operating', Status::OPERATING);
@@ -190,7 +202,7 @@ class CoasterRepository extends ServiceEntityRepository
     private function filterScore(QueryBuilder $qb, array $filters = [])
     {
         // Filter by average rating
-        if (array_key_exists('score', $filters) && $filters['score'] !== '') {
+        if (\array_key_exists('score', $filters) && '' !== $filters['score']) {
             $qb
                 ->andWhere('c.score >= :rating')
                 ->setParameter('rating', $filters['score']);
@@ -200,8 +212,8 @@ class CoasterRepository extends ServiceEntityRepository
     private function filterByRidden(QueryBuilder $qb, array $filters = [])
     {
         // Filter by not ridden. User based filter.
-        if (array_key_exists('ridden', $filters) && $filters['ridden'] === 'on'
-            && array_key_exists('user', $filters) && !empty($filters['user'])) {
+        if (\array_key_exists('ridden', $filters) && 'on' === $filters['ridden']
+            && \array_key_exists('user', $filters) && !empty($filters['user'])) {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()
@@ -221,8 +233,8 @@ class CoasterRepository extends ServiceEntityRepository
      */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('notridden', $filters) && $filters['notridden'] === 'on'
-            && array_key_exists('user', $filters) && !empty($filters['user'])) {
+        if (\array_key_exists('notridden', $filters) && 'on' === $filters['notridden']
+            && \array_key_exists('user', $filters) && !empty($filters['user'])) {
             $qb2 = $this
                 ->getEntityManager()
                 ->createQueryBuilder()
@@ -240,7 +252,7 @@ class CoasterRepository extends ServiceEntityRepository
     private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
     {
         // Filter by average rating
-        if (array_key_exists('openingDate', $filters) && $filters['openingDate'] !== '') {
+        if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
             $qb
                 ->andWhere('c.openingDate like :date')
                 ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));
@@ -249,30 +261,17 @@ class CoasterRepository extends ServiceEntityRepository
 
     private function filterKiddie(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('kiddie', $filters) && $filters['kiddie'] !== '') {
+        if (\array_key_exists('kiddie', $filters) && '' !== $filters['kiddie']) {
             $qb->andWhere('c.kiddie = 0');
         }
     }
 
     private function filterName(QueryBuilder $qb, array $filters = [])
     {
-        if (array_key_exists('name', $filters) && $filters['name'] !== '') {
+        if (\array_key_exists('name', $filters) && '' !== $filters['name']) {
             $qb
                 ->andWhere('c.name like :name')
                 ->setParameter('name', sprintf('%%%s%%', $filters['name']));
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDistinctOpeningYears()
-    {
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('year', 'year');
-
-        return $this->getEntityManager()
-            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c ORDER by year DESC', $rsm)
-            ->getScalarResult();
     }
 }

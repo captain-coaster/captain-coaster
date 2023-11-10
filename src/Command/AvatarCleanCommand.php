@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\User;
@@ -13,9 +15,9 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AvatarCleanCommand extends Command
 {
-    public $repository;
-    protected static $defaultName = 'avatar:clean';
     final public const API_FB_PICTURE = 'https://graph.facebook.com/v7.0/%d/picture';
+    protected static $defaultName = 'avatar:clean';
+    public $repository;
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -52,7 +54,7 @@ class AvatarCleanCommand extends Command
 
     private function updateFacebookAvatar(User $user, OutputInterface $output): void
     {
-        if (is_null($user->getFacebookId())) {
+        if (null === $user->getFacebookId()) {
             return;
         }
 
@@ -70,7 +72,7 @@ class AvatarCleanCommand extends Command
 
     private function removeDeadAvatar(User $user, OutputInterface $output): void
     {
-        if (is_null($user->getProfilePicture())) {
+        if (null === $user->getProfilePicture()) {
             return;
         }
 

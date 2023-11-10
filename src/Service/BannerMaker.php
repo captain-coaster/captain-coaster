@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\TopCoaster;
@@ -15,9 +17,7 @@ class BannerMaker
 
     /**
      * BannerMaker constructor.
-     * @param $fontPath
-     * @param $targetPath
-     * @param $backgroundPath
+     *
      * @param string $fontPath
      * @param string $targetPath
      * @param string $backgroundPath
@@ -36,8 +36,7 @@ class BannerMaker
          * @var string path to background image
          */
         private $backgroundPath
-    )
-    {
+    ) {
     }
 
     /**
@@ -59,7 +58,7 @@ class BannerMaker
     }
 
     /**
-     * Create new image with background
+     * Create new image with background.
      */
     private function createImage()
     {
@@ -89,15 +88,14 @@ class BannerMaker
         foreach ($top as $coaster) {
             $this->writeText(sprintf('%d - %s', $position, $coaster), 240, $y, 10);
             $y += 19;
-            $position++;
+            ++$position;
         }
     }
 
     /**
-     * @param $x
-     * @param $y
-     * @param int $size
+     * @param int    $size
      * @param string $color
+     *
      * @throws InvalidArgumentException
      */
     private function writeText(string $text, $x, $y, $size = 10, $color = 'FFFFFF')
@@ -108,7 +106,6 @@ class BannerMaker
 
         $color = $this->image->palette()->color($color);
         $font = $this->imagine->font($this->fontPath, $size, $color);
-
 
         $this->image->draw()->text($text, $font, new Point($x, $y));
     }

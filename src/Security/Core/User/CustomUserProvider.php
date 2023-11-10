@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security\Core\User;
 
 use App\Entity\User;
@@ -22,9 +24,6 @@ class CustomUserProvider extends BaseClass
         $this->validator = $validator;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function connect(UserInterface $user, UserResponseInterface $response)
     {
         $property = $this->getProperty($response);
@@ -49,9 +48,6 @@ class CustomUserProvider extends BaseClass
         $this->userManager->updateUser($user);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function loadUserByOAuthUserResponse(UserResponseInterface $response)
     {
         $service = $response->getResourceOwner()->getName();
@@ -89,16 +85,16 @@ class CustomUserProvider extends BaseClass
         $user->setUsername($response->getNickname());
 
         // don't override apiKey at every login
-        if (is_null($user->getApiKey())) {
+        if (null === $user->getApiKey()) {
             $user->setApiKey(Uuid::uuid4()->toString());
         }
 
         // don't override displayName at every login
-        if (is_null($user->getDisplayName())) {
+        if (null === $user->getDisplayName()) {
             $user->setDisplayName($response->getNickname());
         }
 
-        if (is_null($response->getEmail())) {
+        if (null === $response->getEmail()) {
             $user->setEmail(uniqid(15).'@notvalid.com');
         } else {
             $user->setEmail($response->getEmail());
@@ -109,10 +105,8 @@ class CustomUserProvider extends BaseClass
 
         $errors = $this->validator->validate($user);
 
-        if (count($errors) > 0) {
-            throw new CustomUserMessageAuthenticationException(
-                "Your $service username cannot be empty. Please update your $service profile, and try again."
-            );
+        if (\count($errors) > 0) {
+            throw new CustomUserMessageAuthenticationException("Your $service username cannot be empty. Please update your $service profile, and try again.");
         }
 
         $this->userManager->updateUser($user);
