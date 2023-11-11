@@ -7,12 +7,24 @@ api_platform:
     http_cache:
         public: true
     defaults:
+        stateless: true
         cache_headers:
             max_age: 3600
             shared_max_age: 3600
             vary: [ 'Content-Type' ]
+        extra_properties:
+            standard_put: true
+            rfc_7807_compliant_errors: true
     swagger:
         api_keys:
             key:
                 name: 'Authorization'
                 type: 'header'
+    formats:
+        jsonld: ['application/ld+json']
+    docs_formats:
+        jsonld: ['application/ld+json']
+        jsonopenapi: ['application/vnd.openapi+json']
+        html: ['text/html']
+    event_listeners_backward_compatibility_layer: false
+    keep_legacy_inflector: false
