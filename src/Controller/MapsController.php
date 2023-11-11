@@ -4,35 +4,39 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Coaster;
-use App\Entity\Manufacturer;
 use App\Entity\Park;
 use App\Entity\User;
+use App\Repository\CoasterRepository;
+use App\Repository\ManufacturerRepository;
+use App\Repository\ParkRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Serializer;
 
-/**
- * Class MapsController.
- */
 #[Route(path: '/map')]
 class MapsController extends AbstractController
 {
-    /**
-     * Map of all coasters, with filters.
-     */
+    public function __construct(
+        private readonly ManufacturerRepository $manufacturerRepository,
+        private readonly CoasterRepository $coasterRepository,
+        private readonly ParkRepository $parkRepository,
+    ) {
+    }
+
+    /** Map of all coasters, with initial filters. */
     #[Route(path: '/', name: 'map_index', methods: ['GET'])]
-    public function indexAction(Request $request): Response
+    public function indexAction(string $parkslug = null): Response
     {
         $initialFilters = ['status' => 'on'];
         $parkId = '';
 
-        $slug = $request->query->get('parkslug');
-        if ($slug) {
-            $park = $this->getDoctrine()->getRepository(Park::class)->findOneBy(['slug' => $slug]);
+        if ($parkslug) {
+            $park = $this->parkRepository->findOneBy(['slug' => $parkslug]);
             if (!empty($park)) {
                 $parkId = $park->getId();
             }
@@ -41,7 +45,7 @@ class MapsController extends AbstractController
         return $this->render(
             'Maps/index.html.twig',
             [
-                'markers' => json_encode($this->getMarkers($initialFilters), \JSON_THROW_ON_ERROR),
+                'markers' => $this->getMarkers($initialFilters),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
                 'parkId' => $parkId,
@@ -49,9 +53,7 @@ class MapsController extends AbstractController
         );
     }
 
-    /**
-     * Map of coasters ridden by a user.
-     */
+    /** Map of coasters ridden by a user. */
     #[Route(path: '/users/{id}', name: 'map_user', methods: ['GET'])]
     public function userMapAction(User $user): Response
     {
@@ -67,65 +69,45 @@ class MapsController extends AbstractController
         return $this->render(
             'Maps/userMap.html.twig',
             [
-                'markers' => json_encode($this->getMarkers($initialFilters), \JSON_THROW_ON_ERROR),
+                'markers' => $this->getMarkers($initialFilters),
                 'filters' => $initialFilters,
                 'filtersForm' => $this->getFiltersForm(),
             ]
         );
     }
 
-    /**
-     * Returns json data with markers filtered.
-     *
-     * @return JsonResponse
-     */
-    #[Route(path: '/markers', name: 'map_markers_ajax', methods: ['GET'], condition: 'request.isXmlHttpRequest()', options: ['expose' => true])]
-    public function markersAction(Request $request)
+    /** Returns json data with markers filtered. */
+    #[Route(path: '/markers', name: 'map_markers_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
+    public function markersAction(#[MapQueryParameter] array $filters = []): JsonResponse
     {
-        return new JsonResponse($this->getMarkers($request->get('filters', [])));
+        return new JsonResponse($this->getMarkers($filters), json: true);
     }
 
-    /**
-     * Get coasters data (when user clicks on a marker).
-     */
-    #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', methods: ['GET'], condition: 'request.isXmlHttpRequest()', options: ['expose' => true])]
-    public function getCoastersAction(Request $request, Park $park): Response
+    /** Get coasters in a park (when user clicks on a marker). */
+    #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
+    public function getCoastersAction(Park $park, array $filters = []): Response
     {
-        $filters = $request->get('filters', []);
-
-        $coasters = $this->getDoctrine()->getRepository(Coaster::class)->getCoastersForMap(
-            $park,
-            $filters
+        return $this->render(
+            'Maps/listCoasters.html.twig',
+            ['coasters' => $this->coasterRepository->getCoastersForMap($park, $filters)]
         );
-
-        return $this->render('Maps/listCoasters.html.twig', ['coasters' => $coasters]);
     }
 
-    /**
-     * Return array of markers, filtered.
-     *
-     * @param array $filters
-     *
-     * @return array
-     */
-    private function getMarkers($filters = [])
+    /** Get data to display filter form (mainly <select> data). */
+    private function getFiltersForm(): array
     {
-        return $this->getDoctrine()
-            ->getRepository(Coaster::class)
-            ->getFilteredMarkers($filters);
+        return [
+            'manufacturer' => $this->manufacturerRepository->findBy([], ['name' => 'asc']),
+            'openingDate' => $this->coasterRepository->getDistinctOpeningYears(),
+        ];
     }
 
-    /**
-     * Get data to display filter form (mainly <select> data).
-     *
-     * @return array
-     */
-    private function getFiltersForm()
+    /** Generate array of markers, based on array of filters */
+    private function getMarkers(array $filters = []): string
     {
-        return ['manufacturer' => $this->getDoctrine()
-            ->getRepository(Manufacturer::class)
-            ->findBy([], ['name' => 'asc']), 'openingDate' => $this->getDoctrine()
-            ->getRepository(Coaster::class)
-            ->getDistinctOpeningYears()];
+        return (new Serializer([], [new JsonEncoder()]))->serialize(
+            $this->coasterRepository->getFilteredMarkers($filters),
+            'json'
+        );
     }
 }

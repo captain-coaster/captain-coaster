@@ -62,10 +62,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return array
-     */
-    public function getFilteredMarkers(array $filters)
+    public function getFilteredMarkers(array $filters): array
     {
         $qb = $this
             ->getEntityManager()
@@ -85,7 +82,7 @@ class CoasterRepository extends ServiceEntityRepository
 
         $this->applyFilters($qb, $filters);
 
-        return $qb->getQuery()->getResult();
+        return $qb->getQuery()->getArrayResult();
     }
 
     /**

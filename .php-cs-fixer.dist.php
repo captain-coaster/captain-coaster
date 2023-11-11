@@ -11,13 +11,14 @@ $config = new PhpCsFixer\Config();
 return $config
     ->setRiskyAllowed(true)
     ->setRules([
+        '@Symfony' => true,
         '@Symfony:risky' => true,
         '@PHP82Migration' => true,
-        '@PSR12:risky' => true,
-        '@Symfony' => true,
+        'phpdoc_line_span' => ['const' => 'single', 'method' => 'single', 'property' => 'single'],
+        'method_argument_space' => ['on_multiline' => 'ensure_single_line'],
     ])
     ->setFinder(PhpCsFixer\Finder::create()
-        ->in(__DIR__)
+            ->in(__DIR__)
         // ->exclude([
         //     'folder-to-exclude',
         // ])

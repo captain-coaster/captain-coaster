@@ -27,20 +27,16 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/tops')]
 class TopController extends AbstractController
 {
-    public function __construct(private readonly TopRepository $topRepository)
-    {
-    }
-
     /**
      * Create a new top.
      */
     #[Route(path: '/new', name: 'top_new', methods: ['GET', 'POST'])]
-    public function newAction(Request $request, EntityManagerInterface $em): Response
+    public function newAction(Request $request, EntityManagerInterface $em, TopRepository $topRepository): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
         $top = new Top();
-        $mainTop = $this->topRepository->findOneBy(['user' => $this->getUser(), 'main' => true]);
+        $mainTop = $topRepository->findOneBy(['user' => $this->getUser(), 'main' => true]);
 
         // Very first top, redirect to main top edit
         if (!$mainTop instanceof Top) {
@@ -119,7 +115,7 @@ class TopController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: '/{id}/edit', name: 'top_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Top $top, EntityManagerInterface $em): RedirectResponse|Response
+    public function edit(Request $request, Top $top, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('edit', $top);
 
