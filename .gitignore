@@ -16,6 +16,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 # Commit build files for now
@@ -24,11 +25,6 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-/public/images/banners/*
-!/public/images/banners/.gitkeep
-/public/images/coasters
-/.idea/
-.php_cs.cache
 ###> symfony/phpunit-bridge ###
 .phpunit.result.cache
 /phpunit.xml
@@ -37,3 +33,10 @@ yarn-error.log
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+/public/images/banners/*
+!/public/images/banners/.gitkeep
+/public/images/coasters
+/.idea/
+.php_cs.cache
+.php-cs-fixer.cache

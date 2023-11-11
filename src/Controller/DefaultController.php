@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -6,7 +8,6 @@ use App\Entity\User;
 use App\Form\Type\ContactType;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
-use App\Service\DiscordService;
 use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -25,13 +26,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Controller for index pages
+ * Controller for index pages.
  */
 class DefaultController extends AbstractController
 {
-    /**
-     * Root of application without locale, redirect to browser language if defined.
-     */
+    /** Root of application without locale, redirect to browser language if defined. */
     public function root(Request $request): RedirectResponse
     {
         $locale = $request->getPreferredLanguage($this->getParameter('app_locales_array'));
@@ -48,12 +47,11 @@ class DefaultController extends AbstractController
      */
     #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
     public function index(
-        Request                 $request,
-        StatService             $statService,
+        Request $request,
+        StatService $statService,
         RiddenCoasterRepository $riddenCoasterRepository,
-        ImageRepository         $imageRepository
-    ): Response
-    {
+        ImageRepository $imageRepository
+    ): Response {
         $missingImages = [];
         if ($user = $this->getUser()) {
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
@@ -78,12 +76,11 @@ class DefaultController extends AbstractController
      */
     #[Route(path: '/contact', name: 'default_contact', methods: ['GET', 'POST'])]
     public function contactAction(
-        Request             $request,
-        MailerInterface     $mailer,
-        ChatterInterface    $chatter,
+        Request $request,
+        MailerInterface $mailer,
+        ChatterInterface $chatter,
         TranslatorInterface $translator
-    ): RedirectResponse|Response
-    {
+    ): RedirectResponse|Response {
         /** @var Form $form */
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
@@ -103,7 +100,7 @@ class DefaultController extends AbstractController
 
             // send notification
             $chatter->send(
-                (new ChatMessage('We just received new message from ' . $data['name'] . "\n\n" . $data['message']))->transport('discord_notif')
+                (new ChatMessage('We just received new message from '.$data['name']."\n\n".$data['message']))->transport('discord_notif')
             );
 
             $this->addFlash(
@@ -125,13 +122,12 @@ class DefaultController extends AbstractController
 
     #[Route('/protected', name: 'protected')]
     public function protected(
-        Request                 $request,
-        StatService             $statService,
+        Request $request,
+        StatService $statService,
         RiddenCoasterRepository $riddenCoasterRepository,
-        ImageRepository         $imageRepository,
-        ChatterInterface        $chatter
-    ): Response
-    {
+        ImageRepository $imageRepository,
+        ChatterInterface $chatter
+    ): Response {
         $missingImages = [];
         if (($user = $this->getUser()) instanceof User) {
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);

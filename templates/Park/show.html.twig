@@ -26,7 +26,7 @@
                             {{ park.kiddies|length }}
                         </h5>
                         <div class="text-muted text-size-small">
-                            {{ 'park.kiddies'|transchoice({'count': park.kiddies|length}) }}
+                            {{ 'park.kiddies'|trans({'count': park.kiddies|length}) }}
                         </div>
                     </div>
                     {% if not is_granted('ROLE_USER') %}

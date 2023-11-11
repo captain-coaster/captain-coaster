@@ -67,12 +67,10 @@ class SearchController extends AbstractController
     /**
      * All data for main search service.
      *
-     * @return JsonResponse
-     *
      * @throws InvalidArgumentException
      */
-    #[Route(path: '/main.json', name: 'ajax_main_search', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
-    public function ajaxMainSearch(SearchService $searchService)
+    #[Route(path: '/main.json', name: 'ajax_main_search', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
+    public function ajaxMainSearch(SearchService $searchService): JsonResponse
     {
         $cache = new FilesystemAdapter();
         $searchItems = $cache->getItem(self::CACHE_AUTOCOMPLETE);
@@ -90,15 +88,5 @@ class SearchController extends AbstractController
         $response->setMaxAge(600);
 
         return $response;
-    }
-
-    /**
-     * Get data to display filter form (mainly <select> data).
-     *
-     * @return array
-     */
-    private function getFiltersForm()
-    {
-        return;
     }
 }
