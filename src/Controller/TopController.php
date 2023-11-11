@@ -27,9 +27,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/tops')]
 class TopController extends AbstractController
 {
-    /**
-     * Create a new top.
-     */
+    /** Create a new top. */
     #[Route(path: '/new', name: 'top_new', methods: ['GET', 'POST'])]
     public function newAction(Request $request, EntityManagerInterface $em, TopRepository $topRepository): Response
     {
@@ -67,29 +65,19 @@ class TopController extends AbstractController
         return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => true]);
     }
 
-    /**
-     * Displays all tops.
-     */
+    /** Displays all tops. */
     #[Route(path: '/', name: 'top_list', methods: ['GET'])]
     public function list(PaginatorInterface $paginator, EntityManagerInterface $em, #[MapQueryParameter] int $page = 1): Response
     {
         try {
-            $pagination = $paginator->paginate(
-                $em->getRepository(Top::class)->findAllTops(),
-                $page,
-                9,
-                ['wrap-queries' => true]
-            );
+            $pagination = $paginator->paginate($em->getRepository(Top::class)->findAllTops(), $page, 9, ['wrap-queries' => true]);
         } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
-        return $this->render(
-            'Top/list.html.twig',
-            [
+        return $this->render('Top/list.html.twig', [
                 'tops' => $pagination,
-            ]
-        );
+            ]);
     }
 
     /**
@@ -101,12 +89,9 @@ class TopController extends AbstractController
     #[Route(path: '/{id}', name: 'top_show', methods: ['GET'])]
     public function show(Top $top, EntityManagerInterface $em): Response
     {
-        return $this->render(
-            'Top/show.html.twig',
-            [
+        return $this->render('Top/show.html.twig', [
                 'top' => $em->getRepository(Top::class)->getTopWithData($top),
-            ]
-        );
+            ]);
     }
 
     /**
@@ -143,18 +128,13 @@ class TopController extends AbstractController
             return $this->redirectToRoute('top_show', ['id' => $top->getId()]);
         }
 
-        return $this->render(
-            'Top/edit.html.twig',
-            [
+        return $this->render('Top/edit.html.twig', [
                 'form' => $form,
                 'topName' => $top->getName(),
-            ]
-        );
+            ]);
     }
 
-    /**
-     * Edits details of a top (name, type).
-     */
+    /** Edits details of a top (name, type). */
     #[Route(path: '/{id}/edit-details', name: 'top_edit_details', methods: ['GET', 'POST'])]
     public function editDetails(Request $request, Top $top, EntityManagerInterface $em): Response
     {
@@ -174,9 +154,7 @@ class TopController extends AbstractController
         return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => false]);
     }
 
-    /**
-     * Deletes a top.
-     */
+    /** Deletes a top. */
     #[Route(path: '/{id}/delete', name: 'top_delete', methods: ['GET'])]
     public function delete(Top $top, EntityManagerInterface $em): RedirectResponse
     {
@@ -188,9 +166,7 @@ class TopController extends AbstractController
         return $this->redirectToRoute('top_list');
     }
 
-    /**
-     * Ajax route for autocomplete search (search "q" parameter).
-     */
+    /** Ajax route for autocomplete search (search "q" parameter). */
     #[Route(path: '/search/coasters.json', name: 'top_ajax_search', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function ajaxSearch(Request $request, EntityManagerInterface $em): JsonResponse
     {
@@ -200,13 +176,8 @@ class TopController extends AbstractController
             return new JsonResponse([]);
         }
 
-        return new JsonResponse(
-            [
-                'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop(
-                    $request->get('q'),
-                    $this->getUser()
-                ),
-            ]
-        );
+        return new JsonResponse([
+                'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop($request->get('q'), $this->getUser()),
+            ]);
     }
 }

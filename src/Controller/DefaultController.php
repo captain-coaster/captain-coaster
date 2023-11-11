@@ -46,27 +46,20 @@ class DefaultController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
-    public function index(
-        Request $request,
-        StatService $statService,
-        RiddenCoasterRepository $riddenCoasterRepository,
-        ImageRepository $imageRepository
-    ): Response {
+    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
+    {
         $missingImages = [];
         if ($user = $this->getUser()) {
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
-        return $this->render(
-            'Default/index.html.twig',
-            [
+        return $this->render('Default/index.html.twig', [
                 'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
                 'image' => $imageRepository->findLatestImage(),
                 'stats' => $statService->getIndexStats(),
                 'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
                 'missingImages' => $missingImages,
-            ]
-        );
+            ]);
     }
 
     /**
@@ -75,12 +68,8 @@ class DefaultController extends AbstractController
      * @throws TransportExceptionInterface
      */
     #[Route(path: '/contact', name: 'default_contact', methods: ['GET', 'POST'])]
-    public function contactAction(
-        Request $request,
-        MailerInterface $mailer,
-        ChatterInterface $chatter,
-        TranslatorInterface $translator
-    ): RedirectResponse|Response {
+    public function contactAction(Request $request, MailerInterface $mailer, ChatterInterface $chatter, TranslatorInterface $translator): RedirectResponse|Response
+    {
         /** @var Form $form */
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
@@ -93,20 +82,13 @@ class DefaultController extends AbstractController
                 ->to($this->getParameter('app_contact_mail_to'))
                 ->replyTo($data['email'])
                 ->subject($translator->trans('contact.email.title'))
-                ->html(
-                    $this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']])
-                );
+                ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']]));
             $mailer->send($message);
 
             // send notification
-            $chatter->send(
-                (new ChatMessage('We just received new message from '.$data['name']."\n\n".$data['message']))->transport('discord_notif')
-            );
+            $chatter->send((new ChatMessage('We just received new message from '.$data['name']."\n\n".$data['message']))->transport('discord_notif'));
 
-            $this->addFlash(
-                'success',
-                $translator->trans('contact.flash.success', ['%name%' => $data['name']])
-            );
+            $this->addFlash('success', $translator->trans('contact.flash.success', ['%name%' => $data['name']]));
 
             return $this->redirectToRoute('default_contact');
         }
@@ -121,27 +103,19 @@ class DefaultController extends AbstractController
     }
 
     #[Route('/protected', name: 'protected')]
-    public function protected(
-        Request $request,
-        StatService $statService,
-        RiddenCoasterRepository $riddenCoasterRepository,
-        ImageRepository $imageRepository,
-        ChatterInterface $chatter
-    ): Response {
+    public function protected(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, ChatterInterface $chatter): Response
+    {
         $missingImages = [];
         if (($user = $this->getUser()) instanceof User) {
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
-        return $this->render(
-            'Default/index.html.twig',
-            [
+        return $this->render('Default/index.html.twig', [
                 'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
                 'image' => $imageRepository->findLatestImage(),
                 'stats' => $statService->getIndexStats(),
                 'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
                 'missingImages' => $missingImages,
-            ]
-        );
+            ]);
     }
 }
