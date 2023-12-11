@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Command;
 
@@ -17,11 +19,7 @@ class RankingCommand extends Command
 {
     protected static $defaultName = 'ranking:update';
 
-    public function __construct(
-        private readonly RankingService      $rankingService,
-        private readonly NotificationService $notificationService,
-        private readonly ChatterInterface    $chatter,
-    )
+    public function __construct(private readonly RankingService $rankingService, private readonly NotificationService $notificationService, private readonly ChatterInterface $chatter)
     {
         parent::__construct();
     }
@@ -33,13 +31,8 @@ class RankingCommand extends Command
             ->addOption('send-email', null, InputOption::VALUE_NONE);
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return void
-     * @throws \Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    /** @throws \Exception */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('ranking');
@@ -49,7 +42,7 @@ class RankingCommand extends Command
         $output->writeln(($dryRun) ? 'Dry-run mode' : 'Production update');
 
         // dry run safety
-        if ((new \DateTime())->format('j') !== '1' && !$dryRun) {
+        if ('1' !== (new \DateTime())->format('j') && !$dryRun) {
             $output->writeln('We are not first day of month. We do it dry-run anyway.');
             $dryRun = true;
         }
@@ -62,7 +55,7 @@ class RankingCommand extends Command
             $output->writeln($this->formatCoasterForConsole($coaster));
         }
 
-        $output->writeln((string)$stopwatch->stop('ranking'));
+        $output->writeln((string) $stopwatch->stop('ranking'));
 
         // notify discord
         if ($input->getOption('send-discord')) {
@@ -71,7 +64,7 @@ class RankingCommand extends Command
 
             $this->notifyDiscord($coasterList);
 
-            $output->writeln((string)$stopwatch->stop('discord'));
+            $output->writeln((string) $stopwatch->stop('discord'));
         }
 
         if ($input->getOption('send-email') && !$dryRun) {
@@ -85,28 +78,24 @@ class RankingCommand extends Command
                 $this->notificationService->sendAll('notif.ranking.message', NotificationService::NOTIF_RANKING);
             }
 
-            $output->writeln((string)$stopwatch->stop('emailing'));
+            $output->writeln((string) $stopwatch->stop('emailing'));
         }
+
+        return 0;
     }
 
     private function formatCoasterForConsole(Coaster $coaster): string
     {
         $format = '[%d] %s - %s (%s)';
         if (null === $coaster->getPreviousRank()) {
-            $format = '<error>' . $format . '</error>';
+            $format = '<error>'.$format.'</error>';
         } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.25 * $coaster->getPreviousRank()) {
-            $format = '<comment>' . $format . '</comment>';
+            $format = '<comment>'.$format.'</comment>';
         } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.1 * $coaster->getPreviousRank()) {
-            $format = '<info>' . $format . '</info>';
+            $format = '<info>'.$format.'</info>';
         }
 
-        return sprintf(
-            $format,
-            $coaster->getRank(),
-            $coaster->getName(),
-            $coaster->getPark()->getName(),
-            null === $coaster->getPreviousRank() ? 'new' : sprintf("%+d", ($coaster->getPreviousRank() - $coaster->getRank()))
-        );
+        return sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
     }
 
     private function notifyDiscord($coasterList): void
@@ -114,26 +103,16 @@ class RankingCommand extends Command
         $discordText = '';
 
         foreach ($coasterList as $coaster) {
-            $text = sprintf(
-                "[%d] %s - %s (%s)\n",
-                $coaster->getRank(),
-                (null === $coaster->getPreviousRank()) ? '**' . $coaster->getName() . '**' : $coaster->getName(),
-                $coaster->getPark()->getName(),
-                null === $coaster->getPreviousRank() ? 'new' : sprintf("%+d", ($coaster->getPreviousRank() - $coaster->getRank()))
-            );
+            $text = sprintf("[%d] %s - %s (%s)\n", $coaster->getRank(), (null === $coaster->getPreviousRank()) ? '**'.$coaster->getName().'**' : $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
 
             if (\strlen($discordText) + \strlen($text) > 2000) {
-                $this->chatter->send(
-                    (new ChatMessage($discordText))->transport('discord_log')
-                );
+                $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));
                 $discordText = '';
             }
 
             $discordText .= $text;
         }
 
-        $this->chatter->send(
-            (new ChatMessage($discordText))->transport('discord_log')
-        );
+        $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));
     }
 }

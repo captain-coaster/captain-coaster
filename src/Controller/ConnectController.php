@@ -1,12 +1,11 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Repository\ImageRepository;
-use App\Repository\RiddenCoasterRepository;
 use App\Repository\UserRepository;
-use App\Service\StatService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -19,13 +18,11 @@ use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkNotification;
 
 /**
- * Controller in charge of authentication routes
+ * Controller in charge of authentication routes.
  */
 class ConnectController extends AbstractController
 {
-    /**
-     * Display login page
-     */
+    /** Display login page */
     #[Route(path: '/login', name: 'login', methods: ['GET'])]
     public function login(): Response
     {
@@ -36,39 +33,39 @@ class ConnectController extends AbstractController
     {
     }
 
-    /**
-     * Route handled in routes.yaml (no locale)
-     */
+    /** Route handled in routes.yaml (no locale) */
     public function logout(): void
     {
     }
 
-    /**
-     * Initiate Google's oauth2 authentication
-     * Route handled in routes.yaml (no locale)
-     */
+    /** Initiate Google's oauth2 authentication. Route handled in routes.yaml (no locale). */
     public function connectGoogleStart(ClientRegistry $clientRegistry): RedirectResponse
     {
         // will redirect to Google!
         return $clientRegistry->getClient('google')->redirect([], []);
     }
 
-    /**
-     * After going to Google, you're redirected back here
-     * Route handled in routes.yaml (no locale)
-     */
+    /** After going to Google, you're redirected back here. Route handled in routes.yaml (no locale). */
     public function connectGoogleCheck(Request $request): void
     {
         // left blank as it is handled inside GoogleAuthenticator
     }
 
+    /** Initiate Facebook's oauth2 authentication. Route handled in routes.yaml (no locale). */
+    public function connectFacebookStart(ClientRegistry $clientRegistry): RedirectResponse
+    {
+        // will redirect to Google!
+        return $clientRegistry->getClient('facebook')->redirect([], []);
+    }
+
+    /** After going to Facebook, you're redirected back here. Route handled in routes.yaml (no locale). */
+    public function connectFacebookCheck(Request $request): void
+    {
+        // left blank as it is handled inside FacebookAuthenticator
+    }
+
     #[Route('/login/link/start', name: 'login_link_start')]
-    public function requestLoginLink(
-        NotifierInterface $notifier,
-        LoginLinkHandlerInterface $loginLinkHandler,
-        UserRepository $userRepository,
-        Request $request
-    ): Response
+    public function requestLoginLink(NotifierInterface $notifier, LoginLinkHandlerInterface $loginLinkHandler, UserRepository $userRepository, Request $request): Response
     {
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
@@ -77,9 +74,7 @@ class ConnectController extends AbstractController
             $loginLinkDetails = $loginLinkHandler->createLoginLink($user);
 
             // create a notification based on the login link details
-            $notification = new LoginLinkNotification(
-                $loginLinkDetails,
-                'Welcome to MY WEBSITE!' // email subject
+            $notification = new LoginLinkNotification($loginLinkDetails, 'Welcome to MY WEBSITE!' // email subject
             );
             // create a recipient for this user
             $recipient = new Recipient($user->getEmail());

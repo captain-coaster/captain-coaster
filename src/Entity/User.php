@@ -223,7 +223,7 @@ class User implements UserInterface
         return $this->profilePicture;
     }
 
-    public function setProfilePicture(string $profilePicture): static
+    public function setProfilePicture(?string $profilePicture): static
     {
         $this->profilePicture = $profilePicture;
 
@@ -319,9 +319,7 @@ class User implements UserInterface
 
     public function getUnreadNotifications(): Collection
     {
-        return $this->notifications->filter(
-            fn (Notification $notif) => !$notif->getIsRead()
-        );
+        return $this->notifications->filter(fn (Notification $notif) => !$notif->getIsRead());
     }
 
     public function isEmailNotification(): bool

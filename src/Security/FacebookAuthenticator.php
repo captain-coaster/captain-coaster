@@ -8,6 +8,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use League\OAuth2\Client\Provider\FacebookUser;
 use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,9 +24,9 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
- * Authenticator for Google login.
+ * Authenticator for Facebook login.
  */
-class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
+class FacebookAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     use TargetPathTrait;
 
@@ -36,33 +37,35 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     public function supports(Request $request): ?bool
     {
         // continue ONLY if the current ROUTE matches the check ROUTE
-        return 'connect_google_check' === $request->attributes->get('_route');
+        return 'connect_facebook_check' === $request->attributes->get('_route');
     }
 
     public function authenticate(Request $request): Passport
     {
-        $client = $this->clientRegistry->getClient('google');
+        $client = $this->clientRegistry->getClient('facebook');
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-            /** @var GoogleUser $googleUser */
-            $googleUser = $client->fetchUserFromToken($accessToken);
+            /** @var FacebookUser $facebookUser */
+            $facebookUser = $client->fetchUserFromToken($accessToken);
+
+            dump($facebookUser);
 
             // try to find a user based on its Google ID
-            $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['googleId' => $googleUser->getId()]);
+            $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['facebookId' => $facebookUser->getId()]);
 
             if ($existingUser) {
-                $this->logger->info('Found Google ID '.$googleUser->getId());
+                $this->logger->info('Found Facebook ID '.$facebookUser->getId());
 
                 return $existingUser;
             }
 
             // 2) do we have a matching user by email?
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $googleUser->getEmail()]);
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $facebookUser->getEmail()]);
 
             // 3) Maybe you just want to "register" them by creating
             // a User object
-            $user->setGoogleId($googleUser->getId());
+            $user->setFacebookId($facebookUser->getId());
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 

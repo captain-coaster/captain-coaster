@@ -39,7 +39,7 @@
                             {#{% for owner in hwi_oauth_resource_owners() %}#}
                             {% set referer = app.request.server.get('HTTP_REFERER')|default('/') %}
                             <li class="mb-5" style="padding:0;">
-                                <a href="{{ path('connect_google_start') }}{# ?target_path={{ referer }} #}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
+                                <a href="{{ path('connect_facebook_start') }}{# ?target_path={{ referer }} #}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
                                     <i class="icon-facebook position-left"></i> {{ 'login.facebook_connect'|trans }}
                                 </a>
                             </li>

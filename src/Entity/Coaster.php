@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -109,17 +111,13 @@ class Coaster implements \Stringable
     #[ORM\ManyToOne(targetEntity: 'Currency')]
     #[ORM\JoinColumn]
     private ?Currency $currency = null;
-    /**
-     * @var float
-     */
+    /** @var float */
     #[ORM\Column(name: 'averageRating', type: Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
     private ?string $averageRating = null;
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['read_coaster'])]
     private ?int $totalRatings = 0;
-    /**
-     * @var float
-     */
+    /** @var float */
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
     private ?string $averageTopRank = null;
     #[ORM\Column(type: Types::INTEGER)]
@@ -127,30 +125,22 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['read_coaster'])]
     private ?int $validDuels = 0;
-    /**
-     * @var float
-     */
+
     #[ORM\Column(type: Types::DECIMAL, precision: 14, scale: 11, nullable: true)]
     #[Groups(['read_coaster'])]
-    private ?string $score = null;
+    private ?float $score = null;
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?int $rank = null;
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $previousRank = null;
-    /**
-     * @var Collection<RiddenCoaster>
-     */
+    /** @var Collection<RiddenCoaster> */
     #[ORM\OneToMany(targetEntity: 'RiddenCoaster', mappedBy: 'coaster')]
     private Collection $ratings;
-    /**
-     * @var Collection<MainTag>
-     */
+    /** @var Collection<MainTag> */
     #[ORM\OneToMany(targetEntity: 'MainTag', mappedBy: 'coaster')]
     private Collection $mainTags;
-    /**
-     * @var Collection<Image>
-     */
+    /** @var Collection<Image> */
     #[ORM\OneToMany(targetEntity: 'Image', mappedBy: 'coaster')]
     private Collection $images;
     #[ORM\OneToOne(targetEntity: 'Image', fetch: 'EAGER')]
@@ -166,9 +156,7 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $enabled = false;
 
-    /**
-     * Constructor.
-     */
+    /** Constructor. */
     public function __construct()
     {
         $this->launchs = new ArrayCollection();
@@ -179,7 +167,7 @@ class Coaster implements \Stringable
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
@@ -276,9 +264,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getSpeed()
     {
         return $this->speed;
@@ -296,9 +282,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getHeight()
     {
         return $this->height;
@@ -316,9 +300,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getLength()
     {
         return $this->length;
@@ -336,9 +318,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getInversionsNumber()
     {
         return $this->inversionsNumber;
@@ -368,17 +348,13 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return Restraint
-     */
+    /** @return Restraint */
     public function getRestraint()
     {
         return $this->restraint;
     }
 
-    /**
-     * @return Coaster
-     */
+    /** @return Coaster */
     public function setRestraint(Restraint $restraint)
     {
         $this->restraint = $restraint;
@@ -410,9 +386,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return bool
-     */
+    /** @return bool */
     public function getVr()
     {
         return $this->vr;
@@ -466,9 +440,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
+    /** @return \DateTime */
     public function getOpeningDate()
     {
         return $this->openingDate;
@@ -486,9 +458,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
+    /** @return \DateTime */
     public function getClosingDate()
     {
         return $this->closingDate;
@@ -506,17 +476,13 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    /** @return string */
     public function getVideo()
     {
         return $this->video;
     }
 
-    /**
-     * @param string $video
-     */
+    /** @param string $video */
     public function setVideo($video): self
     {
         $this->video = $video;
@@ -524,9 +490,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getPrice()
     {
         return $this->price;
@@ -556,9 +520,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    /** @return string */
     public function getAverageRating()
     {
         return $this->averageRating;
@@ -576,9 +538,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getTotalRatings()
     {
         return $this->totalRatings;
@@ -632,29 +592,19 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getScore()
+    public function getScore(): ?float
     {
         return $this->score;
     }
 
-    /**
-     * @param string $score
-     *
-     * @return Coaster
-     */
-    public function setScore($score)
+    public function setScore(float $score): static
     {
         $this->score = $score;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getRank()
     {
         return $this->rank;
@@ -672,9 +622,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getPreviousRank()
     {
         return $this->previousRank;
@@ -692,9 +640,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * @return Coaster
-     */
+    /** @return Coaster */
     public function addRating(RiddenCoaster $rating)
     {
         $this->ratings[] = $rating;
@@ -791,17 +737,13 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * Can we rate this coaster ?
-     */
+    /** Can we rate this coaster ? */
     public function isRateable(): bool
     {
         return $this->status->isRateable();
     }
 
-    /**
-     * We don't rank kiddie coasters.
-     */
+    /** We don't rank kiddie coasters. */
     public function isRankable(): bool
     {
         return !$this->isKiddie();

@@ -18,7 +18,7 @@ privacy:
            <li>The right to rectification - You have the right to request that a correction of any information you believe is inaccurate or missing,</li>
            <li>The right to erasure - You have the right to request that we erase your personal data.</li>
            </ul>
-           <p>If you have any questions about Captain Coaster privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please <a href="%link_href%">contact us</a>.</p>'
+           <p>If you have any questions about Captain Coaster privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please <a href="{link_href}">contact us</a>.</p>'
 cookies:
     title: 'Cookie Policy'
     text: '<p>Cookies are small files stored on a user''s computer to make your life simpler.</p>
@@ -34,7 +34,7 @@ hosting:
 copyright:
     title: 'Copyright'
     text: '<p>The "Captain Coaster" logo belongs to Benjamin R., Captain Coaster has the exclusive rights to use and modify it. Any reproduction without authorization is forbidden.</p>
-           <p>Every user can upload pictures on Captain Coaster with its credit. If you are the owner of a photo you don’t want to share on Captain Coaster, please <a href="%link_href%">contact us</a> and the picture will be removed as soon as possible.</p>'
+           <p>Every user can upload pictures on Captain Coaster with its credit. If you are the owner of a photo you don’t want to share on Captain Coaster, please <a href="{link_href}">contact us</a> and the picture will be removed as soon as possible.</p>'
 contact:
     title: 'Contact us'
-    text: '<b>Any questions, or remarks on this policy ? <a href="%link_href%">Contact us</a>, we don''t bite.</b>'
+    text: '<b>Any questions, or remarks on this policy ? <a href="{link_href}">Contact us</a>, we don''t bite.</b>'
