@@ -35,6 +35,8 @@ security:
                 login_path: login
             custom_authenticators:
                 - App\Security\GoogleAuthenticator
+                - App\Security\FacebookAuthenticator
+            entry_point: App\Security\GoogleAuthenticator
             logout:
                 path: logout
             remember_me:

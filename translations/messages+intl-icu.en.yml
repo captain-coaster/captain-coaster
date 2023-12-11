@@ -15,7 +15,7 @@ index:
     description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
     header:
         title: 'Review, rate and rank roller coasters'
-        info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="%link_path%">to connect</a></b>. Follow the Captain !'
+        info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="{link_path}">to connect</a></b>. Follow the Captain !'
     stats:
         ratings: 'ratings'
         reviews: 'reviews'
@@ -36,10 +36,10 @@ coaster:
         sendreview: 'or click here to write a review'
         updatereview: 'update my review'
         delete: 'delete'
-        text: 'Score based on %count_rating% ratings and %count_top% tops'
+        text: 'Score based on {count_rating} ratings and {count_top} tops'
     infos:
-        title: '%name% features'
-        closeParksTitle: 'Best amusement parks near %parkName%'
+        title: '{name} features'
+        closeParksTitle: 'Best amusement parks near {parkName}'
         status: 'Status'
         park: 'Park'
         country: 'Country'
@@ -57,7 +57,7 @@ coaster:
         cost: 'Cost'
         kiddie: 'Kiddie'
         indoor: 'Indoor'
-    parkcoaster: 'Also in %name%'
+    parkcoaster: 'Also in {name}'
     photos:
         title: 'Photos'
         empty: 'Oops, we don''t have any photos yet for this coaster, but you can send yours!'
@@ -66,7 +66,7 @@ coaster:
     location: 'Location'
 
 image_upload:
-    title: 'Upload a picture of %coaster%'
+    title: 'Upload a picture of {coaster}'
     form:
         file:
             label: 'Select a picture'
@@ -88,11 +88,11 @@ park:
 coaster_ranking:
     title: 'World Roller Coaster Rankings'
     description: 'Discover the world''s best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide.'
-    duel_number: '1 duel|%count% duels'
+    duel_number: '1 duel|{count} duels'
     no_results: 'No coasters found!'
     info:
-        title: 'Last Updated: %rankingMonth%'
-        next:  'Next update %date%'
+        title: 'Last Updated: {rankingMonth}'
+        next: 'Next update {date}'
         coasters_ranked:
             short: 'coasters'
             long: 'ranked coasters'
@@ -120,13 +120,13 @@ map_index:
         kiddie: 'Hide kiddies'
         notridden: 'Not ridden yet'
         score: 'Score'
-        atleast: 'at least %count%'
+        atleast: 'at least {count}'
         openingDate: 'Opening date'
         name: 'Name'
     results: 'Results'
 
 user_profile:
-    title: '%name% - Profile'
+    title: '{name} - Profile'
     ratings: 'Show their ratings'
     reviews: 'Show their reviews'
     main_top: 'Show their Top Coasters'
@@ -140,7 +140,7 @@ user_list:
         title: 'Where do you rank among our members ?'
         text: 'This page shows a list of our riders. Click on them to discover their details!'
     member_from: 'Member since'
-    rating: '1 rating|%count% ratings'
+    rating: '1 rating|{count} ratings'
 
 me:
     title: 'My Profile'
@@ -226,13 +226,13 @@ review:
     all: 'See all →'
     ridden_at: 'Ride date'
     form:
-        title: 'Review about %name%'
+        title: 'Review about {name}'
 
 users:
     tops:
-        title: '%name%''s tops'
+        title: '{name}''s tops'
     ratings:
-        title: '%name% - Ratings'
+        title: '{name} - Ratings'
         coaster: 'Coaster'
         manufacturer: 'Manufacturer'
         opening_date: 'Opened'
@@ -241,16 +241,16 @@ users:
     my_ratings:
         title: 'My ratings'
     reviews:
-        title: '%name% - Reviews'
+        title: '{name} - Reviews'
     images:
-        title: '%name% - Pictures'
+        title: '{name} - Pictures'
 
 review_list:
     title: 'Coaster reviews'
 
 rating:
     last: 'Latest ratings'
-    action: 'rated %value% stars'
+    action: 'rated {value} stars'
 
 navbar:
     profile: 'My profile'
@@ -294,31 +294,31 @@ contact:
     email:
         title: 'Contact Form - Captain Coaster'
     flash:
-        success: 'Thank you %name%, your message was sent to Captain Coaster staff.'
+        success: 'Thank you {name}, your message was sent to Captain Coaster staff.'
 
 notif:
     title: 'Activity'
     empty: 'Nothing special right now, go ride some coasters!'
     badge:
-        message: 'Check it out: Captain just gave you the "%name%" badge!'
+        message: 'Check it out: Captain just gave you the "{name}" badge!'
     ranking:
         message: 'World Roller Coaster Rankings have just been updated!'
-        messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. %name% has been added to the ranking!'
+        messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'
     email:
         title: '🎢 New notification on Captain Coaster'
         gotnotif: 'You just received a new notification on Captain Coaster :'
-        view: 'View this on <a href="%link_path%">CaptainCoaster.com</a>'
-        unsubscribe: 'To stop receiving this, please change your <a href="%link_path%">notification preferences</a>.'
+        view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
+        unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
 search_index:
     title: 'Find coasters nearby'
-    num_found: '%num% coasters found'
+    num_found: '{num} coasters found'
     geo_on: 'Geolocation enabled'
     geo_off: 'Geolocation not enabled'
-    km_away: '%num% km away'
+    km_away: '{num} km away'
 
 image:
-    credit: 'Credit: %name%'
+    credit: 'Credit: {name}'
 
 badge:
     rating1: '1st rating'

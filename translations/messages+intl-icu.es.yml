@@ -1,7 +1,6 @@
-# Define languages
-fr: Français
-en: English
-es: Español
+fr: 'Français'
+en: 'English'
+es: 'Español'
 
 app:
     name: 'Captain Coaster'
@@ -15,7 +14,7 @@ index:
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'
-        info: '¿ Cuál Dive Coaster es el mejor ? : ¿ SheiKra o Griffon ? ¿ Galactica or el difunto Air ? ¿ Y Intimidator 305, es tan loco o simplemente una buena montaña rusa ? Sin pánico, todas las respuestas están aquí, en su guía. Y <b>solo toma unos segundos <a href="%link_path%">conectarse</a></b>. ¡ Sigue al Captain !'
+        info: '¿ Cuál Dive Coaster es el mejor ? : ¿ SheiKra o Griffon ? ¿ Galactica or el difunto Air ? ¿ Y Intimidator 305, es tan loco o simplemente una buena montaña rusa ? Sin pánico, todas las respuestas están aquí, en su guía. Y <b>solo toma unos segundos <a href="{link_path}">conectarse</a></b>. ¡ Sigue al Captain !'
     stats:
         coasters: 'coaster'
         ratings: 'notas'
@@ -32,10 +31,10 @@ coaster:
         mustlogin: 'Debe iniciar sesión para calificar.'
         login: 'Iniciar sesión'
         sendreview: 'o haga clic aquí para escribir una reseña'
-        text: 'Resultado basada en %count_rating% notas y %count_top% tops'
+        text: 'Resultado basada en {count_rating} notas y {count_top} tops'
     infos:
-        title: 'Características de %name%'
-        closeParksTitle: 'Los mejores parques de atracciones cerca de %parkName%'
+        title: 'Características de {name}'
+        closeParksTitle: 'Los mejores parques de atracciones cerca de {parkName}'
         status: 'Estatus'
         park: 'Parque de atracciones'
         country: 'País'
@@ -50,7 +49,7 @@ coaster:
         vr: 'VR'
         indoor: 'Indoor'
         cost: 'Coste'
-    parkcoaster: 'También en %name%'
+    parkcoaster: 'También en {name}'
     photos: 'Fotos'
     location: 'Localización'
 
@@ -59,7 +58,7 @@ park:
     kiddies: 'Montaña rusa infantil|Montaña rusa infantil'
 
 coaster_ranking:
-    title: 'Clasificación de las mejores montañas rusas - %rankingMonth%'
+    title: 'Clasificación de las mejores montañas rusas - {rankingMonth}'
     description: 'Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.'
 
 map_index:
@@ -72,12 +71,12 @@ map_index:
         kiddie: 'Ocultar Montañas rusas infantil'
         notridden: 'No montado todavía'
         score: 'Resultado'
-        atleast: 'al menos %count%'
+        atleast: 'al menos {count}'
         openingDate: 'Fecha de apertura'
     results: 'Resultados'
 
 user_profile:
-    title: '%name% - Perfil'
+    title: '{name} - Perfil'
     ratings: 'Mostrar sus notas'
     map: 'Mostrar su coaster map'
 
@@ -87,7 +86,7 @@ user_list:
         title: '¿ Dónde te clasificas entre nuestros miembros ?'
         text: 'Esta página muestra una clasificación de nuestros miembros. ¡ Hace clic en ellos para descubrir sus clasificación detallados !'
     member_from: 'Miembro desde'
-    rating: '1 clasificación|%count% clasificación'
+    rating: '1 clasificación|{count} clasificación'
 
 me:
     title: 'Mi perfil'
@@ -112,7 +111,7 @@ review:
 
 users:
     ratings:
-        title: '%name% - Clasificación'
+        title: '{name} - Clasificación'
         coaster: 'Montaña rusa'
         manufacturer: 'Fabricante'
         opening_date: 'Abierto'
@@ -126,7 +125,7 @@ review_list:
 
 rating:
     last: 'Últimas notas'
-    action: 'calificó %value% estrellas'
+    action: 'calificó {value} estrellas'
 
 navbar:
     profile: 'Mi perfil'
@@ -167,13 +166,13 @@ contact:
     email:
         title: 'Contacto de formulario Captain Coaster'
     flash:
-        success: 'Gracias %name%, vuestro mensaje fue enviado al personal de Captain Coaster..'
+        success: 'Gracias {name}, vuestro mensaje fue enviado al personal de Captain Coaster..'
 
 notif:
     title: 'Actividad'
     empty: '¡ Nada especial ahora mismo, vaya a montar algunas montañas rusas !'
     badge:
-        message: 'Echale un vistazo: El Captain acaba de darte "%name%" la insignia !'
+        message: 'Echale un vistazo: El Captain acaba de darte "{name}" la insignia !'
     ranking:
         message: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.'
 
