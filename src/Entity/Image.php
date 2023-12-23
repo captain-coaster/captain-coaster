@@ -62,6 +62,7 @@ class Image
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="images")
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      * @Assert\NotBlank()
      */
     private User $uploader;

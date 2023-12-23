@@ -53,7 +53,7 @@ class Badge
      * @var User
      *
      * @ORM\ManyToMany(targetEntity="App\Entity\User", mappedBy="badges")
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\JoinColumn(nullable=true, onDelete="CASCADE")
      */
     private $users;
 
