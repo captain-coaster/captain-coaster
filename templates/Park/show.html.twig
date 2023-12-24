@@ -41,28 +41,30 @@
 
             </div>
         </div>
-        <div class="panel panel-white">
-            <div class="panel-heading">
-                <h6>
-                    {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}<br>
-                </h6>
+        {% if park.latitude is not null and park.longitude is not null %}
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h6>
+                        {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}<br>
+                    </h6>
+                </div>
+                <div class="content-group-sm media">
+                    <ul class="list-feed pl-15 pr-15">
+                        {% for infoPark in closestParks %}
+                            <li>
+                                <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
+                                    {{ infoPark.name }}
+                                </a>
+                                {{ ' - ' ~ infoPark.distance ~ ' km'}}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="border-top-grey text-center pt-10 pb-10">
+                    <a href="{{ path('map_index', {'parkslug': park.slug}) }}">{{ 'coaster.infos.closeParksLink'|trans({'%parkName%': park.name}) }}</a>
+                </div>
             </div>
-            <div class="content-group-sm media">
-                <ul class="list-feed pl-15 pr-15">
-                    {% for infoPark in closestParks %}
-                        <li>
-                            <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
-                                {{ infoPark.name }}
-                            </a>
-                            {{ ' - ' ~ infoPark.distance ~ ' km'}}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            <div class="border-top-grey text-center pt-10 pb-10">
-                <a href="{{ path('map_index', {'parkslug': park.slug}) }}">{{ 'coaster.infos.closeParksLink'|trans({'%parkName%': park.name}) }}</a>
-            </div>
-        </div>
+        {% endif %}
         <!-- /park stats -->
         <!-- coaster location -->
         <!-- removed until open street maps -->
