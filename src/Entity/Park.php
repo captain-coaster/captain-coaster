@@ -37,7 +37,7 @@ class Park
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @Groups({"read_coaster", "read_park"})
+     * @Groups({"list_coaster", "read_coaster", "read_park"})
      */
     private $name;
 
@@ -62,7 +62,7 @@ class Park
      *
      * @ORM\ManyToOne(targetEntity="Country")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read_park"})
+     * @Groups({"read_coaster", "read_park"})
      */
     private $country;
 

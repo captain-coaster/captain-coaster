@@ -27,6 +27,10 @@ security:
             pattern: ^/api$
             security: false
 
+        main_search:
+            pattern: ^/(en|fr|es)/search/main.json$
+            security: false
+
         api_secured:
             guard:
                 authenticators:

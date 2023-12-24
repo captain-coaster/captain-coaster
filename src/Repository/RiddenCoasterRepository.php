@@ -166,10 +166,11 @@ class RiddenCoasterRepository extends EntityRepository
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r', 'm', 'c', 'p')
+            ->select('r', 'm', 'c', 'p', 's')
             ->from('App:RiddenCoaster', 'r')
             ->join('r.user', 'u')
             ->join('r.coaster', 'c')
+            ->join('c.status', 's')
             ->leftJoin('c.manufacturer', 'm')
             ->join('c.park', 'p')
             ->where('r.user = :user')

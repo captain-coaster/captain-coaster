@@ -15,10 +15,10 @@
       <div class="panel-body no-border no-padding-top">
         {% for image in coaster.images|slice(0, number) %}
           <div class="col-sm-3">
-            <a class="m-10" href="{{ asset('images/coasters/' ~ image.path) }}" data-popup="lightbox"
+            <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-popup="lightbox"
                rel="gallery">
               <div class="thumb">
-                <img src="{{ image.path | imagine_filter('thumb_coaster') }}"
+                <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                      alt="{{ coaster.name }}">
               </div>
             </a>

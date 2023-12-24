@@ -78,7 +78,7 @@
                         <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                             <img {% if coaster.images|length > 0 %}
                                 {% set image = random(coaster.images) %}
-                                src="{{ image.path | imagine_filter('coaster_park_show') }}"
+                                src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                             {% else %}
                                 src="{{ asset('images/nophoto.png') }}"
                             {% endif %}
@@ -174,7 +174,7 @@
                 <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
                   <img {% if coaster.images|length > 0 %}
                     {% set image = random(coaster.images) %}
-                    src="{{ image.path | imagine_filter('coaster_park_show') }}"
+                    src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                   {% else %}
                     src="{{ asset('images/nophoto.png') }}"
                   {% endif %}

@@ -8,7 +8,7 @@ app:
     title:
         default: 'Welcome !'
     header:
-        search: 'Iron Gwazi, Busch Gardens...'
+        search: 'ArieForce One, Hersheypark...'
 
 index:
     title: 'Welcome !'
@@ -94,9 +94,13 @@ coaster_ranking:
     info:
         title: 'Last Updated: %rankingMonth%'
         next:  'Next update %date%'
-        coasters_ranked: 'ranked coasters'
+        coasters_ranked:
+            short: 'coasters'
+            long: 'ranked coasters'
         ratings: 'ratings'
-        comparisons: 'analyzed comparisons'
+        comparisons:
+            short: 'pairs'
+            long: 'analyzed pairs'
         users: 'voters'
     filter:
         continent: 'World'
@@ -327,17 +331,20 @@ badge:
     teamispeed: 'Team iSpeed'
 
 error:
+    400:
+        title: 'Bad request'
+        message: 'Bad request'
     404:
         title: 'Page not found'
-        message: 'Oops you seem to be lost...'
+        message: 'This page does not exist'
     403:
-        title: 'Forbidden Access'
-        message: 'You are not officially authorised to access this page by the Coasters Government !'
+        title: 'Access forbidden'
+        message: 'You are not allowed to access this page'
     generic:
-        title: 'Oops, an error occured !'
-        message: 'Calling the maintenance chief department...'
+        title: 'Oops, an error occurred !'
+        message: 'An error occurred. Contact us if the problem persists'
 
-User account is disabled.: 'User account is disabled. Having multiple accounts is not allowed.'
+User account is disabled.: 'This account is disabled because it did not comply with our policies. Contact us to get more information.'
 
 missing:
     step1:

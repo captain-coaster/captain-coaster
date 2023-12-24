@@ -5,6 +5,10 @@ namespace App\Service;
 use App\Entity\Notification;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Templating\EngineInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -38,7 +42,7 @@ class NotificationService
     private $templating;
 
     /**
-     * @var \Swift_Mailer
+     * @var MailerInterface
      */
     private $mailer;
 
@@ -63,19 +67,19 @@ class NotificationService
      * @param EntityManagerInterface $em
      * @param RouterInterface $router
      * @param Environment $templating
-     * @param \Swift_Mailer $mailer
+     * @param MailerInterface $mailer
      * @param TranslatorInterface $translator
      * @param string $emailFrom
      * @param string $emailFromName
      */
     public function __construct(
         EntityManagerInterface $em,
-        RouterInterface $router,
-        Environment $templating,
-        \Swift_Mailer $mailer,
-        TranslatorInterface $translator,
-        string $emailFrom,
-        string $emailFromName
+        RouterInterface        $router,
+        Environment            $templating,
+        MailerInterface        $mailer,
+        TranslatorInterface    $translator,
+        string                 $emailFrom,
+        string                 $emailFromName
     )
     {
         $this->em = $em;
@@ -165,7 +169,7 @@ class NotificationService
      * @param Notification $notification
      * @throws LoaderError
      * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws SyntaxError|TransportExceptionInterface
      */
     private function sendEmail(Notification $notification): void
     {
@@ -181,17 +185,11 @@ class NotificationService
             $notification->getUser()->getPreferredLocale()
         );
 
-        $message = (new \Swift_Message($subject))
-            ->setFrom([$this->emailFrom => $this->emailFromName])
-            ->setTo($notification->getUser()->getEmail())
-            ->setBody(
-                $this->templating->render(
-                    'Notification/email.html.twig',
-                    [
-                        'notification' => $notification,
-                    ]
-                ),
-                'text/html'
+        $message = (new Email())
+            ->from(new Address($this->emailFrom, $this->emailFromName))
+            ->to($notification->getUser()->getEmail())
+            ->subject($subject)
+            ->html($this->templating->render('Notification/email.html.twig', ['notification' => $notification])
             );
 
         $this->mailer->send($message);

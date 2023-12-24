@@ -7,12 +7,13 @@ use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ReviewController
@@ -25,24 +26,23 @@ class ReviewController extends AbstractController
      * Show a list of reviews
      *
      * @Route("/{page}", name="review_list", requirements={"page" = "\d+"}, methods={"GET"})
-     *
-     * @param Request $request
-     * @param PaginatorInterface $paginator
-     * @param int $page
-     * @return Response
      * @throws NonUniqueResultException
      */
-    public function listAction(Request $request, PaginatorInterface $paginator, $page = 1)
+    public function listAction(Request $request, PaginatorInterface $paginator, int $page = 1): Response
     {
         $query = $this->getDoctrine()
             ->getRepository(RiddenCoaster::class)
             ->findAll($request->getLocale());
 
-        $pagination = $paginator->paginate(
-            $query,
-            $page,
-            10
-        );
+        try {
+            $pagination = $paginator->paginate(
+                $query,
+                $page,
+                10
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render(
             'Review/list.html.twig',

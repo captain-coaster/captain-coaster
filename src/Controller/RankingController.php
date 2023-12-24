@@ -17,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -50,22 +51,13 @@ class RankingController extends AbstractController
      * @Route("/", name="ranking_index", methods={"GET"})
      * @throws \Exception
      */
-    public function indexAction(EntityManagerInterface $em)
+    public function indexAction(EntityManagerInterface $em): Response
     {
-        /** @var Ranking $ranking */
-        $ranking = $em->getRepository(Ranking::class)->findCurrent();
-
-        $rankingDate = clone $ranking->getComputedAt();
-        $nextRankingDate = $rankingDate->modify('first day of next month midnight 1 minute');
-        if ($nextRankingDate->getTimestamp() - (new \DateTime())->getTimestamp() < 3600) {
-            $nextRankingDate = null;
-        }
-
         return $this->render(
             'Ranking/index.html.twig',
             [
-                'ranking' => $ranking,
-                'nextRankingDate' => $nextRankingDate,
+                'ranking' => $em->getRepository(Ranking::class)->findCurrent(),
+                'previousRanking' => $em->getRepository(Ranking::class)->findPrevious(),
                 'filtersForm' => $this->getFiltersForm(),
             ]
         );
@@ -111,22 +103,19 @@ class RankingController extends AbstractController
     }
 
     /**
-     * @param array $filters
-     * @param int $page
-     * @return PaginationInterface
      * @throws \Exception
      */
-    private function getCoasters($filters = [], $page = 1)
+    private function getCoasters(array $filters = [], int $page = 1): PaginationInterface
     {
-        $query = $this->getDoctrine()
-            ->getRepository(Ranking::class)
-            ->findCoastersRanked($filters);
-
-        return $this->paginator->paginate(
-            $query,
-            $page,
-            self::COASTERS_PER_PAGE
-        );
+        try {
+            return $this->paginator->paginate(
+                $this->getDoctrine()->getRepository(Ranking::class)->findCoastersRanked($filters),
+                $page,
+                self::COASTERS_PER_PAGE
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
     }
 
     /**

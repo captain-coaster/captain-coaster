@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,13 +23,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\CoasterRepository")
  * @ApiResource(
  *     attributes={
- *         "normalization_context"={"groups"={"read_coaster"}}
+ *         "normalization_context"={"groups"={"list_coaster","read_coaster"}}
  *     },
- *     collectionOperations={"get"={"method"="GET"}},
- *     itemOperations={"get"={"method"="GET"}}
+ *     collectionOperations={"get"={"method"="GET","normalization_context"={"groups"={"list_coaster"}}}},
+ *     itemOperations={"get"={"method"="GET","normalization_context"={"groups"={"read_coaster"}}}}
  * )
  * @ApiFilter(SearchFilter::class, properties={"id": "exact", "name": "partial", "manufacturer": "exact"})
- * @ApiFilter(RangeFilter::class, properties={"totalRatings"})
+ * @ApiFilter(OrderFilter::class, properties={"id", "rank": {"nulls_comparison": OrderFilter::NULLS_LARGEST}}, arguments={"orderParameterName"="order"})
+ * @ApiFilter(RangeFilter::class, properties={"rank", "totalRatings"})
  * @ApiFilter(ExistsFilter::class, properties={"mainImage"})
  */
 class Coaster
@@ -39,7 +41,7 @@ class Coaster
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"read_coaster"})
+     * @Groups({"list_coaster", "read_coaster"})
      */
     private $id;
 
@@ -48,7 +50,7 @@ class Coaster
      *
      * @ORM\Column(name="name", type="string", length=255)
      * @Assert\NotBlank()
-     * @Groups({"read_coaster"})
+     * @Groups({"list_coaster", "read_coaster"})
      */
     private $name;
 
@@ -89,6 +91,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Model")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $model;
 
@@ -138,6 +141,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Restraint", inversedBy="coasters")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $restraint;
 
@@ -146,6 +150,7 @@ class Coaster
      *
      * @ORM\ManyToMany(targetEntity="Launch", inversedBy="coasters")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $launchs;
 
@@ -175,7 +180,7 @@ class Coaster
      *
      * @ORM\ManyToOne(targetEntity="Park", inversedBy="coasters", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"read_coaster"})
+     * @Groups({"list_coaster", "read_coaster"})
      */
     private $park;
 
@@ -192,6 +197,7 @@ class Coaster
      * @var \DateTime
      *
      * @ORM\Column(name="openingDate", type="date", nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $openingDate;
 
@@ -199,6 +205,7 @@ class Coaster
      * @var \DateTime
      *
      * @ORM\Column(name="closingDate", type="date", nullable=true)
+     * @Groups({"read_coaster"})
      */
     private $closingDate;
 
@@ -273,7 +280,7 @@ class Coaster
      * @var int
      *
      * @ORM\Column(type="integer", nullable=true)
-     * @Groups({"read_coaster"})
+     * @Groups({"list_coaster", "read_coaster"})
      */
     private $rank;
 

@@ -2,14 +2,23 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Status
  *
  * @ORM\Table(name="model")
  * @ORM\Entity
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read_model"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
  */
 class Model
 {
@@ -26,6 +35,7 @@ class Model
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
+     * @Groups({"read_model", "read_coaster"})
      */
     private $name;
 

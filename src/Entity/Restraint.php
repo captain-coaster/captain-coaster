@@ -2,15 +2,24 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Restraint
  *
  * @ORM\Table(name="restraint")
  * @ORM\Entity(repositoryClass="App\Repository\RestraintRepository")
+ * @ApiResource(
+ *     attributes={
+ *         "normalization_context"={"groups"={"read_restraint"}}
+ *     },
+ *     collectionOperations={"get"={"method"="GET"}},
+ *     itemOperations={"get"={"method"="GET"}}
+ * )
  */
 class Restraint
 {
@@ -27,6 +36,7 @@ class Restraint
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
+     * @Groups({"read_restraint", "read_coaster"})
      */
     private $name;
 

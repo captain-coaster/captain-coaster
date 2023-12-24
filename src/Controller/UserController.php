@@ -13,8 +13,9 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class UserController
@@ -26,20 +27,19 @@ class UserController extends AbstractController
     /**
      * List all users
      *
-     * @param PaginatorInterface $paginator
-     * @param int $page
-     * @return Response
-     *
      * @Route("/{page}", name="user_list", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listAction(PaginatorInterface $paginator, $page = 1)
+    public function listAction(PaginatorInterface $paginator, int $page = 1): Response
     {
-        $users = $this
-            ->getDoctrine()
-            ->getRepository(User::class)
-            ->getUserList();
-
-        $pagination = $paginator->paginate($users, $page, 21);
+        try {
+            $pagination = $paginator->paginate(
+                $this->getDoctrine()->getRepository(User::class)->getUserList(),
+                $page,
+                21
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render('User/list.html.twig', ['users' => $pagination]);
     }
@@ -47,30 +47,28 @@ class UserController extends AbstractController
     /**
      * Show all user's ratings
      *
-     * @param PaginatorInterface $paginator
-     * @param User $user
-     * @param int $page
-     * @return Response
-     *
      * @Route("/{id}/ratings/{page}", name="user_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listRatingsAction(PaginatorInterface $paginator, User $user, $page = 1)
+    public function listRatingsAction(Request $request, PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
         $query = $this
             ->getDoctrine()
             ->getRepository(RiddenCoaster::class)
             ->getUserRatings($user);
 
-        $pagination = $paginator->paginate(
-            $query,
-            $page,
-            30,
-            [
-                'wrap-queries' => true,
-                'defaultSortFieldName' => 'r.riddenAt',
-                'defaultSortDirection' => 'desc',
-            ]
-        );
+        try {
+            $pagination = $paginator->paginate(
+                $query,
+                $page,
+                30,
+                [
+                    'defaultSortFieldName' => 'r.riddenAt',
+                    'defaultSortDirection' => 'desc',
+                ]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render(
             'User/list_ratings.html.twig',
@@ -84,30 +82,29 @@ class UserController extends AbstractController
     /**
      * Show all user's reviews
      *
-     * @param PaginatorInterface $paginator
-     * @param User $user
-     * @param int $page
-     * @return Response
-     *
      * @Route("/{id}/reviews/{page}", name="user_reviews", requirements={"page" = "\d+"}, methods={"GET"})
      */
-    public function listReviews(PaginatorInterface $paginator, User $user, $page = 1)
+    public function listReviews(PaginatorInterface $paginator, User $user, int $page = 1): Response
     {
         $query = $this
             ->getDoctrine()
             ->getRepository(RiddenCoaster::class)
             ->getUserReviews($user);
 
-        $pagination = $paginator->paginate(
-            $query,
-            $page,
-            30,
-            [
-                'wrap-queries' => true,
-                'defaultSortFieldName' => 'r.updatedAt',
-                'defaultSortDirection' => 'desc',
-            ]
-        );
+        try {
+            $pagination = $paginator->paginate(
+                $query,
+                $page,
+                30,
+                [
+                    'wrap-queries' => true,
+                    'defaultSortFieldName' => 'r.updatedAt',
+                    'defaultSortDirection' => 'desc',
+                ]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render(
             'Review/list.html.twig',
@@ -146,35 +143,23 @@ class UserController extends AbstractController
      * Show all user's pictures
      *
      * @Route("/{id}/pictures", name="user_pictures", requirements={"page" = "\d+"}, methods={"GET"})
-     *
-     * @param Request $request
-     * @param User $user
-     * @param EntityManagerInterface $em
-     * @param PaginatorInterface $paginator
-     * @return Response
      */
-    public function picturesAction(
-        Request                $request,
-        User                   $user,
-        EntityManagerInterface $em,
-        PaginatorInterface     $paginator
-    )
+    public function picturesAction(Request $request, User $user, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
-        $page = $request->get('page', 1);
-        $query = $em
-            ->getRepository(Image::class)
-            ->findUserImages($user);
-
-        $pagination = $paginator->paginate(
-            $query,
-            $page,
-            30,
-            [
-                'wrap-queries' => true,
-                'defaultSortFieldName' => 'i.likeCounter',
-                'defaultSortDirection' => 'desc',
-            ]
-        );
+        try {
+            $pagination = $paginator->paginate(
+                $em->getRepository(Image::class)->findUserImages($user),
+                $request->get('page', 1),
+                30,
+                [
+                    'wrap-queries' => true,
+                    'defaultSortFieldName' => 'i.likeCounter',
+                    'defaultSortDirection' => 'desc',
+                ]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         $userLikes = [];
         if ($loggedInUser = $this->getUser()) {

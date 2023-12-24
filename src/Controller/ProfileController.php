@@ -13,6 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfileController extends AbstractController
@@ -20,7 +22,7 @@ class ProfileController extends AbstractController
     /**
      * @param Request $request
      * @param StatService $statService
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      * @Route("/me", name="me", methods={"GET", "POST"})
      * @Security("is_granted('ROLE_USER')")
      */
@@ -59,15 +61,12 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * @param EntityManagerInterface $em
-     * @param PaginatorInterface $paginator
-     * @param int $page
-     * @return \Symfony\Component\HttpFoundation\Response
+     * Show my ratings
      *
      * @Route("/me/ratings/{page}", name="me_ratings", requirements={"page" = "\d+"}, methods={"GET"})
      * @Security("is_granted('ROLE_USER')")
      */
-    public function ratingsAction(EntityManagerInterface $em, PaginatorInterface $paginator, $page = 1)
+    public function ratingsAction(Request $request, EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
     {
         /** @var User $user */
         $user = $this->getUser();
@@ -76,16 +75,19 @@ class ProfileController extends AbstractController
             ->getRepository(RiddenCoaster::class)
             ->getUserRatings($user);
 
-        $ratings = $paginator->paginate(
-            $query,
-            $page,
-            30,
-            [
-                'wrap-queries' => true,
-                'defaultSortFieldName' => 'r.updatedAt',
-                'defaultSortDirection' => 'desc',
-            ]
-        );
+        try {
+            $ratings = $paginator->paginate(
+                $query,
+                $page,
+                30,
+                [
+                    'defaultSortFieldName' => 'r.updatedAt',
+                    'defaultSortDirection' => 'desc',
+                ]
+            );
+        } catch (\UnexpectedValueException $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->render(
             'Profile/ratings.html.twig',
@@ -106,7 +108,7 @@ class ProfileController extends AbstractController
      * @Security("is_granted('ROLE_USER')")
      *
      * @param BannerMaker $bannerMaker
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function getBanner(BannerMaker $bannerMaker)
     {

@@ -19,56 +19,27 @@ class RankingService
     // Minimum comparison number between coaster A and B
     const MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
-    const MIN_DUELS = 275;
+    const MIN_DUELS = 280;
     // For elite coaster, we need more comparisons
     const ELITE_SCORE = 99;
-    const MIN_DUELS_ELITE_SCORE = 350;
+    const MIN_DUELS_ELITE_SCORE = 375;
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var NotificationService
-     */
-    private $notificationService;
-
-    /**
-     * @var array
-     */
-    private $duels = [];
-
-    /**
-     * @var array
-     */
-    private $ranking = [];
-
-    /**
-     * @var integer
-     */
-    private $totalComparisonNumber = 0;
-
-    /**
-     * @var array
-     */
-    private $userComparisons = [];
-
-    /**
-     * @var array
-     */
-    private $rejectedCoasters = [];
+    private EntityManagerInterface $em;
+    private array $duels = [];
+    private array $ranking = [];
+    private int $totalComparisonNumber = 0;
+    private array $userComparisons = [];
+    private array $rejectedCoasters = [];
+    private ?string $highlightedNewCoaster = null;
 
     /**
      * RankingService constructor
      *
      * @param EntityManagerInterface $em
-     * @param NotificationService $notificationService
      */
-    public function __construct(EntityManagerInterface $em, NotificationService $notificationService)
+    public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->notificationService = $notificationService;
     }
 
     /**
@@ -83,14 +54,13 @@ class RankingService
         $this->computeRanking();
 
         $rank = 1;
-        $infos = [];
-        $newCoaster = null;
+        $coasterList = [];
 
         foreach ($this->ranking as $coasterId => $score) {
             $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
 
-            if ($coaster->getRank() === null && $rank < 300 && $newCoaster === null) {
-                $newCoaster = $coaster->getName();
+            if ($coaster->getRank() === null && $rank < 300 && $this->highlightedNewCoaster === null) {
+                $this->highlightedNewCoaster = $coaster->getName();
             }
 
             $coaster->setScore($score);
@@ -99,7 +69,7 @@ class RankingService
             $coaster->setUpdatedAt(new \DateTime());
 
             // used just for command output
-            $infos[] = $coaster;
+            $coasterList[] = $coaster;
 
             $rank++;
 
@@ -120,15 +90,9 @@ class RankingService
             $this->createRankingEntry();
             // remove coasters not ranked anymore
             $this->disableNonRankedCoasters();
-            // send notifications to everyone
-            if ($newCoaster) {
-                $this->notificationService->sendAll('notif.ranking.messageWithNewCoaster', NotificationService::NOTIF_RANKING, $newCoaster);
-            } else {
-                $this->notificationService->sendAll('notif.ranking.message', NotificationService::NOTIF_RANKING);
-            }
         }
 
-        return $infos;
+        return $coasterList;
     }
 
     /**
@@ -152,6 +116,14 @@ class RankingService
         }
 
         $this->computeScore();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getHighlightedNewCoaster(): ?string
+    {
+        return $this->highlightedNewCoaster;
     }
 
     /**

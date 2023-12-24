@@ -3,8 +3,10 @@
 namespace App\Doctrine;
 
 use App\Entity\Image;
+use App\Service\DiscordService;
 use App\Service\ImageManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
+use League\Flysystem\FilesystemException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -13,26 +15,19 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class ImageListener
 {
-    /**
-     * @var ImageManager
-     */
-    private $imageManager;
+    private ImageManager $imageManager;
+    private DiscordService $discordService;
 
-    /**
-     * ImageUploadListener constructor.
-     * @param ImageManager $imageManager
-     */
-    public function __construct(ImageManager $imageManager)
+    public function __construct(ImageManager $imageManager, DiscordService $discordService)
     {
         $this->imageManager = $imageManager;
+        $this->discordService = $discordService;
     }
 
     /**
      * Before persist:
      *  - upload file
-     *
-     * @param LifecycleEventArgs $args
-     * @throws \Exception
+     * @throws FilesystemException
      */
     public function prePersist(LifecycleEventArgs $args)
     {
@@ -45,16 +40,17 @@ class ImageListener
 
         // only upload new files
         if ($file instanceof UploadedFile) {
-            $fileName = $this->imageManager->upload($file);
+            $fileName = $this->imageManager->upload($file, $image->getCoaster()->getSlug());
             $image->setFilename($fileName);
         }
+
+        $this->discordService->notify('A new picture of ' . $image->getCoaster()->getName() . ' is waiting for review');
     }
 
     /**
      * Before remove :
      *  - remove image file on disk
-     *
-     * @param LifecycleEventArgs $args
+     * @throws FilesystemException
      */
     public function preRemove(LifecycleEventArgs $args)
     {
@@ -70,8 +66,6 @@ class ImageListener
      * After remove :
      *  - update main images
      *  - remove cache
-     *
-     * @param LifecycleEventArgs $args
      */
     public function postRemove(LifecycleEventArgs $args)
     {
@@ -81,15 +75,12 @@ class ImageListener
         }
 
         $this->imageManager->setMainImages();
-
         $this->imageManager->removeCache($image);
     }
 
     /**
      * After update (enabled set to 1 is an update)
      *  - update main images
-     *
-     * @param LifecycleEventArgs $args
      */
     public function postUpdate(LifecycleEventArgs $args)
     {

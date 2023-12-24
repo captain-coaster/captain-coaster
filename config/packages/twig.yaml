@@ -4,3 +4,4 @@ twig:
     strict_variables: '%kernel.debug%'
     globals:
         locales: '%app_locales_array%'
+        pictures_cdn: '%env(PICTURES_CDN)%'

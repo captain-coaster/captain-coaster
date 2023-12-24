@@ -11,8 +11,13 @@ use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -26,7 +31,7 @@ class DefaultController extends AbstractController
      * Root of application, redirect to browser language if defined
      *
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function rootAction(Request $request)
     {
@@ -69,19 +74,17 @@ class DefaultController extends AbstractController
     /**
      * Contact form
      *
-     * @param Request $request
-     * @param \Swift_Mailer $mailer
-     * @param DiscordService $discord
-     * @param TranslatorInterface $translator
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      * @Route("/contact", name="default_contact", methods={"GET", "POST"})
+     * @throws TransportExceptionInterface
      */
     public function contactAction(
-        Request $request,
-        \Swift_Mailer $mailer,
-        DiscordService $discord,
+        Request             $request,
+        MailerInterface     $mailer,
+        DiscordService      $discord,
         TranslatorInterface $translator
-    ) {
+    )
+    {
         /** @var Form $form */
         $form = $this->createForm(ContactType::class, null);
         $form->handleRequest($request);
@@ -89,23 +92,17 @@ class DefaultController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
-            $message = (new \Swift_Message($translator->trans('contact.email.title')))
-                ->setFrom($this->getParameter('app_mail_from'), $this->getParameter('app_mail_from_name'))
-                ->setTo($this->getParameter('app_contact_mail_to'))
-                ->setReplyTo($data['email'])
-                ->setBody(
-                    $this->renderView(
-                        'Default/contact_mail.txt.twig',
-                        [
-                            'name' => $data['name'],
-                            'message' => $data['message'],
-                        ]
-                    )
+            $message = (new Email())
+                ->from(new Address($this->getParameter('app_mail_from'),$this->getParameter('app_mail_from_name') ))
+                ->to($this->getParameter('app_contact_mail_to'))
+                ->replyTo($data['email'])
+                ->subject($translator->trans('contact.email.title'))
+                ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']])
                 );
             $mailer->send($message);
 
             // send notification
-            $discord->notify('We just received new message from '.$data['name']."\n\n".$data['message']);
+            $discord->notify('We just received new message from ' . $data['name'] . "\n\n" . $data['message']);
 
             $this->addFlash(
                 'success',
