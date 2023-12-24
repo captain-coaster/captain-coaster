@@ -40,6 +40,7 @@ coaster:
     infos:
         title: '{name} features'
         closeParksTitle: 'Best amusement parks near {parkName}'
+        closeParksLink: 'View %parkName% on the map'
         status: 'Status'
         park: 'Park'
         country: 'Country'

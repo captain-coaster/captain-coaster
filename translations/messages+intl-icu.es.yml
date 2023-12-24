@@ -35,6 +35,7 @@ coaster:
     infos:
         title: 'Características de {name}'
         closeParksTitle: 'Los mejores parques de atracciones cerca de {parkName}'
+        closeParksLink: 'Ver %parkName% en el mapa'
         status: 'Estatus'
         park: 'Parque de atracciones'
         country: 'País'

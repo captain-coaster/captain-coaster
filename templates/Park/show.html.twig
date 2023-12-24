@@ -41,20 +41,17 @@
 
                 </div>
             </div>
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h6 class="text-center">
-                        {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}&nbsp;<a
-                            href="{{ path('map_index', {'parkslug': park.slug}) }}">
-                            <i class="icon-map text-grey-600" style="font-size:24px;"></i>
-                        </a>
-                    </h6>
-                </div>
-                <div class="content-group-sm media row">
-                    <div class="col-xs-6 col-xs-offset-3">
-                        <ul class="list-feed">
+            {% if park.latitude is not null and park.longitude is not null %}
+                <div class="panel panel-white">
+                    <div class="panel-heading">
+                        <h6>
+                            {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}<br>
+                        </h6>
+                    </div>
+                    <div class="content-group-sm media">
+                        <ul class="list-feed pl-15 pr-15">
                             {% for infoPark in closestParks %}
-                                <li class="">
+                                <li>
                                     <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
                                         {{ infoPark.name }}
                                     </a>
@@ -63,9 +60,11 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    <div class="border-top-grey text-center pt-10 pb-10">
+                        <a href="{{ path('map_index', {'parkslug': park.slug}) }}">{{ 'coaster.infos.closeParksLink'|trans({'%parkName%': park.name}) }}</a>
+                    </div>
                 </div>
-
-            </div>
+            {% endif %}
             <!-- /park stats -->
             <!-- coaster location -->
             <!-- removed until open street maps -->
@@ -77,8 +76,9 @@
                     <li class="media panel panel-body stack-media-on-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">
                         <div class="media-left">
                             <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                                <img {% if coaster.mainImage %}
-                                    src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                                <img {% if coaster.images|length > 0 %}
+                                    {% set image = random(coaster.images) %}
+                                    src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                                 {% else %}
                                     src="{{ asset('images/nophoto.png') }}"
                                 {% endif %}
