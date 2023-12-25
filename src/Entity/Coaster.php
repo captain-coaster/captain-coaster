@@ -90,7 +90,7 @@ class Coaster implements \Stringable
     private ?bool $vr = false;
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
     private ?bool $indoor = false;
-    #[ORM\ManyToOne(targetEntity: 'Park', inversedBy: 'coasters', fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: 'Park', fetch: 'LAZY', inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?Park $park = null;
