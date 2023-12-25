@@ -128,7 +128,7 @@ class Coaster implements \Stringable
 
     #[ORM\Column(type: Types::DECIMAL, precision: 14, scale: 11, nullable: true)]
     #[Groups(['read_coaster'])]
-    private ?float $score = null;
+    private ?string $score = null;
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?int $rank = null;
@@ -556,12 +556,12 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    public function getAverageTopRank(): ?int
+    public function getAverageTopRank(): ?string
     {
         return $this->averageTopRank;
     }
 
-    public function setAverageTopRank(int $averageTopRank): self
+    public function setAverageTopRank(string $averageTopRank): static
     {
         $this->averageTopRank = $averageTopRank;
 
@@ -592,12 +592,12 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    public function getScore(): ?float
+    public function getScore(): ?string
     {
         return $this->score;
     }
 
-    public function setScore(float $score): static
+    public function setScore(string $score): static
     {
         $this->score = $score;
 

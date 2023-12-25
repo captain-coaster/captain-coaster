@@ -67,7 +67,8 @@
         "allow-plugins": {
             "symfony/flex": true,
             "symfony/runtime": true,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "php-http/discovery": true
         },
         "platform": {
             "php": "8.2.5"

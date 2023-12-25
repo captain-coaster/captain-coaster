@@ -72,9 +72,16 @@ class User implements UserInterface
     #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class)]
     private Collection $images;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private \DateTimeInterface $lastLogin;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private bool $emailNotification = true;
@@ -92,7 +99,7 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $addTodayDateWhenRating = false;
 
-    #[ORM\Column(type: Types::ARRAY, options: ['default' => 0])]
+    #[ORM\Column(type: Types::ARRAY)]
     private array $roles = [];
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
@@ -240,6 +247,30 @@ class User implements UserInterface
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $lastLogin): static
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->lastLogin;
     }
 
     public function getDisplayName(): string

@@ -68,5 +68,7 @@ class RankingHistoryManagerCommand extends Command
         }
 
         $output->writeln('All ranked coasters saved.');
+
+        return 0;
     }
 }
