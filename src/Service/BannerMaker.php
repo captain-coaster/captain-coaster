@@ -15,33 +15,18 @@ class BannerMaker
 {
     private ?\Imagine\Image\ImageInterface $image = null;
 
-    /**
-     * BannerMaker constructor.
-     *
-     * @param string $fontPath
-     * @param string $targetPath
-     * @param string $backgroundPath
-     */
     public function __construct(
         private readonly Imagine $imagine,
-        /**
-         * @var string path to font
-         */
+        /** @var string path to font */
         private $fontPath,
-        /**
-         * @var string path target directory
-         */
+        /** @var string path target directory */
         private $targetPath,
-        /**
-         * @var string path to background image
-         */
+        /** @var string path to background image */
         private $backgroundPath
     ) {
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     public function makeBanner(User $user)
     {
         $this->createImage();
@@ -57,9 +42,7 @@ class BannerMaker
         $this->saveImage($user);
     }
 
-    /**
-     * Create new image with background.
-     */
+    /** Create new image with background. */
     private function createImage()
     {
         $this->image = $this->imagine->open($this->backgroundPath);
@@ -70,17 +53,13 @@ class BannerMaker
         $this->image->save(sprintf('%s/%d.png', $this->targetPath, $user->getId()));
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     private function writeCoasterCount(int $count)
     {
         $this->writeText($count.' coasters', 110, 32, 12);
     }
 
-    /**
-     * @throws InvalidArgumentException
-     */
+    /** @throws InvalidArgumentException */
     private function writeTop3(array $top)
     {
         $y = 3;

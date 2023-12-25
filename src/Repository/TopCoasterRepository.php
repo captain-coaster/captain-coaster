@@ -21,9 +21,7 @@ class TopCoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, TopCoaster::class);
     }
 
-    /**
-     * @return mixed|null
-     */
+    /** @return mixed|null */
     public function countForCoaster(Coaster $coaster)
     {
         try {
@@ -40,9 +38,7 @@ class TopCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Count all coasters inside main tops only.
-     */
+    /** Count all coasters inside main tops only. */
     public function countAllInTops()
     {
         try {
@@ -59,9 +55,7 @@ class TopCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Update totalTopsIn for all coasters.
-     */
+    /** Update totalTopsIn for all coasters. */
     public function updateTotalTopsIn(): bool
     {
         $connection = $this->getEntityManager()->getConnection();
@@ -109,9 +103,8 @@ class TopCoasterRepository extends ServiceEntityRepository
 
         try {
             $statement = $connection->prepare($sql);
-            $statement->execute(['minTopsIn' => $minTopsIn]);
 
-            return $statement->rowCount();
+            return $statement->executeStatement(['minTopsIn' => $minTopsIn]);
         } catch (DBALException) {
             return false;
         }

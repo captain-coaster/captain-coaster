@@ -1,10 +1,13 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Command;
 
 use App\Entity\Coaster;
 use App\Entity\Status;
 use App\Repository\CoasterRepository;
+use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,11 +20,11 @@ class CoasterOpenCommand extends Command
     protected static $defaultName = 'coaster:open';
 
     public function __construct(
+        private readonly CoasterRepository $coasterRepository,
+        private readonly StatusRepository $statusRepository,
         private readonly EntityManagerInterface $em,
-        private readonly CoasterRepository      $coasterRepository,
-        private readonly ChatterInterface       $chatter,
-    )
-    {
+        private readonly ChatterInterface $chatter
+    ) {
         parent::__construct();
     }
 
@@ -30,31 +33,21 @@ class CoasterOpenCommand extends Command
         $this->setDescription('Checks if a coaster opens today and change its status.');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Exception
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $today = new \DateTime();
 
-        if ($today->format('dm') === '0101') {
+        if ('0101' === $today->format('dm')) {
             $output->writeln('No opening first day of year.');
 
-            return;
+            return 0;
         }
 
-        $openingCoasters = $this->coasterRepository->findBy(
-            [
-                'openingDate' => $today,
-            ]
-        );
+        $openingCoasters = $this->coasterRepository->findBy([
+            'openingDate' => $today,
+        ]);
 
-        $operatingStatus = $this->coasterRepository->findOneBy(
-            ['name' => Status::OPERATING]
-        );
+        $operatingStatus = $this->statusRepository->findOneBy(['name' => Status::OPERATING]);
 
         /** @var Coaster $coaster */
         foreach ($openingCoasters as $coaster) {
@@ -63,8 +56,11 @@ class CoasterOpenCommand extends Command
             $this->em->flush();
 
             $this->chatter->send(
-                (new ChatMessage('We just opened ' . $coaster->getName() . ' at ' . $coaster->getPark()->getName() . '! 🎉'))->transport('discord_notif')
+                (new ChatMessage('We just opened '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🎉'))
+                    ->transport('discord_notif')
             );
         }
+
+        return 0;
     }
 }

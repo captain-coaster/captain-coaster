@@ -14,18 +14,12 @@ use Symfony\Component\Stopwatch\Stopwatch;
 class CoasterUpdateCommand extends Command
 {
     protected static $defaultName = 'coaster:update';
-    /** @var RatingService */
-    protected $ratingService;
 
-    /** @var TopService */
-    protected $topService;
-
-    /** RatingUpdateCommand constructor. */
-    public function __construct(RatingService $ratingService, TopService $topService)
-    {
+    public function __construct(
+        private readonly RatingService $ratingService,
+        private readonly TopService $topService
+    ) {
         parent::__construct();
-        $this->ratingService = $ratingService;
-        $this->topService = $topService;
     }
 
     protected function configure()
@@ -33,8 +27,7 @@ class CoasterUpdateCommand extends Command
         $this->setDescription('Update average rating and total ratings calculated values for all coasters');
     }
 
-    /** @return int|void|null */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('command');
@@ -48,5 +41,7 @@ class CoasterUpdateCommand extends Command
         $output->writeln("$topNumber tops updated.");
 
         $output->writeln((string) $stopwatch->stop('command'));
+
+        return 0;
     }
 }

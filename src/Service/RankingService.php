@@ -52,7 +52,7 @@ class RankingService
                 $this->highlightedNewCoaster = $coaster->getName();
             }
 
-            $coaster->setScore($score);
+            $coaster->setScore((string) $score);
             $coaster->setPreviousRank($coaster->getRank());
             $coaster->setRank($rank);
             $coaster->setUpdatedAt(new \DateTime());

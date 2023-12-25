@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\BadgeService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,12 +16,8 @@ use Symfony\Component\Stopwatch\Stopwatch;
 class BadgeGiveCommand extends Command
 {
     protected static $defaultName = 'badge:give';
-    public $repository;
 
-    /**
-     * BadgeGiveCommand constructor.
-     */
-    public function __construct(private readonly BadgeService $badgeService, private readonly EntityManagerInterface $em, private readonly \App\Repository\UserRepository $userRepository)
+    public function __construct(private readonly BadgeService $badgeService, private readonly UserRepository $userRepository)
     {
         parent::__construct();
     }
@@ -32,13 +28,7 @@ class BadgeGiveCommand extends Command
             ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
-    /**
-     * @return int|void|null
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $users = [];
         $stopwatch = new Stopwatch();
@@ -48,9 +38,9 @@ class BadgeGiveCommand extends Command
         $userId = $input->getArgument('user');
 
         if (null !== $userId) {
-            $users[] = $this->repository->findOneBy(['id' => $userId]);
+            $users[] = $this->userRepository->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->em->getRepository(User::class)->getUsersWithRecentRatingOrTopUpdate();
+            $users = $this->userRepository->getUsersWithRecentRatingOrTopUpdate();
         }
 
         /** @var User $user */
@@ -61,5 +51,7 @@ class BadgeGiveCommand extends Command
 
         $output->writeln('End of command.');
         $output->writeln((string) $stopwatch->stop('badge'));
+
+        return 0;
     }
 }

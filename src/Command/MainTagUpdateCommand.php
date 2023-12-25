@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Coaster;
+use App\Repository\CoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,14 +13,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class MainTagUpdateCommand extends Command
 {
-    public $repository;
     protected static $defaultName = 'main-tag:update';
 
-    /**
-     * MainTagUpdateCommand constructor.
-     * @param EntityManagerInterface $em
-     */
-    public function __construct(private readonly EntityManagerInterface $em, private readonly \App\Repository\CoasterRepository $coasterRepository)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly CoasterRepository $coasterRepository)
     {
         parent::__construct();
     }
@@ -28,24 +25,18 @@ class MainTagUpdateCommand extends Command
         $this->setDescription('Update main tags for all coasters');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('main-tag');
         $output->writeln('Start updating main tags');
 
         $conn = $this->em->getConnection();
-        $coasters = $this->repository->findAll();
+        $coasters = $this->coasterRepository->findAll();
 
         $sql = 'truncate table main_tag';
         $stmt = $conn->prepare($sql);
-        $stmt->execute();
+        $stmt->executeStatement();
 
         foreach ($coasters as $coaster) {
             $conn = $this->em->getConnection();
@@ -64,11 +55,11 @@ class MainTagUpdateCommand extends Command
             GROUP BY t.id
             ORDER BY nb DESC';
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute(['coasterId' => $coaster->getId()]);
+            $statement = $conn->prepare($sql);
+            $result = $statement->executeQuery(['coasterId' => $coaster->getId()]);
 
             $rank = 1;
-            foreach ($stmt->fetchAll() as $mainTag) {
+            foreach ($result->fetchAllAssociative() as $mainTag) {
                 // stop after 3 main tags, or if it's not popular enough
                 if ($rank > 3 || $mainTag['nb'] < 3) {
                     break;
@@ -76,11 +67,13 @@ class MainTagUpdateCommand extends Command
 
                 $sql = 'INSERT INTO `main_tag` (coaster_id, tag_id, rank) VALUES (:coasterId, :tagId, :rank)';
                 $stmt = $conn->prepare($sql);
-                $stmt->execute(['coasterId' => $coaster->getId(), 'tagId' => (int)$mainTag['id'], 'rank' => $rank]);
-                $rank++;
+                $stmt->executeStatement(['coasterId' => $coaster->getId(), 'tagId' => (int) $mainTag['id'], 'rank' => $rank]);
+                ++$rank;
             }
         }
 
-        $output->writeln((string)$stopwatch->stop('main-tag'));
+        $output->writeln((string) $stopwatch->stop('main-tag'));
+
+        return 0;
     }
 }

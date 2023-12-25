@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Repository\UserRepository;
 use App\Service\BannerMaker;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,9 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class BannerMakerCommand extends Command
 {
     protected static $defaultName = 'banner:make';
-    public $repository;
 
-    public function __construct(private readonly BannerMaker $bannerMakerService, private readonly EntityManagerInterface $em, private readonly \App\Repository\UserRepository $userRepository)
+    public function __construct(private readonly BannerMaker $bannerMakerService, private readonly UserRepository $userRepository)
     {
         parent::__construct();
     }
@@ -27,10 +26,7 @@ class BannerMakerCommand extends Command
             ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
-    /**
-     * @return int|void|null
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $users = [];
         $output->writeln('Start making banners.');
@@ -38,9 +34,9 @@ class BannerMakerCommand extends Command
         $userId = $input->getArgument('user');
 
         if (null !== $userId) {
-            $users[] = $this->repository->findOneBy(['id' => $userId]);
+            $users[] = $this->userRepository->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->repository->findAll();
+            $users = $this->userRepository->findAll();
         }
 
         foreach ($users as $user) {
@@ -48,5 +44,7 @@ class BannerMakerCommand extends Command
         }
 
         $output->writeln('End.');
+
+        return 0;
     }
 }

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -13,7 +15,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * RiddenCoasterRepository
+ * RiddenCoasterRepository.
  */
 class RiddenCoasterRepository extends ServiceEntityRepository
 {
@@ -23,9 +25,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count all ratings
-     *
-     * @return mixed
+     * Count all ratings.
      */
     public function countAll()
     {
@@ -42,8 +42,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count all ratings with text review
-     * @return mixed
+     * Count all ratings with text review.
+     *
      * @throws NonUniqueResultException
      */
     public function countReviews()
@@ -57,8 +57,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count all new ratings since date passed in parameter
-     * @return mixed
+     * Count all new ratings since date passed in parameter.
+     *
      * @throws NonUniqueResultException
      */
     public function countNew(\DateTime $date)
@@ -74,8 +74,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count all ratings for a specific user passed in parameter
-     * @return mixed
+     * Count all ratings for a specific user passed in parameter.
+     *
      * @throws NonUniqueResultException
      */
     public function countForUser(User $user)
@@ -90,9 +90,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    /**
-     * @return mixed
-     */
     public function countForCoaster(Coaster $coaster)
     {
         try {
@@ -110,8 +107,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get ratings for a specific coaster ordered by language preference, text review and date
-     * @return mixed
+     * Get ratings for a specific coaster ordered by language preference, text review and date.
      */
     public function getReviews(Coaster $coaster, string $locale = 'en')
     {
@@ -120,7 +116,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r', 'p', 'c', 'u')
             ->addSelect(
-                "CASE WHEN r.language = :locale AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority"
+                'CASE WHEN r.language = :locale AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from('App:RiddenCoaster', 'r')
             ->innerJoin('r.user', 'u')
@@ -136,15 +132,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get latest text reviews ordered by language
-     * @return mixed
+     * Get latest text reviews ordered by language.
      */
     public function getLatestReviewsByLocale(string $locale = 'en', int $limit = 3)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
-            ->addSelect("CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority")
+            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
             ->addSelect('u')
             ->from('App:RiddenCoaster', 'r')
             ->innerJoin('r.user', 'u')
@@ -157,9 +152,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return QueryBuilder
-     */
+    /** @return QueryBuilder */
     public function getUserRatings(User $user)
     {
         return $this->getEntityManager()
@@ -175,9 +168,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
     }
 
-    /**
-     * @return QueryBuilder
-     */
+    /** @return QueryBuilder */
     public function getUserReviews(User $user)
     {
         return $this->getEntityManager()
@@ -194,9 +185,10 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all reviews ordered by language
-     * @param string $locale
+     * Get all reviews ordered by language.
+     *
      * @return array|mixed
+     *
      * @throws NonUniqueResultException
      */
     public function findAll(string $locale = 'en')
@@ -212,7 +204,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r, u')
-            ->addSelect("CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority")
+            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
             ->from('App:RiddenCoaster', 'r')
             ->join('r.user', 'u')
             ->where('r.review is not null')
@@ -223,9 +215,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setHint('knp_paginator.count', $count);
     }
 
-    /**
-     * Update totalRating for all coasters
-     */
+    /** Update totalRating for all coasters */
     public function updateTotalRatings(): bool
     {
         $connection = $this->getEntityManager()->getConnection();
@@ -249,9 +239,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return true;
     }
 
-    /**
-     * Update averageRating for all coasters
-     */
+    /** Update averageRating for all coasters */
     public function updateAverageRatings(int $minRatings): bool|int
     {
         $connection = $this->getEntityManager()->getConnection();
@@ -269,17 +257,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         try {
             $statement = $connection->prepare($sql);
-            $statement->execute(['minRatings' => $minRatings]);
 
-            return $statement->rowCount();
+            return $statement->executeStatement(['minRatings' => $minRatings]);
         } catch (\Exception) {
             return false;
         }
     }
 
     /**
-     * Get country where a user rode the most
-     * @return mixed
+     * Get country where a user rode the most.
      */
     public function findMostRiddenCountry(User $user)
     {
@@ -306,8 +292,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Count ridden coasters for a user in Top 100
-     * @return mixed
+     * Count ridden coasters for a user in Top 100.
      */
     public function countTop100ForUser(User $user)
     {
@@ -327,9 +312,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return mixed|string
-     */
+    /** @return mixed|string */
     public function getMostRiddenManufacturer(User $user)
     {
         try {
@@ -352,9 +335,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return mixed
-     */
     public function findCoastersWithNoImage(UserInterface $user, int $max = 5): mixed
     {
         return $this->getEntityManager()
@@ -372,9 +352,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * Get user ratings for monthly ranking update
-     */
+    /** Get user ratings for monthly ranking update */
     public function findUserRatingsForRanking(int $userId): array
     {
         $query = $this->getEntityManager()->createQuery('
