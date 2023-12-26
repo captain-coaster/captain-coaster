@@ -149,6 +149,8 @@ me:
         ratings: 'My ratings'
         tops: 'My tops'
         map: 'My map'
+        photos: 'My photos'
+        reviews: 'My reviews'
     parameters: 'Parameters'
     form:
         displayName: 'I want to appear as'
@@ -248,6 +250,7 @@ users:
 
 review_list:
     title: 'Coaster reviews'
+    no_review: 'No review!'
 
 rating:
     last: 'Latest ratings'

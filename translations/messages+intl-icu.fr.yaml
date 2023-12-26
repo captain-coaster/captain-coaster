@@ -149,6 +149,8 @@ me:
         ratings: 'Mes notes'
         tops: 'Mes tops'
         map: 'Ma carte'
+        photos: 'Mes photos'
+        reviews: 'Mes avis'
     parameters: 'Préférences'
     form:
         displayName: 'Je souhaite apparaître en tant que'
@@ -229,6 +231,8 @@ review:
     form:
         title: 'Avis sur {name}'
 
+
+
 users:
     tops:
         title: 'Tops de {name}'
@@ -248,6 +252,7 @@ users:
 
 review_list:
     title: 'Tous les avis'
+    no_review: 'Aucun avis !'
 
 rating:
     last: 'Dernières notes'
