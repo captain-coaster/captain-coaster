@@ -39,13 +39,14 @@ class RankingCommand extends Command
         $output->writeln('Starting update ranking command.');
 
         $dryRun = $input->getOption('dry-run');
-        $output->writeln(($dryRun) ? 'Dry-run mode' : 'Production update');
 
         // dry run safety
         if ('1' !== (new \DateTime())->format('j') && !$dryRun) {
             $output->writeln('We are not first day of month. We do it dry-run anyway.');
             $dryRun = true;
         }
+
+        $output->writeln(($dryRun) ? 'Dry-run mode' : 'Production update');
 
         // compute ranking
         $coasterList = $this->rankingService->updateRanking($dryRun);
@@ -57,8 +58,8 @@ class RankingCommand extends Command
 
         $output->writeln((string) $stopwatch->stop('ranking'));
 
-        // notify discord
-        if ($input->getOption('send-discord')) {
+        // send recap to discord only if dry run mode
+        if ($input->getOption('send-discord') && $dryRun) {
             $stopwatch->start('discord');
             $output->writeln('Notifying discord...');
 
@@ -67,6 +68,7 @@ class RankingCommand extends Command
             $output->writeln((string) $stopwatch->stop('discord'));
         }
 
+        // send email notif only if NOT dry run mode
         if ($input->getOption('send-email') && !$dryRun) {
             $stopwatch->start('emailing');
             $output->writeln('Sending emails to users...');
@@ -111,6 +113,9 @@ class RankingCommand extends Command
             }
 
             $discordText .= $text;
+
+            // avoid discord rate limit
+            sleep(2);
         }
 
         $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));

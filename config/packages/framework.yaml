@@ -18,6 +18,10 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        default_options:
+            timeout: 10
+
 when@test:
     framework:
         test: true
