@@ -22,6 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Status implements \Stringable
 {
     final public const OPERATING = 'status.operating';
+    final public const CLOSED_DEFINITELY = 'status.closed.definitely';
     #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
