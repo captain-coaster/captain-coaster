@@ -123,6 +123,7 @@ users:
 
 review_list:
     title: 'Reseñas de montañas rusas'
+    no_review: '¡ No hay reseñas !'
 
 rating:
     last: 'Últimas notas'
