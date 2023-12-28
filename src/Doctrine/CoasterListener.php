@@ -8,30 +8,21 @@ use App\Controller\SearchController;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
-/**
- * Class ImageListener.
- */
 class CoasterListener
 {
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function postPersist(LifecycleEventArgs $args)
     {
         $this->invalidateCache();
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function postUpdate(LifecycleEventArgs $args)
     {
         $this->invalidateCache();
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function postRemove(LifecycleEventArgs $args)
     {
         $this->invalidateCache();

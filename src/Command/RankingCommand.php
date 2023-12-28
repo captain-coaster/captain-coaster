@@ -110,12 +110,12 @@ class RankingCommand extends Command
             if (\strlen($discordText) + \strlen($text) > 2000) {
                 $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));
                 $discordText = '';
+
+                // avoid discord rate limit
+                sleep(2);
             }
 
             $discordText .= $text;
-
-            // avoid discord rate limit
-            sleep(2);
         }
 
         $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));

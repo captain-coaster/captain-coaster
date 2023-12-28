@@ -74,6 +74,10 @@ services:
             - {name: doctrine.event_listener, event: postPersist, lazy: true}
             - {name: doctrine.event_listener, event: postRemove, lazy: true}
 
+    App\Doctrine\UserListener:
+        tags:
+            - { name: doctrine.event_listener, event: postUpdate, lazy: true }
+
     Gedmo\Sluggable\SluggableListener:
         alias: stof_doctrine_extensions.listener.sluggable
 

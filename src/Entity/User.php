@@ -475,4 +475,9 @@ class User implements UserInterface
     {
         return $this->enabled;
     }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
+    }
 }

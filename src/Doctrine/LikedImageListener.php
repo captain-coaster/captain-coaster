@@ -10,9 +10,6 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 
 class LikedImageListener
 {
-    /**
-     * ImageUploadListener constructor.
-     */
     public function __construct(private readonly ImageManager $imageManager)
     {
     }
