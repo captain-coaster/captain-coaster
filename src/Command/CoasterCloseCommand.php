@@ -8,7 +8,6 @@ use App\Entity\Coaster;
 use App\Entity\Status;
 use App\Repository\CoasterRepository;
 use App\Repository\StatusRepository;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,12 +20,11 @@ class CoasterCloseCommand extends Command
     protected static $defaultName = 'coaster:close';
 
     public function __construct(
-        private readonly CoasterRepository      $coasterRepository,
-        private readonly StatusRepository       $statusRepository,
+        private readonly CoasterRepository $coasterRepository,
+        private readonly StatusRepository $statusRepository,
         private readonly EntityManagerInterface $em,
-        private readonly ChatterInterface       $chatter
-    )
-    {
+        private readonly ChatterInterface $chatter
+    ) {
         parent::__construct();
     }
 
@@ -37,7 +35,7 @@ class CoasterCloseCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $today = new DateTime();
+        $today = new \DateTime();
 
         $closingCoasters = $this->coasterRepository->findBy([
             'closingDate' => $today,
@@ -52,7 +50,7 @@ class CoasterCloseCommand extends Command
             $this->em->flush();
 
             $this->chatter->send(
-                (new ChatMessage('We just definitely closed ' . $coaster->getName() . ' at ' . $coaster->getPark()->getName() . '! 🚫'))
+                (new ChatMessage('We just definitely closed '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🚫'))
                     ->transport('discord_notif')
             );
         }
