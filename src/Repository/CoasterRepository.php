@@ -24,9 +24,7 @@ class CoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, Coaster::class);
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function suggestCoasterForTop(string $term, User $user)
     {
         return $this->getEntityManager()
@@ -47,9 +45,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function findAllForSearch()
     {
         return $this->getEntityManager()
@@ -85,9 +81,7 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getCoastersForMap(Park $park, array $filters)
     {
         $qb = $this->getEntityManager()->createQueryBuilder();
@@ -184,9 +178,7 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Filter only operating coasters.
-     */
+    /** Filter only operating coasters. */
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
     {
         if (\array_key_exists('status', $filters)) {
@@ -225,9 +217,7 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Filter coasters user has not ridden. User based filter.
-     */
+    /** Filter coasters user has not ridden. User based filter. */
     private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
     {
         if (\array_key_exists('notridden', $filters) && 'on' === $filters['notridden']
