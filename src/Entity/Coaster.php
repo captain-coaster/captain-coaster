@@ -33,6 +33,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'rank' => ['nulls_comparison' => 'nulls_largest']], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(filterClass: RangeFilter::class, properties: ['rank', 'totalRatings'])]
 #[ApiFilter(filterClass: ExistsFilter::class, properties: ['mainImage'])]
+#[Assert\Expression(
+    '(this.getPrice() and this.getCurrency()) or (!this.getPrice() and !this.getCurrency())',
+    message: 'Missing Price or Currency',
+)]
 class Coaster implements \Stringable
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
