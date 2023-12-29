@@ -55,11 +55,11 @@
                                     <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
                                         {{ infoPark.name }}
                                     </a>
-                                    {{ ' - ' ~ infoPark.distance }}
-                                    {% if is_imperial %}
-                                        mil
+                                    -
+                                    {% if unities.isImperial(app.request.locale) %}
+                                        {{ ((infoPark.distance / 1.609)|round(0) ~ ' mil') }}
                                     {% else %}
-                                        km
+                                        {{ infoPark.distance }} km
                                     {% endif %}
                                 </li>
                             {% endfor %}
@@ -133,34 +133,37 @@
                             <ul class="list-inline list-inline-separate text-muted mb-5">
                                 <li>
                                     <i class="icon-arrow-up8 text-warning-600"></i>
-                                    {{ coaster.height|default('data.unknown'|trans([], 'database')) }}
-                                    {% if coaster.height|length %}
-                                        {% if is_imperial %}
-                                            ft
+                                    {% if coaster.height is null %}
+                                        {{ ('data.unknown'|trans([], 'database')) }}
+                                    {% else %}
+                                        {% if unities.isImperial(app.request.locale) %}
+                                            {{ ((coaster.height * 3.281)|round(0) ~ ' ft') }}
                                         {% else %}
-                                            m
+                                            {{ coaster.height }} m
                                         {% endif %}
                                     {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-rocket text-success-400"></i>
-                                    {{ coaster.speed|default('data.unknown'|trans([], 'database')) }}
-                                    {% if coaster.speed|length %}
-                                        {% if is_imperial %}
-                                            mph
+                                    {% if coaster.speed is null %}
+                                        {{ ('data.unknown'|trans([], 'database')) }}
+                                    {% else %}
+                                        {% if unities.isImperial(app.request.locale) %}
+                                            {{ ((coaster.speed / 1.609)|round(0) ~ ' mph') }}
                                         {% else %}
-                                            km/h
+                                            {{ coaster.speed }} km/h
                                         {% endif %}
                                     {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-rulers text-blue"></i>
-                                    {{ coaster.length|default('data.unknown'|trans([], 'database')) }}
-                                    {% if coaster.length|length %}
-                                        {% if is_imperial %}
-                                            ft
+                                    {% if coaster.length is null %}
+                                        {{ ('data.unknown'|trans([], 'database')) }}
+                                    {% else %}
+                                        {% if unities.isImperial(app.request.locale) %}
+                                            {{ ((coaster.length * 3.281)|round(0) ~ ' ft') }}
                                         {% else %}
-                                            m
+                                            {{ coaster.speed }} m
                                         {% endif %}
                                     {% endif %}
                                 </li>

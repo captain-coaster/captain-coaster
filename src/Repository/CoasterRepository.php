@@ -261,25 +261,4 @@ class CoasterRepository extends ServiceEntityRepository
                 ->setParameter('name', sprintf('%%%s%%', $filters['name']));
         }
     }
-
-    public function transformStatsToImperial(Coaster $coaster): Coaster
-    {
-        $imperialHeight = null !== $coaster->getHeight() ? (int) ($coaster->getHeight() * 3.281) : null;
-        $imperialLength = null !== $coaster->getLength() ? (int) ($coaster->getLength() * 3.281) : null;
-        $imperialSpeed = null !== $coaster->getSpeed() ? (int) ($coaster->getSpeed() / 1.609) : null;
-
-        $coaster->setHeight($imperialHeight);
-        $coaster->setLength($imperialLength);
-        $coaster->setSpeed($imperialSpeed);
-
-        return $coaster;
-    }
-
-    public function isImperial(string $locale): bool
-    {
-        // TODO cookies
-        // TODO User
-
-        return 'en' === $locale;
-    }
 }

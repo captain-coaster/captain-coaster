@@ -82,9 +82,4 @@ class ParkRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-    public function transformClosestParkDistanceToImperial($distance): float
-    {
-        return (int) number_format($distance / 1.609);
-    }
 }

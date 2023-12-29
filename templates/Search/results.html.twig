@@ -37,7 +37,7 @@
               <li>{{ coaster.item.materialType }}</li>
             {% endif %}
             {% if coaster.distance is defined %}
-              <li>{{ 'search_index.km_away'|trans({'%num%': coaster.distance|number_format(0)}) }}</li>
+              <li>{{ 'search_index.km_away'|trans({'%num%': unities.isImperial(app.request.locale) ? (coaster.distance / 1.609)|round(0) : coaster.distance|round(0), '%unity%': unities.isImperial(app.request.locale) ? ' mil' : ' km' }) }}</li>
             {% endif %}
           </ul>
         </div>

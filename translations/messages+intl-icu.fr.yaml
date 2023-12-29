@@ -321,7 +321,7 @@ search_index:
     num_found: '{num} coasters trouvés'
     geo_on: 'Localisation activée'
     geo_off: 'Localisation désactivée'
-    km_away: '{num} km'
+    km_away: 'à {num} {unity}'
 
 badge:
     rating1: '1ère note'

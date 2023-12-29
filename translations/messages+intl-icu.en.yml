@@ -319,7 +319,7 @@ search_index:
     num_found: '{num} coasters found'
     geo_on: 'Geolocation enabled'
     geo_off: 'Geolocation not enabled'
-    km_away: '{num} km away'
+    km_away: '{num} {unity} away'
 
 image:
     credit: 'Credit: {name}'
