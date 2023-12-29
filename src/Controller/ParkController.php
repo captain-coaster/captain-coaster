@@ -19,16 +19,24 @@ class ParkController extends AbstractController
     public function showAction(ParkRepository $parkRepository, Park $park, Request $request, CoasterRepository $coasterRepository): Response
     {
         $is_imperial = $coasterRepository->isImperial($request->getLocale());
-        if ($is_imperial) {
+        $closestParks = $parkRepository->getClosestParks($park, 80, 300);
 
+        if ($is_imperial) {
             foreach ($park->getCoasters() as $coaster) {
                 $coasterRepository->transformStatsToImperial($coaster);
             }
+
+            foreach ($closestParks as &$closestPark) {
+                $distance = $parkRepository->transformClosestParkDistanceToImperial($closestPark['distance']);
+                $closestPark['distance'] = $distance;
+            }
+
+            unset($closestPark);
         }
 
         return $this->render(
             'Park/show.html.twig',
-            ['park' => $park, 'closestParks' => $parkRepository->getClosestParks($park, 80, 300), 'is_imperial' => $is_imperial]
+            ['park' => $park, 'closestParks' => $closestParks, 'is_imperial' => $is_imperial]
         );
     }
 }

@@ -55,7 +55,12 @@
                                     <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
                                         {{ infoPark.name }}
                                     </a>
-                                    {{ ' - ' ~ infoPark.distance ~ ' km' }}
+                                    {{ ' - ' ~ infoPark.distance }}
+                                    {% if is_imperial %}
+                                        mil
+                                    {% else %}
+                                        km
+                                    {% endif %}
                                 </li>
                             {% endfor %}
                         </ul>
