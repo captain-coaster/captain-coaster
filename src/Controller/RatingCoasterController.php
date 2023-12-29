@@ -7,45 +7,33 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
+use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-/**
- * Class RatingCoasterController.
- */
 class RatingCoasterController extends AbstractController
 {
-    public $repository;
-
-    public function __construct(private readonly \App\Repository\RiddenCoasterRepository $riddenCoasterRepository)
-    {
-    }
-
-    /**
-     * Rate a coaster or edit a rating.
-     *
-     * @return JsonResponse
-     *
-     * @throws \Exception
-     */
+    /** Rate a coaster or edit a rating. */
     #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', methods: ['POST'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function editAction(
         Request $request,
         Coaster $coaster,
         EntityManagerInterface $em,
+        RiddenCoasterRepository $riddenCoasterRepository,
         ValidatorInterface $validator
-    ) {
+    ): JsonResponse {
         $this->denyAccessUnlessGranted('rate', $coaster);
 
         /** @var User $user */
         $user = $this->getUser();
 
-        $rating = $this->repository->findOneBy(
-            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+        $rating = $riddenCoasterRepository->findOneBy(
+            ['coaster' => $coaster, 'user' => $this->getUser()]
         );
 
         if (!$rating instanceof RiddenCoaster) {
@@ -60,14 +48,14 @@ class RatingCoasterController extends AbstractController
         }
 
         if ($request->request->has('value')) {
-            $rating->setValue($request->request->get('value'));
+            $rating->setValue((float) $request->request->get('value'));
         }
 
         if ($request->request->has('riddenAt')) {
             try {
                 $date = new \DateTime($request->request->get('riddenAt'));
             } catch (\Exception) {
-                return new JsonResponse(['state' => 'error'], \Symfony\Component\HttpFoundation\Response::HTTP_INTERNAL_SERVER_ERROR);
+                return new JsonResponse(['state' => 'error'], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             $rating->setRiddenAt($date);
         }
@@ -87,13 +75,9 @@ class RatingCoasterController extends AbstractController
         ]);
     }
 
-    /**
-     * Delete a rating.
-     *
-     * @return JsonResponse
-     */
+    /** Delete a rating. */
     #[Route(path: '/ratings/{id}', name: 'rating_delete', methods: ['DELETE'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
-    public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em)
+    public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em): JsonResponse
     {
         $this->denyAccessUnlessGranted('delete', $rating);
 

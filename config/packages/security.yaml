@@ -4,10 +4,6 @@ security:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        api_user_provider:
-            entity:
-                class: 'App\Entity\User'
-                property: 'apiKey'
         login_link_provider:
             entity:
                 class: 'App\Entity\User'
@@ -23,16 +19,22 @@ security:
             pattern: ^/api$
             security: false
 
+        api_secured:
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
+            stateless: true
+            pattern: '^/api/'
+
         main:
             lazy: true
-            login_link:
-                check_route: login_check
-                #check_post_only: true
-                signature_properties: ['id', 'email']
-                provider: login_link_provider
-                lifetime: 300
-                max_uses: 1
-                login_path: login
+#            login_link:
+#                check_route: login_check
+#                #check_post_only: true
+#                signature_properties: ['id', 'email']
+#                provider: login_link_provider
+#                lifetime: 300
+#                max_uses: 1
+#                login_path: login
             custom_authenticators:
                 - App\Security\GoogleAuthenticator
                 - App\Security\FacebookAuthenticator
@@ -43,16 +45,9 @@ security:
                 secret: '%kernel.secret%'
                 lifetime: 2629800 # 1 month in seconds
                 always_remember_me: true
+                signature_properties: ['email', 'updatedAt']
                 secure: true
                 httponly: true
-
-#        api_secured:
-#            guard:
-#                authenticators:
-#                    - 'App\Security\TokenAuthenticator'
-#            provider: 'api_user_provider'
-#            stateless: true
-#            pattern: '^/api/'
 
     role_hierarchy:
         ROLE_ADMIN:       [ROLE_USER, ROLE_CONTRIBUTOR, ROLE_PREVIEW_FEATURE]

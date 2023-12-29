@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Park;
+use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,15 +24,13 @@ class ParkRepository extends ServiceEntityRepository
         parent::__construct($registry, Park::class);
     }
 
-    /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
+    /** @throws NonUniqueResultException */
     public function countForUser(User $user)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(DISTINCT(p.id))')
-            ->from('App:RiddenCoaster', 'r')
+            ->from(RiddenCoaster::class, 'r')
             ->join('r.coaster', 'c')
             ->join('c.park', 'p')
             ->where('r.user = :user')
@@ -51,7 +51,7 @@ class ParkRepository extends ServiceEntityRepository
               * cos( radians( p.longitude ) - radians(:parkLongitude) )
               + sin( radians(:parkLatitude) )
               * sin( radians( p.latitude ) ) ) ) ) AS distance, p.slug as slug')
-            ->from('App:Park', 'p')
+            ->from(Park::class, 'p')
             ->join('p.coasters', 'c')
             ->where('p.latitude between :parkLatitudeMin and :parkLatitudeMax')
             ->andwhere('p.longitude between :parkLongitudeMin and :parkLongitudeMax')
@@ -78,7 +78,7 @@ class ParkRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('p.name')
             ->addSelect('p.slug')
-            ->from('App:Park', 'p')
+            ->from(Park::class, 'p')
             ->getQuery()
             ->getResult();
     }

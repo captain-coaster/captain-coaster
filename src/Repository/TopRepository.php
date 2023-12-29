@@ -8,6 +8,7 @@ use App\Entity\Top;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -26,7 +27,7 @@ class TopRepository extends ServiceEntityRepository
     /**
      * Tops must have at lest 3 ranked coasters inside.
      *
-     * @return \Doctrine\ORM\Query
+     * @return Query
      */
     public function findAllTops()
     {
@@ -34,7 +35,7 @@ class TopRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('t')
             ->addSelect('COUNT(t.id) as HIDDEN nb')
-            ->from('App:Top', 't')
+            ->from(Top::class, 't')
             ->join('t.topCoasters', 'tc')
             ->groupBy('t.id')
             ->having('nb > 2')
@@ -42,16 +43,14 @@ class TopRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    /**
-     * @return int|mixed
-     */
+    /** @return int|mixed */
     public function countTops()
     {
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1)')
-                ->from('App:Top', 't')
+                ->from(Top::class, 't')
                 ->where('t.main = 1')
                 ->getQuery()
                 ->getSingleScalarResult();
@@ -60,16 +59,14 @@ class TopRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return \Doctrine\ORM\Query
-     */
+    /** @return Query */
     public function findAllCustomLists()
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('t')
             ->addSelect('COUNT(t.id) as HIDDEN nb')
-            ->from('App:Top', 't')
+            ->from(Top::class, 't')
             ->join('t.topCoasters', 'tc')
             ->where('t.main = 0')
             ->groupBy('t.id')
@@ -78,15 +75,13 @@ class TopRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    /**
-     * Return all lists for a user.
-     */
+    /** Return all lists for a user. */
     public function findAllByUser(User $user)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('t')
-            ->from('App:Top', 't')
+            ->from(Top::class, 't')
             ->where('t.user = :user')
             ->setParameter('user', $user)
             ->orderBy('t.main', 'desc')
@@ -104,7 +99,7 @@ class TopRepository extends ServiceEntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('t', 'tc', 'c', 'm', 'p', 'co')
-            ->from('App:Top', 't')
+            ->from(Top::class, 't')
             ->leftJoin('t.topCoasters', 'tc')
             ->leftJoin('tc.coaster', 'c')
             ->leftJoin('c.park', 'p')
@@ -116,9 +111,7 @@ class TopRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    /**
-     * Get user main top coasters for monthly ranking update.
-     */
+    /** Get user main top coasters for monthly ranking update. */
     public function findUserTopForRanking(int $userId): array
     {
         $query = $this->getEntityManager()->createQuery('

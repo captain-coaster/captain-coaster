@@ -26,7 +26,7 @@ class NotificationRepository extends ServiceEntityRepository
         return $this
             ->getEntityManager()
             ->createQueryBuilder()
-            ->update('App:Notification n')
+            ->update(Notification::class, 'n')
             ->set('n.isRead', true)
             ->where('n.type LIKE :type')
             ->setParameter('type', $type)

@@ -6,17 +6,16 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Park;
+use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * CoasterRepository.
- */
 class CoasterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -24,13 +23,12 @@ class CoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, Coaster::class);
     }
 
-    /** @return array */
     public function suggestCoasterForTop(string $term, User $user)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('c.id', 'c.name as coaster', 'p.name as park', 'r.value as rating')
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->join('c.park', 'p')
             ->leftJoin('c.ratings', 'r', Expr\Join::WITH, 'r.user = :user')
             ->where('c.name LIKE :term')
@@ -52,7 +50,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('CONCAT(c.name, \' - \', p.name) AS name')
             ->addSelect('c.slug')
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
             ->getQuery()
             ->getResult();
@@ -68,7 +66,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->addSelect('p.longitude as longitude')
             ->addSelect('count(1) as nb')
             ->addSelect('p.id as id')
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
             ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
@@ -88,7 +86,7 @@ class CoasterRepository extends ServiceEntityRepository
 
         $qb
             ->select(['c', 's', 'p'])
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
             ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
@@ -103,7 +101,7 @@ class CoasterRepository extends ServiceEntityRepository
     /**
      * Return coasters for nearby page.
      *
-     * @return \Doctrine\ORM\Query
+     * @return Query
      */
     public function getSearchCoasters(array $filters)
     {
@@ -111,7 +109,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->getEntityManager()
             ->createQueryBuilder()
             ->select('c AS item')
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
             ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
@@ -133,7 +131,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->getScalarResult();
     }
 
-    private function applyFilters(QueryBuilder $qb, array $filters = [])
+    private function applyFilters(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by manufacturer
         $this->filterManufacturer($qb, $filters);
@@ -155,7 +153,7 @@ class CoasterRepository extends ServiceEntityRepository
         $this->orderBy($qb, $filters);
     }
 
-    private function orderBy(QueryBuilder $qb, array $filters = [])
+    private function orderBy(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('latitude', $filters) && '' !== $filters['latitude']) {
             $qb->addSelect(
@@ -169,7 +167,7 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterManufacturer(QueryBuilder $qb, array $filters = [])
+    private function filterManufacturer(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
             $qb
@@ -179,7 +177,7 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /** Filter only operating coasters. */
-    private function filterOpenedStatus(QueryBuilder $qb, array $filters = [])
+    private function filterOpenedStatus(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('status', $filters)) {
             $qb
@@ -188,7 +186,7 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterScore(QueryBuilder $qb, array $filters = [])
+    private function filterScore(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by average rating
         if (\array_key_exists('score', $filters) && '' !== $filters['score']) {
@@ -198,7 +196,7 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterByRidden(QueryBuilder $qb, array $filters = [])
+    private function filterByRidden(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by not ridden. User based filter.
         if (\array_key_exists('ridden', $filters) && 'on' === $filters['ridden']
@@ -207,7 +205,7 @@ class CoasterRepository extends ServiceEntityRepository
                 ->getEntityManager()
                 ->createQueryBuilder()
                 ->select('c1.id')
-                ->from('App:RiddenCoaster', 'rc1')
+                ->from(RiddenCoaster::class, 'rc1')
                 ->innerJoin('rc1.coaster', 'c1', 'WITH', 'rc1.coaster = c1.id')
                 ->where('rc1.user = :userid');
 
@@ -218,7 +216,7 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /** Filter coasters user has not ridden. User based filter. */
-    private function filterByNotRidden(QueryBuilder $qb, array $filters = [])
+    private function filterByNotRidden(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('notridden', $filters) && 'on' === $filters['notridden']
             && \array_key_exists('user', $filters) && !empty($filters['user'])) {
@@ -226,7 +224,7 @@ class CoasterRepository extends ServiceEntityRepository
                 ->getEntityManager()
                 ->createQueryBuilder()
                 ->select('c2.id')
-                ->from('App:RiddenCoaster', 'rc2')
+                ->from(RiddenCoaster::class, 'rc2')
                 ->innerJoin('rc2.coaster', 'c2', 'WITH', 'rc2.coaster = c2.id')
                 ->where('rc2.user = :userid');
 
@@ -236,7 +234,7 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
+    private function filterOpeningDate(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by average rating
         if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
@@ -246,14 +244,14 @@ class CoasterRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterKiddie(QueryBuilder $qb, array $filters = [])
+    private function filterKiddie(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('kiddie', $filters) && '' !== $filters['kiddie']) {
             $qb->andWhere('c.kiddie = 0');
         }
     }
 
-    private function filterName(QueryBuilder $qb, array $filters = [])
+    private function filterName(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('name', $filters) && '' !== $filters['name']) {
             $qb

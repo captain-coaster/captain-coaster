@@ -76,8 +76,8 @@ class TopController extends AbstractController
         }
 
         return $this->render('Top/list.html.twig', [
-                'tops' => $pagination,
-            ]);
+            'tops' => $pagination,
+        ]);
     }
 
     /**
@@ -90,8 +90,8 @@ class TopController extends AbstractController
     public function show(Top $top, EntityManagerInterface $em): Response
     {
         return $this->render('Top/show.html.twig', [
-                'top' => $em->getRepository(Top::class)->getTopWithData($top),
-            ]);
+            'top' => $em->getRepository(Top::class)->getTopWithData($top),
+        ]);
     }
 
     /**
@@ -129,9 +129,9 @@ class TopController extends AbstractController
         }
 
         return $this->render('Top/edit.html.twig', [
-                'form' => $form,
-                'topName' => $top->getName(),
-            ]);
+            'form' => $form,
+            'topName' => $top->getName(),
+        ]);
     }
 
     /** Edits details of a top (name, type). */
@@ -177,7 +177,7 @@ class TopController extends AbstractController
         }
 
         return new JsonResponse([
-                'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop($request->get('q'), $this->getUser()),
-            ]);
+            'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop($request->get('q'), $this->getUser()),
+        ]);
     }
 }
