@@ -83,8 +83,8 @@ image_upload:
         success: 'Picture has been uploaded successfully. It will be reviewed by an administrator before display.'
 
 park:
-    opened_coasters: 'opened coaster|opened coasters'
-    kiddies: 'kiddie|kiddies'
+    opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
+    kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
 
 coaster_ranking:
     title: 'World Roller Coaster Rankings'

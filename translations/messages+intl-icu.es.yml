@@ -55,8 +55,8 @@ coaster:
     location: 'Localización'
 
 park:
-    opened_coasters: 'montaña rusa abierta|montaña rusa abierta'
-    kiddies: 'Montaña rusa infantil|Montaña rusa infantil'
+    opened_coasters: '{ count, plural, one { montaña rusa abierta } other { montaña rusa abierta }}'
+    kiddies: '{ count, plural, one { montaña rusa infantil } other { montaña rusa infantil }}'
 
 coaster_ranking:
     title: 'Clasificación de las mejores montañas rusas - {rankingMonth}'
