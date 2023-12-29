@@ -11,44 +11,55 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'users')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface
 {
-    private const ROLE_DEFAULT = 'ROLE_USER';
+    public function __construct()
+    {
+        $this->ratings = new ArrayCollection();
+        $this->tops = new ArrayCollection();
+        $this->badges = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+        $this->images = new ArrayCollection();
+        $this->apiKey = Uuid::v4()->toRfc4122();
+    }
+
+    private const string ROLE_DEFAULT = 'ROLE_USER';
 
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
     protected ?int $id = null;
 
-    #[ORM\Column(name: 'facebookId', type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
     private ?string $facebookId = null;
 
     private ?string $facebookAccessToken = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
     private ?string $googleId = null;
 
     private ?string $googleAccessToken = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false, unique: true)]
     private string $email;
 
-    #[ORM\Column(name: 'lastName', type: Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $lastName = null;
-
-    #[ORM\Column(name: 'firstName', type: Types::STRING, length: 255)]
-    #[Assert\NotBlank]
-    private string $firstName;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
-    private string $displayName;
+    private string $firstName;
 
-    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
+    #[Assert\NotBlank]
+    private ?string $displayName = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['displayName'])]
     private string $slug;
 
@@ -93,7 +104,7 @@ class User implements UserInterface
     #[ORM\JoinColumn]
     private ?Park $homePark = null;
 
-    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: false)]
     private string $apiKey;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
@@ -104,15 +115,6 @@ class User implements UserInterface
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $enabled = false;
-
-    public function __construct()
-    {
-        $this->ratings = new ArrayCollection();
-        $this->tops = new ArrayCollection();
-        $this->badges = new ArrayCollection();
-        $this->notifications = new ArrayCollection();
-        $this->images = new ArrayCollection();
-    }
 
     public function __toString(): string
     {
@@ -273,12 +275,12 @@ class User implements UserInterface
         return $this->lastLogin;
     }
 
-    public function getDisplayName(): string
+    public function getDisplayName(): ?string
     {
         return $this->displayName;
     }
 
-    public function setDisplayName(string $displayName): static
+    public function setDisplayName(?string $displayName): static
     {
         $this->displayName = $displayName;
 

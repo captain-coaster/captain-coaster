@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
 use League\OAuth2\Client\Provider\FacebookUser;
-use League\OAuth2\Client\Provider\GoogleUser;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,21 +16,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
-/**
- * Authenticator for Facebook login.
- */
 class FacebookAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     use TargetPathTrait;
 
-    public function __construct(private readonly ClientRegistry $clientRegistry, private readonly EntityManagerInterface $entityManager, private readonly RouterInterface $router, private readonly LoggerInterface $logger)
-    {
+    public function __construct(
+        private readonly ClientRegistry $clientRegistry,
+        private readonly EntityManagerInterface $em,
+        private readonly RouterInterface $router,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function supports(Request $request): ?bool
@@ -49,28 +50,16 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
             /** @var FacebookUser $facebookUser */
             $facebookUser = $client->fetchUserFromToken($accessToken);
 
-            dump($facebookUser);
+            // 1) try to find a user based on its Google ID or email, otherwise create new User
+            $user = $this->findOrCreateUser($facebookUser);
 
-            // try to find a user based on its Google ID
-            $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['facebookId' => $facebookUser->getId()]);
-
-            if ($existingUser) {
-                $this->logger->info('Found Facebook ID '.$facebookUser->getId());
-
-                return $existingUser;
-            }
-
-            // 2) do we have a matching user by email?
-            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $facebookUser->getEmail()]);
-
-            // 3) Maybe you just want to "register" them by creating
-            // a User object
-            $user->setFacebookId($facebookUser->getId());
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+            // 2) update user details based on token
+            $this->updateUserDetails($user, $facebookUser);
 
             return $user;
-        }));
+        }), [
+            new RememberMeBadge(),
+        ]);
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
@@ -96,5 +85,45 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
     public function start(Request $request, AuthenticationException $authException = null): Response
     {
         return new RedirectResponse($this->router->generate('login'), Response::HTTP_TEMPORARY_REDIRECT);
+    }
+
+    /** Try to find user using first google id then email, otherwise create new User */
+    private function findOrCreateUser(FacebookUser $facebookUser)
+    {
+        $user = $this->em->getRepository(User::class)->findOneBy(['facebookId' => $facebookUser->getId()])
+            ?? $this->em->getRepository(User::class)->findOneBy(['email' => $facebookUser->getEmail()]);
+
+        if (!$user instanceof User) {
+            $user = new User();
+            $user->setPreferredLocale($facebookUser->getLocale());
+            $user->setEnabled(true);
+        }
+
+        return $user;
+    }
+
+    private function updateUserDetails(User $user, FacebookUser $facebookUser): void
+    {
+        try {
+            // update user fields based on token
+            $user->setFacebookId($facebookUser->getId());
+            $user->setEmail($facebookUser->getEmail());
+            $user->setFirstName($facebookUser->getFirstName());
+            $user->setLastName($facebookUser->getLastName());
+            $user->setProfilePicture($facebookUser->getPictureUrl());
+            $user->setLastLogin(new \DateTime());
+
+            // don't override displayName at every login
+            if (!$user->getDisplayName()) {
+                $user->setDisplayName($facebookUser->getFirstName().' '.$facebookUser->getLastName());
+            }
+
+            $this->em->persist($user);
+            $this->em->flush();
+        } catch (\Exception $e) {
+            $this->logger->error('Error while updating user details: '.$e->getMessage());
+
+            throw new AuthenticationException('Authentication error');
+        }
     }
 }
