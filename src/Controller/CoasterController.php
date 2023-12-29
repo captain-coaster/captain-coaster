@@ -9,7 +9,6 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
-use App\Repository\CoasterRepository;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -117,7 +116,6 @@ class CoasterController extends AbstractController
         Request $request,
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
-        CoasterRepository $coasterRepository,
     ): Response {
         $rating = null;
         $user = null;
