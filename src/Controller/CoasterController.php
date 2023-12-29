@@ -9,6 +9,7 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
+use App\Repository\CoasterRepository;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -115,7 +116,8 @@ class CoasterController extends AbstractController
     public function showAction(
         Request $request,
         Coaster $coaster,
-        RiddenCoasterRepository $riddenCoasterRepository
+        RiddenCoasterRepository $riddenCoasterRepository,
+        CoasterRepository $coasterRepository,
     ): Response {
         $rating = null;
         $user = null;
@@ -126,6 +128,11 @@ class CoasterController extends AbstractController
             );
         }
 
+        $is_imperial = $coasterRepository->isImperial($request->getLocale());
+        if ($is_imperial) {
+            $coaster = $coasterRepository->transformStatsToImperial($coaster);
+        }
+
         return $this->render(
             'Coaster/show.html.twig',
             [
@@ -133,6 +140,7 @@ class CoasterController extends AbstractController
                 'reviews' => $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
                 'rating' => $rating,
                 'user' => $user,
+                'is_imperial' => $is_imperial,
             ]
         );
     }

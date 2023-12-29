@@ -128,15 +128,36 @@
                             <ul class="list-inline list-inline-separate text-muted mb-5">
                                 <li>
                                     <i class="icon-arrow-up8 text-warning-600"></i>
-                                    {{ coaster.height|default('data.unknown'|trans([], 'database')) }}{% if coaster.height|length %} m{% endif %}
+                                    {{ coaster.height|default('data.unknown'|trans([], 'database')) }}
+                                    {% if coaster.height|length %}
+                                        {% if is_imperial %}
+                                            ft
+                                        {% else %}
+                                            m
+                                        {% endif %}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-rocket text-success-400"></i>
-                                    {{ coaster.speed|default('data.unknown'|trans([], 'database')) }}{% if coaster.speed|length %} km/h{% endif %}
+                                    {{ coaster.speed|default('data.unknown'|trans([], 'database')) }}
+                                    {% if coaster.speed|length %}
+                                        {% if is_imperial %}
+                                            mph
+                                        {% else %}
+                                            km/h
+                                        {% endif %}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-rulers text-blue"></i>
-                                    {{ coaster.length|default('data.unknown'|trans([], 'database')) }}{% if coaster.length|length %} m{% endif %}
+                                    {{ coaster.length|default('data.unknown'|trans([], 'database')) }}
+                                    {% if coaster.length|length %}
+                                        {% if is_imperial %}
+                                            ft
+                                        {% else %}
+                                            m
+                                        {% endif %}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-spinner11 text-danger-400"></i>
