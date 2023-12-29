@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Repository;
 
@@ -19,7 +21,7 @@ class LikedImageRepository extends ServiceEntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('i.id')
-            ->from('App:LikedImage', 'li')
+            ->from(LikedImage::class, 'li')
             ->join('li.image', 'i')
             ->where('li.user = :user')
             ->setParameter('user', $user)

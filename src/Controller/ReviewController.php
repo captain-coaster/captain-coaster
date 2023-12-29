@@ -30,8 +30,8 @@ class ReviewController extends AbstractController
         Request $request,
         RiddenCoasterRepository $riddenCoasterRepository,
         PaginatorInterface $paginator,
-        int $page = 1): Response
-    {
+        int $page = 1
+    ): Response {
         try {
             $pagination = $paginator->paginate(
                 $riddenCoasterRepository->findAll($request->getLocale()),
@@ -48,16 +48,18 @@ class ReviewController extends AbstractController
         );
     }
 
-    /**
-     * Create or update a review.
-     */
+    /** Create or update a review. */
     #[Route(path: '/coasters/{id}/form', name: 'review_form', methods: ['GET', 'POST'])]
-    public function newAction(Request $request, Coaster $coaster, EntityManagerInterface $entityManager): Response
-    {
+    public function newAction(
+        Request $request,
+        Coaster $coaster,
+        EntityManagerInterface $em,
+        RiddenCoasterRepository $riddenCoasterRepository
+    ): Response {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $review = $entityManager->getRepository('App:RiddenCoaster')->findOneBy(
-            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getUserIdentifier()]
+        $review = $riddenCoasterRepository->findOneBy(
+            ['coaster' => $coaster, 'user' => $this->getUser()]
         );
 
         if (!$review instanceof RiddenCoaster) {
@@ -77,8 +79,8 @@ class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($review);
-            $entityManager->flush();
+            $em->persist($review);
+            $em->flush();
 
             return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
         }
