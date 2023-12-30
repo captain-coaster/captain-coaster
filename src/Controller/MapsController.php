@@ -11,6 +11,7 @@ use App\Repository\ManufacturerRepository;
 use App\Repository\ParkRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -30,9 +31,10 @@ class MapsController extends AbstractController
 
     /** Map of all coasters, with initial filters. */
     #[Route(path: '/', name: 'map_index', methods: ['GET'])]
-    public function indexAction(string $parkslug = null): Response
+    public function indexAction(Request $request): Response
     {
         $initialFilters = ['status' => 'on'];
+        $parkslug = $request->get('parkslug');
         $parkId = '';
 
         if ($parkslug) {
@@ -87,8 +89,10 @@ class MapsController extends AbstractController
 
     /** Get coasters in a park (when user clicks on a marker). */
     #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
-    public function getCoastersAction(Park $park, array $filters = []): Response
+    public function getCoastersAction(Park $park, Request $request): Response
     {
+        $filters = $request->get('filters');
+
         return $this->render(
             'Maps/listCoasters.html.twig',
             ['coasters' => $this->coasterRepository->getCoastersForMap($park, $filters)]
