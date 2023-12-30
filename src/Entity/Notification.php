@@ -1,73 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\NotificationRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Notification
- *
- * @ORM\Table(name="notification")
- * @ORM\Entity(repositoryClass="App\Repository\NotificationRepository")
+ * Notification.
  */
+#[ORM\Table(name: 'notification')]
+#[ORM\Entity(repositoryClass: NotificationRepository::class)]
 class Notification
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $message = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $parameter = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $type = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private ?bool $isRead = false;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?\App\Entity\User $user = null;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255)
-     */
-    private $message;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $parameter;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     * @Gedmo\Timestampable(on="create")
-     */
-    private $createdAt;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255)
-     */
-    private $type;
-
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(type="boolean")
-     */
-    private $isRead = false;
-
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="notifications")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
-    private $user;
-
-    /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -77,7 +52,7 @@ class Notification
     }
 
     /**
-     * Set message
+     * Set message.
      *
      * @param string $message
      *
@@ -91,7 +66,7 @@ class Notification
     }
 
     /**
-     * Get message
+     * Get message.
      *
      * @return string
      */
@@ -101,7 +76,7 @@ class Notification
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -115,7 +90,7 @@ class Notification
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -125,7 +100,7 @@ class Notification
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -139,7 +114,7 @@ class Notification
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -149,9 +124,9 @@ class Notification
     }
 
     /**
-     * Set isRead
+     * Set isRead.
      *
-     * @param boolean $isRead
+     * @param bool $isRead
      *
      * @return Notification
      */
@@ -163,9 +138,9 @@ class Notification
     }
 
     /**
-     * Get isRead
+     * Get isRead.
      *
-     * @return boolean
+     * @return bool
      */
     public function getIsRead()
     {
@@ -173,13 +148,11 @@ class Notification
     }
 
     /**
-     * Set user
-     *
-     * @param \App\Entity\User $user
+     * Set user.
      *
      * @return Notification
      */
-    public function setUser(\App\Entity\User $user)
+    public function setUser(User $user)
     {
         $this->user = $user;
 
@@ -187,9 +160,9 @@ class Notification
     }
 
     /**
-     * Get user
+     * Get user.
      *
-     * @return \App\Entity\User
+     * @return User
      */
     public function getUser()
     {
@@ -197,7 +170,7 @@ class Notification
     }
 
     /**
-     * Set parameter
+     * Set parameter.
      *
      * @param string $parameter
      *
@@ -211,7 +184,7 @@ class Notification
     }
 
     /**
-     * Get parameter
+     * Get parameter.
      *
      * @return string
      */

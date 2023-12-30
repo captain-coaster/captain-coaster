@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form\Type;
 
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaV3Type;
@@ -13,16 +15,11 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class ContactType
- * @package App\Form\Type
+ * Class ContactType.
  */
 class ContactType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
@@ -62,11 +59,6 @@ class ContactType extends AbstractType
                 ]
             );
 
-        $builder->add('recaptcha', EWZRecaptchaV3Type::class, array(
-            'mapped' => false,
-            'constraints' => array(
-                new IsTrueV3()
-            )
-        ));
+        $builder->add('recaptcha', EWZRecaptchaV3Type::class, ['mapped' => false, 'constraints' => [new IsTrueV3()]]);
     }
 }

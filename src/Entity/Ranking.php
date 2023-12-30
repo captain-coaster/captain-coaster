@@ -1,212 +1,131 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\RankingRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Ranking
- *
- * @ORM\Table(name="ranking")
- * @ORM\Entity(repositoryClass="App\Repository\RankingRepository")
+ * Ranking.
  */
+#[ORM\Table(name: 'ranking')]
+#[ORM\Entity(repositoryClass: RankingRepository::class)]
 class Ranking
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $ratingNumber;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $ratingNumber = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $topNumber;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $topNumber = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $coasterInTopNumber;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $coasterInTopNumber = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $comparisonNumber;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $comparisonNumber = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $userNumber;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $userNumber = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer", nullable=false)
-     */
-    private $rankedCoasterNumber;
+    #[ORM\Column(type: Types::INTEGER)]
+    private ?int $rankedCoasterNumber = null;
 
-    /**
-     * @var \DateTime $computedAt
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
-    private $computedAt;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $computedAt = null;
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return int
-     */
     public function getRatingNumber(): int
     {
         return $this->ratingNumber;
     }
 
-    /**
-     * @param int $ratingNumber
-     * @return Ranking
-     */
-    public function setRatingNumber(int $ratingNumber): Ranking
+    public function setRatingNumber(int $ratingNumber): self
     {
         $this->ratingNumber = $ratingNumber;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getTopNumber(): int
     {
         return $this->topNumber;
     }
 
-    /**
-     * @param int $topNumber
-     * @return Ranking
-     */
-    public function setTopNumber(int $topNumber): Ranking
+    public function setTopNumber(int $topNumber): self
     {
         $this->topNumber = $topNumber;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getCoasterInTopNumber(): int
     {
         return $this->coasterInTopNumber;
     }
 
-    /**
-     * @param int $coasterInTopNumber
-     * @return Ranking
-     */
-    public function setCoasterInTopNumber(int $coasterInTopNumber): Ranking
+    public function setCoasterInTopNumber(int $coasterInTopNumber): self
     {
         $this->coasterInTopNumber = $coasterInTopNumber;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getComparisonNumber(): int
     {
         return $this->comparisonNumber;
     }
 
-    /**
-     * @param int $comparisonNumber
-     * @return Ranking
-     */
-    public function setComparisonNumber(int $comparisonNumber): Ranking
+    public function setComparisonNumber(int $comparisonNumber): self
     {
         $this->comparisonNumber = $comparisonNumber;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getUserNumber(): int
     {
         return $this->userNumber;
     }
 
-    /**
-     * @param int $userNumber
-     * @return Ranking
-     */
-    public function setUserNumber(int $userNumber): Ranking
+    public function setUserNumber(int $userNumber): self
     {
         $this->userNumber = $userNumber;
 
         return $this;
     }
 
-    /**
-     * @return \DateTime
-     */
     public function getComputedAt(): \DateTime
     {
         return $this->computedAt;
     }
 
-    /**
-     * @param \DateTime $computedAt
-     * @return Ranking
-     */
-    public function setComputedAt(\DateTime $computedAt): Ranking
+    public function setComputedAt(\DateTime $computedAt): self
     {
         $this->computedAt = $computedAt;
 
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getRankedCoasterNumber(): int
     {
         return $this->rankedCoasterNumber;
     }
 
-    /**
-     * @param int $rankedCoasterNumber
-     * @return Ranking
-     */
-    public function setRankedCoasterNumber(int $rankedCoasterNumber): Ranking
+    public function setRankedCoasterNumber(int $rankedCoasterNumber): self
     {
         $this->rankedCoasterNumber = $rankedCoasterNumber;
 

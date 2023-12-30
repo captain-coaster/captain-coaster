@@ -1,62 +1,46 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\CountryRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Country
- *
- * @ORM\Table(name="country")
- * @ORM\Entity(repositoryClass="App\Repository\CountryRepository")
+ * Country.
  */
-class Country
+#[ORM\Table(name: 'country')]
+#[ORM\Entity(repositoryClass: CountryRepository::class)]
+class Country implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @Groups({"read_coaster", "read_park"})
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
+    #[Groups(['read_coaster', 'read_park'])]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
-     */
-    private $slug;
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
 
-    /**
-     * @var Continent
-     *
-     * @ORM\ManyToOne(targetEntity="Continent")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $continent;
+    #[ORM\ManyToOne(targetEntity: 'Continent')]
+    #[ORM\JoinColumn]
+    private ?Continent $continent = null;
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -66,7 +50,7 @@ class Country
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -80,7 +64,7 @@ class Country
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -90,7 +74,7 @@ class Country
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -104,7 +88,7 @@ class Country
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */
@@ -113,20 +97,13 @@ class Country
         return $this->slug;
     }
 
-    /**
-     * @param Continent $continent
-     * @return Country
-     */
-    public function setContinent(Continent $continent): Country
+    public function setContinent(Continent $continent): self
     {
         $this->continent = $continent;
 
         return $this;
     }
 
-    /**
-     * @return Continent
-     */
     public function getContinent(): ?Continent
     {
         return $this->continent;

@@ -1,0 +1,55 @@
+{% import "helper.html.twig" as helper %}
+
+<ul class="media-list content-group">
+    {% for coaster in coasters %}
+        <li class="media panel panel-body stack-media-on-mobile">
+            <div class="media-left">
+                <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                    {% if coaster.mainImage is not null %}
+                        <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
+                             class="img-rounded"
+                             style="width:96px;"
+                             alt="{{ coaster.name }}">
+                    {% endif %}
+                </a>
+            </div>
+            <div class="media-body">
+                <h2 class="media-heading mb-10">
+                    <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                        {% if not filtered %}
+                            {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
+                        {% else %}
+                            {{ firstRank + loop.index0 }}&nbsp;-&nbsp;{{ coaster.name }} (#{{ coaster.rank }})
+                        {% endif %}
+                    </a>
+                    {{ helper.variation(coaster) }}
+                </h2>
+                <ul class="list-inline list-inline-separate text-muted mb-5">
+                    <li>
+                        <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                            {{ coaster.park.name }}
+                        </a>
+                    </li>
+                    <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
+                </ul>
+                <ul class="list-inline list-inline-separate text-muted mb-5">
+                    {% if coaster.manufacturer %}
+                        <li>{{ coaster.manufacturer.name }}</li>{% endif %}
+                </ul>
+            </div>
+            <div class="media-right text-center">
+                <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
+                    {{ coaster.score|number_format(1, ',') }}%
+                </h3>
+                <span class="text-muted mb-10 mt-10 text-nowrap">
+            {{ 'coaster_ranking.duel_number'|trans({'count': coaster.validDuels}) }}
+          </span>
+            </div>
+        </li>
+    {% else %}
+        <li class="media panel panel-body stack-media-on-mobile">
+            <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
+        </li>
+    {% endfor %}
+</ul>
+{{ knp_pagination_render(coasters) }}

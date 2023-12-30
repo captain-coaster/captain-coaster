@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
@@ -8,7 +10,6 @@ use App\Form\Type\ChooseParkType;
 use App\Form\Type\CreateCoasterType;
 use App\Form\Type\CreateParkType;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,24 +17,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * Class MissingCoasterController
- * @package App\Controller
- * @Route("/missing-coaster")
+ * Class MissingCoasterController.
  */
+#[Route(path: '/missing-coaster')]
 class MissingCoasterController extends AbstractController
 {
-    /**
-     * Starts missing coaster procedure
-     *
-     * @Route("/start", name="missingcoaster_start", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $em
-     * @return RedirectResponse|Response
-     */
-    public function start(Request $request, EntityManagerInterface $em)
+    /** Starts missing coaster procedure. */
+    #[Route(path: '/start', name: 'missingcoaster_start', methods: ['GET', 'POST'])]
+    public function start(Request $request, EntityManagerInterface $em): RedirectResponse|Response
     {
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         $chooseForm = $this->createForm(ChooseParkType::class);
         $chooseForm->handleRequest($request);
 
@@ -59,25 +53,18 @@ class MissingCoasterController extends AbstractController
         return $this->render(
             'MissingCoaster/start.html.twig',
             [
-                'chooseForm' => $chooseForm->createView(),
-                'form' => $form->createView(),
+                'chooseForm' => $chooseForm,
+                'form' => $form,
             ]
         );
     }
 
-    /**
-     * Main form to add a missing coaster
-     *
-     * @Route("/park/{id}/add", name="missingcoaster_add", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
-     *
-     * @param Request $request
-     * @param Park $park
-     * @param EntityManagerInterface $em
-     * @return RedirectResponse|Response
-     */
-    public function addCoaster(Request $request, Park $park, EntityManagerInterface $em)
+    /** Main form to add a missing coaster. */
+    #[Route(path: '/park/{id}/add', name: 'missingcoaster_add', methods: ['GET', 'POST'])]
+    public function addCoaster(Request $request, Park $park, EntityManagerInterface $em): RedirectResponse|Response
     {
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         $coaster = new Coaster();
         $coaster->setPark($park);
 
@@ -92,20 +79,15 @@ class MissingCoasterController extends AbstractController
             return $this->redirectToRoute('missingcoaster_success', ['coaster' => $coaster]);
         }
 
-        return $this->render('MissingCoaster/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('MissingCoaster/create.html.twig', ['form' => $form]);
     }
 
-    /**
-     * Recap message for the user
-     *
-     * @Route("/success", name="missingcoaster_success", methods={"GET"})
-     * @Security("is_granted('ROLE_PREVIEW_FEATURE')")
-     *
-     * @param Coaster $coaster
-     * @return Response
-     */
-    public function success(Coaster $coaster)
+    /** Recap message for the user. */
+    #[Route(path: '/success', name: 'missingcoaster_success', methods: ['GET'])]
+    public function success(Coaster $coaster): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         return $this->render('MissingCoaster/success.html.twig', ['coaster' => $coaster]);
     }
 }

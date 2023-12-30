@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\Coaster;
@@ -15,33 +17,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RankingHistoryManagerCommand extends Command
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
+    protected static $defaultName = 'app:ranking:history:add';
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * RankingHistoryManagerCommand constructor.
-     * @param EntityManagerInterface $em
-     * @param LoggerInterface $logger
-     */
-    public function __construct(EntityManagerInterface $em, LoggerInterface $logger)
+    /** RankingHistoryManagerCommand constructor. */
+    public function __construct(private readonly EntityManagerInterface $em, private readonly LoggerInterface $logger)
     {
         parent::__construct();
-        $this->em = $em;
-        $this->logger = $logger;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('app:ranking:history:add')
-            ->setDescription('Saves current ranking stats.')
+        $this->setDescription('Saves current ranking stats.')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
     }
@@ -80,5 +66,7 @@ class RankingHistoryManagerCommand extends Command
         }
 
         $output->writeln('All ranked coasters saved.');
+
+        return 0;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form\Type;
 
 use App\Entity\TopCoaster;
@@ -9,51 +11,27 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-/**
- * Class TopCoasterType
- * @package App\Form\Type
- */
 class TopCoasterType extends AbstractType
 {
-    private $transformer;
-
-    /**
-     * TopCoasterType constructor.
-     * @param CoasterToIdTransformer $transformer
-     */
-    public function __construct(CoasterToIdTransformer $transformer)
+    public function __construct(private readonly CoasterToIdTransformer $transformer)
     {
-        $this->transformer = $transformer;
     }
 
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(
-                'coaster',
-                HiddenType::class,
-                [
-                    'invalid_message' => 'That is not a valid coaster number',
-                ]
-            )
+            ->add('coaster', HiddenType::class, [
+                'invalid_message' => 'That is not a valid coaster number',
+            ])
             ->add('position', HiddenType::class);
 
         $builder->get('coaster')->addModelTransformer($this->transformer);
     }
 
-    /**
-     * @param OptionsResolver $resolver
-     */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(
-            [
-                'data_class' => TopCoaster::class,
-            ]
-        );
+        $resolver->setDefaults([
+            'data_class' => TopCoaster::class,
+        ]);
     }
 }

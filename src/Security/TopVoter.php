@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\Top;
@@ -9,35 +11,20 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TopVoter extends Voter
 {
-    const EDIT = 'edit';
-    const EDIT_DETAILS = 'edit-details';
-    const DELETE = 'delete';
+    final public const EDIT = 'edit';
+    final public const EDIT_DETAILS = 'edit-details';
+    final public const DELETE = 'delete';
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @return bool
-     */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::EDIT, self::EDIT_DETAILS, self::DELETE])) {
+        if (!\in_array($attribute, [self::EDIT, self::EDIT_DETAILS, self::DELETE])) {
             return false;
         }
 
-        if (!$subject instanceof Top) {
-            return false;
-        }
-
-        return true;
+        return $subject instanceof Top;
     }
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -45,45 +32,26 @@ class TopVoter extends Voter
             return false;
         }
 
-        switch ($attribute) {
-            case self::EDIT:
-                return $this->canEdit($subject, $user);
-            case self::EDIT_DETAILS:
-                return $this->canEditDetails($subject, $user);
-            case self::DELETE:
-                return $this->canDelete($subject, $user);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::EDIT => $this->canEdit($subject, $user),
+            self::EDIT_DETAILS => $this->canEditDetails($subject, $user),
+            self::DELETE => $this->canDelete($subject, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
-    /**
-     * @param Top $top
-     * @param User $user
-     * @return bool
-     */
-    private function canEdit(Top $top, User $user)
+    private function canEdit(Top $top, User $user): bool
     {
         return $user === $top->getUser();
     }
 
-    /**
-     * @param Top $top
-     * @param User $user
-     * @return bool
-     */
-    private function canEditDetails(Top $top, User $user)
+    private function canEditDetails(Top $top, User $user): bool
     {
-        return $user === $top->getUser() && $top->isMain() === false;
+        return $user === $top->getUser() && !$top->isMain();
     }
 
-    /**
-     * @param Top $top
-     * @param User $user
-     * @return bool
-     */
-    private function canDelete(Top $top, User $user)
+    private function canDelete(Top $top, User $user): bool
     {
-        return $user === $top->getUser() && $top->isMain() === false;
+        return $user === $top->getUser() && !$top->isMain();
     }
 }

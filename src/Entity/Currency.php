@@ -1,57 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\CurrencyRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Currency
- *
- * @ORM\Table(name="currency")
- * @ORM\Entity(repositoryClass="App\Repository\CurrencyRepository")
+ * Currency.
  */
-class Currency
+#[ORM\Table(name: 'currency')]
+#[ORM\Entity(repositoryClass: CurrencyRepository::class)]
+class Currency implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255)
-     *
-     * @Assert\NotBlank()
-     */
-    private $name;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=10)
-     *
-     * @Assert\NotBlank()
-     */
-    private $symbol;
+    #[ORM\Column(type: Types::STRING, length: 10)]
+    #[Assert\NotBlank]
+    private ?string $symbol = null;
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -59,7 +45,7 @@ class Currency
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -73,7 +59,7 @@ class Currency
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -83,7 +69,7 @@ class Currency
     }
 
     /**
-     * Set symbol
+     * Set symbol.
      *
      * @param string $symbol
      *
@@ -97,7 +83,7 @@ class Currency
     }
 
     /**
-     * Get symbol
+     * Get symbol.
      *
      * @return string
      */

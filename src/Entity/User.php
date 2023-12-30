@@ -1,355 +1,220 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use FOS\UserBundle\Model\User as BaseUser;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Table(name="users")
- * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- */
-class User extends BaseUser
+#[ORM\Table(name: 'users')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+class User implements UserInterface
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="facebookId", type="string", length=255, nullable=true)
-     */
-    private $facebookId;
-
-    /**
-     * @var string
-     */
-    private $facebookAccessToken;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $googleId;
-
-    /**
-     * @var string
-     */
-    private $googleAccessToken;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="lastName", type="string", length=255, nullable=true)
-     */
-    private $lastName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="firstName", type="string", length=255, nullable=false)
-     * @Assert\NotBlank()
-     */
-    private $firstName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     * @Assert\NotBlank()
-     */
-    private $displayName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
-     * @Gedmo\Slug(fields={"displayName"})
-     */
-    private $slug;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=1024, nullable=true)
-     */
-    private $profilePicture;
-
-    /**
-     * @var RiddenCoaster
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\RiddenCoaster", mappedBy="user")
-     */
-    private $ratings;
-
-    /**
-     * @var Top[]
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Top", mappedBy="user")
-     */
-    private $tops;
-
-    /**
-     * @var Badge
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Badge", inversedBy="users")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $badges;
-
-    /**
-     * @var Notification
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Notification", mappedBy="user")
-     * @ORM\OrderBy({"createdAt" = "DESC"})
-     */
-    private $notifications;
-
-    /**
-     * @var Image
-     *
-     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="uploader")
-     */
-    private $images;
-
-    /**
-     * @var \DateTime $createdAt
-     *
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", options={"default": 1})
-     */
-    private $emailNotification = 1;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=255, nullable=false)
-     */
-    private $preferredLocale = 'en';
-
-    /**
-     * @var Park
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Park")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $homePark;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", unique=true, nullable=true)
-     */
-    private $apiKey;
-
-    /**
-     * Auto add today's date when I rate a coaster
-     *
-     * @var bool
-     *
-     * @ORM\Column(type="boolean", options={"default": 0})
-     */
-    private $addTodayDateWhenRating = 0;
-
-    /**
-     * User constructor.
-     */
     public function __construct()
     {
-        parent::__construct();
-
         $this->ratings = new ArrayCollection();
         $this->tops = new ArrayCollection();
         $this->badges = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->apiKey = Uuid::v4()->toRfc4122();
     }
 
-    /**
-     * @param string $facebookId
-     * @return User
-     */
-    public function setFacebookId($facebookId)
+    private const string ROLE_DEFAULT = 'ROLE_USER';
+
+    #[ORM\Id]
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\GeneratedValue]
+    protected ?int $id = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
+    private ?string $facebookId = null;
+
+    private ?string $facebookAccessToken = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
+    private ?string $googleId = null;
+
+    private ?string $googleAccessToken = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false, unique: true)]
+    private string $email;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $lastName = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank]
+    private string $firstName;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
+    #[Assert\NotBlank]
+    private ?string $displayName = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['displayName'])]
+    private string $slug;
+
+    #[ORM\Column(type: Types::STRING, length: 1024, nullable: true)]
+    private ?string $profilePicture = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class)]
+    private Collection $ratings;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class)]
+    private Collection $tops;
+
+    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
+    #[ORM\JoinColumn]
+    private Collection $badges;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    #[ORM\OrderBy(['createdAt' => 'DESC'])]
+    private Collection $notifications;
+
+    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class)]
+    private Collection $images;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private \DateTimeInterface $createdAt;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Gedmo\Timestampable(on: 'update')]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private \DateTimeInterface $lastLogin;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
+    private bool $emailNotification = true;
+
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private string $preferredLocale = 'en';
+
+    #[ORM\ManyToOne(targetEntity: Park::class)]
+    #[ORM\JoinColumn]
+    private ?Park $homePark = null;
+
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: false)]
+    private string $apiKey;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $addTodayDateWhenRating = false;
+
+    #[ORM\Column(type: Types::ARRAY)]
+    private array $roles = [];
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $enabled = false;
+
+    public function __toString(): string
+    {
+        return $this->displayName;
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getFacebookId(): ?string
+    {
+        return $this->facebookId;
+    }
+
+    public function setFacebookId(string $facebookId): static
     {
         $this->facebookId = $facebookId;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFacebookId()
-    {
-        return $this->facebookId;
-    }
-
-    /**
-     * @param string $facebookAccessToken
-     * @return User
-     */
-    public function setFacebookAccessToken($facebookAccessToken)
+    public function setFacebookAccessToken(string $facebookAccessToken): static
     {
         $this->facebookAccessToken = $facebookAccessToken;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getFacebookAccessToken()
+    public function getFacebookAccessToken(): ?string
     {
         return $this->facebookAccessToken;
     }
 
-    /**
-     * Set googleId
-     *
-     * @param string $googleId
-     *
-     * @return User
-     */
-    public function setGoogleId($googleId)
+    public function getGoogleId(): ?string
+    {
+        return $this->googleId;
+    }
+
+    public function setGoogleId(string $googleId): static
     {
         $this->googleId = $googleId;
 
         return $this;
     }
 
-    /**
-     * Get googleId
-     *
-     * @return string
-     */
-    public function getGoogleId()
-    {
-        return $this->googleId;
-    }
-
-    /**
-     * @param string $googleAccessToken
-     * @return User
-     */
-    public function setGoogleAccessToken($googleAccessToken)
+    public function setGoogleAccessToken(string $googleAccessToken): static
     {
         $this->googleAccessToken = $googleAccessToken;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getGoogleAccessToken()
+    public function getGoogleAccessToken(): ?string
     {
         return $this->googleAccessToken;
     }
 
-    /**
-     * Set lastName
-     *
-     * @param string $lastName
-     *
-     * @return User
-     */
-    public function setLastName($lastName)
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): static
     {
         $this->lastName = $lastName;
 
         return $this;
     }
 
-    /**
-     * Get lastName
-     *
-     * @return string
-     */
-    public function getLastName()
+    public function getFirstName(): string
     {
-        return $this->lastName;
+        return $this->firstName;
     }
 
-    /**
-     * Set firstName
-     *
-     * @param string $firstName
-     *
-     * @return User
-     */
-    public function setFirstName($firstName)
+    public function setFirstName($firstName): static
     {
         $this->firstName = $firstName;
 
         return $this;
     }
 
-    /**
-     * Get firstName
-     *
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * Add rating
-     *
-     * @param RiddenCoaster $rating
-     *
-     * @return User
-     */
-    public function addRating(RiddenCoaster $rating)
+    public function addRating(RiddenCoaster $rating): static
     {
         $this->ratings[] = $rating;
 
         return $this;
     }
 
-    /**
-     * Remove rating
-     *
-     * @param RiddenCoaster $rating
-     */
-    public function removeRating(RiddenCoaster $rating)
+    public function removeRating(RiddenCoaster $rating): void
     {
         $this->ratings->removeElement($rating);
     }
 
-    /**
-     * Get ratings
-     *
-     * @return Collection
-     */
-    public function getRatings()
+    public function getRatings(): Collection
     {
         return $this->ratings;
     }
 
-    /**
-     * @param Coaster $coaster
-     * @return RiddenCoaster|null
-     */
     public function getRating(Coaster $coaster): ?RiddenCoaster
     {
         /** @var RiddenCoaster $rating */
@@ -362,121 +227,87 @@ class User extends BaseUser
         return null;
     }
 
-    /**
-     * Set profilePicture
-     *
-     * @param string $profilePicture
-     *
-     * @return User
-     */
-    public function setProfilePicture($profilePicture)
+    public function getProfilePicture(): ?string
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture(?string $profilePicture): static
     {
         $this->profilePicture = $profilePicture;
 
         return $this;
     }
 
-    /**
-     * Get profilePicture
-     *
-     * @return string
-     */
-    public function getProfilePicture()
+    public function getCreatedAt(): \DateTimeInterface
     {
-        return $this->profilePicture;
+        return $this->createdAt;
     }
 
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return User
-     */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
-        return $this->createdAt;
+        $this->updatedAt = $updatedAt;
+
+        return $this;
     }
 
-    /**
-     * Set displayName
-     *
-     * @param string $displayName
-     *
-     * @return User
-     */
-    public function setDisplayName($displayName)
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setLastLogin(?\DateTimeInterface $lastLogin): static
+    {
+        $this->lastLogin = $lastLogin;
+
+        return $this;
+    }
+
+    public function getLastLogin(): ?\DateTimeInterface
+    {
+        return $this->lastLogin;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): static
     {
         $this->displayName = $displayName;
 
         return $this;
     }
 
-    /**
-     * Get displayName
-     *
-     * @return string
-     */
-    public function getDisplayName()
-    {
-        return $this->displayName;
-    }
-
-    /**
-     * Add top
-     *
-     * @param Top $top
-     *
-     * @return User
-     */
-    public function addTop(Top $top)
+    public function addTop(Top $top): static
     {
         $this->tops[] = $top;
 
         return $this;
     }
 
-    /**
-     * Remove top
-     *
-     * @param \App\Entity\Top $top
-     */
-    public function removeTop(Top $top)
+    public function removeTop(Top $top): void
     {
         $this->tops->removeElement($top);
     }
 
-    /**
-     * Get tops
-     *
-     * @return Collection
-     */
-    public function getTops()
+    public function getTops(): Collection
     {
         return $this->tops;
     }
 
-    /**
-     * Get main top
-     *
-     * @return Top
-     */
-    public function getMainTop()
+    public function getMainTop(): Top
     {
         foreach ($this->tops as $top) {
-            if ($top->isMain() === true) {
+            if ($top->isMain()) {
                 return $top;
             }
         }
@@ -485,231 +316,170 @@ class User extends BaseUser
         return new Top();
     }
 
-    /**
-     * Add badge
-     *
-     * @param \App\Entity\Badge $badge
-     *
-     * @return User
-     */
-    public function addBadge(Badge $badge)
+    public function addBadge(Badge $badge): static
     {
         $this->badges[] = $badge;
 
         return $this;
     }
 
-    /**
-     * Remove badge
-     *
-     * @param \App\Entity\Badge $badge
-     */
-    public function removeBadge(Badge $badge)
+    public function removeBadge(Badge $badge): void
     {
         $this->badges->removeElement($badge);
     }
 
-    /**
-     * Get badges
-     *
-     * @return Collection
-     */
-    public function getBadges()
+    public function getBadges(): Collection
     {
         return $this->badges;
     }
 
-    /**
-     * Add notification
-     *
-     * @param \App\Entity\Notification $notification
-     *
-     * @return User
-     */
-    public function addNotification(Notification $notification)
+    public function addNotification(Notification $notification): static
     {
         $this->notifications[] = $notification;
 
         return $this;
     }
 
-    /**
-     * Remove notification
-     *
-     * @param \App\Entity\Notification $notification
-     */
-    public function removeNotification(Notification $notification)
+    public function removeNotification(Notification $notification): void
     {
         $this->notifications->removeElement($notification);
     }
 
-    /**
-     * Get notifications
-     *
-     * @return Collection
-     */
-    public function getNotifications()
+    public function getNotifications(): Collection
     {
         return $this->notifications;
     }
 
-    /**
-     * @return \Doctrine\Common\Collections\ArrayCollection|Collection
-     */
-    public function getUnreadNotifications()
+    public function getUnreadNotifications(): Collection
     {
-        return $this->notifications->filter(
-            function (Notification $notif) {
-                return !$notif->getIsRead();
-            }
-        );
+        return $this->notifications->filter(fn (Notification $notif) => !$notif->getIsRead());
     }
 
-    /**
-     * @return bool
-     */
     public function isEmailNotification(): bool
     {
         return $this->emailNotification;
     }
 
-    /**
-     * @param bool $emailNotification
-     * @return User
-     */
-    public function setEmailNotification(bool $emailNotification): User
+    public function setEmailNotification(bool $emailNotification): static
     {
         $this->emailNotification = $emailNotification;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPreferredLocale(): string
     {
         return $this->preferredLocale;
     }
 
-    /**
-     * @param string $preferredLocale
-     * @return User
-     */
-    public function setPreferredLocale(string $preferredLocale): User
+    public function setPreferredLocale(string $preferredLocale): static
     {
         $this->preferredLocale = $preferredLocale;
 
         return $this;
     }
 
-    /**
-     * @param string $slug
-     * @return User
-     */
-    public function setSlug(?string $slug): User
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getSlug(): ?string
+    public function getHomePark(): ?Park
     {
-        return $this->slug;
+        return $this->homePark;
     }
 
-    /**
-     * @param Park $homePark
-     * @return User
-     */
-    public function setHomePark(?Park $homePark): User
+    public function setHomePark(Park $homePark): static
     {
         $this->homePark = $homePark;
 
         return $this;
     }
 
-    /**
-     * @return Park|null
-     */
-    public function getHomePark(): ?Park
+    public function getApiKey(): string
     {
-        return $this->homePark;
+        return $this->apiKey;
     }
 
-    /**
-     * @param string $apiKey
-     * @return User
-     */
-    public function setApiKey(string $apiKey): User
+    public function setApiKey(string $apiKey): static
     {
         $this->apiKey = $apiKey;
 
         return $this;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getApiKey(): ?string
-    {
-        return $this->apiKey;
-    }
-
-    /**
-     * Add image
-     *
-     * @param Image $image
-     *
-     * @return User
-     */
-    public function addImage(Image $image)
+    public function addImage(Image $image): static
     {
         $this->images[] = $image;
 
         return $this;
     }
 
-    /**
-     * Remove image
-     *
-     * @param Image $image
-     */
-    public function removeImage(Image $image)
+    public function removeImage(Image $image): void
     {
         $this->images->removeElement($image);
     }
 
-    /**
-     * Get images
-     *
-     * @return Collection
-     */
     public function getImages(): ?Collection
     {
         return $this->images;
     }
 
-    /**
-     * @param bool $addTodayDateWhenRating
-     * @return User
-     */
-    public function setAddTodayDateWhenRating(bool $addTodayDateWhenRating): User
+    public function setAddTodayDateWhenRating(bool $addTodayDateWhenRating): static
     {
         $this->addTodayDateWhenRating = $addTodayDateWhenRating;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isAddTodayDateWhenRating(): bool
     {
         return $this->addTodayDateWhenRating;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+
+        // we need to make sure to have at least one role
+        $roles[] = self::ROLE_DEFAULT;
+
+        return array_values(array_unique($roles));
+    }
+
+    public function eraseCredentials(): void
+    {
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(bool $enabled): void
+    {
+        $this->enabled = $enabled;
     }
 }

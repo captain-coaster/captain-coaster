@@ -1,64 +1,62 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Coaster;
+use App\Entity\TopCoaster;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * TopCoasterRepository
+ * TopCoasterRepository.
  */
-class TopCoasterRepository extends EntityRepository
+class TopCoasterRepository extends ServiceEntityRepository
 {
-    /**
-     * @param Coaster $coaster
-     * @return mixed|null
-     */
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, TopCoaster::class);
+    }
+
+    /** @return mixed|null */
     public function countForCoaster(Coaster $coaster)
     {
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1)')
-                ->from('App:TopCoaster', 'l')
+                ->from(TopCoaster::class, 'l')
                 ->where('l.coaster = :coaster')
                 ->setParameter('coaster', $coaster)
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return null;
         }
     }
 
-    /**
-     * Count all coasters inside main tops only
-     *
-     * @return mixed
-     */
+    /** Count all coasters inside main tops only. */
     public function countAllInTops()
     {
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1)')
-                ->from('App:TopCoaster', 'tc')
+                ->from(TopCoaster::class, 'tc')
                 ->join('tc.top', 't')
                 ->where('t.main = 1')
                 ->getQuery()
                 ->getSingleScalarResult();
-        } catch (NonUniqueResultException $e) {
+        } catch (NonUniqueResultException) {
             return 0;
         }
     }
 
-    /**
-     * Update totalTopsIn for all coasters
-     *
-     * @return bool
-     */
-    public function updateTotalTopsIn()
+    /** Update totalTopsIn for all coasters. */
+    public function updateTotalTopsIn(): bool
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -76,7 +74,7 @@ class TopCoasterRepository extends EntityRepository
 
         try {
             $connection->executeQuery($sql);
-        } catch (DBALException $e) {
+        } catch (DBALException) {
             return false;
         }
 
@@ -84,9 +82,8 @@ class TopCoasterRepository extends EntityRepository
     }
 
     /**
-     * Update averageTopRank for all coasters
+     * Update averageTopRank for all coasters.
      *
-     * @param int $minTopsIn
      * @return bool
      */
     public function updateAverageTopRanks(int $minTopsIn)
@@ -106,10 +103,9 @@ class TopCoasterRepository extends EntityRepository
 
         try {
             $statement = $connection->prepare($sql);
-            $statement->execute(['minTopsIn' => $minTopsIn]);
 
-            return $statement->rowCount();
-        } catch (DBALException $e) {
+            return $statement->executeStatement(['minTopsIn' => $minTopsIn]);
+        } catch (DBALException) {
             return false;
         }
     }

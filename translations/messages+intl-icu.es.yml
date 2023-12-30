@@ -1,0 +1,230 @@
+fr: 'Français'
+en: 'English'
+es: 'Español'
+
+app:
+    name: 'Captain Coaster'
+    title:
+        default: '¡ Bienvenido !'
+    header:
+        search: 'Parque Warner, Uncharted...'
+
+index:
+    title: '¡ Bienvenido !'
+    description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
+    header:
+        title: 'Descubre, califica y comparte montañas rusas'
+        info: '¿ Cuál Dive Coaster es el mejor ? : ¿ SheiKra o Griffon ? ¿ Galactica or el difunto Air ? ¿ Y Intimidator 305, es tan loco o simplemente una buena montaña rusa ? Sin pánico, todas las respuestas están aquí, en su guía. Y <b>solo toma unos segundos <a href="{link_path}">conectarse</a></b>. ¡ Sigue al Captain !'
+    stats:
+        coasters: 'coaster'
+        ratings: 'notas'
+        reviews: 'reseñas'
+
+coaster:
+    score:
+        scoreof: 'Resultado de'
+        ranked: 'Clasificado'
+        intheworld: 'en el mundo'
+    rating:
+        action: '¡ Califica esta montaña rusa !'
+        notenough: '¡ No hay suficientes notas para esta montaña rusa !'
+        mustlogin: 'Debe iniciar sesión para calificar.'
+        login: 'Iniciar sesión'
+        sendreview: 'o haga clic aquí para escribir una reseña'
+        text: 'Resultado basada en {count_rating} notas y {count_top} tops'
+    infos:
+        title: 'Características de {name}'
+        closeParksTitle: 'Los mejores parques de atracciones cerca de {parkName}'
+        closeParksLink: 'Ver {parkName} en el mapa'
+        status: 'Estatus'
+        park: 'Parque de atracciones'
+        country: 'País'
+        type: 'Tipo'
+        launch: 'Lanzamiento'
+        manufacturer: 'Fabricante'
+        restraint: 'Seguridad'
+        forces: 'G-forces'
+        duration: 'Duración'
+        opening: 'Apertura'
+        closing: 'clausura'
+        vr: 'VR'
+        indoor: 'Indoor'
+        cost: 'Coste'
+    parkcoaster: 'También en {name}'
+    photos: 'Fotos'
+    location: 'Localización'
+
+park:
+    opened_coasters: '{ count, plural, one { montaña rusa abierta } other { montañas rusas abierta }}'
+    kiddies: '{ count, plural, one { montaña rusa infantil } other { montañas rusas infantiles }}'
+
+coaster_ranking:
+    title: 'Clasificación mundial de montañas rusas'
+    description: 'Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.'
+    duel_number: '{ count, plural, one { # duelo } other { # duelos }}'
+    no_results: '¡ no se han encontrado montañas rusas !'
+    info:
+        title: 'Última actualización: {rankingMonth}'
+        next: 'Próxima actualización {date}'
+        learn_more: 'Más información sobre la clasificación'
+        coasters_ranked:
+            short: 'montañas rusas'
+            long: 'montañas rusas clasificados'
+        ratings: 'clasificaciones'
+        comparisons:
+            short: 'pares'
+            long: 'pares analizados'
+        users: 'votantes'
+    filter:
+        title: 'Filtros'
+        manufacturer: 'Fabricante'
+        status: 'Operando'
+        kiddie: 'Ocultar Montañas rusas infantil'
+        notridden: 'No montado todavía'
+        score: 'Resultado'
+        atleast: 'al menos {count}'
+        openingDate: 'Fecha de apertura'
+
+map_index:
+    title: 'Mapa de montañas rusas'
+    description: 'Descubre dónde están las montañas rusas más increíbles de los alrededores, los éxitos del próximo año o el B&M que aún no has montado con este mapa interactivo.'
+    filter:
+        title: 'Filtros'
+        manufacturer: 'Fabricante'
+        status: 'Operando'
+        kiddie: 'Ocultar Montañas rusas infantil'
+        notridden: 'No montado todavía'
+        score: 'Resultado'
+        atleast: 'al menos {count}'
+        openingDate: 'Fecha de apertura'
+    results: 'Resultados'
+
+user_profile:
+    title: '{name} - Perfil'
+    ratings: 'Mostrar sus notas'
+    map: 'Mostrar su coaster map'
+
+user_list:
+    title: 'Nuestros usuarios'
+    info:
+        title: '¿ Dónde te clasificas entre nuestros miembros ?'
+        text: 'Esta página muestra una clasificación de nuestros miembros. ¡ Hace clic en ellos para descubrir sus clasificación detallados !'
+    member_from: 'Miembro desde'
+    rating: '1 clasificación|{count} clasificación'
+
+me:
+    title: 'Mi perfil'
+    parameters: 'Parámetros'
+    form:
+        displayName: 'Quiero aparecer como'
+        save: 'Salvar'
+    badge: 'Insignias'
+
+review:
+    title: 'Reseñas'
+    share: 'Comparte tu opinión con nosotros !'
+    value: '¿ Cuántas estrellas para esa montaña rusa ?'
+    pros: '¿ Cuáles son sus principales ventajas ?'
+    cons: '¿ Y sus principales contras ?'
+    comment: '¿ Necesita más precisiones ? Cuéntanos !'
+    send: 'Envía mi opinion'
+    update: 'Editar'
+    delete: 'Borrar'
+    last: 'Últimas reseñas'
+    all: 'Ver todo →'
+
+users:
+    ratings:
+        title: '{name} - Clasificación'
+        coaster: 'Montaña rusa'
+        manufacturer: 'Fabricante'
+        opening_date: 'Abierto'
+        rating: 'Nota'
+        ridden_at: 'Ridden at'
+    my_ratings:
+        title: 'Mis notas'
+
+review_list:
+    title: 'Reseñas de montañas rusas'
+    no_review: '¡ No hay reseñas !'
+
+rating:
+    last: 'Últimas notas'
+    action: 'calificó {value} estrellas'
+
+navbar:
+    profile: 'Mi perfil'
+    rating: 'Mis notas'
+    logout: 'Cerrar sesión'
+    topcoasters: 'Mi Top Coasters'
+    my_map: 'Mi mapa'
+
+sidebar:
+    index: 'Pagina de inicio'
+    search: 'Busca una montaña rusa'
+    ranking: 'Las mejores montañas rusas'
+    users: 'Nuestros usuarios'
+    map: 'Mapa de las montañas rusas'
+    review: 'Reseñas de montaña rusa'
+    contact: 'Estar en contacto'
+    logout: 'Cerrar sesión'
+    login: 'Iniciar sesión'
+
+footer:
+    terms: 'Términos de Uso'
+
+login:
+    title: 'Iniciar sesión en Captain Coaster'
+    info:
+        title: '¿ Pastilla azul o pastilla roja ?'
+        text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google. Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
+    already_connected_as: 'Ya ha iniciado sesión como'
+    logout: '¿ Cerrar sesión ?'
+
+contact:
+    title: 'Estar en contacto'
+    send: 'Envía el mensaje'
+    form:
+        name: 'Tu nombre'
+        email: 'Ingrese vuestro correo electrónico aquí si desea que respondamos'
+        message: 'Tu mensaje'
+    email:
+        title: 'Contacto de formulario Captain Coaster'
+    flash:
+        success: 'Gracias {name}, vuestro mensaje fue enviado al personal de Captain Coaster..'
+
+notif:
+    title: 'Actividad'
+    empty: '¡ Nada especial ahora mismo, vaya a montar algunas montañas rusas !'
+    badge:
+        message: 'Echale un vistazo: El Captain acaba de darte "{name}" la insignia !'
+    ranking:
+        message: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.'
+
+search_index:
+    title: 'Busca una montaña rusa'
+
+badge:
+    rating1: 'Primera nota'
+    rating100: 'Centésima nota'
+    rating250: 'Nota 250'
+    rating500: 'Nota 500'
+    rating1000: 'Milésima nota'
+    teamkatun: 'Equipo Katun'
+    teamispeed: 'Equipo iSpeed'
+
+error:
+    400:
+        title: 'Bad request'
+        message: 'Bad request'
+    404:
+        title: 'Página no encontrada'
+        message: 'Página no encontrada'
+    403:
+        title: 'Acceso Prohibido'
+        message: 'Acceso Prohibido'
+    generic:
+        title: 'Se ha producido un error'
+        message: 'Se ha producido un error'
+
+User account is disabled.: 'Esta cuenta está inhabilitada porque no cumple con nuestras políticas. Póngase en contacto con nosotros para obtener más información.'

@@ -1,83 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\MainTagRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * MainTag
- *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\MainTagRepository")
+ * MainTag.
  */
+#[ORM\Entity(repositoryClass: MainTagRepository::class)]
 class MainTag
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var Coaster
-     * @ORM\ManyToOne(targetEntity="Coaster", inversedBy="mainTags")
-     */
-    private $coaster;
+    #[ORM\ManyToOne(targetEntity: 'Coaster', inversedBy: 'mainTags')]
+    private ?\App\Entity\Coaster $coaster = null;
 
-    /**
-     * @var Tag
-     * @ORM\ManyToOne(targetEntity="Tag")
-     */
+    /** @var Tag */
+    #[ORM\ManyToOne(targetEntity: 'Tag')]
     private $tag;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="rank", type="integer", nullable=false)
-     */
-    private $rank;
+    #[ORM\Column(name: 'rank', type: Types::INTEGER)]
+    private ?int $rank = null;
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
+    /** Get id */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set coaster
-     *
-     * @param \App\Entity\Coaster $coaster
-     *
-     * @return MainTag
-     */
-    public function setCoaster(Coaster $coaster): MainTag
+    /** Set coaster */
+    public function setCoaster(Coaster $coaster): self
     {
         $this->coaster = $coaster;
 
         return $this;
     }
 
-    /**
-     * Get coaster
-     *
-     * @return \App\Entity\Coaster
-     */
+    /** Get coaster */
     public function getCoaster(): Coaster
     {
         return $this->coaster;
     }
 
     /**
-     * Set tag
+     * Set tag.
      *
-     * @param \App\Entity\Tag $tag
+     * @param Tag $tag
      *
      * @return MainTag
      */
@@ -89,9 +64,9 @@ class MainTag
     }
 
     /**
-     * Get tag
+     * Get tag.
      *
-     * @return \App\Entity\Tag
+     * @return Tag
      */
     public function getTag()
     {
@@ -99,9 +74,9 @@ class MainTag
     }
 
     /**
-     * Set rank
+     * Set rank.
      *
-     * @param integer $rank
+     * @param int $rank
      *
      * @return MainTag
      */
@@ -113,9 +88,9 @@ class MainTag
     }
 
     /**
-     * Get rank
+     * Get rank.
      *
-     * @return integer
+     * @return int
      */
     public function getRank()
     {

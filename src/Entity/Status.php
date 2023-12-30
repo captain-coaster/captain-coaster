@@ -1,95 +1,63 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\StatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Status
- *
- * @ORM\Table(name="status")
- * @ORM\Entity(repositoryClass="App\Repository\StatusRepository")
- * @ApiResource(
- *     attributes={
- *         "normalization_context"={"groups"={"read_status"}}
- *     },
- *     collectionOperations={"get"={"method"="GET"}},
- *     itemOperations={"get"={"method"="GET"}}
- * )
+ * Status.
  */
-class Status
+#[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_status']])]
+#[ORM\Table(name: 'status')]
+#[ORM\Entity(repositoryClass: StatusRepository::class)]
+class Status implements \Stringable
 {
-    const OPERATING = 'status.operating';
+    final public const OPERATING = 'status.operating';
+    final public const CLOSED_DEFINITELY = 'status.closed.definitely';
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[Groups(['read_status'])]
+    private ?int $id = null;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
+    #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
+    private ?string $name = null;
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
+    private ?string $type = null;
+    /** @var Collection<\App\Entity\Coaster> */
+    #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
+    private \Doctrine\Common\Collections\Collection $coasters;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['read_status'])]
+    private ?bool $isRateable = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"read_status"})
-     */
-    private $id;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"list_coaster", "read_coaster", "read_status"})
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
-     */
-    private $slug;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255, unique=false, nullable=false)
-     */
-    private $type;
-
-    /**
-     * @var Coaster
-     *
-     * @ORM\OneToMany(targetEntity="Coaster", mappedBy="status")
-     */
-    private $coasters;
-
-    /**
-     * @var bool
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Groups({"read_status"})
-     */
-    private $isRateable;
-
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -99,7 +67,7 @@ class Status
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -113,7 +81,7 @@ class Status
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -123,7 +91,7 @@ class Status
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -137,7 +105,7 @@ class Status
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */
@@ -147,9 +115,7 @@ class Status
     }
 
     /**
-     * Add coaster
-     *
-     * @param Coaster $coaster
+     * Add coaster.
      *
      * @return Status
      */
@@ -160,20 +126,16 @@ class Status
         return $this;
     }
 
-    /**
-     * Remove coaster
-     *
-     * @param Coaster $coaster
-     */
-    public function removeCoaster(Coaster $coaster)
+    /** Remove coaster */
+    public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
 
     /**
-     * Get coasters
+     * Get coasters.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getCoasters()
     {
@@ -181,7 +143,7 @@ class Status
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -195,7 +157,7 @@ class Status
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -204,20 +166,13 @@ class Status
         return $this->type;
     }
 
-    /**
-     * @param bool $isRateable
-     * @return Status
-     */
-    public function setIsRateable(bool $isRateable): Status
+    public function setIsRateable(bool $isRateable): self
     {
         $this->isRateable = $isRateable;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function isRateable(): bool
     {
         return $this->isRateable;

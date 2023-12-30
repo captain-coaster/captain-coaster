@@ -1,62 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Status
- *
- * @ORM\Table(name="model")
- * @ORM\Entity
- * @ApiResource(
- *     attributes={
- *         "normalization_context"={"groups"={"read_model"}}
- *     },
- *     collectionOperations={"get"={"method"="GET"}},
- *     itemOperations={"get"={"method"="GET"}}
- * )
+ * Status.
  */
-class Model
+#[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_model']])]
+#[ORM\Table(name: 'model')]
+#[ORM\Entity]
+class Model implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
+    #[Groups(['read_model', 'read_coaster'])]
+    private ?string $name = null;
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"read_model", "read_coaster"})
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
-     */
-    private $slug;
-
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -66,7 +47,7 @@ class Model
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -80,7 +61,7 @@ class Model
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -90,7 +71,7 @@ class Model
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -104,7 +85,7 @@ class Model
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */

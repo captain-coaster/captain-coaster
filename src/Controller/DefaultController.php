@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
-use App\Entity\Image;
-use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Form\Type\ContactType;
-use App\Service\DiscordService;
+use App\Repository\ImageRepository;
+use App\Repository\RiddenCoasterRepository;
 use App\Service\StatService;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,22 +20,18 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class DefaultController
- * @package App\Controller
+ * Controller for index pages.
  */
 class DefaultController extends AbstractController
 {
-    /**
-     * Root of application, redirect to browser language if defined
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     */
-    public function rootAction(Request $request)
+    /** Root of application without locale, redirect to browser language if defined. */
+    public function root(Request $request): RedirectResponse
     {
         $locale = $request->getPreferredLanguage($this->getParameter('app_locales_array'));
 
@@ -41,86 +39,83 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * Index of application
+     * Index of application.
      *
-     * @param Request $request
-     * @param StatService $statService
-     * @param EntityManagerInterface $em
-     * @return Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
+     * @throws NoResultException
      * @throws \Exception
-     * @Route("/", name="bdd_index", methods={"GET"})
      */
-    public function indexAction(Request $request, StatService $statService, EntityManagerInterface $em)
+    #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
+    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
     {
         $missingImages = [];
-        if (($user = $this->getUser()) instanceof User) {
-            $missingImages = $em->getRepository(RiddenCoaster::class)->findCoastersWithNoImage($user);
+        if ($user = $this->getUser()) {
+            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
-        return $this->render(
-            'Default/index.html.twig',
-            [
-                'ratingFeed' => $em->getRepository(RiddenCoaster::class)->findBy([], ['updatedAt' => 'DESC'], 6),
-                'image' => $em->getRepository(Image::class)->findLatestImage(),
+        return $this->render('Default/index.html.twig', [
+                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+                'image' => $imageRepository->findLatestImage(),
                 'stats' => $statService->getIndexStats(),
-                'reviews' => $em->getRepository(RiddenCoaster::class)->getLatestReviewsByLocale($request->getLocale()),
+                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
                 'missingImages' => $missingImages,
-            ]
-        );
+            ]);
     }
 
     /**
-     * Contact form
+     * Contact form.
      *
-     * @return RedirectResponse|Response
-     * @Route("/contact", name="default_contact", methods={"GET", "POST"})
      * @throws TransportExceptionInterface
      */
-    public function contactAction(
-        Request             $request,
-        MailerInterface     $mailer,
-        DiscordService      $discord,
-        TranslatorInterface $translator
-    )
+    #[Route(path: '/contact', name: 'default_contact', methods: ['GET', 'POST'])]
+    public function contactAction(Request $request, MailerInterface $mailer, ChatterInterface $chatter, TranslatorInterface $translator): RedirectResponse|Response
     {
         /** @var Form $form */
-        $form = $this->createForm(ContactType::class, null);
+        $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
 
             $message = (new Email())
-                ->from(new Address($this->getParameter('app_mail_from'),$this->getParameter('app_mail_from_name') ))
+                ->from(new Address($this->getParameter('app_mail_from'), $this->getParameter('app_mail_from_name')))
                 ->to($this->getParameter('app_contact_mail_to'))
                 ->replyTo($data['email'])
                 ->subject($translator->trans('contact.email.title'))
-                ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']])
-                );
+                ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']]));
             $mailer->send($message);
 
             // send notification
-            $discord->notify('We just received new message from ' . $data['name'] . "\n\n" . $data['message']);
+            $chatter->send((new ChatMessage('We just received new message from '.$data['name']."\n\n".$data['message']))->transport('discord_notif'));
 
-            $this->addFlash(
-                'success',
-                $translator->trans('contact.flash.success', ['%name%' => $data['name']])
-            );
+            $this->addFlash('success', $translator->trans('contact.flash.success', ['%name%' => $data['name']]));
 
             return $this->redirectToRoute('default_contact');
         }
 
-        return $this->render('Default/contact.html.twig', ['form' => $form->createView()]);
+        return $this->render('Default/contact.html.twig', ['form' => $form]);
     }
 
-    /**
-     * @return Response
-     * @Route("/privacy-policy", name="default_privacy_policy", methods={"GET"})
-     */
-    public function privacyPolicy()
+    #[Route(path: '/privacy-policy', name: 'default_privacy_policy', methods: ['GET'])]
+    public function privacyPolicy(): Response
     {
         return $this->render('Default/policy.html.twig');
+    }
+
+    #[Route('/protected', name: 'protected')]
+    public function protected(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, ChatterInterface $chatter): Response
+    {
+        $missingImages = [];
+        if (($user = $this->getUser()) instanceof User) {
+            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
+        }
+
+        return $this->render('Default/index.html.twig', [
+                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+                'image' => $imageRepository->findLatestImage(),
+                'stats' => $statService->getIndexStats(),
+                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
+                'missingImages' => $missingImages,
+            ]);
     }
 }

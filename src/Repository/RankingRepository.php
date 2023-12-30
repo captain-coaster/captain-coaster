@@ -1,59 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Coaster;
+use App\Entity\Ranking;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * RankingRepository
+ * RankingRepository.
  */
-class RankingRepository extends EntityRepository
+class RankingRepository extends ServiceEntityRepository
 {
-    /**
-     * @return mixed|null
-     */
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Ranking::class);
+    }
+
     public function findCurrent()
     {
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('r')
-                ->from('App:Ranking', 'r')
+                ->from(Ranking::class, 'r')
                 ->orderBy('r.computedAt', 'desc')
                 ->setMaxResults(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return null;
         }
     }
 
-    /**
-     * @return mixed|null
-     */
+    /** @return mixed|null */
     public function findPrevious()
     {
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('r')
-                ->from('App:Ranking', 'r')
+                ->from(Ranking::class, 'r')
                 ->orderBy('r.computedAt', 'desc')
                 ->setMaxResults(1)
                 ->setFirstResult(1)
                 ->getQuery()
                 ->getSingleResult();
-        } catch (NoResultException|NonUniqueResultException $e) {
+        } catch (NoResultException|NonUniqueResultException) {
             return null;
         }
     }
 
     /**
-     * @param array $filters
-     * @return \Doctrine\ORM\Query
+     * @return Query
+     *
      * @throws \Exception
      */
     public function findCoastersRanked(array $filters = [])
@@ -61,7 +67,7 @@ class RankingRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('c', 'p', 'm')
-            ->from('App:Coaster', 'c')
+            ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p')
             ->leftJoin('c.manufacturer', 'm')
             ->where('c.rank is not null');
@@ -73,11 +79,7 @@ class RankingRepository extends EntityRepository
         return $qb->getQuery();
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function applyFilters(QueryBuilder $qb, array $filters = [])
+    private function applyFilters(QueryBuilder $qb, array $filters = []): void
     {
         $this->filterLocation($qb, $filters);
         $this->filterMaterialType($qb, $filters);
@@ -87,18 +89,14 @@ class RankingRepository extends EntityRepository
         $this->filterOpeningDate($qb, $filters);
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterLocation(QueryBuilder $qb, array $filters = [])
+    private function filterLocation(QueryBuilder $qb, array $filters = []): void
     {
-        if (array_key_exists('country', $filters) && $filters['country'] !== '') {
+        if (\array_key_exists('country', $filters) && '' !== $filters['country']) {
             $qb
                 ->join('p.country', 'co')
                 ->andWhere('co.id = :country')
                 ->setParameter('country', $filters['country']);
-        } elseif (array_key_exists('continent', $filters) && $filters['continent'] !== '') {
+        } elseif (\array_key_exists('continent', $filters) && '' !== $filters['continent']) {
             $qb
                 ->join('p.country', 'co')
                 ->join('co.continent', 'ct')
@@ -107,13 +105,9 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterMaterialType(QueryBuilder $qb, array $filters = [])
+    private function filterMaterialType(QueryBuilder $qb, array $filters = []): void
     {
-        if (array_key_exists('materialType', $filters) && $filters['materialType'] !== '') {
+        if (\array_key_exists('materialType', $filters) && '' !== $filters['materialType']) {
             $qb
                 ->join('c.materialType', 'mt')
                 ->andWhere('mt.id = :materialType')
@@ -121,13 +115,9 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterSeatingType(QueryBuilder $qb, array $filters = [])
+    private function filterSeatingType(QueryBuilder $qb, array $filters = []): void
     {
-        if (array_key_exists('seatingType', $filters) && $filters['seatingType'] !== '') {
+        if (\array_key_exists('seatingType', $filters) && '' !== $filters['seatingType']) {
             $qb
                 ->join('c.seatingType', 'st')
                 ->andWhere('st.id = :seatingType')
@@ -135,13 +125,9 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterModel(QueryBuilder $qb, array $filters = [])
+    private function filterModel(QueryBuilder $qb, array $filters = []): void
     {
-        if (array_key_exists('model', $filters) && $filters['model'] !== '') {
+        if (\array_key_exists('model', $filters) && '' !== $filters['model']) {
             $qb
                 ->join('c.model', 'mo')
                 ->andWhere('mo.id = :model')
@@ -149,27 +135,19 @@ class RankingRepository extends EntityRepository
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterManufacturer(QueryBuilder $qb, array $filters = [])
+    private function filterManufacturer(QueryBuilder $qb, array $filters = []): void
     {
-        if (array_key_exists('manufacturer', $filters) && $filters['manufacturer'] !== '') {
+        if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
             $qb
                 ->andWhere('m.id = :manufacturer')
                 ->setParameter('manufacturer', $filters['manufacturer']);
         }
     }
 
-    /**
-     * @param QueryBuilder $qb
-     * @param array $filters
-     */
-    private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
+    private function filterOpeningDate(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by average rating
-        if (array_key_exists('openingDate', $filters) && $filters['openingDate'] !== '') {
+        if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
             $qb
                 ->andWhere('c.openingDate like :date')
                 ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));

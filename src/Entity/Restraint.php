@@ -1,79 +1,54 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\RestraintRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Restraint
- *
- * @ORM\Table(name="restraint")
- * @ORM\Entity(repositoryClass="App\Repository\RestraintRepository")
- * @ApiResource(
- *     attributes={
- *         "normalization_context"={"groups"={"read_restraint"}}
- *     },
- *     collectionOperations={"get"={"method"="GET"}},
- *     itemOperations={"get"={"method"="GET"}}
- * )
+ * Restraint.
  */
-class Restraint
+#[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_restraint']])]
+#[ORM\Table(name: 'restraint')]
+#[ORM\Entity(repositoryClass: RestraintRepository::class)]
+class Restraint implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
+    #[Groups(['read_restraint', 'read_coaster'])]
+    private ?string $name = null;
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
+    /** @var Collection<\App\Entity\Coaster> */
+    #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'restraint')]
+    private \Doctrine\Common\Collections\Collection $coasters;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, unique=true, nullable=false)
-     * @Groups({"read_restraint", "read_coaster"})
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
-     */
-    private $slug;
-
-    /**
-     * @var Coaster[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Coaster", mappedBy="restraint")
-     */
-    private $coasters;
-
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
-    /**
-     * @return int
-     */
+    /** @return int */
     public function getId()
     {
         return $this->id;
@@ -81,6 +56,7 @@ class Restraint
 
     /**
      * @param string $name
+     *
      * @return Restraint
      */
     public function setName($name)
@@ -90,9 +66,7 @@ class Restraint
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    /** @return string */
     public function getName()
     {
         return $this->name;
@@ -100,6 +74,7 @@ class Restraint
 
     /**
      * @param string $slug
+     *
      * @return Restraint
      */
     public function setSlug($slug)
@@ -109,18 +84,13 @@ class Restraint
         return $this;
     }
 
-    /**
-     * @return string
-     */
+    /** @return string */
     public function getSlug()
     {
         return $this->slug;
     }
 
-    /**
-     * @param Coaster $coaster
-     * @return Restraint
-     */
+    /** @return Restraint */
     public function addCoaster(Coaster $coaster)
     {
         $this->coasters[] = $coaster;
@@ -128,18 +98,13 @@ class Restraint
         return $this;
     }
 
-    /**
-     * @param Coaster $coaster
-     */
-    public function removeCoaster(Coaster $coaster)
+    public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
 
-    /**
-     * @return Coaster[]|ArrayCollection
-     */
-    public function getCoasters()
+    /** @return Coaster[]|ArrayCollection */
+    public function getCoasters(): array|\Doctrine\Common\Collections\ArrayCollection
     {
         return $this->coasters;
     }

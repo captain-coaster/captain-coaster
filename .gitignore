@@ -2,6 +2,7 @@
 /.env.local
 /.env.local.php
 /.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
 /vendor/
@@ -13,7 +14,9 @@
 
 ###> phpunit/phpunit ###
 /phpunit.xml
+.phpunit.result.cache
 ###< phpunit/phpunit ###
+
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
 # Commit build files for now
@@ -22,8 +25,18 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+
 /public/images/banners/*
 !/public/images/banners/.gitkeep
 /public/images/coasters
 /.idea/
 .php_cs.cache
+.php-cs-fixer.cache

@@ -1,41 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\LikedImageRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * LikedImage
- *
- * @ORM\Table(name="liked_image")
- * @ORM\Entity(repositoryClass="App\Repository\LikedImageRepository")
+ * LikedImage.
  */
+#[ORM\Table(name: 'liked_image')]
+#[ORM\Entity(repositoryClass: LikedImageRepository::class)]
 class LikedImage
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\User")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?User $user = null;
 
-    /**
-     * @var Image
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Image")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
-    private $image;
+    #[ORM\ManyToOne(targetEntity: Image::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private ?Image $image = null;
 
     /**
      * Get id.
@@ -47,41 +38,27 @@ class LikedImage
         return $this->id;
     }
 
-    /**
-     * @param User $user
-     * @return LikedImage
-     */
-    public function setUser(User $user): LikedImage
+    public function getUser(): User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): self
     {
         $this->user = $user;
 
         return $this;
     }
 
-    /**
-     * @return User
-     */
-    public function getUser(): User
+    public function getImage(): Image
     {
-        return $this->user;
+        return $this->image;
     }
 
-    /**
-     * @param Image $image
-     * @return LikedImage
-     */
-    public function setImage(Image $image): LikedImage
+    public function setImage(Image $image): self
     {
         $this->image = $image;
 
         return $this;
-    }
-
-    /**
-     * @return Image
-     */
-    public function getImage(): Image
-    {
-        return $this->image;
     }
 }

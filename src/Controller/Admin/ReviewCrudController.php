@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\RiddenCoaster;
@@ -58,12 +60,11 @@ class ReviewCrudController extends AbstractCrudController
             AssociationField::new('pros')->hideOnIndex(),
             AssociationField::new('cons')->hideOnIndex(),
             TextField::new('language')->hideOnIndex(),
-            TextareaField::new('review')->setMaxLength($pageName === Crud::PAGE_DETAIL ? 1024 : 50),
+            TextareaField::new('review')->setMaxLength(Crud::PAGE_DETAIL === $pageName ? 1024 : 50),
             IntegerField::new('like')->hideOnIndex(),
             IntegerField::new('dislike')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),
-
         ];
     }
 }

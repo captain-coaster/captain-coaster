@@ -1,144 +1,106 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Http\Client\HttpClient;
-use Http\Message\MessageFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AvatarCleanCommand extends Command
 {
-    const API_FB_PICTURE = 'https://graph.facebook.com/v7.0/%d/picture';
+    final public const string API_FB_PICTURE = 'https://graph.facebook.com/v18.0/%d/picture';
+    protected static $defaultName = 'avatar:clean';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var HttpClient
-     */
-    protected $client;
-
-    /**
-     * @var MessageFactory
-     */
-    protected $factory;
-
-    /**
-     * AvatarCleanCommand constructor.
-     * @param EntityManagerInterface $em
-     * @param HttpClient $client
-     * @param MessageFactory $factory
-     */
-    public function __construct(EntityManagerInterface $em, HttpClient $client, MessageFactory $factory)
+    public function __construct(private readonly EntityManagerInterface $em, private readonly HttpClientInterface $client, private readonly UserRepository $userRepository)
     {
         parent::__construct();
-        $this->em = $em;
-        $this->client = $client;
-        $this->factory = $factory;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('avatar:clean')
-            ->setDescription('Update Facebook avatar and cleanup dead avatars.');
+        $this->setDescription('Update profile pictures');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Http\Client\Exception
-     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('avatar');
         $output->writeln('Cleaning avatars...');
 
-        $users = $this->em
-            ->getRepository('App:User')
-            ->findAll();
+        $users = $this->userRepository->findAll();
 
-        /** @var User $user */
+        $batchSize = 20;
+        $i = 0;
         foreach ($users as $user) {
-            $this->updateFacebookAvatar($user, $output);
-            $this->removeDeadAvatar($user, $output);
+            if ($this->isAvatarDead($user)) {
+                $output->writeln("Dead URL for $user");
+                $this->updateAvatar($user, $output);
+            }
+
+            ++$i;
+            if (0 === $i % $batchSize) {
+                $output->writeln("Flushing ($i)");
+                $this->em->flush();
+                $this->em->clear();
+            }
         }
 
         $this->em->flush();
+        $this->em->clear();
 
         $output->writeln('End.');
-        $output->writeln((string)$stopwatch->stop('avatar'));
+        $output->writeln((string) $stopwatch->stop('avatar'));
+
+        return 0;
     }
 
-    /**
-     * @param User $user
-     * @param OutputInterface $output
-     * @throws \Http\Client\Exception
-     */
-    private function updateFacebookAvatar(User $user, OutputInterface $output)
+    private function updateAvatar(User $user, OutputInterface $output): void
     {
-        if (is_null($user->getFacebookId())) {
+        if (null === $user->getFacebookId()) {
+            $user->setProfilePicture(null);
+            $this->em->persist($user);
+
+            $output->writeln("Removing profile picture for $user");
+
             return;
         }
 
         try {
-            $request = $this
-                ->factory
-                ->createRequest('GET', sprintf(self::API_FB_PICTURE, $user->getFacebookId()));
-            $response = $this
-                ->client
-                ->sendRequest($request);
+            $response = $this->client->request('GET', sprintf(self::API_FB_PICTURE, $user->getFacebookId()), ['max_redirects' => 0]);
 
-
-            if ($response->getStatusCode() === 302) {
-                if ($response->hasHeader('Location')) {
-                    $user->setProfilePicture($response->getHeader('Location')[0]);
-                    $this->em->persist($user);
-
-                    $output->writeln("Updating $user");
-                }
-            }
-        } catch (\Exception $e) {
-            return;
-        }
-    }
-
-    /**
-     * @param User $user
-     * @param OutputInterface $output
-     * @throws \Http\Client\Exception
-     */
-    private function removeDeadAvatar(User $user, OutputInterface $output)
-    {
-        if (is_null($user->getProfilePicture())) {
-            return;
-        }
-
-        try {
-            $request = $this
-                ->factory
-                ->createRequest('GET', $user->getProfilePicture());
-            $response = $this
-                ->client
-                ->sendRequest($request);
-
-            if ($response->getStatusCode() !== 200) {
-                $user->setProfilePicture(null);
+            if (302 === $response->getStatusCode()) {
+                $user->setProfilePicture($response->getHeaders(false)['location'][0]);
                 $this->em->persist($user);
-
-                $output->writeln("Removing avatar for $user");
+                $output->writeln("Updating Facebook picture for: $user");
             }
-        } catch (\Exception $e) {
-            return;
+        } catch (\Exception) {
+            // do nothing
         }
+    }
+
+    private function isAvatarDead(User $user): bool
+    {
+        if (null === $user->getProfilePicture()) {
+            return false;
+        }
+
+        try {
+            $response = $this->client->request('GET', $user->getProfilePicture());
+
+            if (200 !== $response->getStatusCode()) {
+                return true;
+            }
+        } catch (\Exception) {
+            return true;
+        }
+
+        return false;
     }
 }

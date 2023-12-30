@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
-use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\BannerMaker;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,46 +13,30 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class BannerMakerCommand extends Command
 {
-    /**
-     * @var BannerMaker
-     */
-    private $bannerMakerService;
+    protected static $defaultName = 'banner:make';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    public function __construct(BannerMaker $bannerMakerService, EntityManagerInterface $em)
+    public function __construct(private readonly BannerMaker $bannerMakerService, private readonly UserRepository $userRepository)
     {
         parent::__construct();
-        $this->bannerMakerService = $bannerMakerService;
-        $this->em = $em;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('banner:make')
-            ->setDescription('Generate banners for users')
+        $this->setDescription('Generate banners for users')
             ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $users = [];
         $output->writeln('Start making banners.');
 
         $userId = $input->getArgument('user');
 
-        if (!is_null($userId)) {
-            $users[] = $this->em->getRepository(User::class)->findOneBy(['id' => $userId]);
+        if (null !== $userId) {
+            $users[] = $this->userRepository->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->em->getRepository(User::class)->findAll();
+            $users = $this->userRepository->findAll();
         }
 
         foreach ($users as $user) {
@@ -59,5 +44,7 @@ class BannerMakerCommand extends Command
         }
 
         $output->writeln('End.');
+
+        return 0;
     }
 }

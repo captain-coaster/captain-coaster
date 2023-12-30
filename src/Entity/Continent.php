@@ -1,91 +1,61 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Continent
- *
- * @ORM\Table(name="continent")
- * @ORM\Entity
+ * Continent.
  */
-class Continent
+#[ORM\Table(name: 'continent')]
+#[ORM\Entity]
+class Continent implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     */
-    private $slug;
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    private ?string $slug = null;
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $name
-     * @return Continent
-     */
-    public function setName(string $name): Continent
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getName(): string
+    public function getSlug(): string
     {
-        return $this->name;
+        return $this->slug;
     }
 
-    /**
-     * @param string $slug
-     * @return Continent
-     */
-    public function setSlug(string $slug): Continent
+    public function setSlug(string $slug): self
     {
         $this->slug = $slug;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSlug(): string
-    {
-        return $this->slug;
     }
 }

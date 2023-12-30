@@ -1,44 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\Top;
 use App\Form\Type\TopDetailsType;
 use App\Form\Type\TopType;
+use App\Repository\TopRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class TopController
- * @package App\Controller
- * @Route("/tops")
- */
+#[Route(path: '/tops')]
 class TopController extends AbstractController
 {
-    /**
-     * Creates a new top
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     *
-     * @Route("/new", name="top_new", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
-     */
-    public function newAction(Request $request, EntityManagerInterface $em)
+    /** Create a new top. */
+    #[Route(path: '/new', name: 'top_new', methods: ['GET', 'POST'])]
+    public function newAction(Request $request, EntityManagerInterface $em, TopRepository $topRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         $top = new Top();
-        $mainTop = $em->getRepository(Top::class)->findOneBy(['user' => $this->getUser(), 'main' => true]);
+        $mainTop = $topRepository->findOneBy(['user' => $this->getUser(), 'main' => true]);
 
         // Very first top, redirect to main top edit
         if (!$mainTop instanceof Top) {
@@ -60,75 +56,51 @@ class TopController extends AbstractController
             $top->setMain(false);
             $top->setUser($this->getUser());
 
-            $em = $this->getDoctrine()->getManager();
             $em->persist($top);
             $em->flush();
 
             return $this->redirectToRoute('top_edit', ['id' => $top->getId()]);
         }
 
-        return $this->render('Top/edit-details.html.twig', ['form' => $form->createView(), 'create' => true]);
+        return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => true]);
     }
 
-    /**
-     * Displays all tops
-     *
-     * @Route("/", name="top_list", methods={"GET"})
-     */
-    public function list(Request $request, PaginatorInterface $paginator, EntityManagerInterface $em): Response
+    /** Displays all tops. */
+    #[Route(path: '/', name: 'top_list', methods: ['GET'])]
+    public function list(PaginatorInterface $paginator, EntityManagerInterface $em, #[MapQueryParameter] int $page = 1): Response
     {
         try {
-            $pagination = $paginator->paginate(
-                $em->getRepository(Top::class)->findAllTops(),
-                $request->get('page', 1),
-                9,
-                ['wrap-queries' => true]
-            );
-        } catch (\UnexpectedValueException $e) {
+            $pagination = $paginator->paginate($em->getRepository(Top::class)->findAllTops(), $page, 9, ['wrap-queries' => true]);
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
-        return $this->render(
-            'Top/list.html.twig',
-            [
-                'tops' => $pagination,
-            ]
-        );
+        return $this->render('Top/list.html.twig', [
+            'tops' => $pagination,
+        ]);
     }
 
     /**
-     * Displays a top
+     * Displays a top.
      *
-     * @param Top $top
-     * @param EntityManagerInterface $em
-     * @return Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @Route("/{id}", name="top_show", methods={"GET"})
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    public function show(Top $top, EntityManagerInterface $em)
+    #[Route(path: '/{id}', name: 'top_show', methods: ['GET'])]
+    public function show(Top $top, EntityManagerInterface $em): Response
     {
-        return $this->render(
-            'Top/show.html.twig',
-            [
-                'top' => $em->getRepository(Top::class)->getTopWithData($top),
-            ]
-        );
+        return $this->render('Top/show.html.twig', [
+            'top' => $em->getRepository(Top::class)->getTopWithData($top),
+        ]);
     }
 
     /**
-     * Edits a top
-     *
-     * @param Request $request
-     * @param Top $top
-     * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * Edits a top.
      *
      * @throws \Exception
-     * @Route("/{id}/edit", name="top_edit", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
      */
-    public function edit(Request $request, Top $top, EntityManagerInterface $em)
+    #[Route(path: '/{id}/edit', name: 'top_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Top $top, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('edit', $top);
 
@@ -143,7 +115,7 @@ class TopController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($originalCoasters as $coaster) {
-                if (false === $top->getTopCoasters()->contains($coaster)) {
+                if (!$top->getTopCoasters()->contains($coaster)) {
                     $em->remove($coaster);
                 }
             }
@@ -156,26 +128,15 @@ class TopController extends AbstractController
             return $this->redirectToRoute('top_show', ['id' => $top->getId()]);
         }
 
-        return $this->render(
-            'Top/edit.html.twig',
-            [
-                'form' => $form->createView(),
-                'topName' => $top->getName(),
-            ]
-        );
+        return $this->render('Top/edit.html.twig', [
+            'form' => $form,
+            'topName' => $top->getName(),
+        ]);
     }
 
-    /**
-     * Edits details of a top (name, type)
-     *
-     * @param Request $request
-     * @param Top $top
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
-     *
-     * @Route("/{id}/edit-details", name="top_edit_details", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
-     */
-    public function editDetails(Request $request, Top $top)
+    /** Edits details of a top (name, type). */
+    #[Route(path: '/{id}/edit-details', name: 'top_edit_details', methods: ['GET', 'POST'])]
+    public function editDetails(Request $request, Top $top, EntityManagerInterface $em): Response
     {
         $this->denyAccessUnlessGranted('edit-details', $top);
 
@@ -184,27 +145,18 @@ class TopController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($top);
             $em->flush();
 
             return $this->redirectToRoute('top_show', ['id' => $top->getId()]);
         }
 
-        return $this->render('Top/edit-details.html.twig', ['form' => $form->createView(), 'create' => false]);
+        return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => false]);
     }
 
-    /**
-     * Deletes a top
-     *
-     * @param Top $top
-     * @param EntityManagerInterface $em
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     *
-     * @Route("/{id}/delete", name="top_delete", methods={"GET"})
-     * @Security("is_granted('ROLE_USER')")
-     */
-    public function delete(Top $top, EntityManagerInterface $em)
+    /** Deletes a top. */
+    #[Route(path: '/{id}/delete', name: 'top_delete', methods: ['GET'])]
+    public function delete(Top $top, EntityManagerInterface $em): RedirectResponse
     {
         $this->denyAccessUnlessGranted('delete', $top);
 
@@ -214,35 +166,18 @@ class TopController extends AbstractController
         return $this->redirectToRoute('top_list');
     }
 
-    /**
-     * Ajax route for autocomplete search (search "q" parameter)
-     *
-     * @param Request $request
-     * @param EntityManagerInterface $em
-     * @return JsonResponse
-     *
-     * @Route(
-     *     "/search/coasters.json",
-     *     name="top_ajax_search",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     * @Security("is_granted('ROLE_USER')")
-     */
-    public function ajaxSearch(Request $request, EntityManagerInterface $em)
+    /** Ajax route for autocomplete search (search "q" parameter). */
+    #[Route(path: '/search/coasters.json', name: 'top_ajax_search', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
+    public function ajaxSearch(Request $request, EntityManagerInterface $em): JsonResponse
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
+
         if (!$request->get('q')) {
             return new JsonResponse([]);
         }
 
-        return new JsonResponse(
-            [
-                'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop(
-                    $request->get('q'),
-                    $this->getUser()
-                ),
-            ]
-        );
+        return new JsonResponse([
+            'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop($request->get('q'), $this->getUser()),
+        ]);
     }
 }

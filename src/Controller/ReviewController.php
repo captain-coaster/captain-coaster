@@ -1,46 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
+use App\Repository\RiddenCoasterRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Class ReviewController
- * @package App\Controller
- * @Route("/reviews")
- */
+#[Route(path: '/reviews')]
 class ReviewController extends AbstractController
 {
     /**
-     * Show a list of reviews
+     * Show a list of reviews.
      *
-     * @Route("/{page}", name="review_list", requirements={"page" = "\d+"}, methods={"GET"})
      * @throws NonUniqueResultException
      */
-    public function listAction(Request $request, PaginatorInterface $paginator, int $page = 1): Response
-    {
-        $query = $this->getDoctrine()
-            ->getRepository(RiddenCoaster::class)
-            ->findAll($request->getLocale());
-
+    #[Route(path: '/{page}', name: 'review_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function listAction(
+        Request $request,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        PaginatorInterface $paginator,
+        int $page = 1
+    ): Response {
         try {
             $pagination = $paginator->paginate(
-                $query,
+                $riddenCoasterRepository->findAll($request->getLocale()),
                 $page,
                 10
             );
-        } catch (\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
@@ -50,21 +48,18 @@ class ReviewController extends AbstractController
         );
     }
 
-    /**
-     * Create or update a review
-     *
-     * @param Request $request
-     * @param Coaster $coaster
-     * @return Response
-     * @Route("/coasters/{id}/form", name="review_form", methods={"GET", "POST"})
-     * @Security("is_granted('ROLE_USER')")
-     */
-    public function newAction(Request $request, Coaster $coaster)
-    {
-        $em = $this->getDoctrine()->getManager();
+    /** Create or update a review. */
+    #[Route(path: '/coasters/{id}/form', name: 'review_form', methods: ['GET', 'POST'])]
+    public function newAction(
+        Request $request,
+        Coaster $coaster,
+        EntityManagerInterface $em,
+        RiddenCoasterRepository $riddenCoasterRepository
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
-        $review = $em->getRepository('App:RiddenCoaster')->findOneBy(
-            ['coaster' => $coaster->getId(), 'user' => $this->getUser()->getId()]
+        $review = $riddenCoasterRepository->findOneBy(
+            ['coaster' => $coaster, 'user' => $this->getUser()]
         );
 
         if (!$review instanceof RiddenCoaster) {
@@ -74,7 +69,6 @@ class ReviewController extends AbstractController
             $review->setLanguage($request->getLocale());
         }
 
-        /** @var Form $form */
         $form = $this->createForm(
             ReviewType::class,
             $review,
@@ -85,7 +79,6 @@ class ReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $em->persist($review);
             $em->flush();
 
@@ -95,7 +88,7 @@ class ReviewController extends AbstractController
         return $this->render(
             'Review/form.html.twig',
             [
-                'form' => $form->createView(),
+                'form' => $form,
                 'coaster' => $coaster,
             ]
         );

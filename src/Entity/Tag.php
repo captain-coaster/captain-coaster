@@ -1,106 +1,77 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\TagRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Tag
- *
- * @ORM\Table
- * @ORM\Entity(repositoryClass="App\Repository\TagRepository")
+ * Tag.
  */
-class Tag
+#[ORM\Entity(repositoryClass: TagRepository::class)]
+class Tag implements \Stringable
 {
-    const PRO = 'pro';
-    const CON = 'con';
+    final public const PRO = 'pro';
+    final public const CON = 'con';
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="type", type="string", length=255)
-     */
-    private $type;
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
+    private ?string $type = null;
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->getName();
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     *
-     * @return Tag
-     */
-    public function setName($name): Tag
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string
-     */
+    /** Get name */
     public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * Set type
+     * Set name.
      *
-     * @param string $type
-     *
-     * @return Tag
+     * @param string $name
      */
-    public function setType($type): Tag
+    public function setName($name): self
     {
-        $this->type = $type;
+        $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get type
-     *
-     * @return string
-     */
+    /** Get id */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /** Get type */
     public function getType(): string
     {
         return $this->type;
+    }
+
+    /**
+     * Set type.
+     *
+     * @param string $type
+     */
+    public function setType($type): self
+    {
+        $this->type = $type;
+
+        return $this;
     }
 }

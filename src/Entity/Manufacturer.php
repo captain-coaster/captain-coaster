@@ -1,54 +1,42 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\ManufacturerRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Manufacturer
- *
- * @ORM\Table(name="manufacturer")
- * @ORM\Entity(repositoryClass="App\Repository\ManufacturerRepository")
+ * Manufacturer.
  */
-class Manufacturer
+#[ORM\Table(name: 'manufacturer')]
+#[ORM\Entity(repositoryClass: ManufacturerRepository::class)]
+class Manufacturer implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="name", type="string", length=255, nullable=false)
-     * @Groups({"read_coaster"})
-     */
-    private $name;
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
+    #[Groups(['read_coaster'])]
+    private ?string $name = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="slug", type="string", length=255, unique=true, nullable=false)
-     * @Gedmo\Slug(fields={"name"})
-     */
-    private $slug;
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -58,7 +46,17 @@ class Manufacturer
     }
 
     /**
-     * Set name
+     * Get name.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set name.
      *
      * @param string $name
      *
@@ -72,17 +70,17 @@ class Manufacturer
     }
 
     /**
-     * Get name
+     * Get slug.
      *
      * @return string
      */
-    public function getName()
+    public function getSlug()
     {
-        return $this->name;
+        return $this->slug;
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -93,15 +91,5 @@ class Manufacturer
         $this->slug = $slug;
 
         return $this;
-    }
-
-    /**
-     * Get slug
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
     }
 }

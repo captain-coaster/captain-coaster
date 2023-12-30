@@ -1,15 +1,41 @@
 root:
     path: '/'
-    defaults: { _controller: 'App\Controller\DefaultController::rootAction' }
+    controller: App\Controller\DefaultController::root
 
-facebook_login:
-    path: '/login/check-facebook'
+admin:
+    path: /team
+    controller: App\Controller\Admin\DashboardController::index
 
-google_login:
-    path: '/login/check-google'
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+    prefix: '/{_locale<en|fr|es>}'
 
 logout:
     path: '/logout'
+    controller: App\Controller\ConnectController::logout
+
+connect_google_start:
+    path: '/connect/google'
+    controller: App\Controller\ConnectController::connectGoogleStart
+
+connect_google_check:
+    path: '/connect/google/check'
+    controller: App\Controller\ConnectController::connectGoogleCheck
+
+connect_facebook_start:
+    path: '/connect/facebook'
+    controller: App\Controller\ConnectController::connectFacebookStart
+
+connect_facebook_check:
+    path: '/connect/facebook/check'
+    controller: App\Controller\ConnectController::connectFacebookCheck
+
+login_check:
+    path: '/login/check'
+    controller: App\Controller\ConnectController::loginCheck
 
 sitemap:
     path: '/sitemap.xml'
@@ -18,14 +44,3 @@ sitemap:
 sitemap_image:
     path: '/sitemap_image.xml'
     defaults: { _controller: 'App\Controller\SitemapController::imageAction', _format: 'xml' }
-
-web:
-    resource: '../src/Controller/'
-    type: 'annotation'
-    prefix: '/{_locale}'
-    requirements:
-        _locale: '%app_locales%'
-
-admin:
-    path: /team
-    controller: App\Controller\Admin\DashboardController::index

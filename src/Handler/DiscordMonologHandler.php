@@ -1,40 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Handler;
 
 use App\Service\DiscordService;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 
 /**
- * Monolog Handler to log into a discord channel
+ * Monolog Handler to log into a discord channel.
  */
 class DiscordMonologHandler extends AbstractProcessingHandler
 {
-    /**
-     * @var DiscordService
-     */
-    protected $discordService;
-
-    /**
-     * DiscordMonologHandler constructor.
-     * @param DiscordService $discordService
-     */
-    public function __construct(DiscordService $discordService)
+    /** DiscordMonologHandler constructor. */
+    public function __construct(protected DiscordService $discordService)
     {
-        parent::__construct(Logger::CRITICAL, true);
-
-        $this->discordService = $discordService;
+        parent::__construct(Level::Critical, true);
     }
 
-    /**
-     * @param array $record
-     * @throws \Exception
-     */
-    public function write(array $record): void
+    /** @throws \Exception */
+    public function write(LogRecord $record): void
     {
         $this->discordService->log(
-            sprintf('%s: `%s`', Logger::getLevelName($record['level']), $record['message'])
+            sprintf('%s: `%s`', Logger::toMonologLevel($record->level), $record->message)
         );
     }
 }

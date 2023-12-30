@@ -26,7 +26,7 @@
       <h6 class="alert-heading text-semibold">
         {{ 'index.header.title'|trans }}
       </h6>
-      {{ 'index.header.info'|trans({'%link_path%': path('hwi_oauth_connect')})|raw }}
+      {{ 'index.header.info'|trans({'%link_path%': path('login')})|raw }}
     </div>
   {% endif %}
   <!-- /info alert -->
@@ -149,7 +149,7 @@
                     </a>
                     <span class="media-annotation dotted text-warning">
                       {% set low = review.value|round(0, 'floor') %}
-                      {% for i in 1..low if low > 0 %}
+                      {% for i in 1..low %}
                         <i class="icon-star-full2"></i>
                       {% endfor %}
                       {% if low < review.value %}

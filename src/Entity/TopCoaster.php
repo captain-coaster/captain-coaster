@@ -1,135 +1,73 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
+use App\Repository\TopCoasterRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * TopCoaster - ranked coaster in a top
- *
- * @ORM\Table(name="liste_coaster")
- * @ORM\Entity(repositoryClass="App\Repository\TopCoasterRepository")
- */
-class TopCoaster
+#[ORM\Table(name: 'liste_coaster')]
+#[ORM\Entity(repositoryClass: TopCoasterRepository::class)]
+class TopCoaster implements \Stringable
 {
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(type: Types::INTEGER), ORM\Id, ORM\GeneratedValue]
+    private ?int $id = null;
 
-    /**
-     * @var int
-     *
-     * @ORM\Column(name="position", type="integer", nullable=true)
-     */
-    private $position;
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
+    private int $position;
 
-    /**
-     * @var Top
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Top", inversedBy="topCoasters")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
-    private $top;
+    #[ORM\ManyToOne(targetEntity: Top::class, inversedBy: 'topCoasters')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Top $top;
 
-    /**
-     * @var Coaster
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Coaster", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     */
-    private $coaster;
+    #[ORM\ManyToOne(targetEntity: Coaster::class, fetch: 'EAGER')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Coaster $coaster;
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
-        return (string) $this->coaster . ' (' . $this->position . ')';
+        return (string) $this->coaster.' ('.$this->position.')';
     }
 
-    /**
-     * Get id
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set position
-     *
-     * @param integer $position
-     *
-     * @return TopCoaster
-     */
-    public function setPosition($position)
+    public function setPosition(int $position): static
     {
         $this->position = $position;
 
         return $this;
     }
 
-    /**
-     * Get position
-     *
-     * @return int
-     */
-    public function getPosition()
+    public function getPosition(): int
     {
         return $this->position;
     }
 
-    /**
-     * Set top
-     *
-     * @param Top $top
-     *
-     * @return TopCoaster
-     */
-    public function setTop(Top $top)
+    public function setTop(Top $top): static
     {
         $this->top = $top;
 
         return $this;
     }
 
-    /**
-     * Get top
-     *
-     * @return Top
-     */
-    public function getTop()
+    public function getTop(): Top
     {
         return $this->top;
     }
 
-    /**
-     * Set coaster
-     *
-     * @param Coaster $coaster
-     *
-     * @return TopCoaster
-     */
-    public function setCoaster(Coaster $coaster)
+    public function setCoaster(Coaster $coaster): static
     {
         $this->coaster = $coaster;
 
         return $this;
     }
 
-    /**
-     * Get coaster
-     *
-     * @return Coaster
-     */
-    public function getCoaster()
+    public function getCoaster(): Coaster
     {
         return $this->coaster;
     }

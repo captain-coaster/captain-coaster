@@ -1,19 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Service\SitemapService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\Response;
 
 class SitemapController extends AbstractController
 {
     /**
-     * Create sitemap for pages
+     * Create sitemap for pages.
      *
-     * @param SitemapService $sitemapService
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
+     *
      * @throws InvalidArgumentException
      */
     public function indexAction(SitemapService $sitemapService)
@@ -34,10 +37,10 @@ class SitemapController extends AbstractController
     }
 
     /**
-     * Create sitemap for images
+     * Create sitemap for images.
      *
-     * @param SitemapService $sitemapService
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
+     *
      * @throws InvalidArgumentException
      */
     public function imageAction(SitemapService $sitemapService)

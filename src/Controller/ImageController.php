@@ -1,38 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 class ImageController extends AbstractController
 {
-    /**
-     * @Route(
-     *     "/toggleLike/{id}",
-     *     name="like_image_async",
-     *     methods={"GET"},
-     *     options = {"expose" = true},
-     *     condition="request.isXmlHttpRequest()"
-     * )
-     * @param Image $image
-     * @param EntityManagerInterface $em
-     * @return JsonResponse
-     */
+    /** @return JsonResponse */
+    #[Route(path: '/toggleLike/{id}', name: 'like_image_async', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function toggleLikeAction(Image $image, EntityManagerInterface $em)
     {
         // avoid redirects to login...
         // @todo
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
-            return new JsonResponse([], 403);
+            return new JsonResponse([], Response::HTTP_FORBIDDEN);
         }
 
         $user = $this->getUser();
-        $likedImage = $em->getRepository('App:LikedImage')->findOneBy(['user' => $user, 'image' => $image]);
+        $likedImage = $this->Repository->findOneBy(['user' => $user, 'image' => $image]);
 
         if ($likedImage instanceof LikedImage) {
             $em->remove($likedImage);

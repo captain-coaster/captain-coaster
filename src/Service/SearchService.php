@@ -1,72 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
+use App\Entity\Coaster;
+use App\Entity\Park;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
 class SearchService
 {
-    const COASTER = [
+    final public const COASTER = [
         'emoji' => '🎢',
         'route' => 'bdd_show_coaster',
     ];
 
-    const PARK = [
+    final public const PARK = [
         'emoji' => '🎡',
         'route' => 'park_show',
     ];
 
-    const USER =[
+    final public const USER = [
         'emoji' => '👦',
-        'route' => 'user_show'
+        'route' => 'user_show',
     ];
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * SearchService constructor.
-     * @param EntityManagerInterface $em
-     */
-    public function __construct(EntityManagerInterface $em)
+    /** SearchService constructor. */
+    public function __construct(private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
     }
 
-    /**
-     * @return array
-     */
     public function getAutocompleteValues(): array
     {
-        $coasters = $this->em->getRepository('App:Coaster')->findAllForSearch();
+        $coasters = $this->em->getRepository(Coaster::class)->findAllForSearch();
         $coasters = $this->formatValues($coasters, self::COASTER);
 
-        $parks = $this->em->getRepository('App:Park')->findAllForSearch();
+        $parks = $this->em->getRepository(Park::class)->findAllForSearch();
         $parks = $this->formatValues($parks, self::PARK);
 
-        $users = $this->em->getRepository('App:User')->getAllForSearch();
+        $users = $this->em->getRepository(User::class)->getAllForSearch();
         $users = $this->formatValues($users, self::USER);
 
         return array_merge($parks, $coasters, $users);
     }
 
-    /**
-     * @param $results
-     * @param $options
-     * @return array
-     */
-    private function formatValues($results, $options)
+    private function formatValues($results, $options): array
     {
         return array_map(
-            function ($result) use ($options) {
-                return [
-                    'n' => $options['emoji'].' '.$result['name'],
-                    'r' => $options['route'],
-                    's' => $result['slug'],
-                ];
-            },
+            fn ($result) => [
+                'n' => $options['emoji'].' '.$result['name'],
+                'r' => $options['route'],
+                's' => $result['slug'],
+            ],
             $results
         );
     }

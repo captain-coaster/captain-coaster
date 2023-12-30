@@ -1,21 +1,13 @@
-# To get started with security, check out the documentation:
-# http://symfony.com/doc/current/security.html
 security:
-    encoders:
-        FOS\UserBundle\Model\UserInterface: 'bcrypt'
-
-    role_hierarchy:
-        ROLE_ADMIN:       [ROLE_USER, ROLE_CONTRIBUTOR, ROLE_PREVIEW_FEATURE]
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
-
+    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        api_user_provider:
+        login_link_provider:
             entity:
-                class: 'App:User'
-                property: 'apiKey'
-        oauth_provider:
-            id: 'my.custom.user_provider'
+                class: 'App\Entity\User'
+                property: 'email'
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -27,41 +19,55 @@ security:
             pattern: ^/api$
             security: false
 
-        main_search:
-            pattern: ^/(en|fr|es)/search/main.json$
-            security: false
-
         api_secured:
-            guard:
-                authenticators:
-                    - 'App\Security\TokenAuthenticator'
-            provider: 'api_user_provider'
+            custom_authenticators:
+                - App\Security\ApiKeyAuthenticator
             stateless: true
             pattern: '^/api/'
 
         main:
-            # used for remember_me
-            provider: oauth_provider
-            anonymous: ~
-            oauth:
-                resource_owners:
-                    facebook: '/login/check-facebook'
-                    google: '/login/check-google'
-                # A améliorer
-                login_path: '/en/login'
-                use_forward: false
-                failure_path: '/en/login'
-                oauth_user_provider:
-                    service: 'my.custom.user_provider'
-            remember_me:
-                secret: '%env(APP_SECRET)%'
-                lifetime: 15552000 # 6 months
-                path: '/'
-                always_remember_me: true
+            lazy: true
+#            login_link:
+#                check_route: login_check
+#                #check_post_only: true
+#                signature_properties: ['id', 'email']
+#                provider: login_link_provider
+#                lifetime: 300
+#                max_uses: 1
+#                login_path: login
+            custom_authenticators:
+                - App\Security\GoogleAuthenticator
+                - App\Security\FacebookAuthenticator
+            entry_point: App\Security\GoogleAuthenticator
             logout:
-                path: '/logout'
-                target: '/'
+                path: logout
+            remember_me:
+                name: captain_rmb
+                secret: '%kernel.secret%'
+                lifetime: 2629800 # 1 month in seconds
+                always_remember_me: true
+                signature_properties: ['email', 'updatedAt']
+                secure: true
+                httponly: true
 
+    role_hierarchy:
+        ROLE_ADMIN:       [ROLE_USER, ROLE_CONTRIBUTOR, ROLE_PREVIEW_FEATURE]
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+    # Easy way to control access for large sections of your site
+    # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/team, roles: ROLE_CONTRIBUTOR }
         - { path: ^/api, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            # By default, password hashers are resource intensive and take time. This is
+            # important to generate secure password hashes. In tests however, secure hashes
+            # are not important, waste resources and increase test times. The following
+            # reduces the work factor to the lowest possible values.
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4 # Lowest possible value for bcrypt
+                time_cost: 3 # Lowest possible value for argon
+                memory_cost: 10 # Lowest possible value for argon

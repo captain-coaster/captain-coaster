@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Doctrine;
 
 use App\Entity\LikedImage;
@@ -8,21 +10,11 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 
 class LikedImageListener
 {
-    /**
-     * @var ImageManager
-     */
-    private $imageManager;
-
-    /**
-     * ImageUploadListener constructor.
-     * @param ImageManager $imageManager
-     */
-    public function __construct(ImageManager $imageManager)
+    public function __construct(private readonly ImageManager $imageManager)
     {
-        $this->imageManager = $imageManager;
     }
 
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         if (!$args->getEntity() instanceof LikedImage) {
             return;
@@ -31,7 +23,7 @@ class LikedImageListener
         $this->imageManager->updateLikeCounters();
     }
 
-    public function postRemove(LifecycleEventArgs $args)
+    public function postRemove(LifecycleEventArgs $args): void
     {
         if (!$args->getEntity() instanceof LikedImage) {
             return;

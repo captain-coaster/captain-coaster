@@ -81,7 +81,7 @@
             <p class="text-muted content-group-sm">
               {{ 'coaster.rating.mustlogin'|trans }}
             </p>
-            <a href="{{ path('hwi_oauth_connect') }}">{{ 'coaster.rating.login'|trans }}</a>
+            <a href="{{ path('login') }}">{{ 'coaster.rating.login'|trans }}</a>
           {% endif %}
         </div>
         <!-- /star rating -->
@@ -243,11 +243,11 @@
               <div class="pull-right"><i class="icon-checkmark3"></i></div>
             </div>
           {% endif %}
-          {% if coaster.price %}
+          {% if coaster.price and coaster.currency %}
             <div class="list-group-item">
               <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}:</label>
               <div class="pull-right">
-                {{ coaster.price|number_format(0, ',', ' ') }} {{ coaster.currency.symbol }}
+                {{ coaster.price|format_currency(coaster.currency, {fraction_digit: 0}) }}
               </div>
             </div>
           {% endif %}

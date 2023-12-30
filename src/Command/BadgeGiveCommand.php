@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Service\BadgeService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,55 +15,32 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class BadgeGiveCommand extends Command
 {
-    /**
-     * @var BadgeService
-     */
-    private $badgeService;
+    protected static $defaultName = 'badge:give';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * BadgeGiveCommand constructor.
-     * @param BadgeService $badgeService
-     * @param EntityManagerInterface $em
-     */
-    public function __construct(BadgeService $badgeService, EntityManagerInterface $em)
+    public function __construct(private readonly BadgeService $badgeService, private readonly UserRepository $userRepository)
     {
         parent::__construct();
-        $this->badgeService = $badgeService;
-        $this->em = $em;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('badge:give')
-            ->setDescription('Give badges to users')
+        $this->setDescription('Give badges to users')
             ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $users = [];
         $stopwatch = new Stopwatch();
         $stopwatch->start('badge');
         $output->writeln('Start giving badges.');
 
         $userId = $input->getArgument('user');
 
-        if (!is_null($userId)) {
-            $users[] = $this->em->getRepository(User::class)->findOneBy(['id' => $userId]);
+        if (null !== $userId) {
+            $users[] = $this->userRepository->findOneBy(['id' => $userId]);
         } else {
-            $users = $this->em->getRepository(User::class)->getUsersWithRecentRatingOrTopUpdate();
+            $users = $this->userRepository->getUsersWithRecentRatingOrTopUpdate();
         }
 
         /** @var User $user */
@@ -71,6 +50,8 @@ class BadgeGiveCommand extends Command
         }
 
         $output->writeln('End of command.');
-        $output->writeln((string)$stopwatch->stop('badge'));
+        $output->writeln((string) $stopwatch->stop('badge'));
+
+        return 0;
     }
 }

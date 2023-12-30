@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use App\Entity\RiddenCoaster;
@@ -9,34 +11,19 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class RiddenCoasterVoter extends Voter
 {
-    const UPDATE = 'update';
-    const DELETE = 'delete';
+    final public const UPDATE = 'update';
+    final public const DELETE = 'delete';
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @return bool
-     */
-    protected function supports($attribute, $subject)
+    protected function supports(string $attribute, mixed $subject): bool
     {
-        if (!in_array($attribute, [self::UPDATE, self::DELETE])) {
+        if (!\in_array($attribute, [self::UPDATE, self::DELETE])) {
             return false;
         }
 
-        if (!$subject instanceof RiddenCoaster) {
-            return false;
-        }
-
-        return true;
+        return $subject instanceof RiddenCoaster;
     }
 
-    /**
-     * @param string $attribute
-     * @param mixed $subject
-     * @param TokenInterface $token
-     * @return bool
-     */
-    protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
+    protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
 
@@ -47,32 +34,19 @@ class RiddenCoasterVoter extends Voter
         /** @var RiddenCoaster $review */
         $review = $subject;
 
-        switch ($attribute) {
-            case self::UPDATE:
-                return $this->canUpdate($review, $user);
-            case self::DELETE:
-                return $this->canDelete($review, $user);
-        }
-
-        throw new \LogicException('This code should not be reached!');
+        return match ($attribute) {
+            self::UPDATE => $this->canUpdate($review, $user),
+            self::DELETE => $this->canDelete($review, $user),
+            default => throw new \LogicException('This code should not be reached!'),
+        };
     }
 
-    /**
-     * @param RiddenCoaster $review
-     * @param User $user
-     * @return bool
-     */
-    private function canUpdate(RiddenCoaster $review, User $user)
+    private function canUpdate(RiddenCoaster $review, User $user): bool
     {
         return $user === $review->getUser();
     }
 
-    /**
-     * @param RiddenCoaster $review
-     * @param User $user
-     * @return bool
-     */
-    private function canDelete(RiddenCoaster $review, User $user)
+    private function canDelete(RiddenCoaster $review, User $user): bool
     {
         return $user === $review->getUser();
     }

@@ -1,18 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
+use App\Entity\Image;
 use App\Entity\User;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * ImageRepository
+ * ImageRepository.
  */
-class ImageRepository extends EntityRepository
+class ImageRepository extends ServiceEntityRepository
 {
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Image::class);
+    }
+
     /**
-     * @return mixed
-     * @throws \Doctrine\ORM\NoResultException
+     * @throws NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findLatestImage()
@@ -20,7 +30,7 @@ class ImageRepository extends EntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('i')
-            ->from('App:Image', 'i')
+            ->from(Image::class, 'i')
             ->where('i.enabled = 1')
             ->andWhere('i.credit is not null')
             ->orderBy('i.updatedAt', 'DESC')
@@ -29,16 +39,12 @@ class ImageRepository extends EntityRepository
             ->getSingleResult();
     }
 
-    /**
-     * @param User $user
-     * @return mixed
-     */
     public function findUserImages(User $user)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('i')
-            ->from('App:Image', 'i')
+            ->from(Image::class, 'i')
             ->where('i.enabled = 1')
             ->andWhere('i.credit is not null')
             ->andWhere('i.uploader = :uploader')
@@ -46,16 +52,13 @@ class ImageRepository extends EntityRepository
             ->getQuery();
     }
 
-    /**
-     * @return mixed
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
+    /** @throws NonUniqueResultException */
     public function countAll()
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
-            ->from('App:Image', 'i')
+            ->from(Image::class, 'i')
             ->where('i.enabled = 1')
             ->getQuery()
             ->getSingleScalarResult();

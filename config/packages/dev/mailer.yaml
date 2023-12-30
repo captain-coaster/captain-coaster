@@ -1,4 +1,0 @@
-framework:
-  mailer:
-    envelope:
-      recipients: ['%env(APP_DELIVERY_ADDRESSES)%']

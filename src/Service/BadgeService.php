@@ -1,59 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Badge;
-use App\Entity\TopCoaster;
 use App\Entity\RiddenCoaster;
+use App\Entity\TopCoaster;
 use App\Entity\User;
+use App\Repository\BadgeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * Class BadgeService
- * @package App\Service
- */
 class BadgeService
 {
-    const BADGE_TYPE_RATING = 'rating';
-    const BADGE_RATING_1 = 'badge.rating1';
-    const BADGE_RATING_100 = 'badge.rating100';
-    const BADGE_RATING_250 = 'badge.rating250';
-    const BADGE_RATING_500 = 'badge.rating500';
-    const BADGE_RATING_1000 = 'badge.rating1000';
+    final public const string BADGE_TYPE_RATING = 'rating';
+    final public const string BADGE_RATING_1 = 'badge.rating1';
+    final public const string BADGE_RATING_100 = 'badge.rating100';
+    final public const string BADGE_RATING_250 = 'badge.rating250';
+    final public const string BADGE_RATING_500 = 'badge.rating500';
+    final public const string BADGE_RATING_1000 = 'badge.rating1000';
 
-    const BADGE_TYPE_TEAM = 'team';
-    const BADGE_TEAM_KATUN = 'badge.teamkatun';
-    const BADGE_TEAM_ISPEED = 'badge.teamispeed';
+    final public const string BADGE_TYPE_TEAM = 'team';
+    final public const string BADGE_TEAM_KATUN = 'badge.teamkatun';
+    final public const string BADGE_TEAM_ISPEED = 'badge.teamispeed';
 
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var NotificationService
-     */
-    private $notifService;
-
-    /**
-     * BadgeService constructor.
-     * @param EntityManagerInterface $em
-     * @param NotificationService $notifService
-     */
-    public function __construct(EntityManagerInterface $em, NotificationService $notifService)
-    {
-        $this->em = $em;
-        $this->notifService = $notifService;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly NotificationService $notifService,
+        private readonly BadgeRepository $badgeRepository
+    ) {
     }
 
-    /**
-     * Give badges to User
-     *
-     * @param User $user
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function give(User $user)
+    /** Give badges to User. */
+    public function give(User $user): void
     {
         // Give rating badges
         $this->giveRatingBadge($user);
@@ -65,14 +44,10 @@ class BadgeService
         $this->em->flush();
     }
 
-    /**
-     * Give rating badges to User
-     *
-     * @param User $user
-     */
-    private function giveRatingBadge(User $user)
+    /** Give rating badges to User. */
+    private function giveRatingBadge(User $user): void
     {
-        $ratingNumber = count($user->getRatings());
+        $ratingNumber = \count($user->getRatings());
 
         if ($ratingNumber >= 1) {
             $this->addNewBadge($user, self::BADGE_RATING_1);
@@ -91,33 +66,27 @@ class BadgeService
         }
     }
 
-    /**
-     * Give team badges to User
-     *
-     * @param User $user
-     */
-    private function giveTeamBadge(User $user)
+    /** Give team badges to User. */
+    private function giveTeamBadge(User $user): void
     {
         // Check for already given Team badge
         $currentBadge = $user->getBadges()->filter(
-            function (Badge $badge) {
-                return $badge->getType() == self::BADGE_TYPE_TEAM;
-            }
+            fn (Badge $badge) => self::BADGE_TYPE_TEAM == $badge->getType()
         );
 
         // You can be only in one team !
-        if ($currentBadge->count() == 1) {
+        if (1 == $currentBadge->count()) {
             return;
         }
 
         // Check in Top first (priority)
-        if (!is_null($user->getMainTop())) {
+        if (null !== $user->getMainTop()) {
             /** @var TopCoaster $topCoaster */
             foreach ($user->getMainTop()->getTopCoasters() as $topCoaster) {
-                if ($topCoaster->getCoaster()->getName() === 'Katun') {
+                if ('Katun' === $topCoaster->getCoaster()->getName()) {
                     $katun = $topCoaster->getPosition();
                 }
-                if ($topCoaster->getCoaster()->getName() === 'iSpeed') {
+                if ('iSpeed' === $topCoaster->getCoaster()->getName()) {
                     $ispeed = $topCoaster->getPosition();
                 }
             }
@@ -138,10 +107,10 @@ class BadgeService
         // check then in ratings
         /** @var RiddenCoaster $rating */
         foreach ($user->getRatings() as $rating) {
-            if ($rating->getCoaster()->getName() === 'Katun') {
+            if ('Katun' === $rating->getCoaster()->getName()) {
                 $katun = $rating->getValue();
             }
-            if ($rating->getCoaster()->getName() === 'iSpeed') {
+            if ('iSpeed' === $rating->getCoaster()->getName()) {
                 $ispeed = $rating->getValue();
             }
         }
@@ -156,15 +125,10 @@ class BadgeService
         }
     }
 
-    /**
-     * Helper to add only new badge
-     *
-     * @param User $user
-     * @param string $badgeName
-     */
-    private function addNewBadge(User $user, string $badgeName)
+    /** Helper to add only new badge. */
+    private function addNewBadge(User $user, string $badgeName): void
     {
-        $badge = $this->em->getRepository('App:Badge')->findOneBy(['name' => $badgeName]);
+        $badge = $this->badgeRepository->findOneBy(['name' => $badgeName]);
 
         if (!$user->getBadges()->contains($badge)) {
             $user->addBadge($badge);

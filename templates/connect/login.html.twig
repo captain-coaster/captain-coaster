@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.get('_locale') }}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ 'login.title'|trans }} • {{ 'app.name'|trans }}</title>
+
+    <!-- Global stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
+          type="text/css">
+    {{ encore_entry_link_tags('app') }}
+    <!-- /global stylesheets -->
+</head>
+
+<body class="login-container login-cover"
+      style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
+<!-- Page container -->
+<div class="page-container">
+    <!-- Page content -->
+    <div class="page-content">
+        <!-- Main content -->
+        <div class="content-wrapper">
+            <!-- Content area -->
+            <div class="content pb-20">
+                <!-- Form with validation -->
+                <div class="panel panel-body login-form">
+                    <div class="text-center">
+                        <div class="icon-object border-indigo-300 text-indigo-300"><i class="icon-lock"></i></div>
+                        <h5 class="content-group">{{ 'login.title'|trans }}</h5>
+                    </div>
+                    {% if error is defined and error %}
+                        <div class="alert alert-danger alert-bordered">
+                            {{ error|trans }}
+                        </div>
+                    {% endif %}
+                    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <ul class="list-inline form-group list-inline-condensed text-center">
+                            {#{% for owner in hwi_oauth_resource_owners() %}#}
+                            {% set referer = app.request.server.get('HTTP_REFERER')|default('/') %}
+                            <li class="mb-5" style="padding:0;">
+                                <a href="{{ path('connect_facebook_start') }}{# ?target_path={{ referer }} #}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
+                                    <i class="icon-facebook position-left"></i> {{ 'login.facebook_connect'|trans }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('connect_google_start') }}" class="btn btn-flat bg-danger-800">
+                                    <i class="icon-google position-left"></i> {{ 'login.google_connect'|trans }}
+                                </a>
+                            </li>
+                            {#{% endfor %}#}
+                        </ul>
+                        <div class="content-divider text-muted form-group">
+                            <span>{{ 'login.info.title'|trans }}</span></div>
+                        <span class="help-block text-center no-margin">
+                            {{ 'login.info.text'|trans }}
+                        </span>
+                        {#
+                            <form action="{{ path('login_link_start') }}" method="POST">
+                            <input type="email" name="email">
+                            <button type="submit">Send Login Link</button>
+                            </form>
+                        #}
+                    {% else %}
+                        <div class="text-center">
+                            {{ 'login.already_connected_as'|trans }} <strong>{{ app.user.displayName }}</strong>
+                            <br/><br/>
+                            <a href="{{ path('logout') }}" class="btn btn-flat bg-indigo">{{ 'login.logout'|trans }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+                <!-- /form with validation -->
+            </div>
+            <!-- /content area -->
+        </div>
+        <!-- /main content -->
+    </div>
+    <!-- /page content -->
+</div>
+<!-- /page container -->
+</body>
+</html>

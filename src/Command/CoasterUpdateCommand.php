@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Service\RatingService;
@@ -11,42 +13,21 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 class CoasterUpdateCommand extends Command
 {
-    /**
-     * @var RatingService
-     */
-    protected $ratingService;
+    protected static $defaultName = 'coaster:update';
 
-    /**
-     * @var TopService
-     */
-    protected $topService;
-
-    /**
-     * RatingUpdateCommand constructor.
-     *
-     * @param RatingService $ratingService
-     * @param TopService $topService
-     */
-    public function __construct(RatingService $ratingService, TopService $topService)
-    {
+    public function __construct(
+        private readonly RatingService $ratingService,
+        private readonly TopService $topService
+    ) {
         parent::__construct();
-        $this->ratingService = $ratingService;
-        $this->topService = $topService;
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this
-            ->setName('coaster:update')
-            ->setDescription('Update average rating and total ratings calculated values for all coasters');
+        $this->setDescription('Update average rating and total ratings calculated values for all coasters');
     }
 
-    /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|null|void
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('command');
@@ -59,6 +40,8 @@ class CoasterUpdateCommand extends Command
         $topNumber = $this->topService->updateTopStats();
         $output->writeln("$topNumber tops updated.");
 
-        $output->writeln((string)$stopwatch->stop('command'));
+        $output->writeln((string) $stopwatch->stop('command'));
+
+        return 0;
     }
 }

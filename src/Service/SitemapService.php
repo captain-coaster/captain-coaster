@@ -1,68 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Asset\UrlPackage;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * Class SitemapService
- * @package App\Service
+ * Class SitemapService.
  */
 class SitemapService
 {
-    /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $router;
-
-    /**
-     * @var TranslatorInterface
-     */
+    /** @var TranslatorInterface */
     private $translator;
 
-    /**
-     * @var array
-     */
-    private $locales;
-
-    /**
-     * SitemapService constructor.
-     * @param EntityManagerInterface $em
-     * @param UrlGeneratorInterface $router
-     * @param TranslatorInterface $translator
-     * @param array $locales
-     */
+    /** SitemapService constructor. */
     public function __construct(
-        EntityManagerInterface $em,
-        UrlGeneratorInterface $router,
+        private readonly EntityManagerInterface $em,
+        private readonly UrlGeneratorInterface $router,
         TranslatorInterface $translator,
-        array $locales
+        private readonly array $locales,
+        private readonly \Unknown_Repository_Class $Repository
     ) {
-        $this->em = $em;
-        $this->router = $router;
         $this->translator = $translator;
-        $this->locales = $locales;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getUrlsForPages()
     {
         $urls = [];
 
         // Latest review
-        $latestRating = $this->em->getRepository('App:RiddenCoaster')
+        $latestRating = $this->Repository
             ->findOneBy([], ['updatedAt' => 'desc'], 1);
         $indexUpdateDate = $latestRating->getUpdatedAt();
 
@@ -81,7 +54,7 @@ class SitemapService
             $params = ['slug' => $coaster->getSlug()];
             $date = null;
             // Latest review
-            $latestReview = $this->em->getRepository('App:RiddenCoaster')
+            $latestReview = $this->Repository
                 ->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc'], 1);
             if ($latestReview instanceof RiddenCoaster) {
                 $date = $latestReview->getUpdatedAt();
@@ -93,15 +66,13 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getUrlsForImages()
     {
         $urls = [];
 
         // Latest review
-        $images = $this->em->getRepository('App:Image')
+        $images = $this->Repository
             ->findBy(['watermarked' => true]);
 
         foreach ($images as $image) {
@@ -138,11 +109,9 @@ class SitemapService
     }
 
     /**
-     * @param $route
-     * @param array $params
-     * @param \DateTime|null $lastmod
      * @param string $changefreq
      * @param string $priority
+     *
      * @return array
      */
     private function getUrlAndAlternates(
@@ -165,7 +134,7 @@ class SitemapService
             $url['changefreq'] = $changefreq;
             $url['priority'] = $priority;
 
-            if (!is_null($lastmod)) {
+            if (null !== $lastmod) {
                 $url['lastmod'] = $lastmod->format(\DateTime::W3C);
             }
 
@@ -185,11 +154,7 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @param array $params
-     * @param $locale
-     * @return array
-     */
+    /** @return array */
     private function buildRouteParams(array $params, $locale)
     {
         return array_merge(

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Admin;
 
 use App\Entity\User;
@@ -26,7 +28,7 @@ class UserCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('User')
             ->setEntityLabelInPlural('Users')
-            ->setSearchFields(['id', 'firstName', 'lastName', 'username', 'displayName', 'email'])
+            ->setSearchFields(['id', 'firstName', 'lastName', 'displayName', 'email'])
             ->setDefaultSort(['lastLogin' => 'DESC'])
             ->showEntityActionsInlined()
             ->setPaginatorPageSize(50);
@@ -47,6 +49,7 @@ class UserCrudController extends AbstractCrudController
             ->add('email')
             ->add('enabled')
             ->add('createdAt')
+            ->add('updatedAt')
             ->add('lastLogin');
     }
 
@@ -56,7 +59,6 @@ class UserCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('firstName')->setFormTypeOption('disabled', 'disabled'),
             TextField::new('lastName')->setFormTypeOption('disabled', 'disabled'),
-            TextField::new('userName')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             TextField::new('displayName')->hideOnIndex(),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             TextField::new('email'),
@@ -72,6 +74,7 @@ class UserCrudController extends AbstractCrudController
             BooleanField::new('addTodayDateWhenRating')->hideOnIndex(),
             DateTimeField::new('lastLogin')->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('createdAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
+            DateTimeField::new('updatedAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
         ];
     }
 }

@@ -1,0 +1,91 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'coaster_ranking.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+  <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
+{% endblock %}
+
+{% set pageHasFilters = true %}
+
+{% block secondary_sidebar %}
+  {% include 'ranking/filters.html.twig' %}
+{% endblock %}
+
+{% block body %}
+  {% include 'ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
+  <div id="ranking-result"></div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript">
+    var containerId = 'ranking-result';
+    function filterData() {
+      $.ajax({
+        url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(data) {
+        $('#'+containerId).html(data);
+        ajaxPager();
+        changeBrowserUrl();
+      });
+    }
+
+    function ajaxPager() {
+      $('ul.pagination a').click(function(e) {
+        e.preventDefault();
+        var pageUrl = $(this).attr('href');
+        var queryString = pageUrl.split('?')[1];
+        var urlParams = new URLSearchParams(queryString);
+        $('#form-filter input#filter-page').val(urlParams.get('page'));
+
+        $.ajax({
+          url: pageUrl,
+          type: 'GET',
+          dataType: 'html',
+        }).done(function(data) {
+          $('#'+containerId).html(data);
+          document.getElementById(containerId).scrollIntoView();
+          ajaxPager();
+          changeBrowserUrl();
+        });
+      });
+    };
+
+    function changeBrowserUrl() {
+        window.history.pushState(
+            {"html":'Ranking',"pageTitle":'Ranking'},
+            "",
+            window.location.pathname + '?' + $('form').serialize()
+        );
+    }
+
+    window.onpopstate = function(event) {
+      var pageUrl = window.location.href;
+      var queryString = pageUrl.split('?')[1];
+      var urlParams = new URLSearchParams(queryString);
+
+      urlParams.forEach(function(value, key) {
+        if(key == "page") {
+          $('#form-filter input#filter-page').val(urlParams.get('page'));
+        }
+        else {
+          document.getElementsByName(key)[0].value = value;
+        }
+      });
+
+      $.ajax({
+        url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(data) {
+        $('#'+containerId).html(data);
+        ajaxPager();
+      });
+    };
+
+    filterData();
+  </script>
+{% endblock %}
