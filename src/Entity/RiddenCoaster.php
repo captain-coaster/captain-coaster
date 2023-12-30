@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -41,15 +42,17 @@ class RiddenCoaster
     #[ORM\Column(type: Types::STRING, length: 5)]
     private ?string $language = 'en';
 
+    #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(name: 'ridden_coaster_pro')]
-    #[ORM\ManyToMany(targetEntity: Tag::class)]
-    #[ORM\JoinColumn]
-    private \Doctrine\Common\Collections\Collection $pros;
+    #[JoinColumn(nullable: false, onDelete: 'RESTRICT')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Collection $pros;
 
-    #[ORM\JoinTable(name: 'ridden_coaster_con')]
     #[ORM\ManyToMany(targetEntity: Tag::class)]
-    #[ORM\JoinColumn]
-    private \Doctrine\Common\Collections\Collection $cons;
+    #[ORM\JoinTable(name: 'ridden_coaster_con')]
+    #[JoinColumn(nullable: false, onDelete: 'RESTRICT')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'CASCADE')]
+    private Collection $cons;
 
     #[ORM\Column(name: 'likes', type: Types::INTEGER, nullable: true)]
     private ?int $like = 0;

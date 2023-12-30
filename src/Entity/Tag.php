@@ -14,8 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag implements \Stringable
 {
-    final public const PRO = 'pro';
-    final public const CON = 'con';
+    final public const string PRO = 'pro';
+    final public const string CON = 'con';
 
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
