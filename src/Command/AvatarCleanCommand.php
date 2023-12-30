@@ -7,28 +7,31 @@ namespace App\Command;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+#[AsCommand(
+    name: 'avatar:clean',
+    description: 'Update profile pictures.',
+    hidden: false,
+)]
 class AvatarCleanCommand extends Command
 {
     final public const string API_FB_PICTURE = 'https://graph.facebook.com/v18.0/%d/picture';
-    protected static $defaultName = 'avatar:clean';
 
-    public function __construct(private readonly EntityManagerInterface $em, private readonly HttpClientInterface $client, private readonly UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly HttpClientInterface $client,
+        private readonly UserRepository $userRepository
+    ) {
         parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this->setDescription('Update profile pictures');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $stopwatch = new Stopwatch();
         $stopwatch->start('avatar');
@@ -58,7 +61,7 @@ class AvatarCleanCommand extends Command
         $output->writeln('End.');
         $output->writeln((string) $stopwatch->stop('avatar'));
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function updateAvatar(User $user, OutputInterface $output): void

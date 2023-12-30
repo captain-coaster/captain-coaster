@@ -9,16 +9,20 @@ use App\Entity\Status;
 use App\Repository\CoasterRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
+#[AsCommand(
+    name: 'coaster:close',
+    description: 'Checks if a coaster is closing today and update its status.',
+    hidden: false,
+)]
 class CoasterCloseCommand extends Command
 {
-    protected static $defaultName = 'coaster:close';
-
     public function __construct(
         private readonly CoasterRepository $coasterRepository,
         private readonly StatusRepository $statusRepository,
@@ -26,11 +30,6 @@ class CoasterCloseCommand extends Command
         private readonly ChatterInterface $chatter
     ) {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Checks if a coaster opens today and change its status.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -55,6 +54,6 @@ class CoasterCloseCommand extends Command
             );
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

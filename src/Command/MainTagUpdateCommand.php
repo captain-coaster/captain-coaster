@@ -6,23 +6,22 @@ namespace App\Command;
 
 use App\Repository\CoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[AsCommand(
+    name: 'main-tag:update',
+    description: 'Update main tags for all coasters.',
+    hidden: false,
+)]
 class MainTagUpdateCommand extends Command
 {
-    protected static $defaultName = 'main-tag:update';
-
     public function __construct(private readonly EntityManagerInterface $em, private readonly CoasterRepository $coasterRepository)
     {
         parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Update main tags for all coasters');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -74,6 +73,6 @@ class MainTagUpdateCommand extends Command
 
         $output->writeln((string) $stopwatch->stop('main-tag'));
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
