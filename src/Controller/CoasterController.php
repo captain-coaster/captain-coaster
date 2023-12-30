@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/coasters')]
@@ -32,14 +33,13 @@ class CoasterController extends AbstractController
 
     /** Uploads an image for a coaster */
     #[Route(path: '/{slug}/images/upload', name: 'coaster_images_upload', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function imageUpload(
         Request $request,
         Coaster $coaster,
         TranslatorInterface $translator,
         EntityManagerInterface $em
     ): Response {
-        $this->denyAccessUnlessGranted('upload', $coaster);
-
         $image = new Image();
         $image->setCoaster($coaster);
         $image->setWatermarked(true);

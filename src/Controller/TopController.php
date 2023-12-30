@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/tops')]
 class TopController extends AbstractController
@@ -168,10 +169,9 @@ class TopController extends AbstractController
 
     /** Ajax route for autocomplete search (search "q" parameter). */
     #[Route(path: '/search/coasters.json', name: 'top_ajax_search', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ROLE_USER')]
     public function ajaxSearch(Request $request, EntityManagerInterface $em): JsonResponse
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         if (!$request->get('q')) {
             return new JsonResponse([]);
         }

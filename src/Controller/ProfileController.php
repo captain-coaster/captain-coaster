@@ -15,14 +15,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ProfileController extends BaseController
 {
     #[Route(path: '/me', name: 'me', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function meAction(Request $request, StatService $statService, EntityManagerInterface $em): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $user = $this->getUser();
 
         $form = $this->createForm(ProfileType::class, $user, [
@@ -48,10 +48,9 @@ class ProfileController extends BaseController
 
     /** Show my ratings. */
     #[Route(path: '/me/ratings/{page}', name: 'me_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function ratingsAction(EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         /** @var User $user */
         $user = $this->getUser();
 
@@ -74,10 +73,9 @@ class ProfileController extends BaseController
     }
 
     #[Route(path: '/banner', name: 'profile_banner', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ROLE_USER')]
     public function getBanner(BannerMaker $bannerMaker): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $user = $this->getUser();
         $bannerMaker->makeBanner($user);
 
