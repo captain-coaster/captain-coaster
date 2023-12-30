@@ -42,6 +42,7 @@ security:
             logout:
                 path: logout
             remember_me:
+                name: captain_rmb
                 secret: '%kernel.secret%'
                 lifetime: 2629800 # 1 month in seconds
                 always_remember_me: true

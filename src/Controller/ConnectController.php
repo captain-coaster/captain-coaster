@@ -16,16 +16,29 @@ use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkNotification;
+use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 /**
  * Controller in charge of authentication routes.
  */
 class ConnectController extends AbstractController
 {
+    use TargetPathTrait;
+
     /** Display login page */
     #[Route(path: '/login', name: 'login', methods: ['GET'])]
-    public function login(): Response
+    public function login(Request $request): Response
     {
+        // save referer to redirect after login
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            $this->saveTargetPath(
+                $request->getSession(),
+                'main',
+                parse_url($referer, \PHP_URL_PATH).'?'.parse_url($referer, \PHP_URL_QUERY)
+            );
+        }
+
         return $this->render('connect/login.html.twig');
     }
 
@@ -54,7 +67,7 @@ class ConnectController extends AbstractController
     /** Initiate Facebook's oauth2 authentication. Route handled in routes.yaml (no locale). */
     public function connectFacebookStart(ClientRegistry $clientRegistry): RedirectResponse
     {
-        // will redirect to Google!
+        // will redirect to Facebook!
         return $clientRegistry->getClient('facebook')->redirect([], []);
     }
 
@@ -67,6 +80,9 @@ class ConnectController extends AbstractController
     #[Route('/login/link/start', name: 'login_link_start')]
     public function requestLoginLink(NotifierInterface $notifier, LoginLinkHandlerInterface $loginLinkHandler, UserRepository $userRepository, Request $request): Response
     {
+        // deny access for now
+        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
+
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
@@ -74,7 +90,9 @@ class ConnectController extends AbstractController
             $loginLinkDetails = $loginLinkHandler->createLoginLink($user);
 
             // create a notification based on the login link details
-            $notification = new LoginLinkNotification($loginLinkDetails, 'Welcome to MY WEBSITE!' // email subject
+            $notification = new LoginLinkNotification(
+                $loginLinkDetails,
+                'Welcome to MY WEBSITE!' // email subject
             );
             // create a recipient for this user
             $recipient = new Recipient($user->getEmail());
