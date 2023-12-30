@@ -142,7 +142,7 @@ class UserController extends AbstractController
         try {
             $pagination = $paginator->paginate(
                 $em->getRepository(Image::class)->findUserImages($user),
-                $request->get('page', 1),
+                $request->query->getInt('page', 1),
                 30,
                 [
                     'wrap-queries' => true,
