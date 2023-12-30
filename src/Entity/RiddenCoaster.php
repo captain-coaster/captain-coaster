@@ -36,7 +36,7 @@ class RiddenCoaster
     #[Assert\Choice([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0], strict: true)]
     private ?float $value = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true, options: ['collation' => 'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $review = null;
 
     #[ORM\Column(type: Types::STRING, length: 5)]

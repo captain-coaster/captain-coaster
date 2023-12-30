@@ -39,8 +39,8 @@ login_check:
 
 sitemap:
     path: '/sitemap.xml'
-    defaults: { _controller: 'App\Controller\SitemapController::indexAction', _format: 'xml' }
+    controller: App\Controller\SitemapController::indexAction
 
 sitemap_image:
     path: '/sitemap_image.xml'
-    defaults: { _controller: 'App\Controller\SitemapController::imageAction', _format: 'xml' }
+    controller: App\Controller\SitemapController::imageAction
