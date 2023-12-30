@@ -83,17 +83,18 @@ image_upload:
         success: 'Picture has been uploaded successfully. It will be reviewed by an administrator before display.'
 
 park:
-    opened_coasters: 'opened coaster|opened coasters'
-    kiddies: 'kiddie|kiddies'
+    opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
+    kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
 
 coaster_ranking:
     title: 'World Roller Coaster Rankings'
     description: 'Discover the world''s best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide.'
-    duel_number: '1 duel|{count} duels'
+    duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'No coasters found!'
     info:
         title: 'Last Updated: {rankingMonth}'
         next: 'Next update {date}'
+        learn_more: 'Learn more about the ranking'
         coasters_ranked:
             short: 'coasters'
             long: 'ranked coasters'
