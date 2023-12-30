@@ -15,7 +15,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AvatarCleanCommand extends Command
 {
-    final public const API_FB_PICTURE = 'https://graph.facebook.com/v18.0/%d/picture';
+    final public const string API_FB_PICTURE = 'https://graph.facebook.com/v18.0/%d/picture';
     protected static $defaultName = 'avatar:clean';
 
     public function __construct(private readonly EntityManagerInterface $em, private readonly HttpClientInterface $client, private readonly UserRepository $userRepository)

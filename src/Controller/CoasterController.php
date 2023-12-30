@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -18,32 +20,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @package App\Controller
- */
 #[Route(path: '/coasters')]
 class CoasterController extends AbstractController
 {
-    /**
-     * Redirects to index
-     */
+    /** Redirects to index */
     #[Route(path: '/', name: 'coaster_index', methods: ['GET'])]
     public function index(): RedirectResponse
     {
         return $this->redirectToRoute('bdd_index');
     }
 
-    /**
-     * Uploads an image for a coaster
-     */
+    /** Uploads an image for a coaster */
     #[Route(path: '/{slug}/images/upload', name: 'coaster_images_upload', methods: ['GET', 'POST'])]
     public function imageUpload(
         Request $request,
         Coaster $coaster,
         TranslatorInterface $translator,
         EntityManagerInterface $em
-    ): Response
-    {
+    ): Response {
         $this->denyAccessUnlessGranted('upload', $coaster);
 
         $image = new Image();
@@ -77,9 +71,7 @@ class CoasterController extends AbstractController
         );
     }
 
-    /**
-     * Async loads images for a coaster
-     */
+    /** Async loads images for a coaster */
     #[Route(
         path: '/{slug}/images/ajax/{imageNumber}',
         name: 'coaster_images_ajax_load',
@@ -111,25 +103,20 @@ class CoasterController extends AbstractController
         );
     }
 
-    /**
-     * Keep redirection for a while
-     */
+    /** Keep redirection for a while */
     #[Route(path: '/ranking/{page}', name: 'coaster_ranking', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function showRankingAction(int $page = 1): RedirectResponse
     {
         return $this->redirectToRoute('ranking_index', ['page' => $page], 301);
     }
 
-    /**
-     * Show details of a coaster
-     */
+    /** Show details of a coaster */
     #[Route(path: '/{slug}', name: 'bdd_show_coaster', options: ['expose' => true], methods: ['GET'])]
     public function showAction(
-        Request                 $request,
-        Coaster                 $coaster,
+        Request $request,
+        Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository
-    ): Response
-    {
+    ): Response {
         $rating = null;
         $user = null;
         if ($this->isGranted('ROLE_USER')) {

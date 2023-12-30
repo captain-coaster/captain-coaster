@@ -1,17 +1,21 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\RankingHistoryRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * RankingHistory
+ * RankingHistory.
  */
 #[ORM\UniqueConstraint(name: 'unique_coaster_per_ranking_history', columns: ['ranking_id', 'coaster_id'])]
-#[ORM\Entity(repositoryClass: \App\Repository\RankingHistoryRepository::class)]
+#[ORM\Entity(repositoryClass: RankingHistoryRepository::class)]
 class RankingHistory
 {
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
@@ -24,27 +28,26 @@ class RankingHistory
     #[ORM\JoinColumn(nullable: false)]
     private ?\App\Entity\Coaster $coaster = null;
 
-    #[ORM\Column(name: 'rank', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'rank', type: Types::INTEGER)]
     private ?int $rank = null;
 
-    #[ORM\Column(name: 'score', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 14, scale: 11)]
+    #[ORM\Column(name: 'score', type: Types::DECIMAL, precision: 14, scale: 11)]
     private ?string $score = null;
 
-    #[ORM\Column(name: 'validDuels', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'validDuels', type: Types::INTEGER)]
     private ?int $validDuels = null;
 
-    #[ORM\Column(name: 'totalTopsIn', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'totalTopsIn', type: Types::INTEGER, nullable: true)]
     private ?int $totalTopsIn = null;
 
-    #[ORM\Column(name: 'averageTopRank', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
+    #[ORM\Column(name: 'averageTopRank', type: Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
     private ?string $averageTopRank = null;
 
-    #[ORM\Column(name: 'totalRatings', type: \Doctrine\DBAL\Types\Types::INTEGER, nullable: true)]
+    #[ORM\Column(name: 'totalRatings', type: Types::INTEGER, nullable: true)]
     private ?int $totalRatings = null;
 
-    #[ORM\Column(name: 'averageRating', type: \Doctrine\DBAL\Types\Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
+    #[ORM\Column(name: 'averageRating', type: Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
     private ?string $averageRating = null;
-
 
     /**
      * Get id.

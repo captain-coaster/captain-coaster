@@ -1,42 +1,45 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\BadgeRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Badge
+ * Badge.
  */
 #[ORM\Table(name: 'badge')]
-#[ORM\Entity(repositoryClass: \App\Repository\BadgeRepository::class)]
+#[ORM\Entity(repositoryClass: BadgeRepository::class)]
 class Badge
 {
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $type = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     private ?string $filenameFr = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     private ?string $filenameEn = null;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection<\App\Entity\User>
-     */
-    #[ORM\ManyToMany(targetEntity: \App\Entity\User::class, mappedBy: 'badges')]
+    /** @var Collection<\App\Entity\User> */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'badges')]
     #[ORM\JoinColumn]
     private \Doctrine\Common\Collections\Collection $users;
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -46,7 +49,7 @@ class Badge
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -60,7 +63,7 @@ class Badge
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -70,7 +73,7 @@ class Badge
     }
 
     /**
-     * Set filenameFr
+     * Set filenameFr.
      *
      * @param string $filenameFr
      *
@@ -84,7 +87,7 @@ class Badge
     }
 
     /**
-     * Get filenameFr
+     * Get filenameFr.
      *
      * @return string
      */
@@ -94,7 +97,7 @@ class Badge
     }
 
     /**
-     * Set filenameEn
+     * Set filenameEn.
      *
      * @param string $filenameEn
      *
@@ -108,7 +111,7 @@ class Badge
     }
 
     /**
-     * Get filenameEn
+     * Get filenameEn.
      *
      * @return string
      */
@@ -117,39 +120,34 @@ class Badge
         return $this->filenameEn;
     }
 
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
-     * Add user
-     *
+     * Add user.
      *
      * @return Badge
      */
-    public function addUser(\App\Entity\User $user)
+    public function addUser(User $user)
     {
         $this->users[] = $user;
 
         return $this;
     }
 
-    /**
-     * Remove user
-     */
-    public function removeUser(\App\Entity\User $user): void
+    /** Remove user */
+    public function removeUser(User $user): void
     {
         $this->users->removeElement($user);
     }
 
     /**
-     * Get users
+     * Get users.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getUsers()
     {
@@ -157,7 +155,7 @@ class Badge
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -171,7 +169,7 @@ class Badge
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -182,7 +180,7 @@ class Badge
 
     public function getFilename($locale = 'en')
     {
-        $method = sprintf('getFilename%s', ucfirst((string)$locale));
+        $method = sprintf('getFilename%s', ucfirst((string) $locale));
 
         if (method_exists($this, $method)) {
             return $this->$method();

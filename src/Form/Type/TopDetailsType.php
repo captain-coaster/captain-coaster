@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Form\Type;
 
@@ -12,8 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class TopDetailsType
- * @package App\Form\Type
+ * Class TopDetailsType.
  */
 class TopDetailsType extends AbstractType
 {

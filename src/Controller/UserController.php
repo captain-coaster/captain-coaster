@@ -29,9 +29,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[Route(path: '/users')]
 class UserController extends AbstractController
 {
-    /**
-     * List all users.
-     */
+    /** List all users. */
     #[Route(path: '/{page}', name: 'user_list', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listAction(UserRepository $userRepository, PaginatorInterface $paginator, int $page = 1): Response
     {
@@ -45,14 +43,14 @@ class UserController extends AbstractController
         );
     }
 
-    /**
-     * Show all user's ratings.
-     */
+    /** Show all user's ratings. */
     #[Route(path: '/{id}/ratings/{page}', name: 'user_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listRatingsAction(
         RiddenCoasterRepository $riddenCoasterRepository,
-        PaginatorInterface $paginator, User $user, int $page = 1): Response
-    {
+        PaginatorInterface $paginator,
+        User $user,
+        int $page = 1
+    ): Response {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
         }
@@ -80,13 +78,14 @@ class UserController extends AbstractController
         );
     }
 
-    /**
-     * Show all user's reviews.
-     */
+    /** Show all user's reviews. */
     #[Route(path: '/{id}/reviews/{page}', name: 'user_reviews', requirements: ['page' => '\d+'], methods: ['GET'])]
-    public function listReviews(RiddenCoasterRepository $riddenCoasterRepository,
-        PaginatorInterface $paginator, User $user, int $page = 1): Response
-    {
+    public function listReviews(
+        RiddenCoasterRepository $riddenCoasterRepository,
+        PaginatorInterface $paginator,
+        User $user,
+        int $page = 1
+    ): Response {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
         }
@@ -115,9 +114,7 @@ class UserController extends AbstractController
         );
     }
 
-    /**
-     * Show all user's top.
-     */
+    /** Show all user's top. */
     #[Route(path: '/{id}/tops', name: 'user_tops', methods: ['GET'])]
     public function listTops(User $user, TopRepository $topRepository): Response
     {
@@ -134,9 +131,7 @@ class UserController extends AbstractController
         );
     }
 
-    /**
-     * Show all user's pictures.
-     */
+    /** Show all user's pictures. */
     #[Route(path: '/{id}/pictures', name: 'user_pictures', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function picturesAction(Request $request, User $user, EntityManagerInterface $em, PaginatorInterface $paginator): Response
     {
@@ -181,9 +176,7 @@ class UserController extends AbstractController
         );
     }
 
-    /**
-     * Display a user.
-     */
+    /** Display a user. */
     #[Route(path: '/{slug}', name: 'user_show', options: ['expose' => true], methods: ['GET'])]
     public function showAction(User $user, StatService $statService): Response
     {

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -8,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Ranking
+ * Ranking.
  */
 #[ORM\Table(name: 'ranking')]
 #[ORM\Entity(repositoryClass: RankingRepository::class)]

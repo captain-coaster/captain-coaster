@@ -8,13 +8,14 @@ use App\Service\SitemapService;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\Response;
 
 class SitemapController extends AbstractController
 {
     /**
      * Create sitemap for pages.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @throws InvalidArgumentException
      */
@@ -38,7 +39,7 @@ class SitemapController extends AbstractController
     /**
      * Create sitemap for images.
      *
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      *
      * @throws InvalidArgumentException
      */

@@ -14,7 +14,7 @@ class LikedImageListener
     {
     }
 
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         if (!$args->getEntity() instanceof LikedImage) {
             return;
@@ -23,7 +23,7 @@ class LikedImageListener
         $this->imageManager->updateLikeCounters();
     }
 
-    public function postRemove(LifecycleEventArgs $args)
+    public function postRemove(LifecycleEventArgs $args): void
     {
         if (!$args->getEntity() instanceof LikedImage) {
             return;

@@ -27,7 +27,7 @@ class BannerMaker
     }
 
     /** @throws InvalidArgumentException */
-    public function makeBanner(User $user)
+    public function makeBanner(User $user): void
     {
         $this->createImage();
         $this->writeCoasterCount($user->getRatings()->count());
@@ -43,24 +43,24 @@ class BannerMaker
     }
 
     /** Create new image with background. */
-    private function createImage()
+    private function createImage(): void
     {
         $this->image = $this->imagine->open($this->backgroundPath);
     }
 
-    private function saveImage(User $user)
+    private function saveImage(User $user): void
     {
         $this->image->save(sprintf('%s/%d.png', $this->targetPath, $user->getId()));
     }
 
     /** @throws InvalidArgumentException */
-    private function writeCoasterCount(int $count)
+    private function writeCoasterCount(int $count): void
     {
         $this->writeText($count.' coasters', 110, 32, 12);
     }
 
     /** @throws InvalidArgumentException */
-    private function writeTop3(array $top)
+    private function writeTop3(array $top): void
     {
         $y = 3;
         $position = 1;
@@ -77,7 +77,7 @@ class BannerMaker
      *
      * @throws InvalidArgumentException
      */
-    private function writeText(string $text, $x, $y, $size = 10, $color = 'FFFFFF')
+    private function writeText(string $text, $x, $y, $size = 10, $color = 'FFFFFF'): void
     {
         if (!$this->image instanceof Image) {
             $this->createImage();

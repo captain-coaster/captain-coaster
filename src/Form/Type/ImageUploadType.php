@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Form\Type;
 
@@ -13,8 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class ImageUploadType
- * @package App\Form\Type
+ * Class ImageUploadType.
  */
 class ImageUploadType extends AbstractType
 {
@@ -46,6 +47,6 @@ class ImageUploadType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults(['data_class' => Image::class,]);
+        $resolver->setDefaults(['data_class' => Image::class]);
     }
 }

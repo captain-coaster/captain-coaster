@@ -15,14 +15,10 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class SitemapService
 {
-    /**
-     * @var TranslatorInterface
-     */
+    /** @var TranslatorInterface */
     private $translator;
 
-    /**
-     * SitemapService constructor.
-     */
+    /** SitemapService constructor. */
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UrlGeneratorInterface $router,
@@ -33,9 +29,7 @@ class SitemapService
         $this->translator = $translator;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getUrlsForPages()
     {
         $urls = [];
@@ -72,9 +66,7 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getUrlsForImages()
     {
         $urls = [];
@@ -162,9 +154,7 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     private function buildRouteParams(array $params, $locale)
     {
         return array_merge(

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -7,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Tag
+ * Tag.
  */
 #[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag implements \Stringable
@@ -31,16 +33,14 @@ class Tag implements \Stringable
         return $this->getName();
     }
 
-    /**
-     * Get name
-     */
+    /** Get name */
     public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      */
@@ -51,24 +51,20 @@ class Tag implements \Stringable
         return $this;
     }
 
-    /**
-     * Get id
-     */
+    /** Get id */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Get type
-     */
+    /** Get type */
     public function getType(): string
     {
         return $this->type;
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      */

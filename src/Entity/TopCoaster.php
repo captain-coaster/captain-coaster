@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\TopCoasterRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'liste_coaster')]
-#[ORM\Entity(repositoryClass: \App\Repository\TopCoasterRepository::class)]
+#[ORM\Entity(repositoryClass: TopCoasterRepository::class)]
 class TopCoaster implements \Stringable
 {
     #[ORM\Column(type: Types::INTEGER), ORM\Id, ORM\GeneratedValue]
@@ -21,7 +22,7 @@ class TopCoaster implements \Stringable
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Top $top;
 
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Coaster::class, fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: Coaster::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Coaster $coaster;
 

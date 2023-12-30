@@ -1,53 +1,51 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\ApiProperty;
-use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use App\Repository\StatusRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Status
- *
+ * Status.
  */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_status']])]
 #[ORM\Table(name: 'status')]
-#[ORM\Entity(repositoryClass: \App\Repository\StatusRepository::class)]
+#[ORM\Entity(repositoryClass: StatusRepository::class)]
 class Status implements \Stringable
 {
     final public const OPERATING = 'status.operating';
     final public const CLOSED_DEFINITELY = 'status.closed.definitely';
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['read_status'])]
     private ?int $id = null;
-    #[ORM\Column(name: 'name', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
     private ?string $name = null;
-    #[ORM\Column(name: 'slug', type: \Doctrine\DBAL\Types\Types::STRING, length: 255, unique: true)]
+    #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
-    #[ORM\Column(name: 'type', type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
     private ?string $type = null;
-    /**
-     * @var \Doctrine\Common\Collections\Collection<\App\Entity\Coaster>
-     */
+    /** @var Collection<\App\Entity\Coaster> */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
     private \Doctrine\Common\Collections\Collection $coasters;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['read_status'])]
     private ?bool $isRateable = null;
 
-    /**
-     * Constructor
-     */
+    /** Constructor */
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
@@ -55,11 +53,11 @@ class Status implements \Stringable
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -69,7 +67,7 @@ class Status implements \Stringable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -78,11 +76,12 @@ class Status implements \Stringable
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -92,7 +91,7 @@ class Status implements \Stringable
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -101,11 +100,12 @@ class Status implements \Stringable
     public function setSlug($slug)
     {
         $this->slug = $slug;
+
         return $this;
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */
@@ -115,29 +115,27 @@ class Status implements \Stringable
     }
 
     /**
-     * Add coaster
-     *
+     * Add coaster.
      *
      * @return Status
      */
     public function addCoaster(Coaster $coaster)
     {
         $this->coasters[] = $coaster;
+
         return $this;
     }
 
-    /**
-     * Remove coaster
-     */
+    /** Remove coaster */
     public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
 
     /**
-     * Get coasters
+     * Get coasters.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getCoasters()
     {
@@ -145,7 +143,7 @@ class Status implements \Stringable
     }
 
     /**
-     * Set type
+     * Set type.
      *
      * @param string $type
      *
@@ -154,11 +152,12 @@ class Status implements \Stringable
     public function setType($type)
     {
         $this->type = $type;
+
         return $this;
     }
 
     /**
-     * Get type
+     * Get type.
      *
      * @return string
      */
@@ -170,6 +169,7 @@ class Status implements \Stringable
     public function setIsRateable(bool $isRateable): self
     {
         $this->isRateable = $isRateable;
+
         return $this;
     }
 

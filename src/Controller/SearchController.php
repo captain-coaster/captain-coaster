@@ -47,9 +47,11 @@ class SearchController extends AbstractController
     #[Route(path: '/coasters', name: 'search_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function searchAction(
         CoasterRepository $coasterRepository,
-        #[MapQueryParameter] array $filters = [],
-        #[MapQueryParameter] int $page = 1): Response
-    {
+        #[MapQueryParameter]
+        array $filters = [],
+        #[MapQueryParameter]
+        int $page = 1
+    ): Response {
         try {
             $pagination = $this->paginator->paginate(
                 $coasterRepository->getSearchCoasters($filters),

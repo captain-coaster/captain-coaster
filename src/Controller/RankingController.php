@@ -80,9 +80,7 @@ class RankingController extends AbstractController
         return $filtersForm->get();
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     #[Route(
         path: '/coasters',
         name: 'ranking_search_async',
@@ -113,9 +111,7 @@ class RankingController extends AbstractController
         );
     }
 
-    /**
-     * Learn more on the ranking.
-     */
+    /** Learn more on the ranking. */
     #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
     public function learnMore(): Response
     {

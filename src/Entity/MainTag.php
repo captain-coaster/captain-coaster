@@ -1,16 +1,20 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\MainTagRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * MainTag
+ * MainTag.
  */
-#[ORM\Entity(repositoryClass: \App\Repository\MainTagRepository::class)]
+#[ORM\Entity(repositoryClass: MainTagRepository::class)]
 class MainTag
 {
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
@@ -18,28 +22,20 @@ class MainTag
     #[ORM\ManyToOne(targetEntity: 'Coaster', inversedBy: 'mainTags')]
     private ?\App\Entity\Coaster $coaster = null;
 
-    /**
-     * @var Tag
-     */
+    /** @var Tag */
     #[ORM\ManyToOne(targetEntity: 'Tag')]
     private $tag;
 
-    #[ORM\Column(name: 'rank', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'rank', type: Types::INTEGER)]
     private ?int $rank = null;
 
-    /**
-     * Get id
-     */
+    /** Get id */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Set coaster
-     *
-     *
-     */
+    /** Set coaster */
     public function setCoaster(Coaster $coaster): self
     {
         $this->coaster = $coaster;
@@ -47,18 +43,16 @@ class MainTag
         return $this;
     }
 
-    /**
-     * Get coaster
-     */
+    /** Get coaster */
     public function getCoaster(): Coaster
     {
         return $this->coaster;
     }
 
     /**
-     * Set tag
+     * Set tag.
      *
-     * @param \App\Entity\Tag $tag
+     * @param Tag $tag
      *
      * @return MainTag
      */
@@ -70,9 +64,9 @@ class MainTag
     }
 
     /**
-     * Get tag
+     * Get tag.
      *
-     * @return \App\Entity\Tag
+     * @return Tag
      */
     public function getTag()
     {
@@ -80,9 +74,9 @@ class MainTag
     }
 
     /**
-     * Set rank
+     * Set rank.
      *
-     * @param integer $rank
+     * @param int $rank
      *
      * @return MainTag
      */
@@ -94,9 +88,9 @@ class MainTag
     }
 
     /**
-     * Get rank
+     * Get rank.
      *
-     * @return integer
+     * @return int
      */
     public function getRank()
     {

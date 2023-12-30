@@ -15,17 +15,13 @@ use Monolog\LogRecord;
  */
 class DiscordMonologHandler extends AbstractProcessingHandler
 {
-    /**
-     * DiscordMonologHandler constructor.
-     */
+    /** DiscordMonologHandler constructor. */
     public function __construct(protected DiscordService $discordService)
     {
         parent::__construct(Level::Critical, true);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function write(LogRecord $record): void
     {
         $this->discordService->log(

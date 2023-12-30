@@ -9,20 +9,19 @@ use App\Entity\LikedImage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ImageController extends AbstractController
 {
-    /**
-     * @return JsonResponse
-     */
+    /** @return JsonResponse */
     #[Route(path: '/toggleLike/{id}', name: 'like_image_async', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
     public function toggleLikeAction(Image $image, EntityManagerInterface $em)
     {
         // avoid redirects to login...
         // @todo
         if (!$this->get('security.authorization_checker')->isGranted('ROLE_USER')) {
-            return new JsonResponse([], \Symfony\Component\HttpFoundation\Response::HTTP_FORBIDDEN);
+            return new JsonResponse([], Response::HTTP_FORBIDDEN);
         }
 
         $user = $this->getUser();

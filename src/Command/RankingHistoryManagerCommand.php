@@ -19,15 +19,13 @@ class RankingHistoryManagerCommand extends Command
 {
     protected static $defaultName = 'app:ranking:history:add';
 
-    /**
-     * RankingHistoryManagerCommand constructor.
-     */
+    /** RankingHistoryManagerCommand constructor. */
     public function __construct(private readonly EntityManagerInterface $em, private readonly LoggerInterface $logger)
     {
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Saves current ranking stats.')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')

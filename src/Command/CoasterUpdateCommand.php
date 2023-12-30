@@ -22,7 +22,7 @@ class CoasterUpdateCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->setDescription('Update average rating and total ratings calculated values for all coasters');
     }

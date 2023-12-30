@@ -45,15 +45,13 @@ class ImageManager
      *
      * @throws FilesystemException
      */
-    public function remove(string $filename)
+    public function remove(string $filename): void
     {
         $this->filesystem->delete($filename);
     }
 
-    /**
-     * Remove file from S3 Cache Bucket.
-     */
-    public function removeCache(Image $image)
+    /** Remove file from S3 Cache Bucket. */
+    public function removeCache(Image $image): void
     {
         $this->s3Client->deleteObjects([
             'Bucket' => $this->s3CacheBucket,
@@ -73,7 +71,7 @@ class ImageManager
      *
      * @todo faire mieux :)
      */
-    public function setMainImages()
+    public function setMainImages(): void
     {
         $conn = $this->em->getConnection();
 
@@ -101,7 +99,7 @@ class ImageManager
      *
      * @todo faire mieux :)
      */
-    public function updateLikeCounters()
+    public function updateLikeCounters(): void
     {
         $conn = $this->em->getConnection();
 
@@ -122,9 +120,7 @@ class ImageManager
         }
     }
 
-    /**
-     * Generates a filename like fury-325-carowinds-64429c62b6b23.jpg.
-     */
+    /** Generates a filename like fury-325-carowinds-64429c62b6b23.jpg. */
     private function generateFilename(UploadedFile $file, string $coasterSlug = null): string
     {
         return sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
