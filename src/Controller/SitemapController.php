@@ -44,7 +44,7 @@ class SitemapController extends AbstractController
             $cache->save($urls);
         }
 
-        $response =  $this->render(
+        $response = $this->render(
             'Sitemap/sitemap_image.xml.twig',
             ['urls' => $sitemapService->getUrlsForImages()]
         );
