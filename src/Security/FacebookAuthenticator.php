@@ -95,7 +95,9 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
 
         if (!$user instanceof User) {
             $user = new User();
-            $user->setPreferredLocale($facebookUser->getLocale());
+            if ($facebookUser->getLocale()) {
+                $user->setPreferredLocale($facebookUser->getLocale());
+            }
             $user->setEnabled(true);
         }
 
