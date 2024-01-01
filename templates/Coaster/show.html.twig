@@ -280,9 +280,7 @@
     </div>
     <div class="col-sm-9">
       <div id="coaster-photos" class="row"></div>
-      {% if reviews|length > 0 %}
-        {% include 'Coaster/reviews.html.twig' with {'reviews': reviews, 'coaster': coaster} only %}
-      {% endif %}
+      <div id="coaster-reviews" class="row"></div>
     </div>
   </div>
 {% endblock %}
@@ -311,7 +309,7 @@
   </script>
   <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
   <script type="text/javascript">
-      var loadImage = function (number) {
+         var loadImage = function (number) {
           if (Math.max(document.documentElement.clientWidth, window.innerWidth || 0) < 769
               && number === undefined
           ) {
@@ -335,7 +333,36 @@
           });
       };
 
+      var loadReviews = function(page) {
+        $.ajax({
+              url: Routing.generate('coaster_reviews_ajax_load', {
+                  'slug': '{{ coaster.slug }}',
+                  'page': page || 1,
+                  '_locale': '{{ app.request.locale }}',
+              }),
+              type: 'GET',
+          }).done(function (data) {
+              $('#coaster-reviews').replaceWith(data);
+              if(page != undefined) {
+                $([document.documentElement, document.body]).animate({
+                  scrollTop: $("#coaster-photos").offset().top
+              }, 1000);
+              }
+              var buttons = document.getElementsByClassName('page-link');
+              Array.prototype.forEach.call(buttons, function(el) {
+                  if(el.nodeName == "A") {
+                    el.addEventListener('click', function(event) {
+                        event.preventDefault();
+                        loadReviews(el.innerHTML);
+                    });
+                  }
+              });
+                    
+          });
+      }
+
       loadImage();
+      loadReviews();
   </script>
   {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}

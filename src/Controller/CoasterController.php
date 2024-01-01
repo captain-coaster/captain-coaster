@@ -19,7 +19,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route(path: '/coasters')]
 class CoasterController extends AbstractController
@@ -99,6 +101,34 @@ class CoasterController extends AbstractController
                 'userLikes' => $userLikes,
                 'coaster' => $coaster,
                 'number' => $imageNumber,
+            ]
+        );
+    }
+
+    /** Async loads reviews for a coaster */
+    #[Route(
+        path: '/{slug}/reviews/ajax/{page}',
+        name: 'coaster_reviews_ajax_load',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, Coaster $coaster, int $page = 1): Response
+    {
+        $pagination = $paginator->paginate(
+            $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
+            $page,
+            100
+        );
+
+        $count = $riddenCoasterRepository->countForCoaster($coaster);
+
+        return $this->render(
+            'Coaster/reviews-ajax.html.twig',
+            [
+                'count' => $count,
+                'reviews' => $pagination,
+                'coaster' => $coaster
             ]
         );
     }
