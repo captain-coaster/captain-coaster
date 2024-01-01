@@ -353,7 +353,7 @@
                   if(el.nodeName == "A") {
                     el.addEventListener('click', function(event) {
                         event.preventDefault();
-                        loadReviews(el.innerHTML);
+                        loadReviews(parseInt(el.href.substring(el.href.lastIndexOf('/') + 1) || 1));
                     });
                   }
               });
