@@ -16,7 +16,7 @@ security:
             security: false
 
         api_home:
-            pattern: ^/api$
+            pattern: ^/api(/|/docs)?$
             security: false
 
         api_secured:

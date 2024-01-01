@@ -31,7 +31,7 @@ class ImageListener
      */
     public function prePersist(LifecycleEventArgs $args): void
     {
-        $image = $args->getEntity();
+        $image = $args->getObject();
         if (!$image instanceof Image) {
             return;
         }

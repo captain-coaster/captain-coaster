@@ -37,11 +37,12 @@ class AvatarCleanCommand extends Command
         $stopwatch->start('avatar');
         $output->writeln('Cleaning avatars...');
 
-        $users = $this->userRepository->findAll();
+        $query = $this->userRepository->getAllUsersQuery();
 
-        $batchSize = 20;
+        $batchSize = 100;
         $i = 0;
-        foreach ($users as $user) {
+        // toIterable needed to be able to clear em when updating
+        foreach ($query->toIterable() as $user) {
             if ($this->isAvatarDead($user)) {
                 $output->writeln("Dead URL for $user");
                 $this->updateAvatar($user, $output);

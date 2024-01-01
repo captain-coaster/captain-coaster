@@ -36,7 +36,7 @@ class UserController extends AbstractController
         return $this->render(
             'User/list.html.twig',
             ['users' => $paginator->paginate(
-                $userRepository->getUserList(),
+                $userRepository->getAllUsersWithTotalRatingsQuery(),
                 $page,
                 21
             )]
