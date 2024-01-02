@@ -6,7 +6,7 @@
         <div class="panel-heading">
             <h6 class="panel-title text-semiold">
                 {{ 'review.title'|trans }}
-                &nbsp;<span class="badge badge-primary">{{ count }}</span>
+                &nbsp;<span class="badge badge-primary">{{ reviews.getTotalItemCount() }}</span>
             </h6>
             {% if coaster.isRateable %}
                 <div class="pull-right">

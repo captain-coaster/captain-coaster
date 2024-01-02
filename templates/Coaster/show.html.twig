@@ -343,21 +343,15 @@
               type: 'GET',
           }).done(function (data) {
               $('#coaster-reviews').replaceWith(data);
+              
               if(page != undefined) {
-                $([document.documentElement, document.body]).animate({
-                  scrollTop: $("#coaster-photos").offset().top
-              }, 1000);
+                document.getElementById('coaster-reviews').scrollIntoView();
               }
-              var buttons = document.getElementsByClassName('page-link');
-              Array.prototype.forEach.call(buttons, function(el) {
-                  if(el.nodeName == "A") {
-                    el.addEventListener('click', function(event) {
-                        event.preventDefault();
-                        loadReviews(parseInt(el.href.substring(el.href.lastIndexOf('/') + 1) || 1));
-                    });
-                  }
+
+              $('ul.pagination a').click(function(e) {
+                event.preventDefault();
+                loadReviews($(this).data('page') || 1);
               });
-                    
           });
       }
 

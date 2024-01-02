@@ -120,12 +120,9 @@ class CoasterController extends AbstractController
             100
         );
 
-        $count = $riddenCoasterRepository->countForCoaster($coaster);
-
         return $this->render(
             'Coaster/reviews-ajax.html.twig',
             [
-                'count' => $count,
                 'reviews' => $pagination,
                 'coaster' => $coaster
             ]
