@@ -6,4 +6,4 @@ knp_paginator:
         sort_direction_name: direction
         distinct: true
     template:
-        pagination: '@KnpPaginator/Pagination/twitter_bootstrap_v4_pagination.html.twig'
+        pagination: 'pagination/knp_custom_pagination.html.twig'
