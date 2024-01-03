@@ -1,12 +1,12 @@
 {% import "helper.html.twig" as helper %}
 
-<div class="row">
+<div id="coaster-reviews" class="row">
     <!-- Comments -->
     <div class="panel panel-flat">
         <div class="panel-heading">
             <h6 class="panel-title text-semiold">
                 {{ 'review.title'|trans }}
-                &nbsp;<span class="badge badge-primary">{{ reviews|length }}</span>
+                &nbsp;<span class="badge badge-primary">{{ reviews.getTotalItemCount() }}</span>
             </h6>
             {% if coaster.isRateable %}
                 <div class="pull-right">
@@ -76,6 +76,7 @@
                     </li>
                 {% endfor %}
             </ul>
+            {{ knp_pagination_render(reviews) }}
         </div>
         {% if coaster.isRateable %}
             <div class="panel-body">
