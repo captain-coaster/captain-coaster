@@ -151,10 +151,13 @@ class CoasterController extends AbstractController
                 ['coaster' => $coaster, 'user' => $user]
             );
         }
+        
+        $countRatings = $riddenCoasterRepository->getCountRatingsForCoaster($coaster);
 
         return $this->render(
             'Coaster/show.html.twig',
             [
+                'countRatings' => $countRatings,
                 'coaster' => $coaster,
                 'reviews' => $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
                 'rating' => $rating,

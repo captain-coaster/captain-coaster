@@ -37,6 +37,8 @@ coaster:
         updatereview: 'update my review'
         delete: 'delete'
         text: 'Score based on {count_rating} ratings and {count_top} tops'
+        details: 'Detailed user ratings'
+        ratings: 'ratings'
     infos:
         title: '{name} features'
         closeParksTitle: 'Best amusement parks near {parkName}'
