@@ -37,6 +37,8 @@ coaster:
         updatereview: 'modifier mon avis'
         delete: 'supprimer'
         text: 'Score basé sur {count_rating} notes et {count_top} tops'
+        details: 'Détail des notes utilisateurs'
+        ratings: 'notes'
     infos:
         title: 'Caractéristiques de {name}'
         closeParksTitle: 'Les meilleurs parcs d''attractions proche de {parkName}'

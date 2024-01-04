@@ -356,4 +356,19 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         return $query->getResult();
     }
+
+    public function getCountRatingsForCoaster(Coaster $coaster): array
+    {
+        $id = $coaster->getId();
+        
+        $query = $this->getEntityManager()->createQuery('
+        SELECT r.value, COUNT(r.id) AS count
+        FROM App:RiddenCoaster r
+        WHERE r.coaster = :id
+        GROUP BY r.value
+        ');
+        $query->setParameter('id', $id);
+
+        return $query->getResult();
+    }
 }
