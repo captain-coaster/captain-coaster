@@ -413,7 +413,7 @@
         },
         tooltip: {
           y: {
-            formatter: function (val, { series, seriesIndex, dataPointIndex, w }) {
+            formatter: function (val, { series, seriesIndex, w }) {
               var value = Math.floor(w.globals.seriesPercent[seriesIndex][0] * 100) / 100;
               return value + "% (" + val + " {{ 'coaster.rating.ratings'|trans }})";
             }
