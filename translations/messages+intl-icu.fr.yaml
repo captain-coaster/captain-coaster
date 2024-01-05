@@ -39,8 +39,9 @@ coaster:
         text: 'Score basé sur {count_rating} notes et {count_top} tops'
     infos:
         title: 'Caractéristiques de {name}'
-        closeParksTitle: 'Les meilleurs parcs d''attractions proche de {parkName}'
+        closeParksTitle: 'Les meilleurs parcs d''attractions proches de {parkName}'
         closeParksLink: 'Visualiser {parkName} sur la carte'
+        noCloseParks: 'Aucun parc avec au moins un coaster ayant un score de minimum {score}% à moins de {distance} km de {name}'
         status: 'Statut'
         park: 'Parc'
         country: 'Pays'
