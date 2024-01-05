@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Park;
 use App\Entity\RiddenCoaster;
+use App\Entity\Status;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -56,6 +57,9 @@ class ParkRepository extends ServiceEntityRepository
             ->where('p.latitude between :parkLatitudeMin and :parkLatitudeMax')
             ->andwhere('p.longitude between :parkLongitudeMin and :parkLongitudeMax')
             ->andwhere('c.score > :minScore')
+            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
+            ->andWhere('s.name = :operating')
+            ->setParameter('operating', Status::OPERATING)
             ->andwhere('p.id != :parkId')
             ->having('distance < :maxDistance')
             ->orderBy('distance')
