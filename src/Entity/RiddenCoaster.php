@@ -44,14 +44,14 @@ class RiddenCoaster
 
     #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(name: 'ridden_coaster_pro')]
-    #[JoinColumn(nullable: false, onDelete: 'RESTRICT')]
-    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $pros;
 
     #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(name: 'ridden_coaster_con')]
-    #[JoinColumn(nullable: false, onDelete: 'RESTRICT')]
-    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $cons;
 
     #[ORM\Column(name: 'likes', type: Types::INTEGER, nullable: true)]

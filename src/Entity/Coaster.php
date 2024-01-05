@@ -23,12 +23,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * Coaster.
- */
-#[ApiResource(operations: [new Get(normalizationContext: ['groups' => ['read_coaster']]), new GetCollection(normalizationContext: ['groups' => ['list_coaster']])], normalizationContext: ['groups' => ['list_coaster', 'read_coaster']])]
-#[ORM\Table(name: 'coaster')]
 #[ORM\Entity(repositoryClass: CoasterRepository::class)]
+#[ORM\Table(name: 'coaster')]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['read_coaster']]),
+        new GetCollection(normalizationContext: ['groups' => ['list_coaster']]),
+    ],
+    normalizationContext: ['groups' => ['list_coaster', 'read_coaster']]
+)
+]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'manufacturer' => 'exact'])]
 #[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'rank' => ['nulls_comparison' => 'nulls_largest']], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(filterClass: RangeFilter::class, properties: ['rank', 'totalRatings'])]
@@ -44,123 +48,162 @@ class Coaster implements \Stringable
     #[ORM\GeneratedValue]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?int $id = null;
+
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?string $name = null;
+
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name'], updatable: true, separator: '-', handlers: [new Gedmo\SlugHandler(class: CustomRelativeSlugHandler::class, options: [new Gedmo\SlugHandlerOption(name: 'relationField', value: 'park'), new Gedmo\SlugHandlerOption(name: 'relationSlugField', value: 'slug'), new Gedmo\SlugHandlerOption(name: 'separator', value: '-')])])]
+    #[Gedmo\Slug(fields: ['name'], updatable: true, separator: '-', handlers: [
+        new Gedmo\SlugHandler(
+            class: CustomRelativeSlugHandler::class,
+            options: [
+                new Gedmo\SlugHandlerOption(name: 'relationField', value: 'park'),
+                new Gedmo\SlugHandlerOption(name: 'relationSlugField', value: 'slug'),
+                new Gedmo\SlugHandlerOption(name: 'separator', value: '-'),
+            ]
+        ),
+    ])]
     private ?string $slug = null;
+
     #[ORM\ManyToOne(targetEntity: 'MaterialType')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?MaterialType $materialType = null;
+
     #[ORM\ManyToOne(targetEntity: 'SeatingType')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?SeatingType $seatingType = null;
+
     #[ORM\ManyToOne(targetEntity: 'Model')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Model $model = null;
+
     #[ORM\Column(name: 'speed', type: Types::INTEGER, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?int $speed = null;
+
     #[ORM\Column(name: 'height', type: Types::INTEGER, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?int $height = null;
+
     #[ORM\Column(name: 'length', type: Types::INTEGER, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?int $length = null;
+
     #[ORM\Column(name: 'inversions_number', type: Types::INTEGER, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?int $inversionsNumber = 0;
+
     #[ORM\ManyToOne(targetEntity: 'Manufacturer')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Manufacturer $manufacturer = null;
+
     #[ORM\ManyToOne(targetEntity: 'Restraint', inversedBy: 'coasters')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Restraint $restraint = null;
 
     #[ORM\ManyToMany(targetEntity: 'Launch', inversedBy: 'coasters')]
-    #[ORM\JoinColumn]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     #[Groups(['read_coaster'])]
     private Collection $launchs;
-    #[ORM\Column(name: 'is_kiddie', type: Types::BOOLEAN)]
-    private ?bool $kiddie = false;
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-    private ?bool $vr = false;
-    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
-    private ?bool $indoor = false;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $kiddie = false;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $vr = false;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $indoor = false;
+
     #[ORM\ManyToOne(targetEntity: 'Park', fetch: 'LAZY', inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?Park $park = null;
+
     #[ORM\ManyToOne(targetEntity: 'Status', inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?Status $status = null;
+
     #[ORM\Column(name: 'openingDate', type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?\DateTimeInterface $openingDate = null;
+
     #[ORM\Column(name: 'closingDate', type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?\DateTimeInterface $closingDate = null;
+
     #[ORM\Column(name: 'video', type: Types::STRING, length: 255, nullable: true)]
     private ?string $video = null;
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $price = null;
+
     #[ORM\ManyToOne(targetEntity: 'Currency')]
     #[ORM\JoinColumn]
     private ?Currency $currency = null;
-    /** @var float */
+
     #[ORM\Column(name: 'averageRating', type: Types::DECIMAL, precision: 5, scale: 3, nullable: true)]
     private ?string $averageRating = null;
+
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['read_coaster'])]
-    private ?int $totalRatings = 0;
-    /** @var float */
+    private int $totalRatings = 0;
+
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 3, nullable: true)]
     private ?string $averageTopRank = null;
+
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $totalTopsIn = 0;
+    private int $totalTopsIn = 0;
+
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['read_coaster'])]
-    private ?int $validDuels = 0;
+    private int $validDuels = 0;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 14, scale: 11, nullable: true)]
     #[Groups(['read_coaster'])]
     private ?string $score = null;
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?int $rank = null;
+
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $previousRank = null;
-    /** @var Collection<RiddenCoaster> */
+
     #[ORM\OneToMany(targetEntity: 'RiddenCoaster', mappedBy: 'coaster')]
     private Collection $ratings;
-    /** @var Collection<MainTag> */
+
     #[ORM\OneToMany(targetEntity: 'MainTag', mappedBy: 'coaster')]
     private Collection $mainTags;
-    /** @var Collection<Image> */
+
     #[ORM\OneToMany(targetEntity: 'Image', mappedBy: 'coaster')]
     private Collection $images;
+
     #[ORM\OneToOne(targetEntity: 'Image', fetch: 'EAGER')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[Groups(['read_coaster'])]
     private ?Image $mainImage = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $createdAt = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeInterface $updatedAt = null;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $enabled = false;
 
-    /** Constructor. */
     public function __construct()
     {
         $this->launchs = new ArrayCollection();
@@ -171,61 +214,32 @@ class Coaster implements \Stringable
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return $this->name;
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return Coaster
-     */
-    public function setName($name)
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get slug.
-     *
-     * @return string
-     */
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    /**
-     * Set slug.
-     *
-     * @param string $slug
-     *
-     * @return Coaster
-     */
-    public function setSlug($slug)
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
@@ -237,7 +251,7 @@ class Coaster implements \Stringable
         return $this->materialType;
     }
 
-    public function setMaterialType(MaterialType $materialType): self
+    public function setMaterialType(MaterialType $materialType): static
     {
         $this->materialType = $materialType;
 
@@ -249,7 +263,7 @@ class Coaster implements \Stringable
         return $this->seatingType;
     }
 
-    public function setSeatingType(SeatingType $seatingType): self
+    public function setSeatingType(SeatingType $seatingType): static
     {
         $this->seatingType = $seatingType;
 
@@ -261,79 +275,55 @@ class Coaster implements \Stringable
         return $this->model;
     }
 
-    public function setModel(?Model $model): self
+    public function setModel(?Model $model): static
     {
         $this->model = $model;
 
         return $this;
     }
 
-    /** @return int */
-    public function getSpeed()
+    public function getSpeed(): ?int
     {
         return $this->speed;
     }
 
-    /**
-     * @param int $speed
-     *
-     * @return Coaster
-     */
-    public function setSpeed($speed)
+    public function setSpeed(?int $speed): static
     {
         $this->speed = $speed;
 
         return $this;
     }
 
-    /** @return int */
-    public function getHeight()
+    public function getHeight(): ?int
     {
         return $this->height;
     }
 
-    /**
-     * @param int $height
-     *
-     * @return Coaster
-     */
-    public function setHeight($height)
+    public function setHeight(?int $height): static
     {
         $this->height = $height;
 
         return $this;
     }
 
-    /** @return int */
-    public function getLength()
+    public function getLength(): ?int
     {
         return $this->length;
     }
 
-    /**
-     * @param int $length
-     *
-     * @return Coaster
-     */
-    public function setLength($length)
+    public function setLength(?int $length): static
     {
         $this->length = $length;
 
         return $this;
     }
 
-    /** @return int */
-    public function getInversionsNumber()
+    public function getInversionsNumber(): ?int
     {
         return $this->inversionsNumber;
     }
 
-    /**
-     * @param int $inversionsNumber
-     *
-     * @return Coaster
-     */
-    public function setInversionsNumber($inversionsNumber)
+    public function setInversionsNumber(?int $inversionsNumber): static
     {
         $this->inversionsNumber = $inversionsNumber;
 
@@ -345,28 +335,26 @@ class Coaster implements \Stringable
         return $this->manufacturer;
     }
 
-    public function setManufacturer(?Manufacturer $manufacturer): self
+    public function setManufacturer(?Manufacturer $manufacturer): static
     {
         $this->manufacturer = $manufacturer;
 
         return $this;
     }
 
-    /** @return Restraint */
-    public function getRestraint()
+    public function getRestraint(): ?Restraint
     {
         return $this->restraint;
     }
 
-    /** @return Coaster */
-    public function setRestraint(Restraint $restraint)
+    public function setRestraint(Restraint $restraint): static
     {
         $this->restraint = $restraint;
 
         return $this;
     }
 
-    public function addLaunch(Launch $launch): self
+    public function addLaunch(Launch $launch): static
     {
         $this->launchs[] = $launch;
 
@@ -383,34 +371,26 @@ class Coaster implements \Stringable
         return $this->launchs;
     }
 
-    public function setKiddie(bool $kiddie): self
+    public function isKiddie(): bool
+    {
+        return $this->kiddie;
+    }
+
+    public function setKiddie(bool $kiddie): static
     {
         $this->kiddie = $kiddie;
 
         return $this;
     }
 
-    /** @return bool */
-    public function getVr()
+    public function getVr(): bool
     {
         return $this->vr;
     }
 
-    /**
-     * @param bool $vr
-     *
-     * @return Coaster
-     */
-    public function setVr($vr)
+    public function setVr(bool $vr): static
     {
         $this->vr = $vr;
-
-        return $this;
-    }
-
-    public function setIndoor(bool $indoor): self
-    {
-        $this->indoor = $indoor;
 
         return $this;
     }
@@ -420,12 +400,19 @@ class Coaster implements \Stringable
         return $this->indoor;
     }
 
+    public function setIndoor(bool $indoor): static
+    {
+        $this->indoor = $indoor;
+
+        return $this;
+    }
+
     public function getPark(): ?Park
     {
         return $this->park;
     }
 
-    public function setPark(Park $park): self
+    public function setPark(Park $park): static
     {
         $this->park = $park;
 
@@ -437,75 +424,55 @@ class Coaster implements \Stringable
         return $this->status;
     }
 
-    public function setStatus(Status $status): self
+    public function setStatus(Status $status): static
     {
         $this->status = $status;
 
         return $this;
     }
 
-    /** @return \DateTime */
-    public function getOpeningDate()
+    public function getOpeningDate(): ?\DateTimeInterface
     {
         return $this->openingDate;
     }
 
-    /**
-     * @param \DateTime $openingDate
-     *
-     * @return Coaster
-     */
-    public function setOpeningDate($openingDate)
+    public function setOpeningDate(?\DateTimeInterface $openingDate): static
     {
         $this->openingDate = $openingDate;
 
         return $this;
     }
 
-    /** @return \DateTime */
-    public function getClosingDate()
+    public function getClosingDate(): ?\DateTimeInterface
     {
         return $this->closingDate;
     }
 
-    /**
-     * @param \DateTime $closingDate
-     *
-     * @return Coaster
-     */
-    public function setClosingDate($closingDate)
+    public function setClosingDate(?\DateTimeInterface $closingDate): static
     {
         $this->closingDate = $closingDate;
 
         return $this;
     }
 
-    /** @return string */
-    public function getVideo()
+    public function getVideo(): ?string
     {
         return $this->video;
     }
 
-    /** @param string $video */
-    public function setVideo($video): self
+    public function setVideo($video): static
     {
         $this->video = $video;
 
         return $this;
     }
 
-    /** @return int */
-    public function getPrice()
+    public function getPrice(): ?int
     {
         return $this->price;
     }
 
-    /**
-     * @param int $price
-     *
-     * @return Coaster
-     */
-    public function setPrice($price)
+    public function setPrice($price): static
     {
         $this->price = $price;
 
@@ -517,43 +484,31 @@ class Coaster implements \Stringable
         return $this->currency;
     }
 
-    public function setCurrency(?Currency $currency): self
+    public function setCurrency(?Currency $currency): static
     {
         $this->currency = $currency;
 
         return $this;
     }
 
-    /** @return string */
-    public function getAverageRating()
+    public function getAverageRating(): ?string
     {
         return $this->averageRating;
     }
 
-    /**
-     * @param string $averageRating
-     *
-     * @return Coaster
-     */
-    public function setAverageRating($averageRating)
+    public function setAverageRating(?string $averageRating): static
     {
         $this->averageRating = $averageRating;
 
         return $this;
     }
 
-    /** @return int */
-    public function getTotalRatings()
+    public function getTotalRatings(): int
     {
         return $this->totalRatings;
     }
 
-    /**
-     * @param int $totalRatings
-     *
-     * @return Coaster
-     */
-    public function setTotalRatings($totalRatings)
+    public function setTotalRatings(int $totalRatings): static
     {
         $this->totalRatings = $totalRatings;
 
@@ -565,7 +520,7 @@ class Coaster implements \Stringable
         return $this->averageTopRank;
     }
 
-    public function setAverageTopRank(string $averageTopRank): static
+    public function setAverageTopRank(?string $averageTopRank): static
     {
         $this->averageTopRank = $averageTopRank;
 
@@ -577,7 +532,7 @@ class Coaster implements \Stringable
         return $this->totalTopsIn;
     }
 
-    public function setTotalTopsIn(int $totalTopsIn): self
+    public function setTotalTopsIn(int $totalTopsIn): static
     {
         $this->totalTopsIn = $totalTopsIn;
 
@@ -589,7 +544,7 @@ class Coaster implements \Stringable
         return $this->validDuels;
     }
 
-    public function setValidDuels(int $validDuels): self
+    public function setValidDuels(int $validDuels): static
     {
         $this->validDuels = $validDuels;
 
@@ -601,51 +556,38 @@ class Coaster implements \Stringable
         return $this->score;
     }
 
-    public function setScore(string $score): static
+    public function setScore(?string $score): static
     {
         $this->score = $score;
 
         return $this;
     }
 
-    /** @return int */
-    public function getRank()
+    public function getRank(): ?int
     {
         return $this->rank;
     }
 
-    /**
-     * @param int $rank
-     *
-     * @return Coaster
-     */
-    public function setRank($rank)
+    public function setRank($rank): static
     {
         $this->rank = $rank;
 
         return $this;
     }
 
-    /** @return int */
-    public function getPreviousRank()
+    public function getPreviousRank(): ?int
     {
         return $this->previousRank;
     }
 
-    /**
-     * @param int $previousRank
-     *
-     * @return Coaster
-     */
-    public function setPreviousRank($previousRank)
+    public function setPreviousRank(?int $previousRank): static
     {
         $this->previousRank = $previousRank;
 
         return $this;
     }
 
-    /** @return Coaster */
-    public function addRating(RiddenCoaster $rating)
+    public function addRating(RiddenCoaster $rating): static
     {
         $this->ratings[] = $rating;
 
@@ -662,19 +604,19 @@ class Coaster implements \Stringable
         return $this->ratings;
     }
 
-    public function getMainTags(): ArrayCollection|Collection
+    public function getMainTags(): Collection
     {
         return $this->mainTags;
     }
 
-    public function getImages(): ArrayCollection|Collection
+    public function getImages(): Collection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('enabled', true))->orderBy(['likeCounter' => Criteria::DESC, 'updatedAt' => Criteria::DESC]);
 
         return $this->images->matching($criteria);
     }
 
-    public function setImages(Image $images): self
+    public function setImages(Collection $images): static
     {
         $this->images = $images;
 
@@ -686,55 +628,31 @@ class Coaster implements \Stringable
         return $this->mainImage;
     }
 
-    public function setMainImage(Image $mainImage): self
+    public function setMainImage(?Image $mainImage): static
     {
         $this->mainImage = $mainImage;
 
         return $this;
     }
 
-    /**
-     * Get createdAt.
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    /**
-     * Set createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Coaster
-     */
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt(?\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    /**
-     * Get updatedAt.
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    /**
-     * Set updatedAt.
-     *
-     * @param \DateTime $updatedAt
-     *
-     * @return Coaster
-     */
-    public function setUpdatedAt($updatedAt)
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
@@ -753,11 +671,6 @@ class Coaster implements \Stringable
         return !$this->isKiddie();
     }
 
-    public function isKiddie(): bool
-    {
-        return $this->kiddie;
-    }
-
     public function getUserRating(User $user): ?RiddenCoaster
     {
         /** @var RiddenCoaster $rating */
@@ -770,7 +683,7 @@ class Coaster implements \Stringable
         return null;
     }
 
-    public function setEnabled(bool $enabled): self
+    public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
 
