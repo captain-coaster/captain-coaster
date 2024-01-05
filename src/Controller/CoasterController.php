@@ -152,7 +152,7 @@ class CoasterController extends AbstractController
             );
         }
         
-        $countRatings = $riddenCoasterRepository->getCountRatingsForCoaster($coaster);
+        $countRatings = $riddenCoasterRepository->getRatingStatsForCoaster($coaster);
 
         return $this->render(
             'Coaster/show.html.twig',
