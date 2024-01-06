@@ -123,14 +123,16 @@
           </div>
         </div>
       </div>
+      {% if countRatings %}
       <div class="panel panel-white">
           <div class="panel-heading">
             <h6>
               {{ 'coaster.rating.details'|trans }}
             </h6>
           </div>
-          <div class="media-body" id="chart"></div>
-        </div>
+        <div class="media-body" id="chart"></div>
+      </div>
+      {% endif %}
       <!-- /main carac -->
       <!-- coaster details -->
       <div class="panel panel-white">
@@ -367,6 +369,7 @@
       loadImage();
       loadReviews();
 
+      {% if countRatings %}
       var options = {
         series: [
           {% for countRating in countRatings %}
@@ -430,6 +433,7 @@
 
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
+        {% endif %}
   </script>
   {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}
