@@ -123,6 +123,14 @@
           </div>
         </div>
       </div>
+      <div class="panel panel-white">
+          <div class="panel-heading">
+            <h6>
+              {{ 'coaster.rating.details'|trans }}
+            </h6>
+          </div>
+          <div class="media-body" id="chart"></div>
+        </div>
       <!-- /main carac -->
       <!-- coaster details -->
       <div class="panel panel-white">
@@ -286,6 +294,7 @@
 {% endblock %}
 
 {% block javascripts %}
+  <script src="{{ asset('js/pages/apexcharts.min.js') }}"></script>
   <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
   <script src="{{ asset('js/pages/rating.js') }}"></script>
   <script src="{{ asset('js/plugins/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
@@ -357,6 +366,70 @@
 
       loadImage();
       loadReviews();
+
+      var options = {
+        series: [
+          {% for countRating in countRatings %}
+              {
+                name: {{ countRating.value }},
+                data: [{{ countRating.count }}]
+              },
+          {% endfor %}
+        ],
+        dataLabels: {
+          enabled: false
+        },
+        colors:['#bf4040', '#c24d31', '#c25c20', '#bd6b09', '#b57b00', '#a98a00', '#999800', '#84a600', '#6ab31f', '#40bf40'],
+        chart: {
+          type: 'bar',
+          toolbar: {
+            show: false
+          },
+          height: 100,
+          stacked: true,
+          stackType: '100%'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '100%'
+          },
+        },
+        stroke: {
+          width: 0
+        },
+        xaxis: {
+          categories: [''],
+          labels: {
+            formatter: function(value, timestamp, opts) {
+              return value + "%";
+            }
+          }
+        },
+        yaxis: {
+          labels: {
+            show: false
+          }
+        },
+        tooltip: {
+          y: {
+            formatter: function (val, { series, seriesIndex, w }) {
+              var value = Math.floor(w.globals.seriesPercent[seriesIndex][0] * 100) / 100;
+              return value + "% (" + val + " {{ 'coaster.rating.ratings'|trans }})";
+            }
+          }
+        },
+        fill: {
+          opacity: 1
+        
+        },
+        legend: {
+          show: false
+        }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
   </script>
   {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}
