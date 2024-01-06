@@ -15,9 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * Launch.
- */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_launch']])]
 #[ORM\Table(name: 'launch')]
 #[ORM\Entity(repositoryClass: LaunchRepository::class)]
@@ -27,18 +24,18 @@ class Launch implements \Stringable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
+
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Groups(['read_launch', 'read_coaster'])]
     private ?string $name = null;
+
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
-    /** @var Collection<\App\Entity\Coaster> */
-    #[ORM\ManyToMany(targetEntity: 'Coaster', mappedBy: 'launchs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private \Doctrine\Common\Collections\Collection $coasters;
 
-    /** Constructor */
+    #[ORM\ManyToMany(targetEntity: 'Coaster', mappedBy: 'launchs')]
+    private Collection $coasters;
+
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
@@ -46,53 +43,39 @@ class Launch implements \Stringable
 
     public function __toString(): string
     {
-        return $this->getName();
+        return $this->name;
     }
 
-    /** @return int */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return Launch
-     */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /** @return string */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $slug
-     *
-     * @return Launch
-     */
-    public function setSlug($slug)
+    public function setSlug($slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    /** @return string */
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    /** @return Launch */
-    public function addCoaster(Coaster $coaster)
+    public function addCoaster(Coaster $coaster): static
     {
         $this->coasters[] = $coaster;
 
@@ -104,8 +87,7 @@ class Launch implements \Stringable
         $this->coasters->removeElement($coaster);
     }
 
-    /** @return Coaster[]|ArrayCollection */
-    public function getCoasters(): array|\Doctrine\Common\Collections\ArrayCollection
+    public function getCoasters(): Collection
     {
         return $this->coasters;
     }
