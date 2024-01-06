@@ -360,8 +360,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     public function getRatingStatsForCoaster(Coaster $coaster): array
     {
         $id = $coaster->getId();
-        
-        return $this->getEntityManager()
+        $existingValues = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
+
+        $result = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r.value')
             ->addselect('COUNT(r.id) AS count')
@@ -371,5 +372,20 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
+        
+        $pos = 0;
+        $notExisting = [];
+        for($i = 0; $i < count($result); $i++) {
+            if($result[$i]["value"] != $existingValues[$pos]) {
+                array_push($notExisting, ["value" => $existingValues[$pos], "count" => 0]);
+                $i--;
+            } 
+            $pos++;
+        }
+
+        $result = array_merge($result, $notExisting);
+        asort($result);
+        return $result;
+
     }
 }
