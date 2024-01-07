@@ -172,8 +172,12 @@
           <div class="list-group-item">
             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}:</label>
             <div class="pull-right">
-                <a href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
-                {{ coaster.manufacturer.name|default('data.unknown'|trans([], 'database')) }}</a>
+                {% if coaster.manufacturer %}
+                  <a href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
+                  {{ coaster.manufacturer.name }}</a>
+                {% else %}
+                  <label>{{ 'data.unknown'|trans([], 'database') }}</label>
+                {% endif %}
             </div>
           </div>
           {% if coaster.materialType %}
