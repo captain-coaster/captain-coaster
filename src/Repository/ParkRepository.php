@@ -72,6 +72,7 @@ class ParkRepository extends ServiceEntityRepository
             ->setParameter('minScore', $minScore)
             ->setParameter('parkId', $park->getId())
             ->setParameter('maxDistance', $maxDistance)
+            ->setMaxResults(5)
             ->getQuery()
             ->getResult();
     }
