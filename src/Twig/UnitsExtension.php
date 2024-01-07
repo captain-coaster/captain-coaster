@@ -11,9 +11,9 @@ class UnitsExtension extends AbstractExtension
     {
         return [
             new TwigFunction('is_imperial', [$this, 'isImperial']),
-            new TwigFunction('meter_or_feet', [$this, 'm_or_f']),
-            new TwigFunction('meter_or_feet', [$this, 'kph_or_mph']),
-            new TwigFunction('meter_or_feet', [$this, 'km_or_mil']),
+            new TwigFunction('m_or_f', [$this, 'm_or_f']),
+            new TwigFunction('kph_or_mph', [$this, 'kph_or_mph']),
+            new TwigFunction('km_or_mil', [$this, 'km_or_mil']),
         ];
     }
 
