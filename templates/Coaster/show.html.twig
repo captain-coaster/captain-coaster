@@ -382,7 +382,20 @@
         dataLabels: {
           enabled: false
         },
-        colors:['#bf4040', '#c24d31', '#c25c20', '#bd6b09', '#b57b00', '#a98a00', '#999800', '#84a600', '#6ab31f', '#40bf40'],
+        colors:[function({seriesIndex, w}) {
+        switch(w.globals.seriesNames[seriesIndex]) {
+            case 5: return '#40bf40';
+            case 4.5: return '#6ab31f';
+            case 4: return '#84a600';
+            case 3.5: return '#999800';
+            case 3: return '#a98a00';
+            case 2.5: return '#b57b00';
+            case 2: return '#bd6b09';
+            case 1.5: return '#c25c20';
+            case 1: return '#c24d31';
+            case 0.5: return '#bf4040';
+        }
+    }],
         chart: {
           type: 'bar',
           toolbar: {
