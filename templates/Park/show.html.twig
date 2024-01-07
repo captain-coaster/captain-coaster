@@ -5,6 +5,7 @@
 {% set subTitle = park.country.name|trans([], 'database') %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
+{% set isImperial = units.isImperial(app.request.locale) %}
 {% block body %}
     <div class="row">
         <div class="col-sm-3">
@@ -56,11 +57,7 @@
                                         {{ infoPark.name }}
                                     </a>
                                     -
-                                    {% if unities.isImperial(app.request.locale) %}
-                                        {{ ((infoPark.distance / 1.609)|round(0) ~ ' mil') }}
-                                    {% else %}
-                                        {{ infoPark.distance }} km
-                                    {% endif %}
+                                    {{ units.km_or_mil(isImperial, infoPark.distance) }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -136,11 +133,7 @@
                                     {% if coaster.height is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {% if unities.isImperial(app.request.locale) %}
-                                            {{ ((coaster.height * 3.281)|round(0) ~ ' ft') }}
-                                        {% else %}
-                                            {{ coaster.height }} m
-                                        {% endif %}
+                                        {{ units.m_or_f(isImperial, coaster.height) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -148,11 +141,7 @@
                                     {% if coaster.speed is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {% if unities.isImperial(app.request.locale) %}
-                                            {{ ((coaster.speed / 1.609)|round(0) ~ ' mph') }}
-                                        {% else %}
-                                            {{ coaster.speed }} km/h
-                                        {% endif %}
+                                        {{ units.kph_or_mph(isImperial, coaster.speed) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -160,11 +149,7 @@
                                     {% if coaster.length is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {% if unities.isImperial(app.request.locale) %}
-                                            {{ ((coaster.length * 3.281)|round(0) ~ ' ft') }}
-                                        {% else %}
-                                            {{ coaster.speed }} m
-                                        {% endif %}
+                                        {{ units.m_or_f(isImperial, coaster.length) }}
                                     {% endif %}
                                 </li>
                                 <li>
