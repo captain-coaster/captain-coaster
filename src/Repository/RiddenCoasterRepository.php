@@ -360,16 +360,16 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     public function getRatingStatsForCoaster(Coaster $coaster): array
     {
         $id = $coaster->getId();
-        
+
         return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r.value')
-            ->addselect('COUNT(r.id) AS count')
-            ->from(RiddenCoaster::class, 'r')
-            ->where('r.coaster = :id')
-            ->groupby('r.value')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult();
+        ->createQueryBuilder()
+        ->select('r.value')
+        ->addselect('COUNT(r.id) AS count')
+        ->from(RiddenCoaster::class, 'r')
+        ->where('r.coaster = :id')
+        ->groupby('r.value')
+        ->setParameter('id', $id)
+        ->getQuery()
+        ->getResult();
     }
 }

@@ -123,14 +123,16 @@
           </div>
         </div>
       </div>
+      {% if countRatings %}
       <div class="panel panel-white">
           <div class="panel-heading">
             <h6>
               {{ 'coaster.rating.details'|trans }}
             </h6>
           </div>
-          <div class="media-body" id="chart"></div>
-        </div>
+        <div class="media-body" id="chart"></div>
+      </div>
+      {% endif %}
       <!-- /main carac -->
       <!-- coaster details -->
       <div class="panel panel-white">
@@ -170,8 +172,12 @@
           <div class="list-group-item">
             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}:</label>
             <div class="pull-right">
-                <a href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
-                {{ coaster.manufacturer.name|default('data.unknown'|trans([], 'database')) }}</a>
+                {% if coaster.manufacturer %}
+                  <a href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
+                  {{ coaster.manufacturer.name }}</a>
+                {% else %}
+                  <label>{{ 'data.unknown'|trans([], 'database') }}</label>
+                {% endif %}
             </div>
           </div>
           {% if coaster.materialType %}
@@ -367,6 +373,7 @@
       loadImage();
       loadReviews();
 
+      {% if countRatings %}
       var options = {
         series: [
           {% for countRating in countRatings %}
@@ -379,7 +386,20 @@
         dataLabels: {
           enabled: false
         },
-        colors:['#bf4040', '#c24d31', '#c25c20', '#bd6b09', '#b57b00', '#a98a00', '#999800', '#84a600', '#6ab31f', '#40bf40'],
+        colors:[function({seriesIndex, w}) {
+        switch(w.globals.seriesNames[seriesIndex]) {
+            case 5: return '#40bf40';
+            case 4.5: return '#6ab31f';
+            case 4: return '#84a600';
+            case 3.5: return '#999800';
+            case 3: return '#a98a00';
+            case 2.5: return '#b57b00';
+            case 2: return '#bd6b09';
+            case 1.5: return '#c25c20';
+            case 1: return '#c24d31';
+            case 0.5: return '#bf4040';
+        }
+    }],
         chart: {
           type: 'bar',
           toolbar: {
@@ -430,6 +450,7 @@
 
         var chart = new ApexCharts(document.querySelector("#chart"), options);
         chart.render();
+        {% endif %}
   </script>
   {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}
