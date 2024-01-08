@@ -39,6 +39,7 @@ jobs:
                     restore-keys: ${{ runner.os }}-composer-
 
             -   name: Install dependencies
+                id: install
                 run: composer install --ansi --no-interaction --no-progress
 
             -   name: Lint Twig templates
