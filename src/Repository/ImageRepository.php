@@ -23,7 +23,7 @@ class ImageRepository extends ServiceEntityRepository
 
     /**
      * @throws NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findLatestImage()
     {
