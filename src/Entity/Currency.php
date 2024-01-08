@@ -1,39 +1,43 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\CurrencyRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Currency
+ * Currency.
  */
 #[ORM\Table(name: 'currency')]
-#[ORM\Entity(repositoryClass: \App\Repository\CurrencyRepository::class)]
+#[ORM\Entity(repositoryClass: CurrencyRepository::class)]
 class Currency implements \Stringable
 {
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     private ?string $name = null;
 
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 10)]
+    #[ORM\Column(type: Types::STRING, length: 10)]
     #[Assert\NotBlank]
     private ?string $symbol = null;
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -41,7 +45,7 @@ class Currency implements \Stringable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -55,7 +59,7 @@ class Currency implements \Stringable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -65,7 +69,7 @@ class Currency implements \Stringable
     }
 
     /**
-     * Set symbol
+     * Set symbol.
      *
      * @param string $symbol
      *
@@ -79,7 +83,7 @@ class Currency implements \Stringable
     }
 
     /**
-     * Get symbol
+     * Get symbol.
      *
      * @return string
      */

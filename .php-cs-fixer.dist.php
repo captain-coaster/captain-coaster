@@ -17,13 +17,18 @@ return $config
         '@PHP82Migration' => true,
         'phpdoc_line_span' => ['const' => 'single', 'method' => 'single', 'property' => 'single'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
-        'fully_qualified_strict_types' => ['import_symbols' => true]
+        'fully_qualified_strict_types' => ['import_symbols' => true],
     ])
-    ->setFinder(PhpCsFixer\Finder::create()
-            ->in(__DIR__)
-        // ->exclude([
-        //     'folder-to-exclude',
-        // ])
+    ->setFinder(
+        PhpCsFixer\Finder::create()
+        ->in(__DIR__)
+        ->exclude([
+            'var',
+            'vendor',
+            'tests',
+            'config',
+            'public',
+        ])
         // ->append([
         //     'file-to-include',
         // ])

@@ -73,7 +73,9 @@ class User implements UserInterface
     private Collection $tops;
 
     #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
-    #[ORM\JoinColumn]
+    #[JoinTable]
+    #[JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $badges;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
@@ -179,7 +181,7 @@ class User implements UserInterface
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): static
+    public function setLastName(?string $lastName): static
     {
         $this->lastName = $lastName;
 

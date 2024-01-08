@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -7,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * LikedImage
+ * LikedImage.
  */
 #[ORM\Table(name: 'liked_image')]
 #[ORM\Entity(repositoryClass: LikedImageRepository::class)]

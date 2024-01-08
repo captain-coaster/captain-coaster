@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\Coaster;
 use App\Service\NotificationService;
 use App\Service\RankingService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,12 +16,18 @@ use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[AsCommand(
+    name: 'ranking:update',
+    description: 'Monthly ranking update.',
+    hidden: false,
+)]
 class RankingCommand extends Command
 {
-    protected static $defaultName = 'ranking:update';
-
-    public function __construct(private readonly RankingService $rankingService, private readonly NotificationService $notificationService, private readonly ChatterInterface $chatter)
-    {
+    public function __construct(
+        private readonly RankingService $rankingService,
+        private readonly NotificationService $notificationService,
+        private readonly ChatterInterface $chatter
+    ) {
         parent::__construct();
     }
 
@@ -83,7 +90,7 @@ class RankingCommand extends Command
             $output->writeln((string) $stopwatch->stop('emailing'));
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function formatCoasterForConsole(Coaster $coaster): string

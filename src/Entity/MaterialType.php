@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -8,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Status
+ * Status.
  */
 #[ORM\Table(name: 'material_type')]
 #[ORM\Entity]
@@ -29,11 +31,11 @@ class MaterialType implements \Stringable
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -43,7 +45,7 @@ class MaterialType implements \Stringable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -53,7 +55,7 @@ class MaterialType implements \Stringable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -67,7 +69,7 @@ class MaterialType implements \Stringable
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */
@@ -77,7 +79,7 @@ class MaterialType implements \Stringable
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *

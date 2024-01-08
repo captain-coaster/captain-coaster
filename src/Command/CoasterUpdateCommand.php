@@ -6,25 +6,24 @@ namespace App\Command;
 
 use App\Service\RatingService;
 use App\Service\TopService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[AsCommand(
+    name: 'coaster:update',
+    description: 'Update average rating and total ratings calculated values for all coasters.',
+    hidden: false,
+)]
 class CoasterUpdateCommand extends Command
 {
-    protected static $defaultName = 'coaster:update';
-
     public function __construct(
         private readonly RatingService $ratingService,
         private readonly TopService $topService
     ) {
         parent::__construct();
-    }
-
-    protected function configure()
-    {
-        $this->setDescription('Update average rating and total ratings calculated values for all coasters');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -42,6 +41,6 @@ class CoasterUpdateCommand extends Command
 
         $output->writeln((string) $stopwatch->stop('command'));
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

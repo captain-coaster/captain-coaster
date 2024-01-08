@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -75,6 +77,7 @@ class Park implements \Stringable
     public function setName(string $name): static
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -86,12 +89,14 @@ class Park implements \Stringable
     public function setSlug(string $slug): static
     {
         $this->slug = $slug;
+
         return $this;
     }
 
     public function addCoaster(Coaster $coaster): static
     {
         $this->coasters[] = $coaster;
+
         return $this;
     }
 
@@ -108,6 +113,7 @@ class Park implements \Stringable
     public function setCountry(Country $country): static
     {
         $this->country = $country;
+
         return $this;
     }
 
@@ -119,6 +125,7 @@ class Park implements \Stringable
     public function setLatitude(float|null $latitude): static
     {
         $this->latitude = $latitude;
+
         return $this;
     }
 
@@ -130,6 +137,7 @@ class Park implements \Stringable
     public function setLongitude(float|null $longitude): static
     {
         $this->longitude = $longitude;
+
         return $this;
     }
 
@@ -141,6 +149,7 @@ class Park implements \Stringable
     public function setCreatedAt(\DateTimeInterface|null $createdAt): static
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -152,13 +161,14 @@ class Park implements \Stringable
     public function setUpdatedAt(\DateTimeInterface|null $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
     /** @return Collection<Coaster> */
     public function getOpenedCoasters(): Collection
     {
-        return $this->getCoasters()->filter(fn(Coaster $coaster) => $coaster->getStatus()->getId() == 1);
+        return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->getStatus()->getId());
     }
 
     /** @return Collection<Coaster> */
@@ -175,7 +185,7 @@ class Park implements \Stringable
     /** @return Collection<Coaster> */
     public function getKiddies(): Collection
     {
-        return $this->getCoasters()->filter(fn(Coaster $coaster) => $coaster->isKiddie() == 1);
+        return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->isKiddie());
     }
 
     public function isEnabled(): bool
@@ -186,6 +196,7 @@ class Park implements \Stringable
     public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
+
         return $this;
     }
 }

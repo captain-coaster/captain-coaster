@@ -17,7 +17,16 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function getUserList(): Query
+    public function getAllUsersQuery(): Query
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->getQuery();
+    }
+
+    public function getAllUsersWithTotalRatingsQuery(): Query
     {
         return $this->getEntityManager()
             ->createQueryBuilder()

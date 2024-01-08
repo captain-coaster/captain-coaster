@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+declare(strict_types=1);
+
 namespace App\Form\Type;
 
 use App\Entity\RiddenCoaster;
@@ -9,8 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class RatingCoasterType
- * @package App\Form\Type
+ * Class RatingCoasterType.
  */
 class RatingCoasterType extends AbstractType
 {

@@ -22,9 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/missing-coaster')]
 class MissingCoasterController extends AbstractController
 {
-    /**
-     * Starts missing coaster procedure.
-     */
+    /** Starts missing coaster procedure. */
     #[Route(path: '/start', name: 'missingcoaster_start', methods: ['GET', 'POST'])]
     public function start(Request $request, EntityManagerInterface $em): RedirectResponse|Response
     {
@@ -61,9 +59,7 @@ class MissingCoasterController extends AbstractController
         );
     }
 
-    /**
-     * Main form to add a missing coaster.
-     */
+    /** Main form to add a missing coaster. */
     #[Route(path: '/park/{id}/add', name: 'missingcoaster_add', methods: ['GET', 'POST'])]
     public function addCoaster(Request $request, Park $park, EntityManagerInterface $em): RedirectResponse|Response
     {
@@ -86,9 +82,7 @@ class MissingCoasterController extends AbstractController
         return $this->render('MissingCoaster/create.html.twig', ['form' => $form]);
     }
 
-    /**
-     * Recap message for the user.
-     */
+    /** Recap message for the user. */
     #[Route(path: '/success', name: 'missingcoaster_success', methods: ['GET'])]
     public function success(Coaster $coaster): Response
     {

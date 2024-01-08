@@ -160,7 +160,7 @@ class RankingService
      * Compute score based on duels array
      * A duel is the result of all comparisons for coaster A and B.
      */
-    private function computeScore(bool $dryRun)
+    private function computeScore(bool $dryRun): void
     {
         $this->rejectedCoasters = [];
 
@@ -228,7 +228,7 @@ class RankingService
     }
 
     /** Compute a list of coaster that does not meet the comparison & duel requirements. */
-    private function computeRejectedCoasters()
+    private function computeRejectedCoasters(): void
     {
         foreach ($this->duels as $coasterId => $coasterDuels) {
             $duelCount = 0;
@@ -251,7 +251,7 @@ class RankingService
     }
 
     /** Remove all duels from rejected coasters. */
-    private function removeRejectedCoasters()
+    private function removeRejectedCoasters(): void
     {
         foreach ($this->rejectedCoasters as $idRejected) {
             unset($this->duels[$idRejected]);
@@ -294,7 +294,7 @@ class RankingService
     }
 
     /** Remove rank and previous_rank fields for coaster not ranked anymore. */
-    private function disableNonRankedCoasters()
+    private function disableNonRankedCoasters(): void
     {
         $sql = 'update coaster c
                 set c.rank = NULL, c.previous_rank = NULL, c.score = NULL, c.valid_duels = 0
@@ -309,7 +309,7 @@ class RankingService
     }
 
     /** Add a row for Ranking entity in database. */
-    private function createRankingEntry()
+    private function createRankingEntry(): void
     {
         $ranking = new Ranking();
 
@@ -325,7 +325,7 @@ class RankingService
     }
 
     /** Update "validDuels" column for a coaster. */
-    private function updateDuelStat(int $coasterId, int $duelCount)
+    private function updateDuelStat(int $coasterId, int $duelCount): void
     {
         $sql = 'update coaster c
                 set c.valid_duels = :count

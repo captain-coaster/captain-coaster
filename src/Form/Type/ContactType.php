@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+declare(strict_types=1);
+
 namespace App\Form\Type;
 
 use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaV3Type;
@@ -13,8 +15,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class ContactType
- * @package App\Form\Type
+ * Class ContactType.
  */
 class ContactType extends AbstractType
 {

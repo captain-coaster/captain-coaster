@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -35,21 +36,23 @@ class RiddenCoaster
     #[Assert\Choice([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0], strict: true)]
     private ?float $value = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true, options: ['collation' => 'utf8mb4_unicode_ci'])]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $review = null;
 
     #[ORM\Column(type: Types::STRING, length: 5)]
     private ?string $language = 'en';
 
+    #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(name: 'ridden_coaster_pro')]
-    #[ORM\ManyToMany(targetEntity: Tag::class)]
-    #[ORM\JoinColumn]
-    private \Doctrine\Common\Collections\Collection $pros;
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
+    private Collection $pros;
 
-    #[ORM\JoinTable(name: 'ridden_coaster_con')]
     #[ORM\ManyToMany(targetEntity: Tag::class)]
-    #[ORM\JoinColumn]
-    private \Doctrine\Common\Collections\Collection $cons;
+    #[ORM\JoinTable(name: 'ridden_coaster_con')]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
+    private Collection $cons;
 
     #[ORM\Column(name: 'likes', type: Types::INTEGER, nullable: true)]
     private ?int $like = 0;

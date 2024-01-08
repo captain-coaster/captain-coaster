@@ -8,38 +8,31 @@ use App\Entity\Badge;
 use App\Entity\RiddenCoaster;
 use App\Entity\TopCoaster;
 use App\Entity\User;
+use App\Repository\BadgeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-/**
- * Class BadgeService.
- */
 class BadgeService
 {
-    final public const BADGE_TYPE_RATING = 'rating';
-    final public const BADGE_RATING_1 = 'badge.rating1';
-    final public const BADGE_RATING_100 = 'badge.rating100';
-    final public const BADGE_RATING_250 = 'badge.rating250';
-    final public const BADGE_RATING_500 = 'badge.rating500';
-    final public const BADGE_RATING_1000 = 'badge.rating1000';
+    final public const string BADGE_TYPE_RATING = 'rating';
+    final public const string BADGE_RATING_1 = 'badge.rating1';
+    final public const string BADGE_RATING_100 = 'badge.rating100';
+    final public const string BADGE_RATING_250 = 'badge.rating250';
+    final public const string BADGE_RATING_500 = 'badge.rating500';
+    final public const string BADGE_RATING_1000 = 'badge.rating1000';
 
-    final public const BADGE_TYPE_TEAM = 'team';
-    final public const BADGE_TEAM_KATUN = 'badge.teamkatun';
-    final public const BADGE_TEAM_ISPEED = 'badge.teamispeed';
+    final public const string BADGE_TYPE_TEAM = 'team';
+    final public const string BADGE_TEAM_KATUN = 'badge.teamkatun';
+    final public const string BADGE_TEAM_ISPEED = 'badge.teamispeed';
 
-    /**
-     * BadgeService constructor.
-     */
-    public function __construct(EntityManagerInterface $em, NotificationService $notifService)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly NotificationService $notifService,
+        private readonly BadgeRepository $badgeRepository
+    ) {
     }
 
-    /**
-     * Give badges to User.
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     */
-    public function give(User $user)
+    /** Give badges to User. */
+    public function give(User $user): void
     {
         // Give rating badges
         $this->giveRatingBadge($user);
@@ -51,10 +44,8 @@ class BadgeService
         $this->em->flush();
     }
 
-    /**
-     * Give rating badges to User.
-     */
-    private function giveRatingBadge(User $user)
+    /** Give rating badges to User. */
+    private function giveRatingBadge(User $user): void
     {
         $ratingNumber = \count($user->getRatings());
 
@@ -75,10 +66,8 @@ class BadgeService
         }
     }
 
-    /**
-     * Give team badges to User.
-     */
-    private function giveTeamBadge(User $user)
+    /** Give team badges to User. */
+    private function giveTeamBadge(User $user): void
     {
         // Check for already given Team badge
         $currentBadge = $user->getBadges()->filter(
@@ -136,12 +125,10 @@ class BadgeService
         }
     }
 
-    /**
-     * Helper to add only new badge.
-     */
-    private function addNewBadge(User $user, string $badgeName)
+    /** Helper to add only new badge. */
+    private function addNewBadge(User $user, string $badgeName): void
     {
-        $badge = $this->Repository->findOneBy(['name' => $badgeName]);
+        $badge = $this->badgeRepository->findOneBy(['name' => $badgeName]);
 
         if (!$user->getBadges()->contains($badge)) {
             $user->addBadge($badge);

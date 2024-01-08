@@ -9,6 +9,7 @@ use App\Entity\Ranking;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -38,9 +39,7 @@ class RankingRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @return mixed|null
-     */
+    /** @return mixed|null */
     public function findPrevious()
     {
         try {
@@ -59,7 +58,7 @@ class RankingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return \Doctrine\ORM\Query
+     * @return Query
      *
      * @throws \Exception
      */
@@ -80,7 +79,7 @@ class RankingRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
-    private function applyFilters(QueryBuilder $qb, array $filters = [])
+    private function applyFilters(QueryBuilder $qb, array $filters = []): void
     {
         $this->filterLocation($qb, $filters);
         $this->filterMaterialType($qb, $filters);
@@ -90,7 +89,7 @@ class RankingRepository extends ServiceEntityRepository
         $this->filterOpeningDate($qb, $filters);
     }
 
-    private function filterLocation(QueryBuilder $qb, array $filters = [])
+    private function filterLocation(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('country', $filters) && '' !== $filters['country']) {
             $qb
@@ -106,7 +105,7 @@ class RankingRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterMaterialType(QueryBuilder $qb, array $filters = [])
+    private function filterMaterialType(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('materialType', $filters) && '' !== $filters['materialType']) {
             $qb
@@ -116,7 +115,7 @@ class RankingRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterSeatingType(QueryBuilder $qb, array $filters = [])
+    private function filterSeatingType(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('seatingType', $filters) && '' !== $filters['seatingType']) {
             $qb
@@ -126,7 +125,7 @@ class RankingRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterModel(QueryBuilder $qb, array $filters = [])
+    private function filterModel(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('model', $filters) && '' !== $filters['model']) {
             $qb
@@ -136,7 +135,7 @@ class RankingRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterManufacturer(QueryBuilder $qb, array $filters = [])
+    private function filterManufacturer(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
             $qb
@@ -145,7 +144,7 @@ class RankingRepository extends ServiceEntityRepository
         }
     }
 
-    private function filterOpeningDate(QueryBuilder $qb, array $filters = [])
+    private function filterOpeningDate(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by average rating
         if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {

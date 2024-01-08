@@ -5,44 +5,28 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Coaster;
+use App\Entity\Image;
 use App\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * Class SitemapService.
- */
 class SitemapService
 {
-    /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-
-    /**
-     * SitemapService constructor.
-     */
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UrlGeneratorInterface $router,
-        TranslatorInterface $translator,
+        private readonly TranslatorInterface $translator,
         private readonly array $locales,
-        private readonly \Unknown_Repository_Class $Repository
     ) {
-        $this->translator = $translator;
     }
 
-    /**
-     * @return array
-     */
-    public function getUrlsForPages()
+    public function getUrlsForPages(): array
     {
         $urls = [];
 
         // Latest review
-        $latestRating = $this->Repository
-            ->findOneBy([], ['updatedAt' => 'desc'], 1);
+        $latestRating = $this->em->getRepository(RiddenCoaster::class)->findOneBy([], ['updatedAt' => 'desc'], 1);
         $indexUpdateDate = $latestRating->getUpdatedAt();
 
         // Index
@@ -60,8 +44,7 @@ class SitemapService
             $params = ['slug' => $coaster->getSlug()];
             $date = null;
             // Latest review
-            $latestReview = $this->Repository
-                ->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc'], 1);
+            $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc'], 1);
             if ($latestReview instanceof RiddenCoaster) {
                 $date = $latestReview->getUpdatedAt();
             }
@@ -72,16 +55,12 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @return array
-     */
-    public function getUrlsForImages()
+    public function getUrlsForImages(): array
     {
         $urls = [];
 
         // Latest review
-        $images = $this->Repository
-            ->findBy(['watermarked' => true]);
+        $images = $this->em->getRepository(Image::class)->findBy(['watermarked' => true]);
 
         foreach ($images as $image) {
             $url = [];
@@ -116,19 +95,13 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @param string $changefreq
-     * @param string $priority
-     *
-     * @return array
-     */
     private function getUrlAndAlternates(
         $route,
         array $params = [],
         \DateTime $lastmod = null,
         $changefreq = 'weekly',
         $priority = '0.5'
-    ) {
+    ): array {
         $urls = [];
 
         foreach ($this->locales as $locale) {
@@ -162,10 +135,7 @@ class SitemapService
         return $urls;
     }
 
-    /**
-     * @return array
-     */
-    private function buildRouteParams(array $params, $locale)
+    private function buildRouteParams(array $params, $locale): array
     {
         return array_merge(
             ['_locale' => $locale],

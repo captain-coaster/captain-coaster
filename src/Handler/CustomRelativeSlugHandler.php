@@ -25,14 +25,10 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
 {
     final public const SEPARATOR = '/';
 
-    /**
-     * @var ObjectManager
-     */
+    /** @var ObjectManager */
     protected $om;
 
-    /**
-     * @var SluggableListener
-     */
+    /** @var SluggableListener */
     protected $sluggable;
 
     /**
@@ -63,14 +59,14 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
         $this->sluggable = $sluggable;
     }
 
-    public static function validate(array $options, ClassMetadata $meta)
+    public static function validate(array $options, ClassMetadata $meta): void
     {
         if (!$meta->isSingleValuedAssociation($options['relationField'])) {
             throw new InvalidMappingException("Unable to find slug relation through field - [{$options['relationField']}] in class - {$meta->name}");
         }
     }
 
-    public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug)
+    public function onChangeDecision(SluggableAdapter $ea, array &$config, $object, &$slug, &$needToChangeSlug): void
     {
         $this->om = $ea->getObjectManager();
         $isInsert = $this->om->getUnitOfWork()->isScheduledForInsert($object);
@@ -86,13 +82,13 @@ class CustomRelativeSlugHandler implements SlugHandlerInterface
         }
     }
 
-    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug)
+    public function postSlugBuild(SluggableAdapter $ea, array &$config, $object, &$slug): void
     {
         $this->originalTransliterator = $this->sluggable->getTransliterator();
         $this->sluggable->setTransliterator(fn (string $text, string $separator, object $object): string => $this->transliterate($text, $separator, $object));
     }
 
-    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug)
+    public function onSlugCompletion(SluggableAdapter $ea, array &$config, $object, &$slug): void
     {
     }
 

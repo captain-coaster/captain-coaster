@@ -18,7 +18,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route(path: '/coasters')]
 class CoasterController extends AbstractController
@@ -32,14 +34,13 @@ class CoasterController extends AbstractController
 
     /** Uploads an image for a coaster */
     #[Route(path: '/{slug}/images/upload', name: 'coaster_images_upload', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function imageUpload(
         Request $request,
         Coaster $coaster,
         TranslatorInterface $translator,
         EntityManagerInterface $em
     ): Response {
-        $this->denyAccessUnlessGranted('upload', $coaster);
-
         $image = new Image();
         $image->setCoaster($coaster);
         $image->setWatermarked(true);
@@ -103,6 +104,31 @@ class CoasterController extends AbstractController
         );
     }
 
+    /** Async loads reviews for a coaster */
+    #[Route(
+        path: '/{slug}/reviews/ajax/{page}',
+        name: 'coaster_reviews_ajax_load',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, Coaster $coaster, int $page = 1): Response
+    {
+        $pagination = $paginator->paginate(
+            $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
+            $page,
+            100
+        );
+
+        return $this->render(
+            'Coaster/reviews-ajax.html.twig',
+            [
+                'reviews' => $pagination,
+                'coaster' => $coaster
+            ]
+        );
+    }
+
     /** Keep redirection for a while */
     #[Route(path: '/ranking/{page}', name: 'coaster_ranking', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function showRankingAction(int $page = 1): RedirectResponse
@@ -115,7 +141,7 @@ class CoasterController extends AbstractController
     public function showAction(
         Request $request,
         Coaster $coaster,
-        RiddenCoasterRepository $riddenCoasterRepository,
+        RiddenCoasterRepository $riddenCoasterRepository
     ): Response {
         $rating = null;
         $user = null;
@@ -125,10 +151,13 @@ class CoasterController extends AbstractController
                 ['coaster' => $coaster, 'user' => $user]
             );
         }
+        
+        $countRatings = $riddenCoasterRepository->getRatingStatsForCoaster($coaster);
 
         return $this->render(
             'Coaster/show.html.twig',
             [
+                'countRatings' => $countRatings,
                 'coaster' => $coaster,
                 'reviews' => $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
                 'rating' => $rating,

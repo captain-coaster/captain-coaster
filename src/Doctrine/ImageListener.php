@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Doctrine;
 
@@ -12,8 +14,7 @@ use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
 /**
- * Class ImageListener
- * @package App\Doctrine
+ * Class ImageListener.
  */
 class ImageListener
 {
@@ -24,12 +25,13 @@ class ImageListener
     /**
      * Before persist:
      *  - upload file
+     *
      * @throws FilesystemException
      * @throws TransportExceptionInterface
      */
     public function prePersist(LifecycleEventArgs $args): void
     {
-        $image = $args->getEntity();
+        $image = $args->getObject();
         if (!$image instanceof Image) {
             return;
         }
@@ -43,13 +45,14 @@ class ImageListener
         }
 
         $this->chatter->send(
-            (new ChatMessage('A new picture of ' . $image->getCoaster()->getName() . ' is waiting for review'))->transport('discord_notif')
+            (new ChatMessage('A new picture of '.$image->getCoaster()->getName().' is waiting for review'))->transport('discord_notif')
         );
     }
 
     /**
      * Before remove :
      *  - remove image file on disk
+     *
      * @throws FilesystemException
      */
     public function preRemove(LifecycleEventArgs $args): void
@@ -80,7 +83,7 @@ class ImageListener
 
     /**
      * After update (enabled set to 1 is an update)
-     *  - update main images
+     *  - update main images.
      */
     public function postUpdate(LifecycleEventArgs $args): void
     {

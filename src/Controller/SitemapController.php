@@ -5,20 +5,14 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\SitemapService;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\HttpFoundation\Response;
 
 class SitemapController extends AbstractController
 {
-    /**
-     * Create sitemap for pages.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws InvalidArgumentException
-     */
-    public function indexAction(SitemapService $sitemapService)
+    /** Create sitemap for pages. */
+    public function indexAction(SitemapService $sitemapService): Response
     {
         $cache = new FilesystemAdapter();
         $urls = $cache->getItem('sitemap_urls');
@@ -29,20 +23,17 @@ class SitemapController extends AbstractController
             $cache->save($urls);
         }
 
-        return $this->render(
+        $response = $this->render(
             'Sitemap/sitemap.xml.twig',
-            ['urls' => $urls->get()]
+            ['urls' => $urls->get()],
         );
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
     }
 
-    /**
-     * Create sitemap for images.
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @throws InvalidArgumentException
-     */
-    public function imageAction(SitemapService $sitemapService)
+    /** Create sitemap for images. */
+    public function imageAction(SitemapService $sitemapService): Response
     {
         $cache = new FilesystemAdapter();
         $urls = $cache->getItem('sitemap_image');
@@ -53,9 +44,12 @@ class SitemapController extends AbstractController
             $cache->save($urls);
         }
 
-        return $this->render(
+        $response = $this->render(
             'Sitemap/sitemap_image.xml.twig',
             ['urls' => $sitemapService->getUrlsForImages()]
         );
+        $response->headers->set('Content-Type', 'text/xml');
+
+        return $response;
     }
 }

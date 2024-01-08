@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -24,9 +26,7 @@ class SearchService
         'route' => 'user_show',
     ];
 
-    /**
-     * SearchService constructor.
-     */
+    /** SearchService constructor. */
     public function __construct(private readonly EntityManagerInterface $em)
     {
     }
@@ -48,8 +48,8 @@ class SearchService
     private function formatValues($results, $options): array
     {
         return array_map(
-            fn($result) => [
-                'n' => $options['emoji'] . ' ' . $result['name'],
+            fn ($result) => [
+                'n' => $options['emoji'].' '.$result['name'],
                 'r' => $options['route'],
                 's' => $result['slug'],
             ],

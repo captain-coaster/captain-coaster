@@ -95,7 +95,9 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
 
         if (!$user instanceof User) {
             $user = new User();
-            $user->setPreferredLocale($facebookUser->getLocale());
+            if ($facebookUser->getLocale()) {
+                $user->setPreferredLocale($facebookUser->getLocale());
+            }
             $user->setEnabled(true);
         }
 
@@ -107,7 +109,9 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
         try {
             // update user fields based on token
             $user->setFacebookId($facebookUser->getId());
-            $user->setEmail($facebookUser->getEmail());
+            if ($facebookUser->getEmail()) {
+                $user->setEmail($facebookUser->getEmail());
+            }
             $user->setFirstName($facebookUser->getFirstName());
             $user->setLastName($facebookUser->getLastName());
             $user->setProfilePicture($facebookUser->getPictureUrl());

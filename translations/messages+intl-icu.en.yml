@@ -37,6 +37,8 @@ coaster:
         updatereview: 'update my review'
         delete: 'delete'
         text: 'Score based on {count_rating} ratings and {count_top} tops'
+        details: 'Detailed user ratings'
+        ratings: 'ratings'
     infos:
         title: '{name} features'
         closeParksTitle: 'Best amusement parks near {parkName}'
@@ -320,7 +322,7 @@ search_index:
     num_found: '{num} coasters found'
     geo_on: 'Geolocation enabled'
     geo_off: 'Geolocation not enabled'
-    km_away: '{num} {unity} away'
+    km_away: '{num} km away'
 
 image:
     credit: 'Credit: {name}'

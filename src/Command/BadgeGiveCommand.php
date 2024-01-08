@@ -7,25 +7,30 @@ namespace App\Command;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\BadgeService;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
+#[AsCommand(
+    name: 'badge:give',
+    description: 'Give badges to users.',
+    hidden: false,
+)]
 class BadgeGiveCommand extends Command
 {
-    protected static $defaultName = 'badge:give';
-
-    public function __construct(private readonly BadgeService $badgeService, private readonly UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly BadgeService $badgeService,
+        private readonly UserRepository $userRepository
+    ) {
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
-        $this->setDescription('Give badges to users')
-            ->addArgument('user', InputArgument::OPTIONAL, 'User ID');
+        $this->addArgument('user', InputArgument::OPTIONAL, 'User ID');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -52,6 +57,6 @@ class BadgeGiveCommand extends Command
         $output->writeln('End of command.');
         $output->writeln((string) $stopwatch->stop('badge'));
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

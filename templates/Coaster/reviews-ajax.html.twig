@@ -1,16 +1,16 @@
 {% import "helper.html.twig" as helper %}
 
-<div class="row">
+<div id="coaster-reviews" class="row">
     <!-- Comments -->
     <div class="panel panel-flat">
         <div class="panel-heading">
             <h6 class="panel-title text-semiold">
                 {{ 'review.title'|trans }}
-                &nbsp;<span class="badge badge-primary">{{ reviews|length }}</span>
+                &nbsp;<span class="badge badge-primary">{{ reviews.getTotalItemCount() }}</span>
             </h6>
             {% if coaster.isRateable %}
                 <div class="pull-right">
-                    <a class="text-muted" href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+                    <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
                         {{ 'review.send'|trans() }}
                     </a>
                 </div>
@@ -43,7 +43,7 @@
                       {% endif %}
                   </span>
                 </span>
-                                <span class="media-annotation dotted">
+                <span class="media-annotation dotted">
                   {{ review.updatedAt|ago }}
                 </span>
                             </div>
@@ -65,7 +65,7 @@
                             {% if is_granted('update', review) %}
                                 <ul class="list-inline list-inline-separate text-size-small">
                                     <li>
-                                        <a href="{{ path('review_form', {'id': review.coaster.id}) }}">{{ 'review.update'|trans }}</a>
+                                        <a href="{{ path('review_form', {'id': coaster.id}) }}">{{ 'review.update'|trans }}</a>
                                     </li>
                                     <li>
                                         <a onclick="deleteRating({{ review.id }})">{{ 'review.delete'|trans }}</a>
@@ -76,10 +76,11 @@
                     </li>
                 {% endfor %}
             </ul>
+            {{ knp_pagination_render(reviews) }}
         </div>
         {% if coaster.isRateable %}
             <div class="panel-body">
-                <a href="{{ path('review_form', {'id': reviews.0.coaster.id}) }}">
+                <a href="{{ path('review_form', {'id': coaster.id}) }}">
                     <button type="button" class="btn bg-blue">
                         <i class="icon-plus22"></i>
                         {{ 'review.send'| trans() }}

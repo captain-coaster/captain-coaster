@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -9,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Manufacturer
+ * Manufacturer.
  */
 #[ORM\Table(name: 'manufacturer')]
 #[ORM\Entity(repositoryClass: ManufacturerRepository::class)]
@@ -30,11 +32,11 @@ class Manufacturer implements \Stringable
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -44,7 +46,7 @@ class Manufacturer implements \Stringable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -54,7 +56,7 @@ class Manufacturer implements \Stringable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -68,7 +70,7 @@ class Manufacturer implements \Stringable
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */
@@ -78,7 +80,7 @@ class Manufacturer implements \Stringable
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *

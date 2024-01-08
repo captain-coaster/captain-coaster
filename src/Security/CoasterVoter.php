@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class CoasterVoter extends Voter
 {
-    final public const RATE = 'rate';
+    final public const string RATE = 'rate';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

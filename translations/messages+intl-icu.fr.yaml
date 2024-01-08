@@ -37,9 +37,11 @@ coaster:
         updatereview: 'modifier mon avis'
         delete: 'supprimer'
         text: 'Score basé sur {count_rating} notes et {count_top} tops'
+        details: 'Détail des notes utilisateurs'
+        ratings: 'notes'
     infos:
         title: 'Caractéristiques de {name}'
-        closeParksTitle: 'Les meilleurs parcs d''attractions proche de {parkName}'
+        closeParksTitle: 'Les meilleurs parcs d''attractions proches de {parkName}'
         closeParksLink: 'Visualiser {parkName} sur la carte'
         status: 'Statut'
         park: 'Parc'
@@ -322,7 +324,7 @@ search_index:
     num_found: '{num} coasters trouvés'
     geo_on: 'Localisation activée'
     geo_off: 'Localisation désactivée'
-    km_away: 'à {num} {unity}'
+    km_away: '{num} km'
 
 badge:
     rating1: '1ère note'

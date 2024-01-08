@@ -58,7 +58,7 @@ class NotificationService
     }
 
     /** Send notification to everyone. */
-    public function sendAll(string $message, string $type, string $parameter = null, bool $markSameTypeRead = true)
+    public function sendAll(string $message, string $type, string $parameter = null, bool $markSameTypeRead = true): void
     {
         if ($markSameTypeRead) {
             $this->em->getRepository(Notification::class)->markTypeAsRead($type);

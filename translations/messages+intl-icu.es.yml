@@ -32,6 +32,8 @@ coaster:
         login: 'Iniciar sesión'
         sendreview: 'o haga clic aquí para escribir una reseña'
         text: 'Resultado basada en {count_rating} notas y {count_top} tops'
+        details: 'Valoraciones detalladas de los usuarios'
+        ratings: 'clasificaciones'
     infos:
         title: 'Características de {name}'
         closeParksTitle: 'Los mejores parques de atracciones cerca de {parkName}'

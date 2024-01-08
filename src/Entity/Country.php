@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -9,7 +11,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * Country
+ * Country.
  */
 #[ORM\Table(name: 'country')]
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
@@ -34,11 +36,11 @@ class Country implements \Stringable
 
     public function __toString(): string
     {
-        return (string)$this->name;
+        return (string) $this->name;
     }
 
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -48,7 +50,7 @@ class Country implements \Stringable
     }
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
      *
@@ -62,7 +64,7 @@ class Country implements \Stringable
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
@@ -72,7 +74,7 @@ class Country implements \Stringable
     }
 
     /**
-     * Set slug
+     * Set slug.
      *
      * @param string $slug
      *
@@ -86,7 +88,7 @@ class Country implements \Stringable
     }
 
     /**
-     * Get slug
+     * Get slug.
      *
      * @return string
      */

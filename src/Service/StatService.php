@@ -16,9 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class StatService
 {
-    /**
-     * RatingService constructor.
-     */
+    /** RatingService constructor. */
     public function __construct(private readonly EntityManagerInterface $em)
     {
     }
@@ -57,9 +55,7 @@ class StatService
         return $stats;
     }
 
-    /**
-     * @return array
-     */
+    /** @return array */
     public function getUserStats(User $user)
     {
         $stats = [];

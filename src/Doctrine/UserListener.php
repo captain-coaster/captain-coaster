@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Doctrine;
 
 use App\Entity\User;
@@ -12,7 +14,7 @@ class UserListener
     {
     }
 
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         /** @var User $user */
         $user = $args->getEntity();

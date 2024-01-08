@@ -9,6 +9,8 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Repository\ImageRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,40 +21,40 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_image']])]
 #[ORM\Table(name: 'image')]
-#[ORM\Entity(repositoryClass: \App\Repository\ImageRepository::class)]
+#[ORM\Entity(repositoryClass: ImageRepository::class)]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['coaster' => 'exact'])]
 class Image
 {
-    #[ORM\Column(name: 'id', type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private int $id;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255)]
     private string $filename;
-    #[ORM\ManyToOne(targetEntity: \App\Entity\Coaster::class, inversedBy: 'images')]
+    #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read_image'])]
     private Coaster $coaster;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $optimized = false;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $enabled = false;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN)]
     private bool $watermarked;
-    #[ORM\ManyToOne(targetEntity: \App\Entity\User::class, inversedBy: 'images')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotBlank]
     private User $uploader;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::STRING, length: 255, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\NotBlank]
     #[Groups(['read_image'])]
     private ?string $credit = null;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::INTEGER)]
+    #[ORM\Column(type: Types::INTEGER)]
     private int $likeCounter = 0;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private \DateTime $createdAt;
-    #[ORM\Column(type: \Doctrine\DBAL\Types\Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private \DateTime $updatedAt;
     #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '13M')]
