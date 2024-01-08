@@ -17,7 +17,7 @@
         "easycorp/easyadmin-bundle": "^4",
         "excelwebzone/recaptcha-bundle": "^1.5",
         "friendsofsymfony/jsrouting-bundle": "^3.0",
-        "http-interop/http-factory-guzzle": "*",
+        "http-interop/http-factory-guzzle": "^1.2.0",
         "knplabs/knp-paginator-bundle": "^6",
         "knplabs/knp-time-bundle": "^2",
         "knpuniversity/oauth2-client-bundle": "^2.15",
