@@ -46,7 +46,7 @@ security:
                 secret: '%kernel.secret%'
                 lifetime: 2629800 # 1 month in seconds
                 always_remember_me: true
-                signature_properties: ['email', 'updatedAt']
+                signature_properties: ['id', 'email', 'enabled']
                 secure: true
                 httponly: true
 
