@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
@@ -13,7 +15,7 @@ class UnitsExtension extends AbstractExtension
             new TwigFunction('is_imperial', [$this, 'isImperial']),
             new TwigFunction('m_or_f', [$this, 'm_or_f']),
             new TwigFunction('kph_or_mph', [$this, 'kph_or_mph']),
-            new TwigFunction('km_or_mil', [$this, 'km_or_mil']),
+            new TwigFunction('km_or_mi', [$this, 'km_or_mi']),
         ];
     }
 
@@ -25,30 +27,30 @@ class UnitsExtension extends AbstractExtension
         return 'en' === $locale;
     }
 
-    public function m_or_f(bool $isImperial, int $value): string
+    public function m_or_f(bool $isImperial, int $value): array
     {
         if ($isImperial) {
-            return round($value * 3.281).' ft';
+            return ['value' => round($value * 3.281), 'unit' => 'ft'];
         }
 
-        return $value.' m';
+        return ['value' => $value, 'unit' => 'm'];
     }
 
-    public function kph_or_mph(bool $isImperial, int $value): string
+    public function kph_or_mph(bool $isImperial, int $value): array
     {
         if ($isImperial) {
-            return round($value / 1.609).' mph';
+            return ['value' => round($value / 1.609), 'unit' => 'mph'];
         }
 
-        return $value.' km/h';
+        return ['value' => $value, 'unit' => 'km/h'];
     }
 
-    public function km_or_mil(bool $isImperial, int $value): string
+    public function km_or_mi(bool $isImperial, int $value): array
     {
         if ($isImperial) {
-            return round($value / 1.609).' mil';
+            return ['value' => round($value / 1.609), 'unit' => 'mi'];
         }
 
-        return $value.' km';
+        return ['value' => $value, 'unit' => 'km'];
     }
 }

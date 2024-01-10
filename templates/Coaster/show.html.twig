@@ -94,7 +94,8 @@
             <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
               <i class="icon-arrow-up8 text-warning-600"></i>
               {% if coaster.height is not empty %}
-                  {{ units.m_or_f(isImperial, coaster.height) }}
+                  {% set height = units.m_or_f(isImperial, coaster.height) %}
+                  {{ height.value ~ ' ' ~ height.unit }}
               {% else %}
                 &nbsp;
               {% endif %}
@@ -102,7 +103,8 @@
             <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
               <i class="icon-rocket text-success-400"></i>
               {% if coaster.speed is not empty %}
-                  {{ units.kph_or_mph(isImperial, coaster.speed) }}
+                  {% set speed = units.kph_or_mph(isImperial, coaster.speed) %}
+                  {{ speed.value ~ ' ' ~ speed.unit }}
               {% else %}
                 &nbsp;
               {% endif %}
@@ -112,7 +114,8 @@
             <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
               <i class="icon-rulers text-blue"></i>
               {% if coaster.length is not empty %}
-                  {{ units.m_or_f(isImperial, coaster.length) }}
+                  {% set length = units.m_or_f(isImperial, coaster.length) %}
+                  {{ length.value ~ ' ' ~ length.unit }}
               {% else %}
                 &nbsp;
               {% endif %}
