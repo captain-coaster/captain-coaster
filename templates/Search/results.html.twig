@@ -1,54 +1,54 @@
 {% set isImperial = units.isImperial(app.request.locale) %}
 <div class="panel panel-white">
-  <div class="panel-heading">
-    <h6 class="panel-title text-semibold">{{ 'search_index.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
-      {% if coasters.0 is defined and coasters.0.distance is defined %}
-        <span class="pull-right text-green text-size-small">{{ 'search_index.geo_on'|trans }}</span>
-      {% else %}
-        <span class="pull-right text-danger text-size-small">{{ 'search_index.geo_off'|trans }}</span>
-      {% endif %}
-    </h6>
-  </div>
-
-  <ul class="media-list">
-    {% for coaster in coasters %}
-      <li class="media panel-body stack-media-on-mobile">
-        <div class="media-left">
-          {% if coaster.item.mainImage is not null %}
-            <img src="{{ pictures_cdn }}/96x96/{{ coaster.item.mainImage.filename }}"
-                 class="img-rounded"
-                 style="width:96px;"
-                 alt="{{ coaster.item.name }}">
-          {% endif %}
-        </div>
-
-        <div class="media-body">
-          <h6 class="media-heading text-semibold">
-            <a href="{{ path('bdd_show_coaster', {'slug': coaster.item.slug}) }}">
-              {{ coaster.item.name }}
-            </a>
-            -
-            <a href="{{ path('park_show', {'slug': coaster.item.park.slug}) }}">
-              {{ coaster.item.park.name }}
-            </a>
-          </h6>
-
-          <ul class="list-inline list-inline-separate text-muted mb-10">
-            {% if coaster.item.materialType %}
-              <li>{{ coaster.item.materialType }}</li>
+    <div class="panel-heading">
+        <h6 class="panel-title text-semibold">{{ 'search_index.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
+            {% if coasters.0 is defined and coasters.0.distance is defined %}
+                <span class="pull-right text-green text-size-small">{{ 'search_index.geo_on'|trans }}</span>
+            {% else %}
+                <span class="pull-right text-danger text-size-small">{{ 'search_index.geo_off'|trans }}</span>
             {% endif %}
-            {% if coaster.distance is defined %}
-                <li>
-                  {% set distance = units.km_or_mi(isImperial, coaster.distance) %}
-                  {{ distance.value ~ ' ' ~ distance.unit }}
-                  {{ 'search_index.km_away'|trans({'%num%': distance.value, '%unity%': distance.unit }) }}
-              </li>
-            {% endif %}
-          </ul>
-        </div>
-      </li>
-    {% endfor %}
-  </ul>
+        </h6>
+    </div>
+
+    <ul class="media-list">
+        {% for coaster in coasters %}
+            <li class="media panel-body stack-media-on-mobile">
+                <div class="media-left">
+                    {% if coaster.item.mainImage is not null %}
+                        <img src="{{ pictures_cdn }}/96x96/{{ coaster.item.mainImage.filename }}"
+                             class="img-rounded"
+                             style="width:96px;"
+                             alt="{{ coaster.item.name }}">
+                    {% endif %}
+                </div>
+
+                <div class="media-body">
+                    <h6 class="media-heading text-semibold">
+                        <a href="{{ path('bdd_show_coaster', {'slug': coaster.item.slug}) }}">
+                            {{ coaster.item.name }}
+                        </a>
+                        -
+                        <a href="{{ path('park_show', {'slug': coaster.item.park.slug}) }}">
+                            {{ coaster.item.park.name }}
+                        </a>
+                    </h6>
+
+                    <ul class="list-inline list-inline-separate text-muted mb-10">
+                        {% if coaster.item.materialType %}
+                            <li>{{ coaster.item.materialType }}</li>
+                        {% endif %}
+                        {% if coaster.distance is defined %}
+                            <li>
+                                {% set distance = units.km_or_mi(isImperial, coaster.distance) %}
+                                {{ distance.value ~ ' ' ~ distance.unit }}
+                                {{ 'search_index.km_away'|trans({'%num%': distance.value, '%unity%': distance.unit }) }}
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
 </div>
 
 {{ knp_pagination_render(coasters) }}
