@@ -17,7 +17,7 @@
         "easycorp/easyadmin-bundle": "^4",
         "excelwebzone/recaptcha-bundle": "^1.5",
         "friendsofsymfony/jsrouting-bundle": "^3.0",
-        "http-interop/http-factory-guzzle": "*",
+        "http-interop/http-factory-guzzle": "^1.2.0",
         "knplabs/knp-paginator-bundle": "^6",
         "knplabs/knp-time-bundle": "^2",
         "knpuniversity/oauth2-client-bundle": "^2.15",
@@ -45,9 +45,9 @@
         "symfony/twig-bundle": "6.4.*",
         "symfony/validator": "6.4.*",
         "symfony/webpack-encore-bundle": "^1.0",
-        "twig/cssinliner-extra": "*",
-        "twig/extra-bundle": "*",
-        "twig/inky-extra": "*",
+        "twig/cssinliner-extra": "^3.8.0",
+        "twig/extra-bundle": "^3.8.0",
+        "twig/inky-extra": "^3.8.0",
         "twig/intl-extra": "^3.6"
     },
     "require-dev": {

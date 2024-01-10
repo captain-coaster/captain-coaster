@@ -11,6 +11,7 @@ use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -20,7 +21,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Knp\Component\Pager\PaginatorInterface;
 
 #[Route(path: '/coasters')]
 class CoasterController extends AbstractController
@@ -124,7 +124,7 @@ class CoasterController extends AbstractController
             'Coaster/reviews-ajax.html.twig',
             [
                 'reviews' => $pagination,
-                'coaster' => $coaster
+                'coaster' => $coaster,
             ]
         );
     }
@@ -151,7 +151,7 @@ class CoasterController extends AbstractController
                 ['coaster' => $coaster, 'user' => $user]
             );
         }
-        
+
         $countRatings = $riddenCoasterRepository->getRatingStatsForCoaster($coaster);
 
         return $this->render(
