@@ -208,7 +208,7 @@ search_index:
     num_found: '{num} montañas rusas encontradas'
     geo_on: 'Geolocalización activada'
     geo_off: 'Geolocalización no activada'
-    km_away: 'A {num} {unity}'
+    km_away: 'a {distance}'
 
 badge:
     rating1: 'Primera nota'

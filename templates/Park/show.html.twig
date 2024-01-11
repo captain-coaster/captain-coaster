@@ -58,7 +58,7 @@
                                     </a>
                                     -
                                     {% set distance = units.km_or_mi(isImperial, infoPark.distance) %}
-                                    {{ distance.value ~ ' ' ~ distance.unit }}
+                                    {{ distance }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -134,8 +134,7 @@
                                     {% if coaster.height is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {% set height = units.m_or_f(isImperial, coaster.height) %}
-                                        {{ height.value ~ ' ' ~ height.unit }}
+                                        {{ units.m_or_f(isImperial, coaster.height) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -143,8 +142,7 @@
                                     {% if coaster.speed is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {% set speed = units.kph_or_mph(isImperial, coaster.speed) %}
-                                        {{ speed.value ~ ' ' ~ speed.unit }}
+                                        {{ units.kph_or_mph(isImperial, coaster.speed) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -152,8 +150,7 @@
                                     {% if coaster.length is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {% set length = units.m_or_f(isImperial, coaster.length) %}
-                                        {{ length.value ~ ' ' ~ length.unit }}
+                                        {{ units.m_or_f(isImperial, coaster.length) }}
                                     {% endif %}
                                 </li>
                                 <li>

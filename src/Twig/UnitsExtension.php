@@ -27,30 +27,30 @@ class UnitsExtension extends AbstractExtension
         return 'en' === $locale;
     }
 
-    public function m_or_f(bool $isImperial, int $value): array
+    public function m_or_f(bool $isImperial, int $value): string
     {
         if ($isImperial) {
-            return ['value' => round($value * 3.281), 'unit' => 'ft'];
+            return round($value * 3.281).' ft';
         }
 
-        return ['value' => $value, 'unit' => 'm'];
+        return $value.' m';
     }
 
-    public function kph_or_mph(bool $isImperial, int $value): array
+    public function kph_or_mph(bool $isImperial, int $value): string
     {
         if ($isImperial) {
-            return ['value' => round($value / 1.609), 'unit' => 'mph'];
+            return round($value / 1.609).' mph';
         }
 
-        return ['value' => $value, 'unit' => 'km/h'];
+        return $value.' km/h';
     }
 
-    public function km_or_mi(bool $isImperial, int $value): array
+    public function km_or_mi(bool $isImperial, int $value): string
     {
         if ($isImperial) {
-            return ['value' => round($value / 1.609), 'unit' => 'mi'];
+            return round($value / 1.609).' mi';
         }
 
-        return ['value' => $value, 'unit' => 'km'];
+        return $value.' km';
     }
 }
