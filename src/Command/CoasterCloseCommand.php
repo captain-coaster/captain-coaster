@@ -36,6 +36,12 @@ class CoasterCloseCommand extends Command
     {
         $today = new \DateTime();
 
+        if ('0101' === $today->format('dm')) {
+            $output->writeln('No closing first day of year.');
+
+            return 0;
+        }
+
         $closingCoasters = $this->coasterRepository->findBy([
             'closingDate' => $today,
         ]);
