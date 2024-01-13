@@ -5,6 +5,7 @@
 {% set subTitle = park.country.name|trans([], 'database') %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
+{% set isImperial = units.isImperial(app.request.locale) %}
 {% block body %}
     <div class="row">
         <div class="col-sm-3">
@@ -55,7 +56,8 @@
                                     <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
                                         {{ infoPark.name }}
                                     </a>
-                                    {{ ' - ' ~ infoPark.distance ~ ' km' }}
+                                    -
+                                    {{ units.km_or_mi(isImperial, infoPark.distance) }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -128,15 +130,27 @@
                             <ul class="list-inline list-inline-separate text-muted mb-5">
                                 <li>
                                     <i class="icon-arrow-up8 text-warning-600"></i>
-                                    {{ coaster.height|default('data.unknown'|trans([], 'database')) }}{% if coaster.height|length %} m{% endif %}
+                                    {% if coaster.height is null %}
+                                        {{ ('data.unknown'|trans([], 'database')) }}
+                                    {% else %}
+                                        {{ units.m_or_f(isImperial, coaster.height) }}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-rocket text-success-400"></i>
-                                    {{ coaster.speed|default('data.unknown'|trans([], 'database')) }}{% if coaster.speed|length %} km/h{% endif %}
+                                    {% if coaster.speed is null %}
+                                        {{ ('data.unknown'|trans([], 'database')) }}
+                                    {% else %}
+                                        {{ units.kph_or_mph(isImperial, coaster.speed) }}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-rulers text-blue"></i>
-                                    {{ coaster.length|default('data.unknown'|trans([], 'database')) }}{% if coaster.length|length %} m{% endif %}
+                                    {% if coaster.length is null %}
+                                        {{ ('data.unknown'|trans([], 'database')) }}
+                                    {% else %}
+                                        {{ units.m_or_f(isImperial, coaster.length) }}
+                                    {% endif %}
                                 </li>
                                 <li>
                                     <i class="icon-spinner11 text-danger-400"></i>
