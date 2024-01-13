@@ -57,8 +57,7 @@
                                         {{ infoPark.name }}
                                     </a>
                                     -
-                                    {% set distance = units.km_or_mi(isImperial, infoPark.distance) %}
-                                    {{ distance }}
+                                    {{ units.km_or_mi(isImperial, infoPark.distance) }}
                                 </li>
                             {% endfor %}
                         </ul>
