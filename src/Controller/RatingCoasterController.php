@@ -14,12 +14,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RatingCoasterController extends AbstractController
 {
     /** Rate a coaster or edit a rating. */
-    #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', methods: ['POST'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', options: ['expose' => true], methods: ['POST'], condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ROLE_USER', statusCode: 403)]
+    #[IsGranted('rate', 'coaster', statusCode: 403)]
     public function editAction(
         Request $request,
         Coaster $coaster,
@@ -27,8 +30,6 @@ class RatingCoasterController extends AbstractController
         RiddenCoasterRepository $riddenCoasterRepository,
         ValidatorInterface $validator
     ): JsonResponse {
-        $this->denyAccessUnlessGranted('rate', $coaster);
-
         /** @var User $user */
         $user = $this->getUser();
 
