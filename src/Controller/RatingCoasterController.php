@@ -14,12 +14,14 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class RatingCoasterController extends AbstractController
 {
     /** Rate a coaster or edit a rating. */
-    #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', methods: ['POST'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', options: ['expose' => true], methods: ['POST'], condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('rate', 'coaster', null, 403)]
     public function editAction(
         Request $request,
         Coaster $coaster,
