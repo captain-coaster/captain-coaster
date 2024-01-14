@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/reviews')]
 class ReviewController extends AbstractController
@@ -50,6 +51,7 @@ class ReviewController extends AbstractController
 
     /** Create or update a review. */
     #[Route(path: '/coasters/{id}/form', name: 'review_form', methods: ['GET', 'POST'])]
+    #[IsGranted('rate', 'coaster', null, 403)]
     public function newAction(
         Request $request,
         Coaster $coaster,
