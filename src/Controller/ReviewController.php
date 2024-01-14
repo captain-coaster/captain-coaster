@@ -51,15 +51,14 @@ class ReviewController extends AbstractController
 
     /** Create or update a review. */
     #[Route(path: '/coasters/{id}/form', name: 'review_form', methods: ['GET', 'POST'])]
-    #[IsGranted('rate', 'coaster', null, 403)]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted('rate', 'coaster', statusCode: 403)]
     public function newAction(
         Request $request,
         Coaster $coaster,
         EntityManagerInterface $em,
         RiddenCoasterRepository $riddenCoasterRepository
     ): Response {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $review = $riddenCoasterRepository->findOneBy(
             ['coaster' => $coaster, 'user' => $this->getUser()]
         );

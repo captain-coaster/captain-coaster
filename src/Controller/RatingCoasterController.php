@@ -21,7 +21,8 @@ class RatingCoasterController extends AbstractController
 {
     /** Rate a coaster or edit a rating. */
     #[Route(path: '/ratings/coasters/{id}/edit', name: 'rating_edit', options: ['expose' => true], methods: ['POST'], condition: 'request.isXmlHttpRequest()')]
-    #[IsGranted('rate', 'coaster', null, 403)]
+    #[IsGranted('ROLE_USER', statusCode: 403)]
+    #[IsGranted('rate', 'coaster', statusCode: 403)]
     public function editAction(
         Request $request,
         Coaster $coaster,
@@ -29,8 +30,6 @@ class RatingCoasterController extends AbstractController
         RiddenCoasterRepository $riddenCoasterRepository,
         ValidatorInterface $validator
     ): JsonResponse {
-        $this->denyAccessUnlessGranted('rate', $coaster);
-
         /** @var User $user */
         $user = $this->getUser();
 
