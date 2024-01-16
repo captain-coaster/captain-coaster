@@ -30,10 +30,9 @@ class TopController extends AbstractController
 {
     /** Create a new top. */
     #[Route(path: '/new', name: 'top_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function newAction(Request $request, EntityManagerInterface $em, TopRepository $topRepository): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
-
         $top = new Top();
         $mainTop = $topRepository->findOneBy(['user' => $this->getUser(), 'main' => true]);
 
@@ -101,10 +100,10 @@ class TopController extends AbstractController
      * @throws \Exception
      */
     #[Route(path: '/{id}/edit', name: 'top_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted('edit', 'top', statusCode: 403)]
     public function edit(Request $request, Top $top, EntityManagerInterface $em): Response
     {
-        $this->denyAccessUnlessGranted('edit', $top);
-
         $originalCoasters = new ArrayCollection();
         foreach ($top->getTopCoasters() as $coaster) {
             $originalCoasters->add($coaster);
@@ -137,9 +136,10 @@ class TopController extends AbstractController
 
     /** Edits details of a top (name, type). */
     #[Route(path: '/{id}/edit-details', name: 'top_edit_details', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted('edit-details', 'top', statusCode: 403)]
     public function editDetails(Request $request, Top $top, EntityManagerInterface $em): Response
     {
-        $this->denyAccessUnlessGranted('edit-details', $top);
 
         /** @var Form $form */
         $form = $this->createForm(TopDetailsType::class, $top);
@@ -157,10 +157,10 @@ class TopController extends AbstractController
 
     /** Deletes a top. */
     #[Route(path: '/{id}/delete', name: 'top_delete', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted('delete', 'top', statusCode: 403)]
     public function delete(Top $top, EntityManagerInterface $em): RedirectResponse
     {
-        $this->denyAccessUnlessGranted('delete', $top);
-
         $em->remove($top);
         $em->flush();
 

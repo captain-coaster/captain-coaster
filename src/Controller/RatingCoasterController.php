@@ -77,11 +77,11 @@ class RatingCoasterController extends AbstractController
     }
 
     /** Delete a rating. */
-    #[Route(path: '/ratings/{id}', name: 'rating_delete', methods: ['DELETE'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
+    #[Route(path: '/ratings/{id}', name: 'rating_delete', options: ['expose' => true], methods: ['DELETE'], condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ROLE_USER', statusCode: 403)]
+    #[IsGranted('delete', 'rating', statusCode: 403)]
     public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em): JsonResponse
     {
-        $this->denyAccessUnlessGranted('delete', $rating);
-
         $em->remove($rating);
         $em->flush();
 
