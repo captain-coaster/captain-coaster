@@ -35,7 +35,6 @@ connect_facebook_check:
 
 login_check:
     path: '/login/check'
-    controller: App\Controller\ConnectController::loginCheck
 
 sitemap:
     path: '/sitemap.xml'
