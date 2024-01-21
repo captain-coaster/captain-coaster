@@ -15,7 +15,7 @@ index:
     description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
     header:
         title: 'Review, rate and rank roller coasters'
-        info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="{link_path}">to connect</a></b>. Follow the Captain !'
+        info: 'Captain Coaster is the ultimate guide for roller coaster enthusiasts! Rate, write reviews, and craft top lists for the coasters you''ve ridden. <a href="{link_path}">Join us</a> in shaping the world''s best roller coaster rankings!'
     stats:
         ratings: 'ratings'
         reviews: 'reviews'
@@ -283,13 +283,13 @@ footer:
 
 login:
     title: 'Login to Captain Coaster'
-    facebook_connect: 'Login with Facebook'
-    google_connect: 'Login with Google'
-    info:
-        title: 'Blue pill or red pill ?'
-        text: 'You can login using your Facebook or Google account. We only gather your name, email and profile picture. We do not publish on Facebook.'
-    already_connected_as: 'Already logged in as'
-    logout: 'Logout ?'
+    subtitle: 'Send a login link to your email'
+    send_link: 'Send login link'
+    or_sign_in_with: 'or sign in with'
+    terms: 'By continuing, you''re confirming that you''ve read our <a href="{link_path}">Terms &amp; Conditions</a>'
+    email:
+        title: 'Login to Captain Coaster'
+    link_sent: 'Login link sent to {email}. Check your email and click on the link to login'
 
 contact:
     title: 'Get in touch'

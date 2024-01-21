@@ -27,14 +27,13 @@ security:
 
         main:
             lazy: true
-#            login_link:
-#                check_route: login_check
-#                #check_post_only: true
-#                signature_properties: ['id', 'email']
-#                provider: login_link_provider
-#                lifetime: 300
-#                max_uses: 1
-#                login_path: login
+            login_link:
+                check_route: login_check
+                signature_properties: ['id', 'email', 'enabled']
+                provider: login_link_provider
+                lifetime: 900
+                max_uses: 3
+                login_path: login
             custom_authenticators:
                 - App\Security\GoogleAuthenticator
                 - App\Security\FacebookAuthenticator
@@ -51,13 +50,14 @@ security:
                 httponly: true
 
     role_hierarchy:
-        ROLE_ADMIN:       [ROLE_USER, ROLE_CONTRIBUTOR, ROLE_PREVIEW_FEATURE]
+        ROLE_ADMIN: [ROLE_USER, ROLE_CONTRIBUTOR, ROLE_PREVIEW_FEATURE]
         ROLE_SUPER_ADMIN: ROLE_ADMIN
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/team, roles: ROLE_CONTRIBUTOR }
-        - { path: ^/api, roles: ROLE_USER }
+        - {path: ^/team, roles: ROLE_CONTRIBUTOR}
+        - {path: ^/api, roles: ROLE_USER}
+        - {path: ^/login$, allow_if: "!is_authenticated()"}
 
 when@test:
     security:
