@@ -286,13 +286,13 @@ footer:
 
 login:
     title: 'Se connecter'
-    facebook_connect: 'Connexion avec Facebook'
-    google_connect: 'Connexion avec Google'
-    info:
-        title: 'Pilule bleue ou pilule rouge ?'
-        text: 'Tu peux te connecter via ton compte Facebook, ou Google. Nous ne collectons que ton nom, ton email et ta photo de profil. Nous ne publions pas sur Facebook.'
-    already_connected_as: 'Déjà connecté en tant que'
-    logout: 'Se deconnecter ?'
+    subtitle: 'Envoyer un lien de connexion par email'
+    send_link: 'Envoyer le lien'
+    or_sign_in_with: 'ou se connecter avec'
+    terms: 'En continuant, vous confirmez avoir lu nos <a href="{link_path}">Termes et Conditions</a>'
+    email:
+        title: 'Connexion à Captain Coaster'
+    link_sent: 'Lien de connexion envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour vous connecter.'
 
 contact:
     title: 'Nous contacter'

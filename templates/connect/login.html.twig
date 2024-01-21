@@ -25,50 +25,56 @@
             <div class="content pb-20">
                 <!-- Form with validation -->
                 <div class="panel panel-body login-form">
-                    <div class="text-center">
-                        <div class="icon-object border-indigo-300 text-indigo-300"><i class="icon-lock"></i></div>
-                        <h5 class="content-group">{{ 'login.title'|trans }}</h5>
+                    <div class="text-center mb-3">
+                        <div class="icon-object border-warning-400 text-warning-400"><i class="icon-key"></i></div>
+                        <h5 class="content-group-lg">{{ 'login.title'|trans }}
+                            <small class="display-block">{{ 'login.subtitle'|trans }}</small>
+                        </h5>
                     </div>
-                    {% if error is defined and error %}
+                    {% if error %}
                         <div class="alert alert-danger alert-bordered">
-                            {{ error|trans }}
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
                         </div>
                     {% endif %}
-                    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                        <ul class="list-inline form-group list-inline-condensed text-center">
-                            {#{% for owner in hwi_oauth_resource_owners() %}#}
-                            {% set referer = app.request.server.get('HTTP_REFERER')|default('/') %}
-                            {# <li class="mb-5" style="padding:0;">
-                                <a href="{{ path('connect_facebook_start') }}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
-                                    <i class="icon-facebook position-left"></i> {{ 'login.facebook_connect'|trans }}
-                                </a>
-                            </li> #}
-                            <li>
-                                <a href="{{ path('connect_google_start') }}" class="btn btn-flat bg-danger-800">
-                                    <i class="icon-google position-left"></i> {{ 'login.google_connect'|trans }}
-                                </a>
-                            </li>
-                            {#{% endfor %}#}
-                        </ul>
-                        {#
-                        <div class="content-divider text-muted form-group">
-                            <span>{{ 'login.info.title'|trans }}</span></div>
-                        <span class="help-block text-center no-margin">
-                            {{ 'login.info.text'|trans }}
-                        </span> #}
-                        {#
-                            <form action="{{ path('login_link_start') }}" method="POST">
-                            <input type="email" name="email">
-                            <button type="submit">Send Login Link</button>
-                            </form>
-                        #}
-                    {% else %}
-                        <div class="text-center">
-                            {{ 'login.already_connected_as'|trans }} <strong>{{ app.user.displayName }}</strong>
-                            <br/><br/>
-                            <a href="{{ path('logout') }}" class="btn btn-flat bg-indigo">{{ 'login.logout'|trans }}</a>
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }} alert-bordered">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    <form action="{{ path('login') }}" method="POST">
+                        <div class="form-group has-feedback has-feedback-left">
+                            <input type="email" name="email" class="form-control" placeholder="Email">
+                            <div class="form-control-feedback">
+                                <i class="icon-mail5 text-muted"></i>
+                            </div>
                         </div>
-                    {% endif %}
+                        <div class="form-group">
+                            <button type="submit"
+                                    class="btn bg-blue btn-block">{{ 'login.send_link'|trans }}</button>
+                        </div>
+                    </form>
+                    <div class="content-divider text-muted form-group">
+                        <span>{{ 'login.or_sign_in_with'|trans }}</span>
+                    </div>
+                    <ul class="list-inline form-group list-inline-condensed text-center">
+                        <li>
+                            <a href="{{ path('connect_facebook_start') }}"
+                               class="btn border-indigo text-indigo btn-flat btn-icon btn-rounded">
+                                <i class="icon-facebook"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('connect_google_start') }}"
+                               class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
+                                <i class="icon-google"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <span class="help-block text-center no-margin">
+                            {{ 'login.terms'|trans({'%link_path%': path('default_privacy_policy')})|raw }}
+                        </span>
                 </div>
                 <!-- /form with validation -->
             </div>

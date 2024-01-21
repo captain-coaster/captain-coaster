@@ -290,13 +290,13 @@ footer:
 
 login:
     title: 'Login to Captain Coaster'
-    facebook_connect: 'Login with Facebook'
-    google_connect: 'Login with Google'
-    info:
-        title: 'Blue pill or red pill ?'
-        text: 'You can login using your Facebook or Google account. We only gather your name, email and profile picture. We do not publish on Facebook.'
-    already_connected_as: 'Already logged in as'
-    logout: 'Logout ?'
+    subtitle: 'Send a login link to your email'
+    send_link: 'Send login link'
+    or_sign_in_with: 'or sign in with'
+    terms: 'By continuing, you''re confirming that you''ve read our <a href="{link_path}">Terms &amp; Conditions</a>'
+    email:
+        title: 'Login to Captain Coaster'
+    link_sent: 'Login link sent to {email}. Check your email and click on the link to login'
 
 contact:
     title: 'Get in touch'
