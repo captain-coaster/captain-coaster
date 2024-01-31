@@ -140,7 +140,6 @@ class TopController extends AbstractController
     #[IsGranted('edit-details', 'top', statusCode: 403)]
     public function editDetails(Request $request, Top $top, EntityManagerInterface $em): Response
     {
-
         /** @var Form $form */
         $form = $this->createForm(TopDetailsType::class, $top);
         $form->handleRequest($request);

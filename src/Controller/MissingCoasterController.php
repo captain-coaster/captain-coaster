@@ -26,7 +26,6 @@ class MissingCoasterController extends AbstractController
 {
     /** Starts missing coaster procedure. */
     #[Route(path: '/start', name: 'missingcoaster_start', methods: ['GET', 'POST'])]
-
     public function start(Request $request, EntityManagerInterface $em): RedirectResponse|Response
     {
         $chooseForm = $this->createForm(ChooseParkType::class);
