@@ -8,7 +8,9 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 RUN install-php-extensions apcu gd imagick opcache redis zip intl pdo_mysql xsl
 
-RUN wget https://cs.symfony.com/download/php-cs-fixer-v3.phar -O php-cs-fixer  \
+ENV VERSION=v3.48.0
+
+RUN wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/$VERSION/php-cs-fixer.phar -O php-cs-fixer \
     && chmod a+x php-cs-fixer \
     && mv php-cs-fixer /usr/local/bin/php-cs-fixer
 
