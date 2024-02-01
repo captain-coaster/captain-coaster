@@ -63,7 +63,7 @@ class User implements UserInterface
     #[Gedmo\Slug(fields: ['displayName'])]
     private string $slug;
 
-    #[ORM\Column(type: Types::STRING, length: 1024, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 2048, nullable: true)]
     private ?string $profilePicture = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class)]
