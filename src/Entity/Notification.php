@@ -39,7 +39,7 @@ class Notification
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?\App\Entity\User $user = null;
+    private ?User $user = null;
 
     /**
      * Get id.

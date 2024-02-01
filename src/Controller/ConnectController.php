@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkNotification;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
@@ -78,11 +79,10 @@ class ConnectController extends AbstractController
     }
 
     #[Route('/login/link/start', name: 'login_link_start')]
+    // deny access for now
+    #[IsGranted('ROLE_PREVIEW_FEATURE')]
     public function requestLoginLink(NotifierInterface $notifier, LoginLinkHandlerInterface $loginLinkHandler, UserRepository $userRepository, Request $request): Response
     {
-        // deny access for now
-        $this->denyAccessUnlessGranted('ROLE_PREVIEW_FEATURE');
-
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $user = $userRepository->findOneBy(['email' => $email]);
