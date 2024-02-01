@@ -46,7 +46,7 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
         $client = $this->clientRegistry->getClient('facebook');
         $accessToken = $this->fetchAccessToken($client);
 
-        return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
+        return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use ($accessToken, $client, $request) {
             /** @var FacebookUser $facebookUser */
             $facebookUser = $client->fetchUserFromToken($accessToken);
 
@@ -54,7 +54,7 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
             $user = $this->findOrCreateUser($facebookUser);
 
             // 2) update user details based on token
-            $this->updateUserDetails($user, $facebookUser);
+            $this->updateUserDetails($user, $facebookUser, $request);
 
             return $user;
         }), [
@@ -104,7 +104,7 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
         return $user;
     }
 
-    private function updateUserDetails(User $user, FacebookUser $facebookUser): void
+    private function updateUserDetails(User $user, FacebookUser $facebookUser, Request $request): void
     {
         try {
             // update user fields based on token
@@ -116,6 +116,7 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
             $user->setLastName($facebookUser->getLastName());
             $user->setProfilePicture($facebookUser->getPictureUrl());
             $user->setLastLogin(new \DateTime());
+            $user->setIpAddress($request->getClientIp());
 
             // don't override displayName at every login
             if (!$user->getDisplayName()) {

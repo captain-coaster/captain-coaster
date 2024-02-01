@@ -73,8 +73,8 @@ class User implements UserInterface
     private Collection $tops;
 
     #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
-    #[JoinTable]
-    #[JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinTable]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $badges;
 
@@ -117,6 +117,9 @@ class User implements UserInterface
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $enabled = false;
+
+    #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
+    private string $ipAddress;
 
     public function __toString(): string
     {
@@ -483,5 +486,17 @@ class User implements UserInterface
     public function setEnabled(bool $enabled): void
     {
         $this->enabled = $enabled;
+    }
+
+    public function getIpAddress(): string
+    {
+        return $this->ipAddress;
+    }
+
+    public function setIpAddress(string $ipAddress): static
+    {
+        $this->ipAddress = $ipAddress;
+
+        return $this;
     }
 }

@@ -49,7 +49,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         $client = $this->clientRegistry->getClient('google');
         $accessToken = $this->fetchAccessToken($client);
 
-        return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
+        return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use ($accessToken, $client, $request) {
             /** @var GoogleUser $googleUser */
             $googleUser = $client->fetchUserFromToken($accessToken);
 
@@ -57,7 +57,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $user = $this->findOrCreateUser($googleUser);
 
             // 2) update user details based on token
-            $this->updateUserDetails($user, $googleUser);
+            $this->updateUserDetails($user, $googleUser, $request);
 
             return $user;
         }), [
@@ -105,7 +105,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         return $user;
     }
 
-    private function updateUserDetails(User $user, GoogleUser $googleUser): void
+    private function updateUserDetails(User $user, GoogleUser $googleUser, Request $request): void
     {
         try {
             // update user fields based on token
@@ -115,6 +115,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $user->setLastName($googleUser->getLastName());
             $user->setProfilePicture($googleUser->getAvatar());
             $user->setLastLogin(new \DateTime());
+            $user->setIpAddress($request->getClientIp());
 
             // don't override displayName at every login
             if (!$user->getDisplayName()) {
