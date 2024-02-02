@@ -1,0 +1,40 @@
+title: 'Captain Coaster''s Datenschutzrichtlinie'
+privacy:
+    title: 'Datenschutzrichtlinie'
+    text: '<p>In dieser Datenschutzrichtlinie wird erläutert, wie unsere Website die personenbezogenen Daten nutzt, die wir von Ihnen erfassen, wenn Sie Captain Coaster nutzen.</p>
+           <p>Captain Coaster erhebt bei Ihrer Registrierung folgende Daten:</p>
+           <ul>
+               <li>Name and Nachname,</li>
+               <li>E-Mail-Adresse,</li>
+               <li>Öffentliches Profilbild,</li>
+               <li>Eindeutige ID,</li>
+           </ul>
+           <p>von Facebook oder Google, je nachdem, was Sie bei der Registrierung ausgewählt haben.</p>
+           <p>Wir bewahren Ihre Daten sicher und unter Einhaltung der französischen Gesetze auf, solange Sie unseren Service nutzen "Loi Informatique et Libertés du 6 janvier 1978".</p>
+           <p>Sie werden niemals an andere Organisationen weitergegeben und nur zum Erstellen eines Kontos und für einige Captain Coaster-Funktionen verwendet.</p>
+           <p>Jeder Nutzer hat Anspruch auf Folgendes:</p>
+           <ul>
+           <li>Das Recht auf Zugang – Sie haben das Recht, von uns Kopien Ihrer personenbezogenen Daten anzufordern, die Ihnen per E-Mail zugesandt werden.</li>
+           <li>Das Recht auf Berichtigung – Sie haben das Recht, die Berichtigung von Informationen zu verlangen, die Ihrer Meinung nach unrichtig sind oder fehlen.</li>
+           <li>Das Recht auf Löschung – Sie haben das Recht zu verlangen, dass wir Ihre personenbezogenen Daten löschen.</li>
+           </ul>
+           <p>Wenn Sie Fragen zur Datenschutzrichtlinie von Captain Coaster oder zu den von uns über Sie gespeicherten Daten haben oder eines Ihrer Datenschutzrechte ausüben möchten, wenden Sie sich bitte an uns <a href="{link_href}">Kontaktiere uns</a>.</p>'
+cookies:
+    title: 'Cookies-Richtlinie'
+    text: '<p>Cookies sind kleine Dateien, die auf dem Computer eines Benutzers gespeichert werden, um Ihnen das Leben zu erleichtern.</p>
+           <p>Captain Coaster verwendet ein Sitzungscookie, um sich an Sie zu erinnern, wenn Sie eine Verbindung herstellen. Dadurch wird vermieden, dass Sie sich jedes Mal neu anmelden müssen, wenn Sie uns besuchen. Für Statistiken verwenden wir außerdem ein Google Analytics-Cookie.</p>'
+terms:
+    title: 'Benutzung von Captain Coaster'
+    text: '<p>Captain Coaster ist eine kostenlose inoffizielle Community-Website für Freizeitparks und Achterbahn-Enthusiasten. Es ist keinem Park, keinem Hersteller oder Unternehmen der Vergnügungsindustrie angeschlossen. Niemand wird dafür bezahlt, es zu verwalten, außer mit der Dankbarkeit der Mitglieder.</p>
+        <p>Es steht jedem offen: Sie müssen sich nur anmelden, um Ihre Erfahrungen auf Achterbahnen zu teilen (Bewertungen, Tags, Rezensionen). Um auf diese Funktionen zugreifen zu können, benötigen Sie einen <b>gültigen</b> Facebook- oder Google-Account. <b>Mehrere Konten zu haben ist definitiv verboten</b> und führt zu einer dauerhaften Sperrung.</p>
+        <p>Alle Teilnahmefelder werden von Teammoderatoren überprüft, die sich das Recht vorbehalten, Beiträge zu bearbeiten oder zu löschen. Mitglieder können vorübergehend oder dauerhaft gesperrt werden.</p>'
+hosting:
+    title: 'Hosting'
+    text: 'Captain Coaster wird von Amazon Web Services gehostet, dessen Hauptsitz sich in Seattle, Washington, USA befindet. Unsere Server befinden sich in Paris, Frankreich.'
+copyright:
+    title: 'Urheberrecht'
+    text: '<p>Das „Captain Coaster“-Logo gehört Benjamin R., Captain Coaster hat die ausschließlichen Rechte zur Nutzung und Änderung. Jede Vervielfältigung ohne Genehmigung ist untersagt.</p>
+           <p>Jeder Benutzer kann mit seinem Credit Bilder auf Captain Coaster hochladen. Wenn Sie der Eigentümer eines Fotos sind, das Sie nicht auf Captain Coaster teilen möchten, wenden Sie sich bitte an uns <a href="{link_href}">Kontaktiere uns</a> und das Bild wird so schnell wie möglich entfernt.</p>'
+contact:
+    title: 'Kontaktiere uns'
+    text: '<b>Haben Sie Fragen oder Anmerkungen zu dieser Richtlinie? <a href="{link_href}">Kontaktieren Sie uns</a>, wir beißen nicht!</b>'

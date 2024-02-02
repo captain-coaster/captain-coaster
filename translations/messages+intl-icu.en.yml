@@ -2,20 +2,21 @@
 fr: Français
 en: English
 es: Español
+de: Deutsch
 
 app:
     name: 'Captain Coaster'
     title:
         default: 'Welcome !'
     header:
-        search: 'ArieForce One, Hersheypark...'
+        search: 'Top Thrill 2, Dorney Park...'
 
 index:
     title: 'Welcome !'
     description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
     header:
         title: 'Review, rate and rank roller coasters'
-        info: 'Which dive coaster is the best: SheiKra or Griffon ? Loving Galactica or missing Air ? And Intimidator 305, is it so crazy or just a good coaster ? No panic, all the answers are here, in your guide. And <b>it takes only a couple of seconds <a href="{link_path}">to connect</a></b>. Follow the Captain !'
+        info: 'Captain Coaster is the ultimate guide for roller coaster enthusiasts! Rate, write reviews, and craft top lists for the coasters you''ve ridden. <a href="{link_path}">Join us</a> in shaping the world''s best roller coaster rankings!'
     stats:
         ratings: 'ratings'
         reviews: 'reviews'
