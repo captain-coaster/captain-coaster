@@ -1,20 +1,16 @@
-fr: 'Français'
-en: 'English'
-es: 'Español'
-
 app:
     name: 'Captain Coaster'
     title:
         default: '¡ Bienvenido !'
     header:
-        search: 'Parque Warner, Uncharted...'
+        search: 'Batman, Port Aventura...'
 
 index:
     title: '¡ Bienvenido !'
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'
-        info: '¿ Cuál Dive Coaster es el mejor ? : ¿ SheiKra o Griffon ? ¿ Galactica or el difunto Air ? ¿ Y Intimidator 305, es tan loco o simplemente una buena montaña rusa ? Sin pánico, todas las respuestas están aquí, en su guía. Y <b>solo toma unos segundos <a href="{link_path}">conectarse</a></b>. ¡ Sigue al Captain !'
+        info: '¡Captain Coaster es la guía definitiva para los entusiastas de las montañas rusas! Califica, escribe reseñas y crea listas principales para las montañas rusas que has montado. <a href="{link_path}">Únete a nosotros</a> ¡y contribuye a dar forma a las clasificaciones de las mejores montañas rusas del mundo!'
     stats:
         coasters: 'coaster'
         ratings: 'notas'

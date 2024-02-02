@@ -1,21 +1,16 @@
-# Define languages
-fr: Français
-en: English
-es: Español
-
 app:
     name: 'Captain Coaster'
     title:
         default: 'Bienvenue !'
     header:
-        search: 'Toutatis, Parque Warner...'
+        search: 'Mahuka, Parc Asterix...'
 
 index:
     title: 'Bienvenue !'
     description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
     header:
         title: 'Notes, avis et classement des meilleurs coasters'
-        info: 'Space Mountain, c''est vraiment Hyper ? Que pensent les connaisseurs d''Oziris au Parc Asterix ? Où sont les Intamin qui ouvriront l''année prochaine ? Pas de panique, toutes les réponses sont ici ! Et pour en profiter, c''est très rapide : <b>2 clics suffisent pour <a href="{link_path}">se connecter</a>.</b> Suivez le Captain !'
+        info: 'Captain Coaster est le guide ultime pour les passionnés de montagnes russes! Notez, rédigez des avis, et créez des tops pour les coasters que vous avez faits. <a href="{link_path}">Rejoignez-nous</a> pour façonner le classement des meilleures montagnes russes du monde!'
     stats:
         ratings: 'notes'
         reviews: 'avis'
