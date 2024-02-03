@@ -5,7 +5,7 @@
 {% set subTitle = park.country.name|trans([], 'database') %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
-{% set isImperial = units.isImperial(app.request.locale) %}
+{% set isImperial = units.isImperial(app.request.locale, app.user) %}
 {% block body %}
     <div class="row">
         <div class="col-sm-3">

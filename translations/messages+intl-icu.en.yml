@@ -166,6 +166,10 @@ me:
         homePark:
             label: 'My home park'
             placeholder: 'Choose one'
+        units:
+            metric: 'Metric units'
+            imperial: 'Imperial units'
+            label: 'Display distances and statistics in'
         addTodayDateWhenRating:
             label: 'Add today''s date on a new rating'
         apiKey:

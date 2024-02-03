@@ -160,6 +160,10 @@ me:
         homePark:
             label: 'Mon home park'
             placeholder: 'Choisis un parc'
+        units:
+            metric: 'Unités métriques'
+            imperial: 'Unités impériales'
+            label: 'Afficher les distances et statistiques en'
         addTodayDateWhenRating:
             label: 'Ajouter la date du jour quand je note un nouveau coaster'
         apiKey:

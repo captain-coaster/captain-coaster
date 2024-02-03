@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use App\Entity\User;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -19,10 +20,13 @@ class UnitsExtension extends AbstractExtension
         ];
     }
 
-    public function isImperial(string $locale): bool
+    public function isImperial(string $locale, User|null $user): bool
     {
+        if ($user) {
+            return $user->isImperial();
+        }
+
         // TODO cookies
-        // TODO User
 
         return 'en' === $locale;
     }

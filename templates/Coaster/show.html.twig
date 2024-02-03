@@ -10,7 +10,7 @@
     {# <meta name="description" content="{{ coaster.name }} is a {{ coaster.manufacturer.name }} roller coaster"/> #}
 {# {% endblock %} #}
 
-{% set isImperial = units.isImperial(app.request.locale) %}
+{% set isImperial = units.isImperial(app.request.locale, app.user) %}
 {% block body %}
     <div class="row">
         <div class="col-sm-3">

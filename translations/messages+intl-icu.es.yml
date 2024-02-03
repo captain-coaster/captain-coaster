@@ -112,11 +112,47 @@ user_list:
 
 me:
     title: 'Mi perfil'
+    menu:
+        ratings: 'Mis notas'
+        tops: 'Mis tops'
+        map: 'Mi mapa'
+        photos: 'My fotos'
+        reviews: 'Mi reseñas'
     parameters: 'Parámetros'
     form:
         displayName: 'Quiero aparecer como'
+        notificationPreference: 'Preferencias de notificación'
+        choices:
+            email: 'Web y correo electrónico'
+            notif: 'Sólo web'
+        preferredLocale: 'Lengua preferida'
+        homePark:
+            label: 'Mi home park'
+            placeholder: 'Elige uno'
+        units:
+            metric: 'Sistema Internacional de unidades'
+            imperial: 'Sistema anglosajón de unidades'
+            label: 'Visualización de distancias y estadísticas en'
+        addTodayDateWhenRating:
+            label: 'Añadir la fecha de hoy en una nueva calificación'
+        apiKey:
+            label: 'API Key'
+        advanced: 'Avanzado'
         save: 'Salvar'
     badge: 'Insignias'
+    banner:
+        title: 'Banner personalizado'
+        text: 'Aquí tienes tu pancarta personalizada, ¡para mostrar con orgullo tus posavasos y tu Top!'
+        getbbcode: 'Copiar BBCode (foros)'
+        gethtml: 'Copiar html'
+    stats:
+        title: 'Visión general'
+        coasters: 'montañas rusas'
+        parks: 'parques'
+        countries: 'países'
+        most_country: 'más montados de'
+        top_100: 'montado en el top 100'
+        manufacturer: 'más acosado'
 
 review:
     title: 'Reseñas'
