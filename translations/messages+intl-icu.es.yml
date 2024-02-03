@@ -108,7 +108,7 @@ user_list:
         title: '¿ Dónde te clasificas entre nuestros miembros ?'
         text: 'Esta página muestra una clasificación de nuestros miembros. ¡ Hace clic en ellos para descubrir sus clasificación detallados !'
     member_from: 'Miembro desde'
-    rating: '1 clasificación|{count} clasificación'
+    rating: '{ count, plural, one { # clasificación } other { # clasificaciónes }}'
 
 me:
     title: 'Mi perfil'
