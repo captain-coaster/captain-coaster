@@ -121,7 +121,7 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
     private string $ipAddress;
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $imperial = false;
 
     public function __toString(): string
@@ -503,7 +503,7 @@ class User implements UserInterface
         return $this;
     }
 
-    public function isImperial(): ?bool
+    public function isImperial(): bool
     {
         return $this->imperial;
     }
