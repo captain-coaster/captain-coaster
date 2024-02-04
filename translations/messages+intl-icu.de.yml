@@ -137,7 +137,7 @@ user_list:
         title: 'Wo stehst du unter unseren Mitgliedern?'
         text: 'Auf dieser Seite findest du eine Liste unserer Fahrer. Klicke darauf, um ihre Details zu entdecken!'
     member_from: 'Mitglied seit'
-    rating: '1 Bewertung|{count} Bewertungen'
+    rating: '{ count, plural, one { # Bewertung } other { # Bewertungen }}'
 
 me:
     title: 'Mein Profil'

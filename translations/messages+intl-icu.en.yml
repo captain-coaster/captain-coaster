@@ -145,7 +145,7 @@ user_list:
         title: 'Where do you rank among our members ?'
         text: 'This page shows a list of our riders. Click on them to discover their details!'
     member_from: 'Member since'
-    rating: '1 rating|{count} ratings'
+    rating: '{ count, plural, one { # rating } other { # ratings }}'
 
 me:
     title: 'My Profile'
