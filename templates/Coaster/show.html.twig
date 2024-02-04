@@ -10,7 +10,6 @@
     {# <meta name="description" content="{{ coaster.name }} is a {{ coaster.manufacturer.name }} roller coaster"/> #}
 {# {% endblock %} #}
 
-{% set isImperial = units.isImperial() %}
 {% block body %}
     <div class="row">
         <div class="col-sm-3">
@@ -99,7 +98,7 @@
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
                             <i class="icon-arrow-up8 text-warning-600"></i>
                             {% if coaster.height is not empty %}
-                                {{ units.m_or_f(isImperial, coaster.height) }}
+                                {{ units.m_or_f(units.isImperial(), coaster.height) }}
                             {% else %}
                                 &nbsp;
                             {% endif %}
@@ -107,7 +106,7 @@
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
                             <i class="icon-rocket text-success-400"></i>
                             {% if coaster.speed is not empty %}
-                                {{ units.kph_or_mph(isImperial, coaster.speed) }}
+                                {{ units.kph_or_mph(units.isImperial(), coaster.speed) }}
                             {% else %}
                                 &nbsp;
                             {% endif %}
@@ -117,7 +116,7 @@
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
                             <i class="icon-rulers text-blue"></i>
                             {% if coaster.length is not empty %}
-                                {{ units.m_or_f(isImperial, coaster.length) }}
+                                {{ units.m_or_f(units.isImperial(), coaster.length) }}
                             {% else %}
                                 &nbsp;
                             {% endif %}
