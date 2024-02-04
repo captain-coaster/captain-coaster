@@ -100,3 +100,6 @@ services:
                     secret: '%env(AWS_S3_ACCESS_SECRET)%'
 
     Symfony\Bridge\Monolog\Handler\NotifierHandler: ~
+
+    App\Service\UnitsService:
+        class: App\Service\UnitsService

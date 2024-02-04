@@ -3,7 +3,7 @@ twig:
     globals:
         locales: '%app_locales_array%'
         pictures_cdn: '%env(PICTURES_CDN)%'
-        units: '@App\Twig\UnitsExtension'
+        units: '@App\Service\UnitsService'
 
 when@test:
     twig:

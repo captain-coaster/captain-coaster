@@ -1,4 +1,4 @@
-{% set isImperial = units.isImperial(app.request.locale, app.user) %}
+{% set isImperial = units.isImperial() %}
 <div class="panel panel-white">
     <div class="panel-heading">
         <h6 class="panel-title text-semibold">{{ 'search_index.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}

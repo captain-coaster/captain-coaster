@@ -2,14 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Twig;
+namespace App\Service;
 
-use App\Entity\User;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class UnitsExtension extends AbstractExtension
+class UnitsService extends AbstractExtension
 {
+    private Security $security;
+    private RequestStack $requestStack;
+
+    public function __construct(Security $security, RequestStack $requestStack)
+    {
+        $this->security = $security;
+        $this->requestStack = $requestStack;
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -20,15 +30,15 @@ class UnitsExtension extends AbstractExtension
         ];
     }
 
-    public function isImperial(string $locale, User|null $user): bool
+    public function isImperial(): bool
     {
-        if ($user) {
-            return $user->isImperial();
+        if ($this->security->getUser()) {
+            return $this->security->getUser()->isImperial();
         }
 
         // TODO cookies
 
-        return 'en' === $locale;
+        return 'en' === $this->requestStack->getCurrentRequest()->getLocale();
     }
 
     public function m_or_f(bool $isImperial, int $value): string
