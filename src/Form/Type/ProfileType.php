@@ -51,6 +51,13 @@ class ProfileType extends AbstractType
                 'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('p')
                     ->orderBy('p.name', 'ASC'),
             ])
+            ->add('imperial', ChoiceType::class, [
+                'choices' => [
+                    'me.form.units.metric' => false,
+                    'me.form.units.imperial' => true,
+                ],
+                'label' => 'me.form.units.label',
+            ])
             ->add('addTodayDateWhenRating', CheckboxType::class, [
                 'required' => false,
                 'label' => 'me.form.addTodayDateWhenRating.label',

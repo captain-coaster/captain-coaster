@@ -1,4 +1,3 @@
-{% set isImperial = units.isImperial(app.request.locale) %}
 <div class="panel panel-white">
     <div class="panel-heading">
         <h6 class="panel-title text-semibold">{{ 'search_index.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
@@ -39,7 +38,7 @@
                         {% endif %}
                         {% if coaster.distance is defined %}
                             <li>
-                                {{ 'search_index.km_away'|trans({'%distance%': units.km_or_mi(isImperial, coaster.distance)}) }}
+                                {{ 'search_index.km_away'|trans({'%distance%': units.km_or_mi(coaster.distance)}) }}
                             </li>
                         {% endif %}
                     </ul>

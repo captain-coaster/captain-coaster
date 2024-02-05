@@ -121,6 +121,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
     private string $ipAddress;
 
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
+    private bool $imperial = false;
+
     public function __toString(): string
     {
         return $this->displayName;
@@ -496,6 +499,18 @@ class User implements UserInterface
     public function setIpAddress(string $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
+
+        return $this;
+    }
+
+    public function isImperial(): bool
+    {
+        return $this->imperial;
+    }
+
+    public function setImperial(bool $imperial): static
+    {
+        $this->imperial = $imperial;
 
         return $this;
     }

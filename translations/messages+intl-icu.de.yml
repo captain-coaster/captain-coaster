@@ -158,6 +158,10 @@ me:
         homePark:
             label: 'Mein Heimatpark'
             placeholder: 'Wähle einen aus'
+        units:
+            metric: 'Internationale Einheitensystem'
+            imperial: 'Britische Einheitensystem'
+            label: 'Anzeigen von Entfernungen und Statistiken in'
         addTodayDateWhenRating:
             label: 'Füge das heutige Datum zu einer Bewertung hinzu'
         apiKey:

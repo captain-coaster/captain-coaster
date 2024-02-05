@@ -5,7 +5,6 @@
 {% set subTitle = park.country.name|trans([], 'database') %}
 {% block title %}{{ title }} - {{ subTitle }}{% endblock %}
 
-{% set isImperial = units.isImperial(app.request.locale) %}
 {% block body %}
     <div class="row">
         <div class="col-sm-3">
@@ -57,7 +56,7 @@
                                         {{ infoPark.name }}
                                     </a>
                                     -
-                                    {{ units.km_or_mi(isImperial, infoPark.distance) }}
+                                    {{ units.km_or_mi(infoPark.distance) }}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -133,7 +132,7 @@
                                     {% if coaster.height is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {{ units.m_or_f(isImperial, coaster.height) }}
+                                        {{ units.m_or_f(coaster.height) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -141,7 +140,7 @@
                                     {% if coaster.speed is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {{ units.kph_or_mph(isImperial, coaster.speed) }}
+                                        {{ units.kph_or_mph(coaster.speed) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -149,7 +148,7 @@
                                     {% if coaster.length is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {{ units.m_or_f(isImperial, coaster.length) }}
+                                        {{ units.m_or_f(coaster.length) }}
                                     {% endif %}
                                 </li>
                                 <li>
