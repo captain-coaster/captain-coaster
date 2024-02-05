@@ -38,7 +38,7 @@
                         {% endif %}
                         {% if coaster.distance is defined %}
                             <li>
-                                {{ 'search_index.km_away'|trans({'%distance%': units.km_or_mi(units.isImperial(), coaster.distance)}) }}
+                                {{ 'search_index.km_away'|trans({'%distance%': units.km_or_mi(coaster.distance)}) }}
                             </li>
                         {% endif %}
                     </ul>

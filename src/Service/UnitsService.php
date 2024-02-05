@@ -41,27 +41,27 @@ class UnitsService extends AbstractExtension
         return 'en' === $this->requestStack->getCurrentRequest()->getLocale();
     }
 
-    public function m_or_f(bool $isImperial, int $value): string
+    public function m_or_f(int $value): string
     {
-        if ($isImperial) {
+        if ($this->isImperial()) {
             return round($value * 3.281).' ft';
         }
 
         return $value.' m';
     }
 
-    public function kph_or_mph(bool $isImperial, int $value): string
+    public function kph_or_mph(int $value): string
     {
-        if ($isImperial) {
+        if ($this->isImperial()) {
             return round($value / 1.609).' mph';
         }
 
         return $value.' km/h';
     }
 
-    public function km_or_mi(bool $isImperial, int $value): string
+    public function km_or_mi(int $value): string
     {
-        if ($isImperial) {
+        if ($this->isImperial()) {
             return round($value / 1.609).' mi';
         }
 
