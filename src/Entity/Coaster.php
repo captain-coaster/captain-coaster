@@ -204,6 +204,9 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::BOOLEAN)]
     private ?bool $enabled = false;
 
+    #[ORM\Column(length: 12, nullable: true)]
+    private ?string $youtubeId = null;
+
     public function __construct()
     {
         $this->launchs = new ArrayCollection();
@@ -693,5 +696,17 @@ class Coaster implements \Stringable
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function getYoutubeId(): ?string
+    {
+        return $this->youtubeId;
+    }
+
+    public function setYoutubeId(?string $youtubeId): static
+    {
+        $this->youtubeId = $youtubeId;
+
+        return $this;
     }
 }

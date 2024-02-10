@@ -54,6 +54,8 @@ coaster:
         kiddie: 'Kinder'
         indoor: 'Indoor'
     parkcoaster: 'Auch in {name}'
+    video:
+        title: 'Onride Video'
     photos:
         title: 'Fotos'
         empty: 'Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!'
