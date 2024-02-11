@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -60,6 +61,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('firstName')->setFormTypeOption('disabled', 'disabled'),
             TextField::new('lastName')->setFormTypeOption('disabled', 'disabled'),
             TextField::new('displayName')->hideOnIndex(),
+            ArrayField::new('roles')->setPermission('ROLE_SUPER_ADMIN'),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             TextField::new('email'),
             TextField::new('facebookId')->hideOnIndex(),
