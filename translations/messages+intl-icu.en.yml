@@ -292,6 +292,11 @@ login:
     link_sent: 'Enlace de inicio de sesión enviado a {email}. Compruebe su correo electrónico y haga clic en el enlace para iniciar sesión'
     account_disabled: 'Your email {email} has not been verified. Please <a href="{link_path}">register</a> or click on the link you received after registering to activate your account.'
 
+register:
+    title: 'Register'
+    subtitle: 'Create an account and verify it by email'
+    send_link: 'Send the confirmation link'
+
 contact:
     title: 'Get in touch'
     send: 'Send the message'

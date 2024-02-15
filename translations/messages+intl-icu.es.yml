@@ -185,6 +185,11 @@ login:
     link_sent: 'Lien de connexion envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour vous connecter.'
     account_disabled: 'Su correo electrónico {email} no ha sido verificado. Por favor, <a href="{link_path}">regístrese</a> o haga clic en el enlace que recibió después de registrarse para activar su cuenta.'
 
+register:
+    title: 'Regístrese'
+    subtitle: 'Crear una cuenta y verificarla por correo electrónico'
+    send_link: 'Enviar el enlace de confirmación'
+
 contact:
     title: 'Estar en contacto'
     send: 'Envía el mensaje'
