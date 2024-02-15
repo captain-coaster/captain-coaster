@@ -283,7 +283,7 @@ footer:
 
 login:
     title: 'Login to Captain Coaster'
-    subtitle: 'Send a login link to your email'
+    subtitle: 'Send a login link to your email. If you do not have an account yet, <a href="{link_path}">register here</a>.'
     send_link: 'Send login link'
     or_sign_in_with: 'or sign in with'
     terms: 'By continuing, you''re confirming that you''ve read our <a href="{link_path}">Terms &amp; Conditions</a>'

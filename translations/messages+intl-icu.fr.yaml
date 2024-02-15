@@ -285,7 +285,7 @@ footer:
 
 login:
     title: 'Se connecter'
-    subtitle: 'Envoyer un lien de connexion par email'
+    subtitle: 'Envoyer un lien de connexion par email. Si vous n''avez pas de compte, <a href="{link_path}">inscrivez-vous</a>.'
     send_link: 'Envoyer le lien'
     or_sign_in_with: 'ou se connecter avec'
     terms: 'En continuant, vous confirmez avoir lu nos <a href="{link_path}">Termes et Conditions</a>'
