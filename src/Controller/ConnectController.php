@@ -45,9 +45,16 @@ class ConnectController extends AbstractController
                 $translator->trans('login.email.title'),
                 ['email']
             );
-            $notifier->send($notification, new Recipient($user->getEmail()));
 
-            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
+            if($user->isEnabled()) {
+                $notifier->send($notification, new Recipient($user->getEmail()));
+
+                $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
+            }
+            else {
+                $this->addFlash('danger', $translator->trans('login.account_disabled', ['email' => $email, 'link_path' => $this->generateUrl('app_register')]));
+            }
+            
         } else {
             // save referer to redirect after login
             $referer = $request->headers->get('referer');

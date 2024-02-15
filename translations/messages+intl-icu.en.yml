@@ -289,7 +289,8 @@ login:
     terms: 'By continuing, you''re confirming that you''ve read our <a href="{link_path}">Terms &amp; Conditions</a>'
     email:
         title: 'Login to Captain Coaster'
-    link_sent: 'Login link sent to {email}. Check your email and click on the link to login'
+    link_sent: 'Enlace de inicio de sesión enviado a {email}. Compruebe su correo electrónico y haga clic en el enlace para iniciar sesión'
+    account_disabled: 'Your email {email} has not been verified. Please <a href="{link_path}">register</a> or click on the link you received after registering to activate your account.'
 
 contact:
     title: 'Get in touch'
