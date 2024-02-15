@@ -296,6 +296,7 @@ register:
     title: 'Register'
     subtitle: 'Create an account and verify it by email'
     send_link: 'Send the confirmation link'
+    link_sent: 'Confirmation link sent to {email}. Please check your email and click on the link to activate your account.'
 
 contact:
     title: 'Get in touch'

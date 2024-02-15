@@ -190,6 +190,7 @@ register:
     title: 'Regístrese'
     subtitle: 'Crear una cuenta y verificarla por correo electrónico'
     send_link: 'Enviar el enlace de confirmación'
+    link_sent: 'Enlace de confirmación enviado a {email}. Compruebe su correo electrónico y haga clic en el enlace para activar su cuenta.'
 
 contact:
     title: 'Estar en contacto'

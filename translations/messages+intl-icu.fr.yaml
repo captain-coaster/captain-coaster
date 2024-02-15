@@ -298,6 +298,7 @@ register:
     title: 'S''enregistrer'
     subtitle: 'Créer un compte et le valider par email'
     send_link: 'Envoyer le lien de confirmation'
+    link_sent: 'Lien de confirmation envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour activer votre compte.'
 
 contact:
     title: 'Nous contacter'
