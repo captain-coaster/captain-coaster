@@ -288,6 +288,18 @@
                     {% endif %}
                 </div>
             </div>
+            {% if coaster.youtubeId %}
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h6>
+                        {{ 'coaster.video.title'|trans }}
+                    </h6>
+                </div>
+                <div class="media-yt-container">
+                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ coaster.youtubeId }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+            {% endif %}
             <!-- /coaster details -->
             <!-- coasters in park -->
             <div class="panel panel-white">

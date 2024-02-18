@@ -49,7 +49,13 @@ coaster:
         indoor: 'Indoor'
         cost: 'Coste'
     parkcoaster: 'También en {name}'
-    photos: 'Fotos'
+    video:
+        title: 'POV Onride'
+    photos:
+        title: 'Fotos'
+        empty: 'Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
+        button: 'Subir una foto'
+        all: 'Ver todas las fotos'
     location: 'Localización'
 
 park:

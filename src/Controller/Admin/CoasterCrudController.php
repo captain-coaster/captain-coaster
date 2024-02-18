@@ -68,6 +68,7 @@ class CoasterCrudController extends AbstractCrudController
             AssociationField::new('manufacturer'),
             AssociationField::new('restraint')->hideOnIndex(),
             AssociationField::new('launchs')->hideOnIndex(),
+            TextField::new('youtubeId')->hideOnIndex(),
             AssociationField::new('ratings')->onlyOnIndex(),
             IntegerField::new('speed')->hideOnIndex(),
             IntegerField::new('height')->hideOnIndex(),
