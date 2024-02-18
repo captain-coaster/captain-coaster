@@ -32,7 +32,7 @@ class NotificationService
     ) {
     }
 
-    public function send(User $user, string $message, string $parameter = null, string $type = null): void
+    public function send(User $user, string $message, ?string $parameter = null, ?string $type = null): void
     {
         $notification = new Notification();
         $notification->setUser($user);
@@ -58,7 +58,7 @@ class NotificationService
     }
 
     /** Send notification to everyone. */
-    public function sendAll(string $message, string $type, string $parameter = null, bool $markSameTypeRead = true): void
+    public function sendAll(string $message, string $type, ?string $parameter = null, bool $markSameTypeRead = true): void
     {
         if ($markSameTypeRead) {
             $this->em->getRepository(Notification::class)->markTypeAsRead($type);

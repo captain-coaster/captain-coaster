@@ -20,7 +20,7 @@ class MainTag
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: 'Coaster', inversedBy: 'mainTags')]
-    private ?\App\Entity\Coaster $coaster = null;
+    private ?Coaster $coaster = null;
 
     /** @var Tag */
     #[ORM\ManyToOne(targetEntity: 'Tag')]

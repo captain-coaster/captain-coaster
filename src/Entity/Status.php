@@ -40,7 +40,7 @@ class Status implements \Stringable
     private ?string $type = null;
     /** @var Collection<\App\Entity\Coaster> */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
-    private \Doctrine\Common\Collections\Collection $coasters;
+    private Collection $coasters;
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['read_status'])]
     private ?bool $isRateable = null;

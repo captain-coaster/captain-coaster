@@ -52,6 +52,11 @@ services:
             $emailFrom: '%app_mail_from%'
             $emailFromName: '%app_mail_from_name%'
 
+    App\Controller\RegistrationController:
+        arguments:
+            $emailFrom: '%app_mail_from%'
+            $emailFromName: '%app_mail_from_name%'
+
     App\Service\SitemapService:
         arguments:
             $locales: '%app_locales_array%'

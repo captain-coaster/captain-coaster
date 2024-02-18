@@ -26,11 +26,11 @@ class RiddenCoaster
 
     #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'ratings')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\Coaster $coaster = null;
+    private ?Coaster $coaster = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ratings')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?\App\Entity\User $user = null;
+    private ?User $user = null;
 
     #[ORM\Column(name: 'rating', type: Types::FLOAT, nullable: false)]
     #[Assert\Choice([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0], strict: true)]

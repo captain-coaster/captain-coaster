@@ -28,7 +28,7 @@ class ImageManager
      *
      * @throws FilesystemException
      */
-    public function upload(UploadedFile $file, string $coasterSlug = null): string
+    public function upload(UploadedFile $file, ?string $coasterSlug = null): string
     {
         $filename = $this->generateFilename($file, $coasterSlug);
 
@@ -121,7 +121,7 @@ class ImageManager
     }
 
     /** Generates a filename like fury-325-carowinds-64429c62b6b23.jpg. */
-    private function generateFilename(UploadedFile $file, string $coasterSlug = null): string
+    private function generateFilename(UploadedFile $file, ?string $coasterSlug = null): string
     {
         return sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
     }

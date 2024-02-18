@@ -7,13 +7,14 @@ namespace App\Service;
 use App\Entity\TopCoaster;
 use App\Entity\User;
 use Imagine\Exception\InvalidArgumentException;
+use Imagine\Image\ImageInterface;
 use Imagine\Image\Point;
 use Imagine\Imagick\Image;
 use Imagine\Imagick\Imagine;
 
 class BannerMaker
 {
-    private ?\Imagine\Image\ImageInterface $image = null;
+    private ?ImageInterface $image = null;
 
     public function __construct(
         private readonly Imagine $imagine,
