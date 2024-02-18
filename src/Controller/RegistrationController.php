@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
             );
             // do anything else you need here, like send an email
             $this->addFlash('success', $translator->trans('register.link_sent', ['email' => $user->getEmail()]));
-            
+
             return $this->redirectToRoute('login');
         }
 
