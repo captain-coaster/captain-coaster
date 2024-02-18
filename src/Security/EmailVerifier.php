@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Security;
 
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,9 +40,7 @@ class EmailVerifier
         $this->mailer->send($email);
     }
 
-    /**
-     * @throws VerifyEmailExceptionInterface
-     */
+    /** @throws VerifyEmailExceptionInterface */
     public function handleEmailConfirmation(Request $request, UserInterface $user): void
     {
         $this->verifyEmailHelper->validateEmailConfirmation($request->getUri(), $user->getId(), $user->getEmail());

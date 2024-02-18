@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -19,14 +21,12 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    private EmailVerifier $emailVerifier;
-
-    public function __construct(EmailVerifier $emailVerifier, 
-    private readonly string $emailFrom,
-    private readonly string $emailFromName)
-    {
+    public function __construct(
+        EmailVerifier $emailVerifier, 
+        private readonly string $emailFrom,
+        private readonly string $emailFromName
+    ) {
         $this->emailVerifier = $emailVerifier;
-        
     }
 
     #[Route('/register', name: 'app_register')]
@@ -37,13 +37,14 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $user->setDisplayName($user->getFirstName() . " " . $user->getLastName());
+            $user->setDisplayName($user->getFirstName().' '.$user->getLastName());
             $entityManager->persist($user);
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email', 
+                $user,
                 (new TemplatedEmail())
                 ->from(new Address($this->emailFrom, $this->emailFromName))
                     ->to($user->getEmail())

@@ -22,11 +22,11 @@ class RankingHistory
 
     #[ORM\ManyToOne(targetEntity: 'Ranking')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\Ranking $ranking = null;
+    private ?Ranking $ranking = null;
 
     #[ORM\ManyToOne(targetEntity: 'Coaster')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?\App\Entity\Coaster $coaster = null;
+    private ?Coaster $coaster = null;
 
     #[ORM\Column(name: 'rank', type: Types::INTEGER)]
     private ?int $rank = null;

@@ -35,7 +35,7 @@ class Restraint implements \Stringable
     private ?string $slug = null;
     /** @var Collection<\App\Entity\Coaster> */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'restraint')]
-    private \Doctrine\Common\Collections\Collection $coasters;
+    private Collection $coasters;
 
     /** Constructor */
     public function __construct()
@@ -104,7 +104,7 @@ class Restraint implements \Stringable
     }
 
     /** @return Coaster[]|ArrayCollection */
-    public function getCoasters(): array|\Doctrine\Common\Collections\ArrayCollection
+    public function getCoasters(): array|ArrayCollection
     {
         return $this->coasters;
     }
