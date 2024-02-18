@@ -22,7 +22,7 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        EmailVerifier $emailVerifier, 
+        EmailVerifier $emailVerifier,
         private readonly string $emailFrom,
         private readonly string $emailFromName
     ) {
@@ -43,7 +43,7 @@ class RegistrationController extends AbstractController
 
             // generate a signed url and email it to the user
             $this->emailVerifier->sendEmailConfirmation(
-                'app_verify_email', 
+                'app_verify_email',
                 $user,
                 (new TemplatedEmail())
                 ->from(new Address($this->emailFrom, $this->emailFromName))
@@ -53,6 +53,7 @@ class RegistrationController extends AbstractController
             );
             // do anything else you need here, like send an email
             $this->addFlash('success', $translator->trans('register.link_sent', ['email' => $user->getEmail()]));
+            
             return $this->redirectToRoute('login');
         }
 
