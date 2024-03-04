@@ -36,11 +36,9 @@ class ImageListener
             return;
         }
 
-        $file = $image->getFile();
-
         // only upload new files
-        if ($file instanceof UploadedFile) {
-            $fileName = $this->imageManager->upload($file, $image->getCoaster()->getSlug());
+        if ($image->getFile() instanceof UploadedFile) {
+            $fileName = $this->imageManager->upload($image);
             $image->setFilename($fileName);
         }
 
