@@ -122,7 +122,7 @@ class ImageManager
     }
 
     /** Generates a filename like fury-325-carowinds-64429c62b6b23.jpg. */
-    private function generateFilename(UploadedFile $file, ?string $coasterSlug = null): string
+    private function generateFilename(UploadedFile $file, string $coasterSlug): string
     {
         return sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
     }
