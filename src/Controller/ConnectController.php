@@ -40,6 +40,9 @@ class ConnectController extends AbstractController
             );
         }
 
+        // save current locale in session
+        $request->getSession()->set('locale_at_login', $request->getLocale());
+
         return $this->render('connect/login.html.twig');
     }
 

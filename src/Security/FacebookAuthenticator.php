@@ -51,7 +51,7 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
             $facebookUser = $client->fetchUserFromToken($accessToken);
 
             // 1) try to find a user based on its Google ID or email, otherwise create new User
-            $user = $this->findOrCreateUser($facebookUser);
+            $user = $this->findOrCreateUser($facebookUser, $request);
 
             // 2) update user details based on token
             $this->updateUserDetails($user, $facebookUser, $request);
@@ -88,16 +88,14 @@ class FacebookAuthenticator extends OAuth2Authenticator implements Authenticatio
     }
 
     /** Try to find user using first google id then email, otherwise create new User */
-    private function findOrCreateUser(FacebookUser $facebookUser)
+    private function findOrCreateUser(FacebookUser $facebookUser, Request $request)
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['facebookId' => $facebookUser->getId()])
             ?? $this->em->getRepository(User::class)->findOneBy(['email' => $facebookUser->getEmail()]);
 
         if (!$user instanceof User) {
             $user = new User();
-            if ($facebookUser->getLocale()) {
-                $user->setPreferredLocale($facebookUser->getLocale());
-            }
+            $user->setPreferredLocale($request->getSession()->get('locale_at_login', 'en'));
             $user->setEnabled(true);
         }
 

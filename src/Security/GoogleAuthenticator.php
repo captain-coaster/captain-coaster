@@ -54,7 +54,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $googleUser = $client->fetchUserFromToken($accessToken);
 
             // 1) try to find a user based on its Google ID or email, otherwise create new User
-            $user = $this->findOrCreateUser($googleUser);
+            $user = $this->findOrCreateUser($googleUser, $request);
 
             // 2) update user details based on token
             $this->updateUserDetails($user, $googleUser, $request);
@@ -91,14 +91,14 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     }
 
     /** Try to find user using first google id then email, otherwise create new User */
-    private function findOrCreateUser(GoogleUser $googleUser)
+    private function findOrCreateUser(GoogleUser $googleUser, Request $request)
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['googleId' => $googleUser->getId()])
             ?? $this->em->getRepository(User::class)->findOneBy(['email' => $googleUser->getEmail()]);
 
         if (!$user instanceof User) {
             $user = new User();
-            $user->setPreferredLocale($googleUser->getLocale());
+            $user->setPreferredLocale($request->getSession()->get('locale_at_login', 'en'));
             $user->setEnabled(true);
         }
 
