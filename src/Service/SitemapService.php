@@ -98,7 +98,7 @@ class SitemapService
     private function getUrlAndAlternates(
         $route,
         array $params = [],
-        \DateTime $lastmod = null,
+        ?\DateTime $lastmod = null,
         $changefreq = 'weekly',
         $priority = '0.5'
     ): array {

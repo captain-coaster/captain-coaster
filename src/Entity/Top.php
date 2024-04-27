@@ -51,7 +51,7 @@ class Top
         $this->topCoasters = new ArrayCollection();
     }
 
-    public function getId(): int|null
+    public function getId(): ?int
     {
         return $this->id;
     }

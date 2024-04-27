@@ -54,12 +54,12 @@ class DefaultController extends AbstractController
         }
 
         return $this->render('Default/index.html.twig', [
-                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
-                'image' => $imageRepository->findLatestImage(),
-                'stats' => $statService->getIndexStats(),
-                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
-                'missingImages' => $missingImages,
-            ]);
+            'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+            'image' => $imageRepository->findLatestImage(),
+            'stats' => $statService->getIndexStats(),
+            'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
+            'missingImages' => $missingImages,
+        ]);
     }
 
     /**
@@ -111,11 +111,11 @@ class DefaultController extends AbstractController
         }
 
         return $this->render('Default/index.html.twig', [
-                'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
-                'image' => $imageRepository->findLatestImage(),
-                'stats' => $statService->getIndexStats(),
-                'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
-                'missingImages' => $missingImages,
-            ]);
+            'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+            'image' => $imageRepository->findLatestImage(),
+            'stats' => $statService->getIndexStats(),
+            'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
+            'missingImages' => $missingImages,
+        ]);
     }
 }

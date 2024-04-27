@@ -22,7 +22,7 @@ class Park implements \Stringable
 {
     #[ORM\Id, ORM\Column(name: 'id', type: Types::INTEGER), ORM\GeneratedValue]
     #[Groups(['read_park'])]
-    private int|null $id = null;
+    private ?int $id = null;
 
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Groups(['list_coaster', 'read_coaster', 'read_park'])]
@@ -38,23 +38,23 @@ class Park implements \Stringable
 
     #[ORM\ManyToOne(targetEntity: 'Country'), ORM\JoinColumn(nullable: false)]
     #[Groups(['read_coaster', 'read_park'])]
-    private Country|null $country = null;
+    private ?Country $country = null;
 
     #[ORM\Column(name: 'latitude', type: Types::FLOAT, precision: 8, scale: 6, nullable: true)]
     #[Groups(['read_park'])]
-    private float|null $latitude = null;
+    private ?float $latitude = null;
 
     #[ORM\Column(name: 'longitude', type: Types::FLOAT, precision: 8, scale: 6, nullable: true)]
     #[Groups(['read_park'])]
-    private float|null $longitude = null;
+    private ?float $longitude = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private \DateTimeInterface|null $createdAt = null;
+    private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
-    private \DateTimeInterface|null $updatedAt = null;
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $enabled = false;
@@ -105,7 +105,7 @@ class Park implements \Stringable
         $this->coasters->removeElement($coaster);
     }
 
-    public function getCountry(): Country|null
+    public function getCountry(): ?Country
     {
         return $this->country;
     }
@@ -117,48 +117,48 @@ class Park implements \Stringable
         return $this;
     }
 
-    public function getLatitude(): float|null
+    public function getLatitude(): ?float
     {
         return $this->latitude;
     }
 
-    public function setLatitude(float|null $latitude): static
+    public function setLatitude(?float $latitude): static
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLongitude(): float|null
+    public function getLongitude(): ?float
     {
         return $this->longitude;
     }
 
-    public function setLongitude(float|null $longitude): static
+    public function setLongitude(?float $longitude): static
     {
         $this->longitude = $longitude;
 
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeInterface|null
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface|null $createdAt): static
+    public function setCreatedAt(?\DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTimeInterface|null
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface|null $updatedAt): static
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
@@ -177,7 +177,7 @@ class Park implements \Stringable
         return $this->coasters;
     }
 
-    public function getId(): int|null
+    public function getId(): ?int
     {
         return $this->id;
     }
