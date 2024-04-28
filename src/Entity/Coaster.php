@@ -98,7 +98,7 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private ?int $inversionsNumber = 0;
 
-    #[ORM\ManyToOne(targetEntity: 'Manufacturer', fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: 'Manufacturer')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Manufacturer $manufacturer = null;
