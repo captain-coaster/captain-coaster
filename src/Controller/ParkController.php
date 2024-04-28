@@ -18,7 +18,10 @@ class ParkController extends AbstractController
     {
         return $this->render(
             'Park/show.html.twig',
-            ['park' => $park, 'closestParks' => $parkRepository->getClosestParks($park, 80, 300)]
+            [
+                'park' => $park,
+                'closestParks' => $parkRepository->getClosestParks($park, 80, 300),
+            ]
         );
     }
 }

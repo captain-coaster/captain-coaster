@@ -514,4 +514,16 @@ class User implements UserInterface
 
         return $this;
     }
+
+    public function getCoasterRating(Coaster $coaster): ?RiddenCoaster
+    {
+        /** @var RiddenCoaster $rating */
+        foreach ($this->ratings as $rating) {
+            if ($rating->getCoaster() === $coaster) {
+                return $rating;
+            }
+        }
+
+        return null;
+    }
 }

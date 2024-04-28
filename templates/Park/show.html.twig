@@ -77,9 +77,8 @@
                     <li class="media panel panel-body stack-media-on-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">
                         <div class="media-left">
                             <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
-                                <img {% if coaster.images|length > 0 %}
-                                    {% set image = random(coaster.images) %}
-                                    src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                <img {% if coaster.mainImage %}
+                                    src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
                                 {% else %}
                                     src="{{ asset('images/nophoto.png') }}"
                                 {% endif %}
@@ -157,14 +156,12 @@
                                 </li>
                             </ul>
                         </div>
-
                         <div class="media-right text-center note-responsive" style="vertical-align: middle;">
-
                             {% if coaster.isRateable %}
                                 {% if is_granted('ROLE_USER') %}
                                     <div class="rating-coaster center"
                                          data-coaster="{{ coaster.id }}"
-                                         data-rateit-value="{{ coaster.userRating(app.user).value|default(0) }}"
+                                         data-rateit-value="{{ app.user.coasterRating(coaster).value|default(0) }}"
                                          style="font-size: 22px;"></div>
                                 {% endif %}
                             {% endif %}

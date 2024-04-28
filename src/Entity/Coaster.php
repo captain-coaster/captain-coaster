@@ -72,7 +72,7 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private ?MaterialType $materialType = null;
 
-    #[ORM\ManyToOne(targetEntity: 'SeatingType')]
+    #[ORM\ManyToOne(targetEntity: 'SeatingType', fetch: 'EAGER')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?SeatingType $seatingType = null;
@@ -98,7 +98,7 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private ?int $inversionsNumber = 0;
 
-    #[ORM\ManyToOne(targetEntity: 'Manufacturer')]
+    #[ORM\ManyToOne(targetEntity: 'Manufacturer', fetch: 'EAGER')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Manufacturer $manufacturer = null;
@@ -672,18 +672,6 @@ class Coaster implements \Stringable
     public function isRankable(): bool
     {
         return !$this->isKiddie();
-    }
-
-    public function getUserRating(User $user): ?RiddenCoaster
-    {
-        /** @var RiddenCoaster $rating */
-        foreach ($this->ratings as $rating) {
-            if ($rating->getUser() === $user) {
-                return $rating;
-            }
-        }
-
-        return null;
     }
 
     public function setEnabled(bool $enabled): static
