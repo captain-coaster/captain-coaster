@@ -87,7 +87,7 @@ class RankingService
     /** Compute ranking in ranking array. */
     public function computeRanking(bool $dryRun): void
     {
-        $users = $this->userRepository->findAll();
+        $users = $this->userRepository->findBy(['enabled' => true]);
 
         /** @var User $user */
         foreach ($users as $user) {
