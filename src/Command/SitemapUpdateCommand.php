@@ -22,15 +22,14 @@ class SitemapUpdateCommand extends Command
 {
     public function __construct(
         private readonly SitemapService $sitemapService
-    )
-    {
+    ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
         $this->addOption('pages', null, InputOption::VALUE_NONE)
-            ->addOption('iamges', null, InputOption::VALUE_NONE);
+            ->addOption('images', null, InputOption::VALUE_NONE);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -60,7 +59,7 @@ class SitemapUpdateCommand extends Command
             }
         }
 
-        $output->writeln((string)$stopwatch->stop('command'));
+        $output->writeln((string) $stopwatch->stop('command'));
 
         return Command::SUCCESS;
     }
