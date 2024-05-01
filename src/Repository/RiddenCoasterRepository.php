@@ -119,6 +119,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->leftJoin('r.pros', 'p')
             ->leftjoin('r.cons', 'c')
             ->where('r.coaster = :coasterId')
+            ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
