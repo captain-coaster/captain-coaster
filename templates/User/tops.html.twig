@@ -46,7 +46,7 @@
                 {% if top.topCoasters[i] is defined %}
                   <li>
                     {{ i + 1 }} -
-                    <a href="{{ path('bdd_show_coaster', {'slug': top.topCoasters[i].coaster.slug}) }}"
+                    <a href="{{ path('show_coaster', {'id': top.topCoasters[i].coaster.id, 'slug': top.topCoasters[i].coaster.slug}) }}"
                        class="text-default">
                       {{ top.topCoasters[i].coaster.name }}
                     </a>

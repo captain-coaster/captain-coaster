@@ -23,7 +23,7 @@
 
                 <div class="media-body">
                     <h6 class="media-heading text-semibold">
-                        <a href="{{ path('bdd_show_coaster', {'slug': coaster.item.slug}) }}">
+                        <a href="{{ path('show_coaster', {'id': coaster.item.id, 'slug': coaster.item.slug}) }}">
                             {{ coaster.item.name }}
                         </a>
                         -

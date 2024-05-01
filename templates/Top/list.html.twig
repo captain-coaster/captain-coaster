@@ -34,7 +34,7 @@
               {% for topCoaster in top.topCoasters|slice(0,3) %}
                 <li>
                   {{ topCoaster.position }} -
-                  <a href="{{ path('bdd_show_coaster', {'slug': topCoaster.coaster.slug}) }}"
+                    <a href="{{ path('show_coaster', {'id': topCoaster.coaster.id, 'slug': topCoaster.coaster.slug}) }}"
                      class="text-default">
                     {{ topCoaster.coaster.name }}
                   </a>

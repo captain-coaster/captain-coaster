@@ -4,7 +4,7 @@
     {% for coaster in coasters %}
         <li class="media panel panel-body stack-media-on-mobile">
             <div class="media-left">
-                <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                     {% if coaster.mainImage is not null %}
                         <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
                              class="img-rounded"
@@ -15,7 +15,7 @@
             </div>
             <div class="media-body">
                 <h2 class="media-heading mb-10">
-                    <a style="color:#333;" href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}">
+                    <a style="color:#333;" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if not filtered %}
                             {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
                         {% else %}

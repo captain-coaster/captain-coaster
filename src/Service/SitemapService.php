@@ -26,7 +26,7 @@ class SitemapService
         $urls = [];
 
         // Latest review
-        $latestRating = $this->em->getRepository(RiddenCoaster::class)->findOneBy([], ['updatedAt' => 'desc'], 1);
+        $latestRating = $this->em->getRepository(RiddenCoaster::class)->findOneBy([], ['updatedAt' => 'desc']);
         $indexUpdateDate = $latestRating->getUpdatedAt();
 
         // Index
@@ -44,11 +44,11 @@ class SitemapService
             $params = ['slug' => $coaster->getSlug()];
             $date = null;
             // Latest review
-            $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc'], 1);
+            $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc']);
             if ($latestReview instanceof RiddenCoaster) {
                 $date = $latestReview->getUpdatedAt();
             }
-            $coasterUrls = $this->getUrlAndAlternates('bdd_show_coaster', $params, $date, 'weekly', '0.8');
+            $coasterUrls = $this->getUrlAndAlternates('show_coaster', $params, $date, 'weekly', '0.8');
             $urls = array_merge($urls, $coasterUrls);
         }
 
@@ -65,8 +65,12 @@ class SitemapService
         foreach ($images as $image) {
             $url = [];
             $url['loc'] = $this->router->generate(
-                'bdd_show_coaster',
-                ['slug' => $image->getCoaster()->getSlug(), '_locale' => 'en'],
+                'show_coaster',
+                [
+                    'id' => $image->getCoaster()->getId(),
+                    'slug' => $image->getCoaster()->getSlug(),
+                    '_locale' => 'en',
+                ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 

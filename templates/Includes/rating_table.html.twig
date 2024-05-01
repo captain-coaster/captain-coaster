@@ -17,7 +17,7 @@
       {% for rating in ratings %}
         <tr id="tr-coaster-{{ rating.coaster.id }}">
           <td>
-            <a href="{{ path('bdd_show_coaster', {'slug': rating.coaster.slug}) }}"
+            <a href="{{ path('show_coaster', {'id': rating.coaster.id, 'slug': rating.coaster.slug}) }}"
                class="text-semibold">{{ rating.coaster.name }}</a>
             <div class="text-muted text-size-small">
               <span class="status-mark bg-{{ rating.coaster.status.type }} position-left"></span>

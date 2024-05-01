@@ -11,17 +11,17 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class SearchService
 {
-    final public const COASTER = [
+    final public const array COASTER = [
         'emoji' => '🎢',
-        'route' => 'bdd_show_coaster',
+        'route' => 'show_coaster',
     ];
 
-    final public const PARK = [
+    final public const array PARK = [
         'emoji' => '🎡',
         'route' => 'park_show',
     ];
 
-    final public const USER = [
+    final public const array USER = [
         'emoji' => '👦',
         'route' => 'user_show',
     ];

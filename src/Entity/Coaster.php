@@ -12,7 +12,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
-use App\Handler\CustomRelativeSlugHandler;
+
 use App\Repository\CoasterRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,6 +20,7 @@ use Doctrine\Common\Collections\Criteria;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -55,15 +56,11 @@ class Coaster implements \Stringable
     private ?string $name = null;
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
-    #[Gedmo\Slug(fields: ['name'], updatable: true, separator: '-', handlers: [
-        new Gedmo\SlugHandler(
-            class: CustomRelativeSlugHandler::class,
-            options: [
-                new Gedmo\SlugHandlerOption(name: 'relationField', value: 'park'),
-                new Gedmo\SlugHandlerOption(name: 'relationSlugField', value: 'slug'),
-                new Gedmo\SlugHandlerOption(name: 'separator', value: '-'),
-            ]
-        ),
+    #[Gedmo\Slug(fields: ['name'])]
+    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: [
+        'relationField' => 'park',
+        'relationSlugField' => 'slug',
+        'separator' => '-',
     ])]
     private ?string $slug = null;
 

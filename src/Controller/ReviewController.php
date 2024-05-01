@@ -83,7 +83,7 @@ class ReviewController extends AbstractController
             $em->persist($review);
             $em->flush();
 
-            return $this->redirectToRoute('bdd_show_coaster', ['slug' => $coaster->getSlug()]);
+            return $this->redirectToRoute('show_coaster', ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()]);
         }
 
         return $this->render(

@@ -137,7 +137,7 @@ class CoasterController extends AbstractController
     }
 
     /** Show details of a coaster */
-    #[Route(path: '/{slug}', name: 'bdd_show_coaster', options: ['expose' => true], methods: ['GET'])]
+    #[Route(path: '/{id}/{slug}', name: 'show_coaster', options: ['expose' => true], methods: ['GET'])]
     public function showAction(
         Request $request,
         Coaster $coaster,
@@ -164,5 +164,15 @@ class CoasterController extends AbstractController
                 'user' => $user,
             ]
         );
+    }
+
+    /** Redirect old urls to above */
+    #[Route(path: '/{slug}', name: 'redirect_coaster_show', options: ['expose' => true], methods: ['GET'])]
+    public function redirectCoaster(Coaster $coaster): RedirectResponse
+    {
+        return $this->redirectToRoute('show_coaster', [
+            'id' => $coaster->getId(),
+            'slug' => $coaster->getSlug(),
+        ], 301);
     }
 }

@@ -39,7 +39,7 @@
       </div>
       <div class="form-group">
         {{ form_widget(form.upload, {'attr': {'class': 'btn btn-primary'}}) }}
-        <a href="{{ path('bdd_show_coaster', {'slug': coaster.slug}) }}" class="btn btn-warning">
+          <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="btn btn-warning">
           {{ 'image_upload.form.back'|trans }}
         </a>
       </div>

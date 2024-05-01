@@ -71,7 +71,7 @@
     <div class="col-sm-6">
       <!-- Thumbnail with image and button -->
       <div class="thumbnail">
-        <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}">
+          <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
           <div class="thumb">
             <img src="{{ pictures_cdn }}/600x336/{{ image.filename }}"
                  alt="{{ image.coaster.name }}">
@@ -81,7 +81,8 @@
 
         <div class="caption text-center">
           <h5 class="text-semibold no-margin">
-            <a href="{{ path('bdd_show_coaster', {'slug': image.coaster.slug}) }}" class="btn btn-info">
+              <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
+                 class="btn btn-info">
               {{ image.coaster.name }}
             </a>
           </h5>
@@ -102,7 +103,7 @@
                   {{ ratingItem.user.displayName }}
                 </a>
                 {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
-                <a href="{{ path('bdd_show_coaster', {'slug': ratingItem.coaster.slug}) }}">
+                  <a href="{{ path('show_coaster', {'id': ratingItem.coaster.id, 'slug': ratingItem.coaster.slug}) }}">
                   {{ ratingItem.coaster.name }}
                 </a>
                 <div class="text-muted">
@@ -136,7 +137,7 @@
                 <div class="media-body">
                   <div class="media-heading">
                     <h6 class="media-heading">
-                      <a href="{{ path('bdd_show_coaster', {'slug': review.coaster.slug}) }}">
+                        <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
                         {{ review.coaster.name }}
                       </a>
                       -
