@@ -13,7 +13,7 @@ class SearchService
 {
     final public const array COASTER = [
         'emoji' => '🎢',
-        'route' => 'show_coaster',
+        'route' => 'redirect_coaster_show',
     ];
 
     final public const array PARK = [
