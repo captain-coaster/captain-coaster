@@ -41,7 +41,7 @@ class SitemapService
         // Fiche Coasters
         $coasters = $this->em->getRepository(Coaster::class)->findAll();
         foreach ($coasters as $coaster) {
-            $params = ['slug' => $coaster->getSlug()];
+            $params = ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()];
             $date = null;
             // Latest review
             $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc']);
