@@ -103,7 +103,7 @@ class User implements UserInterface
     private string $preferredLocale = 'en';
 
     #[ORM\ManyToOne(targetEntity: Park::class)]
-    #[ORM\JoinColumn]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Park $homePark = null;
 
     #[ORM\Column(type: Types::STRING, unique: true, nullable: false)]
@@ -404,7 +404,7 @@ class User implements UserInterface
         return $this->homePark;
     }
 
-    public function setHomePark(Park $homePark): static
+    public function setHomePark(?Park $homePark): static
     {
         $this->homePark = $homePark;
 
