@@ -28,7 +28,7 @@
                     <div class="text-center mb-3">
                         <div class="icon-object border-warning-400 text-warning-400"><i class="icon-key"></i></div>
                         <h5 class="content-group-lg">{{ 'login.title'|trans }}
-                            <small class="display-block">{{ 'login.subtitle'|trans }}</small>
+                            <small class="display-block">{{ 'login.subtitle'|trans({'%link_path%': path('app_register')})|raw }}</small>
                         </h5>
                     </div>
                     {% if error %}
@@ -39,7 +39,7 @@
                     {% for label, messages in app.flashes %}
                         {% for message in messages %}
                             <div class="alert alert-{{ label }} alert-bordered">
-                                {{ message }}
+                                {{ message | raw }}
                             </div>
                         {% endfor %}
                     {% endfor %}

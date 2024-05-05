@@ -286,13 +286,20 @@ footer:
 
 login:
     title: 'Se connecter'
-    subtitle: 'Envoyer un lien de connexion par email'
+    subtitle: 'Envoyer un lien de connexion par email. Si vous n''avez pas de compte, <a href="{link_path}">inscrivez-vous</a>.'
     send_link: 'Envoyer le lien'
     or_sign_in_with: 'ou se connecter avec'
     terms: 'En continuant, vous confirmez avoir lu nos <a href="{link_path}">Termes et Conditions</a>'
     email:
         title: 'Connexion à Captain Coaster'
     link_sent: 'Lien de connexion envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour vous connecter.'
+    account_disabled: 'Votre email {email} n''est pas vérifié. Merci de vous <a href="{link_path}">inscrire</a> ou de cliquer sur le lien reçu après l''inscription pour activer votre compte.'
+
+register:
+    title: 'S''enregistrer'
+    subtitle: 'Créer un compte et le valider par email'
+    send_link: 'Envoyer le lien de confirmation'
+    link_sent: 'Lien de confirmation envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour activer votre compte.'
 
 contact:
     title: 'Nous contacter'
