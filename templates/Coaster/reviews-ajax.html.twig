@@ -30,22 +30,10 @@
                                 <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
                                     {{ review.user.displayName }}
                                 </a>
+                                {{ helper.starRating(review.value) }}
                                 <span class="media-annotation dotted">
-                  <span class="text-warning">
-                    {% set low = review.value|round(0, 'floor') %}
-                      {% if low > 0 %}
-                          {% for i in 1..low %}
-                              <i class="icon-star-full2"></i>
-                          {% endfor %}
-                      {% endif %}
-                      {% if low < review.value %}
-                          <i class="icon-star-half"></i>
-                      {% endif %}
-                  </span>
-                </span>
-                <span class="media-annotation dotted">
-                  {{ review.updatedAt|ago }}
-                </span>
+                                  {{ review.updatedAt|ago }}
+                                </span>
                             </div>
                             {% if review.pros|length > 0 or review.cons|length > 0 %}
                                 <p>

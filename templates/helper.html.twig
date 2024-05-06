@@ -1,52 +1,54 @@
 {# Display profile picture or fallback picture #}
 {% macro profilePicture(user, className) %}
-  <img src="{{ user.profilePicture|default(asset('images/default_user.png')) }}"
-       class="{{ className|default('img-circle img-lg') }}"
-       alt="{{ user.displayName }}">
+    <img src="{{ user.profilePicture|default(asset('images/default_user.png')) }}"
+         class="{{ className|default('img-circle img-lg') }}"
+         alt="{{ user.displayName }}">
 {% endmacro %}
 
 {# Display a coaster related date #}
 {% macro displayDate(date) %}
-  {% if date|date("dm") == "0101" %}
-    {{ date|date("Y") }}
-  {% else %}
-    {{ date|format_datetime('short', 'none') }}
-  {% endif %}
+    {% if date|date("dm") == "0101" %}
+        {{ date|date("Y") }}
+    {% else %}
+        {{ date|format_datetime('short', 'none') }}
+    {% endif %}
 {% endmacro %}
 
 {# Color magic for ratings #}
 {% macro ratingColor(score) %}
-  hsl({{ score * 1.2 }}, 50%, 50%)
+    hsl({{ score * 1.2 }}, 50%, 50%)
 {% endmacro %}
 
 {# Display coaster rank variation #}
 {% macro variation(coaster) %}
-  {% if coaster.previousRank is empty %}
-    <span class="badge badge-flat border-warning-600 text-warning-600">new</span>
-  {% elseif coaster.previousRank < coaster.rank %}
-    <span class="badge badge-flat border-danger-600 text-danger-600">
+    {% if coaster.previousRank is empty %}
+        <span class="badge badge-flat border-warning-600 text-warning-600">new</span>
+    {% elseif coaster.previousRank < coaster.rank %}
+        <span class="badge badge-flat border-danger-600 text-danger-600">
       <i class="icon-arrow-down5"></i> {{ (coaster.rank - coaster.previousRank)|abs }}
     </span>
-  {% elseif coaster.previousRank > coaster.rank %}
-    <span class="badge badge-flat border-success-600 text-success-600">
+    {% elseif coaster.previousRank > coaster.rank %}
+        <span class="badge badge-flat border-success-600 text-success-600">
       <i class="icon-arrow-up5"></i> {{ (coaster.rank - coaster.previousRank)|abs }}
     </span>
-  {% elseif coaster.previousRank == coaster.rank %}
-    <span class="badge badge-flat border-primary-600 text-primary-600"><i class="icon-arrow-right5"></i></span>
-  {% endif %}
+    {% elseif coaster.previousRank == coaster.rank %}
+        <span class="badge badge-flat border-primary-600 text-primary-600"><i class="icon-arrow-right5"></i></span>
+    {% endif %}
 {% endmacro %}
 
 {# Display star rating #}
 {% macro starRating(rating) %}
-  <span class="media-annotation dotted">
-    <span class="text-warning">
-      {% set low = rating|round(0, 'floor') %}
-      {% for i in 1..low %}
-        <i class="icon-star-full2"></i>
-      {% endfor %}
-      {% if low < rating %}
-        <i class="icon-star-half"></i>
-      {% endif %}
+    <span class="media-annotation dotted">
+        <span class="text-warning">
+            {% set low = rating|round(0, 'floor') %}
+            {% if low > 0 %}
+                {% for i in 1..low %}
+                    <i class="icon-star-full2"></i>
+                {% endfor %}
+            {% endif %}
+            {% if low < rating %}
+                <i class="icon-star-half"></i>
+            {% endif %}
+        </span>
     </span>
-  </span>
 {% endmacro %}
