@@ -38,11 +38,11 @@
                         <ul class="list-inline form-group list-inline-condensed text-center">
                             {#{% for owner in hwi_oauth_resource_owners() %}#}
                             {% set referer = app.request.server.get('HTTP_REFERER')|default('/') %}
-                            <li class="mb-5" style="padding:0;">
-                                <a href="{{ path('connect_facebook_start') }}{# ?target_path={{ referer }} #}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
+                            {# <li class="mb-5" style="padding:0;">
+                                <a href="{{ path('connect_facebook_start') }}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
                                     <i class="icon-facebook position-left"></i> {{ 'login.facebook_connect'|trans }}
                                 </a>
-                            </li>
+                            </li> #}
                             <li>
                                 <a href="{{ path('connect_google_start') }}" class="btn btn-flat bg-danger-800">
                                     <i class="icon-google position-left"></i> {{ 'login.google_connect'|trans }}
@@ -50,11 +50,12 @@
                             </li>
                             {#{% endfor %}#}
                         </ul>
+                        {#
                         <div class="content-divider text-muted form-group">
                             <span>{{ 'login.info.title'|trans }}</span></div>
                         <span class="help-block text-center no-margin">
                             {{ 'login.info.text'|trans }}
-                        </span>
+                        </span> #}
                         {#
                             <form action="{{ path('login_link_start') }}" method="POST">
                             <input type="email" name="email">
