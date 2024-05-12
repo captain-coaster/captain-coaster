@@ -112,11 +112,7 @@
           </ul>
         </li>
       {% else %}
-        <li>
-          <a href="{{ path('login') }}" data-popup="tooltip" title="Login">
-            <i class="icon-lock display-block"></i>
-          </a>
-        </li>
+        <li><a href="{{ path('login') }}">{{ 'navbar.login'|trans }}</a></li>
       {% endif %}
       <!-- /user profile -->
     </ul>

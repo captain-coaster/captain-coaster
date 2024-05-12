@@ -1,65 +1,30 @@
-<!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ 'register.title'|trans }} • {{ 'app.name'|trans }}</title>
+{% extends "base_login.html.twig" %}
 
-    <!-- Global stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    {{ encore_entry_link_tags('app') }}
-    <!-- /global stylesheets -->
-</head>
+{% block title %}{{ 'register.title'|trans }} • {{ 'app.name'|trans }}{% endblock %}
 
-<body class="login-container login-cover"
-      style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
-<!-- Page container -->
-<div class="page-container">
-    <!-- Page content -->
-    <div class="page-content">
-        <!-- Main content -->
-        <div class="content-wrapper">
-            <!-- Content area -->
-            <div class="content pb-20">
-                <!-- Form with validation -->
-                <div class="panel panel-body login-form">
-                    <div class="text-center mb-3">
-                        <div class="icon-object border-warning-400 text-warning-400"><i class="icon-key"></i></div>
-                        <h5 class="content-group-lg">{{ 'register.title'|trans }}
-                            <small class="display-block">{{ 'register.subtitle'|trans }}</small>
-                        </h5>
-                    </div>
-                     {% for flash_error in app.flashes('verify_email_error') %}
-                        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-                    {% endfor %}
-                    {{ form_errors(registrationForm) }}
+{% block body %}
+    <!-- Form with validation -->
+    <div class="panel panel-body login-form">
+        <div class="text-center mb-3">
+            <div class="icon-object border-warning-400 text-warning-400"><i class="icon-key"></i></div>
+            <h5 class="content-group-lg">{{ 'register.title'|trans }}
+                <small class="display-block">{{ 'register.subtitle'|trans }}</small>
+            </h5>
+        </div>
+        {% for flash_error in app.flashes('verify_email_error') %}
+            <div class="alert alert-danger alert-bordered">{{ flash_error }}</div>
+        {% endfor %}
 
-                    {{ form_start(registrationForm) }}
-                        {{ form_row(registrationForm.email) }}
-                        <br/>
-                        {{ form_row(registrationForm.firstName) }}
-                        <br/>
-                        {{ form_row(registrationForm.lastName) }}
-                        <br/>
+        {{ form_start(registrationForm) }}
+        {{ form_row(registrationForm.email) }}
+        {{ form_row(registrationForm.firstName) }}
+        {{ form_row(registrationForm.lastName) }}
 
-                        <button type="submit"
-                                    class="btn bg-blue btn-block">{{ 'register.send_link'|trans }}</button>
-                    {{ form_end(registrationForm) }}
-            
-                    <span class="help-block text-center no-margin">
+        {{ form_end(registrationForm) }}
+
+        <span class="help-block text-center no-margin">
                             {{ 'login.terms'|trans({'%link_path%': path('default_privacy_policy')})|raw }}
                         </span>
-                </div>
-                <!-- /form with validation -->
-            </div>
-            <!-- /content area -->
-        </div>
-        <!-- /main content -->
     </div>
-    <!-- /page content -->
-</div>
-<!-- /page container -->
-</body>
-</html>
+    <!-- /form with validation -->
+{% endblock %}

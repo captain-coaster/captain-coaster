@@ -1,7 +1,7 @@
 app:
     name: 'Captain Coaster'
     title:
-        default: '¡ Bienvenido !'
+        default: 'Bienvenido'
     header:
         search: 'Batman, Port Aventura...'
 
@@ -221,7 +221,7 @@ login:
         text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google. Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
     already_connected_as: 'Ya ha iniciado sesión como'
     logout: '¿ Cerrar sesión ?'
-    link_sent: 'Lien de connexion envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour vous connecter.'
+    link_sent: 'Enlace de inicio de sesión enviado a {email}. Por favor, revisa tu correo electrónico y haz clic en el enlace para iniciar sesión.'
     account_disabled: 'Su correo electrónico {email} no ha sido verificado. Por favor, <a href="{link_path}">regístrese</a> o haga clic en el enlace que recibió después de registrarse para activar su cuenta.'
 
 register:

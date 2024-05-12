@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
+use App\Notifier\CustomLoginLinkNotification;
 use App\Repository\UserRepository;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,7 +16,6 @@ use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkNotification;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
@@ -37,22 +38,21 @@ class ConnectController extends AbstractController
         UserRepository $userRepository,
         TranslatorInterface $translator,
     ): Response {
-        if ($request->isMethod('POST')) {
-            $email = $request->request->get('email');
+        if ($request->isMethod('POST') && $email = $request->request->get('email')) {
             $user = $userRepository->findOneBy(['email' => $email]);
 
-            $notification = new LoginLinkNotification(
-                $loginLinkHandler->createLoginLink($user),
-                $translator->trans('login.email.title'),
-                ['email']
-            );
+            // always return success for account enumeration prevention
+            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
 
-            if ($user->isEnabled()) {
-                $notifier->send($notification, new Recipient($user->getEmail()));
-
-                $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
-            } else {
-                $this->addFlash('danger', $translator->trans('login.account_disabled', ['email' => $email, 'link_path' => $this->generateUrl('app_register')]));
+            if ($user instanceof User && $user->isEnabled()) {
+                $notifier->send(
+                    new CustomLoginLinkNotification(
+                        $loginLinkHandler->createLoginLink($user),
+                        $translator->trans('login.email.title'),
+                        ['email']
+                    ),
+                    new Recipient($user->getEmail())
+                );
             }
         } else {
             // save referer to redirect after login
@@ -90,18 +90,5 @@ class ConnectController extends AbstractController
     public function connectGoogleCheck(Request $request): void
     {
         // left blank as it is handled inside GoogleAuthenticator
-    }
-
-    /** Initiate Facebook's oauth2 authentication. Route handled in routes.yaml (no locale). */
-    public function connectFacebookStart(ClientRegistry $clientRegistry): RedirectResponse
-    {
-        // will redirect to Facebook!
-        return $clientRegistry->getClient('facebook')->redirect([], []);
-    }
-
-    /** After going to Facebook, you're redirected back here. Route handled in routes.yaml (no locale). */
-    public function connectFacebookCheck(Request $request): void
-    {
-        // left blank as it is handled inside FacebookAuthenticator
     }
 }

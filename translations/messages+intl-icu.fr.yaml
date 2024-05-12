@@ -265,7 +265,8 @@ rating:
 navbar:
     profile: 'Mon Profil'
     rating: 'Mes Notes'
-    logout: 'Se déconnecter'
+    login: 'Connexion'
+    logout: 'Déconnexion'
     tops: 'Mes tops'
     my_map: 'Ma carte'
 
@@ -278,21 +279,27 @@ sidebar:
     top: 'Les tops'
     review: 'Tous les avis'
     contact: 'Nous contacter'
-    logout: 'Se déconnecter'
-    login: 'Se connecter'
+    logout: 'Déconnexion'
+    login: 'Connexion'
 
 footer:
     terms: 'Politique de confidentialité'
 
 login:
     title: 'Se connecter'
-    subtitle: 'Envoyer un lien de connexion par email. Si vous n''avez pas de compte, <a href="{link_path}">inscrivez-vous</a>.'
-    send_link: 'Envoyer le lien'
-    or_sign_in_with: 'ou se connecter avec'
-    terms: 'En continuant, vous confirmez avoir lu nos <a href="{link_path}">Termes et Conditions</a>'
+    subtitle: 'Envoyer un lien de connexion par email'
+    send_link: 'Envoyer un lien'
+    redirect_to_register: 'Nouveau sur Captain Coaster? <a href="{link_path}">Créez un compte</a>'
+    or_sign_in_with: 'ou'
+    connect_with_google: 'Connexion avec google'
+    terms: 'En continuant, vous acceptez nos <a href="{link_path}">Termes et Conditions</a>'
     email:
         title: 'Connexion à Captain Coaster'
-    link_sent: 'Lien de connexion envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour vous connecter.'
+        h1: 'Prêt au dispatch !'
+        paragraph1: 'Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes.'
+        button: 'Connexion'
+        paragraph2: 'Vous recevez cet email car vous avez demandé à vous connecter à Captain Coaster. Si vous ne savez pas pourquoi vous recevez cet email, vous pouvez nous contacter en répondant à cet email.'
+    link_sent: 'Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter.'
     account_disabled: 'Votre email {email} n''est pas vérifié. Merci de vous <a href="{link_path}">inscrire</a> ou de cliquer sur le lien reçu après l''inscription pour activer votre compte.'
 
 register:
@@ -300,6 +307,13 @@ register:
     subtitle: 'Créer un compte et le valider par email'
     send_link: 'Envoyer le lien de confirmation'
     link_sent: 'Lien de confirmation envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour activer votre compte.'
+    form:
+        email: 'Email'
+        firstName: 'Prénom'
+        lastName: 'Nom'
+        submit: 'Créer un compte'
+    email:
+        title: 'Confirmez votre email'
 
 contact:
     title: 'Nous contacter'
