@@ -303,9 +303,9 @@ login:
     account_disabled: 'Votre email {email} n''est pas vérifié. Merci de vous <a href="{link_path}">inscrire</a> ou de cliquer sur le lien reçu après l''inscription pour activer votre compte.'
 
 register:
-    title: 'S''enregistrer'
+    title: 'Créer un compte'
     subtitle: 'Créer un compte et le valider par email'
-    send_link: 'Envoyer le lien de confirmation'
+    send_link: 'Créer un compte'
     link_sent: 'Lien de confirmation envoyé à {email}. Vérifiez votre email et cliquez sur le lien pour activer votre compte.'
     form:
         email: 'Email'
