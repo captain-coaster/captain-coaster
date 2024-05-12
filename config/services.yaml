@@ -6,10 +6,7 @@
 parameters:
     locale: 'en'
     app_locales_array: ['en', 'fr', 'es', 'de']
-    # @todo delete
-    app_mail_from: 'contact@captaincoaster.com'
-    app_contact_mail_to: '%app_mail_from%'
-    app_mail_from_name: 'Captain Coaster'
+    app_contact_mail_to: '%env(MAILER_REPLY_TO)%'
     app_banner_font_path: '%kernel.project_dir%/public/upload'
     app_banner_target_path: '%kernel.project_dir%/public/images/banners'
     app_banner_background_path: '%kernel.project_dir%/public/images/background-banner.png'
@@ -46,11 +43,6 @@ services:
             $fontPath: '%app_banner_font_path%'
             $targetPath: '%app_banner_target_path%'
             $backgroundPath: '%app_banner_background_path%'
-
-    App\Service\NotificationService:
-        arguments:
-            $emailFrom: '%app_mail_from%'
-            $emailFromName: '%app_mail_from_name%'
 
     App\Service\SitemapService:
         arguments:

@@ -78,7 +78,6 @@ class DefaultController extends AbstractController
             $data = $form->getData();
 
             $message = (new Email())
-                ->from(new Address($this->getParameter('app_mail_from'), $this->getParameter('app_mail_from_name')))
                 ->to($this->getParameter('app_contact_mail_to'))
                 ->replyTo($data['email'])
                 ->subject($translator->trans('contact.email.title'))
@@ -96,26 +95,9 @@ class DefaultController extends AbstractController
         return $this->render('Default/contact.html.twig', ['form' => $form]);
     }
 
-    #[Route(path: '/privacy-policy', name: 'default_privacy_policy', methods: ['GET'])]
+    #[Route(path: '/terms-conditions', name: 'app_terms_conditions', methods: ['GET'])]
     public function privacyPolicy(): Response
     {
-        return $this->render('Default/policy.html.twig');
-    }
-
-    #[Route('/protected', name: 'protected')]
-    public function protected(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, ChatterInterface $chatter): Response
-    {
-        $missingImages = [];
-        if (($user = $this->getUser()) instanceof User) {
-            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
-        }
-
-        return $this->render('Default/index.html.twig', [
-            'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
-            'image' => $imageRepository->findLatestImage(),
-            'stats' => $statService->getIndexStats(),
-            'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
-            'missingImages' => $missingImages,
-        ]);
+        return $this->render('Default/terms_conditions.html.twig');
     }
 }

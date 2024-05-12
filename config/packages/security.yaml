@@ -37,6 +37,7 @@ security:
             custom_authenticators:
                 - App\Security\GoogleAuthenticator
             entry_point: App\Security\GoogleAuthenticator
+            user_checker: App\Security\UserChecker
             logout:
                 path: logout
             remember_me:

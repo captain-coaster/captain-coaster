@@ -1,17 +1,15 @@
-title: 'Captain Coaster''s Privacy Policy'
+title: 'Terms & Conditions'
 privacy:
     title: 'Privacy Policy'
     text: '<p>This privacy policy will explain how our website uses the personal data we collect from you when you use Captain Coaster.</p>
            <p>Captain Coaster collects the following data when you register:</p>
            <ul>
-               <li>Name and Surname,</li>
-               <li>Email Address,</li>
-               <li>Public profile photo,</li>
-               <li>Unique ID,</li>
+               <li>First name and last name,</li>
+               <li>Email address,</li>
+               <li>Public profile picture (only when using Google authentication)</li>
            </ul>
-           <p>from Facebook or Google, depending on your choice when you register.</p>
-           <p>We will keep your data as long as you use our service, in a securely storage and respectfully of the French law "Loi Informatique et Libertés du 6 janvier 1978".</p>
-           <p>They are never shared to any other organization, and are used only to create an account and for some Captain Coaster features.</p>
+           <p>We will keep your data as long as you use our service, in a secure storage and respectfully of the French law "Loi Informatique et Libertés du 6 janvier 1978".</p>
+           <p>They are never shared to anyone, and are used only to create an account and for some Captain Coaster features.</p>
            <p>Every user is entitled to the following:</p>
            <ul>
            <li>The right to access - You have the right to request us for copies of your personal data, sent by email,</li>
@@ -22,12 +20,12 @@ privacy:
 cookies:
     title: 'Cookie Policy'
     text: '<p>Cookies are small files stored on a user''s computer to make your life simpler.</p>
-           <p>Captain Coaster uses a session cookie to remember you when you connect. It avoids you to log each time you visit us. We also use a Google Analytics cookie for statistics.</p>'
+           <p>Captain Coaster uses a session cookie to remember you when you connect. It avoids you to sign in each time you visit us. We also use a Google Analytics cookie for statistics.</p>'
 terms:
     title: 'Using Captain Coaster'
-    text: '<p>Captain Coaster is a free unofficial community website for theme parks and roller coasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company. Nobody gets paid to manage it, except with members gratitude.</p>
-        <p>It is opened to anyone : you just need to connect to share your experience on coasters (ratings, tags, reviews). To access these features, you will need a <b>valid</b> Facebook or Google account. <b>Having multiple accounts is definitely forbidden</b> and will lead to a permanent ban.</p>
-        <p>All participative fields are reviewed by team moderators who reserve the right to edit or delete any post. Members can be banned temporarily or permanently.</p>'
+    text: '<p>Captain Coaster is a community website for theme parks and roller coasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company.</p>
+        <p>It is opened to anyone : you just need to connect to share your experience on coasters (ratings, tags, reviews). To access these features, you will need a <b>valid</b> Google account or email address. <b>Having multiple accounts is definitely forbidden</b> and will lead to a permanent ban.</p>
+        <p>All participative fields are reviewed by team moderators who reserve the right to edit or delete any post. Users not complying with these rules can be banned temporarily or permanently.</p>'
 hosting:
     title: 'Hosting'
     text: 'Captain Coaster is hosted by Amazon Web Services, whose headquarters are in Seattle, Washington, United States. Our servers are located in Paris, France.'
@@ -37,4 +35,4 @@ copyright:
            <p>Every user can upload pictures on Captain Coaster with its credit. If you are the owner of a photo you don’t want to share on Captain Coaster, please <a href="{link_href}">contact us</a> and the picture will be removed as soon as possible.</p>'
 contact:
     title: 'Contact us'
-    text: '<b>Any questions, or remarks on this policy ? <a href="{link_href}">Contact us</a>, we don''t bite.</b>'
+    text: '<b>Any questions or remarks ? <a href="{link_href}">Contact us</a>, we don''t bite.</b>'

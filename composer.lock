@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aac399d82086414c27b543c7abfec34d",
+    "content-hash": "a903dc548b727455bebea9a580a2d12d",
     "packages": [
         {
             "name": "api-platform/core",
@@ -3330,62 +3330,6 @@
             "time": "2023-04-16T18:19:15+00:00"
         },
         {
-            "name": "league/oauth2-facebook",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/oauth2-facebook.git",
-                "reference": "ec6d62a00b548c6cd56d7b734346b9e6befbfbbb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-facebook/zipball/ec6d62a00b548c6cd56d7b734346b9e6befbfbbb",
-                "reference": "ec6d62a00b548c6cd56d7b734346b9e6befbfbbb",
-                "shasum": ""
-            },
-            "require": {
-                "league/oauth2-client": "^2.0",
-                "php": ">=7.3"
-            },
-            "require-dev": {
-                "ext-json": "*",
-                "mockery/mockery": "~1.3.0",
-                "phpunit/phpunit": "^9.4",
-                "squizlabs/php_codesniffer": "~3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "League\\OAuth2\\Client\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sammy Kaye Powers",
-                    "email": "me@sammyk.me",
-                    "homepage": "http://www.sammyk.me"
-                }
-            ],
-            "description": "Facebook OAuth 2.0 Client Provider for The PHP League OAuth2-Client",
-            "keywords": [
-                "Authentication",
-                "authorization",
-                "client",
-                "facebook",
-                "oauth",
-                "oauth2"
-            ],
-            "support": {
-                "issues": "https://github.com/thephpleague/oauth2-facebook/issues",
-                "source": "https://github.com/thephpleague/oauth2-facebook/tree/2.2.0"
-            },
-            "time": "2022-02-24T18:45:07+00:00"
-        },
-        {
             "name": "league/oauth2-google",
             "version": "4.0.1",
             "source": {
@@ -6618,6 +6562,85 @@
             "time": "2024-04-18T09:22:46+00:00"
         },
         {
+            "name": "symfony/lock",
+            "version": "v6.4.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/lock.git",
+                "reference": "c6b3959c418a7c1115c060fab77927ca4bd2546a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/c6b3959c418a7c1115c060fab77927ca4bd2546a",
+                "reference": "c6b3959c418a7c1115c060fab77927ca4bd2546a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "psr/log": "^1|^2|^3",
+                "symfony/deprecation-contracts": "^2.5|^3"
+            },
+            "conflict": {
+                "doctrine/dbal": "<2.13",
+                "symfony/cache": "<6.2"
+            },
+            "require-dev": {
+                "doctrine/dbal": "^2.13|^3|^4",
+                "predis/predis": "^1.1|^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Lock\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jérémy Derussé",
+                    "email": "jeremy@derusse.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Creates and manages locks, a mechanism to provide exclusive access to a shared resource",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "cas",
+                "flock",
+                "locking",
+                "mutex",
+                "redlock",
+                "semaphore"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/lock/tree/v6.4.7"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-04-18T09:22:46+00:00"
+        },
+        {
             "name": "symfony/mailer",
             "version": "v6.4.7",
             "source": {
@@ -8174,6 +8197,77 @@
                 }
             ],
             "time": "2024-04-28T10:28:08+00:00"
+        },
+        {
+            "name": "symfony/rate-limiter",
+            "version": "v6.4.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/rate-limiter.git",
+                "reference": "4cac50fc39cb15bf989df64952e653cda2adcd72"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/rate-limiter/zipball/4cac50fc39cb15bf989df64952e653cda2adcd72",
+                "reference": "4cac50fc39cb15bf989df64952e653cda2adcd72",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/deprecation-contracts": "^2.5|^3",
+                "symfony/options-resolver": "^5.4|^6.0|^7.0"
+            },
+            "require-dev": {
+                "psr/cache": "^1.0|^2.0|^3.0",
+                "symfony/lock": "^5.4|^6.0|^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\RateLimiter\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Wouter de Jong",
+                    "email": "wouter@wouterj.nl"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides a Token Bucket implementation to rate limit input and output in your application",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "limiter",
+                "rate-limiter"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/rate-limiter/tree/v6.4.7"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-04-18T09:22:46+00:00"
         },
         {
             "name": "symfony/routing",

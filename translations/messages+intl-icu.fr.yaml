@@ -370,8 +370,9 @@ error:
     403:
         title: 'Accès interdit'
         message: 'L''accès à cette page est interdit'
+    429:
+        title: 'Too many requests'
+        message: 'Please wait a few minutes'
     generic:
-        title: 'Oops, une erreur s''est produite'
+        title: 'Une erreur s''est produite'
         message: 'Une erreur s''est produite. Contactez-nous si le problème persiste'
-
-User account is disabled.: 'Ce compte est désactivé car il ne respecte pas nos règles d''utilisation. Contactez-nous pour avoir plus d''informations.'

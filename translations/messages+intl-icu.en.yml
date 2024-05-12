@@ -374,11 +374,12 @@ error:
     403:
         title: 'Access forbidden'
         message: 'You are not allowed to access this page'
+    429:
+        title: 'Too many requests'
+        message: 'Please wait a few minutes'
     generic:
-        title: 'Oops, an error occurred !'
+        title: 'An error occurred'
         message: 'An error occurred. Contact us if the problem persists'
-
-User account is disabled.: 'This account is disabled because it did not comply with our policies. Contact us to get more information.'
 
 missing:
     step1:

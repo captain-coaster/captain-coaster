@@ -25,14 +25,6 @@ connect_google_check:
     path: '/connect/google/check'
     controller: App\Controller\ConnectController::connectGoogleCheck
 
-connect_facebook_start:
-    path: '/connect/facebook'
-    controller: App\Controller\ConnectController::connectFacebookStart
-
-connect_facebook_check:
-    path: '/connect/facebook/check'
-    controller: App\Controller\ConnectController::connectFacebookCheck
-
 login_check:
     path: '/login/check'
 

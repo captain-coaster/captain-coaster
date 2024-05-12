@@ -12,8 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
@@ -37,12 +39,20 @@ class ConnectController extends AbstractController
         LoginLinkHandlerInterface $loginLinkHandler,
         UserRepository $userRepository,
         TranslatorInterface $translator,
+        RateLimiterFactory $loginLinkLimiter,
     ): Response {
         if ($request->isMethod('POST') && $email = $request->request->get('email')) {
-            $user = $userRepository->findOneBy(['email' => $email]);
+            // create a limiter based on a unique identifier of the client
+            // (e.g. the client's IP address, a username/email, an API key, etc.)
+            $limiter = $loginLinkLimiter->create($request->getClientIp());
 
-            // always return success for account enumeration prevention
-            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
+            // the argument of consume() is the number of tokens to consume
+            // and returns an object of type Limit
+            if (false === $limiter->consume(1)->isAccepted()) {
+                throw new TooManyRequestsHttpException();
+            }
+
+            $user = $userRepository->findOneBy(['email' => $email]);
 
             if ($user instanceof User && $user->isEnabled()) {
                 $notifier->send(
@@ -54,6 +64,9 @@ class ConnectController extends AbstractController
                     new Recipient($user->getEmail())
                 );
             }
+
+            // always return success for account enumeration prevention
+            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
         } else {
             // save referer to redirect after login
             $referer = $request->headers->get('referer');
