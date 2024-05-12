@@ -1,3 +1,9 @@
+# Define languages
+fr: Français
+en: English
+es: Español
+de: Deutsch
+
 app:
     name: 'Captain Coaster'
     title:
@@ -215,20 +221,33 @@ footer:
 
 login:
     title: 'Iniciar sesión en Captain Coaster'
-    subtitle: 'Enviar un enlace de inicio de sesión a su correo electrónico. Si aún no tiene una cuenta, <a href="{link_path}">regístrese aquí</a>.'
-    info:
-        title: '¿ Pastilla azul o pastilla roja ?'
-        text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google. Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
-    already_connected_as: 'Ya ha iniciado sesión como'
-    logout: '¿ Cerrar sesión ?'
-    link_sent: 'Enlace de inicio de sesión enviado a {email}. Por favor, revisa tu correo electrónico y haz clic en el enlace para iniciar sesión.'
-    account_disabled: 'Su correo electrónico {email} no ha sido verificado. Por favor, <a href="{link_path}">regístrese</a> o haga clic en el enlace que recibió después de registrarse para activar su cuenta.'
+    subtitle: 'Enviar un enlace de inicio de sesión a tu correo electrónico'
+    send_link: 'Enviar enlace de inicio de sesión'
+    redirect_to_register: '¿Eres nuevo en Captain Coaster? <a href="{link_path}">Crea una cuenta</a>'
+    or_sign_in_with: 'o'
+    connect_with_google: 'Conectar con Google'
+    terms: 'Al continuar, confirmas que aceptas nuestros <a href="{link_path}">Términos y Condiciones</a>'
+    email:
+        title: 'Iniciar sesión en Captain Coaster'
+        h1: '¡Listo para despachar!'
+        paragraph1: 'Para iniciar sesión en Captain Coaster, haz clic en el botón de abajo. Este enlace expirará en 15 minutos.'
+        button: 'Iniciar sesión'
+        paragraph2: 'Recibiste este correo electrónico porque estás intentando iniciar sesión en Captain Coaster. Si no estás seguro(a) de por qué estás recibiendo esto, contáctanos respondiendo a este correo electrónico.'
+    link_sent: 'Si hay una cuenta asociada con {email}, recibirás un enlace de inicio de sesión. Haz clic en el enlace para iniciar sesión.'
+    account_disabled: 'Tu correo electrónico {email} no ha sido verificado. Por favor, <a href="{link_path}">regístrate</a> o haz clic en el enlace que recibiste después de registrarte para activar tu cuenta.'
 
 register:
-    title: 'Regístrese'
-    subtitle: 'Crear una cuenta y verificarla por correo electrónico'
-    send_link: 'Enviar el enlace de confirmación'
-    link_sent: 'Enlace de confirmación enviado a {email}. Compruebe su correo electrónico y haga clic en el enlace para activar su cuenta.'
+    title: 'Crear una cuenta'
+    subtitle: 'Crea una cuenta y verifícala por correo electrónico'
+    send_link: 'Crear una cuenta'
+    link_sent: 'Enlace de confirmación enviado a {email}. Por favor, revisa tu correo electrónico y haz clic en el enlace para activar tu cuenta.'
+    form:
+        email: 'Correo electrónico'
+        first_name: 'Nombre'
+        last_name: 'Apellido'
+        submit: 'Crear una cuenta'
+    email:
+        title: 'Confirma tu correo electrónico'
 
 contact:
     title: 'Estar en contacto'
