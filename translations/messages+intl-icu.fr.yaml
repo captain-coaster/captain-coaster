@@ -265,7 +265,8 @@ rating:
 navbar:
     profile: 'Mon Profil'
     rating: 'Mes Notes'
-    logout: 'Se déconnecter'
+    login: 'Connexion'
+    logout: 'Déconnexion'
     tops: 'Mes tops'
     my_map: 'Ma carte'
 
@@ -278,21 +279,46 @@ sidebar:
     top: 'Les tops'
     review: 'Tous les avis'
     contact: 'Nous contacter'
-    logout: 'Se déconnecter'
-    login: 'Se connecter'
+    logout: 'Déconnexion'
+    login: 'Connexion'
 
 footer:
     terms: 'Politique de confidentialité'
 
 login:
     title: 'Se connecter'
-    facebook_connect: 'Connexion avec Facebook'
-    google_connect: 'Connexion avec Google'
-    info:
-        title: 'Pilule bleue ou pilule rouge ?'
-        text: 'Tu peux te connecter via ton compte Facebook, ou Google. Nous ne collectons que ton nom, ton email et ta photo de profil. Nous ne publions pas sur Facebook.'
-    already_connected_as: 'Déjà connecté en tant que'
-    logout: 'Se deconnecter ?'
+    subtitle: 'Envoyer un lien de connexion par email'
+    send_link: 'Envoyer un lien'
+    redirect_to_register: 'Nouveau sur Captain Coaster? <a href="{link_path}">Créez un compte</a>'
+    or_sign_in_with: 'ou'
+    connect_with_google: 'Connexion avec google'
+    facebook_login_disclaimer: 'Utilisateurs de la connexion Facebook, veuillez maintenant vous connecter en utilisant l''adresse e-mail associée à votre compte Facebook'
+    terms: 'En continuant, vous acceptez nos <a href="{link_path}">Termes et Conditions</a>'
+    email:
+        title: 'Connexion à Captain Coaster'
+        h1: 'Prêt au dispatch !'
+        paragraph1: 'Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes.'
+        button: 'Connexion'
+        paragraph2: 'Vous recevez cet email car vous avez demandé à vous connecter à Captain Coaster. Si vous ne savez pas pourquoi vous recevez cet email, vous pouvez nous contacter en répondant à cet email.'
+    link_sent: 'Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter.'
+    account_disabled: 'Votre email {email} n''est pas vérifié. Merci de vous <a href="{link_path}">inscrire</a> ou de cliquer sur le lien reçu après l''inscription pour activer votre compte.'
+
+register:
+    title: 'Créer un compte'
+    subtitle: 'Veuillez remplir tous les champs ci-dessous'
+    link_sent: 'Compte créé ! Veuillez vérifier votre email ({email}) et cliquer sur le lien pour activer votre compte.'
+    form:
+        email: 'Email'
+        first_name: 'Prénom'
+        last_name: 'Nom'
+        submit: 'Créer un compte'
+    email:
+        title: 'Confirmez votre email'
+        h1: 'Bienvenue à bord !'
+        paragraph1: 'Pour utiliser Captain Coaster, cliquez sur le bouton de vérification. Ce lien est valable pendant'
+        button: 'Activer'
+        paragraph2: 'Vous avez reçu cet email parce que vous avez créé un compte sur Captain Coaster. Si vous n’êtes pas sûr de la raison pour laquelle vous recevez ceci, veuillez nous contacter en répondant à cet email.'
+    email_verified: 'Votre compte ({email}) a été activé. Bienvenue sur Captain Coaster!'
 
 contact:
     title: 'Nous contacter'
@@ -349,8 +375,9 @@ error:
     403:
         title: 'Accès interdit'
         message: 'L''accès à cette page est interdit'
+    429:
+        title: 'Too many requests'
+        message: 'Please wait a few minutes'
     generic:
-        title: 'Oops, une erreur s''est produite'
+        title: 'Une erreur s''est produite'
         message: 'Une erreur s''est produite. Contactez-nous si le problème persiste'
-
-User account is disabled.: 'Ce compte est désactivé car il ne respecte pas nos règles d''utilisation. Contactez-nous pour avoir plus d''informations.'

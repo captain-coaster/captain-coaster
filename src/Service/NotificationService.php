@@ -9,7 +9,6 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -17,8 +16,8 @@ use Twig\Environment;
 
 class NotificationService
 {
-    final public const NOTIF_BADGE = 'badge';
-    final public const NOTIF_RANKING = 'ranking';
+    final public const string NOTIF_BADGE = 'badge';
+    final public const string NOTIF_RANKING = 'ranking';
 
     public function __construct(
         private readonly EntityManagerInterface $em,
@@ -26,8 +25,6 @@ class NotificationService
         private readonly Environment $templating,
         private readonly MailerInterface $mailer,
         private readonly TranslatorInterface $translator,
-        private readonly string $emailFrom,
-        private readonly string $emailFromName,
         private readonly UserRepository $userRepository
     ) {
     }
@@ -93,7 +90,6 @@ class NotificationService
         );
 
         $message = (new Email())
-            ->from(new Address($this->emailFrom, $this->emailFromName))
             ->to($notification->getUser()->getEmail())
             ->subject($subject)
             ->html(

@@ -187,10 +187,6 @@ class RankingService
                 // don't take into account if too few comparisons
                 // $comparisonResult + $reverseComparisonResult always equals vote number
                 if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
-                    if ((floor($comparisonResult + $reverseComparisonResult) - ($comparisonResult + $reverseComparisonResult)) < 0) {
-                        dump(floor($comparisonResult + $reverseComparisonResult) - ($comparisonResult + $reverseComparisonResult));
-                        exit;
-                    }
                     $this->totalComparisonNumber += (int) ($comparisonResult + $reverseComparisonResult);
                     ++$duelCount;
 

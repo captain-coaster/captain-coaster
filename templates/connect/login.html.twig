@@ -1,83 +1,62 @@
-<!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ 'login.title'|trans }} • {{ 'app.name'|trans }}</title>
+{% extends "base_login.html.twig" %}
 
-    <!-- Global stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet"
-          type="text/css">
-    {{ encore_entry_link_tags('app') }}
-    <!-- /global stylesheets -->
-</head>
+{% block title %}{{ 'login.title'|trans }} • {{ 'app.name'|trans }}{% endblock %}
 
-<body class="login-container login-cover"
-      style="background: url({{ asset('images/backgrounds/login.jpg') }}) no-repeat; background-size: cover;">
-<!-- Page container -->
-<div class="page-container">
-    <!-- Page content -->
-    <div class="page-content">
-        <!-- Main content -->
-        <div class="content-wrapper">
-            <!-- Content area -->
-            <div class="content pb-20">
-                <!-- Form with validation -->
-                <div class="panel panel-body login-form">
-                    <div class="text-center">
-                        <div class="icon-object border-indigo-300 text-indigo-300"><i class="icon-lock"></i></div>
-                        <h5 class="content-group">{{ 'login.title'|trans }}</h5>
-                    </div>
-                    {% if error is defined and error %}
-                        <div class="alert alert-danger alert-bordered">
-                            {{ error|trans }}
-                        </div>
-                    {% endif %}
-                    {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-                        <ul class="list-inline form-group list-inline-condensed text-center">
-                            {#{% for owner in hwi_oauth_resource_owners() %}#}
-                            {% set referer = app.request.server.get('HTTP_REFERER')|default('/') %}
-                            {# <li class="mb-5" style="padding:0;">
-                                <a href="{{ path('connect_facebook_start') }}" class="btn btn-flat" style="background-color: #4267B2; color: #FFFFFF;">
-                                    <i class="icon-facebook position-left"></i> {{ 'login.facebook_connect'|trans }}
-                                </a>
-                            </li> #}
-                            <li>
-                                <a href="{{ path('connect_google_start') }}" class="btn btn-flat bg-danger-800">
-                                    <i class="icon-google position-left"></i> {{ 'login.google_connect'|trans }}
-                                </a>
-                            </li>
-                            {#{% endfor %}#}
-                        </ul>
-                        {#
-                        <div class="content-divider text-muted form-group">
-                            <span>{{ 'login.info.title'|trans }}</span></div>
-                        <span class="help-block text-center no-margin">
-                            {{ 'login.info.text'|trans }}
-                        </span> #}
-                        {#
-                            <form action="{{ path('login_link_start') }}" method="POST">
-                            <input type="email" name="email">
-                            <button type="submit">Send Login Link</button>
-                            </form>
-                        #}
-                    {% else %}
-                        <div class="text-center">
-                            {{ 'login.already_connected_as'|trans }} <strong>{{ app.user.displayName }}</strong>
-                            <br/><br/>
-                            <a href="{{ path('logout') }}" class="btn btn-flat bg-indigo">{{ 'login.logout'|trans }}</a>
-                        </div>
-                    {% endif %}
-                </div>
-                <!-- /form with validation -->
-            </div>
-            <!-- /content area -->
+{% block body %}
+    <!-- Form with validation -->
+    <div class="panel panel-body login-form">
+        <div class="text-center mb-3">
+            <div class="icon-object border-warning-400 text-warning-400"><i class="icon-key"></i></div>
+            <h5 class="content-group-lg">{{ 'login.title'|trans }}
+                <small
+                    class="display-block">{{ 'login.subtitle'|trans }}</small>
+            </h5>
         </div>
-        <!-- /main content -->
+        {% if error %}
+            <div class="alert alert-danger alert-bordered">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-bordered">
+                    {{ message | raw }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+        <form action="{{ path('login') }}" method="POST">
+            <div class="form-group has-feedback has-feedback-left">
+                <input type="email" name="email" class="form-control" placeholder="Email">
+                <div class="form-control-feedback">
+                    <i class="icon-mail5 text-muted"></i>
+                </div>
+            </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <div class="form-group">
+                <button type="submit"
+                        class="btn bg-blue btn-block">{{ 'login.send_link'|trans }}</button>
+            </div>
+            <div
+                class="form-group text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
+        </form>
+        <div class="content-divider text-muted form-group">
+            <span>{{ 'login.or_sign_in_with'|trans }}</span>
+        </div>
+        <ul class="list-inline form-group list-inline-condensed text-center">
+            <li>
+                <a href="{{ path('connect_google_start') }}"
+                   class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
+                    <i class="icon-google"></i>
+                    {{ 'login.connect_with_google'|trans }}
+                </a>
+            </li>
+        </ul>
+        <div class="alert alert-primary alert-bordered">
+            {{ 'login.facebook_login_disclaimer'|trans }}
+        </div>
+        <span class="help-block text-center">
+            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
+        </span>
     </div>
-    <!-- /page content -->
-</div>
-<!-- /page container -->
-</body>
-</html>
+    <!-- /form with validation -->
+{% endblock %}

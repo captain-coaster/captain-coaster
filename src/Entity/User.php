@@ -10,12 +10,14 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'users')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface
 {
     public function __construct()
@@ -56,7 +58,6 @@ class User implements UserInterface
     private string $firstName;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
-    #[Assert\NotBlank]
     private ?string $displayName = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
@@ -123,6 +124,9 @@ class User implements UserInterface
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $imperial = false;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
+    private bool $isVerified = false;
 
     public function __toString(): string
     {
@@ -462,6 +466,11 @@ class User implements UserInterface
         return array_values(array_unique($roles));
     }
 
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
     public function eraseCredentials(): void
     {
     }
@@ -525,5 +534,17 @@ class User implements UserInterface
         }
 
         return null;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

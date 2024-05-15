@@ -1,7 +1,13 @@
+# Define languages
+fr: Français
+en: English
+es: Español
+de: Deutsch
+
 app:
     name: 'Captain Coaster'
     title:
-        default: '¡ Bienvenido !'
+        default: 'Bienvenido'
     header:
         search: 'Batman, Port Aventura...'
 
@@ -198,6 +204,7 @@ navbar:
     logout: 'Cerrar sesión'
     topcoasters: 'Mi Top Coasters'
     my_map: 'Mi mapa'
+    login: 'Iniciar sesión'
 
 sidebar:
     index: 'Pagina de inicio'
@@ -215,11 +222,38 @@ footer:
 
 login:
     title: 'Iniciar sesión en Captain Coaster'
-    info:
-        title: '¿ Pastilla azul o pastilla roja ?'
-        text: 'Puede iniciar sesión con vuestra cuenta de Facebook o Google. Solo recopilamos vuestros nombre, correo electrónico y foto de perfil.'
-    already_connected_as: 'Ya ha iniciado sesión como'
-    logout: '¿ Cerrar sesión ?'
+    subtitle: 'Enviar un enlace de inicio de sesión a tu correo electrónico'
+    send_link: 'Enviar enlace de inicio de sesión'
+    redirect_to_register: '¿Eres nuevo en Captain Coaster? <a href="{link_path}">Crea una cuenta</a>'
+    or_sign_in_with: 'o'
+    connect_with_google: 'Conectar con Google'
+    facebook_login_disclaimer: 'Usuarios de Facebook login, por favor inicien sesión utilizando el correo electrónico asociada a su cuenta de Facebook'
+    terms: 'Al continuar, confirmas que aceptas nuestros <a href="{link_path}">Términos y Condiciones</a>'
+    email:
+        title: 'Iniciar sesión en Captain Coaster'
+        h1: '¡Listo para despachar!'
+        paragraph1: 'Para iniciar sesión en Captain Coaster, haz clic en el botón de abajo. Este enlace expirará en 15 minutos.'
+        button: 'Iniciar sesión'
+        paragraph2: 'Recibiste este correo electrónico porque estás intentando iniciar sesión en Captain Coaster. Si no estás seguro(a) de por qué estás recibiendo esto, contáctanos respondiendo a este correo electrónico.'
+    link_sent: 'Si hay una cuenta asociada con {email}, recibirás un enlace de inicio de sesión. Haz clic en el enlace para iniciar sesión.'
+    account_disabled: 'Tu correo electrónico {email} no ha sido verificado. Por favor, <a href="{link_path}">regístrate</a> o haz clic en el enlace que recibiste después de registrarte para activar tu cuenta.'
+
+register:
+    title: 'Crear una cuenta'
+    subtitle: 'Por favor, complete todos los campos a continuación'
+    link_sent: '¡Cuenta creada! Por favor, revise su correo electrónico ({email}) y haga clic en el enlace para activar su cuenta.'
+    form:
+        email: 'Correo electrónico'
+        first_name: 'Nombre'
+        last_name: 'Apellido'
+        submit: 'Crear una cuenta'
+    email:
+        title: 'Confirma tu correo electrónico'
+        h1: '¡Bienvenido a bordo!'
+        paragraph1: 'Para usar Captain Coaster, haga clic en el botón de verificación. Este enlace es válido por'
+        button: 'Activar'
+        paragraph2: 'Recibió este correo electrónico porque creó una cuenta en Captain Coaster. Si no está seguro de por qué está recibiendo esto, por favor contáctenos respondiendo a este correo electrónico.'
+    email_verified: 'Su correo electrónico {email} ha sido verificado. ¡Bienvenido a Captain Coaster!'
 
 contact:
     title: 'Estar en contacto'

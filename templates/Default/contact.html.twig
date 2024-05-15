@@ -4,8 +4,6 @@
 {% set openedSidebar = true %}
 {% block title %}{{ title }}{% endblock %}
 
-{% form_theme form 'bootstrap_3_layout.html.twig' %}
-
 {% block body %}
   {{ form_errors(form) }}
   {{ form_start(form, {'attr': {'class': 'recaptcha-form'}}) }}
