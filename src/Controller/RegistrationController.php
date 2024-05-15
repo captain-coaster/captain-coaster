@@ -14,7 +14,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -36,8 +35,9 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // init display name
+            // init display name & preferred locale
             $user->setDisplayName($user->getFirstName().' '.$user->getLastName());
+            $user->setPreferredLocale($request->getLocale());
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -47,7 +47,6 @@ class RegistrationController extends AbstractController
                 'app_verify_email',
                 $user,
                 (new TemplatedEmail())
-                    // ->from(new Address('no-reply@captaincoaster.com', 'Captain Coaster'))
                     ->to($user->getEmail())
                     ->subject($translator->trans('register.email.title'))
                     ->htmlTemplate('registration/confirmation_email.html.twig')
@@ -89,8 +88,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        // @TODO Change the redirect on success and handle or remove the flash message in your templates
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('success', $translator->trans('register.email_verified', ['email' => $user->getEmail()]));
 
         return $security->login($user, 'login_link', 'main');
     }

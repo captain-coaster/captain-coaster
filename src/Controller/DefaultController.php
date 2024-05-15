@@ -10,7 +10,6 @@ use App\Repository\RiddenCoasterRepository;
 use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,14 +25,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 /**
  * Controller for index pages.
  */
-class DefaultController extends AbstractController
+class DefaultController extends BaseController
 {
     /** Root of application without locale, redirect to browser language if defined. */
     public function root(Request $request): RedirectResponse
     {
-        $locale = $request->getPreferredLanguage($this->getParameter('app_locales_array'));
+        if ($this->getUser()) {
+            return $this->redirectToRoute('bdd_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
+        }
 
-        return $this->redirectToRoute('bdd_index', ['_locale' => $locale], 301);
+        return $this->redirectToRoute('bdd_index', [
+            '_locale' => $request->getPreferredLanguage($this->getParameter('app_locales_array')),
+        ], 301);
     }
 
     /**

@@ -27,7 +27,7 @@ class TopCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Top')
             ->setEntityLabelInPlural('Tops')
-            ->setSearchFields(['id', 'name', 'user.username'])
+            ->setSearchFields(['id', 'name', 'user.displayName'])
             ->setDefaultSort(['updatedAt' => 'DESC'])
             ->showEntityActionsInlined();
     }

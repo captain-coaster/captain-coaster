@@ -270,6 +270,7 @@ navbar:
     logout: 'Abmelden'
     tops: 'Meine Tops'
     my_map: 'Meine Karte'
+    login: 'Anmelden'
 
 sidebar:
     index: 'Home'
@@ -293,6 +294,7 @@ login:
     redirect_to_register: 'Neu bei Captain Coaster? <a href="{link_path}">Konto erstellen</a>'
     or_sign_in_with: 'oder'
     connect_with_google: 'Mit Google anmelden'
+    facebook_login_disclaimer: 'Ehemalige Facebook-Login-Nutzer, bitte melden Sie sich mit der E-Mail-Adresse an, die mit Ihrem Facebook-Konto verknüpft ist'
     terms: 'Durch die Fortsetzung bestätigen Sie, dass Sie unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a> akzeptieren.'
     email:
         title: 'Anmelden bei Captain Coaster'
@@ -304,17 +306,21 @@ login:
     account_disabled: 'Ihre E-Mail-Adresse {email} wurde nicht verifiziert. Bitte <a href="{link_path}">registrieren</a> Sie sich oder klicken Sie auf den Link, den Sie nach der Registrierung erhalten haben, um Ihr Konto zu aktivieren.'
 
 register:
-    title: 'Konto erstellen'
-    subtitle: 'Ein Konto erstellen und per E-Mail bestätigen'
-    send_link: 'Konto erstellen'
-    link_sent: 'Bestätigungslink an {email} gesendet. Bitte überprüfen Sie Ihre E-Mail und klicken Sie auf den Link, um Ihr Konto zu aktivieren.'
+    title: 'Ein Konto erstellen'
+    subtitle: 'Bitte füllen Sie alle untenstehenden Felder aus'
+    link_sent: 'Konto erstellt! Bitte überprüfen Sie Ihre E-Mail ({email}) und klicken Sie auf den Link, um Ihr Konto zu aktivieren.'
     form:
         email: 'E-Mail'
         first_name: 'Vorname'
         last_name: 'Nachname'
-        submit: 'Konto erstellen'
+        submit: 'Ein Konto erstellen'
     email:
-        title: 'Bitte bestätigen Sie Ihre E-Mail-Adresse'
+        title: 'Bestätigen Sie Ihre E-Mail'
+        h1: 'Willkommen an Bord!'
+        paragraph1: 'Um Captain Coaster zu nutzen, klicken Sie auf den Bestätigungsbutton. Dieser Link ist gültig für'
+        button: 'Aktivieren'
+        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie ein Konto bei Captain Coaster erstellt haben. Wenn Sie nicht sicher sind, warum Sie diese Nachricht erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
+    email_verified: 'Ihre E-Mail {email} wurde verifiziert. Willkommen bei Captain Coaster!'
 
 contact:
     title: 'Kontaktiere uns'

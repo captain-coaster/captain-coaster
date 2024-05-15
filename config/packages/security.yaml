@@ -34,12 +34,15 @@ security:
                 lifetime: 900
                 max_uses: 3
                 login_path: login
+            form_login:
+                enable_csrf: true
             custom_authenticators:
                 - App\Security\GoogleAuthenticator
             entry_point: App\Security\GoogleAuthenticator
             user_checker: App\Security\UserChecker
             logout:
                 path: logout
+                target: bdd_index
             remember_me:
                 name: captain_rmb
                 secret: '%kernel.secret%'

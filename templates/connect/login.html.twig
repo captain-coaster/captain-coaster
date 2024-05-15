@@ -31,6 +31,7 @@
                     <i class="icon-mail5 text-muted"></i>
                 </div>
             </div>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <div class="form-group">
                 <button type="submit"
                         class="btn bg-blue btn-block">{{ 'login.send_link'|trans }}</button>
@@ -50,9 +51,12 @@
                 </a>
             </li>
         </ul>
-        <span class="help-block text-center no-margin">
-                            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
-                        </span>
+        <div class="alert alert-primary alert-bordered">
+            {{ 'login.facebook_login_disclaimer'|trans }}
+        </div>
+        <span class="help-block text-center">
+            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
+        </span>
     </div>
     <!-- /form with validation -->
 {% endblock %}

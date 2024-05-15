@@ -296,6 +296,7 @@ login:
     redirect_to_register: 'New to Captain Coaster? <a href="{link_path}">Create an account</a>'
     or_sign_in_with: 'or'
     connect_with_google: 'Connect with google'
+    facebook_login_disclaimer: 'Former Facebook login users, please sign in using the email address associated to your Facebook account'
     terms: 'By continuing, you confirm that you accept our <a href="{link_path}">Terms &amp; Conditions</a>'
     email:
         title: 'Sign in to Captain Coaster'
@@ -308,16 +309,20 @@ login:
 
 register:
     title: 'Create an account'
-    subtitle: 'Create an account and verify it by email'
-    send_link: 'Créer un compte'
-    link_sent: 'Confirmation link sent to {email}. Please check your email and click on the link to activate your account.'
+    subtitle: 'Please fill in all the fields below'
+    link_sent: 'Account created! Please check your email ({email}) and click on the link to activate your account.'
     form:
         email: 'Email'
         first_name: 'First Name'
         last_name: 'Last Name'
         submit: 'Create an account'
     email:
-        title: 'Please confirm your email'
+        title: 'Confirm your email'
+        h1: 'Welcome aboard!'
+        paragraph1: 'To use Captain Coaster, click the verification button. This link is valid for'
+        button: 'Activate'
+        paragraph2: 'You received this email because you created an account on Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email.'
+    email_verified: 'Your email {email} has been verified. Welcome to Captain Coaster!'
 
 contact:
     title: 'Get in touch'

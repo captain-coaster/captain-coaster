@@ -204,6 +204,7 @@ navbar:
     logout: 'Cerrar sesión'
     topcoasters: 'Mi Top Coasters'
     my_map: 'Mi mapa'
+    login: 'Iniciar sesión'
 
 sidebar:
     index: 'Pagina de inicio'
@@ -226,6 +227,7 @@ login:
     redirect_to_register: '¿Eres nuevo en Captain Coaster? <a href="{link_path}">Crea una cuenta</a>'
     or_sign_in_with: 'o'
     connect_with_google: 'Conectar con Google'
+    facebook_login_disclaimer: 'Usuarios de Facebook login, por favor inicien sesión utilizando el correo electrónico asociada a su cuenta de Facebook'
     terms: 'Al continuar, confirmas que aceptas nuestros <a href="{link_path}">Términos y Condiciones</a>'
     email:
         title: 'Iniciar sesión en Captain Coaster'
@@ -238,9 +240,8 @@ login:
 
 register:
     title: 'Crear una cuenta'
-    subtitle: 'Crea una cuenta y verifícala por correo electrónico'
-    send_link: 'Crear una cuenta'
-    link_sent: 'Enlace de confirmación enviado a {email}. Por favor, revisa tu correo electrónico y haz clic en el enlace para activar tu cuenta.'
+    subtitle: 'Por favor, complete todos los campos a continuación'
+    link_sent: '¡Cuenta creada! Por favor, revise su correo electrónico ({email}) y haga clic en el enlace para activar su cuenta.'
     form:
         email: 'Correo electrónico'
         first_name: 'Nombre'
@@ -248,6 +249,11 @@ register:
         submit: 'Crear una cuenta'
     email:
         title: 'Confirma tu correo electrónico'
+        h1: '¡Bienvenido a bordo!'
+        paragraph1: 'Para usar Captain Coaster, haga clic en el botón de verificación. Este enlace es válido por'
+        button: 'Activar'
+        paragraph2: 'Recibió este correo electrónico porque creó una cuenta en Captain Coaster. Si no está seguro de por qué está recibiendo esto, por favor contáctenos respondiendo a este correo electrónico.'
+    email_verified: 'Su correo electrónico {email} ha sido verificado. ¡Bienvenido a Captain Coaster!'
 
 contact:
     title: 'Estar en contacto'

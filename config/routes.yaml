@@ -14,7 +14,7 @@ controllers:
     prefix: '/{_locale<en|fr|es|de>}'
 
 logout:
-    path: '/logout'
+    path: '/{_locale<en|fr|es|de>}/logout'
     controller: App\Controller\ConnectController::logout
 
 connect_google_start:
@@ -26,7 +26,7 @@ connect_google_check:
     controller: App\Controller\ConnectController::connectGoogleCheck
 
 login_check:
-    path: '/login/check'
+    path: '/{_locale<en|fr|es|de>}/login/check'
 
 sitemap:
     path: '/sitemap.xml'

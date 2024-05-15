@@ -11,8 +11,12 @@
                 <small class="display-block">{{ 'register.subtitle'|trans }}</small>
             </h5>
         </div>
-        {% for flash_error in app.flashes('verify_email_error') %}
-            <div class="alert alert-danger alert-bordered">{{ flash_error }}</div>
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-bordered">
+                    {{ message | raw }}
+                </div>
+            {% endfor %}
         {% endfor %}
 
         {{ form_start(registrationForm) }}
@@ -23,8 +27,8 @@
         {{ form_end(registrationForm) }}
 
         <span class="help-block text-center no-margin">
-                            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
-                        </span>
+            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
+        </span>
     </div>
     <!-- /form with validation -->
 {% endblock %}

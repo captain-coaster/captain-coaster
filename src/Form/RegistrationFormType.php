@@ -32,7 +32,7 @@ class RegistrationFormType extends AbstractType
             ->add('lastName', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'register.form.first_name'],
+                    'placeholder' => 'register.form.last_name'],
                 'label' => false,
             ])
             ->add(
