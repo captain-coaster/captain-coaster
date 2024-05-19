@@ -19,7 +19,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -80,9 +80,13 @@ class DefaultController extends BaseController
 
             $message = (new Email())
                 ->to($this->getParameter('app_contact_mail_to'))
-                ->replyTo($data['email'])
                 ->subject($translator->trans('contact.email.title'))
                 ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']]));
+
+            if ($data['email']) {
+                $message->replyTo($data['email']);
+            }
+
             $mailer->send($message);
 
             // send notification
