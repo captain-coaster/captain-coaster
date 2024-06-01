@@ -28,7 +28,7 @@ class ImageCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Picture')
             ->setEntityLabelInPlural('Pictures')
-            ->setSearchFields(['id', 'coaster.name', 'uploader.username', 'filename', 'credit'])
+            ->setSearchFields(['id', 'coaster.name', 'uploader.displayName', 'filename', 'credit'])
             ->setDefaultSort(['enabled' => 'ASC', 'updatedAt' => 'DESC'])
             ->showEntityActionsInlined()
             ->setPaginatorPageSize(20);
