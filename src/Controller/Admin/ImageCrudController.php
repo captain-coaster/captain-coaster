@@ -18,6 +18,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ImageCrudController extends AbstractCrudController
 {
+    public function __construct(private string $picturesHostname)
+    {
+    }
+
     public static function getEntityFqcn(): string
     {
         return Image::class;
@@ -46,7 +50,7 @@ class ImageCrudController extends AbstractCrudController
             AssociationField::new('uploader'),
             AssociationField::new('coaster'),
             TextField::new('credit'),
-            ImageField::new('path', 'Image')->setBasePath($this->getParameter('pictures_cdn_host').'/1440x1440/')->onlyOnIndex(),
+            ImageField::new('path', 'Image')->setBasePath($this->picturesHostname.'/1440x1440/')->onlyOnIndex(),
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             BooleanField::new('watermarked')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),

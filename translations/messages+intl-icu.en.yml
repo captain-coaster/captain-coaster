@@ -79,7 +79,7 @@ image_upload:
             helper: 'The file must be in JPEG format and less than 13MB in size. Very small images could be rejected.'
         credit:
             label: 'Who took this picture?'
-            helper: 'Credit will be displayed under the picture.'
+            helper: 'You may only upload pictures if you are the original author or have obtained authorization from the original author.'
         watermark:
             label: 'Watermark "Captain Coaster"'
             helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'

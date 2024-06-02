@@ -73,10 +73,10 @@ image_upload:
             helper: 'Le fichier doit être au format JPEG et faire moins de 13Mo. Une image trop petite peut être rejetée.'
         credit:
             label: 'Qui a pris cette photo ?'
-            helper: 'Le crédit sera affiché sous la photo.'
+            helper: 'Vous ne pouvez envoyer des photos que si vous êtes l''auteur ou si vous avez obtenu l''autorisation de l''auteur original.'
         watermark:
             label: 'Watermark "Captain Coaster"'
-            helper: 'Tu peux mettre un watermark Captain Coaster sur la photo, pour éviter la réutilisation sur d''autres sites.'
+            helper: 'Appliquer un watermark Captain Coaster sur la photo, pour éviter la réutilisation sur d''autres sites.'
         upload: 'Envoyer ma photo'
         back: 'Retour au coaster'
         success: 'La photo a été envoyée. Elle sera validée par un administrateur avant affichage.'

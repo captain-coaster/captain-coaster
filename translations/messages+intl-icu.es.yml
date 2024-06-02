@@ -1,9 +1,3 @@
-# Define languages
-fr: Français
-en: English
-es: Español
-de: Deutsch
-
 app:
     name: 'Captain Coaster'
     title:
@@ -63,6 +57,22 @@ coaster:
         button: 'Subir una foto'
         all: 'Ver todas las fotos'
     location: 'Localización'
+
+image_upload:
+    title: 'Sube una foto de {coaster}'
+    form:
+        file:
+            label: 'Selecciona una foto'
+            helper: 'El archivo debe estar en formato JPEG y tener un tamaño inferior a 13MB. Imágenes muy pequeñas podrían ser rechazadas.'
+        credit:
+            label: '¿Quién tomó esta foto?'
+            helper: 'Solo puede subir fotos si es el autor original o si ha obtenido la autorización del autor original.'
+        watermark:
+            label: 'Marca de agua "Captain Coaster"'
+            helper: 'Puede elegir marcar la foto con un logotipo de Captain Coaster para evitar su reutilización en otros sitios web.'
+        upload: 'Enviar mi foto'
+        back: 'Volver a la montaña rusa'
+        success: 'La foto se ha subido correctamente. Será revisada por un administrador antes de su visualización.'
 
 park:
     opened_coasters: '{ count, plural, one { montaña rusa abierta } other { montañas rusas abierta }}'

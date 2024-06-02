@@ -77,7 +77,7 @@ image_upload:
             helper: 'Die Datei muss im JPEG-Format vorliegen und weniger als 13 MB groß sein. Zu kleine Bilder könnten abgelehnt werden.'
         credit:
             label: 'Wer hat dieses Bild gemacht?'
-            helper: 'Der Urheber wird unter dem Bild angezeigt.'
+            helper: 'Sie dürfen nur Bilder hochladen, wenn Sie der ursprüngliche Autor sind oder die Genehmigung des ursprünglichen Autors erhalten haben.'
         watermark:
             label: 'Wasserzeichen "Captain Coaster"'
             helper: 'Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden.'

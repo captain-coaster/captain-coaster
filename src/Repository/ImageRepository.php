@@ -7,13 +7,9 @@ namespace App\Repository;
 use App\Entity\Image;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * ImageRepository.
- */
 class ImageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -21,10 +17,6 @@ class ImageRepository extends ServiceEntityRepository
         parent::__construct($registry, Image::class);
     }
 
-    /**
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
     public function findLatestImage()
     {
         return $this->getEntityManager()
@@ -39,7 +31,7 @@ class ImageRepository extends ServiceEntityRepository
             ->getSingleResult();
     }
 
-    public function findUserImages(User $user)
+    public function findUserImages(User $user): Query
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -52,8 +44,7 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    /** @throws NonUniqueResultException */
-    public function countAll()
+    public function countAll(): int
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -62,5 +53,18 @@ class ImageRepository extends ServiceEntityRepository
             ->where('i.enabled = 1')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    public function findImageToBeValidated(): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('i')
+            ->from(Image::class, 'i')
+            ->where('i.enabled = 0')
+            ->andWhere('i.createdAt < :date')
+            ->setParameter('date', new \DateTime('-23 hours'))
+            ->getQuery()
+            ->getResult();
     }
 }

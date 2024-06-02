@@ -9,6 +9,10 @@ use App\Service\ImageManager;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use League\Flysystem\FilesystemException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
+use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
+use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordFieldEmbedObject;
+use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordMediaEmbedObject;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Exception\TransportExceptionInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
@@ -18,8 +22,11 @@ use Symfony\Component\Notifier\Message\ChatMessage;
  */
 class ImageListener
 {
-    public function __construct(private readonly ImageManager $imageManager, private readonly ChatterInterface $chatter)
-    {
+    public function __construct(
+        private readonly ImageManager $imageManager,
+        private readonly ChatterInterface $chatter,
+        private string $picturesHostname
+    ) {
     }
 
     /**
@@ -42,9 +49,30 @@ class ImageListener
             $image->setFilename($fileName);
         }
 
-        $this->chatter->send(
-            (new ChatMessage('A new picture of '.$image->getCoaster()->getName().' is waiting for review'))->transport('discord_notif')
-        );
+        $chatMessage = (new ChatMessage(''))->transport('discord_picture');
+
+        $discordOptions = (new DiscordOptions())
+            ->addEmbed(
+                (new DiscordEmbed())
+                    ->title($image->getCoaster()->getName().' - '.$image->getCoaster()->getPark()->getName())
+                    ->thumbnail((new DiscordMediaEmbedObject())
+                        ->url($this->picturesHostname.'/1440x1440/'.$image->getFilename()))
+                    ->addField(
+                        (new DiscordFieldEmbedObject())
+                            ->name('Uploader')
+                            ->value($image->getUploader()->getDisplayName())
+                    )
+                    ->addField(
+                        (new DiscordFieldEmbedObject())
+                            ->name('Credit')
+                            ->value($image->getCredit())
+                    )
+            );
+
+        // Add the custom options to the chat message and send the message
+        $chatMessage->options($discordOptions);
+
+        $this->chatter->send($chatMessage);
     }
 
     /**

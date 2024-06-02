@@ -3,12 +3,11 @@ framework:
         chatter_transports:
             discord_notif: '%env(DISCORD_NOTIF_DSN)%'
             discord_log: '%env(DISCORD_LOG_DSN)%'
-        texter_transports:
+            discord_picture: '%env(DISCORD_PICTURE_DSN)%'
         channel_policy:
-            # use chat/slack, chat/telegram, sms/twilio or sms/nexmo
+            # channel_policy only used  by monolog at this time
+            # need to improve the monolog transport logic
             urgent: ['chat/discord_log']
             high: ['chat/discord_log']
             medium: ['chat/discord_log']
             low: ['chat/discord_log']
-        admin_recipients:
-            - { email: admin@example.com }
