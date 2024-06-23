@@ -110,13 +110,16 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private Collection $launchs;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $kiddie = false;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $holdRanking = false;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $vr = false;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $indoor = false;
 
     #[ORM\ManyToOne(targetEntity: 'Park', fetch: 'LAZY', inversedBy: 'coasters')]
@@ -378,6 +381,18 @@ class Coaster implements \Stringable
     public function setKiddie(bool $kiddie): static
     {
         $this->kiddie = $kiddie;
+
+        return $this;
+    }
+
+    public function isHoldRanking(): bool
+    {
+        return $this->holdRanking;
+    }
+
+    public function setHoldRanking(bool $holdRanking): static
+    {
+        $this->holdRanking = $holdRanking;
 
         return $this;
     }

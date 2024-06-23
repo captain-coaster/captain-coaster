@@ -12,7 +12,6 @@ use App\Form\Type\ImageUploadType;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/coasters')]
-class CoasterController extends AbstractController
+class CoasterController extends BaseController
 {
     /** Redirects to index */
     #[Route(path: '/', name: 'coaster_index', methods: ['GET'])]

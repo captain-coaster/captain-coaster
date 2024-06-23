@@ -16,18 +16,17 @@ use Doctrine\ORM\EntityManagerInterface;
 class RankingService
 {
     // Minimum comparison number between coaster A and B
-    final public const MIN_COMPARISONS = 3;
+    final public const int MIN_COMPARISONS = 3;
     // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
-    final public const MIN_DUELS = 325;
+    final public const int MIN_DUELS = 350;
     // For elite coaster, we need more comparisons
-    final public const ELITE_SCORE = 95;
-    final public const MIN_DUELS_ELITE_SCORE = 550;
+    final public const int ELITE_SCORE = 95;
+    final public const int MIN_DUELS_ELITE_SCORE = 600;
     private array $duels = [];
     private array $ranking = [];
     private int $totalComparisonNumber = 0;
     private array $userComparisons = [];
     private array $rejectedCoasters = [];
-    private ?string $highlightedNewCoaster = null;
 
     public function __construct(private readonly EntityManagerInterface $em, private readonly UserRepository $userRepository)
     {
@@ -47,10 +46,6 @@ class RankingService
 
         foreach ($this->ranking as $coasterId => $score) {
             $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
-
-            if (null === $coaster->getRank() && $rank < 300 && null === $this->highlightedNewCoaster) {
-                $this->highlightedNewCoaster = $coaster->getName();
-            }
 
             $coaster->setScore((string) $score);
             $coaster->setPreviousRank($coaster->getRank());
@@ -99,11 +94,6 @@ class RankingService
         }
 
         $this->computeScore($dryRun);
-    }
-
-    public function getHighlightedNewCoaster(): ?string
-    {
-        return $this->highlightedNewCoaster;
     }
 
     /** Process all comparisons inside a top and set all results in duels array. */

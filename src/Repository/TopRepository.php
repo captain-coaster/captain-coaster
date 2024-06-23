@@ -115,17 +115,18 @@ class TopRepository extends ServiceEntityRepository
     /** Get user main top coasters for monthly ranking update. */
     public function findUserTopForRanking(int $userId): array
     {
-        $query = $this->getEntityManager()->createQuery('
-            SELECT tc.position AS position, c.id AS coaster
-            FROM App:Top t
-            JOIN t.topCoasters tc
-            JOIN tc.coaster c
-            WHERE t.main = true
-            AND t.user = :id
-            AND c.kiddie = 0
-        ');
-        $query->setParameter('id', $userId);
-
-        return $query->getResult();
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->addSelect('tc.position AS position', 'c.id as coaster')
+            ->from(Top::class, 't')
+            ->innerJoin('t.topCoasters', 'tc')
+            ->innerJoin('tc.coaster', 'c')
+            ->where('t.main = 1')
+            ->andWhere('t.user = :id')
+            ->andWhere('c.kiddie = 0')
+            ->andWhere('c.holdRanking = 0')
+            ->setParameter('id', $userId)
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -1,45 +1,49 @@
 services:
-  nginx:
-    image: nginx:1-alpine
-    container_name: nginx-captain
-    ports:
-      - "8080:80"
-    volumes:
-      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - .:/var/www
-  php:
-    build:
-      context: ./docker/php
-    container_name: php-captain
-    volumes:
-      - .:/var/www
-    user: "1000:1000"
-    tmpfs:
-      - /tmp:rw
-      - /.composer:rw
-  db:
-    image: mariadb:10.11
-    container_name: db-captain
-    volumes:
-      - datamaria:/var/lib/mysql
-    restart: always
-    ports:
-        - "3306:3306"
-    environment:
-        - MYSQL_ROOT_PASSWORD=root123
-        - MARIADB_AUTO_UPGRADE=1
-  adminer:
-    image: adminer
-    container_name: adminer-captain
-    restart: always
-    ports:
-      - "8081:8080"
-  encore:
-    image: node:16-alpine
-    container_name: node-captain
-    volumes:
-      - .:/var/www
-    working_dir: /var/www
-    command: [ "sh", "-c", "npm install && npm run build" ]
+    nginx:
+        image: nginx:1-alpine
+        container_name: nginx-captain
+        ports:
+            - "8080:80"
+        volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+            - .:/var/www
+    php:
+        build:
+            context: ./docker/php
+        container_name: php-captain
+        volumes:
+            - .:/var/www
+        user: "1000:1000"
+        tmpfs:
+            - /tmp:rw
+            - /.composer:rw
+    db:
+        image: mariadb:10.11
+        container_name: db-captain
+        volumes:
+            - datamaria:/var/lib/mysql
+        restart: always
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=root123
+            - MARIADB_AUTO_UPGRADE=1
+    redis:
+        image: 'redis:alpine'
+        ports:
+            - '6379:6379'
+    adminer:
+        image: adminer
+        container_name: adminer-captain
+        restart: always
+        ports:
+            - "8081:8080"
+    encore:
+        image: node:16-alpine
+        container_name: node-captain
+        volumes:
+            - .:/var/www
+        working_dir: /var/www
+        command: ["sh", "-c", "npm install && npm run build"]
 volumes:
-  datamaria:
+    datamaria:

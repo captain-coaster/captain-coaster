@@ -52,7 +52,7 @@ class CoasterCrudController extends AbstractCrudController
             ->add('vr')
             ->add('indoor')
             ->add('status')
-            ->add('enabled');
+            ->add('holdRanking');
     }
 
     public function configureFields(string $pageName): iterable
@@ -82,7 +82,8 @@ class CoasterCrudController extends AbstractCrudController
             DateField::new('closingDate')->hideOnIndex(),
             IntegerField::new('price')->hideOnIndex(),
             AssociationField::new('currency')->hideOnIndex(),
-            BooleanField::new('enabled'),
+            BooleanField::new('holdRanking'),
+            BooleanField::new('enabled')->hideOnIndex(),
             DateTimeField::new('createdAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->setFormTypeOption('disabled', 'disabled'),
         ];

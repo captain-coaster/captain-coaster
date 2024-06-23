@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Coaster;
-use App\Service\NotificationService;
 use App\Service\RankingService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -25,7 +24,6 @@ class RankingCommand extends Command
 {
     public function __construct(
         private readonly RankingService $rankingService,
-        private readonly NotificationService $notificationService,
         private readonly ChatterInterface $chatter
     ) {
         parent::__construct();
@@ -34,8 +32,7 @@ class RankingCommand extends Command
     protected function configure(): void
     {
         $this->addOption('dry-run', null, InputOption::VALUE_NONE)
-            ->addOption('send-discord', null, InputOption::VALUE_NONE)
-            ->addOption('send-email', null, InputOption::VALUE_NONE);
+            ->addOption('send-discord', null, InputOption::VALUE_NONE);
     }
 
     /** @throws \Exception */
@@ -73,21 +70,6 @@ class RankingCommand extends Command
             $this->notifyDiscord($coasterList);
 
             $output->writeln((string) $stopwatch->stop('discord'));
-        }
-
-        // send email notif only if NOT dry run mode
-        if ($input->getOption('send-email') && !$dryRun) {
-            $stopwatch->start('emailing');
-            $output->writeln('Sending emails to users...');
-
-            // send notifications to everyone
-            if ($this->rankingService->getHighlightedNewCoaster()) {
-                $this->notificationService->sendAll('notif.ranking.messageWithNewCoaster', NotificationService::NOTIF_RANKING, $this->rankingService->getHighlightedNewCoaster());
-            } else {
-                $this->notificationService->sendAll('notif.ranking.message', NotificationService::NOTIF_RANKING);
-            }
-
-            $output->writeln((string) $stopwatch->stop('emailing'));
         }
 
         return Command::SUCCESS;

@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/ranking')]
 class RankingController extends AbstractController
 {
-    final public const COASTERS_PER_PAGE = 20;
+    final public const int COASTERS_PER_PAGE = 20;
 
     public function __construct(
         private readonly PaginatorInterface $paginator,

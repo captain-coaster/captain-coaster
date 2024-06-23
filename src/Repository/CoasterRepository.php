@@ -131,6 +131,20 @@ class CoasterRepository extends ServiceEntityRepository
             ->getScalarResult();
     }
 
+    public function getNewlyRankedHighlightedCoaster($maxRank = 300)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->from(Coaster::class, 'c')
+            ->andWhere('c.previousRank is null')
+            ->andWhere('c.rank < :maxRank')
+            ->setParameter('maxRank', $maxRank)
+            ->orderBy('c.rank', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     private function applyFilters(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by manufacturer

@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/search')]
 class SearchController extends AbstractController
 {
-    final public const CACHE_AUTOCOMPLETE = 'main_autocomplete';
+    final public const string CACHE_AUTOCOMPLETE = 'main_autocomplete';
 
     protected PaginatorInterface $paginator;
 
