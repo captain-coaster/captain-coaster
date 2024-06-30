@@ -15,37 +15,42 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * Status.
- */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_status']])]
 #[ORM\Table(name: 'status')]
 #[ORM\Entity(repositoryClass: StatusRepository::class)]
 class Status implements \Stringable
 {
-    final public const OPERATING = 'status.operating';
-    final public const CLOSED_DEFINITELY = 'status.closed.definitely';
+    final public const string OPERATING = 'status.operating';
+    final public const string CLOSED_DEFINITELY = 'status.closed.definitely';
+
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[Groups(['read_status'])]
     private ?int $id = null;
+
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
     private ?string $name = null;
+
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
+
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
     private ?string $type = null;
+
     /** @var Collection<\App\Entity\Coaster> */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
     private Collection $coasters;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['read_status'])]
     private ?bool $isRateable = null;
 
-    /** Constructor */
+    #[ORM\Column(type: Types::INTEGER, nullable: false)]
+    private int $order;
+
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
@@ -56,117 +61,65 @@ class Status implements \Stringable
         return (string) $this->name;
     }
 
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set name.
-     *
-     * @param string $name
-     *
-     * @return Status
-     */
-    public function setName($name)
+    public function setName($name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    /**
-     * Get name.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * Set slug.
-     *
-     * @param string $slug
-     *
-     * @return Status
-     */
-    public function setSlug($slug)
+    public function setSlug($slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    /**
-     * Get slug.
-     *
-     * @return string
-     */
-    public function getSlug()
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    /**
-     * Add coaster.
-     *
-     * @return Status
-     */
-    public function addCoaster(Coaster $coaster)
+    public function addCoaster(Coaster $coaster): static
     {
         $this->coasters[] = $coaster;
 
         return $this;
     }
 
-    /** Remove coaster */
     public function removeCoaster(Coaster $coaster): void
     {
         $this->coasters->removeElement($coaster);
     }
 
-    /**
-     * Get coasters.
-     *
-     * @return Collection
-     */
-    public function getCoasters()
+    public function getCoasters(): Collection
     {
         return $this->coasters;
     }
 
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return Status
-     */
-    public function setType($type)
+    public function setType($type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setIsRateable(bool $isRateable): self
+    public function setIsRateable(bool $isRateable): static
     {
         $this->isRateable = $isRateable;
 
@@ -176,5 +129,17 @@ class Status implements \Stringable
     public function isRateable(): bool
     {
         return $this->isRateable;
+    }
+
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
+
+    public function setOrder(int $order): static
+    {
+        $this->order = $order;
+
+        return $this;
     }
 }

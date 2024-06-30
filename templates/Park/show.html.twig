@@ -73,7 +73,7 @@
         </div>
         <div class="col-sm-9">
             <ul class="media-list content-group">
-                {% for coaster in park.coasters %}
+                {% for coaster in coasters %}
                     <li class="media panel panel-body stack-media-on-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">
                         <div class="media-left">
                             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">

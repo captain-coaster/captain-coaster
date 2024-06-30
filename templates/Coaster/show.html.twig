@@ -310,7 +310,7 @@
                     </h6>
                 </div>
                 <div class="list-group no-border">
-                    {% for otherCoaster in coaster.park.coasters %}
+                    {% for otherCoaster in coasters %}
                         <div class="list-group-item">
                             <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
                             <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">

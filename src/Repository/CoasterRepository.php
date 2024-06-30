@@ -131,6 +131,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->getScalarResult();
     }
 
+    /** Find a newly ranked coaster to add in neach month notification */
     public function getNewlyRankedHighlightedCoaster($maxRank = 300)
     {
         return $this->getEntityManager()->createQueryBuilder()
@@ -143,6 +144,21 @@ class CoasterRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /** Get all coasters in a park, nicely ordered */
+    public function findAllCoastersInPark(Park $park)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->from(Coaster::class, 'c')
+            ->innerJoin('c.status', 's')
+            ->andWhere('c.park = :park')
+            ->setParameter('park', $park)
+            ->orderBy('s.order', 'ASC')
+            ->addOrderBy('c.score', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 
     private function applyFilters(QueryBuilder $qb, array $filters = []): void

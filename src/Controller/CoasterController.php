@@ -9,6 +9,7 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
+use App\Repository\CoasterRepository;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -16,7 +17,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -140,7 +141,8 @@ class CoasterController extends BaseController
     public function showAction(
         Request $request,
         Coaster $coaster,
-        RiddenCoasterRepository $riddenCoasterRepository
+        RiddenCoasterRepository $riddenCoasterRepository,
+        CoasterRepository $coasterRepository
     ): Response {
         $rating = null;
         $user = null;
@@ -151,16 +153,15 @@ class CoasterController extends BaseController
             );
         }
 
-        $countRatings = $riddenCoasterRepository->getRatingStatsForCoaster($coaster);
-
         return $this->render(
             'Coaster/show.html.twig',
             [
-                'countRatings' => $countRatings,
+                'countRatings' => $riddenCoasterRepository->getRatingStatsForCoaster($coaster),
                 'coaster' => $coaster,
                 'reviews' => $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
                 'rating' => $rating,
                 'user' => $user,
+                'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
             ]
         );
     }
