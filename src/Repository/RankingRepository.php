@@ -150,7 +150,7 @@ class RankingRepository extends ServiceEntityRepository
         if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
             $qb
                 ->andWhere('c.openingDate like :date')
-                ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));
+                ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
         }
     }
 }

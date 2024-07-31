@@ -77,7 +77,7 @@ class AvatarCleanCommand extends Command
         }
 
         try {
-            $response = $this->client->request('GET', sprintf(self::API_FB_PICTURE, $user->getFacebookId()), ['max_redirects' => 0]);
+            $response = $this->client->request('GET', \sprintf(self::API_FB_PICTURE, $user->getFacebookId()), ['max_redirects' => 0]);
 
             if (302 === $response->getStatusCode()) {
                 $user->setProfilePicture($response->getHeaders(false)['location'][0]);

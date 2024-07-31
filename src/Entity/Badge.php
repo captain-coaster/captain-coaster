@@ -111,7 +111,7 @@ class Badge
 
     public function getFilename(string $locale = 'en'): string
     {
-        $method = sprintf('getFilename%s', ucfirst((string) $locale));
+        $method = \sprintf('getFilename%s', ucfirst((string) $locale));
 
         if (method_exists($this, $method)) {
             return $this->$method();

@@ -86,7 +86,7 @@ class RankingCommand extends Command
             $format = '<info>'.$format.'</info>';
         }
 
-        return sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
+        return \sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
     }
 
     private function notifyDiscord($coasterList): void
@@ -94,7 +94,7 @@ class RankingCommand extends Command
         $discordText = '';
 
         foreach ($coasterList as $coaster) {
-            $text = sprintf("[%d] %s - %s (%s)\n", $coaster->getRank(), (null === $coaster->getPreviousRank()) ? '**'.$coaster->getName().'**' : $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
+            $text = \sprintf("[%d] %s - %s (%s)\n", $coaster->getRank(), (null === $coaster->getPreviousRank()) ? '**'.$coaster->getName().'**' : $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
 
             if (\strlen($discordText) + \strlen($text) > 2000) {
                 $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));

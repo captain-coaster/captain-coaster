@@ -76,7 +76,7 @@ class SitemapService
 
             $imageXML = [];
 
-            $imageXML['loc'] = sprintf(
+            $imageXML['loc'] = \sprintf(
                 '%s://%s/%s/%s',
                 $this->router->getContext()->getScheme(),
                 $this->router->getContext()->getHost(),
@@ -85,7 +85,7 @@ class SitemapService
             );
 
             $imageXML['title'] = $image->getCoaster()->getName();
-            $imageXML['geo_location'] = sprintf(
+            $imageXML['geo_location'] = \sprintf(
                 '%s, %s',
                 $image->getCoaster()->getPark()->getName(),
                 $this->translator->trans($image->getCoaster()->getPark()->getCountry()->getName(), [], 'database', 'en')

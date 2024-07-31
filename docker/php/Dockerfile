@@ -1,4 +1,4 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.3.9-fpm-alpine
 
 # Install Git
 RUN apk add --no-cache git
@@ -6,16 +6,21 @@ RUN apk add --no-cache git
 # Install PHP extensions
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN install-php-extensions apcu gd imagick opcache redis zip intl pdo_mysql xsl
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-ENV VERSION=v3.54.0
+RUN install-php-extensions apcu gd opcache redis zip intl pdo_mysql xsl
+
+# Temp workaround for Imagick
+RUN apk add --no-cache git autoconf build-base pkgconfig
+RUN set -eux; \
+	install-php-extensions Imagick/imagick@master
+
+ENV VERSION=v3.60.0
 
 RUN wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/$VERSION/php-cs-fixer.phar -O php-cs-fixer \
     && chmod a+x php-cs-fixer \
     && mv php-cs-fixer /usr/local/bin/php-cs-fixer
-
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY ./conf.d/docker-php.ini /usr/local/etc/php/conf.d/
 

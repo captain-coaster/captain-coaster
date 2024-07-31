@@ -35,8 +35,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->orWhere('p.name LIKE :term')
             ->orWhere('c.slug LIKE :term2')
             ->orWhere('p.slug LIKE :term2')
-            ->setParameter('term', sprintf('%%%s%%', $term))
-            ->setParameter('term2', str_replace(' ', '-', sprintf('%%%s%%', $term)))
+            ->setParameter('term', \sprintf('%%%s%%', $term))
+            ->setParameter('term2', str_replace(' ', '-', \sprintf('%%%s%%', $term)))
             ->setParameter('user', $user)
             ->setMaxResults(15)
             ->getQuery()
@@ -270,7 +270,7 @@ class CoasterRepository extends ServiceEntityRepository
         if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
             $qb
                 ->andWhere('c.openingDate like :date')
-                ->setParameter('date', sprintf('%%%s%%', $filters['openingDate']));
+                ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
         }
     }
 
@@ -286,7 +286,7 @@ class CoasterRepository extends ServiceEntityRepository
         if (\array_key_exists('name', $filters) && '' !== $filters['name']) {
             $qb
                 ->andWhere('c.name like :name')
-                ->setParameter('name', sprintf('%%%s%%', $filters['name']));
+                ->setParameter('name', \sprintf('%%%s%%', $filters['name']));
         }
     }
 }

@@ -41,7 +41,7 @@ class NotificationService
 
         if ($user->isEmailNotification()) {
             // disable email temporarily
-            //$this->sendEmail($notification);
+            // $this->sendEmail($notification);
         }
     }
 

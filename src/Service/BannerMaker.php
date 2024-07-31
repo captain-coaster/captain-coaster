@@ -51,7 +51,7 @@ class BannerMaker
 
     private function saveImage(User $user): void
     {
-        $this->image->save(sprintf('%s/%d.png', $this->targetPath, $user->getId()));
+        $this->image->save(\sprintf('%s/%d.png', $this->targetPath, $user->getId()));
     }
 
     /** @throws InvalidArgumentException */
@@ -66,7 +66,7 @@ class BannerMaker
         $y = 3;
         $position = 1;
         foreach ($top as $coaster) {
-            $this->writeText(sprintf('%d - %s', $position, $coaster), 240, $y, 10);
+            $this->writeText(\sprintf('%d - %s', $position, $coaster), 240, $y, 10);
             $y += 19;
             ++$position;
         }

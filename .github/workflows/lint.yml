@@ -15,7 +15,7 @@ jobs:
                 uses: actions/checkout@v3
 
             -   name: PHP-CS-Fixer
-                uses: docker://oskarstark/php-cs-fixer-ga@sha256:eb83f3ed231a8f8a5000960d0fb11e20b2de86c0c957791e978f4ee4e5590e74
+                uses: docker://oskarstark/php-cs-fixer-ga@sha256:09b6bb4a6072879e41988fe2ccd366c8dc3d20f59d24cdef555f6edc8486fbf2
                 with:
                     args: --diff --dry-run
 

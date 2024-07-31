@@ -35,7 +35,7 @@ class CoasterToIdTransformer implements DataTransformerInterface
         $coaster = $this->coasterRepository->find($coasterId);
 
         if (null === $coaster) {
-            throw new TransformationFailedException(sprintf('A coaster with id "%d" does not exist!', $coasterId));
+            throw new TransformationFailedException(\sprintf('A coaster with id "%d" does not exist!', $coasterId));
         }
 
         return $coaster;

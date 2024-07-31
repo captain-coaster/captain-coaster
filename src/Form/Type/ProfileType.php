@@ -19,8 +19,8 @@ class ProfileType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $completeName = sprintf('%s %s', $options['firstname'], $options['lastname']);
-        $partialName = sprintf('%s %s.', $options['firstname'], substr((string) $options['lastname'], 0, 1));
+        $completeName = \sprintf('%s %s', $options['firstname'], $options['lastname']);
+        $partialName = \sprintf('%s %s.', $options['firstname'], substr((string) $options['lastname'], 0, 1));
         $locales = $options['locales'];
 
         $builder
