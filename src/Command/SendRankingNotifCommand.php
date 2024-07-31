@@ -61,7 +61,7 @@ class SendRankingNotifCommand extends Command
             return Command::FAILURE;
         }
 
-        $io->info('Sending emails to users...');
+        $io->info('Sending notifications to users...');
 
         if ($dryRun) {
             $io->note('Dry run mode enabled. No emails will be sent.');
