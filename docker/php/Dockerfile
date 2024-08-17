@@ -11,11 +11,6 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN install-php-extensions apcu gd opcache redis zip intl pdo_mysql xsl
 
-# Temp workaround for Imagick
-RUN apk add --no-cache git autoconf build-base pkgconfig
-RUN set -eux; \
-	install-php-extensions Imagick/imagick@master
-
 ENV VERSION=v3.60.0
 
 RUN wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/$VERSION/php-cs-fixer.phar -O php-cs-fixer \

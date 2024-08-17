@@ -23,7 +23,6 @@
         "knpuniversity/oauth2-client-bundle": "^2.15",
         "league/flysystem-aws-s3-v3": "^3",
         "league/oauth2-google": "^4",
-        "liip/imagine-bundle": "^2.0",
         "oneup/flysystem-bundle": "^4",
         "stof/doctrine-extensions-bundle": "^1.2",
         "symfony/amazon-mailer": "6.4.*",

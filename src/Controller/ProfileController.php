@@ -8,7 +8,6 @@ use App\Entity\RiddenCoaster;
 use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileType;
-use App\Service\BannerMaker;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -73,16 +72,6 @@ class ProfileController extends BaseController
         return $this->render('Profile/ratings.html.twig', [
             'ratings' => $ratings,
         ]);
-    }
-
-    #[Route(path: '/banner', name: 'profile_banner', methods: ['GET'], options: ['expose' => true], condition: 'request.isXmlHttpRequest()')]
-    #[IsGranted('ROLE_USER')]
-    public function getBanner(BannerMaker $bannerMaker): Response
-    {
-        $user = $this->getUser();
-        $bannerMaker->makeBanner($user);
-
-        return $this->render('Profile/banner.html.twig', ['user' => $user]);
     }
 
     #[Route(path: '/banner/data/{id}', name: 'banner_data', methods: ['GET'])]

@@ -7,9 +7,6 @@ parameters:
     locale: 'en'
     app_locales_array: ['en', 'fr', 'es', 'de']
     app_contact_mail_to: '%env(MAILER_REPLY_TO)%'
-    app_banner_font_path: '%kernel.project_dir%/public/upload'
-    app_banner_target_path: '%kernel.project_dir%/public/images/banners'
-    app_banner_background_path: '%kernel.project_dir%/public/images/background-banner.png'
     router.request_context.host: '%env(APP_CONTEXT_HOST)%'
     router.request_context.scheme: '%env(APP_CONTEXT_SCHEME)%'
 
@@ -37,13 +34,6 @@ services:
     App\Service\ImageManager:
         arguments:
             $s3CacheBucket: '%env(AWS_S3_CACHE_BUCKET_NAME)%'
-
-    App\Service\BannerMaker:
-        arguments:
-            $imagine: '@liip_imagine.imagick'
-            $fontPath: '%app_banner_font_path%'
-            $targetPath: '%app_banner_target_path%'
-            $backgroundPath: '%app_banner_background_path%'
 
     App\Service\SitemapService:
         arguments:

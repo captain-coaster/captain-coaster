@@ -7,11 +7,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> liip/imagine-bundle ###
-/public/media/cache/
-###< liip/imagine-bundle ###
-
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
@@ -34,9 +29,6 @@ yarn-error.log
 phpstan.neon
 ###< phpstan/phpstan ###
 
-/public/images/banners/*
-!/public/images/banners/.gitkeep
-/public/images/coasters
 /.idea/
 .php_cs.cache
 .php-cs-fixer.cache
