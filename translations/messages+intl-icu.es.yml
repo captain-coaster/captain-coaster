@@ -316,3 +316,6 @@ error:
         message: 'Se ha producido un error'
 
 User account is disabled.: 'Esta cuenta está inhabilitada porque no cumple con nuestras políticas. Póngase en contacto con nosotros para obtener más información.'
+
+banner:
+    coasters: '{count, plural, one {1 coaster} other {# coasters}}'

@@ -5,17 +5,20 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\RiddenCoaster;
+use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileType;
 use App\Service\BannerMaker;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProfileController extends BaseController
 {
@@ -80,5 +83,22 @@ class ProfileController extends BaseController
         $bannerMaker->makeBanner($user);
 
         return $this->render('Profile/banner.html.twig', ['user' => $user]);
+    }
+
+    #[Route(path: '/banner/data/{id}', name: 'banner_data', methods: ['GET'])]
+    public function getBannerData(User $user, TranslatorInterface $translator): Response
+    {
+        $top = [];
+        $i = 1;
+        /** @var TopCoaster $topCoaster */
+        foreach ($user->getMainTop()->getTopCoasters()->slice(0, 3) as $topCoaster) {
+            $top[] = $i.' - '.$topCoaster->getCoaster()->getName();
+            ++$i;
+        }
+
+        return new JsonResponse([
+            'count' => $translator->trans('banner.coasters', ['count' => $user->getRatings()->count()]),
+            'top' => $top,
+        ]);
     }
 }

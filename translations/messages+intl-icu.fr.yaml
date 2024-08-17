@@ -381,3 +381,6 @@ error:
     generic:
         title: 'Une erreur s''est produite'
         message: 'Une erreur s''est produite. Contactez-nous si le problème persiste'
+
+banner:
+    coasters: '{count, plural, one {1 coaster} other {# coasters}}'

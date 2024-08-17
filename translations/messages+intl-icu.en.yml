@@ -396,3 +396,6 @@ missing:
             choose_btn: 'Select this park'
             park_name: 'Enter park name'
             country: 'Select its country below'
+
+banner:
+    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
