@@ -8,7 +8,6 @@ use App\Entity\Image;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\Filesystem;
-use League\Flysystem\FilesystemException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -23,11 +22,7 @@ class ImageManager
     ) {
     }
 
-    /**
-     * Create file on abstracted filesystem (currently S3).
-     *
-     * @throws FilesystemException
-     */
+    /** Create file on abstracted filesystem (currently S3). */
     public function upload(Image $image): string
     {
         $filename = $this->generateFilename($image->getFile(), $image->getCoaster()->getSlug());
@@ -41,11 +36,7 @@ class ImageManager
         return $filename;
     }
 
-    /**
-     * Remove file from abstracted filesystem (currently S3).
-     *
-     * @throws FilesystemException
-     */
+    /** Remove file from abstracted filesystem (currently S3). */
     public function remove(string $filename): void
     {
         $this->filesystem->delete($filename);
