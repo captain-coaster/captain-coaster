@@ -13,6 +13,7 @@ use App\Repository\ImageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -29,37 +30,46 @@ class Image
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private int $id;
+
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $filename;
+
     #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read_image'])]
     private Coaster $coaster;
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $optimized = false;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $enabled = false;
+
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $watermarked;
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotBlank]
     private User $uploader;
+
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\NotBlank]
     #[Groups(['read_image'])]
     private ?string $credit = null;
+
     #[ORM\Column(type: Types::INTEGER)]
     private int $likeCounter = 0;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private \DateTime $createdAt;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private \DateTime $updatedAt;
-    #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '13M')]
-    #[Assert\Image(minPixels: 720000)]
-    private $file;
+
+    #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '15M')]
+    #[Assert\Image(minPixels: 786432)]
+    private ?UploadedFile $file;
+
     #[Groups(['read_coaster', 'read_image'])]
     private string $path;
 
@@ -73,21 +83,9 @@ class Image
         return $this->filename;
     }
 
-    public function setFilename(string $filename): self
+    public function setFilename(string $filename): static
     {
         $this->filename = $filename;
-
-        return $this;
-    }
-
-    public function isOptimized(): bool
-    {
-        return $this->optimized;
-    }
-
-    public function setOptimized(bool $optimized): self
-    {
-        $this->optimized = $optimized;
 
         return $this;
     }
@@ -97,7 +95,7 @@ class Image
         return $this->coaster;
     }
 
-    public function setCoaster(Coaster $coaster): self
+    public function setCoaster(Coaster $coaster): static
     {
         $this->coaster = $coaster;
 
@@ -109,12 +107,12 @@ class Image
         return $this->filename;
     }
 
-    public function getFile()
+    public function getFile(): ?UploadedFile
     {
         return $this->file;
     }
 
-    public function setFile($file): self
+    public function setFile(?UploadedFile $file): static
     {
         $this->file = $file;
 
@@ -126,7 +124,7 @@ class Image
         return $this->enabled;
     }
 
-    public function setEnabled(bool $enabled): self
+    public function setEnabled(bool $enabled): static
     {
         $this->enabled = $enabled;
 
@@ -138,7 +136,7 @@ class Image
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): self
+    public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -150,7 +148,7 @@ class Image
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): self
+    public function setUpdatedAt(\DateTime $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 
@@ -162,7 +160,7 @@ class Image
         return $this->credit;
     }
 
-    public function setCredit(?string $credit): self
+    public function setCredit(?string $credit): static
     {
         $this->credit = $credit;
 
@@ -174,19 +172,19 @@ class Image
         return $this->watermarked;
     }
 
-    public function setWatermarked(bool $watermarked): self
+    public function setWatermarked(bool $watermarked): static
     {
         $this->watermarked = $watermarked;
 
         return $this;
     }
 
-    public function getUploader(): ?User
+    public function getUploader(): User
     {
         return $this->uploader;
     }
 
-    public function setUploader(User $uploader): self
+    public function setUploader(User $uploader): static
     {
         $this->uploader = $uploader;
 
@@ -198,7 +196,7 @@ class Image
         return $this->likeCounter;
     }
 
-    public function setLikeCounter(int $likeCounter): self
+    public function setLikeCounter(int $likeCounter): static
     {
         $this->likeCounter = $likeCounter;
 

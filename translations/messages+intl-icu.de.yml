@@ -74,7 +74,7 @@ image_upload:
     form:
         file:
             label: 'Wähle ein Bild aus'
-            helper: 'Die Datei muss im JPEG-Format vorliegen und weniger als 13 MB groß sein. Zu kleine Bilder könnten abgelehnt werden.'
+            helper: 'Die Datei muss im JPEG-Format vorliegen und weniger als 15 MB groß sein. Zu kleine Bilder könnten abgelehnt werden.'
         credit:
             label: 'Wer hat dieses Bild gemacht?'
             helper: 'Sie dürfen nur Bilder hochladen, wenn Sie der ursprüngliche Autor sind oder die Genehmigung des ursprünglichen Autors erhalten haben.'

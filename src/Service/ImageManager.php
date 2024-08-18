@@ -35,7 +35,7 @@ class ImageManager
         $this->filesystem->write(
             $filename,
             $image->getFile()->getContent(),
-            ['Metadata' => ['watermark' => (string) $image->isWatermarked()]]
+            ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0']]
         );
 
         return $filename;

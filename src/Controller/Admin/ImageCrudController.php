@@ -54,7 +54,6 @@ class ImageCrudController extends AbstractCrudController
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             BooleanField::new('watermarked')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
-            BooleanField::new('optimized')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             IntegerField::new('likeCounter')->hideOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
