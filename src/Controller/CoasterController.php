@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Doctrine\Hydrator\ColumnHydrator;
 use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
@@ -84,14 +83,10 @@ class CoasterController extends BaseController
     {
         $userLikes = [];
         if (($user = $this->getUser()) instanceof UserInterface) {
-            $em->getConfiguration()->addCustomHydrationMode(
-                'COLUMN_HYDRATOR',
-                ColumnHydrator::class
-            );
             $userLikes = $em
                 ->getRepository(LikedImage::class)
                 ->findUserLikes($user)
-                ->getResult('COLUMN_HYDRATOR');
+                ->getSingleColumnResult();
         }
 
         return $this->render(

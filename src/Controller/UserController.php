@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Doctrine\Hydrator\ColumnHydrator;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
@@ -155,14 +154,10 @@ class UserController extends BaseController
 
         $userLikes = [];
         if (($loggedInUser = $this->getUser()) instanceof UserInterface) {
-            $em->getConfiguration()->addCustomHydrationMode(
-                'COLUMN_HYDRATOR',
-                ColumnHydrator::class
-            );
             $userLikes = $em
                 ->getRepository(LikedImage::class)
                 ->findUserLikes($loggedInUser)
-                ->getResult('COLUMN_HYDRATOR');
+                ->getSingleColumnResult();
         }
 
         return $this->render(
