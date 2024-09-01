@@ -115,8 +115,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $user->setFirstName($googleUser->getFirstName());
             $user->setLastName($googleUser->getLastName());
             $user->setProfilePicture($googleUser->getAvatar());
-            $user->setLastLogin(new \DateTime());
-            $user->setIpAddress($request->getClientIp());
 
             // don't override displayName at every login
             if (!$user->getDisplayName()) {
