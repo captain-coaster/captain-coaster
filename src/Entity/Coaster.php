@@ -206,6 +206,9 @@ class Coaster implements \Stringable
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $youtubeId = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $externalId = null;
+
     public function __construct()
     {
         $this->launchs = new ArrayCollection();
@@ -705,6 +708,18 @@ class Coaster implements \Stringable
     public function setYoutubeId(?string $youtubeId): static
     {
         $this->youtubeId = $youtubeId;
+
+        return $this;
+    }
+
+    public function getExternalId(): ?int
+    {
+        return $this->externalId;
+    }
+
+    public function setExternalId(?int $externalId): static
+    {
+        $this->externalId = $externalId;
 
         return $this;
     }
