@@ -2,11 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Doctrine;
+namespace App\EventListener;
 
 use App\Entity\Image;
 use App\Service\ImageManager;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PostPersistEventArgs;
+use Doctrine\ORM\Event\PostRemoveEventArgs;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Doctrine\ORM\Events;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
 use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
@@ -15,6 +21,11 @@ use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordMediaEmbedObject;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
+#[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Image::class)]
+#[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Image::class)]
+#[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: Image::class)]
+#[AsEntityListener(event: Events::postRemove, method: 'postRemove', entity: Image::class)]
+#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: Image::class)]
 class ImageListener
 {
     public function __construct(
@@ -25,13 +36,8 @@ class ImageListener
     }
 
     /** Before persist: upload file to storage (S3) */
-    public function prePersist(LifecycleEventArgs $args): void
+    public function prePersist(Image $image, PrePersistEventArgs $event): void
     {
-        $image = $args->getObject();
-        if (!$image instanceof Image) {
-            return;
-        }
-
         // only upload new files
         if ($image->getFile() instanceof UploadedFile) {
             $fileName = $this->imageManager->upload($image);
@@ -40,13 +46,8 @@ class ImageListener
     }
 
     /** After persist: send Discord notification */
-    public function postPersist(LifecycleEventArgs $args): void
+    public function postPersist(Image $image, PostPersistEventArgs $event): void
     {
-        $image = $args->getObject();
-        if (!$image instanceof Image) {
-            return;
-        }
-
         $discordOptions = (new DiscordOptions())
             ->addEmbed(
                 (new DiscordEmbed())
@@ -73,36 +74,21 @@ class ImageListener
     }
 
     /** Before remove: remove image file on storage (S3) */
-    public function preRemove(LifecycleEventArgs $args): void
+    public function preRemove(Image $image, PreRemoveEventArgs $args): void
     {
-        $image = $args->getEntity();
-        if (!$image instanceof Image) {
-            return;
-        }
-
         $this->imageManager->remove($image->getFilename());
     }
 
     /** After remove: update main images, remove cache */
-    public function postRemove(LifecycleEventArgs $args): void
+    public function postRemove(Image $image, PostRemoveEventArgs $args): void
     {
-        $image = $args->getEntity();
-        if (!$image instanceof Image) {
-            return;
-        }
-
         $this->imageManager->setMainImages();
         $this->imageManager->removeCache($image);
     }
 
     /** After update (enabled set to 1 is an update): update main images */
-    public function postUpdate(LifecycleEventArgs $args): void
+    public function postUpdate(Image $image, PostUpdateEventArgs $event): void
     {
-        $image = $args->getEntity();
-        if (!$image instanceof Image) {
-            return;
-        }
-
         $this->imageManager->setMainImages();
     }
 }
