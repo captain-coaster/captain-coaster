@@ -44,6 +44,20 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
+    public function countUserEnabledImages(User $user): int
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(Image::class, 'i')
+            ->where('i.enabled = 1')
+            ->andWhere('i.credit is not null')
+            ->andWhere('i.uploader = :uploader')
+            ->setParameter('uploader', $user->getId())
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function countAll(): int
     {
         return $this->getEntityManager()

@@ -172,7 +172,7 @@ class UserController extends BaseController
 
     /** Display a user. */
     #[Route(path: '/{slug}', name: 'user_show', options: ['expose' => true], methods: ['GET'])]
-    public function showAction(User $user, StatService $statService): Response
+    public function showAction(User $user, StatService $statService, EntityManagerInterface $em): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -183,6 +183,7 @@ class UserController extends BaseController
             [
                 'user' => $user,
                 'stats' => $statService->getUserStats($user),
+                'images_counter' => $em->getRepository(Image::class)->countUserEnabledImages($user),
             ]
         );
     }
