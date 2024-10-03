@@ -41,14 +41,14 @@
 
                 </div>
             </div>
-            {% if closestParks %}
-                <div class="panel panel-white">
-                    <div class="panel-heading">
-                        <h6>
-                            {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}<br>
-                        </h6>
-                    </div>
-                    <div class="content-group-sm media">
+            <div class="panel panel-white">
+                <div class="panel-heading">
+                    <h6>
+                        {{ 'coaster.infos.closeParksTitle'|trans({'%parkName%': park.name}) }}<br>
+                    </h6>
+                </div>
+                <div class="content-group-sm media">
+                    {% if closestParks %}
                         <ul class="list-feed pl-15 pr-15">
                             {% for infoPark in closestParks %}
                                 <li>
@@ -60,12 +60,16 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                    </div>
-                    <div class="border-top-grey text-center pt-10 pb-10">
-                        <a href="{{ path('map_index', {'parkslug': park.slug}) }}">{{ 'coaster.infos.closeParksLink'|trans({'%parkName%': park.name}) }}</a>
-                    </div>
+                    {% else %}
+                        <div class="pl-15 pr-15">
+                            <p>{{ 'coaster.infos.closeParksNone'|trans({'%parkName%': park.name}) }}</p>
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
+                <div class="border-top-grey text-center pt-10 pb-10">
+                    <a href="{{ path('map_index', {'parkslug': park.slug}) }}">{{ 'coaster.infos.closeParksLink'|trans({'%parkName%': park.name}) }}</a>
+                </div>
+            </div>
             <!-- /park stats -->
             <!-- coaster location -->
             <!-- removed until open street maps -->
