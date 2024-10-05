@@ -22,8 +22,8 @@ class ModelCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Seating Type')
-            ->setEntityLabelInPlural('Seating Types')
+            ->setEntityLabelInSingular('Model')
+            ->setEntityLabelInPlural('Models')
             ->setSearchFields(['id', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
