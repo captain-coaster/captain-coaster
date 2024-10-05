@@ -43,6 +43,7 @@ coaster:
     infos:
         title: '{name} features'
         closeParksTitle: 'Best amusement parks near {parkName}'
+        closeParksNone: 'No amusement parks near {parkName} found.'
         closeParksLink: 'View {parkName} on the map'
         status: 'Status'
         park: 'Park'

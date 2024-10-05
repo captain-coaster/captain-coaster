@@ -33,7 +33,7 @@ class MapsController extends AbstractController
     #[Route(path: '/', name: 'map_index', methods: ['GET'])]
     public function indexAction(Request $request): Response
     {
-        $initialFilters = ['status' => 'on'];
+        $initialFilters = [];
         $parkslug = $request->get('parkslug');
         $parkId = '';
 
@@ -41,6 +41,9 @@ class MapsController extends AbstractController
             $park = $this->parkRepository->findOneBy(['slug' => $parkslug]);
             if (!empty($park)) {
                 $parkId = $park->getId();
+                if (\count($park->getOpenedCoasters()) > 0) {
+                    $initialFilters = ['status' => 'on'];
+                }
             }
         }
 

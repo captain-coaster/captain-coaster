@@ -41,6 +41,7 @@ coaster:
     infos:
         title: '{name} Merkmale'
         closeParksTitle: 'Beste Freizeitparks nahe {parkName}'
+        closeParksNone: 'Keine Freizeitparks nahe {parkName} gefunden.'
         closeParksLink: 'Zeige {parkName} auf der Karte'
         status: 'Status'
         park: 'Park'
