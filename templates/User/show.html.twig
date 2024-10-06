@@ -45,11 +45,11 @@
                 <span class="badge bg-teal-400 pull-right">{{ user.tops|length }}</span>
               </a>
             {% endif %}
-            {% if user.images| length > 0 %}
+              {% if images_counter > 0 %}
               <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
                 <i class="icon-camera"></i>
                 {{ 'user_profile.pictures'|trans }}
-                <span class="badge bg-teal-400 pull-right">{{ user.images|length }}</span>
+                  <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
               </a>
             {% endif %}
             <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">

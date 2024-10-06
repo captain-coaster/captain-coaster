@@ -8,6 +8,7 @@ use App\Entity\RiddenCoaster;
 use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileType;
+use App\Repository\ImageRepository;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -23,7 +24,7 @@ class ProfileController extends BaseController
 {
     #[Route(path: '/me', name: 'me', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function meAction(Request $request, StatService $statService, EntityManagerInterface $em): Response
+    public function meAction(Request $request, StatService $statService, EntityManagerInterface $em, ImageRepository $imageRepository): Response
     {
         $user = $this->getUser();
 
@@ -45,6 +46,7 @@ class ProfileController extends BaseController
             'user' => $this->getUser(),
             'form' => $form,
             'stats' => $statService->getUserStats($user),
+            'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
 

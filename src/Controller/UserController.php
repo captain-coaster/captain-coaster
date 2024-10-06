@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
+use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 use App\Repository\UserRepository;
@@ -172,7 +173,7 @@ class UserController extends BaseController
 
     /** Display a user. */
     #[Route(path: '/{slug}', name: 'user_show', options: ['expose' => true], methods: ['GET'])]
-    public function showAction(User $user, StatService $statService): Response
+    public function showAction(User $user, StatService $statService, ImageRepository $imageRepository): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -183,6 +184,7 @@ class UserController extends BaseController
             [
                 'user' => $user,
                 'stats' => $statService->getUserStats($user),
+                'images_counter' => $imageRepository->countUserEnabledImages($user),
             ]
         );
     }
