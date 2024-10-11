@@ -15,11 +15,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ImageCrudController extends AbstractCrudController
 {
-    public function __construct(private string $picturesHostname)
-    {
+    public function __construct(
+        #[Autowire('%env(bool:PICTURES_CDN)%')]
+        private string $imagesEndpoint
+    ) {
     }
 
     public static function getEntityFqcn(): string
@@ -50,7 +53,7 @@ class ImageCrudController extends AbstractCrudController
             AssociationField::new('uploader'),
             AssociationField::new('coaster'),
             TextField::new('credit'),
-            ImageField::new('path', 'Image')->setBasePath($this->picturesHostname.'/1440x1440/')->onlyOnIndex(),
+            ImageField::new('path', 'Image')->setBasePath($this->imagesEndpoint.'/1440x1440/')->onlyOnIndex(),
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             BooleanField::new('watermarked')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),

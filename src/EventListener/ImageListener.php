@@ -13,6 +13,7 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
 use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
@@ -31,7 +32,8 @@ class ImageListener
     public function __construct(
         private readonly ImageManager $imageManager,
         private readonly ChatterInterface $chatter,
-        private string $picturesHostname
+        #[Autowire('%env(bool:PICTURES_CDN)%')]
+        private string $imagesEndpoint
     ) {
     }
 
@@ -53,7 +55,7 @@ class ImageListener
                 (new DiscordEmbed())
                     ->title($image->getCoaster()->getName().' - '.$image->getCoaster()->getPark()->getName())
                     ->image((new DiscordMediaEmbedObject())
-                        ->url($this->picturesHostname.'/1440x1440/'.$image->getFilename()))
+                        ->url($this->imagesEndpoint.'/1440x1440/'.$image->getFilename()))
                     ->addField(
                         (new DiscordFieldEmbedObject())
                             ->name('Uploader')
