@@ -23,7 +23,7 @@ class ValidatePicturesCommand extends Command
     public function __construct(
         private readonly ImageRepository $imageRepository,
         private readonly EntityManagerInterface $em,
-        #[Autowire('%env(bool:PICTURES_CDN)%')]
+        #[Autowire('%env(string:PICTURES_CDN)%')]
         private string $imagesEndpoint
     ) {
         parent::__construct();

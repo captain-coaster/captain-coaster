@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class ImageCrudController extends AbstractCrudController
 {
     public function __construct(
-        #[Autowire('%env(bool:PICTURES_CDN)%')]
+        #[Autowire('%env(string:PICTURES_CDN)%')]
         private string $imagesEndpoint
     ) {
     }

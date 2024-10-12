@@ -32,7 +32,7 @@ class ImageListener
     public function __construct(
         private readonly ImageManager $imageManager,
         private readonly ChatterInterface $chatter,
-        #[Autowire('%env(bool:PICTURES_CDN)%')]
+        #[Autowire('%env(string:PICTURES_CDN)%')]
         private string $imagesEndpoint
     ) {
     }
