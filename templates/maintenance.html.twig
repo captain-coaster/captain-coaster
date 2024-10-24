@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Site temporarily under maintenance</title>
-</head>
-<body>
-<h1>Site temporarily under maintenance</h1>
-<p>Sorry for the inconvenience, we will get back soon!</p>
-</body>
-</html>
+{% extends "base.html.twig" %}
+
+{% set title = 'error.maintenance.title'|trans %}
+
+{% block body %}
+    <div class="text-center content-group">
+        <h1 class="error-title">Hold on tight</h1>
+        <h3>{{ 'error.maintenance.message'|trans }}</h3>
+    </div>
+{% endblock %}

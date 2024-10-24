@@ -12,6 +12,8 @@ controllers:
         namespace: App\Controller
     type: attribute
     prefix: '/{_locale<en|fr|es|de>}'
+    defaults:
+        _locale: 'en'
 
 logout:
     path: '/{_locale<en|fr|es|de>}/logout'

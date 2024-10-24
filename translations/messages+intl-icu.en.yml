@@ -386,6 +386,9 @@ error:
     generic:
         title: 'An error occurred'
         message: 'An error occurred. Contact us if the problem persists'
+    maintenance:
+        title: 'Quick Technical Stop! 🔧'
+        message: 'Please remain in line. We will resume operations in a few minutes!'
 
 missing:
     step1:
