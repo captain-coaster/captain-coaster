@@ -176,7 +176,7 @@ me:
     badge: 'Badges'
     banner:
         title: 'Bannière personnalisée'
-        text: 'Voici ta bannière personnalisée, pour afficher fièrement tes coasters et ton Top !'
+        text: 'Voici ta bannière personnalisée, avec tes notes et ton Top 3 ! La mise à jour de la bannière peut prendre quelques heures.'
         getbbcode: 'Copier le BBCode (forums)'
         gethtml: 'Copier en html'
     stats:

@@ -165,7 +165,7 @@ me:
     badge: 'Insignias'
     banner:
         title: 'Banner personalizado'
-        text: 'Aquí tienes tu pancarta personalizada, ¡para mostrar con orgullo tus posavasos y tu Top!'
+        text: 'Aquí tienes tu pancarta personalizada, mostrando tus calificaciones y Top 3! La actualización de la pancarta puede tardar unas horas.'
         getbbcode: 'Copiar BBCode (foros)'
         gethtml: 'Copiar html'
     stats:

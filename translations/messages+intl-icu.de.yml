@@ -180,7 +180,7 @@ me:
     badge: 'Abzeichen'
     banner:
         title: 'Persönliches Banner'
-        text: 'Hier ist dein persönliches Banner, um die Welt über deine Lieblingsachterbahnen staunen zu lassen!'
+        text: 'Hier ist Ihr personalisiertes Banner, mit Ihren Bewertungen und Ihren Top 3! Die Aktualisierung des Banners kann einige Stunden dauern.'
         getbbcode: 'Kopiere BBCode (Foren)'
         gethtml: 'Kopiere HTML'
     stats:

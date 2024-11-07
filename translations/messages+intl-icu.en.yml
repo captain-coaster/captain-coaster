@@ -182,7 +182,7 @@ me:
     badge: 'Badges'
     banner:
         title: 'Personal banner'
-        text: 'Here is your personal banner, to make the World know about your favorites coasters !'
+        text: 'Here is your personal banner, showing your ratings and Top 3! Banner can take a few hours to update.'
         getbbcode: 'Copy BBCode (forums)'
         gethtml: 'Copy html'
     stats:
