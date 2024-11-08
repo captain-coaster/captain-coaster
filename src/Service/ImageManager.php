@@ -9,6 +9,7 @@ use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\Filesystem;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ImageManager
@@ -18,6 +19,7 @@ class ImageManager
         private readonly LoggerInterface $logger,
         private readonly Filesystem $filesystem,
         private readonly S3Client $s3Client,
+        #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
         private readonly string $s3CacheBucket
     ) {
     }

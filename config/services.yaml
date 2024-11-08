@@ -29,10 +29,6 @@ services:
     # please note that last definitions always *replace* previous ones
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Service\ImageManager:
-        arguments:
-            $s3CacheBucket: '%env(AWS_S3_CACHE_BUCKET_NAME)%'
-
     App\Service\SitemapService:
         arguments:
             $locales: '%app_locales_array%'
