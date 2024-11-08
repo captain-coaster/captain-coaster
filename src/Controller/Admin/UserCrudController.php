@@ -74,6 +74,7 @@ class UserCrudController extends AbstractCrudController
             BooleanField::new('enabled'),
             BooleanField::new('emailNotification')->hideOnIndex(),
             BooleanField::new('addTodayDateWhenRating')->hideOnIndex(),
+            TextField::new('apiKey')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('lastLogin')->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('createdAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
