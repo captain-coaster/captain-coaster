@@ -38,6 +38,7 @@ class RegistrationController extends AbstractController
             // init display name & preferred locale
             $user->setDisplayName($user->getFirstName().' '.$user->getLastName());
             $user->setPreferredLocale($request->getLocale());
+            $user->setIpAddress($request->getClientIp());
 
             $entityManager->persist($user);
             $entityManager->flush();
