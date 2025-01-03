@@ -1,25 +1,51 @@
 <?php
 
+declare(strict_types=1);
+
+use ApiPlatform\Symfony\Bundle\ApiPlatformBundle;
+use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
+use Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle;
+use EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle;
+use EWZ\Bundle\RecaptchaBundle\EWZRecaptchaBundle;
+use FOS\JsRoutingBundle\FOSJsRoutingBundle;
+use Knp\Bundle\PaginatorBundle\KnpPaginatorBundle;
+use Knp\Bundle\TimeBundle\KnpTimeBundle;
+use KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle;
+use Oneup\FlysystemBundle\OneupFlysystemBundle;
+use Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle;
+use Symfony\Bundle\DebugBundle\DebugBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+use Symfony\Bundle\MakerBundle\MakerBundle;
+use Symfony\Bundle\MonologBundle\MonologBundle;
+use Symfony\Bundle\SecurityBundle\SecurityBundle;
+use Symfony\Bundle\TwigBundle\TwigBundle;
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\UX\TwigComponent\TwigComponentBundle;
+use Symfony\WebpackEncoreBundle\WebpackEncoreBundle;
+use SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle;
+use Twig\Extra\TwigExtraBundle\TwigExtraBundle;
+
 return [
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle::class => ['all' => true],
-    Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
-    Symfony\Bundle\TwigBundle\TwigBundle::class => ['all' => true],
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-    Doctrine\Bundle\DoctrineBundle\DoctrineBundle::class => ['all' => true],
-    EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle::class => ['all' => true],
-    FOS\JsRoutingBundle\FOSJsRoutingBundle::class => ['all' => true],
-    Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
-    Knp\Bundle\TimeBundle\KnpTimeBundle::class => ['all' => true],
-    Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
-    Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
-    Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
-    EWZ\Bundle\RecaptchaBundle\EWZRecaptchaBundle::class => ['all' => true],
-    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    Oneup\FlysystemBundle\OneupFlysystemBundle::class => ['all' => true],
-    ApiPlatform\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
-    Twig\Extra\TwigExtraBundle\TwigExtraBundle::class => ['all' => true],
-    Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
-    KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
-    SymfonyCasts\Bundle\VerifyEmail\SymfonyCastsVerifyEmailBundle::class => ['all' => true],
+    FrameworkBundle::class => ['all' => true],
+    DoctrineMigrationsBundle::class => ['all' => true],
+    SecurityBundle::class => ['all' => true],
+    TwigBundle::class => ['all' => true],
+    MakerBundle::class => ['dev' => true],
+    DoctrineBundle::class => ['all' => true],
+    EasyAdminBundle::class => ['all' => true],
+    FOSJsRoutingBundle::class => ['all' => true],
+    KnpPaginatorBundle::class => ['all' => true],
+    KnpTimeBundle::class => ['all' => true],
+    StofDoctrineExtensionsBundle::class => ['all' => true],
+    MonologBundle::class => ['all' => true],
+    WebpackEncoreBundle::class => ['all' => true],
+    EWZRecaptchaBundle::class => ['all' => true],
+    WebProfilerBundle::class => ['dev' => true, 'test' => true],
+    OneupFlysystemBundle::class => ['all' => true],
+    ApiPlatformBundle::class => ['all' => true],
+    TwigExtraBundle::class => ['all' => true],
+    DebugBundle::class => ['dev' => true],
+    KnpUOAuth2ClientBundle::class => ['all' => true],
+    SymfonyCastsVerifyEmailBundle::class => ['all' => true],
+    TwigComponentBundle::class => ['all' => true],
 ];
