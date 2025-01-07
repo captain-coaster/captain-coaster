@@ -7,10 +7,9 @@ namespace App\EventSubscriber;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
-use Symfony\Component\Security\Http\SecurityEvents;
+use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
-class InteractiveLoginSubscriber implements EventSubscriberInterface
+class LoginSuccessSubscriber implements EventSubscriberInterface
 {
     private EntityManagerInterface $entityManager;
 
@@ -22,13 +21,13 @@ class InteractiveLoginSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            SecurityEvents::INTERACTIVE_LOGIN => 'onInteractiveLogin',
+            LoginSuccessEvent::class => 'onLoginSuccess',
         ];
     }
 
-    public function onInteractiveLogin(InteractiveLoginEvent $event): void
+    public function onLoginSuccess(LoginSuccessEvent $event): void
     {
-        $user = $event->getAuthenticationToken()->getUser();
+        $user = $event->getAuthenticatedToken()->getUser();
 
         if ($user instanceof User) {
             $user->setLastLogin(new \DateTime());
