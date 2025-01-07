@@ -301,7 +301,7 @@ class RankingService
 
         $ranking->setRatingNumber($this->em->getRepository(RiddenCoaster::class)->countAll());
         $ranking->setTopNumber($this->em->getRepository(Top::class)->countTops());
-        $ranking->setUserNumber($this->userRepository->count([]));
+        $ranking->setUserNumber($this->userRepository->count(['enabled' => true]));
         $ranking->setCoasterInTopNumber($this->em->getRepository(TopCoaster::class)->countAllInTops());
         $ranking->setComparisonNumber($this->totalComparisonNumber);
         $ranking->setRankedCoasterNumber(\count($this->ranking));
