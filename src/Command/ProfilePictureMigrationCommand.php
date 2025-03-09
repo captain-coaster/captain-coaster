@@ -79,10 +79,8 @@ class ProfilePictureMigrationCommand extends Command
                 $progressBar->advance();
                 ++$totalProcessed;
 
-                // Skip users without profile picture or with non-external profile pictures
-                if (!$profilePictureUrl
-                    || (!str_contains($profilePictureUrl, 'googleusercontent.com')
-                     && !str_contains($profilePictureUrl, 'graph.facebook.com'))) {
+                // Skip users without profile picture or with already migrated pictures (not URLs)
+                if (!$profilePictureUrl || !str_starts_with($profilePictureUrl, 'http')) {
                     ++$skippedCount;
                     continue;
                 }
