@@ -9,7 +9,6 @@ oneup_flysystem:
         client: Aws\S3\S3Client
         bucket: '%env(AWS_S3_BUCKET_NAME)%'
         prefix: 'profile-pictures'
-
   filesystems:
     pictures:
       adapter: pictures_original_adapter
@@ -17,4 +16,3 @@ oneup_flysystem:
     profile_pictures:
       adapter: profile_pictures_adapter
       alias: League\Flysystem\Filesystem
-      
