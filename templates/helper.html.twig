@@ -1,6 +1,6 @@
 {# Display profile picture or fallback picture #}
 {% macro profilePicture(user, className) %}
-    <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture|default(asset('images/default_user.png')) }}"
+    <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture|default('default_user.png') }}"
          class="{{ className|default('img-circle img-lg') }}"
          alt="{{ user.displayName }}">
 {% endmacro %}
