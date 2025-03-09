@@ -11,7 +11,7 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 RUN install-php-extensions apcu gd opcache redis zip intl pdo_mysql xsl
 
-ENV VERSION=v3.60.0
+ENV VERSION=v3.71.0
 
 RUN wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/$VERSION/php-cs-fixer.phar -O php-cs-fixer \
     && chmod a+x php-cs-fixer \
