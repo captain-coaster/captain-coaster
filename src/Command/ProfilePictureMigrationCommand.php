@@ -54,6 +54,7 @@ class ProfilePictureMigrationCommand extends Command
         $batchSize = (int) $input->getOption('batch-size');
 
         // Statistics counters
+
         $totalProcessed = 0;
         $successCount = 0;
         $failureCount = 0;
@@ -61,7 +62,7 @@ class ProfilePictureMigrationCommand extends Command
 
         // Get total count for progress bar
         $totalUsers = $this->userRepository->count([]);
-        $io->info(sprintf('Found %d users to process', $totalUsers));
+        $io->info(\sprintf('Found %d users to process', $totalUsers));
 
         // Create progress bar
         $progressBar = new ProgressBar($output, $totalUsers);
@@ -72,26 +73,26 @@ class ProfilePictureMigrationCommand extends Command
         $offset = 0;
         while ($offset < $totalUsers) {
             $users = $this->userRepository->findBy([], ['id' => 'ASC'], $batchSize, $offset);
-            
+
             foreach ($users as $user) {
                 $profilePictureUrl = $user->getProfilePicture();
                 $progressBar->advance();
-                $totalProcessed++;
+                ++$totalProcessed;
 
                 // Skip users without profile picture or with non-external profile pictures
-                if (!$profilePictureUrl || 
-                    (strpos($profilePictureUrl, 'googleusercontent.com') === false && 
-                     strpos($profilePictureUrl, 'graph.facebook.com') === false)) {
-                    $skippedCount++;
+                if (!$profilePictureUrl
+                    || (!str_contains($profilePictureUrl, 'googleusercontent.com')
+                     && !str_contains($profilePictureUrl, 'graph.facebook.com'))) {
+                    ++$skippedCount;
                     continue;
                 }
 
                 // Process the profile picture
                 $result = $this->processProfilePicture($user, $profilePictureUrl, $dryRun, $io);
                 if ($result) {
-                    $successCount++;
+                    ++$successCount;
                 } else {
-                    $failureCount++;
+                    ++$failureCount;
                 }
             }
 
@@ -114,98 +115,99 @@ class ProfilePictureMigrationCommand extends Command
         return Command::SUCCESS;
     }
 
-    /**
-     * Process a single profile picture migration
-     */
+    /** Process a single profile picture migration */
     private function processProfilePicture(User $user, string $profilePictureUrl, bool $dryRun, SymfonyStyle $io): bool
     {
         try {
             // Fetch profile picture content using HTTP client
             $response = $this->client->request('GET', $profilePictureUrl);
-            
-            if ($response->getStatusCode() !== 200) {
-                $this->logger->warning(sprintf(
-                    'Failed to download profile picture for user %s: HTTP status %d', 
-                    $user->getEmail(), 
+
+            if (200 !== $response->getStatusCode()) {
+                $this->logger->warning(\sprintf(
+                    'Failed to download profile picture for user %s: HTTP status %d',
+                    $user->getEmail(),
                     $response->getStatusCode()
                 ));
+
                 return false;
             }
 
             $profilePictureContent = $response->getContent();
             $contentType = $response->getHeaders()['content-type'][0] ?? null;
-            
-            if ($contentType === null) {
-                $this->logger->warning(sprintf(
-                    'Could not determine content type for user %s', 
+
+            if (null === $contentType) {
+                $this->logger->warning(\sprintf(
+                    'Could not determine content type for user %s',
                     $user->getEmail()
                 ));
+
                 return false;
             }
-            
+
             // Extract file extension from content type
             $extension = $this->getExtensionFromContentType($contentType);
             if (!$extension) {
-                $this->logger->warning(sprintf(
-                    'Could not determine file extension for user %s, Content-Type: %s', 
-                    $user->getEmail(), 
+                $this->logger->warning(\sprintf(
+                    'Could not determine file extension for user %s, Content-Type: %s',
+                    $user->getEmail(),
                     $contentType
                 ));
+
                 return false;
             }
 
             // Generate unique filename with user ID
-            $profilePictureFilename = 'pp_' . $user->getId() . '_' . uniqid() . '.' . $extension;
+            $profilePictureFilename = 'pp_'.$user->getId().'_'.uniqid().'.'.$extension;
             $profilePicturePath = $profilePictureFilename;
-            
+
             if ($dryRun) {
-                $this->logger->info(sprintf(
-                    'Dry run: would upload profile picture for user %s to S3 as %s', 
-                    $user->getEmail(), 
+                $this->logger->info(\sprintf(
+                    'Dry run: would upload profile picture for user %s to S3 as %s',
+                    $user->getEmail(),
                     $profilePicturePath
                 ));
+
                 return true;
-            } 
-            
+            }
+
             // Save to filesystem and update user
             $this->profilePicturesFilesystem->write($profilePicturePath, $profilePictureContent);
             $user->setProfilePicture($profilePicturePath);
             $this->em->persist($user);
             $this->em->flush();
-            
-            $this->logger->info(sprintf(
-                'Successfully migrated profile picture for user %s', 
+
+            $this->logger->info(\sprintf(
+                'Successfully migrated profile picture for user %s',
                 $user->getEmail()
             ));
-            
+
             return true;
         } catch (\Exception $e) {
-            $this->logger->error(sprintf(
-                'Error while migrating profile picture for user %s: %s', 
-                $user->getEmail(), 
+            $this->logger->error(\sprintf(
+                'Error while migrating profile picture for user %s: %s',
+                $user->getEmail(),
                 $e->getMessage()
             ));
+
             return false;
         }
     }
 
-    /**
-     * Extract file extension from content type
-     */
+    /** Extract file extension from content type */
     private function getExtensionFromContentType(string $contentType): ?string
     {
         $pos = strrpos($contentType, '/');
-        if ($pos === false) {
+        if (false === $pos) {
             return null;
         }
-        
+
         $extension = substr($contentType, $pos + 1);
-        
+
         // Handle special cases
-        if ($extension === 'jpeg') {
+        if ('jpeg' === $extension) {
             return 'jpg';
         }
-        
+
         return $extension;
     }
 }
