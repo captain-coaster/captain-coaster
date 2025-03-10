@@ -13,6 +13,6 @@ oneup_flysystem:
     pictures:
       adapter: pictures_original_adapter
       alias: League\Flysystem\Filesystem
-    profile_pictures:
+    profilePictures:
       adapter: profile_pictures_adapter
       alias: League\Flysystem\Filesystem

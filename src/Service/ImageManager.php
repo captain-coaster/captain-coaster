@@ -17,7 +17,7 @@ class ImageManager
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly LoggerInterface $logger,
-        private readonly Filesystem $filesystem,
+        private readonly Filesystem $picturesFilesystem,
         private readonly S3Client $s3Client,
         #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
         private readonly string $s3CacheBucket
@@ -29,7 +29,7 @@ class ImageManager
     {
         $filename = $this->generateFilename($image->getFile(), $image->getCoaster()->getSlug());
 
-        $this->filesystem->write(
+        $this->picturesFilesystem->write(
             $filename,
             $image->getFile()->getContent(),
             ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0']]
@@ -41,7 +41,7 @@ class ImageManager
     /** Remove file from abstracted filesystem (currently S3). */
     public function remove(string $filename): void
     {
-        $this->filesystem->delete($filename);
+        $this->picturesFilesystem->delete($filename);
     }
 
     /** Remove file from S3 Cache Bucket. */
