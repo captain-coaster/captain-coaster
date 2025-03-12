@@ -50,8 +50,8 @@ class ImageCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            AssociationField::new('uploader'),
-            AssociationField::new('coaster'),
+            AssociationField::new('uploader')->autocomplete(),
+            AssociationField::new('coaster')->autocomplete(),
             TextField::new('credit'),
             ImageField::new('path', 'Image')->setBasePath($this->imagesEndpoint.'/1440x1440/')->onlyOnIndex(),
             BooleanField::new('enabled'),
