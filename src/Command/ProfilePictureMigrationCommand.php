@@ -7,7 +7,7 @@ namespace App\Command;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -31,7 +31,7 @@ class ProfilePictureMigrationCommand extends Command
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UserRepository $userRepository,
-        private readonly Filesystem $profilePicturesFilesystem,
+        private readonly FilesystemOperator $profilePicturesFilesystem,
         private readonly LoggerInterface $logger,
         private readonly HttpClientInterface $client
     ) {
