@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\Image;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
-use League\Flysystem\Filesystem;
+use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -17,7 +17,7 @@ class ImageManager
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly LoggerInterface $logger,
-        private readonly Filesystem $picturesFilesystem,
+        private readonly FilesystemOperator $picturesFilesystem,
         private readonly S3Client $s3Client,
         #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
         private readonly string $s3CacheBucket
