@@ -34,7 +34,7 @@ class Image
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $filename;
 
-    #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'images')]
+    #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'images', fetch: 'LAZY')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['read_image'])]
     private Coaster $coaster;
@@ -45,7 +45,7 @@ class Image
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $watermarked;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'images')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'images', fetch: 'LAZY')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[Assert\NotBlank]
     private User $uploader;
