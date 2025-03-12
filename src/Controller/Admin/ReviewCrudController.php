@@ -53,8 +53,8 @@ class ReviewCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            AssociationField::new('user'),
-            AssociationField::new('coaster'),
+            AssociationField::new('user')->autocomplete(),
+            AssociationField::new('coaster')->autocomplete(),
             DateField::new('riddenAt')->hideOnIndex(),
             NumberField::new('value'),
             AssociationField::new('pros')->hideOnIndex(),

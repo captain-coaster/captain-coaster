@@ -50,9 +50,9 @@ class TopCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            AssociationField::new('user'),
+            AssociationField::new('user')->autocomplete(),
             BooleanField::new('main'),
-            AssociationField::new('topCoasters')->setFormTypeOption('disabled', 'disabled'),
+            AssociationField::new('topCoasters')->onlyOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),
         ];

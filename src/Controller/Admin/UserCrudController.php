@@ -69,7 +69,7 @@ class UserCrudController extends AbstractCrudController
             AssociationField::new('ratings')->onlyOnIndex(),
             AssociationField::new('tops')->onlyOnIndex(),
             AssociationField::new('images')->onlyOnIndex(),
-            AssociationField::new('homePark')->hideOnIndex(),
+            AssociationField::new('homePark')->hideOnIndex()->autocomplete(),
             TextField::new('preferredLocale')->hideOnIndex(),
             BooleanField::new('enabled'),
             BooleanField::new('emailNotification')->hideOnIndex(),

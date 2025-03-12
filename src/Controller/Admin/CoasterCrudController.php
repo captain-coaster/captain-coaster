@@ -61,7 +61,7 @@ class CoasterCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
-            AssociationField::new('park'),
+            AssociationField::new('park')->autocomplete(),
             AssociationField::new('materialType')->hideOnIndex(),
             AssociationField::new('seatingType')->hideOnIndex(),
             AssociationField::new('model')->hideOnIndex(),
