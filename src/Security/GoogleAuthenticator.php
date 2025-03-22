@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Security;
 
 use App\Entity\User;
+use App\Service\ProfilePictureManager;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
@@ -33,6 +34,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
         private readonly EntityManagerInterface $em,
+        private readonly ProfilePictureManager $profilePictureManager,
         private readonly RouterInterface $router,
         private readonly LoggerInterface $logger
     ) {
@@ -114,7 +116,14 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $user->setEmail($googleUser->getEmail());
             $user->setFirstName($googleUser->getFirstName());
             $user->setLastName($googleUser->getLastName());
-            $user->setProfilePicture($googleUser->getAvatar());
+
+            // Download and store the profile picture if available
+            if ($googleUser->getAvatar() && !$user->getProfilePicture()) {
+                $filename = $this->profilePictureManager->uploadProfilePictureFromUrl($googleUser->getAvatar(), $user);
+                if ($filename) {
+                    $user->setProfilePicture($filename);
+                }
+            }
 
             // don't override displayName at every login
             if (!$user->getDisplayName()) {
