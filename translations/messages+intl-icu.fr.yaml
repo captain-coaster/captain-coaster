@@ -155,6 +155,7 @@ me:
     parameters: 'Préférences'
     form:
         displayName: 'Je souhaite apparaître en tant que'
+        profilePicture: 'Photo de profil'
         notificationPreference: 'Préférences de notification'
         choices:
             email: 'Web & Email'

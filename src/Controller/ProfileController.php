@@ -9,6 +9,7 @@ use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileType;
 use App\Repository\ImageRepository;
+use App\Service\ProfilePictureManager;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -24,7 +25,13 @@ class ProfileController extends BaseController
 {
     #[Route(path: '/me', name: 'me', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function meAction(Request $request, StatService $statService, EntityManagerInterface $em, ImageRepository $imageRepository): Response
+    public function meAction(
+        Request $request,
+        StatService $statService,
+        EntityManagerInterface $em,
+        ImageRepository $imageRepository,
+        ProfilePictureManager $profilePictureManager
+    ): Response
     {
         $user = $this->getUser();
 
@@ -36,6 +43,14 @@ class ProfileController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $profilePictureFile = $form->get('profilePicture')->getData();
+            if ($profilePictureFile) {
+                $filename = $profilePictureManager->uploadProfilePicture($profilePictureFile, $user);
+                if ($filename) {
+                    $user->setProfilePicture($filename);
+                }
+            }
+
             $em->persist($user);
             $em->flush();
 

@@ -56,34 +56,30 @@
           <div class="panel-body">
             {{ form_start(form) }}
             <div class="form-group">
-              {{ form_label(form.displayName) }}
-              {{ form_widget(form.displayName, {'attr': {'class': 'form-control'}}) }}
+              {{ form_row(form.displayName) }}
             </div>
             <div class="form-group">
-              {{ form_label(form.emailNotification) }}
-              {{ form_widget(form.emailNotification, {'attr': {'class': 'form-control'}}) }}
+              {{ form_row(form.profilePicture) }}
             </div>
             <div class="form-group">
-              {{ form_label(form.preferredLocale) }}
-              {{ form_widget(form.preferredLocale, {'attr': {'class': 'form-control'}}) }}
+              {{ form_row(form.emailNotification) }}
             </div>
             <div class="form-group">
-                {{ form_label(form.imperial) }}
-                {{ form_widget(form.imperial, {'attr': {'class': 'form-control'}}) }}
+              {{ form_row(form.preferredLocale) }}
+            </div>
+            <div class="form-group">
+                {{ form_row(form.imperial) }}
             </div>
               <div class="form-group">
-              {{ form_label(form.homePark) }}
-              {{ form_widget(form.homePark, {'attr': {'class': 'form-control'}}) }}
+              {{ form_row(form.homePark) }}
             </div>
             <div class="form-group">
-              {{ form_widget(form.addTodayDateWhenRating) }}
-              {{ form_label(form.addTodayDateWhenRating) }}
+              {{ form_row(form.addTodayDateWhenRating) }}
             </div>
             <fieldset class="content-group">
               <legend>{{ 'me.form.advanced'|trans }}</legend>
               <div class="form-group">
-                {{ form_label(form.apiKey) }}
-                {{ form_widget(form.apiKey, {'attr': {'class': 'form-control'}}) }}
+                {{ form_row(form.apiKey) }}
               </div>
             </fieldset>
             <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">

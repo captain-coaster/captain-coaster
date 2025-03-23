@@ -161,6 +161,7 @@ me:
     parameters: 'Parameters'
     form:
         displayName: 'I want to appear as'
+        profilePicture: 'Profile Picture'
         notificationPreference: 'Notification preferences'
         choices:
             email: 'Web & Email'

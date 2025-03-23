@@ -144,6 +144,7 @@ me:
     parameters: 'Parámetros'
     form:
         displayName: 'Quiero aparecer como'
+        profilePicture: 'Foto de perfil'
         notificationPreference: 'Preferencias de notificación'
         choices:
             email: 'Web y correo electrónico'
