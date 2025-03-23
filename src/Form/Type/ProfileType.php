@@ -81,7 +81,6 @@ class ProfileType extends AbstractType
                 'required' => false,
                 'mapped' => false,
                 'constraints' => [
-                    new NotBlank(),
                     new File([
                         'maxSize' => '2M',
                         'mimeTypes' => [
