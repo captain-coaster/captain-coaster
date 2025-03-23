@@ -31,8 +31,7 @@ class ProfileController extends BaseController
         EntityManagerInterface $em,
         ImageRepository $imageRepository,
         ProfilePictureManager $profilePictureManager
-    ): Response
-    {
+    ): Response {
         $user = $this->getUser();
 
         $form = $this->createForm(ProfileType::class, $user, [

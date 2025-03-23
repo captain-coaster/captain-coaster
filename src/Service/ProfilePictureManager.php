@@ -16,12 +16,13 @@ class ProfilePictureManager
         private readonly FilesystemOperator $profilePicturesFilesystem,
     ) {
     }
-    
+
     /** Upload a profile picture from a file. */
     public function uploadProfilePicture(UploadedFile $file, User $user): ?string
     {
         try {
             $extension = $file->guessExtension() ?: 'jpg';
+
             return $this->handleUpload(
                 $user,
                 // Use stream to reduce memory usage
@@ -41,14 +42,14 @@ class ProfilePictureManager
             $context = stream_context_create([
                 'http' => [
                     'timeout' => 10,
-                ]
+                ],
             ]);
 
             // Use streams instead of downloading entire file to memory
             if ($stream = fopen($url, 'r', false, $context)) {
                 return $this->handleUpload($user, $stream, 'jpg');
             }
-            
+
             throw new \RuntimeException('Failed to open URL stream');
         } catch (\Exception $e) {
             return $this->handleError('Failed to upload profile picture', $e);
@@ -59,9 +60,9 @@ class ProfilePictureManager
     private function handleUpload(User $user, $stream, string $extension): string
     {
         $this->deleteOldProfilePicture($user);
-        
+
         $filename = $this->generateFilename($user->getId(), $extension);
-        
+
         // Use writeStream instead of write for better memory efficiency
         $this->profilePicturesFilesystem->writeStream(
             $filename,
@@ -76,7 +77,7 @@ class ProfilePictureManager
     private function deleteOldProfilePicture(User $user): void
     {
         $oldPicture = $user->getProfilePicture();
-        if ($oldPicture !== null) {
+        if (null !== $oldPicture) {
             try {
                 // Add exists check to avoid unnecessary delete attempts
                 if ($this->profilePicturesFilesystem->fileExists($oldPicture)) {
@@ -91,7 +92,7 @@ class ProfilePictureManager
     /** Generate a unique filename for the profile picture. */
     private function generateFilename(int|string $userId, string $extension): string
     {
-        return sprintf('pp_%s_%s.%s', $userId, uniqid(), $extension);
+        return \sprintf('pp_%s_%s.%s', $userId, uniqid(), $extension);
     }
 
     /** Handle errors and log exceptions. */
@@ -100,8 +101,9 @@ class ProfilePictureManager
         // Add exception context to log
         $this->logger->error($message, [
             'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
+            'trace' => $e->getTraceAsString(),
         ]);
+
         return null;
     }
 }
