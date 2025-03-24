@@ -117,14 +117,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             $user->setFirstName($googleUser->getFirstName());
             $user->setLastName($googleUser->getLastName());
 
-            // Download and store the profile picture if available
-            if ($googleUser->getAvatar() && !$user->getProfilePicture()) {
-                $filename = $this->profilePictureManager->uploadProfilePictureFromUrl($googleUser->getAvatar(), $user);
-                if ($filename) {
-                    $user->setProfilePicture($filename);
-                }
-            }
-
             // don't override displayName at every login
             if (!$user->getDisplayName()) {
                 $user->setDisplayName($googleUser->getFirstName().' '.$googleUser->getLastName());
@@ -132,6 +124,16 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
             $this->em->persist($user);
             $this->em->flush();
+
+            // Download and store the profile picture if available and not yet set
+            if ($googleUser->getAvatar() && !$user->getProfilePicture()) {
+                $filename = $this->profilePictureManager->uploadProfilePictureFromUrl($googleUser->getAvatar(), $user);
+                if ($filename) {
+                    $user->setProfilePicture($filename);
+                    $this->em->persist($user);
+                    $this->em->flush();
+                }
+            }
         } catch (\Exception $e) {
             $this->logger->error('Error while updating user details: '.$e->getMessage());
 
