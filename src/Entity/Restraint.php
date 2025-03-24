@@ -33,7 +33,7 @@ class Restraint implements \Stringable
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
-    /** @var Collection<\App\Entity\Coaster> */
+    /** @var Collection<Coaster> */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'restraint')]
     private Collection $coasters;
 

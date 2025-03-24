@@ -40,7 +40,7 @@ class Status implements \Stringable
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
     private ?string $type = null;
 
-    /** @var Collection<\App\Entity\Coaster> */
+    /** @var Collection<Coaster> */
     #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
     private Collection $coasters;
 
