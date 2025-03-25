@@ -9,7 +9,7 @@ app:
     title:
         default: 'Willkommen!'
     header:
-        search: 'Voltron, Phantasialand...'
+        search: 'Voltron, Holiday Park...'
 
 index:
     title: 'Willkommen!'

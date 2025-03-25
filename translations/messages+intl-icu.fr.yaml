@@ -3,7 +3,7 @@ app:
     title:
         default: 'Bienvenue !'
     header:
-        search: 'Mahuka, Parc Asterix...'
+        search: 'Wild Buffalo, Parc Astérix...'
 
 index:
     title: 'Bienvenue !'
