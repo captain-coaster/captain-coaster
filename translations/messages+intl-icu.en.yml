@@ -9,7 +9,7 @@ app:
     title:
         default: 'Welcome !'
     header:
-        search: 'Top Thrill 2, Dorney Park...'
+        search: 'Rapterra, Epic Universe...'
 
 index:
     title: 'Welcome !'
