@@ -54,6 +54,9 @@ class Coaster implements \Stringable
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?string $name = null;
 
+    #[ORM\Column(name: 'formerNames', type: Types::SIMPLE_ARRAY, nullable: true)]
+    private ?array $formerNames = null;
+
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: [
@@ -235,6 +238,18 @@ class Coaster implements \Stringable
     public function setName(?string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getFormerNames(): ?array
+    {
+        return $this->formerNames;
+    }
+
+    public function setFormerNames(?array $formerNames): static
+    {
+        $this->formerNames = $formerNames;
 
         return $this;
     }

@@ -60,6 +60,7 @@ coaster:
         cost: 'Kosten'
         kiddie: 'Kinder'
         indoor: 'Indoor'
+        formerNames: 'Ehemalige Namen'
     parkcoaster: 'Auch in {name}'
     video:
         title: 'Onride Video'
