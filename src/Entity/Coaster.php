@@ -242,7 +242,7 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    public function getFormerNames(): ?array
+    public function getFormerNames(): array
     {
         return $this->formerNames;
     }
