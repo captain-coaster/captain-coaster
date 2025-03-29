@@ -52,6 +52,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->addSelect('c.slug')
             ->addSelect('c.formerNames')
             ->from(Coaster::class, 'c')
+            ->orderBy('c.score', 'DESC')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
             ->getQuery()
             ->getResult();
