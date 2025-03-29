@@ -50,7 +50,7 @@ class SearchService
         return array_map(
             fn ($result) => [
                 'display' => $options['emoji'].' '.$result['name'],
-                'names' => isset($result['formerNames']) && count($result['formerNames']) > 0 ? $options['emoji'].' '. join(' ', $result['formerNames']) . ' ' .$result['name'] : $options['emoji'].' '.$result['name'],
+                'names' => isset($result['formerNames']) && count($result['formerNames']) > 0 ? $options['emoji'].' '.join(' ', $result['formerNames']).' '.$result['name'] : $options['emoji'].' '.$result['name'],
                 'route' => $options['route'],
                 'slug' => $result['slug'],
             ],
