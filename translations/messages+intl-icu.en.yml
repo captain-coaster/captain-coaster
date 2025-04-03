@@ -240,6 +240,18 @@ review:
     last: 'Latest reviews'
     all: 'See all →'
     ridden_at: 'Ride date'
+    upvote: 'Upvote this review'
+    report: 'Report this review'
+    report_title: 'Report Review'
+    report_reason: 'Reason for reporting'
+    reason:
+        offensive: 'Offensive content'
+        inappropriate: 'Inappropriate language'
+        incorrect: 'Incorrect information'
+        spam: 'Spam'
+        other: 'Other'
+    cancel: 'Cancel'
+    submit_report: 'Submit Report'
     form:
         title: 'Review about {name}'
 

@@ -234,6 +234,18 @@ review:
     last: 'Derniers avis'
     all: 'Voir plus →'
     ridden_at: 'Date du ride'
+    upvote: 'Voter pour cet avis'
+    report: 'Signaler cet avis'
+    report_title: 'Signaler un avis'
+    report_reason: 'Raison du signalement'
+    reason:
+        offensive: 'Contenu offensant'
+        inappropriate: 'Langage inapproprié'
+        incorrect: 'Information incorrecte'
+        spam: 'Spam'
+        other: 'Autre'
+    cancel: 'Annuler'
+    submit_report: 'Envoyer le signalement'
     form:
         title: 'Avis sur {name}'
 
