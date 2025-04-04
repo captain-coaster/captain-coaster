@@ -27,7 +27,7 @@
                             {{ coaster.item.name }}
                         </a>
                         -
-                        <a href="{{ path('park_show', {'slug': coaster.item.park.slug}) }}">
+                        <a href="{{ path('park_show', {'id': coaster.item.park.id, 'slug': coaster.item.park.slug}) }}">
                             {{ coaster.item.park.name }}
                         </a>
                     </h6>
