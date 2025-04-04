@@ -49,14 +49,10 @@ class DefaultController extends BaseController
     #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
     public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
     {
-        $user = $this->getUser();
         $displayReviewsInAllLanguages = false;
-        if (null !== $user) {
-            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
-        }
-
         $missingImages = [];
         if ($user = $this->getUser()) {
+            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
