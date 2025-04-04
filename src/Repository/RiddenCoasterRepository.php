@@ -105,7 +105,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /** Get ratings for a specific coaster ordered by language preference, text review and date. */
-    public function getReviews(Coaster $coaster, string $locale = 'en', bool $displayReviewsInAllLanguages = true)
+    public function getCoasterReviews(Coaster $coaster, string $locale = 'en', bool $displayReviewsInAllLanguages = true)
     {
         // add joins to avoid multiple subqueries
         return $this->getEntityManager()
