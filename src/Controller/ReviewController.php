@@ -50,7 +50,7 @@ class ReviewController extends BaseController
 
         return $this->render(
             'Review/list.html.twig',
-            ['reviews' => $pagination, 'user' => $user]
+            ['reviews' => $pagination]
         );
     }
 
