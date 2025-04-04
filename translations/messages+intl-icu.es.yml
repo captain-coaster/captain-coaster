@@ -156,7 +156,9 @@ me:
         units:
             metric: 'Sistema Internacional de unidades'
             imperial: 'Sistema anglosajón de unidades'
-            label: 'Visualización de distancias y estadísticas en'
+            label: 'Mostrar distancias y estadísticas en'
+        displayReviewsInAllLanguages:
+            label: 'Mostrar reseñas escritas en diferentes lenguas'
         addTodayDateWhenRating:
             label: 'Añadir la fecha de hoy en una nueva calificación'
         apiKey:
@@ -185,11 +187,15 @@ review:
     pros: '¿ Cuáles son sus principales ventajas ?'
     cons: '¿ Y sus principales contras ?'
     comment: '¿ Necesita más precisiones ? Cuéntanos !'
+    language: 'Lengua'
     send: 'Envía mi opinion'
     update: 'Editar'
     delete: 'Borrar'
     last: 'Últimas reseñas'
     all: 'Ver todo →'
+    ridden_at: 'Fecha del ride'
+    form:
+        title: 'Reseña sobre {name}'
 
 users:
     ratings:

@@ -104,15 +104,18 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
+
+
+
     /** Get ratings for a specific coaster ordered by language preference, text review and date. */
-    public function getReviews(Coaster $coaster, string $locale = 'en')
+    public function getReviews(Coaster $coaster, string $locale = 'en', bool $displayReviewsInAllLanguages = true)
     {
         // add joins to avoid multiple subqueries
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r', 'p', 'c', 'u')
             ->addSelect(
-                'CASE WHEN r.language = :locale AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN ((r.language = :locale AND :displayReviewsInAllLanguages = 0) OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
@@ -124,17 +127,20 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
             ->setParameter('locale', $locale)
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
             ->getQuery()
             ->getResult();
     }
 
     /** Get latest text reviews ordered by language. */
-    public function getLatestReviewsByLocale(string $locale = 'en', int $limit = 3)
+    public function getLatestReviews(string $locale = 'en', int $limit = 3, bool $displayReviewsInAllLanguages = false)
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
-            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
+            ->addSelect(
+                'CASE WHEN ((r.language = :locale AND :displayReviewsInAllLanguages = 0) OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+            )
             ->addSelect('u')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
@@ -143,6 +149,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->addOrderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
             ->setParameter('locale', $locale)
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
             ->getQuery()
             ->getResult();
     }
@@ -186,7 +193,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      *
      * @throws NonUniqueResultException
      */
-    public function findAll(string $locale = 'en')
+    public function findAll(string $locale = 'en', bool $displayReviewsInAllLanguages = false)
     {
         $count = $this->getEntityManager()
             ->createQueryBuilder()
@@ -199,13 +206,16 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r, u')
-            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
+            ->addSelect(
+                'CASE WHEN ((r.language = :locale AND :displayReviewsInAllLanguages = 0) OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+            )
             ->from(RiddenCoaster::class, 'r')
             ->join('r.user', 'u')
             ->where('r.review is not null')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('locale', $locale)
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
             ->getQuery()
             ->setHint('knp_paginator.count', $count);
     }
@@ -364,16 +374,16 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         $id = $coaster->getId();
 
         return $this->getEntityManager()
-        ->createQueryBuilder()
-        ->select('r.value')
-        ->addselect('COUNT(r.id) AS count')
-        ->from(RiddenCoaster::class, 'r')
-        ->innerJoin('r.user', 'u')
-        ->where('r.coaster = :id')
-        ->andWhere('u.enabled = 1')
-        ->groupby('r.value')
-        ->setParameter('id', $id)
-        ->getQuery()
-        ->getResult();
+            ->createQueryBuilder()
+            ->select('r.value')
+            ->addselect('COUNT(r.id) AS count')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :id')
+            ->andWhere('u.enabled = 1')
+            ->groupby('r.value')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
     }
 }

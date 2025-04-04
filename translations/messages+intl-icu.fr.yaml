@@ -168,6 +168,8 @@ me:
             metric: 'Unités métriques'
             imperial: 'Unités impériales'
             label: 'Afficher les distances et statistiques en'
+        displayReviewsInAllLanguages:
+            label: 'Afficher les avis écrits en différentes langues'
         addTodayDateWhenRating:
             label: 'Ajouter la date du jour quand je note un nouveau coaster'
         apiKey:
