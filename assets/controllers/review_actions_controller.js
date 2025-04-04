@@ -1,25 +1,31 @@
 import { Controller } from '@hotwired/stimulus';
+import { trans, REVIEW_REPORT_SUCCESS, REVIEW_REPORT_ERROR, REVIEW_REMOVE_UPVOTE, REVIEW_UPVOTE } from '../translator';
 
 /**
  * Review actions controller for handling upvotes and reports
  */
 export default class extends Controller {
-    static targets = ['upvoteButton', 'upvoteCount', 'reportButton', 'reportModal'];
+    // No outlets needed anymore
+    static targets = ['upvoteButton', 'upvoteCount', 'reportButton', 'reportModal', 'reviewContent', 'expandButton', 'collapseButton'];
     static values = {
         id: Number,
-        upvoted: Boolean
+        upvoted: Boolean,
+        upvoteUrl: String,
+        reportUrl: String
     };
 
     connect() {
         console.log('Review actions controller connected', this.element);
         console.log('Review ID:', this.idValue);
+        console.log('Upvote URL:', this.upvoteUrlValue);
+        console.log('Report URL:', this.reportUrlValue);
         console.log('Has upvote button target:', this.hasUpvoteButtonTarget);
         console.log('Has report button target:', this.hasReportButtonTarget);
         console.log('Has report modal target:', this.hasReportModalTarget);
 
-        // Check if the user has already upvoted this review
-        if (this.hasUpvoteButtonTarget) {
-            this._checkUpvoteStatus();
+        // Initialize the upvote button state based on the upvoted value
+        if (this.hasUpvoteButtonTarget && this.upvotedValue) {
+            this._updateUpvoteButtonState();
         }
     }
 
@@ -30,12 +36,12 @@ export default class extends Controller {
         console.log('Upvote action triggered', event);
         event.preventDefault();
 
-        if (!this.hasIdValue) {
-            console.error('Review ID not provided');
+        if (!this.hasUpvoteUrlValue) {
+            console.error('Upvote URL not provided');
             return;
         }
 
-        fetch(`/reviews/${this.idValue}/upvote`, {
+        fetch(this.upvoteUrlValue, {
             method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -79,15 +85,15 @@ export default class extends Controller {
         console.log('Submit report action triggered', event);
         event.preventDefault();
 
-        if (!this.hasIdValue) {
-            console.error('Review ID not provided');
+        if (!this.hasReportUrlValue) {
+            console.error('Report URL not provided');
             return;
         }
 
         const form = event.currentTarget;
         const formData = new FormData(form);
 
-        fetch(`/reviews/${this.idValue}/report`, {
+        fetch(this.reportUrlValue, {
             method: 'POST',
             body: formData,
             headers: {
@@ -109,38 +115,14 @@ export default class extends Controller {
                     }
 
                     // Show a success message
-                    alert('Thank you for your report. Our team will review it shortly.');
+                    this._showNotification(trans(REVIEW_REPORT_SUCCESS), 'success');
                 } else {
-                    alert(data.message || 'An error occurred while submitting your report.');
+                    this._showNotification(data.message || trans(REVIEW_REPORT_ERROR), 'danger');
                 }
             })
             .catch(error => {
                 console.error('Error submitting report:', error);
-                alert('An error occurred while submitting your report.');
-            });
-    }
-
-    /**
-     * Check if the user has already upvoted this review
-     * @private
-     */
-    _checkUpvoteStatus() {
-        if (!this.hasIdValue) {
-            return;
-        }
-
-        fetch(`/reviews/${this.idValue}/has-upvoted`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                this.upvotedValue = data.hasUpvoted;
-                this._updateUpvoteButtonState();
-            })
-            .catch(error => {
-                console.error('Error checking upvote status:', error);
+                this._showNotification(trans(REVIEW_REPORT_ERROR), 'danger');
             });
     }
 
@@ -152,11 +134,78 @@ export default class extends Controller {
         if (this.hasUpvoteButtonTarget) {
             if (this.upvotedValue) {
                 this.upvoteButtonTarget.classList.add('active');
-                this.upvoteButtonTarget.setAttribute('title', 'Remove upvote');
+                this.upvoteButtonTarget.setAttribute('title', trans(REVIEW_REMOVE_UPVOTE));
+                // Add a visual indicator for upvoted state
+                const icon = this.upvoteButtonTarget.querySelector('i');
+                if (icon) {
+                    icon.classList.add('text-primary');
+                }
             } else {
                 this.upvoteButtonTarget.classList.remove('active');
-                this.upvoteButtonTarget.setAttribute('title', 'Upvote this review');
+                this.upvoteButtonTarget.setAttribute('title', trans(REVIEW_UPVOTE));
+                // Remove visual indicator
+                const icon = this.upvoteButtonTarget.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('text-primary');
+                }
             }
+        }
+    }
+
+    /**
+     * Toggle between short and full review content
+     * @param {Event} event - The click event
+     */
+    toggleReview(event) {
+        event.preventDefault();
+
+        if (this.hasReviewContentTarget) {
+            const reviewContent = this.reviewContentTarget;
+            const shortReview = reviewContent.querySelector('.review-short');
+            const fullReview = reviewContent.querySelector('.review-full');
+
+            // Toggle visibility
+            if (shortReview.style.display !== 'none') {
+                shortReview.style.display = 'none';
+                fullReview.style.display = 'block';
+            } else {
+                shortReview.style.display = 'block';
+                fullReview.style.display = 'none';
+            }
+        }
+    }
+
+    /**
+     * Show a notification using the notification controller
+     * @param {string} message - The message to display
+     * @param {string} type - The type of notification (success, info, warning, danger)
+     * @private
+     */
+    _showNotification(message, type = 'info') {
+        // Get the global notification controller
+        const notificationController = this.application.getControllerForElementAndIdentifier(
+            document.getElementById('notifications'),
+            'notification'
+        );
+
+        if (notificationController) {
+            // Use the appropriate method based on notification type
+            switch (type) {
+                case 'success':
+                    notificationController.showSuccess(message);
+                    break;
+                case 'warning':
+                    notificationController.showWarning(message);
+                    break;
+                case 'danger':
+                    notificationController.showDanger(message);
+                    break;
+                default:
+                    notificationController.showInfo(message);
+            }
+        } else {
+            // Fallback to console if notification controller isn't available
+            console.log(`Notification (${type}): ${message}`);
         }
     }
 }

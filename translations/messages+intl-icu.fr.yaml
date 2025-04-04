@@ -246,6 +246,9 @@ review:
         other: 'Autre'
     cancel: 'Annuler'
     submit_report: 'Envoyer le signalement'
+    report_success: 'Merci pour votre signalement. Notre équipe va l''examiner prochainement.'
+    report_error: 'Une erreur s''est produite lors de l''envoi de votre signalement.'
+    remove_upvote: 'Retirer le vote positif'
     form:
         title: 'Avis sur {name}'
 

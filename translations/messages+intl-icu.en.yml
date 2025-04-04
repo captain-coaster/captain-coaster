@@ -238,7 +238,7 @@ review:
     update: 'Edit'
     delete: 'Delete'
     last: 'Latest reviews'
-    all: 'See all →'
+    all: 'See all'
     ridden_at: 'Ride date'
     upvote: 'Upvote this review'
     report: 'Report this review'
@@ -252,6 +252,9 @@ review:
         other: 'Other'
     cancel: 'Cancel'
     submit_report: 'Submit Report'
+    report_success: 'Thank you for your report. Our team will review it shortly.'
+    report_error: 'An error occurred while submitting your report.'
+    remove_upvote: 'Remove upvote'
     form:
         title: 'Review about {name}'
 

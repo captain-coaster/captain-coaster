@@ -16,6 +16,7 @@ use App\Entity\Model;
 use App\Entity\Park;
 use App\Entity\RankingHistory;
 use App\Entity\Restraint;
+use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use App\Entity\SeatingType;
 use App\Entity\Status;
@@ -69,6 +70,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Ranking History', 'fas fa-trophy', RankingHistory::class);
         yield MenuItem::linkToCrud('Restraint', 'fas fa-lock', Restraint::class);
         yield MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class);
+        yield MenuItem::linkToCrud('Review Reports', 'fa fa-flag', ReviewReport::class);
         yield MenuItem::linkToCrud('Seating Type', 'fa fa-chair', SeatingType::class);
         yield MenuItem::linkToCrud('Status', 'fa fa-toggle-on', Status::class);
         yield MenuItem::linkToCrud('Tag', 'fa fa-tag', Tag::class);

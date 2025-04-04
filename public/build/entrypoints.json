@@ -3,11 +3,21 @@
     "app": {
       "js": [
         "/build/runtime.8ab7f0c8.js",
-        "/build/987.f6725dac.js",
-        "/build/app.59950784.js"
+        "/build/199.5c7f2be8.js",
+        "/build/153.b1cd91e0.js",
+        "/build/764.87e7fe0a.js",
+        "/build/app.35d094a1.js"
       ],
       "css": [
         "/build/app.4d2e6eab.css"
+      ]
+    },
+    "translator": {
+      "js": [
+        "/build/runtime.8ab7f0c8.js",
+        "/build/199.5c7f2be8.js",
+        "/build/764.87e7fe0a.js",
+        "/build/translator.a1350de9.js"
       ]
     }
   }
