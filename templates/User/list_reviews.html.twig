@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'users.reviews.title'|trans %}
+{% set title = 'users.reviews.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
