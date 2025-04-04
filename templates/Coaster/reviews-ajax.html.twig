@@ -11,9 +11,8 @@
             </h6>
             {% if coaster.isRateable %}
                 <div class="heading-elements">
-                    <a class="btn btn-link btn-float text-primary" href="{{ path('review_form', {'id': coaster.id}) }}">
-                        <i class="icon-plus22 text-primary"></i>
-                        <span>{{ 'review.send'|trans() }}</span>
+                    <a href="{{ path('review_form', {'id': coaster.id}) }}">
+                        <button type="button" class="btn btn-primary btn-rounded btn-xs"><i class="icon-plus22 position-left"></i> {{ 'review.send'| trans() }}</button>
                     </a>
                 </div>
             {% endif %}
@@ -23,7 +22,7 @@
             <ul class="media-list media-list-bordered">
                 {% for review in reviews %}
                     <li class="media">
-                        {% include 'Includes/_review_item.html.twig' with {'review': review, 'compact': true} %}
+                        {% include 'Includes/_review_item.html.twig' with {'review': review} %}
                     </li>
                 {% else %}
                     <li class="text-center text-muted">
@@ -34,16 +33,6 @@
             </ul>
             {{ knp_pagination_render(reviews) }}
         </div>
-        {% if coaster.isRateable %}
-            <div class="panel-footer text-center">
-                <a href="{{ path('review_form', {'id': coaster.id}) }}">
-                    <button type="button" class="btn bg-primary">
-                        <i class="icon-plus22 position-left"></i>
-                        {{ 'review.send'| trans() }}
-                    </button>
-                </a>
-            </div>
-        {% endif %}
     </div>
     <!-- /comments -->
 </div>

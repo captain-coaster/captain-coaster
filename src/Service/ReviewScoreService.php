@@ -21,13 +21,21 @@ class ReviewScoreService
     ) {
     }
 
-    /** Calculate and update the score for a single review */
+    /** Calculate and update the score for a single review without affecting updatedAt */
     public function updateScore(RiddenCoaster $review): void
     {
         $score = $this->calculateScore($review);
+
+        // Use direct SQL to update only the score field without triggering lifecycle callbacks
+        $conn = $this->entityManager->getConnection();
+        $sql = 'UPDATE ridden_coaster SET score = :score WHERE id = :id';
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue('score', $score);
+        $stmt->bindValue('id', $review->getId());
+        $stmt->executeStatement();
+
+        // Update the entity in memory to reflect the database change
         $review->setScore($score);
-        $this->entityManager->persist($review);
-        $this->entityManager->flush();
     }
 
     /** Calculate and update scores for all reviews in one efficient SQL query */
