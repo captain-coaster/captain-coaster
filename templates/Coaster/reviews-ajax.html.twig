@@ -47,7 +47,7 @@
                                     {% endfor %}
                                 </p>
                             {% endif %}
-                            {% if review.review and ((review.language == app.request.locale and displayReviewsInAllLanguages == 0) or displayReviewsInAllLanguages == 1) %}
+                            {% if review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
                                 <p>{{ review.review }}</p>
                             {% endif %}
                             {% if is_granted('update', review) %}

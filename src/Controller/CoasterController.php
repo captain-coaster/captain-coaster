@@ -110,7 +110,7 @@ class CoasterController extends BaseController
     public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, Coaster $coaster, int $page = 1): Response
     {
         $user = $this->getUser();
-        $displayReviewsInAllLanguages = false;
+        $displayReviewsInAllLanguages = true;
         if (null !== $user) {
             $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
         }

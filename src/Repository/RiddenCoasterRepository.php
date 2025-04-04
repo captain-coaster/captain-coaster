@@ -112,7 +112,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r', 'p', 'c', 'u')
             ->addSelect(
-                'CASE WHEN ((r.language = :locale AND :displayReviewsInAllLanguages = 0) OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
@@ -136,7 +136,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r')
             ->addSelect(
-                'CASE WHEN ((r.language = :locale AND :displayReviewsInAllLanguages = 0) OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->addSelect('u')
             ->from(RiddenCoaster::class, 'r')
@@ -204,7 +204,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r, u')
             ->addSelect(
-                'CASE WHEN ((r.language = :locale AND :displayReviewsInAllLanguages = 0) OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
             ->join('r.user', 'u')
