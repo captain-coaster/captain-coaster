@@ -49,6 +49,7 @@ coaster:
         vr: 'VR'
         indoor: 'Indoor'
         cost: 'Coste'
+        formerNames: 'Nombres anteriores'
     parkcoaster: 'También en {name}'
     video:
         title: 'POV Onride'

@@ -286,6 +286,15 @@
                             </div>
                         </div>
                     {% endif %}
+                    {% if coaster.formerNames %}
+                        <div class="list-group-item">
+                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.formerNames'|trans }}
+                                :</label>
+                            <div class="pull-right">
+                                {{ coaster.formerNames|join(', ') }}
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
             {% if coaster.youtubeId %}
