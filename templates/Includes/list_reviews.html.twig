@@ -1,59 +1,39 @@
-{% import "helper.html.twig" as helper %}
-
 <div class="panel panel-flat">
+  <div class="panel-heading">
+    <h6 class="panel-title text-semibold">
+      <i class="icon-bubble-lines4 position-left"></i>
+      {{ 'review.title'|trans }}
+    </h6>
+    <div class="heading-elements">
+      <ul class="icons-list">
+        <li><a data-action="collapse"></a></li>
+      </ul>
+    </div>
+  </div>
+
   <div class="panel-body">
-    <ul class="media-list stack-media-on-mobile">
+    <ul class="media-list media-list-bordered">
       {% for review in reviews %}
         <li class="media">
-          <div class="media-left">
-            {{ helper.profilePicture(review.user) }}
+          <div class="media-heading">
+            <h6 class="text-semibold">
+              <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
+                {{ review.coaster.name }}
+              </a>
+              -
+              <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
+                {{ review.coaster.park.name }}
+              </a>
+            </h6>
           </div>
 
-          <div class="media-body">
-            <div class="media-heading">
-              <h6 class="media-heading">
-                  <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                  {{ review.coaster.name }}
-                </a>
-                -
-                <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                  {{ review.coaster.park.name }}
-                </a>
-              </h6>
-              <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
-                {{ review.user.displayName }}
-              </a>
-              {{ helper.starRating(review.value) }}
-              <span class="media-annotation dotted">
-                {{ review.updatedAt|ago }}
-              </span>
-            </div>
-            {% if review.pros|length > 0 or review.cons|length > 0 %}
-              <p>
-                {% for pros in review.pros %}
-                  <span class="label label-success label-rounded mb-5">{{ pros.name|trans([], 'database') }}</span>
-                {% endfor %}
-                {% for cons in review.cons %}
-                  <span class="label label-danger label-rounded mb-5">{{ cons.name|trans([], 'database') }}</span>
-                {% endfor %}
-              </p>
-            {% endif %}
-            {% if review.review %}
-              <p>{{ review.review }}</p>
-            {% endif %}
-            {% if is_granted('update', review) %}
-              <ul class="list-inline list-inline-separate text-size-small">
-                <li>
-                  <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                    {{ 'review.update'|trans }}
-                  </a>
-                </li>
-              </ul>
-            {% endif %}
-          </div>
+          {% include 'Includes/_review_item.html.twig' with {'review': review} %}
         </li>
       {% else %}
+        <li class="text-center text-muted">
+          <i class="icon-comment-discussion position-left"></i>
           {{ 'review_list.no_review'|trans }}
+        </li>
       {% endfor %}
     </ul>
   </div>

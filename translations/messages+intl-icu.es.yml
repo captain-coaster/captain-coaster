@@ -191,6 +191,22 @@ review:
     delete: 'Borrar'
     last: 'Últimas reseñas'
     all: 'Ver todo →'
+    ridden_at: 'Fecha de viaje'
+    upvote: 'Votar por esta reseña'
+    report: 'Reportar esta reseña'
+    report_title: 'Reportar Reseña'
+    report_reason: 'Motivo del reporte'
+    reason:
+        offensive: 'Contenido ofensivo'
+        inappropriate: 'Lenguaje inapropiado'
+        incorrect: 'Información incorrecta'
+        spam: 'Spam'
+        other: 'Otro'
+    cancel: 'Cancelar'
+    submit_report: 'Enviar Reporte'
+    report_success: 'Gracias por tu reporte. Nuestro equipo lo revisará en breve.'
+    report_error: 'Se produjo un error al enviar tu reporte.'
+    remove_upvote: 'Quitar voto'
 
 users:
     ratings:

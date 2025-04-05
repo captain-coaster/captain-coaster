@@ -120,64 +120,35 @@
       <!-- latest reviews -->
       <div class="panel panel-flat">
         <div class="panel-heading">
-          <h6 class="panel-title text-semiold">{{ 'review.last'|trans }}</h6>
+          <h6 class="panel-title text-semibold">
+            <i class="icon-bubble-lines4 position-left"></i>
+            {{ 'review.last'|trans }}
+          </h6>
           <div class="heading-elements">
-            <a href="{{ path('review_list') }}" class="heading-text">{{ 'review.all'|trans }}</a>
+            <a href="{{ path('review_list') }}" class="heading-text">
+              <i class="icon-arrow-right8 position-right"></i>
+              {{ 'review.all'|trans }}
+            </a>
           </div>
         </div>
 
         <div class="panel-body">
-          <ul class="media-list stack-media-on-mobile">
+          <ul class="media-list media-list-bordered stack-media-on-mobile reviews-list">
             {% for review in reviews %}
-              <li class="media">
-                <div class="media-left">
-                  {{ helper.profilePicture(review.user) }}
+              <li class="media review-list-item">
+                <div class="review-coaster-info">
+                  <h6 class="media-heading text-semibold">
+                    <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
+                      {{ review.coaster.name }}
+                    </a>
+                    -
+                    <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
+                      {{ review.coaster.park.name }}
+                    </a>
+                  </h6>
                 </div>
 
-                <div class="media-body">
-                  <div class="media-heading">
-                    <h6 class="media-heading">
-                        <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                        {{ review.coaster.name }}
-                      </a>
-                      -
-                      <a href="{{ path('park_show', {'id':review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                        {{ review.coaster.park.name }}
-                      </a>
-                    </h6>
-                    <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
-                      {{ review.user.displayName }}
-                    </a>
-                      {{ helper.starRating(review.value) }}
-                    <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
-                  </div>
-                  {% if review.pros|length > 0 or review.cons|length > 0 %}
-                    <p>
-                      {% for pros in review.pros %}
-                        <span
-                            class="label label-success label-rounded mb-5">{{ pros.name|trans([], 'database') }}</span>
-                      {% endfor %}
-                      {% for cons in review.cons %}
-                        <span class="label label-danger label-rounded mb-5">{{ cons.name|trans([], 'database') }}</span>
-                      {% endfor %}
-                    </p>
-                  {% endif %}
-                  {% if review.review %}
-                    <p>
-                      {{ review.review|slice(0, 600) }}
-                      {% if review.review|length > 600 %}...{% endif %}
-                    </p>
-                  {% endif %}
-                  {% if is_granted('ROLE_USER') and app.user.id == review.user.id %}
-                    <ul class="list-inline list-inline-separate text-size-small">
-                      <li>
-                        <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-                          Modifier mon avis
-                        </a>
-                      </li>
-                    </ul>
-                  {% endif %}
-                </div>
+                {% include 'Includes/_review_item.html.twig' with {'review': review, 'compact': true} %}
               </li>
             {% endfor %}
           </ul>
