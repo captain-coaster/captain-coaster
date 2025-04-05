@@ -41,7 +41,7 @@ class ParkController extends AbstractController
 
     /** Redirect old urls to above */
     #[\Symfony\Component\Routing\Attribute\Route(path: '/{slug}', name: 'redirect_park_show', options: ['expose' => true], methods: ['GET'])]
-    public function redirectCoaster(Park $park): RedirectResponse
+    public function redirectPark(Park $park): RedirectResponse
     {
         return $this->redirectToRoute('park_show', [
             'id' => $park->getId(),
