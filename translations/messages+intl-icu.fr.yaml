@@ -228,7 +228,7 @@ review:
     cons: 'Et ses principaux défauts ?'
     comment: 'Envie d''être encore plus précis, raconte-nous ça !'
     language: 'Langue de cet avis'
-    send: 'Envoyer mon avis'
+    send: 'Ajouter mon avis'
     update: 'Modifier'
     delete: 'Supprimer'
     last: 'Derniers avis'

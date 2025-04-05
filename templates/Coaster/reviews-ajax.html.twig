@@ -4,21 +4,23 @@
     <!-- Comments -->
     <div class="panel panel-flat">
         <div class="panel-heading">
-            <h6 class="panel-title text-semibold">
-                <i class="icon-bubble-lines4 position-left"></i>
-                {{ 'review.title'|trans }}
-                &nbsp;<span class="badge bg-primary">{{ reviews.getTotalItemCount() }}</span>
-            </h6>
-            {% if coaster.isRateable %}
-                <div class="heading-elements">
-                    <a href="{{ path('review_form', {'id': coaster.id}) }}">
+            <h6 class="panel-title">
+                <span class="text-semibold">
+                    <i class="icon-bubble-lines4 position-left"></i> {{ 'review.title'|trans }}
+                    &nbsp;<span class="badge bg-primary">{{ reviews.getTotalItemCount() }}</span>
+                </span>
+                {% if coaster.isRateable %}
+                <div class="pull-right">
+                    <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
                         <button type="button" class="btn btn-primary btn-rounded btn-xs"><i class="icon-plus22 position-left"></i> {{ 'review.send'| trans() }}</button>
                     </a>
                 </div>
             {% endif %}
+            </h6>
+            
         </div>
 
-        <div class="panel-body">
+        <div class="panel-body mt-5">
             <ul class="media-list media-list-bordered">
                 {% for review in reviews %}
                     <li class="media">

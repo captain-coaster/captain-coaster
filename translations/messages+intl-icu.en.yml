@@ -234,7 +234,7 @@ review:
     cons: 'And its main cons?'
     comment: 'Want to tell us more about your ride?'
     language: 'Language of the review'
-    send: 'Send my review'
+    send: 'Add my review'
     update: 'Edit'
     delete: 'Delete'
     last: 'Latest reviews'
