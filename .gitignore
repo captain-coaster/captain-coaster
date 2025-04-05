@@ -32,3 +32,7 @@ phpstan.neon
 /.idea/
 .php_cs.cache
 .php-cs-fixer.cache
+
+/limitless
+
+.DS_Store

@@ -60,6 +60,15 @@ class RiddenCoaster
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $dislike = 0;
 
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $score = 0.0;
+
+    #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewUpvote::class, orphanRemoval: true)]
+    private Collection $upvotes;
+
+    #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewReport::class, orphanRemoval: true)]
+    private Collection $reports;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $createdAt = null;
@@ -75,6 +84,8 @@ class RiddenCoaster
     {
         $this->pros = new ArrayCollection();
         $this->cons = new ArrayCollection();
+        $this->upvotes = new ArrayCollection();
+        $this->reports = new ArrayCollection();
     }
 
     public function getId(): int
@@ -198,6 +209,80 @@ class RiddenCoaster
     public function getDislike()
     {
         return $this->dislike;
+    }
+
+    public function getScore(): ?float
+    {
+        return $this->score;
+    }
+
+    public function setScore(?float $score): self
+    {
+        $this->score = $score;
+
+        return $this;
+    }
+
+    /** @return Collection<int, ReviewUpvote> */
+    public function getUpvotes(): Collection
+    {
+        return $this->upvotes;
+    }
+
+    public function addUpvote(ReviewUpvote $upvote): self
+    {
+        if (!$this->upvotes->contains($upvote)) {
+            $this->upvotes->add($upvote);
+            $upvote->setReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUpvote(ReviewUpvote $upvote): self
+    {
+        if ($this->upvotes->removeElement($upvote)) {
+            // set the owning side to null (unless already changed)
+            if ($upvote->getReview() === $this) {
+                $upvote->setReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /** @return Collection<int, ReviewReport> */
+    public function getReports(): Collection
+    {
+        return $this->reports;
+    }
+
+    public function addReport(ReviewReport $report): self
+    {
+        if (!$this->reports->contains($report)) {
+            $this->reports->add($report);
+            $report->setReview($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReport(ReviewReport $report): self
+    {
+        if ($this->reports->removeElement($report)) {
+            // set the owning side to null (unless already changed)
+            if ($report->getReview() === $this) {
+                $report->setReview(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /** Get upvote count (for backward compatibility) */
+    public function getUpvoteCount(): int
+    {
+        return $this->upvotes->count();
     }
 
     public function setCreatedAt(\DateTime $createdAt): self

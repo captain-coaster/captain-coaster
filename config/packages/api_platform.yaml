@@ -26,5 +26,4 @@ api_platform:
         jsonld: ['application/ld+json']
         jsonopenapi: ['application/vnd.openapi+json']
         html: ['text/html']
-    event_listeners_backward_compatibility_layer: false
-    keep_legacy_inflector: false
+

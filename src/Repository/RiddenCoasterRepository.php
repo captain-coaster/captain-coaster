@@ -104,7 +104,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /** Get ratings for a specific coaster ordered by language preference, text review and date. */
+    /** Get ratings for a specific coaster ordered by language preference, score and date. */
     public function getReviews(Coaster $coaster, string $locale = 'en')
     {
         // add joins to avoid multiple subqueries
@@ -121,6 +121,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->where('r.coaster = :coasterId')
             ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.score', 'desc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
             ->setParameter('locale', $locale)
@@ -128,7 +129,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** Get latest text reviews ordered by language. */
+    /** Get latest text reviews ordered by language and score. */
     public function getLatestReviewsByLocale(string $locale = 'en', int $limit = 3)
     {
         return $this->getEntityManager()
@@ -140,6 +141,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
             ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.score', 'desc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
             ->setParameter('locale', $locale)
@@ -204,6 +206,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->join('r.user', 'u')
             ->where('r.review is not null')
             ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.score', 'desc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('locale', $locale)
             ->getQuery()

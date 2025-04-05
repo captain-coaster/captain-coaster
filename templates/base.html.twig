@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}">
+<html lang="{{ app.request.get('_locale') }}" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,6 +46,7 @@
         <!-- Content area -->
         <div class="content">
           {{ include('flashes.html.twig') }}
+          <div id="notifications" data-controller="notification" data-notification-target="container"></div>
 
           {% block body %}{% endblock %}
 
@@ -72,6 +73,8 @@
 <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+<!-- Symfony UX Translator -->
+{{ encore_entry_script_tags('translator') }}
 <script type="text/javascript">
   // used for rating
   var locale = '{{ app.request.locale }}';

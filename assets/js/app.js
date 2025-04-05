@@ -11,6 +11,9 @@ require('../css/bootstrap.css');
 require('../css/core.css');
 require('../css/components.css');
 require('../css/colors.css');
-
 // Need jQuery? Install it with "yarn add jquery", then uncomment to require it.
+// const $ = require('jquery');
+
+// Start the Stimulus application
+import '../bootstrap';
 // const $ = require('jquery');
