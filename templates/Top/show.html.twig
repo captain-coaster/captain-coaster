@@ -72,7 +72,7 @@
                 </li>
               {% endif %}
               <li>
-                <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
                   {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
                 </a>
               </li>

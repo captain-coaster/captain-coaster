@@ -18,7 +18,7 @@ class SearchService
 
     final public const array PARK = [
         'emoji' => '🎡',
-        'route' => 'park_show',
+        'route' => 'redirect_park_show',
     ];
 
     final public const array USER = [

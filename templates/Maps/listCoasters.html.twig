@@ -1,7 +1,7 @@
 <ul class="navigation navigation-alt navigation-accordion">
     <li class="navigation-header">
         <a style="min-height:0;padding-top:0;padding-bottom:0;color: #000000;"
-           href="{{ path('park_show', {'slug': coasters.0.park.slug}) }}">
+           href="{{ path('park_show', {'id': coasters.0.park.id, 'slug': coasters.0.park.slug}) }}">
             {{ coasters.0.park.name }}
         </a>
     </li>

@@ -26,7 +26,7 @@
                 </h2>
                 <ul class="list-inline list-inline-separate text-muted mb-5">
                     <li>
-                        <a class="text-muted" href="{{ path('park_show', {'slug': coaster.park.slug}) }}">
+                        <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
                             {{ coaster.park.name }}
                         </a>
                     </li>

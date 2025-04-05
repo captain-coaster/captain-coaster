@@ -51,7 +51,7 @@ class ParkRepository extends ServiceEntityRepository
               * cos( radians( p.latitude ) )
               * cos( radians( p.longitude ) - radians(:parkLongitude) )
               + sin( radians(:parkLatitude) )
-              * sin( radians( p.latitude ) ) ) ) ) AS distance, p.slug as slug')
+              * sin( radians( p.latitude ) ) ) ) ) AS distance, p.slug as slug, p.id as id')
             ->from(Park::class, 'p')
             ->join('p.coasters', 'c')
             ->where('p.latitude between :parkLatitudeMin and :parkLatitudeMax')

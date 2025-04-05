@@ -53,7 +53,7 @@
                             <ul class="list-feed pl-15 pr-15">
                                 {% for infoPark in closestParks %}
                                     <li>
-                                        <a href="{{ path('park_show', {'slug': infoPark.slug}) }}">
+                                        <a href="{{ path('park_show', {'id': infoPark.id, 'slug': infoPark.slug}) }}">
                                             {{ infoPark.name }}
                                         </a>
                                         -
