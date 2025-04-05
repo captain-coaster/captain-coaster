@@ -105,7 +105,7 @@ class UserController extends BaseController
         }
 
         return $this->render(
-            'Review/list.html.twig',
+            'User/list_reviews.html.twig',
             [
                 'reviews' => $pagination,
                 'user' => $user,

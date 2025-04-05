@@ -128,6 +128,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $isVerified = false;
 
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 1])]
+    private bool $displayReviewsInAllLanguages = true;
+
     public function __toString(): string
     {
         return $this->displayName;
@@ -544,6 +547,18 @@ class User implements UserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function isDisplayReviewsInAllLanguages(): bool
+    {
+        return $this->displayReviewsInAllLanguages;
+    }
+
+    public function setDisplayReviewsInAllLanguages(bool $displayReviewsInAllLanguages): static
+    {
+        $this->displayReviewsInAllLanguages = $displayReviewsInAllLanguages;
 
         return $this;
     }

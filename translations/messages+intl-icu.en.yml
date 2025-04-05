@@ -175,6 +175,8 @@ me:
             metric: 'Metric units'
             imperial: 'Imperial units'
             label: 'Display distances and statistics in'
+        displayReviewsInAllLanguages:
+            label: 'Afficher les avis écrits en différentes langues'
         addTodayDateWhenRating:
             label: 'Add today''s date on a new rating'
         apiKey:

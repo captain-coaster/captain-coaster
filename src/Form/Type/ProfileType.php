@@ -65,6 +65,10 @@ class ProfileType extends AbstractType
                 'label' => 'me.form.units.label',
                 'attr' => ['class' => 'form-control'],
             ])
+            ->add('displayReviewsInAllLanguages', CheckboxType::class, [
+                'required' => false,
+                'label' => 'me.form.displayReviewsInAllLanguages.label',
+            ])
             ->add('addTodayDateWhenRating', CheckboxType::class, [
                 'required' => false,
                 'label' => 'me.form.addTodayDateWhenRating.label',
