@@ -24,7 +24,7 @@
             <ul class="media-list media-list-bordered">
                 {% for review in reviews %}
                     <li class="media">
-                        {% include 'Includes/_review_item.html.twig' with {'review': review} %}
+                        {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
                     </li>
                 {% else %}
                     <li class="text-center text-muted">

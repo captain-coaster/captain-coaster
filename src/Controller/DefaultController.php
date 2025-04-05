@@ -62,6 +62,7 @@ class DefaultController extends BaseController
             'stats' => $statService->getIndexStats(),
             'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, $displayReviewsInAllLanguages),
             'missingImages' => $missingImages,
+            'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
         ]);
     }
 

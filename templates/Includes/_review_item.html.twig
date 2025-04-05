@@ -33,7 +33,7 @@
       </p>
     {% endif %}
 
-    {% if review.review %}
+    {% if review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
       {% if review.review|length > 200 %}
         <div class="review-content" data-review-actions-target="reviewContent">
           <p class="review-short">{{ review.review|slice(0, 200) }}...
@@ -79,7 +79,7 @@
         </li>
       {% endif %}
     </ul>
-    
+
     <!-- Report Modal -->
     {% if is_granted('ROLE_USER') %}
       <div id="reportModal-{{ review.id }}" class="modal fade" data-review-actions-target="reportModal">
@@ -89,7 +89,7 @@
               <button type="button" class="close" data-dismiss="modal">&times;</button>
               <h5 class="modal-title">{{ 'review.report_title'|trans }}</h5>
             </div>
-            
+
             <form data-action="review-actions#submitReport">
               <div class="modal-body">
                 <div class="form-group">
@@ -103,7 +103,7 @@
                   </select>
                 </div>
               </div>
-              
+
               <div class="modal-footer">
                 <button type="button" class="btn btn-link" data-dismiss="modal">{{ 'review.cancel'|trans }}</button>
                 <button type="submit" class="btn btn-primary">{{ 'review.submit_report'|trans }}</button>
