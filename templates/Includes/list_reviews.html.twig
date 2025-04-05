@@ -21,7 +21,7 @@
                 {{ review.coaster.name }}
               </a>
               -
-              <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
+              <a href="{{ path('park_show', {'id': review.coaster.park.slug, 'slug': review.coaster.park.slug}) }}">
                 {{ review.coaster.park.name }}
               </a>
             </h6>
