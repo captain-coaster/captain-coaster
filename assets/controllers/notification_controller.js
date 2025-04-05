@@ -7,7 +7,6 @@ export default class extends Controller {
     static targets = ['container'];
 
     connect() {
-        console.log('Notification controller connected', this.element);
     }
 
     /**

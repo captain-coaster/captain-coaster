@@ -15,14 +15,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('Review actions controller connected', this.element);
-        console.log('Review ID:', this.idValue);
-        console.log('Upvote URL:', this.upvoteUrlValue);
-        console.log('Report URL:', this.reportUrlValue);
-        console.log('Has upvote button target:', this.hasUpvoteButtonTarget);
-        console.log('Has report button target:', this.hasReportButtonTarget);
-        console.log('Has report modal target:', this.hasReportModalTarget);
-
         // Initialize the upvote button state based on the upvoted value
         if (this.hasUpvoteButtonTarget && this.upvotedValue) {
             this._updateUpvoteButtonState();
@@ -33,7 +25,6 @@ export default class extends Controller {
      * Toggle upvote for a review
      */
     upvote(event) {
-        console.log('Upvote action triggered', event);
         event.preventDefault();
 
         if (!this.hasUpvoteUrlValue) {
@@ -69,7 +60,6 @@ export default class extends Controller {
      * Open the report modal
      */
     openReportModal(event) {
-        console.log('Open report modal action triggered', event);
         event.preventDefault();
 
         if (this.hasReportModalTarget) {
@@ -82,7 +72,6 @@ export default class extends Controller {
      * Submit a report
      */
     submitReport(event) {
-        console.log('Submit report action triggered', event);
         event.preventDefault();
 
         if (!this.hasReportUrlValue) {
@@ -203,9 +192,6 @@ export default class extends Controller {
                 default:
                     notificationController.showInfo(message);
             }
-        } else {
-            // Fallback to console if notification controller isn't available
-            console.log(`Notification (${type}): ${message}`);
         }
     }
 }
