@@ -60,6 +60,7 @@ coaster:
         cost: 'Kosten'
         kiddie: 'Kinder'
         indoor: 'Indoor'
+        formerNames: 'Ehemalige Namen'
     parkcoaster: 'Auch in {name}'
     video:
         title: 'Onride Video'
@@ -240,6 +241,21 @@ review:
     last: 'Neueste Rezensionen'
     all: 'Zeige alle →'
     ridden_at: 'Datum der Fahrt'
+    upvote: 'Diese Rezension positiv bewerten'
+    report: 'Diese Rezension melden'
+    report_title: 'Rezension melden'
+    report_reason: 'Grund für die Meldung'
+    reason:
+        offensive: 'Anstößiger Inhalt'
+        inappropriate: 'Unangemessene Sprache'
+        incorrect: 'Falsche Informationen'
+        spam: 'Spam'
+        other: 'Anderer Grund'
+    cancel: 'Abbrechen'
+    submit_report: 'Meldung absenden'
+    report_success: 'Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.'
+    report_error: 'Beim Absenden deiner Meldung ist ein Fehler aufgetreten.'
+    remove_upvote: 'Positive Bewertung entfernen'
     form:
         title: 'Rezension über {name}'
 

@@ -144,17 +144,3 @@
     </div>
   </div>
 {% endblock %}
-
-{% block javascripts %}
-  <script type="application/javascript">
-      function loadBanner() {
-          $.ajax({
-              url: Routing.generate('profile_banner', {'_locale': '{{ app.request.locale }}'}),
-              type: 'GET'
-          }).done(function (data) {
-              $('#my-banner').html(data);
-          });
-      }
-      loadBanner();
-  </script>
-{% endblock %}

@@ -45,6 +45,7 @@
         "symfony/redis-messenger": "6.4.*",
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
+        "symfony/stimulus-bundle": "^2.23",
         "symfony/stopwatch": "6.4.*",
         "symfony/translation": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
@@ -54,7 +55,8 @@
         "twig/cssinliner-extra": "^3.8.0",
         "twig/extra-bundle": "^3.8.0",
         "twig/inky-extra": "^3.8.0",
-        "twig/intl-extra": "^3.6"
+        "twig/intl-extra": "^3.6",
+        "symfony/ux-translator": "^2.13"
     },
     "require-dev": {
         "phpstan/extension-installer": "^1.3",

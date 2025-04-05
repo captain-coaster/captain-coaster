@@ -50,7 +50,9 @@ class CoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('CONCAT(c.name, \' - \', p.name) AS name')
             ->addSelect('c.slug')
+            ->addSelect('c.formerNames')
             ->from(Coaster::class, 'c')
+            ->orderBy('c.score', 'DESC')
             ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
             ->getQuery()
             ->getResult();

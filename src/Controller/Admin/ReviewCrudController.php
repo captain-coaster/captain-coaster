@@ -46,7 +46,8 @@ class ReviewCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions->disable('new');
+        return $actions
+            ->disable('new');
     }
 
     public function configureFields(string $pageName): iterable

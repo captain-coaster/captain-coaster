@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}">
+<html lang="{{ app.request.get('_locale') }}" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -46,6 +46,7 @@
         <!-- Content area -->
         <div class="content">
           {{ include('flashes.html.twig') }}
+          <div id="notifications" data-controller="notification" data-notification-target="container"></div>
 
           {% block body %}{% endblock %}
 
@@ -72,6 +73,8 @@
 <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+<!-- Symfony UX Translator -->
+{{ encore_entry_script_tags('translator') }}
 <script type="text/javascript">
   // used for rating
   var locale = '{{ app.request.locale }}';
@@ -97,7 +100,7 @@
     return Bloodhound.tokenizers.nonword(normalized);
   };
   var dataSource = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.nonword('no'),
+    datumTokenizer: Bloodhound.tokenizers.obj.nonword('normalize'),
     queryTokenizer: queryTokenizer,
     prefetch: {
       url: Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'}),
@@ -105,8 +108,8 @@
       ttl: 600000,
       transform: function (obj) {
         return obj.map(
-          function (x) {
-            return {no: normalize(x.n), n: x.n, r: x.r, s: x.s}
+          function (result) {
+            return {normalize: normalize(result.names), display: result.display, route: result.route, slug: result.slug}
           }
         )
       }
@@ -118,13 +121,13 @@
         hint: true,
         autoselect: true,
       }, {
-        display: 'n',
+        display: 'display',
         source: dataSource.ttAdapter(),
         limit: 7,
       }).bind('typeahead:select', function(ev, suggestion) {
     window.location.href = Routing.generate(
-        suggestion.r,
-        {'slug': suggestion.s, '_locale': '{{ app.request.locale }}'},
+        suggestion.route,
+        {'slug': suggestion.slug, '_locale': '{{ app.request.locale }}'},
     );
   });
 </script>

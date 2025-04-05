@@ -38,12 +38,5 @@ services:
         restart: always
         ports:
             - "8081:8080"
-    encore:
-        image: node:16-alpine
-        container_name: node-captain
-        volumes:
-            - .:/var/www
-        working_dir: /var/www
-        command: ["sh", "-c", "npm install && npm run build"]
 volumes:
     datamaria:

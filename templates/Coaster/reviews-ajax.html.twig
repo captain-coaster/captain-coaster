@@ -4,78 +4,37 @@
     <!-- Comments -->
     <div class="panel panel-flat">
         <div class="panel-heading">
-            <h6 class="panel-title text-semiold">
-                {{ 'review.title'|trans }}
-                &nbsp;<span class="badge badge-primary">{{ reviews.getTotalItemCount() }}</span>
-            </h6>
-            {% if coaster.isRateable %}
+            <h6 class="panel-title">
+                <span class="text-semibold">
+                    <i class="icon-bubble-lines4 position-left"></i> {{ 'review.title'|trans }}
+                    &nbsp;<span class="badge bg-primary">{{ reviews.getTotalItemCount() }}</span>
+                </span>
+                {% if coaster.isRateable %}
                 <div class="pull-right">
                     <a class="text-muted" href="{{ path('review_form', {'id': coaster.id}) }}">
-                        {{ 'review.send'|trans() }}
+                        <button type="button" class="btn btn-primary btn-rounded btn-xs"><i class="icon-plus22 position-left"></i> {{ 'review.send'| trans() }}</button>
                     </a>
                 </div>
             {% endif %}
+            </h6>
+
         </div>
 
-        <div class="panel-body">
-            <ul class="media-list stack-media-on-mobile">
+        <div class="panel-body mt-5">
+            <ul class="media-list media-list-bordered">
                 {% for review in reviews %}
                     <li class="media">
-                        <div class="media-left">
-                            {{ helper.profilePicture(review.user, 'img-circle img-xs') }}
-                        </div>
-
-                        <div class="media-body">
-                            <div class="media-heading">
-                                <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
-                                    {{ review.user.displayName }}
-                                </a>
-                                {{ helper.starRating(review.value) }}
-                                <span class="media-annotation dotted">
-                                  {{ review.updatedAt|ago }}
-                                </span>
-                            </div>
-                            {% if review.pros|length > 0 or review.cons|length > 0 %}
-                                <p>
-                                    {% for pros in review.pros %}
-                                        <span
-                                            class="label label-success label-rounded mb-5">{{ pros.name|trans([], 'database') }}</span>
-                                    {% endfor %}
-                                    {% for cons in review.cons %}
-                                        <span
-                                            class="label label-danger label-rounded mb-5">{{ cons.name|trans([], 'database') }}</span>
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
-                            {% if review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
-                                <p>{{ review.review }}</p>
-                            {% endif %}
-                            {% if is_granted('update', review) %}
-                                <ul class="list-inline list-inline-separate text-size-small">
-                                    <li>
-                                        <a href="{{ path('review_form', {'id': coaster.id}) }}">{{ 'review.update'|trans }}</a>
-                                    </li>
-                                    <li>
-                                        <a onclick="deleteRating({{ review.id }})">{{ 'review.delete'|trans }}</a>
-                                    </li>
-                                </ul>
-                            {% endif %}
-                        </div>
+                        {% include 'Includes/_review_item.html.twig' with {'review': review} %}
+                    </li>
+                {% else %}
+                    <li class="text-center text-muted">
+                        <i class="icon-comment-discussion position-left"></i>
+                        {{ 'review_list.no_review'|trans }}
                     </li>
                 {% endfor %}
             </ul>
             {{ knp_pagination_render(reviews) }}
         </div>
-        {% if coaster.isRateable %}
-            <div class="panel-body">
-                <a href="{{ path('review_form', {'id': coaster.id}) }}">
-                    <button type="button" class="btn bg-blue">
-                        <i class="icon-plus22"></i>
-                        {{ 'review.send'| trans() }}
-                    </button>
-                </a>
-            </div>
-        {% endif %}
     </div>
     <!-- /comments -->
 </div>
