@@ -173,6 +173,8 @@ me:
             metric: 'Internationale Einheitensystem'
             imperial: 'Britische Einheitensystem'
             label: 'Anzeigen von Entfernungen und Statistiken in'
+        displayReviewsInAllLanguages:
+            label: 'Anzeigen in verschiedenen Sprachen verfasste Bewertungen'
         addTodayDateWhenRating:
             label: 'Füge das heutige Datum zu einer Bewertung hinzu'
         apiKey:

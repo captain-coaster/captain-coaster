@@ -32,9 +32,15 @@ class ReviewController extends BaseController
         PaginatorInterface $paginator,
         int $page = 1
     ): Response {
+        $user = $this->getUser();
+        $displayReviewsInAllLanguages = false;
+        if (null !== $user) {
+            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
+        }
+
         try {
             $pagination = $paginator->paginate(
-                $riddenCoasterRepository->findAll($request->getLocale()),
+                $riddenCoasterRepository->findAll($request->getLocale(), $displayReviewsInAllLanguages),
                 $page,
                 10
             );

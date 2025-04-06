@@ -49,8 +49,10 @@ class DefaultController extends BaseController
     #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
     public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
     {
+        $displayReviewsInAllLanguages = false;
         $missingImages = [];
         if ($user = $this->getUser()) {
+            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
@@ -58,8 +60,9 @@ class DefaultController extends BaseController
             'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
             'image' => $imageRepository->findLatestImage(),
             'stats' => $statService->getIndexStats(),
-            'reviews' => $riddenCoasterRepository->getLatestReviewsByLocale($request->getLocale()),
+            'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, $displayReviewsInAllLanguages),
             'missingImages' => $missingImages,
+            'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
         ]);
     }
 

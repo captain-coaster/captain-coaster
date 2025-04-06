@@ -1,11 +1,11 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'users.reviews.title'|trans %}
+{% set title = 'users.reviews.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
   <div class="row">
-    {% include 'Includes/list_reviews.html.twig' with {'reviews': reviews} only %}
+    {% include 'Includes/list_reviews.html.twig' with {'reviews': reviews, 'displayReviewsInAllLanguages': true} only %}
   </div>
 
   {{ knp_pagination_render(reviews) }}
