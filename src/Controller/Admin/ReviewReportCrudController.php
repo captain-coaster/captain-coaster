@@ -106,8 +106,8 @@ class ReviewReportCrudController extends AbstractCrudController
                     return $content;
                 }),
             BooleanField::new('resolved'),
-            DateTimeField::new('createdAt')->hideOnForm(),
-            DateTimeField::new('resolvedAt')->hideOnForm(),
+            DateTimeField::new('createdAt')->setDisabled(),
+            DateTimeField::new('resolvedAt')->setDisabled(),
         ];
     }
 }
