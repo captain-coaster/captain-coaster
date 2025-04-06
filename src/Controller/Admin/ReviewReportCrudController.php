@@ -81,6 +81,7 @@ class ReviewReportCrudController extends AbstractCrudController
             AssociationField::new('user')->autocomplete(),
             TextField::new('coasterName', 'Coaster')
                 ->hideOnForm()
+                ->setValue('')
                 // Make sure it's visible on the index page
                 ->formatValue(fn ($value, $entity) => $entity->getReview() ? $entity->getReview()->getCoaster()->getName() : 'Unknown'),
             ChoiceField::new('reason')
