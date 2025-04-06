@@ -102,7 +102,6 @@ class ReviewActionController extends BaseController
         $report->setUser($user);
         $report->setReview($review);
         $report->setReason($reason);
-        $report->setCoaster($review->getCoaster());
 
         $this->entityManager->persist($report);
         $this->entityManager->flush();
