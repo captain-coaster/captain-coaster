@@ -147,8 +147,7 @@
                     </a>
                   </h6>
                 </div>
-
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'compact': true} %}
+                {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
               </li>
             {% endfor %}
           </ul>

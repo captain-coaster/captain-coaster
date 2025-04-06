@@ -109,8 +109,14 @@ class CoasterController extends BaseController
     )]
     public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, Coaster $coaster, int $page = 1): Response
     {
+        $user = $this->getUser();
+        $displayReviewsInAllLanguages = true;
+        if (null !== $user) {
+            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
+        }
+
         $pagination = $paginator->paginate(
-            $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
+            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages),
             $page,
             50
         );
@@ -120,6 +126,7 @@ class CoasterController extends BaseController
             [
                 'reviews' => $pagination,
                 'coaster' => $coaster,
+                'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
             ]
         );
     }
@@ -153,7 +160,6 @@ class CoasterController extends BaseController
             [
                 'countRatings' => $riddenCoasterRepository->getRatingStatsForCoaster($coaster),
                 'coaster' => $coaster,
-                'reviews' => $riddenCoasterRepository->getReviews($coaster, $request->getLocale()),
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
