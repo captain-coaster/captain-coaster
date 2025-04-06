@@ -142,13 +142,12 @@
                       {{ review.coaster.name }}
                     </a>
                     -
-                    <a href="{{ path('park_show', {'slug': review.coaster.park.slug}) }}">
+                    <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
                       {{ review.coaster.park.name }}
                     </a>
                   </h6>
                 </div>
-
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'compact': true, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
+                {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
               </li>
             {% endfor %}
           </ul>
