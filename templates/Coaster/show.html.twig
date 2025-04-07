@@ -5,6 +5,9 @@
 {% set title = coaster.name %}
 {% set subTitle = coaster.park.name %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
+{% if coaster.formerNames %}
+    {% set secondaryTitle = coaster.formerNames|join(', ') %}
+{% endif %}
 
 {# {% block header %} #}
     {# <meta name="description" content="{{ coaster.name }} is a {{ coaster.manufacturer.name }} roller coaster"/> #}
@@ -283,15 +286,6 @@
                                 :</label>
                             <div class="pull-right">
                                 {{ coaster.price|format_currency(coaster.currency, {fraction_digit: 0}) }}
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if coaster.formerNames %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.formerNames'|trans }}
-                                :</label>
-                            <div class="pull-right">
-                                {{ coaster.formerNames|join(', ') }}
                             </div>
                         </div>
                     {% endif %}
