@@ -81,6 +81,7 @@ class ReviewReportCrudController extends AbstractCrudController
             AssociationField::new('user')->autocomplete(),
             TextField::new('coasterName', 'Coaster')
                 ->hideOnForm()
+                ->setValue('')
                 // Make sure it's visible on the index page
                 ->formatValue(fn ($value, $entity) => $entity->getReview() ? $entity->getReview()->getCoaster()->getName() : 'Unknown'),
             ChoiceField::new('reason')
@@ -106,8 +107,8 @@ class ReviewReportCrudController extends AbstractCrudController
                     return $content;
                 }),
             BooleanField::new('resolved'),
-            DateTimeField::new('createdAt')->hideOnForm(),
-            DateTimeField::new('resolvedAt')->hideOnForm(),
+            DateTimeField::new('createdAt')->setDisabled(),
+            DateTimeField::new('resolvedAt')->setDisabled(),
         ];
     }
 }
