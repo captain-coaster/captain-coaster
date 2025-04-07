@@ -16,4 +16,3 @@ updates:
       all-updates:
         patterns:
           - "*"
-    security-updates: true
