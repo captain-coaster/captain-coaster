@@ -42,7 +42,7 @@
         "symfony/monolog-bundle": "^3.0",
         "symfony/notifier": "6.4.*",
         "symfony/rate-limiter": "6.4.*",
-        "symfony/redis-messenger": "6.4.*",
+        "symfony/redis-messenger": "7.2.*",
         "symfony/runtime": "6.4.*",
         "symfony/security-bundle": "6.4.*",
         "symfony/stimulus-bundle": "^2.23",
