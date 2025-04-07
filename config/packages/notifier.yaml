@@ -4,6 +4,7 @@ framework:
             discord_notif: '%env(DISCORD_NOTIF_DSN)%'
             discord_log: '%env(DISCORD_LOG_DSN)%'
             discord_picture: '%env(DISCORD_PICTURE_DSN)%'
+            discord_report: '%env(DISCORD_REPORT_DSN)%'
         channel_policy:
             # channel_policy only used  by monolog at this time
             # need to improve the monolog transport logic
