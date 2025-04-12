@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Continent;
+use App\Form\Admin\ContinentTranslationType;
+use App\Tooling\Translation\Admin\TranslationsField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -38,7 +40,9 @@ class ContinentCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            TextField::new('name'),
+            TextField::new('name')->hideOnForm(),
+            TranslationsField::new('translations')
+                ->setFormTypeOption('entry_type', ContinentTranslationType::class),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
         ];
     }
