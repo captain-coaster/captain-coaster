@@ -1,7 +1,7 @@
 {% if stats|length > 0 %}
   <div class="panel">
     <div class="panel-heading">
-      <h3 class="panel-title">{{ 'me.stats.title'|trans }}</h3>
+      <h3 class="panel-title">{{ 'profile.stats.title'|trans }}</h3>
     </div>
     <div class="panel-body">
       <div class="col-sm-6 col-md-4">
@@ -12,7 +12,7 @@
             </div>
             <div class="media-body text-right">
               <h3 class="no-margin text-semibold">{{ stats.nb_coasters }}</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'me.stats.coasters'|trans }}</span>
+              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.coasters'|trans }}</span>
             </div>
           </div>
         </div>
@@ -25,7 +25,7 @@
             </div>
             <div class="media-body text-right">
               <h3 class="no-margin text-semibold">{{ stats.nb_park }}</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'me.stats.parks'|trans }}</span>
+              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.parks'|trans }}</span>
             </div>
           </div>
         </div>
@@ -38,7 +38,7 @@
             </div>
             <div class="media-body text-right">
               <h3 class="no-margin text-semibold">{{ stats.nb_country }}</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'me.stats.countries'|trans }}</span>
+              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.countries'|trans }}</span>
             </div>
           </div>
         </div>
@@ -51,7 +51,7 @@
             </div>
             <div class="media-body text-right">
               <h3 class="no-margin text-semibold">{{ stats.country.name|trans([], 'database') }}</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'me.stats.most_country'|trans }}</span>
+              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.most_country'|trans }}</span>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
             </div>
             <div class="media-body text-right">
               <h3 class="no-margin text-semibold">{{ stats.top_100 }}</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'me.stats.top_100'|trans }}</span>
+              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.top_100'|trans }}</span>
             </div>
           </div>
         </div>
@@ -77,7 +77,7 @@
             </div>
             <div class="media-body text-right">
               <h3 class="no-margin text-semibold">{{ stats.manufacturer.name }} ({{ stats.manufacturer.nb }})</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'me.stats.manufacturer'|trans }}</span>
+              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.manufacturer'|trans }}</span>
             </div>
           </div>
         </div>

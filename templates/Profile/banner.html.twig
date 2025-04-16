@@ -11,13 +11,13 @@
       {% set htmlcode = '<a href="'~ absolute_url(path('user_profile', {'id': user.id})) ~'"><img src="' ~ bannerUrl ~ '"/></a>' %}
       <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
         <i class="icon-copy position-left"></i>
-        {{ 'me.banner.getbbcode'|trans }}
+        {{ 'profile.banner.getbbcode'|trans }}
       </a>
     </li>
     <li>
       <a onclick="copy(this);" class="btn btn-link" data-copy="{{ htmlcode }}">
         <i class="icon-copy2 position-left"></i>
-        {{ 'me.banner.gethtml'|trans }}
+        {{ 'profile.banner.gethtml'|trans }}
       </a>
     </li>
   </ul>

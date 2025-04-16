@@ -7,9 +7,11 @@ namespace App\EventListener;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
+#[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: User::class)]
+#[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: User::class)]
 #[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: User::class)]
 class UserListener
 {
@@ -17,7 +19,28 @@ class UserListener
     {
     }
 
-    public function postUpdate(User $user, PostUpdateEventArgs $event): void
+    public function prePersist(User $user): void
+    {
+        $user->updateDisplayName();
+    }
+
+    public function preUpdate(User $user, PreUpdateEventArgs $args): void
+    {
+        $nameChanged = $args->hasChangedField('firstName') || $args->hasChangedField('lastName');
+        $formatChanged = $args->hasChangedField('displayNameFormat');
+
+        // Update display name if any relevant field changed
+        if ($nameChanged || $formatChanged) {
+            $user->updateDisplayName();
+        }
+
+        // Update nameChangedAt only if name fields changed and user can change name
+        if ($nameChanged && $user->canChangeName()) {
+            $user->setNameChangedAt(new \DateTime());
+        }
+    }
+
+    public function postUpdate(User $user): void
     {
         if (!$user->isEnabled()) {
             $user->setEmailNotification(false);

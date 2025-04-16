@@ -114,12 +114,14 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             // update user fields based on token
             $user->setGoogleId($googleUser->getId());
             $user->setEmail($googleUser->getEmail());
-            $user->setFirstName($googleUser->getFirstName());
-            $user->setLastName($googleUser->getLastName());
 
-            // don't override displayName at every login
-            if (!$user->getDisplayName()) {
-                $user->setDisplayName($googleUser->getFirstName().' '.$googleUser->getLastName());
+            // Only set first name and last name if they're not already set
+            if (!$user->getFirstName()) {
+                $user->setFirstName($googleUser->getFirstName());
+            }
+
+            if (!$user->getLastName()) {
+                $user->setLastName($googleUser->getLastName());
             }
 
             $this->em->persist($user);
