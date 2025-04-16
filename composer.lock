@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "33d816c2c7e6b1e799924bc3fac3f69d",
+    "content-hash": "c25e8bdd63407b5b61370bb7808349c7",
     "packages": [
         {
             "name": "api-platform/core",
-            "version": "v4.1.6",
+            "version": "v4.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/api-platform/core.git",
-                "reference": "747186020faf9506ea5a50e4b7ab09429a7d92ee"
+                "reference": "83d005a2b355bbac2d90eb3a8fb3ca5152fb9284"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/api-platform/core/zipball/747186020faf9506ea5a50e4b7ab09429a7d92ee",
-                "reference": "747186020faf9506ea5a50e4b7ab09429a7d92ee",
+                "url": "https://api.github.com/repos/api-platform/core/zipball/83d005a2b355bbac2d90eb3a8fb3ca5152fb9284",
+                "reference": "83d005a2b355bbac2d90eb3a8fb3ca5152fb9284",
                 "shasum": ""
             },
             "require": {
@@ -216,9 +216,9 @@
             ],
             "support": {
                 "issues": "https://github.com/api-platform/core/issues",
-                "source": "https://github.com/api-platform/core/tree/v4.1.6"
+                "source": "https://github.com/api-platform/core/tree/v4.1.7"
             },
-            "time": "2025-04-07T08:48:08+00:00"
+            "time": "2025-04-11T09:53:03+00:00"
         },
         {
             "name": "async-aws/core",
@@ -401,16 +401,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.21",
+            "version": "3.342.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f4d501414c553ddeea2efc9c77f72e58bd899823"
+                "reference": "4c18299000c34ab4903100fe68721d6f26c7cdf2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f4d501414c553ddeea2efc9c77f72e58bd899823",
-                "reference": "f4d501414c553ddeea2efc9c77f72e58bd899823",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4c18299000c34ab4903100fe68721d6f26c7cdf2",
+                "reference": "4c18299000c34ab4903100fe68721d6f26c7cdf2",
                 "shasum": ""
             },
             "require": {
@@ -492,9 +492,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.21"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.27"
             },
-            "time": "2025-04-04T18:20:53+00:00"
+            "time": "2025-04-14T18:08:09+00:00"
         },
         {
             "name": "beberlei/doctrineextensions",
@@ -990,26 +990,29 @@
         },
         {
             "name": "doctrine/deprecations",
-            "version": "1.1.4",
+            "version": "1.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/deprecations.git",
-                "reference": "31610dbb31faa98e6b5447b62340826f54fbc4e9"
+                "reference": "459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/31610dbb31faa98e6b5447b62340826f54fbc4e9",
-                "reference": "31610dbb31faa98e6b5447b62340826f54fbc4e9",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38",
+                "reference": "459c2f5dd3d6a4633d3b5f46ee2b1c40f57d3f38",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1 || ^8.0"
             },
+            "conflict": {
+                "phpunit/phpunit": "<=7.5 || >=13"
+            },
             "require-dev": {
-                "doctrine/coding-standard": "^9 || ^12",
-                "phpstan/phpstan": "1.4.10 || 2.0.3",
+                "doctrine/coding-standard": "^9 || ^12 || ^13",
+                "phpstan/phpstan": "1.4.10 || 2.1.11",
                 "phpstan/phpstan-phpunit": "^1.0 || ^2",
-                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6 || ^10.5 || ^11.5 || ^12",
                 "psr/log": "^1 || ^2 || ^3"
             },
             "suggest": {
@@ -1029,9 +1032,9 @@
             "homepage": "https://www.doctrine-project.org/",
             "support": {
                 "issues": "https://github.com/doctrine/deprecations/issues",
-                "source": "https://github.com/doctrine/deprecations/tree/1.1.4"
+                "source": "https://github.com/doctrine/deprecations/tree/1.1.5"
             },
-            "time": "2024-12-07T21:18:45+00:00"
+            "time": "2025-04-07T20:06:18+00:00"
         },
         {
             "name": "doctrine/doctrine-bundle",
@@ -1928,16 +1931,16 @@
         },
         {
             "name": "easycorp/easyadmin-bundle",
-            "version": "v4.24.5",
+            "version": "v4.24.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/EasyCorp/EasyAdminBundle.git",
-                "reference": "dcc64d06fc142f894667439e72837aa3742b5460"
+                "reference": "c5e4496c4c96d67385c48e285c463e0f5a8947e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/dcc64d06fc142f894667439e72837aa3742b5460",
-                "reference": "dcc64d06fc142f894667439e72837aa3742b5460",
+                "url": "https://api.github.com/repos/EasyCorp/EasyAdminBundle/zipball/c5e4496c4c96d67385c48e285c463e0f5a8947e7",
+                "reference": "c5e4496c4c96d67385c48e285c463e0f5a8947e7",
                 "shasum": ""
             },
             "require": {
@@ -2018,7 +2021,7 @@
             ],
             "support": {
                 "issues": "https://github.com/EasyCorp/EasyAdminBundle/issues",
-                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v4.24.5"
+                "source": "https://github.com/EasyCorp/EasyAdminBundle/tree/v4.24.6"
             },
             "funding": [
                 {
@@ -2026,7 +2029,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-10T19:31:19+00:00"
+            "time": "2025-04-12T13:53:15+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -2875,16 +2878,16 @@
         },
         {
             "name": "knplabs/knp-paginator-bundle",
-            "version": "v6.7.0",
+            "version": "v6.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpPaginatorBundle.git",
-                "reference": "a346431b9f0cddac8cd03d63e70911b6bf70ffde"
+                "reference": "c3ba635cc61c8bc5de4656223d8664c4045e9fdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/a346431b9f0cddac8cd03d63e70911b6bf70ffde",
-                "reference": "a346431b9f0cddac8cd03d63e70911b6bf70ffde",
+                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/c3ba635cc61c8bc5de4656223d8664c4045e9fdc",
+                "reference": "c3ba635cc61c8bc5de4656223d8664c4045e9fdc",
                 "shasum": ""
             },
             "require": {
@@ -2943,9 +2946,9 @@
             ],
             "support": {
                 "issues": "https://github.com/KnpLabs/KnpPaginatorBundle/issues",
-                "source": "https://github.com/KnpLabs/KnpPaginatorBundle/tree/v6.7.0"
+                "source": "https://github.com/KnpLabs/KnpPaginatorBundle/tree/v6.8.0"
             },
-            "time": "2025-03-02T16:36:05+00:00"
+            "time": "2025-04-11T07:08:09+00:00"
         },
         {
             "name": "knplabs/knp-time-bundle",
