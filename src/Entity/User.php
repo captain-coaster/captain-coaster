@@ -97,6 +97,12 @@ class User implements UserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private \DateTimeInterface $lastLogin;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $nameChangedAt = null;
+
+    #[ORM\Column(type: Types::STRING, length: 20, nullable: false, options: ['default' => 'full'])]
+    private string $displayNameFormat = 'full';
+
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
     private bool $emailNotification = true;
 
@@ -300,6 +306,81 @@ class User implements UserInterface
         $this->displayName = $displayName;
 
         return $this;
+    }
+
+    public function getDisplayNameFormat(): string
+    {
+        return $this->displayNameFormat;
+    }
+
+    public function setDisplayNameFormat(string $displayNameFormat): static
+    {
+        $this->displayNameFormat = $displayNameFormat;
+        $this->updateDisplayName();
+
+        return $this;
+    }
+
+    public function getNameChangedAt(): ?\DateTimeInterface
+    {
+        return $this->nameChangedAt;
+    }
+
+    public function setNameChangedAt(?\DateTimeInterface $nameChangedAt): static
+    {
+        $this->nameChangedAt = $nameChangedAt;
+
+        return $this;
+    }
+
+    public function generateDisplayName(): string
+    {
+        return match ($this->displayNameFormat) {
+            'full' => $this->getFullNameFormat(),
+            'partial' => $this->getPartialNameFormat(),
+            'first_only' => $this->getFirstNameOnlyFormat(),
+            default => $this->getFullNameFormat(),
+        };
+    }
+
+    public function getFullNameFormat(): string
+    {
+        return $this->firstName.' '.($this->lastName ?? '');
+    }
+
+    public function getPartialNameFormat(): string
+    {
+        return $this->firstName.' '.($this->lastName ? substr($this->lastName, 0, 1).'.' : '');
+    }
+
+    public function getFirstNameOnlyFormat(): string
+    {
+        return $this->firstName;
+    }
+
+    public function getNamePreviewFormats(): array
+    {
+        return [
+            'full' => $this->getFullNameFormat(),
+            'partial' => $this->getPartialNameFormat(),
+            'first_only' => $this->getFirstNameOnlyFormat(),
+        ];
+    }
+
+    public function updateDisplayName(): void
+    {
+        $this->displayName = $this->generateDisplayName();
+    }
+
+    public function canChangeName(): bool
+    {
+        if (null === $this->nameChangedAt) {
+            return true;
+        }
+
+        $oneMonthAgo = new \DateTime('-1 month');
+
+        return $this->nameChangedAt < $oneMonthAgo;
     }
 
     public function addTop(Top $top): static
