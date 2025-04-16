@@ -55,7 +55,7 @@ class User implements UserInterface
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
-    private string $firstName;
+    private string $firstName = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
     private ?string $displayName = null;
