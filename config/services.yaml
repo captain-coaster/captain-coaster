@@ -58,3 +58,6 @@ services:
 
     App\Service\UnitsService:
         class: App\Service\UnitsService
+
+    App\Tooling\LocaleProvider:
+        arguments: ['%app_locales_array%']

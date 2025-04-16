@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Tooling\Translation\Model\TranslatableInterface;
+use App\Tooling\Translation\Model\TranslatableTrait;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,8 +14,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Table(name: 'continent')]
 #[ORM\Entity]
-class Continent implements \Stringable
+class Continent implements TranslatableInterface
 {
+    use TranslatableTrait;
+
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -27,7 +31,7 @@ class Continent implements \Stringable
 
     public function __toString(): string
     {
-        return (string) $this->name;
+        return $this->getName();
     }
 
     public function getId(): int
@@ -37,7 +41,7 @@ class Continent implements \Stringable
 
     public function getName(): string
     {
-        return $this->name;
+        return $this->getTranslation()->getName() ?? $this->name ?? 'Undefined translation';
     }
 
     public function setName(string $name): self
