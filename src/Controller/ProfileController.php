@@ -39,6 +39,14 @@ class ProfileController extends BaseController
         ]);
     }
 
+    /** Redirect to new route profile. */
+    #[Route(path: '/me', name: 'profile_redirect', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function redirectMeToProfile(): Response
+    {
+        return $this->redirectToRoute('profile');
+    }
+
     /** Show my ratings. */
     #[Route(path: '/profile/ratings/{page}', name: 'profile_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
@@ -88,7 +96,6 @@ class ProfileController extends BaseController
     #[IsGranted('ROLE_USER')]
     public function settings(
         Request $request,
-        StatService $statService,
         EntityManagerInterface $em,
         ImageRepository $imageRepository,
         ProfilePictureManager $profilePictureManager,
@@ -126,7 +133,6 @@ class ProfileController extends BaseController
             'form' => $form,
             'user' => $user,
             'canChangeName' => $user->canChangeName(),
-            'previewNames' => $user->getNamePreviewFormats(),
             'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
