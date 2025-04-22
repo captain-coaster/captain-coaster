@@ -49,7 +49,7 @@ class NotificationService
     public function getRedirectUrl(Notification $notif): string
     {
         return match ($notif->getType()) {
-            self::NOTIF_BADGE => $this->router->generate('me'),
+            self::NOTIF_BADGE => $this->router->generate('profile'),
             self::NOTIF_RANKING => $this->router->generate('ranking_index'),
             default => $this->router->generate('root'),
         };
