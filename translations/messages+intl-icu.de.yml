@@ -72,7 +72,7 @@ coaster:
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
     location: Standort
-    relocations: 'Andere Standorte'
+    relocations: Andere Standorte
 
 image_upload:
     title: 'Lade ein Bild von {coaster} hoch'
