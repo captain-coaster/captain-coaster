@@ -155,6 +155,11 @@ class CoasterController extends BaseController
             );
         }
 
+        $relocations = [];
+        foreach ($coasterRepository->findCoasterRelocations($coaster) as $coasterRelocation) {
+            $relocations[] = $coasterRelocation->getCoaster();
+        }
+
         return $this->render(
             'Coaster/show.html.twig',
             [
@@ -163,6 +168,7 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'relocations' => $relocations,
             ]
         );
     }

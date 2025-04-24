@@ -72,6 +72,7 @@ coaster:
         button: 'Upload a picture'
         all: 'See all pictures'
     location: 'Location'
+    relocations: 'Other locations'
 
 image_upload:
     title: 'Upload a picture of {coaster}'

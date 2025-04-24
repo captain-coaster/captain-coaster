@@ -1,0 +1,21 @@
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6>
+            {{ title }}
+            &nbsp;<span class="badge badge-primary">{{ titleNumber }}</span>
+        </h6>
+    </div>
+    <div class="list-group no-border">
+        {% for coaster in coasters %}
+            <div class="list-group-item">
+                <span class="status-mark border-{{ coaster.status.type }} position-left"></span>
+                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
+                    {{ coaster.name }}
+                    {% if dispayParkName %}
+                        • {{ coaster.park.name }}
+                    {% endif %}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>

@@ -304,25 +304,13 @@
             </div>
             {% endif %}
             <!-- /coaster details -->
+            <!-- coasters relocations -->
+                {% if relocations|length > 1 %}
+                    {% include 'Includes/list_coasters.html.twig' with {title: 'coaster.relocations'|trans(), titleNumber: relocations|length, coasters: relocations, dispayParkName: true} %}
+                {% endif %}
+            <!-- coasters relocations -->
             <!-- coasters in park -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h6>
-                        {{ 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}) }}
-                        &nbsp;<span class="badge badge-primary">{{ coaster.park.coasters|length }}</span>
-                    </h6>
-                </div>
-                <div class="list-group no-border">
-                    {% for otherCoaster in coasters %}
-                        <div class="list-group-item">
-                            <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
-                            <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">
-                                {{ otherCoaster.name }}
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+                {% include 'Includes/list_coasters.html.twig' with {title: 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}), titleNumber: coaster.park.coasters|length, coasters: coasters, dispayParkName: false} %}
             <!-- /coasters in park -->
             <!-- coaster location -->
             <!-- removed until open street maps -->

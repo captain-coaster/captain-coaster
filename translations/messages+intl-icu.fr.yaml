@@ -66,6 +66,7 @@ coaster:
         button: 'Envoyer une photo'
         all: 'Voir toutes les photos'
     location: 'Localisation'
+    relocations: 'Autres emplacements'
 
 image_upload:
     title: 'Envoyer une photo de "{coaster}"'

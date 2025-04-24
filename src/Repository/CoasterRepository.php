@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Park;
+use App\Entity\RelocationCoaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Entity\User;
@@ -159,6 +160,22 @@ class CoasterRepository extends ServiceEntityRepository
             ->setParameter('park', $park)
             ->orderBy('s.order', 'ASC')
             ->addOrderBy('c.score', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Get coaster relocations */
+    public function findCoasterRelocations(Coaster $coaster)
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->select('rc')
+            ->from(RelocationCoaster::class, 'rc')
+            ->innerJoin('rc.relocation', 'r')
+            ->innerJoin('r.coasters', 'rc2')
+            ->where('rc2.coaster = :coaster')
+            ->innerJoin('rc2.coaster', 'c', 'WITH', 'rc2.coaster = c.id')
+            ->setParameter('coaster', $coaster)
+            ->orderBy('rc.position', 'ASC')
             ->getQuery()
             ->getResult();
     }

@@ -222,7 +222,7 @@ class Coaster implements \Stringable
 
     public function __toString(): string
     {
-        return $this->name;
+        return $this->name.' - '.$this->getPark()->getName();
     }
 
     public function getId(): ?int
