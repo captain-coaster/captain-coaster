@@ -7,7 +7,7 @@ namespace App\Controller;
 use App\Entity\RiddenCoaster;
 use App\Entity\TopCoaster;
 use App\Entity\User;
-use App\Form\Type\ProfileType;
+use App\Form\Type\ProfileSettingsForm;
 use App\Repository\ImageRepository;
 use App\Service\ProfilePictureManager;
 use App\Service\StatService;
@@ -23,49 +23,32 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProfileController extends BaseController
 {
-    #[Route(path: '/me', name: 'me', methods: ['GET', 'POST'])]
+    /** Show my profile. */
+    #[Route(path: '/profile', name: 'profile', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function meAction(
-        Request $request,
+    public function index(
         StatService $statService,
-        EntityManagerInterface $em,
-        ImageRepository $imageRepository,
-        ProfilePictureManager $profilePictureManager
+        ImageRepository $imageRepository
     ): Response {
         $user = $this->getUser();
 
-        $form = $this->createForm(ProfileType::class, $user, [
-            'firstname' => $user->getFirstname(),
-            'lastname' => $user->getLastName(),
-            'locales' => $this->getParameter('app_locales_array'),
-        ]);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $profilePictureFile = $form->get('profilePicture')->getData();
-            if ($profilePictureFile) {
-                $filename = $profilePictureManager->uploadProfilePicture($profilePictureFile, $user);
-                if ($filename) {
-                    $user->setProfilePicture($filename);
-                }
-            }
-
-            $em->persist($user);
-            $em->flush();
-
-            return $this->redirectToRoute('me');
-        }
-
-        return $this->render('Profile/me.html.twig', [
-            'user' => $this->getUser(),
-            'form' => $form,
+        return $this->render('Profile/index.html.twig', [
+            'user' => $user,
             'stats' => $statService->getUserStats($user),
             'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
 
+    /** Redirect to new route profile. */
+    #[Route(path: '/me', name: 'profile_redirect', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function redirectMeToProfile(): Response
+    {
+        return $this->redirectToRoute('profile');
+    }
+
     /** Show my ratings. */
-    #[Route(path: '/me/ratings/{page}', name: 'me_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
+    #[Route(path: '/profile/ratings/{page}', name: 'profile_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function ratingsAction(EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
     {
@@ -90,6 +73,7 @@ class ProfileController extends BaseController
         ]);
     }
 
+    /** Get banner data */
     #[Route(path: '/banner/data/{id}', name: 'banner_data', methods: ['GET'])]
     public function getBannerData(User $user, TranslatorInterface $translator): Response
     {
@@ -104,6 +88,52 @@ class ProfileController extends BaseController
         return new JsonResponse([
             'count' => $translator->trans('banner.coasters', ['count' => $user->getRatings()->count()]),
             'top' => $top,
+        ]);
+    }
+
+    /** Show my settings. */
+    #[Route(path: '/profile/settings', name: 'profile_settings', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function settings(
+        Request $request,
+        EntityManagerInterface $em,
+        ImageRepository $imageRepository,
+        ProfilePictureManager $profilePictureManager,
+        TranslatorInterface $translator
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $form = $this->createForm(ProfileSettingsForm::class, $user, [
+            'can_change_name' => $user->canChangeName(),
+            'locales' => $this->getParameter('app_locales_array'),
+            'translator' => $translator,
+        ]);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Handle profile picture upload
+            $profilePictureFile = $form->get('profilePicture')->getData();
+            if ($profilePictureFile) {
+                $filename = $profilePictureManager->uploadProfilePicture($profilePictureFile, $user);
+                if ($filename) {
+                    $user->setProfilePicture($filename);
+                }
+            }
+
+            $this->addFlash('success', $translator->trans('profile.settings.updated_success'));
+
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirectToRoute('profile_settings');
+        }
+
+        return $this->render('Profile/settings.html.twig', [
+            'form' => $form,
+            'user' => $user,
+            'canChangeName' => $user->canChangeName(),
+            'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
 }

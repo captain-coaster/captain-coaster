@@ -152,7 +152,7 @@ user_list:
     member_from: 'Member since'
     rating: '{ count, plural, one { # rating } other { # ratings }}'
 
-me:
+profile:
     title: 'My Profile'
     menu:
         ratings: 'My ratings'
@@ -160,30 +160,7 @@ me:
         map: 'My map'
         photos: 'My photos'
         reviews: 'My reviews'
-    parameters: 'Parameters'
-    form:
-        displayName: 'I want to appear as'
-        profilePicture: 'Profile Picture'
-        notificationPreference: 'Notification preferences'
-        choices:
-            email: 'Web & Email'
-            notif: 'Web only'
-        preferredLocale: 'Preferred language'
-        homePark:
-            label: 'My home park'
-            placeholder: 'Choose one'
-        units:
-            metric: 'Metric units'
-            imperial: 'Imperial units'
-            label: 'Display distances and statistics in'
-        displayReviewsInAllLanguages:
-            label: 'Afficher les avis écrits en différentes langues'
-        addTodayDateWhenRating:
-            label: 'Add today''s date on a new rating'
-        apiKey:
-            label: 'API Key'
-        advanced: 'Advanced'
-        save: 'Save'
+        settings: 'Settings'
     badge: 'Badges'
     banner:
         title: 'Personal banner'
@@ -198,6 +175,50 @@ me:
         most_country: 'most ridden in'
         top_100: 'ridden in top 100'
         manufacturer: 'most ridden'
+    ratings:
+        title: 'My Ratings'
+    settings:
+        title: 'Profile Settings'
+        sections:
+            name: 'Name Settings'
+            preferences: 'Preferences'
+            advanced: 'Advanced'
+        name:
+            firstName: 'First Name'
+            lastName: 'Last Name'
+            format: 'Display Name Format'
+            format.help: 'Choose how your name will appear to other users (preview shown on the right)'
+            format.full: 'Full Name'
+            format.partial: 'First Name + Last Initial'
+            format.first_only: 'First Name Only'
+            invalid_characters: 'Name can only contain letters, spaces, and common punctuation (apostrophes, hyphens, periods).'
+            change_limit: 'You can only change your name once per month.'
+            changed_success: 'Your name has been updated successfully.'
+            format_changed_success: 'Your display name format has been updated successfully.'
+        preferences:
+            profilePicture: 'Profile Picture'
+            notificationPreference: 'Notification Preferences'
+            choices:
+                email: 'Web & Email'
+                notif: 'Web only'
+            preferredLocale: 'Preferred Language'
+            homePark:
+                label: 'My Home Park'
+                placeholder: 'Choose one'
+            units:
+                metric: 'Metric units'
+                imperial: 'Imperial units'
+                label: 'Display distances and statistics in'
+            displayReviewsInAllLanguages:
+                label: 'Display reviews written in different languages'
+            addTodayDateWhenRating:
+                label: 'Add today''s date on a new rating'
+        advanced:
+            apiKey:
+                label: 'API Key'
+        updated_success: 'Your settings have been updated successfully.'
+        save: 'Save Changes'
+
 
 top:
     new:

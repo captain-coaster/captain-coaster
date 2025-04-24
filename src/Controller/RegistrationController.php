@@ -35,8 +35,7 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // init display name & preferred locale
-            $user->setDisplayName($user->getFirstName().' '.$user->getLastName());
+            // init preferred locale
             $user->setPreferredLocale($request->getLocale());
             $user->setIpAddress($request->getClientIp());
 
