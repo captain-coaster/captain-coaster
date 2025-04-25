@@ -221,34 +221,34 @@ profile:
 
 top:
     new:
-        title: Create a new top
+        title: Crear un nuevo top
         form:
-            name: 'Name of your top :'
-            type: 'Is it a Top or a Flop ?'
-            flop: Flop (lower is better)
-            top: Top (higher is better)
-            submit: Create new top
+            name: 'Nombre de su top:'
+            type: '¿Es un Top o un Flop?'
+            flop: Flop (más bajo es mejor)
+            top: Top (más alto es mejor)
+            submit: Crear nuevo top
     editDetails:
-        title: Update a top
+        title: Actualizar un top
         form:
-            submit: Update the top
+            submit: Actualizar el top
     list:
-        title: The latest tops
-        more: See more
-        updated: last updated
-        by: by
-        infotitle: 'All your tops are on this page!'
-        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It''s up to you!'
-        create_first: Create my first Top Coasters
-        create: Create a custom top
-    title: My Top Coasters
-    update: Update
-    update_details: Change name
-    delete: Delete
-    delete_confirmation: 'Delete ?'
-    save: Save the top
-    find: Find a coaster...
-    info: 'Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle.'
+        title: Los últimos tops
+        more: Ver detalles
+        updated: última actualización
+        by: por
+        infotitle: '¡Todos tus tops están aquí!'
+        info: 'Los tops te permiten compartir tus gustos con los demás, como el mejor RMC del planeta, o los peores kiddies de España, ¡o tal vez los mejores posavasos azules con lanzamiento magnético! Todo es posible, y cada top puede compartirse.'
+        create_first: Crear mis primeros Top Coasters
+        create: Crear un top personalizado
+    title: Mi Top Coasters
+    update: Actualizar
+    update_details: Cambiar nombre
+    delete: Borrar
+    delete_confirmation: '¿Borrar?'
+    save: Almacenar el top
+    find: Buscar una montaña rusa...
+    info: 'Empieza por buscar una montaña rusa ahí arriba, luego la magia sucede abajo. Incluso puedes actualizar la posición arrastrando y soltando líneas o escribiendo la nueva posición dentro del círculo azul.'
 
 review:
     title: Reseñas
@@ -386,10 +386,10 @@ notif:
         message: La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.
         messageWithNewCoaster: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. ¡{name} ha sido añadido al ranking!'
     email:
-        title: 🎢 New notification on Captain Coaster
-        gotnotif: 'You just received a new notification on Captain Coaster :'
-        view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
-        unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
+        title: 🎢 Nueva notificación en Captain Coaster
+        gotnotif: 'Acabas de recibir una nueva notificación en Captain Coaster:'
+        view: 'Ver esto en <a href="{link_path}">CaptainCoaster.com</a>'
+        unsubscribe: 'Para dejar de recibirlo, cambie sus <a href="{link_path}">preferencias de notificación</a>.'
 
 search_index:
     title: Busca una montaña rusa
