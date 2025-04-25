@@ -262,7 +262,7 @@ review:
     update: Bearbeiten
     delete: Löschen
     last: Neueste Rezensionen
-    all: Zeige alle →
+    all: Zeige alle
     ridden_at: Datum der Fahrt
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden

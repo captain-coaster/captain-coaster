@@ -262,7 +262,7 @@ review:
     update: Editar
     delete: Borrar
     last: Últimas reseñas
-    all: Ver todo →
+    all: Ver todo
     ridden_at: Fecha del ride
     upvote: Votar por esta reseña
     report: Reportar esta reseña

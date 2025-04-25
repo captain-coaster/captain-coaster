@@ -262,7 +262,7 @@ review:
     update: Modifier
     delete: Supprimer
     last: Derniers avis
-    all: Voir plus →
+    all: Voir plus
     ridden_at: Date du ride
     upvote: Voter pour cet avis
     report: Signaler cet avis
