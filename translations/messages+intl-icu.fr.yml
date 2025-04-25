@@ -16,7 +16,7 @@ index:
     description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
     header:
         title: 'Notes, avis et classement des meilleurs coasters'
-        info: 'Captain Coaster est le guide ultime pour les passionnés de montagnes russes! Notez, rédigez des avis, et créez des tops pour les coasters que vous avez faits. <a href="{link_path}">Rejoignez-nous</a> pour façonner le classement des meilleures montagnes russes du monde!'
+        info: 'Captain Coaster est le guide ultime pour les passionnés de montagnes russes ! Notez, rédigez des avis, et créez des tops pour les coasters que vous avez faits. <a href="{link_path}">Rejoignez-nous</a> pour façonner le classement des meilleures montagnes russes du monde !'
     stats:
         ratings: notes
         reviews: avis
@@ -68,7 +68,7 @@ coaster:
         title: Vidéo Onride
     photos:
         title: Photos
-        empty: 'Oups, nous n''avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes!'
+        empty: 'Oups, nous n''avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes !'
         button: Envoyer une photo
         all: Voir toutes les photos
     location: Localisation
@@ -363,7 +363,7 @@ register:
         paragraph1: 'Pour utiliser Captain Coaster, cliquez sur le bouton de vérification. Ce lien est valable pendant'
         button: Activer
         paragraph2: 'Vous avez reçu cet email parce que vous avez créé un compte sur Captain Coaster. Si vous n’êtes pas sûr de la raison pour laquelle vous recevez ceci, veuillez nous contacter en répondant à cet email.'
-    email_verified: 'Votre compte ({email}) a été activé. Bienvenue sur Captain Coaster!'
+    email_verified: 'Votre compte ({email}) a été activé. Bienvenue sur Captain Coaster !'
 
 contact:
     title: Nous contacter
@@ -427,8 +427,8 @@ error:
         title: 'Une erreur s''est produite'
         message: 'Une erreur s''est produite. Contactez-nous si le problème persiste'
     maintenance:
-        title: 'Arrêt Technique Rapide! 🔧'
-        message: 'Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes!'
+        title: 'Arrêt Technique Rapide ! 🔧'
+        message: 'Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !'
 
 missing:
     step1:

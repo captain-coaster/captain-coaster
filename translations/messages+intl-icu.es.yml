@@ -12,7 +12,7 @@ app:
         search: 'Batman, Port Aventura...'
 
 index:
-    title: '¡ Bienvenido !'
+    title: '¡Bienvenido!'
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'
@@ -22,7 +22,7 @@ index:
         reviews: reseñas
         users: usuarios
         images: fotos
-    missingCoasters: ¡Buscamos fotos para esta montaña rusa!
+    missingCoasters: '¡Buscamos fotos para esta montaña rusa!'
 
 coaster:
     score:
@@ -30,8 +30,8 @@ coaster:
         ranked: Clasificado
         intheworld: en el mundo
     rating:
-        action: '¡ Califica esta montaña rusa !'
-        notenough: '¡ No hay suficientes notas para esta montaña rusa !'
+        action: '¡Califica esta montaña rusa!'
+        notenough: '¡No hay suficientes notas para esta montaña rusa!'
         mustlogin: Debe iniciar sesión para calificar.
         login: Iniciar sesión
         sendreview: o haga clic aquí para escribir una reseña
@@ -68,7 +68,7 @@ coaster:
         title: POV Onride
     photos:
         title: Fotos
-        empty: 'Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
+        empty: '¡Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
         button: Subir una foto
         all: Ver todas las fotos
     location: Localización
@@ -97,7 +97,7 @@ coaster_ranking:
     title: Clasificación mundial de montañas rusas
     description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
     duel_number: '{ count, plural, one { # duelo } other { # duelos }}'
-    no_results: '¡ no se han encontrado montañas rusas !'
+    no_results: '¡no se han encontrado montañas rusas!'
     info:
         title: 'Última actualización: {rankingMonth}'
         next: 'Próxima actualización {date}'
@@ -146,8 +146,8 @@ user_profile:
 user_list:
     title: Nuestros usuarios
     info:
-        title: '¿ Dónde te clasificas entre nuestros miembros ?'
-        text: 'Esta página muestra una clasificación de nuestros miembros. ¡ Hace clic en ellos para descubrir sus clasificación detallados !'
+        title: '¿Dónde te clasificas entre nuestros miembros ?'
+        text: 'Esta página muestra una clasificación de nuestros miembros. ¡Hace clic en ellos para descubrir sus clasificación detallados!'
     member_from: Miembro desde
     rating: '{ count, plural, one { # clasificación } other { # clasificaciónes }}'
 
@@ -163,7 +163,7 @@ profile:
     badge: Insignias
     banner:
         title: Banner personalizado
-        text: 'Aquí tienes tu pancarta personalizada, mostrando tus calificaciones y Top 3! La actualización de la pancarta puede tardar unas horas.'
+        text: '¡Aquí tienes tu pancarta personalizada, mostrando tus calificaciones y Top 3! La actualización de la pancarta puede tardar unas horas.'
         getbbcode: Copiar BBCode (foros)
         gethtml: Copiar html
     stats:
@@ -237,8 +237,8 @@ top:
         more: See more
         updated: last updated
         by: by
-        infotitle: 'All your tops are on this page !'
-        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
+        infotitle: 'All your tops are on this page!'
+        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It''s up to you!'
         create_first: Create my first Top Coasters
         create: Create a custom top
     title: My Top Coasters
@@ -252,11 +252,11 @@ top:
 
 review:
     title: Reseñas
-    share: 'Comparte tu opinión con nosotros !'
-    value: '¿ Cuántas estrellas para esa montaña rusa ?'
-    pros: '¿ Cuáles son sus principales ventajas ?'
-    cons: '¿ Y sus principales contras ?'
-    comment: '¿ Necesita más precisiones ? Cuéntanos !'
+    share: '¡Comparte tu opinión con nosotros!'
+    value: '¿Cuántas estrellas para esa montaña rusa?'
+    pros: '¿Cuáles son sus principales ventajas?'
+    cons: '¿Y sus principales contras?'
+    comment: '¿Necesita más precisiones? ¡Cuéntanos!'
     language: Lengua
     send: Envía mi opinion
     update: Editar
@@ -301,7 +301,7 @@ users:
 
 review_list:
     title: Reseñas de montañas rusas
-    no_review: '¡ No hay reseñas !'
+    no_review: '¡No hay reseñas!'
 
 rating:
     last: Últimas notas
@@ -379,9 +379,9 @@ contact:
 
 notif:
     title: Actividad
-    empty: '¡ Nada especial ahora mismo, vaya a montar algunas montañas rusas !'
+    empty: '¡Nada especial ahora mismo, vaya a montar algunas montañas rusas!'
     badge:
-        message: 'Echale un vistazo: El Captain acaba de darte "{name}" la insignia !'
+        message: 'Echale un vistazo: ¡El Captain acaba de darte "{name}" la insignia!'
     ranking:
         message: La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.
         messageWithNewCoaster: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. ¡{name} ha sido añadido al ranking!'

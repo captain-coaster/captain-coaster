@@ -7,12 +7,12 @@ de: Deutsch
 app:
     name: 'Captain Coaster'
     title:
-        default: 'Welcome !'
+        default: 'Welcome!'
     header:
         search: 'Rapterra, Epic Universe...'
 
 index:
-    title: 'Welcome !'
+    title: 'Welcome!'
     description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
     header:
         title: 'Review, rate and rank roller coasters'
@@ -30,8 +30,8 @@ coaster:
         ranked: 'Ranked'
         intheworld: 'in the world'
     rating:
-        action: 'Rate this coaster !'
-        notenough: 'Not enough ratings for this coaster !'
+        action: 'Rate this coaster!'
+        notenough: 'Not enough ratings for this coaster!'
         mustlogin: 'You must be logged in to rate.'
         login: 'Log in'
         sendreview: 'or click here to write a review'
@@ -237,8 +237,8 @@ top:
         more: 'See more'
         updated: 'last updated'
         by: 'by'
-        infotitle: 'All your tops are on this page !'
-        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
+        infotitle: 'All your tops are on this page!'
+        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It''s up to you!'
         create_first: 'Create my first Top Coasters'
         create: 'Create a custom top'
     title: 'My Top Coasters'
