@@ -20,9 +20,9 @@ index:
     stats:
         ratings: notas
         reviews: reseñas
-        users: ''
-        images: ''
-    missingCoasters: ''
+        users: usuarios
+        images: fotos
+    missingCoasters: ¡Buscamos fotos para esta montaña rusa!
 
 coaster:
     score:
@@ -35,8 +35,8 @@ coaster:
         mustlogin: Debe iniciar sesión para calificar.
         login: Iniciar sesión
         sendreview: o haga clic aquí para escribir una reseña
-        updatereview: ''
-        delete: ''
+        updatereview: cambiar mi reseña
+        delete: borrar
         text: 'Resultado basada en {count_rating} notas y {count_top} tops'
         details: Valoraciones detalladas de los usuarios
         ratings: clasificaciones
@@ -51,16 +51,16 @@ coaster:
         type: Tipo
         launch: Lanzamiento
         manufacturer: Fabricante
-        materialType: ''
-        seatingType: ''
-        model: ''
+        materialType: Material
+        seatingType: Tren
+        model: Modelo
         restraint: Seguridad
         forces: G-forces
         opening: Apertura
         closing: clausura
         vr: VR
         cost: Coste
-        kiddie: ''
+        kiddie: Kiddie
         indoor: Indoor
         formerNames: Nombres anteriores
     parkcoaster: 'También en {name}'
