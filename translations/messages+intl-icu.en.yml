@@ -223,7 +223,7 @@ top:
     new:
         title: 'Create a new top'
         form:
-            name: 'Name of your top :'
+            name: 'Name of your top:'
             type: 'Is it a Top or a Flop ?'
             flop: 'Flop (lower is better)'
             top: 'Top (higher is better)'
@@ -238,7 +238,7 @@ top:
         updated: 'last updated'
         by: 'by'
         infotitle: 'All your tops are on this page!'
-        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It''s up to you!'
+        info: 'Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It''s up to you!'
         create_first: 'Create my first Top Coasters'
         create: 'Create a custom top'
     title: 'My Top Coasters'
@@ -387,7 +387,7 @@ notif:
         messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'
     email:
         title: '🎢 New notification on Captain Coaster'
-        gotnotif: 'You just received a new notification on Captain Coaster :'
+        gotnotif: 'You just received a new notification on Captain Coaster:'
         view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
