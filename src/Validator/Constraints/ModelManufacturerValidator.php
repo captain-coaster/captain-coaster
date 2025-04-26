@@ -21,7 +21,7 @@ class ModelManufacturerValidator extends ConstraintValidator
         }
 
         $currentCoaster = $this->context->getObject();
-        if ($currentCoaster->getManufacturer()->getId() !== $value->getManufacturer()->getId()) {
+        if ($value->getManufacturer() && $currentCoaster->getManufacturer()->getId() !== $value->getManufacturer()->getId()) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('%model%', $value->getName())
                 ->setParameter('%manufacturer%', $currentCoaster->getManufacturer()->getName())
