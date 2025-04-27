@@ -87,5 +87,28 @@
     };
 
     filterData();
+    filterModels(document.querySelector("select[name='filters[manufacturer]']").value);
+
+    function filterModels(manufacturerId) {
+        const modelsOptions = document.querySelectorAll("select[name='filters[model]'] option");
+
+        if (manufacturerId) {
+            modelsOptions.forEach((model) => {
+                if (model.getAttribute("data-manufacturer") === manufacturerId || model.getAttribute("value") === "") {
+                    model.style.display = "block";
+                } else {
+                    model.style.display = "none";
+                }
+            });
+        } else {
+            modelsOptions.forEach((model) => {
+                if (model.getAttribute("data-manufacturer") === "" || model.getAttribute("value") === "") {
+                    model.style.display = "block";
+                } else {
+                    model.style.display = "none";
+                }
+            });
+        }
+    }
   </script>
 {% endblock %}
