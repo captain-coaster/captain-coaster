@@ -3,7 +3,7 @@ brief:
     title: 'Das Ranking des Captain’s in Kurzform'
     text: '<p>Captain Coaster’s Ranking basiert auf einem <b>paarweisen Vergleichssystem</b>. Die Vergleiche werden aus deinen Tops und den Bewertungen abgeleitet. Je detaillierter diese sind, desto besser!</p>
         <p>Die Tops sind präziser, wohingegen die Bewertungen schneller zu verwenden sind. Um deinen Einfluss auf das Ranking zu verbessern, empfehlen wir dir, </b>alle deine gefahrenen Achterbahnenzu bewerten</b> und anschließend <b>deine bestbewerteten Achterbahnen</b> in deine Tops hinzuzufügen.</p>'
-Prinzipien:
+principles:
     title: 'Ranking Prinzipien'
     text: '<p><b>Für jede Achterbahn in dem Ranking berechnen wir ein Duell mit allen anderen Achterbahnen</b> in der Datenbank, um herauszufinden, welche die beste ist.</p>
            <p>Es können nur Personen sagen, ob sie die eine oder andere Achterbahn bevorzugen, wenn beide sie gefahren sind. Diese Information wird bereitgestellt, indem beide bewertet werden oder beide in den Tops sind.
