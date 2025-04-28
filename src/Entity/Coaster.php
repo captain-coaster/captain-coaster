@@ -212,6 +212,9 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $externalId = null;
 
+    #[ORM\OneToOne(mappedBy: 'coaster', targetEntity: RelocationCoaster::class)]
+    private RelocationCoaster $relocationCoaster;
+
     public function __construct()
     {
         $this->launchs = new ArrayCollection();
@@ -735,6 +738,18 @@ class Coaster implements \Stringable
     public function setExternalId(?int $externalId): static
     {
         $this->externalId = $externalId;
+
+        return $this;
+    }
+
+    public function getRelocationCoaster(): RelocationCoaster
+    {
+        return $this->relocationCoaster;
+    }
+
+    public function setRelocationCoaster(RelocationCoaster $relocationCoaster): static
+    {
+        $this->relocationCoaster = $relocationCoaster;
 
         return $this;
     }

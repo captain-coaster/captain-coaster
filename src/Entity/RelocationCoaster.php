@@ -20,7 +20,7 @@ class RelocationCoaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private int $position;
 
-    #[ORM\ManyToOne(targetEntity: Coaster::class)]
+    #[ORM\OneToOne(inversedBy: 'relocationCoaster', targetEntity: Coaster::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private Coaster $coaster;
 

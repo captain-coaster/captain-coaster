@@ -156,8 +156,8 @@ class CoasterController extends BaseController
         }
 
         $relocations = [];
-        foreach ($coasterRepository->findCoasterRelocations($coaster) as $coasterRelocation) {
-            $relocations[] = $coasterRelocation->getCoaster();
+        foreach ($coaster->getRelocationCoaster()->getRelocation()->getCoasters() as $relocationCoaster) {
+            $relocations[] = $relocationCoaster->getCoaster();
         }
 
         return $this->render(

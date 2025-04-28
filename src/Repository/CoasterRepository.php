@@ -164,22 +164,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** Get coaster relocations */
-    public function findCoasterRelocations(Coaster $coaster)
-    {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('rc')
-            ->from(RelocationCoaster::class, 'rc')
-            ->innerJoin('rc.relocation', 'r')
-            ->innerJoin('r.coasters', 'rc2')
-            ->where('rc2.coaster = :coaster')
-            ->innerJoin('rc2.coaster', 'c', 'WITH', 'rc2.coaster = c.id')
-            ->setParameter('coaster', $coaster)
-            ->orderBy('rc.position', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
-
     private function applyFilters(QueryBuilder $qb, array $filters = []): void
     {
         // Filter by manufacturer
