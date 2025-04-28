@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Park;
-use App\Entity\RelocationCoaster;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Entity\User;
