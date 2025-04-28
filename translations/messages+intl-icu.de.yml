@@ -263,7 +263,7 @@ review:
     update: Bearbeiten
     delete: Löschen
     last: Neueste Rezensionen
-    all: Zeige alle →
+    all: Zeige alle
     ridden_at: Datum der Fahrt
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
@@ -425,7 +425,7 @@ error:
         title: 'Zu viele Anfragen'
         message: 'Bitte warten Sie einige Minuten'
     generic:
-        title: 'Hoppla! Ein Fehler ist aufgetreten !'
+        title: 'Hoppla! Ein Fehler ist aufgetreten!'
         message: 'Ein Fehler ist aufgetreten. Kontaktiere uns, wenn das Problem weiterhin besteht'
     maintenance:
         title: 'Kurzer Technischer Halt! 🔧'
