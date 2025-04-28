@@ -50,7 +50,7 @@ class RelocationValidator extends ConstraintValidator
             foreach ($relocations as $relocation) {
                 if ($relocation->getRelocation() !== $currentRelocation) {
                     $this->context->buildViolation($constraint->duplicate)
-                        ->setParameter('%coaster%', $this->formatValue($element->getCoaster(), 2))
+                        ->setParameter('%coaster%', $element->getCoaster()->__toString())
                         ->addViolation();
 
                     return;
