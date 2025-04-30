@@ -105,7 +105,7 @@ class CoasterRepository extends ServiceEntityRepository
      *
      * @return Query
      */
-    public function getSearchCoasters(array $filters)
+    public function getNearbyCoasters(array $filters)
     {
         $qb = $this
             ->getEntityManager()

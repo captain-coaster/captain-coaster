@@ -48,7 +48,7 @@ class NearbyController extends AbstractController
     ): Response {
         try {
             $pagination = $this->paginator->paginate(
-                $coasterRepository->getSearchCoasters($filters),
+                $coasterRepository->getNearbyCoasters($filters),
                 $page,
                 20,
                 ['wrap-queries' => true]
