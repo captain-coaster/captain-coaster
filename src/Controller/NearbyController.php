@@ -16,8 +16,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/nearby')]
 class NearbyController extends AbstractController
 {
-    final public const string CACHE_AUTOCOMPLETE = 'main_autocomplete';
-
     protected PaginatorInterface $paginator;
 
     public function __construct(PaginatorInterface $paginator)
