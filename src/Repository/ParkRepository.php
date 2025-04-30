@@ -83,6 +83,7 @@ class ParkRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('p.name')
             ->addSelect('p.slug')
+            ->addSelect('p.formerNames')
             ->from(Park::class, 'p')
             ->getQuery()
             ->getResult();
