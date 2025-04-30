@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'search_index.title'|trans %}
+{% set title = 'nearby.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% set pageHasFilters = true %}
@@ -40,7 +40,7 @@
 
     function filterData() {
       $.ajax({
-        url: Routing.generate('search_coasters_ajax', {'_locale': '{{ app.request.locale }}'}),
+        url: Routing.generate('nearby_coasters_ajax', {'_locale': '{{ app.request.locale }}'}),
         type: 'GET',
         data: $('form').serialize(),
       }).done(function(data) {

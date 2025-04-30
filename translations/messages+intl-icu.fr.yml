@@ -317,7 +317,7 @@ navbar:
 
 sidebar:
     index: Accueil
-    search: Coasters à proximité
+    nearby: Coasters à proximité
     ranking: Classement Mondial des Coasters
     users: Nos riders
     map: Carte des coasters
@@ -391,7 +391,7 @@ notif:
         view: 'Afficher ceci sur <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="{link_path}">préférences de notification</a>.'
 
-search_index:
+nearby:
     title: Coasters à proximité
     num_found: '{num} coasters trouvés'
     geo_on: Localisation activée

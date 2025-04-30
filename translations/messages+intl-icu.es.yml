@@ -317,7 +317,7 @@ navbar:
 
 sidebar:
     index: Pagina de inicio
-    search: Busca una montaña rusa
+    nearby: Montañas rusas cercanas
     ranking: Las mejores montañas rusas
     users: Nuestros usuarios
     map: Mapa de las montañas rusas
@@ -391,7 +391,7 @@ notif:
         view: 'Ver esto en <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Para dejar de recibirlo, cambie sus <a href="{link_path}">preferencias de notificación</a>.'
 
-search_index:
+nearby:
     title: Busca una montaña rusa
     num_found: '{num} montañas rusas encontradas'
     geo_on: Geolocalización activada

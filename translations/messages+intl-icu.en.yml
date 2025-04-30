@@ -317,7 +317,7 @@ navbar:
 
 sidebar:
     index: 'Home'
-    search: 'Find coasters nearby'
+    nearby: 'Find coasters nearby'
     ranking: 'World Roller Coaster Rankings'
     users: 'Our riders'
     map: 'Coasters map'
@@ -391,7 +391,7 @@ notif:
         view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
-search_index:
+nearby:
     title: 'Find coasters nearby'
     num_found: '{num} coasters found'
     geo_on: 'Geolocation enabled'

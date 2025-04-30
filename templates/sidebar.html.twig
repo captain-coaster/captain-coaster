@@ -25,10 +25,10 @@
             <a href="{{ path('top_list') }}">
               <i class="icon-podium"></i> <span>{{ 'sidebar.top'|trans }}</span>
             </a>
-          </li{% if currentRoute == 'search_index' %} class="active"{% endif %}>
+          </li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
           <li>
-            <a href="{{ path('search_index') }}">
-              <i class="icon-compass4"></i> <span>{{ 'sidebar.search'|trans }}</span>
+            <a href="{{ path('nearby_index') }}">
+              <i class="icon-compass4"></i> <span>{{ 'sidebar.nearby'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>

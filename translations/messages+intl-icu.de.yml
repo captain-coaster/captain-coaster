@@ -317,7 +317,7 @@ navbar:
 
 sidebar:
     index: Home
-    search: Finde Achterbahnen in der Nähe
+    nearby: Finde Achterbahnen in der Nähe
     ranking: Weltrangliste der Achterbahnen
     users: Unsere Fahrer
     map: Achterbahn Landkarte
@@ -391,7 +391,7 @@ notif:
         view: 'Sehe es dir auf <a href="{link_path}">CaptainCoaster.com</a> an'
         unsubscribe: 'Um dies nicht mehr zu erhalten, ändere bitte deine <a href="{link_path}">Benachrichtigungseinstellungen</a>.'
 
-search_index:
+nearby:
     title: Finde Achterbahnen in der Nähe
     num_found: '{num} Achterbahnen gefunden'
     geo_on: Lokalisierung aktiviert
