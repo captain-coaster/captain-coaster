@@ -25,8 +25,8 @@
             <a href="{{ path('top_list') }}">
               <i class="icon-podium"></i> <span>{{ 'sidebar.top'|trans }}</span>
             </a>
-          </li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
-          <li>
+          </li>
+          <li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
             <a href="{{ path('nearby_index') }}">
               <i class="icon-compass4"></i> <span>{{ 'sidebar.nearby'|trans }}</span>
             </a>
