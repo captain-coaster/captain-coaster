@@ -84,4 +84,21 @@ class UserRepository extends ServiceEntityRepository
             return 0;
         }
     }
+
+    public function getSearchUsers($query)
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->addSelect('count(r.id) as total_ratings')
+            ->from(User::class, 'u')
+            ->where('u.enabled = 1')
+            ->andWhere('u.displayName LIKE :term')
+            ->orderBy('u.displayName', 'ASC')
+            ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
+            ->groupBy('r.user')
+            ->setParameter('term', \sprintf('%%%s%%', $query))
+            ->getQuery();
+    }
 }

@@ -1,0 +1,52 @@
+{% extends "base.html.twig" %}
+
+{% set title = '"' ~ query ~ '"'|default('search_index.noTerm'|trans()) %}
+{% set subTitle = 'search_index.title'|trans %}
+{% block title %}{{ title }} • {{ subTitle }}{% endblock %}
+
+{% block body %}
+    {% if query|length > 2 %}
+        <div class="search-results" data-result="coasters"></div>
+        <div class="search-results" data-result="parks"></div>
+        <div class="search-results" data-result="users"></div>
+    {% else %}
+        <ul class="media-list content-group">
+            <li class="media panel panel-body">
+                {{ 'search_index.short'|trans() }}
+            </li>
+        </ul>
+    {% endif %}
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        const resultsSections = document.querySelectorAll(".search-results");
+        resultsSections.forEach((section) => {
+            getSectionResults(section.getAttribute("data-result"));
+        });
+
+        function getSectionResults(section, url = null) {
+            $.ajax({
+                url: url ?? Routing.generate('search_' + section + '_ajax', {'_locale': '{{ app.request.locale }}'}),
+                type: "GET",
+                data: {
+                    query: "{{ query }}",
+                },
+            }).done(function (data) {
+                result(section, data);
+            });
+        }
+
+        function ajaxPager(section) {
+            $(".search-results[data-result='" + section + "'] ul.pagination a").click(function (e) {
+                e.preventDefault();
+                getSectionResults(section, $(this).attr("href"));
+            });
+        }
+
+        function result(section, html) {
+            document.querySelector(".search-results[data-result='" + section + "']").innerHTML = html;
+            ajaxPager(section);
+        }
+    </script>
+{% endblock %}

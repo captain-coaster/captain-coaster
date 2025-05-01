@@ -443,3 +443,28 @@ missing:
 
 banner:
     coasters: '{count, plural, one {1 montaña rusa} other {# montañas rusas}}'
+
+search_index:
+    title: Buscar
+    more: Ver todos los resultados
+    noResult: No hay resultados
+    noTerm: No hay término de búsqueda
+    short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
+    coasters_found: >-
+        {num, plural,
+            =0 {No se han encontrado montañas rusas}
+            =1 {1 montaña rusa encontrada}
+            other {# montañas rusas encontradas}
+        }
+    parks_found: >-
+        {num, plural,
+            =0 {No se han encontrado parque o propietario}
+            =1 {1 parque o propietario encontrado}
+            other {# parques o propietarios encontrados}
+        }
+    users_found: >-
+        {num, plural,
+            =0 {No se han encontrado usuario}
+            =1 {1 usuario encontrado}
+            other {# usuarios encontrados}
+        }

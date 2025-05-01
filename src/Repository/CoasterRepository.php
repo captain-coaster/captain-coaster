@@ -123,6 +123,25 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
+    public function getSearchCoasters($query)
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c')
+            ->from(Coaster::class, 'c')
+            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
+            ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
+            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
+            ->where('c.name LIKE :term')
+            ->orWhere('c.formerNames LIKE :term')
+            ->orWhere('c.slug LIKE :term2')
+            ->orderBy('c.name', 'ASC')
+            ->setParameter('term', \sprintf('%%%s%%', $query))
+            ->setParameter('term2', str_replace(' ', '-', \sprintf('%%%s%%', $query)))
+            ->getQuery();
+    }
+
     public function getDistinctOpeningYears()
     {
         $rsm = new ResultSetMapping();

@@ -443,3 +443,28 @@ missing:
 
 banner:
     coasters: '{count, plural, one {1 coaster} other {# coasters}}'
+
+search_index:
+    title: Search
+    more: See all results
+    noResult: No results
+    noTerm: No search term
+    short: Your search is too short and must contain more than 2 characters.
+    coasters_found: >-
+        {num, plural,
+            =0 {No coasters found}
+            =1 {1 coaster found}
+            other {# coasters found}
+        }
+    parks_found: >-
+        {num, plural,
+            =0 {No parks or showmen found}
+            =1 {1 park or showman found}
+            other {# parks or showmen found}
+        }
+    users_found: >-
+        {num, plural,
+            =0 {No users found}
+            =1 {1 user found}
+            other {# users found}
+        }
