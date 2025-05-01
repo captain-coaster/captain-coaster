@@ -46,7 +46,7 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()->setTitle('Captain Coaster');
+        return Dashboard::new()->setTitle('Captain Coaster')->setFaviconPath('favicon.ico');
     }
 
     public function configureCrud(): Crud

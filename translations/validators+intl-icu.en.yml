@@ -1,3 +1,2 @@
 top_coaster.duplicate: "{coaster} appears several times. Please remove duplicates."
-contact.recaptcha: "You must check the box 'I am not a robot'"
 model_manufacturer.wrong: "{model} is not linked to {manufacturer}. Please select another model or manufacturer."

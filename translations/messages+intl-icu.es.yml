@@ -12,7 +12,7 @@ app:
         search: 'Batman, Port Aventura...'
 
 index:
-    title: '¡ Bienvenido !'
+    title: '¡Bienvenido!'
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'
@@ -20,9 +20,9 @@ index:
     stats:
         ratings: notas
         reviews: reseñas
-        users: ''
-        images: ''
-    missingCoasters: ''
+        users: usuarios
+        images: fotos
+    missingCoasters: '¡Buscamos fotos para esta montaña rusa!'
 
 coaster:
     score:
@@ -30,13 +30,13 @@ coaster:
         ranked: Clasificado
         intheworld: en el mundo
     rating:
-        action: '¡ Califica esta montaña rusa !'
-        notenough: '¡ No hay suficientes notas para esta montaña rusa !'
+        action: '¡Califica esta montaña rusa!'
+        notenough: '¡No hay suficientes notas para esta montaña rusa!'
         mustlogin: Debe iniciar sesión para calificar.
         login: Iniciar sesión
         sendreview: o haga clic aquí para escribir una reseña
-        updatereview: ''
-        delete: ''
+        updatereview: cambiar mi reseña
+        delete: borrar
         text: 'Resultado basada en {count_rating} notas y {count_top} tops'
         details: Valoraciones detalladas de los usuarios
         ratings: clasificaciones
@@ -51,16 +51,16 @@ coaster:
         type: Tipo
         launch: Lanzamiento
         manufacturer: Fabricante
-        materialType: ''
-        seatingType: ''
-        model: ''
+        materialType: Material
+        seatingType: Tren
+        model: Modelo
         restraint: Seguridad
         forces: G-forces
         opening: Apertura
         closing: clausura
         vr: VR
         cost: Coste
-        kiddie: ''
+        kiddie: Kiddie
         indoor: Indoor
         formerNames: Nombres anteriores
     parkcoaster: 'También en {name}'
@@ -68,7 +68,7 @@ coaster:
         title: POV Onride
     photos:
         title: Fotos
-        empty: 'Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
+        empty: '¡Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
         button: Subir una foto
         all: Ver todas las fotos
     location: Localización
@@ -97,7 +97,7 @@ coaster_ranking:
     title: Clasificación mundial de montañas rusas
     description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
     duel_number: '{ count, plural, one { # duelo } other { # duelos }}'
-    no_results: '¡ no se han encontrado montañas rusas !'
+    no_results: '¡no se han encontrado montañas rusas!'
     info:
         title: 'Última actualización: {rankingMonth}'
         next: 'Próxima actualización {date}'
@@ -146,8 +146,8 @@ user_profile:
 user_list:
     title: Nuestros usuarios
     info:
-        title: '¿ Dónde te clasificas entre nuestros miembros ?'
-        text: 'Esta página muestra una clasificación de nuestros miembros. ¡ Hace clic en ellos para descubrir sus clasificación detallados !'
+        title: '¿Dónde te clasificas entre nuestros miembros ?'
+        text: 'Esta página muestra una clasificación de nuestros miembros. ¡Hace clic en ellos para descubrir sus clasificación detallados!'
     member_from: Miembro desde
     rating: '{ count, plural, one { # clasificación } other { # clasificaciónes }}'
 
@@ -163,7 +163,7 @@ profile:
     badge: Insignias
     banner:
         title: Banner personalizado
-        text: 'Aquí tienes tu pancarta personalizada, mostrando tus calificaciones y Top 3! La actualización de la pancarta puede tardar unas horas.'
+        text: '¡Aquí tienes tu pancarta personalizada, mostrando tus calificaciones y Top 3! La actualización de la pancarta puede tardar unas horas.'
         getbbcode: Copiar BBCode (foros)
         gethtml: Copiar html
     stats:
@@ -221,48 +221,48 @@ profile:
 
 top:
     new:
-        title: Create a new top
+        title: Crear un nuevo top
         form:
-            name: 'Name of your top :'
-            type: 'Is it a Top or a Flop ?'
-            flop: Flop (lower is better)
-            top: Top (higher is better)
-            submit: Create new top
+            name: 'Nombre de su top:'
+            type: '¿Es un Top o un Flop?'
+            flop: Flop (más bajo es mejor)
+            top: Top (más alto es mejor)
+            submit: Crear nuevo top
     editDetails:
-        title: Update a top
+        title: Actualizar un top
         form:
-            submit: Update the top
+            submit: Actualizar el top
     list:
-        title: The latest tops
-        more: See more
-        updated: last updated
-        by: by
-        infotitle: 'All your tops are on this page !'
-        info: 'Tops are the best way to share your passion : tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM ! It''s up to you !'
-        create_first: Create my first Top Coasters
-        create: Create a custom top
-    title: My Top Coasters
-    update: Update
-    update_details: Change name
-    delete: Delete
-    delete_confirmation: 'Delete ?'
-    save: Save the top
-    find: Find a coaster...
-    info: 'Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle.'
+        title: Los últimos tops
+        more: Ver detalles
+        updated: última actualización
+        by: por
+        infotitle: '¡Todos tus tops están aquí!'
+        info: 'Los tops te permiten compartir tus gustos con los demás, como el mejor RMC del planeta, o los peores kiddies de España, ¡o tal vez los mejores posavasos azules con lanzamiento magnético! Todo es posible, y cada top puede compartirse.'
+        create_first: Crear mis primeros Top Coasters
+        create: Crear un top personalizado
+    title: Mi Top Coasters
+    update: Actualizar
+    update_details: Cambiar nombre
+    delete: Borrar
+    delete_confirmation: '¿Borrar?'
+    save: Almacenar el top
+    find: Buscar una montaña rusa...
+    info: 'Empieza por buscar una montaña rusa ahí arriba, luego la magia sucede abajo. Incluso puedes actualizar la posición arrastrando y soltando líneas o escribiendo la nueva posición dentro del círculo azul.'
 
 review:
     title: Reseñas
-    share: 'Comparte tu opinión con nosotros !'
-    value: '¿ Cuántas estrellas para esa montaña rusa ?'
-    pros: '¿ Cuáles son sus principales ventajas ?'
-    cons: '¿ Y sus principales contras ?'
-    comment: '¿ Necesita más precisiones ? Cuéntanos !'
+    share: '¡Comparte tu opinión con nosotros!'
+    value: '¿Cuántas estrellas para esa montaña rusa?'
+    pros: '¿Cuáles son sus principales ventajas?'
+    cons: '¿Y sus principales contras?'
+    comment: '¿Necesita más precisiones? ¡Cuéntanos!'
     language: Lengua
     send: Envía mi opinion
     update: Editar
     delete: Borrar
     last: Últimas reseñas
-    all: Ver todo →
+    all: Ver todo
     ridden_at: Fecha del ride
     upvote: Votar por esta reseña
     report: Reportar esta reseña
@@ -301,7 +301,7 @@ users:
 
 review_list:
     title: Reseñas de montañas rusas
-    no_review: '¡ No hay reseñas !'
+    no_review: '¡No hay reseñas!'
 
 rating:
     last: Últimas notas
@@ -379,17 +379,17 @@ contact:
 
 notif:
     title: Actividad
-    empty: '¡ Nada especial ahora mismo, vaya a montar algunas montañas rusas !'
+    empty: '¡Nada especial ahora mismo, vaya a montar algunas montañas rusas!'
     badge:
-        message: 'Echale un vistazo: El Captain acaba de darte "{name}" la insignia !'
+        message: 'Echale un vistazo: ¡El Captain acaba de darte "{name}" la insignia!'
     ranking:
         message: La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.
         messageWithNewCoaster: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. ¡{name} ha sido añadido al ranking!'
     email:
-        title: 🎢 New notification on Captain Coaster
-        gotnotif: 'You just received a new notification on Captain Coaster :'
-        view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
-        unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
+        title: 🎢 Nueva notificación en Captain Coaster
+        gotnotif: 'Acabas de recibir una nueva notificación en Captain Coaster:'
+        view: 'Ver esto en <a href="{link_path}">CaptainCoaster.com</a>'
+        unsubscribe: 'Para dejar de recibirlo, cambie sus <a href="{link_path}">preferencias de notificación</a>.'
 
 search_index:
     title: Busca una montaña rusa
