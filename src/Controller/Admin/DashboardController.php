@@ -15,6 +15,7 @@ use App\Entity\MaterialType;
 use App\Entity\Model;
 use App\Entity\Park;
 use App\Entity\RankingHistory;
+use App\Entity\Relocation;
 use App\Entity\Restraint;
 use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
@@ -67,6 +68,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Material Type', 'fas fa-cubes', MaterialType::class);
         yield MenuItem::linkToCrud('Model', 'fas fa-copyright', Model::class);
         yield MenuItem::linkToCrud('Park', 'fas fa-dharmachakra', Park::class);
+        yield MenuItem::linkToCrud('Relocation', 'fa fa-location-dot', Relocation::class);
         yield MenuItem::linkToCrud('Ranking History', 'fas fa-trophy', RankingHistory::class);
         yield MenuItem::linkToCrud('Restraint', 'fas fa-lock', Restraint::class);
         yield MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class);

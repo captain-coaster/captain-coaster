@@ -72,6 +72,7 @@ coaster:
         button: Subir una foto
         all: Ver todas las fotos
     location: Localización
+    relocations: Otras localizaciones
 
 image_upload:
     title: 'Sube una foto de {coaster}'
