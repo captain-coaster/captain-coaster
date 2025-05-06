@@ -44,7 +44,7 @@ class ReviewReportListener
                     ->addField(
                         (new DiscordFieldEmbedObject())
                             ->name('Reported content')
-                            ->value(mb_substr($reviewReport->getReview()->getReview(), 0, 1000, 'UTF-8'))
+                            ->value($reviewReport->getReview()->getReview() ? mb_substr($reviewReport->getReview()->getReview(), 0, 1000, 'UTF-8') : '')
                             ->inline(false)
                     )
                     ->addField(
