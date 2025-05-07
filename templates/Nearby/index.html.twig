@@ -1,0 +1,68 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'nearby.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% set pageHasFilters = true %}
+
+{% block secondary_sidebar %}
+  {% include 'Includes/filter_sidebar.html.twig' with {'filters': filters, 'filtersForm': filtersForm} only %}
+{% endblock %}
+
+{% block body %}
+  <div id="search-result"></div>
+{% endblock %}
+
+{% block javascripts %}
+  <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
+  <script type="text/javascript">
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+    elems.forEach(function(html) {
+      var switchery = new Switchery(html);
+      html.addEventListener('click', function() {
+        filterData();
+      })
+    });
+  </script>
+  <script type="text/javascript">
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        $('#form-latitude').val(position.coords.latitude);
+        $('#form-longitude').val(position.coords.longitude);
+        filterData();
+      }, function(position) {
+        console.log(position);
+        filterData();
+      });
+    } else {
+      filterData();
+    }
+
+    function filterData() {
+      $.ajax({
+        url: Routing.generate('nearby_coasters_ajax', {'_locale': '{{ app.request.locale }}'}),
+        type: 'GET',
+        data: $('form').serialize(),
+      }).done(function(data) {
+        $('#search-result').html(data);
+        ajaxPager();
+      });
+    }
+
+    var ajaxPager = function() {
+      $('ul.pagination a').click(function(e) {
+        e.preventDefault();
+        var pageUrl = $(this).attr('href');
+
+        $.ajax({
+          url: pageUrl,
+          type: 'GET',
+          dataType: 'html',
+        }).done(function(data) {
+          $('#search-result').html(data);
+          ajaxPager();
+        });
+      });
+    };
+  </script>
+{% endblock %}

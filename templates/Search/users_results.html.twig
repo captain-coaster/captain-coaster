@@ -1,0 +1,9 @@
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title text-semibold">{{ 'search_index.users_found'|trans({'%num%': users.getTotalItemCount}) }}</h6>
+    </div>
+
+    {% include 'Includes/list_users.html.twig' with {'users': users, 'border': false} %}
+</div>
+
+{{ knp_pagination_render(users) }}

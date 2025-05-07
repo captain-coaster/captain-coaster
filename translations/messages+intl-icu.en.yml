@@ -317,7 +317,7 @@ navbar:
 
 sidebar:
     index: 'Home'
-    search: 'Find coasters nearby'
+    nearby: 'Find coasters nearby'
     ranking: 'World Roller Coaster Rankings'
     users: 'Our riders'
     map: 'Coasters map'
@@ -391,7 +391,7 @@ notif:
         view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
-search_index:
+nearby:
     title: 'Find coasters nearby'
     num_found: '{num} coasters found'
     geo_on: 'Geolocation enabled'
@@ -443,3 +443,28 @@ missing:
 
 banner:
     coasters: '{count, plural, one {1 coaster} other {# coasters}}'
+
+search_index:
+    title: Search
+    more: See all results
+    noResult: No results
+    noTerm: No search term
+    short: Your search is too short and must contain more than 2 characters.
+    coasters_found: >-
+        {num, plural,
+            =0 {No coasters found}
+            =1 {1 coaster found}
+            other {# coasters found}
+        }
+    parks_found: >-
+        {num, plural,
+            =0 {No parks or showmen found}
+            =1 {1 park or showman found}
+            other {# parks or showmen found}
+        }
+    users_found: >-
+        {num, plural,
+            =0 {No users found}
+            =1 {1 user found}
+            other {# users found}
+        }

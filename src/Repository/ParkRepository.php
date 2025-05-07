@@ -88,4 +88,20 @@ class ParkRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getSearchParks($query)
+    {
+        return $this
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('p')
+            ->from(Park::class, 'p')
+            ->where('p.name LIKE :term')
+            ->orWhere('p.formerNames LIKE :term')
+            ->orWhere('p.slug LIKE :term2')
+            ->orderBy('p.name', 'ASC')
+            ->setParameter('term', \sprintf('%%%s%%', $query))
+            ->setParameter('term2', str_replace(' ', '-', \sprintf('%%%s%%', $query)))
+            ->getQuery();
+    }
 }

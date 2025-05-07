@@ -1,10 +1,10 @@
 <div class="panel panel-white">
     <div class="panel-heading">
-        <h6 class="panel-title text-semibold">{{ 'search_index.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
+        <h6 class="panel-title text-semibold">{{ 'nearby.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
             {% if coasters.0 is defined and coasters.0.distance is defined %}
-                <span class="pull-right text-green text-size-small">{{ 'search_index.geo_on'|trans }}</span>
+                <span class="pull-right text-green text-size-small">{{ 'nearby.geo_on'|trans }}</span>
             {% else %}
-                <span class="pull-right text-danger text-size-small">{{ 'search_index.geo_off'|trans }}</span>
+                <span class="pull-right text-danger text-size-small">{{ 'nearby.geo_off'|trans }}</span>
             {% endif %}
         </h6>
     </div>
@@ -38,7 +38,7 @@
                         {% endif %}
                         {% if coaster.distance is defined %}
                             <li>
-                                {{ 'search_index.km_away'|trans({'%distance%': units.km_or_mi(coaster.distance)}) }}
+                                {{ 'nearby.km_away'|trans({'%distance%': units.km_or_mi(coaster.distance)}) }}
                             </li>
                         {% endif %}
                     </ul>

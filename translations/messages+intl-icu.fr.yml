@@ -317,7 +317,7 @@ navbar:
 
 sidebar:
     index: Accueil
-    search: Coasters à proximité
+    nearby: Coasters à proximité
     ranking: Classement Mondial des Coasters
     users: Nos riders
     map: Carte des coasters
@@ -391,7 +391,7 @@ notif:
         view: 'Afficher ceci sur <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="{link_path}">préférences de notification</a>.'
 
-search_index:
+nearby:
     title: Coasters à proximité
     num_found: '{num} coasters trouvés'
     geo_on: Localisation activée
@@ -443,3 +443,28 @@ missing:
 
 banner:
     coasters: '{count, plural, one {1 coaster} other {# coasters}}'
+
+search_index:
+    title: Recherche
+    more: Voir tous les résultats
+    noResult: Aucun résultat
+    noTerm: Pas de terme recherché
+    short: Votre recherche est trop courte et doit contenir plus de 2 caractères.
+    coasters_found: >-
+        {num, plural,
+            =0 {Aucun coaster trouvé}
+            =1 {1 coaster trouvé}
+            other {# coasters trouvés}
+        }
+    parks_found: >-
+        {num, plural,
+            =0 {Aucun parc ou forain trouvé}
+            =1 {1 parc ou forain trouvé}
+            other {# parcs ou forains trouvés}
+        }
+    users_found: >-
+        {num, plural,
+            =0 {Aucun utilisateur trouvé}
+            =1 {1 utilisateur trouvé}
+            other {# utilisateurs trouvés}
+        }

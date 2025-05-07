@@ -1,68 +1,52 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'search_index.title'|trans %}
-{% block title %}{{ title }}{% endblock %}
-
-{% set pageHasFilters = true %}
-
-{% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {'filters': filters, 'filtersForm': filtersForm} only %}
-{% endblock %}
+{% set title = '"' ~ query ~ '"'|default('search_index.noTerm'|trans()) %}
+{% set subTitle = 'search_index.title'|trans %}
+{% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 
 {% block body %}
-  <div id="search-result"></div>
+    {% if query|length > 2 %}
+        <div class="search-results" data-result="coasters"></div>
+        <div class="search-results" data-result="parks"></div>
+        <div class="search-results" data-result="users"></div>
+    {% else %}
+        <ul class="media-list content-group">
+            <li class="media panel panel-body">
+                {{ 'search_index.short'|trans() }}
+            </li>
+        </ul>
+    {% endif %}
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
-  <script type="text/javascript">
-    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-    elems.forEach(function(html) {
-      var switchery = new Switchery(html);
-      html.addEventListener('click', function() {
-        filterData();
-      })
-    });
-  </script>
-  <script type="text/javascript">
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        $('#form-latitude').val(position.coords.latitude);
-        $('#form-longitude').val(position.coords.longitude);
-        filterData();
-      }, function(position) {
-        console.log(position);
-        filterData();
-      });
-    } else {
-      filterData();
-    }
-
-    function filterData() {
-      $.ajax({
-        url: Routing.generate('search_coasters_ajax', {'_locale': '{{ app.request.locale }}'}),
-        type: 'GET',
-        data: $('form').serialize(),
-      }).done(function(data) {
-        $('#search-result').html(data);
-        ajaxPager();
-      });
-    }
-
-    var ajaxPager = function() {
-      $('ul.pagination a').click(function(e) {
-        e.preventDefault();
-        var pageUrl = $(this).attr('href');
-
-        $.ajax({
-          url: pageUrl,
-          type: 'GET',
-          dataType: 'html',
-        }).done(function(data) {
-          $('#search-result').html(data);
-          ajaxPager();
+    <script type="text/javascript">
+        const resultsSections = document.querySelectorAll(".search-results");
+        resultsSections.forEach((section) => {
+            getSectionResults(section.getAttribute("data-result"));
         });
-      });
-    };
-  </script>
+
+        function getSectionResults(section, url = null) {
+            $.ajax({
+                url: url ?? Routing.generate('search_' + section + '_ajax', {'_locale': '{{ app.request.locale }}'}),
+                type: "GET",
+                data: {
+                    query: "{{ query }}",
+                },
+            }).done(function (data) {
+                result(section, data);
+            });
+        }
+
+        function ajaxPager(section) {
+            $(".search-results[data-result='" + section + "'] ul.pagination a").click(function (e) {
+                e.preventDefault();
+                getSectionResults(section, $(this).attr("href"));
+            });
+        }
+
+        function result(section, html) {
+            document.querySelector(".search-results[data-result='" + section + "']").innerHTML = html;
+            ajaxPager(section);
+        }
+    </script>
 {% endblock %}
