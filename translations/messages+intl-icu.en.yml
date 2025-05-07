@@ -323,6 +323,7 @@ sidebar:
     map: 'Coasters map'
     top: 'Tops'
     review: 'Coaster Reviews'
+    blog: 'Blog'
     contact: 'Get in touch'
     logout: 'Logout'
     login: 'Sign in'

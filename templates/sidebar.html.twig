@@ -41,6 +41,11 @@
               <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
             </a>
           </li>
+          <li>
+            <a href="https://blog.captaincoaster.com" target="_blank">
+              <i class="icon-newspaper"></i> <span>{{ 'sidebar.blog'|trans }} <i class="icon-new-tab" style="font-size: 12px;"></i></span>
+            </a>
+          </li>
           <li{% if currentRoute == 'default_contact' %} class="active"{% endif %}>
             <a href="{{ path('default_contact') }}">
               <i class="icon-mail5"></i> <span>{{ 'sidebar.contact'|trans }}</span>
