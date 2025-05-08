@@ -16,6 +16,9 @@ jobs:
                   memory_limit: 256M
 
             - uses: php-actions/phpstan@v3
+              with:
+                  configuration: phpstan.neon
+                  memory_limit: 256M
 
             - name: PHP-CS-Fixer
               uses: docker://oskarstark/php-cs-fixer-ga@sha256:3d910b31ae27be05ae16c4ea9bd07078de1a5f40cb104c13f3f3b940fa90f5d9
