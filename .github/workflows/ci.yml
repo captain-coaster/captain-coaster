@@ -17,7 +17,10 @@ jobs:
 
             - uses: php-actions/phpstan@v3
               with:
-                  configuration: ./phpstan.neon
+                  level: 1
+                  paths:
+                      - src
+                      - tests
                   memory_limit: 256M
 
             - name: PHP-CS-Fixer
