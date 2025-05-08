@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
@@ -32,8 +33,10 @@ class UnitsService extends AbstractExtension
 
     public function isImperial(): bool
     {
-        if ($this->security->getUser()) {
-            return $this->security->getUser()->isImperial();
+        /** @var User|null $user */
+        $user = $this->security->getUser();
+        if ($user) {
+            return $user->isImperial();
         }
 
         // TODO cookies

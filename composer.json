@@ -79,7 +79,7 @@
             "php-http/discovery": true
         },
         "platform": {
-            "php": "8.3.1"
+            "php": "8.3.20"
         },
         "preferred-install": {
             "*": "dist"
@@ -108,7 +108,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "phpstan": "vendor/bin/phpstan -c phpstan.neon"
+        "phpstan": "vendor/bin/phpstan"
     },
     "conflict": {
         "symfony/symfony": "*"

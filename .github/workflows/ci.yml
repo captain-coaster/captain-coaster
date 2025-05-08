@@ -1,0 +1,39 @@
+name: "CI"
+
+on:
+    pull_request:
+    push:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Lint Composer config
+              run: composer validate --strict
+
+            - uses: php-actions/composer@v6
+              id: install
+              with:
+                  php_extensions: redis xsl
+                  memory_limit: 256M
+
+            - uses: php-actions/phpstan@v3
+
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga@sha256:3d910b31ae27be05ae16c4ea9bd07078de1a5f40cb104c13f3f3b940fa90f5d9
+              with:
+                  args: --diff --dry-run
+
+            - name: Lint Twig templates
+              run: ./bin/console lint:twig templates --env=prod
+
+            - name: Lint Parameters and Services
+              run: ./bin/console lint:container --no-debug
+
+            - name: Lint Doctrine entities
+              run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+            #- name: Check if any dependencies are compromised
+            #  run: composer audit
