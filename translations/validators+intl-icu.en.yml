@@ -1,1 +1,2 @@
 top_coaster.duplicate: "{coaster} appears several times. Please remove duplicates."
+model_manufacturer.wrong: "{model} is not linked to {manufacturer}. Please select another model or manufacturer."
