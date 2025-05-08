@@ -13,6 +13,7 @@ jobs:
             - uses: php-actions/composer@v6
               with:
                   php_extensions: redis xsl
+                  memory_limit: 256M
 
             - uses: php-actions/phpstan@v3
 
