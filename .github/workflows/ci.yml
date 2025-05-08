@@ -11,6 +11,7 @@ jobs:
             - uses: actions/checkout@v3
 
             - uses: php-actions/composer@v6
+              id: install
               with:
                   php_extensions: redis xsl
                   memory_limit: 256M
