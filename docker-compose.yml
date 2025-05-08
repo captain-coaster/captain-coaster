@@ -1,22 +1,4 @@
 services:
-    nginx:
-        image: nginx:1-alpine
-        container_name: nginx-captain
-        ports:
-            - "8080:80"
-        volumes:
-            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-            - .:/var/www
-    php:
-        build:
-            context: ./docker/php
-        container_name: php-captain
-        volumes:
-            - .:/var/www
-        user: "1000:1000"
-        tmpfs:
-            - /tmp:rw
-            - /.composer:rw
     db:
         image: mariadb:10.11
         container_name: db-captain
@@ -29,11 +11,11 @@ services:
             - MYSQL_ROOT_PASSWORD=root123
             - MARIADB_AUTO_UPGRADE=1
     redis:
-        image: 'redis:alpine'
+        image: "redis:alpine"
         ports:
-            - '6379:6379'
+            - "6379:6379"
     adminer:
-        image: adminer
+        image: adminer:latest
         container_name: adminer-captain
         restart: always
         ports:

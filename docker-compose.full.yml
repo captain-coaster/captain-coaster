@@ -1,0 +1,28 @@
+# Import the base docker-compose.yml
+include:
+    - docker-compose.yml
+
+# Add additional services for the full setup
+services:
+    nginx:
+        image: nginx:alpine
+        container_name: nginx-captain
+        restart: always
+        volumes:
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./:/var/www
+        ports:
+            - "8080:80"
+        depends_on:
+            - php
+
+    php:
+        build:
+            context: ./docker/php
+        container_name: php-captain
+        restart: always
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - db
+            - redis

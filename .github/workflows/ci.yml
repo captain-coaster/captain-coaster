@@ -1,0 +1,40 @@
+name: "CI"
+
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: php-actions/composer@v6
+            - uses: php-actions/phpstan@v3
+
+            - name: PHP-CS-Fixer
+              uses: docker://oskarstark/php-cs-fixer-ga@sha256:3d910b31ae27be05ae16c4ea9bd07078de1a5f40cb104c13f3f3b940fa90f5d9
+              with:
+                  args: --diff --dry-run
+
+            - name: Lint Twig templates
+              if: always() && steps.install.outcome == 'success'
+              run: ./bin/console lint:twig templates --env=prod
+
+            - name: Lint Parameters and Services
+              if: always() && steps.install.outcome == 'success'
+              run: ./bin/console lint:container --no-debug
+
+            - name: Lint Doctrine entities
+              if: always() && steps.install.outcome == 'success'
+              run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
+
+            - name: Lint Composer config
+              if: always() && steps.install.outcome == 'success'
+              run: composer validate --strict
+
+            - name: Check if any dependencies are compromised
+              if: always() && steps.install.outcome == 'success'
+              run: composer audit
