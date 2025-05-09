@@ -1,0 +1,178 @@
+<!-- Start: Layout - Sidebar -->
+
+<input
+    type="checkbox"
+    id="layout-sidebar-toggle-trigger"
+    class="hidden"
+    aria-label="Toggle layout sidebar" />
+
+<div id="layout-sidebar">
+    <a class="flex min-h-16 items-center justify-center" href="{{ path('bdd_index') }}">
+        <img
+            alt="logo-dark"
+            class="hidden h-6 dark:inline"
+            src="{{ asset('assets/images/logo/logo.svg') }}" />
+        <img
+            alt="Captain Logo"
+            class="h-6 dark:hidden"
+            src="{{ asset('assets/images/logo/logo.svg') }}" />
+    </a>
+    <div class="relative min-h-0 grow">
+        <div data-simplebar class="size-full">
+            <div id="sidebar-menu">
+                <!-- Main Navigation Links -->
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'bdd_index' %} active{% endif %}"
+                    href="{{ path('bdd_index') }}">
+                    <span class="iconify lucide--home size-4"></span>
+                    <span>{{ 'sidebar.index'|trans }}</span>
+                </a>
+
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'ranking_index' %} active{% endif %}"
+                    href="{{ path('ranking_index') }}">
+                    <span class="iconify lucide--trophy size-4"></span>
+                    <span>{{ 'sidebar.ranking'|trans }}</span>
+                </a>
+
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'top_list' %} active{% endif %}"
+                    href="{{ path('top_list') }}">
+                    <span class="iconify lucide--list-ordered size-4"></span>
+                    <span>{{ 'sidebar.top'|trans }}</span>
+                </a>
+
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'nearby_index' %} active{% endif %}"
+                    href="{{ path('nearby_index') }}">
+                    <span class="iconify lucide--compass size-4"></span>
+                    <span>{{ 'sidebar.nearby'|trans }}</span>
+                </a>
+
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'map_index' %} active{% endif %}"
+                    href="{{ path('map_index') }}">
+                    <span class="iconify lucide--map size-4"></span>
+                    <span>{{ 'sidebar.map'|trans }}</span>
+                </a>
+
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'review_list' %} active{% endif %}"
+                    href="{{ path('review_list') }}">
+                    <span class="iconify lucide--message-square size-4"></span>
+                    <span>{{ 'sidebar.review'|trans }}</span>
+                </a>
+
+                <a
+                    class="sidebar-menu-item{% if app.request.attributes.get('_route') == 'user_list' %} active{% endif %}"
+                    href="{{ path('user_list') }}">
+                    <span class="iconify lucide--users size-4"></span>
+                    <span>{{ 'sidebar.users'|trans }}</span>
+                </a>
+
+                <a class="sidebar-menu-item" href="https://blog.captaincoaster.com" target="_blank">
+                    <span class="iconify lucide--newspaper size-4"></span>
+                    <span>{{ 'sidebar.blog'|trans }}</span>
+                    <span class="iconify lucide--external-link size-3.5 ml-1"></span>
+                </a>
+            </div>
+        </div>
+        <div
+            class="from-base-100/60 pointer-events-none absolute start-0 end-0 bottom-0 h-7 bg-linear-to-t to-transparent"></div>
+    </div>
+    <div class="mb-2">
+        <hr class="border-base-300" />
+        <ul class="menu w-full">
+            <!-- Contact/Get in touch at the bottom -->
+            <li>
+                <a
+                    href="{{ path('default_contact') }}"
+                    class="flex items-center gap-2{% if app.request.attributes.get('_route') == 'default_contact' %} active{% endif %}">
+                    <span class="iconify lucide--mail size-4"></span>
+                    {{ 'sidebar.contact'|trans }}
+                </a>
+            </li>
+
+            <!-- Settings link (always visible) -->
+            <li>
+                <a href="{{ path('profile') }}" class="flex items-center gap-2">
+                    <span class="iconify lucide--settings-2 size-4"></span>
+                    {{ 'sidebar.settings'|trans|default('Settings') }}
+                </a>
+            </li>
+
+            <!-- Login/Logout link -->
+            <li>
+                {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                    <a href="{{ path('logout') }}" class="flex items-center gap-2">
+                        <span class="iconify lucide--log-out size-4"></span>
+                        {{ 'sidebar.logout'|trans }}
+                    </a>
+                {% else %}
+                    <a
+                        href="{{ path('login') }}"
+                        class="flex items-center gap-2{% if app.request.attributes.get('_route') == 'login' %} active{% endif %}">
+                        <span class="iconify lucide--log-in size-4"></span>
+                        {{ 'sidebar.login'|trans }}
+                    </a>
+                {% endif %}
+            </li>
+        </ul>
+
+        <!-- User profile dropdown (when logged in) -->
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <div class="dropdown dropdown-top dropdown-end w-full">
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="bg-base-200 hover:bg-base-300 rounded-box mx-2 mt-0 flex cursor-pointer items-center gap-2.5 px-3 py-2 transition-all">
+                    <div class="avatar">
+                        <div class="bg-base-200 mask mask-squircle bg-base-200 w-8">
+                            <img
+                                alt="Avatar"
+                                src="{{
+                                pictures_cdn ~ '/profile-pictures/'
+                                    ~ (app.user.profilePicture|default('default_user.png'))
+                                }}" />
+                        </div>
+                    </div>
+                    <div class="grow">
+                        <p class="text-sm font-medium">
+                            {{ app.user.displayName }}
+                        </p>
+                    </div>
+                    <span class="iconify lucide--chevrons-up-down text-base-content/60 size-4">
+
+                    </span>
+                </div>
+                <ul
+                    role="menu"
+                    class="dropdown-content menu bg-base-100 rounded-box shadow-base-content/4 mb-1 w-48 p-1 shadow-[0px_-10px_40px_0px]"
+                    tabindex="0">
+                    <li>
+                        <a href="{{ path('profile') }}">
+                            <span class="iconify lucide--user size-4"></span>
+                            <span>{{ 'sidebar.profile'|trans|default('My Profile') }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('profile') }}">
+                            <span class="iconify lucide--settings size-4"></span>
+                            <span>{{ 'sidebar.settings'|trans|default('Settings') }}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ path('logout') }}">
+                            <span class="iconify lucide--log-out size-4"></span>
+                            <span>{{ 'sidebar.logout'|trans }}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<label for="layout-sidebar-toggle-trigger" id="layout-sidebar-backdrop"></label>
+
+<!-- End: Layout - Sidebar -->

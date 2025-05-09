@@ -1,0 +1,24 @@
+/*** Tailwind CSS Presets ***/
+@import "tailwindcss";
+
+/** Dark Variant with theme & system mode **/
+@variant dark {
+    &:where([data-theme="dark"] *, [data-theme="dim"] *, [data-theme="material-dark"] *) {
+        @slot;
+    }
+    &:not([data-theme="light"] *, [data-theme="contrast"] *, [data-theme="material"] *) {
+        @media (prefers-color-scheme: dark) {
+            @slot;
+        }
+    }
+}
+
+/** Container utility **/
+@utility container {
+    margin-inline: auto;
+    @apply px-[1rem] md:px-[2rem] lg:px-[3rem] xl:px-[4rem] 2xl:px-[6rem];
+}
+
+html {
+    scroll-behavior: smooth;
+}

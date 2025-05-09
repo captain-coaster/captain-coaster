@@ -1,0 +1,21 @@
+<!-- Start: Layout - Footer -->
+<footer class="footer footer-center border-t border-base-300 p-6 text-base-content">
+    <div class="flex flex-col items-center gap-2">
+        <div class="flex items-center gap-1">
+            <span>© 2017-{{ 'now'|date('Y') }}</span>
+            <span class="mx-1">•</span>
+            <span>{{ 'Crafted with' }}</span>
+            <span class="text-error"><span class="iconify lucide--heart size-4"></span></span>
+            <span>{{ 'by French coaster enthusiasts' }}</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ path('app_terms_conditions') }}" class="link link-hover text-sm">
+                {{ 'title'|trans([], 'policy') }}
+            </a>
+            <a href="{{ path('default_contact') }}" class="link link-hover text-sm">
+                {{ 'sidebar.contact'|trans }}
+            </a>
+        </div>
+    </div>
+</footer>
+<!-- End: Layout - Footer -->

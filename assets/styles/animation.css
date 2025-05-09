@@ -1,0 +1,32 @@
+@theme {
+    --animate-bounce-slow: bounce-slow 2s infinite alternate;
+    --animate-text-color: text-color 10s ease infinite;
+
+    @keyframes bounce-slow {
+        0% {
+            transform: translateY(0);
+        }
+        to {
+            transform: translateY(-12px);
+        }
+    }
+
+    @keyframes text-color {
+        0% {
+            background-position: 0 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0 50%;
+        }
+    }
+}
+
+.animated-text {
+    @apply animate-text-color;
+    background-size: 400% 400%;
+    background-clip: text;
+    color: transparent;
+}

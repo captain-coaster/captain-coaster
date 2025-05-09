@@ -1,0 +1,131 @@
+:root {
+    --layout-sidebar-width: 256px;
+}
+
+/* == Layout: Sidebar == */
+
+#layout-sidebar {
+    width: var(--layout-sidebar-width);
+    min-width: var(--layout-sidebar-width);
+    background: var(--layout-sidebar-background);
+    max-height: 100vh;
+
+    @apply relative top-0 bottom-0 flex flex-col transition-[margin,_top,_max-height,_border-radius] duration-300;
+
+    &.hide {
+        margin-inline-start: calc(var(--layout-sidebar-width) * -1);
+    }
+
+    /* == Sidebar: Menu Items == */
+
+    #sidebar-menu {
+        @apply mb-4 size-full space-y-0.5 px-2;
+
+        a {
+            @apply hover:bg-base-200;
+
+            &.active {
+                @apply bg-base-200;
+            }
+        }
+
+        .sidebar-menu-title {
+            @apply text-base-content/70 mx-2.5 my-2 text-sm font-medium;
+        }
+
+        .sidebar-menu-item {
+            @apply rounded-box flex h-8 items-center gap-2 px-3 text-sm;
+        }
+
+        .collapse {
+            input {
+                @apply min-h-8 p-0;
+            }
+
+            .collapse-title {
+                @apply peer-hover:bg-base-200 rounded-box flex min-h-8 items-center gap-2 px-3 py-1.5 text-sm;
+
+                .arrow-icon {
+                    @apply opacity-60 transition-all;
+                }
+
+                &:is(:where(.peer):checked ~ *) {
+                    .arrow-icon {
+                        @apply rotate-90 opacity-100;
+                    }
+                }
+            }
+
+            .collapse-content {
+                @apply ms-6 mt-0.5 space-y-0.5 p-0 pb-0;
+
+                &:before {
+                    @apply bg-base-content/10 absolute start-4 top-10 bottom-2 w-px;
+                    content: "";
+                }
+            }
+        }
+    }
+}
+
+/* == Layout: Topbar == */
+
+#layout-topbar {
+    background: var(--layout-topbar-background);
+    @apply sticky top-0 z-50 max-h-[64px] min-h-[64px] transition-[top,_margin,_border-radius] duration-300;
+}
+
+/* == Layout: Content == */
+
+#layout-content {
+    @apply grow p-6 transition-all;
+}
+
+/* == Sidebar: Toggle == */
+
+#layout-sidebar-toggle-trigger:checked ~ #layout-sidebar {
+    margin-inline-start: calc(var(--layout-sidebar-width) * -1);
+}
+
+/* == Sidebar: @media for small devices (phone, tablet), <= xl size == */
+
+@media (width <= theme(--breakpoint-lg)) {
+    #layout-sidebar {
+        @apply fixed z-[500];
+    }
+
+    /* = Tweaks for hide on mobile device by default = */
+    #layout-sidebar-toggle-trigger:not(:checked) ~ #layout-sidebar {
+        margin-inline-start: calc(var(--layout-sidebar-width) * -1);
+    }
+    #layout-sidebar-toggle-trigger:checked ~ #layout-sidebar {
+        margin-inline-start: 0;
+    }
+    #layout-sidebar-toggle-trigger:checked ~ #layout-sidebar-backdrop {
+        @apply bg-base-content/5 fixed inset-0 z-[499] transition-all;
+    }
+}
+
+/* == Overrides: specific to material theme and non-material theme == */
+
+html:not([data-theme="material"], [data-theme="material-dark"]) {
+    #layout-sidebar {
+        @apply border-base-200 border-e-[1px];
+    }
+
+    #layout-topbar {
+        @apply border-base-200 border-b;
+    }
+}
+
+html[data-theme="material"],
+html[data-theme="material-dark"] {
+    #layout-sidebar {
+        max-height: calc(100vh - 32px);
+        @apply rounded-box top-4 bottom-4 ms-4;
+    }
+
+    #layout-topbar {
+        @apply rounded-box static mx-5 mt-4;
+    }
+}

@@ -6,6 +6,11 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@iconify/json": "^2.2.336",
+        "@iconify/tailwind4": "^1.0.6",
+        "@zackad/prettier-plugin-twig": "^0.16.0",
+        "prettier": "^3.5.3",
+        "prettier-plugin-tailwindcss": "^0.6.11",
         "vite": "^6.0",
         "vite-plugin-symfony": "^8.0"
     },

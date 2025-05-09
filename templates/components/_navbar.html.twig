@@ -1,0 +1,372 @@
+<!-- Start: Layout - Topbar -->
+
+<div
+    role="navigation"
+    aria-label="Navbar"
+    class="flex items-center justify-between px-3"
+    id="layout-topbar">
+    <div class="inline-flex items-center gap-3">
+        <!-- Logo - only visible on lg and smaller screens -->
+        <a class="lg:hidden items-center" href="{{ path('bdd_index') }}">
+            <img
+                alt="logo-dark"
+                class="hidden h-7 dark:inline"
+                src="{{ asset('assets/images/logo/logo-square.svg') }}" />
+            <img
+                alt="Captain Logo"
+                class="h-7 dark:hidden"
+                src="{{ asset('assets/images/logo/logo-square.svg') }}" />
+        </a>
+        <!-- Hamburger menu - only visible on mobile -->
+        <label
+            class="btn btn-square btn-ghost btn-sm lg:hidden"
+            aria-label="Leftmenu toggle"
+            for="layout-sidebar-toggle-trigger">
+            <span class="iconify lucide--menu size-5"></span>
+        </label>
+
+        <!-- Search button - keeping as is -->
+        <button
+            class="btn btn-outline btn-sm btn-ghost border-base-300 text-base-content/70 hidden h-9 w-48 justify-start gap-2 !text-sm md:flex">
+            <span class="iconify lucide--search size-4"></span>
+            <span>Search</span>
+        </button>
+        <button
+            class="btn btn-outline btn-sm btn-square btn-ghost border-base-300 text-base-content/70 flex size-9 md:hidden"
+            aria-label="Search">
+            <span class="iconify lucide--search size-4"></span>
+        </button>
+        <dialog id="topbar-search-modal" class="modal p-0">
+            <div class="modal-box p-0">
+                <div
+                    class="input border-base-300 w-full rounded-none border-0 border-b focus:!outline-0 active:!outline-0">
+                    <span class="iconify lucide--search text-base-content/60 size-4.5"></span>
+                    <input class="grow" placeholder="Search" aria-label="Search" type="search" />
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost" aria-label="Close">
+                            <span class="iconify lucide--x text-base-content/80 size-4"></span>
+                        </button>
+                    </form>
+                </div>
+                <ul class="menu w-full pt-0">
+                    <li class="menu-title">Actions</li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--folder-plus size-4.5"></span>
+                            <p class="grow text-sm">
+                                Create a new folder
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--file-plus size-4.5"></span>
+                            <p class="grow text-sm">
+                                Upload new document
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--user-plus size-4.5"></span>
+                            <p class="grow text-sm">
+                                Invite to project
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+                <hr class="border-base-300 h-px" />
+                <ul class="menu w-full pt-0">
+                    <li class="menu-title">Quick Links</li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--folders size-4.5"></span>
+                            <p class="grow text-sm">
+                                File Manager
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--user size-4.5"></span>
+                            <p class="grow text-sm">
+                                Profile
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--layout-dashboard size-4.5"></span>
+                            <p class="grow text-sm">
+                                Dashboard
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--help-circle size-4.5"></span>
+                            <p class="grow text-sm">
+                                Support
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            <span class="iconify lucide--keyboard size-4.5"></span>
+                            <p class="grow text-sm">
+                                Keyboard Shortcuts
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <form method="dialog" class="modal-backdrop">
+                <button>close</button>
+            </form>
+        </dialog>
+    </div>
+    <div class="inline-flex items-center gap-1.5">
+        <!-- Theme toggle - keeping as is for now -->
+        <div class="dropdown dropdown-center">
+            <div
+                tabindex="0"
+                role="button"
+                class="btn btn-sm btn-circle btn-ghost"
+                aria-label="Theme toggle">
+                <span
+                    class="iconify lucide--sun hidden size-4.5 group-data-[theme=light]/html:inline">
+
+                </span>
+                <span
+                    class="iconify lucide--moon hidden size-4.5 group-data-[theme=dark]/html:inline">
+
+                </span>
+                <span
+                    class="iconify lucide--monitor hidden size-4.5 group-[:not([data-theme])]/html:inline">
+
+                </span>
+                <span
+                    class="iconify lucide--palette hidden size-4.5 group-data-[theme=contrast]/html:inline group-data-[theme=dim]/html:inline group-data-[theme=material]/html:inline group-data-[theme=material-dark]/html:inline">
+
+                </span>
+            </div>
+            <ul
+                tabindex="0"
+                class="dropdown-content menu bg-base-100 rounded-box z-1 mt-2 w-36 space-y-0.5 p-1 shadow-sm">
+                <li>
+                    <div
+                        class="group-data-[theme=light]/html:bg-base-200 flex gap-2"
+                        data-theme-control="light">
+                        <span class="iconify lucide--sun size-4.5"></span>
+                        <span class="font-medium">Light</span>
+                    </div>
+                </li>
+                <li>
+                    <div
+                        class="group-data-[theme=dark]/html:bg-base-200 flex gap-2"
+                        data-theme-control="dark">
+                        <span class="iconify lucide--moon size-4.5"></span>
+                        <span class="font-medium">Dark</span>
+                    </div>
+                </li>
+                <li>
+                    <div
+                        class="group-[:not([data-theme])]/html:bg-base-200 flex gap-2"
+                        data-theme-control="system">
+                        <span class="iconify lucide--monitor size-4.5"></span>
+                        <span class="font-medium">System</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Notifications - implementing with previous logic -->
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+            <div class="dropdown dropdown-bottom sm:dropdown-end max-sm:dropdown-center">
+                <div
+                    tabindex="0"
+                    role="button"
+                    class="btn btn-circle btn-ghost btn-sm relative"
+                    aria-label="Notifications">
+                    <span class="iconify lucide--bell size-4.5"></span>
+                    {% if (app.user.unreadNotifications|length) > 0 %}
+                        <span
+                            class="badge badge-xs badge-warning absolute top-0 right-0 translate-x-1/3 -translate-y-1/3">
+                            {{ app.user.unreadNotifications|length }}
+                        </span>
+                    {% endif %}
+                </div>
+                <div
+                    tabindex="0"
+                    class="dropdown-content bg-base-100 rounded-box card card-compact mt-5 w-60 p-2 shadow sm:w-84">
+                    <div class="flex items-center justify-between px-2">
+                        <p class="text-base font-medium">
+                            {{ 'notif.title'|trans }}
+                        </p>
+                        <button
+                            tabindex="0"
+                            class="btn btn-sm btn-circle btn-ghost"
+                            aria-label="Close">
+                            <span class="iconify lucide--x size-4"></span>
+                        </button>
+                    </div>
+
+                    <div class="mt-2">
+                        {% for notif in app.user.unreadNotifications %}
+                            <div
+                                class="rounded-box hover:bg-base-200 flex cursor-pointer gap-3 px-2 py-1.5 transition-all">
+                                <div
+                                    class="bg-success-400 mask mask-squircle size-10 flex items-center justify-center">
+                                    <span class="iconify lucide--star size-4.5 text-white"></span>
+                                </div>
+                                <div class="grow">
+                                    <a
+                                        href="{{
+                                        path(
+                                            'notification_read',
+                                            {
+                                                id: notif.id
+                                            }
+                                        )
+                                        }}">
+                                        <p class="text-sm leading-tight">
+                                            {{
+                                                notif.message|trans({
+                                                    '%name%': notif.parameter|trans
+                                                })
+                                            }}
+                                        </p>
+                                    </a>
+                                    <p class="text-base-content/60 text-end text-xs leading-tight">
+                                        {{ notif.createdAt|ago }}
+                                    </p>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="px-2 py-1.5">
+                                <p class="text-sm">
+                                    {{ 'notif.empty'|trans }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Profile dropdown - enhanced with previous links -->
+        <div class="dropdown dropdown-bottom dropdown-end">
+            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                <div tabindex="0" role="button" class="btn btn-ghost rounded-btn px-1.5">
+                    <div class="flex items-center gap-2">
+                        <div class="avatar">
+                            <div class="bg-base-200 mask mask-squircle w-8">
+                                <img
+                                    alt="{{ app.user.displayName }}"
+                                    src="{{
+                                    pictures_cdn ~ '/profile-pictures/'
+                                        ~ (app.user.profilePicture|default('default_user.png'))
+                                    }}" />
+                            </div>
+                        </div>
+                        <div class="-space-y-0.5 text-start hidden md:block">
+                            <p class="text-sm">
+                                {{ app.user.firstname }}
+                            </p>
+                            <p class="text-base-content/60 text-xs">
+                                Profile
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown-content bg-base-100 rounded-box mt-4 w-44 shadow" tabindex="0">
+                    <ul class="menu w-full p-2">
+                        <li>
+                            <a href="{{ path('profile') }}">
+                                <span class="iconify lucide--user size-4"></span>
+                                <span>{{ 'navbar.profile'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('profile_ratings') }}">
+                                <span class="iconify lucide--star size-4"></span>
+                                <span>{{ 'navbar.rating'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{{
+                                path(
+                                    'user_tops',
+                                    {
+                                        id: app.user.id
+                                    }
+                                )
+                                }}">
+                                <span class="iconify lucide--clipboard size-4"></span>
+                                <span>{{ 'navbar.tops'|trans }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a
+                                href="{{
+                                path(
+                                    'map_user',
+                                    {
+                                        id: app.user.id
+                                    }
+                                )
+                                }}">
+                                <span class="iconify lucide--map-pin size-4"></span>
+                                <span>{{ 'navbar.my_map'|trans }}</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Language switcher in user menu -->
+                    {% if app.request.attributes.get('_route') %}
+                        <hr class="border-base-300" />
+                        <ul class="menu w-full p-2">
+                            <li class="menu-title">{{ app.request.locale|trans }}</li>
+                            {% set route = app.request.attributes.get('_route') %}
+                            {% set route_params = app.request.attributes.get('_route_params') %}
+                            {% set params = route_params|merge(app.request.query.all) %}
+                            {% for locale in locales|filter(v => v != app.request.locale) %}
+                                <li>
+                                    <a
+                                        href="{{
+                                        path(
+                                            route,
+                                            params|merge({
+                                                _locale: locale
+                                            })
+                                        )
+                                        }}">
+                                        <span class="iconify lucide--globe size-4"></span>
+                                        <span>{{ locale|trans }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    <hr class="border-base-300" />
+                    <ul class="menu w-full p-2">
+                        <li>
+                            <a class="text-error hover:bg-error/10" href="{{ path('logout') }}">
+                                <span class="iconify lucide--log-out size-4"></span>
+                                <span>{{ 'navbar.logout'|trans }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{{ path('login') }}" class="btn btn-ghost rounded-btn">
+                    {{ 'navbar.login'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- End: Layout - Topbar -->
