@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="group/html" data-theme="pastel">
+<html lang="en" class="group/html">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -19,18 +19,11 @@
             {{ vite_entry_script_tags('app') }}
         {% endblock %}
         {# prettier-ignore-start #}
-        <script type="text/javascript">
-            try { 
-                const localStorageItem = localStorage.getItem("captain-theme") 
-                if (localStorageItem) { 
-                    const theme = JSON.parse(localStorageItem).theme 
-                    if (theme !== "system") { 
-                        document.documentElement.setAttribute("data-theme", theme) 
-                    } 
-                } 
-            } catch (err) { 
-                console.log(err) 
-            }
+        <script>
+            try {
+                const t = localStorage.theme;
+                t && t !== "system" && (document.documentElement.dataset.theme = t);
+            } catch(e) {}
         </script>
         {# prettier-ignore-end #}
     </head>
