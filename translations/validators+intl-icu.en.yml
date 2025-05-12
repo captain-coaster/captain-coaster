@@ -1,1 +1,3 @@
 top_coaster.duplicate: "{coaster} appears several times. Please remove duplicates."
+relocation.duplicate: "Another relocation group contains {coaster}"
+relocation.short: "Relocation need minimum 2 coasters"
