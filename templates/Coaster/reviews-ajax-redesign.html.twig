@@ -1,0 +1,216 @@
+{% import 'helper.html.twig' as helper %}
+
+<div id="coaster-reviews" class="space-y-4">
+    {% for review in reviews %}
+        <div class="card bg-base-200">
+            <div class="card-body">
+                <div class="flex items-start gap-4">
+                    <!-- User Avatar -->
+                    <div class="avatar">
+                        <div class="w-12 rounded-full">
+                            {{ helper.profilePicture(review.user, 'w-full h-full object-cover') }}
+                        </div>
+                    </div>
+
+                    <!-- Review Content -->
+                    <div class="flex-1">
+                        <!-- User and Rating -->
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <a href="{{ path('user_show', { slug: review.user.slug }) }}" class="font-bold">
+                                {{ review.user.displayName }}
+                            </a>
+                            <div class="rating rating-sm rating-half">
+                                {% set low = review.value|round(0, 'floor') %}
+                                {% set half = low < review.value %}
+
+                                {% for i in 1..5 %}
+                                    {% if i <= low %}
+                                        <input type="radio" class="bg-warning mask mask-star-2" disabled checked />
+                                    {% elseif half and i == low + 1 %}
+                                        <input
+                                            type="radio"
+                                            class="bg-warning mask mask-star-2 mask-half-1"
+                                            disabled
+                                            checked
+                                        />
+                                    {% else %}
+                                        <input type="radio" class="bg-warning mask mask-star-2" disabled />
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <span class="text-sm opacity-70">{{ review.updatedAt|ago }}</span>
+                        </div>
+
+                        <!-- Tags -->
+                        {% if (review.pros|length) > 0 or (review.cons|length) > 0 %}
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                {% for pros in review.pros %}
+                                    <span class="badge badge-success">{{ pros.name|trans([], 'database') }}</span>
+                                {% endfor %}
+                                {% for cons in review.cons %}
+                                    <span class="badge badge-error">{{ cons.name|trans([], 'database') }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Review Text -->
+                        {% if
+                            review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
+                            <div class="review-content" data-review-actions-target="reviewContent">
+                                {% if (review.review|length) > 200 %}
+                                    <div class="review-short">
+                                        <p>
+                                            {{ review.review|slice(0, 200) }}...
+                                        </p>
+                                        <button
+                                            class="btn btn-xs btn-ghost expand-review"
+                                            data-action="review-actions#toggleReview"
+                                            data-review-actions-target="expandButton"
+                                        >
+                                            {{ 'review.readmore'|trans }} <i class="icon-arrow-down22 ml-1"></i>
+                                        </button>
+                                    </div>
+                                    <div class="review-full hidden">
+                                        <p>
+                                            {{ review.review }}
+                                        </p>
+                                        <button
+                                            class="btn btn-xs btn-ghost collapse-review"
+                                            data-action="review-actions#toggleReview"
+                                            data-review-actions-target="collapseButton"
+                                        >
+                                            {{ 'review.showless'|trans }} <i class="icon-arrow-up22 ml-1"></i>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <p>
+                                        {{ review.review }}
+                                    </p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        <!-- Actions -->
+                        <div class="flex flex-wrap gap-4 mt-3 text-sm">
+                            <div class="flex items-center gap-1">
+                                <span data-review-actions-target="upvoteCount">{{ review.upvotes|length }}</span>
+                                <button
+                                    class="btn btn-xs btn-ghost"
+                                    data-action="review-actions#upvote"
+                                    data-review-actions-target="upvoteButton"
+                                >
+                                    <i class="icon-arrow-up22 text-success"></i>
+                                </button>
+                            </div>
+
+                            {% if is_granted('ROLE_USER') %}
+                                <button
+                                    class="btn btn-xs btn-ghost"
+                                    data-action="review-actions#openReportModal"
+                                    data-review-actions-target="reportButton"
+                                    title="{{ 'review.report'|trans }}"
+                                >
+                                    <i class="icon-flag8 text-warning"></i> {{ 'review.report'|trans }}
+                                </button>
+                            {% endif %}
+
+                            {% if is_granted('update', review) %}
+                                <a
+                                    href="{{ path('review_form', { id: review.coaster.id }) }}"
+                                    class="btn btn-xs btn-ghost"
+                                >
+                                    <i class="icon-pencil"></i> {{ 'review.update'|trans }}
+                                </a>
+                            {% endif %}
+
+                            {% if is_granted('delete', review) %}
+                                <button class="btn btn-xs btn-ghost text-error" onclick="deleteRating({{ review.id }})">
+                                    <i class="icon-trash"></i> {{ 'review.delete'|trans }}
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Modal -->
+        {% if is_granted('ROLE_USER') %}
+            <dialog id="reportModal-{{ review.id }}" class="modal" data-review-actions-target="reportModal">
+                <div class="modal-box">
+                    <h3 class="font-bold text-lg">{{ 'review.report_title'|trans }}</h3>
+
+                    <form data-action="review-actions#submitReport">
+                        <div class="form-control w-full mt-4">
+                            <label class="label">
+                                <span class="label-text">{{ 'review.report_reason'|trans }}</span>
+                            </label>
+                            <select name="reason" class="select select-bordered w-full">
+                                <option value="offensive">
+                                    {{ 'review.reason.offensive'|trans }}
+                                </option>
+                                <option value="inappropriate">
+                                    {{ 'review.reason.inappropriate'|trans }}
+                                </option>
+                                <option value="incorrect">
+                                    {{ 'review.reason.incorrect'|trans }}
+                                </option>
+                                <option value="spam">
+                                    {{ 'review.reason.spam'|trans }}
+                                </option>
+                                <option value="other">
+                                    {{ 'review.reason.other'|trans }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="modal-action">
+                            <button
+                                type="button"
+                                class="btn"
+                                onclick="document.getElementById('reportModal-{{ review.id }}').close()"
+                            >
+                                {{ 'review.cancel'|trans }}
+                            </button>
+                            <button type="submit" class="btn btn-primary">{{ 'review.submit_report'|trans }}</button>
+                        </div>
+                    </form>
+                </div>
+                <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+        {% endif %}
+    {% else %}
+        <div class="card bg-base-200">
+            <div class="card-body text-center">
+                <i class="icon-comment-discussion text-3xl opacity-50 mb-2"></i>
+                <p>
+                    {{ 'review_list.no_review'|trans }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-6">
+        {{ knp_pagination_render(reviews) }}
+    </div>
+</div>
+
+<script>
+    // Initialize review actions document.querySelectorAll('[data-review-actions-target="expandButton"]').forEach(button
+    => { button.addEventListener('click', function() { const reviewContent = this.closest('.review-content');
+    reviewContent.querySelector('.review-short').classList.add('hidden');
+    reviewContent.querySelector('.review-full').classList.remove('hidden'); }); });
+
+    document.querySelectorAll('[data-review-actions-target="collapseButton"]').forEach(button => {
+    button.addEventListener('click', function() { const reviewContent = this.closest('.review-content');
+    reviewContent.querySelector('.review-full').classList.add('hidden');
+    reviewContent.querySelector('.review-short').classList.remove('hidden'); }); });
+
+    document.querySelectorAll('[data-review-actions-target="reportButton"]').forEach(button => {
+    button.addEventListener('click', function() { const reviewId =
+    this.closest('[data-review-actions-id-value]').dataset.reviewActionsIdValue; document.getElementById('reportModal-'
+    + reviewId).showModal(); }); });
+</script>

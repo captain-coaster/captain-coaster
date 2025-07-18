@@ -1,0 +1,87 @@
+{% if coaster.images|length > 0 %}
+  <div id="coaster-photos" class="carousel w-full rounded-box">
+    {% for image in coaster.images|slice(0, number) %}
+      <div id="slide{{ loop.index }}" class="carousel-item relative w-full">
+        <img src="{{ pictures_cdn|default('/images') }}/800x600/{{ image.filename }}" class="w-full object-cover" alt="{{ coaster.name }}" />
+        <div class="absolute flex justify-between transform -translate-y-1/2 left-5 right-5 top-1/2">
+          <a href="#slide{{ loop.index == 1 ? coaster.images|slice(0, number)|length : loop.index - 1 }}" class="btn btn-circle">❮</a>
+          <a href="#slide{{ loop.index == coaster.images|slice(0, number)|length ? 1 : loop.index + 1 }}" class="btn btn-circle">❯</a>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <i onclick="toggleLike(this, '{{ image.id }}');"
+               style="cursor: pointer;"
+               class="{% if image.id in userLikes %}icon-heart5{% else %}icon-heart6{% endif %} text-white like-image"></i>
+            <span>{{ image.likeCounter }}</span>
+          </div>
+          {% if image.credit %}<span>{{ image.credit }}</span>{% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Carousel Indicators -->
+  <div class="flex justify-center w-full py-2 gap-2 mt-2">
+    {% for image in coaster.images|slice(0, number) %}
+      <a href="#slide{{ loop.index }}" class="btn btn-xs">{{ loop.index }}</a>
+    {% endfor %}
+  </div>
+  
+  <!-- Show All Images Link -->
+  {% if number < coaster.images|length %}
+    <div class="text-center mt-2">
+      <button id="show-all" class="btn btn-sm btn-outline">{{ 'coaster.photos.all'|trans }}</button>
+    </div>
+  {% endif %}
+  
+  <!-- Lightbox Gallery -->
+  <div class="hidden">
+    {% for image in coaster.images|slice(0, number) %}
+      <a class="lightbox-link" href="{{ pictures_cdn|default('/images') }}/1440x1440/{{ image.filename }}" data-popup="lightbox" rel="gallery"></a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div id="coaster-photos" class="flex flex-col items-center justify-center p-8 bg-base-200 rounded-box">
+    <p class="mb-4">{{ 'coaster.photos.empty'|trans }}</p>
+    <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn btn-primary">
+      {{ 'coaster.photos.button'|trans }}
+    </a>
+  </div>
+{% endif %}
+<script>
+  function toggleLike(element, id) {
+    if (typeof Routing === 'undefined') {
+      console.error('Routing is not defined');
+      return;
+    }
+    
+    fetch(Routing.generate('like_image_async', {
+      'id': id,
+      '_locale': '{{ app.request.locale }}',
+    }))
+    .then(response => {
+      if (response.ok) {
+        element.classList.toggle('icon-heart5');
+        element.classList.toggle('icon-heart6');
+      }
+    });
+  }
+  
+  // Initialize lightbox for all images
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('[data-popup="lightbox"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Initialize lightbox if Fancybox is available
+        if (typeof Fancybox !== 'undefined') {
+          Fancybox.show([
+            {
+              src: this.getAttribute('href'),
+              type: 'image'
+            }
+          ]);
+        }
+      });
+    });
+  });
+</script>

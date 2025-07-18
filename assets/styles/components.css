@@ -67,15 +67,3 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     -webkit-background-clip: text;
 }
-
-/* ==  Theme Specific  == */
-
-[data-theme="material"],
-[data-theme="material-dark"] {
-    .card {
-        @apply shadow-none;
-        &.card-border {
-            @apply border-0;
-        }
-    }
-}

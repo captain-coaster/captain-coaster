@@ -167,6 +167,95 @@ class CoasterController extends BaseController
         );
     }
 
+    /** Show details of a coaster with the redesigned template */
+    #[Route(path: '/{id}/{slug}/redesign', name: 'show_coaster_redesign', options: ['expose' => true], methods: ['GET'])]
+    public function showRedesignAction(
+        Request $request,
+        Coaster $coaster,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        CoasterRepository $coasterRepository
+    ): Response {
+        $rating = null;
+        $user = null;
+        if ($this->isGranted('ROLE_USER')) {
+            $user = $this->getUser();
+            $rating = $riddenCoasterRepository->findOneBy(
+                ['coaster' => $coaster, 'user' => $user]
+            );
+        }
+
+        return $this->render(
+            'Coaster/hero-section.html.twig',
+            [
+                'countRatings' => $riddenCoasterRepository->getRatingStatsForCoaster($coaster),
+                'coaster' => $coaster,
+                'rating' => $rating,
+                'user' => $user,
+                'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+            ]
+        );
+    }
+
+    /** Async loads images for a coaster with redesigned template */
+    #[Route(
+        path: '/{slug}/images/ajax/redesign/{imageNumber}',
+        name: 'coaster_images_ajax_load_redesign',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function ajaxLoadImagesRedesign(EntityManagerInterface $em, Coaster $coaster, int $imageNumber = 8): Response
+    {
+        $userLikes = [];
+        if (($user = $this->getUser()) instanceof UserInterface) {
+            $userLikes = $em
+                ->getRepository(LikedImage::class)
+                ->findUserLikes($user)
+                ->getSingleColumnResult();
+        }
+
+        return $this->render(
+            'Coaster/image-ajax-redesign.html.twig',
+            [
+                'userLikes' => $userLikes,
+                'coaster' => $coaster,
+                'number' => $imageNumber,
+            ]
+        );
+    }
+
+    /** Async loads reviews for a coaster with redesigned template */
+    #[Route(
+        path: '/{slug}/reviews/ajax/redesign/{page}',
+        name: 'coaster_reviews_ajax_load_redesign',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function ajaxLoadReviewsRedesign(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, Coaster $coaster, int $page = 1): Response
+    {
+        $user = $this->getUser();
+        $displayReviewsInAllLanguages = true;
+        if (null !== $user) {
+            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
+        }
+
+        $pagination = $paginator->paginate(
+            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages),
+            $page,
+            50
+        );
+
+        return $this->render(
+            'Coaster/reviews-ajax-redesign.html.twig',
+            [
+                'reviews' => $pagination,
+                'coaster' => $coaster,
+                'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+            ]
+        );
+    }
+
     /** Redirect old urls to above */
     #[Route(path: '/{slug}', name: 'redirect_coaster_show', options: ['expose' => true], methods: ['GET'])]
     public function redirectCoaster(Coaster $coaster): RedirectResponse

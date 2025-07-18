@@ -1,12 +1,12 @@
 /*** Tailwind CSS Presets ***/
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /** Dark Variant with theme & system mode **/
 @variant dark {
-    &:where([data-theme="dark"] *, [data-theme="dim"] *, [data-theme="material-dark"] *) {
+    &:where([data-theme='dracula'] *) {
         @slot;
     }
-    &:not([data-theme="light"] *, [data-theme="contrast"] *, [data-theme="material"] *) {
+    &:not([data-theme='pastel'] *) {
         @media (prefers-color-scheme: dark) {
             @slot;
         }
