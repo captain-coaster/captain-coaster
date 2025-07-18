@@ -37,7 +37,6 @@
         "symfony/http-client": "6.4.*",
         "symfony/lock": "6.4.*",
         "symfony/mailer": "6.4.*",
-        "symfony/mailjet-mailer": "6.4.*",
         "symfony/messenger": "6.4.*",
         "symfony/monolog-bundle": "^3.0",
         "symfony/notifier": "6.4.*",
