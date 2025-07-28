@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Validator\Constraints;
 
+use App\Entity\RelocationCoaster;
 use App\Entity\TopCoaster;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -26,9 +27,8 @@ class UniqueCoasterValidator extends ConstraintValidator
         }
 
         $collectionElements = [];
-        /** @var TopCoaster $element */
         foreach ($value as $element) {
-            if (!$element instanceof TopCoaster) {
+            if (!$element instanceof TopCoaster && !$element instanceof RelocationCoaster) {
                 throw new UnexpectedTypeException($element, 'IteratorAggregate');
             }
 
