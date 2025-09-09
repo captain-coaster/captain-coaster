@@ -67,7 +67,7 @@ class ImageManager
 
         $sql = 'UPDATE coaster c
             LEFT JOIN (
-                SELECT DISTINCT coaster_id, 
+                SELECT DISTINCT coaster_id,
                        FIRST_VALUE(id) OVER (PARTITION BY coaster_id ORDER BY like_counter DESC, updated_at DESC) as id
                 FROM image
                 WHERE enabled = 1
