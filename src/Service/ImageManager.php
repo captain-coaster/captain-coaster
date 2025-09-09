@@ -60,25 +60,19 @@ class ImageManager
         ]);
     }
 
-    /**
-     * Update main image property of all coasters.
-     *
-     * @todo faire mieux :)
-     */
+    /** Update main image property of all coasters. */
     public function setMainImages(): void
     {
         $conn = $this->em->getConnection();
 
-        $sql = 'update coaster c
-            left join (
-	            select sub.id, sub.coaster_id from (
-		            select * from image
-		            where enabled = 1
-		            order by like_counter desc, updated_at desc
-		            limit 18446744073709551615) as sub
-	            group by coaster_id
-            ) as i on i.coaster_id = c.id
-            set c.main_image_id = i.id;';
+        $sql = 'UPDATE coaster c
+            LEFT JOIN (
+                SELECT DISTINCT coaster_id, 
+                       FIRST_VALUE(id) OVER (PARTITION BY coaster_id ORDER BY like_counter DESC, updated_at DESC) as id
+                FROM image
+                WHERE enabled = 1
+            ) i ON i.coaster_id = c.id
+            SET c.main_image_id = i.id';
 
         try {
             $stmt = $conn->prepare($sql);
@@ -88,23 +82,18 @@ class ImageManager
         }
     }
 
-    /**
-     * Update like counters for all images.
-     *
-     * @todo faire mieux :)
-     */
+    /** Update like counters for all images. */
     public function updateLikeCounters(): void
     {
         $conn = $this->em->getConnection();
 
-        $sql = 'update image i1
-            join (
-                select i.id, count(li.image_id) as nb from image i
-                left join liked_image li on li.image_id = i.id
-                group by i.id
-            ) as i2
-            on i2.id = i1.id
-            set i1.like_counter = i2.nb;';
+        $sql = 'UPDATE image i
+            LEFT JOIN (
+                SELECT image_id, COUNT(*) as nb
+                FROM liked_image
+                GROUP BY image_id
+            ) li ON i.id = li.image_id
+            SET i.like_counter = COALESCE(li.nb, 0)';
 
         try {
             $stmt = $conn->prepare($sql);
