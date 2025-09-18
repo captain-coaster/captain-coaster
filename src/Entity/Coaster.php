@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\CoasterRepository;
+use App\Validator\Constraints as CaptainConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -79,6 +80,7 @@ class Coaster implements \Stringable
     #[ORM\ManyToOne(targetEntity: 'Model')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
+    #[CaptainConstraints\ModelManufacturer]
     private ?Model $model = null;
 
     #[ORM\Column(name: 'speed', type: Types::INTEGER, nullable: true)]
