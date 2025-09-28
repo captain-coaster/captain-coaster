@@ -24,8 +24,8 @@ class RankingHistory
     #[ORM\JoinColumn(nullable: false)]
     private ?Ranking $ranking = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Coaster')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Coaster::class)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Coaster $coaster = null;
 
     #[ORM\Column(name: 'rank', type: Types::INTEGER)]
