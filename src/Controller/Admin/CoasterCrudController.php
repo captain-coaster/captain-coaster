@@ -43,6 +43,7 @@ class CoasterCrudController extends AbstractCrudController
             ->add('materialType')
             ->add('seatingType')
             ->add('manufacturer')
+            ->add('model')
             ->add('restraint')
             ->add('launchs')
             ->add('speed')
