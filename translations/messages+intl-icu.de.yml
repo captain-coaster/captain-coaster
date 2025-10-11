@@ -208,6 +208,8 @@ profile:
                 metric: Internationale Einheitensystem
                 imperial: Britische Einheitensystem
                 label: Anzeigen von Entfernungen und Statistiken in
+            hideNonOperatingCoastersInTop100Stat:
+                label: Verstecke geschlossene Achterbahnen im Ranking und in deine gefahrenen Achterbahnen in den Top 100
             displayReviewsInAllLanguages:
                 label: Anzeigen in verschiedenen Sprachen verfasste Bewertungen
             addTodayDateWhenRating:

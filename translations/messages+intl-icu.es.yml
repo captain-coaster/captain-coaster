@@ -172,7 +172,7 @@ profile:
         parks: parques
         countries: países
         most_country: más montados de
-        top_100: montado en el top 100
+        top_100: montados en el top 100
         manufacturer: más montado
     ratings:
         title: Mis notas
@@ -208,6 +208,8 @@ profile:
                 metric: Sistema Internacional de unidades
                 imperial: Sistema anglosajón de unidades
                 label: Mostrar distancias y estadísticas en
+            hideNonOperatingCoastersInTop100Stat:
+                label: Oculta las montañas rusas cerradas en la Clasificación y tus montañas rusas montadas en el Top 100
             displayReviewsInAllLanguages:
                 label: Mostrar reseñas escritas en diferentes lenguas
             addTodayDateWhenRating:

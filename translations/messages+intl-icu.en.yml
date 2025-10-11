@@ -208,6 +208,8 @@ profile:
                 metric: 'Metric units'
                 imperial: 'Imperial units'
                 label: 'Display distances and statistics in'
+            hideNonOperatingCoastersInTop100Stat:
+                label:  'Hide closed coasters in the Ranking and your ridden coasters in the Top 100'
             displayReviewsInAllLanguages:
                 label: 'Display reviews written in different languages'
             addTodayDateWhenRating:

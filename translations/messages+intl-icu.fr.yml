@@ -208,6 +208,8 @@ profile:
                 metric: Unités métriques
                 imperial: Unités impériales
                 label: Afficher les distances et statistiques en
+            hideNonOperatingCoastersInTop100Stat:
+                label: Masquer les coasters fermés du classement et de tes coasters ridés dans le Top 100
             displayReviewsInAllLanguages:
                 label: Afficher les avis écrits en différentes langues
             addTodayDateWhenRating:
