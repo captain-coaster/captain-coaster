@@ -65,7 +65,7 @@
       <div class="row">
         <div class="col-sm-12">
           <!-- stats -->
-          {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
+          {% include 'Profile/user_stats.html.twig' with {'stats': stats, 'hideNonOperatingCoastersInTop100Stat': hideNonOperatingCoastersInTop100Stat} only %}
           <!-- stats -->
           <!-- badges -->
           <div class="panel panel-flat">

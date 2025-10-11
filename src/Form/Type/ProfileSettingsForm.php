@@ -126,6 +126,11 @@ class ProfileSettingsForm extends AbstractType
                 ->orderBy('p.name', 'ASC'),
         ]);
 
+        $builder->add('hideNonOperatingCoastersInTop100Stat', CheckboxType::class, [
+            'required' => false,
+            'label' => 'profile.settings.preferences.hideNonOperatingCoastersInTop100Stat.label',
+        ]);
+
         $builder->add('imperial', ChoiceType::class, [
             'choices' => [
                 'profile.settings.preferences.units.metric' => false,

@@ -63,8 +63,21 @@
               <i class="icon-trophy2 icon-3x text-teal-400"></i>
             </div>
             <div class="media-body text-right">
-              <h3 class="no-margin text-semibold">{{ stats.top_100 }}</h3>
-              <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.top_100'|trans }}</span>
+              <h3 class="no-margin text-semibold">
+                {% if hideNonOperatingCoastersInTop100Stat is true %}
+                    {{ stats.top_100_operating }}
+                {% else %}
+                  {{ stats.top_100 }}
+                {% endif %}
+              </h3>
+              <span class="text-uppercase text-size-mini text-muted">
+                  {{ 'profile.stats.top_100'|trans }},
+                  {% if hideNonOperatingCoastersInTop100Stat is true %}
+                    {{ 'profile.stats.top_100_plus_closed'|trans({'%coasters%': stats.top_100 - stats.top_100_operating}) }}
+                  {% else %}
+                    {{ 'profile.stats.top_100_including_closed'|trans({'%coasters%': stats.top_100 - stats.top_100_operating}) }}
+                  {% endif %}
+              </span>
             </div>
           </div>
         </div>

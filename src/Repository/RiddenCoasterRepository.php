@@ -298,14 +298,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
-                ->select('count(1) as nb_top100')
+                ->select([
+                    'COUNT(1) as nb_top100',
+                    'SUM(CASE WHEN c.status = 1 THEN 1 ELSE 0 END) AS nb_top100_operating',
+                ])
                 ->from(RiddenCoaster::class, 'r')
                 ->join('r.coaster', 'c')
                 ->where('r.user = :user')
                 ->andWhere('c.rank <= 100')
                 ->setParameter('user', $user)
                 ->getQuery()
-                ->getSingleScalarResult();
+                ->getSingleResult();
         } catch (NonUniqueResultException) {
             return 0;
         }

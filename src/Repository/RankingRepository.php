@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Ranking;
+use App\Entity\RiddenCoaster;
+use App\Entity\Status;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -69,6 +71,7 @@ class RankingRepository extends ServiceEntityRepository
             ->select('c', 'p', 'm')
             ->from(Coaster::class, 'c')
             ->innerJoin('c.park', 'p')
+            ->innerJoin('c.status', 's')
             ->leftJoin('c.manufacturer', 'm')
             ->where('c.rank is not null');
 
@@ -87,6 +90,8 @@ class RankingRepository extends ServiceEntityRepository
         $this->filterModel($qb, $filters);
         $this->filterManufacturer($qb, $filters);
         $this->filterOpeningDate($qb, $filters);
+        $this->filterOpenedStatus($qb, $filters);
+        $this->filterByNotRidden($qb, $filters);
     }
 
     private function filterLocation(QueryBuilder $qb, array $filters = []): void
@@ -151,6 +156,35 @@ class RankingRepository extends ServiceEntityRepository
             $qb
                 ->andWhere('c.openingDate like :date')
                 ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
+        }
+    }
+
+    /** Filter only operating coasters. */
+    private function filterOpenedStatus(QueryBuilder $qb, array $filters = []): void
+    {
+        if (\array_key_exists('status', $filters)) {
+            $qb
+                ->andWhere('s.name = :operating')
+                ->setParameter('operating', Status::OPERATING);
+        }
+    }
+
+    /** Filter coasters user has not ridden. User based filter. */
+    private function filterByNotRidden(QueryBuilder $qb, array $filters = []): void
+    {
+        if (\array_key_exists('notridden', $filters) && 'on' === $filters['notridden']
+            && \array_key_exists('user', $filters) && !empty($filters['user'])) {
+            $qb2 = $this
+                ->getEntityManager()
+                ->createQueryBuilder()
+                ->select('c2.id')
+                ->from(RiddenCoaster::class, 'rc2')
+                ->innerJoin('rc2.coaster', 'c2', 'WITH', 'rc2.coaster = c2.id')
+                ->where('rc2.user = :userid');
+
+            $qb
+                ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
+                ->setParameter('userid', $filters['user']);
         }
     }
 }
