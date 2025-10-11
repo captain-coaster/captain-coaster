@@ -6,6 +6,10 @@
         <div class="category-title">
           <span>{{ 'map_index.filter.title'|trans }}</span>
         </div>
+
+        <input id="form-user" name="filters[user]" type="hidden"
+               value="{{ filters.user|default(app.user.id|default('')) }}">
+
         <div class="category-content">
           <div class="form-group">
             <select class="form-control" name="filters[continent]" onchange="filterData();">
@@ -28,6 +32,25 @@
                 </option>
               {% endfor %}
             </select>
+          </div>
+          <div class="form-group">
+            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+              <label class="display-block">
+                {{ 'map_index.filter.status'|trans }}
+                <input name="filters[status]" type="checkbox"
+                       class="switchery" {% if qS.filters.status is defined and qS.filters.status == "on" %} checked{% endif %}>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+              <label class="display-block">
+                {{ 'map_index.filter.notridden'|trans }}
+                  <input name="filters[notridden]" type="checkbox" class="switchery"
+                         {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
+                         {% if qS.filters.notridden is defined and qS.filters.notridden == "on" and is_granted('ROLE_USER') is defined %} checked{% endif %}>
+              </label>
+            </div>
           </div>
           <div class="form-group">
             <select class="form-control" name="filters[materialType]" onchange="filterData();">
