@@ -173,6 +173,8 @@ profile:
         countries: Länder
         most_country: Am meisten gefahren in
         top_100: Gefahren in den Top 100
+        top_100_plus_closed: '+ {coasters} geschlossen'
+        top_100_including_closed: 'dessen {coasters} geschlossen'
         manufacturer: Am meisten gefahren
     ratings:
         title: Meine Bewertungen

@@ -173,6 +173,18 @@ profile:
         countries: países
         most_country: más montados de
         top_100: montados en el top 100
+        top_100_plus_closed: >-
+            {coasters, plural,
+                =0 {+ 0 cerrado}
+                =1 {+ 1 cerrado}
+                other {+ # carrados}
+            }
+        top_100_including_closed: >-
+            {coasters, plural,
+                =0 {dont 0 cerrado}
+                =1 {dont 1 cerrado}
+                other {# de ellos cerrados}
+            }
         manufacturer: más montado
     ratings:
         title: Mis notas

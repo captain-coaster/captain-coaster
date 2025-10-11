@@ -173,6 +173,8 @@ profile:
         countries: 'countries'
         most_country: 'most ridden in'
         top_100: 'ridden in top 100'
+        top_100_plus_closed: '+ {coasters} closed'
+        top_100_including_closed: 'including {coasters} closed'
         manufacturer: 'most ridden'
     ratings:
         title: 'My Ratings'

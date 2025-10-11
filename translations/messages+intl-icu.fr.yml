@@ -173,6 +173,18 @@ profile:
         countries: pays
         most_country: le plus ridé
         top_100: fait dans le top 100
+        top_100_plus_closed: >-
+            {coasters, plural,
+                =0 {+ 0 fermé}
+                =1 {+ 1 fermé}
+                other {+ # fermés}
+            }
+        top_100_including_closed: >-
+            {coasters, plural,
+                =0 {dont 0 fermé}
+                =1 {dont 1 fermé}
+                other {dont # fermés}
+            }
         manufacturer: le plus ridé
     ratings:
         title: Mes Notes

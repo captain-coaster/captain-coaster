@@ -185,6 +185,7 @@ class UserController extends BaseController
                 'user' => $user,
                 'stats' => $statService->getUserStats($user),
                 'images_counter' => $imageRepository->countUserEnabledImages($user),
+                'hideNonOperatingCoastersInTop100Stat' => $user->isHideNonOperatingCoastersInTop100Stat(),
             ]
         );
     }
