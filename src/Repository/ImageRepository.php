@@ -81,4 +81,27 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findWatermarkToFix(?int $limit, int $offset = 0): array
+    {
+        $queryBuilder = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('i')
+            ->from(Image::class, 'i')
+            ->where('i.watermarked = true')
+            ->andWhere('i.id BETWEEN 16749 AND 23361')
+            ->orderBy('i.id', 'ASC');
+
+        if ($offset > 0) {
+            $queryBuilder->setFirstResult($offset);
+        }
+
+        if (null !== $limit) {
+            $queryBuilder->setMaxResults($limit);
+        }
+
+        return $queryBuilder
+            ->getQuery()
+            ->getResult();
+    }
 }
