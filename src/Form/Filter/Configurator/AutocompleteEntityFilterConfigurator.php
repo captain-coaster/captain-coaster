@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Form\Filter;
+namespace App\Form\Filter\Configurator;
 
+use App\Form\Filter\AutocompleteEntityFilter;
 use App\Form\Filter\Type\AutocompleteEntityFilterType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Option\EA;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
