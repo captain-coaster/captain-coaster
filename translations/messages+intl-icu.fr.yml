@@ -172,19 +172,13 @@ profile:
         parks: parcs
         countries: pays
         most_country: le plus ridé
-        top_100: fait dans le top 100
-        top_100_plus_closed: >-
+        top_100: >-
             {coasters, plural,
-                =0 {+ 0 fermé}
-                =1 {+ 1 fermé}
-                other {+ # fermés}
+                =0 {riddé dans le top 100}
+                =1 {riddé dans le top 100}
+                other {riddés dans le top 100}
             }
-        top_100_including_closed: >-
-            {coasters, plural,
-                =0 {dont 0 fermé}
-                =1 {dont 1 fermé}
-                other {dont # fermés}
-            }
+        top_100_operating: dans le top 100 des coasters ouverts
         manufacturer: le plus ridé
     ratings:
         title: Mes Notes
@@ -220,8 +214,6 @@ profile:
                 metric: Unités métriques
                 imperial: Unités impériales
                 label: Afficher les distances et statistiques en
-            hideNonOperatingCoastersInTop100Stat:
-                label: Masquer les coasters fermés du classement et de tes coasters ridés dans le Top 100
             displayReviewsInAllLanguages:
                 label: Afficher les avis écrits en différentes langues
             addTodayDateWhenRating:

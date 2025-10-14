@@ -137,9 +137,6 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 1])]
     private bool $displayReviewsInAllLanguages = true;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
-    private bool $hideNonOperatingCoastersInTop100Stat = false;
-
     public function __toString(): string
     {
         return $this->displayName;
@@ -643,18 +640,6 @@ class User implements UserInterface
     public function setDisplayReviewsInAllLanguages(bool $displayReviewsInAllLanguages): static
     {
         $this->displayReviewsInAllLanguages = $displayReviewsInAllLanguages;
-
-        return $this;
-    }
-
-    public function isHideNonOperatingCoastersInTop100Stat(): bool
-    {
-        return $this->hideNonOperatingCoastersInTop100Stat;
-    }
-
-    public function setHideNonOperatingCoastersInTop100Stat(bool $hideNonOperatingCoastersInTop100Stat): static
-    {
-        $this->hideNonOperatingCoastersInTop100Stat = $hideNonOperatingCoastersInTop100Stat;
 
         return $this;
     }

@@ -173,8 +173,7 @@ profile:
         countries: 'countries'
         most_country: 'most ridden in'
         top_100: 'ridden in top 100'
-        top_100_plus_closed: '+ {coasters} closed'
-        top_100_including_closed: 'including {coasters} closed'
+        top_100_operating: 'in top 100 operating roller coasters'
         manufacturer: 'most ridden'
     ratings:
         title: 'My Ratings'
@@ -210,8 +209,6 @@ profile:
                 metric: 'Metric units'
                 imperial: 'Imperial units'
                 label: 'Display distances and statistics in'
-            hideNonOperatingCoastersInTop100Stat:
-                label:  'Hide closed coasters in the Ranking and your ridden coasters in the Top 100'
             displayReviewsInAllLanguages:
                 label: 'Display reviews written in different languages'
             addTodayDateWhenRating:

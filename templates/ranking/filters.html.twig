@@ -39,7 +39,7 @@
                 {{ 'map_index.filter.status'|trans }}
                 <input name="filters[status]" type="checkbox"
                        class="switchery"
-                       {% if (app.user is not null and app.user.hideNonOperatingCoastersInTop100Stat is true) or (qS.filters.status is defined and qS.filters.status == "on") %} checked{% endif %}>
+                       {% if qS.filters.status is defined and qS.filters.status == "on" %} checked{% endif %}>
               </label>
             </div>
           </div>
