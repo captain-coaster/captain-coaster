@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\ReviewReport;
+use App\Form\Filter\AutocompleteEntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -46,8 +47,8 @@ class ReviewReportCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add('user')
-            ->add('review')
+            ->add(AutocompleteEntityFilter::new('user', 'User'))
+            ->add(AutocompleteEntityFilter::new('review', 'Review'))
             ->add('reason')
             ->add('resolved');
     }

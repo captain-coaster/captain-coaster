@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\RiddenCoaster;
+use App\Form\Filter\AutocompleteEntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
@@ -38,8 +39,8 @@ class ReviewCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add('user')
-            ->add('coaster')
+            ->add(AutocompleteEntityFilter::new('user', 'User'))
+            ->add(AutocompleteEntityFilter::new('coaster', 'Coaster'))
             ->add('value')
             ->add('updatedAt');
     }
