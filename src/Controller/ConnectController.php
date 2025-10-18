@@ -7,12 +7,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Notifier\CustomLoginLinkNotification;
 use App\Repository\UserRepository;
+
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+
 use Symfony\Component\Notifier\NotifierInterface;
 use Symfony\Component\Notifier\Recipient\Recipient;
 use Symfony\Component\RateLimiter\RateLimiterFactory;
@@ -39,16 +40,18 @@ class ConnectController extends AbstractController
         UserRepository $userRepository,
         TranslatorInterface $translator,
         RateLimiterFactory $loginLinkLimiter,
+
     ): Response {
         if ($request->isMethod('POST') && $email = $request->request->get('email')) {
-            // create a limiter based on a unique identifier of the client
-            // (e.g. the client's IP address, a username/email, an API key, etc.)
             $limiter = $loginLinkLimiter->create($request->getClientIp());
-
-            // the argument of consume() is the number of tokens to consume
-            // and returns an object of type Limit
-            if (false === $limiter->consume(1)->isAccepted()) {
-                throw new TooManyRequestsHttpException();
+            $limit = $limiter->consume(1);
+            
+            if (false === $limit->isAccepted()) {
+                $this->addFlash('danger', $translator->trans('login.rate_limit_exceeded'));
+                return $this->render('connect/login.html.twig', [
+                    'error' => $authenticationUtils->getLastAuthenticationError(),
+                    'rateLimitExceeded' => true,
+                ]);
             }
 
             $user = $userRepository->findOneBy(['email' => $email]);
@@ -83,6 +86,7 @@ class ConnectController extends AbstractController
 
         return $this->render('connect/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
+            'rateLimitExceeded' => false,
         ]);
     }
 
