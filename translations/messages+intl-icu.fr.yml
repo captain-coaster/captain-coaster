@@ -346,7 +346,6 @@ login:
     redirect_to_register: 'Nouveau sur Captain Coaster? <a href="{link_path}">Créez un compte</a>'
     or_sign_in_with: ou
     connect_with_google: Connexion avec google
-    facebook_login_disclaimer: "Utilisateurs de la connexion Facebook, veuillez maintenant vous connecter en utilisant l'adresse e-mail associée à votre compte Facebook"
     terms: 'En continuant, vous acceptez nos <a href="{link_path}">Termes et Conditions</a>'
     email:
         title: Connexion à Captain Coaster
@@ -355,12 +354,14 @@ login:
         button: Connexion
         paragraph2: "Vous recevez cet email car vous avez demandé à vous connecter à Captain Coaster. Si vous ne savez pas pourquoi vous recevez cet email, vous pouvez nous contacter en répondant à cet email."
     link_sent: "Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter."
+    rate_limit_exceeded: "Trop de tentatives de connexion. Veuillez réessayer plus tard."
     account_disabled: 'Votre email {email} n''est pas vérifié. Merci de vous <a href="{link_path}">inscrire</a> ou de cliquer sur le lien reçu après l''inscription pour activer votre compte.'
 
 register:
     title: Créer un compte
     subtitle: Veuillez remplir tous les champs ci-dessous
     link_sent: "Compte créé ! Veuillez vérifier votre email ({email}) et cliquer sur le lien pour activer votre compte."
+    rate_limit_exceeded: "Trop de tentatives d'inscription. Veuillez réessayer plus tard."
     form:
         email: Email
         first_name: Prénom
