@@ -1,108 +1,124 @@
 {% if stats|length > 0 %}
-    <div class="panel">
-        <div class="panel-heading">
-            <h3 class="panel-title">{{ 'profile.stats.title'|trans }}</h3>
-        </div>
-        <div class="panel-body">
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-shield-check icon-3x text-success-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.nb_coasters }}</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.coasters'|trans }}</span>
-                        </div>
+    <h6 class="content-group text-semibold">
+        {{ 'profile.stats.title'|trans }}
+    </h6>
+
+    <div class="row">
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-success-400">{{ stats.nb_coasters }}</h3>
+                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.ridden_coasters'|trans({'count': stats.nb_coasters}) }}</span>
                     </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-location3 icon-3x text-blue-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.nb_park }}</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.parks'|trans }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-city icon-3x text-indigo-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.nb_country }}</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.countries'|trans }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-earth icon-3x text-warning-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.country.name|trans([], 'database') }}</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.most_country'|trans }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-trophy2 icon-3x text-teal-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.top_100 }}</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.top_100'|trans({'%coasters%': stats.top_100}) }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-trophy2 icon-3x text-success-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.top_100_operating }}</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.top_100_operating'|trans }}</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6 col-md-4">
-                <div class="panel panel-body panel-body-accent">
-                    <div class="media no-margin">
-                        <div class="media-left media-middle">
-                            <i class="icon-design icon-3x text-danger-400"></i>
-                        </div>
-                        <div class="media-body text-right">
-                            <h3 class="no-margin text-semibold">{{ stats.manufacturer.name }}
-                                ({{ stats.manufacturer.nb }})</h3>
-                            <span
-                                class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.manufacturer'|trans }}</span>
-                        </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-trophy3 icon-3x text-success-400 opacity-75"></i>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-blue-400">{{ stats.nb_park }}</h3>
+                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.explored_parks'|trans({'count': stats.nb_park}) }}</span>
+                    </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-location3 icon-3x text-blue-400 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-indigo-400">{{ stats.nb_country }}</h3>
+                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.visited_countries'|trans({'count': stats.nb_country}) }}</span>
+                    </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-earth icon-3x text-indigo-400 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-6 col-md-3">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
+                        <span class="text-uppercase text-size-mini text-muted">
+                            {{ 'profile.stats.world_top_100'|trans }}
+                            <i class="icon-question3 text-muted ml-5" data-popup="tooltip" data-trigger="click hover focus" title="{{ 'profile.stats.operating_top_100'|trans }}: {{ (stats.top_100_operating * 100 / 100)|round }}/100" style="font-size: 12px; cursor: help;" tabindex="0"></i>
+                        </span>
+                    </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-trophy2 icon-3x text-teal-400 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
+                        <span class="text-uppercase text-size-mini text-muted">
+                            {{ 'profile.stats.top_country'|trans }}
+                            <i class="icon-question3 text-muted ml-5" data-popup="tooltip" data-trigger="click hover focus" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0"></i>
+                        </span>
+                    </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-flag3 icon-3x text-warning-400 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-pink-400">{{ stats.manufacturer.name }}</h3>
+                        <span class="text-uppercase text-size-mini text-muted">
+                            {{ 'profile.stats.top_manufacturer'|trans }}
+                            <i class="icon-question3 text-muted ml-5" data-popup="tooltip" data-trigger="click hover focus" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0"></i>
+                        </span>
+                    </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-cog3 icon-3x text-pink-400 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if stats.top_rated_manufacturer is defined %}
+        <div class="col-sm-4">
+            <div class="panel panel-body">
+                <div class="media no-margin">
+                    <div class="media-body">
+                        <h3 class="no-margin text-semibold text-orange-400">
+                            {% if stats.top_rated_manufacturer %}
+                                {{ stats.top_rated_manufacturer.name }}
+                            {% else %}
+                                <small class="text-muted">{{ 'profile.stats.create_top_placeholder'|trans }}</small>
+                            {% endif %}
+                        </h3>
+                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.favorite_manufacturer'|trans }}</span>
+                    </div>
+                    <div class="media-right media-middle">
+                        <i class="icon-heart5 icon-3x text-orange-400 opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 {% endif %}

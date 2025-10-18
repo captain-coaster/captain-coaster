@@ -7,22 +7,22 @@ de: Deutsch
 app:
     name: Captain Coaster
     title:
-        default: 'Willkommen!'
+        default: "Willkommen!"
     header:
-        search: 'Voltron, Holiday Park...'
+        search: "Voltron, Holiday Park..."
 
 index:
-    title: 'Willkommen!'
-    description: 'Leitfaden zum Entdecken, Bewerten und Rezensieren von Achterbahnen. Unser Ranking der besten Achterbahnen wird jeden Monat anhand aller Benutzerbewertungen aktualisiert!'
+    title: "Willkommen!"
+    description: "Leitfaden zum Entdecken, Bewerten und Rezensieren von Achterbahnen. Unser Ranking der besten Achterbahnen wird jeden Monat anhand aller Benutzerbewertungen aktualisiert!"
     header:
-        title: 'Rezensiere, bewerte und ranke Achterbahnen'
+        title: "Rezensiere, bewerte und ranke Achterbahnen"
         info: 'Captain Coaster ist der ultimative Leitfaden für Achterbahn-Enthusiasten! Bewerte, schreibe Bewertungen und erstelle Top-Listen für die Achterbahnen, die du gefahren bist. <a href="{link_path}">Schließe dich uns an</a>, um die besten Achterbahn-Rankings der Welt mitzugestalten!'
     stats:
         ratings: Ratings
         reviews: Rezensionen
         users: Benutzer
         images: Bilder
-    missingCoasters: 'Wir suchen nach Bildern dieser Achterbahn!'
+    missingCoasters: "Wir suchen nach Bildern dieser Achterbahn!"
 
 coaster:
     score:
@@ -30,21 +30,21 @@ coaster:
         ranked: Rang
         intheworld: Auf der Welt
     rating:
-        action: 'Bewerte diese Achterbahn!'
-        notenough: 'Nicht genügend Bewertungen für diese Achterbahn!'
-        mustlogin: 'Zum Bewerten musst du eingeloggt sein!'
+        action: "Bewerte diese Achterbahn!"
+        notenough: "Nicht genügend Bewertungen für diese Achterbahn!"
+        mustlogin: "Zum Bewerten musst du eingeloggt sein!"
         login: Einloggen
-        sendreview: 'Oder klicke hier, um eine Rezension zu schreiben'
+        sendreview: "Oder klicke hier, um eine Rezension zu schreiben"
         updatereview: Aktualisiere meine Rezension
         delete: Löschen
-        text: 'Punktzahl basiert auf {count_rating} Bewertungen und {count_top} Tops'
-        details: 'Detaillierte Benutzerbewertungen'
-        ratings: 'Bewertungen'
+        text: "Punktzahl basiert auf {count_rating} Bewertungen und {count_top} Tops"
+        details: "Detaillierte Benutzerbewertungen"
+        ratings: "Bewertungen"
     infos:
-        title: '{name} Merkmale'
-        closeParksTitle: 'Beste Freizeitparks nahe {parkName}'
-        closeParksNone: 'Keine Freizeitparks nahe {parkName} gefunden.'
-        closeParksLink: 'Zeige {parkName} auf der Karte'
+        title: "{name} Merkmale"
+        closeParksTitle: "Beste Freizeitparks nahe {parkName}"
+        closeParksNone: "Keine Freizeitparks nahe {parkName} gefunden."
+        closeParksLink: "Zeige {parkName} auf der Karte"
         status: Status
         park: Park
         country: Land
@@ -63,44 +63,44 @@ coaster:
         kiddie: Kinder
         indoor: Indoor
         formerNames: Ehemalige Namen
-    parkcoaster: 'Auch in {name}'
+    parkcoaster: "Auch in {name}"
     video:
         title: Onride Video
     photos:
         title: Fotos
-        empty: 'Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!'
+        empty: "Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!"
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
     location: Standort
 
 image_upload:
-    title: 'Lade ein Bild von {coaster} hoch'
+    title: "Lade ein Bild von {coaster} hoch"
     form:
         file:
             label: Wähle ein Bild aus
             helper: Die Datei muss im JPEG-Format vorliegen und weniger als 15 MB groß sein. Zu kleine Bilder könnten abgelehnt werden.
         credit:
-            label: 'Wer hat dieses Bild gemacht?'
-            helper: 'Sie dürfen nur Bilder hochladen, wenn Sie der ursprüngliche Autor sind oder die Genehmigung des ursprünglichen Autors erhalten haben.'
+            label: "Wer hat dieses Bild gemacht?"
+            helper: "Sie dürfen nur Bilder hochladen, wenn Sie der ursprüngliche Autor sind oder die Genehmigung des ursprünglichen Autors erhalten haben."
         watermark:
             label: 'Wasserzeichen "Captain Coaster"'
-            helper: 'Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden.'
+            helper: "Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden."
         upload: Mein Bild einreichen
         back: Zurück zu Achterbahn
-        success: 'Das Bild wurde erfolgreich hochgeladen. Bevor es veröffentlicht wird, wird es von einem Administrator geprüft.'
+        success: "Das Bild wurde erfolgreich hochgeladen. Bevor es veröffentlicht wird, wird es von einem Administrator geprüft."
 
 park:
-    opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
-    kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    opened_coasters: "{ count, plural, one { opened coaster } other { opened coasters }}"
+    kiddies: "{ count, plural, one { kiddie } other { kiddies }}"
 
 coaster_ranking:
     title: Weltrangliste der Achterbahnen
-    description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 3000 Benutzern weltweit.'
-    duel_number: '{ count, plural, one { # duel } other { # duels }}'
-    no_results: 'Keine Achterbahnen gefunden!'
+    description: "Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 3000 Benutzern weltweit."
+    duel_number: "{ count, plural, one { # duel } other { # duels }}"
+    no_results: "Keine Achterbahnen gefunden!"
     info:
-        title: 'Letzte Aktualisierung: {rankingMonth}'
-        next: 'Nächste Aktualisierung {date}'
+        title: "Letzte Aktualisierung: {rankingMonth}"
+        next: "Nächste Aktualisierung {date}"
         learn_more: Erfahre mehr über das Ranking
         coasters_ranked:
             short: Achterbahnen
@@ -121,7 +121,7 @@ coaster_ranking:
 
 map_index:
     title: Achterbahn Landkarte
-    description: 'Entdecke mit dieser interaktiven Karte, wo sich die coolsten Achterbahnen in der Nähe befinden, die besten des nächsten Jahres oder die B&M-Bahnen, die du bisher noch nicht gefahren bist.'
+    description: "Entdecke mit dieser interaktiven Karte, wo sich die coolsten Achterbahnen in der Nähe befinden, die besten des nächsten Jahres oder die B&M-Bahnen, die du bisher noch nicht gefahren bist."
     filter:
         title: Filter
         manufacturer: Hersteller
@@ -129,13 +129,13 @@ map_index:
         kiddie: Verstecke Kinderachterbahnen
         notridden: Noch nicht gefahren
         score: Punktzahl
-        atleast: 'mindestens {count}'
+        atleast: "mindestens {count}"
         openingDate: Eröffnungsdatum
         name: Name
     results: Ergebnisse
 
 user_profile:
-    title: '{name} - Profil'
+    title: "{name} - Profil"
     ratings: Zeige dessen Bewertungen
     reviews: Zeige dessen Rezensionen
     main_top: Zeige dessen Top Achterbahnen
@@ -146,10 +146,10 @@ user_profile:
 user_list:
     title: Unsere Fahrer
     info:
-        title: 'Wo stehst du unter unseren Mitgliedern?'
-        text: 'Auf dieser Seite findest du eine Liste unserer Fahrer. Klicke darauf, um ihre Details zu entdecken!'
+        title: "Wo stehst du unter unseren Mitgliedern?"
+        text: "Auf dieser Seite findest du eine Liste unserer Fahrer. Klicke darauf, um ihre Details zu entdecken!"
     member_from: Mitglied seit
-    rating: '{ count, plural, one { # Bewertung } other { # Bewertungen }}'
+    rating: "{ count, plural, one { # Bewertung } other { # Bewertungen }}"
 
 profile:
     title: Mein Profil
@@ -163,18 +163,26 @@ profile:
     badge: Abzeichen
     banner:
         title: Persönliches Banner
-        text: 'Hier ist Ihr personalisiertes Banner, mit Ihren Bewertungen und Ihren Top 3! Die Aktualisierung des Banners kann einige Stunden dauern.'
+        text: "Hier ist Ihr personalisiertes Banner, mit Ihren Bewertungen und Ihren Top 3! Die Aktualisierung des Banners kann einige Stunden dauern."
         getbbcode: Kopiere BBCode (Foren)
         gethtml: Kopiere HTML
     stats:
-        title: Überblick
-        coasters: Achterbahnen
-        parks: Parks
-        countries: Länder
-        most_country: Am meisten gefahren in
-        top_100: Gefahren in den Top 100
-        top_100_operating: in den Top 100 in Betrieb Achterbahnen
-        manufacturer: Am meisten gefahren
+        title: "Überblick"
+        coasters: "Achterbahnen"
+        parks: "Parks"
+        countries: "Länder"
+        ridden_coasters: "{count, plural, =1 {Achterbahn} other {Achterbahnen}}"
+        explored_parks: "{count, plural, =1 {Park} other {Parks}}"
+        visited_countries: "{count, plural, =1 {Land} other {Länder}}"
+        top_country: "Top-Land"
+        world_top_100: "Welt TOP 100"
+        operating_top_100: "Welt TOP 100 in Betrieb"
+        top_manufacturer: "Top-Hersteller"
+        favorite_manufacturer: "Lieblingshersteller"
+        create_top_placeholder: "Erstelle eine Top 10 um deinen Lieblingshersteller zu sehen"
+        coaster_count: "{count, plural, =0 {keine Achterbahnen} =1 {1 Achterbahn} other {# Achterbahnen}}"
+        park_count: "{count, plural, =0 {keine Parks} =1 {1 Park} other {# Parks}}"
+        country_count: "{count, plural, =0 {keine Länder} =1 {1 Land} other {# Länder}}"
     ratings:
         title: Meine Bewertungen
     settings:
@@ -187,11 +195,11 @@ profile:
             firstName: Vorname
             lastName: Nachname
             format: Anzeigeformat des Namens
-            format.help: 'Wählen Sie, wie Ihr Name für andere Benutzer angezeigt wird (Vorschau wird rechts angezeigt)'
+            format.help: "Wählen Sie, wie Ihr Name für andere Benutzer angezeigt wird (Vorschau wird rechts angezeigt)"
             format.full: Vollständiger Name
             format.partial: Vorname + Nachnameninitial
             format.first_only: Nur Vorname
-            invalid_characters: 'Der Name darf nur Buchstaben, Leerzeichen und gängige Satzzeichen (Apostrophe, Bindestriche, Punkte) enthalten.'
+            invalid_characters: "Der Name darf nur Buchstaben, Leerzeichen und gängige Satzzeichen (Apostrophe, Bindestriche, Punkte) enthalten."
             change_limit: Sie können Ihren Namen nur einmal pro Monat ändern.
             changed_success: Ihr Name wurde erfolgreich aktualisiert.
             format_changed_success: Das Anzeigeformat Ihres Namens wurde erfolgreich aktualisiert.
@@ -199,7 +207,7 @@ profile:
             profilePicture: Profilbild
             notificationPreference: Benachrichtigungseinstellungen
             choices:
-                email: 'Web & E-Mail'
+                email: "Web & E-Mail"
                 notif: Nur Web
             preferredLocale: Bevorzugte Sprache
             homePark:
@@ -219,13 +227,12 @@ profile:
         updated_success: Ihre Einstellungen wurden erfolgreich aktualisiert.
         save: Änderungen speichern
 
-
 top:
     new:
         title: Erstelle ein neues Top
         form:
-            name: 'Name deines Top:'
-            type: 'Ist es ein Top oder ein Flop?'
+            name: "Name deines Top:"
+            type: "Ist es ein Top oder ein Flop?"
             flop: Flop (niedriger ist besser)
             top: Top (höher ist besser)
             submit: Erstelle ein neues Top
@@ -238,26 +245,26 @@ top:
         more: Zeige mehr
         updated: zuletzt aktualisiert
         by: von
-        infotitle: 'Alle deine Tops sind auf dieser Seite!'
-        info: 'Tops sind der beste Weg, deine Leidenschaft zu teilen: Sage uns, welcher RMC der beste auf dem Planeten ist, welches die schlechtesten Kinderachterbahnen in Texas sind oder warum die besten Wasserachterbahnen nicht mit einem LIM-Antrieb ausgestattet sind! Es liegt an dir!'
+        infotitle: "Alle deine Tops sind auf dieser Seite!"
+        info: "Tops sind der beste Weg, deine Leidenschaft zu teilen: Sage uns, welcher RMC der beste auf dem Planeten ist, welches die schlechtesten Kinderachterbahnen in Texas sind oder warum die besten Wasserachterbahnen nicht mit einem LIM-Antrieb ausgestattet sind! Es liegt an dir!"
         create_first: Erstelle meine ersten Top Achterbahnen
         create: Erstelle ien individuelles Top
     title: Meine Top Achterbahnen
     update: Aktualisiere
     update_details: Ändere Name
     delete: Lösche
-    delete_confirmation: 'Löschen?'
+    delete_confirmation: "Löschen?"
     save: Speichere das Top
     find: Suche eine Achterbahn...
-    info: 'Wenn du oben mit der Suche nach einer Achterbahn beginnst, passiert unten die Magie. Du kannst die Position sogar aktualisieren, indem du die Linien per Drag-and-Drop verschiebst oder die neue Position in den blauen Kreis schreibst.'
+    info: "Wenn du oben mit der Suche nach einer Achterbahn beginnst, passiert unten die Magie. Du kannst die Position sogar aktualisieren, indem du die Linien per Drag-and-Drop verschiebst oder die neue Position in den blauen Kreis schreibst."
 
 review:
     title: Rezensionen
-    share: 'Teile deine Meinung mit uns!'
-    value: 'Wie viele Sterne für diese Achterbahn?'
-    pros: 'Was sind ihre Pros?'
-    cons: 'Und was ihre Contras?'
-    comment: 'Willst du uns mehr über deine Fahrt erzählen?'
+    share: "Teile deine Meinung mit uns!"
+    value: "Wie viele Sterne für diese Achterbahn?"
+    pros: "Was sind ihre Pros?"
+    cons: "Und was ihre Contras?"
+    comment: "Willst du uns mehr über deine Fahrt erzählen?"
     language: Sprache deiner Rezension
     send: Sende meine Rezension
     update: Bearbeiten
@@ -281,13 +288,13 @@ review:
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
     remove_upvote: Positive Bewertung entfernen
     form:
-        title: 'Rezension über {name}'
+        title: "Rezension über {name}"
 
 users:
     tops:
-        title: '{name}''s Tops'
+        title: "{name}'s Tops"
     ratings:
-        title: '{name} - Bewertungen'
+        title: "{name} - Bewertungen"
         coaster: Achterbahn
         manufacturer: Hersteller
         opening_date: Geöffnet
@@ -296,17 +303,17 @@ users:
     my_ratings:
         title: Meine Bewertungen
     reviews:
-        title: '{name} - Rezensionen'
+        title: "{name} - Rezensionen"
     images:
-        title: '{name} - Bilder'
+        title: "{name} - Bilder"
 
 review_list:
     title: Achterbahn Rezensionen
-    no_review: 'Keine Rezension!'
+    no_review: "Keine Rezension!"
 
 rating:
     last: Neueste Bewertungen
-    action: 'Mit {value} Sternen bewertet'
+    action: "Mit {value} Sternen bewertet"
 
 navbar:
     profile: Mein Profil
@@ -339,21 +346,21 @@ login:
     redirect_to_register: 'Neu bei Captain Coaster? <a href="{link_path}">Konto erstellen</a>'
     or_sign_in_with: oder
     connect_with_google: Mit Google anmelden
-    facebook_login_disclaimer: 'Ehemalige Facebook-Login-Nutzer, bitte melden Sie sich mit der E-Mail-Adresse an, die mit Ihrem Facebook-Konto verknüpft ist'
+    facebook_login_disclaimer: "Ehemalige Facebook-Login-Nutzer, bitte melden Sie sich mit der E-Mail-Adresse an, die mit Ihrem Facebook-Konto verknüpft ist"
     terms: 'Durch die Fortsetzung bestätigen Sie, dass Sie unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a> akzeptieren.'
     email:
         title: Anmelden bei Captain Coaster
-        h1: 'Bereit zum Versand!'
-        paragraph1: 'Um sich bei Captain Coaster anzumelden, klicken Sie auf die Schaltfläche unten. Dieser Link verfällt in 15 Minuten.'
+        h1: "Bereit zum Versand!"
+        paragraph1: "Um sich bei Captain Coaster anzumelden, klicken Sie auf die Schaltfläche unten. Dieser Link verfällt in 15 Minuten."
         button: Anmelden
-        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie versuchen, sich bei Captain Coaster anzumelden. Wenn Sie nicht sicher sind, warum Sie diese E-Mail erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
-    link_sent: 'Wenn ein Konto mit {email} verknüpft ist, erhalten Sie einen Anmelde-Link. Klicken Sie auf den Link, um sich anzumelden.'
+        paragraph2: "Sie haben diese E-Mail erhalten, weil Sie versuchen, sich bei Captain Coaster anzumelden. Wenn Sie nicht sicher sind, warum Sie diese E-Mail erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten."
+    link_sent: "Wenn ein Konto mit {email} verknüpft ist, erhalten Sie einen Anmelde-Link. Klicken Sie auf den Link, um sich anzumelden."
     account_disabled: 'Ihre E-Mail-Adresse {email} wurde nicht verifiziert. Bitte <a href="{link_path}">registrieren</a> Sie sich oder klicken Sie auf den Link, den Sie nach der Registrierung erhalten haben, um Ihr Konto zu aktivieren.'
 
 register:
     title: Ein Konto erstellen
     subtitle: Bitte füllen Sie alle untenstehenden Felder aus
-    link_sent: 'Konto erstellt! Bitte überprüfen Sie Ihre E-Mail ({email}) und klicken Sie auf den Link, um Ihr Konto zu aktivieren.'
+    link_sent: "Konto erstellt! Bitte überprüfen Sie Ihre E-Mail ({email}) und klicken Sie auf den Link, um Ihr Konto zu aktivieren."
     form:
         email: E-Mail
         first_name: Vorname
@@ -361,47 +368,47 @@ register:
         submit: Ein Konto erstellen
     email:
         title: Bestätigen Sie Ihre E-Mail
-        h1: 'Willkommen an Bord!'
-        paragraph1: 'Um Captain Coaster zu nutzen, klicken Sie auf den Bestätigungsbutton. Dieser Link ist gültig für'
+        h1: "Willkommen an Bord!"
+        paragraph1: "Um Captain Coaster zu nutzen, klicken Sie auf den Bestätigungsbutton. Dieser Link ist gültig für"
         button: Aktivieren
-        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie ein Konto bei Captain Coaster erstellt haben. Wenn Sie nicht sicher sind, warum Sie diese Nachricht erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
-    email_verified: 'Ihre E-Mail {email} wurde verifiziert. Willkommen bei Captain Coaster!'
+        paragraph2: "Sie haben diese E-Mail erhalten, weil Sie ein Konto bei Captain Coaster erstellt haben. Wenn Sie nicht sicher sind, warum Sie diese Nachricht erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten."
+    email_verified: "Ihre E-Mail {email} wurde verifiziert. Willkommen bei Captain Coaster!"
 
 contact:
     title: Kontaktiere uns
     send: Nachricht absenden
     form:
         name: Dein Name
-        email: 'Gebe hier deine E-Mail-Adresse ein, falls du möchtest, dass wir antworten'
+        email: "Gebe hier deine E-Mail-Adresse ein, falls du möchtest, dass wir antworten"
         message: Deine Nachricht
     email:
         title: Kontaktformular - Captain Coaster
     flash:
-        success: 'Danke {name}, deine Nachricht wurde an das Captain Coaster-Team gesendet.'
+        success: "Danke {name}, deine Nachricht wurde an das Captain Coaster-Team gesendet."
 
 notif:
     title: Aktivität
-    empty: 'Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!'
+    empty: "Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!"
     badge:
         message: 'Schaue es dir an: Captain gab dir gerade das "{name}" Abzeichen!'
     ranking:
-        message: 'Die Weltrangliste der Achterbahnen wurde gerade aktualisiert!'
-        messageWithNewCoaster: 'Die Weltrangliste der Achterbahnen wurde gerade aktualisiert. {name} wurde zum Ranking hinzugefügt!'
+        message: "Die Weltrangliste der Achterbahnen wurde gerade aktualisiert!"
+        messageWithNewCoaster: "Die Weltrangliste der Achterbahnen wurde gerade aktualisiert. {name} wurde zum Ranking hinzugefügt!"
     email:
         title: 🎢 Neue Benachrichtigung auf Captain Coaster
-        gotnotif: 'Du hast gerade eine neue Benachrichtigung auf Captain Coaster erhalten:'
+        gotnotif: "Du hast gerade eine neue Benachrichtigung auf Captain Coaster erhalten:"
         view: 'Sehe es dir auf <a href="{link_path}">CaptainCoaster.com</a> an'
         unsubscribe: 'Um dies nicht mehr zu erhalten, ändere bitte deine <a href="{link_path}">Benachrichtigungseinstellungen</a>.'
 
 nearby:
     title: Finde Achterbahnen in der Nähe
-    num_found: '{num} Achterbahnen gefunden'
+    num_found: "{num} Achterbahnen gefunden"
     geo_on: Lokalisierung aktiviert
     geo_off: Lokalisierung deaktiviert
-    km_away: '{num} km entfernt'
+    km_away: "{num} km entfernt"
 
 image:
-    credit: 'Urheber: {name}'
+    credit: "Urheber: {name}"
 
 badge:
     rating1: 1. Bewertung
@@ -423,14 +430,14 @@ error:
         title: Zutritt verweigert
         message: Der Zugriff auf diese Seite ist dir nicht gestattet
     429:
-        title: 'Zu viele Anfragen'
-        message: 'Bitte warten Sie einige Minuten'
+        title: "Zu viele Anfragen"
+        message: "Bitte warten Sie einige Minuten"
     generic:
-        title: 'Hoppla! Ein Fehler ist aufgetreten!'
-        message: 'Ein Fehler ist aufgetreten. Kontaktiere uns, wenn das Problem weiterhin besteht'
+        title: "Hoppla! Ein Fehler ist aufgetreten!"
+        message: "Ein Fehler ist aufgetreten. Kontaktiere uns, wenn das Problem weiterhin besteht"
     maintenance:
-        title: 'Kurzer Technischer Halt! 🔧'
-        message: 'Bitte bleiben Sie in der Warteschlange. Wir nehmen den Betrieb in wenigen Minuten wieder auf!'
+        title: "Kurzer Technischer Halt! 🔧"
+        message: "Bitte bleiben Sie in der Warteschlange. Wir nehmen den Betrieb in wenigen Minuten wieder auf!"
 
 missing:
     step1:
@@ -444,7 +451,7 @@ missing:
             country: Wähle unten dessen Land aus
 
 banner:
-    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
+    coasters: "{count, plural, one {1 coaster} other {# coasters}}"
 
 search_index:
     title: Suche

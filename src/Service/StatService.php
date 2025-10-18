@@ -85,6 +85,11 @@ class StatService
             ->getRepository(RiddenCoaster::class)
             ->getMostRiddenManufacturer($user);
 
+        // Add favorite manufacturer from user's main top list (first 10-20 positions)
+        $stats['top_rated_manufacturer'] = $this->em
+            ->getRepository(RiddenCoaster::class)
+            ->getTopListManufacturer($user, 10);
+
         return $stats;
     }
 }

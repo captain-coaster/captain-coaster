@@ -5,446 +5,453 @@ es: Español
 de: Deutsch
 
 app:
-    name: 'Captain Coaster'
+    name: "Captain Coaster"
     title:
-        default: 'Welcome!'
+        default: "Welcome!"
     header:
-        search: 'Rapterra, Epic Universe...'
+        search: "Rapterra, Epic Universe..."
 
 index:
-    title: 'Welcome!'
-    description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
+    title: "Welcome!"
+    description: "Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!"
     header:
-        title: 'Review, rate and rank roller coasters'
+        title: "Review, rate and rank roller coasters"
         info: 'Captain Coaster is the ultimate guide for roller coaster enthusiasts! Rate, write reviews, and craft top lists for the coasters you''ve ridden. <a href="{link_path}">Join us</a> in shaping the world''s best roller coaster rankings!'
     stats:
-        ratings: 'ratings'
-        reviews: 'reviews'
-        users: 'users'
-        images: 'pictures'
-    missingCoasters: 'We are looking for pictures of these coasters!'
+        ratings: "ratings"
+        reviews: "reviews"
+        users: "users"
+        images: "pictures"
+    missingCoasters: "We are looking for pictures of these coasters!"
 
 coaster:
     score:
-        scoreof: 'Score of'
-        ranked: 'Ranked'
-        intheworld: 'in the world'
+        scoreof: "Score of"
+        ranked: "Ranked"
+        intheworld: "in the world"
     rating:
-        action: 'Rate this coaster!'
-        notenough: 'Not enough ratings for this coaster!'
-        mustlogin: 'You must be logged in to rate.'
-        login: 'Log in'
-        sendreview: 'or click here to write a review'
-        updatereview: 'update my review'
-        delete: 'delete'
-        text: 'Score based on {count_rating} ratings and {count_top} tops'
-        details: 'Detailed user ratings'
-        ratings: 'ratings'
+        action: "Rate this coaster!"
+        notenough: "Not enough ratings for this coaster!"
+        mustlogin: "You must be logged in to rate."
+        login: "Log in"
+        sendreview: "or click here to write a review"
+        updatereview: "update my review"
+        delete: "delete"
+        text: "Score based on {count_rating} ratings and {count_top} tops"
+        details: "Detailed user ratings"
+        ratings: "ratings"
     infos:
-        title: '{name} features'
-        closeParksTitle: 'Best amusement parks near {parkName}'
-        closeParksNone: 'No amusement parks near {parkName} found.'
-        closeParksLink: 'View {parkName} on the map'
-        status: 'Status'
-        park: 'Park'
-        country: 'Country'
-        type: 'Type'
-        launch: 'Launch'
-        manufacturer: 'Manufacturer'
-        materialType: 'Type'
-        seatingType: 'Train'
-        model: 'Model'
-        restraint: 'Restraint'
-        forces: 'G-forces'
-        opening: 'Opening date'
-        closing: 'Closing date'
-        vr: 'VR'
-        cost: 'Cost'
-        kiddie: 'Kiddie'
-        indoor: 'Indoor'
-        formerNames: 'Former names'
-    parkcoaster: 'Also in {name}'
+        title: "{name} features"
+        closeParksTitle: "Best amusement parks near {parkName}"
+        closeParksNone: "No amusement parks near {parkName} found."
+        closeParksLink: "View {parkName} on the map"
+        status: "Status"
+        park: "Park"
+        country: "Country"
+        type: "Type"
+        launch: "Launch"
+        manufacturer: "Manufacturer"
+        materialType: "Type"
+        seatingType: "Train"
+        model: "Model"
+        restraint: "Restraint"
+        forces: "G-forces"
+        opening: "Opening date"
+        closing: "Closing date"
+        vr: "VR"
+        cost: "Cost"
+        kiddie: "Kiddie"
+        indoor: "Indoor"
+        formerNames: "Former names"
+    parkcoaster: "Also in {name}"
     video:
-        title: 'Onride Video'
+        title: "Onride Video"
     photos:
-        title: 'Photos'
-        empty: 'Oops, we don''t have any photos yet for this coaster, but you can send yours!'
-        button: 'Upload a picture'
-        all: 'See all pictures'
-    location: 'Location'
+        title: "Photos"
+        empty: "Oops, we don't have any photos yet for this coaster, but you can send yours!"
+        button: "Upload a picture"
+        all: "See all pictures"
+    location: "Location"
 
 image_upload:
-    title: 'Upload a picture of {coaster}'
+    title: "Upload a picture of {coaster}"
     form:
         file:
-            label: 'Select a picture'
-            helper: 'The file must be in JPEG format and less than 15MB in size. Small images could be rejected.'
+            label: "Select a picture"
+            helper: "The file must be in JPEG format and less than 15MB in size. Small images could be rejected."
         credit:
-            label: 'Who took this picture?'
-            helper: 'You may only upload pictures if you are the original author or have obtained authorization from the original author.'
+            label: "Who took this picture?"
+            helper: "You may only upload pictures if you are the original author or have obtained authorization from the original author."
         watermark:
             label: 'Watermark "Captain Coaster"'
-            helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'
-        upload: 'Submit my picture'
-        back: 'Back to coaster'
-        success: 'Picture has been uploaded successfully. It will be reviewed by an administrator before display.'
+            helper: "You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites."
+        upload: "Submit my picture"
+        back: "Back to coaster"
+        success: "Picture has been uploaded successfully. It will be reviewed by an administrator before display."
 
 park:
-    opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
-    kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    opened_coasters: "{ count, plural, one { opened coaster } other { opened coasters }}"
+    kiddies: "{ count, plural, one { kiddie } other { kiddies }}"
 
 coaster_ranking:
-    title: 'World Roller Coaster Rankings'
-    description: 'Discover the world''s best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide.'
-    duel_number: '{ count, plural, one { # duel } other { # duels }}'
-    no_results: 'No coasters found!'
+    title: "World Roller Coaster Rankings"
+    description: "Discover the world's best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide."
+    duel_number: "{ count, plural, one { # duel } other { # duels }}"
+    no_results: "No coasters found!"
     info:
-        title: 'Last Updated: {rankingMonth}'
-        next: 'Next update {date}'
-        learn_more: 'Learn more about the ranking'
+        title: "Last Updated: {rankingMonth}"
+        next: "Next update {date}"
+        learn_more: "Learn more about the ranking"
         coasters_ranked:
-            short: 'coasters'
-            long: 'ranked coasters'
-        ratings: 'ratings'
+            short: "coasters"
+            long: "ranked coasters"
+        ratings: "ratings"
         comparisons:
-            short: 'pairs'
-            long: 'analyzed pairs'
-        users: 'voters'
+            short: "pairs"
+            long: "analyzed pairs"
+        users: "voters"
     filter:
-        continent: 'World'
-        country: 'Country'
-        materialType: 'Type'
-        seatingType: 'Train'
-        model: 'Model'
-        manufacturer: 'Manufacturer'
-        openingDate: 'Opening Date'
+        continent: "World"
+        country: "Country"
+        materialType: "Type"
+        seatingType: "Train"
+        model: "Model"
+        manufacturer: "Manufacturer"
+        openingDate: "Opening Date"
 
 map_index:
-    title: 'Coasters Map'
-    description: 'Discover where are the most amazing roller coasters nearby, the next year hits or the B&M you have not ridden yet with this interactive map.'
+    title: "Coasters Map"
+    description: "Discover where are the most amazing roller coasters nearby, the next year hits or the B&M you have not ridden yet with this interactive map."
     filter:
-        title: 'Filters'
-        manufacturer: 'Manufacturer'
-        status: 'Operating'
-        kiddie: 'Hide kiddies'
-        notridden: 'Not ridden yet'
-        score: 'Score'
-        atleast: 'at least {count}'
-        openingDate: 'Opening date'
-        name: 'Name'
-    results: 'Results'
+        title: "Filters"
+        manufacturer: "Manufacturer"
+        status: "Operating"
+        kiddie: "Hide kiddies"
+        notridden: "Not ridden yet"
+        score: "Score"
+        atleast: "at least {count}"
+        openingDate: "Opening date"
+        name: "Name"
+    results: "Results"
 
 user_profile:
-    title: '{name} - Profile'
-    ratings: 'Show their ratings'
-    reviews: 'Show their reviews'
-    main_top: 'Show their Top Coasters'
-    tops: 'Show their other tops'
-    map: 'Show their coaster map'
-    pictures: 'Show their pictures'
+    title: "{name} - Profile"
+    ratings: "Show their ratings"
+    reviews: "Show their reviews"
+    main_top: "Show their Top Coasters"
+    tops: "Show their other tops"
+    map: "Show their coaster map"
+    pictures: "Show their pictures"
 
 user_list:
-    title: 'Our riders'
+    title: "Our riders"
     info:
-        title: 'Where do you rank among our members ?'
-        text: 'This page shows a list of our riders. Click on them to discover their details!'
-    member_from: 'Member since'
-    rating: '{ count, plural, one { # rating } other { # ratings }}'
+        title: "Where do you rank among our members ?"
+        text: "This page shows a list of our riders. Click on them to discover their details!"
+    member_from: "Member since"
+    rating: "{ count, plural, one { # rating } other { # ratings }}"
 
 profile:
-    title: 'My Profile'
+    title: "My Profile"
     menu:
-        ratings: 'My ratings'
-        tops: 'My tops'
-        map: 'My map'
-        photos: 'My photos'
-        reviews: 'My reviews'
-        settings: 'Settings'
-    badge: 'Badges'
+        ratings: "My ratings"
+        tops: "My tops"
+        map: "My map"
+        photos: "My photos"
+        reviews: "My reviews"
+        settings: "Settings"
+    badge: "Badges"
     banner:
-        title: 'Personal banner'
-        text: 'Here is your personal banner, showing your ratings and Top 3! Banner can take a few hours to update.'
-        getbbcode: 'Copy BBCode (forums)'
-        gethtml: 'Copy html'
+        title: "Personal banner"
+        text: "Here is your personal banner, showing your ratings and Top 3! Banner can take a few hours to update."
+        getbbcode: "Copy BBCode (forums)"
+        gethtml: "Copy html"
     stats:
-        title: 'Overview'
-        coasters: 'coasters'
-        parks: 'parks'
-        countries: 'countries'
-        most_country: 'most ridden in'
-        top_100: 'ridden in top 100'
-        top_100_operating: 'in top 100 operating roller coasters'
-        manufacturer: 'most ridden'
+        title: "Overview"
+        coasters: "coasters"
+        parks: "parks"
+        countries: "countries"
+        ridden_coasters: "{count, plural, =1 {coaster} other {coasters}}"
+        explored_parks: "{count, plural, =1 {park} other {parks}}"
+        visited_countries: "{count, plural, =1 {country} other {countries}}"
+        top_country: "Top Country"
+        top_manufacturer: "Top Manufacturer"
+        favorite_manufacturer: "Favorite Manufacturer"
+        world_top_100: "World TOP 100"
+        operating_top_100: "Operating World TOP 100"
+        create_top_placeholder: "Create a top 10 to see your favorite manufacturer"
+        coaster_count: "{count, plural, =0 {no coasters} =1 {1 coaster} other {# coasters}}"
+        park_count: "{count, plural, =0 {no parks} =1 {1 park} other {# parks}}"
+        country_count: "{count, plural, =0 {no countries} =1 {1 country} other {# countries}}"
     ratings:
-        title: 'My Ratings'
+        title: "My Ratings"
     settings:
-        title: 'Profile Settings'
+        title: "Profile Settings"
         sections:
-            name: 'Name Settings'
-            preferences: 'Preferences'
-            advanced: 'Advanced'
+            name: "Name Settings"
+            preferences: "Preferences"
+            advanced: "Advanced"
         name:
-            firstName: 'First Name'
-            lastName: 'Last Name'
-            format: 'Display Name Format'
-            format.help: 'Choose how your name will appear to other users (preview shown on the right)'
-            format.full: 'Full Name'
-            format.partial: 'First Name + Last Initial'
-            format.first_only: 'First Name Only'
-            invalid_characters: 'Name can only contain letters, spaces, and common punctuation (apostrophes, hyphens, periods).'
-            change_limit: 'You can only change your name once per month.'
-            changed_success: 'Your name has been updated successfully.'
-            format_changed_success: 'Your display name format has been updated successfully.'
+            firstName: "First Name"
+            lastName: "Last Name"
+            format: "Display Name Format"
+            format.help: "Choose how your name will appear to other users (preview shown on the right)"
+            format.full: "Full Name"
+            format.partial: "First Name + Last Initial"
+            format.first_only: "First Name Only"
+            invalid_characters: "Name can only contain letters, spaces, and common punctuation (apostrophes, hyphens, periods)."
+            change_limit: "You can only change your name once per month."
+            changed_success: "Your name has been updated successfully."
+            format_changed_success: "Your display name format has been updated successfully."
         preferences:
-            profilePicture: 'Profile Picture'
-            notificationPreference: 'Notification Preferences'
+            profilePicture: "Profile Picture"
+            notificationPreference: "Notification Preferences"
             choices:
-                email: 'Web & Email'
-                notif: 'Web only'
-            preferredLocale: 'Preferred Language'
+                email: "Web & Email"
+                notif: "Web only"
+            preferredLocale: "Preferred Language"
             homePark:
-                label: 'My Home Park'
-                placeholder: 'Choose one'
+                label: "My Home Park"
+                placeholder: "Choose one"
             units:
-                metric: 'Metric units'
-                imperial: 'Imperial units'
-                label: 'Display distances and statistics in'
+                metric: "Metric units"
+                imperial: "Imperial units"
+                label: "Display distances and statistics in"
             displayReviewsInAllLanguages:
-                label: 'Display reviews written in different languages'
+                label: "Display reviews written in different languages"
             addTodayDateWhenRating:
-                label: 'Add today''s date on a new rating'
+                label: "Add today's date on a new rating"
         advanced:
             apiKey:
-                label: 'API Key'
-        updated_success: 'Your settings have been updated successfully.'
-        save: 'Save Changes'
-
+                label: "API Key"
+        updated_success: "Your settings have been updated successfully."
+        save: "Save Changes"
 
 top:
     new:
-        title: 'Create a new top'
+        title: "Create a new top"
         form:
-            name: 'Name of your top:'
-            type: 'Is it a Top or a Flop ?'
-            flop: 'Flop (lower is better)'
-            top: 'Top (higher is better)'
-            submit: 'Create new top'
+            name: "Name of your top:"
+            type: "Is it a Top or a Flop ?"
+            flop: "Flop (lower is better)"
+            top: "Top (higher is better)"
+            submit: "Create new top"
     editDetails:
-        title: 'Update a top'
+        title: "Update a top"
         form:
-            submit: 'Update the top'
+            submit: "Update the top"
     list:
-        title: 'The latest tops'
-        more: 'See more'
-        updated: 'last updated'
-        by: 'by'
-        infotitle: 'All your tops are on this page!'
-        info: 'Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It''s up to you!'
-        create_first: 'Create my first Top Coasters'
-        create: 'Create a custom top'
-    title: 'My Top Coasters'
-    update: 'Update'
-    update_details: 'Change name'
-    delete: 'Delete'
-    delete_confirmation: 'Delete ?'
-    save: 'Save the top'
-    find: 'Find a coaster...'
-    info: 'Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle.'
+        title: "The latest tops"
+        more: "See more"
+        updated: "last updated"
+        by: "by"
+        infotitle: "All your tops are on this page!"
+        info: "Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It's up to you!"
+        create_first: "Create my first Top Coasters"
+        create: "Create a custom top"
+    title: "My Top Coasters"
+    update: "Update"
+    update_details: "Change name"
+    delete: "Delete"
+    delete_confirmation: "Delete ?"
+    save: "Save the top"
+    find: "Find a coaster..."
+    info: "Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle."
 
 review:
-    title: 'Reviews'
-    share: 'Share your opinion with us!'
-    value: 'How many stars for this coaster?'
-    pros: 'What are its main pros?'
-    cons: 'And its main cons?'
-    comment: 'Want to tell us more about your ride?'
-    language: 'Language of the review'
-    send: 'Add my review'
-    update: 'Edit'
-    delete: 'Delete'
-    last: 'Latest reviews'
-    all: 'See all'
-    ridden_at: 'Ride date'
-    upvote: 'Upvote this review'
-    report: 'Report this review'
-    report_title: 'Report Review'
-    report_reason: 'Reason for reporting'
+    title: "Reviews"
+    share: "Share your opinion with us!"
+    value: "How many stars for this coaster?"
+    pros: "What are its main pros?"
+    cons: "And its main cons?"
+    comment: "Want to tell us more about your ride?"
+    language: "Language of the review"
+    send: "Add my review"
+    update: "Edit"
+    delete: "Delete"
+    last: "Latest reviews"
+    all: "See all"
+    ridden_at: "Ride date"
+    upvote: "Upvote this review"
+    report: "Report this review"
+    report_title: "Report Review"
+    report_reason: "Reason for reporting"
     reason:
-        offensive: 'Offensive content'
-        inappropriate: 'Inappropriate language'
-        incorrect: 'Incorrect information'
-        spam: 'Spam'
-        other: 'Other'
-    cancel: 'Cancel'
-    submit_report: 'Submit Report'
-    report_success: 'Thank you for your report. Our team will review it shortly.'
-    report_error: 'An error occurred while submitting your report.'
-    remove_upvote: 'Remove upvote'
+        offensive: "Offensive content"
+        inappropriate: "Inappropriate language"
+        incorrect: "Incorrect information"
+        spam: "Spam"
+        other: "Other"
+    cancel: "Cancel"
+    submit_report: "Submit Report"
+    report_success: "Thank you for your report. Our team will review it shortly."
+    report_error: "An error occurred while submitting your report."
+    remove_upvote: "Remove upvote"
     form:
-        title: 'Review about {name}'
+        title: "Review about {name}"
 
 users:
     tops:
-        title: '{name}''s tops'
+        title: "{name}'s tops"
     ratings:
-        title: '{name} - Ratings'
-        coaster: 'Coaster'
-        manufacturer: 'Manufacturer'
-        opening_date: 'Opened'
-        rating: 'Rating'
-        ridden_at: 'Ridden at'
+        title: "{name} - Ratings"
+        coaster: "Coaster"
+        manufacturer: "Manufacturer"
+        opening_date: "Opened"
+        rating: "Rating"
+        ridden_at: "Ridden at"
     my_ratings:
-        title: 'My ratings'
+        title: "My ratings"
     reviews:
-        title: '{name} - Reviews'
+        title: "{name} - Reviews"
     images:
-        title: '{name} - Pictures'
+        title: "{name} - Pictures"
 
 review_list:
-    title: 'Coaster reviews'
-    no_review: 'No review!'
+    title: "Coaster reviews"
+    no_review: "No review!"
 
 rating:
-    last: 'Latest ratings'
-    action: 'rated {value} stars'
+    last: "Latest ratings"
+    action: "rated {value} stars"
 
 navbar:
-    profile: 'My profile'
-    rating: 'My ratings'
-    login: 'Sign in'
-    logout: 'Logout'
-    tops: 'My tops'
-    my_map: 'My map'
+    profile: "My profile"
+    rating: "My ratings"
+    login: "Sign in"
+    logout: "Logout"
+    tops: "My tops"
+    my_map: "My map"
 
 sidebar:
-    index: 'Home'
-    nearby: 'Find coasters nearby'
-    ranking: 'World Roller Coaster Rankings'
-    users: 'Our riders'
-    map: 'Coasters map'
-    top: 'Tops'
-    review: 'Coaster Reviews'
-    blog: 'Blog'
-    contact: 'Get in touch'
-    logout: 'Logout'
-    login: 'Sign in'
+    index: "Home"
+    nearby: "Find coasters nearby"
+    ranking: "World Roller Coaster Rankings"
+    users: "Our riders"
+    map: "Coasters map"
+    top: "Tops"
+    review: "Coaster Reviews"
+    blog: "Blog"
+    contact: "Get in touch"
+    logout: "Logout"
+    login: "Sign in"
 
 footer:
-    terms: 'Privacy Policy'
+    terms: "Privacy Policy"
 
 login:
-    title: 'Sign in to Captain Coaster'
-    subtitle: 'Send a login link to your email'
-    send_link: 'Send login link'
+    title: "Sign in to Captain Coaster"
+    subtitle: "Send a login link to your email"
+    send_link: "Send login link"
     redirect_to_register: 'New to Captain Coaster? <a href="{link_path}">Create an account</a>'
-    or_sign_in_with: 'or'
-    connect_with_google: 'Connect with google'
-    facebook_login_disclaimer: 'Former Facebook login users, please sign in using the email address associated to your Facebook account'
+    or_sign_in_with: "or"
+    connect_with_google: "Connect with google"
+    facebook_login_disclaimer: "Former Facebook login users, please sign in using the email address associated to your Facebook account"
     terms: 'By continuing, you confirm that you accept our <a href="{link_path}">Terms &amp; Conditions</a>'
     email:
-        title: 'Sign in to Captain Coaster'
-        h1: 'Ready to dispatch!'
-        paragraph1: 'To sign in to Captain Coaster, click the button below. This link will expire in 15 minutes.'
-        button: 'Sign in'
-        paragraph2: 'You received this email because you are trying to sign in to Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email.'
-    link_sent: 'If an account is associated with {email}, you will receive a login link. Click on the link to sign in'
+        title: "Sign in to Captain Coaster"
+        h1: "Ready to dispatch!"
+        paragraph1: "To sign in to Captain Coaster, click the button below. This link will expire in 15 minutes."
+        button: "Sign in"
+        paragraph2: "You received this email because you are trying to sign in to Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email."
+    link_sent: "If an account is associated with {email}, you will receive a login link. Click on the link to sign in"
     account_disabled: 'Your email {email} has not been verified. Please <a href="{link_path}">register</a> or click on the link you received after registering to activate your account.'
 
 register:
-    title: 'Create an account'
-    subtitle: 'Please fill in all the fields below'
-    link_sent: 'Account created! Please check your email ({email}) and click on the link to activate your account.'
+    title: "Create an account"
+    subtitle: "Please fill in all the fields below"
+    link_sent: "Account created! Please check your email ({email}) and click on the link to activate your account."
     form:
-        email: 'Email'
-        first_name: 'First Name'
-        last_name: 'Last Name'
-        submit: 'Create an account'
+        email: "Email"
+        first_name: "First Name"
+        last_name: "Last Name"
+        submit: "Create an account"
     email:
-        title: 'Confirm your email'
-        h1: 'Welcome aboard!'
-        paragraph1: 'To use Captain Coaster, click the verification button. This link is valid for'
-        button: 'Activate'
-        paragraph2: 'You received this email because you created an account on Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email.'
-    email_verified: 'Your email {email} has been verified. Welcome to Captain Coaster!'
+        title: "Confirm your email"
+        h1: "Welcome aboard!"
+        paragraph1: "To use Captain Coaster, click the verification button. This link is valid for"
+        button: "Activate"
+        paragraph2: "You received this email because you created an account on Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email."
+    email_verified: "Your email {email} has been verified. Welcome to Captain Coaster!"
 
 contact:
-    title: 'Get in touch'
-    send: 'Send the message'
+    title: "Get in touch"
+    send: "Send the message"
     form:
-        name: 'Your name'
-        email: 'Enter your email here if you want us to answer'
-        message: 'Your message'
+        name: "Your name"
+        email: "Enter your email here if you want us to answer"
+        message: "Your message"
     email:
-        title: 'Contact Form - Captain Coaster'
+        title: "Contact Form - Captain Coaster"
     flash:
-        success: 'Thank you {name}, your message was sent to Captain Coaster staff.'
+        success: "Thank you {name}, your message was sent to Captain Coaster staff."
 
 notif:
-    title: 'Activity'
-    empty: 'Nothing special right now, go ride some coasters!'
+    title: "Activity"
+    empty: "Nothing special right now, go ride some coasters!"
     badge:
         message: 'Check it out: Captain just gave you the "{name}" badge!'
     ranking:
-        message: 'World Roller Coaster Rankings have just been updated!'
-        messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'
+        message: "World Roller Coaster Rankings have just been updated!"
+        messageWithNewCoaster: "World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!"
     email:
-        title: '🎢 New notification on Captain Coaster'
-        gotnotif: 'You just received a new notification on Captain Coaster:'
+        title: "🎢 New notification on Captain Coaster"
+        gotnotif: "You just received a new notification on Captain Coaster:"
         view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
 nearby:
-    title: 'Find coasters nearby'
-    num_found: '{num} coasters found'
-    geo_on: 'Geolocation enabled'
-    geo_off: 'Geolocation not enabled'
-    km_away: '{distance} away'
+    title: "Find coasters nearby"
+    num_found: "{num} coasters found"
+    geo_on: "Geolocation enabled"
+    geo_off: "Geolocation not enabled"
+    km_away: "{distance} away"
 
 image:
-    credit: 'Credit: {name}'
+    credit: "Credit: {name}"
 
 badge:
-    rating1: '1st rating'
-    rating100: '100th rating'
-    rating250: '250th rating'
-    rating500: '500th rating'
-    rating1000: '1000th rating'
-    teamkatun: 'Team Katun'
-    teamispeed: 'Team iSpeed'
+    rating1: "1st rating"
+    rating100: "100th rating"
+    rating250: "250th rating"
+    rating500: "500th rating"
+    rating1000: "1000th rating"
+    teamkatun: "Team Katun"
+    teamispeed: "Team iSpeed"
 
 error:
     400:
-        title: 'Bad request'
-        message: 'Bad request'
+        title: "Bad request"
+        message: "Bad request"
     404:
-        title: 'Page not found'
-        message: 'This page does not exist'
+        title: "Page not found"
+        message: "This page does not exist"
     403:
-        title: 'Access forbidden'
-        message: 'You are not allowed to access this page'
+        title: "Access forbidden"
+        message: "You are not allowed to access this page"
     429:
-        title: 'Too many requests'
-        message: 'Please wait a few minutes'
+        title: "Too many requests"
+        message: "Please wait a few minutes"
     generic:
-        title: 'An error occurred'
-        message: 'An error occurred. Contact us if the problem persists'
+        title: "An error occurred"
+        message: "An error occurred. Contact us if the problem persists"
     maintenance:
-        title: 'Quick Technical Stop! 🔧'
-        message: 'Please remain in line. We will resume operations in a few minutes!'
+        title: "Quick Technical Stop! 🔧"
+        message: "Please remain in line. We will resume operations in a few minutes!"
 
 missing:
     step1:
-        title: 'Add a missing coaster'
-        subtitle: 'Step 1'
-        choose_description: 'Select an existing park below'
-        create_description: 'Or simply create a new park'
+        title: "Add a missing coaster"
+        subtitle: "Step 1"
+        choose_description: "Select an existing park below"
+        create_description: "Or simply create a new park"
         form:
-            choose_btn: 'Select this park'
-            park_name: 'Enter park name'
-            country: 'Select its country below'
+            choose_btn: "Select this park"
+            park_name: "Enter park name"
+            country: "Select its country below"
 
 banner:
-    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
+    coasters: "{count, plural, one {1 coaster} other {# coasters}}"
 
 search_index:
     title: Search
