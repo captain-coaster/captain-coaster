@@ -44,7 +44,7 @@ class MissingWatermark extends Command
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Dry run mode - no actual changes will be made')
             ->addOption('batch-size', 'b', InputOption::VALUE_REQUIRED, 'Number of images to process in each batch', self::BATCH_SIZE)
             ->addOption('test-run', null, InputOption::VALUE_NONE, 'Test run mode - process only the first batch and stop')
-            ->addOption('verbose', 'v', InputOption::VALUE_NONE, 'Show detailed processing information');
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force re-processing of files that already have metadata');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -54,7 +54,8 @@ class MissingWatermark extends Command
 
         $dryRun = $input->getOption('dry-run');
         $testRun = $input->getOption('test-run');
-        $verbose = $input->getOption('verbose');
+        $force = $input->getOption('force');
+        $verbose = $output->isVerbose();
         $batchSize = (int) $input->getOption('batch-size');
 
         // Statistics counters
@@ -102,13 +103,14 @@ class MissingWatermark extends Command
                         'Key' => $image->getFilename(),
                     ]);
 
-                    if (!isset($headResult['Metadata']['watermark'])) {
+                    if ($force || !isset($headResult['Metadata']['watermark'])) {
                         if (!$dryRun) {
                             // Use copyObject to add metadata (S3 optimizes same-source copies)
                             $this->s3Client->copyObject([
                                 'Bucket' => $this->s3Bucket,
                                 'Key' => $image->getFilename(),
                                 'CopySource' => $this->s3Bucket.'/'.$image->getFilename(),
+                                'ContentType' => $headResult['ContentType'] ?? 'image/jpeg',
                                 'Metadata' => [
                                     'watermark' => $image->isWatermarked() ? '1' : '0',
                                 ],
@@ -117,7 +119,7 @@ class MissingWatermark extends Command
                         }
                         ++$metadataAdded;
                         if ($verbose) {
-                            $io->writeln('  → Added watermark metadata');
+                            $io->writeln($force && isset($headResult['Metadata']['watermark']) ? '  → Re-processed metadata (forced)' : '  → Added watermark metadata');
                         }
                     }
 
