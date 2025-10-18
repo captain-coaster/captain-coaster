@@ -104,4 +104,16 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function countWatermarkToFix(): int
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(Image::class, 'i')
+            ->where('i.watermarked = true')
+            ->andWhere('i.id BETWEEN 16749 AND 23361')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
