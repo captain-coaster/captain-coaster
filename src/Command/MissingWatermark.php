@@ -60,7 +60,7 @@ class MissingWatermark extends Command
         $offset = 0;
 
         // Get total images count
-        $totalImages = \count($this->em->getRepository(Image::class)->findWatermarkToFix(1, $offset));
+        $totalImages = \count($this->em->getRepository(Image::class)->findWatermarkToFix(null, $offset));
         $io->writeln($totalImages.' images with watermark to fix');
 
         // Create progress bar
