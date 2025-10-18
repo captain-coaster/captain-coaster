@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Coaster;
+use App\Form\Filter\AutocompleteEntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -39,10 +40,10 @@ class CoasterCrudController extends AbstractCrudController
     {
         return $filters
             ->add('name')
-            ->add('park')
+            ->add(AutocompleteEntityFilter::new('park', 'Park'))
             ->add('materialType')
             ->add('seatingType')
-            ->add('manufacturer')
+            ->add(AutocompleteEntityFilter::new('manufacturer', 'Manufacturer'))
             ->add('restraint')
             ->add('launchs')
             ->add('speed')
