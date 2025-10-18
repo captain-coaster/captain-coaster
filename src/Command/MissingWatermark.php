@@ -103,14 +103,28 @@ class MissingWatermark extends Command
                         'Key' => $image->getFilename(),
                     ]);
 
-                    if ($force || !isset($headResult['Metadata']['watermark'])) {
+                    // Check if ContentType needs fixing or metadata is missing
+                    $needsContentTypeFix = isset($headResult['ContentType']) && 'binary/octet-stream' === $headResult['ContentType'];
+                    $needsMetadata = !isset($headResult['Metadata']['watermark']);
+
+                    if ($force || $needsMetadata || $needsContentTypeFix) {
                         if (!$dryRun) {
+                            // Determine correct ContentType based on file extension
+                            $extension = strtolower(pathinfo($image->getFilename(), \PATHINFO_EXTENSION));
+                            $contentType = match ($extension) {
+                                'jpg', 'jpeg' => 'image/jpeg',
+                                'png' => 'image/png',
+                                'gif' => 'image/gif',
+                                'webp' => 'image/webp',
+                                default => 'image/jpeg'
+                            };
+
                             // Use copyObject to add metadata (S3 optimizes same-source copies)
                             $this->s3Client->copyObject([
                                 'Bucket' => $this->s3Bucket,
                                 'Key' => $image->getFilename(),
                                 'CopySource' => $this->s3Bucket.'/'.$image->getFilename(),
-                                'ContentType' => $headResult['ContentType'] ?? 'image/jpeg',
+                                'ContentType' => $contentType,
                                 'Metadata' => [
                                     'watermark' => $image->isWatermarked() ? '1' : '0',
                                 ],
@@ -119,7 +133,17 @@ class MissingWatermark extends Command
                         }
                         ++$metadataAdded;
                         if ($verbose) {
-                            $io->writeln($force && isset($headResult['Metadata']['watermark']) ? '  → Re-processed metadata (forced)' : '  → Added watermark metadata');
+                            $reasons = [];
+                            if ($needsContentTypeFix) {
+                                $reasons[] = 'fixed ContentType';
+                            }
+                            if ($needsMetadata) {
+                                $reasons[] = 'added metadata';
+                            }
+                            if ($force && !$needsMetadata && !$needsContentTypeFix) {
+                                $reasons[] = 'forced';
+                            }
+                            $io->writeln('  → '.implode(', ', $reasons));
                         }
                     }
 
