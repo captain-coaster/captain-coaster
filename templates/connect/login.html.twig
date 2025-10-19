@@ -26,7 +26,7 @@
         {% endfor %}
         <form action="{{ path('login') }}" method="POST">
             <div class="form-group has-feedback has-feedback-left">
-                <input type="email" name="email" class="form-control" placeholder="Email">
+                <input type="email" name="email" class="form-control" placeholder="Email"{% if rateLimitExceeded %} disabled{% endif %}>
                 <div class="form-control-feedback">
                     <i class="icon-mail5 text-muted"></i>
                 </div>
@@ -34,7 +34,7 @@
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
             <div class="form-group">
                 <button type="submit"
-                        class="btn bg-blue btn-block">{{ 'login.send_link'|trans }}</button>
+                        class="btn bg-blue btn-block"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
             </div>
             <div
                 class="form-group text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
@@ -51,9 +51,7 @@
                 </a>
             </li>
         </ul>
-        <div class="alert alert-primary alert-bordered">
-            {{ 'login.facebook_login_disclaimer'|trans }}
-        </div>
+
         <span class="help-block text-center">
             {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
         </span>
