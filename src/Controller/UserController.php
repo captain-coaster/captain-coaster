@@ -14,6 +14,7 @@ use App\Repository\UserRepository;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -173,7 +174,7 @@ class UserController extends BaseController
 
     /** Display a user. */
     #[Route(path: '/{slug}', name: 'user_show', options: ['expose' => true], methods: ['GET'])]
-    public function showAction(User $user, StatService $statService, ImageRepository $imageRepository): Response
+    public function showAction(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, StatService $statService, ImageRepository $imageRepository): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
