@@ -86,8 +86,10 @@ image_upload:
             label: 'Watermark "Captain Coaster"'
             helper: Puede elegir marcar la foto con un logotipo de Captain Coaster para evitar su reutilización en otros sitios web.
         upload: Enviar mi foto
+        uploading: "Subiendo..."
         back: Volver a la montaña rusa
         success: La foto se ha subido correctamente. Será revisada por un administrador antes de su visualización.
+        duplicate: "Esta foto ya ha sido subida. Por favor, elige una imagen diferente."
 
 park:
     opened_coasters: "{ count, plural, one { montaña rusa abierta } other { montañas rusas abierta }}"

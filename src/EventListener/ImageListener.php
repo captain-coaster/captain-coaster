@@ -37,11 +37,12 @@ class ImageListener
     ) {
     }
 
-    /** Before persist: upload file to storage (S3) */
+    /** Before persist: set hash and upload file to storage (S3) */
     public function prePersist(Image $image, PrePersistEventArgs $event): void
     {
         // only upload new files
         if ($image->getFile() instanceof UploadedFile) {
+            $this->imageManager->setImageHash($image);
             $fileName = $this->imageManager->upload($image);
             $image->setFilename($fileName);
         }

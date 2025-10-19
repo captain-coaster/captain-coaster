@@ -86,8 +86,10 @@ image_upload:
             label: 'Wasserzeichen "Captain Coaster"'
             helper: "Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden."
         upload: Mein Bild einreichen
+        uploading: "Hochladen..."
         back: Zurück zu Achterbahn
         success: "Das Bild wurde erfolgreich hochgeladen. Bevor es veröffentlicht wird, wird es von einem Administrator geprüft."
+        duplicate: "Dieses Bild wurde bereits hochgeladen. Bitte wählen Sie ein anderes Bild."
 
 park:
     opened_coasters: "{ count, plural, one { opened coaster } other { opened coasters }}"

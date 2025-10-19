@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Image;
+use App\Repository\ImageRepository;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
@@ -19,6 +20,7 @@ class ImageManager
         private readonly LoggerInterface $logger,
         private readonly FilesystemOperator $picturesFilesystem,
         private readonly S3Client $s3Client,
+        private readonly ImageRepository $imageRepository,
         #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
         private readonly string $s3CacheBucket
     ) {
@@ -36,6 +38,23 @@ class ImageManager
         );
 
         return $filename;
+    }
+
+    /** Check if image already exists based on file hash. */
+    public function isDuplicate(UploadedFile $file): ?Image
+    {
+        $hash = dechex(crc32(file_get_contents($file->getPathname())));
+
+        return $this->imageRepository->findOneBy(['hash' => $hash]);
+    }
+
+    /** Calculate and set hash for image. */
+    public function setImageHash(Image $image): void
+    {
+        if ($image->getFile()) {
+            $hash = dechex(crc32(file_get_contents($image->getFile()->getPathname())));
+            $image->setHash($hash);
+        }
     }
 
     /** Remove file from abstracted filesystem (currently S3). */

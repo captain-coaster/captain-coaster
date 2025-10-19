@@ -22,6 +22,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_image']])]
 #[ORM\Table(name: 'image')]
+#[ORM\Index(columns: ['hash'])]
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['coaster' => 'exact'])]
 class Image
@@ -65,6 +66,9 @@ class Image
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'update')]
     private \DateTime $updatedAt;
+
+    #[ORM\Column(type: Types::STRING, length: 8, nullable: true)]
+    private ?string $hash = null;
 
     #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '15M')]
     #[Assert\Image(minPixels: 786432)]
@@ -199,6 +203,18 @@ class Image
     public function setLikeCounter(int $likeCounter): static
     {
         $this->likeCounter = $likeCounter;
+
+        return $this;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
+    }
+
+    public function setHash(?string $hash): static
+    {
+        $this->hash = $hash;
 
         return $this;
     }

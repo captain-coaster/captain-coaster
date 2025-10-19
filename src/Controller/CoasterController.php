@@ -10,6 +10,7 @@ use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -40,7 +41,8 @@ class CoasterController extends BaseController
         #[MapEntity(mapping: ['slug' => 'slug'])]
         Coaster $coaster,
         TranslatorInterface $translator,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ImageManager $imageManager
     ): Response {
         $image = new Image();
         $image->setCoaster($coaster);
@@ -53,6 +55,16 @@ class CoasterController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Check for duplicate
+            if ($imageManager->isDuplicate($image->getFile())) {
+                $this->addFlash('warning', $translator->trans('image_upload.form.duplicate'));
+
+                return $this->redirectToRoute(
+                    'coaster_images_upload',
+                    ['slug' => $coaster->getSlug()]
+                );
+            }
+
             $em->persist($image);
             $em->flush();
 

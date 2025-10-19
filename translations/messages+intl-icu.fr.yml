@@ -86,8 +86,10 @@ image_upload:
             label: 'Watermark "Captain Coaster"'
             helper: "Appliquer un watermark Captain Coaster sur la photo, pour éviter la réutilisation sur d'autres sites."
         upload: Envoyer ma photo
+        uploading: "Envoi en cours..."
         back: Retour au coaster
         success: La photo a été envoyée. Elle sera validée par un administrateur avant affichage.
+        duplicate: "Cette photo a déjà été envoyée. Veuillez choisir une image différente."
 
 park:
     opened_coasters: "{ count, plural, one { coaster ouvert } other { coasters ouverts }}"
