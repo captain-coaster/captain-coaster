@@ -143,11 +143,27 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
+            ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
             ->setParameter('locale', $locale)
             ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Get latest ratings from enabled users only. */
+    public function getLatestRatings(int $limit = 6)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }

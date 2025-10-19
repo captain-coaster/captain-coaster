@@ -57,7 +57,7 @@ class DefaultController extends BaseController
         }
 
         return $this->render('Default/index.html.twig', [
-            'ratingFeed' => $riddenCoasterRepository->findBy([], ['updatedAt' => 'DESC'], 6),
+            'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
             'image' => $imageRepository->findLatestImage(),
             'stats' => $statService->getIndexStats(),
             'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, $displayReviewsInAllLanguages),
