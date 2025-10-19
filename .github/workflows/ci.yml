@@ -16,10 +16,13 @@ jobs:
             - uses: php-actions/composer@v6
               id: install
               with:
+                  php_version: 8.4
                   php_extensions: redis xsl
                   memory_limit: 256M
 
             - uses: php-actions/phpstan@v3
+              with:
+                  php_version: 8.4
 
             - name: PHP-CS-Fixer
               uses: docker://oskarstark/php-cs-fixer-ga@sha256:abc7a9e43780ea2df458ad9fcdfeb98563fa71eee2af232f2b1962af5ccf1d2a
@@ -35,5 +38,5 @@ jobs:
             - name: Lint Doctrine entities
               run: ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction
 
-            #- name: Check if any dependencies are compromised
-            #  run: composer audit
+            - name: Check if any dependencies are compromised
+              run: composer audit
