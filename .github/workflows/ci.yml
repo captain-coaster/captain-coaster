@@ -22,7 +22,7 @@ jobs:
             - uses: php-actions/phpstan@v3
 
             - name: PHP-CS-Fixer
-              uses: docker://oskarstark/php-cs-fixer-ga@sha256:3d910b31ae27be05ae16c4ea9bd07078de1a5f40cb104c13f3f3b940fa90f5d9
+              uses: docker://oskarstark/php-cs-fixer-ga@sha256:abc7a9e43780ea2df458ad9fcdfeb98563fa71eee2af232f2b1962af5ccf1d2a
               with:
                   args: --diff --dry-run
 
