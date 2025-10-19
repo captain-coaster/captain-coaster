@@ -24,16 +24,23 @@ class Model implements \Stringable
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
+
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['read_model', 'read_coaster'])]
     private ?string $name = null;
+
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
 
+    #[ORM\ManyToOne(targetEntity: Manufacturer::class)]
+    #[ORM\JoinColumn]
+    #[Groups(['read_model', 'read_coaster'])]
+    private ?Manufacturer $manufacturer = null;
+
     public function __toString(): string
     {
-        return (string) $this->name;
+        return $this->getManufacturer() ? $this->getManufacturer()->getName().' '.$this->name : $this->name;
     }
 
     /**
@@ -92,5 +99,17 @@ class Model implements \Stringable
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    public function getManufacturer(): ?Manufacturer
+    {
+        return $this->manufacturer;
+    }
+
+    public function setManufacturer(?Manufacturer $manufacturer): static
+    {
+        $this->manufacturer = $manufacturer;
+
+        return $this;
     }
 }
