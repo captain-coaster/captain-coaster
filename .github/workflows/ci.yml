@@ -10,19 +10,21 @@ jobs:
         steps:
             - uses: actions/checkout@v3
 
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.4"
+                  extensions: redis, xsl, intl, apcu, gd, opcache
+
             - name: Lint Composer config
               run: composer validate --strict
 
             - uses: php-actions/composer@v6
               id: install
               with:
-                  php_version: 8.4
-                  php_extensions: redis xsl
                   memory_limit: 256M
 
             - uses: php-actions/phpstan@v3
-              with:
-                  php_version: 8.4
 
             - name: PHP-CS-Fixer
               uses: docker://oskarstark/php-cs-fixer-ga@sha256:abc7a9e43780ea2df458ad9fcdfeb98563fa71eee2af232f2b1962af5ccf1d2a
