@@ -176,8 +176,9 @@ class RankingService
 
                 // don't take into account if too few comparisons
                 // $comparisonResult + $reverseComparisonResult always equals vote number
-                if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
-                    $this->totalComparisonNumber += (int) ($comparisonResult + $reverseComparisonResult);
+                $totalComparisons = (is_numeric($comparisonResult) ? $comparisonResult : 0) + (is_numeric($reverseComparisonResult) ? $reverseComparisonResult : 0);
+                if ($totalComparisons >= self::MIN_COMPARISONS) {
+                    $this->totalComparisonNumber += (int) $totalComparisons;
                     ++$duelCount;
 
                     // same win & loose numbers
@@ -225,7 +226,8 @@ class RankingService
 
                 // don't take into account if too few comparisons
                 // $comparisonResult + $reverseComparisonResult always equals vote number
-                if ($comparisonResult + $reverseComparisonResult >= self::MIN_COMPARISONS) {
+                $totalComparisons = (is_numeric($comparisonResult) ? $comparisonResult : 0) + (is_numeric($reverseComparisonResult) ? $reverseComparisonResult : 0);
+                if ($totalComparisons >= self::MIN_COMPARISONS) {
                     ++$duelCount;
                 }
             }
@@ -288,7 +290,7 @@ class RankingService
                 and c.rank is not NULL;';
 
         try {
-            $this->em->getConnection()->prepare($sql)->executeStatement();
+            $this->em->getConnection()->executeStatement($sql);
         } catch (\Throwable $e) {
             // todo log
         }
@@ -318,11 +320,10 @@ class RankingService
                 where c.id = :id;';
 
         try {
-            $this->em->getConnection()->prepare($sql)
-                ->executeStatement([
-                    ':count' => $duelCount,
-                    ':id' => $coasterId,
-                ]);
+            $this->em->getConnection()->executeStatement($sql, [
+                'count' => $duelCount,
+                'id' => $coasterId,
+            ]);
         } catch (\Throwable $e) {
             // todo log
         }

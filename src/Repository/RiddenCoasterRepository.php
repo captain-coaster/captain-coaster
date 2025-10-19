@@ -191,7 +191,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      *
      * @throws NonUniqueResultException
      */
-    public function findAll(string $locale = 'en', bool $displayReviewsInAllLanguages = false)
+    public function findAllReviews(string $locale = 'en', bool $displayReviewsInAllLanguages = false)
     {
         $count = $this->getEntityManager()
             ->createQueryBuilder()
@@ -259,9 +259,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ';
 
         try {
-            $statement = $connection->prepare($sql);
-
-            return $statement->executeStatement(['minRatings' => $minRatings]);
+            return $connection->executeStatement($sql, ['minRatings' => $minRatings]);
         } catch (\Exception) {
             return false;
         }

@@ -103,8 +103,8 @@ class Restraint implements \Stringable
         $this->coasters->removeElement($coaster);
     }
 
-    /** @return Coaster[]|ArrayCollection */
-    public function getCoasters(): array|ArrayCollection
+    /** @return Collection<Coaster> */
+    public function getCoasters(): Collection
     {
         return $this->coasters;
     }

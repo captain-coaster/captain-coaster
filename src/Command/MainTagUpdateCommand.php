@@ -54,8 +54,7 @@ class MainTagUpdateCommand extends Command
             GROUP BY t.id
             ORDER BY nb DESC';
 
-            $statement = $conn->prepare($sql);
-            $result = $statement->executeQuery(['coasterId' => $coaster->getId()]);
+            $result = $conn->executeQuery($sql, ['coasterId' => $coaster->getId()]);
 
             $rank = 1;
             foreach ($result->fetchAllAssociative() as $mainTag) {
@@ -65,8 +64,7 @@ class MainTagUpdateCommand extends Command
                 }
 
                 $sql = 'INSERT INTO `main_tag` (coaster_id, tag_id, rank) VALUES (:coasterId, :tagId, :rank)';
-                $stmt = $conn->prepare($sql);
-                $stmt->executeStatement(['coasterId' => $coaster->getId(), 'tagId' => (int) $mainTag['id'], 'rank' => $rank]);
+                $conn->executeStatement($sql, ['coasterId' => $coaster->getId(), 'tagId' => (int) $mainTag['id'], 'rank' => $rank]);
                 ++$rank;
             }
         }

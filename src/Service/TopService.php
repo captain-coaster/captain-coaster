@@ -15,7 +15,7 @@ class TopService
     }
 
     /** Update totalTopsIn & averageTopRank for all coasters. */
-    public function updateTopStats(): int
+    public function updateTopStats(): bool
     {
         $this->topCoasterRepository->updateTotalTopsIn();
 

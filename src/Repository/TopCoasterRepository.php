@@ -102,9 +102,9 @@ class TopCoasterRepository extends ServiceEntityRepository
             ';
 
         try {
-            $statement = $connection->prepare($sql);
+            $connection->executeStatement($sql, ['minTopsIn' => $minTopsIn]);
 
-            return $statement->executeStatement(['minTopsIn' => $minTopsIn]);
+            return true;
         } catch (DBALException) {
             return false;
         }

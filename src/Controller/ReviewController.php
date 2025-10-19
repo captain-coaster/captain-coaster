@@ -40,7 +40,7 @@ class ReviewController extends BaseController
 
         try {
             $pagination = $paginator->paginate(
-                $riddenCoasterRepository->findAll($request->getLocale(), $displayReviewsInAllLanguages),
+                $riddenCoasterRepository->findAllReviews($request->getLocale(), $displayReviewsInAllLanguages),
                 $page,
                 10
             );
