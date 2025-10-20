@@ -10,6 +10,7 @@ use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\CoasterAiSummaryService;
 use App\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -158,7 +159,8 @@ class CoasterController extends BaseController
         Request $request,
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
-        CoasterRepository $coasterRepository
+        CoasterRepository $coasterRepository,
+        CoasterAiSummaryService $aiSummaryService
     ): Response {
         $rating = null;
         $user = null;
@@ -177,6 +179,7 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'aiSummary' => $aiSummaryService->getSummary($coaster),
             ]
         );
     }

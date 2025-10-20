@@ -130,6 +130,49 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /** Get only reviews with text content for a specific coaster (all languages). */
+    public function getCoasterReviewsWithText(Coaster $coaster, int $limit = null)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'u')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :coasterId')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'') 
+            ->andWhere('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setParameter('coasterId', $coaster->getId());
+            
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
+
+    /** Count reviews with text content for a specific coaster. */
+    public function countCoasterReviewsWithText(Coaster $coaster): int
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(r.id)')
+                ->from(RiddenCoaster::class, 'r')
+                ->innerJoin('r.user', 'u')
+                ->where('r.coaster = :coasterId')
+                ->andWhere('r.review IS NOT NULL')
+                ->andWhere('TRIM(r.review) != \'\'') 
+                ->andWhere('u.enabled = 1')
+                ->setParameter('coasterId', $coaster->getId())
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception) {
+            return 0;
+        }
+    }
+
     /** Get latest text reviews ordered by language. */
     public function getLatestReviews(string $locale = 'en', int $limit = 3, bool $displayReviewsInAllLanguages = false)
     {
@@ -281,6 +324,25 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
+    /** Get rating statistics for a coaster */
+    public function getRatingStatsForCoaster(Coaster $coaster): array
+    {
+        $id = $coaster->getId();
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r.value')
+            ->addselect('COUNT(r.id) AS count')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :id')
+            ->andWhere('u.enabled = 1')
+            ->groupby('r.value')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getResult();
+    }
+
     /** Get country where a user rode the most. */
     public function findMostRiddenCountry(User $user)
     {
@@ -380,24 +442,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('c.kiddie = 0')
             ->andWhere('c.holdRanking = 0')
             ->setParameter('id', $userId)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getRatingStatsForCoaster(Coaster $coaster): array
-    {
-        $id = $coaster->getId();
-
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r.value')
-            ->addselect('COUNT(r.id) AS count')
-            ->from(RiddenCoaster::class, 'r')
-            ->innerJoin('r.user', 'u')
-            ->where('r.coaster = :id')
-            ->andWhere('u.enabled = 1')
-            ->groupby('r.value')
-            ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
     }
