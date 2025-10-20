@@ -38,8 +38,7 @@ class UserCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-            ->disable('new')
-            ->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
+            ->disable('new');
     }
 
     public function configureFilters(Filters $filters): Filters
