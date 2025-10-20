@@ -143,11 +143,27 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
+            ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
             ->setParameter('locale', $locale)
             ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Get latest ratings from enabled users only. */
+    public function getLatestRatings(int $limit = 6)
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }
@@ -191,7 +207,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      *
      * @throws NonUniqueResultException
      */
-    public function findAll(string $locale = 'en', bool $displayReviewsInAllLanguages = false)
+    public function findAllReviews(string $locale = 'en', bool $displayReviewsInAllLanguages = false)
     {
         $count = $this->getEntityManager()
             ->createQueryBuilder()
@@ -259,9 +275,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ';
 
         try {
-            $statement = $connection->prepare($sql);
-
-            return $statement->executeStatement(['minRatings' => $minRatings]);
+            return $connection->executeStatement($sql, ['minRatings' => $minRatings]);
         } catch (\Exception) {
             return false;
         }
@@ -270,19 +284,19 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /** Get country where a user rode the most. */
     public function findMostRiddenCountry(User $user)
     {
-        $default = ['name' => '-'];
+        $default = ['name' => '-', 'nb' => 0];
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('co.name as name')
-                ->addSelect('count(1) as HIDDEN nb1')
+                ->addSelect('count(1) as nb')
                 ->from(RiddenCoaster::class, 'r')
                 ->join('r.coaster', 'c')
                 ->join('c.park', 'p')
                 ->join('p.country', 'co')
                 ->where('r.user = :user')
                 ->groupBy('co.id')
-                ->orderBy('nb1', 'desc')
+                ->orderBy('nb', 'desc')
                 ->setParameter('user', $user)
                 ->setMaxResults(1)
                 ->getQuery()
@@ -298,14 +312,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
-                ->select('count(1) as nb_top100')
+                ->select([
+                    'COUNT(1) as nb_top100',
+                    'SUM(CASE WHEN c.status = 1 THEN 1 ELSE 0 END) AS nb_top100_operating',
+                ])
                 ->from(RiddenCoaster::class, 'r')
                 ->join('r.coaster', 'c')
                 ->where('r.user = :user')
                 ->andWhere('c.rank <= 100')
                 ->setParameter('user', $user)
                 ->getQuery()
-                ->getSingleScalarResult();
+                ->getSingleResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
@@ -383,5 +400,32 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
+    }
+
+    /** Get most common manufacturer among user's top list coasters (first 10-20 positions) */
+    public function getTopListManufacturer(User $user, int $maxPosition = 20)
+    {
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1) as nb')
+                ->addSelect('m.name as name')
+                ->from('App\Entity\TopCoaster', 'tc')
+                ->join('tc.coaster', 'c')
+                ->join('c.manufacturer', 'm')
+                ->join('tc.top', 't')
+                ->where('t.user = :user')
+                ->andWhere('t.main = 1')
+                ->andWhere('tc.position <= :maxPosition')
+                ->setParameter('user', $user)
+                ->setParameter('maxPosition', $maxPosition)
+                ->groupBy('m.id')
+                ->orderBy('nb', 'desc')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (\Exception) {
+            return null;
+        }
     }
 }

@@ -50,7 +50,8 @@
 {% block javascripts %}
     <script type="text/javascript">
         $('form').submit(function(){
-            $(this).find(':input[type=submit]').prop('disabled', true);
+            const $btn = $(this).find('button[type=submit]');
+            $btn.prop('disabled', true).text('{{ 'image_upload.form.uploading'|trans }}');
         });
     </script>
 {% endblock %}

@@ -19,6 +19,7 @@
 {% endblock %}
 
 {% block javascripts %}
+  <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
   <script type="text/javascript">
     var containerId = 'ranking-result';
     function filterData() {
@@ -58,7 +59,7 @@
         window.history.pushState(
             {"html":'Ranking',"pageTitle":'Ranking'},
             "",
-            window.location.pathname + '?' + $('form').serialize()
+            window.location.pathname + '?' + $('form *:not(input[id="form-user"])').serialize()
         );
     }
 
@@ -85,6 +86,14 @@
         ajaxPager();
       });
     };
+
+    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+    elems.forEach(function(html) {
+      var switchery = new Switchery(html);
+        html.addEventListener('click', function() {
+          filterData();
+        });
+    });
 
     filterData();
   </script>

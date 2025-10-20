@@ -119,7 +119,7 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $addTodayDateWhenRating = false;
 
-    #[ORM\Column(type: Types::ARRAY)]
+    #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]

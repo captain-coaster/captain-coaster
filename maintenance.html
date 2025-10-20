@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quick Technical Stop! 🔧 • Captain Coaster</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .icon { font-size: 80px; margin-bottom: 30px; animation: bounce 2s infinite; }
+        .title { font-size: 32px; font-weight: 700; color: #333; margin-bottom: 20px; }
+        .message { font-size: 18px; color: #666; margin-bottom: 40px; }
+        .progress { background: #e9ecef; border-radius: 10px; height: 8px; overflow: hidden; margin: 20px 0; }
+        .progress-fill { background: linear-gradient(90deg, #2196F3, #21CBF3); height: 100%; animation: progress 3s ease-in-out infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } }
+        @keyframes progress { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 0%; } }
+        @media (max-width: 768px) { .container { padding: 40px 20px; } .title { font-size: 24px; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🔧</div>
+        <h1 class="title">Quick Technical Stop!</h1>
+        <p class="message">Please remain in line. We will resume operations in a few minutes!</p>
+        <div class="progress"><div class="progress-fill"></div></div>
+        <p style="color: #999; font-size: 14px; margin-top: 30px;">Thank you for your patience! 🎢</p>
+    </div>
+    <script>setTimeout(() => location.reload(), 30000);</script>
+</body>
+</html>

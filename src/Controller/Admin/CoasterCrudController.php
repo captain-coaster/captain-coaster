@@ -44,6 +44,7 @@ class CoasterCrudController extends AbstractCrudController
             ->add('materialType')
             ->add('seatingType')
             ->add(AutocompleteEntityFilter::new('manufacturer', 'Manufacturer'))
+            ->add(AutocompleteEntityFilter::new('model', 'Model'))
             ->add('restraint')
             ->add('launchs')
             ->add('speed')

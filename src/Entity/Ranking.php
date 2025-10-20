@@ -108,7 +108,7 @@ class Ranking
         return $this;
     }
 
-    public function getComputedAt(): \DateTime
+    public function getComputedAt(): ?\DateTimeInterface
     {
         return $this->computedAt;
     }

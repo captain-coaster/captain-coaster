@@ -27,93 +27,93 @@
                   {{ 'profile.settings.name.change_limit'|trans }}
                 </div>
               {% endif %}
-              
+
               {{ form_start(form) }}
-              
+
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.name'|trans }}</legend>
-                
+
                 <div class="form-group">
                   {{ form_label(form.firstName) }}
                   {{ form_widget(form.firstName) }}
                   {{ form_errors(form.firstName) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_label(form.lastName) }}
                   {{ form_widget(form.lastName) }}
                   {{ form_errors(form.lastName) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_label(form.displayNameFormat) }}
                   {{ form_widget(form.displayNameFormat) }}
                   {{ form_errors(form.displayNameFormat) }}
                   <small class="text-muted">{{ 'profile.settings.name.format.help'|trans }}</small>
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_label(form.profilePicture) }}
                   {{ form_widget(form.profilePicture) }}
                   {{ form_errors(form.profilePicture) }}
                 </div>
               </fieldset>
-              
+
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.preferences'|trans }}</legend>
-                
+
                 <div class="form-group">
                   {{ form_label(form.emailNotification) }}
                   {{ form_widget(form.emailNotification) }}
                   {{ form_errors(form.emailNotification) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_label(form.preferredLocale) }}
                   {{ form_widget(form.preferredLocale) }}
                   {{ form_errors(form.preferredLocale) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_label(form.imperial) }}
                   {{ form_widget(form.imperial) }}
                   {{ form_errors(form.imperial) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_label(form.homePark) }}
                   {{ form_widget(form.homePark) }}
                   {{ form_errors(form.homePark) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_widget(form.displayReviewsInAllLanguages) }}
                   {{ form_label(form.displayReviewsInAllLanguages) }}
                   {{ form_errors(form.displayReviewsInAllLanguages) }}
                 </div>
-                
+
                 <div class="form-group">
                   {{ form_widget(form.addTodayDateWhenRating) }}
                   {{ form_label(form.addTodayDateWhenRating) }}
                   {{ form_errors(form.addTodayDateWhenRating) }}
                 </div>
               </fieldset>
-              
+
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.advanced'|trans }}</legend>
-                
+
                 <div class="form-group">
                   {{ form_label(form.apiKey) }}
                   {{ form_widget(form.apiKey) }}
                   {{ form_errors(form.apiKey) }}
                 </div>
               </fieldset>
-              
+
               <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
                 <b><i class="icon-circle-right2"></i></b>
                 {{ 'profile.settings.save'|trans }}
               </button>
-              
+
               {{ form_rest(form) }}
               {{ form_end(form) }}
             </div>

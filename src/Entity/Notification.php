@@ -92,7 +92,7 @@ class Notification
     /**
      * Get createdAt.
      *
-     * @return \DateTime
+     * @return \DateTimeInterface|null
      */
     public function getCreatedAt()
     {

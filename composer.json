@@ -6,14 +6,14 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "ext-json": "*",
         "api-platform/core": "^4.0",
-        "aws/aws-sdk-php": "^3.263",
+        "aws/aws-sdk-php": "^3.0",
         "beberlei/doctrineextensions": "^1.3",
         "doctrine/doctrine-bundle": "^2.0",
         "doctrine/doctrine-migrations-bundle": "^3.0",
-        "doctrine/orm": "^2.10",
+        "doctrine/orm": "^3.3",
         "easycorp/easyadmin-bundle": "^4",
         "excelwebzone/recaptcha-bundle": "^1.5",
         "friendsofsymfony/jsrouting-bundle": "^3.0",
@@ -24,51 +24,51 @@
         "league/flysystem-aws-s3-v3": "^3",
         "league/oauth2-google": "^4",
         "oneup/flysystem-bundle": "^4",
-        "stof/doctrine-extensions-bundle": "^1.2",
-        "symfony/amazon-mailer": "6.4.*",
-        "symfony/asset": "6.4.*",
-        "symfony/cache": "6.4.*",
-        "symfony/discord-notifier": "6.4.*",
-        "symfony/dom-crawler": "6.4.*",
-        "symfony/dotenv": "6.4.*",
-        "symfony/expression-language": "6.4.*",
+        "stof/doctrine-extensions-bundle": "^1.14",
+        "symfony/amazon-mailer": "7.*",
+        "symfony/asset": "7.*",
+        "symfony/cache": "7.*",
+        "symfony/discord-notifier": "7.*",
+        "symfony/dom-crawler": "7.*",
+        "symfony/dotenv": "7.*",
+        "symfony/expression-language": "7.*",
         "symfony/flex": "^2.0",
-        "symfony/form": "6.4.*",
-        "symfony/http-client": "6.4.*",
-        "symfony/lock": "6.4.*",
-        "symfony/mailer": "6.4.*",
-        "symfony/messenger": "6.4.*",
+        "symfony/form": "7.*",
+        "symfony/http-client": "7.*",
+        "symfony/lock": "7.*",
+        "symfony/mailer": "7.*",
+        "symfony/messenger": "7.*",
         "symfony/monolog-bundle": "^3.0",
-        "symfony/notifier": "6.4.*",
-        "symfony/rate-limiter": "6.4.*",
-        "symfony/redis-messenger": "6.4.*",
-        "symfony/runtime": "6.4.*",
-        "symfony/security-bundle": "6.4.*",
+        "symfony/notifier": "7.*",
+        "symfony/rate-limiter": "7.*",
+        "symfony/redis-messenger": "7.*",
+        "symfony/runtime": "7.*",
+        "symfony/security-bundle": "7.*",
         "symfony/stimulus-bundle": "^2.23",
-        "symfony/stopwatch": "6.4.*",
-        "symfony/translation": "6.4.*",
-        "symfony/twig-bundle": "6.4.*",
-        "symfony/validator": "6.4.*",
-        "symfony/webpack-encore-bundle": "^1.0",
+        "symfony/stopwatch": "7.*",
+        "symfony/translation": "7.*",
+        "symfony/twig-bundle": "7.*",
+        "symfony/validator": "7.*",
+        "symfony/webpack-encore-bundle": "^2.0",
         "symfonycasts/verify-email-bundle": "^1.16",
-        "twig/cssinliner-extra": "^3.8.0",
-        "twig/extra-bundle": "^3.8.0",
-        "twig/inky-extra": "^3.8.0",
-        "twig/intl-extra": "^3.6",
+        "twig/cssinliner-extra": "^3.8",
+        "twig/extra-bundle": "^3.8",
+        "twig/inky-extra": "^3.8",
+        "twig/intl-extra": "^3.8",
         "symfony/ux-translator": "^2.13"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "3.75",
+        "friendsofphp/php-cs-fixer": "3.88.2",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan-doctrine": "^1.3",
         "phpstan/phpstan-symfony": "^1.3",
-        "phpunit/phpunit": "^10.0",
-        "symfony/browser-kit": "6.4.*",
-        "symfony/css-selector": "6.4.*",
-        "symfony/debug-bundle": "6.4.*",
+        "phpunit/phpunit": "^11.0",
+        "symfony/browser-kit": "7.*",
+        "symfony/css-selector": "7.*",
+        "symfony/debug-bundle": "7.*",
         "symfony/maker-bundle": "^1.0",
-        "symfony/phpunit-bridge": "6.4.*",
-        "symfony/web-profiler-bundle": "6.4.*"
+        "symfony/phpunit-bridge": "7.*",
+        "symfony/web-profiler-bundle": "7.*"
     },
     "config": {
         "allow-plugins": {
@@ -78,7 +78,7 @@
             "php-http/discovery": true
         },
         "platform": {
-            "php": "8.3.20"
+            "php": "8.4.13"
         },
         "preferred-install": {
             "*": "dist"
@@ -115,7 +115,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "6.4.*"
+            "require": "7.*"
         }
     }
 }

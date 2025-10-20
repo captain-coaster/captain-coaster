@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Park;
 use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,7 +42,7 @@ class ParkController extends AbstractController
 
     /** Redirect old urls to above */
     #[\Symfony\Component\Routing\Attribute\Route(path: '/{slug}', name: 'redirect_park_show', options: ['expose' => true], methods: ['GET'])]
-    public function redirectPark(Park $park): RedirectResponse
+    public function redirectPark(#[MapEntity(mapping: ['slug' => 'slug'])] Park $park): RedirectResponse
     {
         return $this->redirectToRoute('park_show', [
             'id' => $park->getId(),

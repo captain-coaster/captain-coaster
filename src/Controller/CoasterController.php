@@ -10,8 +10,10 @@ use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,9 +38,11 @@ class CoasterController extends BaseController
     #[IsGranted('ROLE_USER')]
     public function imageUpload(
         Request $request,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
         Coaster $coaster,
         TranslatorInterface $translator,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
+        ImageManager $imageManager
     ): Response {
         $image = new Image();
         $image->setCoaster($coaster);
@@ -51,6 +55,16 @@ class CoasterController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Check for duplicate
+            if ($imageManager->isDuplicate($image->getFile())) {
+                $this->addFlash('warning', $translator->trans('image_upload.form.duplicate'));
+
+                return $this->redirectToRoute(
+                    'coaster_images_upload',
+                    ['slug' => $coaster->getSlug()]
+                );
+            }
+
             $em->persist($image);
             $em->flush();
 
@@ -79,7 +93,7 @@ class CoasterController extends BaseController
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadImages(EntityManagerInterface $em, Coaster $coaster, int $imageNumber = 8): Response
+    public function ajaxLoadImages(EntityManagerInterface $em, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $imageNumber = 8): Response
     {
         $userLikes = [];
         if (($user = $this->getUser()) instanceof UserInterface) {
@@ -107,7 +121,7 @@ class CoasterController extends BaseController
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, Coaster $coaster, int $page = 1): Response
+    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $page = 1): Response
     {
         $user = $this->getUser();
         $displayReviewsInAllLanguages = true;
@@ -169,7 +183,7 @@ class CoasterController extends BaseController
 
     /** Redirect old urls to above */
     #[Route(path: '/{slug}', name: 'redirect_coaster_show', options: ['expose' => true], methods: ['GET'])]
-    public function redirectCoaster(Coaster $coaster): RedirectResponse
+    public function redirectCoaster(#[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster): RedirectResponse
     {
         return $this->redirectToRoute('show_coaster', [
             'id' => $coaster->getId(),

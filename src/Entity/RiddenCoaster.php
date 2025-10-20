@@ -292,7 +292,7 @@ class RiddenCoaster
         return $this;
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -304,7 +304,7 @@ class RiddenCoaster
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
@@ -316,7 +316,7 @@ class RiddenCoaster
         return $this;
     }
 
-    public function getRiddenAt(): ?\DateTime
+    public function getRiddenAt(): ?\DateTimeInterface
     {
         return $this->riddenAt;
     }

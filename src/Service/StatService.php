@@ -76,12 +76,19 @@ class StatService
         $stats['country'] = $this->em
             ->getRepository(RiddenCoaster::class)
             ->findMostRiddenCountry($user);
-        $stats['top_100'] = $this->em
+        $top100 = $this->em
             ->getRepository(RiddenCoaster::class)
             ->countTop100ForUser($user);
+        $stats['top_100'] = $top100['nb_top100'];
+        $stats['top_100_operating'] = (int) $top100['nb_top100_operating'];
         $stats['manufacturer'] = $this->em
             ->getRepository(RiddenCoaster::class)
             ->getMostRiddenManufacturer($user);
+
+        // Add favorite manufacturer from user's main top list (first 10-20 positions)
+        $stats['top_rated_manufacturer'] = $this->em
+            ->getRepository(RiddenCoaster::class)
+            ->getTopListManufacturer($user, 10);
 
         return $stats;
     }

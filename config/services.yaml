@@ -7,8 +7,6 @@ parameters:
     locale: 'en'
     app_locales_array: ['en', 'fr', 'es', 'de']
     app_contact_mail_to: '%env(MAILER_REPLY_TO)%'
-    router.request_context.host: '%env(APP_CONTEXT_HOST)%'
-    router.request_context.scheme: '%env(APP_CONTEXT_SCHEME)%'
 
 services:
     # default configuration for services in *this* file
@@ -20,10 +18,6 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
-        exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
