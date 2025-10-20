@@ -130,6 +130,7 @@ map_index:
         status: "Operating"
         kiddie: "Hide kiddies"
         notridden: "Not ridden yet"
+        new: "New this month"
         score: "Score"
         atleast: "at least {count}"
         openingDate: "Opening date"
