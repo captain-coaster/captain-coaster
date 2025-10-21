@@ -83,13 +83,20 @@ class GenerateAiSummariesCommand extends Command
 
     private function processCoaster($coaster, $io, int &$generated): void
     {
+        $reviewCount = count($this->summaryService->getCoasterReviews($coaster));
+        
+        if ($reviewCount < 20) {
+            $io->writeln("⚠ Skipped (insufficient reviews: {$reviewCount}/20)");
+            return;
+        }
+        
         $summary = $this->summaryService->generateSummary($coaster);
         
         if ($summary) {
             $generated++;
-            $io->writeln("✓ Generated summary: {$summary->getSummary()}");
+            $io->writeln("✓ Generated summary");
         } else {
-            $io->writeln("⚠ Skipped (insufficient reviews)");
+            $io->writeln("⚠ Failed to generate summary");
         }
     }
 }

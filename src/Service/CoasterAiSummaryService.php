@@ -14,14 +14,32 @@ use Psr\Log\LoggerInterface;
 
 class CoasterAiSummaryService
 {
-    private const MAX_REVIEWS_FOR_ANALYSIS = 200;
+    private const MAX_REVIEWS_FOR_ANALYSIS = 600;
     private const MIN_REVIEWS_REQUIRED = 20;
+
+    private const MODELS = [
+        'claude-haiku-3.5' => [
+            'id' => 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+            'input_cost_per_1k' => 0.0008,
+            'output_cost_per_1k' => 0.004,
+            'type' => 'anthropic',
+        ],
+        'gpt-oss-120b' => [
+            'id' => 'openai.gpt-oss-120b-1:0',
+            'input_cost_per_1k' => 0.00015,
+            'output_cost_per_1k' => 0.0006,
+            'type' => 'openai',
+        ],
+    ];
+
+    private const DEFAULT_MODEL = 'gpt-oss-120b';
 
     public function __construct(
         private EntityManagerInterface $entityManager,
         private RiddenCoasterRepository $riddenCoasterRepository,
         private BedrockRuntimeClient $bedrockClient,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private string $modelKey = self::DEFAULT_MODEL
     ) {
     }
 
@@ -30,18 +48,24 @@ class CoasterAiSummaryService
         return $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
     }
 
-    public function generateSummary(Coaster $coaster): ?CoasterAiSummary
+    public function generateSummary(Coaster $coaster, ?string $modelKey = null): ?CoasterAiSummary
     {
         $reviewsWithText = $this->getCoasterReviews($coaster);
-        $this->logger->info('Processing coaster', ['coaster' => $coaster->getName(), 'reviews' => \count($reviewsWithText)]);
+        $reviewCount = \count($reviewsWithText);
 
-        if (\count($reviewsWithText) < self::MIN_REVIEWS_REQUIRED) {
-            $this->logger->error('Insufficient reviews for analysis', ['coaster' => $coaster->getName(), 'found' => \count($reviewsWithText), 'required' => self::MIN_REVIEWS_REQUIRED]);
+        $this->logger->info('Processing coaster', ['coaster' => $coaster->getName(), 'reviews' => $reviewCount]);
+
+        if ($reviewCount < self::MIN_REVIEWS_REQUIRED) {
+            $this->logger->error('Insufficient reviews for analysis', [
+                'coaster' => $coaster->getName(),
+                'found' => $reviewCount,
+                'required' => self::MIN_REVIEWS_REQUIRED,
+            ]);
 
             return null;
         }
 
-        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName());
+        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey);
 
         if (empty($aiAnalysis['summary'])) {
             $this->logger->error('AI analysis returned empty summary', ['coaster' => $coaster->getName()]);
@@ -53,7 +77,7 @@ class CoasterAiSummaryService
         $summary->setSummary($aiAnalysis['summary']);
         $summary->setDynamicPros($aiAnalysis['pros']);
         $summary->setDynamicCons($aiAnalysis['cons']);
-        $summary->setReviewsAnalyzed(\count($reviewsWithText));
+        $summary->setReviewsAnalyzed($reviewCount);
 
         $this->entityManager->persist($summary);
         $this->entityManager->flush();
@@ -61,11 +85,12 @@ class CoasterAiSummaryService
         return $summary;
     }
 
-    public function getInputStats(Coaster $coaster): ?array
+    public function getInputStats(Coaster $coaster, ?string $modelKey = null): ?array
     {
         $reviewsWithText = $this->getCoasterReviews($coaster);
+        $reviewCount = \count($reviewsWithText);
 
-        if (\count($reviewsWithText) < self::MIN_REVIEWS_REQUIRED) {
+        if ($reviewCount < self::MIN_REVIEWS_REQUIRED) {
             return null;
         }
 
@@ -75,11 +100,16 @@ class CoasterAiSummaryService
         $wordCount = str_word_count($inputData);
         $estimatedTokens = (int) ($wordCount * 1.3);
 
+        $model = self::MODELS[$modelKey ?? $this->modelKey];
+        $estimatedCost = ($estimatedTokens / 1000) * $model['input_cost_per_1k'];
+
         return [
-            'reviewCount' => \count($reviewsWithText),
+            'reviewCount' => $reviewCount,
             'inputLength' => $inputLength,
             'wordCount' => $wordCount,
             'estimatedTokens' => $estimatedTokens,
+            'estimatedCost' => $estimatedCost,
+            'model' => $model['id'],
         ];
     }
 
@@ -99,10 +129,10 @@ class CoasterAiSummaryService
 
         $currentReviewCount = $this->riddenCoasterRepository->countCoasterReviewsWithText($coaster);
         $analyzedCount = $summary->getReviewsAnalyzed();
+        $reviewDiff = $currentReviewCount - $analyzedCount;
+        $threshold = max(self::MIN_REVIEWS_REQUIRED, (int) ($analyzedCount * 0.2));
 
-        // Update if 20% more reviews or 90 days old
-        return ($currentReviewCount - $analyzedCount) >= max(self::MIN_REVIEWS_REQUIRED, $analyzedCount * 0.2)
-               || $summary->getUpdatedAt() < new \DateTime('-90 days');
+        return $reviewDiff >= $threshold || $summary->getUpdatedAt() < new \DateTime('-90 days');
     }
 
     private function findOrCreateSummary(Coaster $coaster): CoasterAiSummary
@@ -117,7 +147,7 @@ class CoasterAiSummaryService
         return $summary;
     }
 
-    private function analyzeReviews(array $reviews, string $coasterName): array
+    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null): array
     {
         $reviewTexts = array_map(fn ($review) => $review->getReview(), $reviews);
 
@@ -125,49 +155,46 @@ class CoasterAiSummaryService
             return ['summary' => '', 'pros' => [], 'cons' => []];
         }
 
+        $model = self::MODELS[$modelKey ?? $this->modelKey];
         $prompt = $this->buildPrompt($reviewTexts, $coasterName);
 
         try {
-            $this->logger->info('Calling AWS Bedrock API', ['coaster' => $coasterName]);
-            $startTime = microtime(true);
+            $this->logger->info('Calling AWS Bedrock API', ['coaster' => $coasterName, 'model' => $model['id']]);
+
+            $requestBody = $this->buildRequestBody($model, $prompt);
 
             $response = $this->bedrockClient->invokeModel([
-                'modelId' => 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+                'modelId' => $model['id'],
                 'contentType' => 'application/json',
-                'body' => json_encode([
-                    'anthropic_version' => 'bedrock-2023-05-31',
-                    'max_tokens' => 1000,
-                    'temperature' => 0.6,
-                    'messages' => [
-                        [
-                            'role' => 'user',
-                            'content' => $prompt,
-                        ],
-                    ],
-                ]),
+                'body' => json_encode($requestBody),
             ]);
 
-            $latency = round((microtime(true) - $startTime) * 1000, 2);
             $result = json_decode($response['body']->getContents(), true);
+            $metadata = $response['@metadata'];
 
-            $inputTokens = $response['@metadata']['headers']['x-amzn-bedrock-input-token-count'] ?? 0;
-            $outputTokens = $response['@metadata']['headers']['x-amzn-bedrock-output-token-count'] ?? 0;
-            $totalTokens = $inputTokens + $outputTokens;
+            $latencyMs = $metadata['headers']['x-amzn-bedrock-latency'] ?? null;
+            $inputTokens = $metadata['headers']['x-amzn-bedrock-input-token-count'] ?? 0;
+            $outputTokens = $metadata['headers']['x-amzn-bedrock-output-token-count'] ?? 0;
 
-            $inputCost = ($inputTokens / 1000) * 0.0008;
-            $outputCost = ($outputTokens / 1000) * 0.004;
+            $inputCost = ($inputTokens / 1000) * $model['input_cost_per_1k'];
+            $outputCost = ($outputTokens / 1000) * $model['output_cost_per_1k'];
             $totalCost = $inputCost + $outputCost;
 
-            $this->logger->info('Bedrock API call completed', [
+            $logData = [
                 'coaster' => $coasterName,
-                'latency_ms' => $latency,
+                'model' => $model['id'],
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
-                'total_tokens' => $totalTokens,
-                'cost_usd' => $totalCost,
-            ]);
+                'cost_usd' => round($totalCost, 6),
+            ];
 
-            return $this->parseAiResponse($result['content'][0]['text']);
+            if (null !== $latencyMs) {
+                $logData['latency_ms'] = $latencyMs;
+            }
+
+            $this->logger->info('Bedrock API call completed', $logData);
+
+            return $this->parseAiResponse($this->extractResponseText($result, $model['type']));
         } catch (AwsException $e) {
             $this->logger->error('AWS Bedrock API error', ['coaster' => $coasterName, 'error' => $e->getMessage()]);
 
@@ -178,32 +205,41 @@ class CoasterAiSummaryService
     private function buildPrompt(array $reviewTexts, string $coasterName): string
     {
         $combinedReviews = implode("\n\n---\n\n", $reviewTexts);
+        $reviewCount = \count($reviewTexts);
 
-        return "Analyze these multilingual roller coaster reviews for {$coasterName} and provide:
+        return "You are Captain Coaster, an expert to analyze roller coaster reviews and give future riders the best possible advice on coasters. Analyze these {$reviewCount} multilingual roller coaster reviews for {$coasterName}.
 
-1. A concise 2-4 sentence summary in English highlighting the main consensus
-2. 2-5 of the most mentioned positive aspects (pros) in English (2-5 words each)
-3. 2-5 of the most mentioned negative aspects (cons) in English (2-5 words each)
+Provide:
+1. A concise summary (3-4 sentences) reflecting the actual reviewer consensus
+2. Most frequently mentioned positive aspects (pros) in English (maximum 5 and 2-5 words each)
+2. Most frequently mentioned negative aspects (cons) in English (maximum 5 and 2-5 words each)
 
 Reviews:
 {$combinedReviews}
 
-Format your response as JSON:
+CRITICAL INSTRUCTIONS:
+- If most reviews are negative, you may have 0-1 pros and 3-5 cons
+- If most reviews are positive, you may have 3-5 pros and 0-1 cons
+- Only include what reviewers actually mention repeatedly
+- Respect 3 sentences minimum for the summary
+- Feel free to add a slight touch of humour if appropriate
+- Never mention legal, safety, maintenance, or security aspects
+
+Format as JSON:
 {
-  \"summary\": \"Your summary here\",
-  \"pros\": [\"pro1\", \"pro2\", \"pro3\"],
-  \"cons\": [\"con1\", \"con2\"]
-}
-Never talk about legal or safety aspects.";
+  \"summary\": \"Your honest summary\",
+  \"pros\": [\"only genuine positives\"],
+  \"cons\": [\"only genuine negatives\"]
+}";
     }
 
     private function parseAiResponse(string $response): array
     {
         if (preg_match('/\{.*\}/s', $response, $matches)) {
             $json = json_decode($matches[0], true);
-            if ($json) {
+            if ($json && isset($json['summary'])) {
                 return [
-                    'summary' => $json['summary'] ?? '',
+                    'summary' => $json['summary'],
                     'pros' => $json['pros'] ?? [],
                     'cons' => $json['cons'] ?? [],
                 ];
@@ -211,5 +247,52 @@ Never talk about legal or safety aspects.";
         }
 
         return ['summary' => '', 'pros' => [], 'cons' => []];
+    }
+
+    public function getAvailableModels(): array
+    {
+        return array_keys(self::MODELS);
+    }
+
+    public function getModelConfig(string $modelKey): ?array
+    {
+        return self::MODELS[$modelKey] ?? null;
+    }
+
+    private function buildRequestBody(array $model, string $prompt): array
+    {
+        return match ($model['type']) {
+            'anthropic' => [
+                'anthropic_version' => 'bedrock-2023-05-31',
+                'max_tokens' => 1000,
+                'temperature' => 0.6,
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $prompt,
+                    ],
+                ],
+            ],
+            'openai' => [
+                'messages' => [
+                    [
+                        'role' => 'user',
+                        'content' => $prompt,
+                    ],
+                ],
+                'max_tokens' => 1000,
+                'temperature' => 0.6,
+            ],
+            default => throw new \InvalidArgumentException("Unsupported model type: {$model['type']}")
+        };
+    }
+
+    private function extractResponseText(array $result, string $modelType): string
+    {
+        return match ($modelType) {
+            'anthropic' => $result['content'][0]['text'] ?? '',
+            'openai' => $result['choices'][0]['message']['content'] ?? '',
+            default => ''
+        };
     }
 }
