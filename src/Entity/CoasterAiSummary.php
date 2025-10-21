@@ -18,8 +18,11 @@ class CoasterAiSummary
     private ?int $id = null;
 
     #[ORM\OneToOne(targetEntity: Coaster::class)]
-    #[ORM\JoinColumn(nullable: false, unique: true)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?Coaster $coaster = null;
+
+    #[ORM\Column(type: Types::STRING, length: 2)]
+    private string $language = 'en';
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $summary = null;
@@ -120,6 +123,17 @@ class CoasterAiSummary
     public function setUpdatedAt(\DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+        return $this;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language): static
+    {
+        $this->language = $language;
         return $this;
     }
 }

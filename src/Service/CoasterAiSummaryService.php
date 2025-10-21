@@ -48,7 +48,7 @@ class CoasterAiSummaryService
         return $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
     }
 
-    public function generateSummary(Coaster $coaster, ?string $modelKey = null): ?CoasterAiSummary
+    public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en'): ?CoasterAiSummary
     {
         $reviewsWithText = $this->getCoasterReviews($coaster);
         $reviewCount = \count($reviewsWithText);
@@ -73,11 +73,12 @@ class CoasterAiSummaryService
             return null;
         }
 
-        $summary = $this->findOrCreateSummary($coaster);
+        $summary = $this->findOrCreateSummary($coaster, $language);
         $summary->setSummary($aiAnalysis['summary']);
         $summary->setDynamicPros($aiAnalysis['pros']);
         $summary->setDynamicCons($aiAnalysis['cons']);
         $summary->setReviewsAnalyzed($reviewCount);
+        $summary->setLanguage($language);
 
         $this->entityManager->persist($summary);
         $this->entityManager->flush();
@@ -113,15 +114,15 @@ class CoasterAiSummaryService
         ];
     }
 
-    public function getSummary(Coaster $coaster): ?CoasterAiSummary
+    public function getSummary(Coaster $coaster, string $language = 'en'): ?CoasterAiSummary
     {
         return $this->entityManager->getRepository(CoasterAiSummary::class)
-            ->findOneBy(['coaster' => $coaster]);
+            ->findOneBy(['coaster' => $coaster, 'language' => $language]);
     }
 
-    public function shouldUpdateSummary(Coaster $coaster): bool
+    public function shouldUpdateSummary(Coaster $coaster, string $language = 'en'): bool
     {
-        $summary = $this->getSummary($coaster);
+        $summary = $this->getSummary($coaster, $language);
 
         if (!$summary) {
             return true;
@@ -135,13 +136,14 @@ class CoasterAiSummaryService
         return $reviewDiff >= $threshold || $summary->getUpdatedAt() < new \DateTime('-90 days');
     }
 
-    private function findOrCreateSummary(Coaster $coaster): CoasterAiSummary
+    private function findOrCreateSummary(Coaster $coaster, string $language = 'en'): CoasterAiSummary
     {
-        $summary = $this->getSummary($coaster);
+        $summary = $this->getSummary($coaster, $language);
 
         if (!$summary) {
             $summary = new CoasterAiSummary();
             $summary->setCoaster($coaster);
+            $summary->setLanguage($language);
         }
 
         return $summary;
