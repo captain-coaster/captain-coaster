@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\CoasterRepository;
-use App\Service\CoasterAiSummaryService;
+use App\Service\CoasterSummaryService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,14 +14,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:generate-ai-summaries',
-    description: 'Generate AI summaries for coaster reviews'
+    name: 'app:generate-coaster-summaries',
+    description: 'Generate summaries for coaster reviews'
 )]
-class GenerateAiSummariesCommand extends Command
+class GenerateCoasterSummariesCommand extends Command
 {
     public function __construct(
         private CoasterRepository $coasterRepository,
-        private CoasterAiSummaryService $summaryService
+        private CoasterSummaryService $summaryService
     ) {
         parent::__construct();
     }
@@ -79,11 +79,9 @@ class GenerateAiSummariesCommand extends Command
         return Command::SUCCESS;
     }
 
-
-
     private function processCoaster($coaster, $io, int &$generated): void
     {
-        $reviewCount = count($this->summaryService->getCoasterReviews($coaster));
+        $reviewCount = \count($this->summaryService->getCoasterReviews($coaster));
         
         if ($reviewCount < 20) {
             $io->writeln("⚠ Skipped (insufficient reviews: {$reviewCount}/20)");

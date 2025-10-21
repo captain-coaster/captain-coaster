@@ -8,9 +8,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-#[ORM\Entity]
-#[ORM\Table(name: 'coaster_ai_summary')]
-class CoasterAiSummary
+#[ORM\Entity(repositoryClass: 'App\Repository\CoasterSummaryRepository')]
+#[ORM\Table(name: 'coaster_summary')]
+class CoasterSummary
 {
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
@@ -57,72 +57,7 @@ class CoasterAiSummary
     public function setCoaster(Coaster $coaster): static
     {
         $this->coaster = $coaster;
-        return $this;
-    }
 
-    public function getSummary(): ?string
-    {
-        return $this->summary;
-    }
-
-    public function setSummary(string $summary): static
-    {
-        $this->summary = $summary;
-        return $this;
-    }
-
-    public function getDynamicPros(): array
-    {
-        return $this->dynamicPros;
-    }
-
-    public function setDynamicPros(array $dynamicPros): static
-    {
-        $this->dynamicPros = $dynamicPros;
-        return $this;
-    }
-
-    public function getDynamicCons(): array
-    {
-        return $this->dynamicCons;
-    }
-
-    public function setDynamicCons(array $dynamicCons): static
-    {
-        $this->dynamicCons = $dynamicCons;
-        return $this;
-    }
-
-    public function getReviewsAnalyzed(): int
-    {
-        return $this->reviewsAnalyzed;
-    }
-
-    public function setReviewsAnalyzed(int $reviewsAnalyzed): static
-    {
-        $this->reviewsAnalyzed = $reviewsAnalyzed;
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
-
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
         return $this;
     }
 
@@ -134,6 +69,79 @@ class CoasterAiSummary
     public function setLanguage(string $language): static
     {
         $this->language = $language;
+
+        return $this;
+    }
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    public function setSummary(string $summary): static
+    {
+        $this->summary = $summary;
+
+        return $this;
+    }
+
+    public function getDynamicPros(): array
+    {
+        return $this->dynamicPros;
+    }
+
+    public function setDynamicPros(array $dynamicPros): static
+    {
+        $this->dynamicPros = $dynamicPros;
+
+        return $this;
+    }
+
+    public function getDynamicCons(): array
+    {
+        return $this->dynamicCons;
+    }
+
+    public function setDynamicCons(array $dynamicCons): static
+    {
+        $this->dynamicCons = $dynamicCons;
+
+        return $this;
+    }
+
+    public function getReviewsAnalyzed(): int
+    {
+        return $this->reviewsAnalyzed;
+    }
+
+    public function setReviewsAnalyzed(int $reviewsAnalyzed): static
+    {
+        $this->reviewsAnalyzed = $reviewsAnalyzed;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
         return $this;
     }
 }
