@@ -130,6 +130,7 @@ map_index:
         status: En fonctionnement
         kiddie: Masquer les kiddies
         notridden: Pas encore ridé
+        new: Nouveau ce mois
         score: Score
         atleast: "au moins {count}"
         openingDate: "Date d'ouverture"

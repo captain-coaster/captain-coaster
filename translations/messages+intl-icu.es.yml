@@ -130,6 +130,7 @@ map_index:
         status: Operando
         kiddie: Ocultar Montañas rusas infantil
         notridden: No montado todavía
+        new: Nuevo este mos
         score: Resultado
         atleast: "al menos {count}"
         openingDate: Fecha de apertura

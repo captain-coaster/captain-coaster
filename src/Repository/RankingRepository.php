@@ -92,6 +92,7 @@ class RankingRepository extends ServiceEntityRepository
         $this->filterOpeningDate($qb, $filters);
         $this->filterOpenedStatus($qb, $filters);
         $this->filterByNotRidden($qb, $filters);
+        $this->filterByNewInRanking($qb, $filters);
     }
 
     private function filterLocation(QueryBuilder $qb, array $filters = []): void
@@ -185,6 +186,15 @@ class RankingRepository extends ServiceEntityRepository
             $qb
                 ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
                 ->setParameter('userid', $filters['user']);
+        }
+    }
+
+    /** Filter only new coasters. */
+    private function filterByNewInRanking(QueryBuilder $qb, array $filters = []): void
+    {
+        if (\array_key_exists('new', $filters) && 'on' === $filters['new']) {
+            $qb
+                ->andWhere('c.previousRank is null');
         }
     }
 }
