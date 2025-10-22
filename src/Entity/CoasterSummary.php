@@ -1,0 +1,154 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Entity;
+
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * Entity representing an AI-generated summary of coaster reviews.
+ *
+ * Stores summaries with pros/cons lists generated from user reviews.
+ * Supports multiple languages and tracks analysis metadata.
+ */
+#[ORM\Entity(repositoryClass: 'App\Repository\CoasterSummaryRepository')]
+#[ORM\Table(name: 'coaster_summary')]
+#[ORM\Index(columns: ['coaster_id', 'language'], name: 'idx_coaster_language')]
+class CoasterSummary
+{
+    #[ORM\Column(type: Types::INTEGER)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    private ?int $id = null;
+
+    #[ORM\OneToOne(targetEntity: Coaster::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Coaster $coaster = null;
+
+    #[ORM\Column(type: Types::STRING, length: 2)]
+    private string $language = 'en';
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $summary = null;
+
+    #[ORM\Column(type: Types::JSON)]
+    private array $dynamicPros = [];
+
+    #[ORM\Column(type: Types::JSON)]
+    private array $dynamicCons = [];
+
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $reviewsAnalyzed = 0;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'create')]
+    private ?\DateTimeInterface $createdAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Gedmo\Timestampable(on: 'update')]
+    private ?\DateTimeInterface $updatedAt = null;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getCoaster(): ?Coaster
+    {
+        return $this->coaster;
+    }
+
+    public function setCoaster(Coaster $coaster): static
+    {
+        $this->coaster = $coaster;
+
+        return $this;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    public function setLanguage(string $language): static
+    {
+        $this->language = $language;
+
+        return $this;
+    }
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    public function setSummary(string $summary): static
+    {
+        $this->summary = $summary;
+
+        return $this;
+    }
+
+    public function getDynamicPros(): array
+    {
+        return $this->dynamicPros;
+    }
+
+    public function setDynamicPros(array $dynamicPros): static
+    {
+        $this->dynamicPros = array_values(array_filter($dynamicPros, 'is_string'));
+
+        return $this;
+    }
+
+    public function getDynamicCons(): array
+    {
+        return $this->dynamicCons;
+    }
+
+    public function setDynamicCons(array $dynamicCons): static
+    {
+        $this->dynamicCons = array_values(array_filter($dynamicCons, 'is_string'));
+
+        return $this;
+    }
+
+    public function getReviewsAnalyzed(): int
+    {
+        return $this->reviewsAnalyzed;
+    }
+
+    public function setReviewsAnalyzed(int $reviewsAnalyzed): static
+    {
+        $this->reviewsAnalyzed = max(0, $reviewsAnalyzed);
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+}

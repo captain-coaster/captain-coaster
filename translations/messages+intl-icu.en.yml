@@ -29,6 +29,11 @@ coaster:
         scoreof: "Score of"
         ranked: "Ranked"
         intheworld: "in the world"
+    ai_summary:
+        title: "Review Summary"
+        highlights: "What riders love"
+        concerns: "Common concerns"
+        disclaimer: "AI-generated summary based on {count} reviews"
     rating:
         action: "Rate this coaster!"
         notenough: "Not enough ratings for this coaster!"

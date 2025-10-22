@@ -9,6 +9,7 @@ use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
+use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ImageManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -158,7 +159,8 @@ class CoasterController extends BaseController
         Request $request,
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
-        CoasterRepository $coasterRepository
+        CoasterRepository $coasterRepository,
+        CoasterSummaryRepository $coasterSummaryRepository
     ): Response {
         $rating = null;
         $user = null;
@@ -177,6 +179,7 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'coasterSummary' => $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale()),
             ]
         );
     }

@@ -330,6 +330,43 @@
         </div>
         <div class="col-sm-9">
             <div id="coaster-photos" class="row"></div>
+            {% if coasterSummary %}
+                <div class="row">
+                    <div class="panel panel-flat">
+                        <div class="panel-heading">
+                            <h6 class="panel-title">
+                                <span class="text-semibold">
+                                    <i class="icon-star-full2 position-left"></i> Captain's Review
+                                </span>
+                            </h6>
+                        </div>
+                        <div class="panel-body">
+                            <p class="text-muted mb-15">{{ coasterSummary.summary }}</p>
+                            {% if coasterSummary.dynamicPros|length > 0 or coasterSummary.dynamicCons|length > 0 %}
+                                <div class="row">
+                                    {% if coasterSummary.dynamicPros|length > 0 %}
+                                        <div class="col-md-6">
+                                            <h6 class="text-success"><i class="icon-checkmark3"></i> {{ 'coaster.ai_summary.highlights'|trans }}</h6>
+                                            {% for pro in coasterSummary.dynamicPros %}
+                                                <span class="label label-success label-rounded mr-5 mb-5">{{ pro }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                    {% if coasterSummary.dynamicCons|length > 0 %}
+                                        <div class="col-md-6">
+                                            <h6 class="text-danger"><i class="icon-cross2"></i> {{ 'coaster.ai_summary.concerns'|trans }}</h6>
+                                            {% for con in coasterSummary.dynamicCons %}
+                                                <span class="label label-danger label-rounded mr-5 mb-5">{{ con }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted" style="margin-top: 15px; display: block;"><i class="icon-info22"></i> AI-generated summary based on {{ coasterSummary.reviewsAnalyzed }} reviews</small>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             <div id="coaster-reviews" class="row"></div>
         </div>
     </div>
