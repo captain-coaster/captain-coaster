@@ -1,12 +1,12 @@
-import { Controller } from '@hotwired/stimulus';
-import { trans, REVIEW_REPORT_SUCCESS, REVIEW_REPORT_ERROR, REVIEW_REMOVE_UPVOTE, REVIEW_UPVOTE } from '../translator';
+import {Controller} from '@hotwired/stimulus';
+import {trans, REVIEW_REPORT_SUCCESS, REVIEW_REPORT_ERROR, REVIEW_REMOVE_UPVOTE, REVIEW_UPVOTE} from '../translator';
 
 /**
  * Review actions controller for handling upvotes and reports
  */
 export default class extends Controller {
     // No outlets needed anymore
-    static targets = ['upvoteButton', 'upvoteCount', 'reportButton', 'reportModal', 'reviewContent', 'expandButton', 'collapseButton'];
+    static targets = ['upvoteButton', 'upvoteCount', 'reportButton', 'reportModal', 'reviewContent', 'reviewText', 'expandButton', 'collapseButton'];
     static values = {
         id: Number,
         upvoted: Boolean,
@@ -19,6 +19,13 @@ export default class extends Controller {
         if (this.hasUpvoteButtonTarget && this.upvotedValue) {
             this._updateUpvoteButtonState();
         }
+
+        this.checkOverflow();
+        window.addEventListener('resize', this.checkOverflow.bind(this));
+    }
+
+    disconnect() {
+        window.removeEventListener('resize', this.checkOverflow);
     }
 
     /**
@@ -141,25 +148,50 @@ export default class extends Controller {
         }
     }
 
+    checkOverflow() {
+        if (!this.hasReviewTextTarget) return;
+
+        const textElement = this.reviewTextTarget;
+
+        textElement.style.webkitLineClamp = 'unset';
+        textElement.style.overflow = 'visible';
+        textElement.style.display = 'block';
+
+        const fullHeight = textElement.scrollHeight;
+
+        textElement.style.webkitLineClamp = '2';
+        textElement.style.overflow = 'hidden';
+        textElement.style.display = '-webkit-box'
+
+        if (fullHeight > 40) {
+            this.expandButtonTarget.style.display = 'block';
+            this.collapseButtonTarget.style.display = 'none';
+        } else {
+            this.expandButtonTarget.style.display = 'none';
+            this.collapseButtonTarget.style.display = 'none';
+        }
+    }
+
     /**
      * Toggle between short and full review content
      * @param {Event} event - The click event
      */
     toggleReview(event) {
         event.preventDefault();
+        if (this.hasReviewTextTarget) {
+            const textElement = this.reviewTextTarget;
+            const isExpanded = this.collapseButtonTarget.style.display === 'block';
 
-        if (this.hasReviewContentTarget) {
-            const reviewContent = this.reviewContentTarget;
-            const shortReview = reviewContent.querySelector('.review-short');
-            const fullReview = reviewContent.querySelector('.review-full');
-
-            // Toggle visibility
-            if (shortReview.style.display !== 'none') {
-                shortReview.style.display = 'none';
-                fullReview.style.display = 'block';
+            if (isExpanded) {
+                textElement.style.webkitLineClamp = '2';
+                textElement.style.overflow = 'hidden';
+                this.expandButtonTarget.style.display = 'block';
+                this.collapseButtonTarget.style.display = 'none';
             } else {
-                shortReview.style.display = 'block';
-                fullReview.style.display = 'none';
+                textElement.style.webkitLineClamp = 'unset';
+                textElement.style.overflow = 'visible';
+                this.expandButtonTarget.style.display = 'none';
+                this.collapseButtonTarget.style.display = 'block';
             }
         }
     }
