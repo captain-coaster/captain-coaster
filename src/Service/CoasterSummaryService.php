@@ -150,28 +150,22 @@ class CoasterSummaryService
         $combinedReviews = implode("\n\n---\n\n", $reviewTexts);
         $reviewCount = \count($reviewTexts);
 
-        return "Analyze these {$reviewCount} multilingual roller coaster reviews for {$sanitizedName}.
+        return "You are a roller coaster expert who gives future riders the best possible advice. Analyze these {$reviewCount} multilingual roller coaster reviews for {$sanitizedName}.
 
 Provide:
-1. A concise summary (2-4 sentences) reflecting the actual reviewer consensus
-2. Positive aspects: ONLY list aspects that are genuinely mentioned by multiple reviewers (could be 0, 1, 2, 3, 4, or 5 items)
-3. Negative aspects: ONLY list aspects that are genuinely mentioned by multiple reviewers (could be 0, 1, 2, 3, 4, or 5 items)
+1. A concise summary (3-4 sentences) reflecting the actual reviewer consensus
+2. Most frequently mentioned positive aspects (pros) in English (maximum 5 and 2-5 words each)
+3. Most frequently mentioned negative aspects (cons) in English (maximum 5 and 2-5 words each)
 
 CRITICAL INSTRUCTIONS:
-- DO NOT invent pros/cons to reach a certain number
-- If most reviews are negative, you may have 0-1 pros and 3-5 cons
-- If most reviews are positive, you may have 3-5 pros and 0-1 cons
+- If most reviews are negative, you may have 0-2 pros and 3-5 cons
+- If most reviews are positive, you may have 3-5 pros and 0-2 cons
 - Only include what reviewers actually mention repeatedly
-- Never mention legal, safety, or security aspects
-- Each aspect should be 2-5 words
+- Respect 3 sentences minimum for the summary
+- Never mention legal, safety, maintenance, or security aspects
 
 Reviews:
 {$combinedReviews}
-
-Examples of valid responses:
-- Mostly negative: {\"pros\": [], \"cons\": [\"rough ride\", \"long queues\"]}
-- Mostly positive: {\"pros\": [\"smooth ride\", \"great theming\"], \"cons\": []}
-- Mixed: {\"pros\": [\"intense experience\"], \"cons\": [\"too short\", \"uncomfortable seats\"]}
 
 Format as JSON:
 {

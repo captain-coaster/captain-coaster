@@ -179,7 +179,7 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
-                'summary' => $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale()),
+                'coasterSummary' => $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale()),
             ]
         );
     }

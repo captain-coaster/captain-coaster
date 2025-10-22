@@ -65,7 +65,7 @@ class BedrockService
             $result = json_decode($responseBody, true, 10, \JSON_THROW_ON_ERROR);
             $metadata = $response['@metadata'];
 
-            $latencyMs = $metadata['headers']['x-amzn-bedrock-latency'] ?? null;
+            $latencyMs = $metadata['headers']['x-amzn-bedrock-invocation-latency'] ?? null;
             $inputTokens = $metadata['headers']['x-amzn-bedrock-input-token-count'] ?? 0;
             $outputTokens = $metadata['headers']['x-amzn-bedrock-output-token-count'] ?? 0;
 
@@ -75,6 +75,7 @@ class BedrockService
 
             $logData = [
                 'model' => $model['id'],
+                'latency_ms' => $latencyMs,
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
                 'cost_usd' => round($totalCost, 6),
