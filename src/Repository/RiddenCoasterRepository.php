@@ -131,7 +131,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /** Get only reviews with text content for a specific coaster (all languages). */
-    public function getCoasterReviewsWithText(Coaster $coaster, int $limit = null)
+    public function getCoasterReviewsWithText(Coaster $coaster, ?int $limit = null)
     {
         $qb = $this->getEntityManager()
             ->createQueryBuilder()
@@ -140,15 +140,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('r.user', 'u')
             ->where('r.coaster = :coasterId')
             ->andWhere('r.review IS NOT NULL')
-            ->andWhere('TRIM(r.review) != \'\'') 
+            ->andWhere('TRIM(r.review) != \'\'')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId());
-            
+
         if ($limit) {
             $qb->setMaxResults($limit);
         }
-        
+
         return $qb->getQuery()->getResult();
     }
 
@@ -163,7 +163,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->innerJoin('r.user', 'u')
                 ->where('r.coaster = :coasterId')
                 ->andWhere('r.review IS NOT NULL')
-                ->andWhere('TRIM(r.review) != \'\'') 
+                ->andWhere('TRIM(r.review) != \'\'')
                 ->andWhere('u.enabled = 1')
                 ->setParameter('coasterId', $coaster->getId())
                 ->getQuery()

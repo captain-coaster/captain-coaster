@@ -8,8 +8,15 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
+/**
+ * Entity representing an AI-generated summary of coaster reviews.
+ *
+ * Stores summaries with pros/cons lists generated from user reviews.
+ * Supports multiple languages and tracks analysis metadata.
+ */
 #[ORM\Entity(repositoryClass: 'App\Repository\CoasterSummaryRepository')]
 #[ORM\Table(name: 'coaster_summary')]
+#[ORM\Index(columns: ['coaster_id', 'language'], name: 'idx_coaster_language')]
 class CoasterSummary
 {
     #[ORM\Column(type: Types::INTEGER)]
@@ -92,7 +99,7 @@ class CoasterSummary
 
     public function setDynamicPros(array $dynamicPros): static
     {
-        $this->dynamicPros = $dynamicPros;
+        $this->dynamicPros = array_values(array_filter($dynamicPros, 'is_string'));
 
         return $this;
     }
@@ -104,7 +111,7 @@ class CoasterSummary
 
     public function setDynamicCons(array $dynamicCons): static
     {
-        $this->dynamicCons = $dynamicCons;
+        $this->dynamicCons = array_values(array_filter($dynamicCons, 'is_string'));
 
         return $this;
     }
@@ -116,7 +123,7 @@ class CoasterSummary
 
     public function setReviewsAnalyzed(int $reviewsAnalyzed): static
     {
-        $this->reviewsAnalyzed = $reviewsAnalyzed;
+        $this->reviewsAnalyzed = max(0, $reviewsAnalyzed);
 
         return $this;
     }
