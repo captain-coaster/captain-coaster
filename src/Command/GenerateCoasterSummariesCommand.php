@@ -34,9 +34,10 @@ class GenerateCoasterSummariesCommand extends Command
     {
         $this
             ->addOption('coaster-id', null, InputOption::VALUE_OPTIONAL, 'Generate summary for specific coaster ID')
+            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit number of coasters to process', null)
             ->addOption('force', null, InputOption::VALUE_NONE, 'Force regeneration even if summary exists')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate execution without calling Bedrock API')
-            ->setHelp('This command generates AI summaries for coasters.');
+            ->setHelp('This command generates AI summaries for coasters, processing ranked coasters in order (1, 2, 3...).');
     }
 
     /** Executes the command to generate coaster summaries */
@@ -44,6 +45,7 @@ class GenerateCoasterSummariesCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $coasterId = $input->getOption('coaster-id');
+        $limit = $input->getOption('limit') ? (int) $input->getOption('limit') : null;
         $force = (bool) $input->getOption('force');
         $dryRun = (bool) $input->getOption('dry-run');
 
@@ -57,10 +59,19 @@ class GenerateCoasterSummariesCommand extends Command
                 }
                 $coasters = [$coaster];
             } else {
-                $coasters = $this->coasterRepository->findBy([
-                    'enabled' => true,
-                    'rank' >= 0,
-                ]);
+                // Get ranked coasters ordered by rank (1, 2, 3...)
+                $queryBuilder = $this->coasterRepository->createQueryBuilder('c')
+                    ->where('c.enabled = :enabled')
+                    ->andWhere('c.rank IS NOT NULL')
+                    ->andWhere('c.rank >= 1')
+                    ->orderBy('c.rank', 'ASC')
+                    ->setParameter('enabled', true);
+
+                if ($limit) {
+                    $queryBuilder->setMaxResults($limit);
+                }
+
+                $coasters = $queryBuilder->getQuery()->getResult();
             }
         } catch (\Exception $e) {
             $io->error("Error loading coasters: {$e->getMessage()}");
@@ -70,30 +81,35 @@ class GenerateCoasterSummariesCommand extends Command
 
         $processed = 0;
         $generated = 0;
+        $totalCoasters = \count($coasters);
+
+        $io->note("Processing {$totalCoasters} ranked coasters".($limit ? " (limited to {$limit})" : ''));
 
         foreach ($coasters as $coaster) {
             try {
                 if (!$force && !$this->summaryService->shouldUpdateSummary($coaster)) {
+                    $io->writeln("Skipping #{$coaster->getRank()} {$coaster->getName()} (summary exists)");
                     continue;
                 }
 
-                $io->write("Processing: {$coaster->getName()}... ");
+                $io->write("Processing #{$coaster->getRank()} {$coaster->getName()}... ");
 
                 if ($dryRun) {
                     $io->writeln('  ✓ Dry run - would generate summary');
                 } else {
                     $this->processCoaster($coaster, $io, $generated);
+
+                    // AWS Bedrock rate limiting for GPT OSS 120b
+                    // Conservative approach: 1 request per 2 seconds to stay well under quota
+                    if ($processed < $totalCoasters - 1) { // Don't sleep after last item
+                        $io->writeln('  Waiting 2s for AWS quota management...');
+                        sleep(2);
+                    }
                 }
 
                 ++$processed;
-
-                // Rate limiting to avoid API throttling
-                if (!$dryRun && 0 === $processed % 10) {
-                    $io->note('Pausing to avoid API rate limits...');
-                    sleep(1);
-                }
             } catch (\Exception $e) {
-                $io->error("Error processing coaster {$coaster->getName()}: {$e->getMessage()}");
+                $io->error("Error processing coaster #{$coaster->getRank()} {$coaster->getName()}: {$e->getMessage()}");
                 continue;
             }
         }
