@@ -39,7 +39,7 @@ class UserCrudController extends AbstractCrudController
     {
         return $actions
             ->disable('new')
-            ->setPermission(Action::DELETE, 'ROLE_CONTRIBUTOR');
+            ->setPermission(Action::DELETE, 'ROLE_ADMIN');
     }
 
     public function configureFilters(Filters $filters): Filters
