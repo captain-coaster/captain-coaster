@@ -12,6 +12,9 @@ require("../css/core.css");
 require("../css/components.css");
 require("../css/colors.css");
 
+// Enhanced select component styles
+import "../css/enhanced-select.css";
+
 // Import jQuery and make it globally available for legacy scripts
 import $ from "jquery";
 

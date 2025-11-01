@@ -3,32 +3,32 @@
     "app": {
       "js": [
         "/build/runtime.de461b28.js",
-        "/build/447.48c833d9.js",
-        "/build/12.3d55da3f.js",
+        "/build/697.675cb034.js",
+        "/build/594.298e7472.js",
         "/build/192.b4ba2821.js",
         "/build/661.f81f9bbf.js",
         "/build/19.f5d00069.js",
-        "/build/app.9921690b.js"
+        "/build/app.a38ebb52.js"
       ],
       "css": [
-        "/build/app.f43d28af.css"
+        "/build/app.242d0f27.css"
       ]
     },
     "translator": {
       "js": [
         "/build/runtime.de461b28.js",
-        "/build/447.48c833d9.js",
-        "/build/12.3d55da3f.js",
+        "/build/697.675cb034.js",
+        "/build/594.298e7472.js",
         "/build/19.f5d00069.js",
-        "/build/translator.27ef287e.js"
+        "/build/translator.480f03af.js"
       ]
     },
     "coaster": {
       "js": [
         "/build/runtime.de461b28.js",
-        "/build/447.48c833d9.js",
+        "/build/697.675cb034.js",
         "/build/192.b4ba2821.js",
-        "/build/coaster.6a7a6df7.js"
+        "/build/coaster.1827cf92.js"
       ]
     }
   }
