@@ -2,22 +2,33 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.8ab7f0c8.js",
-        "/build/199.5c7f2be8.js",
-        "/build/153.b1cd91e0.js",
-        "/build/764.ba63872d.js",
-        "/build/app.35d094a1.js"
+        "/build/runtime.de461b28.js",
+        "/build/447.48c833d9.js",
+        "/build/12.3d55da3f.js",
+        "/build/192.b4ba2821.js",
+        "/build/661.f81f9bbf.js",
+        "/build/19.f5d00069.js",
+        "/build/app.9921690b.js"
       ],
       "css": [
-        "/build/app.4d2e6eab.css"
+        "/build/app.f43d28af.css"
       ]
     },
     "translator": {
       "js": [
-        "/build/runtime.8ab7f0c8.js",
-        "/build/199.5c7f2be8.js",
-        "/build/764.ba63872d.js",
-        "/build/translator.a1350de9.js"
+        "/build/runtime.de461b28.js",
+        "/build/447.48c833d9.js",
+        "/build/12.3d55da3f.js",
+        "/build/19.f5d00069.js",
+        "/build/translator.27ef287e.js"
+      ]
+    },
+    "coaster": {
+      "js": [
+        "/build/runtime.de461b28.js",
+        "/build/447.48c833d9.js",
+        "/build/192.b4ba2821.js",
+        "/build/coaster.6a7a6df7.js"
       ]
     }
   }

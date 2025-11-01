@@ -9,9 +9,8 @@ $('document').ready(function () {
 
         $.post(url, {value: $(this).rateit('value')}, function (response) {
         }, 'JSON').done(function (data) {
-            $('#rating-date').show();
             $('#review-delete').html('<a class="text-muted" onclick="deleteRating(' + data.id + ');">delete</a>');
-        });
+        }.bind(this));
     });
 });
 

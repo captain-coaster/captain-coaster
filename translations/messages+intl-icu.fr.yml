@@ -22,7 +22,8 @@ index:
         reviews: avis
         users: utilisateurs
         images: photos
-    missingCoasters: "Nous recherchons des photos pour ces coasters !"
+    missingImages: "Nous recherchons des photos pour ces coasters !"
+
 
 coaster:
     score:
@@ -443,16 +444,7 @@ error:
         title: "Arrêt Technique Rapide ! 🔧"
         message: "Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !"
 
-missing:
-    step1:
-        title: "Ajouter un coaster manquant"
-        subtitle: "Étape 1"
-        choose_description: "Sélectionnez un parc existant ci-dessous"
-        create_description: "Ou créez simplement un nouveau parc"
-        form:
-            choose_btn: "Sélectionner ce parc"
-            park_name: "Entrez le nom du parc"
-            country: "Sélectionnez son pays ci-dessous"
+
 
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"

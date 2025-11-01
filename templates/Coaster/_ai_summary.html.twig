@@ -1,0 +1,95 @@
+{% if coasterSummary %}
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h6 class="panel-title">
+                <span class="text-semibold">
+                    <i class="icon-star-full2 position-left"></i> Captain's Review
+                </span>
+            </h6>
+        </div>
+        <div class="panel-body">
+            <p class="text-muted mb-15">{{ coasterSummary.summary }}</p>
+            {% if coasterSummary.dynamicPros|length > 0 or coasterSummary.dynamicCons|length > 0 %}
+                <div class="row">
+                    {% if coasterSummary.dynamicPros|length > 0 %}
+                        <div class="col-md-6">
+                            <h6 class="text-success"><i class="icon-checkmark3"></i> {{ 'coaster.ai_summary.highlights'|trans }}</h6>
+                            {% for pro in coasterSummary.dynamicPros %}
+                                <span class="label label-success label-rounded mr-5 mb-5">{{ pro }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if coasterSummary.dynamicCons|length > 0 %}
+                        <div class="col-md-6">
+                            <h6 class="text-danger"><i class="icon-cross2"></i> {{ 'coaster.ai_summary.concerns'|trans }}</h6>
+                            {% for con in coasterSummary.dynamicCons %}
+                                <span class="label label-danger label-rounded mr-5 mb-5">{{ con }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            <!-- Feedback Section -->
+            <div class="summary-feedback-section">
+                <div class="row">
+                    <div class="col-md-8">
+                        <small class="text-muted"><i class="icon-info22"></i> AI-generated summary based on {{ coasterSummary.reviewsAnalyzed }} reviews</small>
+                    </div>
+                    <div class="col-md-4 text-right">
+                        <div 
+                            class="summary-feedback-buttons"
+                            data-controller="summary-feedback"
+                            data-summary-feedback-summary-id-value="{{ coasterSummary.id }}"
+                            data-summary-feedback-feedback-url-value="{{ path('summary_feedback', {'id': coasterSummary.id}) }}"
+                            data-summary-feedback-csrf-token-value="{{ csrf_token('summary_feedback_' ~ coasterSummary.id) }}"
+                            {% if userFeedbackState %}
+                                data-summary-feedback-user-vote-value="{% if userFeedbackState['hasVoted'] %}{{ userFeedbackState['isPositive'] ? 'positive' : 'negative' }}{% endif %}"
+                                data-summary-feedback-has-voted-value="{{ userFeedbackState['hasVoted'] ? 'true' : 'false' }}"
+                            {% else %}
+                                data-summary-feedback-user-vote-value=""
+                                data-summary-feedback-has-voted-value="false"
+                            {% endif %}
+                        >
+                            <small class="text-muted mr-5">Was this helpful?</small>
+                            <button 
+                                type="button" 
+                                class="btn btn-xs btn-outline-success mr-1"
+                                data-summary-feedback-target="thumbsUpButton"
+                                data-action="click->summary-feedback#thumbsUp"
+                                title="Mark as helpful"
+                                style="padding: 1px 4px; font-size: 12px; min-width: 24px;"
+                            >
+                                👍
+                            </button>
+                            <button 
+                                type="button" 
+                                class="btn btn-xs btn-outline-danger"
+                                data-summary-feedback-target="thumbsDownButton"
+                                data-action="click->summary-feedback#thumbsDown"
+                                title="Mark as not helpful"
+                                style="padding: 1px 4px; font-size: 12px; min-width: 24px;"
+                            >
+                                👎
+                            </button>
+                            <span style="display: none;">
+                                <span data-summary-feedback-target="positiveCount">{{ coasterSummary.positiveVotes }}</span>
+                                <span data-summary-feedback-target="negativeCount">{{ coasterSummary.negativeVotes }}</span>
+                            </span>
+                            <span 
+                                data-summary-feedback-target="loadingIndicator" 
+                                class="ml-5" 
+                                style="display: none;"
+                            >
+                                <i class="icon-spinner2 spinner" style="font-size: 10px;"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <!-- No summary available -->
+    <div style="display: none;"></div>
+{% endif %}

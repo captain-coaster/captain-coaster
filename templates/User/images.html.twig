@@ -9,10 +9,11 @@
   {% if images|length > 0 %}
     <div id="coaster-photos" class="row">
       <div class="panel panel-flat border-top-blue">
-        <div class="panel-body no-border no-padding-top">
+        <div class="panel-body no-border no-padding-top" data-gallery="user-images">
           {% for image in images %}
             <div class="col-sm-3">
-              <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-popup="lightbox" rel="gallery">
+              <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
+                 data-cropped-thumbnail="{{ pictures_cdn }}/280x210/{{ image.filename }}">
                 <div class="thumb">
                   <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" alt="{{ image.coaster.name }}">
                 </div>
@@ -50,10 +51,49 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/plugins/media/fancybox.min.js') }}"></script>
   <script type="text/javascript">
-        $('[data-popup="lightbox"]').fancybox({
-          padding: 3,
-        });
+        // Initialize PhotoSwipe for user images
+        if (window.PhotoSwipeLightbox) {
+            const lightbox = new window.PhotoSwipeLightbox({
+                gallery: '[data-gallery="user-images"]',
+                children: 'a',
+                pswpModule: window.PhotoSwipe,
+                showHideAnimationType: 'fade',
+                bgOpacity: 0.9,
+                spacing: 0.1,
+                allowPanToNext: true,
+                zoom: true,
+                close: true,
+                arrowKeys: true,
+                returnFocus: true,
+                trapFocus: true,
+                clickToCloseNonZoomable: true
+            });
+
+            // Add event listener to dynamically load image dimensions
+            lightbox.on('uiRegister', () => {
+                lightbox.on('contentLoad', (e) => {
+                    const { content } = e;
+                    
+                    if (content.type === 'image') {
+                        // Create a new image to get actual dimensions
+                        const img = new Image();
+                        img.onload = () => {
+                            // Update content with actual dimensions
+                            content.width = img.naturalWidth;
+                            content.height = img.naturalHeight;
+                            
+                            // Trigger PhotoSwipe to update layout
+                            if (lightbox.pswp) {
+                                lightbox.pswp.updateSize();
+                            }
+                        };
+                        img.src = content.data.src;
+                    }
+                });
+            });
+            
+            lightbox.init();
+        }
   </script>
 {% endblock %}

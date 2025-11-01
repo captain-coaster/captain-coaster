@@ -37,7 +37,12 @@
 
 {% block body %}
   <div class="panel panel-flat">
-    <select class="js-data-example-ajax"></select>
+    <select class="js-data-example-ajax" 
+            data-controller="enhanced-select"
+            data-enhanced-select-searchable-value="true"
+            data-enhanced-select-placeholder-value="{{ 'top.find'|trans }}">
+        <option value="">{{ 'top.find'|trans }}</option>
+    </select>
   </div>
   {{ form_start(form) }}
   <div class="panel panel-flat">
@@ -69,8 +74,6 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
   <script type="text/javascript">
       var $collectionHolder;
 
@@ -138,34 +141,7 @@
           });
       }
 
-      var urlSearch = Routing.generate('top_ajax_search', {'_locale': '{{ app.request.locale }}'});
-      $("select").select2({
-          ajax: {
-              url: urlSearch,
-              dataType: 'json',
-              delay: 250,
-              data: function (params) {
-                  return {
-                      q: params.term,
-                      page: params.page
-                  };
-              },
-              processResults: function (data) {
-                  return {
-                      results: $.map(data.items, function (item) {
-                          return {
-                              text: item.coaster + ' - ' + item.park + ' (' + (item.rating || 'N/A') + ')',
-                              id: item.id
-                          }
-                      })
-                  };
-              },
-              cache: true,
-          },
-          minimumInputLength: 2,
-          placeholder: "{{ 'top.find'|trans }}"
-      });
-
+      // Handle Select2 selection via Stimulus controller events
       jQuery("select").on("select2:select", function (evt) {
           addTagForm($collectionHolder, evt.params.data);
       });

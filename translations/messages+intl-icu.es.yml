@@ -22,7 +22,8 @@ index:
         reviews: reseñas
         users: usuarios
         images: fotos
-    missingCoasters: "¡Buscamos fotos para esta montaña rusa!"
+    missingImages: "¡Buscamos fotos para esta montaña rusa!"
+
 
 coaster:
     score:
@@ -443,16 +444,7 @@ error:
         title: "¡Parada Técnica Rápida! 🔧"
         message: "Por favor, permanezca en línea. ¡Reanudaremos las operaciones en unos minutos!"
 
-missing:
-    step1:
-        title: "Añadir una montaña rusa que falta"
-        subtitle: "Paso 1"
-        choose_description: "Seleccione un parque existente a continuación"
-        create_description: "O simplemente cree un nuevo parque"
-        form:
-            choose_btn: "Seleccionar este parque"
-            park_name: "Introduzca el nombre del parque"
-            country: "Seleccione su país a continuación"
+
 
 banner:
     coasters: "{count, plural, one {1 montaña rusa} other {# montañas rusas}}"

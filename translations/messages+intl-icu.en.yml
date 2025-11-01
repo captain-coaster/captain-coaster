@@ -22,7 +22,8 @@ index:
         reviews: "reviews"
         users: "users"
         images: "pictures"
-    missingCoasters: "We are looking for pictures of these coasters!"
+    missingImages: "We are looking for pictures of these coasters!"
+
 
 coaster:
     score:
@@ -449,16 +450,7 @@ error:
         title: "Quick Technical Stop! 🔧"
         message: "Please remain in line. We will resume operations in a few minutes!"
 
-missing:
-    step1:
-        title: "Add a missing coaster"
-        subtitle: "Step 1"
-        choose_description: "Select an existing park below"
-        create_description: "Or simply create a new park"
-        form:
-            choose_btn: "Select this park"
-            park_name: "Enter park name"
-            country: "Select its country below"
+
 
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"

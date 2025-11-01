@@ -12,6 +12,7 @@ use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ImageManager;
+use App\Service\SummaryFeedbackService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -114,6 +115,40 @@ class CoasterController extends BaseController
         );
     }
 
+    /** Async loads AI summary for a coaster */
+    #[Route(
+        path: '/{slug}/summary/ajax',
+        name: 'coaster_summary_ajax_load',
+        options: ['expose' => true],
+        methods: ['GET'],
+        condition: 'request.isXmlHttpRequest()'
+    )]
+    public function ajaxLoadSummary(
+        Request $request,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster,
+        CoasterSummaryRepository $coasterSummaryRepository,
+        SummaryFeedbackService $summaryFeedbackService
+    ): Response {
+        $user = $this->getUser();
+        $coasterSummary = $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale());
+        
+        // Get user's current feedback state for the summary
+        $userFeedbackState = null;
+        if ($coasterSummary) {
+            $ipAddress = $request->getClientIp() ?? '127.0.0.1';
+            $userFeedbackState = $summaryFeedbackService->getUserFeedbackState($coasterSummary, $user, $ipAddress);
+        }
+
+        return $this->render(
+            'Coaster/_ai_summary.html.twig',
+            [
+                'coasterSummary' => $coasterSummary,
+                'userFeedbackState' => $userFeedbackState,
+            ]
+        );
+    }
+
     /** Async loads reviews for a coaster */
     #[Route(
         path: '/{slug}/reviews/ajax/{page}',
@@ -159,8 +194,7 @@ class CoasterController extends BaseController
         Request $request,
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
-        CoasterRepository $coasterRepository,
-        CoasterSummaryRepository $coasterSummaryRepository
+        CoasterRepository $coasterRepository
     ): Response {
         $rating = null;
         $user = null;
@@ -179,7 +213,6 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
-                'coasterSummary' => $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale()),
             ]
         );
     }

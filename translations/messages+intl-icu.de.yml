@@ -22,7 +22,7 @@ index:
         reviews: Rezensionen
         users: Benutzer
         images: Bilder
-    missingCoasters: "Wir suchen nach Bildern dieser Achterbahn!"
+    missingImages: "Wir suchen nach Bildern dieser Achterbahn!"
 
 coaster:
     score:
@@ -442,17 +442,6 @@ error:
     maintenance:
         title: "Kurzer Technischer Halt! 🔧"
         message: "Bitte bleiben Sie in der Warteschlange. Wir nehmen den Betrieb in wenigen Minuten wieder auf!"
-
-missing:
-    step1:
-        title: Füge eine fehlende Achterbahn hinzu
-        subtitle: Schritt 1
-        choose_description: Wähle unten einen existierenden Park aus
-        create_description: Oder erstelle einfach einen neuen Park
-        form:
-            choose_btn: Wähle diesen Park aus
-            park_name: Gebe den Parknamen ein
-            country: Wähle unten dessen Land aus
 
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"

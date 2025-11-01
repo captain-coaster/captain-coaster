@@ -22,6 +22,7 @@ Encore
      */
     .addEntry('app', './assets/js/app.js')
     .addEntry('translator', './assets/translator.js')
+    .addEntry('coaster', './assets/js/coaster.js')
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
@@ -70,8 +71,11 @@ Encore
     // requires WebpackEncoreBundle 1.4 or higher
     //.enableIntegrityHashes(Encore.isProduction())
 
-    // uncomment if you're having problems with a jQuery plugin
-    //.autoProvidejQuery()
+    // Provide jQuery globally for plugins (uses external jQuery from script tag)
+    .autoProvidejQuery()
+
+    // Enable Stimulus bridge
+    .enableStimulusBridge('./assets/controllers.json')
     ;
 
 module.exports = Encore.getWebpackConfig();

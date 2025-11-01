@@ -19,5 +19,10 @@
         "dev": "encore dev",
         "watch": "encore dev --watch",
         "build": "encore production --progress"
+    },
+    "dependencies": {
+        "apexcharts": "^3.54.1",
+        "jquery.rateit": "^1.1.6",
+        "photoswipe": "^5.4.4"
     }
 }

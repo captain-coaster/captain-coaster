@@ -62,7 +62,7 @@
 <!-- /page container -->
 <!-- Core JS files -->
 {{ encore_entry_script_tags('app') }}
-<script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
+
 <script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
 <!-- /core JS files -->
 <!-- Theme JS files -->
@@ -71,10 +71,13 @@
 <script type="text/javascript" src="{{ asset('js/core/layout_fixed_custom.js') }}"></script>
 <!-- /theme JS files -->
 <script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
+
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 <!-- Symfony UX Translator -->
 {{ encore_entry_script_tags('translator') }}
+<!-- Page-specific entries -->
+{% block page_scripts %}{% endblock %}
 <script type="text/javascript">
   // used for rating
   var locale = '{{ app.request.locale }}';
@@ -156,6 +159,8 @@
           seeMoreResults();
       }
   });
+
+
 
   function seeMoreResults() {
       window.location.href = Routing.generate(
