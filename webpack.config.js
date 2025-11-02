@@ -116,6 +116,15 @@ Encore
 
     // Provide jQuery globally for legacy plugins
     .autoProvidejQuery()
+    
+    // Configure Node.js polyfills for browser compatibility
+    .configureDefinePlugin(options => {
+        options.process = JSON.stringify({
+            env: {
+                NODE_ENV: Encore.isProduction() ? 'production' : 'development'
+            }
+        });
+    })
 
     // Enable Stimulus bridge for modern JavaScript interactions
     .enableStimulusBridge("./assets/controllers.json")

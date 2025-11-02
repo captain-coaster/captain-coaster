@@ -10,30 +10,32 @@ import { lazyLoad, lazyLoadOnVisible } from "./modules/lazy-loader";
 // Import rating functionality for coaster pages (critical for coaster functionality)
 import "./pages/rating";
 
-// ApexCharts loader with proper code splitting
+// ApexCharts loader with minimal build for better performance
 const loadApexCharts = async () => {
     return lazyLoad(
-        () => import(/* webpackChunkName: "apexcharts" */ 'apexcharts'),
+        () => import(/* webpackChunkName: "rating-chart" */ './plugins/rating-chart'),
         'ApexCharts',
         {
             cache: true,
-            timeout: 15000,
+            timeout: 10000,
             onError: (error) => {
                 console.warn('ApexCharts failed to load, charts will not be available');
             }
         }
     ).then(module => {
         const ApexCharts = module.default;
+        const { createRatingChart } = module;
         
         // Make ApexCharts available globally for legacy template code
         window.ApexCharts = ApexCharts;
+        window.createRatingChart = createRatingChart;
         
         // Dispatch a custom event to let the page know ApexCharts is ready
         window.dispatchEvent(new CustomEvent('apexcharts-ready', {
-            detail: { ApexCharts }
+            detail: { ApexCharts, createRatingChart }
         }));
         
-        return ApexCharts;
+        return { ApexCharts, createRatingChart };
     });
 };
 
@@ -45,7 +47,7 @@ const initializeCoasterFeatures = () => {
     // Lazy load ApexCharts when chart containers become visible
     lazyLoadOnVisible(
         '[data-chart], .apexcharts-container, .chart-container',
-        () => import(/* webpackChunkName: "apexcharts" */ 'apexcharts'),
+        () => import(/* webpackChunkName: "rating-chart" */ './plugins/rating-chart'),
         'ApexCharts',
         {
             cache: true,

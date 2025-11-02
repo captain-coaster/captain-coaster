@@ -80,12 +80,12 @@ class CoasterSummaryService
         $summary->setDynamicCons($aiAnalysis['cons']);
         $summary->setReviewsAnalyzed($reviewCount);
         $summary->setLanguage($language);
-        
+
         // Reset votes when summary is regenerated since content has changed
         $summary->setPositiveVotes(0);
         $summary->setNegativeVotes(0);
         $summary->setFeedbackRatio(0.0);
-        
+
         // Clear existing feedback records since they're no longer relevant
         $this->clearSummaryFeedback($summary);
 
@@ -96,10 +96,11 @@ class CoasterSummaryService
     }
 
     /**
-     * Gets summaries with poor feedback ratios for regeneration
-     * 
+     * Gets summaries with poor feedback ratios for regeneration.
+     *
      * @param float $maxRatio Maximum feedback ratio threshold (e.g., 0.3 for 30%)
-     * @param int $minVotes Minimum number of votes required to consider the ratio
+     * @param int   $minVotes Minimum number of votes required to consider the ratio
+     *
      * @return CoasterSummary[]
      */
     public function getSummariesWithPoorFeedback(float $maxRatio = 0.3, int $minVotes = 10): array

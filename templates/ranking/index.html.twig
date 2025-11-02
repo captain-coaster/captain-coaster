@@ -19,7 +19,6 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
   <script type="text/javascript">
     var containerId = 'ranking-result';
     function filterData() {
@@ -87,12 +86,13 @@
       });
     };
 
-    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-    elems.forEach(function(html) {
-      var switchery = new Switchery(html);
-        html.addEventListener('click', function() {
+    // Switchery is auto-loaded by webpack, just add event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('.switchery').forEach(function(element) {
+        element.addEventListener('change', function() {
           filterData();
         });
+      });
     });
 
     filterData();

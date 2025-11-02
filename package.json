@@ -33,10 +33,11 @@
         "clean": "rm -rf public/build/*"
     },
     "dependencies": {
-        "apexcharts": "^3.54.1",
         "bootstrap": "^3.3.7",
         "jquery": "^3.7.1",
         "jquery.rateit": "^1.1.6",
+        "leaflet": "^1.9.4",
+        "mapbox-gl": "^3.16.0",
         "photoswipe": "^5.4.4"
     }
 }

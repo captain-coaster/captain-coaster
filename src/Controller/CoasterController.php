@@ -132,7 +132,7 @@ class CoasterController extends BaseController
     ): Response {
         $user = $this->getUser();
         $coasterSummary = $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale());
-        
+
         // Get user's current feedback state for the summary
         $userFeedbackState = null;
         if ($coasterSummary) {

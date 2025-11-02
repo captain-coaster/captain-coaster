@@ -171,9 +171,7 @@ class CoasterSummary
         return $this;
     }
 
-    /**
-     * @return Collection<int, SummaryFeedback>
-     */
+    /** @return Collection<int, SummaryFeedback> */
     public function getFeedbacks(): Collection
     {
         return $this->feedbacks;
@@ -250,7 +248,7 @@ class CoasterSummary
     public function updateFeedbackMetrics(): void
     {
         $totalVotes = $this->getTotalVotes();
-        
+
         if ($totalVotes > 0) {
             $this->feedbackRatio = (string) ($this->positiveVotes / $totalVotes);
         } else {

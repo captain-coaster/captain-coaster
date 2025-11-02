@@ -2,49 +2,34 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.3f662f95.js",
-        "/build/styles.743b72e7.js",
-        "/build/common-bde52cb3.410eaa8a.js",
-        "/build/common-bb3d84b5.6a3fba25.js",
-        "/build/common-b1140668.8c12d480.js",
-        "/build/common-e96e9bea.4615bf10.js",
-        "/build/app.d8d0682e.js"
+        "http://localhost:8080/build/runtime.js",
+        "http://localhost:8080/build/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_localhost_por-108f8b.js",
+        "http://localhost:8080/build/vendors-node_modules_jquery_rateit_scripts_jquery_rateit_js.js",
+        "http://localhost:8080/build/vendors-node_modules_intl-messageformat_lib_src_core_js.js",
+        "http://localhost:8080/build/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_js_alert_js-dab9b6.js",
+        "http://localhost:8080/build/assets_translator_js.js",
+        "http://localhost:8080/build/app.js"
       ],
       "css": [
-        "/build/styles.3fa28dbd.css"
+        "http://localhost:8080/build/app.css"
       ]
     },
     "translator": {
       "js": [
-        "/build/runtime.3f662f95.js",
-        "/build/common-bde52cb3.410eaa8a.js",
-        "/build/common-bb3d84b5.6a3fba25.js",
-        "/build/common-b1140668.8c12d480.js",
-        "/build/common-e96e9bea.4615bf10.js",
-        "/build/translator.d5ca094e.js"
+        "http://localhost:8080/build/runtime.js",
+        "http://localhost:8080/build/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_localhost_por-108f8b.js",
+        "http://localhost:8080/build/vendors-node_modules_intl-messageformat_lib_src_core_js.js",
+        "http://localhost:8080/build/assets_translator_js.js",
+        "http://localhost:8080/build/translator.js"
       ]
     },
     "coaster": {
       "js": [
-        "/build/runtime.3f662f95.js",
-        "/build/common-bde52cb3.410eaa8a.js",
-        "/build/common-bb3d84b5.6a3fba25.js",
-        "/build/common-b1140668.8c12d480.js",
-        "/build/common-e96e9bea.4615bf10.js",
-        "/build/coaster.800c229a.js"
+        "http://localhost:8080/build/runtime.js",
+        "http://localhost:8080/build/vendors-node_modules_webpack-dev-server_client_index_js_protocol_ws_3A_hostname_localhost_por-108f8b.js",
+        "http://localhost:8080/build/vendors-node_modules_jquery_rateit_scripts_jquery_rateit_js.js",
+        "http://localhost:8080/build/coaster.js"
       ]
     }
-  },
-  "integrity": {
-    "/build/runtime.3f662f95.js": "sha384-vmKwlQk9G5+Sr6R4OZlm76t/C9QJ6BdhAtyaswGPMj7cpOmKoG9fl7KbQpXCB+qc",
-    "/build/styles.743b72e7.js": "sha384-hH2oRYEgAQDb885xA+k7dw70bmaMeALjcodW0EMFxdMknRtpqKIjL3LAoy6Ha+wQ",
-    "/build/common-bde52cb3.410eaa8a.js": "sha384-QLUdf9mTxlN6FL90NE7O4WpSBNmg/FrG12EoqscxGWeEas4fLiq3nYpqyisZkss3",
-    "/build/common-bb3d84b5.6a3fba25.js": "sha384-NfZQjIDm4w4C7mSlb4OC1BqOLVCbbRrZEdFDlBGLrkRb4b8nxjPTu/AaWWGX1fui",
-    "/build/common-b1140668.8c12d480.js": "sha384-PVPOAAgN0oH2YBLfNuj/+SdnAxa8DEjaBS6p6Xv4Sa+XKR9XGCnBjuZw5AydzDPe",
-    "/build/common-e96e9bea.4615bf10.js": "sha384-nKVfUG9IRFEs+Ozcsld5U6Vig6xybLW2LnXnZf75uPCkf98R5rAjo4F5udzyu/BJ",
-    "/build/app.d8d0682e.js": "sha384-gw3Nx0Zdhoej26lacZv6EBfItnK9/dLtCpaQ492v25zBRq8VHAfmS4Liur/AC868",
-    "/build/styles.3fa28dbd.css": "sha384-TyRcO4RBbm7br6yg4Bi3STWwuPLbjP3VDVExHcrekOL1/h7Oe0qPjFRQHqz03JAM",
-    "/build/translator.d5ca094e.js": "sha384-Us2xVpB0+RHG3Y8oB8n4W+rfhC1S5ks5BhMqsFzpxpXeNyliPi3yeqttqt3xNj2T",
-    "/build/coaster.800c229a.js": "sha384-GCpkXx0s23mvK+qDshB5cIV4i0LNfYxDSTPi7MvoBUR+EzC5ecKTjkIPTvrUSyIc"
   }
 }

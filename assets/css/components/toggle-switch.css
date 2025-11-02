@@ -1,0 +1,57 @@
+/**
+ * Toggle Switch Component
+ * Modern CSS-only toggle switches
+ */
+
+.toggle-switch {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 16px;
+    background: #dfdfdf;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.toggle-switch:before {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.3s ease, box-shadow 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.toggle-switch:active:before {
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4), 0 0 0 2px rgba(38, 185, 154, 0.2);
+    transform: scale(1.1);
+}
+
+.toggle-switch.on {
+    background: #26B99A;
+}
+
+.toggle-switch.on:before {
+    transform: translateX(16px);
+}
+
+.toggle-switch.on:active:before {
+    transform: translateX(16px) scale(1.1);
+}
+
+.switchery { 
+    display: none !important; 
+}
+
+/* Ensure parent label has relative positioning */
+.checkbox-switchery label {
+    position: relative;
+    padding-right: 50px;
+}

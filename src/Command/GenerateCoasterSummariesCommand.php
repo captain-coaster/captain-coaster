@@ -61,8 +61,9 @@ class GenerateCoasterSummariesCommand extends Command
         $minVotes = (int) $input->getOption('min-votes');
 
         // Validate min-ratio parameter
-        if ($minRatio !== null && ($minRatio < 0.0 || $minRatio > 1.0)) {
+        if (null !== $minRatio && ($minRatio < 0.0 || $minRatio > 1.0)) {
             $io->error('The --min-ratio option must be between 0.0 and 1.0');
+
             return Command::FAILURE;
         }
 
@@ -75,16 +76,16 @@ class GenerateCoasterSummariesCommand extends Command
                     return Command::FAILURE;
                 }
                 $coasters = [$coaster];
-            } elseif ($minRatio !== null) {
+            } elseif (null !== $minRatio) {
                 // Get summaries with poor feedback ratios
                 $summaries = $this->summaryService->getSummariesWithPoorFeedback($minRatio, $minVotes);
-                $coasters = array_map(fn($summary) => $summary->getCoaster(), $summaries);
-                
+                $coasters = array_map(fn ($summary) => $summary->getCoaster(), $summaries);
+
                 if ($limit) {
-                    $coasters = array_slice($coasters, 0, $limit);
+                    $coasters = \array_slice($coasters, 0, $limit);
                 }
-                
-                $io->note("Found " . count($summaries) . " summaries with feedback ratio ≤ " . ($minRatio * 100) . "% and ≥ {$minVotes} votes");
+
+                $io->note('Found '.\count($summaries).' summaries with feedback ratio ≤ '.($minRatio * 100)."% and ≥ {$minVotes} votes");
             } else {
                 // Get ranked coasters ordered by rank (1, 2, 3...)
                 $queryBuilder = $this->coasterRepository->createQueryBuilder('c')
@@ -110,7 +111,7 @@ class GenerateCoasterSummariesCommand extends Command
         $generated = 0;
         $totalCoasters = \count($coasters);
 
-        if ($minRatio !== null) {
+        if (null !== $minRatio) {
             $io->note("Processing {$totalCoasters} coasters with poor feedback ratios".($limit ? " (limited to {$limit})" : ''));
         } else {
             $io->note("Processing {$totalCoasters} ranked coasters".($limit ? " (limited to {$limit})" : ''));
@@ -119,14 +120,14 @@ class GenerateCoasterSummariesCommand extends Command
         foreach ($coasters as $coaster) {
             try {
                 // For feedback filtering mode, always force regeneration since we're targeting poor summaries
-                $shouldProcess = $minRatio !== null || $force || $this->summaryService->shouldUpdateSummary($coaster);
-                
+                $shouldProcess = null !== $minRatio || $force || $this->summaryService->shouldUpdateSummary($coaster);
+
                 if (!$shouldProcess) {
                     $io->writeln("Skipping #{$coaster->getRank()} {$coaster->getName()} (summary exists)");
                     continue;
                 }
 
-                $rankDisplay = $coaster->getRank() ? "#{$coaster->getRank()}" : "#?";
+                $rankDisplay = $coaster->getRank() ? "#{$coaster->getRank()}" : '#?';
                 $io->write("Processing {$rankDisplay} {$coaster->getName()}... ");
 
                 if ($dryRun) {
@@ -144,7 +145,7 @@ class GenerateCoasterSummariesCommand extends Command
 
                 ++$processed;
             } catch (\Exception $e) {
-                $rankDisplay = $coaster->getRank() ? "#{$coaster->getRank()}" : "#?";
+                $rankDisplay = $coaster->getRank() ? "#{$coaster->getRank()}" : '#?';
                 $io->error("Error processing coaster {$rankDisplay} {$coaster->getName()}: {$e->getMessage()}");
                 continue;
             }

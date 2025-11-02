@@ -134,6 +134,14 @@ document.addEventListener("DOMContentLoaded", () => {
 // Start the Stimulus application
 import "../bootstrap";
 
+// Import plugin loader for auto-initialization
+import "./plugins/index";
+
+// Import simple chart replacement
+import "./plugins/rating-chart";
+
+// Components are now handled by Stimulus controllers
+
 // Initialize Bootstrap components after DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
     // Initialize tooltips efficiently - only on elements that need them

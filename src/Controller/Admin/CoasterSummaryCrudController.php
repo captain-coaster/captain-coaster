@@ -25,7 +25,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CoasterSummaryCrudController extends AbstractCrudController
 {
@@ -55,9 +54,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
         $regenerateAction = Action::new('regenerate', '', 'fas fa-sync-alt')
             ->linkToCrudAction('regenerateSummary')
             ->setCssClass('btn btn-warning btn-sm')
-            ->displayIf(static function (CoasterSummary $summary): bool {
-                return $summary->getCoaster() !== null;
-            });
+            ->displayIf(static fn (CoasterSummary $summary): bool => null !== $summary->getCoaster());
 
         return $actions
             ->add(Crud::PAGE_INDEX, $regenerateAction)
@@ -91,9 +88,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('coaster')
                 ->setLabel('Coaster')
-                ->formatValue(function ($value, CoasterSummary $entity) {
-                    return $entity->getCoaster()?->getName() ?? 'N/A';
-                }),
+                ->formatValue(fn ($value, CoasterSummary $entity) => $entity->getCoaster()?->getName() ?? 'N/A'),
             TextField::new('language')
                 ->setLabel('Language')
                 ->formatValue(function ($value) {
@@ -107,7 +102,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
                 }),
         ];
 
-        if ($pageName === Crud::PAGE_INDEX) {
+        if (Crud::PAGE_INDEX === $pageName) {
             $fields = array_merge($fields, [
                 NumberField::new('feedbackRatio')
                     ->setLabel('Ratio')
@@ -115,23 +110,23 @@ class CoasterSummaryCrudController extends AbstractCrudController
                     ->formatValue(function ($value, CoasterSummary $entity) {
                         $ratio = $entity->getFeedbackRatio();
                         $totalVotes = $entity->getTotalVotes();
-                        
+
                         if ($totalVotes < 5) {
-                            return sprintf('%.1f%%', $ratio * 100);
+                            return \sprintf('%.1f%%', $ratio * 100);
                         }
-                        
-                        $percentage = sprintf('%.1f%%', $ratio * 100);
-                        
+
+                        $percentage = \sprintf('%.1f%%', $ratio * 100);
+
                         // Highlight poor ratios with sufficient votes
                         if ($ratio < 0.3 && $totalVotes >= 5) {
-                            return sprintf('<span class="badge badge-danger">%s</span>', $percentage);
+                            return \sprintf('<span class="badge badge-danger">%s</span>', $percentage);
                         }
-                        
+
                         if ($ratio < 0.5 && $totalVotes >= 5) {
-                            return sprintf('<span class="badge badge-warning">%s</span>', $percentage);
+                            return \sprintf('<span class="badge badge-warning">%s</span>', $percentage);
                         }
-                        
-                        return sprintf('<span class="badge badge-success">%s</span>', $percentage);
+
+                        return \sprintf('<span class="badge badge-success">%s</span>', $percentage);
                     }),
                 IntegerField::new('totalVotes')
                     ->setLabel('Votes')
@@ -139,7 +134,8 @@ class CoasterSummaryCrudController extends AbstractCrudController
                         $total = $entity->getTotalVotes();
                         $positive = $entity->getPositiveVotes();
                         $negative = $entity->getNegativeVotes();
-                        return sprintf('%d (👍%d 👎%d)', $total, $positive, $negative);
+
+                        return \sprintf('%d (👍%d 👎%d)', $total, $positive, $negative);
                     }),
             ]);
         } else {
@@ -156,9 +152,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
                 NumberField::new('feedbackRatio')
                     ->setLabel('Feedback Ratio')
                     ->setNumDecimals(4)
-                    ->formatValue(function ($value, CoasterSummary $entity) {
-                        return sprintf('%.2f%% (%d total votes)', $entity->getFeedbackRatio() * 100, $entity->getTotalVotes());
-                    }),
+                    ->formatValue(fn ($value, CoasterSummary $entity) => \sprintf('%.2f%% (%d total votes)', $entity->getFeedbackRatio() * 100, $entity->getTotalVotes())),
                 IntegerField::new('positiveVotes')->setLabel('Positive Votes'),
                 IntegerField::new('negativeVotes')->setLabel('Negative Votes'),
                 IntegerField::new('reviewsAnalyzed')->setLabel('Reviews Analyzed'),
@@ -174,9 +168,10 @@ class CoasterSummaryCrudController extends AbstractCrudController
     {
         /** @var CoasterSummary $summary */
         $summary = $context->getEntity()->getInstance();
-        
+
         if (!$summary->getCoaster()) {
             $this->addFlash('error', 'Cannot regenerate summary: coaster not found.');
+
             return $this->redirectToRoute('admin');
         }
 
@@ -188,21 +183,21 @@ class CoasterSummaryCrudController extends AbstractCrudController
             );
 
             if ($result['summary']) {
-                $this->addFlash('success', sprintf(
+                $this->addFlash('success', \sprintf(
                     'Summary regenerated successfully for %s (%s). Analyzed %d reviews.',
                     $summary->getCoaster()->getName(),
                     $summary->getLanguage(),
                     $result['summary']->getReviewsAnalyzed()
                 ));
             } else {
-                $this->addFlash('warning', sprintf(
+                $this->addFlash('warning', \sprintf(
                     'Could not regenerate summary for %s (%s). Not enough reviews or AI service unavailable.',
                     $summary->getCoaster()->getName(),
                     $summary->getLanguage()
                 ));
             }
         } catch (\Exception $e) {
-            $this->addFlash('error', sprintf(
+            $this->addFlash('error', \sprintf(
                 'Error regenerating summary for %s: %s',
                 $summary->getCoaster()->getName(),
                 $e->getMessage()

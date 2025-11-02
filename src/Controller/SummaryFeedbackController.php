@@ -11,7 +11,6 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -41,40 +40,39 @@ class SummaryFeedbackController extends BaseController
         Request $request,
         CoasterSummary $summary
     ): JsonResponse {
-
         // Validate CSRF token
-        if (!$this->isCsrfTokenValid('summary_feedback_' . $summary->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('summary_feedback_'.$summary->getId(), $request->request->get('_token'))) {
             $this->logger->warning('Invalid CSRF token for summary feedback', [
                 'ip' => $request->getClientIp(),
-                'summary_id' => $summary->getId()
+                'summary_id' => $summary->getId(),
             ]);
-            
+
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Invalid security token.'
+                'message' => 'Invalid security token.',
             ], Response::HTTP_FORBIDDEN);
         }
 
         // Validate feedback value
         $isPositive = $request->request->get('isPositive');
-        if (!is_string($isPositive) || !in_array($isPositive, ['true', 'false'], true)) {
+        if (!\is_string($isPositive) || !\in_array($isPositive, ['true', 'false'], true)) {
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Invalid feedback value.'
+                'message' => 'Invalid feedback value.',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $isPositive = $isPositive === 'true';
+        $isPositive = 'true' === $isPositive;
         $user = $this->getUser();
         $ipAddress = $request->getClientIp() ?? '127.0.0.1';
 
         try {
             // Submit feedback through service
             $feedback = $this->feedbackService->submitFeedback($summary, $user, $ipAddress, $isPositive);
-            
+
             // Refresh summary to get updated metrics
             $this->entityManager->refresh($summary);
-            
+
             // Get user's current vote state
             $userFeedbackState = $this->feedbackService->getUserFeedbackState($summary, $user, $ipAddress);
 
@@ -85,20 +83,19 @@ class SummaryFeedbackController extends BaseController
                 'totalVotes' => $summary->getTotalVotes(),
                 'feedbackRatio' => $summary->getFeedbackRatio(),
                 'userVote' => $userFeedbackState['isPositive'],
-                'hasVoted' => $userFeedbackState['hasVoted']
+                'hasVoted' => $userFeedbackState['hasVoted'],
             ]);
-            
         } catch (\Exception $e) {
             $this->logger->error('Error submitting summary feedback', [
                 'summary_id' => $summary->getId(),
                 'user_id' => $user?->getId(),
                 'ip' => $ipAddress,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred while submitting feedback.'
+                'message' => 'An error occurred while submitting feedback.',
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

@@ -29,10 +29,10 @@ class SummaryFeedbackService
     /**
      * Submits feedback for a summary, handling duplicate votes and vote changes.
      *
-     * @param CoasterSummary $summary The summary to provide feedback for
-     * @param User|null $user The authenticated user (null for anonymous)
-     * @param string $ipAddress The user's IP address
-     * @param bool $isPositive True for thumbs up, false for thumbs down
+     * @param CoasterSummary $summary    The summary to provide feedback for
+     * @param User|null      $user       The authenticated user (null for anonymous)
+     * @param string         $ipAddress  The user's IP address
+     * @param bool           $isPositive True for thumbs up, false for thumbs down
      *
      * @return SummaryFeedback The created or updated feedback entity
      */
@@ -51,12 +51,12 @@ class SummaryFeedbackService
                     'summary_id' => $summary->getId(),
                     'user_id' => $user?->getId(),
                     'old_vote' => $existingFeedback->isPositive() ? 'positive' : 'negative',
-                    'new_vote' => $isPositive ? 'positive' : 'negative'
+                    'new_vote' => $isPositive ? 'positive' : 'negative',
                 ]);
 
                 $existingFeedback->setIsPositive($isPositive);
                 $this->entityManager->flush();
-                
+
                 // Recalculate summary metrics
                 $this->updateSummaryMetrics($summary);
             }
@@ -77,7 +77,7 @@ class SummaryFeedbackService
         $this->logger->info('New feedback submitted', [
             'summary_id' => $summary->getId(),
             'user_id' => $user?->getId(),
-            'vote' => $isPositive ? 'positive' : 'negative'
+            'vote' => $isPositive ? 'positive' : 'negative',
         ]);
 
         // Recalculate summary metrics
@@ -115,7 +115,7 @@ class SummaryFeedbackService
         // Update summary with new counts
         $summary->setPositiveVotes((int) $positiveCount);
         $summary->setNegativeVotes((int) $negativeCount);
-        
+
         // Let the entity calculate the ratio
         $summary->updateFeedbackMetrics();
 
@@ -125,16 +125,16 @@ class SummaryFeedbackService
             'summary_id' => $summary->getId(),
             'positive_votes' => $positiveCount,
             'negative_votes' => $negativeCount,
-            'feedback_ratio' => $summary->getFeedbackRatio()
+            'feedback_ratio' => $summary->getFeedbackRatio(),
         ]);
     }
 
     /**
      * Finds existing feedback for a user/IP and summary combination.
      *
-     * @param CoasterSummary $summary The summary to check
-     * @param User|null $user The authenticated user (null for anonymous)
-     * @param string $hashedIp The hashed IP address
+     * @param CoasterSummary $summary  The summary to check
+     * @param User|null      $user     The authenticated user (null for anonymous)
+     * @param string         $hashedIp The hashed IP address
      *
      * @return SummaryFeedback|null The existing feedback or null if not found
      */
@@ -144,7 +144,7 @@ class SummaryFeedbackService
             // For authenticated users, find by user and summary
             return $this->feedbackRepository->findOneBy([
                 'summary' => $summary,
-                'user' => $user
+                'user' => $user,
             ]);
         }
 
@@ -152,7 +152,7 @@ class SummaryFeedbackService
         return $this->feedbackRepository->findOneBy([
             'summary' => $summary,
             'ipAddress' => $hashedIp,
-            'user' => null
+            'user' => null,
         ]);
     }
 
@@ -167,15 +167,15 @@ class SummaryFeedbackService
     {
         // Use SHA-256 with a salt for privacy
         // This allows duplicate detection while protecting user privacy
-        return hash('sha256', $ipAddress . 'captain_coaster_feedback_salt');
+        return hash('sha256', $ipAddress.'captain_coaster_feedback_salt');
     }
 
     /**
      * Gets the current feedback state for a user/IP and summary.
      *
-     * @param CoasterSummary $summary The summary to check
-     * @param User|null $user The authenticated user (null for anonymous)
-     * @param string $ipAddress The user's IP address
+     * @param CoasterSummary $summary   The summary to check
+     * @param User|null      $user      The authenticated user (null for anonymous)
+     * @param string         $ipAddress The user's IP address
      *
      * @return array{hasVoted: bool, isPositive: bool|null} The current vote state
      */
@@ -187,13 +187,13 @@ class SummaryFeedbackService
         if ($existingFeedback) {
             return [
                 'hasVoted' => true,
-                'isPositive' => $existingFeedback->isPositive()
+                'isPositive' => $existingFeedback->isPositive(),
             ];
         }
 
         return [
             'hasVoted' => false,
-            'isPositive' => null
+            'isPositive' => null,
         ];
     }
 }
