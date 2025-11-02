@@ -82,7 +82,12 @@
 
     <!-- Report Modal -->
     {% if is_granted('ROLE_USER') %}
-      <div id="reportModal-{{ review.id }}" class="modal fade" data-review-actions-target="reportModal">
+      <div id="reportModal-{{ review.id }}" 
+           class="modal fade" 
+           data-controller="modal"
+           data-review-actions-target="reportModal"
+           data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
+           data-modal-target="modal">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -94,7 +99,7 @@
               <div class="modal-body">
                 <div class="form-group">
                   <label>{{ 'review.report_reason'|trans }}</label>
-                  <select name="reason" class="form-control">
+                  <select name="reason" class="form-control" autofocus>
                     <option value="offensive">{{ 'review.reason.offensive'|trans }}</option>
                     <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
                     <option value="incorrect">{{ 'review.reason.incorrect'|trans }}</option>

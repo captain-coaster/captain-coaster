@@ -62,15 +62,8 @@
 <!-- /page container -->
 <!-- Core JS files -->
 {{ encore_entry_script_tags('app') }}
-
-<script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
+<!-- Bootstrap 3.3.7, theme JS, and plugins are now included in the Webpack bundle -->
 <!-- /core JS files -->
-<!-- Theme JS files -->
-<script type="text/javascript" src="{{ asset('js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/core/app.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/core/layout_fixed_custom.js') }}"></script>
-<!-- /theme JS files -->
-<script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
