@@ -1,0 +1,216 @@
+/* ------------------------------------------------------------------------------
+ *
+ *  # Main stylesheet
+ *
+ *  Main entry point for Captain Coaster styles with Bootstrap 3.3.7 integration
+ *  Based on CSS usage analysis - only includes components with 20%+ usage
+ *
+ *  Version: 2.0
+ *  Latest update: November 2024
+ *
+ * ---------------------------------------------------------------------------- */
+
+// Import Bootstrap 3.3.7 from npm (selective imports based on usage analysis)
+@import "~bootstrap/less/variables.less";
+@import "~bootstrap/less/mixins.less";
+
+// Import purchased theme's color palette and variables (used for @color-primary-500)
+@import "theme/core/colors/palette.less";
+@import "theme/core/variables/variables-core.less";
+@import "theme/core/variables/variables-custom.less";
+
+// Import theme's custom mixins (needed for navbar components)
+@import "theme/core/mixins/nav-vertical-align.less";
+
+// Bootstrap Core CSS (high usage components only)
+@import "~bootstrap/less/normalize.less";
+@import "~bootstrap/less/print.less";
+@import "~bootstrap/less/scaffolding.less";
+@import "~bootstrap/less/type.less";
+@import "~bootstrap/less/grid.less";
+@import "~bootstrap/less/tables.less";
+@import "~bootstrap/less/forms.less";
+@import "~bootstrap/less/buttons.less";
+
+// Bootstrap utilities (needed for mixins like .pull-left())
+@import "~bootstrap/less/utilities.less";
+
+// Bootstrap responsive utilities (needed for mobile/desktop visibility)
+@import "~bootstrap/less/responsive-utilities.less";
+
+// Bootstrap Components (20%+ usage based on analysis)
+@import "~bootstrap/less/component-animations.less";
+@import "~bootstrap/less/dropdowns.less";
+@import "~bootstrap/less/button-groups.less";
+@import "~bootstrap/less/input-groups.less";
+@import "~bootstrap/less/navs.less";
+@import "~bootstrap/less/navbar.less";
+@import "~bootstrap/less/breadcrumbs.less";
+@import "~bootstrap/less/pagination.less";
+@import "~bootstrap/less/pager.less";
+@import "~bootstrap/less/labels.less";
+@import "~bootstrap/less/badges.less";
+@import "~bootstrap/less/thumbnails.less";
+@import "~bootstrap/less/alerts.less";
+@import "~bootstrap/less/media.less";
+@import "~bootstrap/less/list-group.less";
+@import "~bootstrap/less/panels.less";
+@import "~bootstrap/less/close.less";
+@import "~bootstrap/less/modals.less";
+
+// Import theme overrides for high-usage Bootstrap components
+@import "theme/bootstrap-limitless/scaffolding.less";      // 50% usage
+@import "theme/bootstrap-limitless/type.less";             // 42% usage
+@import "theme/bootstrap-limitless/buttons.less";          // 52% usage
+@import "theme/bootstrap-limitless/dropdowns.less";        // 47% usage
+@import "theme/bootstrap-limitless/navbar.less";           // 28% usage (but core component)
+@import "theme/bootstrap-limitless/navs.less";             // 30% usage
+@import "theme/bootstrap-limitless/alerts.less";           // 40% usage
+@import "theme/bootstrap-limitless/badges.less";           // 47% usage
+@import "theme/bootstrap-limitless/labels.less";           // 44% usage
+@import "theme/bootstrap-limitless/media.less";            // 70% usage
+@import "theme/bootstrap-limitless/modals.less";           // 55% usage
+@import "theme/bootstrap-limitless/panels.less";           // 33% usage
+@import "theme/bootstrap-limitless/thumbnails.less";       // 46% usage
+@import "theme/bootstrap-limitless/breadcrumbs.less";      // 36% usage
+@import "theme/bootstrap-limitless/forms.less";            // 29% usage
+@import "theme/bootstrap-limitless/tables.less";           // 29% usage
+@import "theme/bootstrap-limitless/list-group.less";       // 38% usage
+@import "theme/bootstrap-limitless/pagination.less";       // 25% usage
+@import "theme/bootstrap-limitless/pager.less";            // 22% usage
+@import "theme/bootstrap-limitless/button-groups.less";    // 26% usage
+@import "theme/bootstrap-limitless/input-groups.less";     // 20% usage
+@import "theme/bootstrap-limitless/close.less";            // 50% usage
+
+// Import theme's core layout components (high usage)
+@import "theme/core/layout/content.less";                 // 100% usage
+@import "theme/core/layout/sidebar.less";                 // 37% usage
+@import "theme/core/layout/footer.less";                  // 67% usage
+
+// Import essential theme UI components (good usage)
+@import "theme/components/ui/helpers.less";               // 26% usage
+@import "theme/components/ui/heading-elements.less";      // 31% usage
+@import "theme/components/ui/toolbar.less";               // 50% usage
+
+// Import form components (needed for switchery and other form elements)
+@import "theme/components/plugins/forms/checkboxes/switchery.less";  // 43% usage
+@import "theme/components/plugins/forms/checkboxes/uniform.less";     // 33% usage
+
+// Import high-usage page components (excluding login.less due to image path issues)
+// @import "theme/components/pages/login.less";              // 62% usage - has image path issues
+@import "theme/components/pages/profile.less";            // 55% usage
+@import "theme/components/pages/user-list.less";          // 75% usage
+
+// Import additional components for better UI support
+@import "theme/core/layout/component-animation.less";     // 16% usage - needed for animations
+@import "theme/core/colors/colors.less";                  // 33% usage - needed for color classes
+
+// Import icon fonts (required for UI components)
+@import "../css/icons/icomoon/styles.css";
+
+// Import additional CSS components
+@import "../css/enhanced-select.css";
+@import "../css/image-optimization.css";
+
+
+// Summary Feedback Styles (custom component)
+.summary-feedback {
+    margin-top: 15px;
+    padding: 10px 0;
+    border-top: 1px solid #eee;
+}
+
+.summary-feedback-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.summary-feedback-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.summary-feedback-button:hover {
+    text-decoration: none;
+}
+
+.summary-feedback-button.loading {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.summary-feedback-button.loading::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    margin-left: 5px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.summary-feedback-stats {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.summary-feedback-loading {
+    display: none;
+    font-size: 12px;
+    color: #666;
+    margin-left: 10px;
+}
+
+// Button variants for summary feedback
+.btn-outline-success.summary-feedback-button {
+    color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-outline-success.summary-feedback-button:hover {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-success.summary-feedback-button {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.btn-outline-danger.summary-feedback-button {
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-danger.summary-feedback-button:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-danger.summary-feedback-button {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+

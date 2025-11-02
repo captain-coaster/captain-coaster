@@ -1,0 +1,1566 @@
+{
+  "highPriorityRemovals": [
+    {
+      "file": "assets/less/_bootstrap/code.less",
+      "usagePercentage": 0,
+      "size": 1401,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/glyphicons.less",
+      "usagePercentage": 0,
+      "size": 19807,
+      "usedClasses": 0,
+      "totalClasses": 272
+    },
+    {
+      "file": "assets/less/_bootstrap/jumbotron.less",
+      "usagePercentage": 0,
+      "size": 1152,
+      "usedClasses": 0,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/alerts.less",
+      "usagePercentage": 0,
+      "size": 257,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/background-variant.less",
+      "usagePercentage": 0,
+      "size": 151,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/border-radius.less",
+      "usagePercentage": 0,
+      "size": 468,
+      "usedClasses": 0,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/center-block.less",
+      "usagePercentage": 0,
+      "size": 120,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/clearfix.less",
+      "usagePercentage": 0,
+      "size": 605,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/gradients.less",
+      "usagePercentage": 0,
+      "size": 4388,
+      "usedClasses": 0,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/grid-framework.less",
+      "usagePercentage": 0,
+      "size": 2797,
+      "usedClasses": 0,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/grid.less",
+      "usagePercentage": 0,
+      "size": 3120,
+      "usedClasses": 0,
+      "totalClasses": 19
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/hide-text.less",
+      "usagePercentage": 0,
+      "size": 575,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/labels.less",
+      "usagePercentage": 0,
+      "size": 161,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/nav-divider.less",
+      "usagePercentage": 0,
+      "size": 232,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/nav-vertical-align.less",
+      "usagePercentage": 0,
+      "size": 364,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/opacity.less",
+      "usagePercentage": 0,
+      "size": 148,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/pagination.less",
+      "usagePercentage": 0,
+      "size": 485,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/progress-bar.less",
+      "usagePercentage": 0,
+      "size": 191,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/reset-filter.less",
+      "usagePercentage": 0,
+      "size": 248,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/reset-text.less",
+      "usagePercentage": 0,
+      "size": 470,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/resize.less",
+      "usagePercentage": 0,
+      "size": 196,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/responsive-visibility.less",
+      "usagePercentage": 0,
+      "size": 354,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/size.less",
+      "usagePercentage": 0,
+      "size": 127,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/tab-focus.less",
+      "usagePercentage": 0,
+      "size": 332,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/text-emphasis.less",
+      "usagePercentage": 0,
+      "size": 128,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/text-overflow.less",
+      "usagePercentage": 0,
+      "size": 162,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/vendor-prefixes.less",
+      "usagePercentage": 0,
+      "size": 6653,
+      "usedClasses": 0,
+      "totalClasses": 34
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins.less",
+      "usagePercentage": 0,
+      "size": 1136,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_bootstrap/normalize.less",
+      "usagePercentage": 0,
+      "size": 7559,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_bootstrap/popovers.less",
+      "usagePercentage": 0,
+      "size": 3488,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/_bootstrap/responsive-embed.less",
+      "usagePercentage": 0,
+      "size": 546,
+      "usedClasses": 0,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_bootstrap/wells.less",
+      "usagePercentage": 0,
+      "size": 527,
+      "usedClasses": 0,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_global/global.less",
+      "usagePercentage": 0,
+      "size": 741,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_main_full/bootstrap.less",
+      "usagePercentage": 0,
+      "size": 2169,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_main_full/colors.less",
+      "usagePercentage": 0,
+      "size": 510,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_main_full/components.less",
+      "usagePercentage": 0,
+      "size": 8835,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_main_full/core.less",
+      "usagePercentage": 0,
+      "size": 1851,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_main_seed/bootstrap.less",
+      "usagePercentage": 0,
+      "size": 2169,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_main_seed/colors.less",
+      "usagePercentage": 0,
+      "size": 510,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/_main_seed/components.less",
+      "usagePercentage": 0,
+      "size": 9010,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_main_seed/core.less",
+      "usagePercentage": 0,
+      "size": 1851,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/code.less",
+      "usagePercentage": 0,
+      "size": 811,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/glyphicons.less",
+      "usagePercentage": 0,
+      "size": 953,
+      "usedClasses": 0,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/popovers.less",
+      "usagePercentage": 0,
+      "size": 1607,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/progress-bars.less",
+      "usagePercentage": 0,
+      "size": 2778,
+      "usedClasses": 0,
+      "totalClasses": 15
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/tooltip.less",
+      "usagePercentage": 0,
+      "size": 987,
+      "usedClasses": 0,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/wells.less",
+      "usagePercentage": 0,
+      "size": 1039,
+      "usedClasses": 0,
+      "totalClasses": 8
+    },
+    {
+      "file": "assets/less/components/charts/c3.less",
+      "usagePercentage": 0,
+      "size": 3246,
+      "usedClasses": 0,
+      "totalClasses": 38
+    },
+    {
+      "file": "assets/less/components/charts/charts.less",
+      "usagePercentage": 0,
+      "size": 1071,
+      "usedClasses": 0,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/components/charts/d3.less",
+      "usagePercentage": 0,
+      "size": 7015,
+      "usedClasses": 0,
+      "totalClasses": 32
+    },
+    {
+      "file": "assets/less/components/charts/sparklines.less",
+      "usagePercentage": 0,
+      "size": 736,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/components/maps/google-maps.less",
+      "usagePercentage": 0,
+      "size": 490,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/components/maps/jvectormap.less",
+      "usagePercentage": 0,
+      "size": 1078,
+      "usedClasses": 0,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/components/pace/default.less",
+      "usagePercentage": 0,
+      "size": 675,
+      "usedClasses": 0,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/components/pace/pace-demo.less",
+      "usagePercentage": 0,
+      "size": 6733,
+      "usedClasses": 0,
+      "totalClasses": 24
+    },
+    {
+      "file": "assets/less/components/pace/theme-bar-sm.less",
+      "usagePercentage": 0,
+      "size": 2201,
+      "usedClasses": 0,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/pace/theme-bar-xs.less",
+      "usagePercentage": 0,
+      "size": 2201,
+      "usedClasses": 0,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/pace/theme-bar.less",
+      "usagePercentage": 0,
+      "size": 2204,
+      "usedClasses": 0,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/pace/theme-corners.less",
+      "usagePercentage": 0,
+      "size": 2245,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-perspective.less",
+      "usagePercentage": 0,
+      "size": 2322,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-radar.less",
+      "usagePercentage": 0,
+      "size": 1769,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-squares.less",
+      "usagePercentage": 0,
+      "size": 1875,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-tail-circle.less",
+      "usagePercentage": 0,
+      "size": 1763,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-tail.less",
+      "usagePercentage": 0,
+      "size": 1713,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-xbox-sm.less",
+      "usagePercentage": 0,
+      "size": 2118,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-xbox-xs.less",
+      "usagePercentage": 0,
+      "size": 2117,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pace/theme-xbox.less",
+      "usagePercentage": 0,
+      "size": 2120,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/pages/task-manager.less",
+      "usagePercentage": 0,
+      "size": 1831,
+      "usedClasses": 0,
+      "totalClasses": 5
+    },
+    {
+      "file": "assets/less/components/plugins/forms/editors/ace.less",
+      "usagePercentage": 0,
+      "size": 363,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/components/plugins/forms/extensions/validation.less",
+      "usagePercentage": 0,
+      "size": 1238,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/components/plugins/forms/menus/select2.less",
+      "usagePercentage": 0,
+      "size": 17898,
+      "usedClasses": 0,
+      "totalClasses": 49
+    },
+    {
+      "file": "assets/less/components/plugins/forms/plugins/maxlength.less",
+      "usagePercentage": 0,
+      "size": 457,
+      "usedClasses": 0,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/components/plugins/forms/tags/tags-input.less",
+      "usagePercentage": 0,
+      "size": 2648,
+      "usedClasses": 0,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/components/plugins/images/fancybox.less",
+      "usagePercentage": 0,
+      "size": 5813,
+      "usedClasses": 0,
+      "totalClasses": 27
+    },
+    {
+      "file": "assets/less/components/plugins/images/image-cropper.less",
+      "usagePercentage": 0,
+      "size": 6048,
+      "usedClasses": 0,
+      "totalClasses": 45
+    },
+    {
+      "file": "assets/less/components/plugins/notifications/sweet-alerts.less",
+      "usagePercentage": 0,
+      "size": 17320,
+      "usedClasses": 0,
+      "totalClasses": 56
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/anytime.less",
+      "usagePercentage": 0,
+      "size": 5485,
+      "usedClasses": 0,
+      "totalClasses": 57
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/pickadate/base.less",
+      "usagePercentage": 0,
+      "size": 1288,
+      "usedClasses": 0,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/pickadate/date.less",
+      "usagePercentage": 0,
+      "size": 5685,
+      "usedClasses": 0,
+      "totalClasses": 23
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/pickadate/time.less",
+      "usagePercentage": 0,
+      "size": 2252,
+      "usedClasses": 0,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/spectrum.less",
+      "usagePercentage": 0,
+      "size": 13980,
+      "usedClasses": 0,
+      "totalClasses": 62
+    },
+    {
+      "file": "assets/less/components/plugins/sliders/ion-range-slider.less",
+      "usagePercentage": 0,
+      "size": 5763,
+      "usedClasses": 0,
+      "totalClasses": 25
+    },
+    {
+      "file": "assets/less/components/plugins/sliders/noui-slider.less",
+      "usagePercentage": 0,
+      "size": 10128,
+      "usedClasses": 0,
+      "totalClasses": 40
+    },
+    {
+      "file": "assets/less/components/plugins/sliders/slider-pips.less",
+      "usagePercentage": 0,
+      "size": 5583,
+      "usedClasses": 0,
+      "totalClasses": 16
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-columns-reorder.less",
+      "usagePercentage": 0,
+      "size": 684,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-fixed-columns.less",
+      "usagePercentage": 0,
+      "size": 1507,
+      "usedClasses": 0,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-fixed-header.less",
+      "usagePercentage": 0,
+      "size": 1084,
+      "usedClasses": 0,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-keytable.less",
+      "usagePercentage": 0,
+      "size": 1190,
+      "usedClasses": 0,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-rows-reorder.less",
+      "usagePercentage": 0,
+      "size": 948,
+      "usedClasses": 0,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-scroller.less",
+      "usagePercentage": 0,
+      "size": 1058,
+      "usedClasses": 0,
+      "totalClasses": 5
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-select.less",
+      "usagePercentage": 0,
+      "size": 2086,
+      "usedClasses": 0,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/components/plugins/ui/prism.less",
+      "usagePercentage": 0,
+      "size": 4380,
+      "usedClasses": 0,
+      "totalClasses": 38
+    },
+    {
+      "file": "assets/less/components/plugins/ui/progress-buttons.less",
+      "usagePercentage": 0,
+      "size": 6502,
+      "usedClasses": 0,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/components/ui/snippets.less",
+      "usagePercentage": 0,
+      "size": 609,
+      "usedClasses": 0,
+      "totalClasses": 1
+    },
+    {
+      "file": "assets/less/core/colors/palette.less",
+      "usagePercentage": 0,
+      "size": 4164,
+      "usedClasses": 0,
+      "totalClasses": 0
+    },
+    {
+      "file": "assets/less/core/mixins/nav-vertical-align.less",
+      "usagePercentage": 0,
+      "size": 739,
+      "usedClasses": 0,
+      "totalClasses": 4
+    }
+  ],
+  "mediumPriorityRemovals": [
+    {
+      "file": "assets/less/_bootstrap/carousel.less",
+      "usagePercentage": 12,
+      "size": 5651,
+      "usedClasses": 3,
+      "totalClasses": 26
+    },
+    {
+      "file": "assets/less/_bootstrap/forms.less",
+      "usagePercentage": 20,
+      "size": 15822,
+      "usedClasses": 9,
+      "totalClasses": 46
+    },
+    {
+      "file": "assets/less/_bootstrap/grid.less",
+      "usagePercentage": 14,
+      "size": 1387,
+      "usedClasses": 1,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/_bootstrap/progress-bars.less",
+      "usagePercentage": 7,
+      "size": 1925,
+      "usedClasses": 1,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/_bootstrap/responsive-utilities.less",
+      "usagePercentage": 14,
+      "size": 4262,
+      "usedClasses": 4,
+      "totalClasses": 28
+    },
+    {
+      "file": "assets/less/_bootstrap/tooltip.less",
+      "usagePercentage": 7,
+      "size": 2985,
+      "usedClasses": 1,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/_bootstrap/utilities.less",
+      "usagePercentage": 18,
+      "size": 747,
+      "usedClasses": 2,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/demo.less",
+      "usagePercentage": 7,
+      "size": 5634,
+      "usedClasses": 2,
+      "totalClasses": 28
+    },
+    {
+      "file": "assets/less/components/extensions/jquery_ui/interactions.less",
+      "usagePercentage": 19,
+      "size": 3687,
+      "usedClasses": 6,
+      "totalClasses": 31
+    },
+    {
+      "file": "assets/less/components/extensions/jquery_ui/widgets.less",
+      "usagePercentage": 3,
+      "size": 32640,
+      "usedClasses": 5,
+      "totalClasses": 149
+    },
+    {
+      "file": "assets/less/components/pages/ecommerce.less",
+      "usagePercentage": 9,
+      "size": 2798,
+      "usedClasses": 1,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/pages/timelines.less",
+      "usagePercentage": 7,
+      "size": 8101,
+      "usedClasses": 1,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/components/plugins/forms/checkboxes/bootstrap-switch.less",
+      "usagePercentage": 6,
+      "size": 5354,
+      "usedClasses": 2,
+      "totalClasses": 35
+    },
+    {
+      "file": "assets/less/components/plugins/forms/editors/summernote.less",
+      "usagePercentage": 3,
+      "size": 14594,
+      "usedClasses": 3,
+      "totalClasses": 102
+    },
+    {
+      "file": "assets/less/components/plugins/forms/editors/wysihtml5.less",
+      "usagePercentage": 14,
+      "size": 4632,
+      "usedClasses": 5,
+      "totalClasses": 35
+    },
+    {
+      "file": "assets/less/components/plugins/forms/extensions/alpaca.less",
+      "usagePercentage": 13,
+      "size": 6749,
+      "usedClasses": 8,
+      "totalClasses": 60
+    },
+    {
+      "file": "assets/less/components/plugins/forms/extensions/editable.less",
+      "usagePercentage": 11,
+      "size": 5701,
+      "usedClasses": 5,
+      "totalClasses": 46
+    },
+    {
+      "file": "assets/less/components/plugins/forms/extensions/passy.less",
+      "usagePercentage": 11,
+      "size": 997,
+      "usedClasses": 1,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/components/plugins/forms/extensions/typeahead.less",
+      "usagePercentage": 6,
+      "size": 1755,
+      "usedClasses": 1,
+      "totalClasses": 17
+    },
+    {
+      "file": "assets/less/components/plugins/forms/menus/selectbox.less",
+      "usagePercentage": 3,
+      "size": 8870,
+      "usedClasses": 1,
+      "totalClasses": 38
+    },
+    {
+      "file": "assets/less/components/plugins/forms/plugins/dual-listbox.less",
+      "usagePercentage": 15,
+      "size": 3748,
+      "usedClasses": 4,
+      "totalClasses": 26
+    },
+    {
+      "file": "assets/less/components/plugins/forms/plugins/touchspin.less",
+      "usagePercentage": 8,
+      "size": 2078,
+      "usedClasses": 1,
+      "totalClasses": 12
+    },
+    {
+      "file": "assets/less/components/plugins/notifications/jgrowl.less",
+      "usagePercentage": 6,
+      "size": 2122,
+      "usedClasses": 1,
+      "totalClasses": 16
+    },
+    {
+      "file": "assets/less/components/plugins/notifications/noty.less",
+      "usagePercentage": 4,
+      "size": 7540,
+      "usedClasses": 1,
+      "totalClasses": 28
+    },
+    {
+      "file": "assets/less/components/plugins/notifications/pnotify.less",
+      "usagePercentage": 4,
+      "size": 8776,
+      "usedClasses": 2,
+      "totalClasses": 51
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/bootstrap-datepicker.less",
+      "usagePercentage": 13,
+      "size": 2976,
+      "usedClasses": 2,
+      "totalClasses": 15
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/date-paginator.less",
+      "usagePercentage": 7,
+      "size": 1989,
+      "usedClasses": 1,
+      "totalClasses": 15
+    },
+    {
+      "file": "assets/less/components/plugins/pickers/daterange.less",
+      "usagePercentage": 15,
+      "size": 10394,
+      "usedClasses": 6,
+      "totalClasses": 40
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-autofill.less",
+      "usagePercentage": 8,
+      "size": 3000,
+      "usedClasses": 1,
+      "totalClasses": 12
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-buttons.less",
+      "usagePercentage": 12,
+      "size": 5234,
+      "usedClasses": 2,
+      "totalClasses": 17
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatable-responsive.less",
+      "usagePercentage": 14,
+      "size": 3347,
+      "usedClasses": 2,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/components/plugins/tables/datatables/datatables.less",
+      "usagePercentage": 19,
+      "size": 10848,
+      "usedClasses": 8,
+      "totalClasses": 43
+    },
+    {
+      "file": "assets/less/components/plugins/tables/footable/footable.less",
+      "usagePercentage": 13,
+      "size": 2770,
+      "usedClasses": 2,
+      "totalClasses": 16
+    },
+    {
+      "file": "assets/less/components/plugins/tables/handsontable/handsontable.less",
+      "usagePercentage": 1,
+      "size": 35247,
+      "usedClasses": 2,
+      "totalClasses": 146
+    },
+    {
+      "file": "assets/less/components/plugins/ui/fancytree.less",
+      "usagePercentage": 4,
+      "size": 10195,
+      "usedClasses": 2,
+      "totalClasses": 49
+    },
+    {
+      "file": "assets/less/components/plugins/ui/fullcalendar.less",
+      "usagePercentage": 1,
+      "size": 20114,
+      "usedClasses": 1,
+      "totalClasses": 117
+    },
+    {
+      "file": "assets/less/components/plugins/ui/headroom.less",
+      "usagePercentage": 9,
+      "size": 1152,
+      "usedClasses": 1,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/plugins/uploaders/dropzone.less",
+      "usagePercentage": 8,
+      "size": 6389,
+      "usedClasses": 2,
+      "totalClasses": 26
+    },
+    {
+      "file": "assets/less/components/plugins/uploaders/file-input.less",
+      "usagePercentage": 13,
+      "size": 10248,
+      "usedClasses": 7,
+      "totalClasses": 55
+    },
+    {
+      "file": "assets/less/components/plugins/uploaders/plupload.less",
+      "usagePercentage": 6,
+      "size": 6896,
+      "usedClasses": 2,
+      "totalClasses": 32
+    },
+    {
+      "file": "assets/less/components/ui/inbox.less",
+      "usagePercentage": 9,
+      "size": 4515,
+      "usedClasses": 2,
+      "totalClasses": 23
+    },
+    {
+      "file": "assets/less/core/layout/component-animation.less",
+      "usagePercentage": 16,
+      "size": 2525,
+      "usedClasses": 13,
+      "totalClasses": 81
+    },
+    {
+      "file": "assets/less/core/layout/utils.less",
+      "usagePercentage": 10,
+      "size": 2321,
+      "usedClasses": 1,
+      "totalClasses": 10
+    }
+  ],
+  "keepFiles": [
+    {
+      "file": "assets/less/_bootstrap/alerts.less",
+      "usagePercentage": 60,
+      "size": 1518,
+      "usedClasses": 6,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/_bootstrap/badges.less",
+      "usagePercentage": 71,
+      "size": 1199,
+      "usedClasses": 5,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/_bootstrap/breadcrumbs.less",
+      "usagePercentage": 50,
+      "size": 594,
+      "usedClasses": 1,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_bootstrap/button-groups.less",
+      "usagePercentage": 31,
+      "size": 5680,
+      "usedClasses": 8,
+      "totalClasses": 26
+    },
+    {
+      "file": "assets/less/_bootstrap/buttons.less",
+      "usagePercentage": 48,
+      "size": 3662,
+      "usedClasses": 11,
+      "totalClasses": 23
+    },
+    {
+      "file": "assets/less/_bootstrap/close.less",
+      "usagePercentage": 25,
+      "size": 764,
+      "usedClasses": 1,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_bootstrap/component-animations.less",
+      "usagePercentage": 30,
+      "size": 666,
+      "usedClasses": 3,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/_bootstrap/dropdowns.less",
+      "usagePercentage": 45,
+      "size": 4876,
+      "usedClasses": 10,
+      "totalClasses": 22
+    },
+    {
+      "file": "assets/less/_bootstrap/input-groups.less",
+      "usagePercentage": 21,
+      "size": 4285,
+      "usedClasses": 3,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/_bootstrap/labels.less",
+      "usagePercentage": 56,
+      "size": 1079,
+      "usedClasses": 5,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/_bootstrap/list-group.less",
+      "usagePercentage": 40,
+      "size": 3124,
+      "usedClasses": 4,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/_bootstrap/media.less",
+      "usagePercentage": 67,
+      "size": 900,
+      "usedClasses": 8,
+      "totalClasses": 12
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/buttons.less",
+      "usagePercentage": 50,
+      "size": 1441,
+      "usedClasses": 4,
+      "totalClasses": 8
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/forms.less",
+      "usagePercentage": 36,
+      "size": 2641,
+      "usedClasses": 5,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/image.less",
+      "usagePercentage": 50,
+      "size": 1062,
+      "usedClasses": 1,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/list-group.less",
+      "usagePercentage": 25,
+      "size": 546,
+      "usedClasses": 1,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/panels.less",
+      "usagePercentage": 50,
+      "size": 537,
+      "usedClasses": 3,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/_bootstrap/mixins/table-row.less",
+      "usagePercentage": 25,
+      "size": 700,
+      "usedClasses": 1,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/_bootstrap/modals.less",
+      "usagePercentage": 48,
+      "size": 3527,
+      "usedClasses": 12,
+      "totalClasses": 25
+    },
+    {
+      "file": "assets/less/_bootstrap/navbar.less",
+      "usagePercentage": 45,
+      "size": 14628,
+      "usedClasses": 20,
+      "totalClasses": 44
+    },
+    {
+      "file": "assets/less/_bootstrap/navs.less",
+      "usagePercentage": 28,
+      "size": 4930,
+      "usedClasses": 5,
+      "totalClasses": 18
+    },
+    {
+      "file": "assets/less/_bootstrap/pager.less",
+      "usagePercentage": 20,
+      "size": 861,
+      "usedClasses": 1,
+      "totalClasses": 5
+    },
+    {
+      "file": "assets/less/_bootstrap/pagination.less",
+      "usagePercentage": 38,
+      "size": 2059,
+      "usedClasses": 3,
+      "totalClasses": 8
+    },
+    {
+      "file": "assets/less/_bootstrap/panels.less",
+      "usagePercentage": 38,
+      "size": 6279,
+      "usedClasses": 10,
+      "totalClasses": 26
+    },
+    {
+      "file": "assets/less/_bootstrap/print.less",
+      "usagePercentage": 56,
+      "size": 1939,
+      "usedClasses": 5,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/_bootstrap/scaffolding.less",
+      "usagePercentage": 27,
+      "size": 2987,
+      "usedClasses": 4,
+      "totalClasses": 15
+    },
+    {
+      "file": "assets/less/_bootstrap/tables.less",
+      "usagePercentage": 25,
+      "size": 4612,
+      "usedClasses": 2,
+      "totalClasses": 8
+    },
+    {
+      "file": "assets/less/_bootstrap/theme.less",
+      "usagePercentage": 41,
+      "size": 8197,
+      "usedClasses": 23,
+      "totalClasses": 56
+    },
+    {
+      "file": "assets/less/_bootstrap/thumbnails.less",
+      "usagePercentage": 80,
+      "size": 753,
+      "usedClasses": 4,
+      "totalClasses": 5
+    },
+    {
+      "file": "assets/less/_bootstrap/type.less",
+      "usagePercentage": 48,
+      "size": 5954,
+      "usedClasses": 19,
+      "totalClasses": 40
+    },
+    {
+      "file": "assets/less/_bootstrap/variables.less",
+      "usagePercentage": 40,
+      "size": 27472,
+      "usedClasses": 4,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/alerts.less",
+      "usagePercentage": 40,
+      "size": 4723,
+      "usedClasses": 8,
+      "totalClasses": 20
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/badges.less",
+      "usagePercentage": 47,
+      "size": 2173,
+      "usedClasses": 8,
+      "totalClasses": 17
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/breadcrumbs.less",
+      "usagePercentage": 36,
+      "size": 9363,
+      "usedClasses": 10,
+      "totalClasses": 28
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/button-groups.less",
+      "usagePercentage": 26,
+      "size": 3016,
+      "usedClasses": 5,
+      "totalClasses": 19
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/buttons.less",
+      "usagePercentage": 52,
+      "size": 13821,
+      "usedClasses": 23,
+      "totalClasses": 44
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/close.less",
+      "usagePercentage": 50,
+      "size": 437,
+      "usedClasses": 1,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/dropdowns.less",
+      "usagePercentage": 47,
+      "size": 13199,
+      "usedClasses": 15,
+      "totalClasses": 32
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/forms.less",
+      "usagePercentage": 29,
+      "size": 14004,
+      "usedClasses": 13,
+      "totalClasses": 45
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/input-groups.less",
+      "usagePercentage": 20,
+      "size": 2339,
+      "usedClasses": 3,
+      "totalClasses": 15
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/labels.less",
+      "usagePercentage": 44,
+      "size": 5175,
+      "usedClasses": 14,
+      "totalClasses": 32
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/list-group.less",
+      "usagePercentage": 38,
+      "size": 2990,
+      "usedClasses": 6,
+      "totalClasses": 16
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/media.less",
+      "usagePercentage": 70,
+      "size": 4819,
+      "usedClasses": 14,
+      "totalClasses": 20
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/modals.less",
+      "usagePercentage": 55,
+      "size": 1670,
+      "usedClasses": 6,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/navbar.less",
+      "usagePercentage": 28,
+      "size": 44564,
+      "usedClasses": 45,
+      "totalClasses": 158
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/navs.less",
+      "usagePercentage": 30,
+      "size": 27224,
+      "usedClasses": 14,
+      "totalClasses": 46
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/pager.less",
+      "usagePercentage": 22,
+      "size": 2449,
+      "usedClasses": 2,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/pagination.less",
+      "usagePercentage": 25,
+      "size": 3297,
+      "usedClasses": 3,
+      "totalClasses": 12
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/panels.less",
+      "usagePercentage": 33,
+      "size": 9020,
+      "usedClasses": 14,
+      "totalClasses": 43
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/scaffolding.less",
+      "usagePercentage": 50,
+      "size": 1237,
+      "usedClasses": 2,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/tables.less",
+      "usagePercentage": 29,
+      "size": 7656,
+      "usedClasses": 6,
+      "totalClasses": 21
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/thumbnails.less",
+      "usagePercentage": 46,
+      "size": 5369,
+      "usedClasses": 12,
+      "totalClasses": 26
+    },
+    {
+      "file": "assets/less/bootstrap-limitless/type.less",
+      "usagePercentage": 42,
+      "size": 15528,
+      "usedClasses": 36,
+      "totalClasses": 85
+    },
+    {
+      "file": "assets/less/components/maps/maps.less",
+      "usagePercentage": 50,
+      "size": 449,
+      "usedClasses": 1,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/components/pages/blog.less",
+      "usagePercentage": 23,
+      "size": 2461,
+      "usedClasses": 3,
+      "totalClasses": 13
+    },
+    {
+      "file": "assets/less/components/pages/chats.less",
+      "usagePercentage": 36,
+      "size": 3901,
+      "usedClasses": 4,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/pages/error.less",
+      "usagePercentage": 50,
+      "size": 1052,
+      "usedClasses": 1,
+      "totalClasses": 2
+    },
+    {
+      "file": "assets/less/components/pages/invoice.less",
+      "usagePercentage": 25,
+      "size": 946,
+      "usedClasses": 1,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/components/pages/login.less",
+      "usagePercentage": 62,
+      "size": 2800,
+      "usedClasses": 8,
+      "totalClasses": 13
+    },
+    {
+      "file": "assets/less/components/pages/profile.less",
+      "usagePercentage": 55,
+      "size": 1697,
+      "usedClasses": 6,
+      "totalClasses": 11
+    },
+    {
+      "file": "assets/less/components/pages/search.less",
+      "usagePercentage": 33,
+      "size": 1161,
+      "usedClasses": 3,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/components/pages/user-list.less",
+      "usagePercentage": 75,
+      "size": 1073,
+      "usedClasses": 3,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/components/plugins/forms/checkboxes/switchery.less",
+      "usagePercentage": 43,
+      "size": 5410,
+      "usedClasses": 6,
+      "totalClasses": 14
+    },
+    {
+      "file": "assets/less/components/plugins/forms/checkboxes/uniform.less",
+      "usagePercentage": 33,
+      "size": 7534,
+      "usedClasses": 11,
+      "totalClasses": 33
+    },
+    {
+      "file": "assets/less/components/plugins/forms/menus/bootstrap-select.less",
+      "usagePercentage": 27,
+      "size": 9352,
+      "usedClasses": 12,
+      "totalClasses": 44
+    },
+    {
+      "file": "assets/less/components/plugins/forms/menus/multiselect.less",
+      "usagePercentage": 27,
+      "size": 8930,
+      "usedClasses": 9,
+      "totalClasses": 33
+    },
+    {
+      "file": "assets/less/components/plugins/forms/tags/tokenfield.less",
+      "usagePercentage": 24,
+      "size": 5420,
+      "usedClasses": 4,
+      "totalClasses": 17
+    },
+    {
+      "file": "assets/less/components/plugins/forms/wizards/form.less",
+      "usagePercentage": 38,
+      "size": 1215,
+      "usedClasses": 3,
+      "totalClasses": 8
+    },
+    {
+      "file": "assets/less/components/plugins/forms/wizards/steps.less",
+      "usagePercentage": 20,
+      "size": 9541,
+      "usedClasses": 3,
+      "totalClasses": 15
+    },
+    {
+      "file": "assets/less/components/plugins/forms/wizards/stepy.less",
+      "usagePercentage": 29,
+      "size": 4160,
+      "usedClasses": 2,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/components/plugins/notifications/bootbox.less",
+      "usagePercentage": 25,
+      "size": 446,
+      "usedClasses": 1,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/components/plugins/ui/dragula.less",
+      "usagePercentage": 20,
+      "size": 1043,
+      "usedClasses": 2,
+      "totalClasses": 10
+    },
+    {
+      "file": "assets/less/components/plugins/ui/fab.less",
+      "usagePercentage": 23,
+      "size": 10987,
+      "usedClasses": 10,
+      "totalClasses": 44
+    },
+    {
+      "file": "assets/less/components/ui/heading-elements.less",
+      "usagePercentage": 31,
+      "size": 18855,
+      "usedClasses": 30,
+      "totalClasses": 96
+    },
+    {
+      "file": "assets/less/components/ui/helpers.less",
+      "usagePercentage": 26,
+      "size": 7812,
+      "usedClasses": 36,
+      "totalClasses": 137
+    },
+    {
+      "file": "assets/less/components/ui/toolbar.less",
+      "usagePercentage": 50,
+      "size": 896,
+      "usedClasses": 3,
+      "totalClasses": 6
+    },
+    {
+      "file": "assets/less/core/colors/colors.less",
+      "usagePercentage": 33,
+      "size": 68197,
+      "usedClasses": 3,
+      "totalClasses": 9
+    },
+    {
+      "file": "assets/less/core/layout/boxed.less",
+      "usagePercentage": 50,
+      "size": 1293,
+      "usedClasses": 2,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/core/layout/content.less",
+      "usagePercentage": 100,
+      "size": 1448,
+      "usedClasses": 4,
+      "totalClasses": 4
+    },
+    {
+      "file": "assets/less/core/layout/footer.less",
+      "usagePercentage": 67,
+      "size": 843,
+      "usedClasses": 2,
+      "totalClasses": 3
+    },
+    {
+      "file": "assets/less/core/layout/sidebar.less",
+      "usagePercentage": 37,
+      "size": 28326,
+      "usedClasses": 35,
+      "totalClasses": 94
+    },
+    {
+      "file": "assets/less/core/variables/variables-core.less",
+      "usagePercentage": 43,
+      "size": 14588,
+      "usedClasses": 3,
+      "totalClasses": 7
+    },
+    {
+      "file": "assets/less/core/variables/variables-custom.less",
+      "usagePercentage": 100,
+      "size": 10464,
+      "usedClasses": 1,
+      "totalClasses": 1
+    }
+  ],
+  "coreBootstrapComponents": [
+    "navbar"
+  ],
+  "customComponentsToKeep": []
+}
