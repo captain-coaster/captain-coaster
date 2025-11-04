@@ -1,19 +1,14 @@
-import { localeFallbacks } from '../var/translations/configuration';
-import { trans, getLocale, setLocale, setLocaleFallbacks } from '@symfony/ux-translator';
-
 /*
- * Proper Symfony UX Translator setup - now with tree shaking
- * Only the translations we import will be included in the bundle
+ * This file is part of the Symfony UX Translator package.
+ *
+ * If folder "../var/translations" does not exist, or some translations are missing,
+ * you must warmup your Symfony cache to refresh JavaScript translations.
  */
+
+import { trans, getLocale, setLocale, setLocaleFallbacks } from '@symfony/ux-translator';
+import { localeFallbacks } from '../var/translations/configuration';
 
 setLocaleFallbacks(localeFallbacks);
 
-export { trans, getLocale, setLocale };
-
-// Import only the specific translations we need (tree shaking will handle the rest)
-export { 
-    REVIEW_REPORT_SUCCESS,
-    REVIEW_REPORT_ERROR, 
-    REVIEW_REMOVE_UPVOTE,
-    REVIEW_UPVOTE 
-} from '../var/translations';
+export { trans }
+export * from '../var/translations';

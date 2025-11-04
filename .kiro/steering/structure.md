@@ -18,6 +18,13 @@
 - **css/**: Stylesheets organized by purpose (core, components, colors)
 - **controllers/**: Stimulus controllers for interactive features
 
+#### Frontend Organization Rules
+- **Separate CSS and JS**: Keep stylesheets and JavaScript in separate files
+- **Stimulus-first**: Use Stimulus controllers instead of jQuery for interactivity
+- **Controller naming**: Stimulus controllers use kebab-case (e.g., `modal-controller.js`)
+- **CSS organization**: Group styles by component or feature, not by page
+- **Asset compilation**: All assets processed through Webpack Encore
+
 ### Templates (`templates/`)
 - Organized by controller/feature area
 - **Includes/**: Reusable template fragments
@@ -47,6 +54,12 @@
 - Organized by controller namespace
 - Use kebab-case for file names
 - Partial templates prefixed with `_` (e.g., `_review_item.html.twig`)
+
+#### Frontend Integration in Templates
+- **Stimulus data attributes**: Use `data-controller`, `data-action`, `data-target` for Stimulus
+- **Avoid inline JavaScript**: Move all JS logic to Stimulus controllers
+- **CSS classes**: Use semantic class names, leverage Bootstrap utilities
+- **Progressive enhancement**: Ensure functionality works without JavaScript
 
 ## Architecture Patterns
 

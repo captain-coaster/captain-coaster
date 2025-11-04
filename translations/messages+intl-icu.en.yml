@@ -10,6 +10,9 @@ app:
         default: "Welcome!"
     header:
         search: "Rapterra, Epic Universe..."
+    search:
+        suggestions: "Search suggestions"
+        searching: "Searching..."
 
 index:
     title: "Welcome!"
@@ -478,4 +481,10 @@ search_index:
             =0 {No users found}
             =1 {1 user found}
             other {# users found}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {No results found for "{query}"}
+            =1 {1 result found for "{query}"}
+            other {# results found for "{query}"}
         }

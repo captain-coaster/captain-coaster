@@ -16,11 +16,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
 
 #[Route(path: '/ranking')]
 class RankingController extends AbstractController
@@ -31,6 +31,7 @@ class RankingController extends AbstractController
         private readonly PaginatorInterface $paginator,
         private readonly RankingRepository $rankingRepository,
         private readonly EntityManagerInterface $em,
+        private readonly CacheInterface $cache,
     ) {
     }
 
@@ -59,10 +60,7 @@ class RankingController extends AbstractController
      */
     private function getFiltersForm(): array
     {
-        $cache = new FilesystemAdapter();
-        $filtersForm = $cache->getItem('ranking_filters_form');
-
-        if (!$filtersForm->isHit()) {
+        return $this->cache->get('ranking_filters_form', function () {
             $data = [];
             $data['continent'] = $this->em->getRepository(Continent::class)->findBy([], ['name' => 'asc']);
             $data['country'] = $this->em->getRepository(Country::class)->findBy([], ['name' => 'asc']);
@@ -72,12 +70,8 @@ class RankingController extends AbstractController
             $data['manufacturer'] = $this->em->getRepository(Manufacturer::class)->findBy([], ['name' => 'asc']);
             $data['openingDate'] = $this->em->getRepository(Coaster::class)->getDistinctOpeningYears();
 
-            $filtersForm->set($data);
-            $filtersForm->expiresAfter(\DateInterval::createFromDateString('7 days'));
-            $cache->save($filtersForm);
-        }
-
-        return $filtersForm->get();
+            return $data;
+        }, 604800); // 7 days TTL
     }
 
     /** @throws \Exception */

@@ -85,20 +85,21 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
-    public function getSearchUsers($query)
+    /** Optimized search method for API with limited results and better performance. */
+    public function findBySearchQuery(string $query, int $limit = 5): array
     {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('u')
-            ->addSelect('count(r.id) as total_ratings')
-            ->from(User::class, 'u')
+        return $this->createQueryBuilder('u')
+            ->select('u.id', 'u.displayName as name', 'u.slug', 'COUNT(r.id) as totalRatings')
+            ->leftJoin('u.ratings', 'r')
             ->where('u.enabled = 1')
-            ->andWhere('u.displayName LIKE :term')
-            ->orderBy('u.displayName', 'ASC')
-            ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
-            ->groupBy('r.user')
-            ->setParameter('term', \sprintf('%%%s%%', $query))
-            ->getQuery();
+            ->andWhere('u.displayName LIKE :query OR u.slug LIKE :slugQuery')
+            ->setParameter('query', '%'.$query.'%')
+            ->setParameter('slugQuery', '%'.str_replace(' ', '-', $query).'%')
+            ->groupBy('u.id')
+            ->orderBy('totalRatings', 'DESC')
+            ->addOrderBy('u.displayName', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
     }
 }

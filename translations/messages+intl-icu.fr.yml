@@ -10,6 +10,9 @@ app:
         default: "Bienvenue !"
     header:
         search: "Wild Buffalo, Parc Astérix..."
+    search:
+        suggestions: "Suggestions de recherche"
+        searching: "Recherche en cours..."
 
 index:
     title: "Bienvenue !"
@@ -472,4 +475,10 @@ search_index:
             =0 {Aucun utilisateur trouvé}
             =1 {1 utilisateur trouvé}
             other {# utilisateurs trouvés}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {Aucun résultat trouvé pour "{query}"}
+            =1 {1 résultat trouvé pour "{query}"}
+            other {# résultats trouvés pour "{query}"}
         }

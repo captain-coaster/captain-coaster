@@ -10,6 +10,9 @@ app:
         default: Bienvenido
     header:
         search: "Batman, Port Aventura..."
+    search:
+        suggestions: "Sugerencias de búsqueda"
+        searching: "Buscando..."
 
 index:
     title: "¡Bienvenido!"
@@ -472,4 +475,10 @@ search_index:
             =0 {No se han encontrado usuario}
             =1 {1 usuario encontrado}
             other {# usuarios encontrados}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {No se han encontrado resultados para "{query}"}
+            =1 {1 resultado encontrado para "{query}"}
+            other {# resultados encontrados para "{query}"}
         }

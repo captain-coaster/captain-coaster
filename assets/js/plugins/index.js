@@ -114,9 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // See assets/js/components/map.js
 });
 
-// Legacy compatibility
-window.Switchery = function() {};
-
 // Legacy loaders (keep minimal)
 export const loadHtmlSortable = () => {
     const script = document.createElement('script');
@@ -125,5 +122,4 @@ export const loadHtmlSortable = () => {
     return Promise.resolve();
 };
 
-export const loadTypeahead = () =>
-    import(/* webpackChunkName: "typeahead" */ './typeahead.bundle.min');
+

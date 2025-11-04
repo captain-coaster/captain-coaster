@@ -1,19 +1,25 @@
 framework:
     cache:
         # Unique name of your app: used to compute stable namespaces for cache keys.
-        #prefix_seed: your_vendor_name/app_name
+        prefix_seed: 'captain_coaster'
 
         # The "app" cache stores to the filesystem by default.
         # The data in this cache should persist between deploys.
         # Other options include:
-
         # Redis
         #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
+        default_redis_provider: '%env(REDIS_URL)%'
 
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
 
         # Namespaced pools use the above "app" backend by default
-        #pools:
-            #my.dedicated.cache: null
+        pools:
+            # Search-related caching (Redis for fast access)
+            search.cache:
+                adapter: cache.adapter.redis
+                
+            # Sitemap cache (filesystem for persistent data)
+            sitemap.cache:
+                adapter: cache.adapter.filesystem
+                default_lifetime: 604800 # 7 days

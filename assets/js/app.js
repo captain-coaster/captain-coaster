@@ -85,26 +85,7 @@ const moduleConfig = {
             },
             options: { cache: true },
         },
-        {
-            name: "Typeahead",
-            importFn: () =>
-                import(
-                    /* webpackChunkName: "typeahead" */ "./plugins/typeahead.bundle.min"
-                ),
-            trigger: {
-                type: "interaction",
-                selector: '[data-typeahead], .typeahead, input[type="search"]',
-                event: "focus",
-            },
-            options: {
-                cache: true,
-                onError: (error) => {
-                    console.warn(
-                        "Typeahead not available, search will work without autocomplete"
-                    );
-                },
-            },
-        },
+
     ],
 };
 
