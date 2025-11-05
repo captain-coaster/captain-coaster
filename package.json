@@ -33,7 +33,7 @@
         "clean": "rm -rf public/build/*"
     },
     "dependencies": {
-        "bootstrap": "^3.3.7",
+        "bootstrap": "^3.4.1",
         "jquery": "^3.7.1",
         "jquery.rateit": "^1.1.6",
         "leaflet": "^1.9.4",

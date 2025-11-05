@@ -121,6 +121,9 @@ import "./plugins/index";
 // Import simple chart replacement
 import "./plugins/rating-chart";
 
+// Import toggle switch functionality
+import "./toggle-switch";
+
 // Components are now handled by Stimulus controllers
 
 // Initialize Bootstrap components after DOM is ready

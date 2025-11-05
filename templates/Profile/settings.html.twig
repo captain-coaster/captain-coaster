@@ -86,16 +86,12 @@
                   {{ form_errors(form.homePark) }}
                 </div>
 
-                <div class="form-group">
-                  {{ form_widget(form.displayReviewsInAllLanguages) }}
-                  {{ form_label(form.displayReviewsInAllLanguages) }}
-                  {{ form_errors(form.displayReviewsInAllLanguages) }}
+                <div class="toggle-switch-form-group">
+                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input'}}) }}
                 </div>
 
-                <div class="form-group">
-                  {{ form_widget(form.addTodayDateWhenRating) }}
-                  {{ form_label(form.addTodayDateWhenRating) }}
-                  {{ form_errors(form.addTodayDateWhenRating) }}
+                <div class="toggle-switch-form-group">
+                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input'}}) }}
                 </div>
               </fieldset>
 

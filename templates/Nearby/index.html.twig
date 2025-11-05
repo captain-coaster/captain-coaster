@@ -17,7 +17,7 @@
   <script type="text/javascript">
     // Switchery is auto-loaded by webpack, just add event listeners
     document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.switchery').forEach(function(element) {
+      document.querySelectorAll('.toggle-switch-form-group input[type="checkbox"]').forEach(function(element) {
         element.addEventListener('change', function() {
           filterData();
         });
