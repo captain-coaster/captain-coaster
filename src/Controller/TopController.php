@@ -178,4 +178,48 @@ class TopController extends BaseController
             'items' => $em->getRepository(Coaster::class)->suggestCoasterForTop($request->get('q'), $this->getUser()),
         ]);
     }
+
+    /** Auto-save positions for drag and drop reordering. */
+    #[Route(path: '/{id}/auto-save', name: 'top_auto_save', methods: ['POST'], condition: 'request.isXmlHttpRequest()')]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted('edit', 'top', statusCode: 403)]
+    public function autoSave(Request $request, Top $top, EntityManagerInterface $em): JsonResponse
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+            
+            if (!isset($data['positions']) || !is_array($data['positions'])) {
+                throw new BadRequestHttpException('Invalid positions data');
+            }
+            
+            $positions = $data['positions'];
+            
+            // Update positions for each coaster in the top
+            foreach ($top->getTopCoasters() as $topCoaster) {
+                $coasterId = (string) $topCoaster->getCoaster()->getId();
+                if (isset($positions[$coasterId])) {
+                    $newPosition = (int) $positions[$coasterId];
+                    if ($newPosition > 0) {
+                        $topCoaster->setPosition($newPosition);
+                    }
+                }
+            }
+            
+            // Update the top's modified date
+            $top->setUpdatedAt(new \DateTime());
+            
+            $em->flush();
+            
+            return new JsonResponse([
+                'status' => 'success',
+                'message' => 'Positions updated successfully'
+            ]);
+            
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 400);
+        }
+    }
 }

@@ -1,0 +1,274 @@
+/**
+ * Top List Drag & Drop Styles
+ * Modern CSS for native HTML5 drag and drop functionality
+ */
+
+/* Container styles */
+.media-list-container[data-controller="top-list"] {
+    position: relative;
+    min-height: 100px;
+}
+
+/* Coaster entry styles */
+.coaster-entry {
+    position: relative;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    background: #fff;
+}
+
+.coaster-entry:hover {
+    border-color: #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Dragging state */
+.coaster-entry.dragging {
+    opacity: 0.5;
+    border-color: #007bff;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+    z-index: 1000;
+}
+
+/* Drag handle */
+.drag-handle {
+    cursor: grab;
+    padding: 8px;
+    color: #666;
+    transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+    color: #007bff;
+}
+
+.drag-handle:active,
+.coaster-entry.dragging .drag-handle {
+    cursor: grabbing;
+    color: #0056b3;
+}
+
+/* Position badge */
+.position-badge {
+    font-weight: bold;
+    min-width: 24px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.coaster-entry.dragging .position-badge {
+    background-color: #007bff !important;
+    border-color: #0056b3 !important;
+}
+
+/* Drop zones */
+.drop-zone {
+    height: 4px;
+    margin: 4px 0;
+    border-radius: 2px;
+    background: transparent;
+    transition: all 0.15s ease;
+    opacity: 0;
+    transform: scaleY(0);
+    list-style: none;
+    position: relative;
+}
+
+.drop-zone-indicator {
+    height: 100%;
+    background: #007bff;
+    border-radius: 2px;
+    opacity: 0.6;
+    transition: all 0.15s ease;
+}
+
+/* Show drop zones during drag */
+.drag-active .drop-zone {
+    opacity: 1;
+    transform: scaleY(1);
+    height: 16px;
+    margin: 12px 0;
+}
+
+.drop-zone.visible {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+/* Drop zone active state */
+.drop-zone.drag-over {
+    height: 24px;
+    margin: 16px 0;
+}
+
+.drop-zone.drag-over .drop-zone-indicator {
+    background: #28a745;
+    opacity: 0.8;
+    box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+}
+
+/* Container drag state */
+.drag-active {
+    background-color: #f8f9fa;
+}
+
+.drag-active .coaster-entry:not(.dragging) {
+    opacity: 0.7;
+}
+
+/* Save status indicator */
+.save-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1050;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.save-status-saving {
+    background-color: #ffc107;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.save-status-saved {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #1e7e34;
+}
+
+.save-status-error {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #bd2130;
+}
+
+/* Spinner animation */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Remove button styles */
+.remove-btn {
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    padding: 4px 8px;
+    border: none;
+    background: transparent;
+    color: #dc3545;
+}
+
+.remove-btn:hover {
+    opacity: 1;
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+.coaster-entry:hover .remove-btn {
+    opacity: 0.8;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .drag-handle {
+        padding: 12px;
+        font-size: 18px;
+    }
+    
+    .drag-active .drop-zone {
+        height: 20px;
+        margin: 16px 0;
+    }
+    
+    .drop-zone.drag-over {
+        height: 28px;
+        margin: 20px 0;
+    }
+    
+    .position-badge {
+        min-width: 28px;
+        font-size: 14px;
+    }
+    
+    .remove-btn {
+        padding: 8px 12px;
+        font-size: 16px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .coaster-entry {
+        margin-bottom: 12px;
+    }
+    
+    .drag-handle {
+        padding: 16px 12px;
+        font-size: 20px;
+    }
+    
+    .drag-active .drop-zone {
+        height: 24px;
+        margin: 20px 0;
+    }
+    
+    .drop-zone.drag-over {
+        height: 32px;
+        margin: 24px 0;
+    }
+}
+
+/* Accessibility improvements */
+.coaster-entry:focus-within {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.drag-handle:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .drop-zone-indicator {
+        background: #000;
+    }
+    
+    .drop-zone.drag-over .drop-zone-indicator {
+        background: #000;
+        border: 2px solid #000;
+    }
+    
+    .coaster-entry.dragging {
+        border-color: #000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .coaster-entry,
+    .drop-zone,
+    .position-badge,
+    .drag-handle,
+    .save-status {
+        transition: none;
+    }
+    
+    .spinner {
+        animation: none;
+    }
+}

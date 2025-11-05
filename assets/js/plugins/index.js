@@ -72,54 +72,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     });
 
-    // 2. Simple touch support for sortable
-    document.querySelectorAll('.ui-sortable').forEach(element => {
-        let touchItem = null;
-        
-        element.addEventListener('touchstart', (e) => {
-            if (e.touches.length === 1) {
-                const touch = e.touches[0];
-                touchItem = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('li');
-                if (touchItem) {
-                    touchItem.dispatchEvent(new MouseEvent('mousedown', {
-                        clientX: touch.clientX,
-                        clientY: touch.clientY,
-                        bubbles: true
-                    }));
-                }
-            }
-        }, { passive: false });
-        
-        element.addEventListener('touchmove', (e) => {
-            if (touchItem && e.touches.length === 1) {
-                e.preventDefault();
-                const touch = e.touches[0];
-                document.dispatchEvent(new MouseEvent('mousemove', {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY,
-                    bubbles: true
-                }));
-            }
-        }, { passive: false });
-        
-        element.addEventListener('touchend', () => {
-            if (touchItem) {
-                document.dispatchEvent(new MouseEvent('mouseup', { bubbles: true }));
-                touchItem = null;
-            }
-        });
-    });
+    // 2. Touch support for sortable removed - will be handled by modern Stimulus controller
 
     // 3. Map functionality is now handled by separate component
     // See assets/js/components/map.js
 });
 
-// Legacy loaders (keep minimal)
-export const loadHtmlSortable = () => {
-    const script = document.createElement('script');
-    script.src = '/build/js/plugins/html.sortable.min.js';
-    document.head.appendChild(script);
-    return Promise.resolve();
-};
+// Legacy loaders removed - html.sortable.min.js no longer needed
 
 

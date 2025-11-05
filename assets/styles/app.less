@@ -106,115 +106,18 @@
 @import "theme/core/colors/colors.less";                  // 33% usage - needed for color classes
 
 // Import icon fonts (required for UI components)
-@import "../css/icons/icomoon/styles.css";
+@import "icons/icomoon/styles.css";
 
-// Import additional CSS components
-@import "../css/enhanced-select.css";
-@import "../css/image-optimization.css";
-@import "../css/plugins/circular-progress.css";
-@import "../css/components/toggle-switch.css";
-@import "../css/components/map.css";
-@import "../css/components/search.css";
+// Import modern CSS components
+@import "components/enhanced-select.css";
+@import "components/toggle-switch.css";
+@import "components/map.css";
+@import "components/search.css";
+@import "components/top-list.css";
+@import "components/feedback.css";
+
+// Import utilities
+@import "utilities/image-optimization.css";
 
 
-// Summary Feedback Styles (custom component)
-.summary-feedback {
-    margin-top: 15px;
-    padding: 10px 0;
-    border-top: 1px solid #eee;
-}
-
-.summary-feedback-buttons {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 5px;
-}
-
-.summary-feedback-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: 1px solid;
-    background: transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 14px;
-    text-decoration: none;
-}
-
-.summary-feedback-button:hover {
-    text-decoration: none;
-}
-
-.summary-feedback-button.loading {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.summary-feedback-button.loading::after {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border: 2px solid currentColor;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 1s linear infinite;
-    margin-left: 5px;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.summary-feedback-stats {
-    font-size: 12px;
-    color: #666;
-    margin-top: 5px;
-}
-
-.summary-feedback-loading {
-    display: none;
-    font-size: 12px;
-    color: #666;
-    margin-left: 10px;
-}
-
-// Button variants for summary feedback
-.btn-outline-success.summary-feedback-button {
-    color: #28a745;
-    border-color: #28a745;
-}
-
-.btn-outline-success.summary-feedback-button:hover {
-    background-color: #28a745;
-    color: white;
-}
-
-.btn-success.summary-feedback-button {
-    background-color: #28a745;
-    border-color: #28a745;
-    color: white;
-}
-
-.btn-outline-danger.summary-feedback-button {
-    color: #dc3545;
-    border-color: #dc3545;
-}
-
-.btn-outline-danger.summary-feedback-button:hover {
-    background-color: #dc3545;
-    color: white;
-}
-
-.btn-danger.summary-feedback-button {
-    background-color: #dc3545;
-    border-color: #dc3545;
-    color: white;
-}
 

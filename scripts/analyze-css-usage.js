@@ -13,14 +13,17 @@ const path = require('path');
 class CSSUsageAnalyzer {
     constructor() {
         this.templateDir = 'templates';
-        this.lessDir = 'assets/less';
-        this.cssDir = 'assets/css';
-        this.publicCssDir = 'public/build';
+        this.stylesDir = 'assets/styles';
+        this.controllersDir = 'assets/controllers';
+        this.entryPoint = 'assets/styles/app.less';
         
         // Store analysis results
         this.usedClasses = new Set();
         this.templateClassMap = new Map();
-        this.lessFileMap = new Map();
+        this.controllerClassMap = new Map();
+        this.styleFileMap = new Map();
+        this.importChain = new Map();
+        this.notImportedFiles = new Set();
         this.bootstrapClasses = new Set();
         this.customClasses = new Set();
         this.iconClasses = new Set();
@@ -84,27 +87,223 @@ class CSSUsageAnalyzer {
      * Main analysis function
      */
     async analyze() {
-        console.log('🔍 Starting CSS usage analysis...\n');
+        console.log('🔍 Starting enhanced CSS/LESS usage analysis...\n');
         
         try {
-            // Step 1: Analyze templates for CSS classes
+            // Step 1: Build import chain from entry point
+            await this.buildImportChain();
+            
+            // Step 2: Find all style files and check if they're imported
+            await this.findUnimportedFiles();
+            
+            // Step 3: Analyze templates for CSS classes
             await this.analyzeTemplates();
             
-            // Step 2: Map LESS files and their contents
-            await this.analyzeLessFiles();
+            // Step 4: Analyze Stimulus controllers for CSS classes
+            await this.analyzeControllers();
             
-            // Step 3: Categorize classes
+            // Step 5: Map style files and their contents
+            await this.analyzeStyleFiles();
+            
+            // Step 6: Categorize classes
             this.categorizeClasses();
             
-            // Step 4: Generate reports
+            // Step 7: Generate enhanced reports
             await this.generateReports();
             
-            console.log('✅ Analysis complete! Check the generated reports in the analysis/ directory.');
+            console.log('✅ Enhanced analysis complete! Check the generated reports in the analysis/ directory.');
             
         } catch (error) {
             console.error('❌ Analysis failed:', error.message);
             process.exit(1);
         }
+    }
+
+    /**
+     * Build import chain starting from entry point
+     */
+    async buildImportChain() {
+        console.log('🔗 Building import chain from entry point...');
+        
+        const visited = new Set();
+        const importedFiles = new Set();
+        
+        const processFile = (filePath) => {
+            if (visited.has(filePath)) {
+                return;
+            }
+            
+            if (!fs.existsSync(filePath)) {
+                return;
+            }
+            
+            visited.add(filePath);
+            importedFiles.add(filePath);
+            
+
+            
+            try {
+                const content = fs.readFileSync(filePath, 'utf8');
+                const imports = this.extractImports(content);
+                
+                this.importChain.set(filePath, imports);
+                
+                // Process each import
+                imports.forEach(importPath => {
+                    let resolvedPath = this.resolveImportPath(importPath, filePath);
+                    if (resolvedPath) {
+                        processFile(resolvedPath);
+                    }
+                });
+            } catch (error) {
+                console.warn(`Warning: Could not process ${filePath}: ${error.message}`);
+            }
+        };
+        
+        processFile(this.entryPoint);
+        
+        console.log(`Found ${importedFiles.size} files in import chain\n`);
+        return importedFiles;
+    }
+
+    /**
+     * Resolve import path relative to current file
+     */
+    resolveImportPath(importPath, currentFile) {
+        const currentDir = path.dirname(currentFile);
+        
+        // Handle different import patterns
+        if (importPath.startsWith('~')) {
+            // Node modules import - skip these for our analysis
+            return null;
+        } 
+        
+        // Try to resolve the path
+        let candidates = [];
+        
+        if (importPath.startsWith('./') || importPath.startsWith('../')) {
+            // Explicit relative import
+            candidates.push(path.resolve(currentDir, importPath));
+        } else {
+            // Implicit relative import (no ./ prefix)
+            candidates.push(path.resolve(currentDir, importPath));
+        }
+        
+        // For each candidate, try with and without extensions
+        for (const candidate of candidates) {
+            // Try exact path
+            if (fs.existsSync(candidate)) return candidate;
+            
+            // Try with .less extension
+            if (fs.existsSync(candidate + '.less')) return candidate + '.less';
+            
+            // Try with .css extension  
+            if (fs.existsSync(candidate + '.css')) return candidate + '.css';
+            
+            // Try without extension if it has one
+            if (path.extname(candidate)) {
+                const withoutExt = candidate.replace(path.extname(candidate), '');
+                if (fs.existsSync(withoutExt)) return withoutExt;
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Find all style files and identify which ones are not imported
+     */
+    async findUnimportedFiles() {
+        console.log('📁 Finding unimported style files...');
+        
+        const allStyleFiles = [
+            ...this.findFiles(this.stylesDir, '.less'),
+            ...this.findFiles(this.stylesDir, '.css')
+        ];
+        
+        const importedFiles = new Set(this.importChain.keys());
+        
+
+        
+        allStyleFiles.forEach(file => {
+            // Normalize paths for comparison - convert to absolute paths
+            const absoluteFile = path.resolve(file);
+            if (!importedFiles.has(file) && !importedFiles.has(absoluteFile)) {
+                this.notImportedFiles.add(file);
+            }
+        });
+        
+        console.log(`Found ${this.notImportedFiles.size} files NOT imported in the chain`);
+        if (this.notImportedFiles.size > 0) {
+            console.log('Unimported files:');
+            this.notImportedFiles.forEach(file => console.log(`  - ${file}`));
+        }
+        console.log();
+    }
+
+    /**
+     * Analyze Stimulus controllers for CSS class usage
+     */
+    async analyzeControllers() {
+        console.log('🎮 Analyzing Stimulus controllers...');
+        
+        const controllerFiles = this.findFiles(this.controllersDir, '.js');
+        console.log(`Found ${controllerFiles.length} controller files`);
+        
+        for (const controllerFile of controllerFiles) {
+            try {
+                const content = fs.readFileSync(controllerFile, 'utf8');
+                const classes = this.extractClassesFromJavaScript(content);
+                
+                this.controllerClassMap.set(controllerFile, classes);
+                classes.forEach(cls => this.usedClasses.add(cls));
+            } catch (error) {
+                console.warn(`Warning: Could not read ${controllerFile}: ${error.message}`);
+            }
+        }
+        
+        const controllerClasses = Array.from(this.controllerClassMap.values())
+            .reduce((acc, classes) => acc + classes.length, 0);
+        console.log(`Found ${controllerClasses} CSS classes in controllers\n`);
+    }
+
+    /**
+     * Extract CSS classes from JavaScript/Stimulus controllers
+     */
+    extractClassesFromJavaScript(content) {
+        const classes = new Set();
+        
+        // Patterns to match CSS classes in JavaScript
+        const patterns = [
+            // classList.add/remove/toggle/contains
+            /classList\.(add|remove|toggle|contains)\s*\(\s*["']([^"']+)["']\s*\)/gi,
+            // className assignments
+            /className\s*=\s*["']([^"']+)["']/gi,
+            // querySelector/querySelectorAll with class selectors
+            /querySelector(?:All)?\s*\(\s*["']\.([^"']+)["']\s*\)/gi,
+            // String literals that look like CSS classes (common patterns)
+            /["']([a-zA-Z][a-zA-Z0-9_-]*(?:\s+[a-zA-Z][a-zA-Z0-9_-]*)*)["']/g,
+            // Data attributes for CSS classes
+            /data-.*-class\s*=\s*["']([^"']+)["']/gi
+        ];
+        
+        patterns.forEach(pattern => {
+            let match;
+            while ((match = pattern.exec(content)) !== null) {
+                const classString = match[1] || match[2];
+                if (classString) {
+                    // Split multiple classes and clean them
+                    const classNames = classString
+                        .split(/\s+/)
+                        .map(cls => cls.trim())
+                        .filter(cls => cls.length > 0 && /^[a-zA-Z][a-zA-Z0-9_-]*$/.test(cls));
+                    
+                    classNames.forEach(cls => classes.add(cls));
+                }
+            }
+        });
+        
+        return Array.from(classes);
     }
 
     /**
@@ -162,30 +361,63 @@ class CSSUsageAnalyzer {
     }
 
     /**
-     * Analyze LESS files to understand available styles
+     * Analyze all style files (LESS and CSS) to understand available styles
      */
-    async analyzeLessFiles() {
-        console.log('🎨 Analyzing LESS files...');
+    async analyzeStyleFiles() {
+        console.log('🎨 Analyzing style files (LESS and CSS)...');
         
-        const lessFiles = this.findFiles(this.lessDir, '.less');
-        console.log(`Found ${lessFiles.length} LESS files`);
+        const styleFiles = [
+            ...this.findFiles(this.stylesDir, '.less'),
+            ...this.findFiles(this.stylesDir, '.css')
+        ];
+        console.log(`Found ${styleFiles.length} style files`);
         
-        for (const lessFile of lessFiles) {
+        for (const styleFile of styleFiles) {
             try {
-                const content = fs.readFileSync(lessFile, 'utf8');
-                const classes = this.extractClassesFromLess(content);
+                const content = fs.readFileSync(styleFile, 'utf8');
+                const classes = styleFile.endsWith('.less') ? 
+                    this.extractClassesFromLess(content) : 
+                    this.extractClassesFromCSS(content);
                 
-                this.lessFileMap.set(lessFile, {
+                const isImported = this.importChain.has(styleFile);
+                
+                this.styleFileMap.set(styleFile, {
                     classes: classes,
-                    size: fs.statSync(lessFile).size,
-                    imports: this.extractImports(content)
+                    size: fs.statSync(styleFile).size,
+                    imports: this.extractImports(content),
+                    isImported: isImported,
+                    type: styleFile.endsWith('.less') ? 'LESS' : 'CSS'
                 });
             } catch (error) {
-                console.warn(`Warning: Could not read ${lessFile}: ${error.message}`);
+                console.warn(`Warning: Could not read ${styleFile}: ${error.message}`);
             }
         }
         
-        console.log(`Analyzed ${this.lessFileMap.size} LESS files\n`);
+        console.log(`Analyzed ${this.styleFileMap.size} style files\n`);
+    }
+
+    /**
+     * Extract CSS classes from CSS content
+     */
+    extractClassesFromCSS(content) {
+        const classes = new Set();
+        
+        // Match CSS class selectors (more comprehensive than LESS version)
+        const patterns = [
+            // Standard class selectors
+            /\.([a-zA-Z][a-zA-Z0-9_-]*)/g,
+            // Classes in complex selectors
+            /\.([a-zA-Z][a-zA-Z0-9_-]*)\s*[,\s>+~:]/g
+        ];
+        
+        patterns.forEach(pattern => {
+            let match;
+            while ((match = pattern.exec(content)) !== null) {
+                classes.add(match[1]);
+            }
+        });
+        
+        return Array.from(classes);
     }
 
     /**
@@ -206,16 +438,23 @@ class CSSUsageAnalyzer {
     }
 
     /**
-     * Extract @import statements from LESS content
+     * Extract @import statements from LESS/CSS content
      */
     extractImports(content) {
         const imports = [];
-        const importPattern = /@import\s+["']([^"']+)["'];?/g;
-        let match;
+        const patterns = [
+            // LESS/CSS @import statements
+            /@import\s+["']([^"']+)["'];?/g,
+            // CSS @import with url()
+            /@import\s+url\s*\(\s*["']([^"']+)["']\s*\)/g
+        ];
         
-        while ((match = importPattern.exec(content)) !== null) {
-            imports.push(match[1]);
-        }
+        patterns.forEach(pattern => {
+            let match;
+            while ((match = pattern.exec(content)) !== null) {
+                imports.push(match[1]);
+            }
+        });
         
         return imports;
     }
@@ -264,14 +503,17 @@ class CSSUsageAnalyzer {
         // Generate main usage report
         await this.generateUsageReport(analysisDir);
         
-        // Generate LESS mapping report
-        await this.generateLessMappingReport(analysisDir);
+        // Generate style file mapping report
+        await this.generateStyleMappingReport(analysisDir);
         
         // Generate optimization recommendations
         await this.generateOptimizationReport(analysisDir);
         
         // Generate template-specific reports
         await this.generateTemplateReport(analysisDir);
+        
+        // Generate controller-specific reports
+        await this.generateControllerReport(analysisDir);
     }
 
     /**
@@ -285,12 +527,18 @@ class CSSUsageAnalyzer {
                 iconClasses: this.iconClasses.size,
                 customClasses: this.customClasses.size,
                 templatesAnalyzed: this.templateClassMap.size,
-                lessFilesAnalyzed: this.lessFileMap.size
+                controllersAnalyzed: this.controllerClassMap.size,
+                styleFilesAnalyzed: this.styleFileMap.size,
+                notImportedFiles: this.notImportedFiles.size
             },
             classBreakdown: {
                 bootstrap: Array.from(this.bootstrapClasses).sort(),
                 icons: Array.from(this.iconClasses).sort(),
                 custom: Array.from(this.customClasses).sort()
+            },
+            importChainSummary: {
+                totalImportedFiles: this.importChain.size,
+                entryPoint: this.entryPoint
             }
         };
         
@@ -308,17 +556,19 @@ class CSSUsageAnalyzer {
     }
 
     /**
-     * Generate LESS file mapping report
+     * Generate enhanced style file mapping report
      */
-    async generateLessMappingReport(analysisDir) {
-        const lessAnalysis = [];
+    async generateStyleMappingReport(analysisDir) {
+        const styleAnalysis = [];
         
-        for (const [lessFile, data] of this.lessFileMap) {
+        for (const [styleFile, data] of this.styleFileMap) {
             const usedClassesInFile = data.classes.filter(cls => this.usedClasses.has(cls));
             const unusedClassesInFile = data.classes.filter(cls => !this.usedClasses.has(cls));
             
-            lessAnalysis.push({
-                file: lessFile,
+            styleAnalysis.push({
+                file: styleFile,
+                type: data.type,
+                isImported: data.isImported,
                 size: data.size,
                 totalClasses: data.classes.length,
                 usedClasses: usedClassesInFile.length,
@@ -331,35 +581,64 @@ class CSSUsageAnalyzer {
             });
         }
         
-        // Sort by usage percentage (lowest first - these are candidates for removal)
-        lessAnalysis.sort((a, b) => a.usagePercentage - b.usagePercentage);
+        // Sort by import status first, then by usage percentage
+        styleAnalysis.sort((a, b) => {
+            if (a.isImported !== b.isImported) {
+                return a.isImported ? -1 : 1; // Imported files first
+            }
+            return a.usagePercentage - b.usagePercentage; // Then by usage
+        });
         
         fs.writeFileSync(
-            path.join(analysisDir, 'less-mapping-report.json'),
-            JSON.stringify(lessAnalysis, null, 2)
+            path.join(analysisDir, 'style-mapping-report.json'),
+            JSON.stringify(styleAnalysis, null, 2)
         );
     }
 
     /**
-     * Generate optimization recommendations
+     * Generate enhanced optimization recommendations
      */
     async generateOptimizationReport(analysisDir) {
         const recommendations = {
-            highPriorityRemovals: [],
-            mediumPriorityRemovals: [],
-            keepFiles: [],
-            coreBootstrapComponents: [],
-            customComponentsToKeep: []
+            notImported: [],
+            zeroUsage: [],
+            lowUsage: [],
+            normalUsage: [],
+            summary: {
+                totalFiles: this.styleFileMap.size,
+                notImportedCount: this.notImportedFiles.size,
+                zeroUsageCount: 0,
+                lowUsageCount: 0,
+                normalUsageCount: 0
+            }
         };
         
-        // Analyze LESS files for removal candidates
-        for (const [lessFile, data] of this.lessFileMap) {
+        // Files not imported at all (highest priority for removal)
+        this.notImportedFiles.forEach(file => {
+            const data = this.styleFileMap.get(file);
+            if (data) {
+                recommendations.notImported.push({
+                    file: file,
+                    type: data.type,
+                    size: data.size,
+                    totalClasses: data.classes.length,
+                    reason: 'Not imported in entry point chain'
+                });
+            }
+        });
+        
+        // Analyze imported files for usage
+        for (const [styleFile, data] of this.styleFileMap) {
+            if (this.notImportedFiles.has(styleFile)) continue; // Already handled above
+            
             const usedClasses = data.classes.filter(cls => this.usedClasses.has(cls));
             const usagePercentage = data.classes.length > 0 ? 
                 (usedClasses.length / data.classes.length) * 100 : 0;
             
             const fileInfo = {
-                file: lessFile,
+                file: styleFile,
+                type: data.type,
+                isImported: data.isImported,
                 usagePercentage: Math.round(usagePercentage),
                 size: data.size,
                 usedClasses: usedClasses.length,
@@ -367,29 +646,21 @@ class CSSUsageAnalyzer {
             };
             
             if (usagePercentage === 0) {
-                recommendations.highPriorityRemovals.push(fileInfo);
+                recommendations.zeroUsage.push(fileInfo);
+                recommendations.summary.zeroUsageCount++;
             } else if (usagePercentage < 20) {
-                recommendations.mediumPriorityRemovals.push(fileInfo);
+                recommendations.lowUsage.push(fileInfo);
+                recommendations.summary.lowUsageCount++;
             } else {
-                recommendations.keepFiles.push(fileInfo);
+                recommendations.normalUsage.push(fileInfo);
+                recommendations.summary.normalUsageCount++;
             }
         }
         
-        // Identify core Bootstrap components to keep
-        const coreComponents = [
-            'grid', 'buttons', 'forms', 'navbar', 'panels', 'alerts', 
-            'badges', 'labels', 'modals', 'dropdowns', 'tables'
-        ];
-        
-        for (const component of coreComponents) {
-            const hasUsage = Array.from(this.bootstrapClasses).some(cls => 
-                cls.includes(component) || cls.startsWith(component)
-            );
-            
-            if (hasUsage) {
-                recommendations.coreBootstrapComponents.push(component);
-            }
-        }
+        // Sort each category by size (largest first for potential savings)
+        recommendations.notImported.sort((a, b) => b.size - a.size);
+        recommendations.zeroUsage.sort((a, b) => b.size - a.size);
+        recommendations.lowUsage.sort((a, b) => a.usagePercentage - b.usagePercentage);
         
         fs.writeFileSync(
             path.join(analysisDir, 'optimization-recommendations.json'),
@@ -428,10 +699,40 @@ class CSSUsageAnalyzer {
     }
 
     /**
+     * Generate controller-specific analysis
+     */
+    async generateControllerReport(analysisDir) {
+        const controllerAnalysis = [];
+        
+        for (const [controllerFile, classes] of this.controllerClassMap) {
+            const bootstrapInController = classes.filter(cls => this.bootstrapClasses.has(cls));
+            const iconsInController = classes.filter(cls => this.iconClasses.has(cls));
+            const customInController = classes.filter(cls => this.customClasses.has(cls));
+            
+            controllerAnalysis.push({
+                controller: controllerFile,
+                totalClasses: classes.length,
+                bootstrap: bootstrapInController.length,
+                icons: iconsInController.length,
+                custom: customInController.length,
+                allClasses: classes
+            });
+        }
+        
+        // Sort by total classes (most complex controllers first)
+        controllerAnalysis.sort((a, b) => b.totalClasses - a.totalClasses);
+        
+        fs.writeFileSync(
+            path.join(analysisDir, 'controller-analysis.json'),
+            JSON.stringify(controllerAnalysis, null, 2)
+        );
+    }
+
+    /**
      * Generate human-readable markdown report
      */
     generateMarkdownReport(report) {
-        return `# CSS Usage Analysis Report
+        return `# Enhanced CSS/LESS Usage Analysis Report
 
 ## Summary
 
@@ -440,7 +741,15 @@ class CSSUsageAnalyzer {
 - **Icon Classes**: ${report.summary.iconClasses}
 - **Custom Classes**: ${report.summary.customClasses}
 - **Templates Analyzed**: ${report.summary.templatesAnalyzed}
-- **LESS Files Analyzed**: ${report.summary.lessFilesAnalyzed}
+- **Controllers Analyzed**: ${report.summary.controllersAnalyzed}
+- **Style Files Analyzed**: ${report.summary.styleFilesAnalyzed}
+- **Files Not Imported**: ${report.summary.notImportedFiles}
+
+## Import Chain Analysis
+
+- **Entry Point**: ${report.importChainSummary.entryPoint}
+- **Files in Import Chain**: ${report.importChainSummary.totalImportedFiles}
+- **Files NOT in Import Chain**: ${report.summary.notImportedFiles}
 
 ## Class Distribution
 
@@ -470,16 +779,19 @@ ${report.classBreakdown.custom.length > 20 ? '... and ' + (report.classBreakdown
 
 ## Next Steps
 
-1. Review the \`less-mapping-report.json\` to see which LESS files have low usage
-2. Check \`optimization-recommendations.json\` for files safe to remove
-3. Use \`template-analysis.json\` to understand per-template CSS usage
+1. **High Priority**: Review files in \`optimization-recommendations.json\` under \`notImported\` - these can likely be deleted
+2. **Medium Priority**: Check \`zeroUsage\` files - imported but no classes used
+3. **Low Priority**: Review \`lowUsage\` files for potential optimization
+4. Use \`style-mapping-report.json\` to see detailed usage per file
+5. Check \`template-analysis.json\` and \`controller-analysis.json\` for usage patterns
 
 ## Files Generated
 
-- \`css-usage-report.json\` - Complete class usage data
-- \`less-mapping-report.json\` - LESS file analysis and usage mapping
-- \`optimization-recommendations.json\` - Recommendations for safe removals
+- \`css-usage-report.json\` - Complete class usage data with import chain info
+- \`style-mapping-report.json\` - All style files analysis (LESS + CSS)
+- \`optimization-recommendations.json\` - Categorized recommendations for cleanup
 - \`template-analysis.json\` - Per-template class usage breakdown
+- \`controller-analysis.json\` - Per-controller class usage breakdown
 `;
     }
 }

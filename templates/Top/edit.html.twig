@@ -8,14 +8,18 @@
 {% form_theme form _self %}
 
 {% block _top_topCoasters_entry_widget %}
-  <li class="media">
+  <li class="media coaster-entry" 
+      draggable="true"
+      data-coaster-id="{% if form.vars.data is not null %}{{ form.vars.data.coaster.id }}{% endif %}"
+      data-position="{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}"
+      data-top-list-target="item">
     {{ form_widget(form) }}
 
-    <div class="media-left media-middle ui-handle" style="cursor: grab;">
+    <div class="media-left media-middle drag-handle" style="cursor: grab;">
       <i class="icon-three-bars"></i>
     </div>
     <div class="media-left media-middle">
-        <textarea class="position label label-rounded label-primary" style="resize:none; height: 22px; width: 50px;">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}empty{% endif %}</textarea>
+        <span class="position-badge label label-rounded label-primary">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}</span>
     </div>
 
     <div class="media-body">
@@ -30,7 +34,9 @@
     </div>
 
     <div class="media-right media-middle">
-      <a class="remove-line"><i class="icon-cross3"></i></a>
+      <button type="button" class="remove-btn btn btn-link" data-action="click->top-list#removeCoaster">
+        <i class="icon-cross3"></i>
+      </button>
     </div>
   </li>
 {% endblock %}
@@ -59,7 +65,11 @@
     <div class="panel-body">
       <ul id="top-coaster"
           data-prototype="{{ form_widget(form.topCoasters.vars.prototype)|e('html_attr') }}"
-          class="media-list media-list-container ui-sortable">
+          class="media-list media-list-container"
+          data-controller="top-list"
+          data-top-list-target="list"
+          data-top-list-auto-save-url-value="{{ path('top_auto_save', {'id': form.vars.data.id}) }}"
+          data-top-list-save-delay-value="2000">
         {% for coaster in form.topCoasters %}
           {{ form_widget(coaster) }}
         {% endfor %}
@@ -74,88 +84,6 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript">
-      var $collectionHolder;
-
-      jQuery(document).ready(function () {
-          // Get the ul that holds the collection of tags
-          $collectionHolder = $('ul#top-coaster');
-          $collectionHolder.data('index', $collectionHolder.find('li').length);
-
-          $(".ui-sortable").sortable({
-              update: function (event, ui) {
-                  updatePosition();
-              },
-              handle: ".ui-handle",
-          });
-      });
-
-      function addTagForm($collectionHolder, data) {
-          var prototype = $collectionHolder.data('prototype');
-          var index = $collectionHolder.data('index');
-          var newForm = prototype.replace(/__name__/g, index);
-          newForm = newForm.replace(/__coastername__/g, data.text);
-          $collectionHolder.data('index', index + 1);
-          $collectionHolder.append(newForm);
-
-          $("#top_topCoasters_" + index + "_coaster").val(data.id);
-
-          updatePosition();
-      }
-
-      $('ul#top-coaster').on('click', '.remove-line', function(e) {
-          $(this).closest('li').remove();
-          updatePosition();
-      });
-
-      $('ul#top-coaster').on('blur', '.position', function(e) {
-          let textValue = parseInt($(this)[0].value.trim());
-          let pos = textValue - 2;
-
-          if(textValue > $('ul#top-coaster li').length) {
-              pos = $('ul#top-coaster li').length - 1;
-              $(this).val($('ul#top-coaster li').length);
-          }
-          else if(textValue > $(this).closest('li').index()) {
-              pos = textValue - 1;
-          }
-
-          if(pos < 0) {
-              $('ul#top-coaster').prepend($(this).closest('li'));
-          }
-          else {
-              $(this).closest('li').insertAfter("ul#top-coaster li:eq(" + pos + ")");
-          }
-
-          updatePosition();
-      });
-
-      function updatePosition() {
-          $("input[id$='position']").each(function (i) {
-              i++;
-              $(this).val(i);
-          });
-          $("textarea.position").each(function (i) {
-              i++;
-              $(this).val(i);
-          });
-      }
-
-      // Handle Select2 selection via Stimulus controller events
-      jQuery("select").on("select2:select", function (evt) {
-          addTagForm($collectionHolder, evt.params.data);
-      });
-
-      $('textarea').keypress(function(e) {
-          var a = [];
-          var k = e.which;
-
-          for (i = 48; i < 58; i++)
-              a.push(i);
-
-          if (!(a.indexOf(k)>=0))
-              e.preventDefault();
-      });
-  </script>
-  {# Touch support is now auto-loaded by webpack for .ui-sortable elements #}
+  {# Modern Stimulus-based drag and drop will be implemented in task 2 #}
+  {# Legacy jQuery sortable code removed - functionality will be restored with modern implementation #}
 {% endblock %}
