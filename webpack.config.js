@@ -1,6 +1,5 @@
 const Encore = require("@symfony/webpack-encore");
 const path = require("path");
-const ImageOptimizationPlugin = require("./webpack/image-optimization-plugin");
 
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
@@ -26,9 +25,7 @@ Encore
     .addEntry("translator", "./assets/translator.js")
     .addEntry("coaster", "./assets/js/coaster.js")
 
-    // Disable automatic entry chunk splitting to prevent unnecessary vendor sharing
-    // Each entrypoint should only include what it actually imports
-    .splitEntryChunks(false)
+    // Use Encore's default entry chunk splitting
 
     // will require an extra script tag for runtime.js
     // but, you probably want this, unless you're building a single-page app
@@ -52,61 +49,29 @@ Encore
     // Enable hashed filenames for production caching
     .enableVersioning(Encore.isProduction())
 
-    // Configure manifest generation for asset resolution
-    .configureManifestPlugin((options) => {
-        // Generate both manifest.json and entrypoints.json
-        options.writeToFileEmit = true;
-    })
+    // Encore generates manifest.json by default
 
-    // Configure Babel for modern JavaScript support
+    // Configure Babel for modern JavaScript support  
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = "usage";
-        config.corejs = "3.38";
-        // Target modern browsers for better performance
-        config.targets = Encore.isProduction()
-            ? "defaults and not IE 11"
-            : "last 2 Chrome versions, last 2 Firefox versions";
+        config.corejs = 3; // Let package.json manage exact version
+        // Browser targets defined in package.json browserslist
     })
 
-    // Enable LESS loader for template files
+    // Enable LESS loader for Bootstrap 3.x compatibility
     .enableLessLoader((options) => {
-        // Configure LESS options
         options.lessOptions = {
-            // Enable inline JavaScript in LESS files (needed for some template features)
+            // Enable inline JavaScript in LESS files (needed for Bootstrap 3.x)
             javascriptEnabled: true,
-            // Set up import paths for easier imports
-            paths: ["./assets/less", "./node_modules"],
         };
     })
 
-    // Enable PostCSS for autoprefixing and optimization
+    // Enable PostCSS for autoprefixing (cssnano handled by Encore's CSS minimizer)
     .enablePostCssLoader((options) => {
         options.postcssOptions = {
             plugins: [
-                require("autoprefixer")({
-                    // Support last 2 versions of major browsers
-                    overrideBrowserslist: [
-                        "last 2 versions",
-                        "> 1%",
-                        "not dead",
-                    ],
-                }),
-                // Enable CSS optimization in production
-                ...(Encore.isProduction()
-                    ? [
-                          require("cssnano")({
-                              preset: [
-                                  "default",
-                                  {
-                                      // Preserve important comments
-                                      discardComments: { removeAll: false },
-                                      // Don't merge rules that might break specificity
-                                      mergeRules: false,
-                                  },
-                              ],
-                          }),
-                      ]
-                    : []),
+                require("autoprefixer")()
+                // Browser targets defined in package.json browserslist
             ],
         };
     })
@@ -117,23 +82,16 @@ Encore
     // Provide jQuery globally for legacy plugins
     .autoProvidejQuery()
     
-    // Configure Node.js polyfills for browser compatibility
-    .configureDefinePlugin(options => {
-        options.process = JSON.stringify({
-            env: {
-                NODE_ENV: Encore.isProduction() ? 'production' : 'development'
-            }
-        });
-    })
+    // Encore handles NODE_ENV automatically
 
     // Enable Stimulus bridge for modern JavaScript interactions
     .enableStimulusBridge("./assets/controllers.json")
 
-    // Configure development server for better development experience
+    // Enable persistent build caching for faster rebuilds
+    .enableBuildCache({ config: [__filename] })
+
+    // Configure development server (Encore provides good defaults, just customize overlay)
     .configureDevServerOptions((options) => {
-        options.hot = true;
-        options.liveReload = true;
-        // Enable overlay for build errors
         options.client = {
             overlay: {
                 errors: true,
@@ -142,16 +100,13 @@ Encore
         };
     })
 
-    // Configure webpack for optimization and performance
+    // Add useful aliases for imports
     .addAliases({
         "@": path.resolve(__dirname, "assets"),
-        "@js": path.resolve(__dirname, "assets/js"),
-        "@css": path.resolve(__dirname, "assets/css"),
-        "@less": path.resolve(__dirname, "assets/less"),
         "@images": path.resolve(__dirname, "assets/images"),
     })
 
-    // Copy and optimize images from assets/images to build/images
+    // Copy images from assets/images to build/images
     .copyFiles({
         from: "./assets/images",
         to: "images/[path][name].[hash:8].[ext]",
@@ -159,74 +114,27 @@ Encore
         includeSubdirectories: true,
     })
 
-    // Configure selective bundle splitting - only split what's actually shared
+    // Configure bundle splitting for large libraries
     .configureSplitChunks((splitChunks) => {
-        // Only apply splitting in production
         if (Encore.isProduction()) {
-            splitChunks.chunks = "async"; // Only split async chunks, not entry chunks
             splitChunks.cacheGroups = {
-                // Only split large libraries that are actually used by multiple entries
-                apexcharts: {
-                    test: /[\\/]node_modules[\\/]apexcharts[\\/]/,
-                    name: "apexcharts",
+                // jQuery - used globally, benefits from separate caching
+                jquery: {
+                    test: /[\\/]node_modules[\\/]jquery[\\/]/,
+                    name: "jquery",
                     chunks: "all",
-                    priority: 40,
-                    minChunks: 1, // Split even if used by only one entry (it's large)
+                    priority: 50,
                 },
+                // PhotoSwipe - large library for image galleries
                 photoswipe: {
                     test: /[\\/]node_modules[\\/]photoswipe[\\/]/,
                     name: "photoswipe",
                     chunks: "all",
                     priority: 40,
-                    minChunks: 1, // Split even if used by only one entry (it's large)
-                },
-                // Only create common chunks for code actually shared between 2+ entries
-                common: {
-                    name: "common",
-                    minChunks: 2, // Must be used by at least 2 entries
-                    chunks: "all",
-                    priority: 10,
-                    reuseExistingChunk: true,
-                    maxSize: 200000, // 200KB max chunk size
-                    enforce: false, // Don't force splitting
-                },
-                // CSS should still be extracted
-                styles: {
-                    name: "styles",
-                    test: /\.(css|less|scss)$/,
-                    chunks: "all",
-                    priority: 30,
-                    enforce: true,
                 },
             };
         }
     });
 
-// Tree shaking is enabled by default in production mode
-
-// Get the base webpack config
-const config = Encore.getWebpackConfig();
-
-// Add custom image optimization plugin for production builds
-if (Encore.isProduction()) {
-    config.plugins.push(
-        new ImageOptimizationPlugin({
-            quality: 85,
-            webpQuality: 80,
-            pngQuality: [0.6, 0.8],
-            jpegQuality: 85,
-            generateWebP: true,
-        })
-    );
-
-    // Configure optimization settings for production
-    config.optimization = {
-        ...config.optimization,
-        usedExports: true,
-        sideEffects: false,
-        chunkIds: "deterministic",
-        moduleIds: "deterministic",
-    };
-}
-
-module.exports = config;
+// Encore handles tree shaking and optimization automatically
+module.exports = Encore.getWebpackConfig();

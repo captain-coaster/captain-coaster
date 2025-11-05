@@ -36,11 +36,11 @@ export default class extends Controller {
                 return response.text();
             })
             .then(html => {
-                // Replace container content
-                this.containerTarget.outerHTML = html;
+                // Replace container content (use innerHTML to preserve the container element)
+                this.containerTarget.innerHTML = html;
                 
                 // Re-initialize PhotoSwipe for new images
-                this.#initializePhotoSwipe();
+                this.#refreshPhotoSwipe();
                 
                 // Re-attach show all button handler if it exists
                 const newShowAllButton = document.getElementById('show-all');
@@ -60,6 +60,8 @@ export default class extends Controller {
     showAllImages() {
         this.loadImages(this.totalImagesValue);
     }
+
+
 
     #buildImageUrl(imageNumber) {
         // Use Symfony's exposed routing (requires FOSJsRoutingBundle)
@@ -87,53 +89,14 @@ export default class extends Controller {
         return fallbackUrl;
     }
 
-    #initializePhotoSwipe() {
-        // Initialize modern PhotoSwipe for lightbox images
-        if (window.PhotoSwipeLightbox) {
-            const lightbox = new window.PhotoSwipeLightbox({
-                gallery: '[data-gallery="coaster-images"]',
-                children: 'a',
-                pswpModule: window.PhotoSwipe,
-                // Modern PhotoSwipe options
-                showHideAnimationType: 'fade',
-                bgOpacity: 0.9,
-                spacing: 0.1,
-                allowPanToNext: true,
-                zoom: true,
-                close: true,
-                arrowKeys: true,
-                returnFocus: true,
-                trapFocus: true,
-                clickToCloseNonZoomable: true
-            });
-
-            // Add event listener to dynamically load image dimensions
-            lightbox.on('uiRegister', () => {
-                lightbox.on('contentLoad', (e) => {
-                    const { content } = e;
-                    
-                    if (content.type === 'image') {
-                        // Create a new image to get actual dimensions
-                        const img = new Image();
-                        img.onload = () => {
-                            // Update content with actual dimensions
-                            content.width = img.naturalWidth;
-                            content.height = img.naturalHeight;
-                            
-                            // Trigger PhotoSwipe to update layout
-                            if (lightbox.pswp) {
-                                lightbox.pswp.updateSize();
-                            }
-                        };
-                        img.src = content.data.src;
-                    }
-                });
-            });
-            
-            lightbox.init();
-            
-            // Store reference for cleanup
-            this.lightbox = lightbox;
-        }
+    #refreshPhotoSwipe() {
+        // Find the gallery controller and refresh it after AJAX content is loaded
+        setTimeout(() => {
+            const galleryElement = document.querySelector('[data-gallery="coaster-images"]');
+            if (galleryElement) {
+                // Trigger a custom event that the gallery controller can listen to
+                galleryElement.dispatchEvent(new CustomEvent('gallery:refresh'));
+            }
+        }, 100);
     }
 }

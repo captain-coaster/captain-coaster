@@ -2,49 +2,34 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.750903a5.js",
-        "/build/styles.cec93222.js",
-        "/build/common-bde52cb3.8b9c2ba7.js",
-        "/build/common-bb3d84b5.5464d5ca.js",
-        "/build/common-b1140668.8c12d480.js",
-        "/build/common-e4fe7a58.de5dacd7.js",
-        "/build/app.f11c1223.js"
+        "/build/runtime.83f5b77b.js",
+        "/build/jquery.390b2fe9.js",
+        "/build/app.d5ed6fce.js"
       ],
       "css": [
-        "/build/styles.6091ee80.css"
+        "/build/app.f476c496.css"
       ]
     },
     "translator": {
       "js": [
-        "/build/runtime.750903a5.js",
-        "/build/common-bde52cb3.8b9c2ba7.js",
-        "/build/common-bb3d84b5.5464d5ca.js",
-        "/build/common-b1140668.8c12d480.js",
-        "/build/common-e4fe7a58.de5dacd7.js",
-        "/build/translator.0cf19ffb.js"
+        "/build/runtime.83f5b77b.js",
+        "/build/translator.e6f6c219.js"
       ]
     },
     "coaster": {
       "js": [
-        "/build/runtime.750903a5.js",
-        "/build/common-bde52cb3.8b9c2ba7.js",
-        "/build/common-bb3d84b5.5464d5ca.js",
-        "/build/common-b1140668.8c12d480.js",
-        "/build/common-e4fe7a58.de5dacd7.js",
-        "/build/coaster.32b814e8.js"
+        "/build/runtime.83f5b77b.js",
+        "/build/jquery.390b2fe9.js",
+        "/build/coaster.bf34f421.js"
       ]
     }
   },
   "integrity": {
-    "/build/runtime.750903a5.js": "sha384-XknV81EMCKtnfT84RJq0y2CGS3WH099XbtkeI6DIU5xt09nlkRDyqTeq/Oa+52Gm",
-    "/build/styles.cec93222.js": "sha384-H/3cAIqtdeJSCucEHhnJukR4A4cVjuCQ1PBAxEbIoB5gyOY4YB5a96qtFlNNaV6A",
-    "/build/common-bde52cb3.8b9c2ba7.js": "sha384-TOyzzBsfuAr7mOORiVEiAfPHMAyvd1N4qkRvofNOk5aQmyXLCUR4uR8Zui2eGZFj",
-    "/build/common-bb3d84b5.5464d5ca.js": "sha384-sumNaehaBdFdu7jtJaZpwPfTzuPVGsOz56rqOaE1YMJyejAsH7t1rFO1VIAC39FQ",
-    "/build/common-b1140668.8c12d480.js": "sha384-PVPOAAgN0oH2YBLfNuj/+SdnAxa8DEjaBS6p6Xv4Sa+XKR9XGCnBjuZw5AydzDPe",
-    "/build/common-e4fe7a58.de5dacd7.js": "sha384-d9qEAFgL2pcT92nrrUvNMIqg+VZyophvuVsyKBR9vIxDaWhQBZHxSl6ZUEKZzEsL",
-    "/build/app.f11c1223.js": "sha384-cifI+zhMOugvwG4LfCa9znFNUFu7JXkW2LL+o/Ws0ePkc0pQ+A+DYfi7OFe9Cu5D",
-    "/build/styles.6091ee80.css": "sha384-msAqxQbdF7Ww9XVuP074VY3rtv/FbApWkuId4Dt7F3tY6RqJRzeE6sbpboJBBboD",
-    "/build/translator.0cf19ffb.js": "sha384-HX5NPhr+lMZq/QIJVw5Xq1Xbm9iyZTxX7sPyZTmlpR6USn80aVwT5MjJSv69Nku7",
-    "/build/coaster.32b814e8.js": "sha384-sKeF6FnrLQGpa77ZGXVFLQsbqvRPs/zj8SdktySF8s83JYEfUGwaNKMTiijYRhGO"
+    "/build/runtime.83f5b77b.js": "sha384-QGdxPoXdkHeY2ELg9oOQn5ebsWIn10exr1luVYxY6Yq/gXiPuxaOxhfBnEniVb9P",
+    "/build/jquery.390b2fe9.js": "sha384-dPscdWbdNc40l2zhpb+hUp2dsqy1iws4Yc8lLkEZ4C2oLfD5ZDr/CBsAX5XRGehx",
+    "/build/app.d5ed6fce.js": "sha384-Z4E6Tysi6Zjhy9b57IKIkG1td7eABEAiceLMXVFAHI2kQx+DelmTwanHoeZzc0oc",
+    "/build/app.f476c496.css": "sha384-YyAW86Rb4OvWFVVAr131yZmF4DdZkV3JOCRpTr4sy67iT8jgdE9vH6BWsCYVk8iV",
+    "/build/translator.e6f6c219.js": "sha384-HEqdDByUlJrrtmlkigm0c5Ah1T7uI5bLgA4300OMmXHJM1XhsmI7jQauDicoNtRA",
+    "/build/coaster.bf34f421.js": "sha384-CqjZhLX6a4v/WTqo+cruRwGNeBMnKvRuKrQucMGEuS/46UyJkWCTPvYj27dt5k9X"
   }
 }
