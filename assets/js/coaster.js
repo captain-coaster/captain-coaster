@@ -5,10 +5,12 @@
  * and includes coaster-specific functionality
  */
 
-// Import the simple rating chart replacement
-import "./plugins/rating-chart";
+// Import component-specific styles
+import '../styles/components/summary-feedback.css';
+import '../styles/components/rating-actions.css';
+import '../styles/components/coaster-loading.css';
 
-// Import coaster-specific page functionality
-import "./pages/rating";
+// Rating functionality is now handled by Stimulus rating controller
+// No need to import pages/rating anymore
 
 console.log('Coaster page JavaScript loaded');

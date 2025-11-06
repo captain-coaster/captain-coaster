@@ -9,6 +9,12 @@
     border-top: 1px solid #eee;
 }
 
+.summary-feedback-section {
+    border-top: 1px solid #eee;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
 .summary-feedback-buttons {
     display: flex;
     align-items: center;
@@ -101,4 +107,38 @@
     background-color: #dc3545;
     border-color: #dc3545;
     color: white;
+}
+
+/* Additional feedback button styles from template */
+.summary-feedback-buttons .btn {
+    border-width: 1px;
+    font-size: 11px;
+    padding: 4px 8px;
+    min-width: 40px;
+}
+
+.summary-feedback-buttons .btn.loading {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.summary-feedback-buttons .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.summary-feedback-buttons .btn.active {
+    border-width: 2px;
+}
+
+.summary-feedback-buttons .spinner {
+    animation: spin 1s linear infinite;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+    .summary-feedback-section .col-md-4 {
+        text-align: left !important;
+        margin-top: 10px;
+    }
 }

@@ -53,12 +53,19 @@ class RatingCoasterController extends AbstractController
         }
 
         if ($request->request->has('riddenAt')) {
-            try {
-                $date = new \DateTime($request->request->get('riddenAt'));
-            } catch (\Exception) {
-                return new JsonResponse(['state' => 'error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $riddenAtValue = $request->request->get('riddenAt');
+            
+            if (empty($riddenAtValue)) {
+                // Clear the date if empty value is sent
+                $rating->setRiddenAt(null);
+            } else {
+                try {
+                    $date = new \DateTime($riddenAtValue);
+                    $rating->setRiddenAt($date);
+                } catch (\Exception) {
+                    return new JsonResponse(['state' => 'error'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
             }
-            $rating->setRiddenAt($date);
         }
 
         $errors = $validator->validate($rating);

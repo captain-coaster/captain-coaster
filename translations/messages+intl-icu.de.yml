@@ -42,6 +42,7 @@ coaster:
         delete: Löschen
         text: "Punktzahl basiert auf {count_rating} Bewertungen und {count_top} Tops"
         details: "Detaillierte Benutzerbewertungen"
+        distribution: "Bewertungsverteilung"
         ratings: "Bewertungen"
     infos:
         title: "{name} Merkmale"

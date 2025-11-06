@@ -20,8 +20,6 @@
 - **Translation Required**: Every piece of text in templates or JS must be translated using Symfony translation mechanisms in all 4 languages (English, French, Spanish, German)
 
 ### Frontend Development Workflow
-- **ALWAYS use dev-server**: When working on frontend (CSS, JS, Stimulus controllers), ALWAYS start `npm run dev-server` for hot reload
-- **NEVER run `npm run build` during development**: Only use build for production deployment
 - **Start dev-server first**: Before making any frontend changes, start the dev-server with `npm run dev-server`
 - **Keep dev-server running**: Leave the dev-server running throughout your development session for instant feedback
 
@@ -72,31 +70,21 @@ npm install
 
 ### Asset Management (Webpack Encore)
 
-**For Development (ALWAYS USE THIS):**
+**For Development:**
 ```bash
 # Development server with hot reload - START THIS FIRST!
 npm run dev-server
-```
-
-**Other Commands (use sparingly):**
-```bash
-# One-time development build (avoid during active development)
-npm run dev
-
-# Watch for changes (use dev-server instead)
-npm run watch
-
-# Production build (ONLY for deployment)
-npm run build
-
 # Production build with bundle analysis
 npm run build:analyze
-
 # Clean build directory
 npm run clean
 ```
 
-**IMPORTANT**: When working on frontend code (CSS, JS, Stimulus controllers), ALWAYS use `npm run dev-server` for the best development experience with hot reload and instant feedback.
+**For production:**
+```bash
+# Production build (ONLY for deployment)
+npm run build
+```
 
 ### Code Quality
 ```bash

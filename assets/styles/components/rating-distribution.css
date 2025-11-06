@@ -1,0 +1,117 @@
+/**
+ * Rating Distribution Component
+ * Pure CSS implementation for displaying rating distribution bars
+ */
+
+.rating-distribution {
+    padding: 1rem;
+}
+
+.rating-bar-container {
+    width: 100%;
+}
+
+.rating-bar {
+    display: flex;
+    width: 100%;
+    height: 24px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #f1f5f9;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin-bottom: 0.5rem;
+}
+
+.rating-segment {
+    height: 100%;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.rating-segment:hover {
+    transform: scaleY(1.4);
+    z-index: 10;
+    filter: brightness(1.1);
+}
+
+/* Rating colors - matching the original ApexCharts colors */
+.rating-segment.rating-5 {
+    background-color: #40bf40;
+}
+
+.rating-segment.rating-4-5 {
+    background-color: #6ab31f;
+}
+
+.rating-segment.rating-4 {
+    background-color: #84a600;
+}
+
+.rating-segment.rating-3-5 {
+    background-color: #999800;
+}
+
+.rating-segment.rating-3 {
+    background-color: #a98a00;
+}
+
+.rating-segment.rating-2-5 {
+    background-color: #b57b00;
+}
+
+.rating-segment.rating-2 {
+    background-color: #bd6b09;
+}
+
+.rating-segment.rating-1-5 {
+    background-color: #c25c20;
+}
+
+.rating-segment.rating-1 {
+    background-color: #c24d31;
+}
+
+.rating-segment.rating-0-5 {
+    background-color: #bf4040;
+}
+
+.rating-labels {
+    display: flex;
+    width: 100%;
+}
+
+.rating-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+    min-height: 1.5rem;
+    text-align: center;
+}
+
+.no-ratings {
+    text-align: center;
+    color: #9ca3af;
+    padding: 2rem;
+    font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .rating-distribution {
+        padding: 0.75rem;
+    }
+    
+    .rating-bar {
+        height: 20px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .rating-label {
+        font-size: 0.8125rem;
+        min-height: 1.25rem;
+    }
+}

@@ -1,0 +1,53 @@
+{#
+    Rating Distribution Component
+    Displays a horizontal bar chart showing the distribution of ratings
+    
+    Parameters:
+    - countRatings: array of rating counts with 'value' and 'count' properties
+#}
+
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6>
+            {{ 'coaster.rating.distribution'|trans }}
+        </h6>
+    </div>
+    <div class="rating-distribution">
+        {% set totalRatings = 0 %}
+        {% for countRating in countRatings %}
+            {% set totalRatings = totalRatings + countRating.count %}
+        {% endfor %}
+        
+        {% if totalRatings > 0 %}
+            <div class="rating-bar-container">
+                <div class="rating-bar">
+                    {% for countRating in countRatings %}
+                        {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
+                        {% if percentage > 0 %}
+                            <div class="rating-segment rating-{{ countRating.value|replace({'.': '-'}) }}" 
+                                 style="width: {{ percentage }}%"
+                                 title="{{ countRating.value }}: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="rating-labels">
+                    {% for countRating in countRatings %}
+                        {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
+                        {% if percentage > 0 %}
+                            <div class="rating-label" style="width: {{ percentage }}%">
+                                {% if percentage > 5 %}
+                                    {{ countRating.value }}★
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div class="no-ratings">
+                {{ 'coaster.rating.notenough'|trans }}
+            </div>
+        {% endif %}
+    </div>
+</div>

@@ -43,6 +43,7 @@ coaster:
         delete: supprimer
         text: "Score basé sur {count_rating} notes et {count_top} tops"
         details: Détail des notes utilisateurs
+        distribution: "Distribution des notes"
         ratings: notes
     infos:
         title: "Caractéristiques de {name}"

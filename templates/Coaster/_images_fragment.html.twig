@@ -1,0 +1,65 @@
+{# Images fragment loaded via AJAX #}
+<div class="panel panel-flat">
+    <div class="panel-heading">
+        <h6 class="panel-title">
+            <span class="text-semibold">
+                <i class="icon-images2 position-left"></i> {{ 'coaster.photos.title'|trans }}
+                {% if images|length > 0 %}
+                    <span class="badge badge-primary">{{ totalImages }}</span>
+                {% endif %}
+            </span>
+        </h6>
+    </div>
+    
+    {% if images|length > 0 %}
+        <div class="panel-body">
+            <div class="row" data-gallery="coaster-images">
+                {% for image in images %}
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 mb-15">
+                        <div class="thumbnail">
+                            <a href="{{ image.webPath }}" 
+                               class="image-link"
+                               data-pswp-width="{{ image.width }}"
+                               data-pswp-height="{{ image.height }}"
+                               title="{{ image.credit ? ('Photo by ' ~ image.credit) : coaster.name }}">
+                                <img src="{{ image.webPath|imagine_filter('coaster_thumbnail') }}" 
+                                     alt="{{ coaster.name }}"
+                                     class="img-responsive"
+                                     loading="lazy">
+                            </a>
+                            {% if image.credit %}
+                                <div class="caption text-center">
+                                    <small class="text-muted">
+                                        <i class="icon-camera"></i> {{ image.credit }}
+                                    </small>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {# Show All Button #}
+            {% if totalImages > images|length %}
+                <div class="text-center mt-15">
+                    <button type="button" 
+                            id="show-all" 
+                            class="btn btn-default btn-sm">
+                        {{ 'coaster.photos.show_all'|trans({'%count%': totalImages}) }}
+                        <i class="icon-arrow-down8 position-right"></i>
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="panel-body text-center text-muted">
+            <i class="icon-images2 icon-2x"></i>
+            <p class="mt-10">{{ 'coaster.photos.no_photos'|trans }}</p>
+            {% if is_granted('ROLE_USER') %}
+                <a href="{{ path('image_upload', {'coaster': coaster.id}) }}" class="btn btn-primary btn-sm">
+                    {{ 'coaster.photos.upload_first'|trans }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

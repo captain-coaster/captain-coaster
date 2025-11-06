@@ -2,34 +2,27 @@
   "entrypoints": {
     "app": {
       "js": [
-        "/build/runtime.83f5b77b.js",
-        "/build/jquery.390b2fe9.js",
-        "/build/app.d5ed6fce.js"
+        "http://localhost:8080/build/runtime.js",
+        "http://localhost:8080/build/app.js"
       ],
       "css": [
-        "/build/app.f476c496.css"
+        "http://localhost:8080/build/app.css"
       ]
     },
     "translator": {
       "js": [
-        "/build/runtime.83f5b77b.js",
-        "/build/translator.e6f6c219.js"
+        "http://localhost:8080/build/runtime.js",
+        "http://localhost:8080/build/translator.js"
       ]
     },
     "coaster": {
       "js": [
-        "/build/runtime.83f5b77b.js",
-        "/build/jquery.390b2fe9.js",
-        "/build/coaster.bf34f421.js"
+        "http://localhost:8080/build/runtime.js",
+        "http://localhost:8080/build/coaster.js"
+      ],
+      "css": [
+        "http://localhost:8080/build/coaster.css"
       ]
     }
-  },
-  "integrity": {
-    "/build/runtime.83f5b77b.js": "sha384-QGdxPoXdkHeY2ELg9oOQn5ebsWIn10exr1luVYxY6Yq/gXiPuxaOxhfBnEniVb9P",
-    "/build/jquery.390b2fe9.js": "sha384-dPscdWbdNc40l2zhpb+hUp2dsqy1iws4Yc8lLkEZ4C2oLfD5ZDr/CBsAX5XRGehx",
-    "/build/app.d5ed6fce.js": "sha384-Z4E6Tysi6Zjhy9b57IKIkG1td7eABEAiceLMXVFAHI2kQx+DelmTwanHoeZzc0oc",
-    "/build/app.f476c496.css": "sha384-YyAW86Rb4OvWFVVAr131yZmF4DdZkV3JOCRpTr4sy67iT8jgdE9vH6BWsCYVk8iV",
-    "/build/translator.e6f6c219.js": "sha384-HEqdDByUlJrrtmlkigm0c5Ah1T7uI5bLgA4300OMmXHJM1XhsmI7jQauDicoNtRA",
-    "/build/coaster.bf34f421.js": "sha384-CqjZhLX6a4v/WTqo+cruRwGNeBMnKvRuKrQucMGEuS/46UyJkWCTPvYj27dt5k9X"
   }
 }

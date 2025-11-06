@@ -55,105 +55,7 @@
                     </div>
                 {% endif %}
                 <!-- /score -->
-                <!-- star rating -->
-                <div class="panel panel-body border-top-primary text-center">
-                    <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
-                    <br/>
-                    {% if is_granted('ROLE_USER') %}
-                        <!-- Centered rating stars -->
-                        <div class="rating-coaster"
-                             data-coaster="{{ coaster.id }}"
-                             data-rateit-value="{{ rating.value|default(0) }}"
-                             style="font-size: 26px;"></div>
-                        <!-- Modern icon-based actions -->
-                        <div class="rating-actions mt-10">
-                        {% if rating %}
-                            <!-- Update review icon -->
-                            <a class="action-icon" 
-                               href="{{ path('review_form', {'id': coaster.id}) }}"
-                               title="{{ 'coaster.rating.updatereview'|trans }}">
-                                <i class="icon-pencil3"></i>
-                            </a>
-                            
-                            {% if user and not user.isAddTodayDateWhenRating %}
-                                <!-- Date picker icon -->
-                                <span 
-                                    data-controller="rating-date"
-                                    data-rating-date-coaster-id-value="{{ coaster.id }}"
-                                    data-rating-date-current-date-value="{% if rating and rating.riddenAt %}{{ rating.riddenAt|date('Y-m-d') }}{% endif %}"
-                                    data-rating-date-update-url-value="{{ path('rating_edit', {'id': coaster.id }) }}"
-                                    class="inline-date-picker"
-                                >
-                                    <button type="button"
-                                            class="action-icon date-trigger"
-                                            data-action="click->rating-date#toggleDatePicker"
-                                            data-rating-date-target="dateTrigger"
-                                            title="{% if rating and rating.riddenAt %}Rode on {{ rating.riddenAt|date('M j, Y') }} - click to change{% else %}Set ride date{% endif %}">
-                                        <i class="icon-calendar"></i>
-                                        {% if rating and rating.riddenAt %}
-                                            <span class="date-indicator"></span>
-                                        {% endif %}
-                                    </button>
-                                    
-                                    <!-- Compact date picker popup -->
-                                    <div 
-                                        data-rating-date-target="dateContainer" 
-                                        class="date-picker-popup-inline" 
-                                        style="display: none;"
-                                    >
-                                        <div class="date-picker-content-small">
-                                            <input 
-                                                type="date" 
-                                                data-rating-date-target="dateInput"
-                                                data-action="change->rating-date#dateChanged"
-                                                class="small-date-input"
-                                                max="{{ 'now'|date('Y-m-d') }}"
-                                            >
-                                            <div class="small-date-actions">
-                                                <button 
-                                                    type="button" 
-                                                    class="tiny-btn today-btn"
-                                                    data-action="click->rating-date#setToday"
-                                                >
-                                                    Today
-                                                </button>
-                                                <button 
-                                                    type="button" 
-                                                    class="tiny-btn clear-btn"
-                                                    data-action="click->rating-date#clearDate"
-                                                >
-                                                    Clear
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </span>
-                            {% endif %}
-                            
-                            <!-- Delete review icon -->
-                            <a class="action-icon delete-icon" 
-                               href="#"
-                               onclick="deleteRating({{ rating.id }}); return false;"
-                               title="{{ 'coaster.rating.delete'|trans }}">
-                                <i class="icon-bin"></i>
-                            </a>
-                        {% else %}
-                            <a class="action-icon"
-                               href="{{ path('review_form', {'id': coaster.id}) }}"
-                               title="{{ 'coaster.rating.sendreview'|trans }}">
-                                <i class="icon-plus3"></i>
-                            </a>
-                            <div id="review-delete"></div>
-                        {% endif %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted content-group-sm">
-                            {{ 'coaster.rating.mustlogin'|trans }}
-                        </p>
-                        <a href="{{ path('login') }}">{{ 'coaster.rating.login'|trans }}</a>
-                    {% endif %}
-                </div>
-                <!-- /star rating -->
+                {% include 'Coaster/_rating_panel.html.twig' with {'coaster': coaster, 'rating': rating, 'user': user} only %}
             {% endif %}
             <!-- main carac -->
             <div class="content-group">
@@ -193,14 +95,7 @@
                 </div>
             </div>
             {% if countRatings %}
-                <div class="panel panel-white">
-                    <div class="panel-heading">
-                        <h6>
-                            {{ 'coaster.rating.details'|trans }}
-                        </h6>
-                    </div>
-                    <div class="media-body" id="chart"></div>
-                </div>
+                {% include 'Coaster/_rating_distribution.html.twig' with {'countRatings': countRatings} only %}
             {% endif %}
             <!-- /main carac -->
             <!-- coaster details -->
@@ -391,18 +286,25 @@
         </div>
         <div class="col-sm-9">
             <!-- AI Summary Section (loaded via AJAX) -->
-            <div id="coaster-ai-summary" class="row mb-15">
-                <div class="panel panel-flat ai-summary-loading">
-                    <div class="panel-heading">
-                        <h6 class="panel-title">
-                            <span class="text-semibold">
-                                <i class="icon-star-full2 position-left"></i> Captain's Review
-                            </span>
-                        </h6>
-                    </div>
-                    <div class="panel-body text-center">
-                        <i class="icon-spinner2 spinner text-muted"></i>
-                        <span class="text-muted ml-5">Loading AI summary...</span>
+            <div 
+                data-controller="coaster-summary"
+                data-coaster-summary-slug-value="{{ coaster.slug }}"
+                data-coaster-summary-locale-value="{{ app.request.locale }}"
+                class="row mb-15"
+            >
+                <div id="coaster-ai-summary" data-coaster-summary-target="container">
+                    <div class="panel panel-flat">
+                        <div class="panel-heading">
+                            <h6 class="panel-title">
+                                <span class="text-semibold">
+                                    <i class="icon-star-full2 position-left"></i> Captain's Review
+                                </span>
+                            </h6>
+                        </div>
+                        <div class="panel-body text-center">
+                            <i class="icon-spinner2 spinner text-muted"></i>
+                            <span class="text-muted ml-5">Loading AI summary...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -413,9 +315,10 @@
                 data-coaster-images-slug-value="{{ coaster.slug }}"
                 data-coaster-images-locale-value="{{ app.request.locale }}"
                 data-coaster-images-total-images-value="{{ coaster.images|length }}"
+                class="row mb-15"
             >
-                <div id="coaster-photos" class="row" data-coaster-images-target="container">
-                    <div class="panel panel-flat photos-loading">
+                <div id="coaster-photos" data-coaster-images-target="container">
+                    <div class="panel panel-flat">
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
@@ -436,9 +339,10 @@
                 data-controller="coaster-reviews"
                 data-coaster-reviews-slug-value="{{ coaster.slug }}"
                 data-coaster-reviews-locale-value="{{ app.request.locale }}"
+                class="row mb-15"
             >
-                <div id="coaster-reviews" class="row" data-coaster-reviews-target="container">
-                    <div class="panel panel-flat reviews-loading">
+                <div id="coaster-reviews" data-coaster-reviews-target="container">
+                    <div class="panel panel-flat">
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
@@ -465,366 +369,11 @@
 
 
 {% block javascripts %}
-
-    {# Rating functionality is now included in the coaster Webpack entry #}
-
-    <script type="text/javascript">
-        // Modern rating system - old datepicker code removed
-        // Date picking is now handled by Stimulus rating-date controller
-    </script>
-    {# Image loading now handled by Stimulus coaster-images controller #}
-    <script type="text/javascript">
-        var loadSummary = function () {
-            $.ajax({
-                url: Routing.generate('coaster_summary_ajax_load', {
-                    'slug': '{{ coaster.slug }}',
-                    '_locale': '{{ app.request.locale }}',
-                }),
-                type: 'GET',
-            }).done(function (data) {
-                $('#coaster-ai-summary').html(data);
-            }).fail(function () {
-                // Hide the summary section if it fails to load
-                $('#coaster-ai-summary').hide();
-            });
-        };
-
-        loadSummary();
-        // Image loading now handled by Stimulus coaster-images controller
-        // Reviews loading now handled by Stimulus coaster-reviews controller
-
-        {% if countRatings %}
-        var options = {
-            series: [
-                {% for countRating in countRatings %}
-                {
-                    name: {{ countRating.value }},
-                    data: [{{ countRating.count }}]
-                },
-                {% endfor %}
-            ],
-            dataLabels: {
-                enabled: false
-            },
-            colors: [function ({seriesIndex, w}) {
-                switch (w.globals.seriesNames[seriesIndex]) {
-                    case 5:
-                        return '#40bf40';
-                    case 4.5:
-                        return '#6ab31f';
-                    case 4:
-                        return '#84a600';
-                    case 3.5:
-                        return '#999800';
-                    case 3:
-                        return '#a98a00';
-                    case 2.5:
-                        return '#b57b00';
-                    case 2:
-                        return '#bd6b09';
-                    case 1.5:
-                        return '#c25c20';
-                    case 1:
-                        return '#c24d31';
-                    case 0.5:
-                        return '#bf4040';
-                }
-            }],
-            chart: {
-                type: 'bar',
-                toolbar: {
-                    show: false
-                },
-                height: 100,
-                stacked: true,
-                stackType: '100%'
-            },
-            plotOptions: {
-                bar: {
-                    horizontal: true,
-                    barHeight: '100%'
-                },
-            },
-            stroke: {
-                width: 0
-            },
-            xaxis: {
-                categories: [''],
-                labels: {
-                    formatter: function (value, timestamp, opts) {
-                        return value + "%";
-                    }
-                }
-            },
-            yaxis: {
-                labels: {
-                    show: false
-                }
-            },
-            tooltip: {
-                y: {
-                    formatter: function (val, {series, seriesIndex, w}) {
-                        var value = Math.floor(w.globals.seriesPercent[seriesIndex][0] * 100) / 100;
-                        return value + "% (" + val + " {{ 'coaster.rating.ratings'|trans }})";
-                    }
-                }
-            },
-            fill: {
-                opacity: 1
-
-            },
-            legend: {
-                show: false
-            }
-        };
-
-        // Wait for ApexCharts to be loaded by webpack
-        function createChart() {
-            if (typeof window.ApexCharts !== 'undefined') {
-                var chart = new ApexCharts(document.querySelector("#chart"), options);
-                chart.render();
-            } else {
-                // Wait for ApexCharts to be ready
-                window.addEventListener('apexcharts-ready', function() {
-                    var chart = new ApexCharts(document.querySelector("#chart"), options);
-                    chart.render();
-                });
-            }
-        }
-        
-        createChart();
-        {% endif %}
-    </script>
+    {# All functionality now handled by Stimulus controllers #}
     {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}
 
 {% block stylesheets %}
     {# Load coaster-specific CSS #}
     {{ encore_entry_link_tags('coaster') }}
-    
-
-    <style>
-        /* Summary feedback button styles */
-        .summary-feedback-buttons .btn {
-            border-width: 1px;
-            font-size: 11px;
-            padding: 4px 8px;
-            min-width: 40px;
-        }
-        
-        .summary-feedback-buttons .btn.loading {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .summary-feedback-buttons .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .summary-feedback-buttons .btn.active {
-            border-width: 2px;
-        }
-        
-        .summary-feedback-buttons .spinner {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .summary-feedback-section {
-            border-top: 1px solid #eee;
-            margin-top: 15px;
-            padding-top: 15px;
-        }
-        
-        .ai-summary-loading,
-        .photos-loading,
-        .reviews-loading {
-            animation: pulse 1.5s ease-in-out infinite alternate;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-        
-        /* Placeholder panel styling */
-        .ai-summary-loading .panel-body,
-        .photos-loading .panel-body,
-        .reviews-loading .panel-body {
-            padding: 30px 20px;
-            background: #fafafa;
-        }
-        
-        @media (max-width: 768px) {
-            .summary-feedback-section .col-md-4 {
-                text-align: left !important;
-                margin-top: 10px;
-            }
-        }
-        
-        /* Modern Icon Actions */
-        .rating-actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .action-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.05);
-            color: #666;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            border: none;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .action-icon:hover {
-            background: rgba(0,123,255,0.1);
-            color: #007bff;
-            transform: scale(1.1);
-            text-decoration: none;
-        }
-        
-        .action-icon.delete-icon:hover {
-            background: rgba(220,53,69,0.1);
-            color: #dc3545;
-        }
-        
-        .action-icon i {
-            font-size: 14px;
-        }
-        
-        /* Date indicator dot */
-        .date-indicator {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 6px;
-            height: 6px;
-            background: #28a745;
-            border-radius: 50%;
-            border: 1px solid white;
-        }
-        
-        /* Inline Date Picker Styles */
-        .inline-date-picker {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .date-picker-popup-inline {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            margin-top: 8px;
-            opacity: 0;
-            transform: translateX(-50%) translateY(-10px) scale(0.95);
-            transition: all 0.2s ease;
-        }
-        
-        .date-picker-popup-inline.fade-in {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0) scale(1);
-        }
-        
-        .date-picker-content-small {
-            background: white;
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            min-width: 180px;
-        }
-        
-        .small-date-input {
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 6px 8px;
-            font-size: 12px;
-            margin-bottom: 6px;
-            transition: all 0.2s ease;
-        }
-        
-        .small-date-input:focus {
-            outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
-        }
-        
-        .small-date-input.loading {
-            opacity: 0.6;
-            background: #f8f9fa;
-        }
-        
-        .small-date-input.success {
-            border-color: #28a745;
-            background: rgba(40,167,69,0.05);
-        }
-        
-        .small-date-input.error {
-            border-color: #dc3545;
-            background: rgba(220,53,69,0.05);
-        }
-        
-        .small-date-actions {
-            display: flex;
-            gap: 4px;
-        }
-        
-        .tiny-btn {
-            background: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 3px;
-            padding: 3px 6px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            flex: 1;
-            text-align: center;
-        }
-        
-        .today-btn:hover {
-            background: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        
-        .clear-btn:hover {
-            background: #dc3545;
-            color: white;
-            border-color: #dc3545;
-        }
-        
-        @media (max-width: 768px) {
-            .date-picker-content-small {
-                min-width: 160px;
-                padding: 8px;
-            }
-            
-            .date-picker-popup-inline {
-                left: 0;
-                transform: translateX(0);
-            }
-            
-            .date-picker-popup-inline.fade-in {
-                transform: translateX(0) translateY(0) scale(1);
-            }
-        }
-    </style>
 {% endblock %}

@@ -48,6 +48,7 @@ coaster:
         delete: "delete"
         text: "Score based on {count_rating} ratings and {count_top} tops"
         details: "Detailed user ratings"
+        distribution: "Rating distribution"
         ratings: "ratings"
     infos:
         title: "{name} features"

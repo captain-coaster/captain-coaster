@@ -1,232 +1,162 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
-/**
- * Modern rating date controller
- *
- * Provides a clean, minimalist date picker experience when rating coasters
- */
 export default class extends Controller {
-    static targets = ["dateInput", "dateContainer", "dateTrigger"];
-    static values = {
-        coasterId: Number,
-        currentDate: String,
-        updateUrl: String,
-    };
+    static targets = ['dateInput', 'dateContainer', 'calendarButton'];
+    static values = { updateUrl: String, ratingId: Number };
 
     connect() {
-        // Set current date if available
-        if (this.currentDateValue && this.hasDateInputTarget) {
-            this.dateInputTarget.value = this.currentDateValue;
-        }
-
-        // Close date picker when clicking outside
-        this.boundClickOutside = this.handleClickOutside.bind(this);
-        document.addEventListener('click', this.boundClickOutside);
+        document.addEventListener('rating:created', this.show.bind(this));
+        document.addEventListener('rating:deleted', this.hide.bind(this));
+        document.addEventListener('click', this.closeOnOutsideClick.bind(this));
+        this.updateVisibility();
     }
 
     disconnect() {
-        // Clean up event listener
-        if (this.boundClickOutside) {
-            document.removeEventListener('click', this.boundClickOutside);
-        }
+        document.removeEventListener('rating:created', this.show.bind(this));
+        document.removeEventListener('rating:deleted', this.hide.bind(this));
+        document.removeEventListener('click', this.closeOnOutsideClick.bind(this));
     }
 
-    /**
-     * Toggle the date picker visibility
-     */
     toggleDatePicker(event) {
+        event.preventDefault();
         event.stopPropagation();
         
-        if (this.hasDateContainerTarget) {
-            const isVisible = this.dateContainerTarget.style.display === 'block';
-            
-            if (isVisible) {
-                this.hideDateInput();
-            } else {
-                this.showDateInput();
-            }
+        if (!this.hasDateContainerTarget) return;
+        
+        const isVisible = this.dateContainerTarget.style.display === 'block';
+        
+        if (isVisible) {
+            this.hideDatePicker();
+        } else {
+            this.showDatePicker();
         }
     }
 
-    /**
-     * Handle clicks outside the date picker to close it
-     */
-    handleClickOutside(event) {
+    showDatePicker() {
+        if (!this.hasDateContainerTarget) return;
+        
+        this.dateContainerTarget.style.display = 'block';
+        // Add fade-in class for smooth animation
+        setTimeout(() => {
+            this.dateContainerTarget.classList.add('fade-in');
+        }, 10);
+    }
+
+    hideDatePicker() {
+        if (!this.hasDateContainerTarget) return;
+        
+        this.dateContainerTarget.classList.remove('fade-in');
+        setTimeout(() => {
+            this.dateContainerTarget.style.display = 'none';
+        }, 200);
+    }
+
+    closeOnOutsideClick(event) {
         if (this.hasDateContainerTarget && 
             this.dateContainerTarget.style.display === 'block' &&
             !this.element.contains(event.target)) {
-            this.hideDateInput();
+            this.hideDatePicker();
         }
     }
 
-    /**
-     * Show the date input when user starts rating
-     */
-    showDateInput() {
-        if (this.hasDateContainerTarget) {
-            this.dateContainerTarget.style.display = "block";
-            this.dateContainerTarget.classList.add("fade-in");
-
-            // Focus the date input for better UX
-            if (this.hasDateInputTarget) {
-                setTimeout(() => {
-                    this.dateInputTarget.focus();
-                }, 150);
-            }
+    async dateChanged(event) {
+        const date = event.target.value;
+        if (!this.updateUrlValue) return;
+        
+        // Add loading state
+        if (this.hasDateInputTarget) {
+            this.dateInputTarget.classList.add('loading');
         }
-    }
-
-    /**
-     * Hide the date input
-     */
-    hideDateInput() {
-        if (this.hasDateContainerTarget) {
-            this.dateContainerTarget.style.display = "none";
-            this.dateContainerTarget.classList.remove("fade-in");
-        }
-    }
-
-    /**
-     * Handle date change and save to backend
-     */
-    dateChanged(event) {
-        const selectedDate = event.target.value;
-
-        if (!this.updateUrlValue) {
-            return;
-        }
-
-        // Show loading state
-        this.setLoadingState(true);
-
-        // Send date to backend
-        fetch(this.updateUrlValue, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "X-Requested-With": "XMLHttpRequest",
-            },
-            body: `riddenAt=${encodeURIComponent(selectedDate || '')}`,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    this.showSuccess();
-                    this.updateTriggerButton(selectedDate);
-                    // Auto-hide after successful save
-                    setTimeout(() => this.hideDateInput(), 1000);
-                } else {
-                    this.showError();
-                }
-            })
-            .catch((error) => {
-                console.error("Error updating ride date:", error);
-                this.showError();
-            })
-            .finally(() => {
-                this.setLoadingState(false);
+        
+        try {
+            const response = await fetch(this.updateUrlValue, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `riddenAt=${encodeURIComponent(date || '')}`
             });
-    }
-
-    /**
-     * Update the trigger button to show the selected date
-     */
-    updateTriggerButton(dateValue) {
-        if (this.hasDateTriggerTarget) {
-            let dateIndicator = this.dateTriggerTarget.querySelector('.date-indicator');
             
-            if (dateValue) {
-                const date = new Date(dateValue);
-                const formattedDate = date.toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric',
-                    year: 'numeric'
-                });
-                
-                // Add date indicator dot if it doesn't exist
-                if (!dateIndicator) {
-                    dateIndicator = document.createElement('span');
-                    dateIndicator.className = 'date-indicator';
-                    this.dateTriggerTarget.appendChild(dateIndicator);
+            if (response.ok) {
+                // Add success state
+                if (this.hasDateInputTarget) {
+                    this.dateInputTarget.classList.remove('loading');
+                    this.dateInputTarget.classList.add('success');
+                    setTimeout(() => {
+                        this.dateInputTarget.classList.remove('success');
+                    }, 1000);
                 }
                 
-                // Update tooltip
-                this.dateTriggerTarget.title = `Rode on ${formattedDate} - click to change`;
+                this.hideDatePicker();
+                this.updateDateIndicator(date);
             } else {
-                // Remove date indicator if it exists
-                if (dateIndicator) {
-                    dateIndicator.remove();
-                }
-                this.dateTriggerTarget.title = 'Set ride date';
+                throw new Error('Save failed');
             }
-        }
-    }
-
-    /**
-     * Set loading state
-     */
-    setLoadingState(isLoading) {
-        if (this.hasDateInputTarget) {
-            this.dateInputTarget.disabled = isLoading;
-
-            if (isLoading) {
-                this.dateInputTarget.classList.add("loading");
-            } else {
-                this.dateInputTarget.classList.remove("loading");
+        } catch (error) {
+            console.error('Date save error:', error);
+            
+            // Add error state
+            if (this.hasDateInputTarget) {
+                this.dateInputTarget.classList.remove('loading');
+                this.dateInputTarget.classList.add('error');
+                setTimeout(() => {
+                    this.dateInputTarget.classList.remove('error');
+                }, 2000);
             }
+            
+            alert('Error saving date');
         }
     }
 
-    /**
-     * Show success feedback
-     */
-    showSuccess() {
-        if (this.hasDateInputTarget) {
-            this.dateInputTarget.classList.remove("error");
-            this.dateInputTarget.classList.add("success");
-
-            // Remove success class after animation
-            setTimeout(() => {
-                this.dateInputTarget.classList.remove("success");
-            }, 2000);
-        }
-    }
-
-    /**
-     * Show error feedback
-     */
-    showError() {
-        if (this.hasDateInputTarget) {
-            this.dateInputTarget.classList.remove("success");
-            this.dateInputTarget.classList.add("error");
-
-            // Remove error class after animation
-            setTimeout(() => {
-                this.dateInputTarget.classList.remove("error");
-            }, 3000);
-        }
-    }
-
-    /**
-     * Handle today button click
-     */
     setToday() {
-        const today = new Date().toISOString().split("T")[0];
-
         if (this.hasDateInputTarget) {
-            this.dateInputTarget.value = today;
-            // Trigger change event
-            this.dateInputTarget.dispatchEvent(new Event("change"));
+            this.dateInputTarget.value = new Date().toISOString().split('T')[0];
+            this.dateInputTarget.dispatchEvent(new Event('change'));
         }
     }
 
-    /**
-     * Clear the date
-     */
     clearDate() {
         if (this.hasDateInputTarget) {
-            this.dateInputTarget.value = "";
-            // Trigger change event
-            this.dateInputTarget.dispatchEvent(new Event("change"));
+            this.dateInputTarget.value = '';
+            this.dateInputTarget.dispatchEvent(new Event('change'));
+        }
+    }
+
+    show(event) {
+        this.ratingIdValue = event.detail.ratingId;
+        this.updateVisibility();
+    }
+
+    hide() {
+        this.ratingIdValue = null;
+        this.updateVisibility();
+        this.hideDatePicker();
+    }
+
+    updateVisibility() {
+        if (this.hasCalendarButtonTarget) {
+            this.calendarButtonTarget.style.display = this.ratingIdValue ? 'inline-block' : 'none';
+        }
+    }
+
+    updateDateIndicator(date) {
+        if (!this.hasCalendarButtonTarget) return;
+        
+        const indicator = this.calendarButtonTarget.querySelector('.date-indicator');
+        
+        if (date && date.trim()) {
+            // Show indicator if date is set
+            if (!indicator) {
+                const dot = document.createElement('span');
+                dot.className = 'date-indicator';
+                this.calendarButtonTarget.appendChild(dot);
+            }
+        } else {
+            // Remove indicator if no date
+            if (indicator) {
+                indicator.remove();
+            }
         }
     }
 }
