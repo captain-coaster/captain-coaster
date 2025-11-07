@@ -8,9 +8,40 @@ export default class extends Controller {
         try {
             await import('jquery.rateit');
             this.initRating();
+            this.setupTouchProtection();
         } catch (error) {
             console.error('Failed to load rateit:', error);
         }
+    }
+
+    setupTouchProtection() {
+        if (!this.hasRatingTarget) return;
+        
+        let touchStartY = 0;
+        let touchMoved = false;
+        
+        this.ratingTarget.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+            touchMoved = false;
+        }, { passive: true });
+        
+        this.ratingTarget.addEventListener('touchmove', (e) => {
+            const touchEndY = e.touches[0].clientY;
+            const deltaY = Math.abs(touchEndY - touchStartY);
+            
+            // If user moved more than 10px vertically, consider it scrolling
+            if (deltaY > 10) {
+                touchMoved = true;
+            }
+        }, { passive: true });
+        
+        this.ratingTarget.addEventListener('touchend', (e) => {
+            if (touchMoved) {
+                // Prevent rating if user was scrolling
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
     }
 
     disconnect() {
@@ -64,6 +95,14 @@ export default class extends Controller {
             const data = await response.json();
             this.currentValueValue = newValue;
             if (data.id) this.ratingIdValue = data.id;
+
+            // Add sparkle effect
+            if (this.hasRatingTarget) {
+                this.ratingTarget.classList.add('rating-confirmed');
+                setTimeout(() => {
+                    this.ratingTarget.classList.remove('rating-confirmed');
+                }, 600);
+            }
 
             this.dispatch(wasNew ? 'created' : 'updated', { 
                 detail: { ratingId: data.id || this.ratingIdValue }, 

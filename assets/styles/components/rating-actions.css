@@ -243,3 +243,23 @@ cker Functionality */
         transform: translateX(0) translateY(0) scale(1);
     }
 }
+
+/* Subtle sparkle effect for rating confirmation */
+@keyframes rating-sparkle {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.15);
+        filter: brightness(1.3) drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+.rating-coaster.rating-confirmed {
+    animation: rating-sparkle 0.6s ease-out;
+}
