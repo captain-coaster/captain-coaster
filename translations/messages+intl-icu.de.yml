@@ -32,6 +32,14 @@ coaster:
         scoreof: Punktzahl von
         ranked: Rang
         intheworld: Auf der Welt
+        quality: "Qualitätsbewertung"
+        worldrank: "Weltrangliste"
+        overview: "Auf einen Blick"
+    quality:
+        excellent: "Ausgezeichnet"
+        good: "Gut"
+        fair: "Durchschnittlich"
+        poor: "Schwach"
     rating:
         action: "Bewerte diese Achterbahn!"
         notenough: "Nicht genügend Bewertungen für diese Achterbahn!"

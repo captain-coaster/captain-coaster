@@ -1486,18 +1486,21 @@
         text-transform: uppercase;
         line-height: @line-height-small;
 
-        // Arrow icon
+        // Arrow icon - Migrated from Icomoon \ede7 to Heroicon arrow-left-circle
         &:before {
-            content: '\ede7';
-            font-family: 'icomoon';
-            font-size: @icon-font-size;
+            content: '';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xMS4yNSA5LTMgM20wIDAgMyAzbS0zLTNoNy41TTIxIDEyYTkgOSAwIDEgMS0xOCAwIDkgOSAwIDAgMSAxOCAwWiIvPjwvc3ZnPg==');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: inline-block;
+            width: @icon-font-size;
+            height: @icon-font-size;
             line-height: 1;
             position: relative;
             top: -1px;
             vertical-align: middle;
             margin-right: @element-horizontal-spacing;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         // Hide default icon and use custom instead
@@ -1532,20 +1535,23 @@
         float: right;
         margin-top: ((@line-height-computed - @icon-font-size) / 2);
 
-        // "Right" arrow and base
+        // "Right" arrow and base - Migrated from Icomoon \e9c7 to Heroicon chevron-right
         &:after {
-            content: '\e9c7';
-            font-family: 'icomoon';
-            font-size: @icon-font-size;
+            content: '';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            display: inline-block;
+            width: @icon-font-size;
+            height: @icon-font-size;
             line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
     }
 
-    // Use another icon in header
+    // Use another icon in header - Migrated from Icomoon \e9c5 to Heroicon chevron-down
     .dd-header .dd-icon:after {
-        content: '\e9c5';
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xOS41IDguMjUtNy41IDcuNS03LjUtNy41Ii8+PC9zdmc+');
     }
 }
 

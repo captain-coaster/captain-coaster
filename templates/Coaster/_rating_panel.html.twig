@@ -16,7 +16,7 @@
             <a class="action-icon" 
                href="{{ path('review_form', {'id': coaster.id}) }}"
                title="{% if rating %}{{ 'coaster.rating.updatereview'|trans }}{% else %}{{ 'coaster.rating.sendreview'|trans }}{% endif %}">
-                <i class="icon-pencil3"></i>
+                {{ heroicon('pencil', 'w-6 h-6') }}
             </a>
             
             {% if user and not user.isAddTodayDateWhenRating %}
@@ -30,7 +30,7 @@
                    style="{% if not rating %}display: none;{% endif %}"
                    data-rating-date-target="calendarButton"
                    title="{% if rating and rating.riddenAt %}{{ 'Rode on'|trans }} {{ rating.riddenAt|date('M j, Y') }} - {{ 'click to change'|trans }}{% else %}{{ 'Set ride date'|trans }}{% endif %}">
-                    <i class="icon-calendar"></i>
+                    {{ heroicon('calendar', 'w-6 h-6') }}
                     {% if rating and rating.riddenAt %}
                         <span class="date-indicator"></span>
                     {% endif %}
@@ -65,7 +65,7 @@
                href="#"
                style="{% if not rating %}display: none;{% endif %}"
                title="{{ 'coaster.rating.delete'|trans }}">
-                <i class="icon-bin"></i>
+                {{ heroicon('trash', 'w-6 h-6') }}
             </a>
         </div>
     {% else %}

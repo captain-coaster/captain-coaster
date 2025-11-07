@@ -25,15 +25,20 @@
     margin-top: -1px;
 
     // Arrow icon
+    // Migrated from Icomoon \e9c5 to Heroicon chevron-down
     &:after {
-        content: '\e9c5';
-        font-family: 'icomoon';
-        display: block;
-        font-size: @icon-font-size;
+        content: '';
+        display: inline-block;
         width: @icon-font-size;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        height: @icon-font-size;
+        // Use white SVG and apply filter to match text color
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        vertical-align: middle;
+        // Ensure icon inherits parent color context
+        opacity: 0.9;
     }
 }
 
@@ -382,19 +387,21 @@
             padding-right: ((@content-padding-base * 2) + (@icon-font-size / 2));
             position: relative;
 
-            // Arrow icon
+            // Arrow icon - Migrated from Icomoon \e9c7 to Heroicon chevron-right
             &:after {
-                content: '\e9c7';
-                font-family: 'icomoon';
+                content: '';
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
+                background-size: contain;
+                background-repeat: no-repeat;
+                background-position: center;
+                display: inline-block;
                 position: absolute;
                 top: 50%;
                 margin-top: -(@icon-font-size / 2);
                 right: @content-padding-base;
-                font-size: @icon-font-size;
-                font-weight: 400;
+                width: @icon-font-size;
+                height: @icon-font-size;
                 line-height: 1;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
                 .opacity(0.8);
             }
         }
@@ -479,9 +486,9 @@
         @media (max-width: @screen-xs-max) {
             position: static;
 
-            // Change arrow icon direction
+            // Change arrow icon direction - Migrated from Icomoon \e9c5 to Heroicon chevron-down
             > a:after {
-                content: '\e9c5';
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xOS41IDguMjUtNy41IDcuNS03LjUtNy41Ii8+PC9zdmc+');
             }
 
             // Make them stacked
@@ -575,9 +582,9 @@
     .caret {
         border: 0;
 
-        // Icon
+        // Icon - Migrated from Icomoon \e9c6 to Heroicon chevron-up
         &:after {
-            content: '\e9c6';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im00LjUgMTUuNzUgNy41LTcuNSA3LjUgNy41Ii8+PC9zdmc+');
         }
     }
 }

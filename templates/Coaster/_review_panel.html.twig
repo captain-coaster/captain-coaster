@@ -1,0 +1,44 @@
+{% import "helper.html.twig" as helper %}
+
+<div class="panel panel-flat">
+    <div class="panel-heading">
+        <h6 class="panel-title">
+            <span class="text-semibold">
+                {{ heroicon('chat-bubble-left-right', 'w-6 h-6 position-left', 'outline') }} {{ 'review.title'|trans }}
+                {% if reviews.getTotalItemCount() > 0 %}
+                    <span class="badge badge-primary">{{ reviews.getTotalItemCount() }}</span>
+                {% endif %}
+            </span>
+            {% if coaster.isRateable %}
+                <div class="pull-right">
+                    <a href="{{ path('review_form', {'id': coaster.id}) }}" class="btn btn-primary btn-rounded btn-xs">
+                        {{ heroicon('plus-circle', 'w-6 h-6 position-left', 'outline') }} {{ 'review.send'|trans() }}
+                    </a>
+                </div>
+            {% endif %}
+        </h6>
+    </div>
+
+    {% if reviews.getTotalItemCount() > 0 %}
+        <div class="panel-body">
+            <ul class="media-list media-list-bordered">
+                {% for review in reviews %}
+                    <li class="media">
+                        {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {{ knp_pagination_render(reviews) }}
+        </div>
+    {% else %}
+        <div class="panel-body text-center text-muted">
+            {{ heroicon('chat-bubble-left-right', 'w-8 h-8') }}
+            <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
+            {% if coaster.isRateable %}
+                <a href="{{ path('review_form', {'id': coaster.id}) }}" class="btn btn-primary btn-sm">
+                    {{ 'review.send'|trans() }}
+                </a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

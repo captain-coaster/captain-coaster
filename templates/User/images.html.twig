@@ -21,12 +21,18 @@
                   <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" alt="{{ image.coaster.name }}">
                 </div>
               </a>
-              <div class="text-size-small text-muted">
-                <i
-                    onclick="toggleLike(this, '{{ image.id }}');"
-                    style="cursor: pointer;"
-                    class="{% if image.id in userLikes %}icon-heart5{% else %}icon-heart6{% endif %} text-muted like-image">
-                </i>&nbsp;{{ image.likeCounter }}
+              <div class="text-size-small text-muted"
+                   data-controller="image-like"
+                   data-image-like-image-id-value="{{ image.id }}"
+                   data-image-like-locale-value="{{ app.request.locale }}"
+                   data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
+                   style="display: flex; align-items: center; gap: 2px;">
+                <button type="button"
+                        data-action="click->image-like#toggle"
+                        data-image-like-target="icon"
+                        class="btn-link text-muted p-0 border-0 bg-transparent"
+                        style="cursor: pointer; display: inline-flex; align-items: center;">
+                </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
               </div>
             </div>
           {% endfor %}
@@ -37,20 +43,6 @@
   {% else %}
     No photos
   {% endif %}
-  <script>
-    function toggleLike(element, id) {
-      $.ajax({
-        url: Routing.generate('like_image_async', {
-          'id': id,
-          '_locale': '{{ app.request.locale }}',
-        }),
-        type: 'GET',
-      }).done(function(data) {
-        element.classList.toggle('icon-heart5');
-        element.classList.toggle('icon-heart6');
-      });
-    }
-  </script>
 {% endblock %}
 
 {% block javascripts %}

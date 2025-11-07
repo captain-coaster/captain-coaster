@@ -25,10 +25,10 @@
     {% if review.pros|length > 0 or review.cons|length > 0 %}
       <p class="mb-10">
         {% for pros in review.pros %}
-          <span class="label label-flat label-rounded border-success text-success-600">{{ pros.name|trans([], 'database') }}</span>
+          {{ helper.tag(pros.name|trans([], 'database'), 'pro') }}
         {% endfor %}
         {% for cons in review.cons %}
-          <span class="label label-flat label-rounded border-danger text-danger-600">{{ cons.name|trans([], 'database') }}</span>
+          {{ helper.tag(cons.name|trans([], 'database'), 'con') }}
         {% endfor %}
       </p>
     {% endif %}
@@ -38,12 +38,12 @@
         <div class="review-content" data-review-actions-target="reviewContent">
           <p class="review-short">{{ review.review|slice(0, 200) }}...
             <a href="#" class="expand-review" data-action="review-actions#toggleReview" data-review-actions-target="expandButton">
-              <i class="icon-arrow-down22"></i>
+              {{ heroicon('chevron-down', 'w-6 h-6') }}
             </a>
           </p>
           <p class="review-full" style="display: none;">{{ review.review }}
             <a href="#" class="collapse-review" data-action="review-actions#toggleReview" data-review-actions-target="collapseButton">
-              <i class="icon-arrow-up22"></i>
+              {{ heroicon('chevron-up', 'w-6 h-6') }}
             </a>
           </p>
         </div>
@@ -56,13 +56,13 @@
       <li>
         <span data-review-actions-target="upvoteCount">{{ review.upvotes|length }}</span>
         <a href="#" data-action="review-actions#upvote" data-review-actions-target="upvoteButton">
-          <i class="icon-arrow-up22 text-success"></i>
+          {{ heroicon('chevron-up', 'w-6 h-6 text-success') }}
         </a>
       </li>
       {% if is_granted('ROLE_USER') %}
         <li>
           <a href="#" data-action="review-actions#openReportModal" data-review-actions-target="reportButton" title="{{ 'review.report'|trans }}">
-            <i class="icon-flag8 text-size-small text-default"></i>
+            {{ heroicon('flag', 'w-6 h-6 text-size-small text-default') }}
           </a>
         </li>
       {% endif %}

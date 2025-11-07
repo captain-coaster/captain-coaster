@@ -33,6 +33,14 @@ coaster:
         scoreof: Score de
         ranked: Classé
         intheworld: mondial
+        quality: "Score de Qualité"
+        worldrank: "Classement Mondial"
+        overview: "En un Coup d'Œil"
+    quality:
+        excellent: "Excellent"
+        good: "Bon"
+        fair: "Moyen"
+        poor: "Faible"
     rating:
         action: "Note ce coaster !"
         notenough: "Pas assez de note sur ce coaster !"

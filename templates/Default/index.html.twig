@@ -35,7 +35,7 @@
       <div class="panel panel-body">
         <div class="row text-center">
           <div class="col-xs-3">
-            <p><i class="icon-stars icon-2x display-inline-block text-success"></i></p>
+            <p>{{ heroicon('star', 'w-8 h-8 display-inline-block text-success') }}</p>
             <h5 class="text-semibold no-margin">
               {{ stats.nb_ratings }}
               {% if stats.nb_new_ratings > 0 %}
@@ -45,21 +45,21 @@
             <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
           </div>
           <div class="col-xs-3">
-            <p><i class="icon-megaphone icon-2x display-inline-block text-success"></i></p>
+            <p>{{ heroicon('megaphone', 'w-8 h-8 display-inline-block text-success') }}</p>
             <h5 class="text-semibold no-margin">
               <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
           </div>
           <div class="col-xs-3">
-            <p><i class="icon-users2 icon-2x display-inline-block text-warning"></i></p>
+            <p>{{ heroicon('user-group', 'w-8 h-8 display-inline-block text-warning') }}</p>
             <h5 class="text-semibold no-margin">
               <a href="{{ path('user_list') }}">{{ stats.nb_users }}</a>
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
           </div>
           <div class="col-xs-3">
-            <p><i class="icon-camera icon-2x display-inline-block text-info"></i></p>
+            <p>{{ heroicon('camera', 'w-8 h-8 display-inline-block text-info') }}</p>
             <h5 class="text-semibold no-margin">{{ stats.nb_images }}</h5>
             <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
           </div>
@@ -121,12 +121,12 @@
       <div class="panel panel-flat">
         <div class="panel-heading">
           <h6 class="panel-title text-semibold">
-            <i class="icon-bubble-lines4 position-left"></i>
+            {{ heroicon('chat-bubble-left', 'w-6 h-6 position-left') }}
             {{ 'review.last'|trans }}
           </h6>
           <div class="heading-elements">
             <a href="{{ path('review_list') }}" class="heading-text">
-              <i class="icon-arrow-right8 position-right"></i>
+              {{ heroicon('arrow-right', 'w-6 h-6 position-right') }}
               {{ 'review.all'|trans }}
             </a>
           </div>

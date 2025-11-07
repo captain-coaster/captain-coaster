@@ -3,27 +3,28 @@
         <div class="panel-heading">
             <h6 class="panel-title">
                 <span class="text-semibold">
-                    <i class="icon-star-full2 position-left"></i> Captain's Review
+                    {{ heroicon('star', 'w-6 h-6 position-left', 'solid') }} Captain's Review
                 </span>
             </h6>
         </div>
         <div class="panel-body">
             <p class="text-muted mb-15">{{ coasterSummary.summary }}</p>
             {% if coasterSummary.dynamicPros|length > 0 or coasterSummary.dynamicCons|length > 0 %}
+                {% import "helper.html.twig" as helper %}
                 <div class="row">
                     {% if coasterSummary.dynamicPros|length > 0 %}
                         <div class="col-md-6">
-                            <h6 class="text-success"><i class="icon-checkmark3"></i> {{ 'coaster.ai_summary.highlights'|trans }}</h6>
+                            <h6 style="color: #065f46;">{{ heroicon('check', 'w-5 h-5') }} {{ 'coaster.ai_summary.highlights'|trans }}</h6>
                             {% for pro in coasterSummary.dynamicPros %}
-                                <span class="label label-success label-rounded mr-5 mb-5">{{ pro }}</span>
+                                {{ helper.tag(pro, 'pro') }}
                             {% endfor %}
                         </div>
                     {% endif %}
                     {% if coasterSummary.dynamicCons|length > 0 %}
                         <div class="col-md-6">
-                            <h6 class="text-danger"><i class="icon-cross2"></i> {{ 'coaster.ai_summary.concerns'|trans }}</h6>
+                            <h6 style="color: #9f1239;">{{ heroicon('exclamation-triangle', 'w-5 h-5') }} {{ 'coaster.ai_summary.concerns'|trans }}</h6>
                             {% for con in coasterSummary.dynamicCons %}
-                                <span class="label label-danger label-rounded mr-5 mb-5">{{ con }}</span>
+                                {{ helper.tag(con, 'con') }}
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -33,10 +34,10 @@
             <!-- Feedback Section -->
             <div class="summary-feedback-section">
                 <div class="row">
-                    <div class="col-md-8">
-                        <small class="text-muted"><i class="icon-info22"></i> AI-generated summary based on {{ coasterSummary.reviewsAnalyzed }} reviews</small>
+                    <div class="col-md-6">
+                        <small class="text-muted">{{ heroicon('information-circle', 'w-6 h-6') }} AI-generated summary based on {{ coasterSummary.reviewsAnalyzed }} reviews</small>
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-6 text-right">
                         <div 
                             class="summary-feedback-buttons"
                             data-controller="summary-feedback"
@@ -50,28 +51,31 @@
                                 data-summary-feedback-user-vote-value=""
                                 data-summary-feedback-has-voted-value="false"
                             {% endif %}
+                            style="display: inline-flex; align-items: center; gap: 8px; justify-content: flex-end;"
                         >
-                            <small class="text-muted mr-5">Was this helpful?</small>
-                            <button 
-                                type="button" 
-                                class="btn btn-xs btn-outline-success mr-1"
-                                data-summary-feedback-target="thumbsUpButton"
-                                data-action="click->summary-feedback#thumbsUp"
-                                title="Mark as helpful"
-                                style="padding: 1px 4px; font-size: 12px; min-width: 24px;"
-                            >
-                                👍
-                            </button>
-                            <button 
-                                type="button" 
-                                class="btn btn-xs btn-outline-danger"
-                                data-summary-feedback-target="thumbsDownButton"
-                                data-action="click->summary-feedback#thumbsDown"
-                                title="Mark as not helpful"
-                                style="padding: 1px 4px; font-size: 12px; min-width: 24px;"
-                            >
-                                👎
-                            </button>
+                            <small class="text-muted" style="margin-right: 8px;">Was this helpful?</small>
+                            <div style="display: inline-flex; gap: 2px;">
+                                <button 
+                                    type="button" 
+                                    class="btn-link text-success p-0 border-0 bg-transparent"
+                                    data-summary-feedback-target="thumbsUpButton"
+                                    data-action="click->summary-feedback#thumbsUp"
+                                    title="Mark as helpful"
+                                    style="cursor: pointer; display: inline-flex; align-items: center;"
+                                >
+                                    <span data-summary-feedback-target="thumbsUpIcon">{{ heroicon('hand-thumb-up', 'w-6 h-6') }}</span>
+                                </button>
+                                <button 
+                                    type="button" 
+                                    class="btn-link text-danger p-0 border-0 bg-transparent"
+                                    data-summary-feedback-target="thumbsDownButton"
+                                    data-action="click->summary-feedback#thumbsDown"
+                                    title="Mark as not helpful"
+                                    style="cursor: pointer; display: inline-flex; align-items: center;"
+                                >
+                                    <span data-summary-feedback-target="thumbsDownIcon">{{ heroicon('hand-thumb-down', 'w-6 h-6') }}</span>
+                                </button>
+                            </div>
                             <span style="display: none;">
                                 <span data-summary-feedback-target="positiveCount">{{ coasterSummary.positiveVotes }}</span>
                                 <span data-summary-feedback-target="negativeCount">{{ coasterSummary.negativeVotes }}</span>
@@ -81,7 +85,7 @@
                                 class="ml-5" 
                                 style="display: none;"
                             >
-                                <i class="icon-spinner2 spinner" style="font-size: 10px;"></i>
+                                <span style="font-size: 10px;">{{ heroicon('arrow-path', 'w-6 h-6 spinner') }}</span>
                             </span>
                         </div>
                     </div>

@@ -1,0 +1,72 @@
+/* ------------------------------------------------------------------------------
+ * Score Card Component - Unified tag colors
+ * ---------------------------------------------------------------------------- */
+
+.label-success {
+    background-color: #dcfce7 !important;  /* Very soft mint green */
+    border: 1px solid #bbf7d0 !important;  /* Soft mint border */
+    color: #14532d !important;             /* Deep forest green text */
+}
+
+.label-danger {
+    background-color: #ffe4e6 !important;  /* Very soft pink */
+    border: 1px solid #fecdd3 !important;  /* Soft pink border */
+    color: #881337 !important;             /* Deep rose text */
+}
+
+/* Fix tag spacing */
+.label-rounded {
+    margin-right: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+/* Compact score display */
+.score-compact {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.score-compact .score-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+}
+
+.score-compact .score-percent {
+    font-size: 18px;
+    font-weight: 400;
+    color: #6b7280;
+}
+
+/* Quality badge - compact */
+.quality-badge-compact {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.quality-badge-compact.excellent {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.quality-badge-compact.good {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.quality-badge-compact.fair {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.quality-badge-compact.poor {
+    background-color: #f3f4f6;
+    color: #374151;
+}

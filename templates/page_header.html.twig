@@ -29,12 +29,12 @@
                      aria-autocomplete="list"
                      aria-haspopup="listbox">
               <div class="form-control-feedback">
-                <i class="icon-search4 text-size-small text-muted search-icon"></i>
+                {{ heroicon('magnifying-glass', 'w-6 h-6 text-size-small text-muted search-icon') }}
                 <button type="button" 
                         class="search-clear-button" 
                         data-action="click->search#clearSearch"
                         aria-label="Clear search">
-                  <i class="icon-cross2 text-size-small text-muted"></i>
+                  {{ heroicon('x-mark', 'w-6 h-6 text-size-small text-muted') }}
                 </button>
               </div>
             </div>

@@ -20,37 +20,27 @@
                 <!-- score -->
                 {% if coaster.score %}
                     <div class="panel panel-body">
-                        <div class="media no-margin">
-                            <div class="media-left">
-                                <i style="color: {{ helper.ratingColor(coaster.score) }};"
-                                   class="icon-heart6 icon-3x"></i>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="text-muted text-size-small text-uppercase" style="letter-spacing: 0.5px; margin-bottom: 8px;">
+                                    {{ 'coaster.score.quality'|trans }}
+                                </div>
+                                <div class="score-compact">
+                                    <div>
+                                        <span class="score-number">{{ coaster.score|number_format(1, ',') }}</span><span class="score-percent">%</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="media-body text-right">
-                                <h3 class="no-margin text-semibold text-right"
-                                    style="color: {{ helper.ratingColor(coaster.score) }};">
-                                    {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
-                                </h3>
-                                {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
-                                {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
-                                <a href="{{ path('ranking_index', {'page': page}) }}" class="text-muted">
-                                    {{ 'coaster.score.ranked'|trans }}
-                                    <span class="badge badge-flat border-grey text-grey-600">#{{ coaster.rank }}</span>
-                                    {{ 'coaster.score.intheworld'|trans }}
+                            {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
+                            {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
+                            <div class="col-xs-6">
+                                <a href="{{ path('ranking_index', {'page': page}) }}" class="text-default" style="text-decoration: none;">
+                                    <div class="text-muted text-size-small text-uppercase" style="letter-spacing: 0.5px; margin-bottom: 8px;">
+                                        {{ 'coaster.score.worldrank'|trans }}
+                                    </div>
+                                    <div style="font-size: 32px; font-weight: 700; line-height: 1; color: #111827;">#{{ coaster.rank }}</div>
                                 </a>
                             </div>
-                            {% if coaster.mainTags|length > 0 %}
-                                <p class="mt-20">
-                                    {% for mainTag in coaster.mainTags %}
-                                        {% if mainTag.tag.type == 'pro' %}
-                                            <span
-                                                class="label label-success label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
-                                        {% else %}
-                                            <span
-                                                class="label label-danger label-rounded mt-10">{{ mainTag.tag.name|trans([], 'database') }}</span>
-                                        {% endif %}
-                                    {% endfor %}
-                                </p>
-                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
@@ -61,35 +51,51 @@
             <div class="content-group">
                 <div class="row row-seamless btn-block-group">
                     <div class="col-xs-6">
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
-                            <i class="icon-arrow-up8 text-warning-600"></i>
-                            {% if coaster.height is not empty %}
-                                {{ units.m_or_f(coaster.height) }}
-                            {% else %}
-                                &nbsp;
-                            {% endif %}
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <div class="text-center">
+                                {{ heroicon('arrow-trending-up', 'w-12 h-12 text-warning-600', 'outline') }}
+                                <div class="text-bold mt-5">
+                                    {% if coaster.height is not empty %}
+                                        {{ units.m_or_f(coaster.height) }}
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </div>
+                            </div>
                         </button>
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
-                            <i class="icon-rocket text-success-400"></i>
-                            {% if coaster.speed is not empty %}
-                                {{ units.kph_or_mph(coaster.speed) }}
-                            {% else %}
-                                &nbsp;
-                            {% endif %}
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <div class="text-center">
+                                {{ heroicon('rocket-launch', 'w-12 h-12 text-success-400', 'outline') }}
+                                <div class="text-bold mt-5">
+                                    {% if coaster.speed is not empty %}
+                                        {{ units.kph_or_mph(coaster.speed) }}
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </div>
+                            </div>
                         </button>
                     </div>
                     <div class="col-xs-6">
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
-                            <i class="icon-rulers text-blue"></i>
-                            {% if coaster.length is not empty %}
-                                {{ units.m_or_f(coaster.length) }}
-                            {% else %}
-                                &nbsp;
-                            {% endif %}
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <div class="text-center">
+                                {{ heroicon('arrows-right-left', 'w-12 h-12 text-blue', 'outline') }}
+                                <div class="text-bold mt-5">
+                                    {% if coaster.length is not empty %}
+                                        {{ units.m_or_f(coaster.length) }}
+                                    {% else %}
+                                        &nbsp;
+                                    {% endif %}
+                                </div>
+                            </div>
                         </button>
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg text-bold">
-                            <i class="icon-spinner11 text-danger-400"></i>
-                            {{ coaster.inversionsNumber|default('0') }}
+                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                            <div class="text-center">
+                                {{ heroicon('arrow-path-rounded-square', 'w-12 h-12 text-danger-400', 'outline') }}
+                                <div class="text-bold mt-5">
+                                    {{ coaster.inversionsNumber|default('0') }}
+                                </div>
+                            </div>
                         </button>
                     </div>
                 </div>
@@ -183,7 +189,7 @@
                         <div class="list-group-item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}
                                 :</label>
-                            <div class="pull-right"><i class="icon-checkmark3"></i></div>
+                            <div class="pull-right">{{ heroicon('check', 'w-4 h-4', 'outline') }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.launchs|length > 0 %}
@@ -227,13 +233,13 @@
                         <div class="list-group-item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}
                                 :</label>
-                            <div class="pull-right"><i class="icon-checkmark3"></i></div>
+                            <div class="pull-right">{{ heroicon('check', 'w-4 h-4', 'outline') }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.vr %}
                         <div class="list-group-item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
-                            <div class="pull-right"><i class="icon-checkmark3"></i></div>
+                            <div class="pull-right">{{ heroicon('check', 'w-4 h-4', 'outline') }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.price and coaster.currency %}
@@ -290,19 +296,18 @@
                 data-controller="coaster-summary"
                 data-coaster-summary-slug-value="{{ coaster.slug }}"
                 data-coaster-summary-locale-value="{{ app.request.locale }}"
-                class="row mb-15"
             >
                 <div id="coaster-ai-summary" data-coaster-summary-target="container">
-                    <div class="panel panel-flat">
+                    <div class="panel panel-flat mb-15">
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    <i class="icon-star-full2 position-left"></i> Captain's Review
+                                    {{ heroicon('star', 'w-6 h-6 position-left', 'solid') }} Captain's Review
                                 </span>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
-                            <i class="icon-spinner2 spinner text-muted"></i>
+                            {{ heroicon('arrow-path', 'w-6 h-6 spinner text-muted', 'outline') }}
                             <span class="text-muted ml-5">Loading AI summary...</span>
                         </div>
                     </div>
@@ -315,19 +320,18 @@
                 data-coaster-images-slug-value="{{ coaster.slug }}"
                 data-coaster-images-locale-value="{{ app.request.locale }}"
                 data-coaster-images-total-images-value="{{ coaster.images|length }}"
-                class="row mb-15"
             >
                 <div id="coaster-photos" data-coaster-images-target="container">
-                    <div class="panel panel-flat">
+                    <div class="panel panel-flat mb-15">
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    <i class="icon-images2 position-left"></i> Photos
+                                    {{ heroicon('photo', 'w-6 h-6 position-left', 'outline') }} Photos
                                 </span>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
-                            <i class="icon-spinner2 spinner text-muted"></i>
+                            {{ heroicon('arrow-path', 'w-6 h-6 spinner text-muted', 'outline') }}
                             <span class="text-muted ml-5">Loading photos...</span>
                         </div>
                     </div>
@@ -339,19 +343,18 @@
                 data-controller="coaster-reviews"
                 data-coaster-reviews-slug-value="{{ coaster.slug }}"
                 data-coaster-reviews-locale-value="{{ app.request.locale }}"
-                class="row mb-15"
             >
                 <div id="coaster-reviews" data-coaster-reviews-target="container">
-                    <div class="panel panel-flat">
+                    <div class="panel panel-flat mb-15">
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    <i class="icon-bubbles4 position-left"></i> Reviews
+                                    {{ heroicon('chat-bubble-left-right', 'w-6 h-6 position-left', 'outline') }} Reviews
                                 </span>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
-                            <i class="icon-spinner2 spinner text-muted"></i>
+                            {{ heroicon('arrow-path', 'w-6 h-6 spinner text-muted', 'outline') }}
                             <span class="text-muted ml-5">Loading reviews...</span>
                         </div>
                     </div>

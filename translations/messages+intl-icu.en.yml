@@ -33,6 +33,14 @@ coaster:
         scoreof: "Score of"
         ranked: "Ranked"
         intheworld: "in the world"
+        quality: "Quality Score"
+        worldrank: "World Rank"
+        overview: "At a Glance"
+    quality:
+        excellent: "Excellent"
+        good: "Good"
+        fair: "Fair"
+        poor: "Poor"
     ai_summary:
         title: "Review Summary"
         highlights: "What riders love"

@@ -9,7 +9,7 @@
         <th>{{ knp_pagination_sortable(ratings, 'users.ratings.rating'|trans, ['r.value']) }}</th>
         <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt') }}</th>
         {% if is_granted('delete', ratings|first) %}
-          <th class="text-center hidden-xs" style="width: 20px;"><i class="icon-arrow-down12"></i></th>
+          <th class="text-center hidden-xs" style="width: 20px;">{{ heroicon('arrow-down', 'w-6 h-6') }}</th>
         {% endif %}
       </tr>
       </thead>
@@ -42,7 +42,7 @@
           </td>
           {% if is_granted('delete', rating) %}
           <td class="text-center hidden-xs">
-            <a onclick="deleteRating({{ rating.id }}, $(this).closest('tr'));"><i class="icon-trash"></i></a>
+            <a onclick="deleteRating({{ rating.id }}, $(this).closest('tr'));">{{ heroicon('trash', 'w-6 h-6') }}</a>
           </td>
           {% endif %}
         </tr>

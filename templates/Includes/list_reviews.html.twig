@@ -1,7 +1,7 @@
 <div class="panel panel-flat">
   <div class="panel-heading">
     <h6 class="panel-title text-semibold">
-      <i class="icon-bubble-lines4 position-left"></i>
+      {{ heroicon('chat-bubble-left', 'w-6 h-6 position-left') }}
       {{ 'review.title'|trans }}
     </h6>
     <div class="heading-elements">
@@ -30,7 +30,7 @@
         </li>
       {% else %}
         <li class="text-center text-muted">
-          <i class="icon-comment-discussion position-left"></i>
+          {{ heroicon('chat-bubble-left-right', 'w-6 h-6 position-left') }}
           {{ 'review_list.no_review'|trans }}
         </li>
       {% endfor %}

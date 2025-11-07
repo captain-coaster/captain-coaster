@@ -17,7 +17,7 @@
               </div>
               <div class="media-body">
                 <h6 class="text-semibold no-margin">
-                  {% if top.main %}<i class="icon-checkmark3 text-size-mini position-left"></i>{% endif %}
+                  {% if top.main %}{{ heroicon('check', 'w-6 h-6 text-size-mini position-left') }}{% endif %}
                   <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
                     {{ top.name }}
                   </a>
@@ -43,13 +43,13 @@
             </ul>
             <div class="media">
               <a href="{{ path('top_show', {'id': top.id}) }}">
-                <i class="icon-circle-right2"></i> {{ 'top.list.more'|trans }}
+                {{ heroicon('arrow-right-circle', 'w-6 h-6') }} {{ 'top.list.more'|trans }}
               </a>
             </div>
             <ul class="list-inline media">
-              <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
+              <li>{{ heroicon('square-3-stack-3d', 'w-6 h-6 position-left') }} {{ top.topCoasters|length }}</li>
               <li>
-                <i class="icon-alarm position-left"></i> {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
+                {{ heroicon('bell-alert', 'w-6 h-6 position-left') }} {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
               </li>
             </ul>
           </div>

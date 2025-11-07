@@ -9,13 +9,13 @@
     <div class="panel-heading">
       <ul class="list-inline no-margin">
 
-        <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
+        <li>{{ heroicon('square-3-stack-3d', 'w-6 h-6 position-left') }} {{ top.topCoasters|length }}</li>
         <li class="position-right">
-          <i class="icon-user-check position-left"></i>
+          {{ heroicon('user-plus', 'w-6 h-6 position-left') }}
           <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
         </li>
         <li>
-          <i class="icon-alarm position-left"></i>
+          {{ heroicon('bell-alert', 'w-6 h-6 position-left') }}
           {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
         </li>
 
@@ -86,7 +86,7 @@
     <div class="mr-10 mb-10 pull-right">
       <a href="{{ path('top_edit', {'id': top.id}) }}">
         <button type="button" class="btn bg-primary btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'top.update'|trans }}
+          <b>{{ heroicon('pencil', 'w-6 h-6') }}</b> {{ 'top.update'|trans }}
         </button>
       </a>
     </div>
@@ -95,7 +95,7 @@
     <div class="mr-10 mb-10 pull-right">
       <a href="{{ path('top_edit_details', {'id': top.id}) }}">
         <button type="button" class="btn bg-primary btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'top.update_details'|trans }}
+          <b>{{ heroicon('pencil', 'w-6 h-6') }}</b> {{ 'top.update_details'|trans }}
         </button>
       </a>
     </div>
@@ -105,7 +105,7 @@
       <a href="{{ path('top_delete', {'id': top.id}) }}"
          onclick="return confirm('{{ 'top.delete_confirmation'|trans }}');">
         <button type="button" class="btn bg-danger btn-labeled">
-          <b><i class="icon-cross3"></i></b> {{ 'top.delete'|trans }}
+          <b>{{ heroicon('x-circle', 'w-6 h-6') }}</b> {{ 'top.delete'|trans }}
         </button>
       </a>
     </div>

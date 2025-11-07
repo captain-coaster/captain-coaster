@@ -117,10 +117,13 @@
     // Icon variations
     &[class*=alert-styled-] {
 
-        // Icon base
+        // Icon base - Migrated from Icomoon \e9a2 to Heroicon information-circle
         &:after {
-            content: '\e9a2';
-            font-family: 'icomoon';
+            content: '';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xMS4yNSAxMS4yNS4wNDEtLjAyYS43NS43NSAwIDAgMSAxLjA2My44NTJsLS43MDggMi44MzZhLjc1Ljc1IDAgMCAwIDEuMDYzLjg1M2wuMDQxLS4wMjFNMjEgMTJhOSA5IDAgMSAxLTE4IDAgOSA5IDAgMCAxIDE4IDBabS05LTMuNzVoLjAwOHYuMDA4SDEyVjguMjVaIi8+PC9zdmc+');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             color: #fff;
             width: (((@alert-padding * 2) + @icon-font-size) - 2);
             left: -(((@alert-padding * 2) + @icon-font-size) - 2);
@@ -128,35 +131,33 @@
             position: absolute;
             top: 50%;
             margin-top: -(@icon-font-size / 2);
-            font-size: @icon-font-size;
-            font-weight: 400;
+            display: inline-block;
+            height: @icon-font-size;
             line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        // Danger icon
+        // Danger icon - Migrated from Icomoon \ed64 to Heroicon x-circle (solid)
         &.alert-danger:after,
         &[class*=bg-danger]:after {
-            content: '\ed64';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMiAyLjI1Yy01LjM4NSAwLTkuNzUgNC4zNjUtOS43NSA5Ljc1czQuMzY1IDkuNzUgOS43NSA5Ljc1IDkuNzUtNC4zNjUgOS43NS05Ljc1UzE3LjM4NSAyLjI1IDEyIDIuMjVabS0xLjcyIDYuOTdhLjc1Ljc1IDAgMSAwLTEuMDYgMS4wNkwxMC45NCAxMmwtMS43MiAxLjcyYS43NS43NSAwIDEgMCAxLjA2IDEuMDZMMTIgMTMuMDZsMS43MiAxLjcyYS43NS43NSAwIDEgMCAxLjA2LTEuMDZMMTMuMDYgMTJsMS43Mi0xLjcyYS43NS43NSAwIDEgMC0xLjA2LTEuMDZMMTIgMTAuOTRsLTEuNzItMS43MloiIGNsaXAtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==');
         }
 
-        // Success icon
+        // Success icon - Migrated from Icomoon \ed6e to Heroicon check-circle (solid)
         &.alert-success:after,
         &[class*=bg-success]:after {
-            content: '\ed6e';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjI1IDEyYzAtNS4zODUgNC4zNjUtOS43NSA5Ljc1LTkuNzVzOS43NSA0LjM2NSA5Ljc1IDkuNzUtNC4zNjUgOS43NS05Ljc1IDkuNzVTMi4yNSAxNy4zODUgMi4yNSAxMlptMTMuMzYtMS44MTRhLjc1Ljc1IDAgMSAwLTEuMjItLjg3MmwtMy4yMzYgNC41M0w5LjUzIDEyLjIyYS43NS43NSAwIDAgMC0xLjA2IDEuMDZsMi4yNSAyLjI1YS43NS43NSAwIDAgMCAxLjE0LS4wOTRsMy43NS01LjI1WiIgY2xpcC1ydWxlPSJldmVub2RkIi8+PC9zdmc+');
         }
 
-        // Warning icon
+        // Warning icon - Migrated from Icomoon \e9bd to Heroicon exclamation-triangle
         &.alert-warning:after,
         &[class*=bg-warning]:after {
-            content: '\e9bd';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Ik0xMiA5djMuNzVtLTkuMzAzIDMuMzc2Yy0uODY2IDEuNS4yMTcgMy4zNzQgMS45NDggMy4zNzRoMTQuNzFjMS43MyAwIDIuODEzLTEuODc0IDEuOTQ4LTMuMzc0TDEzLjk0OSAzLjM3OGMtLjg2Ni0xLjUtMy4wMzItMS41LTMuODk4IDBMMi42OTcgMTYuMTI2Wk0xMiAxNS43NWguMDA3di4wMDhIMTJ2LS4wMDhaIi8+PC9zdmc+');
         }
 
-        // Info icon
+        // Info icon - Migrated from Icomoon \e9b9 to Heroicon information-circle
         &.alert-info:after,
         &[class*=bg-info]:after {
-            content: '\e9b9';
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xMS4yNSAxMS4yNS4wNDEtLjAyYS43NS43NSAwIDAgMSAxLjA2My44NTJsLS43MDggMi44MzZhLjc1Ljc1IDAgMCAwIDEuMDYzLjg1M2wuMDQxLS4wMjFNMjEgMTJhOSA5IDAgMSAxLTE4IDAgOSA5IDAgMCAxIDE4IDBabS05LTMuNzVoLjAwOHYuMDA4SDEyVjguMjVaIi8+PC9zdmc+');
         }
     }
 

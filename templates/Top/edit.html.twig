@@ -16,7 +16,7 @@
     {{ form_widget(form) }}
 
     <div class="media-left media-middle drag-handle" style="cursor: grab;">
-      <i class="icon-three-bars"></i>
+      {{ heroicon('bars-3', 'w-6 h-6') }}
     </div>
     <div class="media-left media-middle">
         <span class="position-badge label label-rounded label-primary">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}</span>
@@ -35,7 +35,7 @@
 
     <div class="media-right media-middle">
       <button type="button" class="remove-btn btn btn-link" data-action="click->top-list#removeCoaster">
-        <i class="icon-cross3"></i>
+        {{ heroicon('x-circle', 'w-6 h-6') }}
       </button>
     </div>
   </li>
@@ -77,7 +77,7 @@
     </div>
   </div>
   <button type="submit" class="btn bg-teal-400 btn-labeled pull-right">
-    <b><i class="icon-pencil3"></i></b> {{ 'top.save'|trans }}
+    <b>{{ heroicon('pencil', 'w-6 h-6') }}</b> {{ 'top.save'|trans }}
   </button>
   {{ form_rest(form) }}
   {{ form_end(form) }}

@@ -243,19 +243,21 @@
 			position: relative;
 			padding-right: (@content-padding-large + @icon-font-size);
 
-			// Arrow icons
+			// Arrow icons - Migrated from Icomoon \e9c7 to Heroicon chevron-right
 			&:after {
-				content: "\e9c7";
-				font-family: "icomoon";
-				font-size: @icon-font-size;
+				content: '';
+				background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
+				background-size: contain;
+				background-repeat: no-repeat;
+				background-position: center;
+				width: @icon-font-size;
+				height: @icon-font-size;
 				display: block;
 				position: absolute;
 				top: 50%;
 				margin-top: -(@icon-font-size / 2);
 				right: @content-padding-large; 
 				line-height: 1;
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
 				.rotate(0deg);
 				.transition(-webkit-transform 0.2s ease-in-out);
 			}

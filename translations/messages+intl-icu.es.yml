@@ -33,6 +33,14 @@ coaster:
         scoreof: Resultado de
         ranked: Clasificado
         intheworld: en el mundo
+        quality: "Puntuación de Calidad"
+        worldrank: "Clasificación Mundial"
+        overview: "De un Vistazo"
+    quality:
+        excellent: "Excelente"
+        good: "Bueno"
+        fair: "Regular"
+        poor: "Pobre"
     rating:
         action: "¡Califica esta montaña rusa!"
         notenough: "¡No hay suficientes notas para esta montaña rusa!"

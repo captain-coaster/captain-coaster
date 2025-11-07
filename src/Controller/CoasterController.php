@@ -106,7 +106,7 @@ class CoasterController extends BaseController
         }
 
         return $this->render(
-            'Coaster/image-ajax.html.twig',
+            'Coaster/_image_panel.html.twig',
             [
                 'userLikes' => $userLikes,
                 'coaster' => $coaster,
@@ -172,7 +172,7 @@ class CoasterController extends BaseController
         );
 
         return $this->render(
-            'Coaster/reviews-ajax.html.twig',
+            'Coaster/_review_panel.html.twig',
             [
                 'reviews' => $pagination,
                 'coaster' => $coaster,

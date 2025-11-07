@@ -9,6 +9,8 @@
 import '../styles/components/summary-feedback.css';
 import '../styles/components/rating-actions.css';
 import '../styles/components/coaster-loading.css';
+import '../styles/components/score-card.css';
+import "../styles/components/rating-distribution.css";
 
 // Rating functionality is now handled by Stimulus rating controller
 // No need to import pages/rating anymore

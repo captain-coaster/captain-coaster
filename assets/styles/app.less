@@ -93,7 +93,7 @@
 @import "theme/components/ui/toolbar.less";               // 50% usage
 
 // Import form components
-@import "theme/components/plugins/forms/checkboxes/uniform.less";     // 33% usage
+// @import "theme/components/plugins/forms/checkboxes/uniform.less";     // 33% usage - file doesn't exist
 
 // Import high-usage page components (excluding login.less due to image path issues)
 // @import "theme/components/pages/login.less";              // 62% usage - has image path issues
@@ -104,8 +104,7 @@
 @import "theme/core/layout/component-animation.less";     // 16% usage - needed for animations
 @import "theme/core/colors/colors.less";                  // 33% usage - needed for color classes
 
-// Import icon fonts (required for UI components)
-@import "icons/icomoon/styles.css";
+// Icon fonts removed - migrated to Heroicons SVG system
 
 // Import modern CSS components
 @import "components/enhanced-select.css";
@@ -113,13 +112,6 @@
 @import "components/map.css";
 @import "components/search.css";
 @import "components/top-list.css";
-@import "components/summary-feedback.css";
 
 // Import utilities
-@import "utilities/image-optimization.css";
-
-// Import rating distribution component
-@import "components/rating-distribution.css";
-
-
-
+@import "icons/icons.css";
