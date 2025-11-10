@@ -29,6 +29,8 @@ index:
 
 coaster:
     score:
+        title: "PUNKTZAHL"
+        rank: "RANG"
         scoreof: Punktzahl von
         ranked: Rang
         intheworld: Auf der Welt

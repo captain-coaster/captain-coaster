@@ -25,8 +25,7 @@
              data-gallery="coaster-images">
             {% for image in coaster.images|slice(0, number) %}
                 <div class="col-sm-3">
-                    <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
-                       data-cropped-thumbnail="{{ pictures_cdn }}/280x210/{{ image.filename }}">
+                    <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
                         <div class="thumb">
                             <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                                  alt="{{ coaster.name }}">

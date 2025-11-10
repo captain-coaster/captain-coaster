@@ -168,7 +168,7 @@ class CoasterController extends BaseController
         $pagination = $paginator->paginate(
             $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages),
             $page,
-            50
+            25
         );
 
         return $this->render(

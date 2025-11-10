@@ -54,7 +54,7 @@ class RatingCoasterController extends AbstractController
 
         if ($request->request->has('riddenAt')) {
             $riddenAtValue = $request->request->get('riddenAt');
-            
+
             if (empty($riddenAtValue)) {
                 // Clear the date if empty value is sent
                 $rating->setRiddenAt(null);

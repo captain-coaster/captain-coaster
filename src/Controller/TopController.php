@@ -187,13 +187,13 @@ class TopController extends BaseController
     {
         try {
             $data = json_decode($request->getContent(), true);
-            
-            if (!isset($data['positions']) || !is_array($data['positions'])) {
+
+            if (!isset($data['positions']) || !\is_array($data['positions'])) {
                 throw new BadRequestHttpException('Invalid positions data');
             }
-            
+
             $positions = $data['positions'];
-            
+
             // Update positions for each coaster in the top
             foreach ($top->getTopCoasters() as $topCoaster) {
                 $coasterId = (string) $topCoaster->getCoaster()->getId();
@@ -204,21 +204,20 @@ class TopController extends BaseController
                     }
                 }
             }
-            
+
             // Update the top's modified date
             $top->setUpdatedAt(new \DateTime());
-            
+
             $em->flush();
-            
+
             return new JsonResponse([
                 'status' => 'success',
-                'message' => 'Positions updated successfully'
+                'message' => 'Positions updated successfully',
             ]);
-            
         } catch (\Exception $e) {
             return new JsonResponse([
                 'status' => 'error',
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         }
     }

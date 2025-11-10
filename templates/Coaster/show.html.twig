@@ -23,7 +23,7 @@
                         <div class="row">
                             <div class="col-xs-6">
                                 <div class="text-muted text-size-small text-uppercase" style="letter-spacing: 0.5px; margin-bottom: 8px;">
-                                    {{ 'coaster.score.quality'|trans }}
+                                    {{ 'coaster.score.title'|trans }}
                                 </div>
                                 <div class="score-compact">
                                     <div>
@@ -36,7 +36,7 @@
                             <div class="col-xs-6">
                                 <a href="{{ path('ranking_index', {'page': page}) }}" class="text-default" style="text-decoration: none;">
                                     <div class="text-muted text-size-small text-uppercase" style="letter-spacing: 0.5px; margin-bottom: 8px;">
-                                        {{ 'coaster.score.worldrank'|trans }}
+                                        {{ 'coaster.score.rank'|trans }}
                                     </div>
                                     <div style="font-size: 32px; font-weight: 700; line-height: 1; color: #111827;">#{{ coaster.rank }}</div>
                                 </a>
@@ -254,16 +254,9 @@
                 </div>
             </div>
             {% if coaster.youtubeId %}
-            <div class="panel panel-white">
-                <div class="panel-heading">
-                    <h6>
-                        {{ 'coaster.video.title'|trans }}
-                    </h6>
-                </div>
-                <div class="media-yt-container">
-                    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/{{ coaster.youtubeId }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-                </div>
-            </div>
+            <a href="https://www.youtube.com/watch?v={{ coaster.youtubeId }}" target="_blank" class="youtube-thumbnail">
+                <img src="https://img.youtube.com/vi/{{ coaster.youtubeId }}/maxresdefault.jpg" alt="Watch {{ coaster.name }} on YouTube" loading="lazy">
+            </a>
             {% endif %}
             <!-- /coaster details -->
             <!-- coasters in park -->

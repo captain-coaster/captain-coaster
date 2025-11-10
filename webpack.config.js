@@ -51,7 +51,7 @@ Encore
 
     // Encore generates manifest.json by default
 
-    // Configure Babel for modern JavaScript support  
+    // Configure Babel for modern JavaScript support
     .configureBabelPresetEnv((config) => {
         config.useBuiltIns = "usage";
         config.corejs = 3; // Let package.json manage exact version
@@ -70,7 +70,7 @@ Encore
     .enablePostCssLoader((options) => {
         options.postcssOptions = {
             plugins: [
-                require("autoprefixer")()
+                require("autoprefixer")(),
                 // Browser targets defined in package.json browserslist
             ],
         };
@@ -81,7 +81,7 @@ Encore
 
     // Provide jQuery globally for legacy plugins
     .autoProvidejQuery()
-    
+
     // Encore handles NODE_ENV automatically
 
     // Enable Stimulus bridge for modern JavaScript interactions
@@ -124,13 +124,6 @@ Encore
                     name: "jquery",
                     chunks: "all",
                     priority: 50,
-                },
-                // PhotoSwipe - large library for image galleries
-                photoswipe: {
-                    test: /[\\/]node_modules[\\/]photoswipe[\\/]/,
-                    name: "photoswipe",
-                    chunks: "all",
-                    priority: 40,
                 },
             };
         }

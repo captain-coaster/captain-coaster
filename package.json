@@ -15,6 +15,7 @@
         "postcss-loader": "^8.2.0",
         "regenerator-runtime": "^0.13.9",
         "webpack": "^5.74.0",
+        "webpack-bundle-analyzer": "^4.10.2",
         "webpack-cli": "^5.1.0",
         "webpack-dev-server": "^5.2.2",
         "webpack-notifier": "^1.15.0"
@@ -41,7 +42,6 @@
         "jquery": "^3.7.1",
         "jquery.rateit": "^1.1.6",
         "leaflet": "^1.9.4",
-        "mapbox-gl": "^3.16.0",
-        "photoswipe": "^5.4.4"
+        "mapbox-gl": "^3.16.0"
     }
 }

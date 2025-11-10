@@ -8,10 +8,10 @@ export default class extends Controller {
     };
 
     connect() {
-        this.loadReviews(1);
+        this.loadReviews(1, false);
     }
 
-    loadReviews(page = 1) {
+    loadReviews(page = 1, shouldScroll = true) {
         fetch(this.buildUrl(page), {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -19,8 +19,11 @@ export default class extends Controller {
         })
             .then(response => response.text())
             .then(html => {
-                this.containerTarget.outerHTML = html;
+                this.containerTarget.innerHTML = html;
                 this.attachPaginationHandlers();
+                if (shouldScroll) {
+                    this.containerTarget.scrollIntoView({ behavior: 'smooth' });
+                }
             })
             .catch(error => {
                 console.error('Error loading reviews:', error);
@@ -45,12 +48,12 @@ export default class extends Controller {
     }
 
     attachPaginationHandlers() {
-        const paginationLinks = document.querySelectorAll('#coaster-reviews ul.pagination a');
+        const paginationLinks = this.containerTarget.querySelectorAll('ul.pagination a');
         paginationLinks.forEach(link => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
                 const page = parseInt(link.dataset.page) || 1;
-                this.loadReviews(page);
+                this.loadReviews(page, true);
             });
         });
     }

@@ -30,6 +30,8 @@ index:
 
 coaster:
     score:
+        title: "SCORE"
+        rank: "RANG"
         scoreof: Score de
         ranked: Classé
         intheworld: mondial

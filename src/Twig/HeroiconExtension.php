@@ -14,7 +14,7 @@ class HeroiconExtension extends AbstractExtension
 
     public function __construct(string $projectDir)
     {
-        $this->iconsPath = $projectDir . '/node_modules/heroicons/24';
+        $this->iconsPath = $projectDir.'/node_modules/heroicons/24';
     }
 
     public function getFunctions(): array

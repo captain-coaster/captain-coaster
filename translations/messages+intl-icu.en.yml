@@ -30,6 +30,8 @@ index:
 
 coaster:
     score:
+        title: "SCORE"
+        rank: "RANK"
         scoreof: "Score of"
         ranked: "Ranked"
         intheworld: "in the world"

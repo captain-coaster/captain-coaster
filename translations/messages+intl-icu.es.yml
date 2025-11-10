@@ -30,6 +30,8 @@ index:
 
 coaster:
     score:
+        title: "PUNTUACIÓN"
+        rank: "RANGO"
         scoreof: Resultado de
         ranked: Clasificado
         intheworld: en el mundo
