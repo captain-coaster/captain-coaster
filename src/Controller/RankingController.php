@@ -98,9 +98,7 @@ class RankingController extends AbstractController
             'ranking/results.html.twig',
             [
                 'coasters' => $pagination,
-                // array_filter removes empty filters e.g. ['continent' => '']
-                // Exclude 'user' filter as it's a hidden field, not a user-visible filter
-                'filtered' => [] !== array_filter(array_diff_key($filters, ['user' => '']), 'strlen'),
+                'filtered' => [] !== array_diff_key($filters, ['user' => null]),
                 'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );

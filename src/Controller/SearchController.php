@@ -48,7 +48,7 @@ class SearchController extends AbstractController
         }
 
         try {
-            $limit = min(5, max(1, (int) $request->query->get('limit', 5)));
+            $limit = min(5, max(1, (int) $request->query->get('limit', '5')));
             $searchResponse = $searchService->searchAll($query, $limit);
 
             $response = new JsonResponse($searchResponse->toArray());
@@ -72,7 +72,7 @@ class SearchController extends AbstractController
     public function search(Request $request, SearchService $searchService): Response
     {
         $query = $request->query->get('query');
-        $page = max(1, (int) $request->query->get('page', 1));
+        $page = max(1, (int) $request->query->get('page', '1'));
 
         // If no query or query too short, show empty search page
         if (empty($query) || \strlen($query) < 2) {

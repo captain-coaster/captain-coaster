@@ -2,6 +2,11 @@
 
 Captain Coaster is a participative guide for roller coaster enthusiasts to discover, rate, and review roller coasters worldwide.
 
+## User Demographics
+- **75% Mobile Users**: Majority of traffic comes from mobile devices (phones and tablets)
+- **25% Desktop Users**: Smaller portion of users access via desktop browsers
+- **Mobile-First Design**: All features must prioritize mobile experience while maintaining desktop functionality
+
 ## Core Features
 - **Coaster Rating System**: Users can rate and review roller coasters they've ridden
 - **Top Lists**: Users can create and share personalized top coaster rankings

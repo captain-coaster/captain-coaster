@@ -113,19 +113,18 @@ Encore
         includeSubdirectories: true,
     })
 
-    // Configure bundle splitting for large libraries
+    // Configure bundle splitting for stable vendor libraries
     .configureSplitChunks((splitChunks) => {
-        if (Encore.isProduction()) {
-            splitChunks.cacheGroups = {
-                // jQuery - used globally, benefits from separate caching
-                jquery: {
-                    test: /[\\/]node_modules[\\/]jquery[\\/]/,
-                    name: "jquery",
-                    chunks: "all",
-                    priority: 50,
-                },
-            };
-        }
+        splitChunks.cacheGroups = {
+            // jQuery + RateIt + Bootstrap - stable libraries, rarely changing
+            vendor: {
+                test: /[\\/]node_modules[\\/](jquery|jquery\.rateit|bootstrap)[\\/]/,
+                name: "vendor",
+                chunks: "all",
+                priority: 50,
+                enforce: true,
+            },
+        };
     });
 
 // Encore handles tree shaking and optimization automatically

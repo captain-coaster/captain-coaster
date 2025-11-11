@@ -55,10 +55,16 @@
     };
 
     function changeBrowserUrl() {
+        var formData = $('form *:not(input[id="form-user"])').serializeArray();
+        var activeFilters = formData.filter(function(item) {
+            return item.value !== '' && item.value !== null;
+        });
+        var queryString = $.param(activeFilters);
+        
         window.history.pushState(
             {"html":'Ranking',"pageTitle":'Ranking'},
             "",
-            window.location.pathname + '?' + $('form *:not(input[id="form-user"])').serialize()
+            window.location.pathname + (queryString ? '?' + queryString : '')
         );
     }
 
