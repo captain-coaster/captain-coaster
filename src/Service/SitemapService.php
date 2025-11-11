@@ -87,7 +87,7 @@ class SitemapService
                     $this->router->getContext()->getScheme(),
                     $this->router->getContext()->getHost(),
                     'images/coasters',
-                    $image->getPath()
+                    $image->getFilename()
                 );
 
                 $imageXML['title'] = $image->getCoaster()->getName();

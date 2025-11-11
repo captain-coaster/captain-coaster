@@ -72,7 +72,7 @@ class ContactType extends AbstractType
         $resolver->setDefaults([
             'is_logged_in' => false,
         ]);
-        
+
         $resolver->setAllowedTypes('is_logged_in', 'bool');
     }
 }

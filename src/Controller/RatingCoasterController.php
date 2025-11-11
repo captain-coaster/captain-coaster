@@ -14,10 +14,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
-use Symfony\Component\Security\Csrf\CsrfToken;
 
 class RatingCoasterController extends AbstractController
 {
@@ -98,7 +98,7 @@ class RatingCoasterController extends AbstractController
     #[IsGranted('delete', 'rating', statusCode: 403)]
     public function deleteAction(
         Request $request,
-        RiddenCoaster $rating, 
+        RiddenCoaster $rating,
         EntityManagerInterface $em,
         CsrfTokenManagerInterface $csrfTokenManager
     ): JsonResponse {

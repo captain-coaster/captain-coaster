@@ -118,11 +118,11 @@ class CoasterSummaryCrudController extends AbstractCrudController
                         $percentage = \sprintf('%.1f%%', $ratio * 100);
 
                         // Highlight poor ratios with sufficient votes
-                        if ($ratio < 0.3 && $totalVotes >= 5) {
+                        if ($ratio < 0.3) {
                             return \sprintf('<span class="badge badge-danger">%s</span>', $percentage);
                         }
 
-                        if ($ratio < 0.5 && $totalVotes >= 5) {
+                        if ($ratio < 0.5) {
                             return \sprintf('<span class="badge badge-warning">%s</span>', $percentage);
                         }
 

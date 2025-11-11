@@ -60,21 +60,14 @@
   <!-- /page content -->
 </div>
 <!-- /page container -->
+
 <!-- Core JS files -->
 {{ encore_entry_script_tags('app') }}
-<!-- Bootstrap 3.3.7, theme JS, and plugins are now included in the Webpack bundle -->
-<!-- /core JS files -->
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-<!-- Symfony UX Translator -->
-{{ encore_entry_script_tags('translator') }}
+
 <!-- Page-specific entries -->
-{% block page_scripts %}{% endblock %}
-<script type="text/javascript">
-  // used for rating
-  var locale = '{{ app.request.locale }}';
-</script>
 {% block javascripts %}{% endblock %}
 {% if app.environment != 'dev' %}
 <!-- Google tag (gtag.js) -->

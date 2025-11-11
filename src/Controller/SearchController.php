@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\SearchService;
-use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +14,6 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/search')]
 class SearchController extends AbstractController
 {
-    public function __construct(
-        private readonly PaginatorInterface $paginator
-    ) {
-    }
-
     /** Modern API search endpoint for real-time search suggestions. */
     #[Route(path: '/api', name: 'api_search', methods: ['GET'])]
     public function apiSearch(

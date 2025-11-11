@@ -13,7 +13,6 @@ use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class SearchService
 {
@@ -35,9 +34,7 @@ class SearchService
     /** SearchService constructor. */
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly SearchCacheService $cacheService,
-        #[Autowire('%env(string:PICTURES_CDN)%')]
-        private readonly string $picturesCdn
+        private readonly SearchCacheService $cacheService
     ) {
     }
 
@@ -45,9 +42,9 @@ class SearchService
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
         $fromCache = false;
+        $cacheKey = $this->getCacheKey($query);
 
         try {
-            $cacheKey = $this->getCacheKey($query);
             $cachedResults = $this->cacheService->getCachedResults($cacheKey);
 
             if (null !== $cachedResults) {

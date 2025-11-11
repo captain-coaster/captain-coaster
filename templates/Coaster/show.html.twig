@@ -357,15 +357,8 @@
     </div>
 {% endblock %}
 
-{% block page_scripts %}
-    {# Load coaster-specific Webpack entry point BEFORE inline scripts #}
-    {{ encore_entry_script_tags('coaster') }}
-{% endblock %}
-
-
-
 {% block javascripts %}
-    {# All functionality now handled by Stimulus controllers #}
+    {{ encore_entry_script_tags('coaster') }}
     {% include 'Coaster/rating-json-ld.html.twig' with {'coaster': coaster} only %}
 {% endblock %}
 
