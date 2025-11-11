@@ -72,6 +72,12 @@ svg.w-16 {
 
 /* Icon spacing for navbar and sidebar */
 .navbar a svg {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/* Add spacing only for dropdown menu items with text */
+.navbar .dropdown-menu a svg {
     margin-right: 8px;
 }
 

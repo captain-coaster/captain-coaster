@@ -5,7 +5,7 @@
             "label": "npm dev-server",
             "type": "shell",
             "command": "npm run dev-server",
-            "group": "none",
+            "group": "build",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
@@ -17,8 +17,8 @@
         {
             "label": "symfony server",
             "type": "shell",
-            "command": "symfony server:start",
-            "group": "none",
+            "command": "symfony server:start --listen-ip 0.0.0.0",
+            "group": "build",
             "presentation": {
                 "reveal": "always",
                 "panel": "new"

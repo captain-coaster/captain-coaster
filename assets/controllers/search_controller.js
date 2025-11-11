@@ -29,7 +29,7 @@ export default class extends Controller {
         resultsUrl: String,
         minLength: { type: Number, default: 2 },
         debounceDelay: { type: Number, default: 300 },
-        maxResults: { type: Number, default: 6 }
+        maxResults: { type: Number, default: 5 }
     };
 
     connect() {
@@ -217,8 +217,8 @@ export default class extends Controller {
         if (allResults.length === 0) {
             html = this.renderNoResults(query);
         } else {
-            // Limit to 6 results maximum to fit dropdown without scrolling
-            const maxDisplayResults = 6;
+            // Limit to 5 results maximum to prevent keyboard from blocking "see all results" on mobile
+            const maxDisplayResults = 5;
             const displayResults = allResults.slice(0, maxDisplayResults);
             const hasMoreResults = hasMore || allResults.length > maxDisplayResults;
             
@@ -227,7 +227,7 @@ export default class extends Controller {
                 html += this.renderResultItem(item, index, query);
             });
             
-            // Add "Show more results" if there are more results (as 7th item)
+            // Add "Show more results" if there are more results (as 6th item)
             if (hasMoreResults) {
                 html += this.renderShowMoreOption(query);
             }

@@ -42,6 +42,7 @@
         "jquery": "^3.7.1",
         "jquery.rateit": "^1.1.6",
         "leaflet": "^1.9.4",
-        "mapbox-gl": "^3.16.0"
+        "mapbox-gl": "^3.16.0",
+        "sortablejs": "^1.15.6"
     }
 }

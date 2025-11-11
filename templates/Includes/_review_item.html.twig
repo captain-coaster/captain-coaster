@@ -19,7 +19,7 @@
       <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="text-semibold">
         {{ review.user.displayName }}
       </a>
-      {{ helper.starRating(review.value) }}
+      <span class="media-annotation dotted">{{ helper.starRating(review.value) }}</span>
       <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
     </div>
 

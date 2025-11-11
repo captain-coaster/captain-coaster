@@ -23,6 +23,7 @@ Encore
      */
     .addEntry("app", "./assets/js/app.js")
     .addEntry("coaster", "./assets/js/coaster.js")
+    .addEntry("top-list", "./assets/js/top-list.js")
 
     // Use Encore's default entry chunk splitting
 
@@ -97,6 +98,8 @@ Encore
                 warnings: false,
             },
         };
+        // Allow access from mobile devices on local network
+        options.allowedHosts = 'all';
     })
 
     // Add useful aliases for imports

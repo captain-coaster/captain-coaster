@@ -38,7 +38,7 @@
 
 {# Display star rating #}
 {% macro starRating(rating) %}
-    <span class="media-annotation dotted star-rating">
+    <span class="star-rating">
         <span class="text-warning star-rating-stars">
             {% set fullStars = rating|round(0, 'floor') %}
             

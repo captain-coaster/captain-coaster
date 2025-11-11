@@ -245,37 +245,6 @@ profile:
         updated_success: Ihre Einstellungen wurden erfolgreich aktualisiert.
         save: Änderungen speichern
 
-top:
-    new:
-        title: Erstelle ein neues Top
-        form:
-            name: "Name deines Top:"
-            type: "Ist es ein Top oder ein Flop?"
-            flop: Flop (niedriger ist besser)
-            top: Top (höher ist besser)
-            submit: Erstelle ein neues Top
-    editDetails:
-        title: Aktualisiere ein Top
-        form:
-            submit: Aktualisiere dieses Top
-    list:
-        title: Die neuesten Tops
-        more: Zeige mehr
-        updated: zuletzt aktualisiert
-        by: von
-        infotitle: "Alle deine Tops sind auf dieser Seite!"
-        info: "Tops sind der beste Weg, deine Leidenschaft zu teilen: Sage uns, welcher RMC der beste auf dem Planeten ist, welches die schlechtesten Kinderachterbahnen in Texas sind oder warum die besten Wasserachterbahnen nicht mit einem LIM-Antrieb ausgestattet sind! Es liegt an dir!"
-        create_first: Erstelle meine ersten Top Achterbahnen
-        create: Erstelle ien individuelles Top
-    title: Meine Top Achterbahnen
-    update: Aktualisiere
-    update_details: Ändere Name
-    delete: Lösche
-    delete_confirmation: "Löschen?"
-    save: Speichere das Top
-    find: Suche eine Achterbahn...
-    info: "Wenn du oben mit der Suche nach einer Achterbahn beginnst, passiert unten die Magie. Du kannst die Position sogar aktualisieren, indem du die Linien per Drag-and-Drop verschiebst oder die neue Position in den blauen Kreis schreibst."
-
 review:
     title: Rezensionen
     share: "Teile deine Meinung mit uns!"

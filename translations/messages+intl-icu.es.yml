@@ -246,37 +246,6 @@ profile:
         updated_success: Su configuración ha sido actualizada con éxito.
         save: Guardar cambios
 
-top:
-    new:
-        title: Crear un nuevo top
-        form:
-            name: "Nombre de su top:"
-            type: "¿Es un Top o un Flop?"
-            flop: Flop (más bajo es mejor)
-            top: Top (más alto es mejor)
-            submit: Crear nuevo top
-    editDetails:
-        title: Actualizar un top
-        form:
-            submit: Actualizar el top
-    list:
-        title: Los últimos tops
-        more: Ver detalles
-        updated: última actualización
-        by: por
-        infotitle: "¡Todos tus tops están aquí!"
-        info: "Los tops te permiten compartir tus gustos con los demás, como el mejor RMC del planeta, o los peores kiddies de España, ¡o tal vez los mejores posavasos azules con lanzamiento magnético! Todo es posible, y cada top puede compartirse."
-        create_first: Crear mis primeros Top Coasters
-        create: Crear un top personalizado
-    title: Mi Top Coasters
-    update: Actualizar
-    update_details: Cambiar nombre
-    delete: Borrar
-    delete_confirmation: "¿Borrar?"
-    save: Almacenar el top
-    find: Buscar una montaña rusa...
-    info: "Empieza por buscar una montaña rusa ahí arriba, luego la magia sucede abajo. Incluso puedes actualizar la posición arrastrando y soltando líneas o escribiendo la nueva posición dentro del círculo azul."
-
 review:
     title: Reseñas
     share: "¡Comparte tu opinión con nosotros!"

@@ -251,36 +251,7 @@ profile:
         updated_success: "Your settings have been updated successfully."
         save: "Save Changes"
 
-top:
-    new:
-        title: "Create a new top"
-        form:
-            name: "Name of your top:"
-            type: "Is it a Top or a Flop ?"
-            flop: "Flop (lower is better)"
-            top: "Top (higher is better)"
-            submit: "Create new top"
-    editDetails:
-        title: "Update a top"
-        form:
-            submit: "Update the top"
-    list:
-        title: "The latest tops"
-        more: "See more"
-        updated: "last updated"
-        by: "by"
-        infotitle: "All your tops are on this page!"
-        info: "Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It's up to you!"
-        create_first: "Create my first Top Coasters"
-        create: "Create a custom top"
-    title: "My Top Coasters"
-    update: "Update"
-    update_details: "Change name"
-    delete: "Delete"
-    delete_confirmation: "Delete ?"
-    save: "Save the top"
-    find: "Find a coaster..."
-    info: "Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle."
+
 
 review:
     title: "Reviews"

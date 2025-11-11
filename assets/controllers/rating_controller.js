@@ -9,40 +9,52 @@ export default class extends Controller {
         try {
             await import('jquery.rateit');
             this.initRating();
-            this.setupTouchProtection();
+            this.setupMobileLongPress();
         } catch (error) {
             console.error('Failed to load rateit:', error);
         }
     }
 
-    setupTouchProtection() {
-        if (!this.hasRatingTarget) return;
+    setupMobileLongPress() {
+        if (!this.hasRatingTarget || !('ontouchstart' in window)) return;
         
-        let touchStartY = 0;
-        let touchMoved = false;
+        this.touchTimer = null;
+        this.touchEnabled = false;
+        this.touchStartTime = 0;
+        this.pendingRatingValue = null;
         
         this.ratingTarget.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-            touchMoved = false;
+            this.touchEnabled = false;
+            this.touchStartTime = Date.now();
+            this.touchTimer = setTimeout(() => {
+                this.touchEnabled = true;
+                // If there's a pending rating, process it now
+                if (this.pendingRatingValue !== null) {
+                    this.processPendingRating();
+                }
+            }, 200);
         }, { passive: true });
         
-        this.ratingTarget.addEventListener('touchmove', (e) => {
-            const touchEndY = e.touches[0].clientY;
-            const deltaY = Math.abs(touchEndY - touchStartY);
-            
-            // If user moved more than 10px vertically, consider it scrolling
-            if (deltaY > 10) {
-                touchMoved = true;
+        this.ratingTarget.addEventListener('touchend', () => {
+            const touchDuration = Date.now() - this.touchStartTime;
+            if (touchDuration >= 200) {
+                this.touchEnabled = true;
             }
+            clearTimeout(this.touchTimer);
         }, { passive: true });
         
-        this.ratingTarget.addEventListener('touchend', (e) => {
-            if (touchMoved) {
-                // Prevent rating if user was scrolling
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        });
+        this.ratingTarget.addEventListener('touchcancel', () => {
+            clearTimeout(this.touchTimer);
+            this.touchEnabled = false;
+            this.pendingRatingValue = null;
+        }, { passive: true });
+    }
+    
+    processPendingRating() {
+        if (this.pendingRatingValue !== null && this.touchEnabled) {
+            this.handleChange();
+            this.pendingRatingValue = null;
+        }
     }
 
     disconnect() {
@@ -66,7 +78,23 @@ export default class extends Controller {
 
         // Only bind change handler if not readonly
         if (!this.readonlyValue) {
-            $rating.on('rated', this.handleChange.bind(this));
+            $rating.on('rated', () => {
+                // On mobile, only allow rating if touch was held for 200ms
+                if ('ontouchstart' in window) {
+                    const newValue = $rating.rateit('value');
+                    this.pendingRatingValue = newValue;
+                    
+                    if (!this.touchEnabled) {
+                        // Revert to previous value and wait for long press
+                        $rating.rateit('value', this.currentValueValue || 0);
+                        return;
+                    }
+                }
+                this.handleChange();
+                // Reset touch state after handling
+                this.touchEnabled = false;
+                this.pendingRatingValue = null;
+            });
         }
     }
 

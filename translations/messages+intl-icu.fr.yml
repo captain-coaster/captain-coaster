@@ -246,37 +246,6 @@ profile:
         updated_success: Vos paramètres ont été mis à jour avec succès.
         save: Enregistrer les modifications
 
-top:
-    new:
-        title: Créer un top
-        form:
-            name: "Nom du top :"
-            type: "Ce sera un Top ou un Flop ?"
-            flop: Flop (les pires sont placés en premier)
-            top: Top (les meilleurs sont placés en premier)
-            submit: Créer le top
-    editDetails:
-        title: Modifier un top
-        form:
-            submit: Modifier le top
-    list:
-        title: Les derniers tops
-        more: Voir le détail
-        updated: mis à jour
-        by: par
-        infotitle: "Tous tes tops sont ici !"
-        info: "Les tops, ça permet de faire connaître aux autres ses goûts, comme les meilleurs RMC de la planète, ou les pires kiddies d’Espagne, ou peut-être les meilleurs water coasters bleus avec launch magnétique ! Tout est possible, et chaque top peut ensuite être partagé."
-        create_first: Create mon premier Top Coasters
-        create: Créer un nouveau top
-    title: Mon Top Coasters
-    update: Modifier
-    update_details: Changer le nom
-    delete: Supprimer
-    delete_confirmation: "Supprimer ?"
-    save: Sauvegarder le top
-    find: Chercher un coaster...
-    info: "Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l'ordre en déplaçant la ligne ou en écrivant sa position dans le rond bleu."
-
 review:
     title: Avis
     share: "Partage ton expérience avec nous !"

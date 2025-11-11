@@ -2,7 +2,7 @@
 
 {% import "helper.html.twig" as helper %}
 
-{% set title = 'top.list.title'|trans %}
+{% set title = 'list.title'|trans({}, 'top') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
@@ -23,7 +23,7 @@
                   </a>
                 </h6>
                 <small class="text-muted">
-                  {{ 'top.list.by'|trans }}
+                  {{ 'list.by'|trans({}, 'top') }}
                   <a href="{{ path('user_show', {'slug': top.user.slug}) }}">
                     {{ top.user.displayName }}
                   </a>
@@ -43,13 +43,13 @@
             </ul>
             <div class="media">
               <a href="{{ path('top_show', {'id': top.id}) }}">
-                {{ heroicon('arrow-right-circle', 'w-6 h-6') }} {{ 'top.list.more'|trans }}
+                {{ heroicon('arrow-right-circle', 'w-6 h-6') }} {{ 'list.more'|trans({}, 'top') }}
               </a>
             </div>
             <ul class="list-inline media">
               <li>{{ heroicon('square-3-stack-3d', 'w-6 h-6 position-left') }} {{ top.topCoasters|length }}</li>
               <li>
-                {{ heroicon('bell-alert', 'w-6 h-6 position-left') }} {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
+                {{ heroicon('clock', 'w-6 h-6 position-left') }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
               </li>
             </ul>
           </div>

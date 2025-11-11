@@ -20,8 +20,7 @@
 - **Translation Required**: Every piece of text in templates or JS must be translated using Symfony translation mechanisms in all 4 languages (English, French, Spanish, German)
 
 ### Frontend Development Workflow
-- **Start dev-server first**: Before making any frontend changes, start the dev-server with `npm run dev-server`
-- **Keep dev-server running**: Leave the dev-server running throughout your development session for instant feedback
+- **dev-server IS running**: Do not run npm build as npm run dev-server is already running
 
 ## Key Libraries & Services
 - **API Platform 4.0**: REST/GraphQL API framework
@@ -51,7 +50,7 @@
 ## Development Environment
 
 ### Local Development URL
-- **Application URL**: https://localhost:8000 (when using `symfony server:start`)
+- **Application URL**: https://localhost:8000 (`symfony server:start` already running)
 
 ## Common Commands
 

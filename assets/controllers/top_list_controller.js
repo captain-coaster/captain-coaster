@@ -1,50 +1,63 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Modern Top List Controller - Native HTML5 Drag & Drop Implementation
+ * Modern Top List Controller - SortableJS Implementation
  * 
- * Replaces legacy jQuery sortable with modern web standards.
  * Provides drag-and-drop reordering with auto-save functionality.
+ * Uses SortableJS for robust touch and mouse support.
  * 
  * Features:
- * - Native HTML5 drag and drop API
- * - Mobile touch support
+ * - SortableJS drag and drop with touch support
+ * - Long-press to drag on mobile (500ms delay)
  * - Visual feedback during drag operations
  * - Auto-save with debouncing
- * - Exactly one drop zone between cards
  * - Position management and updates
  * 
  * Usage:
  * <ul data-controller="top-list" 
  *     data-top-list-auto-save-url-value="/tops/123/auto-save"
  *     data-top-list-save-delay-value="2000">
- *   <li data-top-list-target="item" draggable="true" data-coaster-id="456" data-position="1">
+ *   <li data-top-list-target="item" data-coaster-id="456" data-position="1">
+ *     <div class="drag-handle"><!-- handle icon --></div>
  *     <!-- coaster content -->
  *   </li>
  * </ul>
  */
 export default class extends Controller {
-    static targets = ['list', 'item'];
+    static targets = ['item'];
     static values = {
         autoSaveUrl: String,
         saveDelay: { type: Number, default: 2000 }
     };
 
-    connect() {
-        console.log('TopList controller connected');
+    async connect() {
+        console.log('TopList controller connected with SortableJS');
         
         // Initialize state
-        this.draggedElement = null;
-        this.draggedIndex = -1;
-        this.dropZones = [];
         this.saveTimeout = null;
-        this.isDragging = false;
         
-        // Set up drag and drop
-        this.setupDragAndDrop();
+        // Lazy load SortableJS only when this controller is used
+        const { default: Sortable } = await import('sortablejs');
         
-        // Create drop zones
-        this.createDropZones();
+        // Initialize SortableJS
+        this.sortable = Sortable.create(this.element, {
+            animation: 150,              // Smooth animation duration in ms
+            handle: '.drag-area',        // Only drag from drag area
+            draggable: '[data-top-list-target="item"]', // Items that can be dragged
+            delay: 200,                  // Long-press delay for touch (ms) - reduced for better UX
+            delayOnTouchOnly: true,      // Only delay on touch devices
+            touchStartThreshold: 5,      // Pixels to move before canceling (prevents accidental drags)
+            
+            // Callbacks
+            onStart: (evt) => this.handleDragStart(evt),
+            onEnd: (evt) => this.handleDragEnd(evt),
+            onMove: (evt) => this.handleDragMove(evt),
+            
+            // Visual feedback classes
+            ghostClass: 'sortable-ghost',   // Class for placeholder
+            chosenClass: 'sortable-chosen', // Class for selected item
+            dragClass: 'sortable-drag'      // Class for dragged item
+        });
         
         // Update initial positions
         this.updatePositions();
@@ -56,279 +69,51 @@ export default class extends Controller {
             clearTimeout(this.saveTimeout);
         }
         
-        // Remove drop zones
-        this.removeDropZones();
-    }
-
-    /**
-     * Set up drag and drop event listeners on all items
-     */
-    setupDragAndDrop() {
-        this.itemTargets.forEach((item, index) => {
-            // Make items draggable
-            item.draggable = true;
-            item.dataset.originalIndex = index.toString();
-            
-            // Add drag event listeners
-            item.addEventListener('dragstart', this.handleDragStart.bind(this));
-            item.addEventListener('dragend', this.handleDragEnd.bind(this));
-        });
-    }
-
-    /**
-     * Create drop zones between each item
-     * There MUST be exactly ONE drop zone between cards
-     */
-    createDropZones() {
-        this.removeDropZones(); // Clean up existing zones first
-        
-        const items = this.itemTargets;
-        
-        // Create drop zone before first item
-        const firstDropZone = this.createDropZone(0);
-        if (items.length > 0) {
-            items[0].parentNode.insertBefore(firstDropZone, items[0]);
-        } else {
-            this.listTarget.appendChild(firstDropZone);
+        // Destroy SortableJS instance
+        if (this.sortable) {
+            this.sortable.destroy();
         }
-        
-        // Create drop zones between items
-        items.forEach((item, index) => {
-            if (index < items.length - 1) {
-                const dropZone = this.createDropZone(index + 1);
-                item.parentNode.insertBefore(dropZone, items[index + 1]);
-            }
-        });
-        
-        // Create drop zone after last item
-        const lastDropZone = this.createDropZone(items.length);
-        this.listTarget.appendChild(lastDropZone);
     }
 
     /**
-     * Create a single drop zone element
+     * Handle drag start event (SortableJS callback)
      */
-    createDropZone(position) {
-        const dropZone = document.createElement('li');
-        dropZone.className = 'drop-zone';
-        dropZone.dataset.position = position.toString();
-        dropZone.innerHTML = '<div class="drop-zone-indicator"></div>';
+    handleDragStart(evt) {
+        console.log('Drag started');
         
-        // Add drop zone event listeners
-        dropZone.addEventListener('dragover', this.handleDragOver.bind(this));
-        dropZone.addEventListener('drop', this.handleDrop.bind(this));
-        dropZone.addEventListener('dragenter', this.handleDragEnter.bind(this));
-        dropZone.addEventListener('dragleave', this.handleDragLeave.bind(this));
-        
-        this.dropZones.push(dropZone);
-        return dropZone;
-    }
-
-    /**
-     * Remove all drop zones
-     */
-    removeDropZones() {
-        this.dropZones.forEach(zone => {
-            if (zone.parentNode) {
-                zone.parentNode.removeChild(zone);
-            }
-        });
-        this.dropZones = [];
-    }
-
-    /**
-     * Handle drag start event
-     */
-    handleDragStart(event) {
-        this.isDragging = true;
-        this.draggedElement = event.target;
-        this.draggedIndex = parseInt(event.target.dataset.originalIndex);
-        
-        // Set drag data
-        event.dataTransfer.effectAllowed = 'move';
-        event.dataTransfer.setData('text/html', event.target.outerHTML);
-        
-        // Add visual feedback
-        event.target.classList.add('dragging');
+        // Add visual feedback to container
         this.element.classList.add('drag-active');
-        
-        // Show drop zones
-        this.showDropZones();
-        
-        // Create custom drag image (ghost)
-        this.setDragImage(event);
-        
-        console.log('Drag started for item at index:', this.draggedIndex);
     }
 
     /**
-     * Handle drag end event
+     * Handle drag end event (SortableJS callback)
      */
-    handleDragEnd(event) {
-        this.isDragging = false;
+    handleDragEnd(evt) {
+        console.log('Drag ended');
         
-        // Remove visual feedback
-        event.target.classList.remove('dragging');
+        // Remove visual feedback from container
         this.element.classList.remove('drag-active');
         
-        // Clear all drag states
-        this.clearDragOverStates();
-        
-        // Hide drop zones
-        this.hideDropZones();
-        
-        // Clean up
-        this.draggedElement = null;
-        this.draggedIndex = -1;
-        
-        console.log('Drag ended');
-    }
-
-    /**
-     * Handle drag over event (required for drop to work)
-     */
-    handleDragOver(event) {
-        event.preventDefault();
-        event.dataTransfer.dropEffect = 'move';
-    }
-
-    /**
-     * Handle drag enter event
-     */
-    handleDragEnter(event) {
-        event.preventDefault();
-        const dropZone = event.currentTarget;
-        if (dropZone.classList.contains('drop-zone')) {
-            // Clear any existing drag-over states first
-            this.clearDragOverStates();
-            dropZone.classList.add('drag-over');
-        }
-    }
-
-    /**
-     * Handle drag leave event
-     */
-    handleDragLeave(event) {
-        event.preventDefault();
-        const dropZone = event.currentTarget;
-        if (dropZone.classList.contains('drop-zone')) {
-            // Only remove if we're actually leaving the drop zone completely
-            const rect = dropZone.getBoundingClientRect();
-            const x = event.clientX;
-            const y = event.clientY;
+        // Check if position actually changed
+        if (evt.oldIndex !== evt.newIndex) {
+            console.log(`Item moved from position ${evt.oldIndex} to ${evt.newIndex}`);
             
-            // Check if mouse is still within the drop zone bounds
-            if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
-                dropZone.classList.remove('drag-over');
-            }
-        }
-    }
-
-    /**
-     * Clear all drag-over states
-     */
-    clearDragOverStates() {
-        this.dropZones.forEach(zone => {
-            zone.classList.remove('drag-over');
-        });
-    }
-
-    /**
-     * Handle drop event
-     */
-    handleDrop(event) {
-        event.preventDefault();
-        
-        if (!this.draggedElement) {
-            console.log('No dragged element found');
-            return;
-        }
-        
-        // Find the drop zone (could be the target or a parent)
-        let dropZone = event.target;
-        if (!dropZone.classList.contains('drop-zone')) {
-            dropZone = dropZone.closest('.drop-zone');
-        }
-        
-        if (!dropZone) {
-            console.log('Drop target is not a drop zone');
-            return;
-        }
-        
-        const dropPosition = parseInt(dropZone.dataset.position);
-        const originalPosition = this.draggedIndex;
-        
-        console.log(`Dropping item from position ${originalPosition} to position ${dropPosition}`);
-        
-        // Remove drag over styling
-        dropZone.classList.remove('drag-over');
-        
-        // Only move if position actually changed
-        if (originalPosition !== dropPosition && originalPosition !== dropPosition - 1) {
-            // Perform the move
-            this.moveItem(originalPosition, dropPosition);
-            
-            // Update positions and save
+            // Update positions in the UI
             this.updatePositions();
+            
+            // Trigger auto-save
             this.debouncedSave();
-        } else {
-            console.log('Item dropped in same position, no move needed');
         }
     }
 
     /**
-     * Move an item from one position to another
+     * Handle drag move event (SortableJS callback)
+     * Return false to cancel the move, true to allow it
      */
-    moveItem(fromIndex, toIndex) {
-        const items = Array.from(this.itemTargets);
-        const draggedItem = items[fromIndex];
-        
-        if (!draggedItem) {
-            console.error('Could not find dragged item at index:', fromIndex);
-            return;
-        }
-        
-        console.log(`Moving item from index ${fromIndex} to index ${toIndex}`);
-        
-        // Remove the dragged item from the DOM temporarily
-        const parent = draggedItem.parentNode;
-        draggedItem.remove();
-        
-        // Get updated list of items (without the dragged item)
-        const remainingItems = Array.from(this.itemTargets);
-        
-        // Calculate where to insert the item
-        if (toIndex === 0) {
-            // Insert at the beginning
-            if (remainingItems.length > 0) {
-                parent.insertBefore(draggedItem, remainingItems[0]);
-            } else {
-                parent.appendChild(draggedItem);
-            }
-        } else if (toIndex >= remainingItems.length) {
-            // Insert at the end
-            parent.appendChild(draggedItem);
-        } else {
-            // Insert before the item at the target position
-            parent.insertBefore(draggedItem, remainingItems[toIndex]);
-        }
-        
-        // Recreate drop zones with new layout
-        this.createDropZones();
-        
-        // Update original indices
-        this.updateOriginalIndices();
-        
-        console.log('Item moved successfully');
-    }
-
-    /**
-     * Update original indices after reordering
-     */
-    updateOriginalIndices() {
-        this.itemTargets.forEach((item, index) => {
-            item.dataset.originalIndex = index.toString();
-        });
+    handleDragMove(evt) {
+        // Allow all moves by default
+        // Can add custom logic here if needed
+        return true;
     }
 
     /**
@@ -341,60 +126,12 @@ export default class extends Controller {
             // Update data attribute
             item.dataset.position = position.toString();
             
-            // Update position badge
-            const positionBadge = item.querySelector('.position-badge');
-            if (positionBadge) {
-                positionBadge.textContent = position.toString();
+            // Update position number
+            const positionNumber = item.querySelector('.position-number');
+            if (positionNumber) {
+                positionNumber.textContent = position.toString();
             }
         });
-    }
-
-    /**
-     * Show drop zones during drag operation
-     */
-    showDropZones() {
-        this.dropZones.forEach(zone => {
-            zone.classList.add('visible');
-        });
-    }
-
-    /**
-     * Hide drop zones after drag operation
-     */
-    hideDropZones() {
-        this.dropZones.forEach(zone => {
-            zone.classList.remove('visible', 'drag-over');
-        });
-    }
-
-    /**
-     * Set custom drag image for better visual feedback
-     */
-    setDragImage(event) {
-        try {
-            // Create a ghost image that looks like the dragged item
-            const dragImage = event.target.cloneNode(true);
-            dragImage.style.opacity = '0.8';
-            dragImage.style.position = 'absolute';
-            dragImage.style.top = '-1000px';
-            dragImage.style.left = '-1000px';
-            dragImage.style.width = event.target.offsetWidth + 'px';
-            
-            document.body.appendChild(dragImage);
-            
-            // Set the custom drag image
-            event.dataTransfer.setDragImage(dragImage, event.offsetX, event.offsetY);
-            
-            // Clean up the temporary element after a short delay
-            setTimeout(() => {
-                if (dragImage.parentNode) {
-                    dragImage.parentNode.removeChild(dragImage);
-                }
-            }, 100);
-        } catch (error) {
-            // Fallback to default drag image if custom one fails
-            console.warn('Could not set custom drag image:', error);
-        }
     }
 
     /**
@@ -516,10 +253,8 @@ export default class extends Controller {
         // Remove the item
         item.remove();
         
-        // Update positions and drop zones
+        // Update positions
         this.updatePositions();
-        this.createDropZones();
-        this.updateOriginalIndices();
         
         // Auto-save the changes
         this.debouncedSave();
@@ -545,5 +280,111 @@ export default class extends Controller {
             }
         });
         return positions;
+    }
+
+    /**
+     * Move a coaster to the top of the list (position 1)
+     * Requirements: 6.1
+     */
+    moveToTop(event) {
+        event.preventDefault();
+        
+        const item = event.target.closest('[data-top-list-target="item"]');
+        if (!item) return;
+        
+        console.log('Moving coaster to top');
+        
+        // Move to first position
+        this.element.insertBefore(item, this.element.firstElementChild);
+        
+        // Update positions
+        this.updatePositions();
+        
+        // Trigger auto-save
+        this.debouncedSave();
+    }
+
+    /**
+     * Move a coaster to the bottom of the list (last position)
+     * Requirements: 6.2
+     */
+    moveToBottom(event) {
+        event.preventDefault();
+        
+        const item = event.target.closest('[data-top-list-target="item"]');
+        if (!item) return;
+        
+        console.log('Moving coaster to bottom');
+        
+        // Move to last position
+        this.element.appendChild(item);
+        
+        // Update positions
+        this.updatePositions();
+        
+        // Trigger auto-save
+        this.debouncedSave();
+    }
+
+    /**
+     * Move a coaster to a specific position with user prompt
+     * Requirements: 6.3, 6.4, 6.5
+     */
+    moveToPosition(event) {
+        event.preventDefault();
+        
+        const item = event.target.closest('[data-top-list-target="item"]');
+        if (!item) return;
+        
+        const currentPos = parseInt(item.dataset.position);
+        const maxPos = this.itemTargets.length;
+        
+        // Prompt user for new position
+        const newPosStr = prompt(`Enter position (1-${maxPos}):`, currentPos);
+        
+        // Validate input
+        if (!newPosStr) {
+            // User cancelled
+            return;
+        }
+        
+        const newPos = parseInt(newPosStr);
+        
+        if (isNaN(newPos) || newPos < 1 || newPos > maxPos) {
+            alert(`Invalid position. Please enter a number between 1 and ${maxPos}.`);
+            return;
+        }
+        
+        // Don't do anything if position hasn't changed
+        if (newPos === currentPos) {
+            return;
+        }
+        
+        console.log(`Moving coaster from position ${currentPos} to ${newPos}`);
+        
+        // Move item to new position
+        if (newPos === 1) {
+            // Move to first position
+            this.element.insertBefore(item, this.element.firstElementChild);
+        } else if (newPos === maxPos) {
+            // Move to last position
+            this.element.appendChild(item);
+        } else {
+            // Move to specific position
+            const targetItem = this.itemTargets[newPos - 1];
+            if (newPos > currentPos) {
+                // Moving down - insert after target
+                this.element.insertBefore(item, targetItem.nextElementSibling);
+            } else {
+                // Moving up - insert before target
+                this.element.insertBefore(item, targetItem);
+            }
+        }
+        
+        // Update positions
+        this.updatePositions();
+        
+        // Trigger auto-save
+        this.debouncedSave();
     }
 }
