@@ -260,6 +260,6 @@ cker Functionality */
     }
 }
 
-.rating-coaster.rating-confirmed {
+.rating-confirmed {
     animation: rating-sparkle 0.6s ease-out;
 }

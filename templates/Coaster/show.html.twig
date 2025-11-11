@@ -22,7 +22,7 @@
                     <div class="panel panel-body">
                         <div class="row">
                             <div class="col-xs-6">
-                                <div class="text-muted text-size-small text-uppercase" style="letter-spacing: 0.5px; margin-bottom: 8px;">
+                                <div class="text-muted text-size-small text-uppercase score-label">
                                     {{ 'coaster.score.title'|trans }}
                                 </div>
                                 <div class="score-compact">
@@ -34,11 +34,11 @@
                             {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
                             {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
                             <div class="col-xs-6">
-                                <a href="{{ path('ranking_index', {'page': page}) }}" class="text-default" style="text-decoration: none;">
-                                    <div class="text-muted text-size-small text-uppercase" style="letter-spacing: 0.5px; margin-bottom: 8px;">
+                                <a href="{{ path('ranking_index', {'page': page}) }}" class="text-default rank-link">
+                                    <div class="text-muted text-size-small text-uppercase score-label">
                                         {{ 'coaster.score.rank'|trans }}
                                     </div>
-                                    <div style="font-size: 32px; font-weight: 700; line-height: 1; color: #111827;">#{{ coaster.rank }}</div>
+                                    <div class="rank-number">#{{ coaster.rank }}</div>
                                 </a>
                             </div>
                         </div>

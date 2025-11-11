@@ -12,7 +12,9 @@
 {% set readonly = readonly|default(false) %}
 {% set size = size|default('26px') %}
 
-<div data-controller="rating"
+<div class="csrf-protection" data-controller="csrf-protection rating"
+     data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+     data-rating-csrf-protection-outlet=".csrf-protection"
      data-rating-coaster-id-value="{{ coaster.id }}"
      data-rating-current-value-value="{{ rating.value|default(0) }}"
      {% if rating %}data-rating-rating-id-value="{{ rating.id }}"{% endif %}

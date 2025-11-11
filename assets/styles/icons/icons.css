@@ -69,3 +69,20 @@ svg.w-16 {
     display: inline-block;
     vertical-align: middle;
 }
+
+/* Icon spacing for navbar and sidebar */
+.navbar a svg {
+    margin-right: 8px;
+}
+
+.sidebar .navigation a svg {
+    margin-right: 8px;
+}
+
+.sidebar-xs .sidebar .navigation a svg {
+    margin-right: 0;
+}
+
+.list-group-item svg {
+    margin-right: 8px;
+}

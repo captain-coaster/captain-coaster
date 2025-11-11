@@ -3,6 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['rating'];
     static values = { coasterId: Number, currentValue: Number, ratingId: Number, locale: String, readonly: Boolean };
+    static outlets = ['csrf-protection'];
 
     async connect() {
         try {
@@ -78,16 +79,20 @@ export default class extends Controller {
         const wasNew = !this.ratingIdValue;
         
         try {
-            const response = await fetch(Routing.generate('rating_edit', {
+            const url = Routing.generate('rating_edit', {
                 id: this.coasterIdValue,
                 _locale: this.localeValue
-            }), {
+            });
+            
+            const response = await fetch(url.replace(/^http:/, 'https:'), {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: `value=${newValue}`
+                body: this.csrfProtectionOutlet ? 
+                    this.csrfProtectionOutlet.addTokenToBody(`value=${newValue}`) : 
+                    `value=${newValue}`
             });
 
             if (!response.ok) throw new Error('Failed to save rating');
@@ -109,9 +114,22 @@ export default class extends Controller {
                 bubbles: true 
             });
         } catch (error) {
-            console.error('Rating error:', error);
+            console.error('Rating save failed:', {
+                coasterId: this.coasterIdValue,
+                value: newValue,
+                error: error.message,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Revert rating to previous value
             $(this.ratingTarget).rateit('value', this.currentValueValue || 0);
-            alert('Error saving rating');
+            
+            // Show user-friendly error
+            const errorMsg = error.message.includes('Network') ? 
+                'Network error. Rating not saved.' : 
+                'Unable to save rating. Please try again.';
+            
+            this.dispatch('error', { detail: { message: errorMsg } });
         }
     }
 

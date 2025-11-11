@@ -6,12 +6,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block stylesheets %}
-
+  {{ encore_entry_link_tags('coaster') }}
 {% endblock %}
 
 {% block javascripts %}
-
-  <script src="{{ asset('js/pages/rating.js') }}"></script>
 {% endblock %}
 
 {% block body %}

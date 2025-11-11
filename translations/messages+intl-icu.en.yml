@@ -50,6 +50,7 @@ coaster:
         disclaimer: "AI-generated summary based on {count} reviews"
     rating:
         action: "Rate this coaster!"
+        my_rating: "My rating"
         notenough: "Not enough ratings for this coaster!"
         mustlogin: "You must be logged in to rate."
         login: "Log in"

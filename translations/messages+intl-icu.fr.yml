@@ -45,6 +45,7 @@ coaster:
         poor: "Faible"
     rating:
         action: "Note ce coaster !"
+        my_rating: "Ma note"
         notenough: "Pas assez de note sur ce coaster !"
         mustlogin: Il faut être connecté pour noter.
         login: Se connecter

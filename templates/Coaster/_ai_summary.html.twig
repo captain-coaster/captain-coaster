@@ -16,7 +16,7 @@
                         <div class="col-md-6">
                             <h6 style="color: #065f46;">{{ heroicon('check', 'w-5 h-5') }} {{ 'coaster.ai_summary.highlights'|trans }}</h6>
                             {% for pro in coasterSummary.dynamicPros %}
-                                {{ helper.tag(pro, 'pro') }}
+                                <span class="label label-success label-rounded">{{ pro }}</span>
                             {% endfor %}
                         </div>
                     {% endif %}
@@ -24,7 +24,7 @@
                         <div class="col-md-6">
                             <h6 style="color: #9f1239;">{{ heroicon('exclamation-triangle', 'w-5 h-5') }} {{ 'coaster.ai_summary.concerns'|trans }}</h6>
                             {% for con in coasterSummary.dynamicCons %}
-                                {{ helper.tag(con, 'con') }}
+                                <span class="label label-danger label-rounded">{{ con }}</span>
                             {% endfor %}
                         </div>
                     {% endif %}

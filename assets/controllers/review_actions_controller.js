@@ -12,7 +12,8 @@ export default class extends Controller {
         id: Number,
         upvoted: Boolean,
         upvoteUrl: String,
-        reportUrl: String
+        reportUrl: String,
+        deleteUrl: String
     };
 
     connect() {
@@ -81,6 +82,48 @@ export default class extends Controller {
             // Fallback to direct Bootstrap 3.x modal API for compatibility
             $(this.reportModalTarget).modal('show');
         }
+    }
+
+    /**
+     * Delete a review
+     */
+    deleteReview(event) {
+        event.preventDefault();
+
+        if (!confirm('Are you sure you want to delete this review?')) {
+            return;
+        }
+
+        if (!this.hasDeleteUrlValue) {
+            console.error('Delete URL not provided');
+            return;
+        }
+
+        fetch(this.deleteUrlValue, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.state === 'success') {
+                    // Remove the entire list item (including title) from the DOM
+                    const listItem = this.element.closest('li');
+                    if (listItem) {
+                        listItem.remove();
+                    } else {
+                        this.element.remove();
+                    }
+                    this._showNotification('Review deleted successfully', 'success');
+                } else {
+                    this._showNotification('Failed to delete review', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting review:', error);
+                this._showNotification('Failed to delete review', 'danger');
+            });
     }
 
     /**

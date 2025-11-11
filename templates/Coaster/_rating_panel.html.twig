@@ -1,17 +1,20 @@
 <!-- Rating Panel -->
-<div class="panel panel-body border-top-primary text-center">
-    <h6 class="no-margin text-semibold">{{ 'coaster.rating.action'|trans }}</h6>
-    <br/>
+<div class="panel panel-body border-top-primary text-center csrf-protection" 
+     data-controller="csrf-protection rating-actions"
+     data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+     data-rating-actions-csrf-protection-outlet=".csrf-protection"
+     {% if rating %}data-rating-actions-rating-id-value="{{ rating.id }}"{% endif %}
+     data-rating-actions-locale-value="{{ app.request.locale }}"
+     data-rating-actions-rate-text-value="{{ 'coaster.rating.action'|trans }}"
+     data-rating-actions-my-rating-text-value="{{ 'coaster.rating.my_rating'|trans }}">
+    <h6 class="no-margin text-semibold" data-rating-actions-target="title">{{ rating ? 'coaster.rating.my_rating'|trans : 'coaster.rating.action'|trans }}</h6>
     
     {% if is_granted('ROLE_USER') %}
         <!-- Star Rating Widget -->
         {% include 'Coaster/_rating_widget.html.twig' with {'coaster': coaster, 'rating': rating} only %}
         
         <!-- Action Buttons -->
-        <div class="rating-actions mt-10" 
-             data-controller="rating-actions"
-             {% if rating %}data-rating-actions-rating-id-value="{{ rating.id }}"{% endif %}
-             data-rating-actions-locale-value="{{ app.request.locale }}">
+        <div class="rating-actions mt-10">
             
             <a class="action-icon" 
                href="{{ path('review_form', {'id': coaster.id}) }}"

@@ -44,6 +44,7 @@ coaster:
         poor: "Schwach"
     rating:
         action: "Bewerte diese Achterbahn!"
+        my_rating: "Meine Bewertung"
         notenough: "Nicht genügend Bewertungen für diese Achterbahn!"
         mustlogin: "Zum Bewerten musst du eingeloggt sein!"
         login: Einloggen

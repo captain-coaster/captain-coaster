@@ -45,6 +45,7 @@ coaster:
         poor: "Pobre"
     rating:
         action: "¡Califica esta montaña rusa!"
+        my_rating: "Mi calificación"
         notenough: "¡No hay suficientes notas para esta montaña rusa!"
         mustlogin: Debe iniciar sesión para calificar.
         login: Iniciar sesión

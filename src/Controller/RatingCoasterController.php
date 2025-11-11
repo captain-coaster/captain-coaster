@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
 
 class RatingCoasterController extends AbstractController
 {
@@ -28,8 +30,15 @@ class RatingCoasterController extends AbstractController
         Coaster $coaster,
         EntityManagerInterface $em,
         RiddenCoasterRepository $riddenCoasterRepository,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        CsrfTokenManagerInterface $csrfTokenManager
     ): JsonResponse {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', $token))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -87,8 +96,18 @@ class RatingCoasterController extends AbstractController
     #[Route(path: '/ratings/{id}', name: 'rating_delete', options: ['expose' => true], methods: ['DELETE'], condition: 'request.isXmlHttpRequest()')]
     #[IsGranted('ROLE_USER', statusCode: 403)]
     #[IsGranted('delete', 'rating', statusCode: 403)]
-    public function deleteAction(RiddenCoaster $rating, EntityManagerInterface $em): JsonResponse
-    {
+    public function deleteAction(
+        Request $request,
+        RiddenCoaster $rating, 
+        EntityManagerInterface $em,
+        CsrfTokenManagerInterface $csrfTokenManager
+    ): JsonResponse {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', $token))) {
+            return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
+        }
+
         $em->remove($rating);
         $em->flush();
 

@@ -1,5 +1,3 @@
-{% import "helper.html.twig" as helper %}
-
 <div class="panel panel-flat">
     <div class="panel-heading">
         <h6 class="panel-title">
@@ -23,7 +21,7 @@
         <div class="panel-body">
             <ul class="media-list media-list-bordered">
                 {% for review in reviews %}
-                    <li class="media">
+                    <li>
                         {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
                     </li>
                 {% endfor %}

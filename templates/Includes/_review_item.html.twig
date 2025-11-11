@@ -6,7 +6,8 @@
      data-review-actions-id-value="{{ review.id }}"
      data-review-actions-upvoted-value="false"
      data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"
-     data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}">
+     data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}"
+     data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}">
   <div class="media-left">
     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
       {{ helper.profilePicture(review.user, 'img-circle img-sm') }}
@@ -25,10 +26,10 @@
     {% if review.pros|length > 0 or review.cons|length > 0 %}
       <p class="mb-10">
         {% for pros in review.pros %}
-          {{ helper.tag(pros.name|trans([], 'database'), 'pro') }}
+          <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
         {% endfor %}
         {% for cons in review.cons %}
-          {{ helper.tag(cons.name|trans([], 'database'), 'con') }}
+          <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
         {% endfor %}
       </p>
     {% endif %}
@@ -68,14 +69,16 @@
       {% endif %}
       {% if is_granted('update', review) %}
         <li>
-          <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-            {{ 'review.update'|trans }}
+          <a href="{{ path('review_form', {'id': review.coaster.id}) }}" title="{{ 'review.update'|trans }}">
+            {{ heroicon('pencil', 'w-6 h-6 text-default') }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('delete', review) %}
         <li>
-          <a onclick="deleteRating({{ review.id }})">{{ 'review.delete'|trans }}</a>
+          <a href="#" data-action="review-actions#deleteReview" title="{{ 'review.delete'|trans }}">
+            {{ heroicon('trash', 'w-6 h-6 text-default') }}
+          </a>
         </li>
       {% endif %}
     </ul>
