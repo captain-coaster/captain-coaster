@@ -1,0 +1,62 @@
+# Top List translations - French
+
+new:
+    title: "Créer un nouveau top"
+    form:
+        name: "Nom de votre top :"
+        type: "Est-ce un Top ou un Flop ?"
+        flop: "Flop (le plus bas est le meilleur)"
+        top: "Top (le plus haut est le meilleur)"
+        submit: "Créer un nouveau top"
+
+editDetails:
+    title: "Modifier un top"
+    form:
+        submit: "Mettre à jour le top"
+
+list:
+    title: "Les derniers tops"
+    more: "Voir plus"
+    updated: "dernière mise à jour"
+    by: "par"
+    infotitle: "Tous vos tops sont sur cette page !"
+    info: "Les tops sont le meilleur moyen de partager votre passion : dites-nous quel RMC est le meilleur de la planète, les pires kiddies du Texas, ou pourquoi pas les meilleurs coasters aquatiques avec un LIM ! C'est vous qui décidez !"
+    create_first: "Créer mon premier Top Coasters"
+    create: "Créer un top personnalisé"
+
+title: "Mes Top Coasters"
+update: "Modifier"
+update_details: "Changer le nom"
+delete: "Supprimer"
+delete_confirmation: "Supprimer ?"
+find: "Trouver un coaster..."
+
+search:
+    placeholder: "Rechercher un coaster à ajouter..."
+    no_results: "Aucun coaster trouvé"
+    already_in_list: "Déjà dans votre liste"
+
+help:
+    title: "Comment utiliser votre Top List"
+    search: "Recherchez des coasters à ajouter à votre liste"
+    reorder: "Appuyez longuement sur le numéro de position, puis faites glisser pour réorganiser"
+    actions: "Utilisez le menu pour déplacer ou supprimer rapidement des coasters"
+    autosave: "Les modifications sont enregistrées automatiquement"
+
+actions:
+    move_to_top: "Déplacer en haut"
+    move_to_bottom: "Déplacer en bas"
+    move_to_position: "Déplacer à la position..."
+    remove: "Supprimer"
+    position_prompt: "Entrez la position (1-{max}) :"
+
+save_status:
+    saving: "Enregistrement..."
+    saved: "Enregistré"
+    error: "Erreur d'enregistrement. Nouvelle tentative..."
+
+errors:
+    save_failed: "Échec de l'enregistrement des modifications. Veuillez réessayer."
+    invalid_position: "Position invalide. Veuillez entrer un nombre entre 1 et {max}."
+    add_failed: "Échec de l'ajout du coaster. Veuillez réessayer."
+    duplicate: "Ce coaster est déjà dans votre liste."

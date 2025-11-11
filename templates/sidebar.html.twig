@@ -8,57 +8,57 @@
           {% set currentRoute = app.request.attributes.get('_route') %}
           <li{% if currentRoute == 'bdd_index' %} class="active"{% endif %}>
             <a href="{{ path('bdd_index') }}">
-              <i class="icon-home4"></i> <span>{{ 'sidebar.index'|trans }}</span>
+              {{ heroicon('home', 'w-6 h-6') }} <span>{{ 'sidebar.index'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'ranking_index' %} class="active"{% endif %}>
             <a href="{{ path('ranking_index') }}">
-              <i class="icon-trophy2"></i> <span>{{ 'sidebar.ranking'|trans }}</span>
+              {{ heroicon('trophy', 'w-6 h-6') }} <span>{{ 'sidebar.ranking'|trans }}</span>
             </a>
           </li{% if currentRoute == 'review_list' %} class="active"{% endif %}>
           <li>
             <a href="{{ path('review_list') }}">
-              <i class="icon-megaphone"></i> <span>{{ 'sidebar.review'|trans }}</span>
+              {{ heroicon('megaphone', 'w-6 h-6') }} <span>{{ 'sidebar.review'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'top_list' %} class="active"{% endif %}>
             <a href="{{ path('top_list') }}">
-              <i class="icon-podium"></i> <span>{{ 'sidebar.top'|trans }}</span>
+              {{ heroicon('clipboard', 'w-6 h-6') }} <span>{{ 'sidebar.top'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
             <a href="{{ path('nearby_index') }}">
-              <i class="icon-compass4"></i> <span>{{ 'sidebar.nearby'|trans }}</span>
+              {{ heroicon('magnifying-glass-plus', 'w-6 h-6') }} <span>{{ 'sidebar.nearby'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>
             <a href="{{ path('user_list') }}">
-              <i class="icon-users4"></i> <span>{{ 'sidebar.users'|trans }}</span>
+              {{ heroicon('users', 'w-6 h-6') }} <span>{{ 'sidebar.users'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'map_index' %} class="active"{% endif %}>
             <a href="{{ path('map_index') }}">
-              <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
+              {{ heroicon('map-pin', 'w-6 h-6') }} <span>{{ 'sidebar.map'|trans }}</span>
             </a>
           </li>
           <li>
             <a href="https://blog.captaincoaster.com" target="_blank">
-              <i class="icon-newspaper"></i> <span>{{ 'sidebar.blog'|trans }} <i class="icon-new-tab" style="font-size: 12px;"></i></span>
+              {{ heroicon('newspaper', 'w-6 h-6') }} <span>{{ 'sidebar.blog'|trans }} <span style="font-size: 12px;">{{ heroicon('arrow-top-right-on-square', 'w-6 h-6') }}</span></span>
             </a>
           </li>
           <li{% if currentRoute == 'default_contact' %} class="active"{% endif %}>
             <a href="{{ path('default_contact') }}">
-              <i class="icon-mail5"></i> <span>{{ 'sidebar.contact'|trans }}</span>
+              {{ heroicon('envelope', 'w-6 h-6') }} <span>{{ 'sidebar.contact'|trans }}</span>
             </a>
           </li>
           <li>
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
               <a href="{{ path('logout') }}">
-                <i class="icon-switch2"></i> <span>{{ 'sidebar.logout'|trans }}</span>
+                {{ heroicon('arrow-right-on-rectangle', 'w-6 h-6') }} <span>{{ 'sidebar.logout'|trans }}</span>
               </a>
             {% else %}
               <a href="{{ path('login') }}">
-                <i class="icon-key"></i> <span>{{ 'sidebar.login'|trans }}</span>
+                {{ heroicon('key', 'w-6 h-6') }} <span>{{ 'sidebar.login'|trans }}</span>
               </a>
             {% endif %}
           </li>

@@ -16,8 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Serializer;
 
 #[Route(path: '/map')]
 class MapsController extends AbstractController
@@ -87,18 +85,21 @@ class MapsController extends AbstractController
     #[Route(path: '/markers', name: 'map_markers_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function markersAction(#[MapQueryParameter] array $filters = []): JsonResponse
     {
-        return new JsonResponse($this->getMarkers($filters), json: true);
+        return new JsonResponse($this->getMarkers($filters));
     }
 
-    /** Get coasters in a park (when user clicks on a marker). */
+    /**
+     * Get coasters in a park (when user clicks on a marker).
+     * Uses MapQueryParameter to properly handle filters[key] format from the form.
+     */
     #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
-    public function getCoastersAction(Park $park, Request $request): Response
+    public function getCoastersAction(Park $park, #[MapQueryParameter] array $filters = []): Response
     {
-        $filters = $request->get('filters');
+        $coasters = $this->coasterRepository->getCoastersForMap($park, $filters);
 
         return $this->render(
-            'Maps/listCoasters.html.twig',
-            ['coasters' => $this->coasterRepository->getCoastersForMap($park, $filters)]
+            'Maps/_map_popup.html.twig',
+            ['coasters' => $coasters]
         );
     }
 
@@ -112,11 +113,8 @@ class MapsController extends AbstractController
     }
 
     /** Generate array of markers, based on array of filters */
-    private function getMarkers(array $filters = []): string
+    private function getMarkers(array $filters = []): array
     {
-        return (new Serializer([], [new JsonEncoder()]))->serialize(
-            $this->coasterRepository->getFilteredMarkers($filters),
-            'json'
-        );
+        return $this->coasterRepository->getFilteredMarkers($filters);
     }
 }

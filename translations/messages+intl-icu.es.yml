@@ -10,6 +10,9 @@ app:
         default: Bienvenido
     header:
         search: "Batman, Port Aventura..."
+    search:
+        suggestions: "Sugerencias de búsqueda"
+        searching: "Buscando..."
 
 index:
     title: "¡Bienvenido!"
@@ -22,15 +25,27 @@ index:
         reviews: reseñas
         users: usuarios
         images: fotos
-    missingCoasters: "¡Buscamos fotos para esta montaña rusa!"
+    missingImages: "¡Buscamos fotos para esta montaña rusa!"
+
 
 coaster:
     score:
+        title: "PUNTUACIÓN"
+        rank: "RANGO"
         scoreof: Resultado de
         ranked: Clasificado
         intheworld: en el mundo
+        quality: "Puntuación de Calidad"
+        worldrank: "Clasificación Mundial"
+        overview: "De un Vistazo"
+    quality:
+        excellent: "Excelente"
+        good: "Bueno"
+        fair: "Regular"
+        poor: "Pobre"
     rating:
         action: "¡Califica esta montaña rusa!"
+        my_rating: "Mi calificación"
         notenough: "¡No hay suficientes notas para esta montaña rusa!"
         mustlogin: Debe iniciar sesión para calificar.
         login: Iniciar sesión
@@ -39,6 +54,7 @@ coaster:
         delete: borrar
         text: "Resultado basada en {count_rating} notas y {count_top} tops"
         details: Valoraciones detalladas de los usuarios
+        distribution: "Distribución de calificaciones"
         ratings: clasificaciones
     infos:
         title: "Características de {name}"
@@ -230,37 +246,6 @@ profile:
         updated_success: Su configuración ha sido actualizada con éxito.
         save: Guardar cambios
 
-top:
-    new:
-        title: Crear un nuevo top
-        form:
-            name: "Nombre de su top:"
-            type: "¿Es un Top o un Flop?"
-            flop: Flop (más bajo es mejor)
-            top: Top (más alto es mejor)
-            submit: Crear nuevo top
-    editDetails:
-        title: Actualizar un top
-        form:
-            submit: Actualizar el top
-    list:
-        title: Los últimos tops
-        more: Ver detalles
-        updated: última actualización
-        by: por
-        infotitle: "¡Todos tus tops están aquí!"
-        info: "Los tops te permiten compartir tus gustos con los demás, como el mejor RMC del planeta, o los peores kiddies de España, ¡o tal vez los mejores posavasos azules con lanzamiento magnético! Todo es posible, y cada top puede compartirse."
-        create_first: Crear mis primeros Top Coasters
-        create: Crear un top personalizado
-    title: Mi Top Coasters
-    update: Actualizar
-    update_details: Cambiar nombre
-    delete: Borrar
-    delete_confirmation: "¿Borrar?"
-    save: Almacenar el top
-    find: Buscar una montaña rusa...
-    info: "Empieza por buscar una montaña rusa ahí arriba, luego la magia sucede abajo. Incluso puedes actualizar la posición arrastrando y soltando líneas o escribiendo la nueva posición dentro del círculo azul."
-
 review:
     title: Reseñas
     share: "¡Comparte tu opinión con nosotros!"
@@ -443,16 +428,7 @@ error:
         title: "¡Parada Técnica Rápida! 🔧"
         message: "Por favor, permanezca en línea. ¡Reanudaremos las operaciones en unos minutos!"
 
-missing:
-    step1:
-        title: "Añadir una montaña rusa que falta"
-        subtitle: "Paso 1"
-        choose_description: "Seleccione un parque existente a continuación"
-        create_description: "O simplemente cree un nuevo parque"
-        form:
-            choose_btn: "Seleccionar este parque"
-            park_name: "Introduzca el nombre del parque"
-            country: "Seleccione su país a continuación"
+
 
 banner:
     coasters: "{count, plural, one {1 montaña rusa} other {# montañas rusas}}"
@@ -480,4 +456,10 @@ search_index:
             =0 {No se han encontrado usuario}
             =1 {1 usuario encontrado}
             other {# usuarios encontrados}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {No se han encontrado resultados para "{query}"}
+            =1 {1 resultado encontrado para "{query}"}
+            other {# resultados encontrados para "{query}"}
         }

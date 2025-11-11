@@ -1,0 +1,42 @@
+/* ------------------------------------------------------------------------------
+ * Score Card Component
+ * ---------------------------------------------------------------------------- */
+
+/* Compact score display */
+.score-compact {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.score-compact .score-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+}
+
+.score-compact .score-percent {
+    font-size: 18px;
+    font-weight: 400;
+    color: #6b7280;
+}
+
+/* Score panel styles */
+.score-label {
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.rank-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: #111827;
+}
+
+.rank-link {
+    text-decoration: none;
+}
+
+

@@ -56,11 +56,16 @@ when@prod:
             result_cache_driver:
                 type: pool
                 pool: doctrine.result_cache_pool
+            metadata_cache_driver:
+                type: pool
+                pool: doctrine.metadata_cache_pool
 
     framework:
         cache:
-            pools:
+            pools:                
                 doctrine.result_cache_pool:
-                    adapter: cache.app
+                    adapter: cache.adapter.redis
                 doctrine.system_cache_pool:
                     adapter: cache.system
+                doctrine.metadata_cache_pool:
+                    adapter: cache.adapter.filesystem

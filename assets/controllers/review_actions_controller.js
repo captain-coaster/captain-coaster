@@ -3,21 +3,34 @@ import { trans, REVIEW_REPORT_SUCCESS, REVIEW_REPORT_ERROR, REVIEW_REMOVE_UPVOTE
 
 /**
  * Review actions controller for handling upvotes and reports
+ * Optimized for Bootstrap 3.x with efficient jQuery usage
  */
 export default class extends Controller {
-    // No outlets needed anymore
     static targets = ['upvoteButton', 'upvoteCount', 'reportButton', 'reportModal', 'reviewContent', 'expandButton', 'collapseButton'];
+    static outlets = ['modal'];
     static values = {
         id: Number,
         upvoted: Boolean,
         upvoteUrl: String,
-        reportUrl: String
+        reportUrl: String,
+        deleteUrl: String
     };
 
     connect() {
         // Initialize the upvote button state based on the upvoted value
         if (this.hasUpvoteButtonTarget && this.upvotedValue) {
             this._updateUpvoteButtonState();
+        }
+
+        // Set up modal event listeners for better integration
+        this._setupModalEventListeners();
+    }
+
+    disconnect() {
+        // Clean up event listeners
+        if (this.hasReportModalTarget) {
+            this.element.removeEventListener('modal:shown', this._onModalShown);
+            this.element.removeEventListener('modal:form-submit', this._onModalFormSubmit);
         }
     }
 
@@ -57,15 +70,60 @@ export default class extends Controller {
     }
 
     /**
-     * Open the report modal
+     * Open the report modal using the modal controller
      */
     openReportModal(event) {
         event.preventDefault();
 
-        if (this.hasReportModalTarget) {
-            // Show the modal using Bootstrap's modal API
+        // Try to use the modal outlet first (modern approach)
+        if (this.hasModalOutlet) {
+            this.modalOutlet.show();
+        } else if (this.hasReportModalTarget) {
+            // Fallback to direct Bootstrap 3.x modal API for compatibility
             $(this.reportModalTarget).modal('show');
         }
+    }
+
+    /**
+     * Delete a review
+     */
+    deleteReview(event) {
+        event.preventDefault();
+
+        if (!confirm('Are you sure you want to delete this review?')) {
+            return;
+        }
+
+        if (!this.hasDeleteUrlValue) {
+            console.error('Delete URL not provided');
+            return;
+        }
+
+        fetch(this.deleteUrlValue, {
+            method: 'DELETE',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.state === 'success') {
+                    // Remove the entire list item (including title) from the DOM
+                    const listItem = this.element.closest('li');
+                    if (listItem) {
+                        listItem.remove();
+                    } else {
+                        this.element.remove();
+                    }
+                    this._showNotification('Review deleted successfully', 'success');
+                } else {
+                    this._showNotification('Failed to delete review', 'danger');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting review:', error);
+                this._showNotification('Failed to delete review', 'danger');
+            });
     }
 
     /**
@@ -92,8 +150,10 @@ export default class extends Controller {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Hide the modal
-                    if (this.hasReportModalTarget) {
+                    // Hide the modal using the modal controller or fallback to jQuery
+                    if (this.hasModalOutlet) {
+                        this.modalOutlet.hide();
+                    } else if (this.hasReportModalTarget) {
                         $(this.reportModalTarget).modal('hide');
                     }
 
@@ -162,6 +222,44 @@ export default class extends Controller {
                 fullReview.style.display = 'none';
             }
         }
+    }
+
+    /**
+     * Set up modal event listeners for better integration
+     * @private
+     */
+    _setupModalEventListeners() {
+        if (!this.hasReportModalTarget) return;
+
+        // Bind event handlers to maintain proper context
+        this._onModalShown = this._onModalShown.bind(this);
+        this._onModalFormSubmit = this._onModalFormSubmit.bind(this);
+
+        // Listen for modal events
+        this.element.addEventListener('modal:shown', this._onModalShown);
+        this.element.addEventListener('modal:form-submit', this._onModalFormSubmit);
+    }
+
+    /**
+     * Handle modal shown event
+     * @private
+     */
+    _onModalShown(event) {
+        // Focus on the first form element when modal is shown
+        const firstInput = event.detail.modal.querySelector('select, input, textarea');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    }
+
+    /**
+     * Handle form submission within modal
+     * @private
+     */
+    _onModalFormSubmit(event) {
+        // Prevent default form submission and handle via AJAX
+        event.preventDefault();
+        this.submitReport(event.detail.originalEvent);
     }
 
     /**

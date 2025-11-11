@@ -39,9 +39,9 @@ class NotificationService
 
         $this->sendNotification($notification);
 
-        if ($user->isEmailNotification()) {
-            // disable email temporarily
-            // $this->sendEmail($notification);
+        // No emails for ranking updates
+        if ($user->isEmailNotification() && self::NOTIF_RANKING !== $type) {
+            $this->sendEmail($notification);
         }
     }
 

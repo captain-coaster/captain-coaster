@@ -77,31 +77,18 @@ class ParkRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findAllForSearch()
+    /** Optimized search method for API with limited results and better performance. */
+    public function findBySearchQuery(string $query, int $limit = 5): array
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('p.name')
-            ->addSelect('p.slug')
-            ->addSelect('p.formerNames')
-            ->from(Park::class, 'p')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getSearchParks($query)
-    {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('p')
-            ->from(Park::class, 'p')
-            ->where('p.name LIKE :term')
-            ->orWhere('p.formerNames LIKE :term')
-            ->orWhere('p.slug LIKE :term2')
+        return $this->createQueryBuilder('p')
+            ->select('p.id', 'p.name', 'p.slug', 'co.name as countryName')
+            ->leftJoin('p.country', 'co')
+            ->where('p.name LIKE :query OR p.slug LIKE :slugQuery')
+            ->setParameter('query', '%'.$query.'%')
+            ->setParameter('slugQuery', '%'.str_replace(' ', '-', $query).'%')
             ->orderBy('p.name', 'ASC')
-            ->setParameter('term', \sprintf('%%%s%%', $query))
-            ->setParameter('term2', str_replace(' ', '-', \sprintf('%%%s%%', $query)))
-            ->getQuery();
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
     }
 }

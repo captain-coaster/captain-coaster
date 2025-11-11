@@ -23,37 +23,37 @@
 
           <div class="list-group no-border no-padding-top">
             <a href="{{ path('user_ratings', {'id': user.id}) }}" class="list-group-item">
-              <i class="icon-stars"></i>
+              {{ heroicon('star', 'w-6 h-6') }}
               {{ 'user_profile.ratings'|trans }}
               <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
             </a>
             <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
-              <i class="icon-megaphone"></i>
+              {{ heroicon('megaphone', 'w-6 h-6') }}
               {{ 'user_profile.reviews'|trans }}
             </a>
             {% if user.mainTop.id %}
               <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" class="list-group-item">
-                <i class="icon-podium"></i>
+                {{ heroicon('trophy', 'w-6 h-6') }}
                 {{ 'user_profile.main_top'|trans }}
                 <span class="badge bg-teal-400 pull-right">{{ user.mainTop.topCoasters|length }}</span>
               </a>
             {% endif %}
             {% if user.tops|length > 1 %}
               <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
-                <i class="icon-podium"></i>
+                {{ heroicon('trophy', 'w-6 h-6') }}
                 {{ 'user_profile.tops'|trans }}
                 <span class="badge bg-teal-400 pull-right">{{ user.tops|length }}</span>
               </a>
             {% endif %}
               {% if images_counter > 0 %}
               <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
-                <i class="icon-camera"></i>
+                {{ heroicon('camera', 'w-6 h-6') }}
                 {{ 'user_profile.pictures'|trans }}
                   <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
               </a>
             {% endif %}
             <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
-              <i class="icon-location3"></i>
+              {{ heroicon('map-pin', 'w-6 h-6') }}
               {{ 'user_profile.map'|trans }}
             </a>
           </div>

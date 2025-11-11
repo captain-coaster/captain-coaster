@@ -4,135 +4,109 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Repository\CoasterRepository;
-use App\Repository\ManufacturerRepository;
-use App\Repository\ParkRepository;
-use App\Repository\UserRepository;
 use App\Service\SearchService;
-use Knp\Component\Pager\PaginatorInterface;
-use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/search')]
 class SearchController extends AbstractController
 {
-    protected PaginatorInterface $paginator;
-    final public const string CACHE_AUTOCOMPLETE = 'main_autocomplete';
+    /** Modern API search endpoint for real-time search suggestions. */
+    #[Route(path: '/api', name: 'api_search', methods: ['GET'])]
+    public function apiSearch(
+        Request $request,
+        SearchService $searchService
+    ): JsonResponse {
+        $query = trim($request->query->get('q', ''));
 
-    public function __construct(PaginatorInterface $paginator)
-    {
-        $this->paginator = $paginator;
-    }
-
-    /**
-     * All data for main search service.
-     *
-     * @throws InvalidArgumentException
-     */
-    #[Route(path: '/main.json', name: 'ajax_main_search', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
-    public function ajaxMainSearch(SearchService $searchService): JsonResponse
-    {
-        $cache = new FilesystemAdapter();
-        $searchItems = $cache->getItem(self::CACHE_AUTOCOMPLETE);
-
-        if (!$searchItems->isHit()) {
-            $searchItems->set($searchService->getAutocompleteValues());
-            $searchItems->expiresAfter(\DateInterval::createFromDateString('24 hours'));
-            $cache->save($searchItems);
+        // Validate query parameter
+        if (empty($query)) {
+            return new JsonResponse([
+                'error' => true,
+                'message' => 'Query parameter "q" is required',
+                'code' => 'MISSING_QUERY',
+            ], 400);
         }
 
-        $response = new JsonResponse($searchItems->get());
-        $response->setEncodingOptions(\JSON_UNESCAPED_UNICODE);
+        if (\strlen($query) < 2) {
+            return new JsonResponse([
+                'error' => true,
+                'message' => 'Query must be at least 2 characters long',
+                'code' => 'QUERY_TOO_SHORT',
+            ], 400);
+        }
 
-        $response->setPublic();
-        $response->setMaxAge(600);
+        if (\strlen($query) > 100) {
+            return new JsonResponse([
+                'error' => true,
+                'message' => 'Query must be less than 100 characters',
+                'code' => 'QUERY_TOO_LONG',
+            ], 400);
+        }
 
-        return $response;
+        try {
+            $limit = min(5, max(1, (int) $request->query->get('limit', '5')));
+            $searchResponse = $searchService->searchAll($query, $limit);
+
+            $response = new JsonResponse($searchResponse->toArray());
+            $response->setEncodingOptions(\JSON_UNESCAPED_UNICODE);
+
+            // Set cache headers for performance
+            $response->setPublic();
+            $response->setMaxAge(300); // 5 minutes
+
+            return $response;
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'error' => true,
+                'message' => 'Search temporarily unavailable',
+                'code' => 'SEARCH_ERROR',
+            ], 500);
+        }
     }
 
     #[Route(path: '/', name: 'search_index', options: ['expose' => true], methods: ['GET'])]
-    public function search(Request $request, CoasterRepository $coasterRepository, ManufacturerRepository $manufacturerRepository): Response
+    public function search(Request $request, SearchService $searchService): Response
     {
         $query = $request->query->get('query');
+        $page = max(1, (int) $request->query->get('page', '1'));
 
-        return $this->render(
-            'Search/index.html.twig',
-            [
+        // If no query or query too short, show empty search page
+        if (empty($query) || \strlen($query) < 2) {
+            return $this->render('Search/index.html.twig', [
                 'query' => $query,
-            ]
-        );
-    }
-
-    #[Route(path: '/coasters', name: 'search_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
-    public function searchCoastersAction(
-        CoasterRepository $coasterRepository,
-        #[MapQueryParameter]
-        string $query,
-        #[MapQueryParameter]
-        int $page = 1
-    ): Response {
-        try {
-            $pagination = $this->paginator->paginate(
-                $coasterRepository->getSearchCoasters($query),
-                $page,
-                10,
-                ['wrap-queries' => true]
-            );
-        } catch (\Exception) {
-            throw new BadRequestHttpException();
+                'results' => null,
+                'pagination' => null,
+                'totalResults' => 0,
+            ]);
         }
 
-        return $this->render('Search/coasters_results.html.twig', ['coasters' => $pagination]);
-    }
-
-    #[Route(path: '/parks', name: 'search_parks_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
-    public function searchParksAction(
-        ParkRepository $parkRepository,
-        #[MapQueryParameter]
-        string $query,
-        #[MapQueryParameter]
-        int $page = 1
-    ): Response {
         try {
-            $pagination = $this->paginator->paginate(
-                $parkRepository->getSearchParks($query),
-                $page,
-                10,
-                ['wrap-queries' => true]
-            );
-        } catch (\Exception) {
-            throw new BadRequestHttpException();
+            // Get unified search results with pagination
+            $searchResults = $searchService->searchAllWithPagination($query, $page, 20);
+
+            return $this->render('Search/index.html.twig', [
+                'query' => $query,
+                'results' => $searchResults['results'],
+                'pagination' => $searchResults['pagination'],
+                'totalResults' => $searchResults['totalResults'],
+                'currentPage' => $page,
+                'hasMore' => $searchResults['hasMore'],
+            ]);
+        } catch (\Exception $e) {
+            // Log error and show empty results
+            error_log('Search error: '.$e->getMessage());
+
+            return $this->render('Search/index.html.twig', [
+                'query' => $query,
+                'results' => [],
+                'pagination' => null,
+                'totalResults' => 0,
+                'error' => 'Search temporarily unavailable',
+            ]);
         }
-
-        return $this->render('Search/parks_results.html.twig', ['parks' => $pagination]);
-    }
-
-    #[Route(path: '/users', name: 'search_users_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
-    public function searchUsersAction(
-        UserRepository $userRepository,
-        #[MapQueryParameter]
-        string $query,
-        #[MapQueryParameter]
-        int $page = 1
-    ): Response {
-        try {
-            $pagination = $this->paginator->paginate(
-                $userRepository->getSearchUsers($query),
-                $page,
-                12,
-                ['wrap-queries' => true]
-            );
-        } catch (\Exception) {
-            throw new BadRequestHttpException();
-        }
-
-        return $this->render('Search/users_results.html.twig', ['users' => $pagination]);
     }
 }

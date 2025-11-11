@@ -2,10 +2,11 @@
 framework:
     rate_limiter:
         login_link:
-            policy: 'sliding_window'
+            policy: "sliding_window"
             limit: 3
-            interval: '15 minutes'
+            interval: "15 minutes"
         registration:
-            policy: 'sliding_window'
+            policy: "sliding_window"
             limit: 3
-            interval: '15 minutes'
+            interval: "15 minutes"
+

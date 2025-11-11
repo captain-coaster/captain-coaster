@@ -1,14 +1,19 @@
 <?php
 
 declare(strict_types=1);
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
+use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
+
 /*
  * This document has been generated with
  * https://mlocati.github.io/php-cs-fixer-configurator/#version:3.37.1|configurator
  * you can change this configuration by importing this file.
  */
-$config = new PhpCsFixer\Config();
+$config = new Config();
 
 return $config
+    ->setParallelConfig(ParallelConfigFactory::detect())
     ->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
@@ -20,7 +25,7 @@ return $config
         'fully_qualified_strict_types' => ['import_symbols' => true],
     ])
     ->setFinder(
-        PhpCsFixer\Finder::create()
+        Finder::create()
         ->in(__DIR__)
         ->exclude([
             'var',

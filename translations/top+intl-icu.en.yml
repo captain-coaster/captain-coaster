@@ -1,0 +1,62 @@
+# Top List translations - English
+
+new:
+    title: "Create a new top"
+    form:
+        name: "Name of your top:"
+        type: "Is it a Top or a Flop?"
+        flop: "Flop (lower is better)"
+        top: "Top (higher is better)"
+        submit: "Create new top"
+
+editDetails:
+    title: "Update a top"
+    form:
+        submit: "Update the top"
+
+list:
+    title: "The latest tops"
+    more: "See more"
+    updated: "last updated"
+    by: "by"
+    infotitle: "All your tops are on this page!"
+    info: "Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It's up to you!"
+    create_first: "Create my first Top Coasters"
+    create: "Create a custom top"
+
+title: "My Top Coasters"
+update: "Update"
+update_details: "Change name"
+delete: "Delete"
+delete_confirmation: "Delete?"
+find: "Find a coaster..."
+
+search:
+    placeholder: "Search for a coaster to add..."
+    no_results: "No coasters found"
+    already_in_list: "Already in your list"
+
+help:
+    title: "How to use your Top List"
+    search: "Search for coasters to add to your list"
+    reorder: "Tap and hold the position number, then drag to reorder"
+    actions: "Use the menu to quickly move or remove coasters"
+    autosave: "Changes are saved automatically"
+
+actions:
+    move_to_top: "Move to top"
+    move_to_bottom: "Move to bottom"
+    move_to_position: "Move to position..."
+    remove: "Remove"
+    position_prompt: "Enter position (1-{max}):"
+
+save_status:
+    saving: "Saving..."
+    saved: "Saved"
+    error: "Error saving. Retrying..."
+
+errors:
+    save_failed: "Failed to save changes. Please try again."
+    invalid_position: "Invalid position. Please enter a number between 1 and {max}."
+    add_failed: "Failed to add coaster. Please try again."
+    duplicate: "This coaster is already in your list."

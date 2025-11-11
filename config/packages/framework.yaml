@@ -5,7 +5,8 @@ framework:
     http_method_override: false
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        handler_id: '%env(REDIS_URL)%'
 
     #esi: true
     #fragments: true

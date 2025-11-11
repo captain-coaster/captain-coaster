@@ -43,21 +43,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** @return array */
-    public function findAllForSearch()
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('CONCAT(c.name, \' - \', p.name) AS name')
-            ->addSelect('c.slug')
-            ->addSelect('c.formerNames')
-            ->from(Coaster::class, 'c')
-            ->orderBy('c.score', 'DESC')
-            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->getQuery()
-            ->getResult();
-    }
-
     public function getFilteredMarkers(array $filters): array
     {
         $qb = $this
@@ -123,23 +108,21 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
-    public function getSearchCoasters($query)
+    /** Optimized search method for API with limited results and better performance. */
+    public function findBySearchQuery(string $query, int $limit = 5): array
     {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('c')
-            ->from(Coaster::class, 'c')
-            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
-            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
-            ->where('c.name LIKE :term')
-            ->orWhere('c.formerNames LIKE :term')
-            ->orWhere('c.slug LIKE :term2')
-            ->orderBy('c.name', 'ASC')
-            ->setParameter('term', \sprintf('%%%s%%', $query))
-            ->setParameter('term2', str_replace(' ', '-', \sprintf('%%%s%%', $query)))
-            ->getQuery();
+        return $this->createQueryBuilder('c')
+            ->select('c.id', 'c.name', 'c.slug', 'p.name as parkName', 'co.name as countryName')
+            ->leftJoin('c.park', 'p')
+            ->leftJoin('p.country', 'co')
+            ->where('c.name LIKE :query OR c.slug LIKE :slugQuery')
+            ->setParameter('query', '%'.$query.'%')
+            ->setParameter('slugQuery', '%'.str_replace(' ', '-', $query).'%')
+            ->orderBy('c.score', 'DESC')
+            ->addOrderBy('c.name', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
     }
 
     public function getDistinctOpeningYears()

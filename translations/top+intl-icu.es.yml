@@ -1,0 +1,62 @@
+# Top List translations - Spanish
+
+new:
+    title: "Crear un nuevo top"
+    form:
+        name: "Nombre de tu top:"
+        type: "¿Es un Top o un Flop?"
+        flop: "Flop (el más bajo es mejor)"
+        top: "Top (el más alto es mejor)"
+        submit: "Crear nuevo top"
+
+editDetails:
+    title: "Actualizar un top"
+    form:
+        submit: "Actualizar el top"
+
+list:
+    title: "Los últimos tops"
+    more: "Ver más"
+    updated: "última actualización"
+    by: "por"
+    infotitle: "¡Todos tus tops están en esta página!"
+    info: "Los tops son la mejor manera de compartir tu pasión: dinos qué RMC es el mejor del planeta, los peores kiddies de Texas, o por qué no las mejores montañas rusas acuáticas con un LIM. ¡Tú decides!"
+    create_first: "Crear mi primer Top Coasters"
+    create: "Crear un top personalizado"
+
+title: "Mis Top Coasters"
+update: "Actualizar"
+update_details: "Cambiar nombre"
+delete: "Eliminar"
+delete_confirmation: "¿Eliminar?"
+find: "Buscar una montaña rusa..."
+
+search:
+    placeholder: "Buscar una montaña rusa para añadir..."
+    no_results: "No se encontraron montañas rusas"
+    already_in_list: "Ya está en tu lista"
+
+help:
+    title: "Cómo usar tu Top List"
+    search: "Busca montañas rusas para añadir a tu lista"
+    reorder: "Mantén presionado el número de posición y arrastra para reordenar"
+    actions: "Usa el menú para mover o eliminar montañas rusas rápidamente"
+    autosave: "Los cambios se guardan automáticamente"
+
+actions:
+    move_to_top: "Mover al principio"
+    move_to_bottom: "Mover al final"
+    move_to_position: "Mover a la posición..."
+    remove: "Eliminar"
+    position_prompt: "Introduce la posición (1-{max}):"
+
+save_status:
+    saving: "Guardando..."
+    saved: "Guardado"
+    error: "Error al guardar. Reintentando..."
+
+errors:
+    save_failed: "Error al guardar los cambios. Por favor, inténtalo de nuevo."
+    invalid_position: "Posición inválida. Por favor, introduce un número entre 1 y {max}."
+    add_failed: "Error al añadir la montaña rusa. Por favor, inténtalo de nuevo."
+    duplicate: "Esta montaña rusa ya está en tu lista."
