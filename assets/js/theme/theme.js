@@ -49,10 +49,7 @@ $(function() {
         e.stopPropagation();
     });
 
-    // Dropdown tabs
-    $('.dropdown-content a[data-toggle="tab"]').on("click", function(e) {
-        $(this).tab("show");
-    });
+    // Dropdown tabs - removed (tab component not used)
 
     // Panel reload functionality
     $(".panel [data-action=reload]").click(function(e) {
@@ -178,11 +175,7 @@ $(function() {
     $(".navigation").find("li").has("ul").children("a").addClass("has-ul");
     $(".dropdown-menu:not(.dropdown-content), .dropdown-menu:not(.dropdown-content) .dropdown-submenu").has("li.active").addClass("active").parents(".navbar-nav .dropdown:not(.language-switch), .navbar-nav .dropup:not(.language-switch)").addClass("active");
 
-    // Navigation tooltips
-    $(".navigation-main > .navigation-header > i").tooltip({
-        placement: "right",
-        container: "body"
-    });
+    // Navigation tooltips - removed (tooltip component not used)
 
     // Main navigation functionality
     $(".navigation-main").find("li").has("ul").children("a").on("click", function(e) {
@@ -337,7 +330,5 @@ $(function() {
         }, 100);
     }).resize();
 
-    // Initialize popovers and tooltips
-    $('[data-popup="popover"]').popover();
-    $('[data-popup="tooltip"]').tooltip();
+    // Popovers and tooltips removed - components not used
 });

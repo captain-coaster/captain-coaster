@@ -119,16 +119,18 @@ Encore
     // Configure bundle splitting for stable vendor libraries
     .configureSplitChunks((splitChunks) => {
         splitChunks.cacheGroups = {
-            // jQuery + RateIt + Bootstrap - stable libraries, rarely changing
+            // jQuery + Bootstrap - stable libraries, rarely changing
             vendor: {
-                test: /[\\/]node_modules[\\/](jquery|jquery\.rateit|bootstrap)[\\/]/,
+                test: /[\\/]node_modules[\\/](jquery|bootstrap)[\\/]/,
                 name: "vendor",
                 chunks: "all",
                 priority: 50,
                 enforce: true,
             },
         };
-    });
+    })
+    
+    // Icons are now handled by Symfony UX Icons
 
 // Encore handles tree shaking and optimization automatically
 module.exports = Encore.getWebpackConfig();

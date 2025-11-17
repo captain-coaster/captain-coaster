@@ -4,17 +4,15 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
+use Symfony\UX\Icons\IconRendererInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class HeroiconExtension extends AbstractExtension
 {
-    private string $iconsPath;
-    private array $cache = [];
-
-    public function __construct(string $projectDir)
-    {
-        $this->iconsPath = $projectDir.'/node_modules/heroicons/24';
+    public function __construct(
+        private readonly IconRendererInterface $iconRenderer
+    ) {
     }
 
     public function getFunctions(): array
@@ -24,33 +22,21 @@ class HeroiconExtension extends AbstractExtension
         ];
     }
 
+    /**
+     * Render icon using Symfony UX Icons with Heroicons
+     * Maintains backward compatibility with existing heroicon() calls
+     */
     public function render(string $name, string $class = '', string $variant = 'outline'): string
     {
-        $cacheKey = "$variant/$name";
-
-        // Use cache in production
-        if (isset($this->cache[$cacheKey])) {
-            return $this->addClasses($this->cache[$cacheKey], $class);
+        // Use heroicons prefix for UX Icons on-demand loading
+        $iconName = "heroicons:{$name}";
+        $attributes = [];
+        
+        if ($class) {
+            $attributes['class'] = $class;
         }
-
-        $svgPath = "{$this->iconsPath}/{$variant}/{$name}.svg";
-
-        if (!file_exists($svgPath)) {
-            return "<!-- Icon not found: {$name} -->";
-        }
-
-        $svg = file_get_contents($svgPath);
-        $this->cache[$cacheKey] = $svg;
-
-        return $this->addClasses($svg, $class);
-    }
-
-    private function addClasses(string $svg, string $class): string
-    {
-        if (empty($class)) {
-            return $svg;
-        }
-
-        return preg_replace('/<svg/', "<svg class=\"{$class}\"", $svg, 1);
+        
+        // Use UX Icons renderer
+        return $this->iconRenderer->renderIcon($iconName, $attributes);
     }
 }

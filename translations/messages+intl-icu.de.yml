@@ -4,6 +4,10 @@ en: English
 es: Español
 de: Deutsch
 
+# Common buttons
+Today: "Heute"
+Clear: "Löschen"
+
 app:
     name: Captain Coaster
     title:
@@ -55,6 +59,12 @@ coaster:
         details: "Detaillierte Benutzerbewertungen"
         distribution: "Bewertungsverteilung"
         ratings: "Bewertungen"
+        date:
+            label: "Wann bist du gefahren?"
+            set: "Datum festlegen"
+            rode_on: "Gefahren am"
+            click_to_change: "klicken zum Ändern"
+            select: "Datum auswählen"
     infos:
         title: "{name} Merkmale"
         closeParksTitle: "Beste Freizeitparks nahe {parkName}"

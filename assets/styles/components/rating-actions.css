@@ -34,12 +34,7 @@
     text-decoration: none;
 }
 
-/* Fix for icon centering - ensure flex properties apply to all buttons */
-.rating-actions .action-icon {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
+
 
 .action-icon.delete-icon:hover {
     background: rgba(220,53,69,0.1);
@@ -106,19 +101,21 @@
 
 /* Enhanced delete confirmation styling */
 .delete-icon.confirming {
-    background: rgba(220,53,69,0.2) !important;
-    color: #dc3545 !important;
+    background: rgba(220,53,69,0.2);
+    color: #dc3545;
     animation: rating-pulse-delete 1s ease-in-out infinite;
 }
 
 @keyframes rating-pulse-delete {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.7; }
-}/* Date Pi
-cker Functionality */
+}
 
-/* Date indicator dot */
-.date-indicator {
+/* Date Picker Functionality */
+
+/* Indicator dots for date and review */
+.date-indicator,
+.review-indicator {
     position: absolute;
     top: 2px;
     right: 2px;
@@ -127,92 +124,80 @@ cker Functionality */
     background: #28a745;
     border-radius: 50%;
     border: 1px solid white;
-    z-index: 1;
 }
 
-/* Inline Date Picker Styles */
+/* Inline Date Picker */
 .inline-date-picker {
     position: relative;
-    display: inline-block;
-}
-
-/* Ensure date picker works well in flex containers */
-.rating-actions .inline-date-picker {
-    flex-shrink: 0;
 }
 
 .date-picker-popup-inline {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 8px);
     left: 50%;
-    transform: translateX(-50%) translateY(-10px) scale(0.95);
+    transform: translateX(-50%);
     z-index: 1000;
-    margin-top: 8px;
-    display: none;
     opacity: 0;
-    transition: all 0.2s ease;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
-.date-picker-popup-inline.fade-in {
+.date-picker-popup-inline.show {
     opacity: 1;
-    transform: translateX(-50%) translateY(0) scale(1);
+    visibility: visible;
 }
 
 .date-picker-content-small {
     background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    min-width: 180px;
+    min-width: 200px;
+}
+
+.date-picker-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
 }
 
 .small-date-input {
     width: 100%;
     border: 1px solid #ddd;
     border-radius: 4px;
-    padding: 6px 8px;
-    font-size: 12px;
-    margin-bottom: 6px;
-    transition: all 0.2s ease;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
 }
 
 .small-date-input:focus {
     outline: none;
     border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0,123,255,0.1);
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
 }
 
-.small-date-input.loading {
+.small-date-input:disabled {
     opacity: 0.6;
     background: #f8f9fa;
 }
 
-.small-date-input.success {
-    border-color: #28a745;
-    background: rgba(40,167,69,0.05);
-}
-
-.small-date-input.error {
-    border-color: #dc3545;
-    background: rgba(220,53,69,0.05);
-}
-
 .small-date-actions {
     display: flex;
-    gap: 4px;
+    gap: 6px;
 }
 
 .tiny-btn {
+    flex: 1;
     background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 3px;
-    padding: 3px 6px;
-    font-size: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.15s ease;
-    flex: 1;
-    text-align: center;
 }
 
 .today-btn:hover {
@@ -227,20 +212,41 @@ cker Functionality */
     border-color: #dc3545;
 }
 
-/* Mobile responsive adjustments */
+/* Mobile adjustments */
 @media (max-width: 768px) {
+    .rating-actions {
+        gap: 20px;
+    }
+    
+    .action-icon {
+        width: 44px;
+        height: 44px;
+    }
+    
     .date-picker-content-small {
-        min-width: 160px;
-        padding: 8px;
+        min-width: 260px;
+        padding: 16px;
     }
     
-    .date-picker-popup-inline {
-        left: 0;
-        transform: translateX(0);
+    .date-picker-label {
+        font-size: 14px;
+        margin-bottom: 10px;
     }
     
-    .date-picker-popup-inline.fade-in {
-        transform: translateX(0) translateY(0) scale(1);
+    .small-date-input {
+        font-size: 16px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        min-height: 44px;
+    }
+    
+    .tiny-btn {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+    
+    .small-date-actions {
+        gap: 8px;
     }
 }
 

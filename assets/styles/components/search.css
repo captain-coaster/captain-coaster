@@ -70,6 +70,13 @@
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
+/* Desktop font size */
+@media (min-width: 769px) {
+    .search-container input[type="search"] {
+        font-size: 12px;
+    }
+}
+
 .search-container input[type="search"]:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
@@ -238,8 +245,12 @@
 }
 
 @keyframes search-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .search-loading-text {
@@ -291,21 +302,21 @@
         padding: 6px 10px;
         min-height: 32px;
     }
-    
+
     .search-result-emoji {
         font-size: 12px;
         margin-right: 6px;
         width: 14px;
     }
-    
+
     .search-result-name {
         font-size: 13px;
     }
-    
+
     .search-result-subtitle {
         font-size: 10px;
     }
-    
+
     .search-show-more {
         padding: 6px 10px;
     }
@@ -317,7 +328,7 @@
         border-color: #000;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
-    
+
     .search-result-item.selected {
         background-color: #0066cc;
         color: #fff;
@@ -428,21 +439,21 @@
         padding: 10px 12px;
         min-height: 44px;
     }
-    
+
     .search-result-item-page .search-result-emoji {
         font-size: 14px;
         margin-right: 10px;
         width: 18px;
     }
-    
+
     .search-result-item-page .search-result-name {
         font-size: 15px;
     }
-    
+
     .search-result-item-page .search-result-subtitle {
         font-size: 12px;
     }
-    
+
     .search-result-item-page .search-result-image {
         width: 50px;
         height: 38px;
@@ -457,4 +468,3 @@
     outline: 2px solid #007bff;
     outline-offset: -2px;
 }
-

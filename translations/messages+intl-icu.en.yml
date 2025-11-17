@@ -4,6 +4,10 @@ en: English
 es: Español
 de: Deutsch
 
+# Common buttons
+Today: "Today"
+Clear: "Clear"
+
 app:
     name: "Captain Coaster"
     title:
@@ -61,6 +65,12 @@ coaster:
         details: "Detailed user ratings"
         distribution: "Rating distribution"
         ratings: "ratings"
+        date:
+            label: "When did you ride?"
+            set: "Set ride date"
+            rode_on: "Rode on"
+            click_to_change: "click to change"
+            select: "Select ride date"
     infos:
         title: "{name} features"
         closeParksTitle: "Best amusement parks near {parkName}"

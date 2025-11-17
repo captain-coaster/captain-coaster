@@ -10,7 +10,9 @@ export default class extends Controller {
         this.boundHideDelete = this.hideDelete.bind(this);
         document.addEventListener('rating:created', this.boundShowDelete);
         document.addEventListener('rating:deleted', this.boundHideDelete);
+        // Always enforce correct visibility on connect
         this.updateDeleteButton();
+        this.updateTitle();
     }
 
     disconnect() {
@@ -97,7 +99,9 @@ export default class extends Controller {
 
     updateDeleteButton() {
         if (this.hasDeleteButtonTarget) {
-            this.deleteButtonTarget.style.display = this.ratingIdValue ? 'inline-block' : 'none';
+            // Only show if we have a valid rating ID
+            const shouldShow = this.hasRatingIdValue && this.ratingIdValue > 0;
+            this.deleteButtonTarget.style.display = shouldShow ? 'inline-flex' : 'none';
         }
     }
 

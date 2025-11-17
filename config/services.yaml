@@ -52,8 +52,6 @@ services:
         class: App\Service\UnitsService
 
     App\Twig\HeroiconExtension:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
         tags: ['twig.extension']
 
     Aws\BedrockRuntime\BedrockRuntimeClient:

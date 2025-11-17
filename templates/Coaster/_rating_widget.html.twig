@@ -6,11 +6,9 @@
     - coaster: The coaster entity
     - rating: The user's rating (optional)
     - readonly: Whether the rating is read-only (default: false)
-    - size: Font size for stars (default: 26px)
 #}
 
 {% set readonly = readonly|default(false) %}
-{% set size = size|default('26px') %}
 
 <div class="csrf-protection" data-controller="csrf-protection rating"
      data-csrf-protection-token-value="{{ csrf_token('rating') }}"
@@ -20,7 +18,4 @@
      {% if rating %}data-rating-rating-id-value="{{ rating.id }}"{% endif %}
      data-rating-locale-value="{{ app.request.locale }}"
      {% if readonly %}data-rating-readonly-value="true"{% endif %}>
-    <div class="rating-coaster"
-         data-rating-target="rating"
-         style="font-size: {{ size }};"></div>
 </div>

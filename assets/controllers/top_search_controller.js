@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { renderStarRating } from '../js/utils/star-rating';
+import { heroicon } from '../js/utils/heroicon';
 
 /**
  * Top List Search Controller
@@ -508,68 +510,14 @@ export default class extends Controller {
         li.setAttribute('data-coaster-id', coasterId);
         li.setAttribute('data-position', position.toString());
         
-        // Create star rating HTML
-        let ratingHtml = '';
-        if (rating) {
-            const ratingValue = parseFloat(rating);
-            const fullStars = Math.floor(ratingValue);
-            const hasHalfStar = (ratingValue - fullStars) >= 0.5;
-            
-            ratingHtml = '<span class="coaster-rating"><span class="star-rating"><span class="text-warning star-rating-stars">';
-            
-            // Full stars
-            const starSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z" clip-rule="evenodd" /></svg>`;
-            
-            for (let i = 0; i < fullStars; i++) {
-                ratingHtml += starSvg;
-            }
-            
-            // Half star
-            if (hasHalfStar) {
-                ratingHtml += `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
-                    <defs>
-                        <clipPath id="left-half-${coasterId}"><rect x="0" y="0" width="12" height="24"/></clipPath>
-                        <clipPath id="right-half-${coasterId}"><rect x="12" y="0" width="12" height="24"/></clipPath>
-                    </defs>
-                    <path clip-path="url(#left-half-${coasterId})" fill="currentColor" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"/>
-                    <path clip-path="url(#right-half-${coasterId})" fill="none" stroke="currentColor" stroke-width="1.5" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.563.563 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/>
-                </svg>`;
-            }
-            
-            ratingHtml += '</span></span></span>';
-        }
-        
-        // Get heroicon SVG
-        const dragIndicatorSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-        </svg>`;
-        
-        const cogSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>`;
-        
-        const arrowUpSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18" />
-        </svg>`;
-        
-        const arrowDownSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
-        </svg>`;
-        
-        const arrowsUpDownSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
-        </svg>`;
-        
-        const trashSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-        </svg>`;
+        // Generate rating HTML using shared utility
+        const ratingHtml = rating ? `<span class="coaster-rating">${renderStarRating(rating)}</span>` : '';
         
         li.innerHTML = `
             <div class="drag-area">
                 <div class="position-number">${position}</div>
                 <div class="drag-indicator">
-                    ${dragIndicatorSvg}
+                    ${heroicon('bars-2', 'w-4 h-4')}
                 </div>
             </div>
             <div class="coaster-content">
@@ -583,31 +531,31 @@ export default class extends Controller {
             <div class="coaster-menu">
                 <div class="dropdown">
                     <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false">
-                        ${cogSvg}
+                        ${heroicon('cog-6-tooth', 'w-5 h-5')}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
                             <a href="#" data-action="click->top-list#moveToTop">
-                                ${arrowUpSvg}
+                                ${heroicon('arrow-up', 'w-4 h-4')}
                                 Move to top
                             </a>
                         </li>
                         <li>
                             <a href="#" data-action="click->top-list#moveToBottom">
-                                ${arrowDownSvg}
+                                ${heroicon('arrow-down', 'w-4 h-4')}
                                 Move to bottom
                             </a>
                         </li>
                         <li>
                             <a href="#" data-action="click->top-list#moveToPosition">
-                                ${arrowsUpDownSvg}
+                                ${heroicon('arrows-up-down', 'w-4 h-4')}
                                 Move to position...
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
                         <li>
                             <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
-                                ${trashSvg}
+                                ${heroicon('trash', 'w-4 h-4')}
                                 Remove
                             </a>
                         </li>

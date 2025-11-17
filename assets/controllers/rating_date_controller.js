@@ -3,18 +3,20 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['dateInput', 'dateContainer', 'calendarButton'];
     static values = { updateUrl: String, ratingId: Number };
+    static outlets = ['csrf-protection'];
 
     connect() {
         document.addEventListener('rating:created', this.show.bind(this));
         document.addEventListener('rating:deleted', this.hide.bind(this));
-        document.addEventListener('click', this.closeOnOutsideClick.bind(this));
+        // Always enforce correct visibility on connect
         this.updateVisibility();
+        // Ensure popup is hidden on connect
+        this.hideDatePicker();
     }
 
     disconnect() {
         document.removeEventListener('rating:created', this.show.bind(this));
         document.removeEventListener('rating:deleted', this.hide.bind(this));
-        document.removeEventListener('click', this.closeOnOutsideClick.bind(this));
     }
 
     toggleDatePicker(event) {
@@ -23,7 +25,7 @@ export default class extends Controller {
         
         if (!this.hasDateContainerTarget) return;
         
-        const isVisible = this.dateContainerTarget.style.display === 'block';
+        const isVisible = this.dateContainerTarget.classList.contains('show');
         
         if (isVisible) {
             this.hideDatePicker();
@@ -35,37 +37,84 @@ export default class extends Controller {
     showDatePicker() {
         if (!this.hasDateContainerTarget) return;
         
-        this.dateContainerTarget.style.display = 'block';
-        // Add fade-in class for smooth animation
+        this.dateContainerTarget.classList.add('show');
+        
+        // Store current value before showing picker
+        if (this.hasDateInputTarget) {
+            this.originalValue = this.dateInputTarget.value || '';
+            
+            // Add blur listener to detect when iOS picker closes
+            this.dateInputTarget.addEventListener('blur', this.handleInputBlur.bind(this), { once: true });
+        }
+        
+        // Focus input after animation
         setTimeout(() => {
-            this.dateContainerTarget.classList.add('fade-in');
-        }, 10);
+            if (this.hasDateInputTarget) {
+                this.dateInputTarget.focus();
+            }
+        }, 100);
+    }
+    
+    handleInputBlur() {
+        // When input loses focus (iOS picker closes), close our modal too
+        setTimeout(() => {
+            this.hideDatePicker();
+        }, 100);
     }
 
     hideDatePicker() {
         if (!this.hasDateContainerTarget) return;
+        this.dateContainerTarget.classList.remove('show');
         
-        this.dateContainerTarget.classList.remove('fade-in');
-        setTimeout(() => {
-            this.dateContainerTarget.style.display = 'none';
-        }, 200);
-    }
-
-    closeOnOutsideClick(event) {
-        if (this.hasDateContainerTarget && 
-            this.dateContainerTarget.style.display === 'block' &&
-            !this.element.contains(event.target)) {
-            this.hideDatePicker();
+        // Save if value changed when closing
+        if (this.hasDateInputTarget && this.originalValue !== undefined) {
+            const currentValue = this.dateInputTarget.value || '';
+            if (currentValue !== this.originalValue) {
+                this.saveDate(currentValue);
+            }
+            this.originalValue = undefined;
         }
     }
 
     async dateChanged(event) {
-        const date = event.target.value;
-        if (!this.updateUrlValue) return;
+        // On desktop, save immediately and close. On mobile, save and close when picker closes
+        const isMobile = window.innerWidth <= 768;
+        if (!isMobile) {
+            await this.saveDate(event.target.value);
+            this.hideDatePicker();
+        }
+    }
+
+    async saveDate(date) {
+        if (!this.updateUrlValue || !this.ratingIdValue) return;
         
-        // Add loading state
+        // Validate date
+        if (date && date.trim()) {
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(23, 59, 59, 999);
+            
+            if (isNaN(selectedDate.getTime())) {
+                console.error('Invalid date format:', date);
+                return;
+            }
+            
+            if (selectedDate > today) {
+                console.error('Date cannot be in the future:', date);
+                if (this.hasDateInputTarget) {
+                    this.dateInputTarget.value = this.originalValue || '';
+                }
+                return;
+            }
+        }
+        
         if (this.hasDateInputTarget) {
-            this.dateInputTarget.classList.add('loading');
+            this.dateInputTarget.disabled = true;
+        }
+        
+        let body = `riddenAt=${encodeURIComponent(date || '')}`;
+        if (this.hasCsrfProtectionOutlet) {
+            body = this.csrfProtectionOutlet.addTokenToBody(body);
         }
         
         try {
@@ -75,51 +124,43 @@ export default class extends Controller {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: `riddenAt=${encodeURIComponent(date || '')}`
+                body: body
             });
             
             if (response.ok) {
-                // Add success state
-                if (this.hasDateInputTarget) {
-                    this.dateInputTarget.classList.remove('loading');
-                    this.dateInputTarget.classList.add('success');
-                    setTimeout(() => {
-                        this.dateInputTarget.classList.remove('success');
-                    }, 1000);
-                }
-                
-                this.hideDatePicker();
                 this.updateDateIndicator(date);
             } else {
                 throw new Error('Save failed');
             }
         } catch (error) {
-            console.error('Date save error:', error);
-            
-            // Add error state
+            console.error('Error saving ride date:', error);
+        } finally {
             if (this.hasDateInputTarget) {
-                this.dateInputTarget.classList.remove('loading');
-                this.dateInputTarget.classList.add('error');
-                setTimeout(() => {
-                    this.dateInputTarget.classList.remove('error');
-                }, 2000);
+                this.dateInputTarget.disabled = false;
             }
-            
-            alert('Error saving date');
         }
     }
 
-    setToday() {
+    async setToday(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
         if (this.hasDateInputTarget) {
-            this.dateInputTarget.value = new Date().toISOString().split('T')[0];
-            this.dateInputTarget.dispatchEvent(new Event('change'));
+            const today = new Date().toISOString().split('T')[0];
+            this.dateInputTarget.value = today;
+            await this.saveDate(today);
+            this.hideDatePicker();
         }
     }
 
-    clearDate() {
+    async clearDate(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
         if (this.hasDateInputTarget) {
             this.dateInputTarget.value = '';
-            this.dateInputTarget.dispatchEvent(new Event('change'));
+            await this.saveDate('');
+            this.hideDatePicker();
         }
     }
 
@@ -135,8 +176,12 @@ export default class extends Controller {
     }
 
     updateVisibility() {
+        // Only show if we have a valid rating ID (not 0, null, or undefined)
+        const shouldShow = this.hasRatingIdValue && this.ratingIdValue > 0;
+        
+        // Show/hide the button
         if (this.hasCalendarButtonTarget) {
-            this.calendarButtonTarget.style.display = this.ratingIdValue ? 'inline-block' : 'none';
+            this.calendarButtonTarget.style.display = shouldShow ? 'inline-flex' : 'none';
         }
     }
 
@@ -146,14 +191,12 @@ export default class extends Controller {
         const indicator = this.calendarButtonTarget.querySelector('.date-indicator');
         
         if (date && date.trim()) {
-            // Show indicator if date is set
             if (!indicator) {
                 const dot = document.createElement('span');
                 dot.className = 'date-indicator';
                 this.calendarButtonTarget.appendChild(dot);
             }
         } else {
-            // Remove indicator if no date
             if (indicator) {
                 indicator.remove();
             }
