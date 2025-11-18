@@ -2,7 +2,7 @@
     <div class="panel-heading">
         <h6 class="panel-title">
             <span class="text-semibold">
-                {{ heroicon('photo', 'w-6 h-6 position-left', 'outline') }} {{ 'coaster.photos.title'|trans }}
+                {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                 {% if coaster.images|length > 0 %}
                     <span class="badge badge-primary">{{ coaster.images|length }}</span>
                 {% endif %}
@@ -50,7 +50,7 @@
         </div>
     {% else %}
         <div class="panel-body text-center text-muted">
-            {{ heroicon('photo', 'w-8 h-8') }}
+            {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
             <p class="mt-10">{{ 'coaster.photos.empty'|trans }}</p>
             <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn btn-primary btn-sm">
                 {{ 'coaster.photos.button'|trans }}

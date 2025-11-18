@@ -194,14 +194,54 @@ class TopController extends BaseController
 
             $positions = $data['positions'];
 
-            // Update positions for each coaster in the top
+            $positionCoasterIds = array_map('intval', array_keys($positions));
+            
+            // Build lookup map for existing TopCoasters (O(1) lookups)
+            $existingTopCoasters = [];
             foreach ($top->getTopCoasters() as $topCoaster) {
-                $coasterId = (string) $topCoaster->getCoaster()->getId();
-                if (isset($positions[$coasterId])) {
-                    $newPosition = (int) $positions[$coasterId];
-                    if ($newPosition > 0) {
-                        $topCoaster->setPosition($newPosition);
-                    }
+                $existingTopCoasters[$topCoaster->getCoaster()->getId()] = $topCoaster;
+            }
+            
+            // 1. Remove TopCoasters no longer in positions
+            foreach ($existingTopCoasters as $coasterId => $topCoaster) {
+                if (!in_array($coasterId, $positionCoasterIds, true)) {
+                    $top->removeTopCoaster($topCoaster);
+                    $em->remove($topCoaster);
+                    unset($existingTopCoasters[$coasterId]);
+                }
+            }
+            
+            // 2. Batch load new coasters (single query)
+            $newCoasterIds = array_diff($positionCoasterIds, array_keys($existingTopCoasters));
+            $newCoasters = [];
+            if (!empty($newCoasterIds)) {
+                $newCoasters = $em->getRepository(Coaster::class)
+                    ->createQueryBuilder('c')
+                    ->where('c.id IN (:ids)')
+                    ->setParameter('ids', $newCoasterIds)
+                    ->getQuery()
+                    ->getResult();
+                $newCoasters = array_column($newCoasters, null, 'id');
+            }
+            
+            // 3. Update positions and create new TopCoasters
+            foreach ($positions as $coasterId => $position) {
+                $coasterId = (int) $coasterId;
+                $newPosition = (int) $position;
+                
+                if ($newPosition <= 0) continue;
+                
+                if (isset($existingTopCoasters[$coasterId])) {
+                    // Update existing
+                    $existingTopCoasters[$coasterId]->setPosition($newPosition);
+                } elseif (isset($newCoasters[$coasterId])) {
+                    // Create new
+                    $topCoaster = new \App\Entity\TopCoaster();
+                    $topCoaster->setTop($top);
+                    $topCoaster->setCoaster($newCoasters[$coasterId]);
+                    $topCoaster->setPosition($newPosition);
+                    $top->addTopCoaster($topCoaster);
+                    $em->persist($topCoaster);
                 }
             }
 

@@ -8,57 +8,57 @@
           {% set currentRoute = app.request.attributes.get('_route') %}
           <li{% if currentRoute == 'bdd_index' %} class="active"{% endif %}>
             <a href="{{ path('bdd_index') }}">
-              {{ heroicon('home', 'w-6 h-6') }} <span>{{ 'sidebar.index'|trans }}</span>
+              {{ ux_icon('heroicons:home', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.index'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'ranking_index' %} class="active"{% endif %}>
             <a href="{{ path('ranking_index') }}">
-              {{ heroicon('trophy', 'w-6 h-6') }} <span>{{ 'sidebar.ranking'|trans }}</span>
+              {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.ranking'|trans }}</span>
             </a>
           </li{% if currentRoute == 'review_list' %} class="active"{% endif %}>
           <li>
             <a href="{{ path('review_list') }}">
-              {{ heroicon('megaphone', 'w-6 h-6') }} <span>{{ 'sidebar.review'|trans }}</span>
+              {{ ux_icon('heroicons:megaphone', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.review'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'top_list' %} class="active"{% endif %}>
             <a href="{{ path('top_list') }}">
-              {{ heroicon('clipboard', 'w-6 h-6') }} <span>{{ 'sidebar.top'|trans }}</span>
+              {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.top'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
             <a href="{{ path('nearby_index') }}">
-              {{ heroicon('magnifying-glass-plus', 'w-6 h-6') }} <span>{{ 'sidebar.nearby'|trans }}</span>
+              {{ ux_icon('heroicons:magnifying-glass-plus', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.nearby'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>
             <a href="{{ path('user_list') }}">
-              {{ heroicon('users', 'w-6 h-6') }} <span>{{ 'sidebar.users'|trans }}</span>
+              {{ ux_icon('heroicons:users', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.users'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'map_index' %} class="active"{% endif %}>
             <a href="{{ path('map_index') }}">
-              {{ heroicon('map-pin', 'w-6 h-6') }} <span>{{ 'sidebar.map'|trans }}</span>
+              {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.map'|trans }}</span>
             </a>
           </li>
           <li>
             <a href="https://blog.captaincoaster.com" target="_blank">
-              {{ heroicon('newspaper', 'w-6 h-6') }} <span>{{ 'sidebar.blog'|trans }} <span style="font-size: 12px;">{{ heroicon('arrow-top-right-on-square', 'w-6 h-6') }}</span></span>
+              {{ ux_icon('heroicons:newspaper', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.blog'|trans }} <span style="font-size: 12px;">{{ ux_icon('heroicons:arrow-top-right-on-square', {'class': 'w-6 h-6'}) }}</span></span>
             </a>
           </li>
           <li{% if currentRoute == 'default_contact' %} class="active"{% endif %}>
             <a href="{{ path('default_contact') }}">
-              {{ heroicon('envelope', 'w-6 h-6') }} <span>{{ 'sidebar.contact'|trans }}</span>
+              {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.contact'|trans }}</span>
             </a>
           </li>
           <li>
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
               <a href="{{ path('logout') }}">
-                {{ heroicon('arrow-right-on-rectangle', 'w-6 h-6') }} <span>{{ 'sidebar.logout'|trans }}</span>
+                {{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.logout'|trans }}</span>
               </a>
             {% else %}
               <a href="{{ path('login') }}">
-                {{ heroicon('key', 'w-6 h-6') }} <span>{{ 'sidebar.login'|trans }}</span>
+                {{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.login'|trans }}</span>
               </a>
             {% endif %}
           </li>

@@ -12,35 +12,35 @@
 
     <div class="list-group no-border no-padding-top">
     <a href="{{ path('profile') }}" class="list-group-item">
-        {{ heroicon('user', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:user', {'class': 'w-6 h-6'}) }}
         {{ 'profile.title'|trans }}
     </a>
     <a href="{{ path('profile_settings') }}" class="list-group-item">
-        {{ heroicon('cog-6-tooth', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-6 h-6'}) }}
         {{ 'profile.settings.title'|trans }}
     </a>
     <a href="{{ path('profile_ratings') }}" class="list-group-item">
-        {{ heroicon('star', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }}
         {{ 'profile.menu.ratings'|trans }}
         <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
     </a>
     <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
-        {{ heroicon('megaphone', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:megaphone', {'class': 'w-6 h-6'}) }}
         {{ 'profile.menu.reviews'|trans }}
     </a>
     <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
-        {{ heroicon('clipboard', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }}
         {{ 'profile.menu.tops'|trans }}
     </a>
     {% if images_counter > 0 %}
         <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
-        {{ heroicon('camera', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:camera', {'class': 'w-6 h-6'}) }}
             {{ 'profile.menu.photos'|trans }}
             <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
         </a>
     {% endif %}
     <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
-        {{ heroicon('map-pin', 'w-6 h-6') }}
+        {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }}
         {{ 'profile.menu.map'|trans }}
     </a>
     </div>

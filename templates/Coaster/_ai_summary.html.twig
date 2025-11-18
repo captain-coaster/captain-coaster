@@ -3,7 +3,7 @@
         <div class="panel-heading">
             <h6 class="panel-title">
                 <span class="text-semibold">
-                    {{ heroicon('star', 'w-6 h-6 position-left', 'solid') }} Captain's Review
+                    {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6 position-left'}) }} Captain's Review
                 </span>
             </h6>
         </div>
@@ -14,7 +14,7 @@
                 <div class="row">
                     {% if coasterSummary.dynamicPros|length > 0 %}
                         <div class="col-md-6">
-                            <h6 style="color: #065f46;">{{ heroicon('check', 'w-5 h-5') }} {{ 'coaster.ai_summary.highlights'|trans }}</h6>
+                            <h6 style="color: #065f46;">{{ ux_icon('heroicons:check', {'class': 'w-5 h-5'}) }} {{ 'coaster.ai_summary.highlights'|trans }}</h6>
                             {% for pro in coasterSummary.dynamicPros %}
                                 <span class="label label-success label-rounded">{{ pro }}</span>
                             {% endfor %}
@@ -22,7 +22,7 @@
                     {% endif %}
                     {% if coasterSummary.dynamicCons|length > 0 %}
                         <div class="col-md-6">
-                            <h6 style="color: #9f1239;">{{ heroicon('exclamation-triangle', 'w-5 h-5') }} {{ 'coaster.ai_summary.concerns'|trans }}</h6>
+                            <h6 style="color: #9f1239;">{{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-5 h-5'}) }} {{ 'coaster.ai_summary.concerns'|trans }}</h6>
                             {% for con in coasterSummary.dynamicCons %}
                                 <span class="label label-danger label-rounded">{{ con }}</span>
                             {% endfor %}
@@ -35,7 +35,7 @@
             <div class="summary-feedback-section">
                 <div class="row">
                     <div class="col-md-6">
-                        <small class="text-muted">{{ heroicon('information-circle', 'w-6 h-6') }} AI-generated summary based on {{ coasterSummary.reviewsAnalyzed }} reviews</small>
+                        <small class="text-muted">{{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6'}) }} AI-generated summary based on {{ coasterSummary.reviewsAnalyzed }} reviews</small>
                     </div>
                     <div class="col-md-6 text-right">
                         <div 
@@ -63,7 +63,7 @@
                                     title="Mark as helpful"
                                     style="cursor: pointer; display: inline-flex; align-items: center;"
                                 >
-                                    <span data-summary-feedback-target="thumbsUpIcon">{{ heroicon('hand-thumb-up', 'w-6 h-6') }}</span>
+                                    <span data-summary-feedback-target="thumbsUpIcon">{{ ux_icon('heroicons:hand-thumb-up', {'class': 'w-6 h-6'}) }}</span>
                                 </button>
                                 <button 
                                     type="button" 
@@ -73,7 +73,7 @@
                                     title="Mark as not helpful"
                                     style="cursor: pointer; display: inline-flex; align-items: center;"
                                 >
-                                    <span data-summary-feedback-target="thumbsDownIcon">{{ heroicon('hand-thumb-down', 'w-6 h-6') }}</span>
+                                    <span data-summary-feedback-target="thumbsDownIcon">{{ ux_icon('heroicons:hand-thumb-down', {'class': 'w-6 h-6'}) }}</span>
                                 </button>
                             </div>
                             <span style="display: none;">
@@ -85,7 +85,7 @@
                                 class="ml-5" 
                                 style="display: none;"
                             >
-                                <span style="font-size: 10px;">{{ heroicon('arrow-path', 'w-6 h-6 spinner') }}</span>
+                                <span style="font-size: 10px;">{{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner'}) }}</span>
                             </span>
                         </div>
                     </div>

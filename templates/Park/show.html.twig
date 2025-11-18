@@ -15,7 +15,7 @@
             <div class="panel panel-body">
                 <div class="row text-center">
                     <div class="col-xs-6">
-                        <p>{{ heroicon('map-pin', 'w-8 h-8 display-inline-block text-info') }}</p>
+                        <p>{{ ux_icon('heroicons:map-pin', {'class': 'w-8 h-8 display-inline-block text-info'}) }}</p>
                         <h5 class="text-semibold no-margin">
                             {{ park.openedCoasters|length }}
                         </h5>
@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div class="col-xs-6">
-                        <p>{{ heroicon('puzzle-piece', 'w-8 h-8 display-inline-block text-warning') }}</p>
+                        <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
                         <h5 class="text-semibold no-margin">
                             {{ park.kiddies|length }}
                         </h5>
@@ -137,7 +137,7 @@
                             </ul>
                             <ul class="list-inline list-inline-separate text-muted mb-5">
                                 <li>
-                                    {{ heroicon('arrow-up', 'w-6 h-6 text-warning-600') }}
+                                    {{ ux_icon('heroicons:arrow-up', {'class': 'w-6 h-6 text-warning-600'}) }}
                                     {% if coaster.height is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
@@ -145,7 +145,7 @@
                                     {% endif %}
                                 </li>
                                 <li>
-                                    {{ heroicon('rocket-launch', 'w-6 h-6 text-success-400') }}
+                                    {{ ux_icon('heroicons:rocket-launch', {'class': 'w-6 h-6 text-success-400'}) }}
                                     {% if coaster.speed is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
@@ -153,7 +153,7 @@
                                     {% endif %}
                                 </li>
                                 <li>
-                                    {{ heroicon('arrows-pointing-out', 'w-6 h-6 text-blue') }}
+                                    {{ ux_icon('heroicons:arrows-pointing-out', {'class': 'w-6 h-6 text-blue'}) }}
                                     {% if coaster.length is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
@@ -161,7 +161,7 @@
                                     {% endif %}
                                 </li>
                                 <li>
-                                    {{ heroicon('arrow-path', 'w-6 h-6 text-danger-400') }}
+                                    {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 text-danger-400'}) }}
                                     &nbsp;{{ coaster.inversionsNumber|default('0') }}
                                 </li>
                             </ul>

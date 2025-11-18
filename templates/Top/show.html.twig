@@ -10,13 +10,13 @@
       <div class="row">
         <div class="col-sm-8">
           <ul class="list-inline no-margin">
-            <li>{{ heroicon('square-3-stack-3d', 'w-6 h-6 position-left') }} {{ top.topCoasters|length }}</li>
+            <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
             <li>
-              {{ heroicon('user', 'w-6 h-6 position-left') }}
+              {{ ux_icon('heroicons:user', {'class': 'w-6 h-6 position-left'}) }}
               <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
             </li>
             <li>
-              {{ heroicon('clock', 'w-6 h-6 position-left') }}
+              {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }}
               {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
             </li>
           </ul>
@@ -25,14 +25,14 @@
           <div class="col-sm-4 text-right">
             {% if is_granted('edit', top) %}
               <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm">
-                {{ heroicon('pencil', 'w-5 h-5') }}
+                {{ ux_icon('heroicons:pencil', {'class': 'w-5 h-5'}) }}
               </a>
             {% endif %}
             {% if is_granted('delete', top) %}
               <a href="{{ path('top_delete', {'id': top.id}) }}"
                  onclick="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');"
                  class="btn bg-danger-400 btn-sm">
-                {{ heroicon('trash', 'w-5 h-5') }}
+                {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5'}) }}
               </a>
             {% endif %}
           </div>

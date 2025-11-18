@@ -186,6 +186,8 @@ export default class extends Controller {
             
             const data = await response.json();
             
+
+            
             if (data.status === 'success') {
                 console.log('Auto-save successful');
                 this.showSaveStatus('saved');

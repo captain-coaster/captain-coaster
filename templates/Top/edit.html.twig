@@ -20,7 +20,7 @@
     <div class="drag-area">
       <div class="position-number">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}</div>
       <div class="drag-indicator">
-        {{ heroicon('bars-3', 'w-4 h-4') }}
+        {{ ux_icon('heroicons:bars-3', {'class': 'w-4 h-4'}) }}
       </div>
     </div>
 
@@ -45,31 +45,31 @@
     <div class="coaster-menu">
       <div class="dropdown">
         <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
-          {{ heroicon('cog-6-tooth', 'w-5 h-5') }}
+          {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }}
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
           <li>
             <a href="#" data-action="click->top-list#moveToTop">
-              {{ heroicon('arrow-up', 'w-4 h-4') }}
+              {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4'}) }}
               {{ 'actions.move_to_top'|trans({}, 'top') }}
             </a>
           </li>
           <li>
             <a href="#" data-action="click->top-list#moveToBottom">
-              {{ heroicon('arrow-down', 'w-4 h-4') }}
+              {{ ux_icon('heroicons:arrow-down', {'class': 'w-4 h-4'}) }}
               {{ 'actions.move_to_bottom'|trans({}, 'top') }}
             </a>
           </li>
           <li>
             <a href="#" data-action="click->top-list#moveToPosition">
-              {{ heroicon('arrows-up-down', 'w-4 h-4') }}
+              {{ ux_icon('heroicons:arrows-up-down', {'class': 'w-4 h-4'}) }}
               {{ 'actions.move_to_position'|trans({}, 'top') }}
             </a>
           </li>
           <li class="dropdown-divider"></li>
           <li>
             <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
-              {{ heroicon('trash', 'w-4 h-4') }}
+              {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4'}) }}
               {{ 'actions.remove'|trans({}, 'top') }}
             </a>
           </li>
@@ -89,11 +89,11 @@
               aria-expanded="false"
               style="text-align: left; display: flex; align-items: center; justify-content: space-between;">
         <span style="display: flex; align-items: center; gap: 8px;">
-          {{ heroicon('information-circle', 'w-5 h-5 text-primary') }}
+          {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5 text-primary'}) }}
           <strong>{{ 'help.title'|trans({}, 'top') }}</strong>
         </span>
         <span data-collapse-target="icon" style="transition: transform 0.2s ease;">
-          {{ heroicon('chevron-down', 'w-5 h-5 text-muted') }}
+          {{ ux_icon('heroicons:chevron-down', {'class': 'w-5 h-5 text-muted'}) }}
         </span>
       </button>
       

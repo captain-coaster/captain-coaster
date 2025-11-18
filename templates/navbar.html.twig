@@ -6,17 +6,17 @@
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
     <ul class="nav navbar-nav visible-xs-block">
-      <li><a data-toggle="collapse" data-target="#navbar-mobile">{{ heroicon('user', 'w-8 h-8') }}</a></li>
-      <li><a class="sidebar-mobile-main-toggle">{{ heroicon('bars-3', 'w-8 h-8') }}</a></li>
+      <li><a data-toggle="collapse" data-target="#navbar-mobile">{{ ux_icon('heroicons:user', {'class': 'w-8 h-8'}) }}</a></li>
+      <li><a class="sidebar-mobile-main-toggle">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a></li>
       {% if pageHasFilters is defined %}
-        <li><a class="sidebar-mobile-secondary-toggle">{{ heroicon('funnel', 'w-8 h-8') }}</a></li>
+        <li><a class="sidebar-mobile-secondary-toggle">{{ ux_icon('heroicons:funnel', {'class': 'w-8 h-8'}) }}</a></li>
       {% endif %}
     </ul>
   </div>
   <div class="navbar-collapse collapse" id="navbar-mobile">
     <ul class="nav navbar-nav">
       <li>
-        <a class="sidebar-control sidebar-main-toggle hidden-xs">{{ heroicon('bars-3', 'w-8 h-8') }}</a>
+        <a class="sidebar-control sidebar-main-toggle hidden-xs">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -49,7 +49,7 @@
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            {{ heroicon('bell', 'w-8 h-8') }}
+            {{ ux_icon('heroicons:bell', {'class': 'w-8 h-8'}) }}
             <span class="visible-xs-inline-block position-right">{{ 'notif.title'|trans }}</span>
             {% if app.user.unreadNotifications|length > 0 %}
               <span class="badge bg-warning-400">{{ app.user.unreadNotifications|length }}</span>
@@ -62,7 +62,7 @@
                 <li class="media">
                   <div class="media-left">
                     <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">
-                      {{ heroicon('star', 'w-6 h-6', 'solid') }}</a>
+                      {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}</a>
                   </div>
 
                   <div class="media-body">
@@ -89,25 +89,25 @@
 
           <ul class="dropdown-menu dropdown-menu-right">
             <li>
-              <a href="{{ path('profile') }}">{{ heroicon('user', 'w-6 h-6') }} {{ 'navbar.profile'|trans }}</a>
+              <a href="{{ path('profile') }}">{{ ux_icon('heroicons:user', {'class': 'w-6 h-6'}) }} {{ 'navbar.profile'|trans }}</a>
             </li>
             <li>
               <a href="{{ path('profile_ratings') }}">
-                {{ heroicon('star', 'w-6 h-6') }} {{ 'navbar.rating'|trans }}
+                {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }} {{ 'navbar.rating'|trans }}
               </a>
             </li>
             <li>
               <a href="{{ path('user_tops', {'id': app.user.id}) }}">
-                {{ heroicon('clipboard', 'w-6 h-6') }} {{ 'navbar.tops'|trans }}
+                {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} {{ 'navbar.tops'|trans }}
               </a>
             </li>
             <li>
               <a href="{{ path('map_user', {'id': app.user.id}) }}">
-                {{ heroicon('map-pin', 'w-6 h-6') }} {{ 'navbar.my_map'|trans }}
+                {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }} {{ 'navbar.my_map'|trans }}
               </a>
             </li>
             <li class="divider"></li>
-            <li><a href="{{ path('logout') }}">{{ heroicon('arrow-right-on-rectangle', 'w-6 h-6') }} {{ 'navbar.logout'|trans }}</a>
+            <li><a href="{{ path('logout') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-6 h-6'}) }} {{ 'navbar.logout'|trans }}</a>
             </li>
           </ul>
         </li>

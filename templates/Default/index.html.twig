@@ -35,7 +35,7 @@
       <div class="panel panel-body">
         <div class="row text-center">
           <div class="col-xs-3">
-            <p>{{ heroicon('star', 'w-8 h-8 display-inline-block text-success') }}</p>
+            <p>{{ ux_icon('heroicons:star', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
             <h5 class="text-semibold no-margin">
               {{ stats.nb_ratings }}
               {% if stats.nb_new_ratings > 0 %}
@@ -45,21 +45,21 @@
             <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
           </div>
           <div class="col-xs-3">
-            <p>{{ heroicon('megaphone', 'w-8 h-8 display-inline-block text-success') }}</p>
+            <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
             <h5 class="text-semibold no-margin">
               <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
           </div>
           <div class="col-xs-3">
-            <p>{{ heroicon('user-group', 'w-8 h-8 display-inline-block text-warning') }}</p>
+            <p>{{ ux_icon('heroicons:user-group', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
             <h5 class="text-semibold no-margin">
               <a href="{{ path('user_list') }}">{{ stats.nb_users }}</a>
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
           </div>
           <div class="col-xs-3">
-            <p>{{ heroicon('camera', 'w-8 h-8 display-inline-block text-info') }}</p>
+            <p>{{ ux_icon('heroicons:camera', {'class': 'w-8 h-8 display-inline-block text-info'}) }}</p>
             <h5 class="text-semibold no-margin">{{ stats.nb_images }}</h5>
             <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
           </div>
@@ -121,12 +121,12 @@
       <div class="panel panel-flat">
         <div class="panel-heading">
           <h6 class="panel-title text-semibold">
-            {{ heroicon('chat-bubble-left', 'w-6 h-6 position-left') }}
+            {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
             {{ 'review.last'|trans }}
           </h6>
           <div class="heading-elements">
             <a href="{{ path('review_list') }}" class="heading-text">
-              {{ heroicon('arrow-right', 'w-6 h-6 position-right') }}
+              {{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6 position-right'}) }}
               {{ 'review.all'|trans }}
             </a>
           </div>

@@ -51,9 +51,6 @@ services:
     App\Service\UnitsService:
         class: App\Service\UnitsService
 
-    App\Twig\HeroiconExtension:
-        tags: ['twig.extension']
-
     Aws\BedrockRuntime\BedrockRuntimeClient:
         arguments:
             - version: "latest"

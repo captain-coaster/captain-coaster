@@ -8,7 +8,7 @@
     <div class="panel panel-flat">
       <div class="panel-heading">
         <h6 class="panel-title text-semibold">
-          {{ heroicon('chat-bubble-left', 'w-6 h-6 position-left') }}
+          {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
           {{ 'review.title'|trans }}
         </h6>
       </div>
@@ -37,7 +37,7 @@
         </div>
       {% else %}
         <div class="panel-body text-center text-muted">
-          {{ heroicon('chat-bubble-left-right', 'w-8 h-8') }}
+          {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
           <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
         </div>
       {% endif %}

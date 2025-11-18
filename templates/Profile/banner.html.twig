@@ -10,13 +10,13 @@
       {% set bbcode = '[url='~ absolute_url(path('user_profile', {'id': user.id})) ~'][img]' ~ bannerUrl ~ '[/img][/url]' %}
       {% set htmlcode = '<a href="'~ absolute_url(path('user_profile', {'id': user.id})) ~'"><img src="' ~ bannerUrl ~ '"/></a>' %}
       <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
-        {{ heroicon('clipboard-document', 'w-6 h-6 position-left') }}
+        {{ ux_icon('heroicons:clipboard-document', {'class': 'w-6 h-6 position-left'}) }}
         {{ 'profile.banner.getbbcode'|trans }}
       </a>
     </li>
     <li>
       <a onclick="copy(this);" class="btn btn-link" data-copy="{{ htmlcode }}">
-        {{ heroicon('document-duplicate', 'w-6 h-6 position-left') }}
+        {{ ux_icon('heroicons:document-duplicate', {'class': 'w-6 h-6 position-left'}) }}
         {{ 'profile.banner.gethtml'|trans }}
       </a>
     </li>

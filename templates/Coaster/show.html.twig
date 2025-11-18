@@ -53,7 +53,7 @@
                     <div class="col-xs-6">
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <div class="text-center">
-                                {{ heroicon('arrow-trending-up', 'w-12 h-12 text-warning-600', 'outline') }}
+                                {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-12 h-12 text-warning-600'}) }}
                                 <div class="text-bold mt-5">
                                     {% if coaster.height is not empty %}
                                         {{ units.m_or_f(coaster.height) }}
@@ -65,7 +65,7 @@
                         </button>
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <div class="text-center">
-                                {{ heroicon('rocket-launch', 'w-12 h-12 text-success-400', 'outline') }}
+                                {{ ux_icon('heroicons:rocket-launch', {'class': 'w-12 h-12 text-success-400'}) }}
                                 <div class="text-bold mt-5">
                                     {% if coaster.speed is not empty %}
                                         {{ units.kph_or_mph(coaster.speed) }}
@@ -79,7 +79,7 @@
                     <div class="col-xs-6">
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <div class="text-center">
-                                {{ heroicon('arrows-right-left', 'w-12 h-12 text-blue', 'outline') }}
+                                {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-12 h-12 text-blue'}) }}
                                 <div class="text-bold mt-5">
                                     {% if coaster.length is not empty %}
                                         {{ units.m_or_f(coaster.length) }}
@@ -91,7 +91,7 @@
                         </button>
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <div class="text-center">
-                                {{ heroicon('arrow-path-rounded-square', 'w-12 h-12 text-danger-400', 'outline') }}
+                                {{ ux_icon('heroicons:arrow-path-rounded-square', {'class': 'w-12 h-12 text-danger-400'}) }}
                                 <div class="text-bold mt-5">
                                     {{ coaster.inversionsNumber|default('0') }}
                                 </div>
@@ -189,7 +189,7 @@
                         <div class="list-group-item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}
                                 :</label>
-                            <div class="pull-right">{{ heroicon('check', 'w-4 h-4', 'outline') }}</div>
+                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.launchs|length > 0 %}
@@ -233,13 +233,13 @@
                         <div class="list-group-item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}
                                 :</label>
-                            <div class="pull-right">{{ heroicon('check', 'w-4 h-4', 'outline') }}</div>
+                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.vr %}
                         <div class="list-group-item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
-                            <div class="pull-right">{{ heroicon('check', 'w-4 h-4', 'outline') }}</div>
+                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.price and coaster.currency %}
@@ -295,12 +295,12 @@
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    {{ heroicon('star', 'w-6 h-6 position-left', 'solid') }} Captain's Review
+                                    {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6 position-left'}) }} Captain's Review
                                 </span>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
-                            {{ heroicon('arrow-path', 'w-6 h-6 spinner text-muted', 'outline') }}
+                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
                             <span class="text-muted ml-5">Loading AI summary...</span>
                         </div>
                     </div>
@@ -319,12 +319,12 @@
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    {{ heroicon('photo', 'w-6 h-6 position-left', 'outline') }} Photos
+                                    {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} Photos
                                 </span>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
-                            {{ heroicon('arrow-path', 'w-6 h-6 spinner text-muted', 'outline') }}
+                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
                             <span class="text-muted ml-5">Loading photos...</span>
                         </div>
                     </div>
@@ -342,12 +342,12 @@
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    {{ heroicon('chat-bubble-left-right', 'w-6 h-6 position-left', 'outline') }} Reviews
+                                    {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} Reviews
                                 </span>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
-                            {{ heroicon('arrow-path', 'w-6 h-6 spinner text-muted', 'outline') }}
+                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
                             <span class="text-muted ml-5">Loading reviews...</span>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { renderStarRating } from '../js/utils/star-rating';
-import { heroicon } from '../js/utils/heroicon';
+
 
 /**
  * Top List Search Controller
@@ -470,9 +470,21 @@ export default class extends Controller {
                 parkNameEl.textContent = parkName;
             }
             
-            // Handle rating - for now just remove it, server will handle on reload
-            const ratingEl = newItem.querySelector('.coaster-rating');
-            if (ratingEl) {
+            // Update rating if provided
+            let ratingEl = newItem.querySelector('.coaster-rating');
+            
+            if (rating && rating !== '' && rating !== '0') {
+                if (!ratingEl) {
+                    // Create rating element if it doesn't exist
+                    ratingEl = document.createElement('span');
+                    ratingEl.className = 'coaster-rating';
+                    const coasterContent = newItem.querySelector('.coaster-content .coaster-main');
+                    if (coasterContent && coasterContent.parentNode) {
+                        coasterContent.parentNode.appendChild(ratingEl);
+                    }
+                }
+                ratingEl.innerHTML = renderStarRating(rating);
+            } else if (ratingEl) {
                 ratingEl.remove();
             }
             
@@ -484,87 +496,79 @@ export default class extends Controller {
         } else {
             // Fallback to creating from scratch if no items exist
             const newItem = this.createListItem(coasterId, coasterName, parkName, rating, newPosition);
-            listElement.appendChild(newItem);
-            this.showAddedFeedback(newItem);
+            if (newItem) {
+                listElement.appendChild(newItem);
+                this.showAddedFeedback(newItem);
+            }
         }
         
-        // Trigger auto-save through the top list controller
+        // Update positions and trigger auto-save (should handle new coasters)
         const topListController = this.application.getControllerForElementAndIdentifier(
             listElement, 
             this.listControllerValue
         );
         
-        if (topListController && typeof topListController.debouncedSave === 'function') {
-            topListController.debouncedSave();
+        if (topListController) {
+            // Update positions first
+            if (typeof topListController.updatePositions === 'function') {
+                topListController.updatePositions();
+            }
+
+            
+            // Then trigger auto-save (backend should handle new coasters)
+            if (typeof topListController.debouncedSave === 'function') {
+                topListController.debouncedSave();
+            }
         }
     }
 
     /**
-     * Create a new list item element
-     * Fallback method when no existing items to clone
+     * Create a new list item by cloning the template
      */
     createListItem(coasterId, coasterName, parkName, rating, position) {
-        const li = document.createElement('li');
-        li.className = 'coaster-entry';
-        li.setAttribute('data-top-list-target', 'item');
-        li.setAttribute('data-coaster-id', coasterId);
-        li.setAttribute('data-position', position.toString());
+        // Get the hidden template
+        const template = document.getElementById('coaster-item-template');
+        if (!template) {
+            console.error('Coaster item template not found');
+            return null;
+        }
         
-        // Generate rating HTML using shared utility
-        const ratingHtml = rating ? `<span class="coaster-rating">${renderStarRating(rating)}</span>` : '';
+        // Clone the template content
+        const newItem = template.content.cloneNode(true).firstElementChild;
         
-        li.innerHTML = `
-            <div class="drag-area">
-                <div class="position-number">${position}</div>
-                <div class="drag-indicator">
-                    ${heroicon('bars-2', 'w-4 h-4')}
-                </div>
-            </div>
-            <div class="coaster-content">
-                <div class="coaster-main">
-                    <span class="coaster-name">${this.escapeHtml(coasterName)}</span>
-                    <span class="coaster-separator">•</span>
-                    <span class="coaster-park">${this.escapeHtml(parkName)}</span>
-                </div>
-                ${ratingHtml}
-            </div>
-            <div class="coaster-menu">
-                <div class="dropdown">
-                    <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false">
-                        ${heroicon('cog-6-tooth', 'w-5 h-5')}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                        <li>
-                            <a href="#" data-action="click->top-list#moveToTop">
-                                ${heroicon('arrow-up', 'w-4 h-4')}
-                                Move to top
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-action="click->top-list#moveToBottom">
-                                ${heroicon('arrow-down', 'w-4 h-4')}
-                                Move to bottom
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#" data-action="click->top-list#moveToPosition">
-                                ${heroicon('arrows-up-down', 'w-4 h-4')}
-                                Move to position...
-                            </a>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                        <li>
-                            <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
-                                ${heroicon('trash', 'w-4 h-4')}
-                                Remove
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        `;
+        // Update with coaster data
+        newItem.dataset.coasterId = coasterId;
+        newItem.dataset.position = position;
         
-        return li;
+        // Update position number
+        const positionNumber = newItem.querySelector('.position-number');
+        if (positionNumber) {
+            positionNumber.textContent = position;
+        }
+        
+        // Update coaster name
+        const coasterNameEl = newItem.querySelector('.coaster-name');
+        if (coasterNameEl) {
+            coasterNameEl.textContent = coasterName;
+        }
+        
+        // Update park name
+        const parkNameEl = newItem.querySelector('.coaster-park');
+        if (parkNameEl) {
+            parkNameEl.textContent = parkName;
+        }
+        
+        // Update rating if provided
+        const ratingEl = newItem.querySelector('.coaster-rating');
+        if (ratingEl) {
+            if (rating && rating !== '' && rating !== '0') {
+                ratingEl.innerHTML = renderStarRating(rating);
+            } else {
+                ratingEl.remove();
+            }
+        }
+        
+        return newItem;
     }
 
     /**

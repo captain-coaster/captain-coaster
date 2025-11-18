@@ -6,7 +6,7 @@
     <!-- Form with validation -->
     <div class="panel panel-body login-form">
         <div class="text-center mb-3">
-            <div class="icon-object border-warning-400 text-warning-400">{{ heroicon('key', 'w-6 h-6') }}</div>
+            <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }}</div>
             <h5 class="content-group-lg">{{ 'login.title'|trans }}
                 <small
                     class="display-block">{{ 'login.subtitle'|trans }}</small>
@@ -28,7 +28,7 @@
             <div class="form-group has-feedback has-feedback-left">
                 <input type="email" name="email" class="form-control" placeholder="Email"{% if rateLimitExceeded %} disabled{% endif %}>
                 <div class="form-control-feedback">
-                    {{ heroicon('envelope', 'w-6 h-6 text-muted') }}
+                    {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6 text-muted'}) }}
                 </div>
             </div>
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
@@ -46,7 +46,7 @@
             <li>
                 <a href="{{ path('connect_google_start') }}"
                    class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
-                    {{ heroicon('globe-alt', 'w-6 h-6') }}
+                    {{ ux_icon('heroicons:globe-alt', {'class': 'w-6 h-6'}) }}
                     {{ 'login.connect_with_google'|trans }}
                 </a>
             </li>

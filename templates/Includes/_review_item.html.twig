@@ -39,12 +39,12 @@
         <div class="review-content" data-review-actions-target="reviewContent">
           <p class="review-short">{{ review.review|slice(0, 200) }}...
             <a href="#" class="expand-review" data-action="review-actions#toggleReview" data-review-actions-target="expandButton">
-              {{ heroicon('chevron-down', 'w-6 h-6') }}
+              {{ ux_icon('heroicons:chevron-down', {'class': 'w-6 h-6'}) }}
             </a>
           </p>
           <p class="review-full" style="display: none;">{{ review.review }}
             <a href="#" class="collapse-review" data-action="review-actions#toggleReview" data-review-actions-target="collapseButton">
-              {{ heroicon('chevron-up', 'w-6 h-6') }}
+              {{ ux_icon('heroicons:chevron-up', {'class': 'w-6 h-6'}) }}
             </a>
           </p>
         </div>
@@ -57,27 +57,27 @@
       <li>
         <span data-review-actions-target="upvoteCount">{{ review.upvotes|length }}</span>
         <a href="#" data-action="review-actions#upvote" data-review-actions-target="upvoteButton">
-          {{ heroicon('chevron-up', 'w-6 h-6 text-success') }}
+          {{ ux_icon('heroicons:chevron-up', {'class': 'w-6 h-6 text-success'}) }}
         </a>
       </li>
       {% if is_granted('ROLE_USER') %}
         <li>
           <a href="#" data-action="review-actions#openReportModal" data-review-actions-target="reportButton" title="{{ 'review.report'|trans }}">
-            {{ heroicon('flag', 'w-6 h-6 text-size-small text-default') }}
+            {{ ux_icon('heroicons:flag', {'class': 'w-6 h-6 text-size-small text-default'}) }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('update', review) %}
         <li>
           <a href="{{ path('review_form', {'id': review.coaster.id}) }}" title="{{ 'review.update'|trans }}">
-            {{ heroicon('pencil', 'w-6 h-6 text-default') }}
+            {{ ux_icon('heroicons:pencil', {'class': 'w-6 h-6 text-default'}) }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('delete', review) %}
         <li>
           <a href="#" data-action="review-actions#deleteReview" title="{{ 'review.delete'|trans }}">
-            {{ heroicon('trash', 'w-6 h-6 text-default') }}
+            {{ ux_icon('heroicons:trash', {'class': 'w-6 h-6 text-default'}) }}
           </a>
         </li>
       {% endif %}

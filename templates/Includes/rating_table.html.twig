@@ -9,7 +9,7 @@
         <th>{{ knp_pagination_sortable(ratings, 'users.ratings.rating'|trans, ['r.value']) }}</th>
         <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt') }}</th>
         {% if is_granted('delete', ratings|first) %}
-          <th class="text-center hidden-xs" style="width: 20px;">{{ heroicon('arrow-down', 'w-6 h-6') }}</th>
+          <th class="text-center hidden-xs" style="width: 20px;">{{ ux_icon('heroicons:arrow-down', {'class': 'w-6 h-6'}) }}</th>
         {% endif %}
       </tr>
       </thead>
@@ -53,7 +53,7 @@
                  data-rating-actions-rating-id-value="{{ rating.id }}"
                  data-rating-actions-locale-value="{{ app.request.locale }}"
                  data-rating-actions-mode-value="table">
-              <a href="#" data-action="click->rating-actions#delete" data-rating-actions-target="deleteButton">{{ heroicon('trash', 'w-6 h-6') }}</a>
+              <a href="#" data-action="click->rating-actions#delete" data-rating-actions-target="deleteButton">{{ ux_icon('heroicons:trash', {'class': 'w-6 h-6'}) }}</a>
             </div>
           </td>
           {% endif %}
