@@ -6,7 +6,16 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {'filters': filters, 'filtersForm': filtersForm} only %}
+  {% include 'Includes/filter_sidebar.html.twig' with {
+    'filters': filters, 
+    'filtersForm': filtersForm,
+    'filterConfig': {
+      'endpoint': path('nearby_coasters_ajax'),
+      'container_id': 'search-result',
+      'update_url': true,
+      'enabled_filters': ['status', 'name', 'manufacturer', 'score']
+    }
+  } only %}
 {% endblock %}
 
 {% block body %}
@@ -15,54 +24,32 @@
 
 {% block javascripts %}
   <script type="text/javascript">
-    // Switchery is auto-loaded by webpack, just add event listeners
+    // Handle geolocation for nearby search
     document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.toggle-switch-form-group input[type="checkbox"]').forEach(function(element) {
-        element.addEventListener('change', function() {
-          filterData();
+      const filterController = document.querySelector('[data-controller*="filter"]');
+      
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          document.getElementById('form-latitude').value = position.coords.latitude;
+          document.getElementById('form-longitude').value = position.coords.longitude;
+          
+          // Trigger filter after geolocation
+          if (filterController && filterController.filterController) {
+            filterController.filterController.filterData();
+          }
+        }, function(error) {
+          console.log('Geolocation error:', error);
+          // Trigger filter even without geolocation
+          if (filterController && filterController.filterController) {
+            filterController.filterController.filterData();
+          }
         });
-      });
+      } else {
+        // Trigger filter without geolocation
+        if (filterController && filterController.filterController) {
+          filterController.filterController.filterData();
+        }
+      }
     });
-  </script>
-  <script type="text/javascript">
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        $('#form-latitude').val(position.coords.latitude);
-        $('#form-longitude').val(position.coords.longitude);
-        filterData();
-      }, function(position) {
-        console.log(position);
-        filterData();
-      });
-    } else {
-      filterData();
-    }
-
-    function filterData() {
-      $.ajax({
-        url: Routing.generate('nearby_coasters_ajax', {'_locale': '{{ app.request.locale }}'}),
-        type: 'GET',
-        data: $('form').serialize(),
-      }).done(function(data) {
-        $('#search-result').html(data);
-        ajaxPager();
-      });
-    }
-
-    var ajaxPager = function() {
-      $('ul.pagination a').click(function(e) {
-        e.preventDefault();
-        var pageUrl = $(this).attr('href');
-
-        $.ajax({
-          url: pageUrl,
-          type: 'GET',
-          dataType: 'html',
-        }).done(function(data) {
-          $('#search-result').html(data);
-          ajaxPager();
-        });
-      });
-    };
   </script>
 {% endblock %}

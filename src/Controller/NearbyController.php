@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Repository\CoasterRepository;
-use App\Repository\ManufacturerRepository;
+use App\Service\FilterService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,31 +15,26 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/nearby')]
 class NearbyController extends AbstractController
 {
-    protected PaginatorInterface $paginator;
-
-    public function __construct(PaginatorInterface $paginator)
-    {
-        $this->paginator = $paginator;
+    public function __construct(
+        private readonly PaginatorInterface $paginator,
+        private readonly FilterService $filterService
+    ) {
     }
 
     #[Route(path: '/', name: 'nearby_index', methods: ['GET'])]
-    public function indexAction(ManufacturerRepository $manufacturerRepository, CoasterRepository $coasterRepository): Response
+    public function indexAction(): Response
     {
         return $this->render(
             'Nearby/index.html.twig',
             [
                 'filters' => ['status' => 'on'],
-                'filtersForm' => [
-                    'manufacturer' => $manufacturerRepository->findBy([], ['name' => 'asc']),
-                    'openingDate' => $coasterRepository->getDistinctOpeningYears(),
-                ],
+                'filtersForm' => $this->filterService->getFilterData(),
             ]
         );
     }
 
     #[Route(path: '/coasters', name: 'nearby_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function searchAction(
-        CoasterRepository $coasterRepository,
         #[MapQueryParameter]
         array $filters = [],
         #[MapQueryParameter]
@@ -48,7 +42,7 @@ class NearbyController extends AbstractController
     ): Response {
         try {
             $pagination = $this->paginator->paginate(
-                $coasterRepository->getNearbyCoasters($filters),
+                $this->filterService->getFilteredNearby($filters),
                 $page,
                 20,
                 ['wrap-queries' => true]

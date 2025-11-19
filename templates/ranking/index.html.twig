@@ -10,7 +10,16 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'ranking/filters.html.twig' %}
+  {% include 'Includes/filter_sidebar.html.twig' with {
+    'filters': filters|default({}), 
+    'filtersForm': filtersForm,
+    'filterConfig': {
+      'endpoint': path('ranking_search_async'),
+      'container_id': 'ranking-result',
+      'update_url': true,
+      'enabled_filters': ['continent', 'country', 'status', 'notridden', 'new', 'materialType', 'seatingType', 'model', 'manufacturer', 'openingDate']
+    }
+  } only %}
 {% endblock %}
 
 {% block body %}
@@ -19,88 +28,4 @@
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript">
-    var containerId = 'ranking-result';
-    function filterData() {
-      $.ajax({
-        url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
-        type: 'GET',
-        data: $('form').serialize(),
-      }).done(function(data) {
-        $('#'+containerId).html(data);
-        ajaxPager();
-        changeBrowserUrl();
-      });
-    }
-
-    function ajaxPager() {
-      $('ul.pagination a').click(function(e) {
-        e.preventDefault();
-        var pageUrl = $(this).attr('href');
-        var queryString = pageUrl.split('?')[1];
-        var urlParams = new URLSearchParams(queryString);
-        $('#form-filter input#filter-page').val(urlParams.get('page'));
-
-        $.ajax({
-          url: pageUrl,
-          type: 'GET',
-          dataType: 'html',
-        }).done(function(data) {
-          $('#'+containerId).html(data);
-          document.getElementById(containerId).scrollIntoView();
-          ajaxPager();
-          changeBrowserUrl();
-        });
-      });
-    };
-
-    function changeBrowserUrl() {
-        var formData = $('form *:not(input[id="form-user"])').serializeArray();
-        var activeFilters = formData.filter(function(item) {
-            return item.value !== '' && item.value !== null;
-        });
-        var queryString = $.param(activeFilters);
-        
-        window.history.pushState(
-            {"html":'Ranking',"pageTitle":'Ranking'},
-            "",
-            window.location.pathname + (queryString ? '?' + queryString : '')
-        );
-    }
-
-    window.onpopstate = function(event) {
-      var pageUrl = window.location.href;
-      var queryString = pageUrl.split('?')[1];
-      var urlParams = new URLSearchParams(queryString);
-
-      urlParams.forEach(function(value, key) {
-        if(key == "page") {
-          $('#form-filter input#filter-page').val(urlParams.get('page'));
-        }
-        else {
-          document.getElementsByName(key)[0].value = value;
-        }
-      });
-
-      $.ajax({
-        url: Routing.generate('ranking_search_async', {'_locale': '{{ app.request.locale }}'}),
-        type: 'GET',
-        data: $('form').serialize(),
-      }).done(function(data) {
-        $('#'+containerId).html(data);
-        ajaxPager();
-      });
-    };
-
-    // Switchery is auto-loaded by webpack, just add event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('.toggle-switch-form-group input[type="checkbox"]').forEach(function(element) {
-        element.addEventListener('change', function() {
-          filterData();
-        });
-      });
-    });
-
-    filterData();
-  </script>
 {% endblock %}

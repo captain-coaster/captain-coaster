@@ -11,7 +11,14 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {'filters': filters, 'filtersForm': filtersForm} only %}
+  {% include 'Includes/filter_sidebar.html.twig' with {
+    'filters': filters, 
+    'filtersForm': filtersForm,
+    'filterConfig': {
+      'map_outlet': '.map-container',
+      'enabled_filters': ['status', 'kiddie', 'notridden', 'name', 'manufacturer']
+    }
+  } only %}
 {% endblock %}
 
 {% block wide_body %}

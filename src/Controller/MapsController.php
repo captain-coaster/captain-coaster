@@ -4,11 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Coaster;
+use App\Entity\Continent;
+use App\Entity\Country;
+use App\Entity\Manufacturer;
+use App\Entity\MaterialType;
+use App\Entity\Model;
 use App\Entity\Park;
+use App\Entity\SeatingType;
 use App\Entity\User;
 use App\Repository\CoasterRepository;
 use App\Repository\ManufacturerRepository;
 use App\Repository\ParkRepository;
+use App\Service\FilterService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +33,8 @@ class MapsController extends AbstractController
         private readonly ManufacturerRepository $manufacturerRepository,
         private readonly CoasterRepository $coasterRepository,
         private readonly ParkRepository $parkRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly FilterService $filterService,
     ) {
     }
 
@@ -50,7 +61,7 @@ class MapsController extends AbstractController
             [
                 'markers' => $this->getMarkers($initialFilters),
                 'filters' => $initialFilters,
-                'filtersForm' => $this->getFiltersForm(),
+                'filtersForm' => $this->filterService->getFilterData(),
                 'parkId' => $parkId,
                 'meta_description' => 'map_index.description',
             ]
@@ -75,8 +86,8 @@ class MapsController extends AbstractController
             [
                 'markers' => $this->getMarkers($initialFilters),
                 'filters' => $initialFilters,
-                'filtersForm' => $this->getFiltersForm(),
-                'parkId' => '',
+                'filtersForm' => $this->filterService->getFilterData(),
+                'parkId' => ''
             ]
         );
     }
@@ -103,18 +114,11 @@ class MapsController extends AbstractController
         );
     }
 
-    /** Get data to display filter form (mainly <select> data). */
-    private function getFiltersForm(): array
-    {
-        return [
-            'manufacturer' => $this->manufacturerRepository->findBy([], ['name' => 'asc']),
-            'openingDate' => $this->coasterRepository->getDistinctOpeningYears(),
-        ];
-    }
+
 
     /** Generate array of markers, based on array of filters */
     private function getMarkers(array $filters = []): array
     {
-        return $this->coasterRepository->getFilteredMarkers($filters);
+        return $this->filterService->getFilteredMarkers($filters);
     }
 }

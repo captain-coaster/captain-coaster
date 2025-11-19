@@ -12,6 +12,7 @@ use App\Entity\MaterialType;
 use App\Entity\Model;
 use App\Entity\SeatingType;
 use App\Repository\RankingRepository;
+use App\Service\FilterService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
@@ -32,6 +33,7 @@ class RankingController extends AbstractController
         private readonly RankingRepository $rankingRepository,
         private readonly EntityManagerInterface $em,
         private readonly CacheInterface $cache,
+        private readonly FilterService $filterService,
     ) {
     }
 
@@ -48,31 +50,12 @@ class RankingController extends AbstractController
             [
                 'ranking' => $this->rankingRepository->findCurrent(),
                 'previousRanking' => $this->rankingRepository->findPrevious(),
-                'filtersForm' => $this->getFiltersForm(),
+                'filtersForm' => $this->filterService->getFilterData(),
             ]
         );
     }
 
-    /**
-     * Get data to display filter form (mainly <select> data).
-     *
-     * @throws InvalidArgumentException
-     */
-    private function getFiltersForm(): array
-    {
-        return $this->cache->get('ranking_filters_form', function () {
-            $data = [];
-            $data['continent'] = $this->em->getRepository(Continent::class)->findBy([], ['name' => 'asc']);
-            $data['country'] = $this->em->getRepository(Country::class)->findBy([], ['name' => 'asc']);
-            $data['materialType'] = $this->em->getRepository(MaterialType::class)->findBy([], ['name' => 'asc']);
-            $data['seatingType'] = $this->em->getRepository(SeatingType::class)->findBy([], ['name' => 'asc']);
-            $data['model'] = $this->em->getRepository(Model::class)->findBy([], ['name' => 'asc']);
-            $data['manufacturer'] = $this->em->getRepository(Manufacturer::class)->findBy([], ['name' => 'asc']);
-            $data['openingDate'] = $this->em->getRepository(Coaster::class)->getDistinctOpeningYears();
 
-            return $data;
-        }, 604800); // 7 days TTL
-    }
 
     /** @throws \Exception */
     #[Route(
@@ -86,7 +69,7 @@ class RankingController extends AbstractController
     {
         try {
             $pagination = $this->paginator->paginate(
-                $this->rankingRepository->findCoastersRanked($filters),
+                $this->filterService->getFilteredRanking($filters),
                 $page,
                 self::COASTERS_PER_PAGE
             );

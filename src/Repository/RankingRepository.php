@@ -73,9 +73,13 @@ class RankingRepository extends ServiceEntityRepository
             ->innerJoin('c.park', 'p')
             ->innerJoin('c.status', 's')
             ->leftJoin('c.manufacturer', 'm')
-            ->where('c.rank is not null');
-
-        $qb->orderBy('c.rank', 'asc');
+            ->leftJoin('p.country', 'country')
+            ->leftJoin('country.continent', 'continent')
+            ->leftJoin('c.materialType', 'mt')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.model', 'model')
+            ->where('c.rank is not null')
+            ->orderBy('c.rank', 'asc');
 
         $this->applyFilters($qb, $filters);
 
@@ -98,65 +102,51 @@ class RankingRepository extends ServiceEntityRepository
     private function filterLocation(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('country', $filters) && '' !== $filters['country']) {
-            $qb
-                ->join('p.country', 'co')
-                ->andWhere('co.id = :country')
-                ->setParameter('country', $filters['country']);
+            $qb->andWhere('country.id = :country')
+               ->setParameter('country', $filters['country']);
         } elseif (\array_key_exists('continent', $filters) && '' !== $filters['continent']) {
-            $qb
-                ->join('p.country', 'co')
-                ->join('co.continent', 'ct')
-                ->andWhere('ct.id = :continent')
-                ->setParameter('continent', $filters['continent']);
+            $qb->andWhere('continent.id = :continent')
+               ->setParameter('continent', $filters['continent']);
         }
     }
 
     private function filterMaterialType(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('materialType', $filters) && '' !== $filters['materialType']) {
-            $qb
-                ->join('c.materialType', 'mt')
-                ->andWhere('mt.id = :materialType')
-                ->setParameter('materialType', $filters['materialType']);
+            $qb->andWhere('mt.id = :materialType')
+               ->setParameter('materialType', $filters['materialType']);
         }
     }
 
     private function filterSeatingType(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('seatingType', $filters) && '' !== $filters['seatingType']) {
-            $qb
-                ->join('c.seatingType', 'st')
-                ->andWhere('st.id = :seatingType')
-                ->setParameter('seatingType', $filters['seatingType']);
+            $qb->andWhere('st.id = :seatingType')
+               ->setParameter('seatingType', $filters['seatingType']);
         }
     }
 
     private function filterModel(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('model', $filters) && '' !== $filters['model']) {
-            $qb
-                ->join('c.model', 'mo')
-                ->andWhere('mo.id = :model')
-                ->setParameter('model', $filters['model']);
+            $qb->andWhere('model.id = :model')
+               ->setParameter('model', $filters['model']);
         }
     }
 
     private function filterManufacturer(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
-            $qb
-                ->andWhere('m.id = :manufacturer')
-                ->setParameter('manufacturer', $filters['manufacturer']);
+            $qb->andWhere('m.id = :manufacturer')
+               ->setParameter('manufacturer', $filters['manufacturer']);
         }
     }
 
     private function filterOpeningDate(QueryBuilder $qb, array $filters = []): void
     {
-        // Filter by average rating
         if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
-            $qb
-                ->andWhere('c.openingDate like :date')
-                ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
+            $qb->andWhere('c.openingDate like :date')
+               ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
         }
     }
 
@@ -164,9 +154,8 @@ class RankingRepository extends ServiceEntityRepository
     private function filterOpenedStatus(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('status', $filters)) {
-            $qb
-                ->andWhere('s.name = :operating')
-                ->setParameter('operating', Status::OPERATING);
+            $qb->andWhere('s.name = :operating')
+               ->setParameter('operating', Status::OPERATING);
         }
     }
 
@@ -183,9 +172,8 @@ class RankingRepository extends ServiceEntityRepository
                 ->innerJoin('rc2.coaster', 'c2', 'WITH', 'rc2.coaster = c2.id')
                 ->where('rc2.user = :userid');
 
-            $qb
-                ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
-                ->setParameter('userid', $filters['user']);
+            $qb->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
+               ->setParameter('userid', $filters['user']);
         }
     }
 
@@ -193,8 +181,7 @@ class RankingRepository extends ServiceEntityRepository
     private function filterByNewInRanking(QueryBuilder $qb, array $filters = []): void
     {
         if (\array_key_exists('new', $filters) && 'on' === $filters['new']) {
-            $qb
-                ->andWhere('c.previousRank is null');
+            $qb->andWhere('c.previousRank is null');
         }
     }
 }

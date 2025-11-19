@@ -1,4 +1,16 @@
-<div class="sidebar sidebar-secondary sidebar-default" data-controller="filter" data-filter-map-outlet=".map-container">
+<div class="sidebar sidebar-secondary sidebar-default"
+     {% if filterConfig is defined %}
+       data-controller="filter"
+       {% for key, value in filterConfig %}
+         {% if key == 'map_outlet' %}
+           data-filter-map-outlet="{{ value }}"
+         {% elseif key == 'enabled_filters' %}
+           {# Skip enabled_filters - handled in template logic #}
+         {% else %}
+           data-filter-{{ key|replace({'_': '-'}) }}-value="{{ value }}"
+         {% endif %}
+       {% endfor %}
+     {% endif %}>
     <div class="sidebar-content">
         <form id="form-filter" action="#">
             <div class="sidebar-category">
@@ -12,8 +24,35 @@
                 <input id="form-ridden" name="filters[ridden]" type="hidden" value="{{ filters.ridden|default('') }}">
                 <input id="form-latitude" name="filters[latitude]" type="hidden">
                 <input id="form-longitude" name="filters[longitude]" type="hidden">
+                <input type="hidden" name="page" value="1">
 
                 <div class="category-content">
+                    
+                    {# Continent Filter #}
+                    <div class="form-group">
+                        <select class="form-control" name="filters[continent]">
+                            <option value="">{{ 'coaster_ranking.filter.continent'|trans }}</option>
+                            {% if filtersForm.continent is defined %}
+                                {% for continent in filtersForm.continent %}
+                                    <option value="{{ continent.id }}">{{ continent.name|trans({}, 'database') }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    {# Country Filter #}
+                    <div class="form-group">
+                        <select class="form-control" name="filters[country]">
+                            <option value="">{{ 'coaster_ranking.filter.country'|trans }}</option>
+                            {% if filtersForm.country is defined %}
+                                {% for country in filtersForm.country %}
+                                    <option value="{{ country.id }}">{{ country.name|trans({}, 'database') }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    {# Status Filter #}
                     <div class="form-group toggle-switch-form-group">
                         <div class="checkbox">
                             <label class="display-block">
@@ -23,6 +62,33 @@
                             </label>
                         </div>
                     </div>
+                    
+                    {# Not Ridden Filter #}
+                    {% if filters.ridden is not defined %}
+                    <div class="form-group toggle-switch-form-group">
+                        <div class="checkbox">
+                            <label class="display-block">
+                                {{ 'map_index.filter.notridden'|trans }}
+                                <input name="filters[notridden]" type="checkbox"
+                                    {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
+                                    {% if filters.notridden is defined and filters.notridden == "on" %} checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {# New Filter #}
+                    <div class="form-group toggle-switch-form-group">
+                        <div class="checkbox">
+                            <label class="display-block">
+                                {{ 'map_index.filter.new'|trans }}
+                                <input name="filters[new]" type="checkbox"
+                                       {% if filters.new is defined and filters.new == "on" %} checked{% endif %}>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    {# Kiddie Filter #}
                     <div class="form-group toggle-switch-form-group">
                         <div class="checkbox">
                             <label class="display-block">
@@ -32,22 +98,50 @@
                             </label>
                         </div>
                     </div>
-                    {% if filters.ridden is not defined %}
-                        <div class="form-group toggle-switch-form-group">
-                            <div class="checkbox">
-                                <label class="display-block">
-                                    {{ 'map_index.filter.notridden'|trans }}
-                                    <input name="filters[notridden]" type="checkbox"
-                                        {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
-                                        {% if filters.notridden is defined and filters.notridden == "on" %} checked{% endif %}>
-                                </label>
-                            </div>
-                        </div>
-                    {% endif %}
+                    
+                    {# Name Filter #}
                     <div class="form-group">
                         <input type="text" class="form-control" name="filters[name]"
                                placeholder="{{ 'map_index.filter.name'|trans }}">
                     </div>
+                    
+                    {# Material Type Filter #}
+                    <div class="form-group">
+                        <select class="form-control" name="filters[materialType]">
+                            <option value="">{{ 'coaster_ranking.filter.materialType'|trans }}</option>
+                            {% if filtersForm.materialType is defined %}
+                                {% for type in filtersForm.materialType %}
+                                    <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    {# Seating Type Filter #}
+                    <div class="form-group">
+                        <select class="form-control" name="filters[seatingType]">
+                            <option value="">{{ 'coaster_ranking.filter.seatingType'|trans }}</option>
+                            {% if filtersForm.seatingType is defined %}
+                                {% for type in filtersForm.seatingType %}
+                                    <option value="{{ type.id }}">{{ type.name|trans({}, 'database') }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    {# Model Filter #}
+                    <div class="form-group">
+                        <select class="form-control" name="filters[model]">
+                            <option value="">{{ 'coaster_ranking.filter.model'|trans }}</option>
+                            {% if filtersForm.model is defined %}
+                                {% for model in filtersForm.model %}
+                                    <option value="{{ model.id }}">{{ model.name }}</option>
+                                {% endfor %}
+                            {% endif %}
+                        </select>
+                    </div>
+                    
+                    {# Manufacturer Filter #}
                     <div class="form-group">
                         <select class="form-control" name="filters[manufacturer]">
                             <option value="">{{ 'map_index.filter.manufacturer'|trans }}</option>
@@ -56,6 +150,8 @@
                             {% endfor %}
                         </select>
                     </div>
+                    
+                    {# Opening Date Filter #}
                     <div class="form-group">
                         <select class="form-control" name="filters[openingDate]">
                             <option value="">{{ 'map_index.filter.openingDate'|trans }}</option>
@@ -64,6 +160,8 @@
                             {% endfor %}
                         </select>
                     </div>
+                    
+                    {# Score Filter #}
                     <div class="form-group">
                         <select class="form-control" name="filters[score]">
                             <option value="">{{ 'map_index.filter.score'|trans }}</option>
