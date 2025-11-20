@@ -26,9 +26,9 @@
               {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.top'|trans }}</span>
             </a>
           </li>
-          <li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
-            <a href="{{ path('nearby_index') }}">
-              {{ ux_icon('heroicons:magnifying-glass-plus', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.nearby'|trans }}</span>
+          <li{% if currentRoute == 'coaster_search_index' %} class="active"{% endif %}>
+            <a href="{{ path('coaster_search_index') }}">
+              {{ ux_icon('heroicons:magnifying-glass-plus', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.browse'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>

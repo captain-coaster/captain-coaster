@@ -4,25 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Coaster;
-use App\Entity\Continent;
-use App\Entity\Country;
-use App\Entity\Manufacturer;
-use App\Entity\MaterialType;
-use App\Entity\Model;
 use App\Entity\Park;
-use App\Entity\SeatingType;
 use App\Entity\User;
 use App\Repository\CoasterRepository;
-use App\Repository\ManufacturerRepository;
 use App\Repository\ParkRepository;
 use App\Service\FilterService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,11 +22,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class MapsController extends AbstractController
 {
     public function __construct(
-        private readonly ManufacturerRepository $manufacturerRepository,
         private readonly CoasterRepository $coasterRepository,
         private readonly ParkRepository $parkRepository,
-        private readonly EntityManagerInterface $em,
-        private readonly FilterService $filterService,
+        private readonly FilterService $filterService
     ) {
     }
 
@@ -42,25 +32,34 @@ class MapsController extends AbstractController
     #[Route(path: '/', name: 'map_index', methods: ['GET'])]
     public function indexAction(Request $request): Response
     {
-        $initialFilters = ['status' => 'on'];
         $parkslug = $request->get('parkslug');
         $parkId = '';
+
+        // Get filters from URL or default to status=on
+        $filters = $request->query->all('filters') ?: ['status' => 'on'];
 
         if ($parkslug) {
             $park = $this->parkRepository->findOneBy(['slug' => $parkslug]);
             if (!empty($park)) {
                 $parkId = $park->getId();
                 if (\count($park->getOpenedCoasters()) < 1) {
-                    unset($initialFilters['status']);
+                    unset($filters['status']);
                 }
             }
         }
 
+        // Validate and authorize filters
+        $validatedFilters = $this->filterService->validateAndAuthorize(
+            $filters,
+            'map',
+            $this->getUser()
+        );
+
         return $this->render(
             'Maps/index.html.twig',
             [
-                'markers' => $this->getMarkers($initialFilters),
-                'filters' => $initialFilters,
+                'markers' => $this->getMarkers($validatedFilters),
+                'filters' => $validatedFilters,
                 'filtersForm' => $this->filterService->getFilterData(),
                 'parkId' => $parkId,
                 'meta_description' => 'map_index.description',
@@ -81,13 +80,20 @@ class MapsController extends AbstractController
             'user' => $user->getId(),
         ];
 
+        // Validate and authorize initial filters
+        $validatedFilters = $this->filterService->validateAndAuthorize(
+            $initialFilters,
+            'map',
+            $this->getUser()
+        );
+
         return $this->render(
             'Maps/index.html.twig',
             [
-                'markers' => $this->getMarkers($initialFilters),
-                'filters' => $initialFilters,
+                'markers' => $this->getMarkers($validatedFilters),
+                'filters' => $validatedFilters,
                 'filtersForm' => $this->filterService->getFilterData(),
-                'parkId' => ''
+                'parkId' => '',
             ]
         );
     }
@@ -96,7 +102,18 @@ class MapsController extends AbstractController
     #[Route(path: '/markers', name: 'map_markers_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function markersAction(#[MapQueryParameter] array $filters = []): JsonResponse
     {
-        return new JsonResponse($this->getMarkers($filters));
+        try {
+            // Validate and authorize filters
+            $validatedFilters = $this->filterService->validateAndAuthorize(
+                $filters,
+                'map',
+                $this->getUser()
+            );
+
+            return new JsonResponse($this->getMarkers($validatedFilters));
+        } catch (AccessDeniedHttpException $e) {
+            throw $e;
+        }
     }
 
     /**
@@ -106,19 +123,27 @@ class MapsController extends AbstractController
     #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function getCoastersAction(Park $park, #[MapQueryParameter] array $filters = []): Response
     {
-        $coasters = $this->coasterRepository->getCoastersForMap($park, $filters);
+        try {
+            // Validate and authorize filters
+            $validatedFilters = $this->filterService->validateAndAuthorize(
+                $filters,
+                'map',
+                $this->getUser()
+            );
 
-        return $this->render(
-            'Maps/_map_popup.html.twig',
-            ['coasters' => $coasters]
-        );
+            $coasters = $this->coasterRepository->findForPark($park, $validatedFilters);
+
+            return $this->render(
+                'Maps/_map_popup.html.twig',
+                ['coasters' => $coasters]
+            );
+        } catch (AccessDeniedHttpException $e) {
+            throw $e;
+        }
     }
 
-
-
-    /** Generate array of markers, based on array of filters */
     private function getMarkers(array $filters = []): array
     {
-        return $this->filterService->getFilteredMarkers($filters);
+        return $this->coasterRepository->findForMap($filters);
     }
 }

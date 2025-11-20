@@ -166,6 +166,7 @@ map_index:
         atleast: "at least {count}"
         openingDate: "Opening date"
         name: "Name"
+        clear: "Clear filters"
     results: "Results"
 
 user_profile:
@@ -330,7 +331,7 @@ navbar:
 
 sidebar:
     index: "Home"
-    nearby: "Find coasters nearby"
+    browse: "Browse Coasters"
     ranking: "World Roller Coaster Rankings"
     users: "Our riders"
     map: "Coasters map"
@@ -407,12 +408,10 @@ notif:
         view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
-nearby:
-    title: "Find coasters nearby"
+coaster_search:
+    title: "Search Coasters"
     num_found: "{num} coasters found"
-    geo_on: "Geolocation enabled"
-    geo_off: "Geolocation not enabled"
-    km_away: "{distance} away"
+    no_results: "No coasters found matching your criteria"
 
 image:
     credit: "Credit: {name}"

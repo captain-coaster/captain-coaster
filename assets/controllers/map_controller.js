@@ -127,7 +127,14 @@ export default class extends Controller {
         // Get current form data directly (simple approach)
         const form = document.querySelector('form');
         const formData = new FormData(form);
-        const params = new URLSearchParams(formData);
+        const params = new URLSearchParams();
+        
+        // Only include non-empty values
+        for (const [key, value] of formData.entries()) {
+            if (value && value.trim() !== '') {
+                params.set(key, value);
+            }
+        }
         
         fetch(`${url}?${params}`, {
             headers: {
@@ -136,11 +143,11 @@ export default class extends Controller {
         })
             .then(response => response.text())
             .then(coasters => {
-                marker.bindPopup(coasters);
+                marker.bindPopup(coasters).openPopup();
             })
             .catch(error => {
                 console.error('Failed to load park data:', error);
-                marker.bindPopup('Error loading data');
+                marker.bindPopup('Error loading data').openPopup();
             });
     }
 
@@ -169,7 +176,14 @@ export default class extends Controller {
 
         const form = document.querySelector('form');
         const formData = new FormData(form);
-        const params = new URLSearchParams(formData);
+        const params = new URLSearchParams();
+        
+        // Only include non-empty values
+        for (const [key, value] of formData.entries()) {
+            if (value && value.trim() !== '') {
+                params.set(key, value);
+            }
+        }
         
         console.log('Filter request URL:', `${url}?${params}`);
 
@@ -184,6 +198,15 @@ export default class extends Controller {
                 this.removeMarkers();
                 this.markersValue = data;
                 this.generateMarkers();
+                
+                // Update browser URL if filter controller has URL updates enabled
+                const filterElement = document.querySelector('[data-controller="filter"]');
+                if (filterElement && filterElement.filterController) {
+                    const filterController = filterElement.filterController;
+                    if (filterController.updateUrlValue) {
+                        filterController.updateBrowserUrl();
+                    }
+                }
             })
             .catch(error => {
                 console.error('Failed to filter markers:', error);

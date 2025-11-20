@@ -9,7 +9,7 @@
         {% for coaster in coasters %}
             <div class="popup-coaster">
                 <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" target="_blank">
-                    <span class="status-mark"></span>
+                    <span class="status-mark bg-{{ coaster.status.type }}"></span>
                     {{ coaster.name }}
                 </a>
             </div>

@@ -1,0 +1,61 @@
+{% import "helper.html.twig" as helper %}
+
+<div class="panel panel-white">
+    <div class="panel-heading">
+        <h6 class="panel-title text-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
+    </div>
+
+    <ul class="media-list">
+        {% for coaster in coasters %}
+            <li class="media panel-body stack-media-on-mobile">
+                <div class="media-left">
+                    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
+                        {% if coaster.mainImage is not null %}
+                            <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
+                                 class="img-rounded"
+                                 style="width:96px;"
+                                 alt="{{ coaster.name }}">
+                        {% endif %}
+                    </a>
+                </div>
+
+                <div class="media-body">
+                    <h6 class="media-heading text-semibold">
+                        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
+                            {{ coaster.name }}
+                        </a>
+                    </h6>
+                    
+                    <ul class="list-inline list-inline-separate text-muted mb-5">
+                        <li>
+                            <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
+                                {{ coaster.park.name }}
+                            </a>
+                        </li>
+                        <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
+                    </ul>
+                    
+                    <ul class="list-inline list-inline-separate text-muted mb-5">
+                        {% if coaster.manufacturer %}
+                            <li>{{ coaster.manufacturer.name }}</li>
+                        {% endif %}
+                        {% if coaster.materialType %}
+                            <li>{{ coaster.materialType.name|trans([], 'database') }}</li>
+                        {% endif %}
+                        {% if coaster.openingDate %}
+                            <li>{{ coaster.openingDate|date('Y') }}</li>
+                        {% endif %}
+                    </ul>
+                </div>
+                
+
+            </li>
+        {% else %}
+            <li class="media panel-body">
+                <h5>{{ 'coaster_search.no_results'|trans }}</h5>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{{ knp_pagination_render(coasters) }}

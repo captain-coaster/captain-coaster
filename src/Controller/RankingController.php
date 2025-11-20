@@ -4,24 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Coaster;
-use App\Entity\Continent;
-use App\Entity\Country;
-use App\Entity\Manufacturer;
-use App\Entity\MaterialType;
-use App\Entity\Model;
-use App\Entity\SeatingType;
+use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
 use App\Service\FilterService;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Cache\CacheInterface;
 
 #[Route(path: '/ranking')]
 class RankingController extends AbstractController
@@ -31,9 +24,8 @@ class RankingController extends AbstractController
     public function __construct(
         private readonly PaginatorInterface $paginator,
         private readonly RankingRepository $rankingRepository,
-        private readonly EntityManagerInterface $em,
-        private readonly CacheInterface $cache,
         private readonly FilterService $filterService,
+        private readonly CoasterRepository $coasterRepository
     ) {
     }
 
@@ -55,9 +47,6 @@ class RankingController extends AbstractController
         );
     }
 
-
-
-    /** @throws \Exception */
     #[Route(
         path: '/coasters',
         name: 'ranking_search_async',
@@ -68,11 +57,20 @@ class RankingController extends AbstractController
     public function searchAsyncAction(#[MapQueryParameter] array $filters = [], #[MapQueryParameter] int $page = 1): Response
     {
         try {
+            // Validate and authorize filters
+            $validatedFilters = $this->filterService->validateAndAuthorize(
+                $filters,
+                'ranking',
+                $this->getUser()
+            );
+
             $pagination = $this->paginator->paginate(
-                $this->filterService->getFilteredRanking($filters),
+                $this->coasterRepository->findForRanking($validatedFilters),
                 $page,
                 self::COASTERS_PER_PAGE
             );
+        } catch (AccessDeniedHttpException $e) {
+            throw $e;
         } catch (\Exception) {
             throw new BadRequestHttpException();
         }
@@ -81,7 +79,7 @@ class RankingController extends AbstractController
             'ranking/results.html.twig',
             [
                 'coasters' => $pagination,
-                'filtered' => [] !== array_diff_key($filters, ['user' => null]),
+                'filtered' => [] !== array_diff_key($validatedFilters, ['user' => null]),
                 'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );

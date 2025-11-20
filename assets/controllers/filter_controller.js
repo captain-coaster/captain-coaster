@@ -29,6 +29,7 @@ export default class extends Controller {
         // Set up popstate handling if URL updates are enabled
         if (this.updateUrlValue) {
             this.setupPopstateHandler();
+            this.restoreFiltersFromUrl();
         }
         
         // Auto-trigger initial load if endpoint is provided
@@ -99,7 +100,14 @@ export default class extends Controller {
         try {
             const form = this.element.querySelector('form');
             const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
+            const params = new URLSearchParams();
+            
+            // Only include non-empty values
+            for (const [key, value] of formData.entries()) {
+                if (value && value.trim() !== '') {
+                    params.set(key, value);
+                }
+            }
             
             const response = await fetch(`${this.endpointValue}?${params}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -159,6 +167,26 @@ export default class extends Controller {
         const newUrl = window.location.pathname + (queryString ? '?' + queryString : '');
         
         window.history.pushState(null, '', newUrl);
+    }
+
+    // Restore filters from URL on page load
+    restoreFiltersFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.toString() === '') return;
+        
+        const form = this.element.querySelector('form');
+        
+        // Apply URL parameters to form
+        for (const [key, value] of params.entries()) {
+            const input = form.querySelector(`[name="${key}"]`);
+            if (input) {
+                if (input.type === 'checkbox') {
+                    input.checked = value === 'on';
+                } else {
+                    input.value = value;
+                }
+            }
+        }
     }
 
     // Handle browser back/forward

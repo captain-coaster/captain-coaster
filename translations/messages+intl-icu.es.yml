@@ -161,6 +161,7 @@ map_index:
         atleast: "al menos {count}"
         openingDate: Fecha de apertura
         name: "Nombre"
+        clear: "Borrar filtros"
     results: Resultados
 
 user_profile:

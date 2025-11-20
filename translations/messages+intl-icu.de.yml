@@ -160,6 +160,7 @@ map_index:
         atleast: "mindestens {count}"
         openingDate: Eröffnungsdatum
         name: Name
+        clear: "Filter löschen"
     results: Ergebnisse
 
 user_profile:

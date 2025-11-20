@@ -43,71 +43,26 @@ class CoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getFilteredMarkers(array $filters): array
+    /**
+     * Find coasters for a specific park (used in map popups).
+     * Returns array of coaster entities.
+     * Expects filters to already be validated and authorized.
+     *
+     * @param Park                 $park    The park to get coasters for
+     * @param array<string, mixed> $filters Validated and authorized filter array
+     *
+     * @return array<Coaster> Array of coaster entities
+     */
+    public function findForPark(Park $park, array $filters = []): array
     {
-        $qb = $this->createQueryBuilder('c')
-            ->select('p.name as name')
-            ->addSelect('p.latitude as latitude')
-            ->addSelect('p.longitude as longitude')
-            ->addSelect('count(1) as nb')
-            ->addSelect('p.id as id')
-            ->leftJoin('c.park', 'p')
-            ->leftJoin('p.country', 'country')
-            ->leftJoin('country.continent', 'continent')
-            ->leftJoin('c.manufacturer', 'm')
-            ->leftJoin('c.materialType', 'mt')
-            ->leftJoin('c.seatingType', 'st')
-            ->leftJoin('c.model', 'model')
-            ->leftJoin('c.status', 's')
-            ->where('p.latitude is not null')
-            ->andWhere('p.longitude is not null')
-            ->groupBy('c.park');
-
-        if (!empty($filters)) {
-            $this->applyAllFilters($qb, $filters);
-        }
-
-        return $qb->getQuery()->getArrayResult();
-    }
-
-    /** @return array */
-    public function getCoastersForMap(Park $park, array $filters)
-    {
-        $qb = $this->getEntityManager()->createQueryBuilder();
-
-        $qb
-            ->select(['c', 's', 'p'])
-            ->from(Coaster::class, 'c')
-            ->innerJoin('c.park', 'p', 'WITH', 'c.park = p.id')
-            ->leftJoin('p.country', 'country')
-            ->leftJoin('country.continent', 'continent')
-            ->leftJoin('c.manufacturer', 'm', 'WITH', 'c.manufacturer = m.id')
-            ->leftJoin('c.materialType', 'mt')
-            ->leftJoin('c.seatingType', 'st')
-            ->leftJoin('c.model', 'model')
-            ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
+        $qb = $this->createBaseQuery()
+            ->select('c', 's', 'p')
             ->where('p.id = :parkId')
             ->setParameter('parkId', $park->getId());
 
-        $this->applyFilters($qb, $filters);
+        $this->applyFilters($qb, $filters, 'map');
 
         return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * Return coasters for nearby page.
-     *
-     * @return Query
-     */
-    public function getNearbyCoasters(array $filters)
-    {
-        $qb = $this->buildFilteredQuery($filters)
-            ->select('c AS item')
-            ->where('p.latitude is not null')
-            ->andWhere('p.longitude is not null');
-
-        $this->orderBy($qb, $filters);
-        return $qb->getQuery();
     }
 
     /** Optimized search method for API with limited results and better performance. */
@@ -152,7 +107,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /** Get all coasters in a park, nicely ordered */
     public function findAllCoastersInPark(Park $park)
     {
         return $this->getEntityManager()->createQueryBuilder()
@@ -168,50 +122,69 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Unified method to get filtered coasters in different formats
+     * Find coasters for search page.
+     * Returns Query object for pagination.
+     * Expects filters to already be validated and authorized.
+     *
+     * @param array<string, mixed> $filters Validated and authorized filter array
+     *
+     * @return Query Query object for pagination
      */
-    public function getFilteredCoasters(array $filters, string $format = 'entities')
+    public function findForSearch(array $filters = []): Query
     {
-        // Add format context to filters for format-specific behavior
-        $filters['_format'] = $format;
-        $qb = $this->buildFilteredQuery($filters);
-        
-        switch ($format) {
-            case 'ranking':
-                $qb->select('c', 'p', 'm')
-                   ->andWhere('c.rank IS NOT NULL')
-                   ->orderBy('c.rank', 'ASC');
-                return $qb->getQuery();
-                
-            case 'nearby':
-                $qb->select('c AS item')
-                   ->andWhere('p.latitude IS NOT NULL')
-                   ->andWhere('p.longitude IS NOT NULL');
-                $this->orderBy($qb, $filters);
-                return $qb->getQuery();
-                
-            case 'markers':
-                $qb->select('p.name as name')
-                   ->addSelect('p.latitude as latitude')
-                   ->addSelect('p.longitude as longitude')
-                   ->addSelect('count(1) as nb')
-                   ->addSelect('p.id as id')
-                   ->andWhere('p.latitude IS NOT NULL')
-                   ->andWhere('p.longitude IS NOT NULL')
-                   ->groupBy('c.park');
-                return $qb->getQuery()->getArrayResult();
-                
-            default:
-                return $qb->getQuery();
-        }
+        $qb = $this->createBaseQuery()->select('c');
+        $this->applyFilters($qb, $filters, 'search');
+        $qb->orderBy('c.updatedAt', 'DESC');
+
+        return $qb->getQuery();
     }
 
     /**
-     * Build base query with all necessary joins for filtering
+     * Find coasters for ranking page.
+     * Returns Query object for pagination.
+     * Expects filters to already be validated and authorized.
+     *
+     * @param array<string, mixed> $filters Validated and authorized filter array
+     *
+     * @return Query Query object for pagination
      */
-    private function buildFilteredQuery(array $filters = []): QueryBuilder
+    public function findForRanking(array $filters = []): Query
     {
-        $qb = $this->createQueryBuilder('c')
+        $qb = $this->createBaseQuery()
+            ->select('c', 'p', 'm')
+            ->andWhere('c.rank IS NOT NULL');
+
+        $this->applyFilters($qb, $filters, 'ranking');
+        $qb->orderBy('c.rank', 'ASC');
+
+        return $qb->getQuery();
+    }
+
+    /**
+     * Find map markers for all parks with coasters.
+     * Returns array of marker data (not Query object).
+     * Expects filters to already be validated and authorized.
+     *
+     * @param array<string, mixed> $filters Validated and authorized filter array
+     *
+     * @return array<array{name: string, latitude: float, longitude: float, nb: int, id: int}> Array of marker data
+     */
+    public function findForMap(array $filters = []): array
+    {
+        $qb = $this->createBaseQuery()
+            ->select('p.name as name, p.latitude as latitude, p.longitude as longitude, count(1) as nb, p.id as id')
+            ->andWhere('p.latitude IS NOT NULL')
+            ->andWhere('p.longitude IS NOT NULL')
+            ->groupBy('c.park');
+
+        $this->applyFilters($qb, $filters, 'map');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    private function createBaseQuery()
+    {
+        return $this->createQueryBuilder('c')
             ->leftJoin('c.park', 'p')
             ->leftJoin('p.country', 'country')
             ->leftJoin('country.continent', 'continent')
@@ -220,210 +193,166 @@ class CoasterRepository extends ServiceEntityRepository
             ->leftJoin('c.seatingType', 'st')
             ->leftJoin('c.model', 'model')
             ->leftJoin('c.status', 's');
-
-        if (!empty($filters)) {
-            $this->applyAllFilters($qb, $filters);
-        }
-        return $qb;
     }
 
     /**
-     * Apply all available filters to query
+     * Orchestrates all filter groups and applies them to the query builder.
+     * Expects filters to already be validated and sanitized.
+     *
+     * @param QueryBuilder         $qb      The query builder to apply filters to
+     * @param array<string, mixed> $filters Validated and sanitized filter array
+     * @param string               $context Context where filters are applied (ranking, search, map)
      */
-    private function applyAllFilters(QueryBuilder $qb, array $filters = []): void
+    private function applyFilters(QueryBuilder $qb, array $filters, string $context = 'search'): void
     {
-        // Location filters
-        $this->filterContinent($qb, $filters);
-        $this->filterCountry($qb, $filters);
-        
-        // Coaster attribute filters
-        $this->filterManufacturer($qb, $filters);
-        $this->filterMaterialType($qb, $filters);
-        $this->filterSeatingType($qb, $filters);
-        $this->filterModel($qb, $filters);
-        
-        // Status and date filters
-        $this->filterOpenedStatus($qb, $filters);
-        $this->filterOpeningDate($qb, $filters);
-        $this->filterScore($qb, $filters);
-        
-        // User-based filters
-        $this->filterByNotRidden($qb, $filters);
-        $this->filterByRidden($qb, $filters);
-        
-        // Special filters
-        $this->filterKiddie($qb, $filters);
-        $this->filterNew($qb, $filters);
-        $this->filterName($qb, $filters);
-    }
+        // Apply filters in logical groups
+        $this->applyLocationFilters($qb, $filters);
+        $this->applyCharacteristicFilters($qb, $filters);
+        $this->applyStatusFilters($qb, $filters);
+        $this->applyUserFilters($qb, $filters);
 
-    private function applyFilters(QueryBuilder $qb, array $filters = []): void
-    {
-        $this->applyAllFilters($qb, $filters);
-        // Order by
-        $this->orderBy($qb, $filters);
-    }
-
-    private function orderBy(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('latitude', $filters) && '' !== $filters['latitude']) {
-            $qb->addSelect(
-                'POWER(POWER(111.2 * (p.latitude - :latitude), 2) + POWER(111.2 * (:longitude - p.longitude) * COS(p.latitude / 57.3), 2), 0.5) AS distance'
-            )
-                ->orderBy('distance', 'asc')
-                ->setParameter('latitude', $filters['latitude'])
-                ->setParameter('longitude', $filters['longitude']);
-        } else {
-            $qb->orderBy('c.updatedAt', 'desc');
+        // Apply context-specific filters
+        if ('ranking' === $context) {
+            $this->applyRankingFilters($qb, $filters);
         }
     }
 
-    private function filterManufacturer(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
-            $qb
-                ->andWhere('m.id = :manufacturer')
-                ->setParameter('manufacturer', $filters['manufacturer']);
-        }
-    }
-
-    /** Filter only operating coasters. */
-    private function filterOpenedStatus(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('status', $filters)) {
-            $qb
-                ->andWhere('s.name = :operating')
-                ->setParameter('operating', Status::OPERATING);
-        }
-    }
-
-    private function filterScore(QueryBuilder $qb, array $filters = []): void
-    {
-        // Filter by average rating
-        if (\array_key_exists('score', $filters) && '' !== $filters['score']) {
-            $qb
-                ->andWhere('c.score >= :rating')
-                ->setParameter('rating', $filters['score']);
-        }
-    }
-
-    private function filterByRidden(QueryBuilder $qb, array $filters = []): void
-    {
-        // Filter by not ridden. User based filter.
-        if (\array_key_exists('ridden', $filters) && 'on' === $filters['ridden']
-            && \array_key_exists('user', $filters) && !empty($filters['user'])) {
-            $qb2 = $this
-                ->getEntityManager()
-                ->createQueryBuilder()
-                ->select('c1.id')
-                ->from(RiddenCoaster::class, 'rc1')
-                ->innerJoin('rc1.coaster', 'c1', 'WITH', 'rc1.coaster = c1.id')
-                ->where('rc1.user = :userid');
-
-            $qb
-                ->andWhere($qb->expr()->in('c.id', $qb2->getDQL()))
-                ->setParameter('userid', $filters['user']);
-        }
-    }
-
-    /** Filter coasters user has not ridden. User based filter. */
-    private function filterByNotRidden(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('notridden', $filters) && 'on' === $filters['notridden']
-            && \array_key_exists('user', $filters) && !empty($filters['user'])) {
-            $qb2 = $this
-                ->getEntityManager()
-                ->createQueryBuilder()
-                ->select('c2.id')
-                ->from(RiddenCoaster::class, 'rc2')
-                ->innerJoin('rc2.coaster', 'c2', 'WITH', 'rc2.coaster = c2.id')
-                ->where('rc2.user = :userid');
-
-            $qb
-                ->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
-                ->setParameter('userid', $filters['user']);
-        }
-    }
-
-    private function filterOpeningDate(QueryBuilder $qb, array $filters = []): void
-    {
-        // Filter by average rating
-        if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
-            $qb
-                ->andWhere('c.openingDate like :date')
-                ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
-        }
-    }
-
-    private function filterContinent(QueryBuilder $qb, array $filters = []): void
+    /**
+     * Applies location-based filters (continent, country).
+     *
+     * @param QueryBuilder         $qb      The query builder to apply filters to
+     * @param array<string, mixed> $filters Sanitized filter array
+     */
+    private function applyLocationFilters(QueryBuilder $qb, array $filters): void
     {
         if (!empty($filters['continent'])) {
             $qb->andWhere('continent.id = :continent')
                ->setParameter('continent', $filters['continent']);
         }
-    }
 
-    private function filterCountry(QueryBuilder $qb, array $filters = []): void
-    {
         if (!empty($filters['country'])) {
             $qb->andWhere('country.id = :country')
                ->setParameter('country', $filters['country']);
         }
     }
 
-    private function filterMaterialType(QueryBuilder $qb, array $filters = []): void
+    /**
+     * Applies coaster characteristic filters (manufacturer, material, seating, model, opening date, name, score).
+     *
+     * @param QueryBuilder         $qb      The query builder to apply filters to
+     * @param array<string, mixed> $filters Sanitized filter array
+     */
+    private function applyCharacteristicFilters(QueryBuilder $qb, array $filters): void
     {
+        if (!empty($filters['manufacturer'])) {
+            $qb->andWhere('m.id = :manufacturer')
+               ->setParameter('manufacturer', $filters['manufacturer']);
+        }
+
         if (!empty($filters['materialType'])) {
             $qb->andWhere('mt.id = :materialType')
                ->setParameter('materialType', $filters['materialType']);
         }
-    }
 
-    private function filterSeatingType(QueryBuilder $qb, array $filters = []): void
-    {
         if (!empty($filters['seatingType'])) {
             $qb->andWhere('st.id = :seatingType')
                ->setParameter('seatingType', $filters['seatingType']);
         }
-    }
 
-    private function filterModel(QueryBuilder $qb, array $filters = []): void
-    {
         if (!empty($filters['model'])) {
             $qb->andWhere('model.id = :model')
                ->setParameter('model', $filters['model']);
         }
-    }
 
-    private function filterNew(QueryBuilder $qb, array $filters = []): void
-    {
-        if (isset($filters['new']) && $filters['new'] === 'on') {
-            // For ranking, 'new' means new in ranking (previousRank is null)
-            // For other pages, 'new' means recently opened coasters
-            if (isset($filters['_format']) && $filters['_format'] === 'ranking') {
-                $qb->andWhere('c.previousRank IS NULL');
-            } else {
-                $qb->andWhere('c.openingDate >= :twoYearsAgo')
-                   ->setParameter('twoYearsAgo', new \DateTime('-2 years'));
-            }
+        if (!empty($filters['openingDate'])) {
+            $year = $filters['openingDate'];
+            $qb->andWhere('c.openingDate BETWEEN :yearStart AND :yearEnd')
+               ->setParameter('yearStart', $year.'-01-01')
+               ->setParameter('yearEnd', $year.'-12-31');
+        }
+
+        if (!empty($filters['name'])) {
+            $qb->andWhere('c.name LIKE :name')
+               ->setParameter('name', '%'.$filters['name'].'%');
+        }
+
+        if (!empty($filters['score'])) {
+            $qb->andWhere('c.score >= :score')
+               ->setParameter('score', $filters['score']);
         }
     }
 
-    private function filterKiddie(QueryBuilder $qb, array $filters = []): void
+    /**
+     * Applies status-based filters (operating status, kiddie).
+     *
+     * @param QueryBuilder         $qb      The query builder to apply filters to
+     * @param array<string, mixed> $filters Sanitized filter array
+     */
+    private function applyStatusFilters(QueryBuilder $qb, array $filters): void
     {
-        if (isset($filters['kiddie']) && $filters['kiddie'] === 'on') {
-            $qb->andWhere('c.kiddie = true');
-        } elseif (\array_key_exists('kiddie', $filters) && '' !== $filters['kiddie']) {
-            $qb->andWhere('c.kiddie = 0');
+        if (isset($filters['status']) && 'on' === $filters['status']) {
+            $qb->andWhere('s.name = :operating')
+               ->setParameter('operating', Status::OPERATING);
+        }
+
+        if (isset($filters['kiddie'])) {
+            $qb->andWhere('c.kiddie = :kiddie')
+               ->setParameter('kiddie', 'on' === $filters['kiddie']);
         }
     }
 
-    private function filterName(QueryBuilder $qb, array $filters = []): void
+    /**
+     * Applies user-specific filters (ridden, not ridden).
+     * Expects permissions to already be checked.
+     *
+     * @param QueryBuilder         $qb      The query builder to apply filters to
+     * @param array<string, mixed> $filters Validated and authorized filter array
+     */
+    private function applyUserFilters(QueryBuilder $qb, array $filters): void
     {
-        if (\array_key_exists('name', $filters) && '' !== $filters['name']) {
-            $qb
-                ->andWhere('c.name like :name')
-                ->setParameter('name', \sprintf('%%%s%%', $filters['name']));
+        if (empty($filters['user'])) {
+            return;
+        }
+
+        $userId = $filters['user'];
+
+        if (isset($filters['ridden']) && 'on' === $filters['ridden']) {
+            $subQuery = $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('rc_c.id')
+                ->from(RiddenCoaster::class, 'rc')
+                ->innerJoin('rc.coaster', 'rc_c')
+                ->where('rc.user = :userId');
+
+            $qb->andWhere($qb->expr()->in('c.id', $subQuery->getDQL()))
+               ->setParameter('userId', $userId);
+        }
+
+        if (isset($filters['notridden']) && 'on' === $filters['notridden']) {
+            $subQuery = $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('rc_c.id')
+                ->from(RiddenCoaster::class, 'rc')
+                ->innerJoin('rc.coaster', 'rc_c')
+                ->where('rc.user = :userId');
+
+            $qb->andWhere($qb->expr()->notIn('c.id', $subQuery->getDQL()))
+               ->setParameter('userId', $userId);
+        }
+    }
+
+    /**
+     * Applies ranking-specific filters (new coasters in ranking).
+     *
+     * @param QueryBuilder         $qb      The query builder to apply filters to
+     * @param array<string, mixed> $filters Sanitized filter array
+     */
+    private function applyRankingFilters(QueryBuilder $qb, array $filters): void
+    {
+        // 'new' filter: coasters new to ranking this month
+        if (isset($filters['new']) && 'on' === $filters['new']) {
+            $qb->andWhere('c.previousRank IS NULL')
+               ->andWhere('c.rank IS NOT NULL');
         }
     }
 }

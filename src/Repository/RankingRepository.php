@@ -6,13 +6,10 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Ranking;
-use App\Entity\RiddenCoaster;
-use App\Entity\Status;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
-use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -64,7 +61,7 @@ class RankingRepository extends ServiceEntityRepository
      *
      * @throws \Exception
      */
-    public function findCoastersRanked(array $filters = [])
+    public function findCoastersRanked()
     {
         $qb = $this->getEntityManager()
             ->createQueryBuilder()
@@ -81,107 +78,6 @@ class RankingRepository extends ServiceEntityRepository
             ->where('c.rank is not null')
             ->orderBy('c.rank', 'asc');
 
-        $this->applyFilters($qb, $filters);
-
         return $qb->getQuery();
-    }
-
-    private function applyFilters(QueryBuilder $qb, array $filters = []): void
-    {
-        $this->filterLocation($qb, $filters);
-        $this->filterMaterialType($qb, $filters);
-        $this->filterSeatingType($qb, $filters);
-        $this->filterModel($qb, $filters);
-        $this->filterManufacturer($qb, $filters);
-        $this->filterOpeningDate($qb, $filters);
-        $this->filterOpenedStatus($qb, $filters);
-        $this->filterByNotRidden($qb, $filters);
-        $this->filterByNewInRanking($qb, $filters);
-    }
-
-    private function filterLocation(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('country', $filters) && '' !== $filters['country']) {
-            $qb->andWhere('country.id = :country')
-               ->setParameter('country', $filters['country']);
-        } elseif (\array_key_exists('continent', $filters) && '' !== $filters['continent']) {
-            $qb->andWhere('continent.id = :continent')
-               ->setParameter('continent', $filters['continent']);
-        }
-    }
-
-    private function filterMaterialType(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('materialType', $filters) && '' !== $filters['materialType']) {
-            $qb->andWhere('mt.id = :materialType')
-               ->setParameter('materialType', $filters['materialType']);
-        }
-    }
-
-    private function filterSeatingType(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('seatingType', $filters) && '' !== $filters['seatingType']) {
-            $qb->andWhere('st.id = :seatingType')
-               ->setParameter('seatingType', $filters['seatingType']);
-        }
-    }
-
-    private function filterModel(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('model', $filters) && '' !== $filters['model']) {
-            $qb->andWhere('model.id = :model')
-               ->setParameter('model', $filters['model']);
-        }
-    }
-
-    private function filterManufacturer(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('manufacturer', $filters) && '' !== $filters['manufacturer']) {
-            $qb->andWhere('m.id = :manufacturer')
-               ->setParameter('manufacturer', $filters['manufacturer']);
-        }
-    }
-
-    private function filterOpeningDate(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('openingDate', $filters) && '' !== $filters['openingDate']) {
-            $qb->andWhere('c.openingDate like :date')
-               ->setParameter('date', \sprintf('%%%s%%', $filters['openingDate']));
-        }
-    }
-
-    /** Filter only operating coasters. */
-    private function filterOpenedStatus(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('status', $filters)) {
-            $qb->andWhere('s.name = :operating')
-               ->setParameter('operating', Status::OPERATING);
-        }
-    }
-
-    /** Filter coasters user has not ridden. User based filter. */
-    private function filterByNotRidden(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('notridden', $filters) && 'on' === $filters['notridden']
-            && \array_key_exists('user', $filters) && !empty($filters['user'])) {
-            $qb2 = $this
-                ->getEntityManager()
-                ->createQueryBuilder()
-                ->select('c2.id')
-                ->from(RiddenCoaster::class, 'rc2')
-                ->innerJoin('rc2.coaster', 'c2', 'WITH', 'rc2.coaster = c2.id')
-                ->where('rc2.user = :userid');
-
-            $qb->andWhere($qb->expr()->notIn('c.id', $qb2->getDQL()))
-               ->setParameter('userid', $filters['user']);
-        }
-    }
-
-    /** Filter only new coasters. */
-    private function filterByNewInRanking(QueryBuilder $qb, array $filters = []): void
-    {
-        if (\array_key_exists('new', $filters) && 'on' === $filters['new']) {
-            $qb->andWhere('c.previousRank is null');
-        }
     }
 }
