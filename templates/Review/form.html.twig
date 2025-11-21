@@ -22,13 +22,12 @@
         <span class="text-danger">*</span>
         <br>
         {{ form_widget(form.value, {'attr': {'style': 'display:none;'}}) }}
-        <div data-controller="rating review-rating"
+        <div data-controller="rating"
              data-rating-coaster-id-value="{{ coaster.id }}"
              data-rating-current-value-value="{{ form.value.vars.value|default(0) }}"
              data-rating-locale-value="{{ app.request.locale }}"
              data-rating-readonly-value="false"
-             data-review-rating-field-id-value="review_value"
-             style="font-size: 22px;"></div>
+             data-rating-form-field-id-value="review_value"></div>
       </div>
       <div class="form-group">
         {{ form_label(form.riddenAt, "", {'label_attr': {'class': 'control-label'}}) }}

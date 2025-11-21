@@ -66,15 +66,7 @@
     padding-right: 2.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 16px; /* Prevent zoom on iOS */
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-
-/* Desktop font size */
-@media (min-width: 769px) {
-    .search-container input[type="search"] {
-        font-size: 12px;
-    }
 }
 
 .search-container input[type="search"]:focus {

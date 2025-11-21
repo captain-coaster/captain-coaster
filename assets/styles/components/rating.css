@@ -16,8 +16,8 @@
 }
 
 .star-svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     transition: transform 0.15s ease;
 }
 
@@ -42,11 +42,11 @@
 
 /* Half star - left filled, right empty */
 .rating-star.star-half .star-outline {
-    stroke: #FF5722;
+    stroke: #ff5722;
 }
 
 .rating-star.star-half .star-fill-left {
-    stop-color: #FF5722;
+    stop-color: #ff5722;
 }
 
 .rating-star.star-half .star-fill-right {
@@ -55,23 +55,27 @@
 
 /* Full star - completely filled */
 .rating-star.star-full .star-outline {
-    stroke: #FF5722;
+    stroke: #ff5722;
 }
 
 .rating-star.star-full .star-fill-left,
 .rating-star.star-full .star-fill-right {
-    stop-color: #FF5722;
+    stop-color: #ff5722;
 }
 
 /* Hover effect on desktop */
 @media (hover: hover) {
-    .rating-stars:not([data-rating-readonly-value="true"]) .rating-star:hover .star-svg {
+    .rating-stars:not([data-rating-readonly-value="true"])
+        .rating-star:hover
+        .star-svg {
         transform: scale(1.15);
     }
 }
 
 /* Active/touch state */
-.rating-stars:not([data-rating-readonly-value="true"]) .rating-star:active .star-svg {
+.rating-stars:not([data-rating-readonly-value="true"])
+    .rating-star:active
+    .star-svg {
     transform: scale(0.95);
 }
 
@@ -81,16 +85,14 @@
     pointer-events: none;
 }
 
-
-
 /* Mobile optimizations */
 @media (max-width: 768px) {
     .star-svg {
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
     }
-    
+
     .rating-stars {
-        gap: 6px;
+        gap: 8px;
     }
 }

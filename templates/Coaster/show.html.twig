@@ -42,6 +42,36 @@
                                 </a>
                             </div>
                         </div>
+                        {% if countRatings %}
+                            <div class="rating-distribution-compact">
+                                <div class="text-muted text-size-small text-uppercase score-label mb-10">
+                                    {{ 'coaster.rating.distribution'|trans }}
+                                </div>
+                                {% set totalRatings = 0 %}
+                                {% for countRating in countRatings %}
+                                    {% set totalRatings = totalRatings + countRating.count %}
+                                {% endfor %}
+                                
+                                {% if totalRatings > 0 %}
+                                    <div class="rating-bar-container">
+                                        <div class="rating-bar">
+                                            {% for countRating in countRatings %}
+                                                {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
+                                                {% if percentage > 0 %}
+                                                    <div class="rating-segment rating-{{ countRating.value|replace({'.': '-'}) }}" 
+                                                         style="width: {{ percentage }}%"
+                                                         title="{{ countRating.value }}★: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
+                                                        {% if percentage > 7 %}
+                                                            <span class="rating-segment-label">{{ countRating.value }}★</span>
+                                                        {% endif %}
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
                 {% endif %}
                 <!-- /score -->
@@ -100,9 +130,6 @@
                     </div>
                 </div>
             </div>
-            {% if countRatings %}
-                {% include 'Coaster/_rating_distribution.html.twig' with {'countRatings': countRatings} only %}
-            {% endif %}
             <!-- /main carac -->
             <!-- coaster details -->
             <div class="panel panel-white">

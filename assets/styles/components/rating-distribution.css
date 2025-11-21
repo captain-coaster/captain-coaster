@@ -27,12 +27,23 @@
     transition: all 0.2s ease;
     cursor: pointer;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .rating-segment:hover {
     transform: scaleY(1.4);
     z-index: 10;
     filter: brightness(1.1);
+}
+
+.rating-segment-label {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
 }
 
 /* Rating colors - matching the original ApexCharts colors */
@@ -99,19 +110,42 @@
     font-size: 0.875rem;
 }
 
+/* Compact version for score panel */
+.rating-distribution-compact {
+    margin-top: 1rem;
+}
+
+.rating-distribution-compact .rating-bar-container {
+    width: 100%;
+}
+
+.rating-distribution-compact .rating-bar {
+    height: 20px;
+    border-radius: 10px;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .rating-distribution {
         padding: 0.75rem;
     }
-    
+
     .rating-bar {
         height: 20px;
         margin-bottom: 0.5rem;
     }
-    
+
     .rating-label {
         font-size: 0.8125rem;
         min-height: 1.25rem;
+    }
+
+    .rating-distribution-compact {
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+    }
+
+    .rating-distribution-compact .rating-bar {
+        height: 16px;
     }
 }

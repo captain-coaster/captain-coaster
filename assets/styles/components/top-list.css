@@ -249,11 +249,13 @@
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
-
-
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
@@ -261,50 +263,50 @@
         gap: 8px;
         padding: 10px 8px;
     }
-    
+
     .drag-area {
         min-width: 40px;
         padding: 6px 4px;
     }
-    
+
     .position-number {
         font-size: 16px;
     }
-    
+
     .drag-indicator svg {
         width: 14px;
         height: 14px;
     }
-    
+
     .coaster-content {
         flex-direction: column;
         align-items: flex-start;
         gap: 4px;
     }
-    
+
     .coaster-name {
         font-size: 14px;
     }
-    
+
     .coaster-park {
         font-size: 13px;
     }
-    
+
     .coaster-separator {
         display: none;
     }
-    
+
     .coaster-main {
         display: flex;
         flex-direction: column;
         gap: 2px;
     }
-    
+
     .coaster-rating .star-rating-stars svg {
         width: 14px;
         height: 14px;
     }
-    
+
     .menu-btn {
         width: 40px;
         height: 40px;
@@ -316,22 +318,22 @@
     .coaster-entry {
         margin-bottom: 10px;
     }
-    
+
     .drag-area {
         min-width: 48px;
         padding: 10px 6px;
     }
-    
+
     .menu-btn {
         width: 44px;
         height: 44px;
     }
-    
+
     /* Enhanced visual feedback for touch */
     .sortable-chosen {
         transform: scale(1.02);
     }
-    
+
     .sortable-drag {
         transform: rotate(2deg) scale(1.03);
     }
@@ -355,7 +357,7 @@
         border-color: #000;
         background-color: #fff;
     }
-    
+
     .sortable-chosen,
     .sortable-drag {
         border-color: #000;
@@ -371,15 +373,15 @@
     .save-status {
         transition: none;
     }
-    
+
     .sortable-drag {
         transform: none;
     }
-    
+
     .sortable-chosen {
         transform: none;
     }
-    
+
     .spinner {
         animation: none;
     }
@@ -401,7 +403,6 @@
 
 /* Search input styling for top list context */
 .top-search-container input[type="search"] {
-    font-size: 16px;
     padding: 12px 16px;
     padding-right: 2.5rem;
 }
@@ -466,16 +467,15 @@
     .top-search-container {
         margin-bottom: 16px;
     }
-    
+
     .top-search-container input[type="search"] {
-        font-size: 16px; /* Prevent zoom on iOS */
         padding: 10px 14px;
     }
-    
+
     .top-search-container .search-dropdown {
         max-height: 300px;
     }
-    
+
     .top-search-container .search-result-item {
         padding: 10px 12px;
         min-height: 44px; /* Touch-friendly */
@@ -486,10 +486,9 @@
 @media (hover: none) and (pointer: coarse) {
     .top-search-container input[type="search"] {
         padding: 14px 16px;
-        font-size: 16px;
         min-height: 48px;
     }
-    
+
     .top-search-container .search-result-item {
         padding: 12px 14px;
         min-height: 48px;
