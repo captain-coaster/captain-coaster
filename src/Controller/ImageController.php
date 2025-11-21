@@ -25,6 +25,12 @@ class ImageController extends BaseController
         }
 
         $user = $this->getUser();
+
+        // Prevent users from voting for their own pictures
+        if ($image->getUploader() === $user) {
+            return new JsonResponse(['error' => 'Cannot vote for your own picture'], Response::HTTP_FORBIDDEN);
+        }
+
         $likedImage = $likedImageRepository->findOneBy(['user' => $user, 'image' => $image]);
 
         if ($likedImage instanceof LikedImage) {

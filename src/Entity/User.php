@@ -16,6 +16,9 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'users')]
+#[ORM\Index(name: 'idx_users_displayname_search', columns: ['display_name'])]
+#[ORM\Index(name: 'idx_users_slug_search', columns: ['slug'])]
+#[ORM\Index(name: 'idx_users_enabled_displayname', columns: ['enabled', 'display_name'])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface

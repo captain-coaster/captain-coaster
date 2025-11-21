@@ -12,9 +12,6 @@
           <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">
             {{ 'coaster.photos.button'|trans }}
           </a>
-          {% if number < coaster.images|length %}
-            &nbsp;•&nbsp;<a id="show-all">{{ 'coaster.photos.all'|trans }}</a>
-          {% endif %}
           </div>
     </div>
     
@@ -48,6 +45,11 @@
                 </div>
             {% endfor %}
         </div>
+        {% if number < coaster.images|length %}
+            <div class="panel-footer text-center">
+                <a id="show-all" class="btn btn-link">{{ 'coaster.photos.all'|trans }}</a>
+            </div>
+        {% endif %}
     {% else %}
         <div class="panel-body text-center text-muted">
             {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}

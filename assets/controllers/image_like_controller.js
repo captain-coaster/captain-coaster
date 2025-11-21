@@ -1,48 +1,74 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-    static targets = ['icon', 'counter'];
+    static targets = ["icon", "counter"];
     static values = {
         imageId: Number,
         locale: String,
-        liked: Boolean
+        liked: Boolean,
     };
 
     async toggle(event) {
         event.preventDefault();
-        
-        try {
-            const response = await fetch(Routing.generate('like_image_async', {
-                id: this.imageIdValue,
-                _locale: this.localeValue
-            }), {
-                method: 'GET',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
 
-            if (!response.ok) throw new Error('Toggle like failed');
+        // Add zoom animation
+        this.addZoomAnimation();
+
+        try {
+            const response = await fetch(
+                Routing.generate("like_image_async", {
+                    id: this.imageIdValue,
+                    _locale: this.localeValue,
+                }),
+                {
+                    method: "GET",
+                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                }
+            );
+
+            if (response.status === 403) {
+                // Forbidden - user trying to like their own picture
+                // Animation already played, but don't change the heart state
+                return;
+            }
+
+            if (!response.ok) throw new Error("Toggle like failed");
 
             // Toggle the liked state
             this.likedValue = !this.likedValue;
             this.updateIcon();
             this.updateCounter();
         } catch (error) {
-            console.error('Like toggle error:', error);
+            console.error("Like toggle error:", error);
         }
+    }
+
+    addZoomAnimation() {
+        if (!this.hasIconTarget) return;
+
+        const icon = this.iconTarget;
+        icon.style.transform = "scale(1.3)";
+        icon.style.transition = "transform 0.2s ease";
+
+        setTimeout(() => {
+            icon.style.transform = "scale(1)";
+        }, 200);
     }
 
     updateCounter() {
         if (!this.hasCounterTarget) return;
 
         const currentCount = parseInt(this.counterTarget.textContent) || 0;
-        this.counterTarget.textContent = this.likedValue ? currentCount + 1 : currentCount - 1;
+        this.counterTarget.textContent = this.likedValue
+            ? currentCount + 1
+            : currentCount - 1;
     }
 
     updateIcon() {
         if (!this.hasIconTarget) return;
 
         const icon = this.iconTarget;
-        
+
         if (this.likedValue) {
             // Liked state - solid heart
             icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
