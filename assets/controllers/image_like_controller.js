@@ -34,10 +34,16 @@ export default class extends Controller {
 
             if (!response.ok) throw new Error("Toggle like failed");
 
-            // Toggle the liked state
-            this.likedValue = !this.likedValue;
+            const data = await response.json();
+
+            // Update state from server response
+            this.likedValue = data.liked;
             this.updateIcon();
-            this.updateCounter();
+
+            // Update counter with actual count from server
+            if (this.hasCounterTarget && data.likeCount !== undefined) {
+                this.counterTarget.textContent = data.likeCount;
+            }
         } catch (error) {
             console.error("Like toggle error:", error);
         }
@@ -53,15 +59,6 @@ export default class extends Controller {
         setTimeout(() => {
             icon.style.transform = "scale(1)";
         }, 200);
-    }
-
-    updateCounter() {
-        if (!this.hasCounterTarget) return;
-
-        const currentCount = parseInt(this.counterTarget.textContent) || 0;
-        this.counterTarget.textContent = this.likedValue
-            ? currentCount + 1
-            : currentCount - 1;
     }
 
     updateIcon() {

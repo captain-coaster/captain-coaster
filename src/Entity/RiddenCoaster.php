@@ -54,14 +54,11 @@ class RiddenCoaster
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $cons;
 
-    #[ORM\Column(name: 'likes', type: Types::INTEGER, nullable: true)]
-    private ?int $like = 0;
-
-    #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    private ?int $dislike = 0;
-
     #[ORM\Column(type: Types::FLOAT, nullable: true)]
     private ?float $score = 0.0;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $upvoteCounter = 0;
 
     #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewUpvote::class, orphanRemoval: true)]
     private Collection $upvotes;
@@ -187,30 +184,6 @@ class RiddenCoaster
         return $this->cons;
     }
 
-    public function setLike($like)
-    {
-        $this->like = $like;
-
-        return $this;
-    }
-
-    public function getLike()
-    {
-        return $this->like;
-    }
-
-    public function setDislike($dislike)
-    {
-        $this->dislike = $dislike;
-
-        return $this;
-    }
-
-    public function getDislike()
-    {
-        return $this->dislike;
-    }
-
     public function getScore(): ?float
     {
         return $this->score;
@@ -279,10 +252,22 @@ class RiddenCoaster
         return $this;
     }
 
-    /** Get upvote count (for backward compatibility) */
+    public function getUpvoteCounter(): int
+    {
+        return $this->upvoteCounter;
+    }
+
+    public function setUpvoteCounter(int $upvoteCounter): self
+    {
+        $this->upvoteCounter = $upvoteCounter;
+
+        return $this;
+    }
+
+    /** Get upvote count - uses cached counter for performance */
     public function getUpvoteCount(): int
     {
-        return $this->upvotes->count();
+        return $this->upvoteCounter;
     }
 
     public function setCreatedAt(\DateTime $createdAt): self

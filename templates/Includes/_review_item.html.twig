@@ -7,7 +7,9 @@
      data-review-actions-upvoted-value="false"
      data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"
      data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}"
-     data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}">
+     data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}"
+     data-review-actions-mobile-length-value="150"
+     data-review-actions-desktop-length-value="600">
   <div class="media-left">
     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
       {{ helper.profilePicture(review.user, 'img-circle img-sm') }}
@@ -35,9 +37,9 @@
     {% endif %}
 
     {% if review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
-      {% if review.review|length > 200 %}
-        <div class="review-content" data-review-actions-target="reviewContent">
-          <p class="review-short">{{ review.review|slice(0, 200) }}...
+      {% if review.review|length > 150 %}
+        <div class="review-content" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}">
+          <p class="review-short">{{ review.review|slice(0, 150) }}...
             <a href="#" class="expand-review" data-action="review-actions#toggleReview" data-review-actions-target="expandButton">
               {{ ux_icon('heroicons:chevron-down', {'class': 'w-6 h-6'}) }}
             </a>
