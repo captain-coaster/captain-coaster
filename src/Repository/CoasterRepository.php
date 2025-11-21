@@ -148,7 +148,7 @@ class CoasterRepository extends ServiceEntityRepository
         $rsm->addScalarResult('year', 'year');
 
         return $this->getEntityManager()
-            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c ORDER by year DESC', $rsm)
+            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c WHERE YEAR(c.openingDate) > 1800 ORDER by year DESC', $rsm)
             ->getScalarResult();
     }
 
