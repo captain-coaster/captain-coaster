@@ -1,11 +1,11 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 import {
     trans,
     REVIEW_REPORT_SUCCESS,
     REVIEW_REPORT_ERROR,
     REVIEW_REMOVE_UPVOTE,
     REVIEW_UPVOTE,
-} from "../translator";
+} from '../translator';
 
 /**
  * Review actions controller for handling upvotes and reports
@@ -13,15 +13,15 @@ import {
  */
 export default class extends Controller {
     static targets = [
-        "upvoteButton",
-        "upvoteCount",
-        "reportButton",
-        "reportModal",
-        "reviewContent",
-        "expandButton",
-        "collapseButton",
+        'upvoteButton',
+        'upvoteCount',
+        'reportButton',
+        'reportModal',
+        'reviewContent',
+        'expandButton',
+        'collapseButton',
     ];
-    static outlets = ["modal"];
+    static outlets = ['modal'];
     static values = {
         id: Number,
         upvoted: Boolean,
@@ -44,19 +44,19 @@ export default class extends Controller {
         // Initialize responsive truncation
         this._initializeResponsiveTruncation();
         this._boundHandleResize = this._handleResize.bind(this);
-        window.addEventListener("resize", this._boundHandleResize);
+        window.addEventListener('resize', this._boundHandleResize);
     }
 
     disconnect() {
         // Clean up event listeners
         if (this.hasReportModalTarget) {
-            this.element.removeEventListener("modal:shown", this._onModalShown);
+            this.element.removeEventListener('modal:shown', this._onModalShown);
             this.element.removeEventListener(
-                "modal:form-submit",
+                'modal:form-submit',
                 this._onModalFormSubmit
             );
         }
-        window.removeEventListener("resize", this._boundHandleResize);
+        window.removeEventListener('resize', this._boundHandleResize);
     }
 
     /**
@@ -66,7 +66,7 @@ export default class extends Controller {
         event.preventDefault();
 
         if (!this.hasUpvoteUrlValue) {
-            console.error("Upvote URL not provided");
+            console.error('Upvote URL not provided');
             return;
         }
 
@@ -74,9 +74,9 @@ export default class extends Controller {
         this._addZoomAnimation();
 
         fetch(this.upvoteUrlValue, {
-            method: "POST",
+            method: 'POST',
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => response.json())
@@ -88,15 +88,15 @@ export default class extends Controller {
                     }
 
                     // Toggle the upvoted state
-                    this.upvotedValue = data.action === "added";
+                    this.upvotedValue = data.action === 'added';
                     this._updateUpvoteButtonState();
                 } else if (data.error) {
                     // Handle errors (like self-upvoting)
-                    console.warn("Upvote error:", data.error);
+                    console.warn('Upvote error:', data.error);
                 }
             })
             .catch((error) => {
-                console.error("Error toggling upvote:", error);
+                console.error('Error toggling upvote:', error);
             });
     }
 
@@ -111,7 +111,7 @@ export default class extends Controller {
             this.modalOutlet.show();
         } else if (this.hasReportModalTarget) {
             // Fallback to direct Bootstrap 3.x modal API for compatibility
-            $(this.reportModalTarget).modal("show");
+            $(this.reportModalTarget).modal('show');
         }
     }
 
@@ -121,42 +121,42 @@ export default class extends Controller {
     deleteReview(event) {
         event.preventDefault();
 
-        if (!confirm("Are you sure you want to delete this review?")) {
+        if (!confirm('Are you sure you want to delete this review?')) {
             return;
         }
 
         if (!this.hasDeleteUrlValue) {
-            console.error("Delete URL not provided");
+            console.error('Delete URL not provided');
             return;
         }
 
         fetch(this.deleteUrlValue, {
-            method: "DELETE",
+            method: 'DELETE',
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => response.json())
             .then((data) => {
-                if (data.state === "success") {
+                if (data.state === 'success') {
                     // Remove the entire list item (including title) from the DOM
-                    const listItem = this.element.closest("li");
+                    const listItem = this.element.closest('li');
                     if (listItem) {
                         listItem.remove();
                     } else {
                         this.element.remove();
                     }
                     this._showNotification(
-                        "Review deleted successfully",
-                        "success"
+                        'Review deleted successfully',
+                        'success'
                     );
                 } else {
-                    this._showNotification("Failed to delete review", "danger");
+                    this._showNotification('Failed to delete review', 'danger');
                 }
             })
             .catch((error) => {
-                console.error("Error deleting review:", error);
-                this._showNotification("Failed to delete review", "danger");
+                console.error('Error deleting review:', error);
+                this._showNotification('Failed to delete review', 'danger');
             });
     }
 
@@ -167,7 +167,7 @@ export default class extends Controller {
         event.preventDefault();
 
         if (!this.hasReportUrlValue) {
-            console.error("Report URL not provided");
+            console.error('Report URL not provided');
             return;
         }
 
@@ -175,10 +175,10 @@ export default class extends Controller {
         const formData = new FormData(form);
 
         fetch(this.reportUrlValue, {
-            method: "POST",
+            method: 'POST',
             body: formData,
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => response.json())
@@ -188,30 +188,30 @@ export default class extends Controller {
                     if (this.hasModalOutlet) {
                         this.modalOutlet.hide();
                     } else if (this.hasReportModalTarget) {
-                        $(this.reportModalTarget).modal("hide");
+                        $(this.reportModalTarget).modal('hide');
                     }
 
                     // Disable the report button
                     if (this.hasReportButtonTarget) {
                         this.reportButtonTarget.disabled = true;
-                        this.reportButtonTarget.classList.add("disabled");
+                        this.reportButtonTarget.classList.add('disabled');
                     }
 
                     // Show a success message
                     this._showNotification(
                         trans(REVIEW_REPORT_SUCCESS),
-                        "success"
+                        'success'
                     );
                 } else {
                     this._showNotification(
                         data.message || trans(REVIEW_REPORT_ERROR),
-                        "danger"
+                        'danger'
                     );
                 }
             })
             .catch((error) => {
-                console.error("Error submitting report:", error);
-                this._showNotification(trans(REVIEW_REPORT_ERROR), "danger");
+                console.error('Error submitting report:', error);
+                this._showNotification(trans(REVIEW_REPORT_ERROR), 'danger');
             });
     }
 
@@ -222,14 +222,14 @@ export default class extends Controller {
     _addZoomAnimation() {
         if (!this.hasUpvoteButtonTarget) return;
 
-        const icon = this.upvoteButtonTarget.querySelector("svg");
+        const icon = this.upvoteButtonTarget.querySelector('svg');
         if (!icon) return;
 
-        icon.style.transform = "scale(1.3)";
-        icon.style.transition = "transform 0.2s ease";
+        icon.style.transform = 'scale(1.3)';
+        icon.style.transition = 'transform 0.2s ease';
 
         setTimeout(() => {
-            icon.style.transform = "scale(1)";
+            icon.style.transform = 'scale(1)';
         }, 200);
     }
 
@@ -240,26 +240,26 @@ export default class extends Controller {
     _updateUpvoteButtonState() {
         if (this.hasUpvoteButtonTarget) {
             if (this.upvotedValue) {
-                this.upvoteButtonTarget.classList.add("active");
+                this.upvoteButtonTarget.classList.add('active');
                 this.upvoteButtonTarget.setAttribute(
-                    "title",
+                    'title',
                     trans(REVIEW_REMOVE_UPVOTE)
                 );
                 // Add a visual indicator for upvoted state
-                const icon = this.upvoteButtonTarget.querySelector("i");
+                const icon = this.upvoteButtonTarget.querySelector('i');
                 if (icon) {
-                    icon.classList.add("text-primary");
+                    icon.classList.add('text-primary');
                 }
             } else {
-                this.upvoteButtonTarget.classList.remove("active");
+                this.upvoteButtonTarget.classList.remove('active');
                 this.upvoteButtonTarget.setAttribute(
-                    "title",
+                    'title',
                     trans(REVIEW_UPVOTE)
                 );
                 // Remove visual indicator
-                const icon = this.upvoteButtonTarget.querySelector("i");
+                const icon = this.upvoteButtonTarget.querySelector('i');
                 if (icon) {
-                    icon.classList.remove("text-primary");
+                    icon.classList.remove('text-primary');
                 }
             }
         }
@@ -274,16 +274,16 @@ export default class extends Controller {
 
         if (this.hasReviewContentTarget) {
             const reviewContent = this.reviewContentTarget;
-            const shortReview = reviewContent.querySelector(".review-short");
-            const fullReview = reviewContent.querySelector(".review-full");
+            const shortReview = reviewContent.querySelector('.review-short');
+            const fullReview = reviewContent.querySelector('.review-full');
 
             // Toggle visibility
-            if (shortReview.style.display !== "none") {
-                shortReview.style.display = "none";
-                fullReview.style.display = "block";
+            if (shortReview.style.display !== 'none') {
+                shortReview.style.display = 'none';
+                fullReview.style.display = 'block';
             } else {
-                shortReview.style.display = "block";
-                fullReview.style.display = "none";
+                shortReview.style.display = 'block';
+                fullReview.style.display = 'none';
             }
         }
     }
@@ -299,7 +299,7 @@ export default class extends Controller {
         if (!fullText) {
             // Store the full text on first load
             const fullReview =
-                this.reviewContentTarget.querySelector(".review-full");
+                this.reviewContentTarget.querySelector('.review-full');
             if (fullReview) {
                 this.reviewContentTarget.dataset.fullText =
                     fullReview.textContent.trim();
@@ -337,9 +337,9 @@ export default class extends Controller {
         if (!fullText) return;
 
         const shortReview =
-            this.reviewContentTarget.querySelector(".review-short");
+            this.reviewContentTarget.querySelector('.review-short');
         const fullReview =
-            this.reviewContentTarget.querySelector(".review-full");
+            this.reviewContentTarget.querySelector('.review-full');
 
         if (fullText.length > maxLength) {
             // Show truncated version
@@ -347,23 +347,23 @@ export default class extends Controller {
                 const truncated = fullText.slice(0, maxLength);
                 const textNode = shortReview.childNodes[0];
                 if (textNode && textNode.nodeType === Node.TEXT_NODE) {
-                    textNode.textContent = truncated + "... ";
+                    textNode.textContent = truncated + '... ';
                 }
             }
         } else {
             // Text is short enough, hide expand/collapse buttons
             if (shortReview) {
-                shortReview.style.display = "none";
+                shortReview.style.display = 'none';
             }
             if (fullReview) {
-                fullReview.style.display = "block";
+                fullReview.style.display = 'block';
             }
             const expandButton =
-                this.reviewContentTarget.querySelector(".expand-review");
+                this.reviewContentTarget.querySelector('.expand-review');
             const collapseButton =
-                this.reviewContentTarget.querySelector(".collapse-review");
-            if (expandButton) expandButton.style.display = "none";
-            if (collapseButton) collapseButton.style.display = "none";
+                this.reviewContentTarget.querySelector('.collapse-review');
+            if (expandButton) expandButton.style.display = 'none';
+            if (collapseButton) collapseButton.style.display = 'none';
         }
     }
 
@@ -379,9 +379,9 @@ export default class extends Controller {
         this._onModalFormSubmit = this._onModalFormSubmit.bind(this);
 
         // Listen for modal events
-        this.element.addEventListener("modal:shown", this._onModalShown);
+        this.element.addEventListener('modal:shown', this._onModalShown);
         this.element.addEventListener(
-            "modal:form-submit",
+            'modal:form-submit',
             this._onModalFormSubmit
         );
     }
@@ -393,7 +393,7 @@ export default class extends Controller {
     _onModalShown(event) {
         // Focus on the first form element when modal is shown
         const firstInput = event.detail.modal.querySelector(
-            "select, input, textarea"
+            'select, input, textarea'
         );
         if (firstInput) {
             firstInput.focus();
@@ -416,24 +416,24 @@ export default class extends Controller {
      * @param {string} type - The type of notification (success, info, warning, danger)
      * @private
      */
-    _showNotification(message, type = "info") {
+    _showNotification(message, type = 'info') {
         // Get the global notification controller
         const notificationController =
             this.application.getControllerForElementAndIdentifier(
-                document.getElementById("notifications"),
-                "notification"
+                document.getElementById('notifications'),
+                'notification'
             );
 
         if (notificationController) {
             // Use the appropriate method based on notification type
             switch (type) {
-                case "success":
+                case 'success':
                     notificationController.showSuccess(message);
                     break;
-                case "warning":
+                case 'warning':
                     notificationController.showWarning(message);
                     break;
-                case "danger":
+                case 'danger':
                     notificationController.showDanger(message);
                     break;
                 default:

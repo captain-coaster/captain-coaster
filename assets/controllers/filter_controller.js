@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 /**
  * Unified Filter Controller - Handles filtering for ranking, nearby, and map pages
- * 
+ *
  * Configurable via data attributes:
  * - data-filter-endpoint-value: AJAX endpoint URL
  * - data-filter-container-id-value: Target container for results
@@ -16,22 +16,22 @@ export default class extends Controller {
         containerId: String,
         updateUrl: { type: Boolean, default: false },
         debounceDelay: { type: Number, default: 300 },
-        mapOutlet: String
+        mapOutlet: String,
     };
 
     connect() {
         this.debounceTimer = null;
         this.setupEventListeners();
-        
+
         // Make controller accessible
         this.element.filterController = this;
-        
+
         // Set up popstate handling if URL updates are enabled
         if (this.updateUrlValue) {
             this.setupPopstateHandler();
             this.restoreFiltersFromUrl();
         }
-        
+
         // Auto-trigger initial load if endpoint is provided
         if (this.hasEndpointValue) {
             this.filterData();
@@ -42,7 +42,7 @@ export default class extends Controller {
         if (this.debounceTimer) {
             clearTimeout(this.debounceTimer);
         }
-        
+
         // Clean up popstate listener
         if (this.boundPopstateHandler) {
             window.removeEventListener('popstate', this.boundPopstateHandler);
@@ -73,9 +73,11 @@ export default class extends Controller {
     }
 
     isFilterInput(element) {
-        return element.matches('select[name^="filters"]') || 
-               element.matches('input[name^="filters"]') ||
-               element.matches('input[name="page"]');
+        return (
+            element.matches('select[name^="filters"]') ||
+            element.matches('input[name^="filters"]') ||
+            element.matches('input[name="page"]')
+        );
     }
 
     debouncedFilterData() {
@@ -101,29 +103,28 @@ export default class extends Controller {
             const form = this.element.querySelector('form');
             const formData = new FormData(form);
             const params = new URLSearchParams();
-            
+
             // Only include non-empty values
             for (const [key, value] of formData.entries()) {
                 if (value && value.trim() !== '') {
                     params.set(key, value);
                 }
             }
-            
+
             const response = await fetch(`${this.endpointValue}?${params}`, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
             });
-            
+
             if (!response.ok) throw new Error('Network response was not ok');
-            
+
             const data = await response.text();
             document.getElementById(this.containerIdValue).innerHTML = data;
-            
+
             this.setupPagination();
-            
+
             if (this.updateUrlValue) {
                 this.updateBrowserUrl();
             }
-            
         } catch (error) {
             console.error('Filter request failed:', error);
         }
@@ -132,18 +133,19 @@ export default class extends Controller {
     setupPagination() {
         const container = document.getElementById(this.containerIdValue);
         if (!container) return;
-        
-        container.querySelectorAll('ul.pagination a').forEach(link => {
+
+        container.querySelectorAll('ul.pagination a').forEach((link) => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const url = new URL(link.href);
                 const page = url.searchParams.get('page');
-                
-                const pageInput = this.element.querySelector('input[name="page"]');
+
+                const pageInput =
+                    this.element.querySelector('input[name="page"]');
                 if (pageInput) {
                     pageInput.value = page || 1;
                 }
-                
+
                 this.filterData().then(() => {
                     container.scrollIntoView({ behavior: 'smooth' });
                 });
@@ -155,17 +157,18 @@ export default class extends Controller {
         const form = this.element.querySelector('form');
         const formData = new FormData(form);
         const params = new URLSearchParams();
-        
+
         // Only include non-empty values (exclude user field)
         for (const [key, value] of formData.entries()) {
             if (value && value.trim() !== '' && !key.includes('[user]')) {
                 params.set(key, value);
             }
         }
-        
+
         const queryString = params.toString();
-        const newUrl = window.location.pathname + (queryString ? '?' + queryString : '');
-        
+        const newUrl =
+            window.location.pathname + (queryString ? '?' + queryString : '');
+
         window.history.pushState(null, '', newUrl);
     }
 
@@ -173,9 +176,9 @@ export default class extends Controller {
     restoreFiltersFromUrl() {
         const params = new URLSearchParams(window.location.search);
         if (params.toString() === '') return;
-        
+
         const form = this.element.querySelector('form');
-        
+
         // Apply URL parameters to form
         for (const [key, value] of params.entries()) {
             const input = form.querySelector(`[name="${key}"]`);
@@ -192,13 +195,13 @@ export default class extends Controller {
     // Handle browser back/forward
     handlePopState() {
         if (!this.updateUrlValue) return;
-        
+
         const params = new URLSearchParams(window.location.search);
         const form = this.element.querySelector('form');
-        
+
         // Reset form
         form.reset();
-        
+
         // Apply URL parameters to form
         for (const [key, value] of params.entries()) {
             const input = form.querySelector(`[name="${key}"]`);
@@ -210,7 +213,7 @@ export default class extends Controller {
                 }
             }
         }
-        
+
         this.filterData();
     }
 }

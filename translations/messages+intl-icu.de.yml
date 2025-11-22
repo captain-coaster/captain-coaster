@@ -323,7 +323,7 @@ navbar:
 
 sidebar:
     index: Home
-    nearby: Finde Achterbahnen in der Nähe
+    search: Achterbahnen suchen
     ranking: Weltrangliste der Achterbahnen
     users: Unsere Fahrer
     map: Achterbahn Landkarte

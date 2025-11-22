@@ -297,7 +297,7 @@ class CoasterRepository extends ServiceEntityRepository
 
         if (isset($filters['kiddie'])) {
             $qb->andWhere('c.kiddie = :kiddie')
-               ->setParameter('kiddie', 'on' === $filters['kiddie']);
+               ->setParameter('kiddie', 'on' !== $filters['kiddie']);
         }
     }
 

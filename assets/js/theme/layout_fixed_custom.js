@@ -4,21 +4,27 @@
  * Handles mini sidebar behavior and responsive interactions
  */
 
-$(function() {
+$(function () {
     // Mini sidebar functionality
     function miniSidebar() {
         if ($('body').hasClass('sidebar-xs')) {
-            $('.sidebar-main.sidebar-fixed .sidebar-content').on('mouseenter', function () {
-                if ($('body').hasClass('sidebar-xs')) {
-                    // Expand fixed navbar
-                    $('body').removeClass('sidebar-xs').addClass('sidebar-fixed-expanded');
-                }
-            }).on('mouseleave', function () {
-                if ($('body').hasClass('sidebar-fixed-expanded')) {
-                    // Collapse fixed navbar
-                    $('body').removeClass('sidebar-fixed-expanded').addClass('sidebar-xs');
-                }
-            });
+            $('.sidebar-main.sidebar-fixed .sidebar-content')
+                .on('mouseenter', function () {
+                    if ($('body').hasClass('sidebar-xs')) {
+                        // Expand fixed navbar
+                        $('body')
+                            .removeClass('sidebar-xs')
+                            .addClass('sidebar-fixed-expanded');
+                    }
+                })
+                .on('mouseleave', function () {
+                    if ($('body').hasClass('sidebar-fixed-expanded')) {
+                        // Collapse fixed navbar
+                        $('body')
+                            .removeClass('sidebar-fixed-expanded')
+                            .addClass('sidebar-xs');
+                    }
+                });
         }
     }
 

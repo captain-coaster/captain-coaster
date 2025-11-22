@@ -31,7 +31,6 @@ index:
         images: fotos
     missingImages: "¡Buscamos fotos para esta montaña rusa!"
 
-
 coaster:
     score:
         title: "PUNTUACIÓN"
@@ -324,7 +323,7 @@ navbar:
 
 sidebar:
     index: Pagina de inicio
-    nearby: Montañas rusas cercanas
+    search: Buscar montañas rusas
     ranking: Las mejores montañas rusas
     users: Nuestros usuarios
     map: Mapa de las montañas rusas
@@ -438,8 +437,6 @@ error:
     maintenance:
         title: "¡Parada Técnica Rápida! 🔧"
         message: "Por favor, permanezca en línea. ¡Reanudaremos las operaciones en unos minutos!"
-
-
 
 banner:
     coasters: "{count, plural, one {1 montaña rusa} other {# montañas rusas}}"

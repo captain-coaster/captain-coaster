@@ -2,10 +2,10 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['container'];
-    static values = { 
+    static values = {
         slug: String,
         locale: String,
-        totalImages: Number
+        totalImages: Number,
     };
 
     connect() {
@@ -14,18 +14,18 @@ export default class extends Controller {
 
     loadImages(imageNumber = null) {
         const count = imageNumber || this.getImageCount();
-        
+
         fetch(this.buildUrl(count), {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         })
-            .then(response => response.text())
-            .then(html => {
+            .then((response) => response.text())
+            .then((html) => {
                 this.containerTarget.innerHTML = html;
                 this.attachShowAllHandler();
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Error loading images:', error);
                 this.containerTarget.style.display = 'none';
             });
@@ -46,13 +46,13 @@ export default class extends Controller {
                 return Routing.generate('coaster_images_ajax_load', {
                     slug: this.slugValue,
                     imageNumber: imageNumber,
-                    _locale: this.localeValue
+                    _locale: this.localeValue,
                 });
             } catch (error) {
                 console.warn('Routing failed:', error);
             }
         }
-        
+
         return `${window.location.origin}/${this.localeValue}/coasters/${this.slugValue}/images/ajax/${imageNumber}`;
     }
 

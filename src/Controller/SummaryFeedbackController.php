@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Controller for handling user feedback on AI-generated coaster summaries.
@@ -25,7 +26,8 @@ class SummaryFeedbackController extends BaseController
     public function __construct(
         private SummaryFeedbackService $feedbackService,
         private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private TranslatorInterface $translator
     ) {
     }
 
@@ -40,16 +42,20 @@ class SummaryFeedbackController extends BaseController
         Request $request,
         CoasterSummary $summary
     ): JsonResponse {
-        // Validate CSRF token
-        if (!$this->isCsrfTokenValid('summary_feedback_'.$summary->getId(), $request->request->get('_token'))) {
+        // Validate CSRF token - use a consistent token ID for all summaries
+        $token = $request->request->get('_token');
+        $tokenId = 'summary_feedback';
+
+        if (!$this->isCsrfTokenValid($tokenId, $token)) {
             $this->logger->warning('Invalid CSRF token for summary feedback', [
                 'ip' => $request->getClientIp(),
                 'summary_id' => $summary->getId(),
+                'token_provided' => $token ? 'yes' : 'no',
             ]);
 
             return new JsonResponse([
                 'success' => false,
-                'message' => 'Invalid security token.',
+                'message' => $this->translator->trans('ai_summary.feedback.error_token', [], 'ai_summary'),
             ], Response::HTTP_FORBIDDEN);
         }
 
@@ -95,7 +101,7 @@ class SummaryFeedbackController extends BaseController
 
             return new JsonResponse([
                 'success' => false,
-                'message' => 'An error occurred while submitting feedback.',
+                'message' => $this->translator->trans('ai_summary.feedback.error', [], 'ai_summary'),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

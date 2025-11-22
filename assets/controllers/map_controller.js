@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 /**
  * Map Controller - Clean Stimulus component for Leaflet maps
@@ -10,7 +10,7 @@ export default class extends Controller {
         parkId: String,
     };
 
-    static targets = ["container"];
+    static targets = ['container'];
 
     connect() {
         // Make controller accessible for filter functionality
@@ -27,15 +27,15 @@ export default class extends Controller {
     async initializeMap() {
         try {
             // Dynamic import of Leaflet
-            const L = await import("leaflet");
-            await import("leaflet/dist/leaflet.css");
+            const L = await import('leaflet');
+            await import('leaflet/dist/leaflet.css');
 
             // Fix default marker icons (Leaflet + Webpack issue)
             delete L.Icon.Default.prototype._getIconUrl;
             L.Icon.Default.mergeOptions({
-                iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-                iconUrl: require("leaflet/dist/images/marker-icon.png"),
-                shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+                iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+                iconUrl: require('leaflet/dist/images/marker-icon.png'),
+                shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
             });
 
             // Create map with world copy jump enabled
@@ -45,9 +45,9 @@ export default class extends Controller {
 
             // Add CartoDB Voyager tile layer (colorful, English labels worldwide)
             L.tileLayer(
-                "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+                'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
                 {
-                    attribution: "© OpenStreetMap contributors © CARTO",
+                    attribution: '© OpenStreetMap contributors © CARTO',
                     maxZoom: 15,
                     minZoom: 3,
                 }
@@ -66,7 +66,7 @@ export default class extends Controller {
                 this.setUserLocation();
             }
         } catch (error) {
-            console.error("Failed to initialize map:", error);
+            console.error('Failed to initialize map:', error);
         }
     }
 
@@ -88,7 +88,7 @@ export default class extends Controller {
             marker.title = park.name;
             this.gmarkers.push(marker);
 
-            marker.on("click", () => {
+            marker.on('click', () => {
                 this.loadParkData(marker);
             });
         });
@@ -97,19 +97,19 @@ export default class extends Controller {
     createCoasterMarker(coasterCount) {
         let color;
         if (coasterCount === 1) {
-            color = "#22c55e"; // Green - 1 coaster
+            color = '#22c55e'; // Green - 1 coaster
         } else if (coasterCount <= 5) {
-            color = "#f59e0b"; // Orange - 2-5 coasters
+            color = '#f59e0b'; // Orange - 2-5 coasters
         } else if (coasterCount <= 10) {
-            color = "#ef4444"; // Red - 6-10 coasters
+            color = '#ef4444'; // Red - 6-10 coasters
         } else if (coasterCount <= 15) {
-            color = "#dc2626"; // Dark Red - 11-15 coasters
+            color = '#dc2626'; // Dark Red - 11-15 coasters
         } else {
-            color = "#8b5cf6"; // Purple - 15+ coasters
+            color = '#8b5cf6'; // Purple - 15+ coasters
         }
 
         return window.L.divIcon({
-            className: "coaster-marker",
+            className: 'coaster-marker',
             html: `<div class="coaster-marker-inner" data-count="${coasterCount}" style="background: ${color};">${coasterCount}</div>`,
             iconSize: [20, 20],
             iconAnchor: [10, 10],
@@ -119,28 +119,28 @@ export default class extends Controller {
 
     loadParkData(marker) {
         // Always reload popup data to respect current filters
-        marker.bindPopup("Loading...").openPopup();
+        marker.bindPopup('Loading...').openPopup();
 
-        const url = window.Routing.generate("map_coasters_ajax", {
+        const url = window.Routing.generate('map_coasters_ajax', {
             id: marker.parkId,
-            _locale: document.documentElement.lang || "en",
+            _locale: document.documentElement.lang || 'en',
         });
 
         // Get current form data directly (simple approach)
-        const form = document.querySelector("form");
+        const form = document.querySelector('form');
         const formData = new FormData(form);
         const params = new URLSearchParams();
 
         // Only include non-empty values
         for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== "") {
+            if (value && value.trim() !== '') {
                 params.set(key, value);
             }
         }
 
         fetch(`${url}?${params}`, {
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => response.text())
@@ -148,8 +148,8 @@ export default class extends Controller {
                 marker.bindPopup(coasters).openPopup();
             })
             .catch((error) => {
-                console.error("Failed to load park data:", error);
-                marker.bindPopup("Error loading data").openPopup();
+                console.error('Failed to load park data:', error);
+                marker.bindPopup('Error loading data').openPopup();
             });
     }
 
@@ -173,33 +173,33 @@ export default class extends Controller {
     }
 
     filterData() {
-        console.log("Map filterData called");
+        console.log('Map filterData called');
 
-        const url = window.Routing.generate("map_markers_ajax", {
-            _locale: document.documentElement.lang || "en",
+        const url = window.Routing.generate('map_markers_ajax', {
+            _locale: document.documentElement.lang || 'en',
         });
 
-        const form = document.querySelector("form");
+        const form = document.querySelector('form');
         const formData = new FormData(form);
         const params = new URLSearchParams();
 
         // Only include non-empty values
         for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== "") {
+            if (value && value.trim() !== '') {
                 params.set(key, value);
             }
         }
 
-        console.log("Filter request URL:", `${url}?${params}`);
+        console.log('Filter request URL:', `${url}?${params}`);
 
         fetch(`${url}?${params}`, {
             headers: {
-                "X-Requested-With": "XMLHttpRequest",
+                'X-Requested-With': 'XMLHttpRequest',
             },
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log("Received filtered data:", data.length, "markers");
+                console.log('Received filtered data:', data.length, 'markers');
                 this.removeMarkers();
                 this.markersValue = data;
                 this.generateMarkers();
@@ -216,7 +216,7 @@ export default class extends Controller {
                 }
             })
             .catch((error) => {
-                console.error("Failed to filter markers:", error);
+                console.error('Failed to filter markers:', error);
             });
     }
 

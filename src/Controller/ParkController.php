@@ -20,7 +20,7 @@ class ParkController extends AbstractController
     #[\Symfony\Component\Routing\Attribute\Route(path: '/', name: 'park_index', methods: ['GET'])]
     public function index(): RedirectResponse
     {
-        return $this->redirectToRoute('bdd_index');
+        return $this->redirectToRoute('default_index');
     }
 
     /** Show park details. */

@@ -2,9 +2,9 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['container'];
-    static values = { 
+    static values = {
         slug: String,
-        locale: String
+        locale: String,
     };
 
     connect() {
@@ -14,14 +14,14 @@ export default class extends Controller {
     loadSummary() {
         fetch(this.buildUrl(), {
             headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+                'X-Requested-With': 'XMLHttpRequest',
+            },
         })
-            .then(response => response.text())
-            .then(html => {
+            .then((response) => response.text())
+            .then((html) => {
                 this.containerTarget.innerHTML = html;
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Error loading AI summary:', error);
                 this.containerTarget.style.display = 'none';
             });
@@ -32,13 +32,13 @@ export default class extends Controller {
             try {
                 return Routing.generate('coaster_summary_ajax_load', {
                     slug: this.slugValue,
-                    _locale: this.localeValue
+                    _locale: this.localeValue,
                 });
             } catch (error) {
                 console.warn('Routing failed:', error);
             }
         }
-        
+
         return `${window.location.origin}/${this.localeValue}/coasters/${this.slugValue}/summary/ajax`;
     }
 }

@@ -2,7 +2,13 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['deleteButton', 'title'];
-    static values = { ratingId: Number, locale: String, mode: String, rateText: String, myRatingText: String };
+    static values = {
+        ratingId: Number,
+        locale: String,
+        mode: String,
+        rateText: String,
+        myRatingText: String,
+    };
     static outlets = ['csrf-protection'];
 
     connect() {
@@ -28,7 +34,7 @@ export default class extends Controller {
         try {
             const headers = { 'X-Requested-With': 'XMLHttpRequest' };
             let body = null;
-            
+
             if (this.csrfProtectionOutlet) {
                 headers['Content-Type'] = 'application/x-www-form-urlencoded';
                 body = `_token=${this.csrfProtectionOutlet.getToken()}`;
@@ -36,13 +42,13 @@ export default class extends Controller {
 
             const url = Routing.generate('rating_delete', {
                 id: this.ratingIdValue,
-                _locale: this.localeValue
+                _locale: this.localeValue,
             });
-            
-            const response = await fetch(url.replace(/^http:/, 'https:'), { 
+
+            const response = await fetch(url.replace(/^http:/, 'https:'), {
                 method: 'DELETE',
                 headers,
-                body
+                body,
             });
 
             if (!response.ok) throw new Error('Delete failed');
@@ -52,14 +58,14 @@ export default class extends Controller {
             console.error('Rating deletion failed:', {
                 ratingId: this.ratingIdValue,
                 error: error.message,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
             });
-            
+
             // Show user-friendly error message
-            const errorMsg = error.message.includes('Network') ? 
-                'Network error. Please check your connection.' : 
-                'Unable to delete rating. Please try again.';
-            
+            const errorMsg = error.message.includes('Network')
+                ? 'Network error. Please check your connection.'
+                : 'Unable to delete rating. Please try again.';
+
             this.dispatch('error', { detail: { message: errorMsg } });
         }
     }
@@ -90,9 +96,15 @@ export default class extends Controller {
     }
 
     resetRatingStars() {
-        const ratingElement = document.querySelector('[data-controller*="rating"]:not([data-controller*="rating-"])');
+        const ratingElement = document.querySelector(
+            '[data-controller*="rating"]:not([data-controller*="rating-"])'
+        );
         if (ratingElement) {
-            const controller = this.application.getControllerForElementAndIdentifier(ratingElement, 'rating');
+            const controller =
+                this.application.getControllerForElementAndIdentifier(
+                    ratingElement,
+                    'rating'
+                );
             if (controller?.resetToZero) controller.resetToZero();
         }
     }
@@ -101,13 +113,17 @@ export default class extends Controller {
         if (this.hasDeleteButtonTarget) {
             // Only show if we have a valid rating ID
             const shouldShow = this.hasRatingIdValue && this.ratingIdValue > 0;
-            this.deleteButtonTarget.style.display = shouldShow ? 'inline-flex' : 'none';
+            this.deleteButtonTarget.style.display = shouldShow
+                ? 'inline-flex'
+                : 'none';
         }
     }
 
     updateTitle() {
         if (this.hasTitleTarget) {
-            this.titleTarget.textContent = this.ratingIdValue ? this.myRatingTextValue : this.rateTextValue;
+            this.titleTarget.textContent = this.ratingIdValue
+                ? this.myRatingTextValue
+                : this.rateTextValue;
         }
     }
 }

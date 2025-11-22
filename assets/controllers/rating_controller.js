@@ -1,7 +1,7 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ["star"];
+    static targets = ['star'];
     static values = {
         coasterId: Number,
         currentValue: Number,
@@ -10,7 +10,7 @@ export default class extends Controller {
         readonly: Boolean,
         formFieldId: String,
     };
-    static outlets = ["csrf-protection"];
+    static outlets = ['csrf-protection'];
 
     connect() {
         this.renderStars();
@@ -19,12 +19,12 @@ export default class extends Controller {
 
     renderStars() {
         const container = this.element;
-        container.classList.add("rating-stars");
+        container.classList.add('rating-stars');
 
         for (let i = 1; i <= 5; i++) {
-            const star = document.createElement("span");
-            star.className = "rating-star";
-            star.dataset.ratingTarget = "star";
+            const star = document.createElement('span');
+            star.className = 'rating-star';
+            star.dataset.ratingTarget = 'star';
             star.dataset.value = i;
             star.innerHTML = this.getStarSVG(i);
             container.appendChild(star);
@@ -50,7 +50,7 @@ export default class extends Controller {
     setupEventListeners() {
         if (this.readonlyValue) return;
 
-        const isMobile = "ontouchstart" in window;
+        const isMobile = 'ontouchstart' in window;
 
         if (isMobile) {
             this.setupMobileEvents();
@@ -66,7 +66,7 @@ export default class extends Controller {
         this.hoverValue = 0;
 
         this.element.addEventListener(
-            "touchstart",
+            'touchstart',
             (e) => {
                 this.touchStartY = e.touches[0].clientY;
                 this.touchStartX = e.touches[0].clientX;
@@ -80,7 +80,7 @@ export default class extends Controller {
         );
 
         this.element.addEventListener(
-            "touchmove",
+            'touchmove',
             (e) => {
                 const touchY = e.touches[0].clientY;
                 const touchX = e.touches[0].clientX;
@@ -101,7 +101,7 @@ export default class extends Controller {
             { passive: true }
         );
 
-        this.element.addEventListener("touchend", (e) => {
+        this.element.addEventListener('touchend', (e) => {
             if (!this.isScrolling && this.hoverValue > 0) {
                 this.setRating(this.hoverValue);
             } else {
@@ -112,7 +112,7 @@ export default class extends Controller {
             this.hoverValue = 0;
         });
 
-        this.element.addEventListener("touchcancel", () => {
+        this.element.addEventListener('touchcancel', () => {
             this.isScrolling = false;
             this.hoverValue = 0;
             this.updateStarDisplay(this.currentValueValue || 0);
@@ -120,16 +120,16 @@ export default class extends Controller {
     }
 
     setupDesktopEvents() {
-        this.element.addEventListener("mousemove", (e) => {
+        this.element.addEventListener('mousemove', (e) => {
             const value = this.getValueFromEvent(e);
             this.updateStarDisplay(value);
         });
 
-        this.element.addEventListener("mouseleave", () => {
+        this.element.addEventListener('mouseleave', () => {
             this.updateStarDisplay(this.currentValueValue || 0);
         });
 
-        this.element.addEventListener("click", (e) => {
+        this.element.addEventListener('click', (e) => {
             const value = this.getValueFromEvent(e);
             if (value > 0) {
                 this.setRating(value);
@@ -150,14 +150,14 @@ export default class extends Controller {
             const starValue = index + 1;
 
             // Remove all state classes
-            star.classList.remove("star-full", "star-half", "star-empty");
+            star.classList.remove('star-full', 'star-half', 'star-empty');
 
             if (value >= starValue) {
-                star.classList.add("star-full");
+                star.classList.add('star-full');
             } else if (value >= starValue - 0.5) {
-                star.classList.add("star-half");
+                star.classList.add('star-half');
             } else {
-                star.classList.add("star-empty");
+                star.classList.add('star-empty');
             }
         });
     }
@@ -182,49 +182,49 @@ export default class extends Controller {
         const wasNew = !this.ratingIdValue;
 
         try {
-            const url = Routing.generate("rating_edit", {
+            const url = Routing.generate('rating_edit', {
                 id: this.coasterIdValue,
                 _locale: this.localeValue,
             });
 
-            const response = await fetch(url.replace(/^http:/, "https:"), {
-                method: "POST",
+            const response = await fetch(url.replace(/^http:/, 'https:'), {
+                method: 'POST',
                 headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "X-Requested-With": "XMLHttpRequest",
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
                 },
                 body: this.csrfProtectionOutlet
                     ? this.csrfProtectionOutlet.addTokenToBody(`value=${value}`)
                     : `value=${value}`,
             });
 
-            if (!response.ok) throw new Error("Failed to save rating");
+            if (!response.ok) throw new Error('Failed to save rating');
 
             const data = await response.json();
             if (data.id) this.ratingIdValue = data.id;
 
             // Add sparkle effect
-            this.element.classList.add("rating-confirmed");
+            this.element.classList.add('rating-confirmed');
             setTimeout(() => {
-                this.element.classList.remove("rating-confirmed");
+                this.element.classList.remove('rating-confirmed');
             }, 600);
 
-            this.dispatch(wasNew ? "created" : "updated", {
+            this.dispatch(wasNew ? 'created' : 'updated', {
                 detail: { ratingId: data.id || this.ratingIdValue },
                 bubbles: true,
             });
         } catch (error) {
-            console.error("Rating save failed:", error);
+            console.error('Rating save failed:', error);
 
             // Revert to previous value
             this.currentValueValue = previousValue;
             this.updateStarDisplay(previousValue || 0);
 
-            const errorMsg = error.message.includes("Network")
-                ? "Network error. Rating not saved."
-                : "Unable to save rating. Please try again.";
+            const errorMsg = error.message.includes('Network')
+                ? 'Network error. Rating not saved.'
+                : 'Unable to save rating. Please try again.';
 
-            this.dispatch("error", { detail: { message: errorMsg } });
+            this.dispatch('error', { detail: { message: errorMsg } });
         }
     }
 
@@ -232,6 +232,6 @@ export default class extends Controller {
         this.currentValueValue = 0;
         this.ratingIdValue = null;
         this.updateStarDisplay(0);
-        this.dispatch("deleted", { bubbles: true });
+        this.dispatch('deleted', { bubbles: true });
     }
 }

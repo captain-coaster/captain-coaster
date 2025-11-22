@@ -32,7 +32,7 @@ class CoasterController extends BaseController
     #[Route(path: '/', name: 'coaster_index', methods: ['GET'])]
     public function index(): RedirectResponse
     {
-        return $this->redirectToRoute('bdd_index');
+        return $this->redirectToRoute('default_index');
     }
 
     /** Uploads an image for a coaster */

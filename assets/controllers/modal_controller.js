@@ -10,13 +10,13 @@ export default class extends Controller {
         backdrop: { type: String, default: 'true' },
         keyboard: { type: Boolean, default: true },
         show: { type: Boolean, default: false },
-        remote: String
+        remote: String,
     };
 
     connect() {
         // Initialize the modal with Bootstrap 3.x options
         this._initializeModal();
-        
+
         // Set up event listeners for Bootstrap modal events
         this._setupEventListeners();
     }
@@ -88,9 +88,10 @@ export default class extends Controller {
         if (!this.hasModalTarget) return;
 
         const options = {
-            backdrop: this.backdropValue === 'false' ? false : this.backdropValue,
+            backdrop:
+                this.backdropValue === 'false' ? false : this.backdropValue,
             keyboard: this.keyboardValue,
-            show: this.showValue
+            show: this.showValue,
         };
 
         // Add remote option if specified
@@ -118,9 +119,10 @@ export default class extends Controller {
 
         $modal.on('shown.bs.modal.modal-controller', (event) => {
             this._dispatchCustomEvent('modal:shown', { originalEvent: event });
-            
+
             // Focus on autofocus elements when modal is shown
-            const autofocusElement = this.modalTarget.querySelector('[autofocus]');
+            const autofocusElement =
+                this.modalTarget.querySelector('[autofocus]');
             if (autofocusElement) {
                 autofocusElement.focus();
             }
@@ -136,9 +138,9 @@ export default class extends Controller {
 
         // Handle form submissions within the modal
         $modal.on('submit.modal-controller', 'form', (event) => {
-            this._dispatchCustomEvent('modal:form-submit', { 
+            this._dispatchCustomEvent('modal:form-submit', {
                 originalEvent: event,
-                form: event.target 
+                form: event.target,
             });
         });
     }
@@ -152,10 +154,10 @@ export default class extends Controller {
             detail: {
                 controller: this,
                 modal: this.modalTarget,
-                ...detail
+                ...detail,
             },
             bubbles: true,
-            cancelable: true
+            cancelable: true,
         });
 
         this.modalTarget.dispatchEvent(event);
@@ -182,14 +184,16 @@ export default class extends Controller {
     static createModal(element, options = {}) {
         // Ensure jQuery is available for Bootstrap 3.x
         if (typeof $ === 'undefined') {
-            console.error('jQuery is required for Bootstrap 3.x modal functionality');
+            console.error(
+                'jQuery is required for Bootstrap 3.x modal functionality'
+            );
             return null;
         }
 
         // Initialize with Bootstrap 3.x modal
         const $modal = $(element);
         $modal.modal(options);
-        
+
         return $modal;
     }
 
@@ -200,7 +204,7 @@ export default class extends Controller {
     handleFormSubmission(form, options = {}) {
         const formData = new FormData(form);
         const url = form.action || options.url;
-        
+
         if (!url) {
             console.error('No URL provided for form submission');
             return Promise.reject(new Error('No URL provided'));
@@ -211,18 +215,18 @@ export default class extends Controller {
             body: formData,
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                ...options.headers
-            }
+                ...options.headers,
+            },
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .catch(error => {
-            console.error('Form submission error:', error);
-            throw error;
-        });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .catch((error) => {
+                console.error('Form submission error:', error);
+                throw error;
+            });
     }
 }

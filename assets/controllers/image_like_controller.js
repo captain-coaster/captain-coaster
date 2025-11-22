@@ -1,7 +1,7 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    static targets = ["icon", "counter"];
+    static targets = ['icon', 'counter'];
     static values = {
         imageId: Number,
         locale: String,
@@ -16,13 +16,13 @@ export default class extends Controller {
 
         try {
             const response = await fetch(
-                Routing.generate("like_image_async", {
+                Routing.generate('like_image_async', {
                     id: this.imageIdValue,
                     _locale: this.localeValue,
                 }),
                 {
-                    method: "GET",
-                    headers: { "X-Requested-With": "XMLHttpRequest" },
+                    method: 'GET',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
                 }
             );
 
@@ -32,7 +32,7 @@ export default class extends Controller {
                 return;
             }
 
-            if (!response.ok) throw new Error("Toggle like failed");
+            if (!response.ok) throw new Error('Toggle like failed');
 
             const data = await response.json();
 
@@ -45,7 +45,7 @@ export default class extends Controller {
                 this.counterTarget.textContent = data.likeCount;
             }
         } catch (error) {
-            console.error("Like toggle error:", error);
+            console.error('Like toggle error:', error);
         }
     }
 
@@ -53,11 +53,11 @@ export default class extends Controller {
         if (!this.hasIconTarget) return;
 
         const icon = this.iconTarget;
-        icon.style.transform = "scale(1.3)";
-        icon.style.transition = "transform 0.2s ease";
+        icon.style.transform = 'scale(1.3)';
+        icon.style.transition = 'transform 0.2s ease';
 
         setTimeout(() => {
-            icon.style.transform = "scale(1)";
+            icon.style.transform = 'scale(1)';
         }, 200);
     }
 

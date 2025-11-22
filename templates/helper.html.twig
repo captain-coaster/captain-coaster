@@ -25,14 +25,14 @@
         <span class="badge badge-flat border-warning-600 text-warning-600">new</span>
     {% elseif coaster.previousRank < coaster.rank %}
         <span class="badge badge-flat border-danger-600 text-danger-600">
-      {{ ux_icon('heroicons:arrow-down', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+      {{ ux_icon('bxs:down-arrow', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
     </span>
     {% elseif coaster.previousRank > coaster.rank %}
         <span class="badge badge-flat border-success-600 text-success-600">
-      {{ ux_icon('heroicons:arrow-up', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+      {{ ux_icon('bxs:up-arrow', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
     </span>
     {% elseif coaster.previousRank == coaster.rank %}
-        <span class="badge badge-flat border-primary-600 text-primary-600">{{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6'}) }}</span>
+        <span class="badge badge-flat border-primary-600 text-primary-600">{{ ux_icon('bxs:up-arrow', {'class': 'w-6 h-6'}) }}</span>
     {% endif %}
 {% endmacro %}
 

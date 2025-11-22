@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static values = {
@@ -11,12 +11,12 @@ export default class extends Controller {
 
     connect() {
         // Only enhance if it's an input element
-        if (this.element.tagName !== "INPUT") {
+        if (this.element.tagName !== 'INPUT') {
             return;
         }
 
         // Set default values
-        this.formatValue = this.formatValue || "yyyy-mm-dd";
+        this.formatValue = this.formatValue || 'yyyy-mm-dd';
         this.autocloseValue = this.hasAutocloseValue
             ? this.autocloseValue
             : true;
@@ -25,10 +25,10 @@ export default class extends Controller {
             : true;
 
         // Set input type to date for modern browsers
-        this.element.type = "date";
+        this.element.type = 'date';
 
         // Add CSS classes for styling
-        this.element.classList.add("datepicker-input");
+        this.element.classList.add('datepicker-input');
 
         // Set constraints if provided
         if (this.hasStartDateValue) {
@@ -41,18 +41,18 @@ export default class extends Controller {
 
         // Set today as max date if no end date specified
         if (!this.hasEndDateValue) {
-            const today = new Date().toISOString().split("T")[0];
+            const today = new Date().toISOString().split('T')[0];
             this.element.max = today;
         }
 
         // Add event listeners
         this.element.addEventListener(
-            "change",
+            'change',
             this.handleDateChange.bind(this)
         );
-        this.element.addEventListener("focus", this.handleFocus.bind(this));
-        this.element.addEventListener("blur", this.handleBlur.bind(this));
-        this.element.addEventListener("click", this.handleClick.bind(this));
+        this.element.addEventListener('focus', this.handleFocus.bind(this));
+        this.element.addEventListener('blur', this.handleBlur.bind(this));
+        this.element.addEventListener('click', this.handleClick.bind(this));
     }
 
     handleClick(event) {
@@ -65,7 +65,7 @@ export default class extends Controller {
 
         // Validate date if needed
         if (selectedDate && !this.isValidDate(selectedDate)) {
-            this.showError("Invalid date selected");
+            this.showError('Invalid date selected');
             return;
         }
 
@@ -74,7 +74,7 @@ export default class extends Controller {
 
         // Dispatch custom event for other controllers to listen
         this.element.dispatchEvent(
-            new CustomEvent("datepicker:change", {
+            new CustomEvent('datepicker:change', {
                 detail: {
                     date: selectedDate,
                     formattedDate: this.formatDate(selectedDate),
@@ -85,11 +85,11 @@ export default class extends Controller {
     }
 
     handleFocus(event) {
-        this.element.classList.add("focused");
+        this.element.classList.add('focused');
     }
 
     handleBlur(event) {
-        this.element.classList.remove("focused");
+        this.element.classList.remove('focused');
     }
 
     isValidDate(dateString) {
@@ -98,45 +98,45 @@ export default class extends Controller {
     }
 
     formatDate(dateString) {
-        if (!dateString) return "";
+        if (!dateString) return '';
 
         const date = new Date(dateString);
 
         // Format based on the format value
         switch (this.formatValue) {
-            case "dd/mm/yyyy":
-                return date.toLocaleDateString("en-GB");
-            case "mm/dd/yyyy":
-                return date.toLocaleDateString("en-US");
-            case "yyyy-mm-dd":
+            case 'dd/mm/yyyy':
+                return date.toLocaleDateString('en-GB');
+            case 'mm/dd/yyyy':
+                return date.toLocaleDateString('en-US');
+            case 'yyyy-mm-dd':
             default:
                 return dateString; // Already in correct format
         }
     }
 
     showError(message) {
-        this.element.classList.add("error");
+        this.element.classList.add('error');
 
         // Create or update error message
         let errorEl =
-            this.element.parentNode.querySelector(".datepicker-error");
+            this.element.parentNode.querySelector('.datepicker-error');
         if (!errorEl) {
-            errorEl = document.createElement("div");
-            errorEl.className = "datepicker-error";
+            errorEl = document.createElement('div');
+            errorEl.className = 'datepicker-error';
             this.element.parentNode.appendChild(errorEl);
         }
 
         errorEl.textContent = message;
-        errorEl.style.display = "block";
+        errorEl.style.display = 'block';
     }
 
     clearError() {
-        this.element.classList.remove("error");
+        this.element.classList.remove('error');
 
         const errorEl =
-            this.element.parentNode.querySelector(".datepicker-error");
+            this.element.parentNode.querySelector('.datepicker-error');
         if (errorEl) {
-            errorEl.style.display = "none";
+            errorEl.style.display = 'none';
         }
     }
 
@@ -151,12 +151,12 @@ export default class extends Controller {
     }
 
     clear() {
-        this.element.value = "";
+        this.element.value = '';
         this.clearError();
     }
 
     setToday() {
-        const today = new Date().toISOString().split("T")[0];
+        const today = new Date().toISOString().split('T')[0];
         this.setDate(today);
     }
 }

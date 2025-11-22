@@ -1,4 +1,4 @@
-import { Controller } from "@hotwired/stimulus";
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static values = {
@@ -10,7 +10,7 @@ export default class extends Controller {
 
     connect() {
         // Only enhance if it's a select element
-        if (this.element.tagName !== "SELECT") {
+        if (this.element.tagName !== 'SELECT') {
             return;
         }
 
@@ -31,9 +31,9 @@ export default class extends Controller {
             this.customDropdown.remove();
         }
         if (this.originalSelect) {
-            this.originalSelect.style.display = "";
+            this.originalSelect.style.display = '';
         }
-        document.removeEventListener("click", this.closeOnOutsideClick);
+        document.removeEventListener('click', this.closeOnOutsideClick);
     }
 
     initializeOptions() {
@@ -55,30 +55,30 @@ export default class extends Controller {
 
     createCustomDropdown() {
         // Hide original select
-        this.originalSelect.style.display = "none";
+        this.originalSelect.style.display = 'none';
 
         // Create custom dropdown structure
-        this.customDropdown = document.createElement("div");
-        this.customDropdown.className = "enhanced-select-container";
+        this.customDropdown = document.createElement('div');
+        this.customDropdown.className = 'enhanced-select-container';
 
         // Create selection display
-        this.selectionDisplay = document.createElement("div");
-        this.selectionDisplay.className = "enhanced-select-display";
-        this.selectionDisplay.addEventListener("click", () => this.toggle());
+        this.selectionDisplay = document.createElement('div');
+        this.selectionDisplay.className = 'enhanced-select-display';
+        this.selectionDisplay.addEventListener('click', () => this.toggle());
 
         // Create dropdown menu
-        this.dropdownMenu = document.createElement("div");
-        this.dropdownMenu.className = "enhanced-select-popup";
+        this.dropdownMenu = document.createElement('div');
+        this.dropdownMenu.className = 'enhanced-select-popup';
 
         // Add search if searchable
         if (this.searchableValue) {
-            this.searchContainer = document.createElement("div");
-            this.searchContainer.className = "enhanced-select-search";
+            this.searchContainer = document.createElement('div');
+            this.searchContainer.className = 'enhanced-select-search';
 
-            this.searchInput = document.createElement("input");
-            this.searchInput.type = "text";
-            this.searchInput.placeholder = "Search...";
-            this.searchInput.addEventListener("input", (e) =>
+            this.searchInput = document.createElement('input');
+            this.searchInput.type = 'text';
+            this.searchInput.placeholder = 'Search...';
+            this.searchInput.addEventListener('input', (e) =>
                 this.filterOptions(e.target.value)
             );
 
@@ -87,25 +87,25 @@ export default class extends Controller {
         }
 
         // Create options container
-        this.optionsContainer = document.createElement("div");
-        this.optionsContainer.className = "enhanced-select-options";
+        this.optionsContainer = document.createElement('div');
+        this.optionsContainer.className = 'enhanced-select-options';
 
         // Add options
         this.options.forEach((option) => {
-            if (option.value === "") return; // Skip empty options
+            if (option.value === '') return; // Skip empty options
 
-            const optionElement = document.createElement("div");
-            optionElement.className = "enhanced-select-option";
+            const optionElement = document.createElement('div');
+            optionElement.className = 'enhanced-select-option';
             optionElement.textContent = option.text;
             optionElement.dataset.value = option.value;
-            optionElement.addEventListener("click", (e) => {
-                if (!optionElement.classList.contains("disabled")) {
+            optionElement.addEventListener('click', (e) => {
+                if (!optionElement.classList.contains('disabled')) {
                     this.selectOption(option.value, option.text);
                 }
             });
 
             if (option.selected) {
-                optionElement.classList.add("selected");
+                optionElement.classList.add('selected');
             }
 
             this.optionsContainer.appendChild(optionElement);
@@ -129,10 +129,10 @@ export default class extends Controller {
         this.closeOnOutsideClick = (event) => {
             // Ignore clicks on Bootstrap navbar dropdowns
             if (
-                event.target.closest(".navbar") ||
-                event.target.closest(".dropdown") ||
-                event.target.closest("[data-toggle]") ||
-                event.target.hasAttribute("data-toggle")
+                event.target.closest('.navbar') ||
+                event.target.closest('.dropdown') ||
+                event.target.closest('[data-toggle]') ||
+                event.target.hasAttribute('data-toggle')
             ) {
                 return;
             }
@@ -145,7 +145,7 @@ export default class extends Controller {
                 this.close();
             }
         };
-        document.addEventListener("click", this.closeOnOutsideClick);
+        document.addEventListener('click', this.closeOnOutsideClick);
     }
 
     toggle() {
@@ -158,8 +158,8 @@ export default class extends Controller {
 
     open() {
         this.isOpen = true;
-        this.dropdownMenu.classList.add("show");
-        this.customDropdown.classList.add("open");
+        this.dropdownMenu.classList.add('show');
+        this.customDropdown.classList.add('open');
 
         if (this.searchInput) {
             this.searchInput.focus();
@@ -168,12 +168,12 @@ export default class extends Controller {
 
     close() {
         this.isOpen = false;
-        this.dropdownMenu.classList.remove("show");
-        this.customDropdown.classList.remove("open");
+        this.dropdownMenu.classList.remove('show');
+        this.customDropdown.classList.remove('open');
 
         if (this.searchInput) {
-            this.searchInput.value = "";
-            this.filterOptions("");
+            this.searchInput.value = '';
+            this.filterOptions('');
         }
     }
 
@@ -215,7 +215,7 @@ export default class extends Controller {
 
     updateOptionStates() {
         const optionElements = this.optionsContainer.querySelectorAll(
-            ".enhanced-select-option"
+            '.enhanced-select-option'
         );
         const isMaxReached =
             this.hasMaximumSelectionLengthValue &&
@@ -226,16 +226,16 @@ export default class extends Controller {
             const isSelected = this.selectedValues.has(value);
 
             if (isSelected) {
-                optionEl.classList.add("selected");
-                optionEl.classList.remove("disabled");
+                optionEl.classList.add('selected');
+                optionEl.classList.remove('disabled');
             } else {
-                optionEl.classList.remove("selected");
+                optionEl.classList.remove('selected');
 
                 // Disable unselected options if maximum is reached
                 if (isMaxReached && this.multipleValue) {
-                    optionEl.classList.add("disabled");
+                    optionEl.classList.add('disabled');
                 } else {
-                    optionEl.classList.remove("disabled");
+                    optionEl.classList.remove('disabled');
                 }
             }
         });
@@ -244,18 +244,18 @@ export default class extends Controller {
     showMaximumSelectionMessage() {
         // Create temporary message
         if (!this.maxMessage) {
-            this.maxMessage = document.createElement("div");
-            this.maxMessage.className = "enhanced-select-max-message";
+            this.maxMessage = document.createElement('div');
+            this.maxMessage.className = 'enhanced-select-max-message';
             this.maxMessage.textContent = `Maximum ${this.maximumSelectionLengthValue} selections allowed`;
             this.dropdownMenu.appendChild(this.maxMessage);
         }
 
-        this.maxMessage.style.display = "block";
+        this.maxMessage.style.display = 'block';
 
         // Hide message after 2 seconds
         setTimeout(() => {
             if (this.maxMessage) {
-                this.maxMessage.style.display = "none";
+                this.maxMessage.style.display = 'none';
             }
         }, 2000);
     }
@@ -263,13 +263,13 @@ export default class extends Controller {
     filterOptions(query) {
         const lowerQuery = query.toLowerCase();
         const optionElements = this.optionsContainer.querySelectorAll(
-            ".enhanced-select-option"
+            '.enhanced-select-option'
         );
 
         optionElements.forEach((optionEl) => {
             const text = optionEl.textContent.toLowerCase();
             const matches = text.includes(lowerQuery);
-            optionEl.style.display = matches ? "block" : "none";
+            optionEl.style.display = matches ? 'block' : 'none';
         });
     }
 
@@ -277,7 +277,7 @@ export default class extends Controller {
         if (this.selectedValues.size === 0) {
             // Show placeholder
             this.selectionDisplay.innerHTML = `<span class="placeholder">${
-                this.placeholderValue || "Select..."
+                this.placeholderValue || 'Select...'
             }</span>`;
         } else if (this.multipleValue) {
             // Show tags
@@ -295,15 +295,15 @@ export default class extends Controller {
                     </span>
                 `;
                 })
-                .join("");
+                .join('');
 
             this.selectionDisplay.innerHTML = tags;
 
             // Add event listeners to remove buttons
             this.selectionDisplay
-                .querySelectorAll(".tag-remove")
+                .querySelectorAll('.tag-remove')
                 .forEach((btn) => {
-                    btn.addEventListener("click", (e) => {
+                    btn.addEventListener('click', (e) => {
                         e.stopPropagation();
                         this.removeTag(btn.dataset.value);
                     });
@@ -328,7 +328,7 @@ export default class extends Controller {
     dispatchChangeEvent() {
         // Dispatch change event on original select
         this.originalSelect.dispatchEvent(
-            new Event("change", { bubbles: true })
+            new Event('change', { bubbles: true })
         );
     }
 }

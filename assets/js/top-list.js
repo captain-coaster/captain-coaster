@@ -1,6 +1,6 @@
 /*
  * Top List page specific JavaScript
- * 
+ *
  * This entry point is loaded only on top list edit pages
  * and includes top list-specific functionality:
  * - SortableJS for drag-and-drop

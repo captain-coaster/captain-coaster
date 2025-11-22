@@ -169,7 +169,10 @@
                         <div class="media-right text-center note-responsive" style="vertical-align: middle;">
                             {% if coaster.isRateable %}
                                 {% if is_granted('ROLE_USER') %}
-                                    <div data-controller="rating"
+                                    <div class="csrf-protection"
+                                         data-controller="csrf-protection rating"
+                                         data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+                                         data-rating-csrf-protection-outlet=".csrf-protection"
                                          data-rating-coaster-id-value="{{ coaster.id }}"
                                          data-rating-current-value-value="{{ app.user.coasterRating(coaster).value|default(0) }}"
                                          data-rating-rating-id-value="{{ app.user.coasterRating(coaster).id|default('') }}"

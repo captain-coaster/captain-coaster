@@ -31,7 +31,6 @@ index:
         images: photos
     missingImages: "Nous recherchons des photos pour ces coasters !"
 
-
 coaster:
     score:
         title: "SCORE"
@@ -324,7 +323,7 @@ navbar:
 
 sidebar:
     index: Accueil
-    nearby: Coasters à proximité
+    search: Coasters
     ranking: Classement Mondial des Coasters
     users: Nos riders
     map: Carte des coasters
@@ -438,8 +437,6 @@ error:
     maintenance:
         title: "Arrêt Technique Rapide ! 🔧"
         message: "Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !"
-
-
 
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"

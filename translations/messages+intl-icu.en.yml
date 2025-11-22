@@ -31,7 +31,6 @@ index:
         images: "pictures"
     missingImages: "We are looking for pictures of these coasters!"
 
-
 coaster:
     score:
         title: "SCORE"
@@ -262,8 +261,6 @@ profile:
         updated_success: "Your settings have been updated successfully."
         save: "Save Changes"
 
-
-
 review:
     title: "Reviews"
     share: "Share your opinion with us!"
@@ -331,7 +328,7 @@ navbar:
 
 sidebar:
     index: "Home"
-    browse: "Browse Coasters"
+    search: "Search Coasters"
     ranking: "World Roller Coaster Rankings"
     users: "Our riders"
     map: "Coasters map"
@@ -444,8 +441,6 @@ error:
     maintenance:
         title: "Quick Technical Stop! 🔧"
         message: "Please remain in line. We will resume operations in a few minutes!"
-
-
 
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"

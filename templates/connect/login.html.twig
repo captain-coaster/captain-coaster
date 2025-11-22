@@ -3,8 +3,9 @@
 {% block title %}{{ 'login.title'|trans }} • {{ 'app.name'|trans }}{% endblock %}
 
 {% block body %}
-    <!-- Form with validation -->
-    <div class="panel panel-body login-form">
+    <div class="login-form-container">
+        <!-- Form with validation -->
+        <div class="panel panel-body login-form">
         <div class="text-center mb-3">
             <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }}</div>
             <h5 class="content-group-lg">{{ 'login.title'|trans }}
@@ -46,7 +47,7 @@
             <li>
                 <a href="{{ path('connect_google_start') }}"
                    class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
-                    {{ ux_icon('heroicons:globe-alt', {'class': 'w-6 h-6'}) }}
+                    {{ ux_icon('fe:google', {'class': 'w-6 h-6'}) }}
                     {{ 'login.connect_with_google'|trans }}
                 </a>
             </li>
@@ -55,6 +56,7 @@
         <span class="help-block text-center">
             {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
         </span>
+        </div>
+        <!-- /form with validation -->
     </div>
-    <!-- /form with validation -->
 {% endblock %}

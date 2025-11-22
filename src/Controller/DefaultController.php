@@ -31,10 +31,10 @@ class DefaultController extends BaseController
     public function root(Request $request): RedirectResponse
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('bdd_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
+            return $this->redirectToRoute('default_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
         }
 
-        return $this->redirectToRoute('bdd_index', [
+        return $this->redirectToRoute('default_index', [
             '_locale' => $request->getPreferredLanguage($this->getParameter('app_locales_array')),
         ], 301);
     }
@@ -46,7 +46,7 @@ class DefaultController extends BaseController
      * @throws NoResultException
      * @throws \Exception
      */
-    #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
+    #[Route(path: '/', name: 'default_index', methods: ['GET'])]
     public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
     {
         $displayReviewsInAllLanguages = false;

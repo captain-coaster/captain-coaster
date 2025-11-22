@@ -99,7 +99,7 @@ Encore
             },
         };
         // Allow access from mobile devices on local network
-        options.allowedHosts = 'all';
+        options.allowedHosts = "all";
     })
 
     // Add useful aliases for imports
@@ -109,12 +109,12 @@ Encore
     })
 
     // Copy images from assets/images to build/images
-    .copyFiles({
-        from: "./assets/images",
-        to: "images/[path][name].[hash:8].[ext]",
-        pattern: /\.(png|jpe?g|gif|svg|webp)$/i,
-        includeSubdirectories: true,
-    })
+    // .copyFiles({
+    //     from: "./assets/images",
+    //     to: "images/[path][name].[hash:8].[ext]",
+    //     pattern: /\.(png|jpe?g|gif|svg|webp)$/i,
+    //     includeSubdirectories: true,
+    // })
 
     // Configure bundle splitting for stable vendor libraries
     .configureSplitChunks((splitChunks) => {
@@ -128,9 +128,9 @@ Encore
                 enforce: true,
             },
         };
-    })
-    
-    // Icons are now handled by Symfony UX Icons
+    });
+
+// Icons are now handled by Symfony UX Icons
 
 // Encore handles tree shaking and optimization automatically
 module.exports = Encore.getWebpackConfig();

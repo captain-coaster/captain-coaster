@@ -31,7 +31,7 @@ class SitemapService
             $indexUpdateDate = $latestRating ? $latestRating->getUpdatedAt() : new \DateTime();
 
             // Index
-            $indexUrls = $this->getUrlAndAlternates('bdd_index', [], $indexUpdateDate, 'daily', 1);
+            $indexUrls = $this->getUrlAndAlternates('default_index', [], $indexUpdateDate, 'daily', 1);
             $urls = array_merge($urls, $indexUrls);
 
             // Ranking
