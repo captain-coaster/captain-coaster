@@ -71,7 +71,7 @@ class RiddenCoaster
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Gedmo\Timestampable(on: 'change', field: ['rating', 'review', 'language', 'pros', 'cons'])]
+    #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'language', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
