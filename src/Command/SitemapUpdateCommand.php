@@ -40,14 +40,25 @@ class SitemapUpdateCommand extends Command
         $stopwatch = new Stopwatch();
         $stopwatch->start('command');
 
-        if ($input->getOption('pages')) {
-            $this->sitemapCache->delete('sitemap_urls');
-            $this->sitemapCache->get('sitemap_urls', fn () => $this->sitemapService->getUrlsForPages());
+        $updatePages = $input->getOption('pages');
+        $updateImages = $input->getOption('images');
+
+        // If no options are provided, update both
+        if (!$updatePages && !$updateImages) {
+            $updatePages = true;
+            $updateImages = true;
         }
 
-        if ($input->getOption('images')) {
+        if ($updatePages) {
+            $this->sitemapCache->delete('sitemap_urls');
+            $this->sitemapCache->get('sitemap_urls', fn () => $this->sitemapService->getUrlsForPages());
+            $output->writeln('Pages sitemap updated.');
+        }
+
+        if ($updateImages) {
             $this->sitemapCache->delete('sitemap_image');
             $this->sitemapCache->get('sitemap_image', fn () => $this->sitemapService->getUrlsForImages());
+            $output->writeln('Images sitemap updated.');
         }
 
         $output->writeln((string) $stopwatch->stop('command'));
