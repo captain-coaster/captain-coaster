@@ -28,11 +28,11 @@
                     
                     {# Status Filter #}
                     {% if filterConfig.excluded_filters is not defined or 'status' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.status'|trans }}
-                                <input name="filters[status]" type="checkbox"
+                                <input name="filters[status]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                        {% if filters.status is defined and filters.status == "on" %} checked{% endif %}>
                             </label>
                         </div>
@@ -41,11 +41,11 @@
 
                     {# Special Filters #}
                     {% if filterConfig.excluded_filters is not defined or 'new' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.new'|trans }}
-                                <input name="filters[new]" type="checkbox"
+                                <input name="filters[new]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                        {% if filters.new is defined and filters.new == "on" %} checked{% endif %}>
                             </label>
                         </div>
@@ -53,11 +53,11 @@
                     {% endif %}
                     
                     {% if filterConfig.excluded_filters is not defined or 'kiddie' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.kiddie'|trans }}
-                                <input name="filters[kiddie]" type="checkbox"
+                                <input name="filters[kiddie]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                        {% if filters.kiddie is defined and filters.kiddie == "on" %} checked{% endif %}>
                             </label>
                         </div>
@@ -66,11 +66,11 @@
                     
                     {# User-specific Filter #}
                     {% if (filterConfig.excluded_filters is not defined or 'notridden' not in filterConfig.excluded_filters) and filters.ridden is not defined %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.notridden'|trans }}
-                                <input name="filters[notridden]" type="checkbox"
+                                <input name="filters[notridden]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
                                     {% if filters.notridden is defined and filters.notridden == "on" %} checked{% endif %}>
                             </label>

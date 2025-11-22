@@ -31,8 +31,8 @@
                     <span class="help-block">{{ 'image_upload.form.credit.helper'|trans }}</span>
                 </div>
             </div>
-            <div class="form-group toggle-switch-form-group">
-                {{ form_row(form.watermarked) }}
+            <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
+                {{ form_row(form.watermarked, {'attr': {'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
                 <span class="help-block">{{ 'image_upload.form.watermark.helper'|trans }}</span>
             </div>
             <div class="form-group">

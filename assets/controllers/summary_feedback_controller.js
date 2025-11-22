@@ -271,7 +271,7 @@ export default class extends Controller {
             }
         }
 
-        // Fallback: show a simple alert if notification controller is not available
-        alert(message);
+        // Fallback: log to console if notification controller is not available
+        console.warn('Notification:', message);
     }
 }

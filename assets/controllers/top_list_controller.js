@@ -31,8 +31,6 @@ export default class extends Controller {
     };
 
     async connect() {
-        console.log('TopList controller connected with SortableJS');
-
         // Initialize state
         this.saveTimeout = null;
 
@@ -78,9 +76,7 @@ export default class extends Controller {
     /**
      * Handle drag start event (SortableJS callback)
      */
-    handleDragStart(evt) {
-        console.log('Drag started');
-
+    handleDragStart() {
         // Add visual feedback to container
         this.element.classList.add('drag-active');
     }
@@ -89,17 +85,11 @@ export default class extends Controller {
      * Handle drag end event (SortableJS callback)
      */
     handleDragEnd(evt) {
-        console.log('Drag ended');
-
         // Remove visual feedback from container
         this.element.classList.remove('drag-active');
 
         // Check if position actually changed
         if (evt.oldIndex !== evt.newIndex) {
-            console.log(
-                `Item moved from position ${evt.oldIndex} to ${evt.newIndex}`
-            );
-
             // Update positions in the UI
             this.updatePositions();
 
@@ -160,6 +150,13 @@ export default class extends Controller {
             return;
         }
 
+        // Prevent concurrent saves
+        if (this.isSaving) {
+            return;
+        }
+
+        this.isSaving = true;
+
         try {
             // Collect current positions
             const positions = {};
@@ -169,8 +166,6 @@ export default class extends Controller {
                     positions[coasterId] = index + 1;
                 }
             });
-
-            console.log('Auto-saving positions:', positions);
 
             // Send AJAX request
             const response = await fetch(this.autoSaveUrlValue, {
@@ -191,7 +186,6 @@ export default class extends Controller {
             const data = await response.json();
 
             if (data.status === 'success') {
-                console.log('Auto-save successful');
                 this.showSaveStatus('saved');
             } else {
                 throw new Error(data.message || 'Auto-save failed');
@@ -204,6 +198,8 @@ export default class extends Controller {
             setTimeout(() => {
                 this.autoSave();
             }, 5000);
+        } finally {
+            this.isSaving = false;
         }
     }
 
@@ -269,11 +265,8 @@ export default class extends Controller {
     /**
      * Add a new coaster to the list (for future use)
      */
-    addCoaster(coasterId, position = null) {
+    addCoaster() {
         // This method will be implemented in future tasks
-        console.log(
-            'Add coaster functionality will be implemented in task 4.1'
-        );
     }
 
     /**
@@ -300,8 +293,6 @@ export default class extends Controller {
         const item = event.target.closest('[data-top-list-target="item"]');
         if (!item) return;
 
-        console.log('Moving coaster to top');
-
         // Move to first position
         this.element.insertBefore(item, this.element.firstElementChild);
 
@@ -321,8 +312,6 @@ export default class extends Controller {
 
         const item = event.target.closest('[data-top-list-target="item"]');
         if (!item) return;
-
-        console.log('Moving coaster to bottom');
 
         // Move to last position
         this.element.appendChild(item);
@@ -369,8 +358,6 @@ export default class extends Controller {
         if (newPos === currentPos) {
             return;
         }
-
-        console.log(`Moving coaster from position ${currentPos} to ${newPos}`);
 
         // Move item to new position
         if (newPos === 1) {

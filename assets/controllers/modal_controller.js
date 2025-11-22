@@ -14,6 +14,14 @@ export default class extends Controller {
     };
 
     connect() {
+        // Check if jQuery is available
+        if (typeof $ === 'undefined') {
+            console.error(
+                'Modal controller requires jQuery for Bootstrap 3.x compatibility'
+            );
+            return;
+        }
+
         // Initialize the modal with Bootstrap 3.x options
         this._initializeModal();
 

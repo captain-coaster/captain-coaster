@@ -22,8 +22,6 @@ export default class extends Controller {
     static targets = ['resultItem'];
 
     connect() {
-        console.log('Search results controller connected');
-
         // Add keyboard navigation support
         this.setupKeyboardNavigation();
     }

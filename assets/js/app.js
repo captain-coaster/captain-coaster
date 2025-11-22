@@ -31,9 +31,6 @@ import './theme/layout_fixed_custom';
 // Start the Stimulus application
 import '../bootstrap';
 
-// Import toggle switch functionality
-import './toggle-switch';
-
 // Components are now handled by Stimulus controllers
 
 // Bootstrap components (dropdown, collapse, alert, modal) are initialized automatically

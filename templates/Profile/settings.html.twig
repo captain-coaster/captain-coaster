@@ -86,12 +86,12 @@
                   {{ form_errors(form.homePark) }}
                 </div>
 
-                <div class="toggle-switch-form-group">
-                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input'}}) }}
+                <div class="toggle-switch-form-group" data-controller="toggle-switch">
+                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
                 </div>
 
-                <div class="toggle-switch-form-group">
-                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input'}}) }}
+                <div class="toggle-switch-form-group" data-controller="toggle-switch">
+                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
                 </div>
               </fieldset>
 

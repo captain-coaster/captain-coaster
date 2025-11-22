@@ -53,8 +53,8 @@ export default class extends Controller {
                 }
             ).addTo(this.map);
 
-            // Store Leaflet globally for compatibility
-            window.L = L;
+            // Store Leaflet reference for internal use
+            this.L = L;
 
             // Generate markers
             this.generateMarkers();
@@ -79,7 +79,7 @@ export default class extends Controller {
 
         this.markersValue.forEach((park) => {
             const coasterCount = parseInt(park.nb) || 1;
-            const marker = window.L.marker([park.latitude, park.longitude], {
+            const marker = this.L.marker([park.latitude, park.longitude], {
                 icon: this.createCoasterMarker(coasterCount),
                 zIndexOffset: coasterCount * 100, // Higher coaster count = higher z-index
             }).addTo(this.map);
@@ -108,7 +108,7 @@ export default class extends Controller {
             color = '#8b5cf6'; // Purple - 15+ coasters
         }
 
-        return window.L.divIcon({
+        return this.L.divIcon({
             className: 'coaster-marker',
             html: `<div class="coaster-marker-inner" data-count="${coasterCount}" style="background: ${color};">${coasterCount}</div>`,
             iconSize: [20, 20],
@@ -173,8 +173,6 @@ export default class extends Controller {
     }
 
     filterData() {
-        console.log('Map filterData called');
-
         const url = window.Routing.generate('map_markers_ajax', {
             _locale: document.documentElement.lang || 'en',
         });
@@ -190,8 +188,6 @@ export default class extends Controller {
             }
         }
 
-        console.log('Filter request URL:', `${url}?${params}`);
-
         fetch(`${url}?${params}`, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -199,7 +195,6 @@ export default class extends Controller {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log('Received filtered data:', data.length, 'markers');
                 this.removeMarkers();
                 this.markersValue = data;
                 this.generateMarkers();

@@ -8,8 +8,5 @@
  * - Top list specific styles
  */
 
-// SortableJS is lazy-loaded by the top_list_controller when needed
-
 // Import top list specific styles
 import '../styles/components/top-list.css';
-import '../styles/components/search.css';

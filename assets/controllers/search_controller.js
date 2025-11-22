@@ -38,8 +38,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('Search controller connected');
-
         // Initialize state
         this.debounceTimer = null;
         this.currentRequest = null;

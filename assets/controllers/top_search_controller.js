@@ -35,8 +35,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('Top Search controller connected');
-
         // Initialize state
         this.debounceTimer = null;
         this.currentRequest = null;
@@ -425,11 +423,8 @@ export default class extends Controller {
         const isDuplicate = item.dataset.duplicate === 'true';
 
         if (isDuplicate) {
-            console.log('Coaster already in list');
             return;
         }
-
-        console.log('Adding coaster to list:', coasterId, coasterName);
 
         // Add coaster to the list
         this.addCoasterToList(coasterId, coasterName, parkName, rating);

@@ -12,8 +12,3 @@ import '../styles/components/coaster-loading.css';
 import '../styles/components/score-card.css';
 import '../styles/components/rating-distribution.css';
 import '../styles/components/youtube-thumbnail.css';
-
-// Rating functionality is now handled by Stimulus rating controller
-// No need to import pages/rating anymore
-
-console.log('Coaster page JavaScript loaded');

@@ -37,30 +37,30 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.status'|trans }}
-                                <input name="filters[status]" type="checkbox"
+                                <input name="filters[status]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if qS.filters.status is defined and qS.filters.status == "on" %} checked{% endif %}>
                             </label>
                         </div>
                     </div>
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.notridden'|trans }}
-                                <input name="filters[notridden]" type="checkbox"
+                                <input name="filters[notridden]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
                                     {% if qS.filters.notridden is defined and qS.filters.notridden == "on" and is_granted('ROLE_USER') is defined %} checked{% endif %}>
                             </label>
                         </div>
                     </div>
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.new'|trans }}
-                                <input name="filters[new]" type="checkbox"
+                                <input name="filters[new]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if qS.filters.new is defined and qS.filters.new == "on" %} checked{% endif %}>
                             </label>
                         </div>

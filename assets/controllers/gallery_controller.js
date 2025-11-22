@@ -13,11 +13,14 @@ export default class extends Controller {
     }
 
     linkTargetConnected(element) {
-        element.addEventListener('click', this.open.bind(this));
+        this.boundOpen = this.open.bind(this);
+        element.addEventListener('click', this.boundOpen);
     }
 
     linkTargetDisconnected(element) {
-        element.removeEventListener('click', this.open.bind(this));
+        if (this.boundOpen) {
+            element.removeEventListener('click', this.boundOpen);
+        }
     }
 
     open(event) {
