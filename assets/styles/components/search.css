@@ -9,6 +9,19 @@
     width: 100%;
 }
 
+/* Make search bar wider on desktop */
+@media (min-width: 992px) {
+    .heading-form .search-container {
+        min-width: 400px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .heading-form .search-container {
+        min-width: 500px;
+    }
+}
+
 .search-container.search-open .search-dropdown {
     display: block;
 }
@@ -61,15 +74,17 @@
 }
 
 /* Search Input */
-.search-container input[type="search"] {
+.search-container input[type='search'] {
     width: 100%;
     padding-right: 2.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
-.search-container input[type="search"]:focus {
+.search-container input[type='search']:focus {
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
     outline: none;
@@ -351,7 +366,9 @@
     align-items: center;
     padding: 12px 16px;
     cursor: pointer;
-    transition: background-color 0.15s ease, border-left-color 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        border-left-color 0.15s ease;
     border-bottom: 1px solid #f8f9fa;
     border-left: 3px solid transparent;
     min-height: 48px;
