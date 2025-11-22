@@ -34,6 +34,11 @@ class RegistrationController extends AbstractController
         EmailValidationService $emailValidator,
         RateLimiterFactory $registrationLimiter
     ): Response {
+        // Redirect if already logged in
+        if ($this->getUser()) {
+            return $this->redirectToRoute('default_index');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);

@@ -96,7 +96,7 @@ class ProfilePictureManager
     }
 
     /** Handle errors and log exceptions. */
-    private function handleError(string $message, \Exception $e): ?string
+    private function handleError(string $message, \Exception $e): null
     {
         // Add exception context to log
         $this->logger->error($message, [

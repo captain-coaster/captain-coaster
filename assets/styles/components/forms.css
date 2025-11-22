@@ -1,0 +1,70 @@
+/* ------------------------------------------------------------------------------
+ *
+ *  # Global Form Styles
+ *
+ *  Global form input styles to prevent mobile auto-zoom and ensure consistent sizing
+ *  Mobile devices zoom when input font-size is < 16px, so we set 16px as minimum
+ *  Desktop uses media queries to reduce to more appropriate sizes
+ *
+ * ---------------------------------------------------------------------------- */
+
+/* Base styles for all form inputs - prevents mobile zoom */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="month"],
+input[type="week"],
+input[type="time"],
+select,
+textarea {
+    font-size: 16px !important; /* Minimum 16px prevents iOS zoom */
+    min-height: 44px; /* Better touch targets for mobile users */
+}
+
+/* Date input specific fixes */
+input[type="date"] {
+    /* Fix vertical alignment on mobile - center the text */
+    line-height: normal;
+    cursor: pointer;
+}
+
+/* Fix for webkit browsers (Safari, Chrome) date input alignment */
+input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+/* Make calendar icon more visible */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* Desktop: reduce font size for better proportions (768px and up) */
+@media (min-width: 768px) {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="tel"],
+    input[type="url"],
+    input[type="number"],
+    input[type="date"],
+    input[type="datetime-local"],
+    input[type="month"],
+    input[type="week"],
+    input[type="time"],
+    select,
+    textarea {
+        font-size: 13px !important;
+    }
+}

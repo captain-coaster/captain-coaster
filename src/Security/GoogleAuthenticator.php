@@ -73,7 +73,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('bdd_index'));
+        return new RedirectResponse($this->router->generate('default_index'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response

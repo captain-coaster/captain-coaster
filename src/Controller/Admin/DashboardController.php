@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Coaster;
+use App\Entity\CoasterSummary;
 use App\Entity\Continent;
 use App\Entity\Country;
 use App\Entity\Currency;
@@ -30,8 +31,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[AdminDashboard(routePath: '/admin')]
+#[IsGranted('ROLE_ADMIN')]
 class DashboardController extends AbstractDashboardController
 {
     public function __construct(private readonly AdminUrlGenerator $adminUrlGenerator)
@@ -60,6 +63,7 @@ class DashboardController extends AbstractDashboardController
     {
         // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-dashboard');
         yield MenuItem::linkToCrud('Coaster', 'fas fa-sleigh', Coaster::class);
+        yield MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class);
         yield MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class);
         yield MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class);
         yield MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class);

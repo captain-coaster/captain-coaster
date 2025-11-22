@@ -1,0 +1,23 @@
+{% if coasters is not empty %}
+<div class="popup-content">
+    <h4 class="popup-park-name">
+        <a href="{{ path('park_show', {'id': coasters[0].park.id, 'slug': coasters[0].park.slug}) }}">
+            {{ coasters[0].park.name }}
+        </a>
+    </h4>
+    <div class="popup-coasters">
+        {% for coaster in coasters %}
+            <div class="popup-coaster">
+                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" target="_blank">
+                    <span class="status-mark bg-{{ coaster.status.type }}"></span>
+                    {{ coaster.name }}
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="popup-content">
+    <p>No coasters found for this park.</p>
+</div>
+{% endif %}

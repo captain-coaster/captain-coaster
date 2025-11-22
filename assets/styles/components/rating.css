@@ -1,0 +1,98 @@
+/* SVG Star Rating Component */
+
+.rating-stars {
+    display: inline-flex;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.rating-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+}
+
+.star-svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.15s ease;
+}
+
+.star-outline {
+    fill: none;
+    stroke-width: 1.5;
+}
+
+.star-fill {
+    opacity: 1;
+}
+
+/* Empty star - gray outline */
+.rating-star.star-empty .star-outline {
+    stroke: #ccc;
+}
+
+.rating-star.star-empty .star-fill-left,
+.rating-star.star-empty .star-fill-right {
+    stop-color: transparent;
+}
+
+/* Half star - left filled, right empty */
+.rating-star.star-half .star-outline {
+    stroke: #ff5722;
+}
+
+.rating-star.star-half .star-fill-left {
+    stop-color: #ff5722;
+}
+
+.rating-star.star-half .star-fill-right {
+    stop-color: transparent;
+}
+
+/* Full star - completely filled */
+.rating-star.star-full .star-outline {
+    stroke: #ff5722;
+}
+
+.rating-star.star-full .star-fill-left,
+.rating-star.star-full .star-fill-right {
+    stop-color: #ff5722;
+}
+
+/* Hover effect on desktop */
+@media (hover: hover) {
+    .rating-stars:not([data-rating-readonly-value="true"])
+        .rating-star:hover
+        .star-svg {
+        transform: scale(1.15);
+    }
+}
+
+/* Active/touch state */
+.rating-stars:not([data-rating-readonly-value="true"])
+    .rating-star:active
+    .star-svg {
+    transform: scale(0.95);
+}
+
+/* Readonly state */
+.rating-stars[data-rating-readonly-value="true"] {
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .star-svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .rating-stars {
+        gap: 8px;
+    }
+}

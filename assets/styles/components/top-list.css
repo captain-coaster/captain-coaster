@@ -1,0 +1,504 @@
+/**
+ * Top List Drag & Drop Styles
+ * SortableJS integration for modern drag-and-drop functionality
+ */
+
+/* Container styles */
+.media-list-container[data-controller="top-list"] {
+    position: relative;
+    min-height: 100px;
+}
+
+/* Modern Coaster Entry Layout */
+.coaster-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+/* Disable transition when dragging */
+.coaster-entry.sortable-drag,
+.coaster-entry.sortable-chosen {
+    transition: none;
+}
+
+.coaster-entry:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Drag Area - Combined handle and position */
+.drag-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    cursor: grab;
+    padding: 8px 6px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    min-width: 48px;
+}
+
+.drag-area:hover {
+    background-color: #f3f4f6;
+}
+
+.drag-area:active {
+    cursor: grabbing;
+    background-color: #e5e7eb;
+}
+
+.position-number {
+    font-size: 18px;
+    font-weight: 700;
+    color: #6b7280;
+    line-height: 1;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.drag-indicator {
+    color: #9ca3af;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.drag-area:hover .drag-indicator {
+    opacity: 1;
+    color: #6b7280;
+}
+
+/* Coaster Content - Main info area */
+.coaster-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.coaster-main {
+    flex: 1;
+    min-width: 0;
+    line-height: 1.4;
+}
+
+.coaster-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: #111827;
+}
+
+.coaster-separator {
+    color: #d1d5db;
+    margin: 0 4px;
+}
+
+.coaster-park {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.coaster-rating {
+    flex-shrink: 0;
+}
+
+.coaster-rating .star-rating {
+    margin: 0;
+}
+
+.coaster-rating .star-rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.coaster-rating .star-rating-stars svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Actions Menu */
+.coaster-menu {
+    flex-shrink: 0;
+}
+
+.menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.menu-btn:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.menu-btn:active {
+    background-color: #e5e7eb;
+}
+
+/* SortableJS: Ghost placeholder (shows where item will be dropped) */
+.sortable-ghost {
+    opacity: 0.4;
+    background-color: #f9fafb;
+    border: 2px dashed #3b82f6;
+    border-radius: 8px;
+}
+
+.sortable-ghost * {
+    opacity: 0.5;
+}
+
+/* SortableJS: Chosen item (when item is selected/grabbed) */
+.sortable-chosen {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.sortable-chosen .drag-area {
+    cursor: grabbing;
+    background-color: #dbeafe;
+}
+
+.sortable-chosen .position-number {
+    color: #1e40af;
+}
+
+/* SortableJS: Dragged item (the actual item being dragged) */
+.sortable-drag {
+    opacity: 1;
+    border-color: #3b82f6;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    z-index: 1000;
+    transform: rotate(2deg);
+}
+
+.sortable-drag .drag-area {
+    cursor: grabbing;
+    background-color: #dbeafe;
+}
+
+.sortable-drag .position-number {
+    color: #1e40af;
+}
+
+/* Save status indicator */
+.save-status {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 1050;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.save-status-saving {
+    background-color: #ffc107;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.save-status-saved {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #1e7e34;
+}
+
+.save-status-error {
+    background-color: #dc3545;
+    color: white;
+    border: 1px solid #bd2130;
+}
+
+/* Spinner animation */
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .coaster-entry {
+        gap: 8px;
+        padding: 10px 8px;
+    }
+
+    .drag-area {
+        min-width: 40px;
+        padding: 6px 4px;
+    }
+
+    .position-number {
+        font-size: 16px;
+    }
+
+    .drag-indicator svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .coaster-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .coaster-name {
+        font-size: 14px;
+    }
+
+    .coaster-park {
+        font-size: 13px;
+    }
+
+    .coaster-separator {
+        display: none;
+    }
+
+    .coaster-main {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .coaster-rating .star-rating-stars svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .menu-btn {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .coaster-entry {
+        margin-bottom: 10px;
+    }
+
+    .drag-area {
+        min-width: 48px;
+        padding: 10px 6px;
+    }
+
+    .menu-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Enhanced visual feedback for touch */
+    .sortable-chosen {
+        transform: scale(1.02);
+    }
+
+    .sortable-drag {
+        transform: rotate(2deg) scale(1.03);
+    }
+}
+
+/* Accessibility improvements */
+.coaster-entry:focus-within {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+.drag-handle:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .sortable-ghost {
+        border-color: #000;
+        background-color: #fff;
+    }
+
+    .sortable-chosen,
+    .sortable-drag {
+        border-color: #000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .coaster-entry,
+    .position-badge,
+    .drag-handle,
+    .save-status {
+        transition: none;
+    }
+
+    .sortable-drag {
+        transform: none;
+    }
+
+    .sortable-chosen {
+        transform: none;
+    }
+
+    .spinner {
+        animation: none;
+    }
+}
+/* ====
+====================================
+   Top List Search Component Styles
+   ======================================== */
+
+/* Search container for top list */
+.top-search-container {
+    margin-bottom: 20px;
+}
+
+/* Reuse existing search.css classes with top-list specific overrides */
+.top-search-container .search-container {
+    max-width: 100%;
+}
+
+/* Search input styling for top list context */
+.top-search-container input[type="search"] {
+    padding: 12px 16px;
+    padding-right: 2.5rem;
+}
+
+/* Search dropdown for top list */
+.top-search-container .search-dropdown {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Result item with rating badge */
+.top-search-container .search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.top-search-container .search-result-item .badge {
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* Duplicate coaster styling */
+.search-result-duplicate {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
+}
+
+.search-result-duplicate:hover {
+    background-color: #f8f9fa;
+}
+
+.search-result-duplicate .badge {
+    margin-left: 8px;
+}
+
+/* Added coaster animation */
+.coaster-entry-added {
+    animation: coasterAdded 1s ease;
+}
+
+@keyframes coasterAdded {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.5;
+        background-color: #d4edda;
+    }
+    50% {
+        transform: scale(1.02);
+        background-color: #d4edda;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+        background-color: #fff;
+    }
+}
+
+/* Mobile optimizations for search */
+@media (max-width: 768px) {
+    .top-search-container {
+        margin-bottom: 16px;
+    }
+
+    .top-search-container input[type="search"] {
+        padding: 10px 14px;
+    }
+
+    .top-search-container .search-dropdown {
+        max-height: 300px;
+    }
+
+    .top-search-container .search-result-item {
+        padding: 10px 12px;
+        min-height: 44px; /* Touch-friendly */
+    }
+}
+
+/* Touch device optimizations for search */
+@media (hover: none) and (pointer: coarse) {
+    .top-search-container input[type="search"] {
+        padding: 14px 16px;
+        min-height: 48px;
+    }
+
+    .top-search-container .search-result-item {
+        padding: 12px 14px;
+        min-height: 48px;
+    }
+}
+
+/* Reduced motion for added animation */
+@media (prefers-reduced-motion: reduce) {
+    .coaster-entry-added {
+        animation: none;
+        background-color: #d4edda;
+    }
+}
