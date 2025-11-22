@@ -83,6 +83,7 @@ class RiddenCoaster
         $this->cons = new ArrayCollection();
         $this->upvotes = new ArrayCollection();
         $this->reports = new ArrayCollection();
+        $this->updatedAt = new \DateTime();
     }
 
     public function getId(): int

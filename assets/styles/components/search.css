@@ -3,6 +3,17 @@
  * Replaces legacy typeahead.js styling with modern, accessible design
  */
 
+/* Page Header Search Alignment */
+@media (min-width: 769px) {
+    .page-header-content
+        .heading-elements.visible-elements
+        .heading-form
+        .form-group {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+}
+
 /* Search Container */
 .search-container {
     position: relative;

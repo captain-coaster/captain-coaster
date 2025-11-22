@@ -11,115 +11,116 @@
  * ---------------------------------------------------------------------------- */
 
 // Import Bootstrap 3.3.7 from npm (selective imports based on usage analysis)
-@import "~bootstrap/less/variables.less";
-@import "~bootstrap/less/mixins.less";
+@import '~bootstrap/less/variables.less';
+@import '~bootstrap/less/mixins.less';
 
 // Import purchased theme's color palette and variables (used for @color-primary-500)
-@import "theme/core/colors/palette.less";
-@import "theme/core/variables/variables-core.less";
-@import "theme/core/variables/variables-custom.less";
+@import 'theme/core/colors/palette.less';
+@import 'theme/core/variables/variables-core.less';
+@import 'theme/core/variables/variables-custom.less';
 
 // Import theme's custom mixins (needed for navbar components)
-@import "theme/core/mixins/nav-vertical-align.less";
+@import 'theme/core/mixins/nav-vertical-align.less';
 
 // Bootstrap Core CSS (high usage components only)
-@import "~bootstrap/less/normalize.less";
-@import "~bootstrap/less/print.less";
-@import "~bootstrap/less/scaffolding.less";
-@import "~bootstrap/less/type.less";
-@import "~bootstrap/less/grid.less";
-@import "~bootstrap/less/tables.less";
-@import "~bootstrap/less/forms.less";
-@import "~bootstrap/less/buttons.less";
+@import '~bootstrap/less/normalize.less';
+@import '~bootstrap/less/print.less';
+@import '~bootstrap/less/scaffolding.less';
+@import '~bootstrap/less/type.less';
+@import '~bootstrap/less/grid.less';
+@import '~bootstrap/less/tables.less';
+@import '~bootstrap/less/forms.less';
+@import '~bootstrap/less/buttons.less';
 
 // Bootstrap utilities (needed for mixins like .pull-left())
-@import "~bootstrap/less/utilities.less";
+@import '~bootstrap/less/utilities.less';
 
 // Bootstrap responsive utilities (needed for mobile/desktop visibility)
-@import "~bootstrap/less/responsive-utilities.less";
+@import '~bootstrap/less/responsive-utilities.less';
 
 // Bootstrap Components (20%+ usage based on analysis)
-@import "~bootstrap/less/component-animations.less";
-@import "~bootstrap/less/dropdowns.less";
-@import "~bootstrap/less/button-groups.less";
-@import "~bootstrap/less/input-groups.less";
-@import "~bootstrap/less/navs.less";
-@import "~bootstrap/less/navbar.less";
-@import "~bootstrap/less/breadcrumbs.less";
-@import "~bootstrap/less/pagination.less";
-@import "~bootstrap/less/pager.less";
-@import "~bootstrap/less/labels.less";
-@import "~bootstrap/less/badges.less";
-@import "~bootstrap/less/thumbnails.less";
-@import "~bootstrap/less/alerts.less";
-@import "~bootstrap/less/media.less";
-@import "~bootstrap/less/list-group.less";
-@import "~bootstrap/less/panels.less";
-@import "~bootstrap/less/close.less";
-@import "~bootstrap/less/modals.less";
+@import '~bootstrap/less/component-animations.less';
+@import '~bootstrap/less/dropdowns.less';
+@import '~bootstrap/less/button-groups.less';
+@import '~bootstrap/less/input-groups.less';
+@import '~bootstrap/less/navs.less';
+@import '~bootstrap/less/navbar.less';
+@import '~bootstrap/less/breadcrumbs.less';
+@import '~bootstrap/less/pagination.less';
+@import '~bootstrap/less/pager.less';
+@import '~bootstrap/less/labels.less';
+@import '~bootstrap/less/badges.less';
+@import '~bootstrap/less/thumbnails.less';
+@import '~bootstrap/less/alerts.less';
+@import '~bootstrap/less/media.less';
+@import '~bootstrap/less/list-group.less';
+@import '~bootstrap/less/panels.less';
+@import '~bootstrap/less/close.less';
+@import '~bootstrap/less/modals.less';
 
 // Import theme overrides for high-usage Bootstrap components
-@import "theme/bootstrap-limitless/scaffolding.less"; // 50% usage
-@import "theme/bootstrap-limitless/type.less"; // 42% usage
-@import "theme/bootstrap-limitless/buttons.less"; // 52% usage
-@import "theme/bootstrap-limitless/dropdowns.less"; // 47% usage
-@import "theme/bootstrap-limitless/navbar.less"; // 28% usage (but core component)
-@import "theme/bootstrap-limitless/navs.less"; // 30% usage
-@import "theme/bootstrap-limitless/alerts.less"; // 40% usage
-@import "theme/bootstrap-limitless/badges.less"; // 47% usage
-@import "theme/bootstrap-limitless/labels.less"; // 44% usage
-@import "theme/bootstrap-limitless/media.less"; // 70% usage
-@import "theme/bootstrap-limitless/modals.less"; // 55% usage
-@import "theme/bootstrap-limitless/panels.less"; // 33% usage
-@import "theme/bootstrap-limitless/thumbnails.less"; // 46% usage
-@import "theme/bootstrap-limitless/breadcrumbs.less"; // 36% usage
-@import "theme/bootstrap-limitless/forms.less"; // 29% usage
-@import "theme/bootstrap-limitless/tables.less"; // 29% usage
-@import "theme/bootstrap-limitless/list-group.less"; // 38% usage
-@import "theme/bootstrap-limitless/pagination.less"; // 25% usage
-@import "theme/bootstrap-limitless/pager.less"; // 22% usage
-@import "theme/bootstrap-limitless/button-groups.less"; // 26% usage
-@import "theme/bootstrap-limitless/input-groups.less"; // 20% usage
-@import "theme/bootstrap-limitless/close.less"; // 50% usage
+@import 'theme/bootstrap-limitless/scaffolding.less'; // 50% usage
+@import 'theme/bootstrap-limitless/type.less'; // 42% usage
+@import 'theme/bootstrap-limitless/buttons.less'; // 52% usage
+@import 'theme/bootstrap-limitless/dropdowns.less'; // 47% usage
+@import 'theme/bootstrap-limitless/navbar.less'; // 28% usage (but core component)
+@import 'theme/bootstrap-limitless/navs.less'; // 30% usage
+@import 'theme/bootstrap-limitless/alerts.less'; // 40% usage
+@import 'theme/bootstrap-limitless/badges.less'; // 47% usage
+@import 'theme/bootstrap-limitless/labels.less'; // 44% usage
+@import 'theme/bootstrap-limitless/media.less'; // 70% usage
+@import 'theme/bootstrap-limitless/modals.less'; // 55% usage
+@import 'theme/bootstrap-limitless/panels.less'; // 33% usage
+@import 'theme/bootstrap-limitless/thumbnails.less'; // 46% usage
+@import 'theme/bootstrap-limitless/breadcrumbs.less'; // 36% usage
+@import 'theme/bootstrap-limitless/forms.less'; // 29% usage
+@import 'theme/bootstrap-limitless/tables.less'; // 29% usage
+@import 'theme/bootstrap-limitless/list-group.less'; // 38% usage
+@import 'theme/bootstrap-limitless/pagination.less'; // 25% usage
+@import 'theme/bootstrap-limitless/pager.less'; // 22% usage
+@import 'theme/bootstrap-limitless/button-groups.less'; // 26% usage
+@import 'theme/bootstrap-limitless/input-groups.less'; // 20% usage
+@import 'theme/bootstrap-limitless/close.less'; // 50% usage
 
 // Import theme's core layout components (high usage)
-@import "theme/core/layout/content.less"; // 100% usage
-@import "theme/core/layout/sidebar.less"; // 37% usage
-@import "theme/core/layout/footer.less"; // 67% usage
+@import 'theme/core/layout/content.less'; // 100% usage
+@import 'theme/core/layout/sidebar.less'; // 37% usage
+@import 'theme/core/layout/footer.less'; // 67% usage
 
 // Import essential theme UI components (good usage)
-@import "theme/components/ui/helpers.less"; // 26% usage
-@import "theme/components/ui/heading-elements.less"; // 31% usage
-@import "theme/components/ui/toolbar.less"; // 50% usage
+@import 'theme/components/ui/helpers.less'; // 26% usage
+@import 'theme/components/ui/heading-elements.less'; // 31% usage
+@import 'theme/components/ui/toolbar.less'; // 50% usage
 
 // Import form components
 // @import "theme/components/plugins/forms/checkboxes/uniform.less";     // 33% usage - file doesn't exist
 
 // Import high-usage page components (excluding login.less due to image path issues)
 // @import "theme/components/pages/login.less";              // 62% usage - has image path issues
-@import "theme/components/pages/profile.less"; // 55% usage
-@import "theme/components/pages/user-list.less"; // 75% usage
+@import 'theme/components/pages/profile.less'; // 55% usage
+@import 'theme/components/pages/user-list.less'; // 75% usage
 
 // Import additional components for better UI support
-@import "theme/core/layout/component-animation.less"; // 16% usage - needed for animations
-@import "theme/core/colors/colors.less"; // 33% usage - needed for color classes
+@import 'theme/core/layout/component-animation.less'; // 16% usage - needed for animations
+@import 'theme/core/colors/colors.less'; // 33% usage - needed for color classes
 
 // Icon fonts removed - migrated to Heroicons SVG system
 
 // Import modern CSS components
-@import "components/forms.css";
-@import "components/enhanced-select.css";
-@import "components/toggle-switch.css";
-@import "components/map.css";
-@import "components/search.css";
-@import "components/top-list.css";
-@import "components/image-gallery.css";
-@import "components/rating.css";
-@import "components/rating-actions.css";
+@import 'components/forms.css';
+@import 'components/enhanced-select.css';
+@import 'components/toggle-switch.css';
+@import 'components/map.css';
+@import 'components/search.css';
+@import 'components/top-list.css';
+@import 'components/image-gallery.css';
+@import 'components/rating.css';
+@import 'components/rating-actions.css';
+@import 'components/timeline.css';
 
 // Import utilities
-@import "icons/icons.css";
-@import "utilities/review.css";
+@import 'icons/icons.css';
+@import 'utilities/review.css';
 
 // Import login page styles
-@import "components/login.css";
+@import 'components/login.css';
