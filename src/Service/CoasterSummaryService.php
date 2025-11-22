@@ -42,10 +42,15 @@ class CoasterSummaryService
     /** Clears all feedback records for a summary when it's regenerated */
     private function clearSummaryFeedback(CoasterSummary $summary): void
     {
+        // Only clear feedback if summary has an ID (already persisted)
+        if (!$summary->getId()) {
+            return;
+        }
+
         $this->entityManager->createQueryBuilder()
             ->delete('App\Entity\SummaryFeedback', 'sf')
-            ->where('sf.summary = :summary')
-            ->setParameter('summary', $summary)
+            ->where('sf.summary = :summaryId')
+            ->setParameter('summaryId', $summary->getId())
             ->getQuery()
             ->execute();
     }
@@ -58,7 +63,12 @@ class CoasterSummaryService
         if ($currentReviewCount < self::MIN_REVIEWS_REQUIRED) {
             $this->logger->info('Not enough reviews to generate summary', ['coaster' => $coaster->getName(), 'reviews' => $currentReviewCount]);
 
-            return ['summary' => null, 'metadata' => null];
+            return [
+                'summary' => null,
+                'metadata' => null,
+                'reason' => 'insufficient_reviews',
+                'review_count' => $currentReviewCount,
+            ];
         }
 
         $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
@@ -71,7 +81,11 @@ class CoasterSummaryService
         if (empty($aiAnalysis['summary'])) {
             $this->logger->error('AI analysis returned empty summary', ['coaster' => $coaster->getName()]);
 
-            return ['summary' => null, 'metadata' => $aiAnalysis['metadata'] ?? null];
+            return [
+                'summary' => null,
+                'metadata' => $aiAnalysis['metadata'] ?? null,
+                'reason' => 'ai_error',
+            ];
         }
 
         $summary = $this->findOrCreateSummary($coaster, $language);

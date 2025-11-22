@@ -174,7 +174,13 @@ class GenerateCoasterSummariesCommand extends Command
                 $io->writeln("  ✓ Generated summary ({$reviewsAnalyzed} reviews, {$prosCount} pros, {$consCount} cons)");
                 $io->writeln("  Latency: {$metadata['latency_ms']}ms, Input: {$metadata['input_tokens']}, Output: {$metadata['output_tokens']}, Cost: $".number_format($metadata['cost_usd'], 4));
             } else {
-                $io->writeln('  ⚠ Failed to generate summary');
+                $reason = $result['reason'] ?? 'unknown';
+                if ('insufficient_reviews' === $reason) {
+                    $reviewCount = $result['review_count'] ?? 0;
+                    $io->writeln("  ⊘ Skipped (only {$reviewCount} reviews, need 20+)");
+                } else {
+                    $io->writeln('  ⚠ Failed to generate summary');
+                }
             }
         } catch (\Exception $e) {
             $io->error("  Error processing coaster: {$e->getMessage()}");
