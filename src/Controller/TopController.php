@@ -216,13 +216,17 @@ class TopController extends BaseController
             $newCoasterIds = array_diff($positionCoasterIds, array_keys($existingTopCoasters));
             $newCoasters = [];
             if (!empty($newCoasterIds)) {
-                $newCoasters = $em->getRepository(Coaster::class)
+                $loadedCoasters = $em->getRepository(Coaster::class)
                     ->createQueryBuilder('c')
                     ->where('c.id IN (:ids)')
                     ->setParameter('ids', $newCoasterIds)
                     ->getQuery()
                     ->getResult();
-                $newCoasters = array_column($newCoasters, null, 'id');
+
+                // Build array indexed by coaster ID
+                foreach ($loadedCoasters as $coaster) {
+                    $newCoasters[$coaster->getId()] = $coaster;
+                }
             }
 
             // 3. Update positions and create new TopCoasters
@@ -252,6 +256,9 @@ class TopController extends BaseController
             $top->setUpdatedAt(new \DateTime());
 
             $em->flush();
+
+            // Refresh the entity to get accurate count
+            $em->refresh($top);
 
             return new JsonResponse([
                 'status' => 'success',

@@ -4,7 +4,7 @@
  */
 
 /* Container styles */
-.media-list-container[data-controller="top-list"] {
+.media-list-container[data-controller='top-list'] {
     position: relative;
     min-height: 100px;
 }
@@ -386,10 +386,15 @@
         animation: none;
     }
 }
-/* ====
-====================================
+
+/* ====================================
    Top List Search Component Styles
    ======================================== */
+
+/* Hide page header search when showSearchBar is false */
+.heading-elements:not(.visible-elements) {
+    display: none !important;
+}
 
 /* Search container for top list */
 .top-search-container {
@@ -402,7 +407,7 @@
 }
 
 /* Search input styling for top list context */
-.top-search-container input[type="search"] {
+.top-search-container input[type='search'] {
     padding: 12px 16px;
     padding-right: 2.5rem;
 }
@@ -468,7 +473,7 @@
         margin-bottom: 16px;
     }
 
-    .top-search-container input[type="search"] {
+    .top-search-container input[type='search'] {
         padding: 10px 14px;
     }
 
@@ -484,7 +489,7 @@
 
 /* Touch device optimizations for search */
 @media (hover: none) and (pointer: coarse) {
-    .top-search-container input[type="search"] {
+    .top-search-container input[type='search'] {
         padding: 14px 16px;
         min-height: 48px;
     }

@@ -26,8 +26,8 @@ class TopDetailsType extends AbstractType
                 TextType::class,
                 [
                     'required' => true,
-                    'label' => 'top.new.form.name',
-                    'translation_domain' => 'messages',
+                    'label' => 'new.form.name',
+                    'translation_domain' => 'top',
                     'constraints' => [
                         new NotBlank(),
                     ],
@@ -38,14 +38,14 @@ class TopDetailsType extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => [
-                        'top.new.form.top' => 'top',
-                        'top.new.form.flop' => 'flop',
+                        'new.form.top' => 'top',
+                        'new.form.flop' => 'flop',
                     ],
-                    'choice_translation_domain' => 'messages',
+                    'choice_translation_domain' => 'top',
                     'expanded' => true,
                     'required' => true,
-                    'label' => 'top.new.form.type',
-                    'translation_domain' => 'messages',
+                    'label' => 'new.form.type',
+                    'translation_domain' => 'top',
                     'constraints' => [
                         new NotBlank(),
                     ],
