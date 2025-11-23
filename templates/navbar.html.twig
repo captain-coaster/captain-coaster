@@ -2,21 +2,21 @@
 
 <div class="navbar navbar-inverse navbar-fixed-top">
   <div class="navbar-header">
-    <a class="navbar-brand" href="{{ path('bdd_index') }}" style="padding:11px 20px;">
+    <a class="navbar-brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
     <ul class="nav navbar-nav visible-xs-block">
-      <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-user"></i></a></li>
-      <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+      <li><a data-toggle="collapse" data-target="#navbar-mobile">{{ ux_icon('heroicons:user', {'class': 'w-8 h-8'}) }}</a></li>
+      <li><a class="sidebar-mobile-main-toggle">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a></li>
       {% if pageHasFilters is defined %}
-        <li><a class="sidebar-mobile-secondary-toggle"><i class="icon-filter3"></i></a></li>
+        <li><a class="sidebar-mobile-secondary-toggle">{{ ux_icon('heroicons:funnel', {'class': 'w-8 h-8'}) }}</a></li>
       {% endif %}
     </ul>
   </div>
   <div class="navbar-collapse collapse" id="navbar-mobile">
     <ul class="nav navbar-nav">
       <li>
-        <a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a>
+        <a class="sidebar-control sidebar-main-toggle hidden-xs">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
@@ -49,7 +49,7 @@
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-            <i class="icon-bell2"></i>
+            {{ ux_icon('heroicons:bell', {'class': 'w-8 h-8'}) }}
             <span class="visible-xs-inline-block position-right">{{ 'notif.title'|trans }}</span>
             {% if app.user.unreadNotifications|length > 0 %}
               <span class="badge bg-warning-400">{{ app.user.unreadNotifications|length }}</span>
@@ -62,7 +62,7 @@
                 <li class="media">
                   <div class="media-left">
                     <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">
-                      <i class="icon-star-full2"></i></a>
+                      {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}</a>
                   </div>
 
                   <div class="media-body">
@@ -89,25 +89,25 @@
 
           <ul class="dropdown-menu dropdown-menu-right">
             <li>
-              <a href="{{ path('profile') }}"><i class="icon-profile"></i> {{ 'navbar.profile'|trans }}</a>
+              <a href="{{ path('profile') }}">{{ ux_icon('heroicons:user', {'class': 'w-6 h-6'}) }} {{ 'navbar.profile'|trans }}</a>
             </li>
             <li>
               <a href="{{ path('profile_ratings') }}">
-                <i class="icon-stars"></i> {{ 'navbar.rating'|trans }}
+                {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }} {{ 'navbar.rating'|trans }}
               </a>
             </li>
             <li>
               <a href="{{ path('user_tops', {'id': app.user.id}) }}">
-                <i class="icon-clipboard3"></i> {{ 'navbar.tops'|trans }}
+                {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} {{ 'navbar.tops'|trans }}
               </a>
             </li>
             <li>
               <a href="{{ path('map_user', {'id': app.user.id}) }}">
-                <i class="icon-location3"></i> {{ 'navbar.my_map'|trans }}
+                {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }} {{ 'navbar.my_map'|trans }}
               </a>
             </li>
             <li class="divider"></li>
-            <li><a href="{{ path('logout') }}"><i class="icon-switch2"></i> {{ 'navbar.logout'|trans }}</a>
+            <li><a href="{{ path('logout') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-6 h-6'}) }} {{ 'navbar.logout'|trans }}</a>
             </li>
           </ul>
         </li>

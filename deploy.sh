@@ -52,11 +52,54 @@ update_code() {
     success "Code updated"
 }
 
-# Function to install dependencies
+# Function to install PHP dependencies
 install_dependencies() {
-    log "Installing/updating dependencies..."
+    log "Installing/updating PHP dependencies..."
     composer install --no-dev --optimize-autoloader --no-interaction
-    success "Dependencies updated"
+    success "PHP dependencies updated"
+}
+
+# Function to install Node.js dependencies
+install_node_dependencies() {
+    log "Installing/updating Node.js dependencies..."
+    
+    # Only install if package-lock.json exists
+    if [ ! -f "package-lock.json" ]; then
+        warning "package-lock.json not found, skipping Node.js dependencies"
+        return 0
+    fi
+    
+    # Check if npm is available
+    if ! command -v npm &> /dev/null; then
+        error "npm is not installed or not in PATH"
+        return 1
+    fi
+    
+    npm ci --production=false
+    success "Node.js dependencies updated"
+}
+
+# Function to build production assets
+build_assets() {
+    log "Building production assets with Webpack Encore..."
+    
+    # Check if npm is available
+    if ! command -v npm &> /dev/null; then
+        error "npm is not installed or not in PATH"
+        return 1
+    fi
+    
+    # Check if node_modules exists
+    if [ ! -d "node_modules" ]; then
+        warning "node_modules directory not found. Run 'install-node' first."
+        return 1
+    fi
+    
+    # Clean and build
+    npm run clean
+    npm run build
+    
+    success "Production assets built successfully"
 }
 
 # Function to run database migrations
@@ -111,11 +154,15 @@ rollback() {
     warning "Resetting code to previous commit..."
     git reset --hard HEAD~1
     
+
+    
     # Clear cache
     clear_cache
     
     success "Rollback completed"
 }
+
+
 
 # Show usage information
 show_usage() {
@@ -126,7 +173,9 @@ show_usage() {
     echo "Commands:"
     echo "  maintenance  [on|off|status] - Control maintenance mode"
     echo "  update       Pull latest code from repository"
-    echo "  install      Install/update dependencies"
+    echo "  install      Install/update PHP dependencies"
+    echo "  install-node Install/update Node.js dependencies (only if package-lock.json exists)"
+    echo "  assets       Build production assets with Webpack Encore"
     echo "  migrate      Run database migrations"
     echo "  cache        Clear and warm cache"
     echo "  verify       Verify deployment"
@@ -137,6 +186,8 @@ show_usage() {
     echo "  $0 maintenance on"
     echo "  $0 update"
     echo "  $0 install"
+    echo "  $0 install-node"
+    echo "  $0 assets"
     echo "  $0 migrate"
     echo "  $0 cache"
     echo "  $0 verify"
@@ -167,6 +218,12 @@ case "${1:-help}" in
         ;;
     "install")
         install_dependencies
+        ;;
+    "install-node")
+        install_node_dependencies
+        ;;
+    "assets")
+        build_assets
         ;;
     "migrate")
         run_migrations

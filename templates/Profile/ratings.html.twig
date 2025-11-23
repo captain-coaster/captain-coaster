@@ -6,12 +6,10 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block stylesheets %}
-  <link rel="stylesheet" href="{{ asset('js/plugins/rateit/rateit.css') }}">
+  {{ encore_entry_link_tags('coaster') }}
 {% endblock %}
 
 {% block javascripts %}
-  <script src="{{ asset('js/plugins/rateit/jquery.rateit.min.js') }}"></script>
-  <script src="{{ asset('js/pages/rating.js') }}"></script>
 {% endblock %}
 
 {% block body %}

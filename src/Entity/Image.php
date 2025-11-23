@@ -74,9 +74,6 @@ class Image
     #[Assert\Image(minPixels: 786432)]
     private ?UploadedFile $file;
 
-    #[Groups(['read_coaster', 'read_image'])]
-    private string $path;
-
     public function getId(): int
     {
         return $this->id;
@@ -104,11 +101,6 @@ class Image
         $this->coaster = $coaster;
 
         return $this;
-    }
-
-    public function getPath(): string
-    {
-        return $this->filename;
     }
 
     public function getFile(): ?UploadedFile

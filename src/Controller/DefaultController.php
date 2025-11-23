@@ -31,10 +31,10 @@ class DefaultController extends BaseController
     public function root(Request $request): RedirectResponse
     {
         if ($this->getUser()) {
-            return $this->redirectToRoute('bdd_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
+            return $this->redirectToRoute('default_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
         }
 
-        return $this->redirectToRoute('bdd_index', [
+        return $this->redirectToRoute('default_index', [
             '_locale' => $request->getPreferredLanguage($this->getParameter('app_locales_array')),
         ], 301);
     }
@@ -46,7 +46,7 @@ class DefaultController extends BaseController
      * @throws NoResultException
      * @throws \Exception
      */
-    #[Route(path: '/', name: 'bdd_index', methods: ['GET'])]
+    #[Route(path: '/', name: 'default_index', methods: ['GET'])]
     public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
     {
         $displayReviewsInAllLanguages = false;
@@ -74,33 +74,52 @@ class DefaultController extends BaseController
     #[Route(path: '/contact', name: 'default_contact', methods: ['GET', 'POST'])]
     public function contactAction(Request $request, MailerInterface $mailer, ChatterInterface $chatter, TranslatorInterface $translator): RedirectResponse|Response
     {
+        $initialData = [];
+        $user = $this->getUser();
+
+        // Pre-populate form with user data if logged in
+        if ($user) {
+            $initialData = [
+                'name' => $user->getDisplayName(),
+                'email' => $user->getEmail(),
+            ];
+        }
+
         /** @var Form $form */
-        $form = $this->createForm(ContactType::class);
+        $form = $this->createForm(ContactType::class, $initialData, ['is_logged_in' => (bool) $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $data = $form->getData();
+            $formData = $form->getData();
 
             $message = (new Email())
                 ->to($this->getParameter('app_contact_mail_to'))
                 ->subject($translator->trans('contact.email.title'))
-                ->html($this->renderView('Default/contact_mail.txt.twig', ['name' => $data['name'], 'message' => $data['message']]));
+                ->html($this->renderView('Default/contact_mail.txt.twig', [
+                    'name' => $formData['name'],
+                    'message' => $formData['message'],
+                    'isLoggedIn' => (bool) $user,
+                    'email' => $formData['email'] ?? null,
+                ]));
 
-            if ($data['email']) {
-                $message->replyTo($data['email']);
+            if ($formData['email']) {
+                $message->replyTo($formData['email']);
             }
 
             $mailer->send($message);
 
             // send notification
-            $chatter->send((new ChatMessage('We just received new message from '.$data['name']."\n\n".$data['message']))->transport('discord_notif'));
+            $chatter->send((new ChatMessage('We just received new message from '.$formData['name']."\n\n".$formData['message']))->transport('discord_notif'));
 
-            $this->addFlash('success', $translator->trans('contact.flash.success', ['%name%' => $data['name']]));
+            $this->addFlash('success', $translator->trans('contact.flash.success', ['%name%' => $formData['name']]));
 
             return $this->redirectToRoute('default_contact');
         }
 
-        return $this->render('Default/contact.html.twig', ['form' => $form]);
+        return $this->render('Default/contact.html.twig', [
+            'form' => $form,
+            'isLoggedIn' => (bool) $user,
+        ]);
     }
 
     #[Route(path: '/terms-conditions', name: 'app_terms_conditions', methods: ['GET'])]

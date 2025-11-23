@@ -7,35 +7,35 @@
 {% block body %}
   <div class="panel panel-white panel-flat">
     <div class="panel-heading">
-      <ul class="list-inline no-margin">
-
-        <li><i class="icon-stack3 position-left"></i> {{ top.topCoasters|length }}</li>
-        <li class="position-right">
-          <i class="icon-user-check position-left"></i>
-          <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
-        </li>
-        <li>
-          <i class="icon-alarm position-left"></i>
-          {{ 'top.list.updated'|trans }} {{ top.updatedAt|ago }}
-        </li>
-
-      </ul>
-      <div class="heading-elements visible-elements">
-        {% if is_granted('edit', top) %}
-          <a class="heading-text" href="{{ path('top_edit', {'id': top.id}) }}">
-            {{ 'top.update'|trans }}
-          </a>
-        {% endif %}
-        {% if is_granted('edit-details', top) %}
-          <a class="heading-text" href="{{ path('top_edit_details', {'id': top.id}) }}">
-            {{ 'top.update_details'|trans }}
-          </a>
-        {% endif %}
-        {% if is_granted('delete', top) %}
-          <a class="heading-text" href="{{ path('top_delete', {'id': top.id}) }}"
-             onclick="return confirm('{{ 'top.delete_confirmation'|trans }}');">
-            {{ 'top.delete'|trans }}
-          </a>
+      <div class="row">
+        <div class="col-sm-8">
+          <ul class="list-inline no-margin">
+            <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
+            <li>
+              {{ ux_icon('heroicons:user', {'class': 'w-6 h-6 position-left'}) }}
+              <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
+            </li>
+            <li>
+              {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }}
+              {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
+            </li>
+          </ul>
+        </div>
+        {% if is_granted('edit', top) or is_granted('delete', top) %}
+          <div class="col-sm-4 text-right">
+            {% if is_granted('edit', top) %}
+              <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm">
+                {{ ux_icon('heroicons:pencil', {'class': 'w-5 h-5'}) }}
+              </a>
+            {% endif %}
+            {% if is_granted('delete', top) %}
+              <a href="{{ path('top_delete', {'id': top.id}) }}"
+                 onclick="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');"
+                 class="btn bg-danger-400 btn-sm">
+                {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5'}) }}
+              </a>
+            {% endif %}
+          </div>
         {% endif %}
       </div>
     </div>
@@ -82,32 +82,5 @@
       {% endfor %}
     </ul>
   </div>
-  {% if is_granted('edit', top) %}
-    <div class="mr-10 mb-10 pull-right">
-      <a href="{{ path('top_edit', {'id': top.id}) }}">
-        <button type="button" class="btn bg-primary btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'top.update'|trans }}
-        </button>
-      </a>
-    </div>
-  {% endif %}
-  {% if is_granted('edit-details', top) %}
-    <div class="mr-10 mb-10 pull-right">
-      <a href="{{ path('top_edit_details', {'id': top.id}) }}">
-        <button type="button" class="btn bg-primary btn-labeled">
-          <b><i class="icon-pencil3"></i></b> {{ 'top.update_details'|trans }}
-        </button>
-      </a>
-    </div>
-  {% endif %}
-  {% if is_granted('delete', top) %}
-    <div class="mr-10 mb-10 pull-right">
-      <a href="{{ path('top_delete', {'id': top.id}) }}"
-         onclick="return confirm('{{ 'top.delete_confirmation'|trans }}');">
-        <button type="button" class="btn bg-danger btn-labeled">
-          <b><i class="icon-cross3"></i></b> {{ 'top.delete'|trans }}
-        </button>
-      </a>
-    </div>
-  {% endif %}
+
 {% endblock %}

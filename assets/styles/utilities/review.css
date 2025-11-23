@@ -1,0 +1,38 @@
+/* ------------------------------------------------------------------------------
+ * Review Components - Tags and Star Rating
+ * ---------------------------------------------------------------------------- */
+
+/* Tag styles */
+.label-success {
+    background-color: #dcfce7 !important;  /* Very soft mint green */
+    border: 1px solid #bbf7d0 !important;  /* Soft mint border */
+    color: #14532d !important;             /* Deep forest green text */
+}
+
+.label-danger {
+    background-color: #ffe4e6 !important;  /* Very soft pink */
+    border: 1px solid #fecdd3 !important;  /* Soft pink border */
+    color: #881337 !important;             /* Deep rose text */
+}
+
+.label-rounded {
+    margin-right: 5px !important;
+    margin-bottom: 5px !important;
+}
+
+/* Star rating styles */
+.star-rating {
+    display: inline-flex;
+    align-items: center;
+}
+
+.star-rating-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.star-rating .half-star {
+    display: inline-block;
+    vertical-align: middle;
+}

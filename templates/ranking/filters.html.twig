@@ -1,5 +1,9 @@
 {% set qS = app.request.query.all %}
-<div class="sidebar sidebar-secondary sidebar-default">
+<div class="sidebar sidebar-secondary sidebar-default"
+     data-controller="filter"
+     data-filter-endpoint-value="{{ path('ranking_search_async') }}"
+     data-filter-container-id-value="ranking-result"
+     data-filter-update-url-value="true">
     <div class="sidebar-content">
         <form id="form-filter" action="#">
             <div class="sidebar-category">
@@ -12,7 +16,7 @@
 
                 <div class="category-content">
                     <div class="form-group">
-                        <select class="form-control" name="filters[continent]" onchange="filterData();">
+                        <select class="form-control" name="filters[continent]">
                             <option value="">{{ 'coaster_ranking.filter.continent'|trans }}</option>
                             {% for continent in filtersForm.continent %}
                                 <option value="{{ continent.id }}"
@@ -23,7 +27,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="filters[country]" onchange="filterData();">
+                        <select class="form-control" name="filters[country]">
                             <option value="">{{ 'coaster_ranking.filter.country'|trans }}</option>
                             {% for country in filtersForm.country %}
                                 <option value="{{ country.id }}"
@@ -33,37 +37,36 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
+                        <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.status'|trans }}
-                                <input name="filters[status]" type="checkbox"
-                                       class="switchery"
+                                <input name="filters[status]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if qS.filters.status is defined and qS.filters.status == "on" %} checked{% endif %}>
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
+                        <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.notridden'|trans }}
-                                <input name="filters[notridden]" type="checkbox" class="switchery"
+                                <input name="filters[notridden]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
                                     {% if qS.filters.notridden is defined and qS.filters.notridden == "on" and is_granted('ROLE_USER') is defined %} checked{% endif %}>
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="checkbox checkbox-right checkbox-switchery switchery-xs">
+                    <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
+                        <div class="checkbox">
                             <label class="display-block">
                                 {{ 'map_index.filter.new'|trans }}
-                                <input name="filters[new]" type="checkbox" class="switchery"
+                                <input name="filters[new]" type="checkbox" data-toggle-switch-target="checkbox" data-action="toggle-switch#toggle"
                                     {% if qS.filters.new is defined and qS.filters.new == "on" %} checked{% endif %}>
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="filters[materialType]" onchange="filterData();">
+                        <select class="form-control" name="filters[materialType]">
                             <option value="">{{ 'coaster_ranking.filter.materialType'|trans }}</option>
                             {% for type in filtersForm.materialType %}
                                 <option value="{{ type.id }}"
@@ -74,7 +77,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="filters[seatingType]" onchange="filterData();">
+                        <select class="form-control" name="filters[seatingType]">
                             <option value="">{{ 'coaster_ranking.filter.seatingType'|trans }}</option>
                             {% for type in filtersForm.seatingType %}
                                 <option value="{{ type.id }}"
@@ -85,7 +88,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="filters[model]" onchange="filterData();">
+                        <select class="form-control" name="filters[model]">
                             <option value="">{{ 'coaster_ranking.filter.model'|trans }}</option>
                             {% for model in filtersForm.model %}
                                 <option value="{{ model.id }}"
@@ -96,7 +99,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="filters[manufacturer]" onchange="filterData();">
+                        <select class="form-control" name="filters[manufacturer]">
                             <option value="">{{ 'coaster_ranking.filter.manufacturer'|trans }}</option>
                             {% for type in filtersForm.manufacturer %}
                                 <option value="{{ type.id }}"
@@ -107,7 +110,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <select class="form-control" name="filters[openingDate]" onchange="filterData();">
+                        <select class="form-control" name="filters[openingDate]">
                             <option value="">{{ 'coaster_ranking.filter.openingDate'|trans }}</option>
                             {% for openingDate in filtersForm.openingDate %}
                                 <option value="{{ openingDate.year }}"
@@ -119,7 +122,7 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" name="page" id="filter-page" value="{{ qS.page|default(1) }}">
+            <input type="hidden" name="page" value="{{ qS.page|default(1) }}">
         </form>
     </div>
 </div>

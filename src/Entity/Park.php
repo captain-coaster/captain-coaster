@@ -17,6 +17,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_park']])]
 #[ORM\Table(name: 'park')]
+#[ORM\Index(name: 'idx_park_name_search', columns: ['name'])]
+#[ORM\Index(name: 'idx_park_slug_search', columns: ['slug'])]
 #[ORM\Entity(repositoryClass: ParkRepository::class)]
 class Park implements \Stringable
 {

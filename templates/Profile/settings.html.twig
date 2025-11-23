@@ -86,16 +86,12 @@
                   {{ form_errors(form.homePark) }}
                 </div>
 
-                <div class="form-group">
-                  {{ form_widget(form.displayReviewsInAllLanguages) }}
-                  {{ form_label(form.displayReviewsInAllLanguages) }}
-                  {{ form_errors(form.displayReviewsInAllLanguages) }}
+                <div class="toggle-switch-form-group" data-controller="toggle-switch">
+                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
                 </div>
 
-                <div class="form-group">
-                  {{ form_widget(form.addTodayDateWhenRating) }}
-                  {{ form_label(form.addTodayDateWhenRating) }}
-                  {{ form_errors(form.addTodayDateWhenRating) }}
+                <div class="toggle-switch-form-group" data-controller="toggle-switch">
+                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
                 </div>
               </fieldset>
 
@@ -110,7 +106,7 @@
               </fieldset>
 
               <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
-                <b><i class="icon-circle-right2"></i></b>
+                <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }}</b>
                 {{ 'profile.settings.save'|trans }}
               </button>
 

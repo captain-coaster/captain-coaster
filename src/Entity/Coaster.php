@@ -26,6 +26,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CoasterRepository::class)]
 #[ORM\Table(name: 'coaster')]
+#[ORM\Index(name: 'idx_coaster_name_search', columns: ['name'])]
+#[ORM\Index(name: 'idx_coaster_slug_search', columns: ['slug'])]
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['read_coaster']]),

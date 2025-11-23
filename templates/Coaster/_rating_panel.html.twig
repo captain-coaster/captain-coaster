@@ -1,0 +1,87 @@
+<!-- Rating Panel -->
+<div class="panel panel-body border-top-primary text-center csrf-protection" 
+     data-controller="csrf-protection rating-actions"
+     data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+     data-rating-actions-csrf-protection-outlet=".csrf-protection"
+     {% if rating %}data-rating-actions-rating-id-value="{{ rating.id }}"{% endif %}
+     data-rating-actions-locale-value="{{ app.request.locale }}"
+     data-rating-actions-rate-text-value="{{ 'coaster.rating.action'|trans }}"
+     data-rating-actions-my-rating-text-value="{{ 'coaster.rating.my_rating'|trans }}">
+    <h6 class="no-margin text-semibold" data-rating-actions-target="title">{{ rating ? 'coaster.rating.my_rating'|trans : 'coaster.rating.action'|trans }}</h6>
+    
+    {% if is_granted('ROLE_USER') %}
+        <!-- Star Rating Widget -->
+        {% include 'Coaster/_rating_widget.html.twig' with {'coaster': coaster, 'rating': rating} only %}
+        
+        <!-- Action Buttons -->
+        <div class="rating-actions mt-10">
+            
+            <a class="action-icon review-icon" 
+               href="{{ path('review_form', {'id': coaster.id}) }}"
+               title="{% if rating %}{{ 'coaster.rating.updatereview'|trans }}{% else %}{{ 'coaster.rating.sendreview'|trans }}{% endif %}">
+                {{ ux_icon('heroicons:pencil', {'class': 'w-6 h-6'}) }}
+                {% if rating and rating.review %}
+                    <span class="review-indicator"></span>
+                {% endif %}
+            </a>
+            
+            {% if user and not user.isAddTodayDateWhenRating %}
+            <div class="inline-date-picker"
+                 data-controller="rating-date"
+                 {% if rating %}data-rating-date-rating-id-value="{{ rating.id }}"{% endif %}
+                 data-rating-date-update-url-value="{{ path('rating_edit', {'id': coaster.id }) }}"
+                 data-rating-date-csrf-protection-outlet=".csrf-protection">
+                <a class="action-icon"
+                   data-action="click->rating-date#toggleDatePicker"
+                   href="#"
+                   style="{% if not rating %}display: none;{% endif %}"
+                   data-rating-date-target="calendarButton"
+                   title="{% if rating and rating.riddenAt %}{{ 'coaster.rating.date.rode_on'|trans }} {{ rating.riddenAt|date('M j, Y') }} - {{ 'coaster.rating.date.click_to_change'|trans }}{% else %}{{ 'coaster.rating.date.set'|trans }}{% endif %}">
+                    {{ ux_icon('heroicons:calendar', {'class': 'w-6 h-6'}) }}
+                    {% if rating and rating.riddenAt %}
+                        <span class="date-indicator"></span>
+                    {% endif %}
+                </a>
+                
+                <!-- Date Picker Popup -->
+                <div data-rating-date-target="dateContainer" 
+                     class="date-picker-popup-inline">
+                    <div class="date-picker-content-small">
+                        <label class="date-picker-label">{{ 'coaster.rating.date.label'|trans }}</label>
+                        <input type="date" 
+                               class="small-date-input"
+                               data-rating-date-target="dateInput"
+                               data-action="change->rating-date#dateChanged"
+                               {% if rating and rating.riddenAt %}value="{{ rating.riddenAt|date('Y-m-d') }}"{% endif %}
+                               max="{{ 'now'|date('Y-m-d') }}"
+                               aria-label="{{ 'coaster.rating.date.select'|trans }}">
+                        <div class="small-date-actions">
+                            <button type="button" 
+                                    class="tiny-btn today-btn"
+                                    data-action="click->rating-date#setToday">{{ 'Today'|trans }}</button>
+                            <button type="button" 
+                                    class="tiny-btn clear-btn"
+                                    data-action="click->rating-date#clearDate">{{ 'Clear'|trans }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <a class="action-icon delete-icon" 
+               data-action="click->rating-actions#delete"
+               data-rating-actions-target="deleteButton"
+               href="#"
+               style="{% if not rating %}display: none;{% endif %}"
+               title="{{ 'coaster.rating.delete'|trans }}">
+                {{ ux_icon('heroicons:trash', {'class': 'w-6 h-6'}) }}
+            </a>
+        </div>
+    {% else %}
+        <p class="text-muted content-group-sm">
+            {{ 'coaster.rating.mustlogin'|trans }}
+        </p>
+        <a href="{{ path('login') }}">{{ 'coaster.rating.login'|trans }}</a>
+    {% endif %}
+</div>
+<!-- /Rating Panel -->

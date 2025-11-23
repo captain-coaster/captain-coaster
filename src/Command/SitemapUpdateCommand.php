@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Service\SitemapService;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Contracts\Cache\CacheInterface;
 
 #[AsCommand(
     name: 'sitemap:update',
@@ -21,7 +22,9 @@ use Symfony\Component\Stopwatch\Stopwatch;
 class SitemapUpdateCommand extends Command
 {
     public function __construct(
-        private readonly SitemapService $sitemapService
+        private readonly SitemapService $sitemapService,
+        #[Autowire(service: 'sitemap.cache')]
+        private readonly CacheInterface $sitemapCache
     ) {
         parent::__construct();
     }
@@ -37,26 +40,25 @@ class SitemapUpdateCommand extends Command
         $stopwatch = new Stopwatch();
         $stopwatch->start('command');
 
-        $cache = new FilesystemAdapter();
+        $updatePages = $input->getOption('pages');
+        $updateImages = $input->getOption('images');
 
-        if ($input->getOption('pages')) {
-            $urls = $cache->getItem('sitemap_urls');
-
-            if (!$urls->isHit()) {
-                $urls->set($this->sitemapService->getUrlsForPages());
-                $urls->expiresAfter(\DateInterval::createFromDateString('12 hours'));
-                $cache->save($urls);
-            }
+        // If no options are provided, update both
+        if (!$updatePages && !$updateImages) {
+            $updatePages = true;
+            $updateImages = true;
         }
 
-        if ($input->getOption('images')) {
-            $urls = $cache->getItem('sitemap_image');
+        if ($updatePages) {
+            $this->sitemapCache->delete('sitemap_urls');
+            $this->sitemapCache->get('sitemap_urls', fn () => $this->sitemapService->getUrlsForPages());
+            $output->writeln('Pages sitemap updated.');
+        }
 
-            if (!$urls->isHit()) {
-                $urls->set($this->sitemapService->getUrlsForImages());
-                $urls->expiresAfter(\DateInterval::createFromDateString('48 hours'));
-                $cache->save($urls);
-            }
+        if ($updateImages) {
+            $this->sitemapCache->delete('sitemap_image');
+            $this->sitemapCache->get('sitemap_image', fn () => $this->sitemapService->getUrlsForImages());
+            $output->writeln('Images sitemap updated.');
         }
 
         $output->writeln((string) $stopwatch->stop('command'));

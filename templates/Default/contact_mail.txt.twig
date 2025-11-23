@@ -1,5 +1,8 @@
 From:
-{{ name }}
+{{ name }}{% if email %} ({{ email }}){% endif %}
+
+User Status:
+{% if isLoggedIn %}Logged in user{% else %}Anonymous user{% endif %}
 
 Message:
 {{ message }}

@@ -1,0 +1,17 @@
+ai_summary:
+    feedback:
+        prompt: "Était-ce utile ?"
+        success: "Merci pour votre retour !"
+        error: "Une erreur s'est produite lors de l'envoi de votre retour."
+        error_token: "Jeton de sécurité invalide."
+        button:
+            helpful: "Marquer comme utile"
+            not_helpful: "Marquer comme non utile"
+            voted_helpful: "Vous avez voté ceci utile"
+            voted_not_helpful: "Vous avez voté ceci non utile"
+    info:
+        based_on: "Résumé généré par IA basé sur {count, plural, =1 {1 avis} other {# avis}}"
+    panel:
+        title: "Avis du Capitaine"
+        highlights: "Points forts"
+        concerns: "Points d'attention"

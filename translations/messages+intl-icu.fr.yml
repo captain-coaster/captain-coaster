@@ -4,12 +4,19 @@ en: English
 es: Español
 de: Deutsch
 
+# Common buttons
+Today: "Aujourd'hui"
+Clear: "Effacer"
+
 app:
     name: Captain Coaster
     title:
         default: "Bienvenue !"
     header:
         search: "Wild Buffalo, Parc Astérix..."
+    search:
+        suggestions: "Suggestions de recherche"
+        searching: "Recherche en cours..."
 
 index:
     title: "Bienvenue !"
@@ -22,15 +29,26 @@ index:
         reviews: avis
         users: utilisateurs
         images: photos
-    missingCoasters: "Nous recherchons des photos pour ces coasters !"
+    missingImages: "Nous recherchons des photos pour ces coasters !"
 
 coaster:
     score:
+        title: "SCORE"
+        rank: "RANG"
         scoreof: Score de
         ranked: Classé
         intheworld: mondial
+        quality: "Score de Qualité"
+        worldrank: "Classement Mondial"
+        overview: "En un Coup d'Œil"
+    quality:
+        excellent: "Excellent"
+        good: "Bon"
+        fair: "Moyen"
+        poor: "Faible"
     rating:
         action: "Note ce coaster !"
+        my_rating: "Ma note"
         notenough: "Pas assez de note sur ce coaster !"
         mustlogin: Il faut être connecté pour noter.
         login: Se connecter
@@ -39,7 +57,14 @@ coaster:
         delete: supprimer
         text: "Score basé sur {count_rating} notes et {count_top} tops"
         details: Détail des notes utilisateurs
+        distribution: "Distribution des notes"
         ratings: notes
+        date:
+            label: "Quand l'as-tu ridé ?"
+            set: "Définir la date"
+            rode_on: "Ridé le"
+            click_to_change: "cliquer pour modifier"
+            select: "Sélectionner la date"
     infos:
         title: "Caractéristiques de {name}"
         closeParksTitle: "Les meilleurs parcs d'attractions proches de {parkName}"
@@ -135,6 +160,7 @@ map_index:
         atleast: "au moins {count}"
         openingDate: "Date d'ouverture"
         name: Nom
+        clear: "Effacer les filtres"
     results: Résultats
 
 user_profile:
@@ -230,37 +256,6 @@ profile:
         updated_success: Vos paramètres ont été mis à jour avec succès.
         save: Enregistrer les modifications
 
-top:
-    new:
-        title: Créer un top
-        form:
-            name: "Nom du top :"
-            type: "Ce sera un Top ou un Flop ?"
-            flop: Flop (les pires sont placés en premier)
-            top: Top (les meilleurs sont placés en premier)
-            submit: Créer le top
-    editDetails:
-        title: Modifier un top
-        form:
-            submit: Modifier le top
-    list:
-        title: Les derniers tops
-        more: Voir le détail
-        updated: mis à jour
-        by: par
-        infotitle: "Tous tes tops sont ici !"
-        info: "Les tops, ça permet de faire connaître aux autres ses goûts, comme les meilleurs RMC de la planète, ou les pires kiddies d’Espagne, ou peut-être les meilleurs water coasters bleus avec launch magnétique ! Tout est possible, et chaque top peut ensuite être partagé."
-        create_first: Create mon premier Top Coasters
-        create: Créer un nouveau top
-    title: Mon Top Coasters
-    update: Modifier
-    update_details: Changer le nom
-    delete: Supprimer
-    delete_confirmation: "Supprimer ?"
-    save: Sauvegarder le top
-    find: Chercher un coaster...
-    info: "Commence par chercher un coaster là-haut, et le reste se fait tout seul en dessous ! Tu peux même changer l'ordre en déplaçant la ligne ou en écrivant sa position dans le rond bleu."
-
 review:
     title: Avis
     share: "Partage ton expérience avec nous !"
@@ -328,7 +323,7 @@ navbar:
 
 sidebar:
     index: Accueil
-    nearby: Coasters à proximité
+    search: Coasters
     ranking: Classement Mondial des Coasters
     users: Nos riders
     map: Carte des coasters
@@ -443,17 +438,6 @@ error:
         title: "Arrêt Technique Rapide ! 🔧"
         message: "Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !"
 
-missing:
-    step1:
-        title: "Ajouter un coaster manquant"
-        subtitle: "Étape 1"
-        choose_description: "Sélectionnez un parc existant ci-dessous"
-        create_description: "Ou créez simplement un nouveau parc"
-        form:
-            choose_btn: "Sélectionner ce parc"
-            park_name: "Entrez le nom du parc"
-            country: "Sélectionnez son pays ci-dessous"
-
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"
 
@@ -480,4 +464,10 @@ search_index:
             =0 {Aucun utilisateur trouvé}
             =1 {1 utilisateur trouvé}
             other {# utilisateurs trouvés}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {Aucun résultat trouvé pour "{query}"}
+            =1 {1 résultat trouvé pour "{query}"}
+            other {# résultats trouvés pour "{query}"}
         }

@@ -39,6 +39,22 @@ class CoasterSummaryService
         return $this->riddenCoasterRepository->countCoasterReviewsWithText($coaster);
     }
 
+    /** Clears all feedback records for a summary when it's regenerated */
+    private function clearSummaryFeedback(CoasterSummary $summary): void
+    {
+        // Only clear feedback if summary has an ID (already persisted)
+        if (!$summary->getId()) {
+            return;
+        }
+
+        $this->entityManager->createQueryBuilder()
+            ->delete('App\Entity\SummaryFeedback', 'sf')
+            ->where('sf.summary = :summaryId')
+            ->setParameter('summaryId', $summary->getId())
+            ->getQuery()
+            ->execute();
+    }
+
     /** Generates an AI summary for a coaster based on its reviews */
     public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en'): array
     {
@@ -47,7 +63,12 @@ class CoasterSummaryService
         if ($currentReviewCount < self::MIN_REVIEWS_REQUIRED) {
             $this->logger->info('Not enough reviews to generate summary', ['coaster' => $coaster->getName(), 'reviews' => $currentReviewCount]);
 
-            return ['summary' => null, 'metadata' => null];
+            return [
+                'summary' => null,
+                'metadata' => null,
+                'reason' => 'insufficient_reviews',
+                'review_count' => $currentReviewCount,
+            ];
         }
 
         $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
@@ -60,7 +81,11 @@ class CoasterSummaryService
         if (empty($aiAnalysis['summary'])) {
             $this->logger->error('AI analysis returned empty summary', ['coaster' => $coaster->getName()]);
 
-            return ['summary' => null, 'metadata' => $aiAnalysis['metadata'] ?? null];
+            return [
+                'summary' => null,
+                'metadata' => $aiAnalysis['metadata'] ?? null,
+                'reason' => 'ai_error',
+            ];
         }
 
         $summary = $this->findOrCreateSummary($coaster, $language);
@@ -70,10 +95,39 @@ class CoasterSummaryService
         $summary->setReviewsAnalyzed($reviewCount);
         $summary->setLanguage($language);
 
+        // Reset votes when summary is regenerated since content has changed
+        $summary->setPositiveVotes(0);
+        $summary->setNegativeVotes(0);
+        $summary->setFeedbackRatio(0.0);
+
+        // Clear existing feedback records since they're no longer relevant
+        $this->clearSummaryFeedback($summary);
+
         $this->entityManager->persist($summary);
         $this->entityManager->flush();
 
         return ['summary' => $summary, 'metadata' => $aiAnalysis['metadata']];
+    }
+
+    /**
+     * Gets summaries with poor feedback ratios for regeneration.
+     *
+     * @param float $maxRatio Maximum feedback ratio threshold (e.g., 0.3 for 30%)
+     * @param int   $minVotes Minimum number of votes required to consider the ratio
+     *
+     * @return CoasterSummary[]
+     */
+    public function getSummariesWithPoorFeedback(float $maxRatio = 0.3, int $minVotes = 10): array
+    {
+        return $this->entityManager->getRepository(CoasterSummary::class)
+            ->createQueryBuilder('cs')
+            ->where('cs.feedbackRatio <= :maxRatio')
+            ->andWhere('(cs.positiveVotes + cs.negativeVotes) >= :minVotes')
+            ->setParameter('maxRatio', $maxRatio)
+            ->setParameter('minVotes', $minVotes)
+            ->orderBy('cs.feedbackRatio', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     /**
