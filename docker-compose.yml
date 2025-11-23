@@ -1,24 +1,24 @@
 services:
     db:
-        image: mariadb:10.11
+        image: mariadb:11.8
         container_name: db-captain
         volumes:
             - datamaria:/var/lib/mysql
         restart: always
         ports:
-            - "3306:3306"
+            - '3306:3306'
         environment:
             - MYSQL_ROOT_PASSWORD=root123
             - MARIADB_AUTO_UPGRADE=1
     redis:
-        image: "redis:alpine"
+        image: 'redis:alpine'
         ports:
-            - "6379:6379"
+            - '6379:6379'
     adminer:
         image: adminer:latest
         container_name: adminer-captain
         restart: always
         ports:
-            - "8081:8080"
+            - '8081:8080'
 volumes:
     datamaria:

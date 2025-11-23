@@ -1,0 +1,21 @@
+{#
+    Reusable Rating Widget Component
+    Can be used standalone or as part of the rating panel
+    
+    Parameters:
+    - coaster: The coaster entity
+    - rating: The user's rating (optional)
+    - readonly: Whether the rating is read-only (default: false)
+#}
+
+{% set readonly = readonly|default(false) %}
+
+<div class="csrf-protection" data-controller="csrf-protection rating"
+     data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+     data-rating-csrf-protection-outlet=".csrf-protection"
+     data-rating-coaster-id-value="{{ coaster.id }}"
+     data-rating-current-value-value="{{ rating.value|default(0) }}"
+     {% if rating %}data-rating-rating-id-value="{{ rating.id }}"{% endif %}
+     data-rating-locale-value="{{ app.request.locale }}"
+     {% if readonly %}data-rating-readonly-value="true"{% endif %}>
+</div>

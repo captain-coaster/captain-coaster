@@ -11,130 +11,26 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {'filters': filters, 'filtersForm': filtersForm} only %}
+  {% include 'Includes/filter_sidebar.html.twig' with {
+    'filters': filters, 
+    'filtersForm': filtersForm,
+    'filterConfig': {
+      'map_outlet': '.map-container',
+      'update_url': true,
+      'excluded_filters': ['new', 'continent', 'country']
+    }
+  } only %}
 {% endblock %}
 
 {% block wide_body %}
-    <div id="map" style="height:94vh;"></div>
-    <link rel="stylesheet" href="{{ asset('js/plugins/leaflet/leaflet.css') }}" />
-    <link rel="stylesheet" href="{{ asset('js/plugins/leaflet/mapbox-gl.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('js/plugins/leaflet/leaflet-beautify-marker-icon.css') }}" />
+    <div id="map-container"
+         data-controller="map" 
+         data-map-markers-value="{{ markers|json_encode }}" 
+         data-map-park-id-value="{{ parkId|default('') }}"
+         class="map-container">
+        <div data-map-target="container" id="map" style="height:94vh;"></div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/plugins/switchery.min.js') }}"></script>
-  <script type="text/javascript">
-    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-    elems.forEach(function(html) {
-      var switchery = new Switchery(html);
-      html.addEventListener('click', function() {
-        filterData();
-      })
-    });
-  </script>
-  <script type="text/javascript" src="{{ asset('js/plugins/leaflet/leaflet.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/plugins/leaflet/bounce.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/plugins/leaflet/mapbox-gl.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/plugins/leaflet/leaflet-mapbox-gl.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/plugins/leaflet/leaflet-beautify-marker-icon.js') }}"></script>
-  <script type="text/javascript">
-    var map = null;
-    var gmarkers = [];
-
-    function initMap() {
-      map = L.map('map', {worldCopyJump: true}).setView([48.384098, 7.970846], 5);
-      var gl = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        maxZoom: 15,
-        minZoom : 3
-      }).addTo(map);
-
-      setInterval(generateMarkers(map, {{ markers|raw }}), 50);
-
-      {% if parkId is not empty %}
-      var park = gmarkers.find(function (element) {
-        return element.parkId === {{ parkId }};
-      });
-
-      map.setView([park.getLatLng().lat, park.getLatLng().lng], 9);
-      loadParkData(park);
-      {% else %}
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-          map.setView([position.coords.latitude, position.coords.longitude], 5);
-        });
-      }
-      {% endif %}
-    }
-
-    function generateMarkers(map, markers) {
-      var options = {
-        icon: 'cw',
-        borderWidth: '3',
-        borderColor: '#5d87d5',// TODO à utiliser quand note de parc 'hsl(note * 1.2, 50%, 50%)'
-        backgroundColor: '#37474f'
-      };
-
-      // Adds markers to the map.
-      markers.forEach(function(park) {
-        var marker = L.marker([park['latitude'], park['longitude']], {icon : L.BeautifyIcon.icon(options)}).setBouncingOptions({
-          bounceHeight : 3,
-          bounceSpeed  : 54,
-          exclusive    : true
-        }).addTo(map);
-        marker.parkId = park['id'];
-        marker.title = park['name'];
-
-        gmarkers.push(marker);
-
-        marker.on('click', function() {
-          loadParkData(marker);
-        });
-      });
-    }
-
-    function removeMarkers() {
-      gmarkers.forEach(function(park) {
-        map.removeLayer(park);
-      });
-      gmarkers = [];
-    }
-
-    function loadParkData(marker) {
-      if(marker._popup == undefined) {
-        marker.bindPopup('Loading...').openPopup();
-        marker.toggleBouncing();
-
-        $.ajax({
-          url: Routing.generate('map_coasters_ajax', {
-            'id': marker.parkId,
-            '_locale': '{{ app.request.locale }}',
-          }),
-          type: 'GET',
-          data: $('form').serialize(),
-        }).done(function(coasters) {
-          marker.bindPopup(coasters);
-          marker.toggleBouncing();
-        });
-      }
-      else {
-        marker.bounce(1);
-      }
-    }
-
-    function filterData() {
-      $.ajax({
-        url: Routing.generate('map_markers_ajax', {'_locale': '{{ app.request.locale }}'}),
-        type: 'GET',
-        data: $('form').serialize(),
-      }).done(function(data) {
-        removeMarkers();
-        generateMarkers(map, data);
-      });
-    }
-
-    window.onload = function(){
-      initMap();
-    };
-  </script>
 {% endblock %}

@@ -4,12 +4,19 @@ en: English
 es: Español
 de: Deutsch
 
+# Common buttons
+Today: "Heute"
+Clear: "Löschen"
+
 app:
     name: Captain Coaster
     title:
         default: "Willkommen!"
     header:
         search: "Voltron, Holiday Park..."
+    search:
+        suggestions: "Suchvorschläge"
+        searching: "Suche läuft..."
 
 index:
     title: "Willkommen!"
@@ -22,15 +29,26 @@ index:
         reviews: Rezensionen
         users: Benutzer
         images: Bilder
-    missingCoasters: "Wir suchen nach Bildern dieser Achterbahn!"
+    missingImages: "Wir suchen nach Bildern dieser Achterbahn!"
 
 coaster:
     score:
+        title: "PUNKTZAHL"
+        rank: "RANG"
         scoreof: Punktzahl von
         ranked: Rang
         intheworld: Auf der Welt
+        quality: "Qualitätsbewertung"
+        worldrank: "Weltrangliste"
+        overview: "Auf einen Blick"
+    quality:
+        excellent: "Ausgezeichnet"
+        good: "Gut"
+        fair: "Durchschnittlich"
+        poor: "Schwach"
     rating:
         action: "Bewerte diese Achterbahn!"
+        my_rating: "Meine Bewertung"
         notenough: "Nicht genügend Bewertungen für diese Achterbahn!"
         mustlogin: "Zum Bewerten musst du eingeloggt sein!"
         login: Einloggen
@@ -39,7 +57,14 @@ coaster:
         delete: Löschen
         text: "Punktzahl basiert auf {count_rating} Bewertungen und {count_top} Tops"
         details: "Detaillierte Benutzerbewertungen"
+        distribution: "Bewertungsverteilung"
         ratings: "Bewertungen"
+        date:
+            label: "Wann bist du gefahren?"
+            set: "Datum festlegen"
+            rode_on: "Gefahren am"
+            click_to_change: "klicken zum Ändern"
+            select: "Datum auswählen"
     infos:
         title: "{name} Merkmale"
         closeParksTitle: "Beste Freizeitparks nahe {parkName}"
@@ -135,6 +160,7 @@ map_index:
         atleast: "mindestens {count}"
         openingDate: Eröffnungsdatum
         name: Name
+        clear: "Filter löschen"
     results: Ergebnisse
 
 user_profile:
@@ -230,37 +256,6 @@ profile:
         updated_success: Ihre Einstellungen wurden erfolgreich aktualisiert.
         save: Änderungen speichern
 
-top:
-    new:
-        title: Erstelle ein neues Top
-        form:
-            name: "Name deines Top:"
-            type: "Ist es ein Top oder ein Flop?"
-            flop: Flop (niedriger ist besser)
-            top: Top (höher ist besser)
-            submit: Erstelle ein neues Top
-    editDetails:
-        title: Aktualisiere ein Top
-        form:
-            submit: Aktualisiere dieses Top
-    list:
-        title: Die neuesten Tops
-        more: Zeige mehr
-        updated: zuletzt aktualisiert
-        by: von
-        infotitle: "Alle deine Tops sind auf dieser Seite!"
-        info: "Tops sind der beste Weg, deine Leidenschaft zu teilen: Sage uns, welcher RMC der beste auf dem Planeten ist, welches die schlechtesten Kinderachterbahnen in Texas sind oder warum die besten Wasserachterbahnen nicht mit einem LIM-Antrieb ausgestattet sind! Es liegt an dir!"
-        create_first: Erstelle meine ersten Top Achterbahnen
-        create: Erstelle ien individuelles Top
-    title: Meine Top Achterbahnen
-    update: Aktualisiere
-    update_details: Ändere Name
-    delete: Lösche
-    delete_confirmation: "Löschen?"
-    save: Speichere das Top
-    find: Suche eine Achterbahn...
-    info: "Wenn du oben mit der Suche nach einer Achterbahn beginnst, passiert unten die Magie. Du kannst die Position sogar aktualisieren, indem du die Linien per Drag-and-Drop verschiebst oder die neue Position in den blauen Kreis schreibst."
-
 review:
     title: Rezensionen
     share: "Teile deine Meinung mit uns!"
@@ -328,7 +323,7 @@ navbar:
 
 sidebar:
     index: Home
-    nearby: Finde Achterbahnen in der Nähe
+    search: Achterbahnen suchen
     ranking: Weltrangliste der Achterbahnen
     users: Unsere Fahrer
     map: Achterbahn Landkarte
@@ -443,17 +438,6 @@ error:
         title: "Kurzer Technischer Halt! 🔧"
         message: "Bitte bleiben Sie in der Warteschlange. Wir nehmen den Betrieb in wenigen Minuten wieder auf!"
 
-missing:
-    step1:
-        title: Füge eine fehlende Achterbahn hinzu
-        subtitle: Schritt 1
-        choose_description: Wähle unten einen existierenden Park aus
-        create_description: Oder erstelle einfach einen neuen Park
-        form:
-            choose_btn: Wähle diesen Park aus
-            park_name: Gebe den Parknamen ein
-            country: Wähle unten dessen Land aus
-
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"
 
@@ -480,4 +464,10 @@ search_index:
             =0 {Keine Benutzer gefunden}
             =1 {1 Benutzer gefunden}
             other {# Benutzer gefunden}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {Keine Ergebnisse für "{query}" gefunden}
+            =1 {1 Ergebnis für "{query}" gefunden}
+            other {# Ergebnisse für "{query}" gefunden}
         }

@@ -16,7 +16,7 @@
   <meta name="theme-color" content="#37474f">
   <link rel="manifest" href="{{ asset('manifest.json') }}">
   {% block header %}{% endblock %}
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
   {{ encore_entry_link_tags('app') }}
   {% block stylesheets %}{% endblock %}
 </head>
@@ -60,110 +60,14 @@
   <!-- /page content -->
 </div>
 <!-- /page container -->
+
 <!-- Core JS files -->
 {{ encore_entry_script_tags('app') }}
-<script type="text/javascript" src="{{ asset('js/core/libraries/jquery.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/core/libraries/bootstrap.min.js') }}"></script>
-<!-- /core JS files -->
-<!-- Theme JS files -->
-<script type="text/javascript" src="{{ asset('js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/core/app.min.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/core/layout_fixed_custom.js') }}"></script>
-<!-- /theme JS files -->
-<script type="text/javascript" src="{{ asset('js/plugins/typeahead/typeahead.bundle.min.js') }}"></script>
+
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-<!-- Symfony UX Translator -->
-{{ encore_entry_script_tags('translator') }}
-<script type="text/javascript">
-  // used for rating
-  var locale = '{{ app.request.locale }}';
-  var charMap = {
-    'a': /[àáâãå]/gi,
-    'c': /[ç]/gi,
-    'e': /[èéêë]/gi,
-    'i': /[ïí]/gi,
-    'o': /[ôóøö]/gi,
-    'oe': /[œ]/gi,
-    'u': /[üú]/gi,
-    'n': /[ñ]/gi,
-    'ss': /[ß]/gi
-  };
-  var normalize = function (str) {
-    $.each(charMap, function (normalized, regex) {
-      str = str.replace(regex, normalized);
-    });
-    return str;
-  };
-  var queryTokenizer = function (q) {
-    var normalized = normalize(q);
-    return Bloodhound.tokenizers.nonword(normalized);
-  };
-  var dataSource = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.nonword('normalize'),
-    queryTokenizer: queryTokenizer,
-    prefetch: {
-      url: Routing.generate('ajax_main_search', {'_locale': '{{ app.request.locale }}'}),
-      cache: true,
-      ttl: 600000,
-      transform: function (obj) {
-        return obj.map(
-          function (result) {
-            return {normalize: normalize(result.names), display: result.display, route: result.route, slug: result.slug}
-          }
-        )
-      }
-    }
-  });
-  $('#search-coaster').typeahead(
-      {
-        highlight: true,
-        hint: true,
-        autoselect: true,
-      }, {
-        display: 'display',
-        source: dataSource.ttAdapter(),
-        limit: 7,
-      }).bind('typeahead:select', function(ev, suggestion) {
-    window.location.href = Routing.generate(
-        suggestion.route,
-        {'slug': suggestion.slug, '_locale': '{{ app.request.locale }}'},
-    );
-  }).bind('typeahead:render', function() {
-      if ($('#seeMoreResults').length < 1) {
-        $(".tt-dataset")
-          .append('<div role="option" id="seeMoreResults" class="tt-suggestion tt-selectable"><i class="icon-arrow-right8 position-left"></i> {{ 'search_index.more'|trans() }}</div>')
-          .on("click", () => seeMoreResults());
-        $(".tt-empty").css({"display": "block"});
-      }
-  });
 
-  $("#search-coaster").on("keydown", (e) => {
-    if ((e.keyCode === 13 || e.keyCode === 9) &&
-        (
-          ($(".tt-dataset > *:not(#seeMoreResults)").length < 1 && $('#seeMoreResults').length === 1) ||
-          ($(".tt-dataset > *:not(#seeMoreResults)").length > 1 && $('#seeMoreResults').hasClass("tt-cursor"))
-        )
-    ) {
-      seeMoreResults();
-    }
-  });
-
-  // Mobile form validation
-  $("form.heading-form").on("submit", (e) => {
-      e.preventDefault();
-      if ($(".tt-dataset > *:not(#seeMoreResults)").length < 1 && $('#seeMoreResults').length === 1) {
-          seeMoreResults();
-      }
-  });
-
-  function seeMoreResults() {
-      window.location.href = Routing.generate(
-          'search_index',
-          {'_locale': '{{ app.request.locale }}', 'query': document.querySelector("#search-coaster").value}
-      );
-  }
-</script>
+<!-- Page-specific entries -->
 {% block javascripts %}{% endblock %}
 {% if app.environment != 'dev' %}
 <!-- Google tag (gtag.js) -->

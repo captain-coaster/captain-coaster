@@ -1,0 +1,40 @@
+/* Login page layout - override table-based layout with flexbox */
+body.login-container {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+}
+
+body.login-container .page-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+}
+
+body.login-container .page-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+body.login-container .content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+body.login-container .content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 500px;
+}

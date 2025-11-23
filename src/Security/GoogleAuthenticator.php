@@ -73,7 +73,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('bdd_index'));
+        return new RedirectResponse($this->router->generate('default_index'));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
@@ -123,6 +123,9 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             if (!$user->getLastName()) {
                 $user->setLastName($googleUser->getLastName());
             }
+
+            // Generate display name from first and last name
+            $user->updateDisplayName();
 
             $this->em->persist($user);
             $this->em->flush();

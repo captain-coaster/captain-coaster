@@ -4,12 +4,19 @@ en: English
 es: Español
 de: Deutsch
 
+# Common buttons
+Today: "Today"
+Clear: "Clear"
+
 app:
     name: "Captain Coaster"
     title:
         default: "Welcome!"
     header:
         search: "Rapterra, Epic Universe..."
+    search:
+        suggestions: "Search suggestions"
+        searching: "Searching..."
 
 index:
     title: "Welcome!"
@@ -22,13 +29,23 @@ index:
         reviews: "reviews"
         users: "users"
         images: "pictures"
-    missingCoasters: "We are looking for pictures of these coasters!"
+    missingImages: "We are looking for pictures of these coasters!"
 
 coaster:
     score:
+        title: "SCORE"
+        rank: "RANK"
         scoreof: "Score of"
         ranked: "Ranked"
         intheworld: "in the world"
+        quality: "Quality Score"
+        worldrank: "World Rank"
+        overview: "At a Glance"
+    quality:
+        excellent: "Excellent"
+        good: "Good"
+        fair: "Fair"
+        poor: "Poor"
     ai_summary:
         title: "Review Summary"
         highlights: "What riders love"
@@ -36,6 +53,7 @@ coaster:
         disclaimer: "AI-generated summary based on {count} reviews"
     rating:
         action: "Rate this coaster!"
+        my_rating: "My rating"
         notenough: "Not enough ratings for this coaster!"
         mustlogin: "You must be logged in to rate."
         login: "Log in"
@@ -44,7 +62,14 @@ coaster:
         delete: "delete"
         text: "Score based on {count_rating} ratings and {count_top} tops"
         details: "Detailed user ratings"
+        distribution: "Rating distribution"
         ratings: "ratings"
+        date:
+            label: "When did you ride?"
+            set: "Set ride date"
+            rode_on: "Rode on"
+            click_to_change: "click to change"
+            select: "Select ride date"
     infos:
         title: "{name} features"
         closeParksTitle: "Best amusement parks near {parkName}"
@@ -140,6 +165,7 @@ map_index:
         atleast: "at least {count}"
         openingDate: "Opening date"
         name: "Name"
+        clear: "Clear filters"
     results: "Results"
 
 user_profile:
@@ -235,37 +261,6 @@ profile:
         updated_success: "Your settings have been updated successfully."
         save: "Save Changes"
 
-top:
-    new:
-        title: "Create a new top"
-        form:
-            name: "Name of your top:"
-            type: "Is it a Top or a Flop ?"
-            flop: "Flop (lower is better)"
-            top: "Top (higher is better)"
-            submit: "Create new top"
-    editDetails:
-        title: "Update a top"
-        form:
-            submit: "Update the top"
-    list:
-        title: "The latest tops"
-        more: "See more"
-        updated: "last updated"
-        by: "by"
-        infotitle: "All your tops are on this page!"
-        info: "Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It's up to you!"
-        create_first: "Create my first Top Coasters"
-        create: "Create a custom top"
-    title: "My Top Coasters"
-    update: "Update"
-    update_details: "Change name"
-    delete: "Delete"
-    delete_confirmation: "Delete ?"
-    save: "Save the top"
-    find: "Find a coaster..."
-    info: "Start by searching a coaster up there, then the magic happens below. You can even update the position by dragging and dropping lines or writing the new position inside the blue circle."
-
 review:
     title: "Reviews"
     share: "Share your opinion with us!"
@@ -333,7 +328,7 @@ navbar:
 
 sidebar:
     index: "Home"
-    nearby: "Find coasters nearby"
+    search: "Search Coasters"
     ranking: "World Roller Coaster Rankings"
     users: "Our riders"
     map: "Coasters map"
@@ -410,12 +405,10 @@ notif:
         view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
-nearby:
-    title: "Find coasters nearby"
+coaster_search:
+    title: "Search Coasters"
     num_found: "{num} coasters found"
-    geo_on: "Geolocation enabled"
-    geo_off: "Geolocation not enabled"
-    km_away: "{distance} away"
+    no_results: "No coasters found matching your criteria"
 
 image:
     credit: "Credit: {name}"
@@ -449,17 +442,6 @@ error:
         title: "Quick Technical Stop! 🔧"
         message: "Please remain in line. We will resume operations in a few minutes!"
 
-missing:
-    step1:
-        title: "Add a missing coaster"
-        subtitle: "Step 1"
-        choose_description: "Select an existing park below"
-        create_description: "Or simply create a new park"
-        form:
-            choose_btn: "Select this park"
-            park_name: "Enter park name"
-            country: "Select its country below"
-
 banner:
     coasters: "{count, plural, one {1 coaster} other {# coasters}}"
 
@@ -486,4 +468,10 @@ search_index:
             =0 {No users found}
             =1 {1 user found}
             other {# users found}
+        }
+    unified_results_found: >-
+        {num, plural,
+            =0 {No results found for "{query}"}
+            =1 {1 result found for "{query}"}
+            other {# results found for "{query}"}
         }

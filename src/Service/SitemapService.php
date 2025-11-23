@@ -25,78 +25,87 @@ class SitemapService
     {
         $urls = [];
 
-        // Latest review
-        $latestRating = $this->em->getRepository(RiddenCoaster::class)->findOneBy([], ['updatedAt' => 'desc']);
-        $indexUpdateDate = $latestRating->getUpdatedAt();
-
-        // Index
-        $indexUrls = $this->getUrlAndAlternates('bdd_index', [], $indexUpdateDate, 'daily', 1);
-        $urls = array_merge($urls, $indexUrls);
-
-        // Ranking
-        $rankingUpdateDate = new \DateTime('first day of this month midnight');
-        $rankingUrls = $this->getUrlAndAlternates('ranking_index', [], $rankingUpdateDate, 'monthly', 1);
-        $urls = array_merge($urls, $rankingUrls);
-
-        // Fiche Coasters
-        $coasters = $this->em->getRepository(Coaster::class)->findAll();
-        foreach ($coasters as $coaster) {
-            $params = ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()];
-            $date = null;
+        try {
             // Latest review
-            $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc']);
-            if ($latestReview instanceof RiddenCoaster) {
-                $date = $latestReview->getUpdatedAt();
-            }
-            $coasterUrls = $this->getUrlAndAlternates('show_coaster', $params, $date, 'weekly', '0.8');
-            $urls = array_merge($urls, $coasterUrls);
-        }
+            $latestRating = $this->em->getRepository(RiddenCoaster::class)->findOneBy([], ['updatedAt' => 'desc']);
+            $indexUpdateDate = $latestRating ? $latestRating->getUpdatedAt() : new \DateTime();
 
-        return $urls;
+            // Index
+            $indexUrls = $this->getUrlAndAlternates('default_index', [], $indexUpdateDate, 'daily', 1);
+            $urls = array_merge($urls, $indexUrls);
+
+            // Ranking
+            $rankingUpdateDate = new \DateTime('first day of this month midnight');
+            $rankingUrls = $this->getUrlAndAlternates('ranking_index', [], $rankingUpdateDate, 'monthly', 1);
+            $urls = array_merge($urls, $rankingUrls);
+
+            // Fiche Coasters
+            $coasters = $this->em->getRepository(Coaster::class)->findAll();
+
+            foreach ($coasters as $coaster) {
+                $params = ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()];
+                $date = null;
+                // Latest review
+                $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc']);
+                if ($latestReview instanceof RiddenCoaster) {
+                    $date = $latestReview->getUpdatedAt();
+                }
+                $coasterUrls = $this->getUrlAndAlternates('show_coaster', $params, $date, 'weekly', '0.8');
+                $urls = array_merge($urls, $coasterUrls);
+            }
+
+            return $urls;
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 
     public function getUrlsForImages(): array
     {
         $urls = [];
 
-        // Latest review
-        $images = $this->em->getRepository(Image::class)->findBy(['watermarked' => true]);
+        try {
+            // Latest review
+            $images = $this->em->getRepository(Image::class)->findBy(['watermarked' => true]);
 
-        foreach ($images as $image) {
-            $url = [];
-            $url['loc'] = $this->router->generate(
-                'show_coaster',
-                [
-                    'id' => $image->getCoaster()->getId(),
-                    'slug' => $image->getCoaster()->getSlug(),
-                    '_locale' => 'en',
-                ],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            foreach ($images as $image) {
+                $url = [];
+                $url['loc'] = $this->router->generate(
+                    'show_coaster',
+                    [
+                        'id' => $image->getCoaster()->getId(),
+                        'slug' => $image->getCoaster()->getSlug(),
+                        '_locale' => 'en',
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
 
-            $imageXML = [];
+                $imageXML = [];
 
-            $imageXML['loc'] = \sprintf(
-                '%s://%s/%s/%s',
-                $this->router->getContext()->getScheme(),
-                $this->router->getContext()->getHost(),
-                'images/coasters',
-                $image->getPath()
-            );
+                $imageXML['loc'] = \sprintf(
+                    '%s://%s/%s/%s',
+                    $this->router->getContext()->getScheme(),
+                    $this->router->getContext()->getHost(),
+                    'images/coasters',
+                    $image->getFilename()
+                );
 
-            $imageXML['title'] = $image->getCoaster()->getName();
-            $imageXML['geo_location'] = \sprintf(
-                '%s, %s',
-                $image->getCoaster()->getPark()->getName(),
-                $this->translator->trans($image->getCoaster()->getPark()->getCountry()->getName(), [], 'database', 'en')
-            );
+                $imageXML['title'] = $image->getCoaster()->getName();
+                $imageXML['geo_location'] = \sprintf(
+                    '%s, %s',
+                    $image->getCoaster()->getPark()->getName(),
+                    $this->translator->trans($image->getCoaster()->getPark()->getCountry()->getName(), [], 'database', 'en')
+                );
 
-            $url['images'][] = $imageXML;
+                $url['images'][] = $imageXML;
 
-            $urls[] = $url;
+                $urls[] = $url;
+            }
+
+            return $urls;
+        } catch (\Exception $e) {
+            return [];
         }
-
-        return $urls;
     }
 
     private function getUrlAndAlternates(

@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% import 'helper.html.twig' as helper %}
+
 {% set title = topName %}
 {% block title %}{{ title }}{% endblock %}
 
@@ -8,178 +10,224 @@
 {% form_theme form _self %}
 
 {% block _top_topCoasters_entry_widget %}
-  <li class="media">
-    {{ form_widget(form) }}
+  <li class="coaster-entry" 
+      data-coaster-id="{% if form.vars.data is not null %}{{ form.vars.data.coaster.id }}{% endif %}"
+      data-position="{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}"
+      data-top-list-target="item">
+    <div style="display: none;">{{ form_widget(form) }}</div>
 
-    <div class="media-left media-middle ui-handle" style="cursor: grab;">
-      <i class="icon-three-bars"></i>
-    </div>
-    <div class="media-left media-middle">
-        <textarea class="position label label-rounded label-primary" style="resize:none; height: 22px; width: 50px;">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}empty{% endif %}</textarea>
+    {# Drag Area with Position Number #}
+    <div class="drag-area">
+      <div class="position-number">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}</div>
+      <div class="drag-indicator">
+        {{ ux_icon('heroicons:bars-3', {'class': 'w-4 h-4'}) }}
+      </div>
     </div>
 
-    <div class="media-body">
-      <h4>
-        {{ form.vars.data.coaster.name|default('__coastername__') }}
+    {# Coaster Information #}
+    <div class="coaster-content">
+      <div class="coaster-main">
+        <span class="coaster-name">{{ form.vars.data.coaster.name|default('__coastername__') }}</span>
         {% if form.vars.data is not null %}
-          -
-          {{ form.vars.data.coaster.park.name|default('') }}
-          ({{ app.user.rating(form.vars.data.coaster).value|default('N/A') }})
+          <span class="coaster-separator">•</span>
+          <span class="coaster-park">{{ form.vars.data.coaster.park.name|default('') }}</span>
         {% endif %}
-      </h4>
+      </div>
+      {% if form.vars.data is not null %}
+        {% set userRating = app.user.rating(form.vars.data.coaster).value|default(null) %}
+        {% if userRating %}
+          <span class="coaster-rating">{{ helper.starRating(userRating) }}</span>
+        {% endif %}
+      {% endif %}
     </div>
 
-    <div class="media-right media-middle">
-      <a class="remove-line"><i class="icon-cross3"></i></a>
+    {# Single Actions Menu #}
+    <div class="coaster-menu">
+      <div class="dropdown">
+        <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
+          {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+          <li>
+            <a href="#" data-action="click->top-list#moveToTop">
+              {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4'}) }}
+              {{ 'actions.move_to_top'|trans({}, 'top') }}
+            </a>
+          </li>
+          <li>
+            <a href="#" data-action="click->top-list#moveToBottom">
+              {{ ux_icon('heroicons:arrow-down', {'class': 'w-4 h-4'}) }}
+              {{ 'actions.move_to_bottom'|trans({}, 'top') }}
+            </a>
+          </li>
+          <li>
+            <a href="#" data-action="click->top-list#moveToPosition">
+              {{ ux_icon('heroicons:arrows-up-down', {'class': 'w-4 h-4'}) }}
+              {{ 'actions.move_to_position'|trans({}, 'top') }}
+            </a>
+          </li>
+          <li class="dropdown-divider"></li>
+          <li>
+            <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
+              {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4'}) }}
+              {{ 'actions.remove'|trans({}, 'top') }}
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </li>
 {% endblock %}
 
 {% block body %}
-  <div class="panel panel-flat">
-    <select class="js-data-example-ajax"></select>
+  {# Hidden template for creating new coaster items #}
+  <template id="coaster-item-template">
+    <li class="coaster-entry" 
+        data-coaster-id=""
+        data-position="1"
+        data-top-list-target="item">
+      <div style="display: none;"></div>
+
+      {# Drag Area with Position Number #}
+      <div class="drag-area">
+        <div class="position-number">1</div>
+        <div class="drag-indicator">
+          {{ ux_icon('heroicons:bars-3', {'class': 'w-4 h-4'}) }}
+        </div>
+      </div>
+
+      {# Coaster Information #}
+      <div class="coaster-content">
+        <div class="coaster-main">
+          <span class="coaster-name"></span>
+          <span class="coaster-separator">•</span>
+          <span class="coaster-park"></span>
+        </div>
+        <span class="coaster-rating"></span>
+      </div>
+
+      {# Single Actions Menu #}
+      <div class="coaster-menu">
+        <div class="dropdown">
+          <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
+            {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li>
+              <a href="#" data-action="click->top-list#moveToTop">
+                {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.move_to_top'|trans({}, 'top') }}
+              </a>
+            </li>
+            <li>
+              <a href="#" data-action="click->top-list#moveToBottom">
+                {{ ux_icon('heroicons:arrow-down', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.move_to_bottom'|trans({}, 'top') }}
+              </a>
+            </li>
+            <li>
+              <a href="#" data-action="click->top-list#moveToPosition">
+                {{ ux_icon('heroicons:arrows-up-down', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.move_to_position'|trans({}, 'top') }}
+              </a>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li>
+              <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
+                {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.remove'|trans({}, 'top') }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+  </template>
+
+  {# Help Section - Collapsible #}
+  <div class="panel panel-flat mb-3" data-controller="collapse">
+    <div class="panel-body">
+      <button type="button" 
+              class="btn btn-link p-0 text-decoration-none w-100"
+              data-action="click->collapse#toggle"
+              aria-expanded="false"
+              style="text-align: left; display: flex; align-items: center; justify-content: space-between;">
+        <span style="display: flex; align-items: center; gap: 8px;">
+          {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5 text-primary'}) }}
+          <strong>{{ 'help.title'|trans({}, 'top') }}</strong>
+        </span>
+        <span data-collapse-target="icon" style="transition: transform 0.2s ease;">
+          {{ ux_icon('heroicons:chevron-down', {'class': 'w-5 h-5 text-muted'}) }}
+        </span>
+      </button>
+      
+      <div data-collapse-target="content" style="display: none; margin-top: 12px; padding-left: 32px;">
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #666;">
+          <li style="margin-bottom: 6px;">{{ 'help.search'|trans({}, 'top') }}</li>
+          <li style="margin-bottom: 6px;">{{ 'help.reorder'|trans({}, 'top') }}</li>
+          <li style="margin-bottom: 6px;">{{ 'help.actions'|trans({}, 'top') }}</li>
+          <li style="margin-bottom: 0;">{{ 'help.autosave'|trans({}, 'top') }}</li>
+        </ul>
+      </div>
+    </div>
   </div>
+
+  {# Search Component for Adding Coasters - Mobile-optimized #}
+  <div class="panel panel-flat mb-3">
+    <div class="panel-body p-3">
+      <div data-controller="top-search" 
+           data-top-search-url-value="{{ path('top_ajax_search') }}"
+           data-top-search-list-controller-value="top-list"
+           class="search-container">
+        <input type="search" 
+               data-top-search-target="input"
+               data-action="input->top-search#search keydown->top-search#handleKeydown"
+               class="form-control form-control-lg"
+               placeholder="{{ 'search.placeholder'|trans({}, 'top') }}"
+               autocomplete="off"
+               aria-label="{{ 'search.placeholder'|trans({}, 'top') }}"
+               style="font-size: 16px;">
+        <div data-top-search-target="dropdown" class="search-dropdown">
+          <div data-top-search-target="results"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   {{ form_start(form) }}
-  <div class="panel panel-flat">
-    <div class="panel-heading">
-      <span class="panel-title">
-        {{ 'top.info'|trans }}
-      </span>
-      {% if form.vars.errors is not empty %}
-        <div class="alert alert-danger alert-styled-left alert-dismissible">
+  <div class="panel panel-flat mb-3">
+    {% if form.vars.errors is not empty %}
+      <div class="panel-heading">
+        <div class="alert alert-danger alert-styled-left alert-dismissible mt-2">
           {{ form_errors(form) }}
         </div>
-      {% endif %}
-    </div>
-    <div class="panel-body">
+      </div>
+    {% endif %}
+    <div class="panel-body p-0 p-md-2">
       <ul id="top-coaster"
           data-prototype="{{ form_widget(form.topCoasters.vars.prototype)|e('html_attr') }}"
-          class="media-list media-list-container ui-sortable">
+          class="media-list media-list-container list-unstyled mb-0"
+          data-controller="top-list"
+          data-top-list-target="list"
+          data-top-list-auto-save-url-value="{{ path('top_auto_save', {'id': form.vars.data.id}) }}"
+          data-top-list-save-delay-value="2000">
         {% for coaster in form.topCoasters %}
           {{ form_widget(coaster) }}
         {% endfor %}
       </ul>
     </div>
   </div>
-  <button type="submit" class="btn bg-teal-400 btn-labeled pull-right">
-    <b><i class="icon-pencil3"></i></b> {{ 'top.save'|trans }}
-  </button>
+
   {{ form_rest(form) }}
   {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
-  <script type="text/javascript" src="{{ asset('js/plugins/select2.min.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('js/pages/form_select2.js') }}"></script>
-  <script type="text/javascript">
-      var $collectionHolder;
+  {# Load top list specific JavaScript bundle #}
+  {{ encore_entry_script_tags('top-list') }}
+{% endblock %}
 
-      jQuery(document).ready(function () {
-          // Get the ul that holds the collection of tags
-          $collectionHolder = $('ul#top-coaster');
-          $collectionHolder.data('index', $collectionHolder.find('li').length);
-
-          $(".ui-sortable").sortable({
-              update: function (event, ui) {
-                  updatePosition();
-              },
-              handle: ".ui-handle",
-          });
-      });
-
-      function addTagForm($collectionHolder, data) {
-          var prototype = $collectionHolder.data('prototype');
-          var index = $collectionHolder.data('index');
-          var newForm = prototype.replace(/__name__/g, index);
-          newForm = newForm.replace(/__coastername__/g, data.text);
-          $collectionHolder.data('index', index + 1);
-          $collectionHolder.append(newForm);
-
-          $("#top_topCoasters_" + index + "_coaster").val(data.id);
-
-          updatePosition();
-      }
-
-      $('ul#top-coaster').on('click', '.remove-line', function(e) {
-          $(this).closest('li').remove();
-          updatePosition();
-      });
-
-      $('ul#top-coaster').on('blur', '.position', function(e) {
-          let textValue = parseInt($(this)[0].value.trim());
-          let pos = textValue - 2;
-
-          if(textValue > $('ul#top-coaster li').length) {
-              pos = $('ul#top-coaster li').length - 1;
-              $(this).val($('ul#top-coaster li').length);
-          }
-          else if(textValue > $(this).closest('li').index()) {
-              pos = textValue - 1;
-          }
-
-          if(pos < 0) {
-              $('ul#top-coaster').prepend($(this).closest('li'));
-          }
-          else {
-              $(this).closest('li').insertAfter("ul#top-coaster li:eq(" + pos + ")");
-          }
-
-          updatePosition();
-      });
-
-      function updatePosition() {
-          $("input[id$='position']").each(function (i) {
-              i++;
-              $(this).val(i);
-          });
-          $("textarea.position").each(function (i) {
-              i++;
-              $(this).val(i);
-          });
-      }
-
-      var urlSearch = Routing.generate('top_ajax_search', {'_locale': '{{ app.request.locale }}'});
-      $("select").select2({
-          ajax: {
-              url: urlSearch,
-              dataType: 'json',
-              delay: 250,
-              data: function (params) {
-                  return {
-                      q: params.term,
-                      page: params.page
-                  };
-              },
-              processResults: function (data) {
-                  return {
-                      results: $.map(data.items, function (item) {
-                          return {
-                              text: item.coaster + ' - ' + item.park + ' (' + (item.rating || 'N/A') + ')',
-                              id: item.id
-                          }
-                      })
-                  };
-              },
-              cache: true,
-          },
-          minimumInputLength: 2,
-          placeholder: "{{ 'top.find'|trans }}"
-      });
-
-      jQuery("select").on("select2:select", function (evt) {
-          addTagForm($collectionHolder, evt.params.data);
-      });
-
-      $('textarea').keypress(function(e) {
-          var a = [];
-          var k = e.which;
-
-          for (i = 48; i < 58; i++)
-              a.push(i);
-
-          if (!(a.indexOf(k)>=0))
-              e.preventDefault();
-      });
-  </script>
-  <script type="text/javascript" src="{{ asset('js/plugins/touch-punch/jquery.ui.touch-punch.min.js') }}"></script>
+{% block stylesheets %}
+  {# Load top list specific CSS bundle #}
+  {{ encore_entry_link_tags('top-list') }}
 {% endblock %}

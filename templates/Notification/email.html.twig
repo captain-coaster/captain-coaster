@@ -9,4 +9,4 @@
 <p style="font-weight: bold;">{{ message }}</p>
 —
 <p>{{ 'notif.email.view'|trans({'%link_path%': url('notification_read', {'id': notification.id, '_locale': locale})}, 'messages', locale)|raw }}</p>
-<p>{{ 'notif.email.unsubscribe'|trans({'%link_path%': url('me', {'_locale': locale})}, 'messages', locale)|raw }}</p>
+<p>{{ 'notif.email.unsubscribe'|trans({'%link_path%': url('profile', {'_locale': locale})}, 'messages', locale)|raw }}</p>

@@ -4,21 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Coaster;
-use App\Entity\Continent;
-use App\Entity\Country;
-use App\Entity\Manufacturer;
-use App\Entity\MaterialType;
-use App\Entity\Model;
-use App\Entity\SeatingType;
+use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\FilterService;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,7 +24,8 @@ class RankingController extends AbstractController
     public function __construct(
         private readonly PaginatorInterface $paginator,
         private readonly RankingRepository $rankingRepository,
-        private readonly EntityManagerInterface $em,
+        private readonly FilterService $filterService,
+        private readonly CoasterRepository $coasterRepository
     ) {
     }
 
@@ -47,40 +42,11 @@ class RankingController extends AbstractController
             [
                 'ranking' => $this->rankingRepository->findCurrent(),
                 'previousRanking' => $this->rankingRepository->findPrevious(),
-                'filtersForm' => $this->getFiltersForm(),
+                'filtersForm' => $this->filterService->getFilterData(),
             ]
         );
     }
 
-    /**
-     * Get data to display filter form (mainly <select> data).
-     *
-     * @throws InvalidArgumentException
-     */
-    private function getFiltersForm(): array
-    {
-        $cache = new FilesystemAdapter();
-        $filtersForm = $cache->getItem('ranking_filters_form');
-
-        if (!$filtersForm->isHit()) {
-            $data = [];
-            $data['continent'] = $this->em->getRepository(Continent::class)->findBy([], ['name' => 'asc']);
-            $data['country'] = $this->em->getRepository(Country::class)->findBy([], ['name' => 'asc']);
-            $data['materialType'] = $this->em->getRepository(MaterialType::class)->findBy([], ['name' => 'asc']);
-            $data['seatingType'] = $this->em->getRepository(SeatingType::class)->findBy([], ['name' => 'asc']);
-            $data['model'] = $this->em->getRepository(Model::class)->findBy([], ['name' => 'asc']);
-            $data['manufacturer'] = $this->em->getRepository(Manufacturer::class)->findBy([], ['name' => 'asc']);
-            $data['openingDate'] = $this->em->getRepository(Coaster::class)->getDistinctOpeningYears();
-
-            $filtersForm->set($data);
-            $filtersForm->expiresAfter(\DateInterval::createFromDateString('7 days'));
-            $cache->save($filtersForm);
-        }
-
-        return $filtersForm->get();
-    }
-
-    /** @throws \Exception */
     #[Route(
         path: '/coasters',
         name: 'ranking_search_async',
@@ -91,11 +57,20 @@ class RankingController extends AbstractController
     public function searchAsyncAction(#[MapQueryParameter] array $filters = [], #[MapQueryParameter] int $page = 1): Response
     {
         try {
+            // Validate and authorize filters
+            $validatedFilters = $this->filterService->validateAndAuthorize(
+                $filters,
+                'ranking',
+                $this->getUser()
+            );
+
             $pagination = $this->paginator->paginate(
-                $this->rankingRepository->findCoastersRanked($filters),
+                $this->coasterRepository->findForRanking($validatedFilters),
                 $page,
                 self::COASTERS_PER_PAGE
             );
+        } catch (AccessDeniedHttpException $e) {
+            throw $e;
         } catch (\Exception) {
             throw new BadRequestHttpException();
         }
@@ -104,9 +79,7 @@ class RankingController extends AbstractController
             'ranking/results.html.twig',
             [
                 'coasters' => $pagination,
-                // array_filter removes empty filters e.g. ['continent' => '']
-                // Exclude 'user' filter as it's a hidden field, not a user-visible filter
-                'filtered' => [] !== array_filter(array_diff_key($filters, ['user' => '']), 'strlen'),
+                'filtered' => [] !== array_diff_key($validatedFilters, ['user' => null]),
                 'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );

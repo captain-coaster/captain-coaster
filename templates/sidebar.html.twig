@@ -6,59 +6,59 @@
         <ul class="navigation navigation-main navigation-accordion">
           <!-- Main -->
           {% set currentRoute = app.request.attributes.get('_route') %}
-          <li{% if currentRoute == 'bdd_index' %} class="active"{% endif %}>
-            <a href="{{ path('bdd_index') }}">
-              <i class="icon-home4"></i> <span>{{ 'sidebar.index'|trans }}</span>
+          <li{% if currentRoute == 'default_index' %} class="active"{% endif %}>
+            <a href="{{ path('default_index') }}">
+              {{ ux_icon('heroicons:home', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.index'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'ranking_index' %} class="active"{% endif %}>
             <a href="{{ path('ranking_index') }}">
-              <i class="icon-trophy2"></i> <span>{{ 'sidebar.ranking'|trans }}</span>
-            </a>
-          </li{% if currentRoute == 'review_list' %} class="active"{% endif %}>
-          <li>
-            <a href="{{ path('review_list') }}">
-              <i class="icon-megaphone"></i> <span>{{ 'sidebar.review'|trans }}</span>
+              {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.ranking'|trans }}</span>
             </a>
           </li>
-          <li{% if currentRoute == 'top_list' %} class="active"{% endif %}>
-            <a href="{{ path('top_list') }}">
-              <i class="icon-podium"></i> <span>{{ 'sidebar.top'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'nearby_index' %} class="active"{% endif %}>
-            <a href="{{ path('nearby_index') }}">
-              <i class="icon-compass4"></i> <span>{{ 'sidebar.nearby'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>
-            <a href="{{ path('user_list') }}">
-              <i class="icon-users4"></i> <span>{{ 'sidebar.users'|trans }}</span>
+          <li{% if currentRoute == 'coaster_search_index' %} class="active"{% endif %}>
+            <a href="{{ path('coaster_search_index') }}">
+              {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.search'|trans }}</span>
             </a>
           </li>
           <li{% if currentRoute == 'map_index' %} class="active"{% endif %}>
             <a href="{{ path('map_index') }}">
-              <i class="icon-location3"></i> <span>{{ 'sidebar.map'|trans }}</span>
+              {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.map'|trans }}</span>
+            </a>
+          </li>
+          <li{% if currentRoute == 'top_list' %} class="active"{% endif %}>
+            <a href="{{ path('top_list') }}">
+              {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.top'|trans }}</span>
+            </a>
+          </li>
+          <li{% if currentRoute == 'review_list' %} class="active"{% endif %}>
+            <a href="{{ path('review_list') }}">
+              {{ ux_icon('heroicons:chat-bubble-bottom-center-text', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.review'|trans }}</span>
+            </a>
+          </li>
+          <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>
+            <a href="{{ path('user_list') }}">
+              {{ ux_icon('heroicons:users', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.users'|trans }}</span>
             </a>
           </li>
           <li>
             <a href="https://blog.captaincoaster.com" target="_blank">
-              <i class="icon-newspaper"></i> <span>{{ 'sidebar.blog'|trans }} <i class="icon-new-tab" style="font-size: 12px;"></i></span>
+              {{ ux_icon('heroicons:newspaper', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.blog'|trans }} <span style="font-size: 12px;">{{ ux_icon('heroicons:arrow-top-right-on-square', {'class': 'w-6 h-6'}) }}</span></span>
             </a>
           </li>
           <li{% if currentRoute == 'default_contact' %} class="active"{% endif %}>
             <a href="{{ path('default_contact') }}">
-              <i class="icon-mail5"></i> <span>{{ 'sidebar.contact'|trans }}</span>
+              {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.contact'|trans }}</span>
             </a>
           </li>
           <li>
             {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
               <a href="{{ path('logout') }}">
-                <i class="icon-switch2"></i> <span>{{ 'sidebar.logout'|trans }}</span>
+                {{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.logout'|trans }}</span>
               </a>
             {% else %}
               <a href="{{ path('login') }}">
-                <i class="icon-key"></i> <span>{{ 'sidebar.login'|trans }}</span>
+                {{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.login'|trans }}</span>
               </a>
             {% endif %}
           </li>

@@ -34,6 +34,12 @@ class ReviewActionController extends BaseController
     public function upvoteAction(Request $request, RiddenCoaster $review): JsonResponse
     {
         $user = $this->getUser();
+
+        // Prevent users from upvoting their own reviews
+        if ($review->getUser() === $user) {
+            return new JsonResponse(['error' => 'Cannot upvote your own review'], Response::HTTP_FORBIDDEN);
+        }
+
         $hasUpvoted = $this->upvoteRepository->hasUserUpvoted($user, $review);
 
         if ($hasUpvoted) {
@@ -44,6 +50,7 @@ class ReviewActionController extends BaseController
             ]);
 
             $this->entityManager->remove($upvote);
+            $review->setUpvoteCounter($review->getUpvoteCounter() - 1);
             $this->entityManager->flush();
 
             // Update the review score
@@ -61,6 +68,7 @@ class ReviewActionController extends BaseController
             $upvote->setReview($review);
 
             $this->entityManager->persist($upvote);
+            $review->setUpvoteCounter($review->getUpvoteCounter() + 1);
             $this->entityManager->flush();
 
             // Update the review score

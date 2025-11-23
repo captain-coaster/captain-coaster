@@ -1,0 +1,62 @@
+<div class="panel panel-flat">
+    <div class="panel-heading">
+        <h6 class="panel-title">
+            <span class="text-semibold">
+                {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
+                {% if coaster.images|length > 0 %}
+                    <span class="badge badge-primary">{{ coaster.images|length }}</span>
+                {% endif %}
+            </span>
+        </h6>
+        <div class="pull-right text-muted">
+          <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">
+            {{ 'coaster.photos.button'|trans }}
+          </a>
+          </div>
+    </div>
+    
+    {% if coaster.images|length > 0 %}
+        <div class="panel-body" 
+             data-controller="gallery" 
+             data-gallery-name-value="coaster-images"
+             data-gallery="coaster-images">
+            {% for image in coaster.images|slice(0, number) %}
+                <div class="col-sm-3">
+                    <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
+                        <div class="thumb">
+                            <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                 alt="{{ coaster.name }}">
+                        </div>
+                    </a>
+                    <div class="text-size-small text-muted"
+                         data-controller="image-like"
+                         data-image-like-image-id-value="{{ image.id }}"
+                         data-image-like-locale-value="{{ app.request.locale }}"
+                         data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
+                         style="display: flex; align-items: center; gap: 2px;">
+                        <button type="button"
+                                data-action="click->image-like#toggle"
+                                data-image-like-target="icon"
+                                class="btn-link text-muted p-0 border-0 bg-transparent"
+                                style="cursor: pointer; display: inline-flex; align-items: center;">
+                        </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
+                        {% if image.credit %}&nbsp;{{ image.credit }}{% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% if number < coaster.images|length %}
+            <div class="panel-footer text-center">
+                <a id="show-all" class="btn btn-link">{{ 'coaster.photos.all'|trans }}</a>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="panel-body text-center text-muted">
+            {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
+            <p class="mt-10">{{ 'coaster.photos.empty'|trans }}</p>
+            <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn btn-primary btn-sm">
+                {{ 'coaster.photos.button'|trans }}
+            </a>
+        </div>
+    {% endif %}
+</div>

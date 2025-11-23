@@ -6,7 +6,10 @@
      data-review-actions-id-value="{{ review.id }}"
      data-review-actions-upvoted-value="false"
      data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"
-     data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}">
+     data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}"
+     data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}"
+     data-review-actions-mobile-length-value="150"
+     data-review-actions-desktop-length-value="600">
   <div class="media-left">
     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
       {{ helper.profilePicture(review.user, 'img-circle img-sm') }}
@@ -18,32 +21,32 @@
       <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="text-semibold">
         {{ review.user.displayName }}
       </a>
-      {{ helper.starRating(review.value) }}
+      <span class="media-annotation dotted">{{ helper.starRating(review.value) }}</span>
       <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
     </div>
 
     {% if review.pros|length > 0 or review.cons|length > 0 %}
       <p class="mb-10">
         {% for pros in review.pros %}
-          <span class="label label-flat label-rounded border-success text-success-600">{{ pros.name|trans([], 'database') }}</span>
+          <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
         {% endfor %}
         {% for cons in review.cons %}
-          <span class="label label-flat label-rounded border-danger text-danger-600">{{ cons.name|trans([], 'database') }}</span>
+          <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
         {% endfor %}
       </p>
     {% endif %}
 
     {% if review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
-      {% if review.review|length > 200 %}
-        <div class="review-content" data-review-actions-target="reviewContent">
-          <p class="review-short">{{ review.review|slice(0, 200) }}...
+      {% if review.review|length > 150 %}
+        <div class="review-content" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}">
+          <p class="review-short">{{ review.review|slice(0, 150) }}...
             <a href="#" class="expand-review" data-action="review-actions#toggleReview" data-review-actions-target="expandButton">
-              <i class="icon-arrow-down22"></i>
+              {{ ux_icon('heroicons:chevron-down', {'class': 'w-6 h-6'}) }}
             </a>
           </p>
           <p class="review-full" style="display: none;">{{ review.review }}
             <a href="#" class="collapse-review" data-action="review-actions#toggleReview" data-review-actions-target="collapseButton">
-              <i class="icon-arrow-up22"></i>
+              {{ ux_icon('heroicons:chevron-up', {'class': 'w-6 h-6'}) }}
             </a>
           </p>
         </div>
@@ -56,33 +59,40 @@
       <li>
         <span data-review-actions-target="upvoteCount">{{ review.upvotes|length }}</span>
         <a href="#" data-action="review-actions#upvote" data-review-actions-target="upvoteButton">
-          <i class="icon-arrow-up22 text-success"></i>
+          {{ ux_icon('heroicons:chevron-up', {'class': 'w-6 h-6 text-success'}) }}
         </a>
       </li>
       {% if is_granted('ROLE_USER') %}
         <li>
           <a href="#" data-action="review-actions#openReportModal" data-review-actions-target="reportButton" title="{{ 'review.report'|trans }}">
-            <i class="icon-flag8 text-size-small text-default"></i>
+            {{ ux_icon('heroicons:flag', {'class': 'w-6 h-6 text-size-small text-default'}) }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('update', review) %}
         <li>
-          <a href="{{ path('review_form', {'id': review.coaster.id}) }}">
-            {{ 'review.update'|trans }}
+          <a href="{{ path('review_form', {'id': review.coaster.id}) }}" title="{{ 'review.update'|trans }}">
+            {{ ux_icon('heroicons:pencil', {'class': 'w-6 h-6 text-default'}) }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('delete', review) %}
         <li>
-          <a onclick="deleteRating({{ review.id }})">{{ 'review.delete'|trans }}</a>
+          <a href="#" data-action="review-actions#deleteReview" title="{{ 'review.delete'|trans }}">
+            {{ ux_icon('heroicons:trash', {'class': 'w-6 h-6 text-default'}) }}
+          </a>
         </li>
       {% endif %}
     </ul>
 
     <!-- Report Modal -->
     {% if is_granted('ROLE_USER') %}
-      <div id="reportModal-{{ review.id }}" class="modal fade" data-review-actions-target="reportModal">
+      <div id="reportModal-{{ review.id }}" 
+           class="modal fade" 
+           data-controller="modal"
+           data-review-actions-target="reportModal"
+           data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
+           data-modal-target="modal">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -94,7 +104,7 @@
               <div class="modal-body">
                 <div class="form-group">
                   <label>{{ 'review.report_reason'|trans }}</label>
-                  <select name="reason" class="form-control">
+                  <select name="reason" class="form-control" autofocus>
                     <option value="offensive">{{ 'review.reason.offensive'|trans }}</option>
                     <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
                     <option value="incorrect">{{ 'review.reason.incorrect'|trans }}</option>

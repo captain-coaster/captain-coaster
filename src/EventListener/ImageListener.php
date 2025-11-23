@@ -51,12 +51,14 @@ class ImageListener
     /** After persist: send Discord notification */
     public function postPersist(Image $image, PostPersistEventArgs $event): void
     {
+        $imageUrl = $this->imagesEndpoint.'/1440x1440/'.$image->getFilename();
+
         $discordOptions = (new DiscordOptions())
             ->addEmbed(
                 (new DiscordEmbed())
                     ->title($image->getCoaster()->getName().' - '.$image->getCoaster()->getPark()->getName())
-                    ->image((new DiscordMediaEmbedObject())
-                        ->url($this->imagesEndpoint.'/1440x1440/'.$image->getFilename()))
+                    ->url($imageUrl)
+                    ->thumbnail((new DiscordMediaEmbedObject())->url($imageUrl))
                     ->addField(
                         (new DiscordFieldEmbedObject())
                             ->name('Uploader')

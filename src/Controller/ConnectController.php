@@ -41,6 +41,11 @@ class ConnectController extends AbstractController
         RateLimiterFactory $loginLinkLimiter,
         EmailValidationService $emailValidator,
     ): Response {
+        // Redirect if already logged in
+        if ($this->getUser()) {
+            return $this->redirectToRoute('default_index');
+        }
+
         if ($request->isMethod('POST') && $email = $request->request->get('email')) {
             $limiter = $loginLinkLimiter->create($request->getClientIp());
             $limit = $limiter->consume(1);

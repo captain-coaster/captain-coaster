@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -21,6 +22,8 @@ class ContactType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isLoggedIn = $options['is_logged_in'];
+
         $builder
             ->add(
                 'name',
@@ -29,6 +32,7 @@ class ContactType extends AbstractType
                     'required' => true,
                     'label' => 'contact.form.name',
                     'translation_domain' => 'messages',
+                    'disabled' => $isLoggedIn,
                     'constraints' => [
                         new NotBlank(),
                     ],
@@ -41,6 +45,7 @@ class ContactType extends AbstractType
                     'required' => false,
                     'label' => 'contact.form.email',
                     'translation_domain' => 'messages',
+                    'disabled' => $isLoggedIn,
                     'constraints' => [
                         new Email(),
                     ],
@@ -60,5 +65,14 @@ class ContactType extends AbstractType
             );
 
         $builder->add('recaptcha', EWZRecaptchaV3Type::class, ['mapped' => false, 'constraints' => [new IsTrueV3()]]);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'is_logged_in' => false,
+        ]);
+
+        $resolver->setAllowedTypes('is_logged_in', 'bool');
     }
 }

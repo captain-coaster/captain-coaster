@@ -1,0 +1,304 @@
+/**
+ * Rating Actions Component Styles
+ * Styles for rating action buttons, icons, and date picker functionality
+ */
+
+/* Modern Icon Actions for Rating */
+.rating-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.action-icon:hover {
+    background: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+    transform: scale(1.1);
+    text-decoration: none;
+}
+
+.action-icon.delete-icon:hover {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.action-icon i {
+    font-size: 14px;
+}
+
+/* Loading States for Rating */
+.rating-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.rating-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #007bff;
+    border-radius: 50%;
+    animation: rating-spin 1s linear infinite;
+}
+
+@keyframes rating-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disabled state for actions during loading */
+.rating-actions.disabled .action-icon {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Success/Error feedback animations */
+.rating-success {
+    animation: rating-pulse-success 0.6s ease-in-out;
+}
+
+.rating-error {
+    animation: rating-pulse-error 0.6s ease-in-out;
+}
+
+@keyframes rating-pulse-success {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes rating-pulse-error {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced delete confirmation styling */
+.delete-icon.confirming {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    animation: rating-pulse-delete 1s ease-in-out infinite;
+}
+
+@keyframes rating-pulse-delete {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Date Picker Functionality */
+
+/* Indicator dots for date and review */
+.date-indicator,
+.review-indicator {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 6px;
+    height: 6px;
+    background: #28a745;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+/* Inline Date Picker */
+.inline-date-picker {
+    position: relative;
+}
+
+.date-picker-popup-inline {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.date-picker-popup-inline.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.date-picker-content-small {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+}
+
+.date-picker-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.small-date-input {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.small-date-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.small-date-input:disabled {
+    opacity: 0.6;
+    background: #f8f9fa;
+}
+
+.small-date-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.tiny-btn {
+    flex: 1;
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.today-btn:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.clear-btn:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .rating-actions {
+        gap: 20px;
+    }
+
+    .action-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .date-picker-content-small {
+        min-width: 260px;
+        padding: 16px;
+    }
+
+    .date-picker-label {
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    .small-date-input {
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        min-height: 44px;
+    }
+
+    .tiny-btn {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .small-date-actions {
+        gap: 8px;
+    }
+}
+
+/* Subtle sparkle effect for rating confirmation */
+@keyframes rating-sparkle {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.1);
+        filter: brightness(1.15) drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes rating-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+    50% {
+        box-shadow: 0 0 12px 4px rgba(255, 215, 0, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+.rating-confirmed {
+    animation: rating-sparkle 0.6s ease-out, rating-glow 0.6s ease-out;
+    position: relative;
+}

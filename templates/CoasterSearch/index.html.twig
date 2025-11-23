@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'coaster_search.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% set pageHasFilters = true %}
+
+{% block secondary_sidebar %}
+  {% include 'Includes/filter_sidebar.html.twig' with {
+    'filters': filters, 
+    'filtersForm': filtersForm,
+    'filterConfig': {
+      'endpoint': path('coaster_search_api'),
+      'container_id': 'search-result',
+      'update_url': true,
+      'excluded_filters': ['new']
+    }
+  } only %}
+{% endblock %}
+
+{% block body %}
+  <div id="search-result"></div>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

@@ -110,7 +110,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         // add joins to avoid multiple subqueries
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r', 'p', 'c', 'u')
+            ->select('r', 'p', 'c', 'u', 'up', 'co')
             ->addSelect(
                 'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
@@ -118,6 +118,8 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('r.user', 'u')
             ->leftJoin('r.pros', 'p')
             ->leftjoin('r.cons', 'c')
+            ->leftJoin('r.upvotes', 'up')
+            ->leftJoin('r.coaster', 'co')
             ->where('r.coaster = :coasterId')
             ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
@@ -125,9 +127,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
             ->setParameter('locale', $locale)
-            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages);
     }
 
     /** Get only reviews with text content for a specific coaster (all languages). */
