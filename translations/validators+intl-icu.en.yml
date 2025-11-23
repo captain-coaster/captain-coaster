@@ -1,1 +1,6 @@
 top_coaster.duplicate: "{coaster} appears several times. Please remove duplicates."
+
+
+# Admin validators
+date_minimum:
+    error: Year must be at least 1800.

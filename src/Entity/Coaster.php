@@ -13,6 +13,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use App\Repository\CoasterRepository;
+use App\Validator\Constraints as CaptainConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -136,10 +137,12 @@ class Coaster implements \Stringable
     private ?Status $status = null;
 
     #[ORM\Column(name: 'openingDate', type: Types::DATE_MUTABLE, nullable: true)]
+    #[CaptainConstraints\DateMinimum]
     #[Groups(['read_coaster'])]
     private ?\DateTimeInterface $openingDate = null;
 
     #[ORM\Column(name: 'closingDate', type: Types::DATE_MUTABLE, nullable: true)]
+    #[CaptainConstraints\DateMinimum]
     #[Groups(['read_coaster'])]
     private ?\DateTimeInterface $closingDate = null;
 
