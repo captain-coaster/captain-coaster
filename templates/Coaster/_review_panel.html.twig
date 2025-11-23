@@ -1,42 +1,40 @@
+{% set reviewCount = reviews.getTotalItemCount() %}
+{% if reviewCount > 0 or coaster.isRateable %}
 <div class="panel panel-flat">
     <div class="panel-heading">
         <h6 class="panel-title">
             <span class="text-semibold">
                 {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
-                {% if reviews.getTotalItemCount() > 0 %}
-                    <span class="badge badge-primary">{{ reviews.getTotalItemCount() }}</span>
-                {% endif %}
             </span>
-            {% if coaster.isRateable %}
+            {%- if reviewCount > 0 -%}
+                <span class="badge badge-primary">{{ reviewCount }}</span>
+            {%- endif -%}
+            {%- if coaster.isRateable -%}
                 <div class="pull-right">
                     <a href="{{ path('review_form', {'id': coaster.id}) }}" class="btn btn-primary btn-rounded btn-xs">
                         {{ ux_icon('heroicons:plus-circle', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.send'|trans() }}
                     </a>
                 </div>
-            {% endif %}
+            {%- endif -%}
         </h6>
     </div>
 
-    {% if reviews.getTotalItemCount() > 0 %}
+    {%- if reviewCount > 0 -%}
         <div class="panel-body">
             <ul class="media-list media-list-bordered">
-                {% for review in reviews %}
+                {%- for review in reviews -%}
                     <li>
                         {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
                     </li>
-                {% endfor %}
+                {%- endfor -%}
             </ul>
             {{ knp_pagination_render(reviews) }}
         </div>
-    {% else %}
+    {%- elseif coaster.isRateable -%}
         <div class="panel-body text-center text-muted">
             {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
             <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
-            {% if coaster.isRateable %}
-                <a href="{{ path('review_form', {'id': coaster.id}) }}" class="btn btn-primary btn-sm">
-                    {{ 'review.send'|trans() }}
-                </a>
-            {% endif %}
         </div>
-    {% endif %}
+    {%- endif -%}
 </div>
+{% endif %}
