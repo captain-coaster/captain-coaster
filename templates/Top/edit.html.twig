@@ -80,6 +80,70 @@
 {% endblock %}
 
 {% block body %}
+  {# Hidden template for creating new coaster items #}
+  <template id="coaster-item-template">
+    <li class="coaster-entry" 
+        data-coaster-id=""
+        data-position="1"
+        data-top-list-target="item">
+      <div style="display: none;"></div>
+
+      {# Drag Area with Position Number #}
+      <div class="drag-area">
+        <div class="position-number">1</div>
+        <div class="drag-indicator">
+          {{ ux_icon('heroicons:bars-3', {'class': 'w-4 h-4'}) }}
+        </div>
+      </div>
+
+      {# Coaster Information #}
+      <div class="coaster-content">
+        <div class="coaster-main">
+          <span class="coaster-name"></span>
+          <span class="coaster-separator">•</span>
+          <span class="coaster-park"></span>
+        </div>
+        <span class="coaster-rating"></span>
+      </div>
+
+      {# Single Actions Menu #}
+      <div class="coaster-menu">
+        <div class="dropdown">
+          <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
+            {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right">
+            <li>
+              <a href="#" data-action="click->top-list#moveToTop">
+                {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.move_to_top'|trans({}, 'top') }}
+              </a>
+            </li>
+            <li>
+              <a href="#" data-action="click->top-list#moveToBottom">
+                {{ ux_icon('heroicons:arrow-down', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.move_to_bottom'|trans({}, 'top') }}
+              </a>
+            </li>
+            <li>
+              <a href="#" data-action="click->top-list#moveToPosition">
+                {{ ux_icon('heroicons:arrows-up-down', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.move_to_position'|trans({}, 'top') }}
+              </a>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li>
+              <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
+                {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4'}) }}
+                {{ 'actions.remove'|trans({}, 'top') }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </li>
+  </template>
+
   {# Help Section - Collapsible #}
   <div class="panel panel-flat mb-3" data-controller="collapse">
     <div class="panel-body">

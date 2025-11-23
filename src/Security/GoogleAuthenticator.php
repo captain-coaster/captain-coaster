@@ -124,6 +124,9 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $user->setLastName($googleUser->getLastName());
             }
 
+            // Generate display name from first and last name
+            $user->updateDisplayName();
+
             $this->em->persist($user);
             $this->em->flush();
 

@@ -36,19 +36,29 @@
     {% endif %}
 {% endmacro %}
 
-{# Display star rating using SVG sprite #}
+{# Display star rating #}
 {% macro starRating(rating) %}
-    <span class="star-rating">
-        <span class="text-warning star-rating-stars">
-            {% set fullStars = rating|round(0, 'floor') %}
-            
-            {% for i in 1..fullStars %}
-                {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
-            {% endfor %}
-            
-            {% if (rating - fullStars) >= 0.5 %}
-                {{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
-            {% endif %}
-        </span>
+    <span class="star-rating text-warning">
+        {%- if rating == 5.0 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 4.5 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 4.0 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 3.5 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 3.0 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 2.5 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 2.0 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 1.5 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 1.0 -%}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+        {%- elseif rating == 0.5 -%}
+            {{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+        {%- endif -%}
     </span>
 {% endmacro %}

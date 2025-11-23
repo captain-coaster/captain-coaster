@@ -79,6 +79,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->addOrderBy('c.name', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
+            ->enableResultCache(300) // Cache for 5 minutes
             ->getArrayResult();
     }
 
@@ -157,7 +158,15 @@ class CoasterRepository extends ServiceEntityRepository
         $this->applyFilters($qb, $filters, 'ranking');
         $qb->orderBy('c.rank', 'ASC');
 
-        return $qb->getQuery();
+        $query = $qb->getQuery();
+
+        // Only cache if no user-specific filters
+        $hasUserFilter = !empty($filters['user']);
+        if (!$hasUserFilter) {
+            $query->enableResultCache(300); // Cache for 5 minutes - public data only
+        }
+
+        return $query;
     }
 
     /**

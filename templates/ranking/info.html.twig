@@ -1,18 +1,18 @@
 <div class="panel panel-flat">
   <div class="panel-heading has-visible-elements">
     <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|format_datetime('long', 'none')}) }}</h6>
-    <div class="heading-elements visible-elements">
+    <div class="heading-elements visible-elements" style="display: flex; gap: 1rem; flex-wrap: wrap;">
       {% set nextRankingDate = 'now'|date_modify('first day of next month midnight 1 minute') %}
       {% if nextRankingDate|date('U') - 'now'|date('U') > 7200 %}
-        <span class="heading-text text-muted">
+        <span class="heading-text text-muted" style="white-space: nowrap;">
           {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 text-warning position-left'}) }}
           {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
-          </span>
-      {% endif %}
-      <span class="heading-text text-muted">
-          {{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 text-warning position-left'}) }}
-          <a class="text-muted" href="{{ path('ranking_learn_more') }}">{{ 'coaster_ranking.info.learn_more'|trans() }}</a>
         </span>
+      {% endif %}
+      <span class="heading-text text-muted" style="white-space: nowrap;">
+        {{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 text-warning position-left'}) }}
+        <a class="text-muted" href="{{ path('ranking_learn_more') }}">{{ 'coaster_ranking.info.learn_more'|trans() }}</a>
+      </span>
     </div>
   </div>
   <div class="panel-body text-center">

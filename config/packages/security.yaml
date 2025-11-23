@@ -1,13 +1,13 @@
 security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
-        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         login_link_provider:
             entity:
                 class: 'App\Entity\User'
-                property: "email"
+                property: 'email'
 
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
@@ -16,20 +16,20 @@ security:
             security: false
 
         api_home:
-            pattern: ^/api(/|/docs)?$
+            pattern: ^/api(/|/docs|/docs\.html)?$
             security: false
 
         api_secured:
             custom_authenticators:
                 - App\Security\ApiKeyAuthenticator
             stateless: true
-            pattern: "^/api/"
+            pattern: '^/api/'
 
         main:
             lazy: true
             login_link:
                 check_route: login_check
-                signature_properties: ["id", "email", "enabled"]
+                signature_properties: ['id', 'email', 'enabled']
                 provider: login_link_provider
                 lifetime: 900
                 max_uses: 3
@@ -44,10 +44,10 @@ security:
                 csrf_token_id: logout
             remember_me:
                 name: captain_rmb
-                secret: "%kernel.secret%"
+                secret: '%kernel.secret%'
                 lifetime: 2629800 # 1 month in seconds
                 always_remember_me: true
-                signature_properties: ["id", "email", "enabled"]
+                signature_properties: ['id', 'email', 'enabled']
                 secure: true
                 httponly: true
 
@@ -59,7 +59,7 @@ security:
     access_control:
         - { path: ^/team, roles: ROLE_CONTRIBUTOR }
         - { path: ^/api, roles: ROLE_USER }
-        - { path: ^/login$, allow_if: "!is_authenticated()" }
+        - { path: ^/login$, allow_if: '!is_authenticated()' }
 
 when@test:
     security:
