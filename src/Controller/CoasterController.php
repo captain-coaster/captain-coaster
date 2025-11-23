@@ -11,6 +11,7 @@ use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\CoasterSummaryService;
 use App\Service\ImageManager;
 use App\Service\SummaryFeedbackService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -213,6 +214,7 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'hasMinimumReviewsForSummary' => $riddenCoasterRepository->countCoasterReviewsWithText($coaster) >= CoasterSummaryService::MIN_REVIEWS_REQUIRED,
             ]
         );
     }
