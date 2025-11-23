@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\Service;
 
 use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class SearchCacheService
 {
-    private const int CACHE_TTL = 3600; // 1 hour
+    private const int CACHE_TTL = 900; // 15 minutes
     private const string CACHE_PREFIX = 'search_';
 
     public function __construct(
+        #[Autowire(service: 'search.cache')]
         private readonly CacheItemPoolInterface $cache
     ) {
     }
