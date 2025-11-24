@@ -53,7 +53,7 @@
                         <h3 class="no-margin text-semibold text-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
                         <span class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.world_top_100'|trans }}
-                            <span data-popup="tooltip" data-trigger="click hover focus" title="{{ 'profile.stats.operating_top_100'|trans }}: {{ (stats.top_100_operating * 100 / 100)|round }}/100" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
+                            <span data-controller="tooltip" title="{{ 'profile.stats.operating_top_100'|trans }}: {{ (stats.top_100_operating * 100 / 100)|round }}/100" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
                         </span>
                     </div>
                     <div class="media-right media-middle">
@@ -72,7 +72,7 @@
                         <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
                         <span class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_country'|trans }}
-                            <span data-popup="tooltip" data-trigger="click hover focus" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
+                            <span data-controller="tooltip" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
                         </span>
                     </div>
                     <div class="media-right media-middle">
@@ -89,7 +89,7 @@
                         <h3 class="no-margin text-semibold text-pink-400">{{ stats.manufacturer.name }}</h3>
                         <span class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_manufacturer'|trans }}
-                            <span data-popup="tooltip" data-trigger="click hover focus" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
+                            <span data-controller="tooltip" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
                         </span>
                     </div>
                     <div class="media-right media-middle">

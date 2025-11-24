@@ -18,6 +18,7 @@ import 'bootstrap/js/collapse'; // Used in mobile navbar toggle
 import 'bootstrap/js/alert'; // Used in flash messages and notifications
 import 'bootstrap/js/modal'; // Used in review report modal
 import 'bootstrap/js/transition'; // Required dependency for other components
+import 'bootstrap/js/tooltip'; // Required dependency for tooltips
 
 // Import main stylesheet (includes Bootstrap 3.3.7 and custom theme)
 import '../styles/app.less';
