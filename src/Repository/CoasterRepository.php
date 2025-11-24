@@ -83,16 +83,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
-    public function getDistinctOpeningYears()
-    {
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('year', 'year');
-
-        return $this->getEntityManager()
-            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c WHERE YEAR(c.openingDate) > 1800 ORDER by year DESC', $rsm)
-            ->getScalarResult();
-    }
-
     /** Find a newly ranked coaster to add in neach month notification */
     public function getNewlyRankedHighlightedCoaster($maxRank = 300)
     {
