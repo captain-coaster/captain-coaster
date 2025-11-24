@@ -31,7 +31,7 @@ class ContinentCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-        return $actions->setPermission(Action::DELETE, 'ROLE_SUPER_ADMIN');
+        return $actions->setPermission(Action::DELETE, 'ROLE_ADMIN');
     }
 
     public function configureFields(string $pageName): iterable
