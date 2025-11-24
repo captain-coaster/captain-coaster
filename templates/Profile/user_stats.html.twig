@@ -53,7 +53,7 @@
                         <h3 class="no-margin text-semibold text-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
                         <span class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.world_top_100'|trans }}
-                            <span data-controller="tooltip" title="{{ 'profile.stats.operating_top_100'|trans }}: {{ (stats.top_100_operating * 100 / 100)|round }}/100" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
+                            <span data-controller="tooltip" title="{{ 'profile.stats.operating_top_100'|trans({'coasters': (stats.top_100_operating * 100 / 100)|round}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
                         </span>
                     </div>
                     <div class="media-right media-middle">
@@ -99,19 +99,15 @@
             </div>
         </div>
 
-        {% if stats.top_rated_manufacturer is defined %}
         <div class="col-sm-4">
             <div class="panel panel-body">
                 <div class="media no-margin">
                     <div class="media-body">
-                        <h3 class="no-margin text-semibold text-orange-400">
-                            {% if stats.top_rated_manufacturer %}
-                                {{ stats.top_rated_manufacturer.name }}
-                            {% else %}
-                                <small class="text-muted">{{ 'profile.stats.create_top_placeholder'|trans }}</small>
-                            {% endif %}
-                        </h3>
-                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.favorite_manufacturer'|trans }}</span>
+                        <h3 class="no-margin text-semibold text-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>
+                        <span class="text-uppercase text-size-mini text-muted">
+                            {{ 'profile.stats.favorite_manufacturer'|trans }}
+                            <span data-controller="tooltip" title="{{ 'profile.stats.represented_manufacturer'|trans }}{% if stats.top_rated_manufacturer.nb > 0 %} ({{ stats.top_rated_manufacturer.nb }}){% endif %}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
+                        </span>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:heart', {'class': 'w-12 h-12 text-orange-400 opacity-75'}) }}
@@ -119,6 +115,5 @@
                 </div>
             </div>
         </div>
-        {% endif %}
     </div>
 {% endif %}

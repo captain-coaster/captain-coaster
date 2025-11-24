@@ -205,12 +205,12 @@ profile:
         visited_countries: "{count, plural, =1 {Land} other {Länder}}"
         top_country: "Top-Land"
         world_top_100: "Welt TOP 100"
-        operating_top_100: "Welt TOP 100 in Betrieb"
+        operating_top_100: "Welt TOP 100 in Betrieb: {coasters}/100"
         top_manufacturer: "Top-Hersteller"
         favorite_manufacturer: "Lieblingshersteller"
-        create_top_placeholder: "Erstelle eine Top 10 um deinen Lieblingshersteller zu sehen"
-        coaster_count: "{count, plural, =0 {keine Achterbahnen} =1 {1 Achterbahn} other {# Achterbahnen}}"
-        park_count: "{count, plural, =0 {keine Parks} =1 {1 Park} other {# Parks}}"
+        represented_manufacturer: "Am häufigsten vertretene Hersteller in Ihren Top 10"
+        coaster_count: "{count, plural, =0 {Keine Achterbahnen} =1 {1 Achterbahn} other {# Achterbahnen}}"
+        park_count: "{count, plural, =0 {Keine Parks} =1 {1 Park} other {# Parks}}"
         country_count: "{count, plural, =0 {keine Länder} =1 {1 Land} other {# Länder}}"
     ratings:
         title: Meine Bewertungen

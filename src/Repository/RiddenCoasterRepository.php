@@ -13,15 +13,19 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * RiddenCoasterRepository.
  */
 class RiddenCoasterRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private TranslatorInterface $translatorInterface;
+
+    public function __construct(ManagerRegistry $registry, TranslatorInterface $translatorInterface)
     {
         parent::__construct($registry, RiddenCoaster::class);
+        $this->translatorInterface = $translatorInterface;
     }
 
     /** Count all ratings. */
@@ -346,7 +350,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /** Get country where a user rode the most. */
     public function findMostRiddenCountry(User $user)
     {
-        $default = ['name' => '-', 'nb' => 0];
+        $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
@@ -393,6 +397,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /** @return mixed|string */
     public function getMostRiddenManufacturer(User $user)
     {
+        $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
@@ -409,7 +414,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleResult();
         } catch (\Exception) {
-            return ['nb' => 0, 'name' => 'Unknown'];
+            return $default;
         }
     }
 
@@ -449,6 +454,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /** Get most common manufacturer among user's top list coasters (first 10-20 positions) */
     public function getTopListManufacturer(User $user, int $maxPosition = 20)
     {
+        $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
@@ -469,7 +475,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getSingleResult();
         } catch (\Exception) {
-            return null;
+            return $default;
         }
     }
 }

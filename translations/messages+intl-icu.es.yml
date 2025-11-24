@@ -205,13 +205,12 @@ profile:
         visited_countries: "{count, plural, =1 {país} other {países}}"
         top_country: "País Principal"
         world_top_100: "TOP 100 Mundial"
-        operating_top_100: "TOP 100 Mundial en funcionamiento"
+        operating_top_100: "TOP 100 Mundial en funcionamiento: {coasters}/100"
         top_manufacturer: "Fabricante Principal"
         favorite_manufacturer: "Fabricante Favorito"
-        create_top_placeholder: "Crea un top 10 para ver tu fabricante favorito"
-        coaster_count: "{count, plural, =0 {ninguna montaña rusa} =1 {1 montaña rusa} other {# montañas rusas}}"
-        park_count: "{count, plural, =0 {ningún parque} =1 {1 parque} other {# parques}}"
-        country_count: "{count, plural, =0 {ningún país} =1 {1 país} other {# países}}"
+        represented_manufacturer: " Fabricante más representado en tu top 10"
+        coaster_count: "{count, plural, =0 {Ninguna montaña rusa} =1 {1 montaña rusa} other {# montañas rusas}}"
+        park_count: "{count, plural, =0 {Ningún parque} =1 {1 parque} other {# parques}}"
     ratings:
         title: Mis notas
     settings:
