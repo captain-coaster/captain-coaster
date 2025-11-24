@@ -53,7 +53,7 @@ class ImageCrudController extends AbstractCrudController
             AssociationField::new('uploader')->autocomplete(),
             AssociationField::new('coaster')->autocomplete(),
             TextField::new('credit'),
-            ImageField::new('path', 'Image')->setBasePath($this->imagesEndpoint.'/1440x1440/')->onlyOnIndex(),
+            ImageField::new('filename', 'Image')->setBasePath($this->imagesEndpoint.'/1440x1440/')->onlyOnIndex(),
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             BooleanField::new('watermarked')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),

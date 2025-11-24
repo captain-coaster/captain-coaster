@@ -1,9 +1,9 @@
 api_platform:
-    title: "Captain Coaster API"
-    description: "Welcome to Captain Coaster API! API Keys for authentication can be found in your profile page. Contact us to get support."
-    version: "1.0.1"
+    title: 'Captain Coaster API'
+    description: 'Welcome to Captain Coaster API! API Keys for authentication can be found in your profile page. Contact us to get support.'
+    version: '1.0.2'
     mapping:
-        paths: ["%kernel.project_dir%/src/Entity"]
+        paths: ['%kernel.project_dir%/src/Entity']
     http_cache:
         public: true
     defaults:
@@ -11,18 +11,18 @@ api_platform:
         cache_headers:
             max_age: 3600
             shared_max_age: 3600
-            vary: ["Content-Type", "Authorization", "Origin"]
+            vary: ['Content-Type', 'Authorization', 'Origin']
         extra_properties:
             standard_put: true
             rfc_7807_compliant_errors: true
     swagger:
         api_keys:
             key:
-                name: "Authorization"
-                type: "header"
+                name: 'Authorization'
+                type: 'header'
     formats:
-        jsonld: ["application/ld+json"]
+        jsonld: ['application/ld+json']
     docs_formats:
-        jsonld: ["application/ld+json"]
-        jsonopenapi: ["application/vnd.openapi+json"]
-        html: ["text/html"]
+        jsonld: ['application/ld+json']
+        jsonopenapi: ['application/vnd.openapi+json']
+        html: ['text/html']
