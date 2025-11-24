@@ -33,6 +33,7 @@ class Image
     private int $id;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups(['read_coaster', 'read_image'])]
     private string $filename;
 
     #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'images', fetch: 'LAZY')]
