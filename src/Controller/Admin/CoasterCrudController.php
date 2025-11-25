@@ -55,6 +55,8 @@ class CoasterCrudController extends AbstractCrudController
             ->add('vr')
             ->add('indoor')
             ->add(EntityFilter::new('status')->autocomplete())
+            ->add('openingDate')
+            ->add('closingDate')
             ->add('holdRanking');
     }
 
