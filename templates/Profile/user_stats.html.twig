@@ -9,7 +9,7 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-success-400">{{ stats.nb_coasters }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.ridden_coasters'|trans({'count': stats.nb_coasters}) }}</span>
+                        <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.ridden_coasters'|trans({'count': stats.nb_coasters}) }}</div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:trophy', {'class': 'w-12 h-12 text-success-400 opacity-75'}) }}
@@ -23,7 +23,7 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-blue-400">{{ stats.nb_park }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.explored_parks'|trans({'count': stats.nb_park}) }}</span>
+                        <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.explored_parks'|trans({'count': stats.nb_park}) }}</div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:map-pin', {'class': 'w-12 h-12 text-blue-400 opacity-75'}) }}
@@ -37,7 +37,7 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-indigo-400">{{ stats.nb_country }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.visited_countries'|trans({'count': stats.nb_country}) }}</span>
+                        <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.visited_countries'|trans({'count': stats.nb_country}) }}</div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:globe-americas', {'class': 'w-12 h-12 text-indigo-400 opacity-75'}) }}
@@ -51,10 +51,16 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
-                        <span class="text-uppercase text-size-mini text-muted">
+                        <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.world_top_100'|trans }}
-                            <span data-controller="tooltip" title="{{ 'profile.stats.operating_top_100'|trans({'coasters': (stats.top_100_operating * 100 / 100)|round}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
-                        </span>
+                            <span class="Tooltip ml-5" data-controller="tooltip">
+                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
+                                <div class="Tooltip-content" data-tooltip-target="content">
+                                    <div class="Tooltip-arrow"></div>
+                                    {{ 'profile.stats.operating_top_100'|trans({'coasters': (stats.top_100_operating * 100 / 100)|round}) }}
+                                </div>
+                            </span>
+                        </div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:trophy', {'class': 'w-12 h-12 text-teal-400 opacity-75'}) }}
@@ -70,10 +76,16 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">
+                        <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_country'|trans }}
-                            <span data-controller="tooltip" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
-                        </span>
+                            <span class="Tooltip ml-5" data-controller="tooltip">
+                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
+                                <div class="Tooltip-content" data-tooltip-target="content">
+                                    <div class="Tooltip-arrow"></div>
+                                    {{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}
+                                </div>
+                            </span>
+                        </div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:flag', {'class': 'w-12 h-12 text-warning-400 opacity-75'}) }}
@@ -87,10 +99,16 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-pink-400">{{ stats.manufacturer.name }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">
+                        <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_manufacturer'|trans }}
-                            <span data-controller="tooltip" title="{{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
-                        </span>
+                            <span class="Tooltip ml-5" data-controller="tooltip">
+                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
+                                <div class="Tooltip-content" data-tooltip-target="content">
+                                    <div class="Tooltip-arrow"></div>
+                                    {{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}
+                                </div>
+                            </span>
+                        </div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:cog-8-tooth', {'class': 'w-12 h-12 text-pink-400 opacity-75'}) }}
@@ -104,10 +122,16 @@
                 <div class="media no-margin">
                     <div class="media-body">
                         <h3 class="no-margin text-semibold text-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>
-                        <span class="text-uppercase text-size-mini text-muted">
+                        <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.favorite_manufacturer'|trans }}
-                            <span data-controller="tooltip" title="{{ 'profile.stats.represented_manufacturer'|trans }}{% if stats.top_rated_manufacturer.nb > 0 %} ({{ stats.top_rated_manufacturer.nb }}){% endif %}" style="font-size: 12px; cursor: help;" tabindex="0">{{ ux_icon('heroicons:question-mark-circle', {'class': 'w-6 h-6 text-muted ml-5'}) }}</span>
-                        </span>
+                            <span class="Tooltip ml-5" data-controller="tooltip">
+                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
+                                <div class="Tooltip-content" data-tooltip-target="content">
+                                    <div class="Tooltip-arrow"></div>
+                                    {{ 'profile.stats.represented_manufacturer'|trans }}{% if stats.top_rated_manufacturer.nb > 0 %} ({{ stats.top_rated_manufacturer.nb }}){% endif %}
+                                </div>
+                            </span>
+                        </div>
                     </div>
                     <div class="media-right media-middle">
                         {{ ux_icon('heroicons:heart', {'class': 'w-12 h-12 text-orange-400 opacity-75'}) }}
