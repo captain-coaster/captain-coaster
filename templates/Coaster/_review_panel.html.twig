@@ -1,40 +1,73 @@
 {% set reviewCount = reviews.getTotalItemCount() %}
 {% if reviewCount > 0 or coaster.isRateable %}
-<div class="panel panel-flat">
-    <div class="panel-heading">
-        <h6 class="panel-title">
-            <span class="text-semibold">
-                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
-            </span>
-            {%- if reviewCount > 0 -%}
-                <span class="badge badge-primary">{{ reviewCount }}</span>
-            {%- endif -%}
-            {%- if coaster.isRateable -%}
-                <div class="pull-right">
-                    <a href="{{ path('review_form', {'id': coaster.id}) }}" class="btn btn-primary btn-rounded btn-xs">
-                        {{ ux_icon('heroicons:plus-circle', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.send'|trans() }}
-                    </a>
-                </div>
-            {%- endif -%}
-        </h6>
-    </div>
+    <div class="panel panel-flat">
+        <div class="panel-heading">
+            <h6 class="panel-title SectionHeader">
+                <div class="SectionHeader-container">
+                    <div class="SectionHeader-title">
+                        <span class="text-semibold">
+                            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
+                        </span>
+                        {%- if reviewCount > 0 -%}
+                            <span class="badge badge-primary">{{ reviewCount }}</span>
+                        {%- endif -%}
+                    </div>
+                    {% if reviewCount > 1 %}
+                        <form class="SectionHeader-form form-horizontal">
+                            <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
-    {%- if reviewCount > 0 -%}
-        <div class="panel-body">
-            <ul class="media-list media-list-bordered">
-                {%- for review in reviews -%}
-                    <li>
-                        {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
-                    </li>
-                {%- endfor -%}
-            </ul>
-            {{ knp_pagination_render(reviews) }}
+                            <div class="form-group-xs no-margin-bottom">
+                                <select name="filters[sort]" class="form-control">
+                                    <option value=""
+                                            {% if filters is not null or filters.sort == '' %}selected{% endif %}>
+                                        {{ 'filters.sorts.default'|trans() }}
+                                    </option>
+                                    <option value="updatedAt|asc"
+                                            {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                                        {{ 'filters.sorts.reviews.updatedAt.asc'|trans() }}
+                                    </option>
+                                    <option value="updatedAt|desc"
+                                            {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                                        {{ 'filters.sorts.reviews.updatedAt.desc' |trans() }}
+                                    </option>
+                                    <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
+                                        {{ 'filters.sorts.reviews.value.desc' |trans() }}
+                                    </option>
+                                    <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
+                                        {{ 'filters.sorts.reviews.value.asc' |trans() }}
+                                    </option>
+                                </select>
+                            </div>
+                        </form>
+                    {% endif %}
+                </div>
+                {%- if coaster.isRateable -%}
+                    <div>
+                        <a href="{{ path('review_form', {'id': coaster.id}) }}"
+                           class="btn btn-primary btn-rounded btn-xs">
+                            {{ ux_icon('heroicons:plus-circle', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.send'|trans() }}
+                        </a>
+                    </div>
+                {%- endif -%}
+            </h6>
         </div>
-    {%- elseif coaster.isRateable -%}
-        <div class="panel-body text-center text-muted">
-            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
-            <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
-        </div>
-    {%- endif -%}
-</div>
+
+        {%- if reviewCount > 0 -%}
+            <div class="panel-body">
+                <ul class="media-list media-list-bordered">
+                    {%- for review in reviews -%}
+                        <li>
+                            {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
+                        </li>
+                    {%- endfor -%}
+                </ul>
+                {{ knp_pagination_render(reviews) }}
+            </div>
+        {%- elseif coaster.isRateable -%}
+            <div class="panel-body text-center text-muted">
+                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
+                <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
+            </div>
+        {%- endif -%}
+    </div>
 {% endif %}

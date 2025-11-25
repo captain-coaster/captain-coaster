@@ -166,6 +166,16 @@ filters:
     name: "Name"
     clear: "Clear filters"
 
+    sorts:
+        default: Default sort
+        reviews:
+            updatedAt:
+                asc: Oldest to newest
+                desc: Newest to oldest
+            value:
+                asc: Lowest to higher rating
+                desc: Higher to lowest rating
+
 user_profile:
     title: "{name} - Profile"
     ratings: "Show their ratings"

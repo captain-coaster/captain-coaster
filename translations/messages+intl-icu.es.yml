@@ -161,6 +161,16 @@ filters:
     name: Nombre
     clear: Borrar filtros
 
+    sorts:
+        default: Ordenar por defecto
+        reviews:
+            updatedAt:
+                asc: De la más antigua a la más reciente
+                desc: De la más reciente a la más antigua
+            value:
+                asc: De la nota más alta a la más baja
+                desc: De la nota más baja a la más alta
+
 user_profile:
     title: "{name} - Perfil"
     ratings: Mostrar sus notas

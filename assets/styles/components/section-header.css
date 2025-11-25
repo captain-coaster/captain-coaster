@@ -1,0 +1,28 @@
+.SectionHeader {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.SectionHeader-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.SectionHeader-title {
+    flex-shrink: 0;
+}
+
+.SectionHeader-form {
+    max-width: 150px;
+
+    select {
+        font-size: unset!important;
+        min-height: unset!important;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+}

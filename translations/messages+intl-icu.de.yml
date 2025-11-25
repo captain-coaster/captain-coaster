@@ -161,6 +161,16 @@ filters:
     name: Name
     clear: Filter löschen
 
+    sorts:
+        default: Standardmäßige Sortierung
+        reviews:
+            updatedAt:
+                asc: Von der ältesten zur neuesten
+                desc: Von der neuesten zur ältesten
+            value:
+                asc: Von der schlechtesten bis zu besten Bewertungen
+                desc: Von der besten bis zu schlechtesten Bewertungen
+
 user_profile:
     title: "{name} - Profil"
     ratings: Zeige dessen Bewertungen

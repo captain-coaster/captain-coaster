@@ -371,6 +371,14 @@
                                 <span class="text-semibold">
                                     {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
                                 </span>
+                                <form style="display: none">
+                                    <input type="hidden" name="page" value="1">
+                                    <div>
+                                        <select name="filters[sort]">
+                                            <option value=""></option>
+                                        </select>
+                                    </div>
+                                </form>
                             </h6>
                         </div>
                         <div class="panel-body text-center">
