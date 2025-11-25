@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
 class RankingHistoryCrudController extends AbstractCrudController
 {
@@ -61,7 +62,7 @@ class RankingHistoryCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add('coaster')
+            ->add(EntityFilter::new('coaster')->autocomplete())
             ->add('rank')
             ->add('score')
             ->add('validDuels')

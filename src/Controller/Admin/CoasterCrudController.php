@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
 class CoasterCrudController extends AbstractCrudController
 {
@@ -39,13 +40,13 @@ class CoasterCrudController extends AbstractCrudController
     {
         return $filters
             ->add('name')
-            ->add('park')
-            ->add('materialType')
-            ->add('seatingType')
-            ->add('manufacturer')
-            ->add('model')
-            ->add('restraint')
-            ->add('launchs')
+            ->add(EntityFilter::new('park')->autocomplete())
+            ->add(EntityFilter::new('materialType')->autocomplete())
+            ->add(EntityFilter::new('seatingType')->autocomplete())
+            ->add(EntityFilter::new('manufacturer')->autocomplete())
+            ->add(EntityFilter::new('model')->autocomplete())
+            ->add(EntityFilter::new('restraint')->autocomplete())
+            ->add(EntityFilter::new('launchs')->autocomplete())
             ->add('speed')
             ->add('height')
             ->add('length')
@@ -53,7 +54,9 @@ class CoasterCrudController extends AbstractCrudController
             ->add('kiddie')
             ->add('vr')
             ->add('indoor')
-            ->add('status')
+            ->add(EntityFilter::new('status')->autocomplete())
+            ->add('openingDate')
+            ->add('closingDate')
             ->add('holdRanking');
     }
 

@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class ReviewReportCrudController extends AbstractCrudController
@@ -46,8 +47,7 @@ class ReviewReportCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add('user')
-            ->add('review')
+            ->add(EntityFilter::new('user')->autocomplete())
             ->add('reason')
             ->add('resolved');
     }
