@@ -2,9 +2,9 @@
 {% if reviewCount > 0 or coaster.isRateable %}
     <div class="panel panel-flat">
         <div class="panel-heading">
-            <h6 class="panel-title SectionHeader">
-                <div class="SectionHeader-container">
-                    <div class="SectionHeader-title">
+            <h6 class="panel-title sectionheader">
+                <div class="sectionheader-container">
+                    <div class="sectionheader-title">
                         <span class="text-semibold">
                             {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
                         </span>
@@ -13,7 +13,7 @@
                         {%- endif -%}
                     </div>
                     {% if reviewCount > 1 %}
-                        <form class="SectionHeader-form form-horizontal">
+                        <form class="sectionheader-form form-horizontal">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
                             <div class="form-group-xs no-margin-bottom">

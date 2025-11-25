@@ -1,21 +1,21 @@
-.SectionHeader {
+.sectionheader {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.SectionHeader-container {
+.sectionheader-container {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-.SectionHeader-title {
+.sectionheader-title {
     flex-shrink: 0;
 }
 
-.SectionHeader-form {
+.sectionheader-form {
     max-width: 150px;
 
     select {
