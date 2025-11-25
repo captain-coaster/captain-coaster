@@ -17,6 +17,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
 class ReviewCrudController extends AbstractCrudController
 {
@@ -38,8 +39,8 @@ class ReviewCrudController extends AbstractCrudController
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
-            ->add('user')
-            ->add('coaster')
+            ->add(EntityFilter::new('user')->autocomplete())
+            ->add(EntityFilter::new('coaster')->autocomplete())
             ->add('value')
             ->add('updatedAt');
     }

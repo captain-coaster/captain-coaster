@@ -7,6 +7,7 @@ namespace App\Controller\Admin;
 use App\Entity\Image;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -15,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ImageCrudController extends AbstractCrudController
@@ -45,6 +47,18 @@ class ImageCrudController extends AbstractCrudController
     {
         return $actions->disable('new');
     }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+        return $filters
+            ->add(EntityFilter::new('uploader')->autocomplete())
+            ->add(EntityFilter::new('coaster')->autocomplete())
+            ->add('credit')
+            ->add('enabled')
+            ->add('watermarked')
+            ->add('likeCounter');
+    }
+
 
     public function configureFields(string $pageName): iterable
     {
