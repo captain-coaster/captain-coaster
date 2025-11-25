@@ -137,31 +137,29 @@ coaster_ranking:
             short: pares
             long: pares analizados
         users: votantes
-    filter:
-        continent: "Mundo"
-        country: "País"
-        materialType: "Tipo"
-        seatingType: "Tren"
-        model: "Modelo"
-        manufacturer: Fabricante
-        openingDate: Fecha de apertura
 
 map_index:
     title: Mapa de montañas rusas
     description: "Descubre dónde están las montañas rusas más increíbles de los alrededores, los éxitos del próximo año o el B&M que aún no has montado con este mapa interactivo."
-    filter:
-        title: Filtros
-        manufacturer: Fabricante
-        status: Operando
-        kiddie: Ocultar Montañas rusas infantil
-        notridden: No montado todavía
-        new: Nuevo este mos
-        score: Resultado
-        atleast: "al menos {count}"
-        openingDate: Fecha de apertura
-        name: "Nombre"
-        clear: "Borrar filtros"
     results: Resultados
+
+filters:
+    title: Filtros
+    continent: Mundo
+    country: País
+    materialType: Tipo
+    seatingType: Tren
+    model: Modelo
+    manufacturer: Fabricante
+    status: Operando
+    kiddie: Ocultar Montañas rusas infantil
+    notridden: No montado todavía
+    new: Nuevo este mos
+    score: Resultado
+    atleast: "al menos {count}"
+    openingDate: Fecha de apertura
+    name: Nombre
+    clear: Borrar filtros
 
 user_profile:
     title: "{name} - Perfil"
