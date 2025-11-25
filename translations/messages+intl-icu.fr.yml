@@ -96,6 +96,7 @@ coaster:
         empty: "Oups, nous n'avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes !"
         button: Envoyer une photo
         all: Voir toutes les photos
+        loading: Chargement des photos...
     location: Localisation
 
 image_upload:
@@ -277,6 +278,7 @@ review:
     delete: Supprimer
     last: Derniers avis
     all: Voir plus
+    loading: Chargement des avis...
     ridden_at: Date du ride
     upvote: Voter pour cet avis
     report: Signaler cet avis

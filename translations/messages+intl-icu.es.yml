@@ -96,6 +96,7 @@ coaster:
         empty: "¡Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!"
         button: Subir una foto
         all: Ver todas las fotos
+        loading: Carga de fotos
     location: Localización
 
 image_upload:
@@ -277,6 +278,7 @@ review:
     delete: Borrar
     last: Últimas reseñas
     all: Ver todo
+    loading: Carga de reseñas
     ridden_at: Fecha del ride
     upvote: Votar por esta reseña
     report: Reportar esta reseña

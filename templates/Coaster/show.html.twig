@@ -328,7 +328,7 @@
                         </div>
                         <div class="panel-body text-center">
                             {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">Loading AI summary...</span>
+                            <span class="text-muted ml-5">{{ 'ai_summary.panel.loading'|trans({}, 'ai_summary') }}</span>
                         </div>
                     </div>
                 </div>
@@ -352,7 +352,7 @@
                         </div>
                         <div class="panel-body text-center">
                             {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">Loading photos...</span>
+                            <span class="text-muted ml-5">{{ 'coaster.photos.loading'|trans }}</span>
                         </div>
                     </div>
                 </div>
@@ -383,7 +383,7 @@
                         </div>
                         <div class="panel-body text-center">
                             {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">Loading reviews...</span>
+                            <span class="text-muted ml-5">{{ 'review.loading'|trans }}</span>
                         </div>
                     </div>
                 </div>

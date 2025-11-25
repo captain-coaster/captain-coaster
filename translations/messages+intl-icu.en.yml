@@ -46,11 +46,6 @@ coaster:
         good: "Good"
         fair: "Fair"
         poor: "Poor"
-    ai_summary:
-        title: "Review Summary"
-        highlights: "What riders love"
-        concerns: "Common concerns"
-        disclaimer: "AI-generated summary based on {count} reviews"
     rating:
         action: "Rate this coaster!"
         my_rating: "My rating"
@@ -101,6 +96,7 @@ coaster:
         empty: "Oops, we don't have any photos yet for this coaster, but you can send yours!"
         button: "Upload a picture"
         all: "See all pictures"
+        loading: "Loading photos..."
     location: "Location"
 
 image_upload:
@@ -282,6 +278,7 @@ review:
     delete: "Delete"
     last: "Latest reviews"
     all: "See all"
+    loading: "Loading reviews..."
     ridden_at: "Ride date"
     upvote: "Upvote this review"
     report: "Report this review"

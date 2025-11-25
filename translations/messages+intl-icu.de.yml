@@ -96,6 +96,7 @@ coaster:
         empty: "Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!"
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
+        loading: Laden von Fotos
     location: Standort
 
 image_upload:
@@ -277,6 +278,7 @@ review:
     delete: Löschen
     last: Neueste Rezensionen
     all: Zeige alle
+    loading: Laden von Rezensionen
     ridden_at: Datum der Fahrt
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
