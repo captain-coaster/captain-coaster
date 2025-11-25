@@ -3,7 +3,7 @@
 
 {% set title = park.name %}
 {% set subTitle = park.country.name|trans([], 'database') %}
-{% block title %}{{ title }} - {{ subTitle }}{% endblock %}
+{% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 {% if park.formerNames %}
     {% set secondaryTitle = park.formerNames|join(', ') %}
 {% endif %}

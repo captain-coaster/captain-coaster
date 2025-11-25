@@ -164,7 +164,7 @@ map_index:
     results: Résultats
 
 user_profile:
-    title: "Profil de {name}"
+    title: "Profil • {name}"
     ratings: Voir ses notes
     reviews: Voir ses avis
     main_top: Voir son Top Coasters
@@ -290,9 +290,9 @@ review:
 
 users:
     tops:
-        title: "Tops de {name}"
+        title: "Tops • {name}"
     ratings:
-        title: "Notes de {name}"
+        title: "Notes • {name}"
         coaster: Coaster
         manufacturer: Contructeur
         opening_date: Ouverture
@@ -301,9 +301,9 @@ users:
     my_ratings:
         title: Mes notes
     reviews:
-        title: "Avis de {name}"
+        title: "Avis • {name}"
     images:
-        title: "Photos de {name}"
+        title: "Photos • {name}"
     map:
         title: "Carte des coasters • {name}"
 
