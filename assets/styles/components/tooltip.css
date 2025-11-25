@@ -1,10 +1,10 @@
-.Tooltip {
+.tooltip {
     position: relative;
     font-size: 12px;
     cursor: help;
 }
 
-.Tooltip-content {
+.tooltip-content {
     display: none;
     width: max-content;
     max-width: 150px;
@@ -19,7 +19,7 @@
     background: rgba(0, 0, 0, 90%);
 }
 
-.Tooltip-arrow {
+.tooltip-arrow {
     position: absolute;
     top: -2.5px;
     left: 50%;

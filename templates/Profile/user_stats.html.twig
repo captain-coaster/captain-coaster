@@ -53,10 +53,10 @@
                         <h3 class="no-margin text-semibold text-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.world_top_100'|trans }}
-                            <span class="Tooltip ml-5" data-controller="tooltip">
+                            <span class="tooltip ml-5" data-controller="tooltip">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="Tooltip-content" data-tooltip-target="content">
-                                    <div class="Tooltip-arrow"></div>
+                                <div class="tooltip-content" data-tooltip-target="content">
+                                    <div class="tooltip-arrow"></div>
                                     {{ 'profile.stats.operating_top_100'|trans({'coasters': (stats.top_100_operating * 100 / 100)|round}) }}
                                 </div>
                             </span>
@@ -78,10 +78,10 @@
                         <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_country'|trans }}
-                            <span class="Tooltip ml-5" data-controller="tooltip">
+                            <span class="tooltip ml-5" data-controller="tooltip">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="Tooltip-content" data-tooltip-target="content">
-                                    <div class="Tooltip-arrow"></div>
+                                <div class="tooltip-content" data-tooltip-target="content">
+                                    <div class="tooltip-arrow"></div>
                                     {{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}
                                 </div>
                             </span>
@@ -101,10 +101,10 @@
                         <h3 class="no-margin text-semibold text-pink-400">{{ stats.manufacturer.name }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_manufacturer'|trans }}
-                            <span class="Tooltip ml-5" data-controller="tooltip">
+                            <span class="tooltip ml-5" data-controller="tooltip">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="Tooltip-content" data-tooltip-target="content">
-                                    <div class="Tooltip-arrow"></div>
+                                <div class="tooltip-content" data-tooltip-target="content">
+                                    <div class="tooltip-arrow"></div>
                                     {{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}
                                 </div>
                             </span>
@@ -124,10 +124,10 @@
                         <h3 class="no-margin text-semibold text-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.favorite_manufacturer'|trans }}
-                            <span class="Tooltip ml-5" data-controller="tooltip">
+                            <span class="tooltip ml-5" data-controller="tooltip">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="Tooltip-content" data-tooltip-target="content">
-                                    <div class="Tooltip-arrow"></div>
+                                <div class="tooltip-content" data-tooltip-target="content">
+                                    <div class="tooltip-arrow"></div>
                                     {{ 'profile.stats.represented_manufacturer'|trans }}{% if stats.top_rated_manufacturer.nb > 0 %} ({{ stats.top_rated_manufacturer.nb }}){% endif %}
                                 </div>
                             </span>
