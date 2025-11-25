@@ -304,6 +304,8 @@ users:
         title: "{name} - Rezensionen"
     images:
         title: "{name} - Bilder"
+    map:
+        title: "Achterbahn Landkarte • {name}"
 
 review_list:
     title: Achterbahn Rezensionen

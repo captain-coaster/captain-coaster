@@ -304,6 +304,8 @@ users:
         title: "{name} - Reviews"
     images:
         title: "{name} - Pictures"
+    map:
+        title: "Mapa de las montañas rusas • {name}"
 
 review_list:
     title: Reseñas de montañas rusas

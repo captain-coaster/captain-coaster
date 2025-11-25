@@ -1,31 +1,37 @@
 {% extends "base.html.twig" %}
 
-{% block title %}{{ 'map_index.title'|trans }}{% endblock %}
+{% block title %}
+    {% if user is defined %}
+        {{ 'users.map.title'|trans({'%name%': user.displayName}) }}
+    {% else %}
+        {{ 'map_index.title'|trans }}
+    {% endif %}
+{% endblock %}
 
 {% block header %}
-  {% if meta_description is defined %}
-    <meta name="description" content="{{ meta_description|trans }}"/>
-  {% endif %}
+    {% if meta_description is defined %}
+        <meta name="description" content="{{ meta_description|trans }}"/>
+    {% endif %}
 {% endblock %}
 
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {
-    'filters': filters, 
-    'filtersForm': filtersForm,
-    'filterConfig': {
-      'map_outlet': '.map-container',
-      'update_url': true,
-      'excluded_filters': ['new', 'continent', 'country']
-    }
-  } only %}
+    {% include 'Includes/filter_sidebar.html.twig' with {
+        'filters': filters,
+        'filtersForm': filtersForm,
+        'filterConfig': {
+            'map_outlet': '.map-container',
+            'update_url': true,
+            'excluded_filters': ['new', 'continent', 'country']
+        }
+    } only %}
 {% endblock %}
 
 {% block wide_body %}
     <div id="map-container"
-         data-controller="map" 
-         data-map-markers-value="{{ markers|json_encode }}" 
+         data-controller="map"
+         data-map-markers-value="{{ markers|json_encode }}"
          data-map-park-id-value="{{ parkId|default('') }}"
          class="map-container">
         <div data-map-target="container" id="map" style="height:94vh;"></div>

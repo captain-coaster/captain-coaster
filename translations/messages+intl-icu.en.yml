@@ -309,6 +309,8 @@ users:
         title: "{name} - Reviews"
     images:
         title: "{name} - Pictures"
+    map:
+        title: "Coasters map • {name}"
 
 review_list:
     title: "Coaster reviews"

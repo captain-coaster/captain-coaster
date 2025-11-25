@@ -304,6 +304,8 @@ users:
         title: "Avis de {name}"
     images:
         title: "Photos de {name}"
+    map:
+        title: "Carte des coasters • {name}"
 
 review_list:
     title: Tous les avis
