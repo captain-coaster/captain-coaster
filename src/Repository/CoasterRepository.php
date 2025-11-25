@@ -12,7 +12,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Query\Expr;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -81,16 +80,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->getQuery()
             ->enableResultCache(300) // Cache for 5 minutes
             ->getArrayResult();
-    }
-
-    public function getDistinctOpeningYears()
-    {
-        $rsm = new ResultSetMapping();
-        $rsm->addScalarResult('year', 'year');
-
-        return $this->getEntityManager()
-            ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c ORDER by year DESC', $rsm)
-            ->getScalarResult();
     }
 
     /** Find a newly ranked coaster to add in neach month notification */
