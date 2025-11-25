@@ -34,7 +34,7 @@ class FilterService
             $rsm = new ResultSetMapping();
             $rsm->addScalarResult('year', 'year');
             $openingYears = $this->em
-                ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c ORDER by year DESC', $rsm)
+                ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c WHERE YEAR(c.openingDate) IS NOT NULL ORDER by year DESC', $rsm)
                 ->getScalarResult();
 
             return [

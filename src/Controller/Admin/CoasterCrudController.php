@@ -54,6 +54,8 @@ class CoasterCrudController extends AbstractCrudController
             ->add('vr')
             ->add('indoor')
             ->add('status')
+            ->add('openingDate')
+            ->add('closingDate')
             ->add('holdRanking');
     }
 
