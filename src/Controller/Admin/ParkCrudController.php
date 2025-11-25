@@ -48,7 +48,6 @@ class ParkCrudController extends AbstractCrudController
             ->add(EntityFilter::new('country')->autocomplete());
     }
 
-
     public function configureFields(string $pageName): iterable
     {
         return [
