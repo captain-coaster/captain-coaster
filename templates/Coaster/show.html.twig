@@ -51,14 +51,14 @@
                                 {% for countRating in countRatings %}
                                     {% set totalRatings = totalRatings + countRating.count %}
                                 {% endfor %}
-                                
+
                                 {% if totalRatings > 0 %}
                                     <div class="rating-bar-container">
                                         <div class="rating-bar">
                                             {% for countRating in countRatings %}
                                                 {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
                                                 {% if percentage > 0 %}
-                                                    <div class="rating-segment rating-{{ countRating.value|replace({'.': '-'}) }}" 
+                                                    <div class="rating-segment rating-{{ countRating.value|replace({'.': '-'}) }}"
                                                          style="width: {{ percentage }}%"
                                                          title="{{ countRating.value }}★: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
                                                         {% if percentage > 7 %}
@@ -312,7 +312,7 @@
         </div>
         <div class="col-sm-9">
             <!-- AI Summary Section (loaded via AJAX) -->
-            <div 
+            <div
                 data-controller="coaster-summary"
                 data-coaster-summary-slug-value="{{ coaster.slug }}"
                 data-coaster-summary-locale-value="{{ app.request.locale }}"
@@ -333,9 +333,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Photos Section (loaded via AJAX with Stimulus) -->
-            <div 
+            <div
                 data-controller="coaster-images"
                 data-coaster-images-slug-value="{{ coaster.slug }}"
                 data-coaster-images-locale-value="{{ app.request.locale }}"
@@ -346,7 +346,7 @@
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} Photos
+                                    {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                                 </span>
                             </h6>
                         </div>
@@ -357,9 +357,9 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Reviews Section (loaded via AJAX with Stimulus) -->
-            <div 
+            <div
                 data-controller="coaster-reviews"
                 data-coaster-reviews-slug-value="{{ coaster.slug }}"
                 data-coaster-reviews-locale-value="{{ app.request.locale }}"
@@ -369,7 +369,7 @@
                         <div class="panel-heading">
                             <h6 class="panel-title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} Reviews
+                                    {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
                                 </span>
                             </h6>
                         </div>
