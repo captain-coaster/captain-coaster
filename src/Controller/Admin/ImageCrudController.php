@@ -59,7 +59,6 @@ class ImageCrudController extends AbstractCrudController
             ->add('likeCounter');
     }
 
-
     public function configureFields(string $pageName): iterable
     {
         return [
