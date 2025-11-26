@@ -18,8 +18,8 @@ framework:
             # Search-related caching (Redis for fast access)
             search.cache:
                 adapter: cache.adapter.redis
-                
-            # Sitemap cache (filesystem for persistent data)
+
+            # Sitemap cache (Redis for persistent data across deployments)
             sitemap.cache:
-                adapter: cache.adapter.filesystem
+                adapter: cache.adapter.redis
                 default_lifetime: 604800 # 7 days
