@@ -58,7 +58,7 @@ class ParkCrudController extends AbstractCrudController
             NumberField::new('latitude')->hideOnIndex(),
             NumberField::new('longitude')->hideOnIndex(),
             AssociationField::new('country'),
-            AssociationField::new('coasters'),
+            AssociationField::new('coasters')->hideOnForm(),
             BooleanField::new('enabled'),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),
