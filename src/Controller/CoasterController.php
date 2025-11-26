@@ -20,6 +20,7 @@ use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -151,13 +152,13 @@ class CoasterController extends BaseController
 
     /** Async loads reviews for a coaster */
     #[Route(
-        path: '/{slug}/reviews/ajax/{page}',
+        path: '/{slug}/reviews',
         name: 'coaster_reviews_ajax_load',
         options: ['expose' => true],
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $page = 1): Response
+    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, #[MapQueryParameter] int $page = 1, #[MapQueryParameter] array $filters = []): Response
     {
         $user = $this->getUser();
         $displayReviewsInAllLanguages = true;
@@ -166,7 +167,7 @@ class CoasterController extends BaseController
         }
 
         $pagination = $paginator->paginate(
-            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages),
+            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages, $filters),
             $page,
             25
         );
@@ -177,6 +178,7 @@ class CoasterController extends BaseController
                 'reviews' => $pagination,
                 'coaster' => $coaster,
                 'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+                'filters' => $filters,
             ]
         );
     }

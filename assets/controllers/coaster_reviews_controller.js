@@ -1,4 +1,4 @@
-import { Controller } from '@hotwired/stimulus';
+import {Controller} from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['container'];
@@ -8,11 +8,11 @@ export default class extends Controller {
     };
 
     connect() {
-        this.loadReviews(1, false);
+        this.loadReviews(false);
     }
 
-    loadReviews(page = 1, shouldScroll = true) {
-        fetch(this.buildUrl(page), {
+    loadReviews(shouldScroll = false) {
+        fetch(this.buildUrl(), {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
             },
@@ -22,8 +22,10 @@ export default class extends Controller {
                 this.containerTarget.innerHTML = html;
                 this.attachPaginationHandlers();
                 if (shouldScroll) {
-                    this.containerTarget.scrollIntoView({ behavior: 'smooth' });
+                    this.containerTarget.scrollIntoView({behavior: 'smooth'});
                 }
+
+                this.setupEventListeners();
             })
             .catch((error) => {
                 console.error('Error loading reviews:', error);
@@ -31,20 +33,30 @@ export default class extends Controller {
             });
     }
 
-    buildUrl(page) {
+    buildUrl() {
+        const form = this.element.querySelector('form');
+        const formData = new FormData(form);
+        const params = new URLSearchParams();
+
+        // Only include non-empty values
+        for (const [key, value] of formData.entries()) {
+            params.set(key, value);
+        }
+
         if (typeof Routing !== 'undefined' && Routing.generate) {
             try {
                 return Routing.generate('coaster_reviews_ajax_load', {
-                    slug: this.slugValue,
-                    page: page,
-                    _locale: this.localeValue,
-                });
+                        slug: this.slugValue,
+                        _locale: this.localeValue,
+                        data: formData
+                    },
+                );
             } catch (error) {
                 console.warn('Routing failed:', error);
             }
         }
 
-        return `${window.location.origin}/${this.localeValue}/coasters/${this.slugValue}/reviews/ajax/${page}`;
+        return `${window.location.origin}/${this.localeValue}/coasters/${this.slugValue}/reviews?${params}`;
     }
 
     attachPaginationHandlers() {
@@ -53,9 +65,13 @@ export default class extends Controller {
         paginationLinks.forEach((link) => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
-                const page = parseInt(link.dataset.page) || 1;
-                this.loadReviews(page, true);
+                this.element.querySelector("input[name='page']").value = parseInt(link.dataset.page) || 1;
+                this.loadReviews(true);
             });
         });
+    }
+
+    setupEventListeners() {
+        this.element.querySelector('form').addEventListener('change', () => this.loadReviews(false));
     }
 }
