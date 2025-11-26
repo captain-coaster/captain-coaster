@@ -372,7 +372,7 @@ class Coaster implements \Stringable
         return $this->restraint;
     }
 
-    public function setRestraint(Restraint $restraint): static
+    public function setRestraint(?Restraint $restraint): static
     {
         $this->restraint = $restraint;
 
