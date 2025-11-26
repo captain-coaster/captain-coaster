@@ -164,7 +164,7 @@ map_index:
     results: Ergebnisse
 
 user_profile:
-    title: "{name} - Profil"
+    title: "Profil • {name}"
     ratings: Zeige dessen Bewertungen
     reviews: Zeige dessen Rezensionen
     main_top: Zeige dessen Top Achterbahnen
@@ -290,9 +290,9 @@ review:
 
 users:
     tops:
-        title: "{name}'s Tops"
+        title: "Tops • {name}"
     ratings:
-        title: "{name} - Bewertungen"
+        title: "Bewertungen • {name}"
         coaster: Achterbahn
         manufacturer: Hersteller
         opening_date: Geöffnet
@@ -301,9 +301,11 @@ users:
     my_ratings:
         title: Meine Bewertungen
     reviews:
-        title: "{name} - Rezensionen"
+        title: "Rezensionen • {name}"
     images:
-        title: "{name} - Bilder"
+        title: "Bilder • {name}"
+    map:
+        title: "Achterbahn Landkarte • {name}"
 
 review_list:
     title: Achterbahn Rezensionen

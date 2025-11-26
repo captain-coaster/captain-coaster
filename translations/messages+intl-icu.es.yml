@@ -164,7 +164,7 @@ map_index:
     results: Resultados
 
 user_profile:
-    title: "{name} - Perfil"
+    title: "Perfil • {name}"
     ratings: Mostrar sus notas
     reviews: "Mostrar sus reseñas"
     main_top: "Mostrar sus Top Coasters"
@@ -290,9 +290,9 @@ review:
 
 users:
     tops:
-        title: "{name}'s tops"
+        title: "Tops • {name}"
     ratings:
-        title: "{name} - Clasificación"
+        title: "Clasificación • {name}"
         coaster: Montaña rusa
         manufacturer: Fabricante
         opening_date: Abierto
@@ -301,9 +301,11 @@ users:
     my_ratings:
         title: Mis notas
     reviews:
-        title: "{name} - Reviews"
+        title: "Reseñas • {name}"
     images:
-        title: "{name} - Pictures"
+        title: "Fotos • {name}"
+    map:
+        title: "Mapa de las montañas rusas • {name}"
 
 review_list:
     title: Reseñas de montañas rusas

@@ -169,7 +169,7 @@ map_index:
     results: "Results"
 
 user_profile:
-    title: "{name} - Profile"
+    title: "Profile • {name}"
     ratings: "Show their ratings"
     reviews: "Show their reviews"
     main_top: "Show their Top Coasters"
@@ -295,9 +295,9 @@ review:
 
 users:
     tops:
-        title: "{name}'s tops"
+        title: "Tops • {name}"
     ratings:
-        title: "{name} - Ratings"
+        title: "Ratings • {name}"
         coaster: "Coaster"
         manufacturer: "Manufacturer"
         opening_date: "Opened"
@@ -306,9 +306,11 @@ users:
     my_ratings:
         title: "My ratings"
     reviews:
-        title: "{name} - Reviews"
+        title: "Reviews • {name}"
     images:
-        title: "{name} - Pictures"
+        title: "Pictures • {name}"
+    map:
+        title: "Coasters map • {name}"
 
 review_list:
     title: "Coaster reviews"
