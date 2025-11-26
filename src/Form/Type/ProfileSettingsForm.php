@@ -26,6 +26,13 @@ class ProfileSettingsForm extends AbstractType
     {
         $canChangeName = $options['can_change_name'];
         $locales = $options['locales'];
+        // Get translator service from the container
+        $translator = $options['translator'];
+
+        $nameRegex = new Regex([
+            'pattern' => '/^[\p{L}\s\'\-\.]+$/u',
+            'message' => $translator->trans('profile.settings.name.invalid_characters'),
+        ]);
 
         // Name section
         // First name field (disabled if can't change name)
@@ -35,10 +42,7 @@ class ProfileSettingsForm extends AbstractType
             'constraints' => [
                 new NotBlank(),
                 new Length(['min' => 2, 'max' => 50]),
-                new Regex([
-                    'pattern' => '/^[A-Za-z\s\'\-\.]+$/',
-                    'message' => 'profile.settings.name.invalid_characters',
-                ]),
+                $nameRegex,
             ],
             'attr' => [
                 'class' => 'form-control',
@@ -52,10 +56,7 @@ class ProfileSettingsForm extends AbstractType
             'constraints' => [
                 new NotBlank(),
                 new Length(['min' => 2, 'max' => 50]),
-                new Regex([
-                    'pattern' => '/^[A-Za-z\s\'\-\.]+$/',
-                    'message' => 'profile.settings.name.invalid_characters',
-                ]),
+                $nameRegex,
             ],
             'attr' => [
                 'class' => 'form-control',
@@ -64,9 +65,6 @@ class ProfileSettingsForm extends AbstractType
 
         // Get preview names from the User entity
         $user = $options['data'];
-
-        // Get translator service from the container
-        $translator = $options['translator'];
 
         $builder->add('displayNameFormat', ChoiceType::class, [
             'label' => 'profile.settings.name.format',
