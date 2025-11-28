@@ -1,4 +1,4 @@
-name: "CI"
+name: 'CI'
 
 on:
     pull_request:
@@ -13,7 +13,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: "8.4"
+                  php-version: '8.4'
                   extensions: redis, xsl
 
             - name: Lint Composer config
@@ -28,7 +28,8 @@ jobs:
             - uses: php-actions/phpstan@v3
 
             - name: PHP-CS-Fixer
-              uses: docker://oskarstark/php-cs-fixer-ga@sha256:abc7a9e43780ea2df458ad9fcdfeb98563fa71eee2af232f2b1962af5ccf1d2a
+              # php-cs-fixer v3.90.0
+              uses: docker://oskarstark/php-cs-fixer-ga@sha256:4cff5e369642fa2ce75238310a457c784ded88dbe0400474292f69218e099a4a
               with:
                   args: --diff --dry-run
 
