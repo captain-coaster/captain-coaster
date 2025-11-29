@@ -22,6 +22,24 @@ class CoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, Coaster::class);
     }
 
+    /**
+     * Get distinct opening years for filter dropdown.
+     *
+     * @return array<array{year: int}> Array of years
+     */
+    public function findDistinctOpeningYears(): array
+    {
+        $rsm = new Query\ResultSetMapping();
+        $rsm->addScalarResult('year', 'year');
+
+        return $this->getEntityManager()
+            ->createNativeQuery(
+                'SELECT DISTINCT YEAR(c.openingDate) as year FROM coaster c WHERE c.openingDate IS NOT NULL ORDER BY year DESC',
+                $rsm
+            )
+            ->getResult();
+    }
+
     public function suggestCoasterForTop(string $term, User $user)
     {
         return $this->getEntityManager()

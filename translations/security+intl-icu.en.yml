@@ -1,0 +1,3 @@
+login:
+    authentication_failed: 'Authentication failed. Please try again.'
+    account_disabled: 'Your account has not been activated. Please check your email and click on the activation link.'

@@ -12,6 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class CountryRepository extends ServiceEntityRepository
 {
+    use FilterableRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Country::class);

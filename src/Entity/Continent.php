@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\ContinentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Continent.
  */
 #[ORM\Table(name: 'continent')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ContinentRepository::class)]
 class Continent implements \Stringable
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]

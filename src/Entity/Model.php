@@ -7,6 +7,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use App\Repository\ModelRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -17,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_model']])]
 #[ORM\Table(name: 'model')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: ModelRepository::class)]
 class Model implements \Stringable
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]

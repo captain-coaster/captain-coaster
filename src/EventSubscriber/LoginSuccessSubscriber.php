@@ -38,7 +38,6 @@ class LoginSuccessSubscriber implements EventSubscriberInterface
         if ($user instanceof User) {
             $user->setLastLogin(new \DateTime());
             $user->setIpAddress($event->getRequest()->getClientIp());
-            $this->entityManager->persist($user);
             $this->entityManager->flush();
         }
     }
