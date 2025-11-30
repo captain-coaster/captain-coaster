@@ -20,4 +20,26 @@ class CoasterSummaryRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['coaster' => $coaster, 'language' => $language]);
     }
+
+    /**
+     * Find summaries with poor feedback ratios.
+     *
+     * @param float $maxRatio Maximum feedback ratio threshold (e.g., 0.3 for 30%)
+     * @param int   $minVotes Minimum number of votes required to consider the ratio
+     *
+     * @return array<int> Array of coaster IDs with poor feedback
+     */
+    public function findCoasterIdsWithPoorFeedback(float $maxRatio, int $minVotes): array
+    {
+        $result = $this->createQueryBuilder('cs')
+            ->select('IDENTITY(cs.coaster) as coasterId')
+            ->where('cs.feedbackRatio <= :maxRatio')
+            ->andWhere('(cs.positiveVotes + cs.negativeVotes) >= :minVotes')
+            ->setParameter('maxRatio', $maxRatio)
+            ->setParameter('minVotes', $minVotes)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_column($result, 'coasterId');
+    }
 }

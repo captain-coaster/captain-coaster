@@ -47,8 +47,6 @@ class BedrockService
         $model = self::MODELS[$modelKey ?? $this->modelKey];
 
         try {
-            $this->logger->info('Calling AWS Bedrock API', ['model' => $model['id']]);
-
             $requestBody = $this->buildRequestBody($model, $prompt);
 
             $response = $this->bedrockClient->invokeModel([
@@ -73,7 +71,7 @@ class BedrockService
             $outputCost = ($outputTokens / 1000) * $model['output_cost_per_1k'];
             $totalCost = $inputCost + $outputCost;
 
-            $logData = [
+            $metadata = [
                 'model' => $model['id'],
                 'latency_ms' => $latencyMs,
                 'input_tokens' => $inputTokens,
@@ -81,12 +79,10 @@ class BedrockService
                 'cost_usd' => round($totalCost, 6),
             ];
 
-            $this->logger->info('Bedrock API call completed', $logData);
-
             return [
                 'success' => true,
                 'content' => $this->extractResponseText($result, $model['type']),
-                'metadata' => $logData,
+                'metadata' => $metadata,
             ];
         } catch (AwsException $e) {
             $this->logger->error('AWS Bedrock API error', [

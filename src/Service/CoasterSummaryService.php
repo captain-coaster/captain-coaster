@@ -74,8 +74,6 @@ class CoasterSummaryService
         $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
         $reviewCount = \count($reviewsWithText);
 
-        $this->logger->info('Processing coaster', ['coaster' => $coaster->getName(), 'reviews' => $reviewCount]);
-
         $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey);
 
         if (empty($aiAnalysis['summary'])) {
@@ -107,27 +105,6 @@ class CoasterSummaryService
         $this->entityManager->flush();
 
         return ['summary' => $summary, 'metadata' => $aiAnalysis['metadata']];
-    }
-
-    /**
-     * Gets summaries with poor feedback ratios for regeneration.
-     *
-     * @param float $maxRatio Maximum feedback ratio threshold (e.g., 0.3 for 30%)
-     * @param int   $minVotes Minimum number of votes required to consider the ratio
-     *
-     * @return CoasterSummary[]
-     */
-    public function getSummariesWithPoorFeedback(float $maxRatio = 0.3, int $minVotes = 10): array
-    {
-        return $this->entityManager->getRepository(CoasterSummary::class)
-            ->createQueryBuilder('cs')
-            ->where('cs.feedbackRatio <= :maxRatio')
-            ->andWhere('(cs.positiveVotes + cs.negativeVotes) >= :minVotes')
-            ->setParameter('maxRatio', $maxRatio)
-            ->setParameter('minVotes', $minVotes)
-            ->orderBy('cs.feedbackRatio', 'ASC')
-            ->getQuery()
-            ->getResult();
     }
 
     /**
@@ -185,10 +162,8 @@ class CoasterSummaryService
         if (!$response['success']) {
             $this->logger->error('Bedrock service error', ['coaster' => $coasterName, 'error' => $response['error']]);
 
-            return ['summary' => '', 'pros' => [], 'cons' => []];
+            return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata'] ?? null];
         }
-
-        $this->logger->info('Bedrock API call completed', array_merge(['coaster' => $coasterName], $response['metadata']));
 
         return array_merge(
             $this->parseAiResponse($response['content']),

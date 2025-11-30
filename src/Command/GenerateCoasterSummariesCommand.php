@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\CoasterRepository;
+use App\Repository\CoasterSummaryRepository;
 use App\Service\CoasterSummaryService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,9 +24,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class GenerateCoasterSummariesCommand extends Command
 {
+    /** Feedback ratio threshold for bad summaries */
+    private const BAD_SUMMARY_RATIO = 0.3;
+
+    /** Minimum votes required to consider feedback ratio */
+    private const MIN_VOTES_FOR_FEEDBACK = 10;
+
     public function __construct(
         private CoasterRepository $coasterRepository,
-        private CoasterSummaryService $summaryService
+        private CoasterSummaryRepository $summaryRepository,
+        private CoasterSummaryService $summaryService,
+        private LoggerInterface $logger
     ) {
         parent::__construct();
     }
@@ -35,17 +45,17 @@ class GenerateCoasterSummariesCommand extends Command
         $this
             ->addOption('coaster-id', null, InputOption::VALUE_OPTIONAL, 'Generate summary for specific coaster ID')
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit number of coasters to process', null)
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Force regeneration even if summary exists')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force regeneration of all summaries')
+            ->addOption('force-bad-rated', null, InputOption::VALUE_NONE, 'Force regeneration of summaries with poor feedback (≤30% positive, ≥10 votes)')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate execution without calling Bedrock API')
-            ->addOption('min-ratio', null, InputOption::VALUE_OPTIONAL, 'Regenerate summaries with feedback ratio below this threshold (0.0-1.0)', null)
-            ->addOption('min-votes', null, InputOption::VALUE_OPTIONAL, 'Minimum votes required to consider feedback ratio (default: 10)', '10')
             ->setHelp(
-                'This command generates AI summaries for coasters, processing ranked coasters in order (1, 2, 3...).'."\n\n".
+                'Generates AI summaries for coasters with sufficient reviews (20+).'."\n".
+                'Processes coasters in deterministic order by ID.'."\n\n".
                 'Examples:'."\n".
                 '  php bin/console app:generate-coaster-summaries --limit=50'."\n".
                 '  php bin/console app:generate-coaster-summaries --coaster-id=123 --force'."\n".
-                '  php bin/console app:generate-coaster-summaries --min-ratio=0.3 --min-votes=5'."\n".
-                '  php bin/console app:generate-coaster-summaries --min-ratio=0.2 --dry-run'
+                '  php bin/console app:generate-coaster-summaries --force-bad-rated'."\n".
+                '  php bin/console app:generate-coaster-summaries --force --dry-run'
             );
     }
 
@@ -56,51 +66,14 @@ class GenerateCoasterSummariesCommand extends Command
         $coasterId = $input->getOption('coaster-id');
         $limit = $input->getOption('limit') ? (int) $input->getOption('limit') : null;
         $force = (bool) $input->getOption('force');
+        $forceBadRated = (bool) $input->getOption('force-bad-rated');
         $dryRun = (bool) $input->getOption('dry-run');
-        $minRatio = $input->getOption('min-ratio') ? (float) $input->getOption('min-ratio') : null;
-        $minVotes = (int) $input->getOption('min-votes');
-
-        // Validate min-ratio parameter
-        if (null !== $minRatio && ($minRatio < 0.0 || $minRatio > 1.0)) {
-            $io->error('The --min-ratio option must be between 0.0 and 1.0');
-
-            return Command::FAILURE;
-        }
 
         try {
-            if ($coasterId) {
-                $coaster = $this->coasterRepository->find($coasterId);
-                if (!$coaster) {
-                    $io->error("Coaster with ID {$coasterId} not found");
-
-                    return Command::FAILURE;
-                }
-                $coasters = [$coaster];
-            } elseif (null !== $minRatio) {
-                // Get summaries with poor feedback ratios
-                $summaries = $this->summaryService->getSummariesWithPoorFeedback($minRatio, $minVotes);
-                $coasters = array_map(fn ($summary) => $summary->getCoaster(), $summaries);
-
-                if ($limit) {
-                    $coasters = \array_slice($coasters, 0, $limit);
-                }
-
-                $io->note('Found '.\count($summaries).' summaries with feedback ratio ≤ '.($minRatio * 100)."% and ≥ {$minVotes} votes");
-            } else {
-                // Get ranked coasters ordered by rank (1, 2, 3...)
-                $queryBuilder = $this->coasterRepository->createQueryBuilder('c')
-                    ->where('c.enabled = :enabled')
-                    ->andWhere('c.rank IS NOT NULL')
-                    ->andWhere('c.rank >= 1')
-                    ->orderBy('c.rank', 'ASC')
-                    ->setParameter('enabled', true);
-
-                if ($limit) {
-                    $queryBuilder->setMaxResults($limit);
-                }
-
-                $coasters = $queryBuilder->getQuery()->getResult();
-            }
+            $coasters = $this->loadCoasters($coasterId, $limit);
+            $badRatedCoasterIds = $forceBadRated
+                ? $this->summaryRepository->findCoasterIdsWithPoorFeedback(self::BAD_SUMMARY_RATIO, self::MIN_VOTES_FOR_FEEDBACK)
+                : [];
         } catch (\Exception $e) {
             $io->error("Error loading coasters: {$e->getMessage()}");
 
@@ -111,42 +84,37 @@ class GenerateCoasterSummariesCommand extends Command
         $generated = 0;
         $totalCoasters = \count($coasters);
 
-        if (null !== $minRatio) {
-            $io->note("Processing {$totalCoasters} coasters with poor feedback ratios".($limit ? " (limited to {$limit})" : ''));
+        if ($forceBadRated) {
+            $io->note("Processing {$totalCoasters} eligible coasters, forcing regeneration for ".\count($badRatedCoasterIds).' with poor feedback');
         } else {
-            $io->note("Processing {$totalCoasters} ranked coasters".($limit ? " (limited to {$limit})" : ''));
+            $io->note("Processing {$totalCoasters} eligible coasters".($limit ? " (limited to {$limit})" : ''));
         }
 
         foreach ($coasters as $coaster) {
             try {
-                // For feedback filtering mode, always force regeneration since we're targeting poor summaries
-                $shouldProcess = null !== $minRatio || $force || $this->summaryService->shouldUpdateSummary($coaster);
+                $isBadRated = \in_array($coaster->getId(), $badRatedCoasterIds, true);
+                $shouldProcess = $force || ($forceBadRated && $isBadRated) || $this->summaryService->shouldUpdateSummary($coaster);
 
                 if (!$shouldProcess) {
-                    $io->writeln("Skipping #{$coaster->getRank()} {$coaster->getName()} (summary exists)");
+                    $io->writeln("Skipping ID {$coaster->getId()} {$coaster->getName()} (summary exists)");
                     continue;
                 }
 
-                $rankDisplay = $coaster->getRank() ? "#{$coaster->getRank()}" : '#?';
-                $io->write("Processing {$rankDisplay} {$coaster->getName()}... ");
+                $io->writeln("Processing ID {$coaster->getId()} {$coaster->getName()}...");
 
                 if ($dryRun) {
-                    $io->writeln('  ✓ Dry run - would generate summary');
+                    $io->writeln('  ✓ Dry run');
                 } else {
                     $this->processCoaster($coaster, $io, $generated);
 
-                    // AWS Bedrock rate limiting for GPT OSS 120b
-                    // Conservative approach: 1 request per 2 seconds to stay well under quota
-                    if ($processed < $totalCoasters - 1) { // Don't sleep after last item
-                        $io->writeln('  Waiting 2s for AWS quota management...');
+                    if ($processed < $totalCoasters - 1) {
                         sleep(2);
                     }
                 }
 
                 ++$processed;
             } catch (\Exception $e) {
-                $rankDisplay = $coaster->getRank() ? "#{$coaster->getRank()}" : '#?';
-                $io->error("Error processing coaster {$rankDisplay} {$coaster->getName()}: {$e->getMessage()}");
+                $io->error("Error processing ID {$coaster->getId()} {$coaster->getName()}: {$e->getMessage()}");
                 continue;
             }
         }
@@ -154,6 +122,21 @@ class GenerateCoasterSummariesCommand extends Command
         $io->success("Processed {$processed} coasters, generated {$generated} summaries");
 
         return Command::SUCCESS;
+    }
+
+    /** Loads coasters based on command options */
+    private function loadCoasters(?string $coasterId, ?int $limit): array
+    {
+        if ($coasterId) {
+            $coaster = $this->coasterRepository->find($coasterId);
+            if (!$coaster) {
+                throw new \RuntimeException("Coaster with ID {$coasterId} not found");
+            }
+
+            return [$coaster];
+        }
+
+        return $this->coasterRepository->findEligibleForSummary(CoasterSummaryService::MIN_REVIEWS_REQUIRED, $limit);
     }
 
     /** Processes a single coaster to generate its summary */
@@ -167,23 +150,26 @@ class GenerateCoasterSummariesCommand extends Command
                 $summary = $result['summary'];
                 $metadata = $result['metadata'];
 
-                $prosCount = \count($summary->getDynamicPros());
-                $consCount = \count($summary->getDynamicCons());
-                $reviewsAnalyzed = $summary->getReviewsAnalyzed();
-
-                $io->writeln("  ✓ Generated summary ({$reviewsAnalyzed} reviews, {$prosCount} pros, {$consCount} cons)");
-                $io->writeln("  Latency: {$metadata['latency_ms']}ms, Input: {$metadata['input_tokens']}, Output: {$metadata['output_tokens']}, Cost: $".number_format($metadata['cost_usd'], 4));
+                $io->writeln("  ✓ Generated: {$summary->getReviewsAnalyzed()} reviews, ".\count($summary->getDynamicPros()).' pros, '.\count($summary->getDynamicCons()).' cons');
+                $io->writeln("  Performance: {$metadata['latency_ms']}ms, {$metadata['input_tokens']}+{$metadata['output_tokens']} tokens, $".number_format($metadata['cost_usd'], 4));
+                $io->newLine();
             } else {
                 $reason = $result['reason'] ?? 'unknown';
-                if ('insufficient_reviews' === $reason) {
-                    $reviewCount = $result['review_count'] ?? 0;
-                    $io->writeln("  ⊘ Skipped (only {$reviewCount} reviews, need 20+)");
-                } else {
-                    $io->writeln('  ⚠ Failed to generate summary');
-                }
+                $this->logger->error('Failed to generate summary', [
+                    'coaster_id' => $coaster->getId(),
+                    'coaster_name' => $coaster->getName(),
+                    'reason' => $reason,
+                ]);
+                $io->writeln("  ⚠ Failed ({$reason})");
+                $io->newLine();
             }
         } catch (\Exception $e) {
-            $io->error("  Error processing coaster: {$e->getMessage()}");
+            $this->logger->error('Exception while processing coaster', [
+                'coaster_id' => $coaster->getId(),
+                'coaster_name' => $coaster->getName(),
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
         }
     }
 }

@@ -371,4 +371,32 @@ class CoasterRepository extends ServiceEntityRepository
                ->andWhere('c.rank IS NOT NULL');
         }
     }
+
+    /**
+     * Find all enabled coasters with minimum number of reviews for AI summary generation.
+     *
+     * @param int      $minReviews Minimum number of reviews required
+     * @param int|null $limit      Optional limit on results
+     *
+     * @return array<Coaster> Array of coaster entities ordered by ID
+     */
+    public function findEligibleForSummary(int $minReviews, ?int $limit = null): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c')
+            ->leftJoin('c.ratings', 'rc')
+            ->where('c.enabled = :enabled')
+            ->andWhere('rc.review IS NOT NULL')
+            ->groupBy('c.id')
+            ->having('COUNT(rc.id) >= :minReviews')
+            ->orderBy('c.id', 'ASC')
+            ->setParameter('enabled', true)
+            ->setParameter('minReviews', $minReviews);
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
