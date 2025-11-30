@@ -7,16 +7,15 @@ namespace App\EventListener;
 use App\Entity\User;
 use App\Service\ImageLikeService;
 use App\Service\ReviewScoreService;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
 /**
  * Automatically clean up user interactions when a user is disabled.
  * Removes review upvotes and image likes to prevent disabled users from influencing rankings.
  */
-#[AsDoctrineListener(event: Events::preUpdate, priority: 500, connection: 'default')]
+#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: User::class)]
 class UserDisabledListener
 {
     public function __construct(
@@ -26,34 +25,18 @@ class UserDisabledListener
     ) {
     }
 
-    public function preUpdate(PreUpdateEventArgs $args): void
+    public function postUpdate(User $user): void
     {
-        $entity = $args->getObject();
-
-        // Only process User entities
-        if (!$entity instanceof User) {
-            return;
-        }
-
-        // Check if the 'enabled' field was changed to false
-        if (!$args->hasChangedField('enabled')) {
-            return;
-        }
-
-        $wasEnabled = $args->getOldValue('enabled');
-        $isNowEnabled = $args->getNewValue('enabled');
-
-        // Only act when user is being disabled (was enabled, now disabled)
-        if ($wasEnabled && !$isNowEnabled) {
-            $this->removeUserInteractions($entity);
+        // Only process if user was just disabled
+        if (!$user->isEnabled()) {
+            $this->removeUserInteractions($user->getId());
         }
     }
 
     /** Remove all upvotes and image likes from a disabled user. */
-    private function removeUserInteractions(User $user): void
+    private function removeUserInteractions(int $userId): void
     {
         $conn = $this->entityManager->getConnection();
-        $userId = $user->getId();
 
         // Remove all review upvotes from this user
         $conn->executeStatement(
