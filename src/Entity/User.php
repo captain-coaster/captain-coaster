@@ -140,8 +140,8 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $isVerified = false;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 1])]
-    private bool $displayReviewsInAllLanguages = true;
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
+    private bool $displayReviewsInAllLanguages = false;
 
     public function __toString(): string
     {
