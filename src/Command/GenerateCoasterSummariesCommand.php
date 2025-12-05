@@ -24,12 +24,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class GenerateCoasterSummariesCommand extends Command
 {
-    /** Feedback ratio threshold for bad summaries */
-    private const BAD_SUMMARY_RATIO = 0.3;
-
-    /** Minimum votes required to consider feedback ratio */
-    private const MIN_VOTES_FOR_FEEDBACK = 10;
-
     public function __construct(
         private CoasterRepository $coasterRepository,
         private CoasterSummaryRepository $summaryRepository,
@@ -45,8 +39,10 @@ class GenerateCoasterSummariesCommand extends Command
         $this
             ->addOption('coaster-id', null, InputOption::VALUE_OPTIONAL, 'Generate summary for specific coaster ID')
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit number of coasters to process', null)
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Force regeneration of all summaries')
-            ->addOption('force-bad-rated', null, InputOption::VALUE_NONE, 'Force regeneration of summaries with poor feedback (≤30% positive, ≥10 votes)')
+            ->addOption('force', null, InputOption::VALUE_NONE, 'Force regeneration if summary already exists')
+            ->addOption('no-translate', null, InputOption::VALUE_NONE, 'Skip translation generation (English only)')
+            ->addOption('translate-only', null, InputOption::VALUE_NONE, 'Only generate translations for existing English summaries (skip English generation)')
+            ->addOption('languages', null, InputOption::VALUE_OPTIONAL, 'Generate translations only for specified languages (comma-separated: fr,es,de)', 'fr,es,de')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate execution without calling Bedrock API')
             ->setHelp(
                 'Generates AI summaries for coasters with sufficient reviews (20+).'."\n".
@@ -54,7 +50,10 @@ class GenerateCoasterSummariesCommand extends Command
                 'Examples:'."\n".
                 '  php bin/console app:generate-coaster-summaries --limit=50'."\n".
                 '  php bin/console app:generate-coaster-summaries --coaster-id=123 --force'."\n".
-                '  php bin/console app:generate-coaster-summaries --force-bad-rated'."\n".
+                '  php bin/console app:generate-coaster-summaries --no-translate'."\n".
+                '  php bin/console app:generate-coaster-summaries --translate-only --languages=fr'."\n".
+                '  php bin/console app:generate-coaster-summaries --coaster-id=3144 --translate-only --languages=fr --force'."\n".
+                '  php bin/console app:generate-coaster-summaries --languages=fr,es'."\n".
                 '  php bin/console app:generate-coaster-summaries --force --dry-run'
             );
     }
@@ -66,14 +65,38 @@ class GenerateCoasterSummariesCommand extends Command
         $coasterId = $input->getOption('coaster-id');
         $limit = $input->getOption('limit') ? (int) $input->getOption('limit') : null;
         $force = (bool) $input->getOption('force');
-        $forceBadRated = (bool) $input->getOption('force-bad-rated');
+        $noTranslate = (bool) $input->getOption('no-translate');
+        $translateOnly = (bool) $input->getOption('translate-only');
+        $languagesOption = $input->getOption('languages');
         $dryRun = (bool) $input->getOption('dry-run');
 
+        // Validate conflicting options
+        if ($noTranslate && $translateOnly) {
+            $io->error('Cannot use --no-translate and --translate-only together');
+
+            return Command::FAILURE;
+        }
+
+        // Parse target languages
+        $targetLanguages = [];
+        if (!$noTranslate && $languagesOption) {
+            $languages = array_map('trim', explode(',', $languagesOption));
+            $targetLanguages = array_values(array_intersect($languages, ['fr', 'es', 'de']));
+        }
+
         try {
-            $coasters = $this->loadCoasters($coasterId, $limit);
-            $badRatedCoasterIds = $forceBadRated
-                ? $this->summaryRepository->findCoasterIdsWithPoorFeedback(self::BAD_SUMMARY_RATIO, self::MIN_VOTES_FOR_FEEDBACK)
-                : [];
+            // Load coasters
+            if ($coasterId) {
+                $coaster = $this->coasterRepository->find($coasterId);
+                if (!$coaster) {
+                    throw new \RuntimeException("Coaster with ID {$coasterId} not found");
+                }
+                $coasters = [$coaster];
+            } elseif ($translateOnly) {
+                $coasters = $this->summaryRepository->findCoastersWithSummaries('en', $limit);
+            } else {
+                $coasters = $this->coasterRepository->findEligibleForSummary(CoasterSummaryService::MIN_REVIEWS_REQUIRED, $limit);
+            }
         } catch (\Exception $e) {
             $io->error("Error loading coasters: {$e->getMessage()}");
 
@@ -82,34 +105,87 @@ class GenerateCoasterSummariesCommand extends Command
 
         $processed = 0;
         $generated = 0;
+        $translationsGenerated = array_fill_keys($targetLanguages, 0);
         $totalCoasters = \count($coasters);
 
-        if ($forceBadRated) {
-            $io->note("Processing {$totalCoasters} eligible coasters, forcing regeneration for ".\count($badRatedCoasterIds).' with poor feedback');
-        } else {
-            $io->note("Processing {$totalCoasters} eligible coasters".($limit ? " (limited to {$limit})" : ''));
+        $io->note("Processing {$totalCoasters} eligible coasters".($limit ? " (limited to {$limit})" : ''));
+
+        if ($translateOnly) {
+            $io->note('Translation-only mode: processing translations for existing English summaries');
+        }
+
+        if (!$noTranslate && !empty($targetLanguages)) {
+            $io->note('Translation enabled for languages: '.implode(', ', $targetLanguages));
         }
 
         foreach ($coasters as $coaster) {
             try {
-                $isBadRated = \in_array($coaster->getId(), $badRatedCoasterIds, true);
-                $shouldProcess = $force || ($forceBadRated && $isBadRated) || $this->summaryService->shouldUpdateSummary($coaster);
-
-                if (!$shouldProcess) {
-                    $io->writeln("Skipping ID {$coaster->getId()} {$coaster->getName()} (summary exists)");
-                    continue;
-                }
-
                 $io->writeln("Processing ID {$coaster->getId()} {$coaster->getName()}...");
 
                 if ($dryRun) {
                     $io->writeln('  ✓ Dry run');
-                } else {
-                    $this->processCoaster($coaster, $io, $generated);
+                    ++$processed;
+                    continue;
+                }
 
-                    if ($processed < $totalCoasters - 1) {
-                        sleep(2);
+                $englishSummary = null;
+
+                // In translate-only mode, load existing English summary
+                if ($translateOnly) {
+                    $englishSummary = $this->summaryRepository->findByCoasterAndLanguage($coaster, 'en');
+
+                    if (!$englishSummary) {
+                        $io->writeln('  ⚠ Skipping (no English summary exists)');
+                        continue;
                     }
+
+                    $io->writeln('  → Using existing English summary');
+                } else {
+                    // Normal mode: generate or update English summary
+                    $shouldProcess = $force || $this->summaryService->shouldUpdateSummary($coaster);
+
+                    if (!$shouldProcess) {
+                        $io->writeln('  → Skipping English generation (summary exists)');
+
+                        // Load existing summary for translation
+                        if (!$noTranslate && !empty($targetLanguages)) {
+                            $englishSummary = $this->summaryRepository->findByCoasterAndLanguage($coaster, 'en');
+                        }
+                    } else {
+                        // Generate English summary
+                        $result = $this->summaryService->generateSummary($coaster);
+
+                        if ($result['summary']) {
+                            ++$generated;
+                            $englishSummary = $result['summary'];
+                            $metadata = $result['metadata'];
+
+                            $io->writeln("  ✓ Generated: {$englishSummary->getReviewsAnalyzed()} reviews, ".\count($englishSummary->getDynamicPros()).' pros, '.\count($englishSummary->getDynamicCons()).' cons');
+                            $io->writeln("  Performance: {$metadata['latency_ms']}ms, {$metadata['input_tokens']}+{$metadata['output_tokens']} tokens, $".number_format($metadata['cost_usd'], 4));
+                            $io->newLine();
+                        } else {
+                            $reason = $result['reason'] ?? 'unknown';
+                            $this->logger->error('Failed to generate summary', [
+                                'coaster_id' => $coaster->getId(),
+                                'coaster_name' => $coaster->getName(),
+                                'reason' => $reason,
+                            ]);
+                            $io->writeln("  ⚠ Failed ({$reason})");
+                            $io->newLine();
+                        }
+                    }
+                }
+
+                // Generate translations if we have an English summary
+                if ($englishSummary && !$noTranslate && !empty($targetLanguages)) {
+                    $this->processTranslations(
+                        $coaster,
+                        $englishSummary,
+                        $targetLanguages,
+                        $force,
+                        $io,
+                        $translationsGenerated
+                    );
                 }
 
                 ++$processed;
@@ -119,57 +195,69 @@ class GenerateCoasterSummariesCommand extends Command
             }
         }
 
-        $io->success("Processed {$processed} coasters, generated {$generated} summaries");
+        // Display summary
+        $io->success("Processed {$processed} coasters, generated {$generated} English summaries");
+
+        if (!$noTranslate && !empty($translationsGenerated)) {
+            foreach ($translationsGenerated as $language => $count) {
+                if ($count > 0) {
+                    $io->writeln("{$language}: {$count} translations");
+                }
+            }
+        }
 
         return Command::SUCCESS;
     }
 
-    /** Loads coasters based on command options */
-    private function loadCoasters(?string $coasterId, ?int $limit): array
-    {
-        if ($coasterId) {
-            $coaster = $this->coasterRepository->find($coasterId);
-            if (!$coaster) {
-                throw new \RuntimeException("Coaster with ID {$coasterId} not found");
-            }
+    /** Processes translations for a coaster after English summary is generated */
+    private function processTranslations(
+        $coaster,
+        $englishSummary,
+        array $targetLanguages,
+        bool $force,
+        SymfonyStyle $io,
+        array &$translationsGenerated
+    ): void {
+        foreach ($targetLanguages as $language) {
+            try {
+                $shouldTranslate = $force || $this->summaryService->shouldUpdateTranslation($coaster, $language);
 
-            return [$coaster];
-        }
+                if (!$shouldTranslate) {
+                    $io->writeln("  → Skipping {$language} translation (exists)");
+                    continue;
+                }
 
-        return $this->coasterRepository->findEligibleForSummary(CoasterSummaryService::MIN_REVIEWS_REQUIRED, $limit);
-    }
+                $io->writeln("  → Translating to {$language}...");
 
-    /** Processes a single coaster to generate its summary */
-    private function processCoaster($coaster, SymfonyStyle $io, int &$generated): void
-    {
-        try {
-            $result = $this->summaryService->generateSummary($coaster);
+                $result = $this->summaryService->translateSummary($englishSummary, $language);
 
-            if ($result['summary']) {
-                ++$generated;
-                $summary = $result['summary'];
-                $metadata = $result['metadata'];
+                if ($result['summary']) {
+                    ++$translationsGenerated[$language];
+                    $metadata = $result['metadata'];
 
-                $io->writeln("  ✓ Generated: {$summary->getReviewsAnalyzed()} reviews, ".\count($summary->getDynamicPros()).' pros, '.\count($summary->getDynamicCons()).' cons');
-                $io->writeln("  Performance: {$metadata['latency_ms']}ms, {$metadata['input_tokens']}+{$metadata['output_tokens']} tokens, $".number_format($metadata['cost_usd'], 4));
-                $io->newLine();
-            } else {
-                $reason = $result['reason'] ?? 'unknown';
-                $this->logger->error('Failed to generate summary', [
+                    $io->writeln("    ✓ Translated to {$language}");
+                    $io->writeln("    Performance: {$metadata['latency_ms']}ms, {$metadata['input_tokens']}+{$metadata['output_tokens']} tokens, $".number_format($metadata['cost_usd'], 4));
+                } else {
+                    $reason = $result['reason'] ?? 'unknown';
+                    $this->logger->error('Failed to translate summary', [
+                        'coaster_id' => $coaster->getId(),
+                        'coaster_name' => $coaster->getName(),
+                        'language' => $language,
+                        'reason' => $reason,
+                    ]);
+                    $io->writeln("    ⚠ Translation to {$language} failed ({$reason})");
+                }
+            } catch (\Exception $e) {
+                $this->logger->error('Exception while translating', [
                     'coaster_id' => $coaster->getId(),
                     'coaster_name' => $coaster->getName(),
-                    'reason' => $reason,
+                    'language' => $language,
+                    'error' => $e->getMessage(),
                 ]);
-                $io->writeln("  ⚠ Failed ({$reason})");
-                $io->newLine();
+                $io->writeln("    ⚠ Translation to {$language} failed: {$e->getMessage()}");
             }
-        } catch (\Exception $e) {
-            $this->logger->error('Exception while processing coaster', [
-                'coaster_id' => $coaster->getId(),
-                'coaster_name' => $coaster->getName(),
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
         }
+
+        $io->newLine();
     }
 }

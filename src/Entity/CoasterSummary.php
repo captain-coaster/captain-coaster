@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 #[ORM\Entity(repositoryClass: 'App\Repository\CoasterSummaryRepository')]
 #[ORM\Table(name: 'coaster_summary')]
-#[ORM\Index(columns: ['coaster_id', 'language'], name: 'idx_coaster_language')]
+#[ORM\UniqueConstraint(name: 'unique_coaster_language', columns: ['coaster_id', 'language'])]
 class CoasterSummary
 {
     public function __construct()
@@ -31,7 +31,7 @@ class CoasterSummary
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\OneToOne(targetEntity: Coaster::class)]
+    #[ORM\ManyToOne(targetEntity: Coaster::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Coaster $coaster = null;
 

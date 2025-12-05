@@ -61,9 +61,10 @@ class CoasterSummaryCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $regenerateAction)
             ->add(Crud::PAGE_DETAIL, $regenerateAction)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => $action)
+            ->update(Crud::PAGE_DETAIL, Action::DELETE, fn (Action $action) => $action)
             ->disable(Action::NEW)
-            ->disable(Action::EDIT)
-            ->disable(Action::DELETE);
+            ->disable(Action::EDIT);
     }
 
     public function configureFilters(Filters $filters): Filters

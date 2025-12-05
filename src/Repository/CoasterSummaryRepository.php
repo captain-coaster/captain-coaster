@@ -16,30 +16,37 @@ class CoasterSummaryRepository extends ServiceEntityRepository
         parent::__construct($registry, CoasterSummary::class);
     }
 
+    /**
+     * Find a summary by coaster and language.
+     * Works with the new ManyToOne schema with unique constraint on (coaster_id, language).
+     */
     public function findByCoasterAndLanguage(Coaster $coaster, string $language): ?CoasterSummary
     {
         return $this->findOneBy(['coaster' => $coaster, 'language' => $language]);
     }
 
     /**
-     * Find summaries with poor feedback ratios.
+     * Find coasters that have summaries in a specific language.
+     * Used for translate-only mode to load coasters with existing English summaries.
      *
-     * @param float $maxRatio Maximum feedback ratio threshold (e.g., 0.3 for 30%)
-     * @param int   $minVotes Minimum number of votes required to consider the ratio
+     * @param string   $language Language code (e.g., 'en')
+     * @param int|null $limit    Optional limit on results
      *
-     * @return array<int> Array of coaster IDs with poor feedback
+     * @return array<Coaster> Array of coaster entities ordered by ID
      */
-    public function findCoasterIdsWithPoorFeedback(float $maxRatio, int $minVotes): array
+    public function findCoastersWithSummaries(string $language, ?int $limit = null): array
     {
-        $result = $this->createQueryBuilder('cs')
-            ->select('IDENTITY(cs.coaster) as coasterId')
-            ->where('cs.feedbackRatio <= :maxRatio')
-            ->andWhere('(cs.positiveVotes + cs.negativeVotes) >= :minVotes')
-            ->setParameter('maxRatio', $maxRatio)
-            ->setParameter('minVotes', $minVotes)
-            ->getQuery()
-            ->getScalarResult();
+        $qb = $this->createQueryBuilder('cs')
+            ->select('c')
+            ->join('cs.coaster', 'c')
+            ->where('cs.language = :language')
+            ->orderBy('c.id', 'ASC')
+            ->setParameter('language', $language);
 
-        return array_column($result, 'coasterId');
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -19,10 +19,10 @@ class BedrockService
 {
     /** Available AI models with their configurations */
     private const MODELS = [
-        'claude-haiku-3.5' => [
-            'id' => 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
-            'input_cost_per_1k' => 0.0008,
-            'output_cost_per_1k' => 0.004,
+        'claude-haiku-4.5' => [
+            'id' => 'global.anthropic.claude-haiku-4-5-20251001-v1:0',
+            'input_cost_per_1k' => 0.001,
+            'output_cost_per_1k' => 0.005,
             'type' => 'anthropic',
         ],
         'gpt-oss-120b' => [
@@ -42,12 +42,14 @@ class BedrockService
     ) {
     }
 
-    public function invokeModel(string $prompt, ?string $modelKey = null): array
+    public function invokeModel(string $prompt, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6): array
     {
+        sleep(2);
+
         $model = self::MODELS[$modelKey ?? $this->modelKey];
 
         try {
-            $requestBody = $this->buildRequestBody($model, $prompt);
+            $requestBody = $this->buildRequestBody($model, $prompt, $maxTokens, $temperature);
 
             $response = $this->bedrockClient->invokeModel([
                 'modelId' => $model['id'],
@@ -117,13 +119,13 @@ class BedrockService
      * Builds request body based on model type
      * Different AI providers require different request formats.
      */
-    private function buildRequestBody(array $model, string $prompt): array
+    private function buildRequestBody(array $model, string $prompt, int $maxTokens = 1000, float $temperature = 0.6): array
     {
         return match ($model['type']) {
             'anthropic' => [
                 'anthropic_version' => 'bedrock-2023-05-31',
-                'max_tokens' => 1000,
-                'temperature' => 0.6,
+                'max_tokens' => $maxTokens,
+                'temperature' => $temperature,
                 'messages' => [
                     [
                         'role' => 'user',
@@ -138,8 +140,8 @@ class BedrockService
                         'content' => $prompt,
                     ],
                 ],
-                'max_tokens' => 1000,
-                'temperature' => 0.6,
+                'max_tokens' => $maxTokens,
+                'temperature' => $temperature,
             ],
             default => throw new \InvalidArgumentException("Unsupported model type: {$model['type']}")
         };

@@ -478,4 +478,62 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             return $default;
         }
     }
+
+    /**
+     * Get a sample of reviews in a specific language for terminology analysis.
+     *
+     * @param string $language The target language code
+     * @param int    $limit    Maximum number of reviews to retrieve
+     *
+     * @return array Array of RiddenCoaster entities with review text
+     */
+    public function findReviewSampleByLanguage(string $language, int $limit): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.language = :language')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'DESC')
+            ->setParameter('language', $language)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Get reviews with text content for a specific coaster in a specific language.
+     *
+     * @param Coaster  $coaster  The coaster to get reviews for
+     * @param string   $language The target language code
+     * @param int|null $limit    Maximum number of reviews to retrieve
+     *
+     * @return array Array of RiddenCoaster entities with review text
+     */
+    public function getCoasterReviewsWithTextByLanguage(Coaster $coaster, string $language, ?int $limit = null): array
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'u')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :coasterId')
+            ->andWhere('r.language = :language')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setParameter('coasterId', $coaster->getId())
+            ->setParameter('language', $language);
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }
