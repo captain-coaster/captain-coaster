@@ -25,6 +25,9 @@ jobs:
                   php_extensions: redis xsl
                   memory_limit: 256M
 
+            - name: Run PHPUnit tests
+              run: vendor/bin/phpunit
+
             - uses: php-actions/phpstan@v3
 
             - name: PHP-CS-Fixer
