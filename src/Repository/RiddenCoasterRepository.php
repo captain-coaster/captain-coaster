@@ -32,12 +32,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     public function countAll()
     {
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb_rating')
                 ->from(RiddenCoaster::class, 'r')
-                ->getQuery()
-                ->getSingleScalarResult();
+                ->getQuery();
+
+            $query->enableResultCache(600);
+
+            return $query->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
@@ -50,12 +53,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countReviews()
     {
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(r.review) as nb_review')
             ->from(RiddenCoaster::class, 'r')
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->getQuery();
+
+        $query->enableResultCache(600);
+
+        return $query->getSingleScalarResult();
     }
 
     /**
@@ -65,14 +71,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countNew(\DateTime $date)
     {
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
             ->where('r.createdAt > :date')
             ->setParameter('date', $date)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->getQuery();
+
+        $query->enableResultCache(600);
+
+        return $query->getSingleScalarResult();
     }
 
     /**
@@ -180,7 +189,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /** Get latest text reviews ordered by language. */
     public function getLatestReviews(string $locale = 'en', int $limit = 3, bool $displayReviewsInAllLanguages = false)
     {
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
             ->addSelect(
@@ -196,14 +205,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->setParameter('locale', $locale)
             ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getResult();
     }
 
     /** Get latest ratings from enabled users only. */
     public function getLatestRatings(int $limit = 6)
     {
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
             ->from(RiddenCoaster::class, 'r')
@@ -211,8 +223,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->where('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getResult();
     }
 
     /** @return QueryBuilder */
