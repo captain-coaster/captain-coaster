@@ -31,6 +31,7 @@ class Badge
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     private ?string $filenameEn = null;
 
+    /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'badges')]
     private Collection $users;
 
@@ -44,7 +45,7 @@ class Badge
         return $this->id;
     }
 
-    public function setType($type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
 
@@ -56,7 +57,7 @@ class Badge
         return $this->type;
     }
 
-    public function setFilenameFr($filenameFr): static
+    public function setFilenameFr(?string $filenameFr): static
     {
         $this->filenameFr = $filenameFr;
 
@@ -68,7 +69,7 @@ class Badge
         return $this->filenameFr;
     }
 
-    public function setFilenameEn($filenameEn): static
+    public function setFilenameEn(?string $filenameEn): static
     {
         $this->filenameEn = $filenameEn;
 
@@ -92,12 +93,13 @@ class Badge
         $this->users->removeElement($user);
     }
 
-    public function getUsers(): ArrayCollection|Collection
+    /** @return Collection<int, User> */
+    public function getUsers(): Collection
     {
         return $this->users;
     }
 
-    public function setName($name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 

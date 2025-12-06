@@ -33,7 +33,7 @@ class Restraint implements \Stringable
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
-    /** @var Collection<Coaster> */
+    /** @var Collection<int, Coaster> */
     #[ORM\OneToMany(targetEntity: Coaster::class, mappedBy: 'restraint')]
     private Collection $coasters;
 
@@ -103,7 +103,7 @@ class Restraint implements \Stringable
         $this->coasters->removeElement($coaster);
     }
 
-    /** @return Collection<Coaster> */
+    /** @return Collection<int, Coaster> */
     public function getCoasters(): Collection
     {
         return $this->coasters;

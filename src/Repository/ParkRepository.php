@@ -77,7 +77,11 @@ class ParkRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** Optimized search method for API with limited results and better performance. */
+    /**
+     * Optimized search method for API with limited results and better performance.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('p')

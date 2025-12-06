@@ -40,7 +40,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function suggestCoasterForTop(string $term, User $user)
+    /** @return array<int, array<string, mixed>> */
+    public function suggestCoasterForTop(string $term, User $user): array
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -82,7 +83,11 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /** Optimized search method for API with limited results and better performance. */
+    /**
+     * Optimized search method for API with limited results and better performance.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('c')
@@ -101,7 +106,7 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /** Find a newly ranked coaster to add in neach month notification */
-    public function getNewlyRankedHighlightedCoaster($maxRank = 300)
+    public function getNewlyRankedHighlightedCoaster(int $maxRank = 300): ?Coaster
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('c')
@@ -115,7 +120,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findAllCoastersInPark(Park $park)
+    /** @return array<int, Coaster> */
+    public function findAllCoastersInPark(Park $park): array
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('c')
@@ -198,7 +204,7 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    private function createBaseQuery()
+    private function createBaseQuery(): QueryBuilder
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.park', 'p')

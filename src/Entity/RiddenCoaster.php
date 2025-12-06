@@ -42,12 +42,14 @@ class RiddenCoaster
     #[ORM\Column(type: Types::STRING, length: 5)]
     private ?string $language = 'en';
 
+    /** @var Collection<int, Tag> */
     #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(name: 'ridden_coaster_pro')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $pros;
 
+    /** @var Collection<int, Tag> */
     #[ORM\ManyToMany(targetEntity: Tag::class)]
     #[ORM\JoinTable(name: 'ridden_coaster_con')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -60,9 +62,11 @@ class RiddenCoaster
     #[ORM\Column(type: Types::INTEGER)]
     private int $upvoteCounter = 0;
 
+    /** @var Collection<int, ReviewUpvote> */
     #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewUpvote::class, orphanRemoval: true)]
     private Collection $upvotes;
 
+    /** @var Collection<int, ReviewReport> */
     #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewReport::class, orphanRemoval: true)]
     private Collection $reports;
 
@@ -127,7 +131,7 @@ class RiddenCoaster
         return $this->value;
     }
 
-    public function setReview($review): self
+    public function setReview(?string $review): self
     {
         $this->review = $review;
 
@@ -139,7 +143,7 @@ class RiddenCoaster
         return $this->review;
     }
 
-    public function setLanguage($language): self
+    public function setLanguage(?string $language): self
     {
         $this->language = $language;
 
@@ -163,7 +167,8 @@ class RiddenCoaster
         $this->pros->removeElement($pro);
     }
 
-    public function getPros()
+    /** @return Collection<int, Tag> */
+    public function getPros(): Collection
     {
         return $this->pros;
     }
@@ -180,7 +185,8 @@ class RiddenCoaster
         $this->cons->removeElement($con);
     }
 
-    public function getCons()
+    /** @return Collection<int, Tag> */
+    public function getCons(): Collection
     {
         return $this->cons;
     }

@@ -57,6 +57,7 @@ class Coaster implements \Stringable
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?string $name = null;
 
+    /** @var array<string>|null */
     #[ORM\Column(name: 'formerNames', type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $formerNames = null;
 
@@ -110,6 +111,7 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private ?Restraint $restraint = null;
 
+    /** @var Collection<int, Launch> */
     #[ORM\ManyToMany(targetEntity: Launch::class, inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
@@ -186,12 +188,15 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $previousRank = null;
 
+    /** @var Collection<int, RiddenCoaster> */
     #[ORM\OneToMany(targetEntity: RiddenCoaster::class, mappedBy: 'coaster')]
     private Collection $ratings;
 
+    /** @var Collection<int, MainTag> */
     #[ORM\OneToMany(targetEntity: MainTag::class, mappedBy: 'coaster')]
     private Collection $mainTags;
 
+    /** @var Collection<int, Image> */
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'coaster')]
     private Collection $images;
 
@@ -247,11 +252,13 @@ class Coaster implements \Stringable
         return $this;
     }
 
+    /** @return array<string> */
     public function getFormerNames(): array
     {
         return $this->formerNames;
     }
 
+    /** @param array<string>|null $formerNames */
     public function setFormerNames(?array $formerNames): static
     {
         $this->formerNames = $formerNames;
@@ -391,6 +398,7 @@ class Coaster implements \Stringable
         $this->launchs->removeElement($launch);
     }
 
+    /** @return Collection<int, Launch> */
     public function getLaunchs(): Collection
     {
         return $this->launchs;
@@ -497,7 +505,7 @@ class Coaster implements \Stringable
         return $this->video;
     }
 
-    public function setVideo($video): static
+    public function setVideo(?string $video): static
     {
         $this->video = $video;
 
@@ -509,7 +517,7 @@ class Coaster implements \Stringable
         return $this->price;
     }
 
-    public function setPrice($price): static
+    public function setPrice(?int $price): static
     {
         $this->price = $price;
 
@@ -605,7 +613,7 @@ class Coaster implements \Stringable
         return $this->rank;
     }
 
-    public function setRank($rank): static
+    public function setRank(?int $rank): static
     {
         $this->rank = $rank;
 
@@ -636,16 +644,19 @@ class Coaster implements \Stringable
         $this->ratings->removeElement($rating);
     }
 
+    /** @return Collection<int, RiddenCoaster> */
     public function getRatings(): Collection
     {
         return $this->ratings;
     }
 
+    /** @return Collection<int, MainTag> */
     public function getMainTags(): Collection
     {
         return $this->mainTags;
     }
 
+    /** @return Collection<int, Image> */
     public function getImages(): Collection
     {
         $criteria = Criteria::create()->where(Criteria::expr()->eq('enabled', true))->orderBy(['likeCounter' => Criteria::DESC, 'updatedAt' => Criteria::DESC]);
@@ -653,6 +664,7 @@ class Coaster implements \Stringable
         return $this->images->matching($criteria);
     }
 
+    /** @param Collection<int, Image> $images */
     public function setImages(Collection $images): static
     {
         $this->images = $images;

@@ -33,6 +33,7 @@ class Launch implements \Stringable
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
 
+    /** @var Collection<int, Coaster> */
     #[ORM\ManyToMany(targetEntity: Coaster::class, mappedBy: 'launchs')]
     private Collection $coasters;
 
@@ -51,7 +52,7 @@ class Launch implements \Stringable
         return $this->id;
     }
 
-    public function setName($name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -63,7 +64,7 @@ class Launch implements \Stringable
         return $this->name;
     }
 
-    public function setSlug($slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
@@ -87,6 +88,7 @@ class Launch implements \Stringable
         $this->coasters->removeElement($coaster);
     }
 
+    /** @return Collection<int, Coaster> */
     public function getCoasters(): Collection
     {
         return $this->coasters;

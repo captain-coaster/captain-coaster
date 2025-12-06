@@ -6,6 +6,7 @@ namespace App\DTO;
 
 class SearchResultDTO
 {
+    /** @param array<string, mixed> $metadata */
     public function __construct(
         public readonly int $id,
         public readonly string $name,
@@ -17,6 +18,7 @@ class SearchResultDTO
     ) {
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

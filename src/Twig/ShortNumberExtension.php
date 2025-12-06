@@ -21,7 +21,7 @@ class ShortNumberExtension extends AbstractExtension
     }
 
     /** Use to convert large positive numbers in to short form like 1K+, 100K+, 199K+, 1M+, 10M+, 1B+ etc */
-    public function formatNumber($n, int $precision = 1): string
+    public function formatNumber(int|float $n, int $precision = 1): string
     {
         if ($n >= 0 && $n < 1000) {
             // 1 - 999

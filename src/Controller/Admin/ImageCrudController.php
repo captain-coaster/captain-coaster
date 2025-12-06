@@ -19,6 +19,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+/**
+ * @extends AbstractCrudController<Image>
+ */
 class ImageCrudController extends AbstractCrudController
 {
     public function __construct(

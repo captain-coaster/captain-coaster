@@ -6,8 +6,13 @@ namespace App\DTO;
 
 class SearchResponseDTO
 {
+    /** @var array<string, mixed> */
     public array $debug = [];
 
+    /**
+     * @param array<string, array<SearchResultDTO>> $results
+     * @param array<string, int>                    $totalResults
+     */
     public function __construct(
         public readonly string $query,
         public readonly array $results,
@@ -16,6 +21,7 @@ class SearchResponseDTO
     ) {
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         $formattedResults = [];

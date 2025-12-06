@@ -17,6 +17,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
+/**
+ * @extends AbstractCrudController<RankingHistory>
+ */
 class RankingHistoryCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

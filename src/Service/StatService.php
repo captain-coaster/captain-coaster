@@ -60,7 +60,7 @@ class StatService
     {
         $stats = [];
 
-        if ('0' === $this->em->getRepository(RiddenCoaster::class)->countForUser($user)) {
+        if (0 === $this->em->getRepository(RiddenCoaster::class)->countForUser($user)) {
             return $stats;
         }
 

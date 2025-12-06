@@ -40,7 +40,7 @@ class Status implements \Stringable
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
     private ?string $type = null;
 
-    /** @var Collection<Coaster> */
+    /** @var Collection<int, Coaster> */
     #[ORM\OneToMany(targetEntity: Coaster::class, mappedBy: 'status')]
     private Collection $coasters;
 
@@ -66,7 +66,7 @@ class Status implements \Stringable
         return $this->id;
     }
 
-    public function setName($name): static
+    public function setName(?string $name): static
     {
         $this->name = $name;
 
@@ -78,7 +78,7 @@ class Status implements \Stringable
         return $this->name;
     }
 
-    public function setSlug($slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
@@ -102,12 +102,13 @@ class Status implements \Stringable
         $this->coasters->removeElement($coaster);
     }
 
+    /** @return Collection<int, Coaster> */
     public function getCoasters(): Collection
     {
         return $this->coasters;
     }
 
-    public function setType($type): static
+    public function setType(?string $type): static
     {
         $this->type = $type;
 

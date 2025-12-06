@@ -29,7 +29,7 @@ class Top
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
-    /** @var Collection<TopCoaster> */
+    /** @var Collection<int, TopCoaster> */
     #[ORM\OneToMany(mappedBy: 'top', targetEntity: TopCoaster::class, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     #[CaptainConstraints\UniqueCoaster]
@@ -106,6 +106,7 @@ class Top
         $this->topCoasters->removeElement($topCoaster);
     }
 
+    /** @return Collection<int, TopCoaster> */
     public function getTopCoasters(): Collection
     {
         return $this->topCoasters;

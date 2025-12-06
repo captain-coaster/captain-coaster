@@ -18,6 +18,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
+/**
+ * @extends AbstractCrudController<Coaster>
+ */
 class CoasterCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

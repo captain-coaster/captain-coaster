@@ -14,6 +14,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
+/**
+ * @extends AbstractCrudController<Status>
+ */
 class StatusCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

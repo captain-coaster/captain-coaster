@@ -30,6 +30,7 @@ class Park implements \Stringable
     #[Groups(['list_coaster', 'read_coaster', 'read_park'])]
     private string $name;
 
+    /** @var array<string>|null */
     #[ORM\Column(name: 'formerNames', type: Types::SIMPLE_ARRAY, nullable: true)]
     private ?array $formerNames = null;
 
@@ -37,7 +38,7 @@ class Park implements \Stringable
     #[Gedmo\Slug(fields: ['name'])]
     private string $slug;
 
-    /** @var Collection<Coaster> */
+    /** @var Collection<int, Coaster> */
     #[ORM\OneToMany(mappedBy: 'park', targetEntity: Coaster::class), ORM\OrderBy(['status' => 'ASC', 'score' => 'DESC'])]
     private Collection $coasters;
 
@@ -86,11 +87,13 @@ class Park implements \Stringable
         return $this;
     }
 
+    /** @return array<string>|null */
     public function getFormerNames(): ?array
     {
         return $this->formerNames;
     }
 
+    /** @param array<string>|null $formerNames */
     public function setFormerNames(?array $formerNames): static
     {
         $this->formerNames = $formerNames;
@@ -182,13 +185,13 @@ class Park implements \Stringable
         return $this;
     }
 
-    /** @return Collection<Coaster> */
+    /** @return Collection<int, Coaster> */
     public function getOpenedCoasters(): Collection
     {
         return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->getStatus()->getId());
     }
 
-    /** @return Collection<Coaster> */
+    /** @return Collection<int, Coaster> */
     public function getCoasters(): Collection
     {
         return $this->coasters;
@@ -199,7 +202,7 @@ class Park implements \Stringable
         return $this->id;
     }
 
-    /** @return Collection<Coaster> */
+    /** @return Collection<int, Coaster> */
     public function getKiddies(): Collection
     {
         return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->isKiddie());

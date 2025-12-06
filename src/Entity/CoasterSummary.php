@@ -41,9 +41,11 @@ class CoasterSummary
     #[ORM\Column(type: Types::TEXT)]
     private ?string $summary = null;
 
+    /** @var array<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $dynamicPros = [];
 
+    /** @var array<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $dynamicCons = [];
 
@@ -58,6 +60,7 @@ class CoasterSummary
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeInterface $updatedAt = null;
 
+    /** @var Collection<int, SummaryFeedback> */
     #[ORM\OneToMany(mappedBy: 'summary', targetEntity: SummaryFeedback::class, cascade: ['remove'])]
     private Collection $feedbacks;
 
@@ -111,11 +114,13 @@ class CoasterSummary
         return $this;
     }
 
+    /** @return array<string> */
     public function getDynamicPros(): array
     {
         return $this->dynamicPros;
     }
 
+    /** @param array<string> $dynamicPros */
     public function setDynamicPros(array $dynamicPros): static
     {
         $this->dynamicPros = array_values(array_filter($dynamicPros, 'is_string'));
@@ -123,11 +128,13 @@ class CoasterSummary
         return $this;
     }
 
+    /** @return array<string> */
     public function getDynamicCons(): array
     {
         return $this->dynamicCons;
     }
 
+    /** @param array<string> $dynamicCons */
     public function setDynamicCons(array $dynamicCons): static
     {
         $this->dynamicCons = array_values(array_filter($dynamicCons, 'is_string'));

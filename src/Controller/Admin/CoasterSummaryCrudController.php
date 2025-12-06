@@ -27,6 +27,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @extends AbstractCrudController<CoasterSummary>
+ */
 class CoasterSummaryCrudController extends AbstractCrudController
 {
     public function __construct(

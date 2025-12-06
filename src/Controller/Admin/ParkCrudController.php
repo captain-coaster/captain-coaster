@@ -19,6 +19,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
+/**
+ * @extends AbstractCrudController<Park>
+ */
 class ParkCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
