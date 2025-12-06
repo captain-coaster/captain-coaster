@@ -14,6 +14,7 @@ use App\Entity\SeatingType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class FilterService
@@ -165,15 +166,15 @@ class FilterService
      * - The current user is the same as the filter user
      * - The filter user's profile is public (enabled).
      *
-     * @param int       $filterUserId The user ID from the filter
-     * @param User|null $currentUser  The currently authenticated user
+     * @param int                $filterUserId The user ID from the filter
+     * @param UserInterface|null $currentUser  The currently authenticated user
      *
      * @throws AccessDeniedHttpException If permission check fails
      */
-    public function checkUserFilterPermission(int $filterUserId, ?User $currentUser): void
+    public function checkUserFilterPermission(int $filterUserId, ?UserInterface $currentUser): void
     {
         // If current user matches filter user, allow
-        if ($currentUser && $currentUser->getId() === $filterUserId) {
+        if ($currentUser instanceof User && $currentUser->getId() === $filterUserId) {
             return;
         }
 
@@ -191,13 +192,13 @@ class FilterService
      *
      * @param array<string, mixed> $filters     Raw filter array from request
      * @param string               $context     Context where filters are applied
-     * @param User|null            $currentUser The currently authenticated user
+     * @param UserInterface|null   $currentUser The currently authenticated user
      *
      * @return array<string, mixed> Sanitized and authorized filter array
      *
      * @throws AccessDeniedHttpException If user filter permission check fails
      */
-    public function validateAndAuthorize(array $filters, string $context, ?User $currentUser): array
+    public function validateAndAuthorize(array $filters, string $context, ?UserInterface $currentUser): array
     {
         // First validate and sanitize
         $sanitized = $this->validateFilters($filters, $context);

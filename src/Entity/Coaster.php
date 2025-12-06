@@ -69,17 +69,17 @@ class Coaster implements \Stringable
     ])]
     private ?string $slug = null;
 
-    #[ORM\ManyToOne(targetEntity: 'MaterialType')]
+    #[ORM\ManyToOne(targetEntity: MaterialType::class)]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?MaterialType $materialType = null;
 
-    #[ORM\ManyToOne(targetEntity: 'SeatingType', fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: SeatingType::class, fetch: 'EAGER')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?SeatingType $seatingType = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Model')]
+    #[ORM\ManyToOne(targetEntity: Model::class)]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Model $model = null;
@@ -100,17 +100,17 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private ?int $inversionsNumber = 0;
 
-    #[ORM\ManyToOne(targetEntity: 'Manufacturer')]
+    #[ORM\ManyToOne(targetEntity: Manufacturer::class)]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Manufacturer $manufacturer = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Restraint', inversedBy: 'coasters')]
+    #[ORM\ManyToOne(targetEntity: Restraint::class, inversedBy: 'coasters')]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?Restraint $restraint = null;
 
-    #[ORM\ManyToMany(targetEntity: 'Launch', inversedBy: 'coasters')]
+    #[ORM\ManyToMany(targetEntity: Launch::class, inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     #[Groups(['read_coaster'])]
@@ -128,12 +128,12 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $indoor = false;
 
-    #[ORM\ManyToOne(targetEntity: 'Park', fetch: 'LAZY', inversedBy: 'coasters')]
+    #[ORM\ManyToOne(targetEntity: Park::class, fetch: 'LAZY', inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?Park $park = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Status', inversedBy: 'coasters')]
+    #[ORM\ManyToOne(targetEntity: Status::class, inversedBy: 'coasters')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['list_coaster', 'read_coaster'])]
     private ?Status $status = null;
@@ -154,7 +154,7 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $price = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Currency')]
+    #[ORM\ManyToOne(targetEntity: Currency::class)]
     #[ORM\JoinColumn]
     private ?Currency $currency = null;
 
@@ -186,16 +186,16 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $previousRank = null;
 
-    #[ORM\OneToMany(targetEntity: 'RiddenCoaster', mappedBy: 'coaster')]
+    #[ORM\OneToMany(targetEntity: RiddenCoaster::class, mappedBy: 'coaster')]
     private Collection $ratings;
 
-    #[ORM\OneToMany(targetEntity: 'MainTag', mappedBy: 'coaster')]
+    #[ORM\OneToMany(targetEntity: MainTag::class, mappedBy: 'coaster')]
     private Collection $mainTags;
 
-    #[ORM\OneToMany(targetEntity: 'Image', mappedBy: 'coaster')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'coaster')]
     private Collection $images;
 
-    #[ORM\OneToOne(targetEntity: 'Image', fetch: 'EAGER')]
+    #[ORM\OneToOne(targetEntity: Image::class, fetch: 'EAGER')]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[Groups(['read_coaster'])]
     private ?Image $mainImage = null;

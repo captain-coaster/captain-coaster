@@ -38,10 +38,10 @@ class Park implements \Stringable
     private string $slug;
 
     /** @var Collection<Coaster> */
-    #[ORM\OneToMany(mappedBy: 'park', targetEntity: 'Coaster'), ORM\OrderBy(['status' => 'ASC', 'score' => 'DESC'])]
+    #[ORM\OneToMany(mappedBy: 'park', targetEntity: Coaster::class), ORM\OrderBy(['status' => 'ASC', 'score' => 'DESC'])]
     private Collection $coasters;
 
-    #[ORM\ManyToOne(targetEntity: 'Country'), ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: Country::class), ORM\JoinColumn(nullable: false)]
     #[Groups(['read_coaster', 'read_park'])]
     private ?Country $country = null;
 

@@ -30,7 +30,7 @@ class Top
     private User $user;
 
     /** @var Collection<TopCoaster> */
-    #[ORM\OneToMany(mappedBy: 'top', targetEntity: 'TopCoaster', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(mappedBy: 'top', targetEntity: TopCoaster::class, cascade: ['persist', 'remove'])]
     #[ORM\OrderBy(['position' => 'ASC'])]
     #[CaptainConstraints\UniqueCoaster]
     private Collection $topCoasters;

@@ -30,7 +30,7 @@ class Country implements \Stringable
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Continent')]
+    #[ORM\ManyToOne(targetEntity: Continent::class)]
     #[ORM\JoinColumn]
     private ?Continent $continent = null;
 

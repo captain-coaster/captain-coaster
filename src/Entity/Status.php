@@ -41,7 +41,7 @@ class Status implements \Stringable
     private ?string $type = null;
 
     /** @var Collection<Coaster> */
-    #[ORM\OneToMany(targetEntity: 'Coaster', mappedBy: 'status')]
+    #[ORM\OneToMany(targetEntity: Coaster::class, mappedBy: 'status')]
     private Collection $coasters;
 
     #[ORM\Column(type: Types::BOOLEAN)]

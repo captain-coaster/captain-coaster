@@ -33,7 +33,7 @@ class Launch implements \Stringable
     #[Gedmo\Slug(fields: ['name'])]
     private ?string $slug = null;
 
-    #[ORM\ManyToMany(targetEntity: 'Coaster', mappedBy: 'launchs')]
+    #[ORM\ManyToMany(targetEntity: Coaster::class, mappedBy: 'launchs')]
     private Collection $coasters;
 
     public function __construct()
