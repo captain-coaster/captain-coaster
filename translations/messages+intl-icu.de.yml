@@ -157,7 +157,7 @@ filters:
     notridden: Noch nicht gefahren
     new: Neu diesem Monat
     score: Punktzahl
-    atleast: "mindestens {count}"
+    atleast: 'mindestens {count}'
     openingDate: Eröffnungsdatum
     name: Name
     clear: Filter löschen

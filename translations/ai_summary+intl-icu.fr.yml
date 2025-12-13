@@ -15,4 +15,4 @@ ai_summary:
         title: 'Avis du Capitaine'
         loading: 'Loading du résumé IA...'
         highlights: 'Points forts'
-        concerns: 'Points d''attention'
+        concerns: "Points d'attention"

@@ -1,62 +1,62 @@
 # Top List translations - German
 
 new:
-    title: "Neue Top erstellen"
+    title: 'Neue Top erstellen'
     form:
-        name: "Name deiner Top:"
-        type: "Ist es ein Top oder ein Flop?"
-        flop: "Flop (niedriger ist besser)"
-        top: "Top (höher ist besser)"
-        submit: "Neue Top erstellen"
+        name: 'Name deiner Top:'
+        type: 'Ist es ein Top oder ein Flop?'
+        flop: 'Flop (niedriger ist besser)'
+        top: 'Top (höher ist besser)'
+        submit: 'Neue Top erstellen'
 
 editDetails:
-    title: "Top aktualisieren"
+    title: 'Top aktualisieren'
     form:
-        submit: "Top aktualisieren"
+        submit: 'Top aktualisieren'
 
 list:
-    title: "Die neuesten Tops"
-    more: "Mehr anzeigen"
-    updated: "zuletzt aktualisiert"
-    by: "von"
-    infotitle: "Alle deine Tops sind auf dieser Seite!"
-    info: "Tops sind der beste Weg, deine Leidenschaft zu teilen: Sag uns, welcher RMC der beste auf dem Planeten ist, die schlechtesten Kiddies in Texas oder warum nicht die besten Wasser-Achterbahnen mit einem LIM! Du entscheidest!"
-    create_first: "Meine erste Top Coasters erstellen"
-    create: "Benutzerdefinierte Top erstellen"
+    title: 'Die neuesten Tops'
+    more: 'Mehr anzeigen'
+    updated: 'zuletzt aktualisiert'
+    by: 'von'
+    infotitle: 'Alle deine Tops sind auf dieser Seite!'
+    info: 'Tops sind der beste Weg, deine Leidenschaft zu teilen: Sag uns, welcher RMC der beste auf dem Planeten ist, die schlechtesten Kiddies in Texas oder warum nicht die besten Wasser-Achterbahnen mit einem LIM! Du entscheidest!'
+    create_first: 'Meine erste Top Coasters erstellen'
+    create: 'Benutzerdefinierte Top erstellen'
 
-title: "Meine Top Coasters"
-update: "Aktualisieren"
-update_details: "Namen ändern"
-delete: "Löschen"
-delete_confirmation: "Löschen?"
-find: "Achterbahn finden..."
+title: 'Meine Top Coasters'
+update: 'Aktualisieren'
+update_details: 'Namen ändern'
+delete: 'Löschen'
+delete_confirmation: 'Löschen?'
+find: 'Achterbahn finden...'
 
 search:
-    placeholder: "Achterbahn zum Hinzufügen suchen..."
-    no_results: "Keine Achterbahnen gefunden"
-    already_in_list: "Bereits in deiner Liste"
+    placeholder: 'Achterbahn zum Hinzufügen suchen...'
+    no_results: 'Keine Achterbahnen gefunden'
+    already_in_list: 'Bereits in deiner Liste'
 
 help:
-    title: "So verwendest du deine Top List"
-    search: "Suche nach Achterbahnen, um sie zu deiner Liste hinzuzufügen"
-    reorder: "Halte die Positionsnummer gedrückt und ziehe, um neu zu ordnen"
-    actions: "Verwende das Menü, um Achterbahnen schnell zu verschieben oder zu entfernen"
-    autosave: "Änderungen werden automatisch gespeichert"
+    title: 'So verwendest du deine Top List'
+    search: 'Suche nach Achterbahnen, um sie zu deiner Liste hinzuzufügen'
+    reorder: 'Halte die Positionsnummer gedrückt und ziehe, um neu zu ordnen'
+    actions: 'Verwende das Menü, um Achterbahnen schnell zu verschieben oder zu entfernen'
+    autosave: 'Änderungen werden automatisch gespeichert'
 
 actions:
-    move_to_top: "Nach oben verschieben"
-    move_to_bottom: "Nach unten verschieben"
-    move_to_position: "Zur Position verschieben..."
-    remove: "Entfernen"
-    position_prompt: "Position eingeben (1-{max}):"
+    move_to_top: 'Nach oben verschieben'
+    move_to_bottom: 'Nach unten verschieben'
+    move_to_position: 'Zur Position verschieben...'
+    remove: 'Entfernen'
+    position_prompt: 'Position eingeben (1-{max}):'
 
 save_status:
-    saving: "Speichern..."
-    saved: "Gespeichert"
-    error: "Fehler beim Speichern. Erneuter Versuch..."
+    saving: 'Speichern...'
+    saved: 'Gespeichert'
+    error: 'Fehler beim Speichern. Erneuter Versuch...'
 
 errors:
-    save_failed: "Fehler beim Speichern der Änderungen. Bitte versuche es erneut."
-    invalid_position: "Ungültige Position. Bitte gib eine Zahl zwischen 1 und {max} ein."
-    add_failed: "Fehler beim Hinzufügen der Achterbahn. Bitte versuche es erneut."
-    duplicate: "Diese Achterbahn ist bereits in deiner Liste."
+    save_failed: 'Fehler beim Speichern der Änderungen. Bitte versuche es erneut.'
+    invalid_position: 'Ungültige Position. Bitte gib eine Zahl zwischen 1 und {max} ein.'
+    add_failed: 'Fehler beim Hinzufügen der Achterbahn. Bitte versuche es erneut.'
+    duplicate: 'Diese Achterbahn ist bereits in deiner Liste.'

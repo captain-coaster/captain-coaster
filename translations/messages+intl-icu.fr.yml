@@ -141,7 +141,7 @@ coaster_ranking:
 
 map_index:
     title: Carte des coasters
-    description: 'Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n''as pas encore ridé sur cette carte interactive.'
+    description: "Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n'as pas encore ridé sur cette carte interactive."
     results: Résultats
 
 filters:
@@ -157,7 +157,7 @@ filters:
     notridden: Pas encore ridé
     new: Nouveau ce mois
     score: Score
-    atleast: "au moins {count}"
+    atleast: 'au moins {count}'
     openingDate: "Date d'ouverture"
     name: Nom
     clear: Effacer les filtres

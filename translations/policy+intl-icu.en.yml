@@ -1,29 +1,32 @@
 title: 'Terms & Conditions'
 privacy:
     title: 'Privacy Policy'
-    text: '<p>This privacy policy will explain how our website uses the personal data we collect from you when you use Captain Coaster.</p>
-           <p>Captain Coaster collects the following data when you register:</p>
-           <ul>
-               <li>First name and last name,</li>
-               <li>Email address,</li>
-               <li>Public profile picture (only when using Google authentication)</li>
-           </ul>
-           <p>We will keep your data as long as you use our service, in a secure storage and respectfully of the French law "Loi Informatique et Libertés du 6 janvier 1978".</p>
-           <p>They are never shared to anyone, and are used only to create an account and for some Captain Coaster features.</p>
-           <p>Every user is entitled to the following:</p>
-           <ul>
-           <li>The right to access - You have the right to request us for copies of your personal data, sent by email,</li>
-           <li>The right to rectification - You have the right to request that a correction of any information you believe is inaccurate or missing,</li>
-           <li>The right to erasure - You have the right to request that we erase your personal data.</li>
-           </ul>
-           <p>If you have any questions about Captain Coaster privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please <a href="{link_href}">contact us</a>.</p>'
+    text:
+        '<p>This privacy policy will explain how our website uses the personal data we collect from you when you use Captain Coaster.</p>
+        <p>Captain Coaster collects the following data when you register:</p>
+        <ul>
+        <li>First name and last name,</li>
+        <li>Email address,</li>
+        <li>Public profile picture (only when using Google authentication)</li>
+        </ul>
+        <p>We will keep your data as long as you use our service, in a secure storage and respectfully of the French law "Loi Informatique et Libertés du 6 janvier 1978".</p>
+        <p>They are never shared to anyone, and are used only to create an account and for some Captain Coaster features.</p>
+        <p>Every user is entitled to the following:</p>
+        <ul>
+        <li>The right to access - You have the right to request us for copies of your personal data, sent by email,</li>
+        <li>The right to rectification - You have the right to request that a correction of any information you believe is inaccurate or missing,</li>
+        <li>The right to erasure - You have the right to request that we erase your personal data.</li>
+        </ul>
+        <p>If you have any questions about Captain Coaster privacy policy, the data we hold on you, or you would like to exercise one of your data protection rights, please <a href="{link_href}">contact us</a>.</p>'
 cookies:
     title: 'Cookie Policy'
-    text: '<p>Cookies are small files stored on a user''s computer to make your life simpler.</p>
-           <p>Captain Coaster uses a session cookie to remember you when you connect. It avoids you to sign in each time you visit us. We also use a Google Analytics cookie for statistics.</p>'
+    text:
+        "<p>Cookies are small files stored on a user's computer to make your life simpler.</p>
+        <p>Captain Coaster uses a session cookie to remember you when you connect. It avoids you to sign in each time you visit us. We also use a Google Analytics cookie for statistics.</p>"
 terms:
     title: 'Using Captain Coaster'
-    text: '<p>Captain Coaster is a community website for theme parks and roller coasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company.</p>
+    text:
+        '<p>Captain Coaster is a community website for theme parks and roller coasters enthusiasts.  It is affiliated to no park, nor manufacturer, nor amusement industry company.</p>
         <p>It is opened to anyone: you just need to connect to share your experience on coasters (ratings, tags, reviews). To access these features, you will need a <b>valid</b> Google account or email address. <b>Having multiple accounts is definitely forbidden</b> and will lead to a permanent ban.</p>
         <p>All participative fields are reviewed by team moderators who reserve the right to edit or delete any post. Users not complying with these rules can be banned temporarily or permanently.</p>'
 hosting:
@@ -31,8 +34,9 @@ hosting:
     text: 'Captain Coaster is hosted by Amazon Web Services, whose headquarters are in Seattle, Washington, United States. Our servers are located in Paris, France.'
 copyright:
     title: 'Copyright'
-    text: '<p>The "Captain Coaster" logo belongs to Benjamin R., Captain Coaster has the exclusive rights to use and modify it. Any reproduction without authorization is forbidden.</p>
-           <p>Every user can upload pictures on Captain Coaster with its credit. If you are the owner of a photo you don’t want to share on Captain Coaster, please <a href="{link_href}">contact us</a> and the picture will be removed as soon as possible.</p>'
+    text:
+        '<p>The "Captain Coaster" logo belongs to Benjamin R., Captain Coaster has the exclusive rights to use and modify it. Any reproduction without authorization is forbidden.</p>
+        <p>Every user can upload pictures on Captain Coaster with its credit. If you are the owner of a photo you don’t want to share on Captain Coaster, please <a href="{link_href}">contact us</a> and the picture will be removed as soon as possible.</p>'
 contact:
     title: 'Contact us'
     text: '<b>Any questions or remarks ? <a href="{link_href}">Contact us</a>, we don''t bite.</b>'

@@ -1,5 +1,4 @@
-top_coaster.duplicate: "{coaster} appears several times. Please remove duplicates."
-
+top_coaster.duplicate: '{coaster} appears several times. Please remove duplicates.'
 
 # Admin validators
 date_minimum:

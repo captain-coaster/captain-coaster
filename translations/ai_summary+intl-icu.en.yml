@@ -12,7 +12,7 @@ ai_summary:
     info:
         based_on: 'AI-generated summary based on {count, plural, =1 {1 review} other {# reviews}}'
     panel:
-        title: 'Captain''s Review'
+        title: "Captain's Review"
         loading: 'Loading AI summary...'
         highlights: 'Highlights'
         concerns: 'Concerns'

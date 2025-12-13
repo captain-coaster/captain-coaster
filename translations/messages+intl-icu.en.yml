@@ -88,7 +88,7 @@ coaster:
         title: 'Onride Video'
     photos:
         title: 'Photos'
-        empty: 'Oops, we don''t have any photos yet for this coaster, but you can send yours!'
+        empty: "Oops, we don't have any photos yet for this coaster, but you can send yours!"
         button: 'Upload a picture'
         all: 'See all pictures'
         loading: 'Loading photos...'
@@ -130,7 +130,7 @@ coaster_ranking:
             long: 'ranked coasters'
         ratings: 'ratings'
         comparisons:
-            short: "pairs'
+            short: 'pairs'
             long: 'analyzed pairs'
         users: 'voters'
 
@@ -271,7 +271,7 @@ review:
     update: 'Edit'
     delete: 'Delete'
     last: 'Latest reviews'
-    loading: "Loading reviews..."
+    loading: 'Loading reviews...'
     all: 'See all'
     ridden_at: 'Ride date'
     upvote: 'Upvote this review'

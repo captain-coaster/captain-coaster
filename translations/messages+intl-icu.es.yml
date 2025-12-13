@@ -157,7 +157,7 @@ filters:
     notridden: No montado todavía
     new: Nuevo este mos
     score: Resultado
-    atleast: "al menos {count}"
+    atleast: 'al menos {count}'
     openingDate: Fecha de apertura
     name: Nombre
     clear: Borrar filtros
