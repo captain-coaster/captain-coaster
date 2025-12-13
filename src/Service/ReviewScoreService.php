@@ -114,9 +114,6 @@ class ReviewScoreService
         // Execute the query
         $stmt = $conn->prepare($sql);
         $stmt->executeStatement();
-
-        // Clear the entity manager to ensure entities are refreshed
-        $this->entityManager->clear();
     }
 
     /**

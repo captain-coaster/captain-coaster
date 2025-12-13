@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Coaster;
 use App\Entity\Continent;
 use App\Entity\Country;
 use App\Entity\Manufacturer;
@@ -12,8 +13,8 @@ use App\Entity\Model;
 use App\Entity\SeatingType;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Query\ResultSetMapping;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class FilterService
@@ -24,29 +25,28 @@ class FilterService
     ) {
     }
 
+    /** Clear the filter data cache. */
+    public function clearFilterCache(): void
+    {
+        $this->cache->delete('filter_dropdown_data');
+    }
+
     /**
      * Get filter dropdown data for UI.
-     * Data is cached for 7 days (604800 seconds).
+     * Returns simple arrays with id/name for efficiency.
+     * Data is cached for 1 days (86400 seconds).
      */
     public function getFilterData(): array
     {
-        return $this->cache->get('filter_dropdown_data', function () {
-            $rsm = new ResultSetMapping();
-            $rsm->addScalarResult('year', 'year');
-            $openingYears = $this->em
-                ->createNativeQuery('SELECT DISTINCT YEAR(c.openingDate) as year from coaster c WHERE YEAR(c.openingDate) IS NOT NULL ORDER by year DESC', $rsm)
-                ->getScalarResult();
-
-            return [
-                'continent' => $this->em->getRepository(Continent::class)->findBy([], ['name' => 'asc']),
-                'country' => $this->em->getRepository(Country::class)->findBy([], ['name' => 'asc']),
-                'materialType' => $this->em->getRepository(MaterialType::class)->findBy([], ['name' => 'asc']),
-                'seatingType' => $this->em->getRepository(SeatingType::class)->findBy([], ['name' => 'asc']),
-                'model' => $this->em->getRepository(Model::class)->findBy([], ['name' => 'asc']),
-                'manufacturer' => $this->em->getRepository(Manufacturer::class)->findBy([], ['name' => 'asc']),
-                'openingDate' => $openingYears,
-            ];
-        }, 604800);
+        return $this->cache->get('filter_dropdown_data', fn () => [
+            'continent' => $this->em->getRepository(Continent::class)->findForFilter(),
+            'country' => $this->em->getRepository(Country::class)->findForFilter(),
+            'materialType' => $this->em->getRepository(MaterialType::class)->findForFilter(),
+            'seatingType' => $this->em->getRepository(SeatingType::class)->findForFilter(),
+            'model' => $this->em->getRepository(Model::class)->findForFilter(),
+            'manufacturer' => $this->em->getRepository(Manufacturer::class)->findForFilter(),
+            'openingDate' => $this->em->getRepository(Coaster::class)->findDistinctOpeningYears(),
+        ], 86400);
     }
 
     /**
@@ -60,7 +60,6 @@ class FilterService
     public function validateFilters(array $filters, string $context = 'search'): array
     {
         $sanitized = [];
-        $currentYear = (int) date('Y');
 
         // Define supported filters
         $supportedFilters = [
@@ -73,6 +72,9 @@ class FilterService
         if ('ranking' === $context) {
             $supportedFilters[] = 'new';
         }
+
+        // Get filter data for validation
+        $filterData = $this->getFilterData();
 
         foreach ($filters as $key => $value) {
             // Silently ignore unsupported filter keys
@@ -87,25 +89,36 @@ class FilterService
 
             // Validate and sanitize based on filter type
             switch ($key) {
-                // Integer ID filters
+                // Integer ID filters - validate against available options
                 case 'continent':
                 case 'country':
                 case 'manufacturer':
                 case 'materialType':
                 case 'seatingType':
                 case 'model':
+                    if (is_numeric($value) && (int) $value > 0) {
+                        $id = (int) $value;
+                        // Check if ID exists in filter data
+                        $validIds = array_column($filterData[$key], 'id');
+                        if (\in_array($id, $validIds, true)) {
+                            $sanitized[$key] = $id;
+                        }
+                    }
+                    break;
+
                 case 'user':
-                    // Validate integer type
+                    // User filter validated separately via checkUserFilterPermission
                     if (is_numeric($value) && (int) $value > 0) {
                         $sanitized[$key] = (int) $value;
                     }
                     break;
 
-                    // Year filter (1900 to current year)
+                    // Year filter - validate against available opening dates
                 case 'openingDate':
                     if (is_numeric($value)) {
                         $year = (int) $value;
-                        if ($year >= 1900 && $year <= $currentYear) {
+                        $validYears = array_column($filterData['openingDate'], 'year');
+                        if (\in_array($year, $validYears, true)) {
                             $sanitized[$key] = $year;
                         }
                     }
@@ -153,15 +166,15 @@ class FilterService
      * - The current user is the same as the filter user
      * - The filter user's profile is public (enabled).
      *
-     * @param int       $filterUserId The user ID from the filter
-     * @param User|null $currentUser  The currently authenticated user
+     * @param int                $filterUserId The user ID from the filter
+     * @param UserInterface|null $currentUser  The currently authenticated user
      *
      * @throws AccessDeniedHttpException If permission check fails
      */
-    public function checkUserFilterPermission(int $filterUserId, ?User $currentUser): void
+    public function checkUserFilterPermission(int $filterUserId, ?UserInterface $currentUser): void
     {
         // If current user matches filter user, allow
-        if ($currentUser && $currentUser->getId() === $filterUserId) {
+        if ($currentUser instanceof User && $currentUser->getId() === $filterUserId) {
             return;
         }
 
@@ -179,13 +192,13 @@ class FilterService
      *
      * @param array<string, mixed> $filters     Raw filter array from request
      * @param string               $context     Context where filters are applied
-     * @param User|null            $currentUser The currently authenticated user
+     * @param UserInterface|null   $currentUser The currently authenticated user
      *
      * @return array<string, mixed> Sanitized and authorized filter array
      *
      * @throws AccessDeniedHttpException If user filter permission check fails
      */
-    public function validateAndAuthorize(array $filters, string $context, ?User $currentUser): array
+    public function validateAndAuthorize(array $filters, string $context, ?UserInterface $currentUser): array
     {
         // First validate and sanitize
         $sanitized = $this->validateFilters($filters, $context);

@@ -1,3 +1,5 @@
+.DS_Store
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -7,10 +9,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-###> phpunit/phpunit ###
-/phpunit.xml
-/.phpunit.cache/
-###< phpunit/phpunit ###
 
 ###> symfony/webpack-encore-bundle ###
 /node_modules/
@@ -19,24 +17,16 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
 
-/.idea/
-.php_cs.cache
-.php-cs-fixer.cache
-
-/limitless
-
-.DS_Store
 ###> friendsofphp/php-cs-fixer ###
 /.php-cs-fixer.php
 /.php-cs-fixer.cache
 ###< friendsofphp/php-cs-fixer ###
 
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###

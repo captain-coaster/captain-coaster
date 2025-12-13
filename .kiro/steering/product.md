@@ -1,30 +1,94 @@
-# Captain Coaster Product Overview
+---
+inclusion: always
+---
+
+# Captain Coaster Product Context
 
 Captain Coaster is a participative guide for roller coaster enthusiasts to discover, rate, and review roller coasters worldwide.
 
-## User Demographics
-- **75% Mobile Users**: Majority of traffic comes from mobile devices (phones and tablets)
-- **25% Desktop Users**: Smaller portion of users access via desktop browsers
-- **Mobile-First Design**: All features must prioritize mobile experience while maintaining desktop functionality
+## Critical Design Constraints
 
-## Core Features
-- **Coaster Rating System**: Users can rate and review roller coasters they've ridden
-- **Top Lists**: Users can create and share personalized top coaster rankings
-- **Discovery**: Browse and search coasters by location, manufacturer, type, and other criteria
-- **Community**: Social features including user profiles, notifications, and image sharing
-- **Maps Integration**: Geographic visualization of coasters and parks
-- **Multi-language Support**: Available in English, French, Spanish, and German
+### Mobile-First Priority
 
-## Key Entities
-- **Coasters**: The main content - roller coasters with detailed specifications
-- **Parks**: Theme parks that house coasters
-- **Users**: Community members who rate and review
-- **Reviews**: User-generated content about coaster experiences
-- **Rankings**: Both global rankings and user-specific top lists
-- **Images**: User-uploaded photos of coasters and parks
+- **75% mobile users** - ALL features must work perfectly on mobile devices
+- **25% desktop users** - Desktop is secondary but must remain functional
+- **Touch-first interactions** - Design for finger navigation, not mouse precision
+- **Responsive breakpoints** - Use Bootstrap's mobile-first approach
 
-## Business Logic
-- Coaster ratings contribute to global rankings
-- Badge system rewards user engagement
-- Review moderation and reporting system
-- Notification system for community interactions
+### Multi-language Requirements
+
+- **4 languages supported**: English (default), French, Spanish, German
+- **ALL user-facing text** must be translatable using Symfony's translation system
+- **Domain-specific translations** - Use appropriate translation domains (messages, database, etc.)
+- **Locale-prefixed routes** - All URLs include locale prefix
+
+## Core Domain Model
+
+### Primary Entities
+
+- **Coaster** - Central entity with specifications, ratings, and reviews
+- **Park** - Contains coasters, has location and operational data
+- **User** - Community members with profiles, ratings, and social features
+- **RiddenCoaster** - User's rating/review of a specific coaster (junction entity)
+- **Ranking** - Global coaster rankings calculated from user ratings
+- **Top** - User-created personal coaster rankings/lists
+
+### Supporting Entities
+
+- **Image** - User-uploaded photos with moderation and likes
+- **Review** - Detailed user experiences with voting and reporting
+- **Notification** - System messages for user interactions
+- **Badge** - Achievement system for user engagement
+
+## Business Rules
+
+### Rating System
+
+- Users rate coasters they've ridden (1-5 scale)
+- Ratings contribute to global ranking calculations
+- Users can update their ratings and reviews
+- Minimum rating threshold required for ranking inclusion
+
+### Content Moderation
+
+- User-generated content (reviews, images) requires moderation
+- Reporting system for inappropriate content
+- Automated and manual review processes
+
+### Social Features
+
+- Users can follow each other and see activity
+- Image likes and review voting system
+- Notification system for interactions
+- Badge rewards for engagement milestones
+
+## Feature-Specific Guidance
+
+### Search & Discovery
+
+- Multi-criteria search (location, manufacturer, type, etc.)
+- Map-based coaster discovery
+- Filter combinations with URL state preservation
+- Performance-optimized for large datasets
+
+### AI Integration
+
+- Coaster summaries generated from user reviews and specifications
+- Feedback system for AI-generated content quality
+- Bedrock service integration for content generation
+
+### User Experience Patterns
+
+- Progressive enhancement - core functionality works without JavaScript
+- Stimulus controllers for interactive features
+- Modal dialogs for forms and detailed views
+- Infinite scroll or pagination for large lists
+- Real-time updates where appropriate (notifications, likes)
+
+## Development Priorities
+
+1. **Mobile experience** - Test all features on mobile devices first
+2. **Performance** - Optimize for mobile networks and devices
+3. **Accessibility** - Ensure keyboard navigation and screen reader support
+4. **Internationalization** - All text must be translatable from day one
+5. **Data integrity** - Validate user input and maintain referential integrity

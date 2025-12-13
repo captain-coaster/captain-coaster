@@ -19,6 +19,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 
+/**
+ * @extends AbstractCrudController<Park>
+ */
 class ParkCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
@@ -58,7 +61,7 @@ class ParkCrudController extends AbstractCrudController
             NumberField::new('latitude')->hideOnIndex(),
             NumberField::new('longitude')->hideOnIndex(),
             AssociationField::new('country'),
-            AssociationField::new('coasters'),
+            AssociationField::new('coasters')->hideOnForm(),
             BooleanField::new('enabled'),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),

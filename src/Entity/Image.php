@@ -65,7 +65,7 @@ class Image
     private \DateTime $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Gedmo\Timestampable(on: 'update')]
+    #[Gedmo\Timestampable(on: 'change', field: ['filename', 'enabled', 'watermarked', 'credit', 'hash'])]
     private \DateTime $updatedAt;
 
     #[ORM\Column(type: Types::STRING, length: 8, nullable: true)]
@@ -74,6 +74,11 @@ class Image
     #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '15M')]
     #[Assert\Image(minPixels: 786432)]
     private ?UploadedFile $file;
+
+    public function __construct()
+    {
+        $this->updatedAt = new \DateTime();
+    }
 
     public function getId(): int
     {

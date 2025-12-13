@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -78,9 +79,17 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $message = strtr($exception->getMessageKey(), $exception->getMessageData());
+        $this->logger->error('Google authentication failed', [
+            'exception' => $exception->getMessage(),
+        ]);
 
-        return new Response($message, Response::HTTP_FORBIDDEN);
+        // Store the authentication exception in session for display on login page
+        $request->getSession()->set('_security.last_error', $exception);
+
+        // Get locale from session (stored when user visited login page)
+        $locale = $request->getSession()->get('locale_at_login', $request->getLocale());
+
+        return new RedirectResponse($this->router->generate('login', ['_locale' => $locale]));
     }
 
     /**
@@ -127,6 +136,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             // Generate display name from first and last name
             $user->updateDisplayName();
 
+            // Persist and flush to get user ID for profile picture upload
             $this->em->persist($user);
             $this->em->flush();
 
@@ -135,14 +145,13 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
                 $filename = $this->profilePictureManager->uploadProfilePictureFromUrl($googleUser->getAvatar(), $user);
                 if ($filename) {
                     $user->setProfilePicture($filename);
-                    $this->em->persist($user);
                     $this->em->flush();
                 }
             }
         } catch (\Exception $e) {
             $this->logger->error('Error while updating user details: '.$e->getMessage());
 
-            throw new AuthenticationException('Authentication error');
+            throw new CustomUserMessageAuthenticationException('login.authentication_failed');
         }
     }
 }

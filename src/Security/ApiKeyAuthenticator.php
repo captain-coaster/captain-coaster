@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,8 +24,10 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
     final public const string HEADER = 'Authorization';
     final public const string DEPRECATED_HEADER = 'X-AUTH-TOKEN';
 
-    public function __construct(private readonly UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly EntityManagerInterface $entityManager
+    ) {
     }
 
     /**
@@ -53,7 +57,19 @@ class ApiKeyAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        // on success, let the request continue
+        $user = $token->getUser();
+
+        if ($user instanceof User) {
+            $lastUsed = $user->getLastApiKeyUsedAt();
+
+            // Only update if never set or if more than 1 day has passed (86400 seconds)
+            if (null === $lastUsed || (time() - $lastUsed->getTimestamp()) >= 86400) {
+                $user->setLastApiKeyUsedAt(new \DateTime());
+                $user->setIpAddress($request->getClientIp());
+                $this->entityManager->flush();
+            }
+        }
+
         return null;
     }
 

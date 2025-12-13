@@ -6,70 +6,70 @@ de: Deutsch
 
 # Common buttons
 Today: "Aujourd'hui"
-Clear: "Effacer"
+Clear: 'Effacer'
 
 app:
     name: Captain Coaster
     title:
-        default: "Bienvenue !"
+        default: 'Bienvenue !'
     header:
-        search: "Wild Buffalo, Parc Astérix..."
+        search: 'Wild Buffalo, Parc Astérix...'
     search:
-        suggestions: "Suggestions de recherche"
-        searching: "Recherche en cours..."
+        suggestions: 'Suggestions de recherche'
+        searching: 'Recherche en cours...'
 
 index:
-    title: "Bienvenue !"
-    description: "Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !"
+    title: 'Bienvenue !'
+    description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
     header:
-        title: "Notes, avis et classement des meilleurs coasters"
+        title: 'Notes, avis et classement des meilleurs coasters'
         info: 'Captain Coaster est le guide ultime pour les passionnés de montagnes russes ! Notez, rédigez des avis, et créez des tops pour les coasters que vous avez faits. <a href="{link_path}">Rejoignez-nous</a> pour façonner le classement des meilleures montagnes russes du monde !'
     stats:
         ratings: notes
         reviews: avis
         users: utilisateurs
         images: photos
-    missingImages: "Nous recherchons des photos pour ces coasters !"
+    missingImages: 'Nous recherchons des photos pour ces coasters !'
 
 coaster:
     score:
-        title: "SCORE"
-        rank: "RANG"
+        title: 'SCORE'
+        rank: 'RANG'
         scoreof: Score de
         ranked: Classé
         intheworld: mondial
-        quality: "Score de Qualité"
-        worldrank: "Classement Mondial"
+        quality: 'Score de Qualité'
+        worldrank: 'Classement Mondial'
         overview: "En un Coup d'Œil"
     quality:
-        excellent: "Excellent"
-        good: "Bon"
-        fair: "Moyen"
-        poor: "Faible"
+        excellent: 'Excellent'
+        good: 'Bon'
+        fair: 'Moyen'
+        poor: 'Faible'
     rating:
-        action: "Note ce coaster !"
-        my_rating: "Ma note"
-        notenough: "Pas assez de note sur ce coaster !"
+        action: 'Note ce coaster !'
+        my_rating: 'Ma note'
+        notenough: 'Pas assez de note sur ce coaster !'
         mustlogin: Il faut être connecté pour noter.
         login: Se connecter
         sendreview: ou clique ici pour donner ton avis
         updatereview: modifier mon avis
         delete: supprimer
-        text: "Score basé sur {count_rating} notes et {count_top} tops"
+        text: 'Score basé sur {count_rating} notes et {count_top} tops'
         details: Détail des notes utilisateurs
-        distribution: "Distribution des notes"
+        distribution: 'Distribution des notes'
         ratings: notes
         date:
             label: "Quand l'as-tu ridé ?"
-            set: "Définir la date"
-            rode_on: "Ridé le"
-            click_to_change: "cliquer pour modifier"
-            select: "Sélectionner la date"
+            set: 'Définir la date'
+            rode_on: 'Ridé le'
+            click_to_change: 'cliquer pour modifier'
+            select: 'Sélectionner la date'
     infos:
-        title: "Caractéristiques de {name}"
+        title: 'Caractéristiques de {name}'
         closeParksTitle: "Les meilleurs parcs d'attractions proches de {parkName}"
         closeParksNone: "Aucun parc d'attractions proche de {parkName} trouvé"
-        closeParksLink: "Visualiser {parkName} sur la carte"
+        closeParksLink: 'Visualiser {parkName} sur la carte'
         status: Statut
         park: Parc
         country: Pays
@@ -88,7 +88,7 @@ coaster:
         kiddie: Kiddie
         indoor: Indoor
         formerNames: Anciens noms
-    parkcoaster: "Coasters de {name}"
+    parkcoaster: 'Coasters de {name}'
     video:
         title: Vidéo Onride
     photos:
@@ -106,29 +106,29 @@ image_upload:
             label: Choisis une photo
             helper: Le fichier doit être au format JPEG et faire moins de 15Mo. Une image trop petite pourra être rejetée.
         credit:
-            label: "Qui a pris cette photo ?"
+            label: 'Qui a pris cette photo ?'
             helper: "Vous ne pouvez envoyer des photos que si vous êtes l'auteur ou si vous avez obtenu l'autorisation de l'auteur original."
         watermark:
             label: 'Watermark "Captain Coaster"'
             helper: "Appliquer un watermark Captain Coaster sur la photo, pour éviter la réutilisation sur d'autres sites."
         upload: Envoyer ma photo
-        uploading: "Envoi en cours..."
+        uploading: 'Envoi en cours...'
         back: Retour au coaster
         success: La photo a été envoyée. Elle sera validée par un administrateur avant affichage.
-        duplicate: "Cette photo a déjà été envoyée. Veuillez choisir une image différente."
+        duplicate: 'Cette photo a déjà été envoyée. Veuillez choisir une image différente.'
 
 park:
-    opened_coasters: "{ count, plural, one { coaster ouvert } other { coasters ouverts }}"
-    kiddies: "{ count, plural, one { kiddie } other { kiddies }}"
+    opened_coasters: '{ count, plural, one { coaster ouvert } other { coasters ouverts }}'
+    kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
 
 coaster_ranking:
     title: Classement Mondial des Roller Coasters
-    description: "Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par 3000 utilisateurs du monde entier."
-    duel_number: "{ count, plural, one { # duel } other { # duels }}"
+    description: 'Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par 3000 utilisateurs du monde entier.'
+    duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: Pas de coaster
     info:
-        title: "Mis à jour : {rankingMonth}"
-        next: "Prochaine mise à jour {date}"
+        title: 'Mis à jour : {rankingMonth}'
+        next: 'Prochaine mise à jour {date}'
         learn_more: En apprendre plus sur le classement
         coasters_ranked:
             short: coasters
@@ -141,7 +141,7 @@ coaster_ranking:
 
 map_index:
     title: Carte des coasters
-    description: "Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n'as pas encore ridé sur cette carte interactive."
+    description: 'Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n''as pas encore ridé sur cette carte interactive.'
     results: Résultats
 
 filters:
@@ -173,7 +173,7 @@ filters:
                 desc: De la meilleure à la moins bonne note
 
 user_profile:
-    title: "Profil de {name}"
+    title: 'Profil • {name}'
     ratings: Voir ses notes
     reviews: Voir ses avis
     main_top: Voir son Top Coasters
@@ -187,7 +187,7 @@ user_list:
         title: "Alors, t'en es où dans tes notes ?"
         text: "Cette page présente tous nos riders. Clique sur l'un d'eux pour avoir plus de détails !"
     member_from: Membre depuis le
-    rating: "{ count, plural, one { # note } other { # notes }}"
+    rating: '{ count, plural, one { # note } other { # notes }}'
 
 profile:
     title: Mon Profil
@@ -201,26 +201,25 @@ profile:
     badge: Badges
     banner:
         title: Bannière personnalisée
-        text: "Voici ta bannière personnalisée, avec tes notes et ton Top 3 ! La mise à jour de la bannière peut prendre quelques heures."
+        text: 'Voici ta bannière personnalisée, avec tes notes et ton Top 3 ! La mise à jour de la bannière peut prendre quelques heures.'
         getbbcode: Copier le BBCode (forums)
         gethtml: Copier en html
     stats:
-        title: "Statistiques"
-        coasters: "coasters"
-        parks: "parcs"
-        countries: "pays"
-        ridden_coasters: "{count, plural, =1 {coaster} other {coasters}}"
-        explored_parks: "{count, plural, =1 {parc} other {parcs}}"
-        visited_countries: "{count, plural, =1 {pays} other {pays}}"
-        top_country: "Pays Principal"
-        world_top_100: "TOP 100 Mondial"
-        operating_top_100: "TOP 100 Mondial en fonctionnement"
-        top_manufacturer: "Constructeur Principal"
-        favorite_manufacturer: "Constructeur Favori"
-        create_top_placeholder: "Créez un top 10 pour voir votre constructeur favori"
-        coaster_count: "{count, plural, =0 {aucun coaster} =1 {1 coaster} other {# coasters}}"
-        park_count: "{count, plural, =0 {aucun parc} =1 {1 parc} other {# parcs}}"
-        country_count: "{count, plural, =0 {aucun pays} =1 {1 pays} other {# pays}}"
+        title: 'Statistiques'
+        coasters: 'coasters'
+        parks: 'parcs'
+        countries: 'pays'
+        ridden_coasters: '{count, plural, =1 {coaster} other {coasters}}'
+        explored_parks: '{count, plural, =1 {parc} other {parcs}}'
+        visited_countries: '{count, plural, =1 {pays} other {pays}}'
+        top_country: 'Pays Principal'
+        world_top_100: 'TOP 100 Mondial'
+        operating_top_100: 'TOP 100 Mondial en fonctionnement : {coasters}/100'
+        top_manufacturer: 'Constructeur Principal'
+        favorite_manufacturer: 'Constructeur Favori'
+        represented_manufacturer: 'Constructeur le plus représenté dans votre top 10'
+        coaster_count: '{count, plural, =0 {Aucun coaster} =1 {1 coaster} other {# coasters}}'
+        park_count: '{count, plural, =0 {Aucun parc} =1 {1 parc} other {# parcs}}'
     ratings:
         title: Mes Notes
     settings:
@@ -245,7 +244,7 @@ profile:
             profilePicture: Photo de profil
             notificationPreference: Préférences de notification
             choices:
-                email: "Web & Email"
+                email: 'Web & Email'
                 notif: Web uniquement
             preferredLocale: Langue préférée
             homePark:
@@ -267,10 +266,10 @@ profile:
 
 review:
     title: Avis
-    share: "Partage ton expérience avec nous !"
-    value: "Il vaut combien, ce crédit ?"
-    pros: "Quels sont les principaux atouts de ce coaster ?"
-    cons: "Et ses principaux défauts ?"
+    share: 'Partage ton expérience avec nous !'
+    value: 'Il vaut combien, ce crédit ?'
+    pros: 'Quels sont les principaux atouts de ce coaster ?'
+    cons: 'Et ses principaux défauts ?'
     comment: "Envie d'être encore plus précis, raconte-nous ça !"
     language: Langue de cet avis
     send: Ajouter mon avis
@@ -296,13 +295,13 @@ review:
     report_error: "Une erreur s'est produite lors de l'envoi de votre signalement."
     remove_upvote: Retirer le vote positif
     form:
-        title: "Avis sur {name}"
+        title: 'Avis sur {name}'
 
 users:
     tops:
-        title: "Tops de {name}"
+        title: 'Tops • {name}'
     ratings:
-        title: "Notes de {name}"
+        title: 'Notes • {name}'
         coaster: Coaster
         manufacturer: Contructeur
         opening_date: Ouverture
@@ -311,17 +310,19 @@ users:
     my_ratings:
         title: Mes notes
     reviews:
-        title: "Avis de {name}"
+        title: 'Avis • {name}'
     images:
-        title: "Photos de {name}"
+        title: 'Photos • {name}'
+    map:
+        title: 'Carte des coasters • {name}'
 
 review_list:
     title: Tous les avis
-    no_review: "Aucun avis !"
+    no_review: 'Aucun avis !'
 
 rating:
     last: Dernières notes
-    action: "a mis la note de {value} à"
+    action: 'a mis la note de {value} à'
 
 navbar:
     profile: Mon Profil
@@ -357,18 +358,17 @@ login:
     terms: 'En continuant, vous acceptez nos <a href="{link_path}">Termes et Conditions</a>'
     email:
         title: Connexion à Captain Coaster
-        h1: "Prêt au dispatch !"
-        paragraph1: "Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes."
+        h1: 'Prêt au dispatch !'
+        paragraph1: 'Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes.'
         button: Connexion
-        paragraph2: "Vous recevez cet email car vous avez demandé à vous connecter à Captain Coaster. Si vous ne savez pas pourquoi vous recevez cet email, vous pouvez nous contacter en répondant à cet email."
-    link_sent: "Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter."
-    rate_limit_exceeded: "Trop de tentatives de connexion. Veuillez réessayer plus tard."
-    account_disabled: 'Votre email {email} n''est pas vérifié. Merci de vous <a href="{link_path}">inscrire</a> ou de cliquer sur le lien reçu après l''inscription pour activer votre compte.'
+        paragraph2: 'Vous recevez cet email car vous avez demandé à vous connecter à Captain Coaster. Si vous ne savez pas pourquoi vous recevez cet email, vous pouvez nous contacter en répondant à cet email.'
+    link_sent: 'Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter.'
+    rate_limit_exceeded: 'Trop de tentatives de connexion. Veuillez réessayer plus tard.'
 
 register:
     title: Créer un compte
     subtitle: Veuillez remplir tous les champs ci-dessous
-    link_sent: "Compte créé ! Veuillez vérifier votre email ({email}) et cliquer sur le lien pour activer votre compte."
+    link_sent: 'Compte créé ! Veuillez vérifier votre email ({email}) et cliquer sur le lien pour activer votre compte.'
     rate_limit_exceeded: "Trop de tentatives d'inscription. Veuillez réessayer plus tard."
     form:
         email: Email
@@ -377,11 +377,11 @@ register:
         submit: Créer un compte
     email:
         title: Confirmez votre email
-        h1: "Bienvenue à bord !"
-        paragraph1: "Pour utiliser Captain Coaster, cliquez sur le bouton de vérification. Ce lien est valable pendant"
+        h1: 'Bienvenue à bord !'
+        paragraph1: 'Pour utiliser Captain Coaster, cliquez sur le bouton de vérification. Ce lien est valable pendant'
         button: Activer
-        paragraph2: "Vous avez reçu cet email parce que vous avez créé un compte sur Captain Coaster. Si vous n’êtes pas sûr de la raison pour laquelle vous recevez ceci, veuillez nous contacter en répondant à cet email."
-    email_verified: "Votre compte ({email}) a été activé. Bienvenue sur Captain Coaster !"
+        paragraph2: 'Vous avez reçu cet email parce que vous avez créé un compte sur Captain Coaster. Si vous n’êtes pas sûr de la raison pour laquelle vous recevez ceci, veuillez nous contacter en répondant à cet email.'
+    email_verified: 'Votre compte ({email}) a été activé. Bienvenue sur Captain Coaster !'
 
 contact:
     title: Nous contacter
@@ -397,7 +397,7 @@ contact:
 
 notif:
     title: Activité
-    empty: "Rien de spécial pour le moment, va plutôt rider !"
+    empty: 'Rien de spécial pour le moment, va plutôt rider !'
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "{name}" !'
     ranking:
@@ -405,19 +405,19 @@ notif:
         messageWithNewCoaster: "Le classement mondial des coasters du monde vient d'être mis à jour. {name} a été ajouté au classement !"
     email:
         title: 🎢 Nouvelle notification sur Captain Coaster
-        gotnotif: "Tu viens de recevoir une notification sur Captain Coaster :"
+        gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'
         view: 'Afficher ceci sur <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="{link_path}">préférences de notification</a>.'
 
 nearby:
     title: Coasters à proximité
-    num_found: "{num} coasters trouvés"
+    num_found: '{num} coasters trouvés'
     geo_on: Localisation activée
     geo_off: Localisation désactivée
-    km_away: "à {distance}"
+    km_away: 'à {distance}'
 
 image:
-    credit: "Crédit: {name}"
+    credit: 'Crédit: {name}'
 
 badge:
     rating1: 1ère note
@@ -430,26 +430,26 @@ badge:
 
 error:
     400:
-        title: "Requête incorrecte"
-        message: "Requête incorrecte"
+        title: 'Requête incorrecte'
+        message: 'Requête incorrecte'
     404:
-        title: "Page introuvable"
+        title: 'Page introuvable'
         message: "Cette page n'existe pas"
     403:
-        title: "Accès interdit"
+        title: 'Accès interdit'
         message: "L'accès à cette page est interdit"
     429:
-        title: "Trop de requêtes"
-        message: "Veuillez patienter quelques minutes"
+        title: 'Trop de requêtes'
+        message: 'Veuillez patienter quelques minutes'
     generic:
         title: "Une erreur s'est produite"
         message: "Une erreur s'est produite. Contactez-nous si le problème persiste"
     maintenance:
-        title: "Arrêt Technique Rapide ! 🔧"
-        message: "Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !"
+        title: 'Arrêt Technique Rapide ! 🔧'
+        message: 'Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !'
 
 banner:
-    coasters: "{count, plural, one {1 coaster} other {# coasters}}"
+    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
 search_index:
     title: Recherche

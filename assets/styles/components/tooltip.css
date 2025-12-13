@@ -1,0 +1,30 @@
+.tooltip {
+    position: relative;
+    font-size: 12px;
+    cursor: help;
+}
+
+.tooltip-content {
+    display: none;
+    width: max-content;
+    max-width: 150px;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    z-index: 1;
+    text-transform: initial;
+    color: #fff;
+    background: rgba(0, 0, 0, 90%);
+}
+
+.tooltip-arrow {
+    position: absolute;
+    top: -2.5px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    transform: translateX(-50%) rotate(45deg);
+    background: rgba(0, 0, 0, 90%);
+}

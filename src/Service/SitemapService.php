@@ -111,7 +111,7 @@ class SitemapService
     private function getUrlAndAlternates(
         $route,
         array $params = [],
-        ?\DateTime $lastmod = null,
+        ?\DateTimeInterface $lastmod = null,
         $changefreq = 'weekly',
         $priority = '0.5'
     ): array {

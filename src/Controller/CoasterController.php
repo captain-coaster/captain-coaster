@@ -161,7 +161,7 @@ class CoasterController extends BaseController
     public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, #[MapQueryParameter] int $page = 1, #[MapQueryParameter] array $filters = []): Response
     {
         $user = $this->getUser();
-        $displayReviewsInAllLanguages = true;
+        $displayReviewsInAllLanguages = false;
         if (null !== $user) {
             $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
         }

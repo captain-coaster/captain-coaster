@@ -1,18 +1,18 @@
 ai_summary:
     feedback:
-        prompt: "Was this helpful?"
-        success: "Thank you for your feedback!"
-        error: "An error occurred while submitting your feedback."
-        error_token: "Invalid security token."
+        prompt: 'How was it?'
+        success: 'Thank you for your feedback!'
+        error: 'An error occurred while submitting your feedback.'
+        error_token: 'Invalid security token.'
         button:
-            helpful: "Mark as helpful"
-            not_helpful: "Mark as not helpful"
-            voted_helpful: "You voted this helpful"
-            voted_not_helpful: "You voted this not helpful"
+            helpful: 'Mark as helpful'
+            not_helpful: 'Mark as not helpful'
+            voted_helpful: 'You voted this helpful'
+            voted_not_helpful: 'You voted this not helpful'
     info:
-        based_on: "AI-generated summary based on {count, plural, =1 {1 review} other {# reviews}}"
+        based_on: 'AI-generated summary based on {count, plural, =1 {1 review} other {# reviews}}'
     panel:
-        title: "Captain's Review"
-        loading: "Loading AI summary..."
-        highlights: "Highlights"
-        concerns: "Concerns"
+        title: 'Captain''s Review'
+        loading: 'Loading AI summary...'
+        highlights: 'Highlights'
+        concerns: 'Concerns'

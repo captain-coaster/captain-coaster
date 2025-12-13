@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\MaterialTypeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -13,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Status.
  */
 #[ORM\Table(name: 'material_type')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: MaterialTypeRepository::class)]
 class MaterialType implements \Stringable
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]

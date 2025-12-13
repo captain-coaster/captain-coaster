@@ -1,88 +1,60 @@
-# Project Structure & Organization
+---
+inclusion: always
+---
+
+# Project Structure & Naming Conventions
 
 ## Directory Layout
 
-### Core Application (`src/`)
-- **Controller/**: HTTP request handlers, organized by feature area
-  - `Admin/`: EasyAdmin controllers for backend management
-  - Feature controllers: `CoasterController`, `ParkController`, `UserController`, etc.
-- **Entity/**: Doctrine ORM entities representing database tables
-- **Repository/**: Custom database query methods for entities
-- **Service/**: Business logic and application services
-- **Security/**: Authentication, authorization, and security voters
-- **Form/**: Symfony form types and data transformers
-- **Command/**: Console commands for batch operations and maintenance
+### Backend Structure
 
-### Frontend Assets (`assets/`)
-- **js/**: JavaScript files and Stimulus controllers
-- **css/**: Stylesheets organized by purpose (core, components, colors)
-- **controllers/**: Stimulus controllers for interactive features
+- **src/Controller/**: HTTP request handlers ONLY
+- **src/Service/**: ALL business logic and calculations
+- **src/Repository/**: Custom database queries using Doctrine DQL/QueryBuilder
+- **src/Entity/**: Doctrine ORM entities with relationships
+- **src/Security/**: Authentication, authorization, voters
+- **src/Form/**: Symfony form types for validation
+- **src/EventListener/**: Doctrine lifecycle and application events
 
-#### Frontend Organization Rules
-- **Separate CSS and JS**: Keep stylesheets and JavaScript in separate files
-- **Stimulus-first**: Use Stimulus controllers instead of jQuery for interactivity
-- **Controller naming**: Stimulus controllers use kebab-case (e.g., `modal-controller.js`)
-- **CSS organization**: Group styles by component or feature, not by page
-- **Asset compilation**: All assets processed through Webpack Encore
+### Frontend Structure
 
-### Templates (`templates/`)
-- Organized by controller/feature area
-- **Includes/**: Reusable template fragments
-- **bundles/**: Override vendor bundle templates
-- Base templates: `base.html.twig`, `navbar.html.twig`, `footer.html.twig`
+- **assets/controllers/**: Stimulus controllers
+- **assets/js/**: Vanilla JavaScript utilities
+- **assets/styles/**: LESS/CSS files organized by component
+- **templates/**: Twig templates organized by feature/controller
 
-### Configuration (`config/`)
-- **packages/**: Service-specific configuration files
-- **routes/**: Routing configuration
-- Environment-specific configs in `packages/dev/`, `packages/prod/`
+### Configuration
+
+- **config/packages/**: Service configuration files
+- **translations/**: Multi-language files (EN, FR, ES, DE)
+- **public/build/**: Compiled assets (managed by Webpack Encore)
 
 ## Naming Conventions
 
 ### PHP Classes
-- **Controllers**: `{Feature}Controller` (e.g., `CoasterController`)
-- **Entities**: Singular nouns (e.g., `Coaster`, `User`, `Park`)
-- **Services**: `{Purpose}Service` (e.g., `RankingService`, `ImageManager`)
-- **Repositories**: `{Entity}Repository` (e.g., `CoasterRepository`)
-- **Voters**: `{Entity}Voter` for authorization (e.g., `CoasterVoter`)
 
-### Database
-- Entity properties use camelCase
-- Database columns use snake_case (handled by Doctrine)
-- Foreign keys follow `{entity}_id` pattern
+- **Controllers**: `{Feature}Controller` (e.g., `CoasterController`)
+- **Services**: `{Purpose}Service` (e.g., `RatingService`)
+- **Repositories**: `{Entity}Repository` (e.g., `CoasterRepository`)
+- **Entities**: Singular nouns (e.g., `Coaster`, `User`)
+- **Voters**: `{Entity}Voter` (e.g., `CoasterVoter`)
+- **Form Types**: `{Purpose}Type` (e.g., `CoasterSearchType`)
+
+### Frontend Assets
+
+- **Stimulus controllers**: kebab-case (e.g., `rating-controller.js`)
+- **CSS/LESS files**: kebab-case with component organization
+- **JavaScript modules**: camelCase functions, kebab-case files
 
 ### Templates
-- Organized by controller namespace
-- Use kebab-case for file names
-- Partial templates prefixed with `_` (e.g., `_review_item.html.twig`)
 
-#### Frontend Integration in Templates
-- **Stimulus data attributes**: Use `data-controller`, `data-action`, `data-target` for Stimulus
-- **Avoid inline JavaScript**: Move all JS logic to Stimulus controllers
-- **CSS classes**: Use semantic class names, leverage Bootstrap utilities
-- **Progressive enhancement**: Ensure functionality works without JavaScript
+- **Directory structure**: Match controller structure (`templates/Coaster/`)
+- **File naming**: snake_case (e.g., `show.html.twig`)
+- **Partial templates**: Prefix with underscore (e.g., `_rating_widget.html.twig`)
 
-## Architecture Patterns
+## Translation Domains
 
-### Domain Organization
-- **Feature-based grouping**: Controllers, templates, and related code grouped by business feature
-- **Service layer**: Business logic extracted to dedicated service classes
-- **Repository pattern**: Custom queries encapsulated in repository classes
-- **Voter pattern**: Authorization logic in dedicated voter classes
-
-### Code Style
-- **Strict typing**: All PHP files use `declare(strict_types=1);`
-- **PSR-12 compliance**: Enforced by PHP CS Fixer with Symfony rules
-- **Dependency injection**: Services autowired through Symfony's container
-- **Event-driven**: Use of Doctrine listeners and Symfony event subscribers
-
-### Multi-language Support
-- Translation files in `translations/` using ICU message format
-- Locale parameter and routing configuration
-- Database content translated through separate translation entities
-
-## File Organization Rules
-- One class per file
-- Namespace matches directory structure
-- Configuration files use YAML format
-- Environment variables defined in `.env` files
-- Migrations stored in `migrations/` with timestamp naming
+- `messages`: General UI text
+- `database`: Entity-related text
+- `validators`: Form validation messages
+- `security`: Authentication/authorization text

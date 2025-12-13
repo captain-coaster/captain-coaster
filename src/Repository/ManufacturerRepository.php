@@ -16,6 +16,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ManufacturerRepository extends ServiceEntityRepository
 {
+    use FilterableRepositoryTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Manufacturer::class);

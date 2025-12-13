@@ -20,9 +20,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/**
+ * @extends AbstractCrudController<ReviewReport>
+ */
 class ReviewReportCrudController extends AbstractCrudController
 {
-    private $adminUrlGenerator;
+    private AdminUrlGenerator $adminUrlGenerator;
 
     public function __construct(AdminUrlGenerator $adminUrlGenerator)
     {

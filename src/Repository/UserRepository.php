@@ -71,21 +71,28 @@ class UserRepository extends ServiceEntityRepository
     }
 
     /** Count all users. */
-    public function countAll()
+    public function countAll(): int
     {
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb_users')
                 ->from(User::class, 'u')
-                ->getQuery()
-                ->getSingleScalarResult();
+                ->getQuery();
+
+            $query->enableResultCache(600);
+
+            return (int) $query->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
     }
 
-    /** Optimized search method for API with limited results and better performance. */
+    /**
+     * Optimized search method for API with limited results and better performance.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('u')

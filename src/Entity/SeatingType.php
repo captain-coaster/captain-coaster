@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\SeatingTypeRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -13,7 +14,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * Status.
  */
 #[ORM\Table(name: 'seating_type')]
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: SeatingTypeRepository::class)]
 class SeatingType implements \Stringable
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]

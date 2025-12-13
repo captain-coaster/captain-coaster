@@ -20,7 +20,7 @@ class RankingHistory
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Ranking')]
+    #[ORM\ManyToOne(targetEntity: Ranking::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ranking $ranking = null;
 

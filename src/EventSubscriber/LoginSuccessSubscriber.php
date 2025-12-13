@@ -7,6 +7,7 @@ namespace App\EventSubscriber;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Http\Authenticator\InteractiveAuthenticatorInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class LoginSuccessSubscriber implements EventSubscriberInterface
@@ -29,10 +30,14 @@ class LoginSuccessSubscriber implements EventSubscriberInterface
     {
         $user = $event->getAuthenticatedToken()->getUser();
 
+        // Only update last_login for interactive logins (not API keys)
+        if (!$event->getAuthenticator() instanceof InteractiveAuthenticatorInterface) {
+            return;
+        }
+
         if ($user instanceof User) {
             $user->setLastLogin(new \DateTime());
             $user->setIpAddress($event->getRequest()->getClientIp());
-            $this->entityManager->persist($user);
             $this->entityManager->flush();
         }
     }

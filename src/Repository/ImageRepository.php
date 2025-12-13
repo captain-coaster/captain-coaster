@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Image;
+use App\Entity\LikedImage;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
@@ -17,18 +18,19 @@ class ImageRepository extends ServiceEntityRepository
         parent::__construct($registry, Image::class);
     }
 
-    public function findLatestImage()
+    public function findLatestLikedImage()
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('i')
-            ->from(Image::class, 'i')
+        $query = $this->createQueryBuilder('i')
+            ->join(LikedImage::class, 'li', 'WITH', 'li.image = i.id')
             ->where('i.enabled = 1')
-            ->andWhere('i.credit is not null')
-            ->orderBy('i.updatedAt', 'DESC')
+            ->andWhere('i.credit IS NOT NULL')
+            ->orderBy('li.id', 'DESC')
             ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleResult();
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getSingleResult();
     }
 
     public function findUserImages(User $user): Query
@@ -60,13 +62,16 @@ class ImageRepository extends ServiceEntityRepository
 
     public function countAll(): int
     {
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(Image::class, 'i')
             ->where('i.enabled = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->getQuery();
+
+        $query->enableResultCache(600);
+
+        return $query->getSingleScalarResult();
     }
 
     public function findImageToBeValidated(): array

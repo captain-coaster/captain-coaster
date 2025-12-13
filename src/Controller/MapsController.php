@@ -94,6 +94,7 @@ class MapsController extends AbstractController
                 'filters' => $validatedFilters,
                 'filtersForm' => $this->filterService->getFilterData(),
                 'parkId' => '',
+                'user' => $user,
             ]
         );
     }

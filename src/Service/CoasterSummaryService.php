@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Repository\RiddenCoasterRepository;
+use App\Repository\VocabularyGuideRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -16,6 +17,10 @@ use Psr\Log\LoggerInterface;
  * This service analyzes coaster reviews using AWS Bedrock AI models to generate
  * summaries with pros/cons lists. It handles review collection, AI analysis,
  * and summary persistence with language support.
+ *
+ * Each language summary is now independent - deleting one language summary
+ * does not affect other languages. Feedback records are still cascade-deleted
+ * when their associated summary is removed.
  */
 class CoasterSummaryService
 {
@@ -28,6 +33,7 @@ class CoasterSummaryService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private RiddenCoasterRepository $riddenCoasterRepository,
+        private VocabularyGuideRepository $vocabularyGuideRepository,
         private BedrockService $bedrockService,
         private LoggerInterface $logger
     ) {
@@ -74,12 +80,17 @@ class CoasterSummaryService
         $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
         $reviewCount = \count($reviewsWithText);
 
-        $this->logger->info('Processing coaster', ['coaster' => $coaster->getName(), 'reviews' => $reviewCount]);
-
-        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey);
+        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey, $language);
 
         if (empty($aiAnalysis['summary'])) {
-            $this->logger->error('AI analysis returned empty summary', ['coaster' => $coaster->getName()]);
+            $this->logger->error('AI analysis returned empty summary', [
+                'coaster' => $coaster->getName(),
+                'coaster_id' => $coaster->getId(),
+                'language' => $language,
+                'model_key' => $modelKey,
+                'review_count' => $reviewCount,
+                'metadata' => $aiAnalysis['metadata'] ?? null,
+            ]);
 
             return [
                 'summary' => null,
@@ -107,27 +118,6 @@ class CoasterSummaryService
         $this->entityManager->flush();
 
         return ['summary' => $summary, 'metadata' => $aiAnalysis['metadata']];
-    }
-
-    /**
-     * Gets summaries with poor feedback ratios for regeneration.
-     *
-     * @param float $maxRatio Maximum feedback ratio threshold (e.g., 0.3 for 30%)
-     * @param int   $minVotes Minimum number of votes required to consider the ratio
-     *
-     * @return CoasterSummary[]
-     */
-    public function getSummariesWithPoorFeedback(float $maxRatio = 0.3, int $minVotes = 10): array
-    {
-        return $this->entityManager->getRepository(CoasterSummary::class)
-            ->createQueryBuilder('cs')
-            ->where('cs.feedbackRatio <= :maxRatio')
-            ->andWhere('(cs.positiveVotes + cs.negativeVotes) >= :minVotes')
-            ->setParameter('maxRatio', $maxRatio)
-            ->setParameter('minVotes', $minVotes)
-            ->orderBy('cs.feedbackRatio', 'ASC')
-            ->getQuery()
-            ->getResult();
     }
 
     /**
@@ -171,24 +161,32 @@ class CoasterSummaryService
         return $summary;
     }
 
-    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null): array
+    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en'): array
     {
-        $reviewTexts = array_map(fn ($review) => $review->getReview(), $reviews);
-
-        if (empty($reviewTexts)) {
+        if (empty($reviews)) {
             return ['summary' => '', 'pros' => [], 'cons' => []];
         }
 
-        $prompt = $this->buildPrompt($reviewTexts, $coasterName);
-        $response = $this->bedrockService->invokeModel($prompt, $modelKey);
+        // Get coaster entity from first review to access coaster context data
+        $coaster = $reviews[0]->getCoaster();
+
+        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language);
+        $response = $this->bedrockService->invokeModel($prompt, $modelKey, 1000, 0.5, true);
 
         if (!$response['success']) {
-            $this->logger->error('Bedrock service error', ['coaster' => $coasterName, 'error' => $response['error']]);
+            $this->logger->error('Bedrock service error', [
+                'coaster' => $coasterName,
+                'coaster_id' => $coaster?->getId(),
+                'language' => $language,
+                'model_key' => $modelKey,
+                'error' => $response['error'],
+                'error_code' => $response['error_code'] ?? null,
+                'review_count' => \count($reviews),
+                'metadata' => $response['metadata'] ?? null,
+            ]);
 
-            return ['summary' => '', 'pros' => [], 'cons' => []];
+            return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata'] ?? null];
         }
-
-        $this->logger->info('Bedrock API call completed', array_merge(['coaster' => $coasterName], $response['metadata']));
 
         return array_merge(
             $this->parseAiResponse($response['content']),
@@ -196,44 +194,166 @@ class CoasterSummaryService
         );
     }
 
-    /** Builds the AI prompt for review analysis with security sanitization */
-    private function buildPrompt(array $reviewTexts, string $coasterName): string
+    /** Calculates rating distribution to help AI understand sentiment */
+    private function calculateRatingDistribution(array $riddenCoasters): array
+    {
+        $total = \count($riddenCoasters);
+        if (0 === $total) {
+            return ['positive' => 0, 'neutral' => 0, 'negative' => 0];
+        }
+
+        $positive = 0;
+        $neutral = 0;
+        $negative = 0;
+
+        foreach ($riddenCoasters as $riddenCoaster) {
+            $rating = $riddenCoaster->getValue();
+            if (null === $rating) {
+                continue;
+            }
+
+            if ($rating >= 4.0) {
+                ++$positive;
+            } elseif ($rating >= 3.0) {
+                ++$neutral;
+            } else {
+                ++$negative;
+            }
+        }
+
+        return [
+            'positive' => round(($positive / $total) * 100, 1),
+            'neutral' => round(($neutral / $total) * 100, 1),
+            'negative' => round(($negative / $total) * 100, 1),
+        ];
+    }
+
+    /** Gets vocabulary guide content for a language, with graceful handling of missing guides */
+    private function getVocabularyGuide(string $language): ?string
+    {
+        $vocabularyGuide = $this->vocabularyGuideRepository->findByLanguage($language);
+
+        if ($vocabularyGuide) {
+            return $vocabularyGuide->getContent();
+        }
+
+        // Log warning for missing vocabulary guides in non-English languages
+        if ('en' !== $language) {
+            $this->logger->warning('No vocabulary guide found for language', [
+                'language' => $language,
+            ]);
+        }
+
+        return null;
+    }
+
+    /** Builds the AI prompt for review analysis with enhanced source data and security sanitization */
+    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
     {
         // Sanitize coaster name to prevent prompt injection
         $sanitizedName = preg_replace('/[^\w\s-]/', '', $coasterName);
-        $combinedReviews = implode("\n\n---\n\n", $reviewTexts);
-        $reviewCount = \count($reviewTexts);
+        $reviewCount = \count($riddenCoasters);
 
-        return "You are a roller coaster expert who gives future riders the best possible advice. Analyze these {$reviewCount} multilingual roller coaster reviews for {$sanitizedName}.
+        // Language-specific instructions
+        $languageNames = [
+            'en' => 'English',
+            'fr' => 'French',
+            'es' => 'Spanish',
+            'de' => 'German',
+        ];
+        $languageName = $languageNames[$language] ?? 'English';
+        $outputLanguageInstruction = 'en' === $language ? '' : " Write the summary and pros/cons in natural, fluent {$languageName} as if written by a native speaker enthusiast.";
 
-Provide:
-1. A concise summary (3-4 sentences) reflecting the actual reviewer consensus
-2. Most frequently mentioned positive aspects (pros) in English (maximum 5 and 2-5 words each)
-3. Most frequently mentioned negative aspects (cons) in English (maximum 5 and 2-5 words each)
+        // Enhanced role definition for Nova 2 Lite
+        $prompt = "You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze rider reviews for {$sanitizedName} and create an objective, balanced summary that helps future riders make informed decisions.\n\n";
 
-CRITICAL INSTRUCTIONS:
-- If most reviews are negative, you may have 0-2 pros and 3-5 cons
-- If most reviews are positive, you may have 3-5 pros and 0-2 cons
-- Only include what reviewers actually mention repeatedly
-- Respect 3 sentences minimum for the summary
-- Never mention legal, safety, maintenance, or security aspects
+        // Enhanced instructions with better structure for Nova 2 Lite
+        $prompt .= "<analysis_task>\n";
+        $prompt .= "Analyze the following {$reviewCount} reviews and their ratings to create:\n\n";
+        $prompt .= "1. SUMMARY: A truthful summary that reflects the actual consensus from reviews\n";
+        $prompt .= "   - FOLLOW THE SENTIMENT GUIDANCE provided in the coaster context\n";
+        $prompt .= "   - Use the rating distribution percentages to determine if opinions are divided\n";
+        $prompt .= "   - MUST contain between 3 and 5 sentences\n\n";
+        $prompt .= "2. PROS: List the most frequently praised aspects (MAX 4 words each)\n";
+        $prompt .= "   - Only include aspects mentioned positively by multiple reviewers\n";
+        $prompt .= "   - For highly rated coasters: 3-5 pros\n";
+        $prompt .= "   - For poorly rated coasters: 1-2 pros (or none if truly bad)\n\n";
+        $prompt .= "3. CONS: List the most frequently criticized aspects (MAX 4 words each)\n";
+        $prompt .= "   - Only include aspects mentioned negatively by multiple reviewers\n";
+        $prompt .= "   - For highly rated coasters: 1-2 cons (or none if universally loved)\n";
+        $prompt .= "   - For poorly rated coasters: 3-5 cons\n\n";
+        $prompt .= "IMPORTANT GUIDELINES:\n";
+        if ($outputLanguageInstruction) {
+            $prompt .= "- {$outputLanguageInstruction}\n";
+        }
+        $prompt .= "- Never mention safety, legal, maintenance, construction or security issues\n";
+        $prompt .= "- Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative\n";
+        $prompt .= "- Empty pros or cons arrays are acceptable if not supported by review content\n";
+        $prompt .= "</analysis_task>\n\n";
 
-Reviews:
-{$combinedReviews}
+        // Include vocabulary guide for all languages (including English for consistency)
+        $vocabularyGuideContent = $this->getVocabularyGuide($language);
+        if ($vocabularyGuideContent) {
+            $prompt .= "<vocabulary_guide>\n{$vocabularyGuideContent}\n</vocabulary_guide>\n\n";
+        }
 
-Format as JSON:
-{
-  \"summary\": \"Your honest summary\",
-  \"pros\": [\"only genuine positives\"],
-  \"cons\": [\"only genuine negatives\"]
-}";
+        // Coaster context section with enhanced formatting and rating distribution
+        if ($coaster && $coaster->getStatus()) {
+            $prompt .= "<coaster_context>\n";
+            $prompt .= "Coaster: {$sanitizedName}\n";
+            $prompt .= "Status: {$coaster->getStatus()->getName()}\n";
+
+            if ($coaster->getAverageRating() && $coaster->getTotalRatings() > 0) {
+                $ratingPercent = round(((float) $coaster->getAverageRating() / 10) * 100, 1);
+                $prompt .= "Community Rating: {$ratingPercent}% based on {$coaster->getTotalRatings()} ratings\n";
+
+                // Add rating distribution analysis
+                $ratingDistribution = $this->calculateRatingDistribution($riddenCoasters);
+                $prompt .= "Rating Distribution:\n";
+                $prompt .= "- Positive (4-5 stars): {$ratingDistribution['positive']}%\n";
+                $prompt .= "- Neutral (3 stars): {$ratingDistribution['neutral']}%\n";
+                $prompt .= "- Negative (1-2 stars): {$ratingDistribution['negative']}%\n";
+            }
+            $prompt .= "Reviews to analyze: {$reviewCount}\n";
+            $prompt .= "</coaster_context>\n\n";
+        }
+
+        // Reviews section - without individual ratings to avoid bias
+        $prompt .= "<review_data>\n";
+        foreach ($riddenCoasters as $index => $riddenCoaster) {
+            $prompt .= "{$riddenCoaster->getReview()}\n\n";
+        }
+        $prompt .= "</review_data>\n\n";
+
+        // Enhanced output format with examples
+        $prompt .= "<output_format>\n";
+        $prompt .= "Respond with valid JSON in this exact format:\n";
+        $prompt .= "{\n";
+        $prompt .= "  \"summary\": \"Your analysis in {$languageName} reflecting the actual review consensus\",\n";
+        $prompt .= "  \"pros\": [\"positive aspect 1\", \"positive aspect 2\"],\n";
+        $prompt .= "  \"cons\": [\"concern 1\"]\n";
+        $prompt .= "}\n";
+        $prompt .= "\n";
+        $prompt .= "Notes:\n";
+        $prompt .= "- Pros and cons arrays can have 0-5 items each based on actual review content\n";
+        $prompt .= "- Empty arrays [] are valid if no consistent themes emerge\n";
+        $prompt .= "- Don't force artificial balance - reflect the true sentiment\n";
+        $prompt .= "Ensure your response is valid JSON that can be parsed directly.\n";
+        $prompt .= '</output_format>';
+
+        return $prompt;
     }
 
     /** Parses AI response with security validation and data sanitization */
     private function parseAiResponse(string $response): array
     {
         try {
-            if (preg_match('/\{.*\}/s', $response, $matches)) {
+            // Remove reasoning tags if present
+            $cleanedResponse = preg_replace('/<reasoning>.*?<\/reasoning>\s*/s', '', $response);
+            $cleanedResponse = trim($cleanedResponse);
+
+            // Extract JSON from response
+            if (preg_match('/\{.*\}/s', $cleanedResponse, $matches)) {
                 $json = json_decode($matches[0], true, 10, \JSON_THROW_ON_ERROR);
                 if ($json && isset($json['summary']) && \is_string($json['summary'])) {
                     return [
@@ -244,7 +364,12 @@ Format as JSON:
                 }
             }
         } catch (\JsonException $e) {
-            $this->logger->warning('Failed to parse AI response JSON', ['error' => $e->getMessage()]);
+            $this->logger->warning('Failed to parse AI response JSON', [
+                'error' => $e->getMessage(),
+                'json_error_code' => $e->getCode(),
+                'response_content' => substr($response, 0, 500), // Log first 500 chars for debugging
+                'response_length' => \strlen($response),
+            ]);
         }
 
         return ['summary' => '', 'pros' => [], 'cons' => []];

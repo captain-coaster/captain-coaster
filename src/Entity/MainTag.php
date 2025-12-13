@@ -19,11 +19,11 @@ class MainTag
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: 'Coaster', inversedBy: 'mainTags')]
+    #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'mainTags')]
     private ?Coaster $coaster = null;
 
     /** @var Tag */
-    #[ORM\ManyToOne(targetEntity: 'Tag')]
+    #[ORM\ManyToOne(targetEntity: Tag::class)]
     private $tag;
 
     #[ORM\Column(name: 'rank', type: Types::INTEGER)]

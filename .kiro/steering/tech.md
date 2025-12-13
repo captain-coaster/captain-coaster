@@ -1,107 +1,34 @@
-# Technology Stack
+---
+inclusion: always
+---
 
-## Core Framework
-- **Symfony 7.x**: Modern PHP framework with MicroKernelTrait
-- **PHP 8.4**: Latest PHP version with strict typing enabled
-- **Doctrine ORM 3.3**: Database abstraction and entity management
-- **Twig**: Template engine for frontend rendering
+# Technology Stack & Environment
 
-## Frontend & Assets
-- **Webpack Encore**: Asset compilation and management
-- **Stimulus**: JavaScript framework for progressive enhancement - **PREFERRED over jQuery**
-- **Bootstrap**: CSS framework for responsive design
-- **Symfony UX Components**: Modern frontend components
+## Core Stack
 
-### Frontend Guidelines
-- **Avoid jQuery**: Use Stimulus controllers for interactive features whenever possible
-- **Separate CSS and JS**: Keep stylesheets and JavaScript in separate files
-- **Progressive Enhancement**: Use Stimulus for modern, maintainable JavaScript
-- **Component-based**: Organize code into reusable Stimulus controllers
-- **Translation Required**: Every piece of text in templates or JS must be translated using Symfony translation mechanisms in all 4 languages (English, French, Spanish, German)
+- **Symfony 7.x** with **PHP 8.4**
+- **Doctrine ORM 3.3** - Use QueryBuilder for complex queries
+- **Twig** templating
+- **MariaDB 10.11** + **Redis** for caching and sessions
+- **Stimulus** controllers (preferred over jQuery)
+- **Webpack Encore** - Assets compiled automatically, DO NOT run `npm run build`
+- **Bootstrap 5** with **LESS** styling
 
-### Frontend Development Workflow
-- **dev-server IS running**: Do not run npm build as npm run dev-server is already running
+## Critical Integrations
 
-## Key Libraries & Services
-- **API Platform 4.0**: REST/GraphQL API framework
-- **EasyAdmin 4**: Admin interface
-- **AWS SDK**: Cloud storage integration (S3, SES)
-- **OAuth2**: Google authentication
-- **reCAPTCHA**: Spam protection
-- **Redis**: Caching and session storage
-- **Flysystem**: File storage abstraction
-
-## Routing Architecture
-- **External API Routes**: All routes starting with `/api` are used to provide an API for external users with API Platform, not for the application itself
-- **Internal Application APIs**: APIs for the application are served with standard Symfony Controllers (not API Platform)
-- **Locale Prefixing**: All application routes are prefixed with the locale (with few exceptions)
-
-## Database & Storage
-- **MariaDB 10.11**: Primary database
-- **Redis**: Cache and message queue
-- **AWS S3**: File storage for images
-
-## Development Tools
-- **PHP CS Fixer**: Code style enforcement (@Symfony rules)
-- **PHPStan**: Static analysis with Doctrine/Symfony extensions
-- **PHPUnit**: Testing framework
-- **Docker**: Containerized development environment
+- **API Platform 4.0** - ONLY for external API routes (`/api/*`)
+- **AWS SDK** - S3 for images, SES for email
+- **Google OAuth2** - Primary authentication
+- **EasyAdmin 4** - Admin interface at `/admin`
 
 ## Development Environment
 
-### Local Development URL
-- **Application URL**: https://localhost:8000 (`symfony server:start` already running)
+- **Server**: https://localhost:8000 (Symfony server running)
+- **Asset compilation**: `npm run dev-server` (already running)
+- **Database**: MariaDB with Doctrine migrations
 
-## Common Commands
+## Code Quality Tools
 
-### Development
-```bash
-# Start development server (local)
-symfony server:start
-
-# Start with Docker
-docker-compose up -d
-
-# Install dependencies
-composer install
-npm install
-```
-
-### Asset Management (Webpack Encore)
-
-**For Development:**
-```bash
-# Development server with hot reload - START THIS FIRST!
-npm run dev-server
-# Production build with bundle analysis
-npm run build:analyze
-# Clean build directory
-npm run clean
-```
-
-**For production:**
-```bash
-# Production build (ONLY for deployment)
-npm run build
-```
-
-### Code Quality
-```bash
-# Run static analysis
-composer phpstan
-
-# Fix code style
-vendor/bin/php-cs-fixer fix
-
-# Run tests
-vendor/bin/phpunit
-```
-
-### Database
-```bash
-# Run migrations
-php bin/console doctrine:migrations:migrate
-
-# Create migration
-php bin/console make:migration
-```
+- **PHPStan** - Static analysis (level 8)
+- **PHP CS Fixer** - PSR-12 compliance
+- **PHPUnit** - Testing framework

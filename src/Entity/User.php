@@ -103,6 +103,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $nameChangedAt = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastApiKeyUsedAt = null;
+
     #[ORM\Column(type: Types::STRING, length: 20, nullable: false, options: ['default' => 'full'])]
     private string $displayNameFormat = 'full';
 
@@ -137,8 +140,8 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $isVerified = false;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 1])]
-    private bool $displayReviewsInAllLanguages = true;
+    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
+    private bool $displayReviewsInAllLanguages = false;
 
     public function __toString(): string
     {
@@ -332,6 +335,18 @@ class User implements UserInterface
     public function setNameChangedAt(?\DateTimeInterface $nameChangedAt): static
     {
         $this->nameChangedAt = $nameChangedAt;
+
+        return $this;
+    }
+
+    public function getLastApiKeyUsedAt(): ?\DateTimeInterface
+    {
+        return $this->lastApiKeyUsedAt;
+    }
+
+    public function setLastApiKeyUsedAt(?\DateTimeInterface $lastApiKeyUsedAt): static
+    {
+        $this->lastApiKeyUsedAt = $lastApiKeyUsedAt;
 
         return $this;
     }

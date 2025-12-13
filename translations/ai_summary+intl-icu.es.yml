@@ -1,18 +1,18 @@
 ai_summary:
     feedback:
-        prompt: "¿Te resultó útil?"
-        success: "¡Gracias por tu opinión!"
-        error: "Ocurrió un error al enviar tu opinión."
-        error_token: "Token de seguridad inválido."
+        prompt: '¿Qué te pareció?'
+        success: '¡Gracias por tu opinión!'
+        error: 'Ocurrió un error al enviar tu opinión.'
+        error_token: 'Token de seguridad inválido.'
         button:
-            helpful: "Marcar como útil"
-            not_helpful: "Marcar como no útil"
-            voted_helpful: "Votaste esto como útil"
-            voted_not_helpful: "Votaste esto como no útil"
+            helpful: 'Marcar como útil'
+            not_helpful: 'Marcar como no útil'
+            voted_helpful: 'Votaste esto como útil'
+            voted_not_helpful: 'Votaste esto como no útil'
     info:
-        based_on: "Resumen generado por IA basado en {count, plural, =1 {1 reseña} other {# reseñas}}"
+        based_on: 'Resumen generado por IA basado en {count, plural, =1 {1 reseña} other {# reseñas}}'
     panel:
-        title: "Reseña del Capitán"
-        loading: " Cargando el resumen de IA..."
-        highlights: "Aspectos destacados"
-        concerns: "Aspectos a considerar"
+        title: 'Reseña del Captain'
+        loading: 'Cargando el resumen de IA...'
+        highlights: 'Aspectos destacados'
+        concerns: 'Aspectos a considerar'

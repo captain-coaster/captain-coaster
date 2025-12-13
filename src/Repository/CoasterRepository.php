@@ -22,7 +22,26 @@ class CoasterRepository extends ServiceEntityRepository
         parent::__construct($registry, Coaster::class);
     }
 
-    public function suggestCoasterForTop(string $term, User $user)
+    /**
+     * Get distinct opening years for filter dropdown.
+     *
+     * @return array<array{year: int}> Array of years
+     */
+    public function findDistinctOpeningYears(): array
+    {
+        $rsm = new Query\ResultSetMapping();
+        $rsm->addScalarResult('year', 'year');
+
+        return $this->getEntityManager()
+            ->createNativeQuery(
+                'SELECT DISTINCT YEAR(c.openingDate) as year FROM coaster c WHERE c.openingDate IS NOT NULL ORDER BY year DESC',
+                $rsm
+            )
+            ->getResult();
+    }
+
+    /** @return array<int, array<string, mixed>> */
+    public function suggestCoasterForTop(string $term, User $user): array
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -64,7 +83,11 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    /** Optimized search method for API with limited results and better performance. */
+    /**
+     * Optimized search method for API with limited results and better performance.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('c')
@@ -83,7 +106,7 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /** Find a newly ranked coaster to add in neach month notification */
-    public function getNewlyRankedHighlightedCoaster($maxRank = 300)
+    public function getNewlyRankedHighlightedCoaster(int $maxRank = 300): ?Coaster
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('c')
@@ -97,7 +120,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findAllCoastersInPark(Park $park)
+    /** @return array<int, Coaster> */
+    public function findAllCoastersInPark(Park $park): array
     {
         return $this->getEntityManager()->createQueryBuilder()
             ->select('c')
@@ -180,7 +204,7 @@ class CoasterRepository extends ServiceEntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    private function createBaseQuery()
+    private function createBaseQuery(): QueryBuilder
     {
         return $this->createQueryBuilder('c')
             ->leftJoin('c.park', 'p')
@@ -352,5 +376,33 @@ class CoasterRepository extends ServiceEntityRepository
             $qb->andWhere('c.previousRank IS NULL')
                ->andWhere('c.rank IS NOT NULL');
         }
+    }
+
+    /**
+     * Find all enabled coasters with minimum number of reviews for AI summary generation.
+     *
+     * @param int      $minReviews Minimum number of reviews required
+     * @param int|null $limit      Optional limit on results
+     *
+     * @return array<Coaster> Array of coaster entities ordered by ID
+     */
+    public function findEligibleForSummary(int $minReviews, ?int $limit = null): array
+    {
+        $qb = $this->createQueryBuilder('c')
+            ->select('c')
+            ->leftJoin('c.ratings', 'rc')
+            ->where('c.enabled = :enabled')
+            ->andWhere('rc.review IS NOT NULL')
+            ->groupBy('c.id')
+            ->having('COUNT(rc.id) >= :minReviews')
+            ->orderBy('c.id', 'ASC')
+            ->setParameter('enabled', true)
+            ->setParameter('minReviews', $minReviews);
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
