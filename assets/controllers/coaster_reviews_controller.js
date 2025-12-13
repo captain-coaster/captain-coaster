@@ -1,4 +1,4 @@
-import {Controller} from '@hotwired/stimulus';
+import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['container'];
@@ -8,7 +8,15 @@ export default class extends Controller {
     };
 
     connect() {
+        this.debounceTimeout = null;
         this.loadReviews(false);
+    }
+
+    disconnect() {
+        // Clean up timeout on disconnect
+        if (this.debounceTimeout) {
+            clearTimeout(this.debounceTimeout);
+        }
     }
 
     loadReviews(shouldScroll = false) {
@@ -22,7 +30,7 @@ export default class extends Controller {
                 this.containerTarget.innerHTML = html;
                 this.attachPaginationHandlers();
                 if (shouldScroll) {
-                    this.containerTarget.scrollIntoView({behavior: 'smooth'});
+                    this.containerTarget.scrollIntoView({ behavior: 'smooth' });
                 }
 
                 this.setupEventListeners();
@@ -46,11 +54,10 @@ export default class extends Controller {
         if (typeof Routing !== 'undefined' && Routing.generate) {
             try {
                 return Routing.generate('coaster_reviews_ajax_load', {
-                        slug: this.slugValue,
-                        _locale: this.localeValue,
-                        data: formData
-                    },
-                );
+                    slug: this.slugValue,
+                    _locale: this.localeValue,
+                    data: formData,
+                });
             } catch (error) {
                 console.warn('Routing failed:', error);
             }
@@ -65,13 +72,28 @@ export default class extends Controller {
         paginationLinks.forEach((link) => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
-                this.element.querySelector("input[name='page']").value = parseInt(link.dataset.page) || 1;
+                this.element.querySelector("input[name='page']").value =
+                    parseInt(link.dataset.page) || 1;
                 this.loadReviews(true);
             });
         });
     }
 
     setupEventListeners() {
-        this.element.querySelector('form').addEventListener('change', () => this.loadReviews(false));
+        this.element
+            .querySelector('form')
+            .addEventListener('change', () => this.debouncedLoadReviews(false));
+    }
+
+    debouncedLoadReviews(shouldScroll = false) {
+        // Clear existing timeout
+        if (this.debounceTimeout) {
+            clearTimeout(this.debounceTimeout);
+        }
+
+        // Set new timeout for 300ms delay
+        this.debounceTimeout = setTimeout(() => {
+            this.loadReviews(shouldScroll);
+        }, 300);
     }
 }
