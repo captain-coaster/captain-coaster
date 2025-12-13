@@ -67,7 +67,7 @@ class RiddenCoaster
     private Collection $upvotes;
 
     /** @var Collection<int, ReviewReport> */
-    #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewReport::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'review', targetEntity: ReviewReport::class)]
     private Collection $reports;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

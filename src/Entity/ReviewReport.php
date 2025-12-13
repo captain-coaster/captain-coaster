@@ -14,18 +14,24 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class ReviewReport
 {
-    public const REASON_OFFENSIVE = 'offensive';
     public const REASON_INAPPROPRIATE = 'inappropriate';
-    public const REASON_INCORRECT = 'incorrect';
     public const REASON_SPAM = 'spam';
-    public const REASON_OTHER = 'other';
 
     public const REASONS = [
-        self::REASON_OFFENSIVE,
         self::REASON_INAPPROPRIATE,
-        self::REASON_INCORRECT,
         self::REASON_SPAM,
-        self::REASON_OTHER,
+    ];
+
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_REVIEW_DELETED = 'review_deleted';
+    public const STATUS_USER_BANNED = 'user_banned';
+    public const STATUS_NO_ACTION = 'no_action';
+
+    public const STATUSES = [
+        self::STATUS_PENDING,
+        self::STATUS_REVIEW_DELETED,
+        self::STATUS_USER_BANNED,
+        self::STATUS_NO_ACTION,
     ];
 
     #[ORM\Column(type: Types::INTEGER)]
@@ -38,14 +44,26 @@ class ReviewReport
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: RiddenCoaster::class, inversedBy: 'reports')]
-    #[ORM\JoinColumn(name: 'review_id', nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'review_id', nullable: true, onDelete: 'SET NULL')]
     private ?RiddenCoaster $review = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $reviewContent = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $coasterName = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    private ?string $reviewerName = null;
 
     #[ORM\Column(type: Types::STRING, length: 20)]
     private string $reason;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $resolved = false;
+
+    #[ORM\Column(type: Types::STRING, length: 20)]
+    private string $status = self::STATUS_PENDING;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
@@ -115,6 +133,28 @@ class ReviewReport
         return $this;
     }
 
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        if (!\in_array($status, self::STATUSES, true)) {
+            throw new \InvalidArgumentException(\sprintf('Invalid status "%s". Valid statuses are: %s', $status, implode(', ', self::STATUSES)));
+        }
+
+        $this->status = $status;
+
+        // Auto-set resolved flag based on status
+        $this->resolved = self::STATUS_PENDING !== $status;
+        if ($this->resolved && null === $this->resolvedAt) {
+            $this->resolvedAt = new \DateTime();
+        }
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -137,5 +177,86 @@ class ReviewReport
         $this->resolvedAt = $resolvedAt;
 
         return $this;
+    }
+
+    public function getReviewContent(): ?string
+    {
+        return $this->reviewContent;
+    }
+
+    public function setReviewContent(?string $reviewContent): self
+    {
+        $this->reviewContent = $reviewContent;
+
+        return $this;
+    }
+
+    public function getCoasterName(): ?string
+    {
+        return $this->coasterName;
+    }
+
+    public function setCoasterName(?string $coasterName): self
+    {
+        $this->coasterName = $coasterName;
+
+        return $this;
+    }
+
+    public function getReviewerName(): ?string
+    {
+        return $this->reviewerName;
+    }
+
+    public function setReviewerName(?string $reviewerName): self
+    {
+        $this->reviewerName = $reviewerName;
+
+        return $this;
+    }
+
+    /** Get the review content, either from the stored snapshot or the live review */
+    public function getDisplayContent(): string
+    {
+        if ($this->reviewContent) {
+            return $this->reviewContent;
+        }
+
+        $reviewContent = $this->review?->getReview();
+        if ($reviewContent) {
+            return $reviewContent;
+        }
+
+        return '[Deleted review]';
+    }
+
+    /** Get the coaster name, either from the stored snapshot or the live review */
+    public function getDisplayCoasterName(): string
+    {
+        if ($this->coasterName) {
+            return $this->coasterName;
+        }
+
+        $coasterName = $this->review?->getCoaster()?->getName();
+        if ($coasterName) {
+            return $coasterName;
+        }
+
+        return '[Deleted]';
+    }
+
+    /** Get the reviewer name, either from the stored snapshot or the live review */
+    public function getDisplayReviewerName(): string
+    {
+        if ($this->reviewerName) {
+            return $this->reviewerName;
+        }
+
+        $userName = $this->review?->getUser()?->getDisplayName();
+        if ($userName) {
+            return $userName;
+        }
+
+        return '[Deleted user]';
     }
 }

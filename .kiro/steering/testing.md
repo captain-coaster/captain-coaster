@@ -5,13 +5,23 @@ fileMatchPattern: ['tests/**/*.php', 'src/**/*.php']
 
 # Testing Guidelines
 
+## CRITICAL: No Database Tests
+
+**IMPORTANT**: Tests must NOT require database connections:
+
+- **Unit tests only**: Test business logic in isolation
+- **Property tests**: Use Eris for invariant testing
+- **Mock all database dependencies**: Use mocks for repositories and EntityManager
+- **No integration tests**: Database integration tests are not supported in this environment
+
 ## MANDATORY: Test Creation Rules
 
 When creating or modifying code, you MUST:
 
 1. **Always create tests** for new services, repositories, and business logic
 2. **Use existing test patterns** - follow the 3-file structure for services
-3. **Run quality checks** after test creation:
+3. **Mock all external dependencies** including database connections
+4. **Run quality checks** after test creation:
     ```bash
     vendor/bin/phpunit
     composer phpstan
@@ -63,9 +73,11 @@ public function testPropertyExample(): void
 
 ## Mock Strategy
 
-- **Mock external dependencies**: Databases, HTTP clients, file systems
+- **ALWAYS mock database dependencies**: EntityManager, repositories, connections
+- **Mock external dependencies**: HTTP clients, file systems, AWS services
 - **Keep mocks simple**: Don't over-specify behavior
 - **Use real objects** for value objects and simple entities
+- **No database connections**: Tests must work without MariaDB/MySQL running
 
 ## Performance Requirements
 

@@ -284,11 +284,8 @@ review:
     report_title: Signaler un avis
     report_reason: Raison du signalement
     reason:
-        offensive: Contenu offensant
         inappropriate: Langage inapproprié
-        incorrect: Information incorrecte
         spam: Spam
-        other: Autre
     cancel: Annuler
     submit_report: Envoyer le signalement
     report_success: "Merci pour votre signalement. Notre équipe va l'examiner prochainement."

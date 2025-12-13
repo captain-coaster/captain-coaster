@@ -5,6 +5,7 @@ import {
     REVIEW_REPORT_ERROR,
     REVIEW_REMOVE_UPVOTE,
     REVIEW_UPVOTE,
+    REVIEW_SUBMIT_REPORT,
 } from '../translator';
 
 /**
@@ -49,13 +50,6 @@ export default class extends Controller {
 
     disconnect() {
         // Clean up event listeners
-        if (this.hasReportModalTarget) {
-            this.element.removeEventListener('modal:shown', this._onModalShown);
-            this.element.removeEventListener(
-                'modal:form-submit',
-                this._onModalFormSubmit
-            );
-        }
         window.removeEventListener('resize', this._boundHandleResize);
     }
 
@@ -172,6 +166,17 @@ export default class extends Controller {
         }
 
         const form = event.currentTarget;
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        // Prevent double submission by disabling the submit button immediately
+        if (submitButton) {
+            if (submitButton.disabled) {
+                return; // Already submitting
+            }
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+        }
+
         const formData = new FormData(form);
 
         fetch(this.reportUrlValue, {
@@ -203,6 +208,11 @@ export default class extends Controller {
                         'success'
                     );
                 } else {
+                    // Re-enable submit button on error
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.textContent = trans(REVIEW_SUBMIT_REPORT);
+                    }
                     this._showNotification(
                         data.message || trans(REVIEW_REPORT_ERROR),
                         'danger'
@@ -211,6 +221,11 @@ export default class extends Controller {
             })
             .catch((error) => {
                 console.error('Error submitting report:', error);
+                // Re-enable submit button on error
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = trans(REVIEW_SUBMIT_REPORT);
+                }
                 this._showNotification(trans(REVIEW_REPORT_ERROR), 'danger');
             });
     }
@@ -372,42 +387,8 @@ export default class extends Controller {
      * @private
      */
     _setupModalEventListeners() {
-        if (!this.hasReportModalTarget) return;
-
-        // Bind event handlers to maintain proper context
-        this._onModalShown = this._onModalShown.bind(this);
-        this._onModalFormSubmit = this._onModalFormSubmit.bind(this);
-
-        // Listen for modal events
-        this.element.addEventListener('modal:shown', this._onModalShown);
-        this.element.addEventListener(
-            'modal:form-submit',
-            this._onModalFormSubmit
-        );
-    }
-
-    /**
-     * Handle modal shown event
-     * @private
-     */
-    _onModalShown(event) {
-        // Focus on the first form element when modal is shown
-        const firstInput = event.detail.modal.querySelector(
-            'select, input, textarea'
-        );
-        if (firstInput) {
-            firstInput.focus();
-        }
-    }
-
-    /**
-     * Handle form submission within modal
-     * @private
-     */
-    _onModalFormSubmit(event) {
-        // Prevent default form submission and handle via AJAX
-        event.preventDefault();
-        this.submitReport(event.detail.originalEvent);
+        // Removed duplicate event listeners that were causing double submissions
+        // The form already has data-action="review-actions#submitReport" which handles submission
     }
 
     /**

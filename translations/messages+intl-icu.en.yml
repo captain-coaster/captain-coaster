@@ -279,11 +279,8 @@ review:
     report_title: 'Report Review'
     report_reason: 'Reason for reporting'
     reason:
-        offensive: 'Offensive content'
         inappropriate: 'Inappropriate language'
-        incorrect: 'Incorrect information'
         spam: 'Spam'
-        other: 'Other'
     cancel: 'Cancel'
     submit_report: 'Submit Report'
     report_success: 'Thank you for your report. Our team will review it shortly.'

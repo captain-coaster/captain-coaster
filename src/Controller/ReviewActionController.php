@@ -111,6 +111,11 @@ class ReviewActionController extends BaseController
         $report->setReview($review);
         $report->setReason($reason);
 
+        // Store snapshot data in case the review gets deleted later
+        $report->setReviewContent($review->getReview());
+        $report->setCoasterName($review->getCoaster()->getName());
+        $report->setReviewerName($review->getUser()->getDisplayName());
+
         $this->entityManager->persist($report);
         $this->entityManager->flush();
 

@@ -285,11 +285,8 @@ review:
     report_title: Rezension melden
     report_reason: Grund für die Meldung
     reason:
-        offensive: Anstößiger Inhalt
         inappropriate: Unangemessene Sprache
-        incorrect: Falsche Informationen
         spam: Spam
-        other: Anderer Grund
     cancel: Abbrechen
     submit_report: Meldung absenden
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
