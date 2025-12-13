@@ -151,6 +151,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
     /**
      * Get only reviews with text content for a specific coaster (all languages).
+     * Returns RiddenCoaster entities with review text and rating values.
      *
      * @return array<int, RiddenCoaster>
      */
@@ -540,12 +541,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
     /**
      * Get reviews with text content for a specific coaster in a specific language.
+     * Returns RiddenCoaster entities with review text and rating values.
      *
      * @param Coaster  $coaster  The coaster to get reviews for
      * @param string   $language The target language code
      * @param int|null $limit    Maximum number of reviews to retrieve
      *
-     * @return array Array of RiddenCoaster entities with review text
+     * @return array Array of RiddenCoaster entities with review text and ratings
      */
     public function getCoasterReviewsWithTextByLanguage(Coaster $coaster, string $language, ?int $limit = null): array
     {

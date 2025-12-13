@@ -3,3 +3,5 @@ parameters:
     paths:
         - src
         - tests
+    ignoreErrors:
+        - '#Function Eris\\Generator\\[a-zA-Z_]+ not found\.#'

@@ -16,7 +16,8 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Unit tests for GenerateCoasterSummariesCommand option validation and behavior.
+ * Unit tests for GenerateCoasterSummariesCommand simplified interface.
+ * Updated for task 7: simplified command interface without translation-related options.
  */
 class GenerateCoasterSummariesCommandTest extends TestCase
 {
@@ -46,35 +47,44 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->commandTester = new CommandTester($command);
     }
 
-    public function testRejectsConflictingNoTranslateAndTranslateOnly(): void
-    {
-        $this->commandTester->execute([
-            '--no-translate' => true,
-            '--translate-only' => true,
-        ]);
-
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Cannot use --no-translate and --translate-only together', $output);
-        $this->assertSame(1, $this->commandTester->getStatusCode());
-    }
-
-    public function testTranslateOnlyLoadsCoastersWithSummaries(): void
+    public function testForceBadReviewsOption(): void
     {
         $coaster = new Coaster();
         $coaster->setName('Test Coaster');
 
         $this->summaryRepository
             ->expects($this->once())
-            ->method('findCoastersWithSummaries')
-            ->with('en', 10)
+            ->method('findCoastersWithBadReviews')
+            ->with(5, null)
             ->willReturn([$coaster]);
 
         $this->commandTester->execute([
-            '--translate-only' => true,
-            '--limit' => 10,
+            '--force-bad-reviews' => 5,
             '--dry-run' => true,
         ]);
 
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Force regeneration mode: summaries with 5+ downvotes', $output);
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testDefaultLanguageIsEnglish(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository
+            ->expects($this->once())
+            ->method('findEligibleForSummary')
+            ->with(20, null)
+            ->willReturn([$coaster]);
+
+        $this->commandTester->execute([
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Target languages: en', $output);
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
@@ -149,7 +159,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Translation enabled for languages: fr, es', $output);
+        $this->assertStringContainsString('Target languages: fr, es', $output);
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
@@ -166,10 +176,6 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->summaryService
             ->expects($this->never())
             ->method('generateSummary');
-
-        $this->summaryService
-            ->expects($this->never())
-            ->method('translateSummary');
 
         $this->commandTester->execute([
             '--dry-run' => true,

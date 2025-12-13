@@ -80,9 +80,8 @@ class CoasterSummaryCrudController extends AbstractCrudController
                 'Spanish' => 'es',
                 'German' => 'de',
             ]))
-            ->add(NumericFilter::new('feedbackRatio')->setLabel('Feedback Ratio'))
-            ->add(NumericFilter::new('positiveVotes')->setLabel('Positive Votes'))
-            ->add(NumericFilter::new('negativeVotes')->setLabel('Negative Votes'))
+            ->add(NumericFilter::new('positiveVotes')->setLabel('👍 Positive Votes'))
+            ->add(NumericFilter::new('negativeVotes')->setLabel('👎 Negative Votes'))
             ->add(DateTimeFilter::new('createdAt'))
             ->add(DateTimeFilter::new('updatedAt'));
     }
@@ -109,39 +108,8 @@ class CoasterSummaryCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
             $fields = array_merge($fields, [
-                NumberField::new('feedbackRatio')
-                    ->setLabel('Ratio')
-                    ->setNumDecimals(2)
-                    ->formatValue(function ($value, CoasterSummary $entity) {
-                        $ratio = $entity->getFeedbackRatio();
-                        $totalVotes = $entity->getTotalVotes();
-
-                        if ($totalVotes < 5) {
-                            return \sprintf('%.1f%%', $ratio * 100);
-                        }
-
-                        $percentage = \sprintf('%.1f%%', $ratio * 100);
-
-                        // Highlight poor ratios with sufficient votes
-                        if ($ratio < 0.3) {
-                            return \sprintf('<span class="badge badge-danger">%s</span>', $percentage);
-                        }
-
-                        if ($ratio < 0.5) {
-                            return \sprintf('<span class="badge badge-warning">%s</span>', $percentage);
-                        }
-
-                        return \sprintf('<span class="badge badge-success">%s</span>', $percentage);
-                    }),
-                IntegerField::new('totalVotes')
-                    ->setLabel('Votes')
-                    ->formatValue(function ($value, CoasterSummary $entity) {
-                        $total = $entity->getTotalVotes();
-                        $positive = $entity->getPositiveVotes();
-                        $negative = $entity->getNegativeVotes();
-
-                        return \sprintf('%d (👍%d 👎%d)', $total, $positive, $negative);
-                    }),
+                IntegerField::new('positiveVotes')->setLabel('👍 Up'),
+                IntegerField::new('negativeVotes')->setLabel('👎 Down'),
             ]);
         } else {
             $fields = array_merge($fields, [

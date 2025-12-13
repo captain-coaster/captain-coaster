@@ -18,10 +18,9 @@ use Psr\Log\LoggerInterface;
  * summaries with pros/cons lists. It handles review collection, AI analysis,
  * and summary persistence with language support.
  *
- * Cascade Deletion Behavior:
- * - When an English summary is deleted, all translations (fr, es, de) are automatically deleted
- * - When any summary is deleted, all associated feedback records are automatically deleted
- * - This is handled by CoasterSummaryListener and entity cascade configuration
+ * Each language summary is now independent - deleting one language summary
+ * does not affect other languages. Feedback records are still cascade-deleted
+ * when their associated summary is removed.
  */
 class CoasterSummaryService
 {
@@ -81,10 +80,17 @@ class CoasterSummaryService
         $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
         $reviewCount = \count($reviewsWithText);
 
-        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey);
+        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey, $language);
 
         if (empty($aiAnalysis['summary'])) {
-            $this->logger->error('AI analysis returned empty summary', ['coaster' => $coaster->getName()]);
+            $this->logger->error('AI analysis returned empty summary', [
+                'coaster' => $coaster->getName(),
+                'coaster_id' => $coaster->getId(),
+                'language' => $language,
+                'model_key' => $modelKey,
+                'review_count' => $reviewCount,
+                'metadata' => $aiAnalysis['metadata'] ?? null,
+            ]);
 
             return [
                 'summary' => null,
@@ -155,19 +161,29 @@ class CoasterSummaryService
         return $summary;
     }
 
-    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null): array
+    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en'): array
     {
-        $reviewTexts = array_map(fn ($review) => $review->getReview(), $reviews);
-
-        if (empty($reviewTexts)) {
+        if (empty($reviews)) {
             return ['summary' => '', 'pros' => [], 'cons' => []];
         }
 
-        $prompt = $this->buildPrompt($reviewTexts, $coasterName);
-        $response = $this->bedrockService->invokeModel($prompt, $modelKey);
+        // Get coaster entity from first review to access coaster context data
+        $coaster = $reviews[0]->getCoaster();
+
+        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language);
+        $response = $this->bedrockService->invokeModel($prompt, $modelKey, 1000, 0.5, true);
 
         if (!$response['success']) {
-            $this->logger->error('Bedrock service error', ['coaster' => $coasterName, 'error' => $response['error']]);
+            $this->logger->error('Bedrock service error', [
+                'coaster' => $coasterName,
+                'coaster_id' => $coaster?->getId(),
+                'language' => $language,
+                'model_key' => $modelKey,
+                'error' => $response['error'],
+                'error_code' => $response['error_code'] ?? null,
+                'review_count' => \count($reviews),
+                'metadata' => $response['metadata'] ?? null,
+            ]);
 
             return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata'] ?? null];
         }
@@ -178,45 +194,154 @@ class CoasterSummaryService
         );
     }
 
-    /** Builds the AI prompt for review analysis with security sanitization */
-    private function buildPrompt(array $reviewTexts, string $coasterName): string
+    /** Calculates rating distribution to help AI understand sentiment */
+    private function calculateRatingDistribution(array $riddenCoasters): array
+    {
+        $total = \count($riddenCoasters);
+        if (0 === $total) {
+            return ['positive' => 0, 'neutral' => 0, 'negative' => 0];
+        }
+
+        $positive = 0;
+        $neutral = 0;
+        $negative = 0;
+
+        foreach ($riddenCoasters as $riddenCoaster) {
+            $rating = $riddenCoaster->getValue();
+            if (null === $rating) {
+                continue;
+            }
+
+            if ($rating >= 4.0) {
+                ++$positive;
+            } elseif ($rating >= 3.0) {
+                ++$neutral;
+            } else {
+                ++$negative;
+            }
+        }
+
+        return [
+            'positive' => round(($positive / $total) * 100, 1),
+            'neutral' => round(($neutral / $total) * 100, 1),
+            'negative' => round(($negative / $total) * 100, 1),
+        ];
+    }
+
+    /** Gets vocabulary guide content for a language, with graceful handling of missing guides */
+    private function getVocabularyGuide(string $language): ?string
+    {
+        $vocabularyGuide = $this->vocabularyGuideRepository->findByLanguage($language);
+
+        if ($vocabularyGuide) {
+            return $vocabularyGuide->getContent();
+        }
+
+        // Log warning for missing vocabulary guides in non-English languages
+        if ('en' !== $language) {
+            $this->logger->warning('No vocabulary guide found for language', [
+                'language' => $language,
+            ]);
+        }
+
+        return null;
+    }
+
+    /** Builds the AI prompt for review analysis with enhanced source data and security sanitization */
+    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
     {
         // Sanitize coaster name to prevent prompt injection
         $sanitizedName = preg_replace('/[^\w\s-]/', '', $coasterName);
-        $combinedReviews = implode("\n\n---\n\n", $reviewTexts);
-        $reviewCount = \count($reviewTexts);
+        $reviewCount = \count($riddenCoasters);
 
-        // Include English vocabulary guide if available
-        $vocabularySection = '';
-        $vocabularyGuide = $this->vocabularyGuideRepository->findByLanguage('en');
-        if ($vocabularyGuide) {
-            $guide = $vocabularyGuide->getContent();
-            $vocabularySection = "\n{$guide}\n\n---\n\n";
+        // Language-specific instructions
+        $languageNames = [
+            'en' => 'English',
+            'fr' => 'French',
+            'es' => 'Spanish',
+            'de' => 'German',
+        ];
+        $languageName = $languageNames[$language] ?? 'English';
+        $outputLanguageInstruction = 'en' === $language ? '' : " Write the summary and pros/cons in natural, fluent {$languageName} as if written by a native speaker enthusiast.";
+
+        // Enhanced role definition for Nova 2 Lite
+        $prompt = "You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze rider reviews for {$sanitizedName} and create an objective, balanced summary that helps future riders make informed decisions.\n\n";
+
+        // Enhanced instructions with better structure for Nova 2 Lite
+        $prompt .= "<analysis_task>\n";
+        $prompt .= "Analyze the following {$reviewCount} reviews and their ratings to create:\n\n";
+        $prompt .= "1. SUMMARY: A truthful summary that reflects the actual consensus from reviews\n";
+        $prompt .= "   - FOLLOW THE SENTIMENT GUIDANCE provided in the coaster context\n";
+        $prompt .= "   - Use the rating distribution percentages to determine if opinions are divided\n";
+        $prompt .= "   - MUST contain between 3 and 5 sentences\n\n";
+        $prompt .= "2. PROS: List the most frequently praised aspects (MAX 4 words each)\n";
+        $prompt .= "   - Only include aspects mentioned positively by multiple reviewers\n";
+        $prompt .= "   - For highly rated coasters: 3-5 pros\n";
+        $prompt .= "   - For poorly rated coasters: 1-2 pros (or none if truly bad)\n\n";
+        $prompt .= "3. CONS: List the most frequently criticized aspects (MAX 4 words each)\n";
+        $prompt .= "   - Only include aspects mentioned negatively by multiple reviewers\n";
+        $prompt .= "   - For highly rated coasters: 1-2 cons (or none if universally loved)\n";
+        $prompt .= "   - For poorly rated coasters: 3-5 cons\n\n";
+        $prompt .= "IMPORTANT GUIDELINES:\n";
+        if ($outputLanguageInstruction) {
+            $prompt .= "- {$outputLanguageInstruction}\n";
+        }
+        $prompt .= "- Never mention safety, legal, maintenance, construction or security issues\n";
+        $prompt .= "- Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative\n";
+        $prompt .= "- Empty pros or cons arrays are acceptable if not supported by review content\n";
+        $prompt .= "</analysis_task>\n\n";
+
+        // Include vocabulary guide for all languages (including English for consistency)
+        $vocabularyGuideContent = $this->getVocabularyGuide($language);
+        if ($vocabularyGuideContent) {
+            $prompt .= "<vocabulary_guide>\n{$vocabularyGuideContent}\n</vocabulary_guide>\n\n";
         }
 
-        return "You are a roller coaster expert who gives future riders the best possible advice. Analyze these {$reviewCount} multilingual roller coaster reviews for {$sanitizedName}.
-{$vocabularySection}
-Provide:
-1. A concise summary (3-4 sentences) reflecting the actual reviewer consensus
-2. Most frequently mentioned positive aspects (pros) in English (maximum 5 and 2-5 words each)
-3. Most frequently mentioned negative aspects (cons) in English (maximum 5 and 2-5 words each)
+        // Coaster context section with enhanced formatting and rating distribution
+        if ($coaster && $coaster->getStatus()) {
+            $prompt .= "<coaster_context>\n";
+            $prompt .= "Coaster: {$sanitizedName}\n";
+            $prompt .= "Status: {$coaster->getStatus()->getName()}\n";
 
-CRITICAL INSTRUCTIONS:
-- If most reviews are negative, you may have 0-2 pros and 3-5 cons
-- If most reviews are positive, you may have 3-5 pros and 0-2 cons
-- Only include what reviewers actually mention repeatedly
-- Respect 3 sentences minimum for the summary
-- Never mention legal, safety, maintenance, or security aspects
+            if ($coaster->getAverageRating() && $coaster->getTotalRatings() > 0) {
+                $ratingPercent = round(((float) $coaster->getAverageRating() / 10) * 100, 1);
+                $prompt .= "Community Rating: {$ratingPercent}% based on {$coaster->getTotalRatings()} ratings\n";
 
-Reviews:
-{$combinedReviews}
+                // Add rating distribution analysis
+                $ratingDistribution = $this->calculateRatingDistribution($riddenCoasters);
+                $prompt .= "Rating Distribution:\n";
+                $prompt .= "- Positive (4-5 stars): {$ratingDistribution['positive']}%\n";
+                $prompt .= "- Neutral (3 stars): {$ratingDistribution['neutral']}%\n";
+                $prompt .= "- Negative (1-2 stars): {$ratingDistribution['negative']}%\n";
+            }
+            $prompt .= "Reviews to analyze: {$reviewCount}\n";
+            $prompt .= "</coaster_context>\n\n";
+        }
 
-Format as JSON:
-{
-  \"summary\": \"Your honest summary\",
-  \"pros\": [\"only genuine positives\"],
-  \"cons\": [\"only genuine negatives\"]
-}";
+        // Reviews section - without individual ratings to avoid bias
+        $prompt .= "<review_data>\n";
+        foreach ($riddenCoasters as $index => $riddenCoaster) {
+            $prompt .= "{$riddenCoaster->getReview()}\n\n";
+        }
+        $prompt .= "</review_data>\n\n";
+
+        // Enhanced output format with examples
+        $prompt .= "<output_format>\n";
+        $prompt .= "Respond with valid JSON in this exact format:\n";
+        $prompt .= "{\n";
+        $prompt .= "  \"summary\": \"Your analysis in {$languageName} reflecting the actual review consensus\",\n";
+        $prompt .= "  \"pros\": [\"positive aspect 1\", \"positive aspect 2\"],\n";
+        $prompt .= "  \"cons\": [\"concern 1\"]\n";
+        $prompt .= "}\n";
+        $prompt .= "\n";
+        $prompt .= "Notes:\n";
+        $prompt .= "- Pros and cons arrays can have 0-5 items each based on actual review content\n";
+        $prompt .= "- Empty arrays [] are valid if no consistent themes emerge\n";
+        $prompt .= "- Don't force artificial balance - reflect the true sentiment\n";
+        $prompt .= "Ensure your response is valid JSON that can be parsed directly.\n";
+        $prompt .= '</output_format>';
+
+        return $prompt;
     }
 
     /** Parses AI response with security validation and data sanitization */
@@ -239,221 +364,14 @@ Format as JSON:
                 }
             }
         } catch (\JsonException $e) {
-            $this->logger->warning('Failed to parse AI response JSON', ['error' => $e->getMessage()]);
+            $this->logger->warning('Failed to parse AI response JSON', [
+                'error' => $e->getMessage(),
+                'json_error_code' => $e->getCode(),
+                'response_content' => substr($response, 0, 500), // Log first 500 chars for debugging
+                'response_length' => \strlen($response),
+            ]);
         }
 
         return ['summary' => '', 'pros' => [], 'cons' => []];
-    }
-
-    /**
-     * Translates an English summary to a target language using terminology guide.
-     *
-     * @param CoasterSummary $sourceSummary  The English summary to translate
-     * @param string         $targetLanguage Target language code (fr, es, de)
-     * @param string|null    $modelKey       Optional Bedrock model key
-     *
-     * @return array Result with 'summary' (CoasterSummary|null), 'metadata', and optional 'reason'
-     */
-    public function translateSummary(
-        CoasterSummary $sourceSummary,
-        string $targetLanguage,
-        ?string $modelKey = null
-    ): array {
-        // Validate source summary is in English
-        if ('en' !== $sourceSummary->getLanguage()) {
-            $this->logger->error('Cannot translate non-English summary', [
-                'source_language' => $sourceSummary->getLanguage(),
-                'target_language' => $targetLanguage,
-            ]);
-
-            return [
-                'summary' => null,
-                'metadata' => null,
-                'reason' => 'source_not_english',
-            ];
-        }
-
-        // Get vocabulary guide for target language (auto-generated content only)
-        $vocabularyGuideEntity = $this->vocabularyGuideRepository->findByLanguage($targetLanguage);
-        if (!$vocabularyGuideEntity) {
-            $this->logger->warning('No vocabulary guide for target language', [
-                'target_language' => $targetLanguage,
-            ]);
-
-            return [
-                'summary' => null,
-                'metadata' => null,
-                'reason' => 'missing_vocabulary_guide',
-            ];
-        }
-
-        $vocabularyGuide = $vocabularyGuideEntity->getContent();
-
-        // Get example reviews in target language for this coaster
-        $coaster = $sourceSummary->getCoaster();
-        $riddenCoasters = $this->riddenCoasterRepository->getCoasterReviewsWithTextByLanguage($coaster, $targetLanguage, 10);
-        $exampleReviews = array_map(fn ($rc) => $rc->getReview(), $riddenCoasters);
-
-        // Build translation prompt with vocabulary guide and examples
-        $prompt = $this->buildTranslationPrompt(
-            $sourceSummary->getSummary(),
-            $sourceSummary->getDynamicPros(),
-            $sourceSummary->getDynamicCons(),
-            $targetLanguage,
-            $vocabularyGuide,
-            $exampleReviews,
-            $coaster->getName()
-        );
-
-        // Invoke AI model for translation (use Claude for better language understanding)
-        $response = $this->bedrockService->invokeModel($prompt, 'claude-haiku-4.5', 2000, 0.5);
-
-        if (!$response['success']) {
-            $this->logger->error('Translation failed', [
-                'coaster' => $sourceSummary->getCoaster()->getName(),
-                'target_language' => $targetLanguage,
-                'error' => $response['error'] ?? 'Unknown error',
-            ]);
-
-            return [
-                'summary' => null,
-                'metadata' => $response['metadata'] ?? null,
-                'reason' => 'ai_error',
-            ];
-        }
-
-        // Parse translation response
-        $translation = $this->parseAiResponse($response['content']);
-
-        if (empty($translation['summary'])) {
-            $this->logger->error('AI translation returned empty summary', [
-                'coaster' => $sourceSummary->getCoaster()->getName(),
-                'target_language' => $targetLanguage,
-                'raw_response' => substr($response['content'], 0, 500), // Log first 500 chars
-            ]);
-
-            return [
-                'summary' => null,
-                'metadata' => $response['metadata'] ?? null,
-                'reason' => 'empty_translation',
-            ];
-        }
-
-        // Create or update translation summary
-        $translatedSummary = $this->findOrCreateSummary($sourceSummary->getCoaster(), $targetLanguage);
-        $translatedSummary->setSummary($translation['summary']);
-        $translatedSummary->setDynamicPros($translation['pros']);
-        $translatedSummary->setDynamicCons($translation['cons']);
-        $translatedSummary->setReviewsAnalyzed($sourceSummary->getReviewsAnalyzed());
-        $translatedSummary->setLanguage($targetLanguage);
-
-        // Reset votes when translation is regenerated
-        $translatedSummary->setPositiveVotes(0);
-        $translatedSummary->setNegativeVotes(0);
-        $translatedSummary->setFeedbackRatio(0.0);
-
-        // Clear existing feedback records
-        $this->clearSummaryFeedback($translatedSummary);
-
-        $this->entityManager->persist($translatedSummary);
-        $this->entityManager->flush();
-
-        return [
-            'summary' => $translatedSummary,
-            'metadata' => $response['metadata'],
-        ];
-    }
-
-    /**
-     * Determines if a translation should be updated.
-     * Uses same logic as shouldUpdateSummary but for translations.
-     *
-     * @param Coaster $coaster  The coaster to check
-     * @param string  $language The target language
-     *
-     * @return bool True if translation needs update
-     */
-    public function shouldUpdateTranslation(Coaster $coaster, string $language): bool
-    {
-        // For translations, we use the same logic as shouldUpdateSummary
-        return $this->shouldUpdateSummary($coaster, $language);
-    }
-
-    /** Builds the AI prompt for translating a summary to target language. */
-    private function buildTranslationPrompt(
-        string $summaryText,
-        array $pros,
-        array $cons,
-        string $targetLanguage,
-        string $vocabularyGuide,
-        array $exampleReviews,
-        string $coasterName
-    ): string {
-        $languageNames = [
-            'fr' => 'French',
-            'es' => 'Spanish',
-            'de' => 'German',
-        ];
-
-        $languageName = $languageNames[$targetLanguage] ?? $targetLanguage;
-
-        // Format pros and cons as lists
-        $prosText = implode("\n", array_map(fn ($pro) => "- {$pro}", $pros));
-        $consText = implode("\n", array_map(fn ($con) => "- {$con}", $cons));
-
-        // Format example reviews
-        $examplesText = '';
-        if (!empty($exampleReviews)) {
-            $examplesText = implode("\n\n", array_map(
-                fn ($review, $index) => \sprintf('Example %d: %s', $index + 1, $review),
-                $exampleReviews,
-                array_keys($exampleReviews)
-            ));
-        } else {
-            $examplesText = "(No example reviews available for this coaster in {$languageName})";
-        }
-
-        return "You are a professional translator specializing in roller coaster content for enthusiast communities.
-
-Your task is to translate an English roller coaster summary into natural, fluid {$languageName} that sounds like it was originally written by a native speaker enthusiast.
-
-These are authentic reviews of {$coasterName} written by native {$languageName} speakers. Study their vocabulary, expressions, and writing style:
-
-<example_reviews>
-{$examplesText}
-</example_reviews>
-
-<summary>
-{$summaryText}
-</summary>
-
-<pros>
-{$prosText}
-</pros>
-
-<cons>
-{$consText}
-</cons>
-
-<vocabulary_guide>
-{$vocabularyGuide}
-</vocabulary_guide>
-
-<translation_rules>
-1. DO NOT translate word-for-word from English - adapt to natural {$languageName}
-2. DO NOT EXAGGERATE - keep the same intensity level as the English source
-3. USE the vocabulary guide strictly for technical terms, grammar rules, and domain-specific expressions
-4. Keep the TONE PROFESSIONAL, true to the English source, AVOID slang
-5. Translate STRICTLY pros and cons (maximum 3 words each) while maintaining natural phrasing
-</translation_rules>
-
-<output_format>
-Return valid JSON only:
-{
-  \"summary\": \"translated summary in natural {$languageName}\",
-  \"pros\": [\"translated pro 1\", \"translated pro 2\", ...],
-  \"cons\": [\"translated con 1\", \"translated con 2\", ...]
-}
-</output_format>";
     }
 }

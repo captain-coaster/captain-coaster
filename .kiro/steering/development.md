@@ -1,36 +1,73 @@
-# Development Guidelines
+---
+inclusion: always
+---
+
+# Development Standards & Architecture
 
 ## Core Principles
 
-### Keep It Simple
-- **KISS Principle**: Keep It Simple, Stupid - always choose the simplest solution that works
-- **Avoid Over-Engineering**: Don't build complex solutions for simple problems
-- **Minimal Code**: Write only the code that's absolutely necessary
-- **Clear Intent**: Code should be obvious and easy to understand
+- **KISS**: Keep It Simple - choose the simplest solution that works
+- **Readability First**: Code is read more than written
+- **Minimal Code**: Write only what's absolutely necessary
+- **Mobile-First**: 75% of users are mobile - prioritize mobile experience
 
-### Problem-Solving Approach
-- **Start Simple**: Begin with the most straightforward solution
-- **Iterate Only When Needed**: Add complexity only when the simple solution proves insufficient
-- **One Problem at a Time**: Focus on solving the immediate issue, not potential future problems
-- **Prefer Readable Over Clever**: Choose clear, obvious code over clever optimizations
+## Critical Requirements
 
-### Code Quality
-- **Readability First**: Code is read more often than it's written
-- **Consistent Style**: Follow existing patterns in the codebase
-- **Meaningful Names**: Use descriptive variable and function names
-- **Small Functions**: Keep functions focused on a single responsibility
+- **Strict typing**: ALL PHP files must start with `declare(strict_types=1);`
+- **PSR-12 compliance**: Enforced by PHP CS Fixer
+- **Type hints**: Use return types and parameter types everywhere
+- **Translations**: All user-facing text must be translatable (EN, FR, ES, DE)
+- **Locale-prefixed routing**: All routes include locale (`/{_locale}/...`)
 
-### When to Add Complexity
-Only add complexity when:
-- The simple solution doesn't work
-- Performance requirements demand it
-- Security considerations require it
-- The business logic is inherently complex
+## Architecture Separation
 
-### Red Flags
-Avoid these patterns:
-- Building frameworks within the application
-- Premature optimization
-- Abstract solutions for concrete problems
-- Complex inheritance hierarchies
-- Over-abstraction of simple operations
+Maintain strict separation of concerns:
+
+### Controllers (`src/Controller/`)
+
+- Handle HTTP requests/responses ONLY
+- Validate input using Symfony forms
+- Call services for business logic
+- **NEVER** contain business logic or database queries
+
+### Services (`src/Service/`)
+
+- Contain ALL business logic and application rules
+- Orchestrate operations across entities
+- Use repositories for data access
+- Handle external API calls
+
+### Repositories (`src/Repository/`)
+
+- Handle database queries using Doctrine DQL/QueryBuilder
+- Provide data retrieval methods for services
+- **NEVER** contain business logic
+
+## Code Patterns
+
+### Service Injection
+
+```php
+public function __construct(
+    private readonly SomeService $someService,
+    private readonly EntityManagerInterface $entityManager,
+) {}
+```
+
+### Controller Structure
+
+```php
+#[Route('/{_locale}/path', name: 'route_name')]
+public function action(Request $request, SomeService $service): Response
+{
+    // Validate input
+    // Call service
+    // Return response
+}
+```
+
+## Frontend Standards
+
+- **Stimulus-first**: Use Stimulus controllers over jQuery
+- **Progressive enhancement**: Ensure functionality works without JavaScript
+- **Mobile-first responsive**: Bootstrap utilities and components
