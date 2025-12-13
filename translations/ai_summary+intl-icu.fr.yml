@@ -12,6 +12,7 @@ ai_summary:
     info:
         based_on: 'Résumé généré par IA basé sur {count, plural, =1 {1 avis} other {# avis}}'
     panel:
-        title: 'Avis du Captain'
+        title: 'Avis du Capitaine'
+        loading: 'Loading du résumé IA...'
         highlights: 'Points forts'
         concerns: "Points d'attention"

@@ -117,15 +117,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Get ratings for a specific coaster ordered by language preference, score and date.
-     *
-     * @return array<int, RiddenCoaster>
-     */
-    public function getCoasterReviews(Coaster $coaster, string $locale = 'en', bool $displayReviewsInAllLanguages = true): array
-    {
+    /** Get ratings for a specific coaster. */
+    public function getCoasterReviews(
+        Coaster $coaster,
+        string $locale = 'en',
+        bool $displayReviewsInAllLanguages = true,
+        $filters = []
+    ) {
         // add joins to avoid multiple subqueries
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r', 'p', 'c', 'u', 'up', 'co')
             ->addSelect(
@@ -140,13 +140,44 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->where('r.coaster = :coasterId')
             ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
-            ->addOrderBy('r.score', 'desc')
-            ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('coasterId', $coaster->getId())
             ->setParameter('locale', $locale)
-            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
-            ->getQuery()
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages);
+
+        $this->applyFilters($query, $filters);
+
+        return $query->getQuery()
             ->getResult();
+    }
+
+    private function applyFilters($query, $filters): void
+    {
+        // Sorting
+        $this->sort($query, $filters);
+    }
+
+    private function sort($query, $filters): void
+    {
+        $sortingOptions = ['value', 'updatedAt'];
+
+        if (\array_key_exists('sort', $filters) && '' !== $filters['sort'] && str_contains($filters['sort'], '|')) {
+            $sort = explode('|', $filters['sort']);
+
+            if (!\in_array($sort[0], $sortingOptions) || !\in_array($sort[1], ['ASC', 'DESC', 'asc', 'desc'])) {
+                $this->defaultSort($query);
+            } else {
+                $query->addOrderBy('r.'.$sort[0], $sort[1]);
+            }
+        } else {
+            $this->defaultSort($query);
+        }
+    }
+
+    private function defaultSort($query): void
+    {
+        $query
+            ->addOrderBy('r.score', 'DESC')
+            ->addOrderBy('r.updatedAt', 'DESC');
     }
 
     /**

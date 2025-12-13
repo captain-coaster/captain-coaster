@@ -13,5 +13,6 @@ ai_summary:
         based_on: 'Resumen generado por IA basado en {count, plural, =1 {1 reseña} other {# reseñas}}'
     panel:
         title: 'Reseña del Captain'
+        loading: 'Cargando el resumen de IA...'
         highlights: 'Aspectos destacados'
         concerns: 'Aspectos a considerar'

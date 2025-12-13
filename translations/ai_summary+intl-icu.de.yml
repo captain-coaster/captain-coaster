@@ -12,6 +12,7 @@ ai_summary:
     info:
         based_on: 'KI-generierte Zusammenfassung basierend auf {count, plural, =1 {1 Bewertung} other {# Bewertungen}}'
     panel:
-        title: "Captain's Review"
+        title: 'Captain Bewertung'
+        loading: 'Laden von KI-Zusammenfassung...'
         highlights: 'Highlights'
         concerns: 'Bedenken'

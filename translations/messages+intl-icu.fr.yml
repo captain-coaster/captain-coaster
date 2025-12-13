@@ -96,6 +96,7 @@ coaster:
         empty: "Oups, nous n'avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes !"
         button: Envoyer une photo
         all: Voir toutes les photos
+        loading: Chargement des photos...
     location: Localisation
 
 image_upload:
@@ -137,31 +138,39 @@ coaster_ranking:
             short: paires
             long: paires analysées
         users: votants
-    filter:
-        continent: Monde
-        country: Pays
-        materialType: Type
-        seatingType: Train
-        model: Modèle
-        manufacturer: Constructeur
-        openingDate: "Date d'ouverture"
 
 map_index:
     title: Carte des coasters
     description: "Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n'as pas encore ridé sur cette carte interactive."
-    filter:
-        title: Filtres
-        manufacturer: Constructeur
-        status: En fonctionnement
-        kiddie: Masquer les kiddies
-        notridden: Pas encore ridé
-        new: Nouveau ce mois
-        score: Score
-        atleast: 'au moins {count}'
-        openingDate: "Date d'ouverture"
-        name: Nom
-        clear: 'Effacer les filtres'
     results: Résultats
+
+filters:
+    title: Filtres
+    continent: Monde
+    country: Pays
+    materialType: Type
+    seatingType: Train
+    model: Modèle
+    manufacturer: Constructeur
+    status: En fonctionnement
+    kiddie: Masquer les kiddies
+    notridden: Pas encore ridé
+    new: Nouveau ce mois
+    score: Score
+    atleast: 'au moins {count}'
+    openingDate: "Date d'ouverture"
+    name: Nom
+    clear: Effacer les filtres
+
+    sorts:
+        default: Tri par défaut
+        reviews:
+            updatedAt:
+                asc: Du plus ancien au plus récent
+                desc: Du plus récent au plus ancien
+            value:
+                asc: De la moins bonne à la meilleure note
+                desc: De la meilleure à la moins bonne note
 
 user_profile:
     title: 'Profil • {name}'
@@ -268,6 +277,7 @@ review:
     delete: Supprimer
     last: Derniers avis
     all: Voir plus
+    loading: Chargement des avis...
     ridden_at: Date du ride
     upvote: Voter pour cet avis
     report: Signaler cet avis

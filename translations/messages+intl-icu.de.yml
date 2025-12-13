@@ -96,6 +96,7 @@ coaster:
         empty: 'Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!'
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
+        loading: Laden von Fotos
     location: Standort
 
 image_upload:
@@ -137,31 +138,39 @@ coaster_ranking:
             short: Paare
             long: analysierte Paare
         users: Wähler
-    filter:
-        continent: Welt
-        country: Land
-        materialType: Typ
-        seatingType: Zug
-        model: Modell
-        manufacturer: Hersteller
-        openingDate: Eröffnungsdatum
 
 map_index:
     title: Achterbahn Landkarte
     description: 'Entdecke mit dieser interaktiven Karte, wo sich die coolsten Achterbahnen in der Nähe befinden, die besten des nächsten Jahres oder die B&M-Bahnen, die du bisher noch nicht gefahren bist.'
-    filter:
-        title: Filter
-        manufacturer: Hersteller
-        status: In Betrieb
-        kiddie: Verstecke Kinderachterbahnen
-        notridden: Noch nicht gefahren
-        new: Neu diesem Monat
-        score: Punktzahl
-        atleast: 'mindestens {count}'
-        openingDate: Eröffnungsdatum
-        name: Name
-        clear: 'Filter löschen'
     results: Ergebnisse
+
+filters:
+    title: Filter
+    continent: Welt
+    country: Land
+    materialType: Typ
+    seatingType: Zug
+    model: Modell
+    manufacturer: Hersteller
+    status: In Betrieb
+    kiddie: Verstecke Kinderachterbahnen
+    notridden: Noch nicht gefahren
+    new: Neu diesem Monat
+    score: Punktzahl
+    atleast: 'mindestens {count}'
+    openingDate: Eröffnungsdatum
+    name: Name
+    clear: Filter löschen
+
+    sorts:
+        default: Standardmäßige Sortierung
+        reviews:
+            updatedAt:
+                asc: Von der ältesten zur neuesten
+                desc: Von der neuesten zur ältesten
+            value:
+                asc: Von der schlechtesten bis zu besten Bewertungen
+                desc: Von der besten bis zu schlechtesten Bewertungen
 
 user_profile:
     title: 'Profil • {name}'
@@ -269,6 +278,7 @@ review:
     delete: Löschen
     last: Neueste Rezensionen
     all: Zeige alle
+    loading: Laden von Rezensionen
     ridden_at: Datum der Fahrt
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden

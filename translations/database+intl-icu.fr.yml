@@ -1,7 +1,7 @@
 launch.lift.chain: 'Lift à chaîne'
 launch.lift.wheel: 'Lift à pneus'
 launch.lift.cable: 'Lift à câble'
-launch.lift.spiral: 'Lift en vis d''Archimède'
+launch.lift.spiral: "Lift en vis d'Archimède"
 launch.lift.electrical: 'Lift électrique'
 launch.lift.vertical: 'Ascenseur vertical'
 launch.lim: 'Propulsion magnétique (LIM/LSM)'
@@ -41,7 +41,7 @@ pro.comfort: 'Confort'
 pro.launch: 'Launch'
 pro.pace: 'Vitesse'
 pro.fun: 'Fun'
-pro.masterpiece: 'Chef d''oeuvre'
+pro.masterpiece: "Chef d'oeuvre"
 pro.restraints: 'Harnais'
 pro.intensity: 'Intensité'
 pro.smoothness: 'Fluidité'

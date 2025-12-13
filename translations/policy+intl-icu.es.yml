@@ -1,38 +1,42 @@
 title: 'Términos de Uso'
 privacy:
     title: 'Política de privacidad'
-    text: '<p>Esta política de privacidad explica cómo nuestro sitio web utiliza los datos personales que recopilamos cuando usted utiliza Captain Coaster.</p>
-           <p>Captain Coaster recoge los siguientes datos cuando usted se registra:</p>
-           <ul>
-               <li>Nombre y apellidos,</li>
-               <li>Correo electrónico,</li>
-               <li>Foto de perfil pública (sólo durante la autenticación de Google)</li>
-              </ul>
-              <p>Conservaremos sus datos mientras utilice nuestro servicio, en un almacenamiento seguro y de conformidad con la ley francesa «Loi Informatique et Libertés du 6 janvier 1978».</p>
-              <p>Nunca se comparte con nadie más y sólo se utiliza para crear una cuenta y para ciertas funciones del Captain Coaster.</p>
-              <p>Cada usuario tiene derecho a los siguientes elementos:</p>
-              <ul>
-              <li>Derecho de acceso - Tiene derecho a solicitarnos copias de sus datos personales, enviadas por correo electrónico,</li>
-              <li>Derecho de rectificación - Tiene derecho a solicitar la rectificación de cualquier información que considere inexacta o que falte,</li>
-              <li>Derecho de supresión - Tiene derecho a solicitar que borremos sus datos personales.</li>
-              </ul>
-              <p>Si tiene alguna pregunta sobre la política de privacidad de Captain Coaster, los datos que tenemos sobre usted, o si desea ejercer alguno de sus derechos de protección de datos, póngase en <a href="{link_href}">contacto con nosotros</a>.</p>'
+    text:
+        '<p>Esta política de privacidad explica cómo nuestro sitio web utiliza los datos personales que recopilamos cuando usted utiliza Captain Coaster.</p>
+        <p>Captain Coaster recoge los siguientes datos cuando usted se registra:</p>
+        <ul>
+        <li>Nombre y apellidos,</li>
+        <li>Correo electrónico,</li>
+        <li>Foto de perfil pública (sólo durante la autenticación de Google)</li>
+        </ul>
+        <p>Conservaremos sus datos mientras utilice nuestro servicio, en un almacenamiento seguro y de conformidad con la ley francesa «Loi Informatique et Libertés du 6 janvier 1978».</p>
+        <p>Nunca se comparte con nadie más y sólo se utiliza para crear una cuenta y para ciertas funciones del Captain Coaster.</p>
+        <p>Cada usuario tiene derecho a los siguientes elementos:</p>
+        <ul>
+        <li>Derecho de acceso - Tiene derecho a solicitarnos copias de sus datos personales, enviadas por correo electrónico,</li>
+        <li>Derecho de rectificación - Tiene derecho a solicitar la rectificación de cualquier información que considere inexacta o que falte,</li>
+        <li>Derecho de supresión - Tiene derecho a solicitar que borremos sus datos personales.</li>
+        </ul>
+        <p>Si tiene alguna pregunta sobre la política de privacidad de Captain Coaster, los datos que tenemos sobre usted, o si desea ejercer alguno de sus derechos de protección de datos, póngase en <a href="{link_href}">contacto con nosotros</a>.</p>'
 cookies:
     title: 'Política de cookies'
-    text: '<p>Las cookies son pequeños archivos que se almacenan en el ordenador del usuario para facilitarle la vida.</p>
-              <p>Captain Coaster utiliza una cookie de sesión para recordarle cuándo debe iniciar sesión. Esto le evita tener que iniciar sesión cada vez que nos visita. También utilizamos una cookie de Google Analytics con fines estadísticos.</p>'
+    text:
+        '<p>Las cookies son pequeños archivos que se almacenan en el ordenador del usuario para facilitarle la vida.</p>
+        <p>Captain Coaster utiliza una cookie de sesión para recordarle cuándo debe iniciar sesión. Esto le evita tener que iniciar sesión cada vez que nos visita. También utilizamos una cookie de Google Analytics con fines estadísticos.</p>'
 terms:
     title: 'Condiciones de uso de Captain Coaster'
-    text: '<p>Captain Coaster es un sitio web comunitario para entusiastas de los parques de atracciones y las montañas rusas. No está afiliada a ningún parque, fabricante o empresa de la industria del ocio.</p>
-              <p>Está abierto a todo el mundo: todo lo que tienes que hacer es iniciar sesión para compartir tu experiencia en la montaña rusa (notas, tags, reseñas). Para acceder a estas funciones, necesitarás una cuenta de Google o una dirección de correo electrónico <b>válida</b>. <b>Las cuentas múltiples están estrictamente prohibidas</b> y darán lugar a la exclusión permanente.</p>
-              <p>Todos los campos de participación son examinados por los moderadores del equipo, que se reservan el derecho de modificar o suprimir cualquier mensaje. Los usuarios que no cumplan estas normas podrán ser excluidos temporal o permanentemente.</p>'
+    text:
+        '<p>Captain Coaster es un sitio web comunitario para entusiastas de los parques de atracciones y las montañas rusas. No está afiliada a ningún parque, fabricante o empresa de la industria del ocio.</p>
+        <p>Está abierto a todo el mundo: todo lo que tienes que hacer es iniciar sesión para compartir tu experiencia en la montaña rusa (notas, tags, reseñas). Para acceder a estas funciones, necesitarás una cuenta de Google o una dirección de correo electrónico <b>válida</b>. <b>Las cuentas múltiples están estrictamente prohibidas</b> y darán lugar a la exclusión permanente.</p>
+        <p>Todos los campos de participación son examinados por los moderadores del equipo, que se reservan el derecho de modificar o suprimir cualquier mensaje. Los usuarios que no cumplan estas normas podrán ser excluidos temporal o permanentemente.</p>'
 hosting:
     title: 'Alojamiento web'
     text: 'Captain Coaster está alojado en Amazon Web Services, con sede en Seattle, Washington, Estados Unidos. Nuestros servidores se encuentran en París, Francia.'
 copyright:
     title: 'Derechos de autor'
-    text: '<p>El logotipo "Captain Coaster" pertenece a Benjamin R., Captain Coaster tiene el derecho exclusivo de utilizarlo y modificarlo. Toda reproducción no autorizada está prohibida.</p>
-              <p>Cada usuario puede subir fotos a Captain Coaster con su crédito. Si es propietario de una foto que no desea compartir en Captain Coaster, póngase en <a href="{link_href}">contacto con nosotros</a> y la foto se eliminará lo antes posible.</p>'
+    text:
+        '<p>El logotipo "Captain Coaster" pertenece a Benjamin R., Captain Coaster tiene el derecho exclusivo de utilizarlo y modificarlo. Toda reproducción no autorizada está prohibida.</p>
+        <p>Cada usuario puede subir fotos a Captain Coaster con su crédito. Si es propietario de una foto que no desea compartir en Captain Coaster, póngase en <a href="{link_href}">contacto con nosotros</a> y la foto se eliminará lo antes posible.</p>'
 contact:
     title: 'Contacte con nosotros'
     text: '<b>¿Alguna pregunta o comentario? Póngase en <a href="{link_href}">contacto con nosotros</a>, ¡no mordemos!</b>'
