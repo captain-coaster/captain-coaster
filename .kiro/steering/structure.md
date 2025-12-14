@@ -20,7 +20,7 @@ inclusion: always
 
 - **assets/controllers/**: Stimulus controllers
 - **assets/js/**: Vanilla JavaScript utilities
-- **assets/styles/**: LESS/CSS files organized by component
+- **assets/styles/**: CSS files organized by component (LESS is legacy)
 - **templates/**: Twig templates organized by feature/controller
 
 ### Configuration
@@ -43,7 +43,7 @@ inclusion: always
 ### Frontend Assets
 
 - **Stimulus controllers**: kebab-case (e.g., `rating-controller.js`)
-- **CSS/LESS files**: kebab-case with component organization
+- **CSS files**: kebab-case with component organization
 - **JavaScript modules**: camelCase functions, kebab-case files
 
 ### Templates

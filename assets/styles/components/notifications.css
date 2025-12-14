@@ -1,0 +1,132 @@
+/* Modern minimalistic notification styles */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    max-width: 400px;
+    min-width: 320px;
+    z-index: 9999;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    font-family:
+        -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.hide {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+/* Content layout */
+.notification__content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.notification__icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.notification__message {
+    flex: 1;
+    margin-top: 1px;
+}
+
+.notification__close {
+    background: none;
+    border: none;
+    opacity: 0.5;
+    font-size: 18px;
+    line-height: 1;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+}
+
+.notification__close:hover {
+    opacity: 0.8;
+}
+
+/* Type variants */
+.notification--success {
+    color: #065f46;
+    border: 1px solid #10b981;
+    border-left: 4px solid #10b981;
+}
+
+.notification--success .notification__icon {
+    background: #10b981;
+}
+
+.notification--success .notification__close {
+    color: #065f46;
+}
+
+.notification--info {
+    color: #1e40af;
+    border: 1px solid #3b82f6;
+    border-left: 4px solid #3b82f6;
+}
+
+.notification--info .notification__icon {
+    background: #3b82f6;
+}
+
+.notification--info .notification__close {
+    color: #1e40af;
+}
+
+.notification--warning {
+    color: #92400e;
+    border: 1px solid #f59e0b;
+    border-left: 4px solid #f59e0b;
+}
+
+.notification--warning .notification__icon {
+    background: #f59e0b;
+}
+
+.notification--warning .notification__close {
+    color: #92400e;
+}
+
+.notification--danger {
+    color: #dc2626;
+    border: 1px solid #ef4444;
+    border-left: 4px solid #ef4444;
+}
+
+.notification--danger .notification__icon {
+    background: #ef4444;
+}
+
+.notification--danger .notification__close {
+    color: #dc2626;
+}

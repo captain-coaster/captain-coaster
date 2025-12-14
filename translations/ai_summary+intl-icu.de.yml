@@ -4,6 +4,7 @@ ai_summary:
         success: 'Vielen Dank für Ihr Feedback!'
         error: 'Beim Senden Ihres Feedbacks ist ein Fehler aufgetreten.'
         error_token: 'Ungültiges Sicherheitstoken.'
+        error_session: 'Feedback konnte nicht gesendet werden. Bitte laden Sie die Seite neu und versuchen Sie es erneut.'
         button:
             helpful: 'Als hilfreich markieren'
             not_helpful: 'Als nicht hilfreich markieren'

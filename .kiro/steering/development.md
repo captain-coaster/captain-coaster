@@ -71,3 +71,5 @@ public function action(Request $request, SomeService $service): Response
 - **Stimulus-first**: Use Stimulus controllers over jQuery
 - **Progressive enhancement**: Ensure functionality works without JavaScript
 - **Mobile-first responsive**: Bootstrap utilities and components
+- **CSS separation**: NO CSS styles in JavaScript files - use CSS classes and external stylesheets
+- **CSS only**: Use plain CSS files, NOT LESS - LESS is legacy and should be avoided

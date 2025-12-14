@@ -4,6 +4,7 @@ ai_summary:
         success: '¡Gracias por tu opinión!'
         error: 'Ocurrió un error al enviar tu opinión.'
         error_token: 'Token de seguridad inválido.'
+        error_session: 'No se pudo enviar tu opinión. Por favor, actualiza la página e inténtalo de nuevo.'
         button:
             helpful: 'Marcar como útil'
             not_helpful: 'Marcar como no útil'

@@ -316,6 +316,7 @@
                 data-controller="coaster-summary"
                 data-coaster-summary-slug-value="{{ coaster.slug }}"
                 data-coaster-summary-locale-value="{{ app.request.locale }}"
+                data-coaster-summary-csrf-token-value="{{ csrf_token('summary_feedback') }}"
             >
                 <div id="coaster-ai-summary" data-coaster-summary-target="container">
                     <div class="panel panel-flat mb-15">

@@ -43,7 +43,7 @@
                             data-controller="summary-feedback"
                             data-summary-feedback-summary-id-value="{{ coasterSummary.id }}"
                             data-summary-feedback-feedback-url-value="{{ path('summary_feedback', {'id': coasterSummary.id}) }}"
-                            data-summary-feedback-csrf-token-value="{{ csrf_token('summary_feedback') }}"
+                            data-summary-feedback-csrf-token-value=""
                             data-summary-feedback-success-message-value="{{ 'ai_summary.feedback.success'|trans({}, 'ai_summary') }}"
                             data-summary-feedback-error-message-value="{{ 'ai_summary.feedback.error'|trans({}, 'ai_summary') }}"
                             data-summary-feedback-helpful-title-value="{{ 'ai_summary.feedback.button.helpful'|trans({}, 'ai_summary') }}"

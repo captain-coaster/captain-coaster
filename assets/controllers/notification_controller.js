@@ -15,46 +15,59 @@ export default class extends Controller {
      * @param {number} timeout - Time in milliseconds before the notification disappears
      */
     show(message, type = 'info', timeout = 3000) {
-        // Create the notification element with fixed positioning
+        // Icon mapping for different notification types
+        const icons = {
+            success: '✓',
+            info: 'ℹ',
+            warning: '⚠',
+            danger: '✕',
+        };
+
+        const icon = icons[type] || icons.info;
+
+        // Create notification with CSS classes
         const notification = document.createElement('div');
-        notification.className = `alert alert-${type} alert-styled-left alert-arrow-left alert-bordered`;
+        notification.className = `notification notification--${type}`;
 
-        // Add fixed positioning styles to make it always visible
-        notification.style.position = 'fixed';
-        notification.style.top = '20px';
-        notification.style.right = '20px';
-        notification.style.maxWidth = '400px';
-        notification.style.zIndex = '9999'; // Ensure it's above modals
-        notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-
+        // Clean HTML structure using CSS classes
         notification.innerHTML = `
-            <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
-            ${message}
+            <div class="notification__content">
+                <div class="notification__icon">${icon}</div>
+                <div class="notification__message">${message}</div>
+                <button type="button" class="notification__close">×</button>
+            </div>
         `;
 
-        // Always append to body to ensure it's visible above modals
+        // Append to body
         document.body.appendChild(notification);
 
-        // Set up the close button
-        const closeButton = notification.querySelector('.close');
+        // Set up close button
+        const closeButton = notification.querySelector('.notification__close');
         if (closeButton) {
             closeButton.addEventListener('click', () => {
-                notification.remove();
+                this.hideNotification(notification);
             });
         }
 
-        // Add a fade-in effect
-        notification.style.opacity = '0';
-        notification.style.transition = 'opacity 0.3s ease-in-out';
-        setTimeout(() => {
-            notification.style.opacity = '1';
-        }, 10);
+        // Animate in using CSS classes
+        requestAnimationFrame(() => {
+            notification.classList.add('show');
+        });
 
-        // Auto-remove after timeout with fade-out effect
+        // Auto-remove after timeout
         setTimeout(() => {
-            notification.style.opacity = '0';
-            setTimeout(() => notification.remove(), 300);
+            this.hideNotification(notification);
         }, timeout);
+    }
+
+    hideNotification(notification) {
+        notification.classList.remove('show');
+        notification.classList.add('hide');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
     }
 
     /**

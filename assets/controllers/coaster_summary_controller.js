@@ -5,6 +5,7 @@ export default class extends Controller {
     static values = {
         slug: String,
         locale: String,
+        csrfToken: String,
     };
 
     connect() {
@@ -20,11 +21,29 @@ export default class extends Controller {
             .then((response) => response.text())
             .then((html) => {
                 this.containerTarget.innerHTML = html;
+
+                // CSRF TOKEN FIX: Inject the token from main template into AJAX-loaded content
+                // The token was generated during main page load (reliable session save)
+                this.injectCsrfToken();
             })
             .catch((error) => {
                 console.error('Error loading AI summary:', error);
                 this.containerTarget.style.display = 'none';
             });
+    }
+
+    injectCsrfToken() {
+        // Find the summary feedback controller in the AJAX-loaded content
+        const feedbackController = this.containerTarget.querySelector(
+            '[data-controller*="summary-feedback"]'
+        );
+        if (feedbackController && this.csrfTokenValue) {
+            // Inject the CSRF token from main template into the feedback controller
+            feedbackController.setAttribute(
+                'data-summary-feedback-csrf-token-value',
+                this.csrfTokenValue
+            );
+        }
     }
 
     buildUrl() {

@@ -55,8 +55,8 @@ class SummaryFeedbackController extends BaseController
 
             return new JsonResponse([
                 'success' => false,
-                'message' => $this->translator->trans('ai_summary.feedback.error_token', [], 'ai_summary'),
-            ], Response::HTTP_FORBIDDEN);
+                'message' => $this->translator->trans('ai_summary.feedback.error_session', [], 'ai_summary'),
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         // Validate feedback value
@@ -70,7 +70,7 @@ class SummaryFeedbackController extends BaseController
 
         $isPositive = 'true' === $isPositive;
         $user = $this->getUser();
-        $ipAddress = $request->getClientIp() ?? '127.0.0.1';
+        $ipAddress = $request->getClientIp();
 
         try {
             // Submit feedback through service
