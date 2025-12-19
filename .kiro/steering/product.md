@@ -6,22 +6,6 @@ inclusion: always
 
 Captain Coaster is a participative guide for roller coaster enthusiasts to discover, rate, and review roller coasters worldwide.
 
-## Critical Design Constraints
-
-### Mobile-First Priority
-
-- **75% mobile users** - ALL features must work perfectly on mobile devices
-- **25% desktop users** - Desktop is secondary but must remain functional
-- **Touch-first interactions** - Design for finger navigation, not mouse precision
-- **Responsive breakpoints** - Use Bootstrap's mobile-first approach
-
-### Multi-language Requirements
-
-- **4 languages supported**: English (default), French, Spanish, German
-- **ALL user-facing text** must be translatable using Symfony's translation system
-- **Domain-specific translations** - Use appropriate translation domains (messages, database, etc.)
-- **Locale-prefixed routes** - All URLs include locale prefix
-
 ## Core Domain Model
 
 ### Primary Entities
@@ -57,10 +41,8 @@ Captain Coaster is a participative guide for roller coaster enthusiasts to disco
 
 ### Social Features
 
-- Users can follow each other and see activity
 - Image likes and review voting system
-- Notification system for interactions
-- Badge rewards for engagement milestones
+- Badge rewards for engagement milestones (to be refactored completely)
 
 ## Feature-Specific Guidance
 
@@ -68,27 +50,8 @@ Captain Coaster is a participative guide for roller coaster enthusiasts to disco
 
 - Multi-criteria search (location, manufacturer, type, etc.)
 - Map-based coaster discovery
-- Filter combinations with URL state preservation
-- Performance-optimized for large datasets
 
 ### AI Integration
 
 - Coaster summaries generated from user reviews and specifications
 - Feedback system for AI-generated content quality
-- Bedrock service integration for content generation
-
-### User Experience Patterns
-
-- Progressive enhancement - core functionality works without JavaScript
-- Stimulus controllers for interactive features
-- Modal dialogs for forms and detailed views
-- Infinite scroll or pagination for large lists
-- Real-time updates where appropriate (notifications, likes)
-
-## Development Priorities
-
-1. **Mobile experience** - Test all features on mobile devices first
-2. **Performance** - Optimize for mobile networks and devices
-3. **Accessibility** - Ensure keyboard navigation and screen reader support
-4. **Internationalization** - All text must be translatable from day one
-5. **Data integrity** - Validate user input and maintain referential integrity
