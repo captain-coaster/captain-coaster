@@ -1,15 +1,15 @@
-<div class="panel panel-white">
-  <div class="table-responsive" style="display: block;">
-    <table class="table">
+<div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="table table-hover mb-0">
       <thead>
       <tr>
         <th>{{ knp_pagination_sortable(ratings, 'users.ratings.coaster'|trans, 'c.name') }}</th>
-        <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.manufacturer'|trans, ['m.name']) }}</th>
-        <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.opening_date'|trans, ['c.openingDate']) }}</th>
+        <th class="d-none d-md-table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.manufacturer'|trans, ['m.name']) }}</th>
+        <th class="d-none d-md-table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.opening_date'|trans, ['c.openingDate']) }}</th>
         <th>{{ knp_pagination_sortable(ratings, 'users.ratings.rating'|trans, ['r.value']) }}</th>
-        <th class="hidden-xs">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt') }}</th>
+        <th class="d-none d-md-table-cell">{{ knp_pagination_sortable(ratings, 'users.ratings.ridden_at'|trans, 'r.riddenAt') }}</th>
         {% if is_granted('delete', ratings|first) %}
-          <th class="text-center hidden-xs" style="width: 20px;">{{ ux_icon('heroicons:arrow-down', {'class': 'w-6 h-6'}) }}</th>
+          <th class="text-center d-none d-md-table-cell" style="width: 20px;">{{ ux_icon('heroicons:arrow-down', {'class': 'icon-sm'}) }}</th>
         {% endif %}
       </tr>
       </thead>
@@ -18,16 +18,16 @@
         <tr id="tr-coaster-{{ rating.coaster.id }}">
           <td>
             <a href="{{ path('show_coaster', {'id': rating.coaster.id, 'slug': rating.coaster.slug}) }}"
-               class="text-semibold">{{ rating.coaster.name }}</a>
-            <div class="text-muted text-size-small">
-              <span class="status-mark bg-{{ rating.coaster.status.type }} position-left"></span>
+               class="font-semibold coaster-link">{{ rating.coaster.name }}</a>
+            <div class="text-neutral-600 dark:text-neutral-400 small">
+              <span class="status-mark bg-{{ rating.coaster.status.type }} mr-1"></span>
               {{ rating.coaster.park.name }}
             </div>
           </td>
-          <td class="hidden-xs">
+          <td class="d-none d-md-table-cell">
             {{ rating.coaster.manufacturer.name|default('-') }}
           </td>
-          <td class="hidden-xs">
+          <td class="d-none d-md-table-cell">
             {{ rating.coaster.openingDate is empty ? '-' : rating.coaster.openingDate|date('Y') }}
           </td>
           <td>
@@ -42,18 +42,18 @@
               <div data-rating-target="rating" style="font-size: 22px;"></div>
             </div>
           </td>
-          <td class="hidden-xs">
+          <td class="d-none d-md-table-cell">
             {{ rating.riddenAt is empty ? '-' : rating.riddenAt|format_datetime('short', 'none') }}
           </td>
           {% if is_granted('delete', rating) %}
-          <td class="text-center hidden-xs">
+          <td class="text-center d-none d-md-table-cell">
             <div data-controller="csrf-protection rating-actions"
                  data-csrf-protection-token-value="{{ csrf_token('rating') }}"
                  data-rating-actions-csrf-protection-outlet=".csrf-protection"
                  data-rating-actions-rating-id-value="{{ rating.id }}"
                  data-rating-actions-locale-value="{{ app.request.locale }}"
                  data-rating-actions-mode-value="table">
-              <a href="#" data-action="click->rating-actions#delete" data-rating-actions-target="deleteButton">{{ ux_icon('heroicons:trash', {'class': 'w-6 h-6'}) }}</a>
+              <a href="#" data-action="click->rating-actions#delete" data-rating-actions-target="deleteButton" class="text-red-600 dark:text-red-400">{{ ux_icon('heroicons:trash', {'class': 'icon-sm'}) }}</a>
             </div>
           </td>
           {% endif %}

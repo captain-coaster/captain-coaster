@@ -5,18 +5,34 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  {{ form_errors(form) }}
-  {{ form_start(form, {'attr': {'class': 'recaptcha-form'}}) }}
-  {{ form_row(form.name) }}
-  {{ form_row(form.email) }}
-  {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
-  {{ form_widget(form.recaptcha) }}
-  {{ form_rest(form) }}
-  <div class="text-right">
-    <button id="contact_btn" type="submit" class="btn btn-primary">
-      {{ 'contact.send'|trans }}
-      {{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6 position-right'}) }}
-    </button>
+  <div class="max-w-2xl mx-auto">
+    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-8">
+      <div class="mb-6">
+        <h1 class="text-display-sm text-neutral-900 dark:text-white mb-2">{{ title }}</h1>
+        <p class="text-neutral-900 dark:text-white text-neutral-600 dark:text-neutral-400">
+          {{ 'contact.description'|trans }}
+        </p>
+      </div>
+
+      {{ form_errors(form) }}
+      {{ form_start(form, {'attr': {'class': 'recaptcha-form'}}) }}
+      
+      <div class="space-y-6">
+        {{ form_row(form.name) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
+        {{ form_widget(form.recaptcha) }}
+        {{ form_rest(form) }}
+      </div>
+
+      <div class="flex justify-end pt-6 border-t border-neutral-200 dark:border-neutral-700 mt-8">
+        <button id="contact_btn" type="submit" class="btn-primary">
+          {{ 'contact.send'|trans }}
+          {{ ux_icon('heroicons:arrow-right', {'class': 'w-4 h-4 ml-2'}) }}
+        </button>
+      </div>
+      
+      {{ form_end(form) }}
+    </div>
   </div>
-  {{ form_end(form) }}
 {% endblock %}

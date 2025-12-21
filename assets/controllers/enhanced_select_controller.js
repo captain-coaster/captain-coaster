@@ -125,9 +125,8 @@ export default class extends Controller {
     }
 
     setupEventListeners() {
-        // Close dropdown when clicking outside (but not on Bootstrap dropdowns)
+        // Close dropdown when clicking outside
         this.closeOnOutsideClick = (event) => {
-            // Ignore clicks on Bootstrap navbar dropdowns
             if (
                 event.target.closest('.navbar') ||
                 event.target.closest('.dropdown') ||

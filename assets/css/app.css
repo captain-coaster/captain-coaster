@@ -1,0 +1,290 @@
+/*
+ * Captain Coaster - Tailwind CSS v4 Configuration
+ * Modern, Subtle, Minimalist, Clean, and Joyful Design System
+ */
+
+@import 'tailwindcss';
+
+/* Dark mode configuration - use class strategy */
+@variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   Theme Configuration - Design Tokens
+   ========================================================================== */
+
+@theme {
+    /* Joyful brand colors (from Captain Coaster logo) */
+    --color-cc-blue-50: #f0f7ff;
+    --color-cc-blue-100: #e0efff;
+    --color-cc-blue-200: #bae0ff;
+    --color-cc-blue-300: #7cc8ff;
+    --color-cc-blue-400: #36a9ff;
+    --color-cc-blue-500: #0c8ce9; /* Primary - more vibrant */
+    --color-cc-blue-600: #0066cc;
+    --color-cc-blue-700: #0052a3;
+    --color-cc-blue-800: #004085;
+    --color-cc-blue-900: #003366;
+
+    --color-cc-warm-50: #fefdf8;
+    --color-cc-warm-100: #fdf9e7;
+    --color-cc-warm-200: #fbf0c9;
+    --color-cc-warm-300: #f7e394; /* Warm accent */
+    --color-cc-warm-400: #f1d065;
+    --color-cc-warm-500: #e6b800; /* Gold primary */
+    --color-cc-warm-600: #cc9900;
+    --color-cc-warm-700: #b37700;
+    --color-cc-warm-800: #995500;
+    --color-cc-warm-900: #804400;
+
+    /* Subtle grays for minimalist approach */
+    --color-neutral-50: #fafafa;
+    --color-neutral-100: #f5f5f5;
+    --color-neutral-200: #e5e5e5;
+    --color-neutral-300: #d4d4d4;
+    --color-neutral-400: #a3a3a3;
+    --color-neutral-500: #737373;
+    --color-neutral-600: #525252;
+    --color-neutral-700: #404040;
+    --color-neutral-800: #262626;
+    --color-neutral-900: #171717;
+
+    /* Typography */
+    --font-family-sans: Inter, system-ui, sans-serif;
+    --font-family-display: 'Roboto Flex', Inter, system-ui, sans-serif;
+
+    /* Animations */
+    --animate-fade-in: fadeIn 0.3s ease-out;
+    --animate-slide-up: slideUp 0.4s ease-out;
+    --animate-bounce-gentle: bounceGentle 0.6s ease-out;
+    --animate-pulse-subtle: pulseSubtle 2s ease-in-out infinite;
+
+    /* Custom spacing */
+    --spacing-18: 4.5rem;
+    --spacing-88: 22rem;
+
+    /* Border radius */
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    --radius-3xl: 2rem;
+}
+
+/* ==========================================================================
+   Keyframe Animations
+   ========================================================================== */
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes bounceGentle {
+    0%,
+    20%,
+    53%,
+    80%,
+    100% {
+        transform: translate3d(0, 0, 0);
+    }
+    40%,
+    43% {
+        transform: translate3d(0, -8px, 0);
+    }
+    70% {
+        transform: translate3d(0, -4px, 0);
+    }
+    90% {
+        transform: translate3d(0, -2px, 0);
+    }
+}
+
+@keyframes pulseSubtle {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* ==========================================================================
+   Base Layer - Global Element Styles
+   ========================================================================== */
+
+@layer base {
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Better focus styles for accessibility */
+    :focus-visible {
+        outline: 2px solid var(--color-cc-blue-500);
+        outline-offset: 2px;
+    }
+
+    /* Default body styles */
+    body {
+        font-family: var(--font-family-sans);
+        @apply text-neutral-900 bg-neutral-50 antialiased;
+    }
+
+    /* Dark mode body */
+    .dark body {
+        @apply text-neutral-100 bg-neutral-900;
+    }
+}
+
+/* ==========================================================================
+   Components Layer - Reusable UI Components
+   ========================================================================== */
+
+@layer components {
+    /* Typography Scale */
+    .text-display-lg {
+        @apply text-4xl md:text-5xl font-bold tracking-tight;
+        font-family: var(--font-family-display);
+    }
+
+    .text-display-md {
+        @apply text-3xl md:text-4xl font-bold tracking-tight;
+        font-family: var(--font-family-display);
+    }
+
+    .text-display-sm {
+        @apply text-2xl md:text-3xl font-semibold tracking-tight;
+        font-family: var(--font-family-display);
+    }
+
+    .text-heading-lg {
+        @apply text-xl md:text-2xl font-semibold text-neutral-900 dark:text-white;
+    }
+
+    .text-heading-md {
+        @apply text-lg md:text-xl font-semibold text-neutral-900 dark:text-white;
+    }
+
+    .text-body-lg {
+        @apply text-base md:text-lg text-neutral-700 dark:text-neutral-300;
+    }
+
+    .text-body {
+        @apply text-sm md:text-base text-neutral-600 dark:text-neutral-400;
+    }
+
+    .text-caption {
+        @apply text-xs md:text-sm text-neutral-500 dark:text-neutral-500;
+    }
+
+    /* Custom Component Classes */
+
+    /* Action Icon Button */
+    .action-icon {
+        @apply p-2 rounded-lg text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2;
+    }
+
+    /* Link Styles */
+    .link {
+        @apply text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200;
+    }
+
+    /* Empty State */
+    .empty-state {
+        @apply px-6 py-12 text-center;
+    }
+
+    .empty-state-icon {
+        @apply w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center mx-auto mb-4;
+    }
+
+    .empty-state-text {
+        @apply text-neutral-600 dark:text-neutral-400;
+    }
+}
+
+/* ==========================================================================
+   Utilities Layer - Custom Utility Classes
+   ========================================================================== */
+
+@layer utilities {
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Safe area padding for mobile devices */
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .pt-safe {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    /* Text balance for better typography */
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Gradient text */
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-linear-to-r from-cc-blue-500 to-cc-warm-400;
+    }
+}
+
+/* ==========================================================================
+   Custom Utilities using @utility directive (Tailwind v4)
+   These work with variants like hover:, focus:, lg:, etc.
+   ========================================================================== */
+
+@utility animate-fade-in {
+    animation: var(--animate-fade-in);
+}
+
+@utility animate-slide-up {
+    animation: var(--animate-slide-up);
+}
+
+@utility animate-bounce-gentle {
+    animation: var(--animate-bounce-gentle);
+}
+
+@utility animate-pulse-subtle {
+    animation: var(--animate-pulse-subtle);
+}
+
+/* ==========================================================================
+   Component Imports
+   ========================================================================== */
+
+@import './components/forms.css';
+@import './components/search.css';
+@import './components/top-list.css';
+
+/* ==========================================================================
+   Page-Specific Styles
+   ========================================================================== */
+
+@import './pages/coaster.css';

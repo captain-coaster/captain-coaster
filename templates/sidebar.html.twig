@@ -1,70 +1,229 @@
-<div class="sidebar sidebar-main sidebar-fixed">
-  <div class="sidebar-content">
-    <!-- Main navigation -->
-    <div class="sidebar-category sidebar-category-visible">
-      <div class="category-content no-padding">
-        <ul class="navigation navigation-main navigation-accordion">
-          <!-- Main -->
-          {% set currentRoute = app.request.attributes.get('_route') %}
-          <li{% if currentRoute == 'default_index' %} class="active"{% endif %}>
-            <a href="{{ path('default_index') }}">
-              {{ ux_icon('heroicons:home', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.index'|trans }}</span>
+{% set currentRoute = app.request.attributes.get('_route') %}
+
+<!-- Desktop Sidebar -->
+<aside class="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 md:pt-16 bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800" role="navigation" aria-label="{{ 'nav.sidebar.label'|trans({}, 'navigation') }}">
+  <div class="flex flex-col flex-1 min-h-0">
+    <!-- Skip link for keyboard users -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-cc-blue-600 text-white px-4 py-2 rounded-lg z-50 focus:outline-none focus:ring-2 focus:ring-white">
+      {{ 'nav.skip.main'|trans({}, 'navigation') }}
+    </a>
+
+    <!-- Navigation -->
+    <nav class="flex-1 px-4 py-6 space-y-2" role="navigation">
+      <!-- Main navigation -->
+      <a href="{{ path('default_index') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'default_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'default_index' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:home', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.index'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="{{ path('ranking_index') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'ranking_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'ranking_index' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:trophy', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.ranking'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="{{ path('coaster_search_index') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'coaster_search_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'coaster_search_index' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:magnifying-glass', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.search'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="{{ path('map_index') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'map_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'map_index' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:map-pin', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.map'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="{{ path('top_list') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'top_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'top_list' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:clipboard', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.top'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="{{ path('review_list') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'review_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'review_list' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:chat-bubble-bottom-center-text', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.review'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="{{ path('user_list') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'user_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'user_list' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:users', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.users'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <a href="https://blog.captaincoaster.com" target="_blank" rel="noopener" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+        {{ ux_icon('heroicons:newspaper', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.blog'|trans({}, 'navigation') }}</span>
+        {{ ux_icon('heroicons:arrow-top-right-on-square', {'class': 'ml-auto w-4 h-4 opacity-50', 'aria-hidden': 'true'}) }}
+      </a>
+
+      <a href="{{ path('default_contact') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'default_contact' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}" aria-current="{{ currentRoute == 'default_contact' ? 'page' : 'false' }}">
+        {{ ux_icon('heroicons:envelope', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.contact'|trans({}, 'navigation') }}</span>
+      </a>
+
+      <!-- Language switcher -->
+      {% if app.request.attributes.get('_route') %}
+        <div class="pt-6 mt-6 border-t border-neutral-200 dark:border-neutral-700">
+          <h3 class="px-3 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">{{ 'sidebar.language'|trans({}, 'navigation') }}</h3>
+          {% set route = app.request.attributes.get('_route') %}
+          {% set route_params = app.request.attributes.get('_route_params') %}
+          {% set params = route_params|merge(app.request.query.all) %}
+          {% for locale in locales %}
+            <a href="{{ path(route, params|merge({ _locale: locale })) }}" class="group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ locale == app.request.locale ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}">
+              <div class="flex items-center">
+                {{ ux_icon('heroicons:language', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+                <span>{{ locale|trans }}</span>
+              </div>
+              {% if locale == app.request.locale %}
+                <span class="px-2 py-1 text-xs font-medium text-cc-blue-700 dark:text-cc-blue-300 bg-cc-blue-100 dark:bg-cc-blue-900/30 rounded-full">{{ 'sidebar.current'|trans({}, 'navigation') }}</span>
+              {% endif %}
             </a>
-          </li>
-          <li{% if currentRoute == 'ranking_index' %} class="active"{% endif %}>
-            <a href="{{ path('ranking_index') }}">
-              {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.ranking'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'coaster_search_index' %} class="active"{% endif %}>
-            <a href="{{ path('coaster_search_index') }}">
-              {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.search'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'map_index' %} class="active"{% endif %}>
-            <a href="{{ path('map_index') }}">
-              {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.map'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'top_list' %} class="active"{% endif %}>
-            <a href="{{ path('top_list') }}">
-              {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.top'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'review_list' %} class="active"{% endif %}>
-            <a href="{{ path('review_list') }}">
-              {{ ux_icon('heroicons:chat-bubble-bottom-center-text', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.review'|trans }}</span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'user_list' %} class="active"{% endif %}>
-            <a href="{{ path('user_list') }}">
-              {{ ux_icon('heroicons:users', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.users'|trans }}</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://blog.captaincoaster.com" target="_blank">
-              {{ ux_icon('heroicons:newspaper', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.blog'|trans }} <span style="font-size: 12px;">{{ ux_icon('heroicons:arrow-top-right-on-square', {'class': 'w-6 h-6'}) }}</span></span>
-            </a>
-          </li>
-          <li{% if currentRoute == 'default_contact' %} class="active"{% endif %}>
-            <a href="{{ path('default_contact') }}">
-              {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.contact'|trans }}</span>
-            </a>
-          </li>
-          <li>
-            {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-              <a href="{{ path('logout') }}">
-                {{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.logout'|trans }}</span>
-              </a>
-            {% else %}
-              <a href="{{ path('login') }}">
-                {{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }} <span>{{ 'sidebar.login'|trans }}</span>
-              </a>
-            {% endif %}
-          </li>
-        </ul>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Login/Logout -->
+      <div class="pt-6 mt-auto border-t border-neutral-200 dark:border-neutral-700">
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+          <a href="{{ path('logout') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-red-600 dark:hover:text-red-400">
+            {{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+            <span>{{ 'sidebar.logout'|trans({}, 'navigation') }}</span>
+          </a>
+        {% else %}
+          <a href="{{ path('login') }}" class="group flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+            {{ ux_icon('heroicons:key', {'class': 'mr-3 w-5 h-5 shrink-0 transition-colors duration-200', 'aria-hidden': 'true'}) }}
+            <span>{{ 'sidebar.login'|trans({}, 'navigation') }}</span>
+          </a>
+        {% endif %}
       </div>
+    </nav>
+  </div>
+</aside>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-t border-neutral-200 dark:border-neutral-800 z-50 md:hidden" role="navigation" aria-label="{{ 'nav.bottom.label'|trans({}, 'navigation') }}">
+  <div class="flex justify-around py-2">
+    <a href="{{ path('default_index') }}" class="flex flex-col items-center py-3 px-4 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'default_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-600 dark:text-cc-blue-400' : 'text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-500 hover:bg-neutral-50 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'default_index' ? 'page' : 'false' }}" aria-label="{{ 'nav.home.full_label'|trans({}, 'navigation') }}">
+      {{ ux_icon('heroicons:home', { 'class': 'w-6 h-6 mb-1 transition-transform duration-200 ' ~ (currentRoute == 'default_index' ? 'scale-110' : ''), 'aria-hidden': 'true' }) }}
+      <span class="text-xs font-medium">{{ 'nav.home'|trans({}, 'navigation') }}</span>
+    </a>
+
+    <a href="{{ path('ranking_index') }}" class="flex flex-col items-center py-3 px-4 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'ranking_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-600 dark:text-cc-blue-400' : 'text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-500 hover:bg-neutral-50 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'ranking_index' ? 'page' : 'false' }}" aria-label="{{ 'nav.rankings.full_label'|trans({}, 'navigation') }}">
+      {{ ux_icon('heroicons:trophy', { 'class': 'w-6 h-6 mb-1 transition-transform duration-200 ' ~ (currentRoute == 'ranking_index' ? 'scale-110' : ''), 'aria-hidden': 'true' }) }}
+      <span class="text-xs font-medium">{{ 'nav.rankings'|trans({}, 'navigation') }}</span>
+    </a>
+
+    <a href="{{ path('coaster_search_index') }}" class="flex flex-col items-center py-3 px-4 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'coaster_search_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-600 dark:text-cc-blue-400' : 'text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-500 hover:bg-neutral-50 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'coaster_search_index' ? 'page' : 'false' }}" aria-label="{{ 'nav.discover.full_label'|trans({}, 'navigation') }}">
+      {{ ux_icon('heroicons:magnifying-glass', { 'class': 'w-6 h-6 mb-1 transition-transform duration-200 ' ~ (currentRoute == 'coaster_search_index' ? 'scale-110' : ''), 'aria-hidden': 'true' }) }}
+      <span class="text-xs font-medium">{{ 'nav.discover'|trans({}, 'navigation') }}</span>
+    </a>
+
+    <a href="{{ path('map_index') }}" class="flex flex-col items-center py-3 px-4 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'map_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-600 dark:text-cc-blue-400' : 'text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-500 hover:bg-neutral-50 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'map_index' ? 'page' : 'false' }}" aria-label="{{ 'nav.map.full_label'|trans({}, 'navigation') }}">
+      {{ ux_icon('heroicons:map-pin', { 'class': 'w-6 h-6 mb-1 transition-transform duration-200 ' ~ (currentRoute == 'map_index' ? 'scale-110' : ''), 'aria-hidden': 'true' }) }}
+      <span class="text-xs font-medium">{{ 'nav.map'|trans({}, 'navigation') }}</span>
+    </a>
+
+    <a href="{{ path('profile') }}" class="flex flex-col items-center py-3 px-4 rounded-xl transition-all duration-200 min-h-[48px] min-w-[48px] focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'profile' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-600 dark:text-cc-blue-400' : 'text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-500 hover:bg-neutral-50 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'profile' ? 'page' : 'false' }}" aria-label="{{ 'nav.profile_nav.full_label'|trans({}, 'navigation') }}">
+      {{ ux_icon('heroicons:user', { 'class': 'w-6 h-6 mb-1 transition-transform duration-200 ' ~ (currentRoute == 'profile' ? 'scale-110' : ''), 'aria-hidden': 'true' }) }}
+      <span class="text-xs font-medium">{{ 'nav.profile_nav'|trans({}, 'navigation') }}</span>
+    </a>
+  </div>
+</nav>
+
+<!-- Mobile Offcanvas Sidebar (for additional menu items) -->
+<div class="fixed inset-0 z-50 md:hidden hidden" data-controller="offcanvas" data-offcanvas-id-value="sidebarMenu" data-offcanvas-placement-value="start" aria-labelledby="sidebarMenuLabel">
+  <!-- Backdrop -->
+  <div class="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm" data-action="click->offcanvas#close"></div>
+  
+  <!-- Offcanvas panel -->
+  <div class="fixed inset-y-0 left-0 z-50 w-80 max-w-sm bg-white dark:bg-neutral-900 shadow-xl">
+    <!-- Header -->
+    <div class="flex items-center justify-between px-4 py-4 border-b border-neutral-200 dark:border-neutral-700">
+      <h2 class="text-lg font-semibold text-neutral-900 dark:text-white" id="sidebarMenuLabel">{{ 'nav.menu'|trans({}, 'navigation') }}</h2>
+      <button type="button" class="inline-flex items-center justify-center p-2 rounded-lg text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 transition-colors duration-200" data-action="click->offcanvas#close" aria-label="{{ 'nav.close'|trans({}, 'navigation') }}">
+        {{ ux_icon('heroicons:x-mark', {'class': 'w-6 h-6', 'aria-hidden': 'true'}) }}
+      </button>
     </div>
-    <!-- /main navigation -->
+
+    <!-- Content -->
+    <div class="flex flex-col flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <!-- Secondary navigation items -->
+      <a href="{{ path('top_list') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'top_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}">
+        {{ ux_icon('heroicons:clipboard', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.top'|trans }}</span>
+      </a>
+
+      <a href="{{ path('review_list') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'review_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}">
+        {{ ux_icon('heroicons:chat-bubble-bottom-center-text', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.review'|trans }}</span>
+      </a>
+
+      <a href="{{ path('user_list') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'user_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}">
+        {{ ux_icon('heroicons:users', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.users'|trans }}</span>
+      </a>
+
+      <a href="https://blog.captaincoaster.com" target="_blank" rel="noopener" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+        {{ ux_icon('heroicons:newspaper', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.blog'|trans }}</span>
+        {{ ux_icon('heroicons:arrow-top-right-on-square', {'class': 'ml-auto w-4 h-4 opacity-50', 'aria-hidden': 'true'}) }}
+      </a>
+
+      <a href="{{ path('default_contact') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'default_contact' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}">
+        {{ ux_icon('heroicons:envelope', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.contact'|trans }}</span>
+      </a>
+
+      <!-- Theme toggle (mobile only) -->
+      <button class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 w-full text-left" type="button" data-controller="theme" data-action="click->theme#toggle" data-theme-target="toggle" aria-label="{{ 'nav.theme.toggle'|trans }}">
+        {{ ux_icon('heroicons:moon', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'sidebar.theme'|trans }}</span>
+      </button>
+
+      {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+        <!-- User profile links (mobile) -->
+        <div class="pt-6 mt-6 border-t border-neutral-200 dark:border-neutral-700">
+          <h3 class="px-3 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">{{ 'sidebar.account'|trans }}</h3>
+          
+          <a href="{{ path('profile_ratings') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 {{ currentRoute == 'profile_ratings' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400' }}">
+            {{ ux_icon('heroicons:star', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+            <span>{{ 'navbar.rating'|trans }}</span>
+          </a>
+
+          <a href="{{ path('user_tops', {'id': app.user.id}) }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+            {{ ux_icon('heroicons:clipboard', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+            <span>{{ 'navbar.tops'|trans }}</span>
+          </a>
+
+          <a href="{{ path('map_user', {'id': app.user.id}) }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+            {{ ux_icon('heroicons:map-pin', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+            <span>{{ 'navbar.my_map'|trans }}</span>
+          </a>
+
+          <!-- Notifications (mobile) -->
+          <a href="{{ path('profile') }}" class="flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+            <div class="flex items-center">
+              {{ ux_icon('heroicons:bell', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+              <span>{{ 'notif.title'|trans }}</span>
+            </div>
+            {% if app.user.unreadNotifications|length > 0 %}
+              <span class="px-2 py-1 text-xs font-medium text-cc-warm-800 bg-cc-warm-200 dark:text-cc-warm-200 dark:bg-cc-warm-900/30 rounded-full">{{ app.user.unreadNotifications|length }}</span>
+            {% endif %}
+          </a>
+        </div>
+      {% endif %}
+
+      <!-- Language switcher (mobile) -->
+      {% if app.request.attributes.get('_route') %}
+        <div class="pt-6 mt-6 border-t border-neutral-200 dark:border-neutral-700">
+          <h3 class="px-3 text-xs font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-3">{{ 'sidebar.language'|trans }}</h3>
+          {% set route = app.request.attributes.get('_route') %}
+          {% set route_params = app.request.attributes.get('_route_params') %}
+          {% set params = route_params|merge(app.request.query.all) %}
+          {% for locale in locales|filter(v => v != app.request.locale) %}
+            <a href="{{ path(route, params|merge({ _locale: locale })) }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+              {{ ux_icon('heroicons:language', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+              <span>{{ locale|trans }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
   </div>
 </div>

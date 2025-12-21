@@ -16,18 +16,14 @@ inclusion: always
 - **AWS SDK** - S3 for images, SES for email
 - **Google OAuth2** - Primary authentication, secondary is passwordless login using email
 - **EasyAdmin 4** - Admin interface at `/team`
-- **Webpack Encore** build system
+- **Vite** build system (migrating from Webpack Encore)
 - **Stimulus** controllers
-- **Limitless HTML Template** using their own CSS, based on Bootstrap 3
-- **Bootstrap 3.4.X** mainly for CSS, few JS components used
+- **Tailwind CSS v4** - Utility-first CSS framework
+    - Modern CSS-first architecture with `@theme` and `@apply` directives
+    - Design tokens defined in CSS custom properties
+    - No jQuery dependency
 - **Twig** templating
-- **Heroicons using Symfony UX Icons**
-
-### Development Environment
-
-- **Server**: https://localhost:8000 (to be run as background command)
-- **Asset compilation**: `npm run dev-server` (to be run as background command)
-- **Database**: MariaDB with Doctrine migrations
+- **Icons using Symfony UX Icons** - Heroicons, FE, and others
 
 ### Code Quality Tools
 
@@ -35,11 +31,19 @@ inclusion: always
 - **PHP CS Fixer** - PSR-12 compliance
 - **PHPUnit** - Testing framework
 
+### Development Environment Commands
+
+- **Server**: `symfony server:start --listen-ip 0.0.0.0` (to be run as background command)
+- **Asset Server**: `npm run dev` (to be run as background command)
+- **Asset Build**: `npm run build`
+- **PHPUnit**: `vendor/bin/phpunit`
+- **PHPStan**: `vendor/bin/phpstan`
+- **PHP CS Fixer**: `vendor/bin/php-cs-fixer fix`
+
 ## Core Development Principles
 
-- **KISS**: Keep It Simple - choose the simplest solution that works
-- **Readability First**: Code is read more than written
-- **Minimal Code**: Write only what's absolutely necessary
+- **KISS**: Keep It Super Simple - choose the simplest solution that works
+- **NEVER OVER ENGINEER**
 - **Mobile-First**: 75% of users are mobile - prioritize mobile experience
 - **25% desktop users** - Desktop is secondary but must remain functional
 - **Stimulus-first**: Use Stimulus controllers over jQuery
@@ -105,31 +109,3 @@ Maintain strict separation of concerns:
 - **Arrange-Act-Assert**: Structure tests clearly
 - **One assertion per concept**: Keep tests focused
 - **Use data providers**: For testing multiple scenarios
-
-## CRITICAL: Dev Environment commands
-
-**THERE IS ONLY ONE COMMAND TO RUN TESTS:**
-
-```bash
-vendor/bin/phpunit
-```
-
-### Optional Variations (but still just phpunit):
-
-```bash
-# Run specific test file
-vendor/bin/phpunit tests/Service/CoasterSummaryServiceTest.php
-
-# Run specific test method
-vendor/bin/phpunit --filter testMethodName
-
-# Run tests with coverage (optional)
-vendor/bin/phpunit --coverage-html coverage/
-```
-
-**PLEASE RUN NPM AND SYMFONY WEB SERVER AS BACKGROUND COMMANDS TO CHECK LOGS**
-
-```bash
-npm run dev-server
-symfony server:start --listen-ip 0.0.0.0
-```

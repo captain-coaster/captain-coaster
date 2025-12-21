@@ -1,0 +1,405 @@
+/**
+ * TOP LIST EDIT - DRAG & DROP STYLES (Tailwind CSS)
+ * SortableJS integration for modern drag-and-drop functionality
+ * Used by Top/edit.html.twig and top_search_controller.js
+ */
+
+@layer components {
+    /* Container styles */
+    .media-list-container[data-controller='top-list'] {
+        @apply relative min-h-[100px];
+    }
+
+    /* Modern Coaster Entry Layout */
+    .coaster-entry {
+        @apply flex items-center gap-3 p-3 mb-2 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 rounded-xl transition-all duration-200 relative;
+    }
+
+    .coaster-entry:hover {
+        @apply border-neutral-300 dark:border-neutral-600 shadow-md;
+    }
+
+    .coaster-entry:focus-within {
+        @apply outline outline-2 outline-cc-blue-500 outline-offset-2;
+    }
+
+    /* Disable transition when dragging */
+    .coaster-entry.sortable-drag,
+    .coaster-entry.sortable-chosen {
+        @apply transition-none;
+    }
+
+    /* Drag Area - Combined handle and position */
+    .drag-area {
+        @apply flex flex-col items-center justify-center gap-0.5 cursor-grab p-2 rounded-lg transition-colors duration-200 select-none min-w-[48px];
+    }
+
+    .drag-area:hover {
+        @apply bg-neutral-100 dark:bg-neutral-800;
+    }
+
+    .drag-area:hover .drag-indicator {
+        @apply opacity-100 text-neutral-500 dark:text-neutral-400;
+    }
+
+    .drag-area:active {
+        @apply cursor-grabbing bg-neutral-200 dark:bg-neutral-700;
+    }
+
+    .position-number {
+        @apply text-lg font-bold text-neutral-500 dark:text-neutral-400 leading-none select-none;
+    }
+
+    .drag-indicator {
+        @apply text-neutral-400 dark:text-neutral-500 opacity-60 transition-opacity duration-200 select-none;
+    }
+
+    /* Coaster Content - Main info area */
+    .coaster-content {
+        @apply flex-1 min-w-0 flex items-center gap-2;
+    }
+
+    .coaster-main {
+        @apply flex-1 min-w-0 leading-snug;
+    }
+
+    .coaster-name {
+        @apply font-semibold text-base text-neutral-900 dark:text-white;
+    }
+
+    .coaster-separator {
+        @apply text-neutral-300 dark:text-neutral-600 mx-1;
+    }
+
+    .coaster-park {
+        @apply text-neutral-500 dark:text-neutral-400 text-sm;
+    }
+
+    .coaster-rating {
+        @apply flex-shrink-0;
+    }
+
+    .coaster-rating .star-rating {
+        @apply m-0;
+    }
+
+    .coaster-rating .star-rating-stars {
+        @apply flex items-center gap-px;
+    }
+
+    .coaster-rating .star-rating-stars svg {
+        @apply w-4 h-4;
+    }
+
+    /* Actions Menu */
+    .coaster-menu {
+        @apply flex-shrink-0;
+    }
+
+    .menu-btn {
+        @apply flex items-center justify-center w-9 h-9 p-0 border-0 bg-transparent text-neutral-500 dark:text-neutral-400 rounded-lg cursor-pointer transition-all duration-200;
+    }
+
+    .menu-btn:hover {
+        @apply bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300;
+    }
+
+    .menu-btn:active {
+        @apply bg-neutral-200 dark:bg-neutral-700;
+    }
+
+    /* ========================================================================
+     * SORTABLEJS STATES
+     * ======================================================================== */
+
+    /* Ghost placeholder (shows where item will be dropped) */
+    .sortable-ghost {
+        @apply opacity-40 bg-neutral-50 dark:bg-neutral-800 border-2 border-dashed border-cc-blue-500 rounded-xl;
+    }
+
+    .sortable-ghost * {
+        @apply opacity-50;
+    }
+
+    /* Chosen item (when item is selected/grabbed) */
+    .sortable-chosen {
+        @apply border-cc-blue-500 shadow-lg;
+    }
+
+    .sortable-chosen .drag-area {
+        @apply cursor-grabbing bg-cc-blue-50 dark:bg-cc-blue-900/20;
+    }
+
+    .sortable-chosen .position-number {
+        @apply text-cc-blue-700 dark:text-cc-blue-400;
+    }
+
+    /* Dragged item (the actual item being dragged) */
+    .sortable-drag {
+        @apply opacity-100 border-cc-blue-500 shadow-2xl z-[1000] rotate-2;
+    }
+
+    .sortable-drag .drag-area {
+        @apply cursor-grabbing bg-cc-blue-50 dark:bg-cc-blue-900/20;
+    }
+
+    .sortable-drag .position-number {
+        @apply text-cc-blue-700 dark:text-cc-blue-400;
+    }
+
+    /* ========================================================================
+     * SAVE STATUS INDICATOR
+     * ======================================================================== */
+
+    .save-status {
+        @apply fixed top-5 right-5 px-4 py-2 rounded-lg text-sm font-medium z-50 transition-all duration-300 shadow-lg;
+    }
+
+    .save-status-saving {
+        @apply bg-cc-warm-300 text-neutral-800 border border-cc-warm-500;
+    }
+
+    .save-status-saved {
+        @apply bg-green-500 text-white border border-green-600;
+    }
+
+    .save-status-error {
+        @apply bg-red-500 text-white border border-red-600;
+    }
+
+    /* Spinner animation */
+    .spinner {
+        animation: top-list-spin 1s linear infinite;
+    }
+
+    @keyframes top-list-spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* ========================================================================
+     * TOP LIST SEARCH
+     * ======================================================================== */
+
+    .top-search-container {
+        @apply mb-5;
+    }
+
+    .top-search-container .search-container {
+        @apply max-w-full;
+    }
+
+    .top-search-container input[type='search'] {
+        @apply py-3 px-4 pr-10;
+    }
+
+    .top-search-container .search-dropdown {
+        @apply max-h-[400px] overflow-y-auto;
+    }
+
+    .top-search-container .search-result-item {
+        @apply flex items-center gap-2;
+    }
+
+    .top-search-container .search-result-item .badge {
+        @apply ml-auto flex-shrink-0;
+    }
+
+    /* Duplicate coaster styling */
+    .search-result-duplicate {
+        @apply opacity-60 cursor-not-allowed bg-neutral-50 dark:bg-neutral-800;
+    }
+
+    .search-result-duplicate:hover {
+        @apply bg-neutral-50 dark:bg-neutral-800;
+    }
+
+    .search-result-duplicate .badge {
+        @apply ml-2;
+    }
+
+    /* Added coaster animation */
+    .coaster-entry-added {
+        animation: coasterAdded 1s ease;
+    }
+
+    @keyframes coasterAdded {
+        0% {
+            transform: scale(0.95);
+            opacity: 0.5;
+            background-color: rgba(34, 197, 94, 0.2);
+        }
+        50% {
+            transform: scale(1.02);
+            background-color: rgba(34, 197, 94, 0.2);
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+            background-color: white;
+        }
+    }
+
+    /* Dark mode animation adjustment */
+    @media (prefers-color-scheme: dark) {
+        @keyframes coasterAdded {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.5;
+                background-color: rgba(34, 197, 94, 0.2);
+            }
+            50% {
+                transform: scale(1.02);
+                background-color: rgba(34, 197, 94, 0.2);
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                background-color: rgb(23, 23, 23);
+            }
+        }
+    }
+}
+
+/* ============================================================================
+ * RESPONSIVE
+ * ============================================================================ */
+
+@media (max-width: 767px) {
+    .coaster-entry {
+        @apply gap-2 p-2.5;
+    }
+
+    .drag-area {
+        @apply min-w-[40px] p-1.5;
+    }
+
+    .position-number {
+        @apply text-base;
+    }
+
+    .drag-indicator svg {
+        @apply w-3.5 h-3.5;
+    }
+
+    .coaster-content {
+        @apply flex-col items-start gap-1;
+    }
+
+    .coaster-name {
+        @apply text-sm;
+    }
+
+    .coaster-park {
+        @apply text-xs;
+    }
+
+    .coaster-separator {
+        @apply hidden;
+    }
+
+    .coaster-main {
+        @apply flex flex-col gap-0.5;
+    }
+
+    .coaster-rating .star-rating-stars svg {
+        @apply w-3.5 h-3.5;
+    }
+
+    .menu-btn {
+        @apply w-10 h-10;
+    }
+
+    .top-search-container {
+        @apply mb-4;
+    }
+
+    .top-search-container input[type='search'] {
+        @apply py-2.5 px-3.5;
+    }
+
+    .top-search-container .search-dropdown {
+        @apply max-h-[300px];
+    }
+
+    .top-search-container .search-result-item {
+        @apply py-2.5 px-3 min-h-[44px];
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .coaster-entry {
+        @apply mb-2.5;
+    }
+
+    .drag-area {
+        @apply min-w-[48px] py-2.5 px-1.5;
+    }
+
+    .menu-btn {
+        @apply w-11 h-11;
+    }
+
+    .sortable-chosen {
+        @apply scale-[1.02];
+    }
+
+    .sortable-drag {
+        @apply rotate-2 scale-[1.03];
+    }
+
+    .top-search-container input[type='search'] {
+        @apply py-3.5 px-4 min-h-[48px];
+    }
+
+    .top-search-container .search-result-item {
+        @apply py-3 px-3.5 min-h-[48px];
+    }
+}
+
+/* ============================================================================
+ * ACCESSIBILITY
+ * ============================================================================ */
+
+.drag-handle:focus {
+    @apply outline outline-2 outline-cc-blue-500 outline-offset-2 rounded-sm;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .sortable-ghost {
+        @apply border-black bg-white;
+    }
+
+    .sortable-chosen,
+    .sortable-drag {
+        @apply border-black shadow-[0_4px_8px_rgba(0,0,0,0.5)];
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .coaster-entry,
+    .save-status {
+        @apply transition-none;
+    }
+
+    .sortable-drag,
+    .sortable-chosen {
+        @apply rotate-0;
+    }
+
+    .spinner {
+        animation: none;
+    }
+
+    .coaster-entry-added {
+        animation: none;
+        @apply bg-green-100 dark:bg-green-900/20;
+    }
+}

@@ -1,7 +1,7 @@
 {# Display profile picture or fallback picture #}
 {% macro profilePicture(user, className) %}
     <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture|default('default_user.png') }}"
-         class="{{ className|default('img-circle img-lg') }}"
+         class="{{ className|default('rounded-full img-lg') }}"
          alt="{{ user.displayName }}">
 {% endmacro %}
 
@@ -22,17 +22,17 @@
 {# Display coaster rank variation #}
 {% macro variation(coaster) %}
     {% if coaster.previousRank is empty %}
-        <span class="badge badge-flat border-warning-600 text-warning-600">new</span>
+        <span class="badge bg-warning-subtle text-yellow-600 dark:text-yellow-400 border border-warning">new</span>
     {% elseif coaster.previousRank < coaster.rank %}
-        <span class="badge badge-flat border-danger-600 text-danger-600">
-      {{ ux_icon('bxs:down-arrow', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
-    </span>
+        <span class="badge bg-danger-subtle text-red-600 dark:text-red-400 border border-danger">
+            {{ ux_icon('bxs:down-arrow', {'class': 'icon-xs'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+        </span>
     {% elseif coaster.previousRank > coaster.rank %}
-        <span class="badge badge-flat border-success-600 text-success-600">
-      {{ ux_icon('bxs:up-arrow', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
-    </span>
+        <span class="badge bg-success-subtle text-green-600 dark:text-green-400 border border-success">
+            {{ ux_icon('bxs:up-arrow', {'class': 'icon-xs'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+        </span>
     {% elseif coaster.previousRank == coaster.rank %}
-        <span class="badge badge-flat border-primary-600 text-primary-600">{{ ux_icon('bxs:right-arrow', {'class': 'w-6 h-6'}) }}</span>
+        <span class="badge bg-primary-subtle text-cc-blue-600 dark:text-cc-blue-400 border border-primary">{{ ux_icon('bxs:right-arrow', {'class': 'icon-xs'}) }}</span>
     {% endif %}
 {% endmacro %}
 
@@ -40,25 +40,25 @@
 {% macro starRating(rating) %}
     <span class="star-rating text-warning">
         {%- if rating == 5.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 4.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('half-star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 4.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 3.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('half-star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 3.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 2.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('half-star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 2.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 1.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}{{ ux_icon('half-star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 1.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'icon-sm'}) }}
         {%- elseif rating == 0.5 -%}
-            {{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('half-star', {'class': 'icon-sm'}) }}
         {%- endif -%}
     </span>
 {% endmacro %}

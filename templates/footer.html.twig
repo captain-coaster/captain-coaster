@@ -1,5 +1,13 @@
-<div class="footer text-muted">
-    2017-{{ 'now'|date('Y') }}.
-    Crafted with {{ ux_icon('heroicons-solid:heart', {'class': 'w-6 h-6'}) }} by French coaster enthusiasts.
-    <a href="{{ path('app_terms_conditions') }}">{{ 'title'|trans([], 'policy') }}</a>
-</div>
+<footer class="py-6 mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
+  <div class="container mx-auto px-4">
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <span class="text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
+        2017-{{ 'now'|date('Y') }}.
+        Crafted with {{ ux_icon('heroicons-solid:heart', {'class': 'w-4 h-4 text-red-500 dark:text-red-400 inline-block', 'aria-hidden': 'true'}) }} by French coaster enthusiasts.
+      </span>
+      <a href="{{ path('app_terms_conditions') }}" class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors duration-200">
+        {{ 'title'|trans([], 'policy') }}
+      </a>
+    </div>
+  </div>
+</footer>

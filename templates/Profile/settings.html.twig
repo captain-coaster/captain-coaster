@@ -7,116 +7,115 @@
 {% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
-        {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-      </div>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="md:col-span-1">
+      {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
     </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
-          <!-- settings form -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h6 class="panel-title">{{ 'profile.settings.title'|trans }}</h6>
-            </div>
-            <div class="panel-body">
-              {% if not canChangeName %}
-                <div class="alert alert-warning">
-                  {{ 'profile.settings.name.change_limit'|trans }}
-                </div>
-              {% endif %}
-
-              {{ form_start(form) }}
-
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.name'|trans }}</legend>
-
-                <div class="form-group">
-                  {{ form_label(form.firstName) }}
-                  {{ form_widget(form.firstName) }}
-                  {{ form_errors(form.firstName) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.lastName) }}
-                  {{ form_widget(form.lastName) }}
-                  {{ form_errors(form.lastName) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.displayNameFormat) }}
-                  {{ form_widget(form.displayNameFormat) }}
-                  {{ form_errors(form.displayNameFormat) }}
-                  <small class="text-muted">{{ 'profile.settings.name.format.help'|trans }}</small>
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.profilePicture) }}
-                  {{ form_widget(form.profilePicture) }}
-                  {{ form_errors(form.profilePicture) }}
-                </div>
-              </fieldset>
-
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.preferences'|trans }}</legend>
-
-                <div class="form-group">
-                  {{ form_label(form.emailNotification) }}
-                  {{ form_widget(form.emailNotification) }}
-                  {{ form_errors(form.emailNotification) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.preferredLocale) }}
-                  {{ form_widget(form.preferredLocale) }}
-                  {{ form_errors(form.preferredLocale) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.imperial) }}
-                  {{ form_widget(form.imperial) }}
-                  {{ form_errors(form.imperial) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.homePark) }}
-                  {{ form_widget(form.homePark) }}
-                  {{ form_errors(form.homePark) }}
-                </div>
-
-                <div class="toggle-switch-form-group" data-controller="toggle-switch">
-                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
-                </div>
-
-                <div class="toggle-switch-form-group" data-controller="toggle-switch">
-                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
-                </div>
-              </fieldset>
-
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.advanced'|trans }}</legend>
-
-                <div class="form-group">
-                  {{ form_label(form.apiKey) }}
-                  {{ form_widget(form.apiKey) }}
-                  {{ form_errors(form.apiKey) }}
-                </div>
-              </fieldset>
-
-              <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
-                <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }}</b>
-                {{ 'profile.settings.save'|trans }}
-              </button>
-
-              {{ form_rest(form) }}
-              {{ form_end(form) }}
-            </div>
-          </div>
-          <!-- /settings form -->
+    <div class="md:col-span-3">
+      <!-- settings form -->
+      <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+          <h1 class="text-lg font-semibold text-neutral-900 dark:text-white">{{ 'profile.settings.title'|trans }}</h1>
         </div>
-      </div>
+        <div class="p-6">
+          {% if not canChangeName %}
+            <div class="mb-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800" role="alert">
+              <div class="flex items-start gap-3">
+                {{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                <p class="text-sm text-yellow-800 dark:text-yellow-200">{{ 'profile.settings.name.change_limit'|trans }}</p>
+              </div>
+            </div>
+          {% endif %}
+
+          {{ form_start(form) }}
+
+          <fieldset class="mb-6">
+            <legend class="text-base font-semibold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-4">{{ 'profile.settings.sections.name'|trans }}</legend>
+
+            <div class="mb-3">
+              {{ form_label(form.firstName) }}
+              {{ form_widget(form.firstName) }}
+              {{ form_errors(form.firstName) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.lastName) }}
+              {{ form_widget(form.lastName) }}
+              {{ form_errors(form.lastName) }}
+            </div>
+
+            <div class="mb-6">
+              {{ form_label(form.displayNameFormat) }}
+              {{ form_widget(form.displayNameFormat) }}
+              {{ form_errors(form.displayNameFormat) }}
+              <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ 'profile.settings.name.format.help'|trans }}</p>
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.profilePicture) }}
+              {{ form_widget(form.profilePicture) }}
+              {{ form_errors(form.profilePicture) }}
+            </div>
+          </fieldset>
+
+          <fieldset class="mb-6">
+            <legend class="text-base font-semibold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-4">{{ 'profile.settings.sections.preferences'|trans }}</legend>
+
+            <div class="mb-3">
+              {{ form_label(form.emailNotification) }}
+              {{ form_widget(form.emailNotification) }}
+              {{ form_errors(form.emailNotification) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.preferredLocale) }}
+              {{ form_widget(form.preferredLocale) }}
+              {{ form_errors(form.preferredLocale) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.imperial) }}
+              {{ form_widget(form.imperial) }}
+              {{ form_errors(form.imperial) }}
+            </div>
+
+            <div class="mb-3">
+              {{ form_label(form.homePark) }}
+              {{ form_widget(form.homePark) }}
+              {{ form_errors(form.homePark) }}
+            </div>
+
+            <div class="toggle-switch-form-group mb-3" data-controller="toggle-switch">
+              {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+            </div>
+
+            <div class="toggle-switch-form-group mb-3" data-controller="toggle-switch">
+              {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+            </div>
+          </fieldset>
+
+          <fieldset class="mb-6">
+            <legend class="text-base font-semibold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-4">{{ 'profile.settings.sections.advanced'|trans }}</legend>
+
+            <div class="mb-3">
+              {{ form_label(form.apiKey) }}
+              {{ form_widget(form.apiKey) }}
+              {{ form_errors(form.apiKey) }}
+            </div>
+          </fieldset>
+
+          <div class="flex justify-end">
+            <button type="submit" class="btn-primary inline-flex items-center gap-2">
+              {{ 'profile.settings.save'|trans }}
+              {{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+            </button>
+          </div>
+
+          {{ form_rest(form) }}
+          {{ form_end(form) }}
+        </div>
+      </section>
+      <!-- /settings form -->
     </div>
   </div>
 {% endblock %}

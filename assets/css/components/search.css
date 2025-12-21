@@ -1,0 +1,139 @@
+/*
+ * Search Component Styles
+ * Modern search results with Tailwind CSS v4
+ */
+
+@layer components {
+    /* Search results container */
+    .search-results-container {
+        @apply divide-y divide-neutral-100 dark:divide-neutral-800;
+    }
+
+    /* Search result item */
+    .search-result-item {
+        @apply flex items-center gap-4 p-4 cursor-pointer transition-colors duration-200;
+        @apply hover:bg-neutral-50 dark:hover:bg-neutral-800;
+        @apply focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500;
+    }
+
+    .search-result-item-page {
+        @apply border-l-4 border-transparent hover:border-cc-blue-500;
+    }
+
+    /* Search result emoji/icon */
+    .search-result-emoji {
+        @apply text-3xl flex-shrink-0 w-12 h-12 flex items-center justify-center;
+        @apply bg-neutral-100 dark:bg-neutral-800 rounded-xl;
+    }
+
+    /* Search result content */
+    .search-result-content {
+        @apply flex-1 min-w-0;
+    }
+
+    .search-result-name {
+        @apply text-base font-semibold text-neutral-900 dark:text-white mb-1 truncate;
+    }
+
+    .search-result-subtitle {
+        @apply text-sm text-neutral-600 dark:text-neutral-400 truncate;
+    }
+
+    /* Search result image */
+    .search-result-image {
+        @apply flex-shrink-0 w-24 h-18 rounded-lg overflow-hidden;
+    }
+
+    .search-result-image img {
+        @apply w-full h-full object-cover;
+    }
+
+    /* Search form (for autocomplete) */
+    .search-form {
+        @apply relative w-full max-w-2xl;
+    }
+
+    .search-input {
+        @apply w-full pl-12 pr-4 py-3 rounded-full border-0 shadow-sm;
+        @apply ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600;
+        @apply placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500;
+        @apply dark:bg-neutral-800 dark:text-white transition-colors duration-200;
+    }
+
+    .search-icon {
+        @apply absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400 pointer-events-none;
+    }
+
+    .search-clear {
+        @apply absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 p-0 border-0 bg-transparent;
+        @apply text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300;
+        @apply cursor-pointer hidden transition-colors duration-200;
+    }
+
+    .search-form.has-value .search-clear {
+        @apply flex items-center justify-center;
+    }
+
+    /* Search autocomplete dropdown */
+    .search-autocomplete {
+        @apply absolute top-full left-0 right-0 mt-2 bg-white dark:bg-neutral-900;
+        @apply border border-neutral-200 dark:border-neutral-700 rounded-2xl shadow-lg;
+        @apply max-h-96 overflow-y-auto z-50 hidden;
+    }
+
+    .search-autocomplete.show {
+        @apply block;
+    }
+
+    /* Autocomplete section */
+    .autocomplete-section {
+        @apply py-2 border-b border-neutral-100 dark:border-neutral-800;
+    }
+
+    .autocomplete-section:last-child {
+        @apply border-b-0;
+    }
+
+    .autocomplete-section .section-title {
+        @apply px-4 py-2 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400;
+    }
+
+    /* Autocomplete item */
+    .autocomplete-item {
+        @apply flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors duration-100;
+        @apply hover:bg-neutral-50 dark:hover:bg-neutral-800;
+    }
+
+    .autocomplete-item.highlighted {
+        @apply bg-neutral-50 dark:bg-neutral-800;
+    }
+
+    .autocomplete-item .item-image {
+        @apply w-10 h-10 rounded-lg object-cover flex-shrink-0;
+    }
+
+    .autocomplete-item .item-icon {
+        @apply w-10 h-10 rounded-lg bg-neutral-100 dark:bg-neutral-800;
+        @apply flex items-center justify-center flex-shrink-0 text-neutral-500 dark:text-neutral-400;
+    }
+
+    .autocomplete-item .item-content {
+        @apply flex-1 min-w-0;
+    }
+
+    .autocomplete-item .item-title {
+        @apply font-medium text-neutral-900 dark:text-white text-sm;
+    }
+
+    .autocomplete-item .item-title mark {
+        @apply bg-cc-warm-200 dark:bg-cc-warm-900/30 px-0.5 rounded;
+    }
+
+    .autocomplete-item .item-subtitle {
+        @apply text-xs text-neutral-600 dark:text-neutral-400;
+    }
+
+    .autocomplete-item .item-meta {
+        @apply text-sm text-neutral-600 dark:text-neutral-400 flex-shrink-0;
+    }
+}

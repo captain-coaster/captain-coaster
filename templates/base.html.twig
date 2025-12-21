@@ -2,7 +2,6 @@
 <html lang="{{ app.request.get('_locale') }}" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ 'app.title.default'|trans }}{% endblock %} • {{ 'app.name'|trans }}</title>
   <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
@@ -13,72 +12,69 @@
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
   <meta name="application-name" content="{{ 'app.name'|trans }}">
   <meta name="msapplication-TileColor" content="#2b5797">
-  <meta name="theme-color" content="#37474f">
+  <meta name="theme-color" content="#28343a">
   <link rel="manifest" href="{{ asset('manifest.json') }}">
   {% block header %}{% endblock %}
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
-  {{ encore_entry_link_tags('app') }}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  {{ vite_entry_link_tags('app') }}
   {% block stylesheets %}{% endblock %}
 </head>
-<body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
-<!-- main navbar -->
-{{ include('navbar.html.twig') }}
-<!-- /main navbar -->
-<!-- page container -->
-<div class="page-container">
-  <!-- page content -->
-  <div class="page-content">
-    <!-- main sidebar -->
+<body class="bg-neutral-50 dark:bg-neutral-900">
+  <!-- Main navbar (fixed top) -->
+  {{ include('navbar.html.twig') }}
+
+  <!-- Page layout -->
+  <div class="flex min-h-screen">
+    <!-- Main sidebar (desktop: visible, mobile: offcanvas) -->
     {{ include('sidebar.html.twig') }}
-    <!-- /main sidebar -->
-    <!-- main sidebar -->
-    {% block secondary_sidebar %}{% endblock %}
-    <!-- /main sidebar -->
-    <!-- main content -->
-    <div class="content-wrapper">
+
+    <!-- Main content -->
+    <main id="main-content" class="flex-1 md:ml-64 pt-16 pb-20 md:pb-0" role="main" aria-label="{{ 'main.content.label'|trans({}, 'navigation') }}">
       {% block wide_body %}
-        <!-- page header -->
-        {{ include(
-          'page_header.html.twig',
-          {'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null), 'secondaryTitle': secondaryTitle|default(null)}
-        ) }}
-        <!-- /page header -->
+        <!-- Page header -->
+        {{ include('page_header.html.twig', {
+          'title': title|default('Bienvenue !'),
+          'subTitle': subTitle|default(null),
+          'secondaryTitle': secondaryTitle|default(null),
+          'pageHasFilters': pageHasFilters|default(false)
+        }) }}
+
         <!-- Content area -->
-        <div class="content">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {{ include('flashes.html.twig') }}
           <div id="notifications" data-controller="notification" data-notification-target="container"></div>
 
           {% block body %}{% endblock %}
-
-          {{ include('footer.html.twig') }}
         </div>
+
+        <!-- Footer -->
+        {{ include('footer.html.twig') }}
       {% endblock %}
-      <!-- /content area -->
-    </div>
-    <!-- /main content -->
+    </main>
+
+    <!-- Secondary sidebar (filters) - must be after main-content for flex order -->
+    {% block secondary_sidebar %}{% endblock %}
   </div>
-  <!-- /page content -->
-</div>
-<!-- /page container -->
 
-<!-- Core JS files -->
-{{ encore_entry_script_tags('app') }}
+  <!-- Core JS files -->
+  {{ vite_entry_script_tags('app') }}
 
-<script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-<script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+  <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
-<!-- Page-specific entries -->
-{% block javascripts %}{% endblock %}
-{% if app.environment != 'dev' %}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M2S96P7YEW"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-M2S96P7YEW');
-</script>
-{% endif %}
+  <!-- Page-specific entries -->
+  {% block javascripts %}{% endblock %}
+  {% if app.environment != 'dev' %}
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-M2S96P7YEW"></script>
+  <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-M2S96P7YEW');
+  </script>
+  {% endif %}
 </body>
 </html>

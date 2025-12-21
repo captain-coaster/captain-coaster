@@ -4,61 +4,61 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="panel">
-    <div class="panel-body">
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
+  <article class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+    <div class="p-8 prose prose-neutral dark:prose-invert max-w-none">
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
           {{ 'terms.title'|trans([], 'policy') }}
-        </h3>
-
-        <div class="content-group">
+        </h2>
+        <div class="text-neutral-700 dark:text-neutral-300">
           {{ 'terms.text'|trans([], 'policy')|raw }}
         </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'privacy.title'|trans([], 'policy') }}
-        </h3>
+      </section>
 
-        <div class="content-group">
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
+          {{ 'privacy.title'|trans([], 'policy') }}
+        </h2>
+        <div class="text-neutral-700 dark:text-neutral-300">
           {{ 'privacy.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
         </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'cookies.title'|trans([], 'policy') }}
-        </h3>
+      </section>
 
-        <div class="content-group">
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
+          {{ 'cookies.title'|trans([], 'policy') }}
+        </h2>
+        <div class="text-neutral-700 dark:text-neutral-300">
           {{ 'cookies.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
         </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'hosting.title'|trans([], 'policy') }}
-        </h3>
+      </section>
 
-        <div class="content-group">
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
+          {{ 'hosting.title'|trans([], 'policy') }}
+        </h2>
+        <div class="text-neutral-700 dark:text-neutral-300">
           {{ 'hosting.text'|trans([], 'policy')|raw }}
         </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'copyright.title'|trans([], 'policy') }}
-        </h3>
+      </section>
 
-        <div class="content-group">
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
+          {{ 'copyright.title'|trans([], 'policy') }}
+        </h2>
+        <div class="text-neutral-700 dark:text-neutral-300">
           {{ 'copyright.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
         </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-bold text-neutral-900 dark:text-white mb-4">
           {{ 'contact.title'|trans([], 'policy') }}
-        </h3>
-        <div class="content-group">
+        </h2>
+        <div class="text-neutral-700 dark:text-neutral-300">
           {{ 'contact.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
         </div>
-      </div>
+      </section>
     </div>
-  </div>
+  </article>
 {% endblock %}
