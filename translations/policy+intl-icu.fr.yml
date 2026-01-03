@@ -1,42 +1,60 @@
-title: 'Termes & Conditions'
-privacy:
-    title: 'Politique de Confidentialité'
-    text:
-        '<p>Cette politique de confidentialité explique comment notre site web utilise les données personnelles que nous collectons lorsque vous utilisez Captain Coaster.</p>
-        <p>Captain Coaster collecte les données suivantes lors de votre inscription :</p>
+policy:
+    title: "Politique de Confidentialité et Conditions d'Utilisation"
+    content: |
+        <h2>À Propos de Captain Coaster</h2>
+        <p>Captain Coaster est un guide communautaire pour les passionnés de montagnes russes. Nous ne sommes affiliés à aucun parc ou constructeur.</p>
+
+        <h2>Mentions Légales</h2>
+        <p><strong>Éditeur :</strong> Florian Blond<br>
+        <strong>Contact :</strong> contact@captaincoaster.com<br></p>
+
+        <p><strong>Hébergeur web :</strong> HOSTINGER, UAB<br>
+        Švitrigailos str. 34, Vilnius 03230, Lituanie</p>
+
+        <p><strong>Services cloud :</strong> Amazon Web Services EMEA SARL<br>
+        38 Avenue John F. Kennedy, L-1855, Luxembourg</p>
+
+        <p><strong>Toutes les données sont stockées en France</strong></p>
+
+        <h2>Vos Données Personnelles (RGPD)</h2>
+        <p><strong>Données collectées :</strong> Nom, prénom, email, photo de profil (Google), adresse IP, contenus que vous publiez sur le site.</p>
+
+        <p><strong>Pourquoi :</strong> Gestion de votre compte, fonctionnement du service communautaire, sécurité du site.</p>
+
+        <p><strong>Base légale :</strong> Exécution du service demandé et sécurité (intérêt légitime).</p>
+
+        <p><strong>Partage :</strong> Vos données ne sont jamais vendues ou partagées à quiconque.</p>
+
+        <p><strong>Conservation :</strong> Tant que votre compte existe, puis 1 mois après suppression.</p>
+
+        <p><strong>Vos droits :</strong> Vous pouvez accéder, corriger, supprimer vos données ou vous opposer à leur traitement. En cas de problème, vous pouvez saisir la CNIL. <a href="{contact_link}">Contactez-nous</a></p>
+
+        <h2>Cookies</h2>
+        <p>Nous utilisons uniquement des cookies essentiels (session, langue) nécessaires au fonctionnement. Aucun cookie publicitaire ou de tracking.</p>
+
+        <h2>Règles d'Utilisation</h2>
         <ul>
-        <li>Prénom et nom,</li>
-        <li>Adresse e-mail,</li>
-        <li>Photo de profil public (uniquement lors de l''authentification Google)</li>
+        <li><strong>Un seul compte</strong> par personne</li>
+        <li><strong>Honnêteté :</strong> Ne notez que les coasters que vous avez vraiment faits</li>
+        <li><strong>Respect :</strong> Pas de contenu offensant, illégal ou inapproprié</li>
+        <li><strong>Usage normal :</strong> L'extraction massive de données (scraping) est interdite</li>
+        <li><strong>Modération :</strong> Nous pouvons modifier/supprimer tout contenu et suspendre les comptes</li>
         </ul>
-        <p>Nous conserverons vos données aussi longtemps que vous utiliserez notre service, dans un stockage sécurisé et en respectant la loi française "Loi Informatique et Libertés du 6 janvier 1978".</p>
-        <p>Elles ne sont jamais partagées avec quiconque et sont utilisées uniquement pour créer un compte et pour certaines fonctionnalités de Captain Coaster.</p>
-        <p>Chaque utilisateur a droit aux éléments suivants :</p>
-        <ul>
-        <li>Le droit d''accès - Vous avez le droit de nous demander des copies de vos données personnelles, envoyées par e-mail,</li>
-        <li>Le droit de rectification - Vous avez le droit de demander la correction de toute information que vous estimez inexacte ou manquante,</li>
-        <li>Le droit à l''effacement - Vous avez le droit de demander que nous effacions vos données personnelles.</li>
-        </ul>
-        <p>Si vous avez des questions sur la politique de confidentialité de Captain Coaster, sur les données que nous détenons à votre sujet, ou si vous souhaitez exercer l''un de vos droits de protection des données, veuillez <a href="{link_href}">nous contacter</a>.</p>'
-cookies:
-    title: 'Politique de Cookies'
-    text:
-        "<p>Les cookies sont de petits fichiers stockés sur l'ordinateur d'un utilisateur pour simplifier votre vie.</p>
-        <p>Captain Coaster utilise un cookie de session pour vous rappeler lorsque vous vous connectez. Cela évite de vous connecter à chaque fois que vous nous rendez visite. Nous utilisons également un cookie Google Analytics pour les statistiques.</p>"
-terms:
-    title: 'Utilisation de Captain Coaster'
-    text:
-        "<p>Captain Coaster est un site web communautaire pour les passionnés de parcs d'attractions et de montagnes russes. Il n'est affilié à aucun parc, constructeur ou société de l'industrie du loisir.</p>
-        <p>Il est ouvert à tous : il vous suffit de vous connecter pour partager votre expérience sur les montagnes russes (notes, tags, avis). Pour accéder à ces fonctionnalités, vous aurez besoin d'un compte Google ou d'une adresse e-mail <b>valide</b>. <b>Il est formellement interdit d'avoir plusieurs comptes</b> et cela entraînera une exclusion permanente.</p>
-        <p>Tous les champs participatifs sont examinés par les modérateurs de l'équipe qui se réservent le droit de modifier ou de supprimer tout message. Les utilisateurs ne respectant pas ces règles peuvent être exclus temporairement ou définitivement.</p>"
-hosting:
-    title: 'Hébergement'
-    text: 'Captain Coaster est hébergé par Amazon Web Services, dont le siège est à Seattle, Washington, aux États-Unis. Nos serveurs sont situés à Paris, en France.'
-copyright:
-    title: "Droits d'Auteur"
-    text:
-        '<p>Le logo "Captain Coaster" appartient à Benjamin R., Captain Coaster a le droit exclusif de l''utiliser et de le modifier. Toute reproduction sans autorisation est interdite.</p>
-        <p>Chaque utilisateur peut télécharger des photos sur Captain Coaster avec son crédit. Si vous êtes propriétaire d''une photo que vous ne souhaitez pas partager sur Captain Coaster, veuillez <a href="{link_href}">nous contacter</a> et la photo sera supprimée dès que possible.</p>'
-contact:
-    title: 'Contactez-nous'
-    text: '<b>Des questions ou des remarques ? <a href="{link_href}">Contactez-nous</a>, on mord pas !</b>'
+
+        <h2>Propriété Intellectuelle</h2>
+        <p><strong>Le site :</strong> Contenu protégé par le droit d'auteur. Usage personnel autorisé, commercial interdit.</p>
+
+        <p><strong>Vos contenus :</strong> Vous restez propriétaire de vos photos et avis. En les publiant, vous nous autorisez à les utiliser dans le cadre du service.</p>
+
+        <p><strong>Upload de photos :</strong> En téléchargeant une photo, vous garantissez posséder les droits d'auteur ou avoir obtenu l'autorisation écrite du propriétaire des droits.</p>
+
+        <p><strong>Problème :</strong> Contenu publié sans autorisation ? <a href="{contact_link}">Contactez-nous</a> pour suppression.</p>
+
+        <h2>Responsabilité</h2>
+        <p>Captain Coaster ne garantit pas l'exactitude des informations partagées par la communauté. Nous modérons mais ne pouvons tout vérifier.</p>
+
+        <h2>Droit Applicable</h2>
+        <p>Ces conditions sont régies par le droit français.</p>
+
+        <h2>Contact</h2>
+        <p><a href="{contact_link}">Contactez-nous</a> pour toute question sur ces conditions.</p>

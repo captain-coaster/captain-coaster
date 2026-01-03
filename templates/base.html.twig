@@ -69,6 +69,7 @@
 
 <!-- Page-specific entries -->
 {% block javascripts %}{% endblock %}
+{# Temporarily disabled Google Analytics
 {% if app.environment != 'dev' %}
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-M2S96P7YEW"></script>
@@ -80,5 +81,6 @@
     gtag('config', 'G-M2S96P7YEW');
 </script>
 {% endif %}
+#}
 </body>
 </html>

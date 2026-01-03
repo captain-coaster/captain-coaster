@@ -1,62 +1,15 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'title'|trans([], 'policy') %}
+{% set title = 'policy.title'|trans([], 'policy') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
   <div class="panel">
     <div class="panel-body">
       <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'terms.title'|trans([], 'policy') }}
-        </h3>
 
         <div class="content-group">
-          {{ 'terms.text'|trans([], 'policy')|raw }}
-        </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'privacy.title'|trans([], 'policy') }}
-        </h3>
-
-        <div class="content-group">
-          {{ 'privacy.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
-        </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'cookies.title'|trans([], 'policy') }}
-        </h3>
-
-        <div class="content-group">
-          {{ 'cookies.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
-        </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'hosting.title'|trans([], 'policy') }}
-        </h3>
-
-        <div class="content-group">
-          {{ 'hosting.text'|trans([], 'policy')|raw }}
-        </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'copyright.title'|trans([], 'policy') }}
-        </h3>
-
-        <div class="content-group">
-          {{ 'copyright.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
-        </div>
-      </div>
-      <div class="content-group-lg">
-        <h3 class="text-semibold mb-5">
-          {{ 'contact.title'|trans([], 'policy') }}
-        </h3>
-        <div class="content-group">
-          {{ 'contact.text'|trans({'%link_href%': path('default_contact')}, 'policy')|raw }}
+          {{ 'policy.content'|trans({'{contact_link}': path('default_contact')}, 'policy')|raw }}
         </div>
       </div>
     </div>
