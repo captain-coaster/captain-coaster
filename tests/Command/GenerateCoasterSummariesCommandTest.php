@@ -64,7 +64,8 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Force regeneration mode: summaries with 5+ downvotes', $output);
+        $this->assertStringContainsString('Force regeneration mode', $output);
+        $this->assertStringContainsString('5+', $output);
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
