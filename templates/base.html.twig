@@ -18,6 +18,9 @@
   {% block header %}{% endblock %}
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
   {{ encore_entry_link_tags('app') }}
+  {% if app.environment != 'dev' %}
+  <script defer src="https://umami.captaincoaster.com/script.js" data-website-id="b5fd8d78-2d4e-4319-b75c-f71c6bb1485f"></script>
+  {% endif %}
   {% block stylesheets %}{% endblock %}
 </head>
 <body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
@@ -69,18 +72,5 @@
 
 <!-- Page-specific entries -->
 {% block javascripts %}{% endblock %}
-{# Temporarily disabled Google Analytics
-{% if app.environment != 'dev' %}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-M2S96P7YEW"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-M2S96P7YEW');
-</script>
-{% endif %}
-#}
 </body>
 </html>
