@@ -2,7 +2,15 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
     static targets = ['dateInput', 'dateContainer', 'calendarButton'];
-    static values = { updateUrl: String, ratingId: Number };
+    static values = {
+        updateUrl: String,
+        ratingId: Number,
+        minDate: String,
+        maxDate: String,
+        beforeOpeningMessage: String,
+        afterClosingMessage: String,
+        futureMessage: String,
+    };
     static outlets = ['csrf-protection'];
 
     connect() {
@@ -12,6 +20,8 @@ export default class extends Controller {
         this.updateVisibility();
         // Ensure popup is hidden on connect
         this.hideDatePicker();
+        // Set date constraints based on coaster opening/closing dates
+        this.setDateConstraints();
     }
 
     disconnect() {
@@ -38,6 +48,9 @@ export default class extends Controller {
         if (!this.hasDateContainerTarget) return;
 
         this.dateContainerTarget.classList.add('show');
+
+        // Update Today button state when showing picker
+        this.updateTodayButton();
 
         // Store current value before showing picker
         if (this.hasDateInputTarget) {
@@ -95,19 +108,28 @@ export default class extends Controller {
         // Validate date
         if (date && date.trim()) {
             const selectedDate = new Date(date);
-            const today = new Date();
-            today.setHours(23, 59, 59, 999);
 
-            if (isNaN(selectedDate.getTime())) {
-                console.error('Invalid date format:', date);
-                return;
+            // Check against coaster opening date
+            if (this.minDateValue) {
+                const minDate = new Date(this.minDateValue);
+                if (selectedDate < minDate) {
+                    this.showError(this.beforeOpeningMessageValue);
+                    return;
+                }
             }
 
-            if (selectedDate > today) {
-                console.error('Date cannot be in the future:', date);
-                if (this.hasDateInputTarget) {
-                    this.dateInputTarget.value = this.originalValue || '';
-                }
+            // Check against coaster closing date or today
+            const maxDate = new Date(
+                this.maxDateValue || new Date().toISOString().split('T')[0]
+            );
+            maxDate.setHours(23, 59, 59, 999);
+            if (selectedDate > maxDate) {
+                const message =
+                    this.maxDateValue &&
+                    this.maxDateValue !== new Date().toISOString().split('T')[0]
+                        ? this.afterClosingMessageValue
+                        : this.futureMessageValue;
+                this.showError(message);
                 return;
             }
         }
@@ -150,6 +172,13 @@ export default class extends Controller {
 
         if (this.hasDateInputTarget) {
             const today = new Date().toISOString().split('T')[0];
+
+            // Check if today is valid (not after closing date)
+            if (this.maxDateValue && today > this.maxDateValue) {
+                this.showError(this.afterClosingMessageValue);
+                return;
+            }
+
             this.dateInputTarget.value = today;
             await this.saveDate(today);
             this.hideDatePicker();
@@ -209,6 +238,50 @@ export default class extends Controller {
         } else {
             if (indicator) {
                 indicator.remove();
+            }
+        }
+    }
+
+    setDateConstraints() {
+        if (!this.hasDateInputTarget) return;
+
+        // Set minimum date based on coaster opening date
+        if (this.minDateValue) {
+            this.dateInputTarget.setAttribute('min', this.minDateValue);
+        }
+
+        // Set maximum date based on coaster closing date or today
+        if (this.maxDateValue) {
+            this.dateInputTarget.setAttribute('max', this.maxDateValue);
+        }
+    }
+
+    updateTodayButton() {
+        const todayButton = this.element.querySelector('.today-btn');
+        if (!todayButton) return;
+
+        const today = new Date().toISOString().split('T')[0];
+        const shouldDisable = this.maxDateValue && today > this.maxDateValue;
+
+        todayButton.disabled = shouldDisable;
+        if (shouldDisable) {
+            todayButton.style.opacity = '0.5';
+        } else {
+            todayButton.style.opacity = '1';
+        }
+    }
+
+    showError(message) {
+        const notificationElement = document.getElementById('notifications');
+        if (notificationElement) {
+            const notificationController =
+                this.application.getControllerForElementAndIdentifier(
+                    notificationElement,
+                    'notification'
+                );
+
+            if (notificationController) {
+                notificationController.showDanger(message);
             }
         }
     }

@@ -1,1 +1,6 @@
 top_coaster.duplicate: '{coaster} erscheint mehrmals. Entferne bitte die Duplikate.'
+# Ride date validation
+ride_date:
+    before_opening: Das Fahrdatum kann nicht vor der Eröffnung der Achterbahn liegen.
+    after_closing: Das Fahrdatum kann nicht nach der Schließung der Achterbahn liegen.
+    future: Das Fahrdatum kann nicht in der Zukunft liegen.

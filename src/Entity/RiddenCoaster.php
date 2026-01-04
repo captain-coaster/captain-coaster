@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\RiddenCoasterRepository;
+use App\Validator\Constraints as CaptainConstraints;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -16,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
 #[ORM\Entity(repositoryClass: RiddenCoasterRepository::class)]
 #[UniqueEntity(['coaster', 'user'])]
+#[CaptainConstraints\ValidRideDate]
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class RiddenCoaster
 {

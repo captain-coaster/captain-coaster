@@ -1,1 +1,6 @@
 top_coaster.duplicate: '{coaster} aparece varias veces. Por favor, borráis los duplicados.'
+# Ride date validation
+ride_date:
+    before_opening: La fecha del viaje no puede ser anterior a la apertura de la montaña rusa.
+    after_closing: La fecha del viaje no puede ser posterior al cierre de la montaña rusa.
+    future: La fecha del viaje no puede estar en el futuro.

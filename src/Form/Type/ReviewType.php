@@ -87,7 +87,7 @@ class ReviewType extends AbstractType
                     'required' => false,
                     'label' => 'review.ridden_at',
                     'widget' => 'single_text',
-                    'html5' => false,
+                    'html5' => true,
                 ]
             );
     }

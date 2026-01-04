@@ -3,3 +3,8 @@ top_coaster.duplicate: '{coaster} appears several times. Please remove duplicate
 # Admin validators
 date_minimum:
     error: Year must be at least 1800.
+# Ride date validation
+ride_date:
+    before_opening: The ride date cannot be before the coaster opened.
+    after_closing: The ride date cannot be after the coaster closed.
+    future: The ride date cannot be in the future.

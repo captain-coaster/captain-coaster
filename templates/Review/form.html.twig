@@ -37,8 +37,9 @@
             'data-controller': 'datepicker',
             'data-datepicker-format-value': 'yyyy-mm-dd',
             'data-datepicker-autoclose-value': 'true'
-          }
+          } | merge(coaster.openingDate ? {'data-datepicker-start-date-value': coaster.openingDate|date('Y-m-d')} : {}) | merge(coaster.closingDate ? {'data-datepicker-end-date-value': coaster.closingDate|date('Y-m-d')} : {})
         }) }}
+        {{ form_errors(form.riddenAt) }}
       </div>
       <div class="form-group">
         {{ form_label(form.pros, "", {'label_attr': {'class': 'control-label'}}) }}

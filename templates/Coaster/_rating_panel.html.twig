@@ -30,7 +30,12 @@
                  data-controller="rating-date"
                  {% if rating %}data-rating-date-rating-id-value="{{ rating.id }}"{% endif %}
                  data-rating-date-update-url-value="{{ path('rating_edit', {'id': coaster.id }) }}"
-                 data-rating-date-csrf-protection-outlet=".csrf-protection">
+                 data-rating-date-csrf-protection-outlet=".csrf-protection"
+                 {% if coaster.openingDate %}data-rating-date-min-date-value="{{ coaster.openingDate|date('Y-m-d') }}"{% endif %}
+                 {% if coaster.closingDate %}data-rating-date-max-date-value="{{ coaster.closingDate|date('Y-m-d') }}"{% else %}data-rating-date-max-date-value="{{ 'now'|date('Y-m-d') }}"{% endif %}
+                 data-rating-date-before-opening-message-value="{{ 'ride_date.before_opening'|trans({}, 'validators') }}"
+                 data-rating-date-after-closing-message-value="{{ 'ride_date.after_closing'|trans({}, 'validators') }}"
+                 data-rating-date-future-message-value="{{ 'ride_date.future'|trans({}, 'validators') }}">
                 <a class="action-icon"
                    data-action="click->rating-date#toggleDatePicker"
                    href="#"
