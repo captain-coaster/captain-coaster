@@ -80,6 +80,11 @@ class CoasterSummaryService
         $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
         $reviewCount = \count($reviewsWithText);
 
+        // Use Nova 2 Lite for French summaries if no specific model is requested
+        if (!$modelKey && 'fr' === $language) {
+            $modelKey = 'nova2-lite';
+        }
+
         $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey, $language);
 
         if (empty($aiAnalysis['summary'])) {

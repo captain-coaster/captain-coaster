@@ -34,14 +34,9 @@ class BedrockService
             'input_cost_per_1k' => 0.0003,
             'output_cost_per_1k' => 0.0025,
         ],
-        'mistral' => [
-            'id' => 'mistral.mistral-large-3-675b-instruct',
-            'input_cost_per_1k' => 0.0005,
-            'output_cost_per_1k' => 0.0015,
-        ],
     ];
 
-    private const DEFAULT_MODEL = 'mistral';
+    private const DEFAULT_MODEL = 'gpt-oss-120b';
 
     public function __construct(
         private BedrockRuntimeClient $bedrockClient,
