@@ -352,13 +352,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
             UPDATE coaster c
-            JOIN (
+            LEFT JOIN (
                 SELECT rc.coaster_id AS id, COUNT(rating) AS nb
                 FROM ridden_coaster rc
                 GROUP BY rc.coaster_id
             ) c2
             ON c2.id = c.id
-            SET c.total_ratings = c2.nb
+            SET c.total_ratings = IFNULL(c2.nb, 0)
             ';
 
         try {
