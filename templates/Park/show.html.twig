@@ -26,10 +26,10 @@
                     <div class="col-xs-6">
                         <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
                         <h5 class="text-semibold no-margin">
-                            {{ park.kiddies|length }}
+                            {{ park.operatingKiddies|length }}
                         </h5>
                         <div class="text-muted text-size-small">
-                            {{ 'park.kiddies'|trans({'count': park.kiddies|length}) }}
+                            {{ 'park.kiddies'|trans({'count': park.operatingKiddies|length}) }}
                         </div>
                     </div>
                     {% if not is_granted('ROLE_USER') %}
