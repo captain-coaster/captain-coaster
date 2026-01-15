@@ -18,6 +18,7 @@ export default class extends Controller {
         debounceDelay: { type: Number, default: 300 },
         mapOutlet: String,
     };
+    static targets = ['manufacturerFilter', 'modelFilter'];
 
     connect() {
         this.debounceTimer = null;
@@ -30,6 +31,10 @@ export default class extends Controller {
         if (this.updateUrlValue) {
             this.setupPopstateHandler();
             this.restoreFiltersFromUrl();
+        }
+
+        if (this.manufacturerFilterTarget.value !== '' && this.modelFilterTarget.value === '') {
+            this.filterModels(this.manufacturerFilterTarget.value);
         }
 
         // Auto-trigger initial load if endpoint is provided
@@ -62,6 +67,10 @@ export default class extends Controller {
 
     handleChange(event) {
         if (this.isFilterInput(event.target)) {
+            if (event.target === this.manufacturerFilterTarget && this.hasModelFilterTarget) {
+                this.filterModels(this.manufacturerFilterTarget.value)
+            }
+
             this.filterData();
         }
     }
@@ -215,5 +224,29 @@ export default class extends Controller {
         }
 
         this.filterData();
+    }
+
+    filterModels(manufacturerId = null) {
+        const modelsOptions = this.modelFilterTarget.querySelectorAll('option');
+
+        if (manufacturerId) {
+            modelsOptions.forEach((model) => {
+                if (model.getAttribute('data-manufacturer') === manufacturerId || model.getAttribute('value') === '') {
+                    model.style.display = 'block';
+                } else {
+                    model.style.display = 'none';
+                }
+            });
+        } else {
+            modelsOptions.forEach((model) => {
+                if (model.getAttribute('data-manufacturer') === '' || model.getAttribute('value') === '') {
+                    model.style.display = 'block';
+                } else {
+                    model.style.display = 'none';
+                }
+            });
+        }
+
+        this.modelFilterTarget.value = '';
     }
 }

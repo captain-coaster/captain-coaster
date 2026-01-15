@@ -129,7 +129,7 @@
                     {# Manufacturer & Model - Related to coaster type #}
                     {% if filterConfig.excluded_filters is not defined or 'manufacturer' not in filterConfig.excluded_filters %}
                     <div class="form-group">
-                        <select class="form-control" name="filters[manufacturer]">
+                        <select class="form-control" name="filters[manufacturer]" data-filter-target="manufacturerFilter">
                             <option value="">{{ 'filters.manufacturer'|trans }}</option>
                             {% for manufacturer in filtersForm.manufacturer %}
                                 <option value="{{ manufacturer.id }}" {% if filters.manufacturer is defined and filters.manufacturer == manufacturer.id %}selected{% endif %}>{{ manufacturer.name }}</option>
@@ -140,11 +140,13 @@
 
                     {% if filterConfig.excluded_filters is not defined or 'model' not in filterConfig.excluded_filters %}
                     <div class="form-group">
-                        <select class="form-control" name="filters[model]">
+                        <select class="form-control" name="filters[model]" data-filter-target="modelFilter">
                             <option value="">{{ 'filters.model'|trans }}</option>
                             {% if filtersForm.model is defined %}
                                 {% for model in filtersForm.model %}
-                                    <option value="{{ model.id }}" {% if filters.model is defined and filters.model == model.id %}selected{% endif %}>{{ model.name }}</option>
+                                    <option value="{{ model.id }}" data-manufacturer="{{ model.manufacturerId|default('') }}" {% if filters.model is defined and filters.model == model.id %}selected{% endif %}>
+                                        {{ model.name }}
+                                    </option>
                                 {% endfor %}
                             {% endif %}
                         </select>
