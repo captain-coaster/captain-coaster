@@ -11,6 +11,7 @@ use App\Repository\ModelRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\Sluggable\Handler\RelativeSlugHandler;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
@@ -32,6 +33,11 @@ class Model implements \Stringable
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
+    #[Gedmo\SlugHandler(class: RelativeSlugHandler::class, options: [
+        'relationField' => 'manufacturer',
+        'relationSlugField' => 'slug',
+        'separator' => '-',
+    ])]
     private ?string $slug = null;
 
     #[ORM\ManyToOne(targetEntity: Manufacturer::class)]
