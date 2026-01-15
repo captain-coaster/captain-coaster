@@ -3,17 +3,17 @@
  *
  * If folder "../var/translations" does not exist, or some translations are missing,
  * you must warmup your Symfony cache to refresh JavaScript translations.
+ *
+ * If you use TypeScript, you can rename this file to "translator.ts" to take advantage of types checking.
  */
 
-import {
-    trans,
-    getLocale,
-    setLocale,
-    setLocaleFallbacks,
-} from '@symfony/ux-translator';
-import { localeFallbacks } from '../var/translations/configuration';
+import { createTranslator } from '@symfony/ux-translator';
+import { messages, localeFallbacks } from '../var/translations';
 
-setLocaleFallbacks(localeFallbacks);
+const translator = createTranslator({
+    messages,
+    localeFallbacks,
+});
 
-export { trans };
-export * from '../var/translations';
+// Allow you to use `import { trans } from './translator';` in your assets
+export const { trans } = translator;
