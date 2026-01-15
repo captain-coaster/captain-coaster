@@ -83,6 +83,7 @@ class Coaster implements \Stringable
     #[ORM\ManyToOne(targetEntity: Model::class)]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
+    #[CaptainConstraints\ModelManufacturer]
     private ?Model $model = null;
 
     #[ORM\Column(name: 'speed', type: Types::INTEGER, nullable: true)]
