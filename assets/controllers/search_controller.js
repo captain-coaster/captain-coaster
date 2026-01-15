@@ -257,21 +257,15 @@ export default class extends Controller {
 
         // Translate country keys for parks (subtitle contains country key like "country.usa")
         if (item.type === 'park' && subtitle && subtitle.includes('country.')) {
-            // Extract the country key from the highlighted subtitle
-            const countryMatch = item.subtitle.match(/country\.\w+/);
-            if (countryMatch) {
-                const translatedCountry = this.translateCountry(
-                    countryMatch[0]
-                );
-                subtitle = subtitle.replace(
-                    /<strong>.*?<\/strong>|country\.\w+/g,
-                    (match) => {
-                        return match.startsWith('<strong>')
-                            ? match
-                            : translatedCountry;
-                    }
-                );
-            }
+            const translatedCountry = this.translateCountry(subtitle);
+            subtitle = subtitle.replace(
+                /<strong>.*?<\/strong>|country\.\w+/g,
+                (match) => {
+                    return match.startsWith('<strong>')
+                        ? match
+                        : translatedCountry;
+                }
+            );
         }
 
         return `
@@ -288,18 +282,16 @@ export default class extends Controller {
     /**
      * Translate country keys using Symfony UX Translator
      */
-    translateCountry(countryKey) {
-        if (typeof Translator !== 'undefined' && Translator.trans) {
-            try {
-                const translated = Translator.trans(countryKey, {}, 'database');
-                if (translated && translated !== countryKey) {
-                    return translated;
-                }
-            } catch (error) {
-                console.warn('Translation failed:', countryKey, error);
+    translateCountry(country) {
+        try {
+            const translated = trans(country, {}, 'database');
+            if (translated && translated !== country) {
+                return translated;
             }
+        } catch (error) {
+            console.warn('Translation failed:', country, error);
         }
-        return countryKey
+        return country
             .replace('country.', '')
             .replace(/^\w/, (c) => c.toUpperCase());
     }
