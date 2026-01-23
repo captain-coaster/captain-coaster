@@ -1,12 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-import {
-    trans,
-    REVIEW_REPORT_SUCCESS,
-    REVIEW_REPORT_ERROR,
-    REVIEW_REMOVE_UPVOTE,
-    REVIEW_UPVOTE,
-    REVIEW_SUBMIT_REPORT,
-} from '../translator';
+import { trans } from '../translator';
 
 /**
  * Review actions controller for handling upvotes and reports
@@ -204,17 +197,17 @@ export default class extends Controller {
 
                     // Show a success message
                     this._showNotification(
-                        trans(REVIEW_REPORT_SUCCESS),
+                        trans('review.report_success'),
                         'success'
                     );
                 } else {
                     // Re-enable submit button on error
                     if (submitButton) {
                         submitButton.disabled = false;
-                        submitButton.textContent = trans(REVIEW_SUBMIT_REPORT);
+                        submitButton.textContent = trans('review.submit_report');
                     }
                     this._showNotification(
-                        data.message || trans(REVIEW_REPORT_ERROR),
+                        data.message || trans('review.report_error'),
                         'danger'
                     );
                 }
@@ -224,9 +217,9 @@ export default class extends Controller {
                 // Re-enable submit button on error
                 if (submitButton) {
                     submitButton.disabled = false;
-                    submitButton.textContent = trans(REVIEW_SUBMIT_REPORT);
+                    submitButton.textContent = trans('review.submit_report');
                 }
-                this._showNotification(trans(REVIEW_REPORT_ERROR), 'danger');
+                this._showNotification(trans('review.report_error'), 'danger');
             });
     }
 
@@ -258,7 +251,7 @@ export default class extends Controller {
                 this.upvoteButtonTarget.classList.add('active');
                 this.upvoteButtonTarget.setAttribute(
                     'title',
-                    trans(REVIEW_REMOVE_UPVOTE)
+                    trans('review.remove_upvote')
                 );
                 // Add a visual indicator for upvoted state
                 const icon = this.upvoteButtonTarget.querySelector('i');
@@ -269,7 +262,7 @@ export default class extends Controller {
                 this.upvoteButtonTarget.classList.remove('active');
                 this.upvoteButtonTarget.setAttribute(
                     'title',
-                    trans(REVIEW_UPVOTE)
+                    trans('review.upvote')
                 );
                 // Remove visual indicator
                 const icon = this.upvoteButtonTarget.querySelector('i');

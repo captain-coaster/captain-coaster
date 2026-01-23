@@ -1632,7 +1632,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *                 timeout?: scalar|null, // Default: 90
  *                 utf8?: bool, // Default: false
  *                 passive?: bool, // Default: true
- *                 transferMode?: scalar|null, // Default: 2
+ *                 transferMode?: scalar|null, // Default: null
  *                 systemType?: scalar|null, // Default: null
  *                 ignorePassiveAddress?: bool|null, // Default: null
  *                 timestampsOnUnixListingsEnabled?: bool, // Default: false
@@ -2044,11 +2044,13 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     controllers_json?: scalar|null, // Default: "%kernel.project_dir%/assets/controllers.json"
  * }
  * @psalm-type UxTranslatorConfig = array{
- *     dump_directory?: scalar|null, // Default: "%kernel.project_dir%/var/translations"
+ *     dump_directory?: scalar|null, // The directory where translations and TypeScript types are dumped. // Default: "%kernel.project_dir%/var/translations"
+ *     dump_typescript?: bool, // Control whether TypeScript types are dumped alongside translations. Disable this if you do not use TypeScript (e.g. in production when using AssetMapper). // Default: true
  *     domains?: string|array{ // List of domains to include/exclude from the generated translations. Prefix with a `!` to exclude a domain.
  *         type?: scalar|null,
  *         elements?: list<scalar|null>,
  *     },
+ *     keys_patterns?: list<scalar|null>,
  * }
  * @psalm-type UxIconsConfig = array{
  *     icon_dir?: scalar|null, // The local directory where icons are stored. // Default: "%kernel.project_dir%/assets/icons"

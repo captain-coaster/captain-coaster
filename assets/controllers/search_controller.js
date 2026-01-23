@@ -1,11 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
-import {
-    SEARCH_INDEX_MORE,
-    SEARCH_INDEX_NO_RESULT,
-    APP_SEARCH_SEARCHING,
-    trans,
-} from '../translator';
-
+import { trans } from '../translator';
 /**
  * Modern Search Controller - Replaces legacy typeahead.js implementation
  *
@@ -263,21 +257,15 @@ export default class extends Controller {
 
         // Translate country keys for parks (subtitle contains country key like "country.usa")
         if (item.type === 'park' && subtitle && subtitle.includes('country.')) {
-            // Extract the country key from the highlighted subtitle
-            const countryMatch = item.subtitle.match(/country\.\w+/);
-            if (countryMatch) {
-                const translatedCountry = this.translateCountry(
-                    countryMatch[0]
-                );
-                subtitle = subtitle.replace(
-                    /<strong>.*?<\/strong>|country\.\w+/g,
-                    (match) => {
-                        return match.startsWith('<strong>')
-                            ? match
-                            : translatedCountry;
-                    }
-                );
-            }
+            const translatedCountry = this.translateCountry(subtitle);
+            subtitle = subtitle.replace(
+                /<strong>.*?<\/strong>|country\.\w+/g,
+                (match) => {
+                    return match.startsWith('<strong>')
+                        ? match
+                        : translatedCountry;
+                }
+            );
         }
 
         return `
@@ -294,18 +282,16 @@ export default class extends Controller {
     /**
      * Translate country keys using Symfony UX Translator
      */
-    translateCountry(countryKey) {
-        if (typeof Translator !== 'undefined' && Translator.trans) {
-            try {
-                const translated = Translator.trans(countryKey, {}, 'database');
-                if (translated && translated !== countryKey) {
-                    return translated;
-                }
-            } catch (error) {
-                console.warn('Translation failed:', countryKey, error);
+    translateCountry(country) {
+        try {
+            const translated = trans(country, {}, 'database');
+            if (translated && translated !== country) {
+                return translated;
             }
+        } catch (error) {
+            console.warn('Translation failed:', country, error);
         }
-        return countryKey
+        return country
             .replace('country.', '')
             .replace(/^\w/, (c) => c.toUpperCase());
     }
@@ -353,14 +339,14 @@ export default class extends Controller {
         // Use translated text for no results message
         return `<div class="search-no-results">
             <div class="search-no-results-icon">🔍</div>
-            <div class="search-no-results-text">${trans(SEARCH_INDEX_NO_RESULT)}</div>
+            <div class="search-no-results-text">${trans('search_index.noResult')}</div>
         </div>`;
     }
 
     renderShowMoreOption(query) {
         return `<div class="search-show-more" data-action="click->search#showMoreResults" data-query="${this.escapeHtml(query)}">
             <div class="search-show-more-content">
-                <span>${trans(SEARCH_INDEX_MORE)}</span>
+                <span>${trans('search_index.more')}</span>
                 <i class="icon-arrow-right8"></i>
             </div>
         </div>`;
@@ -373,7 +359,7 @@ export default class extends Controller {
         if (!this.hasResultsTarget) return;
         this.resultsTarget.innerHTML = `<div class="search-loading">
             <div class="search-loading-spinner"></div>
-            <div class="search-loading-text">${trans(APP_SEARCH_SEARCHING)}</div>
+            <div class="search-loading-text">${trans('app.search.searching')}</div>
         </div>`;
         this.showDropdown();
     }
