@@ -208,6 +208,12 @@ class Park implements \Stringable
         return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->isKiddie());
     }
 
+    /** @return Collection<int, Coaster> */
+    public function getOperatingKiddies(): Collection
+    {
+        return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->isKiddie() && 1 == $coaster->getStatus()->getId());
+    }
+
     public function isEnabled(): bool
     {
         return $this->enabled;
