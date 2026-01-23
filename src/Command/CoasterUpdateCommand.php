@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\RatingService;
+use App\Repository\RiddenCoasterRepository;
 use App\Service\TopService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -20,7 +20,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 class CoasterUpdateCommand extends Command
 {
     public function __construct(
-        private readonly RatingService $ratingService,
+        private readonly RiddenCoasterRepository $riddenCoasterRepository,
         private readonly TopService $topService
     ) {
         parent::__construct();
@@ -32,8 +32,9 @@ class CoasterUpdateCommand extends Command
         $stopwatch->start('command');
 
         $output->writeln('Start updating ratings...');
-        $ratingNumber = $this->ratingService->updateRatings();
-        $output->writeln("$ratingNumber ratings updated.");
+        $this->riddenCoasterRepository->updateTotalRatings();
+        $ratingNumber = $this->riddenCoasterRepository->updateAverageRatings();
+        $output->writeln(\sprintf('%d ratings updated.', \is_int($ratingNumber) ? $ratingNumber : 0));
 
         $output->writeln('Start updating tops...');
         $topNumber = $this->topService->updateTopStats();
