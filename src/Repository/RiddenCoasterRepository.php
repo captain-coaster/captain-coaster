@@ -352,13 +352,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
             UPDATE coaster c
-            JOIN (
-                SELECT rc.coaster_id AS id, COUNT(rating) AS nb
+            LEFT JOIN (
+                SELECT rc.coaster_id AS id, COUNT(rc.rating) AS nb
                 FROM ridden_coaster rc
+                INNER JOIN user u ON rc.user_id = u.id
+                WHERE u.enabled = 1
                 GROUP BY rc.coaster_id
             ) c2
             ON c2.id = c.id
-            SET c.total_ratings = c2.nb
+            SET c.total_ratings = IFNULL(c2.nb, 0)
             ';
 
         try {
@@ -371,19 +373,22 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /** Update averageRating for all coasters */
-    public function updateAverageRatings(int $minRatings): bool|int
+    public function updateAverageRatings(int $minRatings = 2): bool|int
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
             UPDATE coaster c
-            JOIN (
-                SELECT rc.coaster_id AS id, FORMAT(AVG(rating), 3) AS average
+            LEFT JOIN (
+                SELECT rc.coaster_id AS id, ROUND(AVG(rc.rating), 3) AS average
                 FROM ridden_coaster rc
+                INNER JOIN user u ON rc.user_id = u.id
+                WHERE u.enabled = 1
                 GROUP BY rc.coaster_id
+                HAVING COUNT(rc.rating) >= :minRatings
             ) c2
             ON c2.id = c.id
             SET c.averageRating = c2.average
-            WHERE c.total_ratings >= :minRatings
+            WHERE c2.average IS NOT NULL
             ';
 
         try {
