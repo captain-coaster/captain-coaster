@@ -22,12 +22,6 @@
               <h6 class="panel-title">{{ 'profile.settings.title'|trans }}</h6>
             </div>
             <div class="panel-body">
-              {% if not canChangeName %}
-                <div class="alert alert-warning">
-                  {{ 'profile.settings.name.change_limit'|trans }}
-                </div>
-              {% endif %}
-
               {{ form_start(form) }}
 
               <fieldset class="content-group">
@@ -37,12 +31,18 @@
                   {{ form_label(form.firstName) }}
                   {{ form_widget(form.firstName) }}
                   {{ form_errors(form.firstName) }}
+                  <small class="text-muted">
+                    {{ 'profile.settings.name.change_limit'|trans }}
+                  </small>
                 </div>
 
                 <div class="form-group">
                   {{ form_label(form.lastName) }}
                   {{ form_widget(form.lastName) }}
                   {{ form_errors(form.lastName) }}
+                  <small class="text-muted">
+                    {{ 'profile.settings.name.change_limit'|trans }}
+                  </small>
                 </div>
 
                 <div class="form-group">
