@@ -112,6 +112,16 @@ class ProfileController extends BaseController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            if (!$user->canChangeName()) {
+                $originalData = $em->getUnitOfWork()->getOriginalEntityData($user);
+                $nameChanged = ($user->getFirstName() !== ($originalData['firstName'] ?? null))
+                    || ($user->getLastName() !== ($originalData['lastName'] ?? null));
+
+                if ($nameChanged) {
+                    return $this->redirectToRoute('profile_settings');
+                }
+            }
+
             // Handle profile picture upload
             $profilePictureFile = $form->get('profilePicture')->getData();
             if ($profilePictureFile) {
