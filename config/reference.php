@@ -1632,7 +1632,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *                 timeout?: scalar|null, // Default: 90
  *                 utf8?: bool, // Default: false
  *                 passive?: bool, // Default: true
- *                 transferMode?: scalar|null, // Default: null
+ *                 transferMode?: scalar|null, // Default: 2
  *                 systemType?: scalar|null, // Default: null
  *                 ignorePassiveAddress?: bool|null, // Default: null
  *                 timestampsOnUnixListingsEnabled?: bool, // Default: false
@@ -2027,9 +2027,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     },
  *     clients?: array<string, array<string, mixed>>,
  * }
- * @psalm-type SymfonycastsVerifyEmailConfig = array{
- *     lifetime?: int, // The length of time in seconds that a signed URI is valid for after it is created. // Default: 3600
- * }
  * @psalm-type TwigComponentConfig = array{
  *     defaults?: array<string, string|array{ // Default: ["__deprecated__use_old_naming_behavior"]
  *         template_directory?: scalar|null, // Default: "components"
@@ -2087,7 +2084,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *     api_platform?: ApiPlatformConfig,
  *     twig_extra?: TwigExtraConfig,
  *     knpu_oauth2_client?: KnpuOauth2ClientConfig,
- *     symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *     twig_component?: TwigComponentConfig,
  *     stimulus?: StimulusConfig,
  *     ux_translator?: UxTranslatorConfig,
@@ -2114,7 +2110,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         twig_extra?: TwigExtraConfig,
  *         debug?: DebugConfig,
  *         knpu_oauth2_client?: KnpuOauth2ClientConfig,
- *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *         twig_component?: TwigComponentConfig,
  *         stimulus?: StimulusConfig,
  *         ux_translator?: UxTranslatorConfig,
@@ -2139,7 +2134,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         api_platform?: ApiPlatformConfig,
  *         twig_extra?: TwigExtraConfig,
  *         knpu_oauth2_client?: KnpuOauth2ClientConfig,
- *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *         twig_component?: TwigComponentConfig,
  *         stimulus?: StimulusConfig,
  *         ux_translator?: UxTranslatorConfig,
@@ -2165,7 +2159,6 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         api_platform?: ApiPlatformConfig,
  *         twig_extra?: TwigExtraConfig,
  *         knpu_oauth2_client?: KnpuOauth2ClientConfig,
- *         symfonycasts_verify_email?: SymfonycastsVerifyEmailConfig,
  *         twig_component?: TwigComponentConfig,
  *         stimulus?: StimulusConfig,
  *         ux_translator?: UxTranslatorConfig,

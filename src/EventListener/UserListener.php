@@ -33,9 +33,14 @@ class UserListener
             $user->setNameChangedAt(new \DateTime());
         }
 
-        // Disable email notifications when user account is disabled
+        // When user account is disabled (banned), set bannedAt and disable notifications
         if ($args->hasChangedField('enabled') && !$user->isEnabled()) {
             $user->setEmailNotification(false);
+
+            // Set bannedAt timestamp if not already set
+            if (null === $user->getBannedAt()) {
+                $user->setBannedAt(new \DateTime());
+            }
         }
     }
 }

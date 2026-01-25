@@ -24,12 +24,13 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->isEnabled()) {
-            $this->logger->warning('Login attempt for disabled account', [
+            $this->logger->warning('Login attempt for banned account', [
                 'user_id' => $user->getId(),
                 'email' => $user->getEmail(),
+                'banned_at' => $user->getBannedAt()?->format('Y-m-d H:i:s'),
             ]);
 
-            throw new CustomUserMessageAccountStatusException('login.account_disabled');
+            throw new CustomUserMessageAccountStatusException('login.account_banned');
         }
     }
 

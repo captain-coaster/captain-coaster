@@ -67,7 +67,6 @@ class UserCrudController extends AbstractCrudController
             ArrayField::new('roles')->setPermission('ROLE_SUPER_ADMIN'),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             TextField::new('email'),
-            TextField::new('facebookId')->hideOnIndex(),
             TextField::new('googleId')->hideOnIndex(),
             AssociationField::new('ratings')->onlyOnIndex(),
             AssociationField::new('tops')->onlyOnIndex(),
