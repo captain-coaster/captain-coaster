@@ -207,8 +207,13 @@
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.model'|trans }}
                                 :</label>
                             <div class="pull-right">
-                                <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id}) }}">
-                                    {{ coaster.model.name }}</a>
+                                {% if coaster.model.manufacturer %}
+                                    <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id, 'filters[manufacturer]': coaster.model.manufacturer.id}) }}">
+                                        {{ coaster.model.name }}</a>
+                                {% else %}
+                                    <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id}) }}">
+                                        {{ coaster.model.name }}</a>
+                                {% endif %}
                             </div>
                         </div>
                     {% endif %}

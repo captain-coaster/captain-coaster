@@ -16,4 +16,15 @@ class ModelRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Model::class);
     }
+
+    // Override to get Manufacturer ID
+    public function findForFilter(): array
+    {
+        return $this->createQueryBuilder('m')
+            ->select('m.id', 'm.name', 'manufacturer.id as manufacturerId')
+            ->leftjoin('m.manufacturer', 'manufacturer')
+            ->orderBy('m.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
 }
