@@ -10,6 +10,9 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<User>
+ */
 class UserRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -40,12 +43,17 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    /** Returns users that have recently up. */
-    public function getUsersWithRecentRatingOrTopUpdate(int $sinceHours = 1)
+    /**
+     * Returns users that have recently updated ratings or tops.
+     *
+     * @return User[]
+     */
+    public function getUsersWithRecentRatingOrTopUpdate(int $sinceHours = 1): array
     {
         $date = new \DateTime('- '.$sinceHours.' hours');
 
-        return $this->getEntityManager()
+        /** @var User[] $result */
+        $result = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
@@ -56,11 +64,15 @@ class UserRepository extends ServiceEntityRepository
             ->setParameter('date', $date)
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 
-    public function getAllForSearch()
+    /** @return array<int, array{name: string, slug: string}> */
+    public function getAllForSearch(): array
     {
-        return $this->getEntityManager()
+        /** @var array<int, array{name: string, slug: string}> $result */
+        $result = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('u.displayName as name')
             ->addSelect('u.slug')
@@ -68,6 +80,8 @@ class UserRepository extends ServiceEntityRepository
             ->where('u.enabled = 1')
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 
     /** Count all users. */
@@ -95,7 +109,8 @@ class UserRepository extends ServiceEntityRepository
      */
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
-        return $this->createQueryBuilder('u')
+        /** @var array<int, array<string, mixed>> $result */
+        $result = $this->createQueryBuilder('u')
             ->select('u.id', 'u.displayName as name', 'u.slug', 'COUNT(r.id) as totalRatings')
             ->leftJoin('u.ratings', 'r')
             ->where('u.enabled = 1')
@@ -107,18 +122,23 @@ class UserRepository extends ServiceEntityRepository
             ->addOrderBy('u.displayName', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->enableResultCache(300) // Cache for 5 minutes
+            ->enableResultCache(300)
             ->getArrayResult();
+
+        return $result;
     }
 
     /** @return User[] */
     public function findUsersScheduledForDeletion(\DateTime $before): array
     {
-        return $this->createQueryBuilder('u')
+        /** @var User[] $result */
+        $result = $this->createQueryBuilder('u')
             ->where('u.deletedAt IS NOT NULL')
             ->andWhere('u.deletedAt <= :before')
             ->setParameter('before', $before)
             ->getQuery()
             ->getResult();
+
+        return $result;
     }
 }

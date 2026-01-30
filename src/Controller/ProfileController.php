@@ -14,6 +14,7 @@ use App\Service\ProfilePictureManager;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,7 @@ class ProfileController extends BaseController
         StatService $statService,
         ImageRepository $imageRepository
     ): Response {
+        /** @var User $user */
         $user = $this->getUser();
 
         return $this->render('Profile/index.html.twig', [
@@ -125,7 +127,7 @@ class ProfileController extends BaseController
 
             // Handle profile picture upload
             $profilePictureFile = $form->get('profilePicture')->getData();
-            if ($profilePictureFile) {
+            if ($profilePictureFile instanceof UploadedFile) {
                 $filename = $profilePictureManager->uploadProfilePicture($profilePictureFile, $user);
                 if ($filename) {
                     $user->setProfilePicture($filename);
@@ -156,7 +158,7 @@ class ProfileController extends BaseController
         AccountDeletionService $accountDeletionService,
         TranslatorInterface $translator
     ): Response {
-        $token = $request->request->get('_csrf_token');
+        $token = $request->request->getString('_csrf_token');
 
         if (!$this->isCsrfTokenValid('delete_account', $token)) {
             $this->addFlash('error', $translator->trans('profile.delete_account.invalid_token'));
