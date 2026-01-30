@@ -41,11 +41,6 @@ class User implements UserInterface
     protected ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
-    private ?string $facebookId = null;
-
-    private ?string $facebookAccessToken = null;
-
-    #[ORM\Column(type: Types::STRING, length: 255, nullable: true, unique: true)]
     private ?string $googleId = null;
 
     private ?string $googleAccessToken = null;
@@ -86,7 +81,7 @@ class User implements UserInterface
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
-    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class)]
+    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'])]
     private Collection $images;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -131,6 +126,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $enabled = false;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $bannedAt = null;
+
     #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
     private string $ipAddress;
 
@@ -138,10 +136,10 @@ class User implements UserInterface
     private bool $imperial = false;
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
-    private bool $isVerified = false;
-
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $displayReviewsInAllLanguages = false;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deletedAt = null;
 
     public function __toString(): string
     {
@@ -151,30 +149,6 @@ class User implements UserInterface
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getFacebookId(): ?string
-    {
-        return $this->facebookId;
-    }
-
-    public function setFacebookId(string $facebookId): static
-    {
-        $this->facebookId = $facebookId;
-
-        return $this;
-    }
-
-    public function setFacebookAccessToken(string $facebookAccessToken): static
-    {
-        $this->facebookAccessToken = $facebookAccessToken;
-
-        return $this;
-    }
-
-    public function getFacebookAccessToken(): ?string
-    {
-        return $this->facebookAccessToken;
     }
 
     public function getGoogleId(): ?string
@@ -602,6 +576,23 @@ class User implements UserInterface
         $this->enabled = $enabled;
     }
 
+    public function getBannedAt(): ?\DateTimeInterface
+    {
+        return $this->bannedAt;
+    }
+
+    public function setBannedAt(?\DateTimeInterface $bannedAt): static
+    {
+        $this->bannedAt = $bannedAt;
+
+        return $this;
+    }
+
+    public function isBanned(): bool
+    {
+        return !$this->enabled;
+    }
+
     public function getIpAddress(): string
     {
         return $this->ipAddress;
@@ -638,18 +629,6 @@ class User implements UserInterface
         return null;
     }
 
-    public function isVerified(): bool
-    {
-        return $this->isVerified;
-    }
-
-    public function setVerified(bool $isVerified): static
-    {
-        $this->isVerified = $isVerified;
-
-        return $this;
-    }
-
     public function isDisplayReviewsInAllLanguages(): bool
     {
         return $this->displayReviewsInAllLanguages;
@@ -660,5 +639,22 @@ class User implements UserInterface
         $this->displayReviewsInAllLanguages = $displayReviewsInAllLanguages;
 
         return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function isDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 }

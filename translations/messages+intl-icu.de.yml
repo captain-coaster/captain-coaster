@@ -258,12 +258,20 @@ profile:
             displayReviewsInAllLanguages:
                 label: Anzeigen in verschiedenen Sprachen verfasste Bewertungen
             addTodayDateWhenRating:
-                label: Füge das heutige Datum zu einer Bewertung hinzu
+                label: Heutiges Datum bei einer neuen Bewertung hinzufügen
         advanced:
             apiKey:
-                label: API-Key
+                label: API-Schlüssel
         updated_success: Ihre Einstellungen wurden erfolgreich aktualisiert.
         save: Änderungen speichern
+    delete_account:
+        title: Konto löschen
+        warning: 'Diese Aktion löscht Ihr Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden.'
+        immediate_logout: Sie werden sofort von allen Geräten abgemeldet
+        permanent_after_month: Alle Ihre Daten werden nach 1 Monat dauerhaft gelöscht
+        button: Mein Konto löschen
+        confirm: 'Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
+        invalid_token: 'Ungültiges Sicherheitstoken. Bitte versuchen Sie es erneut.'
 
 review:
     title: Rezensionen
@@ -324,6 +332,7 @@ rating:
 
 navbar:
     profile: Mein Profil
+    settings: Einstellungen
     rating: Meine Bewertungen
     login: Anmelden
     logout: Abmelden

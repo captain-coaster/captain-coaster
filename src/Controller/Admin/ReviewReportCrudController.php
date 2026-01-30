@@ -291,13 +291,13 @@ class ReviewReportCrudController extends AbstractCrudController
         if (!$user->isEnabled()) {
             $this->addFlash('warning', \sprintf('User %s is already disabled.', $user->getDisplayName()));
         } else {
-            // Disable the user - this triggers UserDisabledListener which may clear EntityManager
+            // Disable the user - UserListener handles related cleanup
             $user->setEnabled(false);
             $this->entityManager->flush();
             $this->addFlash('success', \sprintf('User %s has been disabled.', $user->getDisplayName()));
         }
 
-        // Re-fetch the report after potential EntityManager clear from listener
+        // Re-fetch the report to ensure we have fresh data
         $reviewReport = $this->entityManager->find(ReviewReport::class, $reportId);
         if ($reviewReport) {
             $reviewReport->setStatus(ReviewReport::STATUS_USER_BANNED);

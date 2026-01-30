@@ -92,6 +92,11 @@
               <a href="{{ path('profile') }}">{{ ux_icon('heroicons:user', {'class': 'w-6 h-6'}) }} {{ 'navbar.profile'|trans }}</a>
             </li>
             <li>
+              <a href="{{ path('profile_settings') }}">
+                {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-6 h-6'}) }} {{ 'navbar.settings'|trans }}
+              </a>
+            </li>
+            <li>
               <a href="{{ path('profile_ratings') }}">
                 {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }} {{ 'navbar.rating'|trans }}
               </a>

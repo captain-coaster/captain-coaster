@@ -1,3 +1,4 @@
 login:
     authentication_failed: 'Error de autenticación. Por favor, inténtalo de nuevo.'
-    account_disabled: 'Tu cuenta no ha sido activada. Por favor, verifica tu correo electrónico y haz clic en el enlace de activación.'
+    account_banned: 'Tu cuenta ha sido desactivada. Por favor, contáctanos si crees que esto es un error.'
+    account_deleted: 'Tu cuenta ha sido eliminada y ya no es accesible.'

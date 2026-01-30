@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -52,6 +53,8 @@ class UserCrudController extends AbstractCrudController
             ->add('lastName')
             ->add('email')
             ->add('enabled')
+            ->add('bannedAt')
+            ->add('deletedAt')
             ->add('createdAt')
             ->add('updatedAt')
             ->add('lastLogin');
@@ -59,29 +62,49 @@ class UserCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id')->hideOnForm(),
-            TextField::new('firstName')->setFormTypeOption('disabled', 'disabled'),
-            TextField::new('lastName')->setFormTypeOption('disabled', 'disabled'),
-            TextField::new('displayName')->hideOnIndex(),
-            ArrayField::new('roles')->setPermission('ROLE_SUPER_ADMIN'),
-            TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
-            TextField::new('email'),
-            TextField::new('facebookId')->hideOnIndex(),
-            TextField::new('googleId')->hideOnIndex(),
-            AssociationField::new('ratings')->onlyOnIndex(),
-            AssociationField::new('tops')->onlyOnIndex(),
-            AssociationField::new('images')->onlyOnIndex(),
-            AssociationField::new('homePark')->hideOnIndex()->autocomplete(),
-            TextField::new('preferredLocale')->hideOnIndex(),
-            BooleanField::new('enabled'),
-            BooleanField::new('emailNotification')->hideOnIndex(),
-            BooleanField::new('addTodayDateWhenRating')->hideOnIndex(),
-            TextField::new('apiKey')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
-            TextField::new('ipAddress')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
-            DateTimeField::new('lastLogin')->setFormTypeOption('disabled', 'disabled'),
-            DateTimeField::new('createdAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
-            DateTimeField::new('updatedAt')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
-        ];
+        // List page fields
+        yield IdField::new('id')->hideOnForm();
+        yield TextField::new('displayName')->hideOnForm();
+        yield TextField::new('email')->hideOnForm();
+        yield AssociationField::new('ratings')->onlyOnIndex();
+        yield BooleanField::new('enabled');
+
+        // Edit page - Identity
+        yield FormField::addPanel('Identity')->onlyOnForms();
+        yield IdField::new('id')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield TextField::new('firstName')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield TextField::new('lastName')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield TextField::new('displayName')->onlyOnForms();
+        yield TextField::new('slug')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield TextField::new('email')->onlyOnForms();
+        yield TextField::new('googleId')->onlyOnForms()->setFormTypeOption('disabled', true);
+
+        // Edit page - Activity
+        yield FormField::addPanel('Activity')->onlyOnForms();
+        yield AssociationField::new('homePark')->onlyOnForms()->autocomplete();
+
+        // Edit page - Settings
+        yield FormField::addPanel('Settings')->onlyOnForms();
+        yield TextField::new('preferredLocale')->onlyOnForms();
+        yield BooleanField::new('emailNotification')->onlyOnForms();
+        yield BooleanField::new('addTodayDateWhenRating')->onlyOnForms();
+        yield BooleanField::new('imperial')->onlyOnForms();
+        yield BooleanField::new('displayReviewsInAllLanguages')->onlyOnForms();
+
+        // Edit page - Access
+        yield FormField::addPanel('Access')->onlyOnForms();
+        yield ArrayField::new('roles')->onlyOnForms()->setPermission('ROLE_SUPER_ADMIN');
+        yield TextField::new('apiKey')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield TextField::new('ipAddress')->onlyOnForms()->setFormTypeOption('disabled', true);
+
+        // Edit page - Dates
+        yield FormField::addPanel('Dates')->onlyOnForms();
+        yield DateTimeField::new('createdAt')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield DateTimeField::new('updatedAt')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield DateTimeField::new('lastLogin')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield DateTimeField::new('nameChangedAt')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield DateTimeField::new('lastApiKeyUsedAt')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield DateTimeField::new('bannedAt')->onlyOnForms()->setFormTypeOption('disabled', true);
+        yield DateTimeField::new('deletedAt')->onlyOnForms()->setFormTypeOption('disabled', true);
     }
 }

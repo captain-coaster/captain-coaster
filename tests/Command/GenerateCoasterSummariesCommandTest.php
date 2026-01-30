@@ -42,7 +42,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         );
 
         $application = new Application();
-        $application->add($command);
+        $application->addCommand($command);
 
         $this->commandTester = new CommandTester($command);
     }

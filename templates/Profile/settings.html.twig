@@ -27,19 +27,23 @@
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.name'|trans }}</legend>
 
-                <div class="form-group">
+                <div class="form-group{% if form.firstName.vars.errors|length > 0 %} has-error{% endif %}">
                   {{ form_label(form.firstName) }}
                   {{ form_widget(form.firstName) }}
-                  {{ form_errors(form.firstName) }}
+                  {% for error in form.firstName.vars.errors %}
+                    <span class="help-block text-danger">{{ error.message }}</span>
+                  {% endfor %}
                   <small class="text-muted">
                     {{ 'profile.settings.name.change_limit'|trans }}
                   </small>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group{% if form.lastName.vars.errors|length > 0 %} has-error{% endif %}">
                   {{ form_label(form.lastName) }}
                   {{ form_widget(form.lastName) }}
-                  {{ form_errors(form.lastName) }}
+                  {% for error in form.lastName.vars.errors %}
+                    <span class="help-block text-danger">{{ error.message }}</span>
+                  {% endfor %}
                   <small class="text-muted">
                     {{ 'profile.settings.name.change_limit'|trans }}
                   </small>
@@ -115,6 +119,28 @@
             </div>
           </div>
           <!-- /settings form -->
+
+          <!-- delete account section -->
+          <div class="panel panel-flat">
+            <div class="panel-heading">
+              <h6 class="panel-title">{{ 'profile.delete_account.title'|trans }}</h6>
+            </div>
+            <div class="panel-body">
+              <p class="text-semibold">{{ 'profile.delete_account.warning'|trans }}</p>
+              <ul class="list-unstyled">
+                <li>• {{ 'profile.delete_account.immediate_logout'|trans }}</li>
+                <li>• {{ 'profile.delete_account.permanent_after_month'|trans }}</li>
+              </ul>
+              <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
+                <button type="submit" class="btn btn-danger btn-labeled btn-labeled-right">
+                  <b>{{ ux_icon('heroicons:trash', {'class': 'icon-size-16'}) }}</b>
+                  {{ 'profile.delete_account.button'|trans }}
+                </button>
+              </form>
+            </div>
+          </div>
+          <!-- /delete account section -->
         </div>
       </div>
     </div>

@@ -48,7 +48,7 @@ class Image
     private bool $watermarked;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'images', fetch: 'LAZY')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
     private User $uploader;
 

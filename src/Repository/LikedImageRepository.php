@@ -43,7 +43,7 @@ class LikedImageRepository extends ServiceEntityRepository
         return $result > 0;
     }
 
-    /** Recalculate like counters for all images in one efficient SQL query */
+    /** Recalculate like counters for all images in one efficient SQL query (excludes disabled users) */
     public function updateAllLikeCounts(): void
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -51,9 +51,11 @@ class LikedImageRepository extends ServiceEntityRepository
         $sql = '
             UPDATE image i
             LEFT JOIN (
-                SELECT image_id, COUNT(*) as like_count
-                FROM liked_image
-                GROUP BY image_id
+                SELECT li.image_id, COUNT(*) as like_count
+                FROM liked_image li
+                INNER JOIN users u ON li.user_id = u.id
+                WHERE u.enabled = 1
+                GROUP BY li.image_id
             ) li ON i.id = li.image_id
             SET i.like_counter = COALESCE(li.like_count, 0)
         ';

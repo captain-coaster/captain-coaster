@@ -260,9 +260,17 @@ profile:
                 label: Ajouter la date du jour quand je note un nouveau coaster
         advanced:
             apiKey:
-                label: API Key
+                label: Clé API
         updated_success: Vos paramètres ont été mis à jour avec succès.
         save: Enregistrer les modifications
+    delete_account:
+        title: Supprimer le compte
+        warning: 'Cette action supprimera définitivement votre compte et toutes les données associées. Cette action est irréversible.'
+        immediate_logout: Vous serez déconnecté immédiatement de tous les appareils
+        permanent_after_month: Toutes vos données seront définitivement supprimées après 1 mois
+        button: Supprimer mon compte
+        confirm: 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'
+        invalid_token: 'Jeton de sécurité invalide. Veuillez réessayer.'
 
 review:
     title: Avis
@@ -323,6 +331,7 @@ rating:
 
 navbar:
     profile: Mon Profil
+    settings: Paramètres
     rating: Mes Notes
     login: Connexion
     logout: Déconnexion

@@ -1,3 +1,4 @@
 login:
     authentication_failed: "Échec de l'authentification. Veuillez réessayer."
-    account_disabled: "Votre compte n'a pas été activé. Veuillez vérifier votre email et cliquer sur le lien d'activation."
+    account_banned: "Votre compte a été désactivé. Veuillez nous contacter si vous pensez qu'il s'agit d'une erreur."
+    account_deleted: "Votre compte a été supprimé et n'est plus accessible."

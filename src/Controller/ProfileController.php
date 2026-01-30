@@ -9,10 +9,12 @@ use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileSettingsForm;
 use App\Repository\ImageRepository;
+use App\Service\AccountDeletionService;
 use App\Service\ProfilePictureManager;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,6 +32,7 @@ class ProfileController extends BaseController
         StatService $statService,
         ImageRepository $imageRepository
     ): Response {
+        /** @var User $user */
         $user = $this->getUser();
 
         return $this->render('Profile/index.html.twig', [
@@ -124,7 +127,7 @@ class ProfileController extends BaseController
 
             // Handle profile picture upload
             $profilePictureFile = $form->get('profilePicture')->getData();
-            if ($profilePictureFile) {
+            if ($profilePictureFile instanceof UploadedFile) {
                 $filename = $profilePictureManager->uploadProfilePicture($profilePictureFile, $user);
                 if ($filename) {
                     $user->setProfilePicture($filename);
@@ -145,5 +148,29 @@ class ProfileController extends BaseController
             'canChangeName' => $user->canChangeName(),
             'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
+    }
+
+    /** Delete account. */
+    #[Route(path: '/profile/delete-account', name: 'profile_delete_account', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function deleteAccount(
+        Request $request,
+        AccountDeletionService $accountDeletionService,
+        TranslatorInterface $translator
+    ): Response {
+        $token = $request->request->getString('_csrf_token');
+
+        if (!$this->isCsrfTokenValid('delete_account', $token)) {
+            $this->addFlash('error', $translator->trans('profile.delete_account.invalid_token'));
+
+            return $this->redirectToRoute('profile_settings');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $accountDeletionService->scheduleAccountDeletion($user);
+
+        return $this->redirectToRoute('logout');
     }
 }

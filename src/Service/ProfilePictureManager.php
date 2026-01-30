@@ -22,13 +22,13 @@ class ProfilePictureManager
     {
         try {
             $extension = $file->guessExtension() ?: 'jpg';
+            $stream = fopen($file->getPathname(), 'r');
 
-            return $this->handleUpload(
-                $user,
-                // Use stream to reduce memory usage
-                fopen($file->getPathname(), 'r'),
-                $extension
-            );
+            if (false === $stream) {
+                throw new \RuntimeException('Failed to open file stream');
+            }
+
+            return $this->handleUpload($user, $stream, $extension);
         } catch (\Exception $e) {
             return $this->handleError('Failed to upload profile picture', $e);
         }
@@ -56,12 +56,21 @@ class ProfilePictureManager
         }
     }
 
-    /** Handle the upload process and return the filename. */
-    private function handleUpload(User $user, $stream, string $extension): string
+    /**
+     * Handle the upload process and return the filename.
+     *
+     * @param resource $stream
+     */
+    private function handleUpload(User $user, mixed $stream, string $extension): string
     {
         $this->deleteOldProfilePicture($user);
 
-        $filename = $this->generateFilename($user->getId(), $extension);
+        $userId = $user->getId();
+        if (null === $userId) {
+            throw new \RuntimeException('Cannot upload profile picture for user without ID');
+        }
+
+        $filename = $this->generateFilename($userId, $extension);
 
         // Use writeStream instead of write for better memory efficiency
         $this->profilePicturesFilesystem->writeStream(
@@ -86,6 +95,21 @@ class ProfilePictureManager
             } catch (\Exception $e) {
                 $this->logger->warning('Failed to delete old profile picture: '.$e->getMessage());
             }
+        }
+    }
+
+    /** Delete a profile picture file. */
+    public function deleteProfilePicture(string $filename): void
+    {
+        try {
+            if ($this->profilePicturesFilesystem->fileExists($filename)) {
+                $this->profilePicturesFilesystem->delete($filename);
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to delete profile picture', [
+                'filename' => $filename,
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 
