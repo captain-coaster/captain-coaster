@@ -8,6 +8,9 @@ use App\Entity\MaterialType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<MaterialType>
+ */
 class MaterialTypeRepository extends ServiceEntityRepository
 {
     use FilterableRepositoryTrait;

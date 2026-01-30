@@ -10,6 +10,9 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Country>
+ */
 class CountryRepository extends ServiceEntityRepository
 {
     use FilterableRepositoryTrait;
@@ -19,9 +22,9 @@ class CountryRepository extends ServiceEntityRepository
         parent::__construct($registry, Country::class);
     }
 
-    public function countForUser(User $user)
+    public function countForUser(User $user): int
     {
-        return $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(DISTINCT(co.id))')
             ->from(RiddenCoaster::class, 'r')

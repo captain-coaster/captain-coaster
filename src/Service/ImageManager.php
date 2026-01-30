@@ -43,7 +43,11 @@ class ImageManager
     /** Check if image already exists based on file hash. */
     public function isDuplicate(UploadedFile $file): ?Image
     {
-        $hash = dechex(crc32(file_get_contents($file->getPathname())));
+        $content = file_get_contents($file->getPathname());
+        if (false === $content) {
+            return null;
+        }
+        $hash = dechex(crc32($content));
 
         return $this->imageRepository->findOneBy(['hash' => $hash]);
     }
@@ -52,8 +56,11 @@ class ImageManager
     public function setImageHash(Image $image): void
     {
         if ($image->getFile()) {
-            $hash = dechex(crc32(file_get_contents($image->getFile()->getPathname())));
-            $image->setHash($hash);
+            $content = file_get_contents($image->getFile()->getPathname());
+            if (false !== $content) {
+                $hash = dechex(crc32($content));
+                $image->setHash($hash);
+            }
         }
     }
 

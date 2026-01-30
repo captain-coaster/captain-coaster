@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * TagRepository.
+ * @extends ServiceEntityRepository<Tag>
  */
 class TagRepository extends ServiceEntityRepository
 {

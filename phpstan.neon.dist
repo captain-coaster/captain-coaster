@@ -1,7 +1,16 @@
 parameters:
-    level: 5
+    level: 7
+    treatPhpDocTypesAsCertain: false
     paths:
         - src
         - tests
     ignoreErrors:
         - '#Function Eris\\Generator\\[a-zA-Z_]+ not found\.#'
+        # EasyAdmin AdminContext generic types - third-party library limitation
+        - '#has parameter \$context with generic class EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext but does not specify its types#'
+        # AWS SDK Result generic types in tests - third-party library limitation
+        - '#type has no value type specified in iterable type Aws\\Result#'
+        - '#has parameter \$result with no value type specified in iterable type Aws\\Result#'
+        - '#has parameter \$args with no value type specified in iterable type array#'
+        # Test helper methods returning arrays with mocks
+        - '#Method App\\Tests\\Service\\.*::createServiceWithMocks\(\) return type has no value type specified in iterable type array#'

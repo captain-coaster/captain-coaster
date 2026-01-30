@@ -35,7 +35,7 @@ class RatingCoasterController extends AbstractController
     ): JsonResponse {
         // Validate CSRF token
         $token = $request->request->get('_token');
-        if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', $token))) {
+        if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', (string) $token))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 
@@ -69,7 +69,7 @@ class RatingCoasterController extends AbstractController
                 $rating->setRiddenAt(null);
             } else {
                 try {
-                    $date = new \DateTime($riddenAtValue);
+                    $date = new \DateTime((string) $riddenAtValue);
                     $rating->setRiddenAt($date);
                 } catch (\Exception) {
                     return new JsonResponse(['state' => 'error'], Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -104,7 +104,7 @@ class RatingCoasterController extends AbstractController
     ): JsonResponse {
         // Validate CSRF token
         $token = $request->request->get('_token');
-        if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', $token))) {
+        if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', (string) $token))) {
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 

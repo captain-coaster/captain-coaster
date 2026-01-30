@@ -65,22 +65,27 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 2048, nullable: true)]
     private ?string $profilePicture = null;
 
+    /** @var Collection<int, RiddenCoaster> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class)]
     private Collection $ratings;
 
+    /** @var Collection<int, Top> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class)]
     private Collection $tops;
 
+    /** @var Collection<int, Badge> */
     #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
     #[ORM\JoinTable]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $badges;
 
+    /** @var Collection<int, Notification> */
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
+    /** @var Collection<int, Image> */
     #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'])]
     private Collection $images;
 
@@ -120,6 +125,7 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $addTodayDateWhenRating = false;
 
+    /** @var array<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
@@ -192,7 +198,7 @@ class User implements UserInterface
         return $this->firstName;
     }
 
-    public function setFirstName($firstName): static
+    public function setFirstName(string $firstName): static
     {
         $this->firstName = $firstName;
 
@@ -211,6 +217,7 @@ class User implements UserInterface
         $this->ratings->removeElement($rating);
     }
 
+    /** @return Collection<int, RiddenCoaster> */
     public function getRatings(): Collection
     {
         return $this->ratings;
@@ -350,6 +357,7 @@ class User implements UserInterface
         return $this->firstName;
     }
 
+    /** @return array<string, string> */
     public function getNamePreviewFormats(): array
     {
         return [
@@ -387,6 +395,7 @@ class User implements UserInterface
         $this->tops->removeElement($top);
     }
 
+    /** @return Collection<int, Top> */
     public function getTops(): Collection
     {
         return $this->tops;
@@ -416,6 +425,7 @@ class User implements UserInterface
         $this->badges->removeElement($badge);
     }
 
+    /** @return Collection<int, Badge> */
     public function getBadges(): Collection
     {
         return $this->badges;
@@ -433,11 +443,13 @@ class User implements UserInterface
         $this->notifications->removeElement($notification);
     }
 
+    /** @return Collection<int, Notification> */
     public function getNotifications(): Collection
     {
         return $this->notifications;
     }
 
+    /** @return Collection<int, Notification> */
     public function getUnreadNotifications(): Collection
     {
         return $this->notifications->filter(fn (Notification $notif) => !$notif->getIsRead());
@@ -515,6 +527,7 @@ class User implements UserInterface
         $this->images->removeElement($image);
     }
 
+    /** @return Collection<int, Image>|null */
     public function getImages(): ?Collection
     {
         return $this->images;
@@ -532,6 +545,7 @@ class User implements UserInterface
         return $this->addTodayDateWhenRating;
     }
 
+    /** @return array<string> */
     public function getRoles(): array
     {
         $roles = $this->roles;
@@ -542,6 +556,7 @@ class User implements UserInterface
         return array_values(array_unique($roles));
     }
 
+    /** @param array<string> $roles */
     public function setRoles(array $roles): void
     {
         $this->roles = $roles;
@@ -551,8 +566,12 @@ class User implements UserInterface
     {
     }
 
+    /** @return non-empty-string */
     public function getUserIdentifier(): string
     {
+        // Email is always set and non-empty for valid users
+        \assert('' !== $this->email);
+
         return $this->email;
     }
 

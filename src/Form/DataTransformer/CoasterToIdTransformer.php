@@ -9,6 +9,9 @@ use App\Repository\CoasterRepository;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
+/**
+ * @implements DataTransformerInterface<Coaster|null, int|null>
+ */
 class CoasterToIdTransformer implements DataTransformerInterface
 {
     public function __construct(private readonly CoasterRepository $coasterRepository)

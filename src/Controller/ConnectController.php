@@ -59,9 +59,11 @@ class ConnectController extends AbstractController
                 ]);
             }
 
+            $emailString = (string) $email;
+
             // Only send login link if email is valid
-            if ($emailValidator->isValidEmail($email)) {
-                $user = $userRepository->findOneBy(['email' => $email]);
+            if ($emailValidator->isValidEmail($emailString)) {
+                $user = $userRepository->findOneBy(['email' => $emailString]);
 
                 if ($user instanceof User && $user->isEnabled()) {
                     $notifier->send(
@@ -76,7 +78,7 @@ class ConnectController extends AbstractController
             }
 
             // always return success for account enumeration prevention
-            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $email]));
+            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $emailString]));
         } else {
             // save referer to redirect after login
             $referer = $request->headers->get('referer');

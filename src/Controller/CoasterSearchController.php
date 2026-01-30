@@ -36,6 +36,7 @@ class CoasterSearchController extends AbstractController
         );
     }
 
+    /** @param array<string, mixed> $filters */
     #[Route(path: '/api', name: 'coaster_search_api', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function searchAction(
         #[MapQueryParameter]

@@ -9,6 +9,7 @@ use App\Entity\Tag;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -108,15 +109,20 @@ class ReviewType extends AbstractType
         );
     }
 
+    /** @param array<ChoiceView> $choices */
     private function sortTranslatedChoices(array &$choices): void
     {
         usort(
             $choices,
-            fn ($a, $b): int => // could also use \Collator() to compare the two strings
-            strcmp(
-                $this->translator->trans($a->label, [], 'database'),
-                $this->translator->trans($b->label, [], 'database')
-            )
+            function ($a, $b): int {
+                $labelA = $a->label;
+                $labelB = $b->label;
+
+                return strcmp(
+                    \is_string($labelA) ? $this->translator->trans($labelA, [], 'database') : '',
+                    \is_string($labelB) ? $this->translator->trans($labelB, [], 'database') : ''
+                );
+            }
         );
     }
 }

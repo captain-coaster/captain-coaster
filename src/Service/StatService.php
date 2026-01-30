@@ -22,11 +22,11 @@ class StatService
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      *
      * @throws \Exception
      */
-    public function getIndexStats()
+    public function getIndexStats(): array
     {
         $stats = [];
 
@@ -55,8 +55,8 @@ class StatService
         return $stats;
     }
 
-    /** @return array */
-    public function getUserStats(User $user)
+    /** @return array<string, mixed> */
+    public function getUserStats(User $user): array
     {
         $stats = [];
 
@@ -79,8 +79,15 @@ class StatService
         $top100 = $this->em
             ->getRepository(RiddenCoaster::class)
             ->countTop100ForUser($user);
-        $stats['top_100'] = $top100['nb_top100'];
-        $stats['top_100_operating'] = (int) $top100['nb_top100_operating'];
+
+        if (\is_array($top100)) {
+            $stats['top_100'] = $top100['nb_top100'];
+            $stats['top_100_operating'] = (int) $top100['nb_top100_operating'];
+        } else {
+            $stats['top_100'] = 0;
+            $stats['top_100_operating'] = 0;
+        }
+
         $stats['manufacturer'] = $this->em
             ->getRepository(RiddenCoaster::class)
             ->getMostRiddenManufacturer($user);

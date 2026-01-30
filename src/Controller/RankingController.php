@@ -47,6 +47,7 @@ class RankingController extends AbstractController
         );
     }
 
+    /** @param array<string, mixed> $filters */
     #[Route(
         path: '/coasters',
         name: 'ranking_search_async',

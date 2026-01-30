@@ -89,7 +89,8 @@ class RankingCommand extends Command
         return \sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), (float) $coaster->getScore(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
     }
 
-    private function notifyDiscord($coasterList): void
+    /** @param array<int, Coaster> $coasterList */
+    private function notifyDiscord(array $coasterList): void
     {
         $discordText = '';
 

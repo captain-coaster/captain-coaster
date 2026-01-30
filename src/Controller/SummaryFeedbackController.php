@@ -46,7 +46,7 @@ class SummaryFeedbackController extends BaseController
         $token = $request->request->get('_token');
         $tokenId = 'summary_feedback';
 
-        if (!$this->isCsrfTokenValid($tokenId, $token)) {
+        if (!$this->isCsrfTokenValid($tokenId, \is_string($token) ? $token : null)) {
             $this->logger->warning('Invalid CSRF token for summary feedback', [
                 'ip' => $request->getClientIp(),
                 'summary_id' => $summary->getId(),

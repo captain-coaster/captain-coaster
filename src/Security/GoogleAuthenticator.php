@@ -102,7 +102,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
     }
 
     /** Try to find user using first google id then email, otherwise create new User */
-    private function findOrCreateUser(GoogleUser $googleUser, Request $request)
+    private function findOrCreateUser(GoogleUser $googleUser, Request $request): User
     {
         $user = $this->em->getRepository(User::class)->findOneBy(['googleId' => $googleUser->getId()])
             ?? $this->em->getRepository(User::class)->findOneBy(['email' => $googleUser->getEmail()]);

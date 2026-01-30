@@ -12,7 +12,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * TopCoasterRepository.
+ * @extends ServiceEntityRepository<TopCoaster>
  */
 class TopCoasterRepository extends ServiceEntityRepository
 {
@@ -39,10 +39,10 @@ class TopCoasterRepository extends ServiceEntityRepository
     }
 
     /** Count all coasters inside main tops only. */
-    public function countAllInTops()
+    public function countAllInTops(): int
     {
         try {
-            return $this->getEntityManager()
+            return (int) $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1)')
                 ->from(TopCoaster::class, 'tc')

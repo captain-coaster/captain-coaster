@@ -45,6 +45,7 @@ class BedrockService
     ) {
     }
 
+    /** @return array{success: bool, content?: string, error?: string, error_code?: string|null, metadata: array<string, mixed>} */
     public function invokeModel(string $prompt, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6, bool $enableReasoning = false): array
     {
         $model = self::MODELS[$modelKey ?? $this->modelKey];
@@ -237,6 +238,8 @@ class BedrockService
     /**
      * Builds unified Converse API request for all models
      * Uses the same format regardless of the underlying model.
+     *
+     * @return array<string, mixed>
      */
     private function buildConverseRequest(string $prompt, int $maxTokens, float $temperature, bool $enableReasoning = false): array
     {
@@ -272,6 +275,8 @@ class BedrockService
     /**
      * Parses unified Converse API response from all models
      * Uses the same parsing method regardless of the underlying model.
+     *
+     * @param array<string, mixed> $result
      */
     private function parseConverseResponse(array $result): string
     {

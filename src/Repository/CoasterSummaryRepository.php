@@ -9,6 +9,9 @@ use App\Entity\CoasterSummary;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<CoasterSummary>
+ */
 class CoasterSummaryRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)

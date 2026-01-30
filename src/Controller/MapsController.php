@@ -99,7 +99,11 @@ class MapsController extends AbstractController
         );
     }
 
-    /** Returns json data with markers filtered. */
+    /**
+     * Returns json data with markers filtered.
+     *
+     * @param array<string, mixed> $filters
+     */
     #[Route(path: '/markers', name: 'map_markers_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function markersAction(#[MapQueryParameter] array $filters = []): JsonResponse
     {
@@ -120,6 +124,8 @@ class MapsController extends AbstractController
     /**
      * Get coasters in a park (when user clicks on a marker).
      * Uses MapQueryParameter to properly handle filters[key] format from the form.
+     *
+     * @param array<string, mixed> $filters
      */
     #[Route(path: '/parks/{id}/coasters', name: 'map_coasters_ajax', options: ['expose' => true], methods: ['GET'], condition: 'request.isXmlHttpRequest()')]
     public function getCoastersAction(Park $park, #[MapQueryParameter] array $filters = []): Response
@@ -143,6 +149,11 @@ class MapsController extends AbstractController
         }
     }
 
+    /**
+     * @param array<string, mixed> $filters
+     *
+     * @return array<array{name: string, latitude: float, longitude: float, nb: int, id: int}>
+     */
     private function getMarkers(array $filters = []): array
     {
         return $this->coasterRepository->findForMap($filters);

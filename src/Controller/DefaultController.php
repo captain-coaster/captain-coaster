@@ -34,8 +34,11 @@ class DefaultController extends BaseController
             return $this->redirectToRoute('default_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
         }
 
+        /** @var array<string> $locales */
+        $locales = $this->getParameter('app_locales_array');
+
         return $this->redirectToRoute('default_index', [
-            '_locale' => $request->getPreferredLanguage($this->getParameter('app_locales_array')),
+            '_locale' => $request->getPreferredLanguage($locales),
         ], 301);
     }
 
@@ -90,10 +93,14 @@ class DefaultController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var array{name: string, message: string, email?: string|null} $formData */
             $formData = $form->getData();
 
+            /** @var string $contactMailTo */
+            $contactMailTo = $this->getParameter('app_contact_mail_to');
+
             $message = (new Email())
-                ->to($this->getParameter('app_contact_mail_to'))
+                ->to($contactMailTo)
                 ->subject($translator->trans('contact.email.title'))
                 ->html($this->renderView('Default/contact_mail.txt.twig', [
                     'name' => $formData['name'],
@@ -102,7 +109,7 @@ class DefaultController extends BaseController
                     'email' => $formData['email'] ?? null,
                 ]));
 
-            if ($formData['email']) {
+            if (!empty($formData['email'])) {
                 $message->replyTo($formData['email']);
             }
 

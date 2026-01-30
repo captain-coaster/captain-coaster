@@ -110,7 +110,11 @@ class SearchService
         return $response;
     }
 
-    /** Search coasters with formatted results. */
+    /**
+     * Search coasters with formatted results.
+     *
+     * @return array<int, SearchResultDTO>
+     */
     public function searchCoasters(string $query, int $limit = 5): array
     {
         /** @var CoasterRepository $repository */
@@ -120,7 +124,11 @@ class SearchService
         return $this->formatSearchResults($results, 'coaster');
     }
 
-    /** Search parks with formatted results. */
+    /**
+     * Search parks with formatted results.
+     *
+     * @return array<int, SearchResultDTO>
+     */
     public function searchParks(string $query, int $limit = 5): array
     {
         /** @var ParkRepository $repository */
@@ -130,7 +138,11 @@ class SearchService
         return $this->formatSearchResults($results, 'park');
     }
 
-    /** Search users with formatted results. */
+    /**
+     * Search users with formatted results.
+     *
+     * @return array<int, SearchResultDTO>
+     */
     public function searchUsers(string $query, int $limit = 5): array
     {
         /** @var UserRepository $repository */
@@ -140,7 +152,13 @@ class SearchService
         return $this->formatSearchResults($results, 'user');
     }
 
-    /** Format search results into SearchResultDTO objects. */
+    /**
+     * Format search results into SearchResultDTO objects.
+     *
+     * @param array<int, array<string, mixed>> $results
+     *
+     * @return array<int, SearchResultDTO>
+     */
     private function formatSearchResults(array $results, string $type): array
     {
         return array_map(function ($result) use ($type) {
@@ -186,7 +204,11 @@ class SearchService
         }, $results);
     }
 
-    /** Search all entities with pagination for comprehensive results page. */
+    /**
+     * Search all entities with pagination for comprehensive results page.
+     *
+     * @return array<string, mixed>
+     */
     public function searchAllWithPagination(string $query, int $page = 1, int $perPage = 20): array
     {
         // Get all results without limit first to calculate totals
@@ -254,7 +276,11 @@ class SearchService
         ];
     }
 
-    /** Search coasters without limit for comprehensive results. */
+    /**
+     * Search coasters without limit for comprehensive results.
+     *
+     * @return array<int, SearchResultDTO>
+     */
     private function searchCoastersUnlimited(string $query): array
     {
         /** @var CoasterRepository $repository */
@@ -264,7 +290,11 @@ class SearchService
         return $this->formatSearchResults($results, 'coaster');
     }
 
-    /** Search parks without limit for comprehensive results. */
+    /**
+     * Search parks without limit for comprehensive results.
+     *
+     * @return array<int, SearchResultDTO>
+     */
     private function searchParksUnlimited(string $query): array
     {
         /** @var ParkRepository $repository */
@@ -274,7 +304,11 @@ class SearchService
         return $this->formatSearchResults($results, 'park');
     }
 
-    /** Search users without limit for comprehensive results. */
+    /**
+     * Search users without limit for comprehensive results.
+     *
+     * @return array<int, SearchResultDTO>
+     */
     private function searchUsersUnlimited(string $query): array
     {
         /** @var UserRepository $repository */

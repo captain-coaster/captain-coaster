@@ -8,6 +8,9 @@ use App\Entity\SeatingType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<SeatingType>
+ */
 class SeatingTypeRepository extends ServiceEntityRepository
 {
     use FilterableRepositoryTrait;

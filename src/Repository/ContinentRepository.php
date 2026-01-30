@@ -8,6 +8,9 @@ use App\Entity\Continent;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Continent>
+ */
 class ContinentRepository extends ServiceEntityRepository
 {
     use FilterableRepositoryTrait;

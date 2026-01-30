@@ -13,6 +13,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SitemapService
 {
+    /** @param array<string> $locales */
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UrlGeneratorInterface $router,
@@ -21,6 +22,7 @@ class SitemapService
     ) {
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function getUrlsForPages(): array
     {
         $urls = [];
@@ -31,12 +33,12 @@ class SitemapService
             $indexUpdateDate = $latestRating ? $latestRating->getUpdatedAt() : new \DateTime();
 
             // Index
-            $indexUrls = $this->getUrlAndAlternates('default_index', [], $indexUpdateDate, 'daily', 1);
+            $indexUrls = $this->getUrlAndAlternates('default_index', [], $indexUpdateDate, 'daily', '1');
             $urls = array_merge($urls, $indexUrls);
 
             // Ranking
             $rankingUpdateDate = new \DateTime('first day of this month midnight');
-            $rankingUrls = $this->getUrlAndAlternates('ranking_index', [], $rankingUpdateDate, 'monthly', 1);
+            $rankingUrls = $this->getUrlAndAlternates('ranking_index', [], $rankingUpdateDate, 'monthly', '1');
             $urls = array_merge($urls, $rankingUrls);
 
             // Fiche Coasters
@@ -60,6 +62,7 @@ class SitemapService
         }
     }
 
+    /** @return array<int, array<string, mixed>> */
     public function getUrlsForImages(): array
     {
         $urls = [];
@@ -108,12 +111,17 @@ class SitemapService
         }
     }
 
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private function getUrlAndAlternates(
-        $route,
+        string $route,
         array $params = [],
         ?\DateTimeInterface $lastmod = null,
-        $changefreq = 'weekly',
-        $priority = '0.5'
+        string $changefreq = 'weekly',
+        string $priority = '0.5'
     ): array {
         $urls = [];
 
@@ -148,7 +156,12 @@ class SitemapService
         return $urls;
     }
 
-    private function buildRouteParams(array $params, $locale): array
+    /**
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    private function buildRouteParams(array $params, string $locale): array
     {
         return array_merge(
             ['_locale' => $locale],

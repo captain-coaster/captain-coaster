@@ -13,7 +13,7 @@ use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * RankingRepository.
+ * @extends ServiceEntityRepository<Ranking>
  */
 class RankingRepository extends ServiceEntityRepository
 {
@@ -22,7 +22,7 @@ class RankingRepository extends ServiceEntityRepository
         parent::__construct($registry, Ranking::class);
     }
 
-    public function findCurrent()
+    public function findCurrent(): ?Ranking
     {
         try {
             return $this->getEntityManager()

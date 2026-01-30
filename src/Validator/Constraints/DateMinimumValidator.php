@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class DateMinimumValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof DateMinimum) {
             throw new UnexpectedTypeException($constraint, DateMinimum::class);
@@ -20,7 +20,7 @@ class DateMinimumValidator extends ConstraintValidator
             return;
         }
 
-        if (!\is_array($value) && !$value instanceof \DateTime) {
+        if (!$value instanceof \DateTime) {
             throw new UnexpectedTypeException($value, 'DateTime');
         }
 

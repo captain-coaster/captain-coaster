@@ -16,7 +16,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * RiddenCoasterRepository.
+ * @extends ServiceEntityRepository<RiddenCoaster>
  */
 class RiddenCoasterRepository extends ServiceEntityRepository
 {
@@ -81,7 +81,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         $query->enableResultCache(600);
 
-        return $query->getSingleScalarResult();
+        return (int) $query->getSingleScalarResult();
     }
 
     /**
@@ -117,13 +117,19 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /** Get ratings for a specific coaster. */
+    /**
+     * Get ratings for a specific coaster.
+     *
+     * @param array<string, mixed> $filters
+     *
+     * @return array<int, RiddenCoaster>
+     */
     public function getCoasterReviews(
         Coaster $coaster,
         string $locale = 'en',
         bool $displayReviewsInAllLanguages = true,
-        $filters = []
-    ) {
+        array $filters = []
+    ): array {
         // add joins to avoid multiple subqueries
         $query = $this->getEntityManager()
             ->createQueryBuilder()
@@ -150,13 +156,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    private function applyFilters($query, $filters): void
+    /** @param array<string, mixed> $filters */
+    private function applyFilters(QueryBuilder $query, array $filters): void
     {
         // Sorting
         $this->sort($query, $filters);
     }
 
-    private function sort($query, $filters): void
+    /** @param array<string, mixed> $filters */
+    private function sort(QueryBuilder $query, array $filters): void
     {
         $sortingOptions = ['value', 'updatedAt'];
 
@@ -173,7 +181,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    private function defaultSort($query): void
+    private function defaultSort(QueryBuilder $query): void
     {
         $query
             ->addOrderBy('r.score', 'DESC')
@@ -211,7 +219,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     public function countCoasterReviewsWithText(Coaster $coaster): int
     {
         try {
-            return $this->getEntityManager()
+            return (int) $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(r.id)')
                 ->from(RiddenCoaster::class, 'r')
@@ -373,7 +381,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /** Update averageRating for all coasters */
-    public function updateAverageRatings(int $minRatings = 2): bool|int
+    public function updateAverageRatings(int $minRatings = 2): int|false
     {
         $connection = $this->getEntityManager()->getConnection();
         $sql = '
@@ -392,13 +400,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ';
 
         try {
-            return $connection->executeStatement($sql, ['minRatings' => $minRatings]);
+            return (int) $connection->executeStatement($sql, ['minRatings' => $minRatings]);
         } catch (\Exception) {
             return false;
         }
     }
 
-    /** Get rating statistics for a coaster */
+    /**
+     * Get rating statistics for a coaster.
+     *
+     * @return array<int, array{value: float, count: int}>
+     */
     public function getRatingStatsForCoaster(Coaster $coaster): array
     {
         $id = $coaster->getId();
@@ -417,8 +429,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** Get country where a user rode the most. */
-    public function findMostRiddenCountry(User $user)
+    /**
+     * Get country where a user rode the most.
+     *
+     * @return array{name: string, nb: int}
+     */
+    public function findMostRiddenCountry(User $user): array
     {
         $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
@@ -442,8 +458,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
-    /** Count ridden coasters for a user in Top 100. */
-    public function countTop100ForUser(User $user)
+    /**
+     * Count ridden coasters for a user in Top 100.
+     *
+     * @return array{nb_top100: int, nb_top100_operating: int}|int
+     */
+    public function countTop100ForUser(User $user): array|int
     {
         try {
             return $this->getEntityManager()
@@ -505,7 +525,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** Get user ratings for monthly ranking update */
+    /**
+     * Get user ratings for monthly ranking update.
+     *
+     * @return array<int, array{rating: float, coaster: int}>
+     */
     public function findUserRatingsForRanking(int $userId): array
     {
         return $this->getEntityManager()
@@ -521,8 +545,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** Get most common manufacturer among user's top list coasters (first 10-20 positions) */
-    public function getTopListManufacturer(User $user, int $maxPosition = 20)
+    /**
+     * Get most common manufacturer among user's top list coasters (first 10-20 positions).
+     *
+     * @return array{name: string, nb: int}
+     */
+    public function getTopListManufacturer(User $user, int $maxPosition = 20): array
     {
         $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
@@ -555,7 +583,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * @param string $language The target language code
      * @param int    $limit    Maximum number of reviews to retrieve
      *
-     * @return array Array of RiddenCoaster entities with review text
+     * @return array<int, RiddenCoaster> Array of RiddenCoaster entities with review text
      */
     public function findReviewSampleByLanguage(string $language, int $limit): array
     {
@@ -583,7 +611,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * @param string   $language The target language code
      * @param int|null $limit    Maximum number of reviews to retrieve
      *
-     * @return array Array of RiddenCoaster entities with review text and ratings
+     * @return array<int, RiddenCoaster> Array of RiddenCoaster entities with review text and ratings
      */
     public function getCoasterReviewsWithTextByLanguage(Coaster $coaster, string $language, ?int $limit = null): array
     {

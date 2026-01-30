@@ -22,10 +22,19 @@ class RankingService
     // For elite coaster, we need more comparisons
     final public const int ELITE_SCORE = 95;
     final public const int MIN_DUELS_ELITE_SCORE = 650;
+
+    /** @var array<int, array<int, float>> */
     private array $duels = [];
+
+    /** @var array<int, float> */
     private array $ranking = [];
+
     private int $totalComparisonNumber = 0;
+
+    /** @var array<string, int> */
     private array $userComparisons = [];
+
+    /** @var array<int> */
     private array $rejectedCoasters = [];
 
     public function __construct(private readonly EntityManagerInterface $em, private readonly UserRepository $userRepository)
@@ -34,6 +43,8 @@ class RankingService
 
     /**
      * Update ranking of coasters.
+     *
+     * @return array<int, Coaster>
      *
      * @throws \Exception
      */
@@ -96,7 +107,11 @@ class RankingService
         $this->computeScore($dryRun);
     }
 
-    /** Process all comparisons inside a top and set all results in duels array. */
+    /**
+     * Process all comparisons inside a top and set all results in duels array.
+     *
+     * @param array<int, array{position: int, coaster: int}> $top
+     */
     private function processComparisonsInTop(array $top): void
     {
         foreach ($top as $topCoaster) {
@@ -119,7 +134,11 @@ class RankingService
         }
     }
 
-    /** Process all comparisons of all rated coaster for a user and set all results in duels array. */
+    /**
+     * Process all comparisons of all rated coaster for a user and set all results in duels array.
+     *
+     * @param array<int, array{rating: float, coaster: int}> $ratings
+     */
     private function processComparisonsInRatings(array $ratings): void
     {
         foreach ($ratings as $rating) {

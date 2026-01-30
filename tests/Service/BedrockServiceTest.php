@@ -91,10 +91,10 @@ class BedrockServiceTest extends TestCase
 
             // Verify unified response structure
             $this->assertArrayHasKey('success', $result);
-            $this->assertArrayHasKey('content', $result);
             $this->assertArrayHasKey('metadata', $result);
             $this->assertTrue($result['success']);
-            $this->assertIsString($result['content']);
+            $this->assertArrayHasKey('content', $result);
+            $this->assertIsString($result['content'] ?? '');
             $this->assertIsArray($result['metadata']);
         });
     }

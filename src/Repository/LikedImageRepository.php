@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<LikedImage>
+ */
 class LikedImageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,7 +21,7 @@ class LikedImageRepository extends ServiceEntityRepository
         parent::__construct($registry, LikedImage::class);
     }
 
-    public function findUserLikes(User $user)
+    public function findUserLikes(User $user): Query
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -29,7 +34,7 @@ class LikedImageRepository extends ServiceEntityRepository
     }
 
     /** Check if a user has liked an image */
-    public function hasUserLiked(User $user, $image): bool
+    public function hasUserLiked(User $user, Image $image): bool
     {
         $result = $this->createQueryBuilder('li')
             ->select('COUNT(li.id)')

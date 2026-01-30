@@ -18,6 +18,7 @@ class SearchCacheService
     ) {
     }
 
+    /** @return array<string, mixed>|null */
     public function getCachedResults(string $query): ?array
     {
         $cacheKey = $this->getCacheKey($query);
@@ -35,6 +36,7 @@ class SearchCacheService
         }
     }
 
+    /** @param array<string, mixed> $results */
     public function setCachedResults(string $query, array $results): void
     {
         $cacheKey = $this->getCacheKey($query);
@@ -83,6 +85,7 @@ class SearchCacheService
         }
     }
 
+    /** @param array<string> $popularQueries */
     public function warmCache(array $popularQueries): void
     {
         foreach ($popularQueries as $query) {

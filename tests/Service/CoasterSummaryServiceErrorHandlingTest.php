@@ -102,7 +102,8 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
 
         $this->assertNull($result['summary']);
-        $this->assertEquals('ai_error', $result['reason']);
+        $this->assertArrayHasKey('reason', $result);
+        $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
     }
 
     /**
@@ -220,8 +221,10 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
 
         $this->assertNull($result['summary']);
-        $this->assertEquals('insufficient_reviews', $result['reason']);
-        $this->assertEquals(15, $result['review_count']);
+        $this->assertArrayHasKey('reason', $result);
+        $this->assertEquals('insufficient_reviews', $result['reason']); // @phpstan-ignore-line
+        $this->assertArrayHasKey('review_count', $result);
+        $this->assertEquals(15, $result['review_count']); // @phpstan-ignore-line
     }
 
     /**
@@ -282,7 +285,8 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
 
         $this->assertNull($result['summary']);
-        $this->assertEquals('ai_error', $result['reason']);
+        $this->assertArrayHasKey('reason', $result);
+        $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
     }
 
     /**

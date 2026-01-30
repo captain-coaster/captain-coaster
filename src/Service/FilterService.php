@@ -35,6 +35,8 @@ class FilterService
      * Get filter dropdown data for UI.
      * Returns simple arrays with id/name for efficiency.
      * Data is cached for 1 days (86400 seconds).
+     *
+     * @return array<string, array<int, array<string, mixed>>>
      */
     public function getFilterData(): array
     {

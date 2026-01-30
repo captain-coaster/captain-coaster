@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
+use App\Entity\RiddenCoaster;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\VocabularyGuideRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -61,7 +62,11 @@ class CoasterSummaryService
             ->execute();
     }
 
-    /** Generates an AI summary for a coaster based on its reviews */
+    /**
+     * Generates an AI summary for a coaster based on its reviews.
+     *
+     * @return array{summary: CoasterSummary|null, metadata: array<string, mixed>|null, reason?: string, review_count?: int}
+     */
     public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en'): array
     {
         $currentReviewCount = $this->getReviewCount($coaster);
@@ -122,7 +127,7 @@ class CoasterSummaryService
         $this->entityManager->persist($summary);
         $this->entityManager->flush();
 
-        return ['summary' => $summary, 'metadata' => $aiAnalysis['metadata']];
+        return ['summary' => $summary, 'metadata' => $aiAnalysis['metadata'] ?? null];
     }
 
     /**
@@ -166,6 +171,13 @@ class CoasterSummaryService
         return $summary;
     }
 
+    /**
+     * Analyzes reviews using AI.
+     *
+     * @param array<int, RiddenCoaster> $reviews
+     *
+     * @return array{summary: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
+     */
     private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en'): array
     {
         if (empty($reviews)) {
@@ -181,25 +193,31 @@ class CoasterSummaryService
         if (!$response['success']) {
             $this->logger->error('Bedrock service error', [
                 'coaster' => $coasterName,
-                'coaster_id' => $coaster?->getId(),
+                'coaster_id' => $coaster->getId(),
                 'language' => $language,
                 'model_key' => $modelKey,
-                'error' => $response['error'],
+                'error' => $response['error'] ?? 'Unknown error',
                 'error_code' => $response['error_code'] ?? null,
                 'review_count' => \count($reviews),
-                'metadata' => $response['metadata'] ?? null,
+                'metadata' => $response['metadata'],
             ]);
 
-            return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata'] ?? null];
+            return ['summary' => '', 'pros' => [], 'cons' => [], 'metadata' => $response['metadata']];
         }
 
         return array_merge(
-            $this->parseAiResponse($response['content']),
+            $this->parseAiResponse($response['content'] ?? ''),
             ['metadata' => $response['metadata']]
         );
     }
 
-    /** Calculates rating distribution to help AI understand sentiment */
+    /**
+     * Calculates rating distribution to help AI understand sentiment.
+     *
+     * @param array<int, RiddenCoaster> $riddenCoasters
+     *
+     * @return array{positive: float, neutral: float, negative: float}
+     */
     private function calculateRatingDistribution(array $riddenCoasters): array
     {
         $total = \count($riddenCoasters);
@@ -252,7 +270,11 @@ class CoasterSummaryService
         return null;
     }
 
-    /** Builds the AI prompt for review analysis with enhanced source data and security sanitization */
+    /**
+     * Builds the AI prompt for review analysis with enhanced source data and security sanitization.
+     *
+     * @param array<int, RiddenCoaster> $riddenCoasters
+     */
     private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
     {
         // Sanitize coaster name to prevent prompt injection
@@ -349,7 +371,11 @@ class CoasterSummaryService
         return $prompt;
     }
 
-    /** Parses AI response with security validation and data sanitization */
+    /**
+     * Parses AI response with security validation and data sanitization.
+     *
+     * @return array{summary: string, pros: array<string>, cons: array<string>}
+     */
     private function parseAiResponse(string $response): array
     {
         try {

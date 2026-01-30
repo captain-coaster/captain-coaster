@@ -8,6 +8,9 @@ use App\Entity\Model;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Model>
+ */
 class ModelRepository extends ServiceEntityRepository
 {
     use FilterableRepositoryTrait;

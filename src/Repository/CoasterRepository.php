@@ -15,6 +15,9 @@ use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Coaster>
+ */
 class CoasterRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)

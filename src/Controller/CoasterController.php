@@ -150,7 +150,9 @@ class CoasterController extends BaseController
         );
     }
 
-    /** Async loads reviews for a coaster */
+    /** Async loads reviews for a coaster.
+     * @param array<string, mixed> $filters
+     */
     #[Route(
         path: '/{slug}/reviews',
         name: 'coaster_reviews_ajax_load',

@@ -8,6 +8,7 @@ use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,7 +50,7 @@ class ReviewReportRepository extends ServiceEntityRepository
     }
 
     /** Find unresolved reports */
-    public function findUnresolvedReports()
+    public function findUnresolvedReports(): Query
     {
         return $this->createQueryBuilder('r')
             ->where('r.resolved = :resolved')
@@ -59,7 +60,7 @@ class ReviewReportRepository extends ServiceEntityRepository
     }
 
     /** Find reports by reason */
-    public function findByReason(string $reason)
+    public function findByReason(string $reason): Query
     {
         return $this->createQueryBuilder('r')
             ->where('r.reason = :reason')

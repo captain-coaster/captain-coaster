@@ -11,6 +11,9 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
+/**
+ * @extends ServiceEntityRepository<Image>
+ */
 class ImageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -18,7 +21,7 @@ class ImageRepository extends ServiceEntityRepository
         parent::__construct($registry, Image::class);
     }
 
-    public function findLatestLikedImage()
+    public function findLatestLikedImage(): Image
     {
         $query = $this->createQueryBuilder('i')
             ->join(LikedImage::class, 'li', 'WITH', 'li.image = i.id')
@@ -48,7 +51,7 @@ class ImageRepository extends ServiceEntityRepository
 
     public function countUserEnabledImages(User $user): int
     {
-        return $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(Image::class, 'i')
@@ -71,9 +74,10 @@ class ImageRepository extends ServiceEntityRepository
 
         $query->enableResultCache(600);
 
-        return $query->getSingleScalarResult();
+        return (int) $query->getSingleScalarResult();
     }
 
+    /** @return array<Image> */
     public function findImageToBeValidated(): array
     {
         return $this->getEntityManager()
