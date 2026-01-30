@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\User;
-use App\Service\AccountDeletionService;
+use App\Service\ProfilePictureManager;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -17,7 +17,7 @@ use Doctrine\ORM\Events;
 class UserListener
 {
     public function __construct(
-        private readonly AccountDeletionService $accountDeletionService
+        private readonly ProfilePictureManager $profilePictureManager
     ) {
     }
 
@@ -26,10 +26,13 @@ class UserListener
         $user->updateDisplayName();
     }
 
-    /** Before remove: delete all user files from storage (S3). */
+    /** Before remove: delete profile picture from storage (S3). Images handled by ImageListener via cascade. */
     public function preRemove(User $user, PreRemoveEventArgs $args): void
     {
-        $this->accountDeletionService->deleteUserFiles($user);
+        $profilePicture = $user->getProfilePicture();
+        if (null !== $profilePicture) {
+            $this->profilePictureManager->deleteProfilePicture($profilePicture);
+        }
     }
 
     public function preUpdate(User $user, PreUpdateEventArgs $args): void

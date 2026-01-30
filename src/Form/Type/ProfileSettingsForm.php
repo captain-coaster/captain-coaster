@@ -55,12 +55,12 @@ class ProfileSettingsForm extends AbstractType
             ],
         ]);
 
-        // Last name field (disabled if can't change name)
+        // Last name field (optional, disabled if can't change name)
         $builder->add('lastName', TextType::class, [
             'label' => 'profile.settings.name.lastName',
+            'required' => false,
             'disabled' => !$canChangeName,
             'constraints' => [
-                new NotBlank(),
                 new Length(['min' => 2, 'max' => 50]),
                 $nameRegex,
             ],

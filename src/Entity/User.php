@@ -81,7 +81,7 @@ class User implements UserInterface
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
-    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class)]
+    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'])]
     private Collection $images;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
