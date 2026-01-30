@@ -161,6 +161,7 @@ filters:
     openingDate: Eröffnungsdatum
     name: Name
     clear: Filter löschen
+    sortByDistance: Nach Entfernung sortieren
 
     sorts:
         default: Standardmäßige Sortierung

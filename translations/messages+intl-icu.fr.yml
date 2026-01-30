@@ -161,6 +161,7 @@ filters:
     openingDate: "Date d'ouverture"
     name: Nom
     clear: Effacer les filtres
+    sortByDistance: Trier par distance
 
     sorts:
         default: Tri par défaut

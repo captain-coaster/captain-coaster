@@ -156,6 +156,7 @@ filters:
     openingDate: 'Opening date'
     name: 'Name'
     clear: 'Clear filters'
+    sortByDistance: 'Sort by distance'
 
     sorts:
         default: 'Default sort'

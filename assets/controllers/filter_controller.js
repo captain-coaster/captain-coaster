@@ -11,6 +11,7 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static outlets = ['map'];
+    static targets = ['latitude', 'longitude'];
     static values = {
         endpoint: String,
         containerId: String,
@@ -21,6 +22,7 @@ export default class extends Controller {
 
     connect() {
         this.debounceTimer = null;
+        this.geolocating = false;
         this.setupEventListeners();
 
         // Make controller accessible
@@ -62,8 +64,60 @@ export default class extends Controller {
 
     handleChange(event) {
         if (this.isFilterInput(event.target)) {
-            this.filterData();
+            // Skip filter if geolocation is in progress
+            if (!this.geolocating) {
+                this.filterData();
+            }
         }
+    }
+
+    // Geolocation toggle handler
+    toggleGeolocation(event) {
+        if (event.target.checked) {
+            this.requestGeolocation();
+        } else {
+            this.clearGeolocation();
+        }
+    }
+
+    requestGeolocation() {
+        if (!navigator.geolocation) {
+            event.target.checked = false;
+            return;
+        }
+
+        this.geolocating = true;
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
+                    this.latitudeTarget.value =
+                        position.coords.latitude.toFixed(6);
+                    this.longitudeTarget.value =
+                        position.coords.longitude.toFixed(6);
+                }
+                this.geolocating = false;
+                this.filterData();
+            },
+            () => {
+                // On error, uncheck the toggle and clear coordinates
+                const toggle = this.element.querySelector(
+                    'input[name="filters[sortByDistance]"]'
+                );
+                if (toggle) toggle.checked = false;
+                this.clearGeolocation();
+                this.geolocating = false;
+            },
+            { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+        );
+    }
+
+    clearGeolocation() {
+        if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
+            this.latitudeTarget.value = '';
+            this.longitudeTarget.value = '';
+        }
+        this.filterData();
     }
 
     handleInput(event) {

@@ -148,7 +148,13 @@ class CoasterRepository extends ServiceEntityRepository
     {
         $qb = $this->createBaseQuery()->select('c');
         $this->applyFilters($qb, $filters, 'search');
-        $qb->orderBy('c.updatedAt', 'DESC');
+
+        // Sort by distance if coordinates provided, otherwise by updatedAt
+        if ($this->hasValidCoordinates($filters)) {
+            $this->applyDistanceSort($qb, $filters['latitude'], $filters['longitude']);
+        } else {
+            $qb->orderBy('c.updatedAt', 'DESC');
+        }
 
         return $qb->getQuery();
     }
@@ -407,5 +413,44 @@ class CoasterRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Check if filters contain valid coordinates for distance sorting.
+     *
+     * @param array<string, mixed> $filters Validated filter array
+     */
+    private function hasValidCoordinates(array $filters): bool
+    {
+        return isset($filters['sortByDistance'], $filters['latitude'], $filters['longitude'])
+            && 'on' === $filters['sortByDistance']
+            && is_numeric($filters['latitude'])
+            && is_numeric($filters['longitude']);
+    }
+
+    /**
+     * Apply distance-based sorting using Haversine formula.
+     * Uses native SQL for performance with large datasets.
+     *
+     * @param QueryBuilder $qb        The query builder to modify
+     * @param float        $latitude  User's latitude
+     * @param float        $longitude User's longitude
+     */
+    private function applyDistanceSort(QueryBuilder $qb, float $latitude, float $longitude): void
+    {
+        // Haversine formula for distance calculation (in km)
+        // Using a simplified version that works well for sorting purposes
+        $qb->addSelect(
+            '(6371 * ACOS(
+                COS(RADIANS(:userLat)) * COS(RADIANS(p.latitude)) *
+                COS(RADIANS(p.longitude) - RADIANS(:userLng)) +
+                SIN(RADIANS(:userLat)) * SIN(RADIANS(p.latitude))
+            )) AS HIDDEN distance'
+        )
+            ->andWhere('p.latitude IS NOT NULL')
+            ->andWhere('p.longitude IS NOT NULL')
+            ->setParameter('userLat', $latitude)
+            ->setParameter('userLng', $longitude)
+            ->orderBy('distance', 'ASC');
     }
 }

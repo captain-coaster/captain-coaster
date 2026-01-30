@@ -65,7 +65,7 @@ class FilterService
         $supportedFilters = [
             'continent', 'country', 'manufacturer', 'materialType', 'seatingType',
             'model', 'openingDate', 'status', 'kiddie', 'user', 'ridden',
-            'notridden', 'name', 'score',
+            'notridden', 'name', 'score', 'sortByDistance', 'latitude', 'longitude',
         ];
 
         // Add 'new' filter only for ranking context
@@ -143,12 +143,32 @@ class FilterService
                     }
                     break;
 
+                    // Latitude/Longitude filters for distance sorting
+                case 'latitude':
+                    if (is_numeric($value)) {
+                        $lat = (float) $value;
+                        if ($lat >= -90.0 && $lat <= 90.0) {
+                            $sanitized[$key] = $lat;
+                        }
+                    }
+                    break;
+
+                case 'longitude':
+                    if (is_numeric($value)) {
+                        $lng = (float) $value;
+                        if ($lng >= -180.0 && $lng <= 180.0) {
+                            $sanitized[$key] = $lng;
+                        }
+                    }
+                    break;
+
                     // Boolean-like filters (checkbox values)
                 case 'status':
                 case 'kiddie':
                 case 'new':
                 case 'ridden':
                 case 'notridden':
+                case 'sortByDistance':
                     // Only accept 'on' value (checkbox checked)
                     if ('on' === $value || true === $value || '1' === $value || 1 === $value) {
                         $sanitized[$key] = 'on';
