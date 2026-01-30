@@ -138,6 +138,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $displayReviewsInAllLanguages = false;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $deletedAt = null;
+
     public function __toString(): string
     {
         return $this->displayName;
@@ -636,5 +639,22 @@ class User implements UserInterface
         $this->displayReviewsInAllLanguages = $displayReviewsInAllLanguages;
 
         return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function isDeleted(): bool
+    {
+        return null !== $this->deletedAt;
     }
 }

@@ -24,6 +24,18 @@ class UserChecker implements UserCheckerInterface
         }
 
         if (!$user->isEnabled()) {
+            // Determine the reason for disabled account
+            if ($user->isDeleted()) {
+                $this->logger->warning('Login attempt for deleted account', [
+                    'user_id' => $user->getId(),
+                    'email' => $user->getEmail(),
+                    'deleted_at' => $user->getDeletedAt()?->format('Y-m-d H:i:s'),
+                ]);
+
+                throw new CustomUserMessageAccountStatusException('login.account_deleted');
+            }
+
+            // Account is banned by admin
             $this->logger->warning('Login attempt for banned account', [
                 'user_id' => $user->getId(),
                 'email' => $user->getEmail(),

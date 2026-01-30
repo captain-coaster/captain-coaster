@@ -77,7 +77,7 @@ class RankingCommand extends Command
 
     private function formatCoasterForConsole(Coaster $coaster): string
     {
-        $format = '[%d] %s - %s (%s)';
+        $format = '[%d] %s - %s (score: %.2f) (%s)';
         if (null === $coaster->getPreviousRank()) {
             $format = '<error>'.$format.'</error>';
         } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.25 * $coaster->getPreviousRank()) {
@@ -86,7 +86,7 @@ class RankingCommand extends Command
             $format = '<info>'.$format.'</info>';
         }
 
-        return \sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
+        return \sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), (float) $coaster->getScore(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
     }
 
     private function notifyDiscord($coasterList): void

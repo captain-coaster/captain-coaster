@@ -89,6 +89,21 @@ class ProfilePictureManager
         }
     }
 
+    /** Delete a profile picture file. */
+    public function deleteProfilePicture(string $filename): void
+    {
+        try {
+            if ($this->profilePicturesFilesystem->fileExists($filename)) {
+                $this->profilePicturesFilesystem->delete($filename);
+            }
+        } catch (\Exception $e) {
+            $this->logger->warning('Failed to delete profile picture', [
+                'filename' => $filename,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
     /** Generate a unique filename for the profile picture. */
     private function generateFilename(int|string $userId, string $extension): string
     {

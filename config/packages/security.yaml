@@ -29,7 +29,7 @@ security:
             lazy: true
             login_link:
                 check_route: login_check
-                signature_properties: ['id', 'email', 'enabled']
+                signature_properties: ['id', 'email', 'enabled', 'deletedAt']
                 provider: login_link_provider
                 lifetime: 900
                 max_uses: 3
@@ -47,7 +47,7 @@ security:
                 secret: '%kernel.secret%'
                 lifetime: 2629800 # 1 month in seconds
                 always_remember_me: true
-                signature_properties: ['id', 'email', 'enabled']
+                signature_properties: ['id', 'email', 'enabled', 'deletedAt']
                 secure: true
                 httponly: true
 

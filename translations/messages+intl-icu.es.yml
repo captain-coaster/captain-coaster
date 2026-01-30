@@ -260,9 +260,17 @@ profile:
                 label: Añadir la fecha de hoy en una nueva calificación
         advanced:
             apiKey:
-                label: API Key
+                label: Clave API
         updated_success: Su configuración ha sido actualizada con éxito.
         save: Guardar cambios
+    delete_account:
+        title: Eliminar cuenta
+        warning: 'Esta acción eliminará permanentemente su cuenta y todos los datos asociados. Esto no se puede deshacer.'
+        immediate_logout: Será desconectado inmediatamente de todos los dispositivos
+        permanent_after_month: Todos sus datos se eliminarán permanentemente después de 1 mes
+        button: Eliminar mi cuenta
+        confirm: '¿Está seguro de que desea eliminar su cuenta? Esta acción no se puede deshacer.'
+        invalid_token: 'Token de seguridad no válido. Por favor, inténtelo de nuevo.'
 
 review:
     title: Reseñas
@@ -323,6 +331,7 @@ rating:
 
 navbar:
     profile: Mi perfil
+    settings: Ajustes
     rating: Mis notas
     login: Iniciar sesión
     logout: Cerrar sesión

@@ -1,3 +1,4 @@
 login:
     authentication_failed: 'Authentication failed. Please try again.'
-    account_banned: 'Your account has been banned. Please contact support if you believe this is an error.'
+    account_banned: 'Your account has been deactivated. Please contact us if you believe this is an error.'
+    account_deleted: 'Your account has been deleted and is no longer accessible.'

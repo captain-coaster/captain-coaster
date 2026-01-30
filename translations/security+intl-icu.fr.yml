@@ -1,3 +1,4 @@
 login:
     authentication_failed: "Échec de l'authentification. Veuillez réessayer."
-    account_banned: "Votre compte a été banni. Veuillez contacter le support si vous pensez qu'il s'agit d'une erreur."
+    account_banned: "Votre compte a été désactivé. Veuillez nous contacter si vous pensez qu'il s'agit d'une erreur."
+    account_deleted: "Votre compte a été supprimé et n'est plus accessible."

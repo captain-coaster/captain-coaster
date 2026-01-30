@@ -110,4 +110,15 @@ class UserRepository extends ServiceEntityRepository
             ->enableResultCache(300) // Cache for 5 minutes
             ->getArrayResult();
     }
+
+    /** @return User[] */
+    public function findUsersScheduledForDeletion(\DateTime $before): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.deletedAt IS NOT NULL')
+            ->andWhere('u.deletedAt <= :before')
+            ->setParameter('before', $before)
+            ->getQuery()
+            ->getResult();
+    }
 }

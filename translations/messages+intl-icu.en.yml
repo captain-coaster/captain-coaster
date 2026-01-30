@@ -258,6 +258,14 @@ profile:
                 label: 'API Key'
         updated_success: 'Your settings have been updated successfully.'
         save: 'Save Changes'
+    delete_account:
+        title: 'Delete Account'
+        warning: 'This action will permanently delete your account and all associated data. This cannot be undone.'
+        immediate_logout: 'You will be logged out immediately from all devices'
+        permanent_after_month: 'All your data will be permanently deleted after 1 month'
+        button: 'Delete My Account'
+        confirm: 'Are you sure you want to delete your account? This action cannot be undone.'
+        invalid_token: 'Invalid security token. Please try again.'
 
 review:
     title: 'Reviews'
@@ -318,6 +326,7 @@ rating:
 
 navbar:
     profile: 'My profile'
+    settings: 'Settings'
     rating: 'My ratings'
     login: 'Sign in'
     logout: 'Logout'

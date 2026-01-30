@@ -9,6 +9,7 @@ use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Form\Type\ProfileSettingsForm;
 use App\Repository\ImageRepository;
+use App\Service\AccountDeletionService;
 use App\Service\ProfilePictureManager;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -145,5 +146,29 @@ class ProfileController extends BaseController
             'canChangeName' => $user->canChangeName(),
             'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
+    }
+
+    /** Delete account. */
+    #[Route(path: '/profile/delete-account', name: 'profile_delete_account', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function deleteAccount(
+        Request $request,
+        AccountDeletionService $accountDeletionService,
+        TranslatorInterface $translator
+    ): Response {
+        $token = $request->request->get('_csrf_token');
+
+        if (!$this->isCsrfTokenValid('delete_account', $token)) {
+            $this->addFlash('error', $translator->trans('profile.delete_account.invalid_token'));
+
+            return $this->redirectToRoute('profile_settings');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $accountDeletionService->scheduleAccountDeletion($user);
+
+        return $this->redirectToRoute('logout');
     }
 }
