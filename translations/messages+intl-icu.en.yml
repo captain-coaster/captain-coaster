@@ -41,6 +41,11 @@ coaster:
         quality: 'Quality Score'
         worldrank: 'World Rank'
         overview: 'At a Glance'
+    stats:
+        height: 'Height'
+        length: 'Length'
+        speed: 'Speed'
+        inversions: 'Inversions'
     rating:
         action: 'Rate this coaster!'
         my_rating: 'My rating'
@@ -346,6 +351,11 @@ sidebar:
     contact: 'Get in touch'
     logout: 'Logout'
     login: 'Sign in'
+    account: 'Account'
+    language: 'Language'
+    current: 'Current'
+    mobile_language: 'Language'
+    theme: 'Dark/Light Mode'
 
 footer:
     terms: 'Privacy Policy'
@@ -482,3 +492,11 @@ search_index:
             =1 {1 result found for "{query}"}
             other {# results found for "{query}"}
         }
+# Form-related translations
+form:
+    required: 'Required field'
+    file:
+        upload: 'Upload a file'
+        drag_drop: 'or drag and drop'
+        formats: 'PNG, JPG, GIF up to 10MB'
+    description: "Have a question, suggestion, or just want to say hello? We'd love to hear from you!"

@@ -1,62 +1,75 @@
-<div class="panel panel-flat">
-    <div class="panel-heading">
-        <h6 class="panel-title">
-            <span class="text-semibold">
-                {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
-                {% if coaster.images|length > 0 %}
-                    <span class="badge badge-primary">{{ coaster.images|length }}</span>
-                {% endif %}
-            </span>
-        </h6>
-        <div class="pull-right text-muted">
-          <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}">
+<section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+    <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700 flex justify-between items-center">
+        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+            {{ ux_icon('tabler:photo', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+            {{ 'coaster.photos.title'|trans }}
+            {% if coaster.images|length > 0 %}
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-cc-blue-100 text-cc-blue-800 dark:bg-cc-blue-900/20 dark:text-cc-blue-400">
+                    {{ coaster.images|length }}
+                </span>
+            {% endif %}
+        </h2>
+        <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" 
+           class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors duration-200">
             {{ 'coaster.photos.button'|trans }}
-          </a>
-          </div>
+        </a>
     </div>
     
     {% if coaster.images|length > 0 %}
-        <div class="panel-body" 
+        <div class="p-6" 
              data-controller="gallery" 
              data-gallery-name-value="coaster-images"
              data-gallery="coaster-images">
-            {% for image in coaster.images|slice(0, number) %}
-                <div class="col-sm-3">
-                    <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
-                        <div class="thumb">
-                            <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
-                                 alt="{{ coaster.name }}">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {% for image in coaster.images|slice(0, number) %}
+                    <div class="group">
+                        <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" 
+                           data-gallery-target="link"
+                           class="block rounded-xl overflow-hidden">
+                            <div class="aspect-[4/3] overflow-hidden">
+                                <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                     alt="{{ coaster.name }}"
+                                     loading="lazy">
+                            </div>
+                        </a>
+                        <div class="flex items-center gap-2 mt-2 text-sm text-neutral-500 dark:text-neutral-400"
+                             data-controller="image-like"
+                             data-image-like-image-id-value="{{ image.id }}"
+                             data-image-like-locale-value="{{ app.request.locale }}"
+                             data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}">
+                            <button type="button"
+                                    data-action="click->image-like#toggle"
+                                    data-image-like-target="icon"
+                                    class="inline-flex items-center hover:text-red-500 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 rounded">
+                            </button>
+                            <span data-image-like-target="counter">{{ image.likeCounter }}</span>
+                            {% if image.credit %}
+                                <span class="text-neutral-400 dark:text-neutral-500">{{ image.credit }}</span>
+                            {% endif %}
                         </div>
-                    </a>
-                    <div class="text-size-small text-muted"
-                         data-controller="image-like"
-                         data-image-like-image-id-value="{{ image.id }}"
-                         data-image-like-locale-value="{{ app.request.locale }}"
-                         data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
-                         style="display: flex; align-items: center; gap: 2px;">
-                        <button type="button"
-                                data-action="click->image-like#toggle"
-                                data-image-like-target="icon"
-                                class="btn-link text-muted p-0 border-0 bg-transparent"
-                                style="cursor: pointer; display: inline-flex; align-items: center;">
-                        </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
-                        {% if image.credit %}&nbsp;{{ image.credit }}{% endif %}
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
         {% if number < coaster.images|length %}
-            <div class="panel-footer text-center">
-                <a id="show-all" class="btn btn-link">{{ 'coaster.photos.all'|trans }}</a>
+            <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-t border-neutral-100 dark:border-neutral-700 text-center">
+                <button id="show-all" 
+                        class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 rounded px-4 py-2">
+                    {{ 'coaster.photos.all'|trans }}
+                </button>
             </div>
         {% endif %}
     {% else %}
-        <div class="panel-body text-center text-muted">
-            {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
-            <p class="mt-10">{{ 'coaster.photos.empty'|trans }}</p>
-            <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn btn-primary btn-sm">
+        <div class="px-6 py-12 text-center">
+            <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                {{ ux_icon('tabler:photo', {'class': 'w-8 h-8 text-neutral-400 dark:text-neutral-500', 'aria-hidden': 'true'}) }}
+            </div>
+            <p class="text-neutral-600 dark:text-neutral-400 mb-4">{{ 'coaster.photos.empty'|trans }}</p>
+            <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" 
+               class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2">
                 {{ 'coaster.photos.button'|trans }}
             </a>
         </div>
     {% endif %}
-</div>
+</section>

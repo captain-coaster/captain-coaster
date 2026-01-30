@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = '"' ~ query ~ '"'|default('search_index.noTerm'|trans()) %}
 {% set subTitle = 'search_index.title'|trans %}
@@ -6,35 +6,38 @@
 
 {% block body %}
     {% if query|length < 2 %}
-        <ul class="media-list content-group">
-            <li class="media panel panel-body">
-                {{ 'search_index.short'|trans() }}
-            </li>
-        </ul>
+        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    {{ ux_icon('tabler:search', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-400">{{ 'search_index.short'|trans() }}</p>
+            </div>
+        </section>
     {% elseif error is defined %}
-        <ul class="media-list content-group">
-            <li class="media panel panel-body">
-                <div class="text-center text-muted">
-                    {{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-8 h-8'}) }}
-                    <p class="mt-10">{{ error }}</p>
+        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    {{ ux_icon('tabler:alert-triangle', {'class': 'w-8 h-8 text-red-500', 'aria-hidden': 'true'}) }}
                 </div>
-            </li>
-        </ul>
+                <p class="text-red-600 dark:text-red-400">{{ error }}</p>
+            </div>
+        </section>
     {% elseif results is empty %}
-        <ul class="media-list content-group">
-            <li class="media panel panel-body">
-                <div class="text-center text-muted">
-                    {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-8 h-8'}) }}
-                    <p class="mt-10">{{ 'search_index.noResult'|trans() }}</p>
+        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    {{ ux_icon('tabler:search', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
                 </div>
-            </li>
-        </ul>
+                <p class="text-neutral-600 dark:text-neutral-400">{{ 'search_index.noResult'|trans() }}</p>
+            </div>
+        </section>
     {% else %}
-        <div class="panel panel-white" data-controller="search-results">
-            <div class="panel-heading">
-                <h6 class="panel-title text-semibold">
+        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm" data-controller="search-results">
+            <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+                <h1 class="text-lg font-semibold text-neutral-900 dark:text-white">
                     {{ 'search_index.unified_results_found'|trans({'%num%': totalResults, '%query%': query}) }}
-                </h6>
+                </h1>
             </div>
 
             <div class="search-results-container">
@@ -48,10 +51,10 @@
                         
                         <div class="search-result-emoji">{{ result.emoji }}</div>
                         
-                        <div class="search-result-content">
-                            <div class="search-result-name">{{ result.name }}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-base font-semibold text-neutral-900 dark:text-white mb-1 truncate">{{ result.name }}</div>
                             {% if result.subtitle %}
-                                <div class="search-result-subtitle">
+                                <div class="text-sm text-neutral-600 dark:text-neutral-400 truncate">
                                     {% if result.entity_type == 'park' and result.subtitle starts with 'country.' %}
                                         {{ result.subtitle|trans({}, 'database') }}
                                     {% else %}
@@ -62,8 +65,9 @@
                         </div>
                         
                         {% if result.entity_type == 'coaster' and result.image %}
-                            <div class="search-result-image">
-                                <img src="{{ pictures_cdn }}/280x210/{{ result.image }}" 
+                            <div class="shrink-0 w-24 h-18 rounded-lg overflow-hidden">
+                                <img class="w-full h-full object-cover"
+                                     src="{{ pictures_cdn }}/280x210/{{ result.image }}" 
                                      alt="{{ result.name }}"
                                      loading="lazy">
                             </div>
@@ -71,16 +75,22 @@
                     </div>
                 {% endfor %}
             </div>
-        </div>
+        </section>
 
         {% if pagination and pagination.total > 1 %}
-            <div class="text-center">
-                <ul class="pagination pagination-sm">
+            <nav class="mt-6" aria-label="Search pagination">
+                <ul class="flex items-center justify-center gap-1">
                     {% if pagination.has_previous %}
                         <li>
-                            <a href="{{ path('search_index', {'query': query, 'page': pagination.previous}) }}" aria-label="Previous">
+                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
+                               href="{{ path('search_index', {'query': query, 'page': pagination.previous}) }}" 
+                               aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 dark:text-neutral-600 cursor-not-allowed">&laquo;</span>
                         </li>
                     {% endif %}
 
@@ -88,34 +98,51 @@
                     {% set end_page = min(pagination.total, pagination.current + 2) %}
 
                     {% if start_page > 1 %}
-                        <li><a href="{{ path('search_index', {'query': query, 'page': 1}) }}">1</a></li>
+                        <li>
+                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
+                               href="{{ path('search_index', {'query': query, 'page': 1}) }}">1</a>
+                        </li>
                         {% if start_page > 2 %}
-                            <li class="disabled"><span>...</span></li>
+                            <li><span class="inline-flex items-center justify-center w-10 h-10 text-neutral-400">...</span></li>
                         {% endif %}
                     {% endif %}
 
                     {% for page in start_page..end_page %}
-                        <li{% if page == pagination.current %} class="active"{% endif %}>
-                            <a href="{{ path('search_index', {'query': query, 'page': page}) }}">{{ page }}</a>
+                        <li>
+                            {% if page == pagination.current %}
+                                <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-cc-blue-600 text-white font-medium">{{ page }}</span>
+                            {% else %}
+                                <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
+                                   href="{{ path('search_index', {'query': query, 'page': page}) }}">{{ page }}</a>
+                            {% endif %}
                         </li>
                     {% endfor %}
 
                     {% if end_page < pagination.total %}
                         {% if end_page < pagination.total - 1 %}
-                            <li class="disabled"><span>...</span></li>
+                            <li><span class="inline-flex items-center justify-center w-10 h-10 text-neutral-400">...</span></li>
                         {% endif %}
-                        <li><a href="{{ path('search_index', {'query': query, 'page': pagination.total}) }}">{{ pagination.total }}</a></li>
+                        <li>
+                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
+                               href="{{ path('search_index', {'query': query, 'page': pagination.total}) }}">{{ pagination.total }}</a>
+                        </li>
                     {% endif %}
 
                     {% if pagination.has_next %}
                         <li>
-                            <a href="{{ path('search_index', {'query': query, 'page': pagination.next}) }}" aria-label="Next">
+                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
+                               href="{{ path('search_index', {'query': query, 'page': pagination.next}) }}" 
+                               aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
+                    {% else %}
+                        <li>
+                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 dark:text-neutral-600 cursor-not-allowed">&raquo;</span>
+                        </li>
                     {% endif %}
                 </ul>
-            </div>
+            </nav>
         {% endif %}
     {% endif %}
 {% endblock %}

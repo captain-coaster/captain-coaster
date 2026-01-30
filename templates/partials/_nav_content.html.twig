@@ -1,0 +1,148 @@
+{% import "macros/_macros_helpers.html.twig" as helper %}
+{% set currentRoute = app.request.attributes.get('_route') %}
+
+{# Navigation Links #}
+<div class="space-y-1">
+  <a href="{{ path('default_index') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'default_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'default_index' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:home', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.index'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="{{ path('ranking_index') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'ranking_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'ranking_index' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:trophy', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.ranking'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="{{ path('coaster_search_index') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'coaster_search_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'coaster_search_index' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:search', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.search'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="{{ path('map_index') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'map_index' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'map_index' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:map-pin', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.map'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="{{ path('top_list') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'top_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'top_list' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:clipboard', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.top'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="{{ path('review_list') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'review_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'review_list' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:message-2', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.review'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="{{ path('user_list') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'user_list' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'user_list' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:users', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.users'|trans({}, 'navigation') }}</span>
+  </a>
+
+  <a href="https://blog.captaincoaster.com" target="_blank" rel="noopener" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800">
+    {{ ux_icon('tabler:news', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.blog'|trans({}, 'navigation') }}</span>
+    {{ ux_icon('tabler:external-link', {'class': 'ml-auto w-4 h-4 opacity-50', 'aria-hidden': 'true'}) }}
+  </a>
+
+  <a href="{{ path('default_contact') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ currentRoute == 'default_contact' ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}" aria-current="{{ currentRoute == 'default_contact' ? 'page' : 'false' }}">
+    {{ ux_icon('tabler:mail', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+    <span>{{ 'sidebar.contact'|trans({}, 'navigation') }}</span>
+  </a>
+</div>
+
+{# Settings Section (Language + Theme) #}
+<div class="mt-6 pt-6 border-t border-neutral-200 dark:border-neutral-700 space-y-1" data-controller="nav-settings">
+  {# Language #}
+  {% if app.request.attributes.get('_route') %}
+    <button 
+      type="button" 
+      class="flex items-center justify-between w-full px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+      data-action="click->nav-settings#toggleLanguage"
+      aria-expanded="false"
+      aria-haspopup="true"
+    >
+      <div class="flex items-center">
+        {{ ux_icon('tabler:language', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+        <span>{{ 'nav.language'|trans({}, 'navigation') }}</span>
+        <span class="ml-2 text-xs text-neutral-500 dark:text-neutral-400">({{ app.request.locale|upper }})</span>
+      </div>
+      {{ ux_icon('tabler:chevron-down', {'class': 'w-4 h-4 transition-transform duration-200', 'aria-hidden': 'true', 'data-nav-settings-target': 'languageIcon'}) }}
+    </button>
+    
+    <div class="hidden ml-8 space-y-1" data-nav-settings-target="languageMenu">
+      {% set route = app.request.attributes.get('_route') %}
+      {% set route_params = app.request.attributes.get('_route_params') %}
+      {% set params = route_params|merge(app.request.query.all) %}
+      {% for locale in locales %}
+        <a 
+          href="{{ path(route, params|merge({ _locale: locale })) }}" 
+          class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 {{ locale == app.request.locale ? 'bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300' : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800' }}"
+          {{ locale == app.request.locale ? 'aria-current="true"' : '' }}
+        >
+          <span>{{ locale|trans }}</span>
+          {% if locale == app.request.locale %}
+            {{ ux_icon('tabler:check', {'class': 'ml-auto w-4 h-4', 'aria-hidden': 'true'}) }}
+          {% endif %}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# Theme #}
+  <div class="flex items-center justify-between px-3 py-2.5" data-controller="theme-selector">
+    <div class="flex items-center">
+      {{ ux_icon('tabler:palette', {'class': 'mr-3 w-5 h-5 shrink-0 text-neutral-700 dark:text-neutral-300', 'aria-hidden': 'true'}) }}
+      <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">{{ 'nav.theme'|trans({}, 'navigation') }}</span>
+    </div>
+    <div class="flex items-center bg-neutral-200 dark:bg-neutral-700 rounded-full p-1">
+      <button 
+        type="button"
+        class="p-1.5 rounded-full transition-all duration-200 text-neutral-500 dark:text-neutral-400 data-active:bg-white data-active:dark:bg-neutral-600 data-active:text-neutral-900 data-active:dark:text-white data-active:shadow-sm"
+        data-action="click->theme-selector#setTheme"
+        data-theme="system"
+        data-theme-selector-target="button"
+        aria-label="{{ 'nav.theme.system'|trans({}, 'navigation') }}"
+      >
+        {{ ux_icon('tabler:device-desktop', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      </button>
+      <button 
+        type="button"
+        class="p-1.5 rounded-full transition-all duration-200 text-neutral-500 dark:text-neutral-400 data-active:bg-white data-active:dark:bg-neutral-600 data-active:text-neutral-900 data-active:dark:text-white data-active:shadow-sm"
+        data-action="click->theme-selector#setTheme"
+        data-theme="light"
+        data-theme-selector-target="button"
+        aria-label="{{ 'nav.theme.light'|trans({}, 'navigation') }}"
+      >
+        {{ ux_icon('tabler:sun', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      </button>
+      <button 
+        type="button"
+        class="p-1.5 rounded-full transition-all duration-200 text-neutral-500 dark:text-neutral-400 data-active:bg-white data-active:dark:bg-neutral-600 data-active:text-neutral-900 data-active:dark:text-white data-active:shadow-sm"
+        data-action="click->theme-selector#setTheme"
+        data-theme="dark"
+        data-theme-selector-target="button"
+        aria-label="{{ 'nav.theme.dark'|trans({}, 'navigation') }}"
+      >
+        {{ ux_icon('tabler:moon', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      </button>
+    </div>
+  </div>
+</div>
+
+{# Spacer to push user section to bottom #}
+<div class="flex-1"></div>
+
+{# User Section (Bottom) #}
+<div class="mt-auto pt-6 border-t border-neutral-200 dark:border-neutral-700">
+  {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+    <a href="{{ path('logout') }}" class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-red-600 dark:hover:text-red-400">
+      {{ ux_icon('tabler:logout', {'class': 'mr-3 w-5 h-5 shrink-0', 'aria-hidden': 'true'}) }}
+      <span>{{ 'sidebar.logout'|trans({}, 'navigation') }}</span>
+    </a>
+  {% else %}
+    <a href="{{ path('login') }}" class="flex items-center justify-center w-full px-4 py-2.5 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg transition-colors duration-200">
+      {{ ux_icon('tabler:key', {'class': 'mr-2 w-5 h-5', 'aria-hidden': 'true'}) }}
+      <span>{{ 'sidebar.login'|trans({}, 'navigation') }}</span>
+    </a>
+  {% endif %}
+</div>

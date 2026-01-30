@@ -1,0 +1,28 @@
+{#
+    Card Component
+
+    Usage:
+    {% include 'components/card.html.twig' with {
+        title: 'Card Title',
+        content: '<p>Card content</p>',
+        footer: '<button>Action</button>',
+        class: 'additional-classes'
+    } %}
+#}
+<div class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl p-6 shadow-sm border border-neutral-200 dark:border-neutral-800 {{ class|default('') }}">
+    {% if title is defined %}
+        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
+            {{ title }}
+        </h3>
+    {% endif %}
+
+    <div class="card-content">
+        {{ content|raw }}
+    </div>
+
+    {% if footer is defined %}
+        <div class="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+            {{ footer|raw }}
+        </div>
+    {% endif %}
+</div>

@@ -1,58 +1,57 @@
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
-<div class="panel panel-white">
-    <div class="panel-heading">
-        <h6 class="panel-title text-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
+<div class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+        <h6 class="mb-0 font-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
     </div>
 
-    <ul class="media-list">
+    <ul class="list-group list-group-flush">
         {% for coaster in coasters %}
-            <li class="media panel-body stack-media-on-mobile">
-                <div class="media-left">
-                    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                        {% if coaster.mainImage is not null %}
-                            <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
-                                 class="img-rounded"
-                                 style="width:96px;"
-                                 alt="{{ coaster.name }}">
-                        {% endif %}
-                    </a>
-                </div>
-
-                <div class="media-body">
-                    <h6 class="media-heading text-semibold">
+            <li class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700">
+                <div class="flex gap-3 flex-col md:flex-row">
+                    <div class="shrink-0">
                         <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                            {{ coaster.name }}
+                            {% if coaster.mainImage is not null %}
+                                <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
+                                     class="rounded w-24"
+                                     alt="{{ coaster.name }}">
+                            {% endif %}
                         </a>
-                    </h6>
-                    
-                    <ul class="list-inline list-inline-separate text-muted mb-5">
-                        <li>
-                            <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                                {{ coaster.park.name }}
-                            </a>
-                        </li>
-                        <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
-                    </ul>
-                    
-                    <ul class="list-inline list-inline-separate text-muted mb-5">
-                        {% if coaster.manufacturer %}
-                            <li>{{ coaster.manufacturer.name }}</li>
-                        {% endif %}
-                        {% if coaster.materialType %}
-                            <li>{{ coaster.materialType.name|trans([], 'database') }}</li>
-                        {% endif %}
-                        {% if coaster.openingDate %}
-                            <li>{{ coaster.openingDate|date('Y') }}</li>
-                        {% endif %}
-                    </ul>
-                </div>
-                
+                    </div>
 
+                    <div class="flex-1">
+                        <h6 class="font-semibold mb-1">
+                            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="coaster-link">
+                                {{ coaster.name }}
+                            </a>
+                        </h6>
+                        
+                        <ul class="inline-flex list-inline-separator text-neutral-600 dark:text-neutral-400 text-sm mb-1">
+                            <li class="inline-flex">
+                                <a class="text-neutral-600 dark:text-neutral-400" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
+                                    {{ coaster.park.name }}
+                                </a>
+                            </li>
+                            <li class="inline-flex">{{ coaster.park.country.name|trans([], 'database') }}</li>
+                        </ul>
+                        
+                        <ul class="inline-flex list-inline-separator text-neutral-600 dark:text-neutral-400 text-sm mb-0">
+                            {% if coaster.manufacturer %}
+                                <li class="inline-flex">{{ coaster.manufacturer.name }}</li>
+                            {% endif %}
+                            {% if coaster.materialType %}
+                                <li class="inline-flex">{{ coaster.materialType.name|trans([], 'database') }}</li>
+                            {% endif %}
+                            {% if coaster.openingDate %}
+                                <li class="inline-flex">{{ coaster.openingDate|date('Y') }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
             </li>
         {% else %}
-            <li class="media panel-body">
-                <h5>{{ 'coaster_search.no_results'|trans }}</h5>
+            <li class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 text-center text-neutral-600 dark:text-neutral-400 py-4">
+                <h5 class="mb-0">{{ 'coaster_search.no_results'|trans }}</h5>
             </li>
         {% endfor %}
     </ul>

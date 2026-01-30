@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { lockScroll, unlockScroll, show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static targets = ['link'];
@@ -35,7 +36,7 @@ export default class extends Controller {
         overlay.innerHTML = `
             <div class="captain-gallery-container">
                 <div class="captain-gallery-loader"></div>
-                <img class="captain-gallery-image" src="" alt="" style="display: none;">
+                <img class="captain-gallery-image hidden" src="" alt="">
                 <button class="captain-gallery-close">&times;</button>
                 <button class="captain-gallery-prev">&larr;</button>
                 <button class="captain-gallery-next">&rarr;</button>
@@ -50,7 +51,7 @@ export default class extends Controller {
         this.loadImage();
 
         document.body.appendChild(overlay);
-        document.body.style.overflow = 'hidden';
+        lockScroll();
     }
 
     bindEvents() {
@@ -112,18 +113,18 @@ export default class extends Controller {
         const { src } = this.images[this.currentIndex];
 
         // Show loader
-        this.loader.style.display = 'block';
-        this.image.style.display = 'none';
+        show(this.loader);
+        hide(this.image);
 
         // Load image
         const img = new Image();
         img.onload = () => {
             this.image.src = src;
-            this.loader.style.display = 'none';
-            this.image.style.display = 'block';
+            hide(this.loader);
+            show(this.image);
         };
         img.onerror = () => {
-            this.loader.style.display = 'none';
+            hide(this.loader);
         };
         img.src = src;
     }
@@ -146,7 +147,7 @@ export default class extends Controller {
 
     close() {
         document.removeEventListener('keydown', this.keyHandler);
-        document.body.style.overflow = '';
+        unlockScroll();
         this.overlay?.remove();
     }
 }

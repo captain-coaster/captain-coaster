@@ -1,13 +1,13 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'title'|trans([], 'learnMoreRanking') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="panel">
-    <div class="panel-body">
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+    <div class="p-6">
       <div class="content-group-lg text-justify">
         <h3 class="text-semibold mb-5">{{ 'brief.title'|trans([], 'learnMoreRanking') }}</h3>
         {{ 'brief.text'|trans([], 'learnMoreRanking')|raw }}

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { scaleUp } from '../js/utils/animation.js';
 
 export default class extends Controller {
     static targets = ['icon', 'counter'];
@@ -53,12 +54,7 @@ export default class extends Controller {
         if (!this.hasIconTarget) return;
 
         const icon = this.iconTarget;
-        icon.style.transform = 'scale(1.3)';
-        icon.style.transition = 'transform 0.2s ease';
-
-        setTimeout(() => {
-            icon.style.transform = 'scale(1)';
-        }, 200);
+        scaleUp(icon, 200);
     }
 
     updateIcon() {

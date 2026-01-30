@@ -80,7 +80,7 @@ class CoasterController extends BaseController
         }
 
         return $this->render(
-            'Coaster/image-upload.html.twig',
+            'Coaster/image_upload.html.twig',
             [
                 'form' => $form,
                 'coaster' => $coaster,

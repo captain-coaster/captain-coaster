@@ -41,6 +41,11 @@ coaster:
         quality: 'Score de Qualité'
         worldrank: 'Classement Mondial'
         overview: "En un Coup d'Œil"
+    stats:
+        height: 'Hauteur'
+        length: 'Longueur'
+        speed: 'Vitesse'
+        inversions: 'Inversions'
     quality:
         excellent: 'Excellent'
         good: 'Bon'
@@ -351,6 +356,11 @@ sidebar:
     contact: Nous contacter
     logout: Déconnexion
     login: Connexion
+    account: Compte
+    language: Langue
+    current: Actuel
+    mobile_language: Langue
+    theme: Mode Sombre/Clair
 
 footer:
     terms: Politique de confidentialité
@@ -488,3 +498,11 @@ search_index:
             =1 {1 résultat trouvé pour "{query}"}
             other {# résultats trouvés pour "{query}"}
         }
+# Form-related translations
+form:
+    required: 'Champ obligatoire'
+    file:
+        upload: 'Télécharger un fichier'
+        drag_drop: 'ou glisser-déposer'
+        formats: "PNG, JPG, GIF jusqu'à 10MB"
+    description: 'Une question, une suggestion, ou juste envie de dire bonjour ? Nous serions ravis de vous entendre !'

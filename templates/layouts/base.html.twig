@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.get('_locale') }}" data-symfony-ux-translator-locale="{{ app.request.locale }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{{ 'app.title.default'|trans }}{% endblock %} • {{ 'app.name'|trans }}</title>
+  
+  <!-- Favicon and app icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+  <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#0c8ce9">
+  <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+  <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
+  <meta name="application-name" content="{{ 'app.name'|trans }}">
+  <meta name="msapplication-TileColor" content="#0c8ce9">
+  <meta name="theme-color" content="#0c8ce9">
+  <link rel="manifest" href="{{ asset('manifest.json') }}">
+  
+  <!-- SEO and social meta -->
+  {% block header %}{% endblock %}
+  
+  <!-- Font preloading for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheets -->
+  {{ vite_entry_link_tags('app') }}
+  {% block stylesheets %}{% endblock %}
+</head>
+<body class="bg-neutral-50 dark:bg-neutral-900 font-sans antialiased" data-controller="keyboard-shortcuts">
+  <!-- Skip to main content link for accessibility -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-cc-blue-500 text-white px-4 py-2 rounded-lg z-50">
+    {{ 'accessibility.skip_to_main'|trans({}, 'navigation') }}
+  </a>
+
+  <!-- Main application container -->
+  <div class="min-h-screen flex flex-col">
+    <!-- Navigation header -->
+    <header role="banner" aria-label="{{ 'navigation.main.label'|trans({}, 'navigation') }}">
+      {% include 'partials/_navbar.html.twig' %}
+    </header>
+
+    <!-- Main application layout -->
+    <div class="flex flex-1">
+      <!-- Desktop sidebar navigation -->
+      <aside role="navigation" aria-label="{{ 'navigation.sidebar.label'|trans({}, 'navigation') }}" class="hidden md:block">
+        {% include 'partials/_sidebar.html.twig' %}
+      </aside>
+
+      <!-- Main content area -->
+      <main id="main-content" class="flex-1 md:ml-64 pt-16" role="main" aria-label="{{ 'main.content.label'|trans({}, 'navigation') }}">
+        {% block wide_body %}
+          <!-- Content container -->
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Page title (if provided) -->
+            {% if title is defined and title %}
+              <div class="mb-6">
+                <h1 class="text-2xl md:text-3xl font-semibold text-neutral-900 dark:text-white leading-tight">
+                  {{ title }}
+                  {% if subTitle is defined and subTitle %}
+                    <span class="text-neutral-600 dark:text-neutral-400 font-normal"> • {{ subTitle }}</span>
+                  {% endif %}
+                </h1>
+                {% if secondaryTitle is defined and secondaryTitle %}
+                  <p class="text-neutral-600 dark:text-neutral-400 text-sm mt-2 leading-relaxed">{{ secondaryTitle }}</p>
+                {% endif %}
+                
+                <!-- Page actions (if any) -->
+                {% block page_actions %}{% endblock %}
+              </div>
+            {% endif %}
+
+            <!-- Messages and notifications -->
+            {% include 'partials/_messages.html.twig' %}
+
+            <!-- Page content -->
+            {% block body %}{% endblock %}
+          </div>
+        {% endblock %}
+      </main>
+
+      <!-- Secondary sidebar (filters) -->
+      {% block secondary_sidebar %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer role="contentinfo" aria-label="{{ 'footer.label'|trans({}, 'navigation') }}">
+      {% include 'partials/_footer.html.twig' %}
+    </footer>
+  </div>
+
+  <!-- JavaScript -->
+  {{ vite_entry_script_tags('app') }}
+
+  <!-- Routing -->
+  <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+  <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+  <!-- Page-specific JavaScript -->
+  {% block javascripts %}{% endblock %}
+  
+  <!-- Analytics (production only) -->
+  {% if app.environment != 'dev' %}
+  <script defer src="https://umami.captaincoaster.com/script.js" data-website-id="b5fd8d78-2d4e-4319-b75c-f71c6bb1485f"></script>
+  {% endif %}
+</body>
+</html>

@@ -1,142 +1,98 @@
 {% if stats|length > 0 %}
-    <h6 class="content-group text-semibold">
+    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
         {{ 'profile.stats.title'|trans }}
-    </h6>
+    </h2>
 
-    <div class="row">
-        <div class="col-sm-6 col-md-3">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-success-400">{{ stats.nb_coasters }}</h3>
-                        <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.ridden_coasters'|trans({'count': stats.nb_coasters}) }}</div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:trophy', {'class': 'w-12 h-12 text-success-400 opacity-75'}) }}
-                    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <div class="bg-linear-to-br from-green-50 to-green-100 dark:from-green-900/10 dark:to-green-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-3xl font-semibold text-green-600 dark:text-green-400 mb-1">{{ stats.nb_coasters }}</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.ridden_coasters'|trans({'count': stats.nb_coasters}) }}</div>
                 </div>
+                {{ ux_icon('tabler:trophy', {'class': 'w-10 h-10 text-green-500 dark:text-green-400 opacity-50', 'aria-hidden': 'true'}) }}
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-3">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-blue-400">{{ stats.nb_park }}</h3>
-                        <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.explored_parks'|trans({'count': stats.nb_park}) }}</div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:map-pin', {'class': 'w-12 h-12 text-blue-400 opacity-75'}) }}
-                    </div>
+        <div class="bg-linear-to-br from-cc-blue-50 to-cc-blue-100 dark:from-cc-blue-900/10 dark:to-cc-blue-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-3xl font-semibold text-cc-blue-600 dark:text-cc-blue-400 mb-1">{{ stats.nb_park }}</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.explored_parks'|trans({'count': stats.nb_park}) }}</div>
                 </div>
+                {{ ux_icon('tabler:map-pin', {'class': 'w-10 h-10 text-cc-blue-500 dark:text-cc-blue-400 opacity-50', 'aria-hidden': 'true'}) }}
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-3">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-indigo-400">{{ stats.nb_country }}</h3>
-                        <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.visited_countries'|trans({'count': stats.nb_country}) }}</div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:globe-americas', {'class': 'w-12 h-12 text-indigo-400 opacity-75'}) }}
-                    </div>
+        <div class="bg-linear-to-br from-cyan-50 to-cyan-100 dark:from-cyan-900/10 dark:to-cyan-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-3xl font-semibold text-cyan-600 dark:text-cyan-400 mb-1">{{ stats.nb_country }}</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.visited_countries'|trans({'count': stats.nb_country}) }}</div>
                 </div>
+                {{ ux_icon('tabler:world', {'class': 'w-10 h-10 text-cyan-500 dark:text-cyan-400 opacity-50', 'aria-hidden': 'true'}) }}
             </div>
         </div>
 
-        <div class="col-sm-6 col-md-3">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
-                        <div class="text-uppercase text-size-mini text-muted">
-                            {{ 'profile.stats.world_top_100'|trans }}
-                            <span class="tooltip ml-5" data-controller="tooltip">
-                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="tooltip-content" data-tooltip-target="content">
-                                    <div class="tooltip-arrow"></div>
-                                    {{ 'profile.stats.operating_top_100'|trans({'coasters': (stats.top_100_operating * 100 / 100)|round}) }}
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:trophy', {'class': 'w-12 h-12 text-teal-400 opacity-75'}) }}
+        <div class="bg-linear-to-br from-teal-50 to-teal-100 dark:from-teal-900/10 dark:to-teal-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-3xl font-semibold text-teal-600 dark:text-teal-400 mb-1">{{ (stats.top_100 * 100 / 100)|round }}/100</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
+                        {{ 'profile.stats.world_top_100'|trans }}
+                        <span  >
+                            {{ ux_icon('tabler:info-circle', {'class': 'w-3 h-3 text-neutral-500', 'aria-hidden': 'true'}) }}
+                        </span>
                     </div>
                 </div>
+                {{ ux_icon('tabler:trophy', {'class': 'w-10 h-10 text-teal-500 dark:text-teal-400 opacity-50', 'aria-hidden': 'true'}) }}
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
-                        <div class="text-uppercase text-size-mini text-muted">
-                            {{ 'profile.stats.top_country'|trans }}
-                            <span class="tooltip ml-5" data-controller="tooltip">
-                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="tooltip-content" data-tooltip-target="content">
-                                    <div class="tooltip-arrow"></div>
-                                    {{ 'profile.stats.coaster_count'|trans({'count': stats.country.nb}) }}
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:flag', {'class': 'w-12 h-12 text-warning-400 opacity-75'}) }}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <div class="bg-linear-to-br from-cc-warm-50 to-cc-warm-100 dark:from-cc-warm-900/10 dark:to-cc-warm-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div class="min-w-0 flex-1">
+                    <div class="text-xl font-semibold text-cc-warm-700 dark:text-cc-warm-400 mb-1 truncate">{{ stats.country.name|trans([], 'database') }}</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
+                        {{ 'profile.stats.top_country'|trans }}
+                        <span  >
+                            {{ ux_icon('tabler:info-circle', {'class': 'w-3 h-3 text-neutral-500', 'aria-hidden': 'true'}) }}
+                        </span>
                     </div>
                 </div>
+                {{ ux_icon('tabler:flag', {'class': 'w-10 h-10 text-cc-warm-500 dark:text-cc-warm-400 opacity-50 shrink-0', 'aria-hidden': 'true'}) }}
             </div>
         </div>
 
-        <div class="col-sm-4">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-pink-400">{{ stats.manufacturer.name }}</h3>
-                        <div class="text-uppercase text-size-mini text-muted">
-                            {{ 'profile.stats.top_manufacturer'|trans }}
-                            <span class="tooltip ml-5" data-controller="tooltip">
-                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="tooltip-content" data-tooltip-target="content">
-                                    <div class="tooltip-arrow"></div>
-                                    {{ 'profile.stats.coaster_count'|trans({'count': stats.manufacturer.nb}) }}
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:cog-8-tooth', {'class': 'w-12 h-12 text-pink-400 opacity-75'}) }}
+        <div class="bg-linear-to-br from-pink-50 to-pink-100 dark:from-pink-900/10 dark:to-pink-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div class="min-w-0 flex-1">
+                    <div class="text-xl font-semibold text-pink-600 dark:text-pink-400 mb-1 truncate">{{ stats.manufacturer.name }}</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
+                        {{ 'profile.stats.top_manufacturer'|trans }}
+                        <span  >
+                            {{ ux_icon('tabler:info-circle', {'class': 'w-3 h-3 text-neutral-500', 'aria-hidden': 'true'}) }}
+                        </span>
                     </div>
                 </div>
+                {{ ux_icon('tabler:settings', {'class': 'w-10 h-10 text-pink-500 dark:text-pink-400 opacity-50 shrink-0', 'aria-hidden': 'true'}) }}
             </div>
         </div>
 
-        <div class="col-sm-4">
-            <div class="panel panel-body">
-                <div class="media no-margin">
-                    <div class="media-body">
-                        <h3 class="no-margin text-semibold text-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>
-                        <div class="text-uppercase text-size-mini text-muted">
-                            {{ 'profile.stats.favorite_manufacturer'|trans }}
-                            <span class="tooltip ml-5" data-controller="tooltip">
-                                {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6 text-muted'}) }}
-                                <div class="tooltip-content" data-tooltip-target="content">
-                                    <div class="tooltip-arrow"></div>
-                                    {{ 'profile.stats.represented_manufacturer'|trans }}{% if stats.top_rated_manufacturer.nb > 0 %} ({{ stats.top_rated_manufacturer.nb }}){% endif %}
-                                </div>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="media-right media-middle">
-                        {{ ux_icon('heroicons:heart', {'class': 'w-12 h-12 text-orange-400 opacity-75'}) }}
+        <div class="bg-linear-to-br from-orange-50 to-orange-100 dark:from-orange-900/10 dark:to-orange-900/20 rounded-xl p-4 hover:shadow-md transition-all duration-300">
+            <div class="flex items-center justify-between">
+                <div class="min-w-0 flex-1">
+                    <div class="text-xl font-semibold text-orange-600 dark:text-orange-400 mb-1 truncate">{{ stats.top_rated_manufacturer.name }}</div>
+                    <div class="text-xs uppercase text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
+                        {{ 'profile.stats.favorite_manufacturer'|trans }}
+                        <span  >
+                            {{ ux_icon('tabler:info-circle', {'class': 'w-3 h-3 text-neutral-500', 'aria-hidden': 'true'}) }}
+                        </span>
                     </div>
                 </div>
+                {{ ux_icon('tabler:heart', {'class': 'w-10 h-10 text-orange-500 dark:text-orange-400 opacity-50 shrink-0', 'aria-hidden': 'true'}) }}
             </div>
         </div>
     </div>

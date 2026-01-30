@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% block title %}
     {% if user is defined %}
@@ -17,7 +17,7 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-    {% include 'Includes/filter_sidebar.html.twig' with {
+    {% include 'partials/_filter_sidebar.html.twig' with {
         'filters': filters,
         'filtersForm': filtersForm,
         'filterConfig': {
@@ -34,7 +34,7 @@
          data-map-markers-value="{{ markers|json_encode }}"
          data-map-park-id-value="{{ parkId|default('') }}"
          class="map-container">
-        <div data-map-target="container" id="map" style="height:94vh;"></div>
+        <div data-map-target="container" id="map" class="h-[94vh]"></div>
     </div>
 {% endblock %}
 

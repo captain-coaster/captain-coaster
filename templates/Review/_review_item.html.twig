@@ -1,0 +1,166 @@
+{% import "macros/_macros_helpers.html.twig" as helper %}
+{% import "macros/ui.html.twig" as ui %}
+{% set locale = app.request.locale %}
+
+<article class="flex gap-4"
+     data-controller="review-actions"
+     data-review-actions-id-value="{{ review.id }}"
+     data-review-actions-upvoted-value="false"
+     data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"
+     data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}"
+     data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}"
+     data-review-actions-mobile-length-value="150"
+     data-review-actions-desktop-length-value="600">
+  <div class="shrink-0">
+    <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="block">
+      {{ helper.profilePicture(review.user, 'w-10 h-10 rounded-full object-cover') }}
+    </a>
+  </div>
+
+  <div class="flex-1 min-w-0">
+    <div class="flex flex-wrap items-center gap-2 mb-2">
+      <a href="{{ path('user_show', {'slug': review.user.slug}) }}" 
+         class="font-semibold text-neutral-900 dark:text-white hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors duration-200">
+        {{ review.user.displayName }}
+      </a>
+      <span class="text-neutral-300 dark:text-neutral-600">•</span>
+      {{ ui.starRating(review.value, 'sm') }}
+      <span class="text-neutral-300 dark:text-neutral-600">•</span>
+      <span class="text-sm text-neutral-500 dark:text-neutral-400">{{ review.updatedAt|ago }}</span>
+    </div>
+
+    {% if review.pros|length > 0 or review.cons|length > 0 %}
+      <div class="flex flex-wrap gap-1.5 mb-3">
+        {% for pros in review.pros %}
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">
+            {{ pros.name|trans([], 'database') }}
+          </span>
+        {% endfor %}
+        {% for cons in review.cons %}
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400">
+            {{ cons.name|trans([], 'database') }}
+          </span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if review.review and (displayReviewsInAllLanguages or review.language == app.request.locale) %}
+      {% if review.review|length > 150 %}
+        <div class="review-content" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}">
+          <p class="text-neutral-700 dark:text-neutral-300 mb-3 leading-relaxed review-short">
+            {{ review.review|slice(0, 150) }}...
+            <button type="button" 
+                    class="inline-flex items-center text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200 ml-1" 
+                    data-action="review-actions#toggleReview" 
+                    data-review-actions-target="expandButton">
+              {{ ux_icon('tabler:chevron-down', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            </button>
+          </p>
+          <p class="text-neutral-700 dark:text-neutral-300 mb-3 leading-relaxed review-full hidden">
+            {{ review.review }}
+            <button type="button" 
+                    class="inline-flex items-center text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200 ml-1" 
+                    data-action="review-actions#toggleReview" 
+                    data-review-actions-target="collapseButton">
+              {{ ux_icon('tabler:chevron-up', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            </button>
+          </p>
+        </div>
+      {% else %}
+        <p class="text-neutral-700 dark:text-neutral-300 mb-3 leading-relaxed">{{ review.review }}</p>
+      {% endif %}
+    {% endif %}
+
+    <div class="flex items-center gap-4 text-sm">
+      <span class="flex items-center gap-1">
+        <span class="text-neutral-600 dark:text-neutral-400" data-review-actions-target="upvoteCount">{{ review.upvotes|length }}</span>
+        <button type="button" 
+                class="p-1 rounded text-green-600 hover:bg-green-50 dark:text-green-400 dark:hover:bg-green-900/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2" 
+                data-action="review-actions#upvote" 
+                data-review-actions-target="upvoteButton">
+          {{ ux_icon('tabler:chevron-up', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        </button>
+      </span>
+      {% if is_granted('ROLE_USER') %}
+        <button type="button" 
+                class="p-1 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-neutral-500 focus:ring-offset-2" 
+                data-action="review-actions#openReportModal" 
+                data-review-actions-target="reportButton" 
+                title="{{ 'review.report'|trans }}">
+          {{ ux_icon('tabler:flag', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        </button>
+      {% endif %}
+      {% if is_granted('update', review) %}
+        <a href="{{ path('review_form', {'id': review.coaster.id}) }}" 
+           class="p-1 rounded text-neutral-500 hover:text-cc-blue-600 hover:bg-cc-blue-50 dark:text-neutral-400 dark:hover:text-cc-blue-400 dark:hover:bg-cc-blue-900/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2" 
+           title="{{ 'review.update'|trans }}">
+          {{ ux_icon('tabler:edit', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        </a>
+      {% endif %}
+      {% if is_granted('delete', review) %}
+        <button type="button" 
+                class="p-1 rounded text-neutral-500 hover:text-red-600 hover:bg-red-50 dark:text-neutral-400 dark:hover:text-red-400 dark:hover:bg-red-900/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" 
+                data-action="review-actions#deleteReview" 
+                title="{{ 'review.delete'|trans }}">
+          {{ ux_icon('tabler:trash', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        </button>
+      {% endif %}
+    </div>
+
+    <!-- Report Modal -->
+    {% if is_granted('ROLE_USER') %}
+      <div id="reportModal-{{ review.id }}" 
+           class="fixed inset-0 z-50 hidden overflow-y-auto" 
+           tabindex="-1"
+           data-controller="modal"
+           data-review-actions-target="reportModal"
+           data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
+           data-modal-target="modal"
+           aria-labelledby="reportModalLabel-{{ review.id }}"
+           aria-hidden="true">
+        <div class="flex min-h-full items-center justify-center p-4">
+          <div class="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true"></div>
+          <div class="relative bg-white dark:bg-neutral-900 rounded-2xl shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white" id="reportModalLabel-{{ review.id }}">
+                {{ 'review.report_title'|trans }}
+              </h3>
+              <button type="button" 
+                      class="p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200" 
+                      data-action="click->modal#close" 
+                      aria-label="Close">
+                {{ ux_icon('tabler:x', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </button>
+            </div>
+
+            <form data-action="review-actions#submitReport">
+              <div class="p-6">
+                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                  {{ 'review.report_reason'|trans }}
+                </label>
+                <select name="reason" 
+                        class="block w-full rounded-lg border-0 py-2.5 px-3 text-neutral-900 dark:text-white ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors duration-200"
+                        autofocus>
+                  <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
+                  <option value="spam">{{ 'review.reason.spam'|trans }}</option>
+                </select>
+              </div>
+
+              <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700 flex justify-end gap-3 rounded-b-2xl">
+                <button type="button" 
+                        class="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors duration-200" 
+                        data-action="click->modal#close">
+                  {{ 'review.cancel'|trans }}
+                </button>
+                <button type="submit" 
+                        class="px-4 py-2 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2">
+                  {{ 'review.submit_report'|trans }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</article>

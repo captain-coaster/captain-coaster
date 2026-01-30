@@ -1,0 +1,78 @@
+# Navigation translations - French
+nav:
+    main:
+        label: 'Navigation principale'
+    sidebar:
+        label: 'Navigation latérale'
+    mobile:
+        label: 'Navigation mobile'
+    bottom:
+        label: 'Navigation du bas'
+    skip:
+        main: 'Aller au contenu principal'
+    toggle:
+        label: 'Basculer le menu de navigation'
+    search:
+        label: 'Rechercher'
+    theme:
+        toggle: 'Basculer le mode sombre/clair'
+        system: 'Système'
+        light: 'Clair'
+        dark: 'Sombre'
+    notifications:
+        label: 'Notifications'
+    profile:
+        menu: 'Menu profil'
+        full_label: 'Voir votre profil'
+    close: 'Fermer'
+    menu: 'Menu'
+    primary: 'Principal'
+    secondary: 'Plus'
+    language: 'Langue'
+    user:
+        profile: 'Connecté'
+    home_nav: 'Accueil'
+    rankings_nav: 'Classements'
+    discover_nav: 'Découvrir'
+    map_nav: 'Carte'
+    profile_nav: 'Profil'
+    home:
+        full_label: "Aller à l'accueil"
+    rankings:
+        full_label: 'Voir les classements de montagnes russes'
+    discover:
+        full_label: 'Rechercher et découvrir des montagnes russes'
+    map:
+        full_label: 'Voir la carte des montagnes russes'
+
+# Navbar specific
+navbar:
+    profile: 'Mon Profil'
+    rating: 'Mes Notes'
+    tops: 'Mes Listes'
+    my_map: 'Ma Carte'
+    logout: 'Déconnexion'
+    login: 'Connexion'
+
+# Sidebar specific
+sidebar:
+    index: 'Accueil'
+    ranking: 'Classements'
+    search: 'Découvrir'
+    map: 'Carte'
+    top: 'Top Listes'
+    review: 'Avis'
+    users: 'Utilisateurs'
+    blog: 'Blog'
+    contact: 'Contact'
+    language: 'Langue'
+    current: 'Actuel'
+    account: 'Compte'
+    theme: 'Thème'
+    mobile_language: 'Langue'
+    logout: 'Déconnexion'
+    login: 'Connexion'
+
+main:
+    content:
+        label: 'Contenu principal'

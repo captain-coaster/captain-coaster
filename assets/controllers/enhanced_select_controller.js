@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static values = {
@@ -31,7 +32,7 @@ export default class extends Controller {
             this.customDropdown.remove();
         }
         if (this.originalSelect) {
-            this.originalSelect.style.display = '';
+            show(this.originalSelect);
         }
         document.removeEventListener('click', this.closeOnOutsideClick);
     }
@@ -55,7 +56,7 @@ export default class extends Controller {
 
     createCustomDropdown() {
         // Hide original select
-        this.originalSelect.style.display = 'none';
+        hide(this.originalSelect);
 
         // Create custom dropdown structure
         this.customDropdown = document.createElement('div');
@@ -125,9 +126,8 @@ export default class extends Controller {
     }
 
     setupEventListeners() {
-        // Close dropdown when clicking outside (but not on Bootstrap dropdowns)
+        // Close dropdown when clicking outside
         this.closeOnOutsideClick = (event) => {
-            // Ignore clicks on Bootstrap navbar dropdowns
             if (
                 event.target.closest('.navbar') ||
                 event.target.closest('.dropdown') ||
@@ -250,12 +250,12 @@ export default class extends Controller {
             this.dropdownMenu.appendChild(this.maxMessage);
         }
 
-        this.maxMessage.style.display = 'block';
+        show(this.maxMessage);
 
         // Hide message after 2 seconds
         setTimeout(() => {
             if (this.maxMessage) {
-                this.maxMessage.style.display = 'none';
+                hide(this.maxMessage);
             }
         }, 2000);
     }
@@ -269,7 +269,11 @@ export default class extends Controller {
         optionElements.forEach((optionEl) => {
             const text = optionEl.textContent.toLowerCase();
             const matches = text.includes(lowerQuery);
-            optionEl.style.display = matches ? 'block' : 'none';
+            if (matches) {
+                show(optionEl);
+            } else {
+                hide(optionEl);
+            }
         });
     }
 

@@ -1,53 +1,55 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/base.html.twig' %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'users.tops.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="panel panel-body stack-media-on-mobile">
-    <div class="media-left">
-      <a href="#" class="btn btn-link btn-icon text-teal">
-        {{ ux_icon('heroicons:clipboard', {'class': 'w-8 h-8 no-edge-top'}) }}
-      </a>
-    </div>
-    <div class="media-body media-middle">
-      <h6 class="media-heading text-semibold">{{ 'list.infotitle'|trans({}, 'top') }}</h6>
-      {{ 'list.info'|trans({}, 'top') }}
-    </div>
-    <div class="media-right media-middle">
-      <a href="{{ path('top_new') }}" class="btn bg-teal-400 btn-lg">{{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 position-left'}) }}
-        {% if tops|length == 0 %}{{ 'list.create_first'|trans({}, 'top') }}{% else %}{{ 'list.create'|trans({}, 'top') }}{% endif %}
-      </a>
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-4">
+    <div class="p-6">
+      <div class="flex gap-3 flex-col md:flex-row items-center">
+        <div class="shrink-0 text-cc-blue-600 dark:text-cc-blue-400">
+          {{ ux_icon('tabler:clipboard', {'class': 'icon-xl'}) }}
+        </div>
+        <div class="flex-1 text-center md:text-left">
+          <h6 class="font-semibold mb-1">{{ 'list.infotitle'|trans({}, 'top') }}</h6>
+          <p class="text-neutral-600 dark:text-neutral-400 mb-0">{{ 'list.info'|trans({}, 'top') }}</p>
+        </div>
+        <div class="shrink-0">
+          <a href="{{ path('top_new') }}" class="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 transition-colors duration-200 px-6 py-3">
+            {{ ux_icon('tabler:plus', {'class': 'icon-sm mr-1'}) }}
+            {% if tops|length == 0 %}{{ 'list.create_first'|trans({}, 'top') }}{% else %}{{ 'list.create'|trans({}, 'top') }}{% endif %}
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="row">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
     {% for top in tops %}
-      <div class="col-lg-4 col-sm-6">
-        <div class="thumbnail">
-          <div class="caption">
-            <div class="content-group-sm media">
-              <div class="media-left">
-                {{ helper.profilePicture(top.user) }}
+      <div class="lg:col-span-4 md:col-span-6">
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden h-full">
+          <div class="p-6">
+            <div class="flex gap-3 mb-3">
+              <div class="shrink-0">
+                {{ helper.profilePicture(top.user, 'rounded-full', 48) }}
               </div>
-              <div class="media-body">
-                <h6 class="text-semibold no-margin">
-                  {% if top.main %}{{ ux_icon('heroicons:check', {'class': 'w-6 h-6 text-size-mini position-left'}) }}{% endif %}
-                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
+              <div class="flex-1">
+                <h6 class="font-semibold mb-0">
+                  {% if top.main %}{{ ux_icon('tabler:check', {'class': 'icon-xs text-green-600 dark:text-green-400 mr-1'}) }}{% endif %}
+                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-neutral-900 dark:text-white">
                     {{ top.name }}
                   </a>
                 </h6>
               </div>
             </div>
-            <ul class="list-feed">
+            <ul class="list-feed mb-3">
               {% for i in 0..2 %}
                 {% if top.topCoasters[i] is defined %}
                   <li>
                     {{ i + 1 }} -
-                    <a href="{{ path('show_coaster', {'id': top.topCoasters[i].coaster.id, 'slug': top.topCoasters[i].coaster.slug}) }}"
-                       class="text-default">
+                    <a href="{{ path('show_coaster', {'id': top.topCoasters[i].coaster.id, 'slug': top.topCoasters[i].coaster.slug}) }}" class="coaster-link">
                       {{ top.topCoasters[i].coaster.name }}
                     </a>
                   </li>
@@ -56,15 +58,15 @@
                 {% endif %}
               {% endfor %}
             </ul>
-            <div class="media">
-              <a href="{{ path('top_show', {'id': top.id}) }}">
-                {{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }} {{ 'list.more'|trans({}, 'top') }}
+            <div class="mb-3">
+              <a href="{{ path('top_show', {'id': top.id}) }}" class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300">
+                {{ ux_icon('tabler:arrow-right', {'class': 'icon-sm mr-1'}) }} {{ 'list.more'|trans({}, 'top') }}
               </a>
             </div>
-            <ul class="list-inline media">
-              <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
-              <li>
-                {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
+            <ul class="inline-flex text-neutral-600 dark:text-neutral-400 text-sm mb-0">
+              <li class="inline-flex">{{ ux_icon('tabler:stack-3', {'class': 'icon-xs mr-1'}) }} {{ top.topCoasters|length }}</li>
+              <li class="inline-flex">
+                {{ ux_icon('tabler:clock', {'class': 'icon-xs mr-1'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
               </li>
             </ul>
           </div>

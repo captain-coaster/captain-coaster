@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static targets = ['dateInput', 'dateContainer', 'calendarButton'];
@@ -217,9 +218,11 @@ export default class extends Controller {
 
         // Show/hide the button
         if (this.hasCalendarButtonTarget) {
-            this.calendarButtonTarget.style.display = shouldShow
-                ? 'inline-flex'
-                : 'none';
+            if (shouldShow) {
+                show(this.calendarButtonTarget);
+            } else {
+                hide(this.calendarButtonTarget);
+            }
         }
     }
 

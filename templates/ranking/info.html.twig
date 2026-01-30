@@ -1,66 +1,64 @@
-<div class="panel panel-flat">
-  <div class="panel-heading has-visible-elements">
-    <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|format_datetime('long', 'none')}) }}</h6>
-    <div class="heading-elements visible-elements" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+<section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm mb-6">
+  <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700 flex flex-wrap justify-between items-center gap-2">
+    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-0">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|format_datetime('long', 'none')}) }}</h2>
+    <div class="flex gap-3 flex-wrap">
       {% set nextRankingDate = 'now'|date_modify('first day of next month midnight 1 minute') %}
       {% if nextRankingDate|date('U') - 'now'|date('U') > 7200 %}
-        <span class="heading-text text-muted" style="white-space: nowrap;">
-          {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 text-warning position-left'}) }}
+        <span class="text-neutral-600 dark:text-neutral-400 text-sm flex items-center gap-1">
+          {{ ux_icon('tabler:clock', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
           {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
         </span>
       {% endif %}
-      <span class="heading-text text-muted" style="white-space: nowrap;">
-        {{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 text-warning position-left'}) }}
-        <a class="text-muted" href="{{ path('ranking_learn_more') }}">{{ 'coaster_ranking.info.learn_more'|trans() }}</a>
+      <span class="text-neutral-600 dark:text-neutral-400 text-sm flex items-center gap-1">
+        {{ ux_icon('tabler:plus', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        <a class="link" href="{{ path('ranking_learn_more') }}">{{ 'coaster_ranking.info.learn_more'|trans() }}</a>
       </span>
     </div>
   </div>
-  <div class="panel-body text-center">
-    <div class="col-xs-3">
-      <div class="content-group">
-        <h6 class="text-semibold no-margin">
-          {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.rankedCoasterNumber }}&nbsp;
+  <div class="p-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="flex flex-col items-center">
+        {{ ux_icon('tabler:message', {'class': 'w-8 h-8 text-neutral-500 dark:text-neutral-400 mb-2', 'aria-hidden': 'true'}) }}
+        <div class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1">
+          {{ ranking.rankedCoasterNumber }}
           {% if ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber > 0 %}
-            <span class="badge bg-blue-400">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</span>
+            <span class="badge-primary ml-1">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</span>
           {% endif %}
-        </h6>
-        <span class="visible-xs text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.short'|trans }}</span>
-        <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
+        </div>
+        <span class="md:hidden text-neutral-600 dark:text-neutral-400 text-sm">{{ 'coaster_ranking.info.coasters_ranked.short'|trans }}</span>
+        <span class="hidden md:inline text-neutral-600 dark:text-neutral-400 text-sm">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
       </div>
-    </div>
-    <div class="col-xs-3">
-      <div class="content-group">
-        <h6 class="text-semibold no-margin">
-          {{ ux_icon('heroicons:star', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.ratingNumber|shortNum }}&nbsp;
+      <div class="flex flex-col items-center">
+        {{ ux_icon('tabler:star', {'class': 'w-8 h-8 text-neutral-500 dark:text-neutral-400 mb-2', 'aria-hidden': 'true'}) }}
+        <div class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1">
+          {{ ranking.ratingNumber|shortNum }}
           {% if ranking.ratingNumber - previousRanking.ratingNumber > 1000 %}
-            <span class="badge bg-blue-400">+{{ (ranking.ratingNumber - previousRanking.ratingNumber)|shortNum }}</span>
+            <span class="badge-primary ml-1">+{{ (ranking.ratingNumber - previousRanking.ratingNumber)|shortNum }}</span>
           {% endif %}
-        </h6>
-        <span class="text-muted text-size-small">{{ 'coaster_ranking.info.ratings'|trans }}</span>
+        </div>
+        <span class="text-neutral-600 dark:text-neutral-400 text-sm">{{ 'coaster_ranking.info.ratings'|trans }}</span>
       </div>
-    </div>
-    <div class="col-xs-3">
-      <div class="content-group">
-        <h6 class="text-semibold no-margin">
-          {{ ux_icon('heroicons:user-group', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.userNumber }}&nbsp;
+      <div class="flex flex-col items-center">
+        {{ ux_icon('tabler:users', {'class': 'w-8 h-8 text-neutral-500 dark:text-neutral-400 mb-2', 'aria-hidden': 'true'}) }}
+        <div class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1">
+          {{ ranking.userNumber }}
           {% if ranking.userNumber - previousRanking.userNumber > 0 %}
-            <span class="badge bg-blue-400">+{{ ranking.userNumber - previousRanking.userNumber }}</span>
+            <span class="badge-primary ml-1">+{{ ranking.userNumber - previousRanking.userNumber }}</span>
           {% endif %}
-        </h6>
-        <span class="text-muted text-size-small">{{ 'coaster_ranking.info.users'|trans }}</span>
+        </div>
+        <span class="text-neutral-600 dark:text-neutral-400 text-sm">{{ 'coaster_ranking.info.users'|trans }}</span>
       </div>
-    </div>
-    <div class="col-xs-3">
-      <div class="content-group">
-        <h6 class="text-semibold no-margin">
-          {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.comparisonNumber|shortNum }}&nbsp;
+      <div class="flex flex-col items-center">
+        {{ ux_icon('tabler:arrows-horizontal', {'class': 'w-8 h-8 text-neutral-500 dark:text-neutral-400 mb-2', 'aria-hidden': 'true'}) }}
+        <div class="text-2xl font-semibold text-neutral-900 dark:text-white mb-1">
+          {{ ranking.comparisonNumber|shortNum }}
           {% if ranking.comparisonNumber - previousRanking.comparisonNumber > 1000 %}
-            <span class="badge bg-blue-400">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</span>
+            <span class="badge-primary ml-1">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</span>
           {% endif %}
-        </h6>
-        <span class="visible-xs text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.short'|trans }}</span>
-        <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.long'|trans }}</span>
+        </div>
+        <span class="md:hidden text-neutral-600 dark:text-neutral-400 text-sm">{{ 'coaster_ranking.info.comparisons.short'|trans }}</span>
+        <span class="hidden md:inline text-neutral-600 dark:text-neutral-400 text-sm">{{ 'coaster_ranking.info.comparisons.long'|trans }}</span>
       </div>
     </div>
   </div>
-</div>
+</section>

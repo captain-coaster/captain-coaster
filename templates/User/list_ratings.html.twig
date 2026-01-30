@@ -1,6 +1,6 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'users.ratings.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
@@ -15,5 +15,5 @@
 {% endblock %}
 
 {% block body %}
-  {% include 'Includes/rating_table.html.twig' with {'ratings': ratings} only %}
+  {% include 'Rating/_rating_table.html.twig' with {'ratings': ratings} only %}
 {% endblock %}

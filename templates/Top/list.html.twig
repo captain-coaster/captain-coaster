@@ -1,28 +1,28 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'list.title'|trans({}, 'top') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4 gap-3">
     {% for top in tops %}
-      <div class="col-lg-4 col-sm-6">
-        <div class="thumbnail">
-          <div class="caption">
-            <div class="content-group-sm media">
-              <div class="media-left">
-                {{ helper.profilePicture(top.user) }}
+      <div class="lg:col-span-4 md:col-span-6">
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden h-full">
+          <div class="p-6">
+            <div class="flex gap-3 mb-3">
+              <div class="shrink-0">
+                {{ helper.profilePicture(top.user, 'rounded-full img-md') }}
               </div>
-              <div class="media-body">
-                <h6 class="text-semibold no-margin">
-                  {% if top.main %}{{ ux_icon('heroicons:check', {'class': 'w-6 h-6 text-size-mini position-left'}) }}{% endif %}
-                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
+              <div class="flex-1 min-w-0">
+                <h6 class="font-semibold mb-0 truncate">
+                  {% if top.main %}{{ ux_icon('tabler:check', {'class': 'icon-xs text-green-600 dark:text-green-400 mr-1'}) }}{% endif %}
+                  <a href="{{ path('top_show', {'id': top.id}) }}" class="no-underline">
                     {{ top.name }}
                   </a>
                 </h6>
-                <small class="text-muted">
+                <small class="text-neutral-600 dark:text-neutral-400">
                   {{ 'list.by'|trans({}, 'top') }}
                   <a href="{{ path('user_show', {'slug': top.user.slug}) }}">
                     {{ top.user.displayName }}
@@ -30,26 +30,25 @@
                 </small>
               </div>
             </div>
-            <ul class="list-feed">
+            <ul class="list-feed mb-3">
               {% for topCoaster in top.topCoasters|slice(0,3) %}
                 <li>
                   {{ topCoaster.position }} -
-                    <a href="{{ path('show_coaster', {'id': topCoaster.coaster.id, 'slug': topCoaster.coaster.slug}) }}"
-                     class="text-default">
+                  <a href="{{ path('show_coaster', {'id': topCoaster.coaster.id, 'slug': topCoaster.coaster.slug}) }}" class="no-underline">
                     {{ topCoaster.coaster.name }}
                   </a>
                 </li>
               {% endfor %}
             </ul>
-            <div class="media">
-              <a href="{{ path('top_show', {'id': top.id}) }}">
-                {{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }} {{ 'list.more'|trans({}, 'top') }}
-              </a>
-            </div>
-            <ul class="list-inline media">
-              <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
-              <li>
-                {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
+            <a href="{{ path('top_show', {'id': top.id}) }}" class="flex items-center gap-1 mb-3">
+              {{ ux_icon('tabler:arrow-right', {'class': 'icon-sm'}) }} {{ 'list.more'|trans({}, 'top') }}
+            </a>
+            <ul class="inline-flex text-neutral-600 dark:text-neutral-400 text-sm mb-0">
+              <li class="inline-flex flex items-center gap-1">
+                {{ ux_icon('tabler:stack-3', {'class': 'icon-xs'}) }} {{ top.topCoasters|length }}
+              </li>
+              <li class="inline-flex flex items-center gap-1">
+                {{ ux_icon('tabler:clock', {'class': 'icon-xs'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
               </li>
             </ul>
           </div>
@@ -59,4 +58,3 @@
   </div>
   {{ knp_pagination_render(tops) }}
 {% endblock %}
-

@@ -21,7 +21,7 @@ class CustomLoginLinkNotification extends LoginLinkNotification
          * @var NotificationEmail $email
          */
         $email = $emailMessage->getMessage();
-        $email->htmlTemplate('connect/login_email.html.twig');
+        $email->htmlTemplate('Connect/login_email.html.twig');
 
         return $emailMessage;
     }

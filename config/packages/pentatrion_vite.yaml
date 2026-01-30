@@ -1,0 +1,4 @@
+pentatrion_vite:
+    build_directory: build/.vite
+    proxy_origin: null
+    throw_on_missing_entry: true

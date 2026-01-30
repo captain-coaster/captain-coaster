@@ -1,0 +1,78 @@
+# Navigation translations - English
+nav:
+    main:
+        label: 'Main navigation'
+    sidebar:
+        label: 'Sidebar navigation'
+    mobile:
+        label: 'Mobile navigation'
+    bottom:
+        label: 'Bottom navigation'
+    skip:
+        main: 'Skip to main content'
+    toggle:
+        label: 'Toggle navigation menu'
+    search:
+        label: 'Search'
+    theme:
+        toggle: 'Toggle dark/light mode'
+        system: 'System'
+        light: 'Light'
+        dark: 'Dark'
+    notifications:
+        label: 'Notifications'
+    profile:
+        menu: 'Profile menu'
+        full_label: 'View your profile'
+    close: 'Close'
+    menu: 'Menu'
+    primary: 'Main'
+    secondary: 'More'
+    language: 'Language'
+    user:
+        profile: 'Signed in'
+    home_nav: 'Home'
+    rankings_nav: 'Rankings'
+    discover_nav: 'Discover'
+    map_nav: 'Map'
+    profile_nav: 'Profile'
+    home:
+        full_label: 'Go to homepage'
+    rankings:
+        full_label: 'View coaster rankings'
+    discover:
+        full_label: 'Search and discover coasters'
+    map:
+        full_label: 'View coaster map'
+
+# Navbar specific
+navbar:
+    profile: 'My Profile'
+    rating: 'My Ratings'
+    tops: 'My Lists'
+    my_map: 'My Map'
+    logout: 'Logout'
+    login: 'Login'
+
+# Sidebar specific
+sidebar:
+    index: 'Home'
+    ranking: 'Rankings'
+    search: 'Discover'
+    map: 'Map'
+    top: 'Top Lists'
+    review: 'Reviews'
+    users: 'Users'
+    blog: 'Blog'
+    contact: 'Contact'
+    language: 'Language'
+    current: 'Current'
+    account: 'Account'
+    theme: 'Theme'
+    mobile_language: 'Language'
+    logout: 'Logout'
+    login: 'Login'
+
+main:
+    content:
+        label: 'Main content'

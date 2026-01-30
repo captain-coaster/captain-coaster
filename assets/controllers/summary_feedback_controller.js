@@ -1,9 +1,10 @@
-import { Controller } from '@hotwired/stimulus';
+import BaseController from './base_controller.js';
+import { show, hide } from '../js/utils/dom.js';
 
 /**
  * Summary feedback controller for handling thumbs up/down voting on AI summaries
  */
-export default class extends Controller {
+export default class extends BaseController {
     static targets = [
         'thumbsUpButton',
         'thumbsDownButton',
@@ -60,13 +61,17 @@ export default class extends Controller {
             return;
         }
 
-        // Show loading state
+        // Show loading state using base controller
         this._setLoadingState(true);
 
-        // Prepare form data
+        // Prepare form data with CSRF token from base controller
         const formData = new FormData();
         formData.append('isPositive', isPositive.toString());
-        formData.append('_token', this.csrfTokenValue);
+
+        const token = this.getCsrfToken();
+        if (token) {
+            formData.append('_token', token);
+        }
 
         // Submit the vote
         fetch(this.feedbackUrlValue, {
@@ -93,19 +98,16 @@ export default class extends Controller {
                     // Update button states
                     this._updateButtonStates();
 
-                    // Show success feedback
-                    this._showNotification(this.successMessageValue, 'success');
+                    // Show success feedback using base controller
+                    this.showSuccess(this.successMessageValue);
                 } else {
-                    // Show error message
-                    this._showNotification(
-                        data.message || this.errorMessageValue,
-                        'danger'
-                    );
+                    // Show error message using base controller
+                    this.showError(data.message || this.errorMessageValue);
                 }
             })
             .catch((error) => {
                 console.error('Error submitting feedback:', error);
-                this._showNotification(this.errorMessageValue, 'danger');
+                this.showError(this.errorMessageValue);
             })
             .finally(() => {
                 // Hide loading state
@@ -206,72 +208,27 @@ export default class extends Controller {
     _setLoadingState(isLoading) {
         this._isLoading = isLoading;
 
-        // Disable/enable buttons
-        if (this.hasThumbsUpButtonTarget) {
-            this.thumbsUpButtonTarget.disabled = isLoading;
-        }
-
-        if (this.hasThumbsDownButtonTarget) {
-            this.thumbsDownButtonTarget.disabled = isLoading;
-        }
-
-        // Show/hide loading indicator
-        if (this.hasLoadingIndicatorTarget) {
-            this.loadingIndicatorTarget.style.display = isLoading
-                ? 'inline-block'
-                : 'none';
-        }
-
-        // Add loading class to buttons for visual feedback
+        // Use base controller's loading methods for buttons
         const buttons = [
             this.thumbsUpButtonTarget,
             this.thumbsDownButtonTarget,
         ].filter(Boolean);
+
         buttons.forEach((button) => {
             if (isLoading) {
-                button.classList.add('loading');
+                this.showLoading(button);
             } else {
-                button.classList.remove('loading');
+                this.hideLoading(button);
             }
         });
-    }
 
-    /**
-     * Show a notification using the notification controller
-     * @param {string} message - The message to display
-     * @param {string} type - The type of notification (success, info, warning, danger)
-     * @private
-     */
-    _showNotification(message, type = 'info') {
-        // Try to get the global notification controller
-        const notificationElement = document.getElementById('notifications');
-        if (notificationElement) {
-            const notificationController =
-                this.application.getControllerForElementAndIdentifier(
-                    notificationElement,
-                    'notification'
-                );
-
-            if (notificationController) {
-                // Use the appropriate method based on notification type
-                switch (type) {
-                    case 'success':
-                        notificationController.showSuccess(message);
-                        break;
-                    case 'warning':
-                        notificationController.showWarning(message);
-                        break;
-                    case 'danger':
-                        notificationController.showDanger(message);
-                        break;
-                    default:
-                        notificationController.showInfo(message);
-                }
-                return;
+        // Show/hide loading indicator
+        if (this.hasLoadingIndicatorTarget) {
+            if (isLoading) {
+                show(this.loadingIndicatorTarget);
+            } else {
+                hide(this.loadingIndicatorTarget);
             }
         }
-
-        // Fallback: log to console if notification controller is not available
-        console.warn('Notification:', message);
     }
 }

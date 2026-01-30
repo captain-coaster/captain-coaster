@@ -1,38 +1,41 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = top.name %}
 {% set subTitle = top.user.displayName %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 
 {% block body %}
-  <div class="panel panel-white panel-flat">
-    <div class="panel-heading">
-      <div class="row">
-        <div class="col-sm-8">
-          <ul class="list-inline no-margin">
-            <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
-            <li>
-              {{ ux_icon('heroicons:user', {'class': 'w-6 h-6 position-left'}) }}
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+        <div class="md:col-span-8">
+          <ul class="inline-flex mb-0">
+            <li class="inline-flex">
+              {{ ux_icon('tabler:stack-3', {'class': 'icon-sm mr-1'}) }}
+              {{ top.topCoasters|length }}
+            </li>
+            <li class="inline-flex">
+              {{ ux_icon('tabler:user', {'class': 'icon-sm mr-1'}) }}
               <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
             </li>
-            <li>
-              {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }}
+            <li class="inline-flex">
+              {{ ux_icon('tabler:clock', {'class': 'icon-sm mr-1'}) }}
               {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
             </li>
           </ul>
         </div>
         {% if is_granted('edit', top) or is_granted('delete', top) %}
-          <div class="col-sm-4 text-right">
+          <div class="md:col-span-4 md:text-right mt-2 md:mt-0">
             {% if is_granted('edit', top) %}
-              <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm">
-                {{ ux_icon('heroicons:pencil', {'class': 'w-5 h-5'}) }}
+              <a href="{{ path('top_edit', {'id': top.id}) }}" class="inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 transition-colors duration-200 text-xs px-3 py-1.5">
+                {{ ux_icon('tabler:edit', {'class': 'icon-xs'}) }}
               </a>
             {% endif %}
             {% if is_granted('delete', top) %}
               <a href="{{ path('top_delete', {'id': top.id}) }}"
                  onclick="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');"
-                 class="btn bg-danger-400 btn-sm">
-                {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5'}) }}
+                 class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200">
+                {{ ux_icon('tabler:trash', {'class': 'icon-xs'}) }}
               </a>
             {% endif %}
           </div>
@@ -40,47 +43,44 @@
       </div>
     </div>
 
-    <ul class="media-list">
+    <ul class="list-group list-group-flush">
       {% for topCoaster in top.topCoasters %}
         {% set coaster = topCoaster.coaster %}
-        <li class="media panel-body stack-media-on-mobile">
-          <div class="media-left">
-            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
+        <li class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700">
+          <div class="flex gap-3 items-start">
+            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="shrink-0">
               {% if coaster.mainImage is not null %}
                 <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
-                     class="img-rounded"
-                     style="width:96px;"
+                     class="rounded w-24"
                      alt="{{ coaster.name }}">
               {% endif %}
             </a>
-          </div>
 
-          <div class="media-body">
-            <h2 class="media-heading text-semibold">
-              <a style="color:#333;" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                {{ topCoaster.position }}&nbsp;-&nbsp;{{ coaster.name }}
-              </a>
-            </h2>
-
-            <ul class="list-inline list-inline-separate text-muted mb-10">
-              {% if coaster.manufacturer %}
-                <li>
-                  <a class="text-muted" href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
-                    {{ coaster.manufacturer.name }}
-                  </a>
-
-                </li>
-              {% endif %}
-              <li>
-                <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                  {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
+            <div class="flex-1">
+              <h6 class="font-semibold mb-1">
+                <a class="no-underline" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
+                  {{ topCoaster.position }}&nbsp;-&nbsp;{{ coaster.name }}
                 </a>
-              </li>
-            </ul>
+              </h6>
+
+              <ul class="inline-flex list-inline-separator text-neutral-600 dark:text-neutral-400 text-sm mb-0">
+                {% if coaster.manufacturer %}
+                  <li class="inline-flex">
+                    <a class="text-neutral-600 dark:text-neutral-400" href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
+                      {{ coaster.manufacturer.name }}
+                    </a>
+                  </li>
+                {% endif %}
+                <li class="inline-flex">
+                  <a class="text-neutral-600 dark:text-neutral-400" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
+                    {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </li>
       {% endfor %}
     </ul>
   </div>
-
 {% endblock %}

@@ -1,62 +1,94 @@
-{% extends "base_login.html.twig" %}
+{% extends "layouts/base_login.html.twig" %}
 
 {% block title %}{{ 'login.title'|trans }} • {{ 'app.name'|trans }}{% endblock %}
 
 {% block body %}
     <div class="login-form-container">
-        <!-- Form with validation -->
-        <div class="panel panel-body login-form">
-        <div class="text-center mb-3">
-            <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }}</div>
-            <h5 class="content-group-lg">{{ 'login.title'|trans }}
-                <small
-                    class="display-block">{{ 'login.subtitle'|trans }}</small>
-            </h5>
-        </div>
-        {% if error %}
-            <div class="alert alert-danger alert-bordered">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
-        {% for label, messages in app.flashes %}
-            {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-bordered">
-                    {{ message | raw }}
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg overflow-hidden max-w-md mx-auto">
+            <div class="p-8">
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cc-warm-100 dark:bg-cc-warm-900/20 text-cc-warm-600 dark:text-cc-warm-400 mb-4">
+                        {{ ux_icon('tabler:key', {'class': 'w-8 h-8', 'aria-hidden': 'true'}) }}
+                    </div>
+                    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">{{ 'login.title'|trans }}</h1>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm">{{ 'login.subtitle'|trans }}</p>
                 </div>
-            {% endfor %}
-        {% endfor %}
-        <form action="{{ path('login') }}" method="POST">
-            <div class="form-group has-feedback has-feedback-left">
-                <input type="email" name="email" class="form-control" placeholder="Email" required{% if rateLimitExceeded %} disabled{% endif %}>
-                <div class="form-control-feedback">
-                    {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6 text-muted'}) }}
+                
+                {% if error %}
+                    <div class="mb-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800" role="alert">
+                        <div class="flex items-start gap-3">
+                            {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                            <p class="text-sm text-red-800 dark:text-red-200">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="mb-4 p-4 rounded-lg {% if label == 'success' %}bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800{% elseif label == 'warning' %}bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800{% else %}bg-cc-blue-50 dark:bg-cc-blue-900/20 border border-cc-blue-200 dark:border-cc-blue-800{% endif %}" role="alert">
+                            <div class="flex items-start gap-3">
+                                {% if label == 'success' %}
+                                    {{ ux_icon('tabler:circle-check', {'class': 'w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-green-800 dark:text-green-200">{{ message | raw }}</p>
+                                {% elseif label == 'warning' %}
+                                    {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-yellow-800 dark:text-yellow-200">{{ message | raw }}</p>
+                                {% else %}
+                                    {{ ux_icon('tabler:info-circle', {'class': 'w-5 h-5 text-cc-blue-600 dark:text-cc-blue-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-cc-blue-800 dark:text-cc-blue-200">{{ message | raw }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                
+                <form action="{{ path('login') }}" method="POST" class="space-y-4">
+                    <div>
+                        <label for="email" class="sr-only">{{ 'login.email_label'|trans }}</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                {{ ux_icon('tabler:mail', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+                            </div>
+                            <input type="email" 
+                                   id="email"
+                                   name="email" 
+                                   class="block w-full pl-10 pr-3 py-3 rounded-lg border-0 shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 dark:text-white sm:text-sm transition-colors duration-200" 
+                                   placeholder="Email" 
+                                   required
+                                   {% if rateLimitExceeded %} disabled{% endif %}
+                                   aria-label="{{ 'login.email_label'|trans }}">
+                        </div>
+                    </div>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <button type="submit" 
+                            class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                            {% if rateLimitExceeded %} disabled{% endif %}>
+                        {{ 'login.send_link'|trans }}
+                    </button>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm text-center">
+                        {{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}
+                    </p>
+                </form>
+                
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-neutral-200 dark:border-neutral-700"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">{{ 'login.or_sign_in_with'|trans }}</span>
+                    </div>
                 </div>
-            </div>
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
-            <div class="form-group">
-                <button type="submit"
-                        class="btn bg-blue btn-block"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
-            </div>
-            <div
-                class="form-group text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
-        </form>
-        <div class="content-divider text-muted form-group">
-            <span>{{ 'login.or_sign_in_with'|trans }}</span>
-        </div>
-        <ul class="list-inline form-group list-inline-condensed text-center">
-            <li>
-                <a href="{{ path('connect_google_start') }}"
-                   class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
-                    {{ ux_icon('fe:google', {'class': 'w-6 h-6'}) }}
+                
+                <a href="{{ path('connect_google_start') }}" 
+                   class="w-full inline-flex items-center justify-center gap-3 px-6 py-3 border border-neutral-300 dark:border-neutral-600 text-sm font-medium rounded-lg shadow-sm text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 transition-colors duration-200">
+                    {{ ux_icon('tabler:brand-google', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
                     {{ 'login.connect_with_google'|trans }}
                 </a>
-            </li>
-        </ul>
 
-        <span class="help-block text-center">
-            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
-        </span>
+                <p class="text-neutral-500 dark:text-neutral-400 text-xs text-center mt-6">
+                    {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
+                </p>
+            </div>
         </div>
-        <!-- /form with validation -->
     </div>
 {% endblock %}

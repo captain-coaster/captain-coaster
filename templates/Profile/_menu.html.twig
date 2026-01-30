@@ -1,47 +1,65 @@
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
-<div class="panel">
-    <div class="panel-body text-center">
-    <div class="display-inline-block">
-        {{ helper.profilePicture(user) }}
-    </div>
-    <h6 class="text-semibold no-margin-bottom">
-        {{ user.displayName }}
-    </h6>
+<nav class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm mb-6" aria-label="{{ 'profile.menu.label'|trans }}">
+    <div class="p-6 text-center border-b border-neutral-100 dark:border-neutral-800">
+        <div class="inline-block mb-3">
+            {{ helper.profilePicture(user, 'rounded-full w-20 h-20') }}
+        </div>
+        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+            {{ user.displayName }}
+        </h2>
     </div>
 
-    <div class="list-group no-border no-padding-top">
-    <a href="{{ path('profile') }}" class="list-group-item">
-        {{ ux_icon('heroicons:user', {'class': 'w-6 h-6'}) }}
-        {{ 'profile.title'|trans }}
-    </a>
-    <a href="{{ path('profile_settings') }}" class="list-group-item">
-        {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-6 h-6'}) }}
-        {{ 'profile.settings.title'|trans }}
-    </a>
-    <a href="{{ path('profile_ratings') }}" class="list-group-item">
-        {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }}
-        {{ 'profile.menu.ratings'|trans }}
-        <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
-    </a>
-    <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
-        {{ ux_icon('heroicons:megaphone', {'class': 'w-6 h-6'}) }}
-        {{ 'profile.menu.reviews'|trans }}
-    </a>
-    <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
-        {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }}
-        {{ 'profile.menu.tops'|trans }}
-    </a>
-    {% if images_counter > 0 %}
-        <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
-        {{ ux_icon('heroicons:camera', {'class': 'w-6 h-6'}) }}
-            {{ 'profile.menu.photos'|trans }}
-            <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
-        </a>
-    {% endif %}
-    <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
-        {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }}
-        {{ 'profile.menu.map'|trans }}
-    </a>
-    </div>
-</div>
+    <ul class="divide-y divide-neutral-100 dark:divide-neutral-800">
+        <li>
+            <a href="{{ path('profile') }}" class="flex items-center gap-3 px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                {{ ux_icon('tabler:user', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                <span class="font-medium">{{ 'profile.title'|trans }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('profile_settings') }}" class="flex items-center gap-3 px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                {{ ux_icon('tabler:settings', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                <span class="font-medium">{{ 'profile.settings.title'|trans }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('profile_ratings') }}" class="flex items-center justify-between px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                <span class="flex items-center gap-3">
+                    {{ ux_icon('tabler:star', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                    <span class="font-medium">{{ 'profile.menu.ratings'|trans }}</span>
+                </span>
+                <span class="badge-primary">{{ user.ratings|length }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('user_reviews', {'id': user.id}) }}" class="flex items-center gap-3 px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                {{ ux_icon('tabler:speakerphone', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                <span class="font-medium">{{ 'profile.menu.reviews'|trans }}</span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ path('user_tops', {'id': user.id}) }}" class="flex items-center gap-3 px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                {{ ux_icon('tabler:clipboard', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                <span class="font-medium">{{ 'profile.menu.tops'|trans }}</span>
+            </a>
+        </li>
+        {% if images_counter > 0 %}
+            <li>
+                <a href="{{ path('user_pictures', {'id': user.id}) }}" class="flex items-center justify-between px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                    <span class="flex items-center gap-3">
+                        {{ ux_icon('tabler:camera', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                        <span class="font-medium">{{ 'profile.menu.photos'|trans }}</span>
+                    </span>
+                    <span class="badge-primary">{{ images_counter }}</span>
+                </a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="{{ path('map_user', {'id': user.id}) }}" class="flex items-center gap-3 px-6 py-3 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cc-blue-500">
+                {{ ux_icon('tabler:map-pin', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                <span class="font-medium">{{ 'profile.menu.map'|trans }}</span>
+            </a>
+        </li>
+    </ul>
+</nav>

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static targets = ['content'];
@@ -9,11 +10,11 @@ export default class extends Controller {
 
     tooltipListeners() {
         this.element.addEventListener('mouseenter', () => {
-            this.contentTarget.style.display = 'block';
+            show(this.contentTarget);
         });
 
         this.element.addEventListener('mouseleave', () => {
-            this.contentTarget.style.display = 'none';
+            hide(this.contentTarget);
         });
     }
 }

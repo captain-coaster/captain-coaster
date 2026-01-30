@@ -1,55 +1,48 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'profile.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
-        {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-      </div>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    <div class="md:col-span-1">
+      {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
     </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
-          <!-- stats -->
-          {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
-          <!-- stats -->
-          <!-- banner -->
-          <div class="panel">
-            <div class="panel-body">
-              <h4 class="content-group-lg">
-                {{ 'profile.banner.title'|trans }}
-                <small class="display-block">{{ 'profile.banner.text'|trans }}</small>
-              </h4>
-              <div id="my-banner" class="text-center content-group">
-                  {% include 'Profile/banner.html.twig' with {'user': user} only %}
-              </div>
-            </div>
+    <div class="md:col-span-3 space-y-6">
+      <!-- stats -->
+      {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
+      
+      <!-- banner -->
+      <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+        <div class="p-6">
+          <h2 class="text-xl font-semibold text-neutral-900 dark:text-white mb-2">
+            {{ 'profile.banner.title'|trans }}
+          </h2>
+          <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">{{ 'profile.banner.text'|trans }}</p>
+          <div id="my-banner" class="text-center">
+            {% include 'Profile/banner.html.twig' with {'user': user} only %}
           </div>
-          <!-- banner -->
-          <!-- badges -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{ 'profile.badge'|trans }}</h3>
-            </div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
-                  <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
-                </div>
-                {% for badge in user.badges %}
-                  <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
-                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <!-- /badges -->
         </div>
-      </div>
+      </section>
+      
+      <!-- badges -->
+      <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+          <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">{{ 'profile.badge'|trans }}</h2>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="text-center">
+              <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}" class="w-full h-auto" alt="Welcome badge"/>
+            </div>
+            {% for badge in user.badges %}
+              <div class="text-center">
+                <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}" class="w-full h-auto" alt="{{ badge.name }}"/>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 {% endblock %}

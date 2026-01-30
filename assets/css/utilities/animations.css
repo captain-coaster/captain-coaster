@@ -1,0 +1,84 @@
+/*
+ * Custom Animation Utilities - Tailwind CSS v4
+ * Custom @utility directives for animations
+ */
+
+/* ==========================================================================
+   Utilities Layer - Custom Utility Classes
+   ========================================================================== */
+
+@layer utilities {
+    /* Hide scrollbar but keep functionality */
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Safe area padding for mobile devices */
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .pt-safe {
+        padding-top: env(safe-area-inset-top);
+    }
+
+    /* Text balance for better typography */
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Gradient text */
+    .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(
+            to right,
+            var(--color-cc-blue-500),
+            var(--color-cc-warm-400)
+        );
+    }
+}
+
+/* ==========================================================================
+   Custom Utilities using @utility directive (Tailwind v4)
+   These work with variants like hover:, focus:, lg:, etc.
+   ========================================================================== */
+
+@utility animate-fade-in {
+    animation: var(--animate-fade-in);
+}
+
+@utility animate-slide-up {
+    animation: var(--animate-slide-up);
+}
+
+@utility animate-bounce-gentle {
+    animation: var(--animate-bounce-gentle);
+}
+
+@utility animate-pulse-subtle {
+    animation: var(--animate-pulse-subtle);
+}
+
+/* Enhanced interactive feedback utilities */
+@utility interactive-lift {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.1);
+}
+
+@utility interactive-press {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+@utility focus-visible-ring {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--focus-ring-color);
+}

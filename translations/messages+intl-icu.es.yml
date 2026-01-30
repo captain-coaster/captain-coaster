@@ -41,6 +41,11 @@ coaster:
         quality: 'Puntuación de Calidad'
         worldrank: 'Clasificación Mundial'
         overview: 'De un Vistazo'
+    stats:
+        height: 'Altura'
+        length: 'Longitud'
+        speed: 'Velocidad'
+        inversions: 'Inversiones'
     quality:
         excellent: 'Excelente'
         good: 'Bueno'
@@ -351,6 +356,11 @@ sidebar:
     contact: Estar en contacto
     logout: Cerrar sesión
     login: Iniciar sesión
+    account: Cuenta
+    language: Idioma
+    current: Actual
+    mobile_language: Idioma
+    theme: Modo Oscuro/Claro
 
 footer:
     terms: Términos de Uso
@@ -488,3 +498,11 @@ search_index:
             =1 {1 resultado encontrado para "{query}"}
             other {# resultados encontrados para "{query}"}
         }
+# Form-related translations
+form:
+    required: 'Campo obligatorio'
+    file:
+        upload: 'Subir un archivo'
+        drag_drop: 'o arrastrar y soltar'
+        formats: 'PNG, JPG, GIF hasta 10MB'
+    description: '¿Tienes una pregunta, sugerencia, o simplemente quieres saludar? ¡Nos encantaría saber de ti!'

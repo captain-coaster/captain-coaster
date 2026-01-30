@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'coaster_search.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
@@ -6,7 +6,7 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {
+  {% include 'partials/_filter_sidebar.html.twig' with {
     'filters': filters, 
     'filtersForm': filtersForm,
     'filterConfig': {

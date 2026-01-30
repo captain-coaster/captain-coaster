@@ -1,0 +1,78 @@
+# Navigation translations - Spanish
+nav:
+    main:
+        label: 'Navegación principal'
+    sidebar:
+        label: 'Navegación lateral'
+    mobile:
+        label: 'Navegación móvil'
+    bottom:
+        label: 'Navegación inferior'
+    skip:
+        main: 'Ir al contenido principal'
+    toggle:
+        label: 'Alternar menú de navegación'
+    search:
+        label: 'Buscar'
+    theme:
+        toggle: 'Alternar modo oscuro/claro'
+        system: 'Sistema'
+        light: 'Claro'
+        dark: 'Oscuro'
+    notifications:
+        label: 'Notificaciones'
+    profile:
+        menu: 'Menú de perfil'
+        full_label: 'Ver tu perfil'
+    close: 'Cerrar'
+    menu: 'Menú'
+    primary: 'Principal'
+    secondary: 'Más'
+    language: 'Idioma'
+    user:
+        profile: 'Conectado'
+    home_nav: 'Inicio'
+    rankings_nav: 'Rankings'
+    discover_nav: 'Descubrir'
+    map_nav: 'Mapa'
+    profile_nav: 'Perfil'
+    home:
+        full_label: 'Ir a la página de inicio'
+    rankings:
+        full_label: 'Ver rankings de montañas rusas'
+    discover:
+        full_label: 'Buscar y descubrir montañas rusas'
+    map:
+        full_label: 'Ver mapa de montañas rusas'
+
+# Navbar specific
+navbar:
+    profile: 'Mi Perfil'
+    rating: 'Mis Valoraciones'
+    tops: 'Mis Listas'
+    my_map: 'Mi Mapa'
+    logout: 'Cerrar Sesión'
+    login: 'Iniciar Sesión'
+
+# Sidebar specific
+sidebar:
+    index: 'Inicio'
+    ranking: 'Rankings'
+    search: 'Descubrir'
+    map: 'Mapa'
+    top: 'Top Listas'
+    review: 'Reseñas'
+    users: 'Usuarios'
+    blog: 'Blog'
+    contact: 'Contacto'
+    language: 'Idioma'
+    current: 'Actual'
+    account: 'Cuenta'
+    theme: 'Tema'
+    mobile_language: 'Idioma'
+    logout: 'Cerrar Sesión'
+    login: 'Iniciar Sesión'
+
+main:
+    content:
+        label: 'Contenido principal'

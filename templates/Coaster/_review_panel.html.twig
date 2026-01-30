@@ -1,73 +1,74 @@
 {% set reviewCount = reviews.getTotalItemCount() %}
 {% if reviewCount > 0 or coaster.isRateable %}
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h6 class="panel-title section-header">
-                <div class="section-header__container">
-                    <div class="section-header__title">
-                        <span class="text-semibold">
-                            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
+    <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+                        {{ ux_icon('tabler:messages', {'class': 'w-5 h-5 text-green-500', 'aria-hidden': 'true'}) }}
+                        {{ 'review.title'|trans }}
+                    </h2>
+                    {%- if reviewCount > 0 -%}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-cc-blue-100 text-cc-blue-800 dark:bg-cc-blue-900/20 dark:text-cc-blue-400">
+                            {{ reviewCount }}
                         </span>
-                        {%- if reviewCount > 0 -%}
-                            <span class="badge badge-primary">{{ reviewCount }}</span>
-                        {%- endif -%}
-                    </div>
+                    {%- endif -%}
+                </div>
+                <div class="flex items-center gap-3">
                     {% if reviewCount > 1 %}
-                        <form class="section-header__form form-horizontal">
+                        <form class="inline-block">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
-
-                            <div class="form-group-xs no-margin-bottom">
-                                <select name="filters[sort]" class="form-control">
-                                    <option value=""
-                                            {% if filters is not null or filters.sort == '' %}selected{% endif %}>
-                                        {{ 'filters.sorts.default'|trans() }}
-                                    </option>
-                                    <option value="updatedAt|asc"
-                                            {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.updatedAt.asc'|trans() }}
-                                    </option>
-                                    <option value="updatedAt|desc"
-                                            {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.updatedAt.desc' |trans() }}
-                                    </option>
-                                    <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.value.desc' |trans() }}
-                                    </option>
-                                    <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.value.asc' |trans() }}
-                                    </option>
-                                </select>
-                            </div>
+                            <select name="filters[sort]" 
+                                    class="block w-full rounded-lg border-0 py-1.5 pl-3 pr-8 text-sm text-neutral-900 dark:text-white ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors duration-200">
+                                <option value="" {% if filters is not null or filters.sort == '' %}selected{% endif %}>
+                                    {{ 'filters.sorts.default'|trans() }}
+                                </option>
+                                <option value="updatedAt|asc" {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                                    {{ 'filters.sorts.reviews.updatedAt.asc'|trans() }}
+                                </option>
+                                <option value="updatedAt|desc" {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                                    {{ 'filters.sorts.reviews.updatedAt.desc'|trans() }}
+                                </option>
+                                <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
+                                    {{ 'filters.sorts.reviews.value.desc'|trans() }}
+                                </option>
+                                <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
+                                    {{ 'filters.sorts.reviews.value.asc'|trans() }}
+                                </option>
+                            </select>
                         </form>
                     {% endif %}
-                </div>
-                {%- if coaster.isRateable -%}
-                    <div>
-                        <a href="{{ path('review_form', {'id': coaster.id}) }}"
-                           class="btn btn-primary btn-rounded btn-xs">
-                            {{ ux_icon('heroicons:plus-circle', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.send'|trans() }}
+                    {%- if coaster.isRateable -%}
+                        <a href="{{ path('review_form', {'id': coaster.id}) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2">
+                            {{ ux_icon('tabler:circle-plus', {'class': 'w-4 h-4 mr-1.5', 'aria-hidden': 'true'}) }}
+                            {{ 'review.send'|trans() }}
                         </a>
-                    </div>
-                {%- endif -%}
-            </h6>
+                    {%- endif -%}
+                </div>
+            </div>
         </div>
 
         {%- if reviewCount > 0 -%}
-            <div class="panel-body">
-                <ul class="media-list media-list-bordered">
+            <div class="p-6">
+                <ul class="space-y-6">
                     {%- for review in reviews -%}
-                        <li>
-                            {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
+                        <li class="{% if not loop.last %}border-b border-neutral-100 dark:border-neutral-800 pb-6{% endif %}">
+                            {% include 'Review/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
                         </li>
                     {%- endfor -%}
                 </ul>
-                {{ knp_pagination_render(reviews) }}
+                <div class="mt-6">
+                    {{ knp_pagination_render(reviews) }}
+                </div>
             </div>
         {%- elseif coaster.isRateable -%}
-            <div class="panel-body text-center text-muted">
-                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
-                <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
+            <div class="px-6 py-12 text-center">
+                <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    {{ ux_icon('tabler:messages', {'class': 'w-8 h-8 text-neutral-400 dark:text-neutral-500', 'aria-hidden': 'true'}) }}
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-400">{{ 'review_list.no_review'|trans }}</p>
             </div>
         {%- endif -%}
-    </div>
+    </section>
 {% endif %}

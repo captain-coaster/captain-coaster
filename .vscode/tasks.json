@@ -2,9 +2,9 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "npm dev-server",
+            "label": "npm dev",
             "type": "shell",
-            "command": "npm run dev-server",
+            "command": "npm run dev",
             "group": "build",
             "presentation": {
                 "reveal": "always",

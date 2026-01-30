@@ -102,7 +102,7 @@ class DefaultController extends BaseController
             $message = (new Email())
                 ->to($contactMailTo)
                 ->subject($translator->trans('contact.email.title'))
-                ->html($this->renderView('Default/contact_mail.txt.twig', [
+                ->html($this->renderView('email/contact.txt.twig', [
                     'name' => $formData['name'],
                     'message' => $formData['message'],
                     'isLoggedIn' => (bool) $user,

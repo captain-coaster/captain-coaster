@@ -1,92 +1,91 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'user_profile.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
-        <!-- infos user -->
-        <div class="panel">
-          <div class="panel-body text-center">
-            <div class="display-inline-block">
-              {{ helper.profilePicture(user, 'img-circle img-lg') }}
-            </div>
-
-            <h6 class="text-semibold no-margin-bottom">
-              {{ user.displayName }}
-            </h6>
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+    <div class="md:col-span-3">
+      <!-- infos user -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-3">
+        <div class="p-6 text-center">
+          <div class="d-inline-block mb-2">
+            {{ helper.profilePicture(user, 'rounded-full img-lg') }}
           </div>
-
-          <div class="list-group no-border no-padding-top">
-            <a href="{{ path('user_ratings', {'id': user.id}) }}" class="list-group-item">
-              {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }}
-              {{ 'user_profile.ratings'|trans }}
-              <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
-            </a>
-            <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
-              {{ ux_icon('heroicons:megaphone', {'class': 'w-6 h-6'}) }}
-              {{ 'user_profile.reviews'|trans }}
-            </a>
-            {% if user.mainTop.id %}
-              <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" class="list-group-item">
-                {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }}
-                {{ 'user_profile.main_top'|trans }}
-                <span class="badge bg-teal-400 pull-right">{{ user.mainTop.topCoasters|length }}</span>
-              </a>
-            {% endif %}
-            {% if user.tops|length > 1 %}
-              <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
-                {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }}
-                {{ 'user_profile.tops'|trans }}
-                <span class="badge bg-teal-400 pull-right">{{ user.tops|length }}</span>
-              </a>
-            {% endif %}
-              {% if images_counter > 0 %}
-              <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
-                {{ ux_icon('heroicons:camera', {'class': 'w-6 h-6'}) }}
-                {{ 'user_profile.pictures'|trans }}
-                  <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
-              </a>
-            {% endif %}
-            <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
-              {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }}
-              {{ 'user_profile.map'|trans }}
-            </a>
-          </div>
+          <h6 class="font-semibold mb-0">
+            {{ user.displayName }}
+          </h6>
         </div>
-        <!-- /infos user -->
-      </div>
-    </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
-          <!-- stats -->
-          {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
-          <!-- stats -->
-          <!-- badges -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{ 'profile.badge'|trans }}</h3>
-            </div>
 
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-sm-3" style="margin-bottom: 40px;">
-                  <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
-                </div>
-                {% for badge in user.badges %}
-                  <div class="col-sm-3" style="margin-bottom: 40px;">
-                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
-                  </div>
-                {% endfor %}
-              </div>
+        <ul class="list-group list-group-flush">
+          <a href="{{ path('user_ratings', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
+            <span class="flex items-center gap-2">
+              {{ ux_icon('tabler:star', {'class': 'icon-sm'}) }}
+              {{ 'user_profile.ratings'|trans }}
+            </span>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ user.ratings|length }}</span>
+          </a>
+          <a href="{{ path('user_reviews', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex items-center gap-2">
+            {{ ux_icon('tabler:speakerphone', {'class': 'icon-sm'}) }}
+            {{ 'user_profile.reviews'|trans }}
+          </a>
+          {% if user.mainTop.id %}
+            <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
+              <span class="flex items-center gap-2">
+                {{ ux_icon('tabler:trophy', {'class': 'icon-sm'}) }}
+                {{ 'user_profile.main_top'|trans }}
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ user.mainTop.topCoasters|length }}</span>
+            </a>
+          {% endif %}
+          {% if user.tops|length > 1 %}
+            <a href="{{ path('user_tops', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
+              <span class="flex items-center gap-2">
+                {{ ux_icon('tabler:trophy', {'class': 'icon-sm'}) }}
+                {{ 'user_profile.tops'|trans }}
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ user.tops|length }}</span>
+            </a>
+          {% endif %}
+          {% if images_counter > 0 %}
+            <a href="{{ path('user_pictures', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
+              <span class="flex items-center gap-2">
+                {{ ux_icon('tabler:camera', {'class': 'icon-sm'}) }}
+                {{ 'user_profile.pictures'|trans }}
+              </span>
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ images_counter }}</span>
+            </a>
+          {% endif %}
+          <a href="{{ path('map_user', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex items-center gap-2">
+            {{ ux_icon('tabler:map-pin', {'class': 'icon-sm'}) }}
+            {{ 'user_profile.map'|trans }}
+          </a>
+        </ul>
+      </div>
+      <!-- /infos user -->
+    </div>
+    <div class="md:col-span-9">
+      <!-- stats -->
+      {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
+      
+      <!-- badges -->
+      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+          <h6 class="text-lg font-semibold text-neutral-900 dark:text-white mb-0">{{ 'profile.badge'|trans }}</h6>
+        </div>
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+            <div class="md:col-span-3 col-span-6 text-center mb-4">
+              <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}" class="w-full h-auto" alt="Welcome badge"/>
             </div>
+            {% for badge in user.badges %}
+              <div class="md:col-span-3 col-span-6 text-center mb-4">
+                <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}" class="w-full h-auto" alt="{{ badge.name }}"/>
+              </div>
+            {% endfor %}
           </div>
-          <!-- /badges -->
         </div>
       </div>
     </div>

@@ -1,0 +1,32 @@
+{% import "macros/_macros_helpers.html.twig" as helper %}
+
+<div class="grid grid-cols-1 md:grid-cols-12 gap-4 gap-3">
+    {% for user in users %}
+        <div class="lg:col-span-4 md:col-span-6">
+            <div class="{% if border %}bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden {% endif %}h-100">
+                <div class="{% if border %}p-6 {% endif %}">
+                    <div class="flex gap-3">
+                        <div class="shrink-0">
+                            {{ helper.profilePicture(user.0, 'rounded-full img-md') }}
+                        </div>
+                        <div class="flex-1">
+                            <h6 class="mb-1">
+                                <a href="{{ path('user_show', {'slug': user.0.slug}) }}">
+                                    {{ user.0.displayName }}
+                                </a>
+                            </h6>
+                            <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-2">
+                                {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
+                            </p>
+                            <h6 class="font-semibold mb-0">
+                                <a href="{{ path('user_ratings', {'id': user.0.id}) }}">
+                                    {{ 'user_list.rating'|trans({'count': user.total_ratings}) }}
+                                </a>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

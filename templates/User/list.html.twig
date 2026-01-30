@@ -1,17 +1,21 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'user_list.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
     {# info alert #}
-    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-        <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span>
+    <div class="alert alert-info alert-dismissible fade show flex items-start gap-2" role="alert">
+        {{ ux_icon('tabler:info-circle', {'class': 'icon-sm shrink-0 mt-1'}) }}
+        <div>
+            <h6 class="alert-heading font-semibold mb-1">{{ 'user_list.info.title'|trans }}</h6>
+            <p class="mb-0">{{ 'user_list.info.text'|trans }}</p>
+        </div>
+        <button type="button" class="p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800" onclick="this.parentElement.remove()" aria-label="Close">
+            {{ ux_icon('tabler:x', {'class': 'w-4 h-4'}) }}
         </button>
-        <h6 class="alert-heading text-semibold">{{ 'user_list.info.title'|trans }}</h6>
-        <p>{{ 'user_list.info.text'|trans }}</p>
     </div>
     {# /info alert #}
-    {% include 'Includes/list_users.html.twig' with {'users': users, 'border': true} %}
+    {% include 'User/_list_users.html.twig' with {'users': users, 'border': true} %}
     {{ knp_pagination_render(users) }}
 {% endblock %}

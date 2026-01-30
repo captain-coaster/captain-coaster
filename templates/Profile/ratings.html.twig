@@ -1,17 +1,17 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'profile.ratings.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block stylesheets %}
-  {{ encore_entry_link_tags('coaster') }}
+  {# All CSS is now in the main app bundle #}
 {% endblock %}
 
 {% block javascripts %}
 {% endblock %}
 
 {% block body %}
-  {% include 'Includes/rating_table.html.twig' with {'ratings': ratings} only %}
+  {% include 'Rating/_rating_table.html.twig' with {'ratings': ratings} only %}
 {% endblock %}

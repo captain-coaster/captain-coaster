@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { show, hide } from '../js/utils/dom.js';
 
 /**
  * Simple Collapse Controller
@@ -16,23 +17,23 @@ export default class extends Controller {
         const icon = this.hasIconTarget ? this.iconTarget : null;
         const button = event.currentTarget;
 
-        if (content.style.display === 'none') {
+        if (content.classList.contains('hidden')) {
             // Show content
-            content.style.display = 'block';
+            show(content);
             button.setAttribute('aria-expanded', 'true');
 
             // Rotate icon
             if (icon) {
-                icon.style.transform = 'rotate(180deg)';
+                icon.classList.add('rotate-180');
             }
         } else {
             // Hide content
-            content.style.display = 'none';
+            hide(content);
             button.setAttribute('aria-expanded', 'false');
 
             // Reset icon
             if (icon) {
-                icon.style.transform = 'rotate(0deg)';
+                icon.classList.remove('rotate-180');
             }
         }
     }

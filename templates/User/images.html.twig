@@ -1,38 +1,38 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'users.images.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
   {% if images|length > 0 %}
-    <div id="coaster-photos" class="row">
-      <div class="panel panel-flat border-top-blue">
-        <div class="panel-body no-border no-padding-top" 
-             data-controller="gallery" 
-             data-gallery-name-value="user-images"
-             data-gallery="user-images">
+    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+      <div class="p-6" 
+           data-controller="gallery" 
+           data-gallery-name-value="user-images"
+           data-gallery="user-images">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 gap-3">
           {% for image in images %}
-            <div class="col-sm-3">
-              <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
+            <div class="col-span-6 md:col-span-3">
+              <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
                  data-cropped-thumbnail="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                  data-gallery-target="link">
                 <div class="thumb">
-                  <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" alt="{{ image.coaster.name }}">
+                  <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" 
+                       class="w-full h-auto rounded"
+                       alt="{{ image.coaster.name }}">
                 </div>
               </a>
-              <div class="text-size-small text-muted"
+              <div class="text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-1 mt-1"
                    data-controller="image-like"
                    data-image-like-image-id-value="{{ image.id }}"
                    data-image-like-locale-value="{{ app.request.locale }}"
-                   data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
-                   style="display: flex; align-items: center; gap: 2px;">
+                   data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}">
                 <button type="button"
                         data-action="click->image-like#toggle"
                         data-image-like-target="icon"
-                        class="btn-link text-muted p-0 border-0 bg-transparent"
-                        style="cursor: pointer; display: inline-flex; align-items: center;">
+                        class="p-0 border-0 bg-transparent inline-flex items-center text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors"
                 </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
               </div>
             </div>
@@ -42,7 +42,11 @@
     </div>
     {{ knp_pagination_render(images) }}
   {% else %}
-    No photos
+    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+      <div class="p-6 text-center text-neutral-600 dark:text-neutral-400 py-4">
+        {{ 'users.images.empty'|trans|default('No photos') }}
+      </div>
+    </div>
   {% endif %}
 {% endblock %}
 

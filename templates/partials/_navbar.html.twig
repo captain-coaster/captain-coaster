@@ -1,0 +1,300 @@
+{% import "macros/_macros_helpers.html.twig" as helper %}
+
+<div data-controller="drawer">
+<nav class="fixed top-0 left-0 right-0 bg-neutral-50/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 z-50" role="navigation" aria-label="{{ 'nav.main.label'|trans({}, 'navigation') }}">
+  <div class="px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      {# Left section: Hamburger (mobile) + Logo #}
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        {# Hamburger menu (mobile only) - transforms to X when open #}
+        <button 
+          class="md:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+          type="button" 
+          data-action="click->drawer#toggle"
+          aria-label="{{ 'nav.toggle.label'|trans({}, 'navigation') }}"
+        >
+          <span data-drawer-target="openIcon">
+            {{ ux_icon('tabler:menu-2', {'class': 'w-6 h-6', 'aria-hidden': 'true'}) }}
+          </span>
+          <span class="hidden" data-drawer-target="closeIcon">
+            {{ ux_icon('tabler:x', {'class': 'w-6 h-6', 'aria-hidden': 'true'}) }}
+          </span>
+        </button>
+
+        {# Logo #}
+        <a class="flex items-center text-neutral-900 dark:text-white hover:opacity-80 transition-opacity duration-200" href="{{ path('default_index') }}">
+          <svg class="h-6 md:h-8 w-auto" viewBox="0 0 220.3 32" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#5D87D5" d="M30.9,12v14.6L26.3,32l-9.6-5.4l-9.5,5l-4.4-5V12c0-6.6,6.2-12,14-12C24.5,0,30.9,5.4,30.9,12z"/>
+            <path fill="#4767A3" d="M16.7,0v26.6l-9.5,5l-4.4-5V12C2.7,5.4,9,0,16.7,0z"/>
+            <polygon fill="#28343A" points="13.8,24.3 9.5,26.5 7.3,24.2"/>
+            <polygon fill="#4767A3" points="2.1,13.3 2.1,21.5 0,17.2 0,7.9"/>
+            <polygon fill="#5D87D5" points="31.5,13.3 31.5,21.5 33.6,17.2 33.6,7.9"/>
+            <polygon fill="#FFCD61" points="19.3,11 16.7,9.6 14.1,11.1 14.6,7.9 12.4,5.7 15.4,5.2 16.7,2.4 18,5.2 20.9,5.7 18.8,7.9"/>
+            <polygon fill="#28343A" points="19.6,24.3 23.8,26.5 26.1,24.2"/>
+            <polygon fill="#FFCD61" points="26.4,19.4 23.8,17.9 21.2,19.4 21.7,16.3 19.6,14.1 22.5,13.6 23.8,10.7 25.1,13.6 28,14 25.9,16.3"/>
+            <polygon fill="#FFCD61" points="12.2,19.7 9.6,18.3 7,19.8 7.5,16.6 5.3,14.4 8.3,13.9 9.6,11.1 10.9,13.9 13.8,14.4 11.7,16.6"/>
+            <g fill="currentColor">
+              <path d="M46.6,27.7c-1.4,0-2.3-0.3-2.9-0.8c-0.5-0.6-0.9-1.5-0.9-2.8v-17c0.1-0.9,0.3-1.6,0.9-2.1c0.5-0.5,1.2-0.7,2-0.7h6.3l0.9,4.4h-4.6c-0.3,0-0.4,0.1-0.4,0.4v13.8c0,0.3,0.2,0.4,0.4,0.4h4.6l-0.9,4.4H46.6z"/>
+              <path d="M59.1,24.8l-0.4,2.9h-4.8l4.3-23.5h5.1l4.3,23.5h-4.8l-0.4-2.9H59.1z M59.6,21.1h2.2l-1.1-8.3L59.6,21.1z"/>
+              <path d="M78.3,4.2c0.9,0,1.6,0.3,2.2,0.8c0.5,0.5,0.7,1.2,0.7,2.1v11.2c0,0.4-0.1,0.9-0.2,1.2s-0.3,0.7-0.5,1c-0.3,0.3-0.6,0.5-1,0.7c-0.4,0.1-0.9,0.2-1.6,0.2h-4v6.3H69V4.2H78.3z M73.6,8.3v9.2h2.4c0.2,0,0.3-0.1,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.4V8.8c0-0.3-0.2-0.4-0.4-0.4H73.6z"/>
+              <path d="M92.5,4.2l1.2,4.4h-3.2v19.1h-4.9V8.6h-3.2l1.3-4.4H92.5z"/>
+              <path d="M97.7,24.8l-0.4,2.9h-4.8l4.3-23.5h5.1l4.3,23.5h-4.8l-0.4-2.9H97.7z M98.2,21.1h2.2l-1.1-8.3L98.2,21.1z"/>
+              <path d="M107.5,4.2h4.8v23.5h-4.8V4.2z"/>
+              <path d="M114.3,4.2h4.6l2.4,9.4V4.2h4.9v23.5h-4.9l-2.6-9.8v9.8h-4.4V4.2z"/>
+              <path d="M136,27.7c-1.4,0-2.3-0.3-2.9-0.8c-0.5-0.6-0.9-1.5-0.9-2.8v-17c0-1,0.3-1.6,0.8-2.1c0.5-0.5,1.2-0.7,2-0.7h6.3l0.9,4.4h-4.5c-0.3,0-0.4,0.1-0.4,0.4v13.8c0,0.3,0.2,0.4,0.4,0.4h4.6l-0.9,4.4H136z"/>
+              <path d="M156.1,24.4c0,0.4-0.1,0.9-0.2,1.2s-0.3,0.7-0.6,1c-0.3,0.3-0.6,0.5-1,0.7c-0.4,0.1-0.9,0.3-1.6,0.3h-5.5c-0.7,0-1.2-0.1-1.6-0.3c-0.4-0.1-0.8-0.4-1-0.7s-0.4-0.7-0.6-1c-0.1-0.4-0.2-0.8-0.2-1.2V7.2c0-1,0.3-1.7,0.8-2.2s1.4-0.8,2.5-0.8h5.9c1.1,0,2,0.3,2.5,0.8c0.5,0.6,0.8,1.3,0.8,2.2L156.1,24.4L156.1,24.4z M149,8.3c-0.3,0-0.4,0.1-0.4,0.4v14.3c0,0.1,0,0.3,0.1,0.4c0.1,0.1,0.2,0.1,0.3,0.1h1.8c0.2,0,0.3-0.1,0.3-0.1c0.1-0.1,0.1-0.2,0.1-0.4V8.8c0-0.3-0.2-0.4-0.4-0.4H149z"/>
+              <path d="M162.5,24.8l-0.4,2.9h-4.8l4.3-23.5h5.1l4.3,23.5h-4.8l-0.4-2.9H162.5z M163,21.1h2.2l-1.1-8.3L163,21.1z"/>
+              <path d="M172.6,27.7l-0.9-4.4h5.2c0.3,0,0.6-0.1,0.6-0.5v-4.3c0-0.3-0.1-0.5-0.2-0.6c-0.2-0.1-0.3-0.1-0.7-0.1h-2.5c-0.3,0-0.7,0-1-0.1c-0.3-0.1-0.6-0.1-0.9-0.4c-0.3-0.2-0.4-0.4-0.6-0.8s-0.2-0.8-0.2-1.4v-8c0-1,0.3-1.7,0.8-2.2s1.4-0.8,2.5-0.8h6.6l0.9,4.4h-5.4c-0.4,0-0.6,0.1-0.6,0.5v4.3c0,0.2,0.1,0.4,0.2,0.5c0.1,0.1,0.3,0.1,0.5,0.1h3c0.8,0,1.4,0.1,1.7,0.5c0.4,0.4,0.6,1,0.6,1.8v7.7c0,1.3-0.3,2.2-0.8,2.8c-0.5,0.5-1.5,0.8-2.8,0.8C178.7,27.7,172.6,27.7,172.6,27.7z"/>
+              <path d="M193.3,4.2l1.2,4.4h-3.2v19.1h-4.9V8.6h-3.2l1.3-4.4H193.3z"/>
+              <path d="M195.8,4.2h9.3l0.9,4.4h-5.3v5.6h4v4h-4v5.1h5l-0.9,4.4h-9.1L195.8,4.2L195.8,4.2z"/>
+              <path d="M219.9,18.2c0,0.5-0.2,1-0.5,1.4c-0.3,0.4-0.9,0.7-1.6,0.7l2.5,7.5h-4.9l-2.3-7.5h-0.6v7.5h-4.8V4.2h9c1.1,0,2,0.3,2.5,0.8c0.5,0.6,0.8,1.3,0.8,2.2L219.9,18.2L219.9,18.2z M212.3,8.3v8.1h2.3c0.3,0,0.4-0.1,0.4-0.5v-7c0-0.3-0.2-0.5-0.4-0.5C214.7,8.3,212.3,8.3,212.3,8.3z"/>
+            </g>
+          </svg>
+        </a>
+      </div>
+
+      {# Center section: Search (desktop) #}
+      <div class="hidden md:flex flex-1 max-w-lg mx-8">
+        <form class="w-full" action="{{ path('search_index') }}" method="get">
+          <div class="relative"
+               data-controller="search"
+               data-search-search-url-value="{{ path('api_search') }}"
+               data-search-results-url-value="{{ path('search_index') }}"
+               data-search-min-length-value="2"
+               data-search-debounce-delay-value="300">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                {{ ux_icon('tabler:search', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+              </div>
+              <input 
+                id="search-coaster"
+                name="query"
+                type="search"
+                class="block w-full pl-10 pr-12 py-2.5 border-0 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-sm text-neutral-900 dark:text-white placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:ring-2 focus:ring-cc-blue-500 focus:outline-none transition-all duration-200"
+                placeholder="{{ 'app.header.search'|trans }}"
+                data-search-target="input"
+                data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
+                autocomplete="off"
+                role="combobox"
+                aria-expanded="false"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+              >
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <kbd class="hidden xl:inline-flex items-center px-2 py-1 text-xs font-medium text-neutral-500 bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-400 rounded border border-neutral-300 dark:border-neutral-600" id="search-shortcut">
+                  <span id="search-shortcut-key">Ctrl</span>K
+                </kbd>
+              </div>
+            </div>
+            <div class="absolute z-50 w-full mt-2 bg-neutral-50 dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200 dark:border-neutral-700 hidden" data-search-target="dropdown" role="listbox" aria-label="{{ 'app.search.suggestions'|trans }}">
+              <div data-search-target="results" class="py-2"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {# Right section: Actions #}
+      <div class="flex items-center space-x-1 sm:space-x-2">
+        {# Mobile search button #}
+        <button 
+          class="md:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+          type="button" 
+          onclick="openModal('searchModal')"
+          aria-label="{{ 'nav.search.label'|trans({}, 'navigation') }}"
+        >
+          {{ ux_icon('tabler:search', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </button>
+
+        {# Editor saved indicator #}
+        <span id="editor-saved" class="hidden px-2 py-1 text-xs font-medium text-green-800 bg-green-100 dark:text-green-200 dark:bg-green-900/30 rounded-full"></span>
+
+        {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+          {# Notifications bell icon with badge count #}
+          <div class="relative" data-controller="dropdown">
+            <button 
+              class="relative inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+              type="button" 
+              data-action="click->dropdown#toggle"
+              data-dropdown-target="button"
+              aria-expanded="false"
+              aria-label="{{ 'nav.notifications.label'|trans({}, 'navigation') }}"
+            >
+              {{ ux_icon('tabler:bell', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              {% if app.user.unreadNotifications|length > 0 %}
+                <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-cc-blue-600 rounded-full">{{ app.user.unreadNotifications|length }}</span>
+              {% endif %}
+            </button>
+            <div class="absolute right-0 z-50 mt-2 w-80 bg-neutral-50 dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200 dark:border-neutral-700 hidden" data-dropdown-target="menu">
+              <div class="px-4 py-3 border-b border-neutral-200 dark:border-neutral-700">
+                <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">{{ 'notif.title'|trans }}</h3>
+              </div>
+              <div class="max-h-64 overflow-y-auto">
+                {% for notif in app.user.unreadNotifications %}
+                  <a class="flex items-start space-x-3 px-4 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-700/50 transition-colors duration-200" href="{{ path('notification_read', {'id': notif.id}) }}">
+                    <div class="shrink-0 w-8 h-8 bg-cc-blue-100 dark:bg-cc-blue-900/30 rounded-full flex items-center justify-center">
+                      {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-neutral-900 dark:text-white">{{ notif.message|trans({'%name%': notif.parameter|trans}) }}</p>
+                      <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ notif.createdAt|ago }}</p>
+                    </div>
+                  </a>
+                {% else %}
+                  <div class="px-4 py-8 text-center text-neutral-500 dark:text-neutral-400">
+                    <p class="text-sm">{{ 'notif.empty'|trans }}</p>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          {# User profile (desktop only) #}
+          <div class="hidden lg:block relative" data-controller="dropdown">
+            <button 
+              class="flex items-center space-x-2 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+              type="button" 
+              data-action="click->dropdown#toggle"
+              data-dropdown-target="button"
+              aria-expanded="false"
+              aria-label="{{ 'nav.profile.menu'|trans({}, 'navigation') }}"
+            >
+              {{ helper.profilePicture(app.user, 'w-8 h-8 rounded-full') }}
+            </button>
+            <div class="absolute right-0 z-50 mt-2 w-56 bg-neutral-50 dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200 dark:border-neutral-700 hidden" data-dropdown-target="menu">
+              <div class="py-2">
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('profile') }}">
+                  {{ ux_icon('tabler:user', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.profile'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('profile_settings') }}">
+                  {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.settings'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('profile_ratings') }}">
+                  {{ ux_icon('tabler:star', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.rating'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('user_tops', {'id': app.user.id}) }}">
+                  {{ ux_icon('tabler:clipboard', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.tops'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('map_user', {'id': app.user.id}) }}">
+                  {{ ux_icon('tabler:map-pin', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.my_map'|trans({}, 'navigation') }}</span>
+                </a>
+                <hr class="my-2 border-neutral-200 dark:border-neutral-700">
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('logout') }}">
+                  {{ ux_icon('tabler:logout', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.logout'|trans({}, 'navigation') }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {# User profile dropdown (mobile) #}
+          <div class="lg:hidden relative" data-controller="dropdown">
+            <button 
+              class="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+              type="button" 
+              data-action="click->dropdown#toggle"
+              data-dropdown-target="button"
+              aria-expanded="false"
+              aria-label="{{ 'nav.profile.menu'|trans({}, 'navigation') }}"
+            >
+              {{ helper.profilePicture(app.user, 'w-6 h-6 rounded-full') }}
+            </button>
+            <div class="absolute right-0 z-50 mt-2 w-56 bg-neutral-50 dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200 dark:border-neutral-700 hidden" data-dropdown-target="menu">
+              <div class="py-2">
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('profile') }}">
+                  {{ ux_icon('tabler:user', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.profile'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('profile_ratings') }}">
+                  {{ ux_icon('tabler:star', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.rating'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('user_tops', {'id': app.user.id}) }}">
+                  {{ ux_icon('tabler:clipboard', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.tops'|trans({}, 'navigation') }}</span>
+                </a>
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('map_user', {'id': app.user.id}) }}">
+                  {{ ux_icon('tabler:map-pin', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.my_map'|trans({}, 'navigation') }}</span>
+                </a>
+                <hr class="my-2 border-neutral-200 dark:border-neutral-700">
+                <a class="flex items-center space-x-3 px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors duration-200" href="{{ path('logout') }}">
+                  {{ ux_icon('tabler:logout', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  <span>{{ 'navbar.logout'|trans({}, 'navigation') }}</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        {% else %}
+          {# Login button #}
+          <a class="hidden lg:inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" href="{{ path('login') }}">{{ 'navbar.login'|trans({}, 'navigation') }}</a>
+          <a class="lg:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" href="{{ path('login') }}">
+            {{ ux_icon('tabler:user', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+{# Mobile Drawer - Must be outside nav for proper z-index stacking #}
+{% include 'partials/_drawer.html.twig' %}
+</div>
+
+{# Mobile search modal - Full screen search experience #}
+<div class="fixed inset-0 z-50 hidden" data-controller="modal" data-modal-id-value="searchModal" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="fixed inset-0 bg-neutral-50 dark:bg-neutral-900">
+    <div class="flex flex-col h-full">
+      {# Search header #}
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-800">
+        <form class="flex-1" action="{{ path('search_index') }}" method="get">
+          <div class="relative mobile-search-container"
+               data-controller="search"
+               data-search-search-url-value="{{ path('api_search') }}"
+               data-search-results-url-value="{{ path('search_index') }}"
+               data-search-min-length-value="2"
+               data-search-debounce-delay-value="300">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                {{ ux_icon('tabler:search', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+              </div>
+              <input 
+                type="search"
+                name="query"
+                class="block w-full pl-10 pr-4 py-3 text-base border-0 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:ring-2 focus:ring-cc-blue-500 focus:outline-none transition-all duration-200"
+                placeholder="{{ 'app.header.search'|trans }}"
+                data-search-target="input"
+                data-action="input->search#handleInput keydown->search#handleKeydown"
+                autocomplete="off"
+              >
+            </div>
+            {# Results container - styled as inline list for mobile #}
+            <div class="mobile-search-results" data-search-target="dropdown" role="listbox" aria-label="{{ 'app.search.suggestions'|trans }}">
+              <div data-search-target="results"></div>
+            </div>
+          </div>
+        </form>
+        <button 
+          type="button" 
+          class="inline-flex items-center justify-center p-2 rounded-lg text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 transition-colors duration-200" 
+          data-action="click->modal#close"
+          aria-label="{{ 'nav.close'|trans({}, 'navigation') }}"
+        >
+          {{ ux_icon('tabler:x', {'class': 'w-6 h-6', 'aria-hidden': 'true'}) }}
+        </button>
+      </div>
+      
+      {# Placeholder when no search #}
+      <div class="flex-1 flex flex-col items-center justify-center px-4 text-center mobile-search-placeholder">
+        <div class="w-12 h-12 mb-3 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+          {{ ux_icon('tabler:search', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+        </div>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400">{{ 'search_index.short'|trans }}</p>
+      </div>
+    </div>
+  </div>
+</div>

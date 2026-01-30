@@ -1,0 +1,37 @@
+{# Display profile picture or fallback picture #}
+{% macro profilePicture(user, className) %}
+    <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture|default('default_user.png') }}"
+         class="{{ className|default('rounded-full img-lg') }}"
+         alt="{{ user.displayName }}">
+{% endmacro %}
+
+{# Display a coaster related date #}
+{% macro displayDate(date) %}
+    {% if date|date("dm") == "0101" %}
+        {{ date|date("Y") }}
+    {% else %}
+        {{ date|format_datetime('short', 'none') }}
+    {% endif %}
+{% endmacro %}
+
+{# Color magic for ratings - Legacy support #}
+{% macro ratingColor(score) %}
+    hsl({{ score * 1.2 }}, 50%, 50%)
+{% endmacro %}
+
+{# Display coaster rank variation #}
+{% macro variation(coaster) %}
+    {% if coaster.previousRank is empty %}
+        <span class="badge bg-warning-subtle text-yellow-600 dark:text-yellow-400 border border-warning">new</span>
+    {% elseif coaster.previousRank < coaster.rank %}
+        <span class="badge bg-danger-subtle text-red-600 dark:text-red-400 border border-danger">
+            {{ ux_icon('tabler:arrow-down', {'class': 'icon-xs'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+        </span>
+    {% elseif coaster.previousRank > coaster.rank %}
+        <span class="badge bg-success-subtle text-green-600 dark:text-green-400 border border-success">
+            {{ ux_icon('tabler:arrow-up', {'class': 'icon-xs'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+        </span>
+    {% elseif coaster.previousRank == coaster.rank %}
+        <span class="badge bg-primary-subtle text-cc-blue-600 dark:text-cc-blue-400 border border-primary">{{ ux_icon('tabler:arrow-right', {'class': 'icon-xs'}) }}</span>
+    {% endif %}
+{% endmacro %}

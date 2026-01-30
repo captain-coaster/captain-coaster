@@ -41,6 +41,11 @@ coaster:
         quality: 'Qualitätsbewertung'
         worldrank: 'Weltrangliste'
         overview: 'Auf einen Blick'
+    stats:
+        height: 'Höhe'
+        length: 'Länge'
+        speed: 'Geschwindigkeit'
+        inversions: 'Inversionen'
     quality:
         excellent: 'Ausgezeichnet'
         good: 'Gut'
@@ -352,6 +357,11 @@ sidebar:
     contact: Kontaktiere uns
     logout: Abmelden
     login: Anmelden
+    account: Konto
+    language: Sprache
+    current: Aktuell
+    mobile_language: Sprache
+    theme: Dunkler/Heller Modus
 
 footer:
     terms: Datenschutzrichtlinie
@@ -489,3 +499,11 @@ search_index:
             =1 {1 Ergebnis für "{query}" gefunden}
             other {# Ergebnisse für "{query}" gefunden}
         }
+# Form-related translations
+form:
+    required: 'Pflichtfeld'
+    file:
+        upload: 'Datei hochladen'
+        drag_drop: 'oder per Drag & Drop'
+        formats: 'PNG, JPG, GIF bis zu 10MB'
+    description: 'Haben Sie eine Frage, einen Vorschlag, oder möchten Sie einfach nur Hallo sagen? Wir würden gerne von Ihnen hören!'
