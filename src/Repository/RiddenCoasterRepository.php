@@ -578,6 +578,42 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get featured reviews for a coaster (high-rated with text content).
+     * Prioritizes reviews in the user's locale, sorted by score and upvotes.
+     *
+     * @param Coaster $coaster The coaster to get reviews for
+     * @param string  $locale  The preferred language
+     * @param int     $limit   Maximum number of reviews to retrieve
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function getFeaturedReviews(Coaster $coaster, string $locale = 'en', int $limit = 3): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'u', 'p', 'c')
+            ->addSelect('SIZE(r.upvotes) AS HIDDEN upvoteCount')
+            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->leftJoin('r.pros', 'p')
+            ->leftJoin('r.cons', 'c')
+            ->where('r.coaster = :coasterId')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('u.enabled = 1')
+            ->andWhere('r.value >= 3')
+            ->orderBy('languagePriority', 'ASC')
+            ->addOrderBy('r.score', 'DESC')
+            ->addOrderBy('upvoteCount', 'DESC')
+            ->setParameter('coasterId', $coaster->getId())
+            ->setParameter('locale', $locale)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Get a sample of reviews in a specific language for terminology analysis.
      *
      * @param string $language The target language code

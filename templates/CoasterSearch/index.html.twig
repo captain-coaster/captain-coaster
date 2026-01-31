@@ -3,6 +3,10 @@
 {% set title = 'coaster_search.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
+{% block header %}
+  <meta name="description" content="{{ 'coaster_search.description'|trans }}"/>
+{% endblock %}
+
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
@@ -13,14 +17,35 @@
       'endpoint': path('coaster_search_api'),
       'container_id': 'search-result',
       'update_url': true,
-      'excluded_filters': ['new']
+      'excluded_filters': ['new', 'score', 'kiddie']
     }
   } only %}
 {% endblock %}
 
 {% block body %}
-  <div id="search-result"></div>
-{% endblock %}
-
-{% block javascripts %}
+  {# Wrapper with right margin on desktop for fixed filter sidebar #}
+  <div class="lg:mr-72">
+    {# Search hero section - compact on mobile #}
+    <div class="mb-6">
+      <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+        {{ 'coaster_search.subtitle'|trans }}
+      </p>
+    </div>
+    
+    {# Results container - populated via AJAX #}
+    <div id="search-result">
+      {# Initial empty state #}
+      {% include 'CoasterSearch/_empty_state.html.twig' %}
+    </div>
+  </div>
+  
+  {# Mobile filter button - sticky at bottom #}
+  <div class="lg:hidden fixed bottom-4 right-4 z-40">
+    <button type="button"
+            class="flex items-center gap-2 px-4 py-3 bg-cc-blue-600 hover:bg-cc-blue-700 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2"
+            data-action="global#openFilterSidebar">
+      {{ ux_icon('tabler:adjustments-horizontal', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+      <span>{{ 'filters.title'|trans }}</span>
+    </button>
+  </div>
 {% endblock %}

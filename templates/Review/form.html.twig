@@ -1,95 +1,138 @@
 {% extends "layouts/base.html.twig" %}
+
 {% set title = 'review.form.title'|trans({'%name%': coaster.name}) %}
-{% set subTitle = '' %}
 {% block title %}{{ title }}{% endblock %}
 
-{% block javascripts %}
-{% endblock %}
-
-{% block stylesheets %}
-
-{% endblock %}
-
 {% block body %}
-  <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-    <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-      <h1 class="text-lg font-semibold text-neutral-900 dark:text-white">{{ 'review.share'|trans }}</h1>
+    {# Coaster Context - Compact #}
+    <div class="flex items-center gap-3 p-4 mb-6 bg-white dark:bg-neutral-800 rounded-xl shadow-sm">
+        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="shrink-0">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-700">
+                {% if coaster.mainImage %}
+                    <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                         class="w-full h-full object-cover"
+                         alt="{{ coaster.name }}">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        {{ ux_icon('tabler:roller-coaster', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+                    </div>
+                {% endif %}
+            </div>
+        </a>
+        <div class="min-w-0 flex-1">
+            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+               class="font-semibold text-neutral-900 dark:text-white hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors line-clamp-1 text-sm">
+                {{ coaster.name }}
+            </a>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 line-clamp-1">{{ coaster.park.name }}</p>
+        </div>
+        {% if coaster.score %}
+            <div class="shrink-0 text-right">
+                <span class="text-sm font-bold text-cc-blue-600 dark:text-cc-blue-400">{{ coaster.score|number_format(1, ',') }}%</span>
+            </div>
+        {% endif %}
     </div>
-    <div class="p-6">
-      {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
-      <div>
-        <label class="block text-sm font-medium leading-6 text-neutral-900 dark:text-white mb-2">
-          {{ 'review.value'|trans }}
-          <span class="text-red-500 ml-1" aria-label="{{ 'form.required'|trans }}">*</span>
-        </label>
-        {{ form_widget(form.value, {'attr': {'style': 'display:none;'}}) }}
-        <div data-controller="rating"
-             data-rating-coaster-id-value="{{ coaster.id }}"
-             data-rating-current-value-value="{{ form.value.vars.value|default(0) }}"
-             data-rating-locale-value="{{ app.request.locale }}"
-             data-rating-readonly-value="false"
-             data-rating-form-field-id-value="review_value"></div>
-      </div>
-      <div>
-        {{ form_label(form.riddenAt) }}
-        {{ form_widget(form.riddenAt, {
-          'attr': {
-            'data-controller': 'datepicker',
-            'data-datepicker-format-value': 'yyyy-mm-dd',
-            'data-datepicker-autoclose-value': 'true'
-          } | merge(coaster.openingDate ? {'data-datepicker-start-date-value': coaster.openingDate|date('Y-m-d')} : {}) | merge(coaster.closingDate ? {'data-datepicker-end-date-value': coaster.closingDate|date('Y-m-d')} : {})
-        }) }}
-        {{ form_errors(form.riddenAt) }}
-      </div>
-      <div>
-        {{ form_label(form.pros) }}
-        {{ form_widget(form.pros, {
-          'attr': {
-            'data-controller': 'enhanced-select',
-            'data-enhanced-select-multiple-value': 'true',
-            'data-enhanced-select-searchable-value': 'true',
-            'data-enhanced-select-maximum-selection-length-value': '3',
-            'data-enhanced-select-placeholder-value': 'Select pros...'
-          }
-        }) }}
-        {{ form_errors(form.pros) }}
-      </div>
-      <div>
-        {{ form_label(form.cons) }}
-        {{ form_widget(form.cons, {
-          'attr': {
-            'data-controller': 'enhanced-select',
-            'data-enhanced-select-multiple-value': 'true',
-            'data-enhanced-select-searchable-value': 'true',
-            'data-enhanced-select-maximum-selection-length-value': '3',
-            'data-enhanced-select-placeholder-value': 'Select cons...'
-          }
-        }) }}
-        {{ form_errors(form.cons) }}
-      </div>
-      <div>
-        {{ form_label(form.review) }}
-        {{ form_widget(form.review, {'attr': {'cols': '5', 'rows': '5'}}) }}
-        {{ form_errors(form.review) }}
-      </div>
-      <div>
-        {{ form_label(form.language) }}
-        {{ form_widget(form.language, {
-          'attr': {
-            'data-controller': 'enhanced-select',
-            'data-enhanced-select-placeholder-value': 'Select language...'
-          }
-        }) }}
-        {{ form_errors(form.language) }}
-      </div>
-      <div class="flex justify-end">
-        <button type="submit" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 gap-2">
-          {{ 'review.send'|trans }}
-          {{ ux_icon('tabler:arrow-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
-        </button>
-      </div>
-      {{ form_rest(form) }}
-      {{ form_end(form) }}
+
+    {# Review Form #}
+    <div class="bg-white dark:bg-neutral-800 rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-700">
+            <h2 class="text-base font-semibold text-neutral-900 dark:text-white">
+                {{ 'review.share'|trans }}
+            </h2>
+        </div>
+
+        <div class="p-5">
+            {{ form_start(form) }}
+
+            {# Rating Section #}
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-neutral-900 dark:text-white mb-3">
+                    {{ 'review.value'|trans }}
+                    <span class="text-red-500 ml-1">*</span>
+                </label>
+                {{ form_widget(form.value, {'attr': {'class': 'hidden'}}) }}
+                <div class="flex justify-center py-3 bg-neutral-50 dark:bg-neutral-700/50 rounded-xl">
+                    <div data-controller="rating"
+                         data-rating-coaster-id-value="{{ coaster.id }}"
+                         data-rating-current-value-value="{{ form.value.vars.value|default(0) }}"
+                         data-rating-locale-value="{{ app.request.locale }}"
+                         data-rating-readonly-value="false"
+                         data-rating-form-field-id-value="review_value"></div>
+                </div>
+                {{ form_errors(form.value) }}
+            </div>
+
+            {# Ride Date #}
+            <div class="mb-6">
+                {{ form_label(form.riddenAt) }}
+                {{ form_widget(form.riddenAt) }}
+                {{ form_errors(form.riddenAt) }}
+            </div>
+
+            {# Pros & Cons #}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                        {{ ux_icon('tabler:thumb-up', {'class': 'w-4 h-4 inline text-green-500 mr-1', 'aria-hidden': 'true'}) }}
+                        {{ 'review.pros'|trans }}
+                    </label>
+                    {{ form_widget(form.pros, {
+                        'attr': {
+                            'data-controller': 'enhanced-select',
+                            'data-enhanced-select-multiple-value': 'true',
+                            'data-enhanced-select-searchable-value': 'true',
+                            'data-enhanced-select-maximum-selection-length-value': '3'
+                        }
+                    }) }}
+                    {{ form_errors(form.pros) }}
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-neutral-900 dark:text-white mb-2">
+                        {{ ux_icon('tabler:thumb-down', {'class': 'w-4 h-4 inline text-red-500 mr-1', 'aria-hidden': 'true'}) }}
+                        {{ 'review.cons'|trans }}
+                    </label>
+                    {{ form_widget(form.cons, {
+                        'attr': {
+                            'data-controller': 'enhanced-select',
+                            'data-enhanced-select-multiple-value': 'true',
+                            'data-enhanced-select-searchable-value': 'true',
+                            'data-enhanced-select-maximum-selection-length-value': '3'
+                        }
+                    }) }}
+                    {{ form_errors(form.cons) }}
+                </div>
+            </div>
+
+            {# Review Text #}
+            <div class="mb-6">
+                {{ form_label(form.review) }}
+                {{ form_widget(form.review, {'attr': {'rows': '4'}}) }}
+                {{ form_errors(form.review) }}
+            </div>
+
+            {# Language #}
+            <div class="mb-6">
+                {{ form_label(form.language) }}
+                {{ form_widget(form.language) }}
+                {{ form_errors(form.language) }}
+            </div>
+
+            {# Actions #}
+            <div class="flex flex-col-reverse sm:flex-row sm:justify-between gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-700">
+                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+                   class="inline-flex justify-center items-center px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors">
+                    {{ ux_icon('tabler:arrow-left', {'class': 'w-4 h-4 mr-1', 'aria-hidden': 'true'}) }}
+                    {{ 'review.back'|trans }}
+                </a>
+                <button type="submit"
+                        class="inline-flex justify-center items-center px-6 py-2.5 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-full transition-colors">
+                    {{ 'review.send'|trans }}
+                    {{ ux_icon('tabler:send', {'class': 'w-4 h-4 ml-1.5', 'aria-hidden': 'true'}) }}
+                </button>
+            </div>
+
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
     </div>
-  </section>
 {% endblock %}

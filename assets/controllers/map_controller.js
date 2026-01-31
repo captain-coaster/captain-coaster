@@ -6,7 +6,7 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        markers: Array, // Try Array - Stimulus might auto-parse JSON
+        markers: Array,
         parkId: String,
     };
 
@@ -30,12 +30,25 @@ export default class extends Controller {
             const L = await import('leaflet');
             await import('leaflet/dist/leaflet.css');
 
-            // Fix default marker icons (Leaflet + Webpack issue)
+            // Fix default marker icons for Vite (ES modules)
+            const iconRetinaUrl = new URL(
+                'leaflet/dist/images/marker-icon-2x.png',
+                import.meta.url
+            ).href;
+            const iconUrl = new URL(
+                'leaflet/dist/images/marker-icon.png',
+                import.meta.url
+            ).href;
+            const shadowUrl = new URL(
+                'leaflet/dist/images/marker-shadow.png',
+                import.meta.url
+            ).href;
+
             delete L.Icon.Default.prototype._getIconUrl;
             L.Icon.Default.mergeOptions({
-                iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-                iconUrl: require('leaflet/dist/images/marker-icon.png'),
-                shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+                iconRetinaUrl,
+                iconUrl,
+                shadowUrl,
             });
 
             // Create map with world copy jump enabled

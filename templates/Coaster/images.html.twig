@@ -1,0 +1,68 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'coaster.photos.page_title'|trans({'%name%': coaster.name}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="mb-6">
+        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+           class="inline-flex items-center text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors mb-4">
+            {{ ux_icon('tabler:arrow-left', {'class': 'w-4 h-4 mr-1', 'aria-hidden': 'true'}) }}
+            {{ coaster.name }}
+        </a>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">
+                {{ 'coaster.photos.title'|trans }}
+                <span class="text-neutral-500 dark:text-neutral-400 font-normal">({{ coaster.images|length }})</span>
+            </h1>
+            <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}"
+               class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                {{ ux_icon('tabler:upload', {'class': 'w-4 h-4 mr-1.5', 'aria-hidden': 'true'}) }}
+                {{ 'coaster.photos.button'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {% if coaster.images|length > 0 %}
+        <div data-controller="gallery" data-gallery-name-value="coaster-images-full">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for image in coaster.images %}
+                    <div class="group">
+                        <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
+                           data-gallery-target="link"
+                           class="block rounded-xl overflow-hidden">
+                            <div class="aspect-4/3 overflow-hidden">
+                                <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                     alt="{{ coaster.name }}"
+                                     loading="lazy">
+                            </div>
+                        </a>
+                        <div class="flex items-center gap-2 mt-2 text-sm text-neutral-500 dark:text-neutral-400"
+                             data-controller="image-like"
+                             data-image-like-image-id-value="{{ image.id }}"
+                             data-image-like-locale-value="{{ app.request.locale }}"
+                             data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}">
+                            <button type="button"
+                                    data-action="click->image-like#toggle"
+                                    data-image-like-target="icon"
+                                    class="inline-flex items-center hover:text-red-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 rounded">
+                            </button>
+                            <span data-image-like-target="counter">{{ image.likeCounter }}</span>
+                            {% if image.credit %}
+                                <span class="text-neutral-400 dark:text-neutral-500 truncate">{{ image.credit }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html.twig' with {
+            icon: 'tabler:photo',
+            title: 'coaster.photos.empty'|trans,
+            action_url: path('coaster_images_upload', {'slug': coaster.slug}),
+            action_label: 'coaster.photos.button'|trans
+        } %}
+    {% endif %}
+{% endblock %}

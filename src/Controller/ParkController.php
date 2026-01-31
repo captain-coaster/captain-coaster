@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Coaster;
 use App\Entity\Park;
 use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
@@ -30,14 +31,69 @@ class ParkController extends AbstractController
         Park $park,
         CoasterRepository $coasterRepository
     ): Response {
+        $coasters = $coasterRepository->findAllCoastersInPark($park);
+
+        // Compute park statistics
+        $stats = $this->computeParkStats($coasters);
+
         return $this->render(
             'Park/show.html.twig',
             [
                 'park' => $park,
-                'coasters' => $coasterRepository->findAllCoastersInPark($park),
+                'coasters' => $coasters,
                 'closestParks' => $parkRepository->getClosestParks($park, 80, 300),
+                'stats' => $stats,
             ]
         );
+    }
+
+    /**
+     * Compute useful statistics for the park page.
+     *
+     * @param array<Coaster> $coasters
+     *
+     * @return array<string, mixed>
+     */
+    private function computeParkStats(array $coasters): array
+    {
+        $operating = 0;
+        $kiddies = 0;
+        $totalRatings = 0;
+        $rankedCoasters = [];
+        $topManufacturers = [];
+
+        foreach ($coasters as $coaster) {
+            $status = $coaster->getStatus();
+            if (null !== $status && 1 === $status->getId()) {
+                ++$operating;
+                if ($coaster->isKiddie()) {
+                    ++$kiddies;
+                }
+            }
+            $totalRatings += $coaster->getTotalRatings();
+
+            if (null !== $coaster->getRank()) {
+                $rankedCoasters[] = $coaster;
+            }
+
+            $manufacturer = $coaster->getManufacturer();
+            if (null !== $manufacturer) {
+                $name = $manufacturer->getName();
+                $topManufacturers[$name] = ($topManufacturers[$name] ?? 0) + 1;
+            }
+        }
+
+        arsort($topManufacturers);
+
+        return [
+            'operating' => $operating,
+            'kiddies' => $kiddies,
+            'totalCoasters' => \count($coasters),
+            'totalRatings' => $totalRatings,
+            'rankedCount' => \count($rankedCoasters),
+            'bestRanked' => $rankedCoasters[0] ?? null,
+            'topManufacturer' => array_key_first($topManufacturers),
+        ];
     }
 
     /** Redirect old urls to above */

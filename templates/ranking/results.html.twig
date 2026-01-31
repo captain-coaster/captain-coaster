@@ -1,68 +1,73 @@
-{% import "macros/_macros_helpers.html.twig" as helper %}
+{# Ranking Results - Mobile-first leaderboard #}
 
-<ul class="space-y-3 mb-6">
-    {% for coaster in coasters %}
-        <li class="bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
-            <div class="p-4">
-                <div class="flex gap-4 flex-col md:flex-row">
-                    <div class="shrink-0">
-                        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="block rounded-lg overflow-hidden hover:opacity-90 transition-opacity duration-200">
-                            {% if coaster.mainImage is not null %}
-                                <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
-                                     class="w-24 h-24 object-cover"
-                                     alt="{{ coaster.name }}"
-                                     loading="lazy">
-                            {% else %}
-                                <div class="w-24 h-24 bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center rounded-lg">
-                                    {{ ux_icon('tabler:photo', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
-                                </div>
-                            {% endif %}
-                        </a>
-                    </div>
-                    <div class="flex-grow min-w-0">
-                        <h2 class="text-lg font-semibold mb-2">
-                            <a class="link hover:text-cc-blue-700 dark:hover:text-cc-blue-300" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                                {% if not filtered %}
-                                    {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
-                                {% else %}
-                                    {{ firstRank + loop.index0 }}&nbsp;-&nbsp;{{ coaster.name }} <span class="text-neutral-500 dark:text-neutral-400">(#{{ coaster.rank }})</span>
-                                {% endif %}
-                            </a>
-                            {{ helper.variation(coaster) }}
-                        </h2>
-                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-neutral-600 dark:text-neutral-400 text-sm mb-1">
-                            <a class="link hover:text-cc-blue-700 dark:hover:text-cc-blue-300" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                                {{ coaster.park.name }}
-                            </a>
-                            <span class="text-neutral-300 dark:text-neutral-700">•</span>
-                            <span>{{ coaster.park.country.name|trans([], 'database') }}</span>
-                        </div>
-                        {% if coaster.manufacturer %}
-                            <div class="text-neutral-600 dark:text-neutral-400 text-sm">
-                                {{ coaster.manufacturer.name }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="shrink-0 text-center self-center">
-                        <div style="color: {{ helper.ratingColor(coaster.score) }};" class="text-3xl font-semibold whitespace-nowrap mb-1">
-                            {{ coaster.score|number_format(1, ',') }}%
-                        </div>
-                        <span class="text-neutral-600 dark:text-neutral-400 text-sm whitespace-nowrap">
-                            {{ 'coaster_ranking.duel_number'|trans({'count': coaster.validDuels}) }}
-                        </span>
-                    </div>
-                </div>
+<ul class="space-y-2 mb-6">
+  {% for coaster in coasters %}
+    <li class="bg-white dark:bg-neutral-900 rounded-xl shadow-sm">
+      <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="flex items-center gap-2 sm:gap-3 p-3 overflow-hidden">
+        
+        {# Rank - fixed width #}
+        <div class="w-10 shrink-0 text-center">
+          <div class="text-lg font-bold text-neutral-900 dark:text-white">
+            {% if not filtered %}{{ coaster.rank }}{% else %}{{ firstRank + loop.index0 }}{% endif %}
+          </div>
+          <div class="text-xs leading-tight">
+            {% if coaster.previousRank is empty %}
+              <span class="text-amber-500" title="{{ 'coaster_ranking.new'|trans }}">
+                {{ ux_icon('tabler:sparkles', {'class': 'w-4 h-4 mx-auto', 'aria-label': 'coaster_ranking.new'|trans}) }}
+              </span>
+            {% elseif coaster.previousRank < coaster.rank %}
+              <span class="text-red-500 flex items-center justify-center gap-0.5">
+                {{ ux_icon('tabler:arrow-down', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}{{ (coaster.rank - coaster.previousRank)|abs }}
+              </span>
+            {% elseif coaster.previousRank > coaster.rank %}
+              <span class="text-green-500 flex items-center justify-center gap-0.5">
+                {{ ux_icon('tabler:arrow-up', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}{{ (coaster.rank - coaster.previousRank)|abs }}
+              </span>
+            {% else %}
+              <span class="text-neutral-400">—</span>
+            {% endif %}
+          </div>
+        </div>
+
+        {# Image - fixed width with gradient placeholder #}
+        <div class="w-12 h-12 shrink-0 rounded-lg overflow-hidden">
+          {% if coaster.mainImage is not null %}
+            <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
+                 class="w-full h-full object-cover"
+                 alt=""
+                 loading="lazy">
+          {% else %}
+            <div class="w-full h-full bg-gradient-to-br from-cc-blue-400 to-cc-blue-600 flex items-center justify-center">
+              <span class="text-white text-lg font-bold">{{ coaster.name|slice(0, 1)|upper }}</span>
             </div>
-        </li>
-    {% else %}
-        <li class="bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm">
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    {{ ux_icon('tabler:search', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
-                </div>
-                <p class="text-neutral-600 dark:text-neutral-400 text-lg font-medium">{{ 'coaster_ranking.no_results'|trans }}</p>
+          {% endif %}
+        </div>
+
+        {# Content - flexible, truncates #}
+        <div class="flex-1 min-w-0 overflow-hidden">
+          <h2 class="font-semibold text-neutral-900 dark:text-white text-sm leading-tight truncate">{{ coaster.name }}</h2>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">{{ coaster.park.name }} • {{ coaster.park.country.name|trans([], 'database') }}</p>
+          {# Score bar - max width on desktop #}
+          <div class="flex items-center gap-2 mt-1 max-w-xs">
+            <div class="flex-1 h-1.5 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+              <div class="h-full rounded-full" style="width: {{ coaster.score }}%; background-color: hsl({{ coaster.score * 1.2 }}, 50%, 50%);"></div>
             </div>
-        </li>
-    {% endfor %}
+            <span class="text-xs font-bold shrink-0 tabular-nums" style="color: hsl({{ coaster.score * 1.2 }}, 50%, 45%);">
+              {{ coaster.score|number_format(1, ',') }}%
+            </span>
+          </div>
+        </div>
+
+      </a>
+    </li>
+  {% else %}
+    <li class="bg-white dark:bg-neutral-900 rounded-xl p-8 text-center">
+      <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+        {{ ux_icon('tabler:search-off', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+      </div>
+      <p class="text-neutral-500 dark:text-neutral-400">{{ 'coaster_ranking.no_results'|trans }}</p>
+    </li>
+  {% endfor %}
 </ul>
+
 {{ knp_pagination_render(coasters) }}

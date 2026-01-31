@@ -1,94 +1,120 @@
-{% extends "layouts/base_login.html.twig" %}
+{% extends "layouts/base_auth.html.twig" %}
 
 {% block title %}{{ 'login.title'|trans }} • {{ 'app.name'|trans }}{% endblock %}
 
 {% block body %}
-    <div class="login-form-container">
-        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-lg overflow-hidden max-w-md mx-auto">
-            <div class="p-8">
-                <div class="text-center mb-6">
-                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cc-warm-100 dark:bg-cc-warm-900/20 text-cc-warm-600 dark:text-cc-warm-400 mb-4">
-                        {{ ux_icon('tabler:key', {'class': 'w-8 h-8', 'aria-hidden': 'true'}) }}
+    <div class="space-y-6">
+        <!-- Card -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl shadow-neutral-200/50 dark:shadow-neutral-950/50 border border-neutral-200/50 dark:border-neutral-800/50 overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-cc-blue-500 to-cc-blue-600 text-white mb-4 shadow-lg shadow-cc-blue-500/25">
+                        {{ ux_icon('tabler:key', {'class': 'w-7 h-7', 'aria-hidden': 'true'}) }}
                     </div>
-                    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-2">{{ 'login.title'|trans }}</h1>
-                    <p class="text-neutral-600 dark:text-neutral-400 text-sm">{{ 'login.subtitle'|trans }}</p>
+                    <h1 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+                        {{ 'login.title'|trans }}
+                    </h1>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+                        {{ 'login.subtitle'|trans }}
+                    </p>
                 </div>
                 
+                <!-- Error messages -->
                 {% if error %}
-                    <div class="mb-4 p-4 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800" role="alert">
+                    <div class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50" role="alert">
                         <div class="flex items-start gap-3">
-                            {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
-                            <p class="text-sm text-red-800 dark:text-red-200">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                            {{ ux_icon('tabler:alert-circle', {'class': 'w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                            <p class="text-sm text-red-700 dark:text-red-300">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
                         </div>
                     </div>
                 {% endif %}
                 
+                <!-- Flash messages -->
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
-                        <div class="mb-4 p-4 rounded-lg {% if label == 'success' %}bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800{% elseif label == 'warning' %}bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800{% else %}bg-cc-blue-50 dark:bg-cc-blue-900/20 border border-cc-blue-200 dark:border-cc-blue-800{% endif %}" role="alert">
+                        <div class="mb-6 p-4 rounded-xl border {% if label == 'success' %}bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900/50{% elseif label == 'warning' or label == 'danger' %}bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900/50{% else %}bg-cc-blue-50 dark:bg-cc-blue-950/30 border-cc-blue-200 dark:border-cc-blue-900/50{% endif %}" role="alert">
                             <div class="flex items-start gap-3">
                                 {% if label == 'success' %}
                                     {{ ux_icon('tabler:circle-check', {'class': 'w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
-                                    <p class="text-sm text-green-800 dark:text-green-200">{{ message | raw }}</p>
-                                {% elseif label == 'warning' %}
-                                    {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
-                                    <p class="text-sm text-yellow-800 dark:text-yellow-200">{{ message | raw }}</p>
+                                    <p class="text-sm text-green-700 dark:text-green-300">{{ message | raw }}</p>
+                                {% elseif label == 'warning' or label == 'danger' %}
+                                    {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-amber-700 dark:text-amber-300">{{ message | raw }}</p>
                                 {% else %}
                                     {{ ux_icon('tabler:info-circle', {'class': 'w-5 h-5 text-cc-blue-600 dark:text-cc-blue-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
-                                    <p class="text-sm text-cc-blue-800 dark:text-cc-blue-200">{{ message | raw }}</p>
+                                    <p class="text-sm text-cc-blue-700 dark:text-cc-blue-300">{{ message | raw }}</p>
                                 {% endif %}
                             </div>
                         </div>
                     {% endfor %}
                 {% endfor %}
                 
-                <form action="{{ path('login') }}" method="POST" class="space-y-4">
+                <!-- Login form -->
+                <form action="{{ path('login') }}" method="POST" class="space-y-5">
                     <div>
-                        <label for="email" class="sr-only">{{ 'login.email_label'|trans }}</label>
+                        <label for="email" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                            {{ 'login.email_label'|trans|default('Email') }}
+                        </label>
                         <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 {{ ux_icon('tabler:mail', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
                             </div>
                             <input type="email" 
                                    id="email"
                                    name="email" 
-                                   class="block w-full pl-10 pr-3 py-3 rounded-lg border-0 shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 dark:text-white sm:text-sm transition-colors duration-200" 
-                                   placeholder="Email" 
+                                   class="block w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200" 
+                                   placeholder="you@example.com" 
                                    required
-                                   {% if rateLimitExceeded %} disabled{% endif %}
-                                   aria-label="{{ 'login.email_label'|trans }}">
+                                   autocomplete="email"
+                                   {% if rateLimitExceeded %} disabled{% endif %}>
                         </div>
                     </div>
+                    
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    
                     <button type="submit" 
-                            class="w-full inline-flex justify-center items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                            class="w-full flex justify-center items-center gap-2 px-6 py-3 text-base font-semibold rounded-xl text-white bg-gradient-to-r from-cc-blue-600 to-cc-blue-500 hover:from-cc-blue-700 hover:to-cc-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 dark:focus:ring-offset-neutral-900 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-cc-blue-500/25 hover:shadow-cc-blue-500/40 transition-all duration-200"
                             {% if rateLimitExceeded %} disabled{% endif %}>
+                        {{ ux_icon('tabler:send', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
                         {{ 'login.send_link'|trans }}
                     </button>
-                    <p class="text-neutral-600 dark:text-neutral-400 text-sm text-center">
-                        {{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}
-                    </p>
                 </form>
                 
-                <div class="relative my-6">
+                <!-- Divider -->
+                <div class="relative my-8">
                     <div class="absolute inset-0 flex items-center">
                         <div class="w-full border-t border-neutral-200 dark:border-neutral-700"></div>
                     </div>
-                    <div class="relative flex justify-center text-sm">
-                        <span class="px-4 bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400">{{ 'login.or_sign_in_with'|trans }}</span>
+                    <div class="relative flex justify-center">
+                        <span class="px-4 bg-white dark:bg-neutral-900 text-sm text-neutral-500 dark:text-neutral-400">
+                            {{ 'login.or_sign_in_with'|trans }}
+                        </span>
                     </div>
                 </div>
                 
+                <!-- Google login -->
                 <a href="{{ path('connect_google_start') }}" 
-                   class="w-full inline-flex items-center justify-center gap-3 px-6 py-3 border border-neutral-300 dark:border-neutral-600 text-sm font-medium rounded-lg shadow-sm text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 transition-colors duration-200">
-                    {{ ux_icon('tabler:brand-google', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                   class="w-full flex items-center justify-center gap-3 px-6 py-3 text-base font-medium rounded-xl border-2 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500 dark:focus:ring-offset-neutral-900 transition-all duration-200">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
                     {{ 'login.connect_with_google'|trans }}
                 </a>
-
-                <p class="text-neutral-500 dark:text-neutral-400 text-xs text-center mt-6">
-                    {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
-                </p>
             </div>
         </div>
+
+        <!-- Register link -->
+        <p class="text-center text-white/80 text-sm">
+            {{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}
+        </p>
+
+        <!-- Terms -->
+        <p class="text-center text-white/60 text-xs">
+            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
+        </p>
     </div>
 {% endblock %}

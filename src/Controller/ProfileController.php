@@ -100,7 +100,6 @@ class ProfileController extends BaseController
     public function settings(
         Request $request,
         EntityManagerInterface $em,
-        ImageRepository $imageRepository,
         ProfilePictureManager $profilePictureManager,
         TranslatorInterface $translator
     ): Response {
@@ -146,7 +145,6 @@ class ProfileController extends BaseController
             'form' => $form,
             'user' => $user,
             'canChangeName' => $user->canChangeName(),
-            'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
 

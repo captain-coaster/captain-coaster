@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.get('_locale') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>{% block title %}{% endblock %}</title>
+    
+    <!-- Favicon and app icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <meta name="theme-color" content="#0c8ce9">
+    
+    <!-- Font preloading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    {{ vite_entry_link_tags('app') }}
+</head>
+<body class="min-h-screen bg-gradient-to-br from-cc-blue-600 via-cc-blue-500 to-cc-warm-500 font-sans antialiased">
+    <!-- Decorative background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-40 -right-40 w-80 h-80 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-cc-warm-400/20 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cc-blue-400/10 rounded-full blur-3xl"></div>
+    </div>
+    
+    <!-- Main container -->
+    <div class="relative min-h-screen flex flex-col">
+        <!-- Header with logo -->
+        <header class="py-6 px-4">
+            <div class="max-w-md mx-auto">
+                <a href="{{ path('default_index') }}" class="inline-block">
+                    <img src="{{ asset('images/logo_light.svg') }}" alt="{{ 'app.name'|trans }}" class="h-8">
+                </a>
+            </div>
+        </header>
+
+        <!-- Content area -->
+        <main class="flex-1 flex items-center justify-center px-4 py-8">
+            <div class="w-full max-w-md">
+                {% block body %}{% endblock %}
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-6 px-4">
+            <div class="max-w-md mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-white/70">
+                <div class="flex items-center gap-4">
+                    <a href="{{ path('app_terms_conditions') }}" class="hover:text-white transition-colors">
+                        {{ 'footer.terms'|trans }}
+                    </a>
+                    <a href="{{ path('default_contact') }}" class="hover:text-white transition-colors">
+                        {{ 'sidebar.contact'|trans }}
+                    </a>
+                </div>
+                <div class="flex items-center gap-2">
+                    {% for locale in ['en', 'fr', 'es', 'de'] %}
+                        {% if locale != app.request.locale %}
+                            <a href="{{ path(app.request.attributes.get('_route'), app.request.attributes.get('_route_params')|merge({'_locale': locale})) }}" 
+                               class="px-2 py-1 rounded hover:bg-white/20 transition-colors uppercase text-xs font-medium">
+                                {{ locale }}
+                            </a>
+                        {% else %}
+                            <span class="px-2 py-1 rounded bg-white/20 uppercase text-xs font-medium text-white">
+                                {{ locale }}
+                            </span>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    {{ vite_entry_script_tags('app') }}
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

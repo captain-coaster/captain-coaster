@@ -93,15 +93,23 @@ coaster:
         kiddie: Kinder
         indoor: Indoor
         formerNames: Ehemalige Namen
+        features: Merkmale
     parkcoaster: 'Auch in {name}'
     video:
         title: Onride Video
     photos:
         title: Fotos
+        page_title: 'Fotos von {name}'
         empty: 'Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!'
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
         loading: Laden von Fotos
+    reviews:
+        featured: 'Was die Fahrer sagen'
+        see_all: 'Alle {count} Rezensionen ansehen'
+        page_title: 'Rezensionen von {name}'
+        empty: 'Noch keine Rezensionen für diese Achterbahn.'
+        be_first: 'Sei der Erste, der eine Rezension schreibt!'
     location: Standort
 
 image_upload:
@@ -125,12 +133,24 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    operating: 'In Betrieb'
+    total: 'Gesamt'
+    ranked: 'Gerankt'
+    ratings: 'Bewertungen'
+    best_ranked: 'Bestplatzierte Achterbahn'
+    view_map: 'Auf Karte anzeigen'
+    login_to_rate: 'Anmelden zum Bewerten'
+    nearby: 'Parks in der Nähe'
+    no_coasters: 'Keine Achterbahnen'
+    no_coasters_desc: 'Dieser Park hat noch keine gelisteten Achterbahnen.'
 
 coaster_ranking:
     title: Weltrangliste der Achterbahnen
     description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 3000 Benutzern weltweit.'
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'Keine Achterbahnen gefunden!'
+    new: neu
+    stats: 'Statistiken'
     info:
         title: 'Letzte Aktualisierung: {rankingMonth}'
         next: 'Nächste Aktualisierung {date}'
@@ -148,6 +168,16 @@ map_index:
     title: Achterbahn Landkarte
     description: 'Entdecke mit dieser interaktiven Karte, wo sich die coolsten Achterbahnen in der Nähe befinden, die besten des nächsten Jahres oder die B&M-Bahnen, die du bisher noch nicht gefahren bist.'
     results: Ergebnisse
+
+map:
+    parks_count: 'Parks'
+    legend:
+        title: 'Legende'
+        coaster: 'Achterbahn'
+        coasters: 'Achterbahnen'
+    popup:
+        coasters: 'Achterbahnen'
+        no_coasters: 'Keine Achterbahnen für diesen Park gefunden.'
 
 filters:
     title: Filter
@@ -306,6 +336,8 @@ review:
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
     remove_upvote: Positive Bewertung entfernen
+    back: 'Zurück zur Achterbahn'
+    placeholder: 'Teile deine Erfahrung mit dieser Achterbahn...'
     form:
         title: 'Rezension über {name}'
 
@@ -388,6 +420,7 @@ register:
     subtitle: Bitte füllen Sie alle untenstehenden Felder aus
     link_sent: 'Konto erstellt! Bitte überprüfen Sie Ihre E-Mail ({email}) und klicken Sie auf den Link, um Ihr Konto zu aktivieren.'
     rate_limit_exceeded: 'Zu viele Registrierungsversuche. Bitte versuchen Sie es später erneut.'
+    already_have_account: 'Sie haben bereits ein Konto?'
     form:
         email: E-Mail
         first_name: Vorname
@@ -426,6 +459,16 @@ notif:
         gotnotif: 'Du hast gerade eine neue Benachrichtigung auf Captain Coaster erhalten:'
         view: 'Sehe es dir auf <a href="{link_path}">CaptainCoaster.com</a> an'
         unsubscribe: 'Um dies nicht mehr zu erhalten, ändere bitte deine <a href="{link_path}">Benachrichtigungseinstellungen</a>.'
+
+coaster_search:
+    title: 'Achterbahnen suchen'
+    description: 'Finde Achterbahnen nach Name, Standort, Hersteller und mehr'
+    subtitle: 'Nutze die Filter, um deine nächste Fahrt zu finden'
+    num_found: '{num} Achterbahnen gefunden'
+    no_results: 'Keine Achterbahnen gefunden'
+    no_results_hint: 'Versuche, deine Filter anzupassen'
+    empty_title: 'Starte deine Suche'
+    empty_description: 'Nutze die Filter, um Achterbahnen nach Standort, Hersteller, Typ und mehr zu entdecken'
 
 nearby:
     title: Finde Achterbahnen in der Nähe
@@ -472,9 +515,28 @@ banner:
 search_index:
     title: Suche
     more: Alle Ergebnisse anzeigen
-    noResult: Keine Ergebnisse
+    noResult: Keine Ergebnisse gefunden
     noTerm: Kein Suchbegriff
     short: Ihre Suche ist zu kurz und muss mehr als 2 Zeichen enthalten.
+    results_for: 'Ergebnisse für "{query}"'
+    try_different: Versuchen Sie einen anderen Suchbegriff
+    showing_results: 'Zeige {count} von {total} Ergebnissen'
+    filter:
+        all: Alle
+        coasters: Achterbahnen
+        parks: Parks
+        users: Benutzer
+    coaster_count: >-
+        {count, plural,
+            =1 {1 Achterbahn}
+            other {# Achterbahnen}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {Keine Bewertungen}
+            =1 {1 Bewertung}
+            other {# Bewertungen}
+        }
     coasters_found: >-
         {num, plural,
             =0 {Keine Achterbahnen gefunden}

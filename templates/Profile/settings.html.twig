@@ -1,143 +1,172 @@
 {% extends "layouts/base.html.twig" %}
 
+{% import "macros/_macros_helpers.html.twig" as helper %}
+
 {% set title = 'profile.settings.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
-{% block stylesheets %}
-{% endblock %}
-
 {% block body %}
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-    <div class="md:col-span-1">
-      {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
+  <div class="max-w-2xl mx-auto">
+    {# Header #}
+    <div class="flex items-center gap-3 mb-6">
+      <a href="{{ path('profile') }}" 
+         class="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+      </a>
+      <div class="min-w-0 flex-1">
+        <h1 class="text-lg font-bold text-neutral-900 dark:text-white truncate">
+          {{ 'profile.settings.title'|trans }}
+        </h1>
+      </div>
     </div>
-    <div class="md:col-span-3">
-      <!-- settings form -->
-      <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-          <h1 class="text-lg font-semibold text-neutral-900 dark:text-white">{{ 'profile.settings.title'|trans }}</h1>
+
+    {# Name change warning #}
+    {% if not canChangeName %}
+      <div class="mb-4 p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800" role="alert">
+        <div class="flex items-start gap-3">
+          {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+          <p class="text-sm text-yellow-800 dark:text-yellow-200">{{ 'profile.settings.name.change_limit'|trans }}</p>
         </div>
-        <div class="p-6">
-          {% if not canChangeName %}
-            <div class="mb-4 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800" role="alert">
-              <div class="flex items-start gap-3">
-                {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
-                <p class="text-sm text-yellow-800 dark:text-yellow-200">{{ 'profile.settings.name.change_limit'|trans }}</p>
-              </div>
-            </div>
-          {% endif %}
+      </div>
+    {% endif %}
 
-          {{ form_start(form) }}
+    {{ form_start(form) }}
 
-          <fieldset class="mb-6">
-            <legend class="text-base font-semibold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-4">{{ 'profile.settings.sections.name'|trans }}</legend>
-
-            <div class="mb-3">
-              {{ form_label(form.firstName) }}
-              {{ form_widget(form.firstName) }}
-              {{ form_errors(form.firstName) }}
-            </div>
-
-            <div class="mb-3">
-              {{ form_label(form.lastName) }}
-              {{ form_widget(form.lastName) }}
-              {{ form_errors(form.lastName) }}
-            </div>
-
-            <div class="mb-6">
-              {{ form_label(form.displayNameFormat) }}
-              {{ form_widget(form.displayNameFormat) }}
-              {{ form_errors(form.displayNameFormat) }}
-              <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ 'profile.settings.name.format.help'|trans }}</p>
-            </div>
-
-            <div class="mb-3">
-              {{ form_label(form.profilePicture) }}
-              {{ form_widget(form.profilePicture) }}
-              {{ form_errors(form.profilePicture) }}
-            </div>
-          </fieldset>
-
-          <fieldset class="mb-6">
-            <legend class="text-base font-semibold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-4">{{ 'profile.settings.sections.preferences'|trans }}</legend>
-
-            <div class="mb-3">
-              {{ form_label(form.emailNotification) }}
-              {{ form_widget(form.emailNotification) }}
-              {{ form_errors(form.emailNotification) }}
-            </div>
-
-            <div class="mb-3">
-              {{ form_label(form.preferredLocale) }}
-              {{ form_widget(form.preferredLocale) }}
-              {{ form_errors(form.preferredLocale) }}
-            </div>
-
-            <div class="mb-3">
-              {{ form_label(form.imperial) }}
-              {{ form_widget(form.imperial) }}
-              {{ form_errors(form.imperial) }}
-            </div>
-
-            <div class="mb-3">
-              {{ form_label(form.homePark) }}
-              {{ form_widget(form.homePark) }}
-              {{ form_errors(form.homePark) }}
-            </div>
-
-            <div class="toggle-switch-form-group mb-3" data-controller="toggle-switch">
-              {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
-            </div>
-
-            <div class="toggle-switch-form-group mb-3" data-controller="toggle-switch">
-              {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
-            </div>
-          </fieldset>
-
-          <fieldset class="mb-6">
-            <legend class="text-base font-semibold text-neutral-900 dark:text-white border-b border-neutral-200 dark:border-neutral-700 pb-2 mb-4">{{ 'profile.settings.sections.advanced'|trans }}</legend>
-
-            <div class="mb-3">
-              {{ form_label(form.apiKey) }}
-              {{ form_widget(form.apiKey) }}
-              {{ form_errors(form.apiKey) }}
-            </div>
-          </fieldset>
-
-          <div class="flex justify-end">
-            <button type="submit" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 gap-2">
-              {{ 'profile.settings.save'|trans }}
-              {{ ux_icon('tabler:arrow-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
-            </button>
+    {# Name Settings #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-4">
+      <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+          {{ ux_icon('tabler:user', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.settings.sections.name'|trans }}
+        </h2>
+      </div>
+      <div class="p-4 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            {{ form_label(form.firstName) }}
+            {{ form_widget(form.firstName) }}
+            {{ form_errors(form.firstName) }}
           </div>
+          <div>
+            {{ form_label(form.lastName) }}
+            {{ form_widget(form.lastName) }}
+            {{ form_errors(form.lastName) }}
+          </div>
+        </div>
 
-          {{ form_rest(form) }}
-          {{ form_end(form) }}
+        <div>
+          {{ form_label(form.displayNameFormat) }}
+          {{ form_widget(form.displayNameFormat) }}
+          {{ form_errors(form.displayNameFormat) }}
+          <p class="mt-1.5 text-xs text-neutral-500 dark:text-neutral-400">{{ 'profile.settings.name.format.help'|trans }}</p>
         </div>
-      </section>
-      <!-- /settings form -->
 
-      <!-- delete account section -->
-      <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm mt-6">
-        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-          <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">{{ 'profile.delete_account.title'|trans }}</h2>
+        <div>
+          {{ form_label(form.profilePicture) }}
+          {{ form_widget(form.profilePicture) }}
+          {{ form_errors(form.profilePicture) }}
         </div>
-        <div class="p-6">
-          <p class="font-semibold text-neutral-900 dark:text-white mb-2">{{ 'profile.delete_account.warning'|trans }}</p>
-          <ul class="list-none space-y-1 text-neutral-600 dark:text-neutral-400 mb-4">
-            <li>• {{ 'profile.delete_account.immediate_logout'|trans }}</li>
-            <li>• {{ 'profile.delete_account.permanent_after_month'|trans }}</li>
-          </ul>
-          <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
-            <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
-              {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
-              {{ 'profile.delete_account.button'|trans }}
-            </button>
-          </form>
+      </div>
+    </section>
+
+    {# Preferences #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-4">
+      <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+          {{ ux_icon('tabler:settings', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.settings.sections.preferences'|trans }}
+        </h2>
+      </div>
+      <div class="p-4 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            {{ form_label(form.preferredLocale) }}
+            {{ form_widget(form.preferredLocale) }}
+            {{ form_errors(form.preferredLocale) }}
+          </div>
+          <div>
+            {{ form_label(form.homePark) }}
+            {{ form_widget(form.homePark) }}
+            {{ form_errors(form.homePark) }}
+          </div>
         </div>
-      </section>
-      <!-- /delete account section -->
+
+        <div>
+          {{ form_label(form.emailNotification) }}
+          {{ form_widget(form.emailNotification) }}
+          {{ form_errors(form.emailNotification) }}
+        </div>
+
+        <div>
+          {{ form_label(form.imperial) }}
+          {{ form_widget(form.imperial) }}
+          {{ form_errors(form.imperial) }}
+        </div>
+
+        <div class="toggle-switch-form-group" data-controller="toggle-switch">
+          {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+        </div>
+
+        <div class="toggle-switch-form-group" data-controller="toggle-switch">
+          {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+        </div>
+      </div>
+    </section>
+
+    {# Advanced #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-4">
+      <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+          {{ ux_icon('tabler:code', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.settings.sections.advanced'|trans }}
+        </h2>
+      </div>
+      <div class="p-4">
+        {{ form_label(form.apiKey) }}
+        {{ form_widget(form.apiKey) }}
+        {{ form_errors(form.apiKey) }}
+      </div>
+    </section>
+
+    {# Save Button #}
+    <div class="flex justify-end mb-6">
+      <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl bg-cc-blue-600 text-white hover:bg-cc-blue-700 transition-colors">
+        {{ 'profile.settings.save'|trans }}
+        {{ ux_icon('tabler:check', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      </button>
     </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+
+    {# Delete Account - Danger Zone #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-red-200 dark:border-red-900/50 overflow-hidden">
+      <div class="px-4 py-3 border-b border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20">
+        <h2 class="text-sm font-semibold text-red-700 dark:text-red-400 flex items-center gap-2">
+          {{ ux_icon('tabler:alert-triangle', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+          {{ 'profile.delete_account.title'|trans }}
+        </h2>
+      </div>
+      <div class="p-4">
+        <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-3">{{ 'profile.delete_account.warning'|trans }}</p>
+        <ul class="text-xs text-neutral-500 dark:text-neutral-400 space-y-1 mb-4">
+          <li class="flex items-center gap-2">
+            {{ ux_icon('tabler:logout', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'profile.delete_account.immediate_logout'|trans }}
+          </li>
+          <li class="flex items-center gap-2">
+            {{ ux_icon('tabler:trash', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'profile.delete_account.permanent_after_month'|trans }}
+          </li>
+        </ul>
+        <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
+          <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors">
+            {{ ux_icon('tabler:trash', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'profile.delete_account.button'|trans }}
+          </button>
+        </form>
+      </div>
+    </section>
   </div>
 {% endblock %}

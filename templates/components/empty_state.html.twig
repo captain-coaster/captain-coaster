@@ -25,9 +25,9 @@
         </h3>
     {% endif %}
 
-    {% if message is defined %}
+    {% if message is defined or description is defined %}
         <p class="text-neutral-600 dark:text-neutral-400 mb-6">
-            {{ message }}
+            {{ message|default(description) }}
         </p>
     {% endif %}
 

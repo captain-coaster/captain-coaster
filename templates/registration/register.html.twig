@@ -1,41 +1,142 @@
-{% extends "layouts/base_login.html.twig" %}
+{% extends "layouts/base_auth.html.twig" %}
 
 {% block title %}{{ 'register.title'|trans }} • {{ 'app.name'|trans }}{% endblock %}
 
 {% block body %}
-    <!-- Form with validation -->
-    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden login-form">
-        <div class="p-6">
-            <div class="text-center mb-4">
-                <div class="d-inline-flex items-center justify-content-center rounded-full bg-warning-subtle text-yellow-600 dark:text-yellow-400 mb-3 w-16 h-16">
-                    {{ ux_icon('tabler:key', {'class': 'icon-md'}) }}
-                </div>
-                <h5 class="mb-1">{{ 'register.title'|trans }}</h5>
-                <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-0">{{ 'register.subtitle'|trans }}</p>
-            </div>
-            {% for label, messages in app.flashes %}
-                {% for message in messages %}
-                    <div class="p-4 rounded-lg border {% if label == 'success' %}bg-green-50 border-green-200 text-green-800{% elseif label == 'danger' or label == 'error' %}bg-red-50 border-red-200 text-red-800{% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %} flex items-start justify-between gap-3">
-                        <div class="flex-1">{{ message | raw }}</div>
-                        <button type="button" class="p-1 rounded-lg hover:bg-black/5" onclick="this.parentElement.remove()" aria-label="Close">
-                            {{ ux_icon('tabler:x', {'class': 'w-4 h-4'}) }}
-                        </button>
+    <div class="space-y-6">
+        <!-- Card -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl shadow-neutral-200/50 dark:shadow-neutral-950/50 border border-neutral-200/50 dark:border-neutral-800/50 overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 text-white mb-4 shadow-lg shadow-green-500/25">
+                        {{ ux_icon('tabler:user-plus', {'class': 'w-7 h-7', 'aria-hidden': 'true'}) }}
                     </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+                        {{ 'register.title'|trans }}
+                    </h1>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+                        {{ 'register.subtitle'|trans }}
+                    </p>
+                </div>
+
+                <!-- Flash messages -->
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="mb-6 p-4 rounded-xl border {% if label == 'success' %}bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900/50{% elseif label == 'danger' or label == 'error' %}bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900/50{% else %}bg-cc-blue-50 dark:bg-cc-blue-950/30 border-cc-blue-200 dark:border-cc-blue-900/50{% endif %}" role="alert">
+                            <div class="flex items-start gap-3">
+                                {% if label == 'success' %}
+                                    {{ ux_icon('tabler:circle-check', {'class': 'w-5 h-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-green-700 dark:text-green-300">{{ message | raw }}</p>
+                                {% elseif label == 'danger' or label == 'error' %}
+                                    {{ ux_icon('tabler:alert-circle', {'class': 'w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-red-700 dark:text-red-300">{{ message | raw }}</p>
+                                {% else %}
+                                    {{ ux_icon('tabler:info-circle', {'class': 'w-5 h-5 text-cc-blue-600 dark:text-cc-blue-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                                    <p class="text-sm text-cc-blue-700 dark:text-cc-blue-300">{{ message | raw }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
 
-            {{ form_start(registrationForm) }}
-            {{ form_row(registrationForm.email) }}
-            {{ form_row(registrationForm.firstName) }}
-            {{ form_row(registrationForm.lastName) }}
-            {{ form_widget(registrationForm.recaptcha) }}
+                {{ form_start(registrationForm, {'attr': {'class': 'space-y-5'}}) }}
+                
+                <!-- Email field -->
+                <div>
+                    <label for="{{ registrationForm.email.vars.id }}" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        {{ 'register.form.email'|trans }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:mail', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+                        </div>
+                        {{ form_widget(registrationForm.email, {
+                            'attr': {
+                                'class': 'block w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200',
+                                'placeholder': 'you@example.com'
+                            },
+                            'label': false
+                        }) }}
+                    </div>
+                    {{ form_errors(registrationForm.email) }}
+                </div>
 
-            {{ form_end(registrationForm) }}
+                <!-- First name field -->
+                <div>
+                    <label for="{{ registrationForm.firstName.vars.id }}" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        {{ 'register.form.first_name'|trans }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:user', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+                        </div>
+                        {{ form_widget(registrationForm.firstName, {
+                            'attr': {
+                                'class': 'block w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200',
+                                'placeholder': 'register.form.first_name'|trans
+                            },
+                            'label': false
+                        }) }}
+                    </div>
+                    {{ form_errors(registrationForm.firstName) }}
+                </div>
 
-            <p class="text-center text-neutral-600 dark:text-neutral-400 text-sm mb-0">
-                {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
-            </p>
+                <!-- Last name field -->
+                <div>
+                    <label for="{{ registrationForm.lastName.vars.id }}" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        {{ 'register.form.last_name'|trans }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:user', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+                        </div>
+                        {{ form_widget(registrationForm.lastName, {
+                            'attr': {
+                                'class': 'block w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200',
+                                'placeholder': 'register.form.last_name'|trans
+                            },
+                            'label': false
+                        }) }}
+                    </div>
+                    {{ form_errors(registrationForm.lastName) }}
+                </div>
+
+                <!-- Recaptcha (hidden) -->
+                <div class="hidden">
+                    {{ form_widget(registrationForm.recaptcha) }}
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" 
+                        class="w-full flex justify-center items-center gap-2 px-6 py-3 text-base font-semibold rounded-xl text-white bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 dark:focus:ring-offset-neutral-900 shadow-lg shadow-green-500/25 hover:shadow-green-500/40 transition-all duration-200">
+                    {{ ux_icon('tabler:check', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                    {{ 'register.form.submit'|trans }}
+                </button>
+
+                {# Hide the form's built-in submit button #}
+                <div class="hidden">
+                    {{ form_row(registrationForm.register) }}
+                </div>
+
+                {{ form_end(registrationForm) }}
+            </div>
         </div>
+
+        <!-- Login link -->
+        <p class="text-center text-white/80 text-sm">
+            {{ 'register.already_have_account'|trans|default('Already have an account?') }}
+            <a href="{{ path('login') }}" class="font-medium text-white hover:underline">
+                {{ 'navbar.login'|trans }}
+            </a>
+        </p>
+
+        <!-- Terms -->
+        <p class="text-center text-white/60 text-xs">
+            {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
+        </p>
     </div>
-    <!-- /form with validation -->
 {% endblock %}

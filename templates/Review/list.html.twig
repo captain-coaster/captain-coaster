@@ -1,46 +1,81 @@
 {% extends "layouts/base.html.twig" %}
 
+{% import "macros/ui.html.twig" as ui %}
+
 {% set title = 'review_list.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-    <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-      <h1 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
-        {{ ux_icon('tabler:message', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
-        <span>{{ 'review.title'|trans }}</span>
-      </h1>
+  {# Hero Section #}
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-1">
+      {{ ux_icon('tabler:message-circle', {'class': 'w-7 h-7 inline-block text-cc-blue-500 mr-2', 'aria-hidden': 'true'}) }}
+      {{ 'review.title'|trans }}
+    </h1>
+    <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+      {{ 'review.share'|trans }}
+    </p>
+  </div>
+
+  {% if reviews.getTotalItemCount() > 0 %}
+    {# Reviews Feed #}
+    <div class="space-y-4">
+      {% for review in reviews %}
+        <article class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+          {# Coaster Header #}
+          <div class="px-4 py-3 bg-gradient-to-r from-neutral-50 to-transparent dark:from-neutral-800/50 dark:to-transparent border-b border-neutral-100 dark:border-neutral-800">
+            <div class="flex items-center gap-3">
+              {% if review.coaster.mainImage is not null %}
+                <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}" class="shrink-0">
+                  <img src="{{ pictures_cdn }}/280x210/{{ review.coaster.mainImage.filename }}"
+                       class="w-12 h-12 rounded-lg object-cover"
+                       alt="{{ review.coaster.name }}"
+                       loading="lazy">
+                </a>
+              {% endif %}
+              <div class="flex-1 min-w-0">
+                <h2 class="font-semibold text-neutral-900 dark:text-white text-sm truncate">
+                  <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}" 
+                     class="hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
+                    {{ review.coaster.name }}
+                  </a>
+                </h2>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+                  <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}"
+                     class="hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
+                    {{ review.coaster.park.name }}
+                  </a>
+                  {% if review.coaster.park.country is defined %}
+                    <span class="text-neutral-300 dark:text-neutral-600 mx-1">•</span>
+                    {{ review.coaster.park.country.name|trans([], 'database') }}
+                  {% endif %}
+                </p>
+              </div>
+              {% if review.coaster.score is not null %}
+                <div class="shrink-0 text-right">
+                  <div class="text-lg font-bold text-cc-warm-500">{{ review.coaster.score|number_format(1) }}</div>
+                  <div class="text-xs text-neutral-400">score</div>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          {# Review Content #}
+          <div class="p-4">
+            {% include 'Review/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': true} %}
+          </div>
+        </article>
+      {% endfor %}
     </div>
 
-    {% if reviews.getTotalItemCount() > 0 %}
-      <div class="p-6">
-        <ul class="space-y-6">
-          {% for review in reviews %}
-            <li class="{% if not loop.last %}border-b border-neutral-100 dark:border-neutral-800 pb-6{% endif %}">
-              <h2 class="text-base font-semibold text-neutral-900 dark:text-white mb-3">
-                <a class="link hover:text-cc-blue-700 dark:hover:text-cc-blue-300" href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                  {{ review.coaster.name }}
-                </a>
-                <span class="text-neutral-400 dark:text-neutral-600 font-normal mx-2">-</span>
-                <a class="link hover:text-cc-blue-700 dark:hover:text-cc-blue-300" href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                  {{ review.coaster.park.name }}
-                </a>
-              </h2>
-              {% include 'Review/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': true} %}
-            </li>
-          {% endfor %}
-        </ul>
-        <div class="mt-6">
-          {{ knp_pagination_render(reviews) }}
-        </div>
-      </div>
-    {% else %}
-      <div class="empty-state">
-        <div class="empty-state-icon">
-          {{ ux_icon('tabler:messages', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
-        </div>
-        <p class="text-neutral-600 dark:text-neutral-400">{{ 'review_list.no_review'|trans }}</p>
-      </div>
-    {% endif %}
-  </section>
+    <div class="mt-6">
+      {{ knp_pagination_render(reviews) }}
+    </div>
+  {% else %}
+    {% include 'components/empty_state.html.twig' with {
+      icon: 'tabler:message-circle-off',
+      title: 'review_list.no_review'|trans,
+      description: 'review.share'|trans
+    } %}
+  {% endif %}
 {% endblock %}

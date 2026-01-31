@@ -1,429 +1,471 @@
 {% extends "layouts/base.html.twig" %}
 
 {% import "macros/_macros_helpers.html.twig" as helper %}
+{% import "macros/ui.html.twig" as ui %}
 
-{% set title = coaster.name %}
-{% set subTitle = coaster.park.name %}
-{% block title %}{{ title }} • {{ subTitle }}{% endblock %}
-{% if coaster.formerNames %}
-    {% set secondaryTitle = coaster.formerNames|join(', ') %}
-{% endif %}
+{% block title %}{{ coaster.name }} • {{ coaster.park.name }}{% endblock %}
 
 {% block body %}
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div class="lg:col-span-1 space-y-6">
-            {% if coaster.isRateable %}
-                <!-- Hero Score Section -->
-                {% if coaster.score %}
-                    <section class="bg-linear-to-br from-cc-blue-500 to-cc-warm-400 rounded-3xl p-6 text-white">
-                        <div class="text-center">
-                            <div class="text-4xl font-bold mb-2">
-                                {{ coaster.score|number_format(1, ',') }}<span class="text-2xl opacity-80">%</span>
-                            </div>
-                            <div class="text-lg opacity-90 mb-4">{{ 'coaster.score.title'|trans }}</div>
-                            
-                            {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
-                            {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
-                            <a href="{{ path('ranking_index', {'page': page}) }}" 
-                               class="inline-flex items-center px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-cc-blue-500">
-                                <span class="font-semibold">#{{ coaster.rank }}</span>
-                                <span class="ml-2 opacity-90">{{ 'coaster.score.rank'|trans }}</span>
-                            </a>
-                        </div>
-                        
-                        {% if countRatings %}
-                            <div class="mt-6 pt-6 border-t border-white/20">
-                                <div class="text-sm opacity-90 mb-3 text-center">
-                                    {{ 'coaster.rating.distribution'|trans }}
-                                </div>
-                                {% set totalRatings = 0 %}
-                                {% for countRating in countRatings %}
-                                    {% set totalRatings = totalRatings + countRating.count %}
-                                {% endfor %}
+    {# Hero Section with Main Image #}
+    <div class="relative -mx-4 sm:-mx-6 lg:-mx-8 -mt-6">
+        {% if coaster.mainImage %}
+            <div class="relative h-[45vh] min-h-[350px] max-h-[500px] overflow-hidden">
+                <img src="{{ pictures_cdn }}/1440x1440/{{ coaster.mainImage.filename }}"
+                     alt="{{ coaster.name }}"
+                     class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10"></div>
+            </div>
+        {% else %}
+            <div class="relative h-[35vh] min-h-[280px] max-h-[400px] bg-linear-to-br from-cc-blue-600 to-cc-warm-500"></div>
+        {% endif %}
 
-                                {% if totalRatings > 0 %}
-                                    <div class="bg-white/10 rounded-lg overflow-hidden">
-                                        <div class="flex h-3">
-                                            {% for countRating in countRatings %}
-                                                {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
-                                                {% if percentage > 0 %}
-                                                    <div class="bg-white/40 hover:bg-white/60 transition-colors duration-200"
-                                                         style="width: {{ percentage }}%"
-                                                         title="{{ countRating.value }}★: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
+        {# Hero Content Overlay #}
+        <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8">
+            <div class="max-w-7xl mx-auto">
+                {# Status Badge #}
+                {% if coaster.status %}
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold mb-2
+                        {% if coaster.status.type == 'success' %}bg-green-500 text-white
+                        {% elseif coaster.status.type == 'warning' %}bg-yellow-500 text-black
+                        {% elseif coaster.status.type == 'danger' %}bg-red-500 text-white
+                        {% else %}bg-neutral-500 text-white{% endif %}">
+                        {{ coaster.status.name|trans([], 'database') }}
+                    </span>
+                {% endif %}
+
+                {# Coaster Name & Park #}
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-1">{{ coaster.name }}</h1>
+                <a href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}"
+                   class="text-base sm:text-lg text-white/90 hover:text-white transition-colors">
+                    {{ coaster.park.name }}{% if coaster.park.country %}, {{ coaster.park.country.name|trans([], 'database') }}{% endif %}
+                </a>
+
+                {# Score Badge - Prominent #}
+                {% if coaster.score and coaster.rank %}
+                    <div class="flex items-center gap-3 mt-3">
+                        <div class="flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                            <span class="text-xl sm:text-2xl font-bold text-white">{{ coaster.score|number_format(1, ',') }}%</span>
+                            <span class="text-white/80 text-sm">#{{ coaster.rank }}</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Main Content #}
+    <div class="max-w-7xl mx-auto mt-6 space-y-6">
+        {# Stats Cards - Clean Grid #}
+        <div class="grid grid-cols-4 gap-2 sm:gap-4">
+            <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-3 sm:p-4 text-center">
+                <div class="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white">
+                    {% if coaster.height %}{{ units.m_or_f(coaster.height) }}{% else %}—{% endif %}
+                </div>
+                <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'coaster.stats.height'|trans }}</div>
+            </div>
+            <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-3 sm:p-4 text-center">
+                <div class="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white">
+                    {% if coaster.length %}{{ units.m_or_f(coaster.length) }}{% else %}—{% endif %}
+                </div>
+                <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'coaster.stats.length'|trans }}</div>
+            </div>
+            <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-3 sm:p-4 text-center">
+                <div class="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white">
+                    {% if coaster.speed %}{{ units.kph_or_mph(coaster.speed) }}{% else %}—{% endif %}
+                </div>
+                <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'coaster.stats.speed'|trans }}</div>
+            </div>
+            <div class="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-3 sm:p-4 text-center">
+                <div class="text-lg sm:text-xl font-bold text-neutral-900 dark:text-white">{{ coaster.inversionsNumber|default('0') }}</div>
+                <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'coaster.stats.inversions'|trans }}</div>
+            </div>
+        </div>
+
+        {# Score Details - Moved up, better display #}
+        {% if coaster.isRateable and coaster.score and countRatings %}
+            <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm p-5">
+                <div class="flex items-center gap-6">
+                    <div class="text-center">
+                        <div class="text-4xl font-bold text-cc-blue-600 dark:text-cc-blue-400">{{ coaster.score|number_format(1, ',') }}%</div>
+                        <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ 'coaster.score.quality'|trans }}</div>
+                    </div>
+                    {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
+                    {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
+                    <a href="{{ path('ranking_index', {'page': page}) }}" class="text-center">
+                        <div class="text-4xl font-bold text-neutral-900 dark:text-white">#{{ coaster.rank }}</div>
+                        <div class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ 'coaster.score.worldrank'|trans }}</div>
+                    </a>
+                    <div class="flex-1 ml-4">
+                        {% set totalRatings = 0 %}
+                        {% for countRating in countRatings %}
+                            {% set totalRatings = totalRatings + countRating.count %}
+                        {% endfor %}
+                        {% if totalRatings > 0 %}
+                            <div class="space-y-1">
+                                {% for i in 5..1 %}
+                                    {% set ratingData = null %}
+                                    {% for countRating in countRatings %}
+                                        {% if countRating.value == i %}
+                                            {% set ratingData = countRating %}
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% set count = ratingData ? ratingData.count : 0 %}
+                                    {% set percentage = (count / totalRatings * 100)|round(0) %}
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-3 text-xs text-neutral-500">{{ i }}</span>
+                                        <div class="flex-1 h-1.5 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-cc-warm-500 rounded-full" style="width: {{ percentage }}%"></div>
                                         </div>
                                     </div>
-                                {% endif %}
+                                {% endfor %}
                             </div>
+                            <div class="text-xs text-neutral-500 mt-2 text-right">{{ totalRatings }} {{ 'coaster.rating.ratings'|trans }}</div>
                         {% endif %}
-                    </section>
-                {% endif %}
-                
-                {% include 'Coaster/_rating_panel.html.twig' with {'coaster': coaster, 'rating': rating, 'user': user} only %}
-            {% endif %}
-            
-            <!-- Stats Grid -->
-            <section class="grid grid-cols-2 gap-3">
-                <div class="bg-linear-to-br from-cc-warm-50 to-cc-warm-100 dark:from-cc-warm-900/10 dark:to-cc-warm-900/20 rounded-2xl p-4 group hover:shadow-md transition-all duration-300">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 bg-cc-warm-200 dark:bg-cc-warm-900/30 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                            {{ ux_icon('tabler:trending-up', {'class': 'w-6 h-6 text-cc-warm-700 dark:text-cc-warm-400', 'aria-hidden': 'true'}) }}
-                        </div>
-                        <div class="text-xl font-bold text-neutral-900 dark:text-white">
-                            {% if coaster.height is not empty %}
-                                {{ units.m_or_f(coaster.height) }}
-                            {% else %}
-                                <span class="text-neutral-400">—</span>
-                            {% endif %}
-                        </div>
-                        <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
-                            {{ 'coaster.stats.height'|trans }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-linear-to-br from-cc-blue-50 to-cc-blue-100 dark:from-cc-blue-900/10 dark:to-cc-blue-900/20 rounded-2xl p-4 group hover:shadow-md transition-all duration-300">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 bg-cc-blue-200 dark:bg-cc-blue-900/30 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                            {{ ux_icon('tabler:arrows-horizontal', {'class': 'w-6 h-6 text-cc-blue-700 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
-                        </div>
-                        <div class="text-xl font-bold text-neutral-900 dark:text-white">
-                            {% if coaster.length is not empty %}
-                                {{ units.m_or_f(coaster.length) }}
-                            {% else %}
-                                <span class="text-neutral-400">—</span>
-                            {% endif %}
-                        </div>
-                        <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
-                            {{ 'coaster.stats.length'|trans }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-linear-to-br from-green-50 to-green-100 dark:from-green-900/10 dark:to-green-900/20 rounded-2xl p-4 group hover:shadow-md transition-all duration-300">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 bg-green-200 dark:bg-green-900/30 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                            {{ ux_icon('tabler:rocket', {'class': 'w-6 h-6 text-green-700 dark:text-green-400', 'aria-hidden': 'true'}) }}
-                        </div>
-                        <div class="text-xl font-bold text-neutral-900 dark:text-white">
-                            {% if coaster.speed is not empty %}
-                                {{ units.kph_or_mph(coaster.speed) }}
-                            {% else %}
-                                <span class="text-neutral-400">—</span>
-                            {% endif %}
-                        </div>
-                        <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
-                            {{ 'coaster.stats.speed'|trans }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-linear-to-br from-red-50 to-red-100 dark:from-red-900/10 dark:to-red-900/20 rounded-2xl p-4 group hover:shadow-md transition-all duration-300">
-                    <div class="flex flex-col items-center text-center">
-                        <div class="w-12 h-12 bg-red-200 dark:bg-red-900/30 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
-                            {{ ux_icon('tabler:rotate-clockwise', {'class': 'w-6 h-6 text-red-700 dark:text-red-400', 'aria-hidden': 'true'}) }}
-                        </div>
-                        <div class="text-xl font-bold text-neutral-900 dark:text-white">
-                            {{ coaster.inversionsNumber|default('0') }}
-                        </div>
-                        <div class="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
-                            {{ 'coaster.stats.inversions'|trans }}
-                        </div>
                     </div>
                 </div>
             </section>
-            
-            <!-- Coaster Details -->
+        {% endif %}
+
+        {# Rating Panel (if rateable) #}
+        {% if coaster.isRateable %}
+            {% include 'Coaster/_rating_panel.html.twig' with {'coaster': coaster, 'rating': rating, 'user': user} only %}
+        {% endif %}
+
+        {# AI Summary Section #}
+        <div data-controller="coaster-summary"
+             data-coaster-summary-slug-value="{{ coaster.slug }}"
+             data-coaster-summary-locale-value="{{ app.request.locale }}"
+             data-coaster-summary-csrf-token-value="{{ csrf_token('summary_feedback') }}">
+            <div id="coaster-ai-summary" data-coaster-summary-target="container">
+                <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
+                        <h2 class="text-base font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+                            {{ ux_icon('tabler:star-filled', {'class': 'w-5 h-5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+                            {{ 'ai_summary.panel.title'|trans({}, 'ai_summary') }}
+                        </h2>
+                    </div>
+                    <div class="px-5 py-6 text-center">
+                        <div class="inline-flex items-center gap-3 text-neutral-500 dark:text-neutral-400">
+                            {{ ux_icon('tabler:refresh', {'class': 'w-5 h-5 animate-spin', 'aria-hidden': 'true'}) }}
+                            <span>{{ 'ai_summary.panel.loading'|trans({}, 'ai_summary') }}</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        {# Featured Reviews Section - Horizontal Scroll #}
+        {% if featuredReviews|length > 0 %}
             <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-                <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
-                        {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
+                <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+                    <h2 class="text-base font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+                        {{ ux_icon('tabler:quote', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+                        {{ 'coaster.reviews.featured'|trans }}
+                    </h2>
+                    {% if totalReviews > 3 %}
+                        <a href="{{ path('coaster_reviews', {'slug': coaster.slug}) }}"
+                           class="text-sm text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 transition-colors whitespace-nowrap">
+                            {{ 'coaster.reviews.see_all'|trans({'count': totalReviews}) }}
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="overflow-x-auto">
+                    <div class="flex gap-4 p-5 min-w-max">
+                        {% for review in featuredReviews %}
+                            <article class="w-72 shrink-0 bg-white dark:bg-neutral-800 rounded-xl p-4 shadow-sm">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="shrink-0">
+                                        {{ helper.profilePicture(review.user, 'w-8 h-8 rounded-full object-cover') }}
+                                    </a>
+                                    <div class="min-w-0">
+                                        <a href="{{ path('user_show', {'slug': review.user.slug}) }}"
+                                           class="font-medium text-sm text-neutral-900 dark:text-white hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors truncate block">
+                                            {{ review.user.displayName }}
+                                        </a>
+                                        {{ ui.starRating(review.value, 'xs') }}
+                                    </div>
+                                </div>
+                                {% if review.review %}
+                                    <p class="text-sm text-neutral-600 dark:text-neutral-300 line-clamp-4">{{ review.review }}</p>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if coaster.isRateable %}
+                    <div class="px-5 py-3 border-t border-neutral-100 dark:border-neutral-800 text-center">
+                        <a href="{{ path('review_form', {'id': coaster.id}) }}"
+                           class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-full transition-colors">
+                            {{ ux_icon('tabler:circle-plus', {'class': 'w-4 h-4 mr-1.5', 'aria-hidden': 'true'}) }}
+                            {{ 'review.send'|trans }}
+                        </a>
+                    </div>
+                {% endif %}
+            </section>
+        {% elseif coaster.isRateable %}
+            <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm p-6 text-center">
+                <div class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    {{ ux_icon('tabler:messages', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-3">{{ 'coaster.reviews.empty'|trans }}</p>
+                <a href="{{ path('review_form', {'id': coaster.id}) }}"
+                   class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-full transition-colors">
+                    {{ 'coaster.reviews.be_first'|trans }}
+                </a>
+            </section>
+        {% endif %}
+
+        {# Photos Preview - Horizontal Scroll #}
+        {% if coaster.images|length > 0 %}
+            <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+                <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+                    <h2 class="text-base font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+                        {{ ux_icon('tabler:photo', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+                        {{ 'coaster.photos.title'|trans }}
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-cc-blue-100 text-cc-blue-800 dark:bg-cc-blue-900/20 dark:text-cc-blue-400">
+                            {{ coaster.images|length }}
+                        </span>
+                    </h2>
+                    <a href="{{ path('coaster_images', {'slug': coaster.slug}) }}"
+                       class="text-sm text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 transition-colors whitespace-nowrap">
+                        {{ 'coaster.photos.all'|trans }}
+                    </a>
+                </div>
+                <div class="overflow-x-auto" data-controller="gallery" data-gallery-name-value="coaster-preview">
+                    <div class="flex gap-2 p-4">
+                        {% for image in coaster.images|slice(0, 6) %}
+                            <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
+                               data-gallery-target="link"
+                               class="block shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden {% if loop.index == 6 and coaster.images|length > 6 %}relative{% endif %}">
+                                <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                     alt="{{ coaster.name }}"
+                                     loading="lazy">
+                                {% if loop.index == 6 and coaster.images|length > 6 %}
+                                    <div class="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                        <span class="text-white font-semibold text-lg">+{{ coaster.images|length - 6 }}</span>
+                                    </div>
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="px-5 py-3 border-t border-neutral-100 dark:border-neutral-800 text-center">
+                    <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}"
+                       class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
+                        {{ ux_icon('tabler:upload', {'class': 'w-4 h-4 inline mr-1', 'aria-hidden': 'true'}) }}
+                        {{ 'coaster.photos.button'|trans }}
+                    </a>
+                </div>
+            </section>
+        {% else %}
+            <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm p-6 text-center">
+                <div class="w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center mx-auto mb-3">
+                    {{ ux_icon('tabler:photo', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+                </div>
+                <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-3">{{ 'coaster.photos.empty'|trans }}</p>
+                <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}"
+                   class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-lg transition-colors">
+                    {{ 'coaster.photos.button'|trans }}
+                </a>
+            </section>
+        {% endif %}
+
+        {# YouTube Video - Smaller on desktop #}
+        {% if coaster.youtubeId %}
+            <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+                <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
+                    <h2 class="text-base font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+                        {{ ux_icon('tabler:player-play', {'class': 'w-5 h-5 text-red-500', 'aria-hidden': 'true'}) }}
+                        {{ 'coaster.video.title'|trans }}
                     </h2>
                 </div>
-                <dl class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                    {% if coaster.status %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.status'|trans }}:</dt>
-                            <dd>
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
-                                    {% if coaster.status.type == 'success' %}bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400
-                                    {% elseif coaster.status.type == 'warning' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400
-                                    {% elseif coaster.status.type == 'danger' %}bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400
-                                    {% else %}bg-neutral-100 text-neutral-800 dark:bg-neutral-900/20 dark:text-neutral-400{% endif %}">
-                                    {{ coaster.status.name|trans([], 'database') }}
-                                </span>
-                            </dd>
+                <div class="p-4">
+                    <a href="https://www.youtube.com/watch?v={{ coaster.youtubeId }}" target="_blank" rel="noopener"
+                       class="block group rounded-xl overflow-hidden max-w-md mx-auto lg:mx-0">
+                        <div class="relative aspect-video">
+                            <img src="https://img.youtube.com/vi/{{ coaster.youtubeId }}/mqdefault.jpg"
+                                 alt="{{ 'coaster.video.title'|trans }}"
+                                 loading="lazy"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                                <div class="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                                    {{ ux_icon('tabler:player-play-filled', {'class': 'w-6 h-6 text-white ml-0.5', 'aria-hidden': 'true'}) }}
+                                </div>
+                            </div>
                         </div>
-                    {% endif %}
-                    {% if coaster.park %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.park'|trans }}:</dt>
-                            <dd>
-                                <a href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ coaster.park.name }}
-                                </a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.park.country %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.country'|trans }}:</dt>
-                            <dd>
-                                <a href="{{ path('ranking_index', {'filters[country]': coaster.park.country.id}) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ coaster.park.country.name|trans([], 'database') }}
-                                </a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                    <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                        <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.manufacturer'|trans }}:</dt>
-                        <dd>
-                            {% if coaster.manufacturer %}
-                                <a href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ coaster.manufacturer.name }}
-                                </a>
-                            {% else %}
-                                <span class="text-neutral-500 dark:text-neutral-400">{{ 'data.unknown'|trans([], 'database') }}</span>
+                    </a>
+                </div>
+            </section>
+        {% endif %}
+
+        {# Coaster Details - Fixed text wrapping #}
+        <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+            <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800">
+                <h2 class="text-base font-semibold text-neutral-900 dark:text-white">
+                    {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
+                </h2>
+            </div>
+            <dl class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                {% if coaster.park %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.park'|trans }}</dt>
+                        <dd class="col-span-2 text-right">
+                            <a href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ coaster.park.name }}
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+                {% if coaster.park.country %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.country'|trans }}</dt>
+                        <dd class="col-span-2 text-right">
+                            <a href="{{ path('ranking_index', {'filters[country]': coaster.park.country.id}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ coaster.park.country.name|trans([], 'database') }}
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+                <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                    <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.manufacturer'|trans }}</dt>
+                    <dd class="col-span-2 text-right">
+                        {% if coaster.manufacturer %}
+                            <a href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ coaster.manufacturer.name }}
+                            </a>
+                        {% else %}
+                            <span class="text-neutral-500 text-sm">{{ 'data.unknown'|trans([], 'database') }}</span>
+                        {% endif %}
+                    </dd>
+                </div>
+                {% if coaster.materialType %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.materialType'|trans }}</dt>
+                        <dd class="col-span-2 text-right">
+                            <a href="{{ path('ranking_index', {'filters[materialType]': coaster.materialType.id}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ coaster.materialType.name }}
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+                {% if coaster.seatingType %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.seatingType'|trans }}</dt>
+                        <dd class="col-span-2 text-right">
+                            <a href="{{ path('ranking_index', {'filters[seatingType]': coaster.seatingType.id}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ coaster.seatingType.name }}
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+                {% if coaster.model %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.model'|trans }}</dt>
+                        <dd class="col-span-2 text-right">
+                            <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ coaster.model.name }}
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+                <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                    <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.restraint'|trans }}</dt>
+                    <dd class="col-span-2 text-right text-neutral-900 dark:text-white text-sm">{{ coaster.restraint.name|default('data.unknown')|trans([], 'database') }}</dd>
+                </div>
+                {% if coaster.launchs|length > 0 %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.launch'|trans }}</dt>
+                        <dd class="col-span-2 text-right text-neutral-900 dark:text-white text-sm">
+                            {% for launch in coaster.launchs %}{{ launch|trans([], 'database') }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        </dd>
+                    </div>
+                {% endif %}
+                {% if coaster.openingDate %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.opening'|trans }}</dt>
+                        <dd class="col-span-2 text-right">
+                            <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y')}) }}"
+                               class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 text-sm">
+                                {{ helper.displayDate(coaster.openingDate) }}
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+                {% if coaster.closingDate %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.closing'|trans }}</dt>
+                        <dd class="col-span-2 text-right text-neutral-900 dark:text-white text-sm">{{ helper.displayDate(coaster.closingDate) }}</dd>
+                    </div>
+                {% endif %}
+                {% if coaster.kiddie or coaster.indoor or coaster.vr %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.features'|trans }}</dt>
+                        <dd class="col-span-2 text-right flex flex-wrap gap-1 justify-end">
+                            {% if coaster.kiddie %}
+                                <span class="px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400">{{ 'coaster.infos.kiddie'|trans }}</span>
+                            {% endif %}
+                            {% if coaster.indoor %}
+                                <span class="px-2 py-0.5 rounded-full text-xs bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400">{{ 'coaster.infos.indoor'|trans }}</span>
+                            {% endif %}
+                            {% if coaster.vr %}
+                                <span class="px-2 py-0.5 rounded-full text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ 'coaster.infos.vr'|trans }}</span>
                             {% endif %}
                         </dd>
                     </div>
-                    {% if coaster.materialType %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.materialType'|trans }}:</dt>
-                            <dd>
-                                <a href="{{ path('ranking_index', {'filters[materialType]': coaster.materialType.id}) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ coaster.materialType.name }}
-                                </a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.seatingType %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.seatingType'|trans }}:</dt>
-                            <dd>
-                                <a href="{{ path('ranking_index', {'filters[seatingType]': coaster.seatingType.id}) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ coaster.seatingType.name }}
-                                </a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.model %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.model'|trans }}:</dt>
-                            <dd>
-                                <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id}) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ coaster.model.name }}
-                                </a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.kiddie %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.kiddie'|trans }}:</dt>
-                            <dd>
-                                {{ ux_icon('tabler:check', {'class': 'w-5 h-5 text-green-600 dark:text-green-400', 'aria-hidden': 'true'}) }}
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.launchs|length > 0 %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.launch'|trans }}:</dt>
-                            <dd class="text-neutral-600 dark:text-neutral-300">
-                                {% for launch in coaster.launchs %}
-                                    {{ launch|trans([], 'database') }}{% if not loop.last %}, {% endif %}
-                                {% endfor %}
-                            </dd>
-                        </div>
-                    {% endif %}
-                    <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                        <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.restraint'|trans }}:</dt>
-                        <dd class="text-neutral-600 dark:text-neutral-300">{{ coaster.restraint.name|default('data.unknown')|trans([], 'database') }}</dd>
+                {% endif %}
+                {% if coaster.price and coaster.currency %}
+                    <div class="px-5 py-3 grid grid-cols-3 gap-2">
+                        <dt class="text-neutral-500 dark:text-neutral-400 text-sm">{{ 'coaster.infos.cost'|trans }}</dt>
+                        <dd class="col-span-2 text-right text-neutral-900 dark:text-white text-sm">{{ coaster.price|format_currency(coaster.currency, {fraction_digit: 0}) }}</dd>
                     </div>
-                    {% if coaster.openingDate %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.opening'|trans }}:</dt>
-                            <dd>
-                                <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y') }) }}" 
-                                   class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors duration-200">
-                                    {{ helper.displayDate(coaster.openingDate) }}
-                                </a>
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.closingDate %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.closing'|trans }}:</dt>
-                            <dd class="text-neutral-600 dark:text-neutral-300">{{ helper.displayDate(coaster.closingDate) }}</dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.indoor %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.indoor'|trans }}:</dt>
-                            <dd>
-                                {{ ux_icon('tabler:check', {'class': 'w-5 h-5 text-green-600 dark:text-green-400', 'aria-hidden': 'true'}) }}
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.vr %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.vr'|trans }}:</dt>
-                            <dd>
-                                {{ ux_icon('tabler:check', {'class': 'w-5 h-5 text-green-600 dark:text-green-400', 'aria-hidden': 'true'}) }}
-                            </dd>
-                        </div>
-                    {% endif %}
-                    {% if coaster.price and coaster.currency %}
-                        <div class="px-6 py-4 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <dt class="font-medium text-neutral-900 dark:text-white">{{ 'coaster.infos.cost'|trans }}:</dt>
-                            <dd class="text-neutral-600 dark:text-neutral-300">{{ coaster.price|format_currency(coaster.currency, {fraction_digit: 0}) }}</dd>
-                        </div>
-                    {% endif %}
-                </dl>
-            </section>
-            
-            {% if coaster.youtubeId %}
-                <a href="https://www.youtube.com/watch?v={{ coaster.youtubeId }}" target="_blank" 
-                   class="block group rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
-                    <div class="relative">
-                        <img src="https://img.youtube.com/vi/{{ coaster.youtubeId }}/maxresdefault.jpg" 
-                             alt="Watch {{ coaster.name }} on YouTube" 
-                             loading="lazy" 
-                             class="w-full h-auto group-hover:scale-105 transition-transform duration-300">
-                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
-                            <div class="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
-                                {{ ux_icon('tabler:player-play', {'class': 'w-8 h-8 text-white ml-1', 'aria-hidden': 'true'}) }}
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            {% endif %}
-            
-            <!-- Park Coasters -->
+                {% endif %}
+            </dl>
+        </section>
+
+        {# Park Coasters - Horizontal scroll on mobile #}
+        {% if coasters|length > 1 %}
             <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-                <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700 flex justify-between items-center">
-                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                <div class="px-5 py-4 border-b border-neutral-100 dark:border-neutral-800 flex justify-between items-center">
+                    <h2 class="text-base font-semibold text-neutral-900 dark:text-white">
                         {{ 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}) }}
                     </h2>
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cc-blue-100 text-cc-blue-800 dark:bg-cc-blue-900/20 dark:text-cc-blue-400">
-                        {{ coaster.park.coasters|length }}
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-cc-blue-100 text-cc-blue-800 dark:bg-cc-blue-900/20 dark:text-cc-blue-400">
+                        {{ coasters|length }}
                     </span>
                 </div>
-                <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
-                    {% for otherCoaster in coasters %}
-                        <div class="px-6 py-3 hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors duration-200">
-                            <div class="flex items-center gap-3">
-                                <div class="w-3 h-3 rounded-full 
-                                    {% if otherCoaster.status.type == 'success' %}bg-green-500
-                                    {% elseif otherCoaster.status.type == 'warning' %}bg-yellow-500
-                                    {% elseif otherCoaster.status.type == 'danger' %}bg-red-500
-                                    {% else %}bg-neutral-400{% endif %}" 
-                                     title="{{ otherCoaster.status.name|trans([], 'database') }}">
-                                </div>
-                                <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}" 
-                                   class="text-neutral-900 dark:text-white hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors duration-200 font-medium">
-                                    {{ otherCoaster.name }}
+                <div class="overflow-x-auto">
+                    <div class="flex gap-2 p-4 min-w-max lg:flex-wrap lg:min-w-0">
+                        {% for otherCoaster in coasters %}
+                            {% if otherCoaster.id != coaster.id %}
+                                <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}"
+                                   class="shrink-0 lg:shrink flex items-center gap-2 px-3 py-2 bg-white dark:bg-neutral-800 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors">
+                                    <div class="w-2 h-2 rounded-full shrink-0
+                                        {% if otherCoaster.status.type == 'success' %}bg-green-500
+                                        {% elseif otherCoaster.status.type == 'warning' %}bg-yellow-500
+                                        {% elseif otherCoaster.status.type == 'danger' %}bg-red-500
+                                        {% else %}bg-neutral-400{% endif %}">
+                                    </div>
+                                    <span class="text-sm text-neutral-900 dark:text-white font-medium whitespace-nowrap">{{ otherCoaster.name }}</span>
+                                    {% if otherCoaster.rank %}
+                                        <span class="text-xs text-neutral-400">#{{ otherCoaster.rank }}</span>
+                                    {% endif %}
                                 </a>
-                            </div>
-                        </div>
-                    {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             </section>
-        </div>
-        <div class="lg:col-span-3 space-y-6">
-            <!-- AI Summary Section (loaded via AJAX) -->
-            <div
-                data-controller="coaster-summary"
-                data-coaster-summary-slug-value="{{ coaster.slug }}"
-                data-coaster-summary-locale-value="{{ app.request.locale }}"
-                data-coaster-summary-csrf-token-value="{{ csrf_token('summary_feedback') }}"
-            >
-                <div id="coaster-ai-summary" data-coaster-summary-target="container">
-                    <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
-                                {{ ux_icon('tabler:star-filled', {'class': 'w-5 h-5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
-                                Captain's Review
-                            </h2>
-                        </div>
-                        <div class="px-6 py-8 text-center">
-                            <div class="inline-flex items-center gap-3 text-neutral-500 dark:text-neutral-400">
-                                {{ ux_icon('tabler:refresh', {'class': 'w-5 h-5 animate-spin', 'aria-hidden': 'true'}) }}
-                                <span>{{ 'ai_summary.panel.loading'|trans({}, 'ai_summary') }}</span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-
-            <!-- Photos Section (loaded via AJAX with Stimulus) -->
-            <div
-                data-controller="coaster-images"
-                data-coaster-images-slug-value="{{ coaster.slug }}"
-                data-coaster-images-locale-value="{{ app.request.locale }}"
-                data-coaster-images-total-images-value="{{ coaster.images|length }}"
-            >
-                <div id="coaster-photos" data-coaster-images-target="container">
-                    <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
-                                {{ ux_icon('tabler:photo', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
-                                {{ 'coaster.photos.title'|trans }}
-                            </h2>
-                        </div>
-                        <div class="px-6 py-8 text-center">
-                            <div class="inline-flex items-center gap-3 text-neutral-500 dark:text-neutral-400">
-                                {{ ux_icon('tabler:refresh', {'class': 'w-5 h-5 animate-spin', 'aria-hidden': 'true'}) }}
-                                <span>{{ 'coaster.photos.loading'|trans }}</span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-
-            <!-- Reviews Section (loaded via AJAX with Stimulus) -->
-            <div
-                data-controller="coaster-reviews"
-                data-coaster-reviews-slug-value="{{ coaster.slug }}"
-                data-coaster-reviews-locale-value="{{ app.request.locale }}"
-            >
-                <div id="coaster-reviews" data-coaster-reviews-target="container">
-                    <section class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-                        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700 flex justify-between items-center">
-                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
-                                {{ ux_icon('tabler:messages', {'class': 'w-5 h-5 text-green-500', 'aria-hidden': 'true'}) }}
-                                {{ 'review.title'|trans }}
-                            </h2>
-                            <form class="hidden">
-                                <input type="hidden" name="page" value="1">
-                                <div>
-                                    <select name="filters[sort]">
-                                        <option value=""></option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="px-6 py-8 text-center">
-                            <div class="inline-flex items-center gap-3 text-neutral-500 dark:text-neutral-400">
-                                {{ ux_icon('tabler:refresh', {'class': 'w-5 h-5 animate-spin', 'aria-hidden': 'true'}) }}
-                                <span>{{ 'review.loading'|trans }}</span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}
 
 {% block javascripts %}
-    {# All JavaScript is now in the main app bundle #}
-    {% include 'Coaster/rating_json_ld.html.twig' with {'coaster': coaster} only %}
+    {{ parent() }}
 {% endblock %}

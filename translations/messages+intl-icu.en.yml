@@ -88,15 +88,23 @@ coaster:
         kiddie: 'Kiddie'
         indoor: 'Indoor'
         formerNames: 'Former names'
+        features: 'Features'
     parkcoaster: 'Also in {name}'
     video:
         title: 'Onride Video'
     photos:
         title: 'Photos'
+        page_title: 'Photos of {name}'
         empty: "Oops, we don't have any photos yet for this coaster, but you can send yours!"
         button: 'Upload a picture'
         all: 'See all pictures'
         loading: 'Loading photos...'
+    reviews:
+        featured: 'What riders say'
+        see_all: 'See all {count} reviews'
+        page_title: 'Reviews of {name}'
+        empty: 'No reviews yet for this coaster.'
+        be_first: 'Be the first to review!'
     location: 'Location'
 
 image_upload:
@@ -120,12 +128,24 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    operating: 'Operating'
+    total: 'Total'
+    ranked: 'Ranked'
+    ratings: 'Ratings'
+    best_ranked: 'Best ranked coaster'
+    view_map: 'View on map'
+    login_to_rate: 'Log in to rate'
+    nearby: 'Nearby parks'
+    no_coasters: 'No coasters'
+    no_coasters_desc: 'This park has no coasters listed yet.'
 
 coaster_ranking:
     title: 'World Roller Coaster Rankings'
     description: "Discover the world's best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide."
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'No coasters found!'
+    new: 'new'
+    stats: 'Stats'
     info:
         title: 'Last Updated: {rankingMonth}'
         next: 'Next update {date}'
@@ -143,6 +163,16 @@ map_index:
     title: 'Coasters Map'
     description: 'Discover where are the most amazing roller coasters nearby, the next year hits or the B&M you have not ridden yet with this interactive map.'
     results: 'Results'
+
+map:
+    parks_count: 'parks'
+    legend:
+        title: 'Legend'
+        coaster: 'coaster'
+        coasters: 'coasters'
+    popup:
+        coasters: 'coasters'
+        no_coasters: 'No coasters found for this park.'
 
 filters:
     title: 'Filters'
@@ -300,6 +330,8 @@ review:
     report_success: 'Thank you for your report. Our team will review it shortly.'
     report_error: 'An error occurred while submitting your report.'
     remove_upvote: 'Remove upvote'
+    back: 'Back to coaster'
+    placeholder: 'Share your experience riding this coaster...'
     form:
         title: 'Review about {name}'
 
@@ -383,6 +415,7 @@ register:
     subtitle: 'Please fill in all the fields below'
     link_sent: 'Account created! Please check your email ({email}) and click on the link to activate your account.'
     rate_limit_exceeded: 'Too many registration attempts. Please try again later.'
+    already_have_account: 'Already have an account?'
     form:
         email: 'Email'
         first_name: 'First Name'
@@ -424,8 +457,13 @@ notif:
 
 coaster_search:
     title: 'Search Coasters'
+    description: 'Find roller coasters by name, location, manufacturer and more'
+    subtitle: 'Use the filters to find your next ride'
     num_found: '{num} coasters found'
-    no_results: 'No coasters found matching your criteria'
+    no_results: 'No coasters found'
+    no_results_hint: 'Try adjusting your filters'
+    empty_title: 'Start your search'
+    empty_description: 'Use the filters to discover roller coasters by location, manufacturer, type and more'
 
 image:
     credit: 'Credit: {name}'
@@ -465,9 +503,28 @@ banner:
 search_index:
     title: Search
     more: See all results
-    noResult: No results
+    noResult: No results found
     noTerm: No search term
     short: Your search is too short and must contain more than 2 characters.
+    results_for: 'Results for "{query}"'
+    try_different: Try a different search term
+    showing_results: 'Showing {count} of {total} results'
+    filter:
+        all: All
+        coasters: Coasters
+        parks: Parks
+        users: Users
+    coaster_count: >-
+        {count, plural,
+            =1 {1 coaster}
+            other {# coasters}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {No ratings}
+            =1 {1 rating}
+            other {# ratings}
+        }
     coasters_found: >-
         {num, plural,
             =0 {No coasters found}

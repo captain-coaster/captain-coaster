@@ -6,49 +6,81 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  {% if images|length > 0 %}
-    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
-      <div class="p-6" 
-           data-controller="gallery" 
-           data-gallery-name-value="user-images"
-           data-gallery="user-images">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 gap-3">
-          {% for image in images %}
-            <div class="col-span-6 md:col-span-3">
-              <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
-                 data-cropped-thumbnail="{{ pictures_cdn }}/280x210/{{ image.filename }}"
-                 data-gallery-target="link">
-                <div class="thumb">
-                  <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" 
-                       class="w-full h-auto rounded"
-                       alt="{{ image.coaster.name }}">
-                </div>
-              </a>
-              <div class="text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-1 mt-1"
-                   data-controller="image-like"
-                   data-image-like-image-id-value="{{ image.id }}"
-                   data-image-like-locale-value="{{ app.request.locale }}"
-                   data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}">
-                <button type="button"
-                        data-action="click->image-like#toggle"
-                        data-image-like-target="icon"
-                        class="p-0 border-0 bg-transparent inline-flex items-center text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors"
-                </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
+  <div class="max-w-4xl mx-auto">
+    {# Compact User Header #}
+    <div class="flex items-center gap-3 mb-6">
+      <a href="{{ path('user_show', {'slug': user.slug}) }}" class="shrink-0">
+        {{ helper.profilePicture(user, 'w-10 h-10 rounded-full object-cover') }}
+      </a>
+      <div class="min-w-0 flex-1">
+        <h1 class="text-lg font-bold text-neutral-900 dark:text-white truncate">
+          {{ user.displayName }}
+        </h1>
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          {{ images.getTotalItemCount() }} {{ 'user_profile.pictures'|trans|lower }}
+        </p>
       </div>
+      <a href="{{ path('user_show', {'slug': user.slug}) }}" 
+         class="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+      </a>
     </div>
-    {{ knp_pagination_render(images) }}
-  {% else %}
-    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
-      <div class="p-6 text-center text-neutral-600 dark:text-neutral-400 py-4">
-        {{ 'users.images.empty'|trans|default('No photos') }}
-      </div>
-    </div>
-  {% endif %}
-{% endblock %}
 
-{% block javascripts %}
+    {% if images.getTotalItemCount() > 0 %}
+      {# Image Grid #}
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {% for image in images %}
+          <div class="group relative rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800"
+               data-controller="image-like"
+               data-image-like-id-value="{{ image.id }}"
+               data-image-like-liked-value="{{ image.id in userLikes ? 'true' : 'false' }}"
+               data-image-like-count-value="{{ image.likeCounter }}">
+            {# Image #}
+            <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}" class="block">
+              <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                   class="w-full group-hover:scale-105 transition-transform duration-300"
+                   alt="{{ image.coaster.name }}"
+                   loading="lazy">
+            </a>
+
+            {# Gradient overlay on hover #}
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"></div>
+
+            {# Coaster name on hover #}
+            <div class="absolute bottom-0 left-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+              <p class="text-white text-xs font-medium truncate">
+                {{ image.coaster.name }}
+              </p>
+            </div>
+
+            {# Like button and count #}
+            <div class="absolute top-1.5 right-1.5 flex items-center gap-1">
+              {% if is_granted('ROLE_USER') %}
+                <button type="button"
+                        class="p-1 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm shadow-sm hover:bg-white dark:hover:bg-neutral-900 transition-colors"
+                        data-action="image-like#toggle"
+                        data-image-like-target="button">
+                  {{ ux_icon('tabler:heart', {'class': 'w-3.5 h-3.5 text-red-500', 'aria-hidden': 'true', 'data-image-like-target': 'icon'}) }}
+                </button>
+              {% endif %}
+              <span class="px-1.5 py-0.5 rounded-full bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm text-[10px] font-medium text-neutral-700 dark:text-neutral-300 shadow-sm"
+                    data-image-like-target="count">
+                {{ image.likeCounter }}
+              </span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="mt-6">
+        {{ knp_pagination_render(images) }}
+      </div>
+    {% else %}
+      {% include 'components/empty_state.html.twig' with {
+        icon: 'tabler:camera',
+        title: 'user_profile.pictures'|trans,
+        description: ''
+      } %}
+    {% endif %}
+  </div>
 {% endblock %}

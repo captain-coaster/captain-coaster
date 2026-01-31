@@ -1,60 +1,108 @@
-{% import "macros/_macros_helpers.html.twig" as helper %}
+{# Coaster Search Results - Mobile-first card grid #}
 
-<div class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
-    <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-        <h6 class="mb-0 font-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
-    </div>
-
-    <ul class="list-group list-group-flush">
-        {% for coaster in coasters %}
-            <li class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700">
-                <div class="flex gap-3 flex-col md:flex-row">
-                    <div class="shrink-0">
-                        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                            {% if coaster.mainImage is not null %}
-                                <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
-                                     class="rounded w-24"
-                                     alt="{{ coaster.name }}">
-                            {% endif %}
-                        </a>
-                    </div>
-
-                    <div class="flex-1">
-                        <h6 class="font-semibold mb-1">
-                            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="coaster-link">
-                                {{ coaster.name }}
-                            </a>
-                        </h6>
-                        
-                        <ul class="inline-flex list-inline-separator text-neutral-600 dark:text-neutral-400 text-sm mb-1">
-                            <li class="inline-flex">
-                                <a class="text-neutral-600 dark:text-neutral-400" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                                    {{ coaster.park.name }}
-                                </a>
-                            </li>
-                            <li class="inline-flex">{{ coaster.park.country.name|trans([], 'database') }}</li>
-                        </ul>
-                        
-                        <ul class="inline-flex list-inline-separator text-neutral-600 dark:text-neutral-400 text-sm mb-0">
-                            {% if coaster.manufacturer %}
-                                <li class="inline-flex">{{ coaster.manufacturer.name }}</li>
-                            {% endif %}
-                            {% if coaster.materialType %}
-                                <li class="inline-flex">{{ coaster.materialType.name|trans([], 'database') }}</li>
-                            {% endif %}
-                            {% if coaster.openingDate %}
-                                <li class="inline-flex">{{ coaster.openingDate|date('Y') }}</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </li>
-        {% else %}
-            <li class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 text-center text-neutral-600 dark:text-neutral-400 py-4">
-                <h5 class="mb-0">{{ 'coaster_search.no_results'|trans }}</h5>
-            </li>
-        {% endfor %}
-    </ul>
+{# Results header with count #}
+<div class="flex items-center justify-between mb-4">
+  <p class="text-sm text-neutral-600 dark:text-neutral-400">
+    {{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}
+  </p>
 </div>
 
-{{ knp_pagination_render(coasters) }}
+{# Results grid #}
+{% if coasters|length > 0 %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 mb-6">
+    {% for coaster in coasters %}
+      <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" 
+         class="group bg-white dark:bg-neutral-900 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200">
+        
+        {# Image section #}
+        <div class="relative aspect-[4/3] overflow-hidden">
+          {% if coaster.mainImage is not null %}
+            <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                 alt="{{ coaster.name }}"
+                 loading="lazy">
+          {% else %}
+            <div class="w-full h-full bg-linear-to-br from-cc-blue-400 to-cc-blue-600 flex items-center justify-center">
+              <span class="text-white text-4xl font-bold opacity-50">{{ coaster.name|slice(0, 1)|upper }}</span>
+            </div>
+          {% endif %}
+          
+          {# Status badge #}
+          {% if coaster.status and coaster.status.name != 'status.operating' %}
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-neutral-900/70 text-white backdrop-blur-sm">
+                {{ coaster.status.name|trans({}, 'database') }}
+              </span>
+            </div>
+          {% endif %}
+          
+          {# Rank badge if ranked #}
+          {% if coaster.rank %}
+            <div class="absolute top-2 right-2">
+              <span class="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold bg-amber-500 text-white">
+                {{ ux_icon('tabler:trophy', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+                #{{ coaster.rank }}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+        
+        {# Content section #}
+        <div class="p-3">
+          {# Coaster name #}
+          <h3 class="font-semibold text-neutral-900 dark:text-white text-sm leading-tight truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+            {{ coaster.name }}
+          </h3>
+          
+          {# Park and location #}
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate mt-0.5">
+            {{ coaster.park.name }} • {{ coaster.park.country.name|trans([], 'database') }}
+          </p>
+          
+          {# Specs row #}
+          <div class="flex items-center gap-3 mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+            {% if coaster.manufacturer %}
+              <span class="truncate">{{ coaster.manufacturer.name }}</span>
+            {% endif %}
+            {% if coaster.openingDate %}
+              <span class="shrink-0">{{ coaster.openingDate|date('Y') }}</span>
+            {% endif %}
+          </div>
+          
+          {# Stats row #}
+          <div class="flex items-center gap-3 mt-2 pt-2 border-t border-neutral-100 dark:border-neutral-800">
+            {# Average rating #}
+            {% if coaster.averageRating %}
+              <div class="flex items-center gap-1">
+                {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-amber-400', 'aria-hidden': 'true'}) }}
+                <span class="text-xs font-medium text-neutral-900 dark:text-white">{{ coaster.averageRating|number_format(1, ',') }}</span>
+                <span class="text-xs text-neutral-400">({{ coaster.totalRatings|shortNum }})</span>
+              </div>
+            {% endif %}
+            
+            {# Score if available #}
+            {% if coaster.score %}
+              <div class="flex items-center gap-1 ml-auto">
+                <span class="text-xs font-bold tabular-nums" style="color: hsl({{ coaster.score * 1.2 }}, 50%, 45%);">
+                  {{ coaster.score|number_format(1, ',') }}%
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+  
+  {# Pagination #}
+  {{ knp_pagination_render(coasters) }}
+{% else %}
+  {# No results state #}
+  <div class="bg-white dark:bg-neutral-900 rounded-xl p-8 text-center">
+    <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+      {{ ux_icon('tabler:search-off', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+    </div>
+    <h3 class="text-neutral-900 dark:text-white font-medium mb-1">{{ 'coaster_search.no_results'|trans }}</h3>
+    <p class="text-sm text-neutral-500 dark:text-neutral-400">{{ 'coaster_search.no_results_hint'|trans }}</p>
+  </div>
+{% endif %}

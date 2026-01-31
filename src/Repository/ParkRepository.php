@@ -83,12 +83,21 @@ class ParkRepository extends ServiceEntityRepository
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('p')
-            ->select('p.id', 'p.name', 'p.slug', 'co.name as countryName')
+            ->select(
+                'p.id',
+                'p.name',
+                'p.slug',
+                'co.name as countryName',
+                'COUNT(c.id) as coasterCount'
+            )
             ->leftJoin('p.country', 'co')
+            ->leftJoin('p.coasters', 'c', 'WITH', 'c.enabled = true')
             ->where('p.name LIKE :query OR p.slug LIKE :slugQuery')
             ->setParameter('query', '%'.$query.'%')
             ->setParameter('slugQuery', '%'.str_replace(' ', '-', $query).'%')
-            ->orderBy('p.name', 'ASC')
+            ->groupBy('p.id')
+            ->orderBy('coasterCount', 'DESC')
+            ->addOrderBy('p.name', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
             ->enableResultCache(300) // Cache for 5 minutes

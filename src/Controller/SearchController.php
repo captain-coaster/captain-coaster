@@ -73,6 +73,12 @@ class SearchController extends AbstractController
     {
         $query = $request->query->get('query');
         $page = max(1, (int) $request->query->get('page', '1'));
+        $type = $request->query->get('type', 'all');
+
+        // Validate type filter
+        if (!\in_array($type, ['all', 'coaster', 'park', 'user'], true)) {
+            $type = 'all';
+        }
 
         // If no query or query too short, show empty search page
         if (empty($query) || \strlen($query) < 2) {
@@ -81,6 +87,8 @@ class SearchController extends AbstractController
                 'results' => null,
                 'pagination' => null,
                 'totalResults' => 0,
+                'countByType' => ['all' => 0, 'coaster' => 0, 'park' => 0, 'user' => 0],
+                'activeType' => $type,
             ]);
         }
 
@@ -88,23 +96,42 @@ class SearchController extends AbstractController
             // Get unified search results with pagination
             $searchResults = $searchService->searchAllWithPagination($query, $page, 20);
 
+            // Filter by type if specified
+            $filteredResults = $searchResults['results'];
+            if ('all' !== $type) {
+                $filteredResults = array_values(array_filter(
+                    $searchResults['results'],
+                    fn ($result) => $result['entity_type'] === $type
+                ));
+            }
+
             return $this->render('Search/index.html.twig', [
                 'query' => $query,
-                'results' => $searchResults['results'],
+                'results' => $filteredResults,
                 'pagination' => $searchResults['pagination'],
                 'totalResults' => $searchResults['totalResults'],
+                'countByType' => $searchResults['countByType'],
                 'currentPage' => $page,
                 'hasMore' => $searchResults['hasMore'],
+                'activeType' => $type,
             ]);
         } catch (\Exception $e) {
-            // Log error and show empty results
-            error_log('Search error: '.$e->getMessage());
+            // Log error with full details for debugging
+            error_log('Search error: '.$e->getMessage().' in '.$e->getFile().':'.$e->getLine());
+            error_log('Stack trace: '.$e->getTraceAsString());
+
+            // Re-throw in dev mode to see the actual error
+            if ('dev' === $this->getParameter('kernel.environment')) {
+                throw $e;
+            }
 
             return $this->render('Search/index.html.twig', [
                 'query' => $query,
                 'results' => [],
                 'pagination' => null,
                 'totalResults' => 0,
+                'countByType' => ['all' => 0, 'coaster' => 0, 'park' => 0, 'user' => 0],
+                'activeType' => $type,
                 'error' => 'Search temporarily unavailable',
             ]);
         }

@@ -1,10 +1,9 @@
-<div class="py-6 mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50">
-  <div class="container mx-auto px-4">
+<div class="py-6 mt-auto border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50 md:ml-(--sidebar-width)">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-      <span class="text-sm text-neutral-600 dark:text-neutral-400 flex items-center gap-1">
-        2017-{{ 'now'|date('Y') }}.
-        Crafted with {{ ux_icon('tabler:heart-filled', {'class': 'w-4 h-4 text-red-500 dark:text-red-400 inline-block', 'aria-hidden': 'true'}) }} by French coaster enthusiasts.
-      </span>
+      <p class="text-sm text-neutral-600 dark:text-neutral-400">
+        2017-{{ 'now'|date('Y') }}. Crafted with {{ ux_icon('tabler:heart-filled', {'class': 'w-4 h-4 text-red-500 dark:text-red-400 inline align-text-bottom', 'aria-hidden': 'true'}) }} by French coaster enthusiasts.
+      </p>
       <a href="{{ path('app_terms_conditions') }}" class="text-sm text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors duration-200">
         {{ 'policy.title'|trans([], 'policy') }}
       </a>

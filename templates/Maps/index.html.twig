@@ -29,14 +29,78 @@
 {% endblock %}
 
 {% block wide_body %}
-    <div id="map-container"
-         data-controller="map"
-         data-map-markers-value="{{ markers|json_encode }}"
-         data-map-park-id-value="{{ parkId|default('') }}"
-         class="map-container">
-        <div data-map-target="container" id="map" class="h-[94vh]"></div>
-    </div>
-{% endblock %}
+    <div class="relative h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]">
+        {# Map header overlay - mobile optimized #}
+        <div class="absolute top-0 left-0 right-0 z-10 p-3 md:p-4 pointer-events-none">
+            <div class="pointer-events-auto inline-flex items-center gap-2 px-3 py-2 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm rounded-xl shadow-lg">
+                <div class="w-8 h-8 rounded-full bg-linear-to-br from-cc-blue-500 to-cc-blue-600 flex items-center justify-center shrink-0">
+                    {{ ux_icon('tabler:map-pin', {'class': 'w-4 h-4 text-white', 'aria-hidden': 'true'}) }}
+                </div>
+                <div class="min-w-0">
+                    <h1 class="text-sm font-semibold text-neutral-900 dark:text-white truncate">
+                        {% if user is defined %}
+                            {{ 'users.map.title'|trans({'%name%': user.displayName}) }}
+                        {% else %}
+                            {{ 'map_index.title'|trans }}
+                        {% endif %}
+                    </h1>
+                    <p class="text-xs text-neutral-500 dark:text-neutral-400">
+                        {{ markers|length }} {{ 'map.parks_count'|trans }}
+                    </p>
+                </div>
+            </div>
+        </div>
 
-{% block javascripts %}
+        {# Map legend - bottom left on mobile, top right on desktop #}
+        <div class="absolute bottom-20 left-3 md:bottom-auto md:top-4 md:right-4 md:left-auto z-10">
+            <details class="bg-white/95 dark:bg-neutral-900/95 backdrop-blur-sm rounded-xl shadow-lg group">
+                <summary class="flex items-center gap-2 px-3 py-2 cursor-pointer list-none [&::-webkit-details-marker]:hidden text-sm font-medium text-neutral-700 dark:text-neutral-300">
+                    {{ ux_icon('tabler:info-circle', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+                    <span class="hidden md:inline">{{ 'map.legend.title'|trans }}</span>
+                    {{ ux_icon('tabler:chevron-down', {'class': 'w-4 h-4 transition-transform duration-200 group-open:rotate-180 ml-auto', 'aria-hidden': 'true'}) }}
+                </summary>
+                <div class="px-3 pb-3 pt-1 space-y-1.5 border-t border-neutral-200 dark:border-neutral-700 mt-2">
+                    <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span class="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center text-[10px] font-bold text-white">1</span>
+                        <span>1 {{ 'map.legend.coaster'|trans }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span class="w-4 h-4 rounded-full bg-amber-500 flex items-center justify-center text-[10px] font-bold text-white">5</span>
+                        <span>2-5 {{ 'map.legend.coasters'|trans }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span class="w-4 h-4 rounded-full bg-red-500 flex items-center justify-center text-[10px] font-bold text-white">10</span>
+                        <span>6-10 {{ 'map.legend.coasters'|trans }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span class="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-[10px] font-bold text-white">15</span>
+                        <span>11-15 {{ 'map.legend.coasters'|trans }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                        <span class="w-4 h-4 rounded-full bg-violet-500 flex items-center justify-center text-[10px] font-bold text-white">+</span>
+                        <span>15+ {{ 'map.legend.coasters'|trans }}</span>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        {# Map container #}
+        <div id="map-container"
+             data-controller="map"
+             data-map-markers-value="{{ markers|json_encode }}"
+             data-map-park-id-value="{{ parkId|default('') }}"
+             class="map-container h-full w-full">
+            <div data-map-target="container" id="map" class="h-full w-full"></div>
+        </div>
+
+        {# Mobile filter button - sticky at bottom #}
+        <div class="lg:hidden absolute bottom-4 right-4 z-20">
+            <button type="button"
+                    class="flex items-center gap-2 px-4 py-3 bg-cc-blue-600 hover:bg-cc-blue-700 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2"
+                    data-action="global#openFilterSidebar">
+                {{ ux_icon('tabler:adjustments-horizontal', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                <span>{{ 'filters.title'|trans }}</span>
+            </button>
+        </div>
+    </div>
 {% endblock %}

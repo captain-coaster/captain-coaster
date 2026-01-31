@@ -1,78 +1,144 @@
-{% extends 'layouts/base.html.twig' %}
+{% extends "layouts/base.html.twig" %}
 
 {% import "macros/_macros_helpers.html.twig" as helper %}
+{% import "macros/ui.html.twig" as ui %}
 
 {% set title = 'users.tops.title'|trans({'%name%': user.displayName}) %}
+{% set isOwnProfile = app.user and app.user.id == user.id %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-4">
-    <div class="p-6">
-      <div class="flex gap-3 flex-col md:flex-row items-center">
-        <div class="shrink-0 text-cc-blue-600 dark:text-cc-blue-400">
-          {{ ux_icon('tabler:clipboard', {'class': 'icon-xl'}) }}
-        </div>
-        <div class="flex-1 text-center md:text-left">
-          <h6 class="font-semibold mb-1">{{ 'list.infotitle'|trans({}, 'top') }}</h6>
-          <p class="text-neutral-600 dark:text-neutral-400 mb-0">{{ 'list.info'|trans({}, 'top') }}</p>
-        </div>
-        <div class="shrink-0">
-          <a href="{{ path('top_new') }}" class="inline-flex items-center justify-center px-4 py-2.5 text-base font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 transition-colors duration-200 px-6 py-3">
-            {{ ux_icon('tabler:plus', {'class': 'icon-sm mr-1'}) }}
-            {% if tops|length == 0 %}{{ 'list.create_first'|trans({}, 'top') }}{% else %}{{ 'list.create'|trans({}, 'top') }}{% endif %}
-          </a>
-        </div>
+  <div class="max-w-2xl mx-auto">
+    {# Header #}
+    <div class="flex items-center gap-3 mb-6">
+      {% if isOwnProfile %}
+        <a href="{{ path('profile') }}" 
+           class="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+          {{ ux_icon('tabler:arrow-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </a>
+      {% else %}
+        <a href="{{ path('user_show', {'slug': user.slug}) }}" class="shrink-0">
+          {{ helper.profilePicture(user, 'w-10 h-10 rounded-full object-cover') }}
+        </a>
+      {% endif %}
+      <div class="min-w-0 flex-1">
+        <h1 class="text-lg font-bold text-neutral-900 dark:text-white truncate">
+          {% if isOwnProfile %}
+            {{ 'profile.menu.tops'|trans }}
+          {% else %}
+            {{ user.displayName }}
+          {% endif %}
+        </h1>
+        <p class="text-xs text-neutral-500 dark:text-neutral-400">
+          {{ tops|length }} {{ 'user_profile.tops'|trans|lower }}
+        </p>
       </div>
+      {% if not isOwnProfile %}
+        <a href="{{ path('user_show', {'slug': user.slug}) }}" 
+           class="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+          {{ ux_icon('tabler:arrow-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </a>
+      {% endif %}
+      {% if isOwnProfile %}
+        <a href="{{ path('top_new') }}" 
+           class="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 transition-colors">
+          {{ ux_icon('tabler:plus', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+          <span class="hidden sm:inline">{{ 'list.create'|trans({}, 'top') }}</span>
+        </a>
+      {% endif %}
     </div>
-  </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-    {% for top in tops %}
-      <div class="lg:col-span-4 md:col-span-6">
-        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden h-full">
-          <div class="p-6">
-            <div class="flex gap-3 mb-3">
-              <div class="shrink-0">
-                {{ helper.profilePicture(top.user, 'rounded-full', 48) }}
+    {% if tops|length > 0 %}
+      <div class="space-y-3">
+        {% for top in tops %}
+          <article class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+            {# Top Header #}
+            <div class="flex items-center gap-3 p-4">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 {{ top.main ? 'bg-cc-warm-100 dark:bg-cc-warm-900/30' : 'bg-neutral-100 dark:bg-neutral-800' }}">
+                {% if top.main %}
+                  {{ ux_icon('tabler:trophy', {'class': 'w-5 h-5 text-cc-warm-600 dark:text-cc-warm-400', 'aria-hidden': 'true'}) }}
+                {% else %}
+                  {{ ux_icon('tabler:list-numbers', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400', 'aria-hidden': 'true'}) }}
+                {% endif %}
               </div>
-              <div class="flex-1">
-                <h6 class="font-semibold mb-0">
-                  {% if top.main %}{{ ux_icon('tabler:check', {'class': 'icon-xs text-green-600 dark:text-green-400 mr-1'}) }}{% endif %}
-                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-neutral-900 dark:text-white">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <a href="{{ path('top_show', {'id': top.id}) }}" 
+                     class="font-semibold text-sm text-neutral-900 dark:text-white truncate hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
                     {{ top.name }}
                   </a>
-                </h6>
+                  {% if top.main %}
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                      Main
+                    </span>
+                  {% endif %}
+                </div>
+                <div class="flex items-center gap-3 text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  <span>{{ top.topCoasters|length }} coasters</span>
+                  <span>{{ top.updatedAt|ago }}</span>
+                </div>
+              </div>
+              
+              {# Actions #}
+              <div class="flex items-center gap-1">
+                {% if is_granted('edit', top) %}
+                  <a href="{{ path('top_edit', {'id': top.id}) }}" 
+                     class="p-2 rounded-lg text-neutral-400 hover:text-cc-blue-600 hover:bg-cc-blue-50 dark:hover:bg-cc-blue-900/20 transition-colors"
+                     title="{{ 'update'|trans({}, 'top') }}">
+                    {{ ux_icon('tabler:edit', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+                  </a>
+                {% endif %}
+                <a href="{{ path('top_show', {'id': top.id}) }}" 
+                   class="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                  {{ ux_icon('tabler:chevron-right', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+                </a>
               </div>
             </div>
-            <ul class="list-feed mb-3">
-              {% for i in 0..2 %}
-                {% if top.topCoasters[i] is defined %}
-                  <li>
-                    {{ i + 1 }} -
-                    <a href="{{ path('show_coaster', {'id': top.topCoasters[i].coaster.id, 'slug': top.topCoasters[i].coaster.slug}) }}" class="coaster-link">
-                      {{ top.topCoasters[i].coaster.name }}
+
+            {# Top 3 Preview #}
+            {% if top.topCoasters|length > 0 %}
+              <div class="px-4 pb-4">
+                <div class="flex gap-2">
+                  {% for topCoaster in top.topCoasters|slice(0,3) %}
+                    <a href="{{ path('show_coaster', {'id': topCoaster.coaster.id, 'slug': topCoaster.coaster.slug}) }}" 
+                       class="flex-1 min-w-0 p-2.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/50 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="w-5 h-5 rounded-full text-[10px] font-bold flex items-center justify-center
+                          {% if loop.index == 1 %}bg-cc-warm-100 dark:bg-cc-warm-900/30 text-cc-warm-600 dark:text-cc-warm-400
+                          {% elseif loop.index == 2 %}bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400
+                          {% else %}bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400{% endif %}">
+                          {{ topCoaster.position }}
+                        </span>
+                      </div>
+                      <p class="text-xs text-neutral-700 dark:text-neutral-300 truncate">
+                        {{ topCoaster.coaster.name }}
+                      </p>
+                      <p class="text-[10px] text-neutral-400 truncate">
+                        {{ topCoaster.coaster.park.name }}
+                      </p>
                     </a>
-                  </li>
-                {% else %}
-                  <li>&nbsp;</li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-            <div class="mb-3">
-              <a href="{{ path('top_show', {'id': top.id}) }}" class="text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300">
-                {{ ux_icon('tabler:arrow-right', {'class': 'icon-sm mr-1'}) }} {{ 'list.more'|trans({}, 'top') }}
-              </a>
-            </div>
-            <ul class="inline-flex text-neutral-600 dark:text-neutral-400 text-sm mb-0">
-              <li class="inline-flex">{{ ux_icon('tabler:stack-3', {'class': 'icon-xs mr-1'}) }} {{ top.topCoasters|length }}</li>
-              <li class="inline-flex">
-                {{ ux_icon('tabler:clock', {'class': 'icon-xs mr-1'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
-              </li>
-            </ul>
-          </div>
-        </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </article>
+        {% endfor %}
       </div>
-    {% endfor %}
+    {% else %}
+      <div class="text-center py-12">
+        {% include 'components/empty_state.html.twig' with {
+          icon: 'tabler:trophy',
+          title: 'list.infotitle'|trans({}, 'top'),
+          description: 'list.info'|trans({}, 'top')
+        } %}
+        {% if isOwnProfile %}
+          <a href="{{ path('top_new') }}" 
+             class="inline-flex items-center gap-2 mt-4 px-4 py-2.5 text-sm font-medium rounded-xl bg-cc-blue-600 text-white hover:bg-cc-blue-700 transition-colors">
+            {{ ux_icon('tabler:plus', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'list.create'|trans({}, 'top') }}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
-

@@ -32,17 +32,35 @@ class RankingController extends AbstractController
     /**
      * Show ranking of best coasters.
      *
+     * @param array<string, mixed> $filters
+     *
      * @throws InvalidArgumentException
      */
     #[Route(path: '/', name: 'ranking_index', methods: ['GET'])]
-    public function indexAction(): Response
+    public function indexAction(#[MapQueryParameter] array $filters = [], #[MapQueryParameter] int $page = 1): Response
     {
+        $validatedFilters = $this->filterService->validateAndAuthorize(
+            $filters,
+            'ranking',
+            $this->getUser()
+        );
+
+        $pagination = $this->paginator->paginate(
+            $this->coasterRepository->findForRanking($validatedFilters),
+            $page,
+            self::COASTERS_PER_PAGE
+        );
+
         return $this->render(
             'Ranking/index.html.twig',
             [
                 'ranking' => $this->rankingRepository->findCurrent(),
                 'previousRanking' => $this->rankingRepository->findPrevious(),
                 'filtersForm' => $this->filterService->getFilterData(),
+                'filters' => $filters,
+                'coasters' => $pagination,
+                'filtered' => [] !== array_diff_key($validatedFilters, ['user' => null]),
+                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             ]
         );
     }

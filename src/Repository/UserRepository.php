@@ -111,7 +111,13 @@ class UserRepository extends ServiceEntityRepository
     {
         /** @var array<int, array<string, mixed>> $result */
         $result = $this->createQueryBuilder('u')
-            ->select('u.id', 'u.displayName as name', 'u.slug', 'COUNT(r.id) as totalRatings')
+            ->select(
+                'u.id',
+                'u.displayName as name',
+                'u.slug',
+                'u.profilePicture',
+                'COUNT(r.id) as totalRatings'
+            )
             ->leftJoin('u.ratings', 'r')
             ->where('u.enabled = 1')
             ->andWhere('u.displayName LIKE :query OR u.slug LIKE :slugQuery')

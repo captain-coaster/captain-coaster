@@ -6,88 +6,192 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-    <div class="md:col-span-3">
-      <!-- infos user -->
-      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-3">
-        <div class="p-6 text-center">
-          <div class="d-inline-block mb-2">
-            {{ helper.profilePicture(user, 'rounded-full img-lg') }}
+  <div class="max-w-2xl mx-auto">
+    {# Profile Header #}
+    <div class="text-center mb-8">
+      {# Avatar #}
+      <div class="relative inline-block mb-4">
+        {{ helper.profilePicture(user, 'w-28 h-28 rounded-full object-cover ring-4 ring-white dark:ring-neutral-800 shadow-xl') }}
+        {% if user.homePark %}
+          <div class="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-cc-blue-500 flex items-center justify-center ring-2 ring-white dark:ring-neutral-900">
+            {{ ux_icon('tabler:home', {'class': 'w-4 h-4 text-white', 'aria-hidden': 'true'}) }}
           </div>
-          <h6 class="font-semibold mb-0">
-            {{ user.displayName }}
-          </h6>
-        </div>
-
-        <ul class="list-group list-group-flush">
-          <a href="{{ path('user_ratings', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
-            <span class="flex items-center gap-2">
-              {{ ux_icon('tabler:star', {'class': 'icon-sm'}) }}
-              {{ 'user_profile.ratings'|trans }}
-            </span>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ user.ratings|length }}</span>
-          </a>
-          <a href="{{ path('user_reviews', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex items-center gap-2">
-            {{ ux_icon('tabler:speakerphone', {'class': 'icon-sm'}) }}
-            {{ 'user_profile.reviews'|trans }}
-          </a>
-          {% if user.mainTop.id %}
-            <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
-              <span class="flex items-center gap-2">
-                {{ ux_icon('tabler:trophy', {'class': 'icon-sm'}) }}
-                {{ 'user_profile.main_top'|trans }}
-              </span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ user.mainTop.topCoasters|length }}</span>
-            </a>
-          {% endif %}
-          {% if user.tops|length > 1 %}
-            <a href="{{ path('user_tops', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
-              <span class="flex items-center gap-2">
-                {{ ux_icon('tabler:trophy', {'class': 'icon-sm'}) }}
-                {{ 'user_profile.tops'|trans }}
-              </span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ user.tops|length }}</span>
-            </a>
-          {% endif %}
-          {% if images_counter > 0 %}
-            <a href="{{ path('user_pictures', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex justify-content-between items-center">
-              <span class="flex items-center gap-2">
-                {{ ux_icon('tabler:camera', {'class': 'icon-sm'}) }}
-                {{ 'user_profile.pictures'|trans }}
-              </span>
-              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400">{{ images_counter }}</span>
-            </a>
-          {% endif %}
-          <a href="{{ path('map_user', {'id': user.id}) }}" class="p-4 bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 list-group-item-action flex items-center gap-2">
-            {{ ux_icon('tabler:map-pin', {'class': 'icon-sm'}) }}
-            {{ 'user_profile.map'|trans }}
-          </a>
-        </ul>
+        {% endif %}
       </div>
-      <!-- /infos user -->
-    </div>
-    <div class="md:col-span-9">
-      <!-- stats -->
-      {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
       
-      <!-- badges -->
-      <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-          <h6 class="text-lg font-semibold text-neutral-900 dark:text-white mb-0">{{ 'profile.badge'|trans }}</h6>
+      {# Name #}
+      <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-1">
+        {{ user.displayName }}
+      </h1>
+      
+      {# Meta info #}
+      <div class="flex flex-wrap items-center justify-center gap-3 text-sm text-neutral-500 dark:text-neutral-400">
+        <span class="inline-flex items-center gap-1.5">
+          {{ ux_icon('tabler:calendar', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+          {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.createdAt) }}
+        </span>
+        {% if user.homePark %}
+          <span class="inline-flex items-center gap-1.5">
+            {{ ux_icon('tabler:map-pin', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ user.homePark.name }}
+          </span>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Stats Overview - Compact horizontal scroll on mobile #}
+    {% if stats|length > 0 %}
+      <div class="flex gap-2 overflow-x-auto pb-2 mb-6 -mx-4 px-4 scrollbar-hide">
+        <div class="flex-none w-24 bg-white dark:bg-neutral-900 rounded-xl p-3 border border-neutral-100 dark:border-neutral-800 text-center">
+          <div class="text-xl font-bold text-neutral-900 dark:text-white">{{ stats.nb_coasters }}</div>
+          <div class="text-[10px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">{{ 'profile.stats.coasters'|trans }}</div>
         </div>
-        <div class="p-6">
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-            <div class="md:col-span-3 col-span-6 text-center mb-4">
-              <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}" class="w-full h-auto" alt="Welcome badge"/>
+        <div class="flex-none w-24 bg-white dark:bg-neutral-900 rounded-xl p-3 border border-neutral-100 dark:border-neutral-800 text-center">
+          <div class="text-xl font-bold text-neutral-900 dark:text-white">{{ stats.nb_park }}</div>
+          <div class="text-[10px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">{{ 'profile.stats.parks'|trans }}</div>
+        </div>
+        <div class="flex-none w-24 bg-white dark:bg-neutral-900 rounded-xl p-3 border border-neutral-100 dark:border-neutral-800 text-center">
+          <div class="text-xl font-bold text-neutral-900 dark:text-white">{{ stats.nb_country }}</div>
+          <div class="text-[10px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">{{ 'profile.stats.countries'|trans }}</div>
+        </div>
+        <div class="flex-none w-24 bg-white dark:bg-neutral-900 rounded-xl p-3 border border-neutral-100 dark:border-neutral-800 text-center">
+          <div class="text-xl font-bold text-cc-warm-600 dark:text-cc-warm-400">{{ stats.top_100 }}<span class="text-xs font-normal text-neutral-400">/100</span></div>
+          <div class="text-[10px] text-neutral-500 dark:text-neutral-400 uppercase tracking-wide">TOP 100</div>
+        </div>
+      </div>
+    {% endif %}
+
+    {# Quick Navigation Grid #}
+    <div class="grid grid-cols-2 gap-3 mb-6">
+      <a href="{{ path('user_ratings', {'id': user.id}) }}" 
+         class="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-cc-blue-300 dark:hover:border-cc-blue-700 transition-colors group">
+        <div class="w-10 h-10 rounded-full bg-cc-blue-100 dark:bg-cc-blue-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+          {{ ux_icon('tabler:star', {'class': 'w-5 h-5 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+        </div>
+        <div class="min-w-0">
+          <div class="text-lg font-bold text-neutral-900 dark:text-white">{{ user.ratings|length }}</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'user_profile.ratings'|trans }}</div>
+        </div>
+      </a>
+
+      <a href="{{ path('user_reviews', {'id': user.id}) }}" 
+         class="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-green-300 dark:hover:border-green-700 transition-colors group">
+        <div class="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+          {{ ux_icon('tabler:message-circle', {'class': 'w-5 h-5 text-green-600 dark:text-green-400', 'aria-hidden': 'true'}) }}
+        </div>
+        <div class="min-w-0">
+          <div class="text-lg font-bold text-neutral-900 dark:text-white">{{ 'review.title'|trans }}</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'user_profile.reviews'|trans }}</div>
+        </div>
+      </a>
+
+      {% if user.mainTop.id %}
+        <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" 
+           class="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-cc-warm-300 dark:hover:border-cc-warm-700 transition-colors group">
+          <div class="w-10 h-10 rounded-full bg-cc-warm-100 dark:bg-cc-warm-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            {{ ux_icon('tabler:trophy', {'class': 'w-5 h-5 text-cc-warm-600 dark:text-cc-warm-400', 'aria-hidden': 'true'}) }}
+          </div>
+          <div class="min-w-0">
+            <div class="text-lg font-bold text-neutral-900 dark:text-white">{{ user.mainTop.topCoasters|length }}</div>
+            <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'user_profile.main_top'|trans }}</div>
+          </div>
+        </a>
+      {% endif %}
+
+      {% if user.tops|length > 1 %}
+        <a href="{{ path('user_tops', {'id': user.id}) }}" 
+           class="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-purple-300 dark:hover:border-purple-700 transition-colors group">
+          <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            {{ ux_icon('tabler:list-numbers', {'class': 'w-5 h-5 text-purple-600 dark:text-purple-400', 'aria-hidden': 'true'}) }}
+          </div>
+          <div class="min-w-0">
+            <div class="text-lg font-bold text-neutral-900 dark:text-white">{{ user.tops|length }}</div>
+            <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'user_profile.tops'|trans }}</div>
+          </div>
+        </a>
+      {% endif %}
+
+      {% if images_counter > 0 %}
+        <a href="{{ path('user_pictures', {'id': user.id}) }}" 
+           class="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-pink-300 dark:hover:border-pink-700 transition-colors group">
+          <div class="w-10 h-10 rounded-full bg-pink-100 dark:bg-pink-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+            {{ ux_icon('tabler:camera', {'class': 'w-5 h-5 text-pink-600 dark:text-pink-400', 'aria-hidden': 'true'}) }}
+          </div>
+          <div class="min-w-0">
+            <div class="text-lg font-bold text-neutral-900 dark:text-white">{{ images_counter }}</div>
+            <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'user_profile.pictures'|trans }}</div>
+          </div>
+        </a>
+      {% endif %}
+
+      <a href="{{ path('map_user', {'id': user.id}) }}" 
+         class="flex items-center gap-3 p-4 bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 hover:border-cyan-300 dark:hover:border-cyan-700 transition-colors group">
+        <div class="w-10 h-10 rounded-full bg-cyan-100 dark:bg-cyan-900/30 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+          {{ ux_icon('tabler:map', {'class': 'w-5 h-5 text-cyan-600 dark:text-cyan-400', 'aria-hidden': 'true'}) }}
+        </div>
+        <div class="min-w-0">
+          <div class="text-lg font-bold text-neutral-900 dark:text-white">{{ 'map_index.title'|trans }}</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400">{{ 'user_profile.map'|trans }}</div>
+        </div>
+      </a>
+    </div>
+
+    {# Insights Section #}
+    {% if stats|length > 0 %}
+      <div class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-6">
+        <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+          <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+            {{ ux_icon('tabler:sparkles', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+            {{ 'profile.stats.title'|trans }}
+          </h2>
+        </div>
+        <div class="divide-y divide-neutral-100 dark:divide-neutral-800">
+          <div class="flex items-center justify-between px-4 py-3">
+            <span class="text-sm text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.top_country'|trans }}</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-white">{{ stats.country.name|trans([], 'database') }}</span>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3">
+            <span class="text-sm text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.top_manufacturer'|trans }}</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-white">{{ stats.manufacturer.name }}</span>
+          </div>
+          <div class="flex items-center justify-between px-4 py-3">
+            <span class="text-sm text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.favorite_manufacturer'|trans }}</span>
+            <span class="text-sm font-medium text-neutral-900 dark:text-white">{{ stats.top_rated_manufacturer.name }}</span>
+          </div>
+          {% if stats.top_100_operating > 0 %}
+            <div class="flex items-center justify-between px-4 py-3">
+              <span class="text-sm text-neutral-600 dark:text-neutral-400">{{ 'profile.stats.operating_top_100'|trans({'coasters': stats.top_100_operating}) }}</span>
             </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {# Badges Section #}
+    {% if user.badges|length > 0 or true %}
+      <div class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden">
+        <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+          <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+            {{ ux_icon('tabler:award', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+            {{ 'profile.badge'|trans }}
+          </h2>
+        </div>
+        <div class="p-4">
+          <div class="flex flex-wrap gap-3 justify-center">
+            {# Welcome badge #}
+            <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}" 
+                 class="w-16 h-auto" 
+                 alt="Welcome badge"
+                 loading="lazy">
             {% for badge in user.badges %}
-              <div class="md:col-span-3 col-span-6 text-center mb-4">
-                <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}" class="w-full h-auto" alt="{{ badge.name }}"/>
-              </div>
+              <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}" 
+                   class="w-16 h-auto" 
+                   alt="{{ badge.name }}"
+                   loading="lazy">
             {% endfor %}
           </div>
         </div>
       </div>
-    </div>
+    {% endif %}
   </div>
 {% endblock %}

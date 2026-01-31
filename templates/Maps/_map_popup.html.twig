@@ -1,23 +1,33 @@
 {% if coasters is not empty %}
-<div class="popup-content">
-    <h4 class="popup-park-name">
-        <a href="{{ path('park_show', {'id': coasters[0].park.id, 'slug': coasters[0].park.slug}) }}">
-            {{ coasters[0].park.name }}
-        </a>
-    </h4>
-    <div class="popup-coasters">
+<div class="map-popup">
+    <a href="{{ path('park_show', {'id': coasters[0].park.id, 'slug': coasters[0].park.slug}) }}" 
+       class="map-popup-header">
+        <span class="map-popup-title">{{ coasters[0].park.name }}</span>
+        {{ ux_icon('tabler:external-link', {'class': 'map-popup-link-icon', 'aria-hidden': 'true'}) }}
+    </a>
+    
+    <div class="map-popup-list">
         {% for coaster in coasters %}
-            <div class="popup-coaster">
-                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" target="_blank">
-                    <span class="status-mark bg-{{ coaster.status.type }}"></span>
-                    {{ coaster.name }}
-                </a>
-            </div>
+            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" 
+               target="_blank"
+               class="map-popup-item">
+                <span class="map-popup-status map-popup-status--{{ coaster.status.type }}"></span>
+                <span class="map-popup-name">{{ coaster.name }}</span>
+                {% if coaster.score %}
+                    <span class="map-popup-score">{{ coaster.score|number_format(1) }}</span>
+                {% endif %}
+            </a>
         {% endfor %}
     </div>
+    
+    {% if coasters|length > 1 %}
+        <div class="map-popup-footer">
+            {{ coasters|length }} {{ 'map.popup.coasters'|trans }}
+        </div>
+    {% endif %}
 </div>
 {% else %}
-<div class="popup-content">
-    <p>No coasters found for this park.</p>
+<div class="map-popup">
+    <p class="map-popup-empty">{{ 'map.popup.no_coasters'|trans }}</p>
 </div>
 {% endif %}

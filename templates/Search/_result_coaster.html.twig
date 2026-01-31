@@ -1,0 +1,71 @@
+{# Coaster search result card #}
+<a href="{{ path('redirect_coaster_show', {'slug': result.slug}) }}"
+   class="group flex gap-3 md:gap-4 p-3 md:p-4 bg-white dark:bg-neutral-900 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+    
+    {# Image #}
+    <div class="shrink-0 w-20 h-14 md:w-28 md:h-20 rounded-lg overflow-hidden bg-neutral-100 dark:bg-neutral-800">
+        {% if result.image %}
+            <img src="{{ pictures_cdn }}/280x210/{{ result.image }}" 
+                 alt="{{ result.name }}"
+                 class="w-full h-full object-cover"
+                 loading="lazy">
+        {% else %}
+            <div class="w-full h-full flex items-center justify-center">
+                {{ ux_icon('tabler:rollercoaster', {'class': 'w-8 h-8 text-neutral-300 dark:text-neutral-600', 'aria-hidden': 'true'}) }}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Content #}
+    <div class="flex-1 min-w-0">
+        <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0">
+                <h3 class="font-semibold text-neutral-900 dark:text-white truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+                    {{ result.name }}
+                </h3>
+                <p class="text-sm text-neutral-500 dark:text-neutral-400 truncate">
+                    {{ result.subtitle }}
+                    {% if result.metadata.country %}
+                        <span class="text-neutral-300 dark:text-neutral-600 mx-1">•</span>
+                        {{ result.metadata.country }}
+                    {% endif %}
+                </p>
+            </div>
+            
+            {# Rank badge #}
+            {% if result.metadata.rank %}
+                <div class="shrink-0 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs font-medium">
+                    {{ ux_icon('tabler:trophy', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+                    <span>#{{ result.metadata.rank }}</span>
+                </div>
+            {% endif %}
+        </div>
+
+        {# Stats row #}
+        <div class="flex items-center gap-3 mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+            {% if result.metadata.score %}
+                <span class="inline-flex items-center gap-1">
+                    {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-amber-500', 'aria-hidden': 'true'}) }}
+                    {{ result.metadata.score|number_format(1) }}
+                </span>
+            {% endif %}
+            {% if result.metadata.totalRatings > 0 %}
+                <span class="inline-flex items-center gap-1">
+                    {{ ux_icon('tabler:users', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+                    {{ result.metadata.totalRatings }}
+                </span>
+            {% endif %}
+            {% if result.metadata.status and result.metadata.status != 'operating' %}
+                <span class="inline-flex items-center gap-1 text-neutral-400 dark:text-neutral-500">
+                    {{ ux_icon('tabler:clock', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+                    {{ ('status.' ~ result.metadata.status)|trans({}, 'database') }}
+                </span>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Arrow #}
+    <div class="hidden md:flex items-center shrink-0">
+        {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-300 dark:text-neutral-600 group-hover:text-cc-blue-500 transition-colors', 'aria-hidden': 'true'}) }}
+    </div>
+</a>

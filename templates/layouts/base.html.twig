@@ -29,7 +29,7 @@
   {{ vite_entry_link_tags('app') }}
   {% block stylesheets %}{% endblock %}
 </head>
-<body class="bg-neutral-50 dark:bg-neutral-900 font-sans antialiased" data-controller="keyboard-shortcuts">
+<body class="bg-neutral-50 dark:bg-neutral-900 font-sans antialiased [--sidebar-width:16rem]" data-controller="keyboard-shortcuts global">
   <!-- Skip to main content link for accessibility -->
   <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-cc-blue-500 text-white px-4 py-2 rounded-lg z-50">
     {{ 'accessibility.skip_to_main'|trans({}, 'navigation') }}
@@ -50,7 +50,7 @@
       </aside>
 
       <!-- Main content area -->
-      <main id="main-content" class="flex-1 md:ml-64 pt-16" role="main" aria-label="{{ 'main.content.label'|trans({}, 'navigation') }}">
+      <main id="main-content" class="flex-1 md:ml-(--sidebar-width) pt-16 min-w-0" role="main" aria-label="{{ 'main.content.label'|trans({}, 'navigation') }}">
         {% block wide_body %}
           <!-- Content container -->
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

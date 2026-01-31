@@ -93,15 +93,23 @@ coaster:
         kiddie: Kiddie
         indoor: Indoor
         formerNames: Nombres anteriores
+        features: Características
     parkcoaster: 'También en {name}'
     video:
         title: POV Onride
     photos:
         title: Fotos
+        page_title: 'Fotos de {name}'
         empty: '¡Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
         button: Subir una foto
         all: Ver todas las fotos
         loading: Carga de fotos
+    reviews:
+        featured: 'Lo que dicen los riders'
+        see_all: 'Ver las {count} reseñas'
+        page_title: 'Reseñas de {name}'
+        empty: 'Aún no hay reseñas para esta montaña rusa.'
+        be_first: '¡Sé el primero en opinar!'
     location: Localización
 
 image_upload:
@@ -125,12 +133,24 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { montaña rusa abierta } other { montañas rusas abierta }}'
     kiddies: '{ count, plural, one { montaña rusa infantil } other { montañas rusas infantiles }}'
+    operating: 'En funcionamiento'
+    total: 'Total'
+    ranked: 'Clasificadas'
+    ratings: 'Valoraciones'
+    best_ranked: 'Mejor montaña rusa clasificada'
+    view_map: 'Ver en el mapa'
+    login_to_rate: 'Inicia sesión para valorar'
+    nearby: 'Parques cercanos'
+    no_coasters: 'Sin montañas rusas'
+    no_coasters_desc: 'Este parque aún no tiene montañas rusas listadas.'
 
 coaster_ranking:
     title: Clasificación mundial de montañas rusas
     description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
     duel_number: '{ count, plural, one { # duelo } other { # duelos }}'
     no_results: '¡no se han encontrado montañas rusas!'
+    new: nuevo
+    stats: 'Estadísticas'
     info:
         title: 'Última actualización: {rankingMonth}'
         next: 'Próxima actualización {date}'
@@ -148,6 +168,16 @@ map_index:
     title: 'Mapa de montañas rusas'
     description: 'Descubre dónde están las montañas rusas más increíbles de los alrededores, los éxitos del próximo año o el B&M que aún no has montado con este mapa interactivo.'
     results: Resultados
+
+map:
+    parks_count: 'parques'
+    legend:
+        title: 'Leyenda'
+        coaster: 'montaña rusa'
+        coasters: 'montañas rusas'
+    popup:
+        coasters: 'montañas rusas'
+        no_coasters: 'No se encontraron montañas rusas para este parque.'
 
 filters:
     title: Filtros
@@ -305,6 +335,8 @@ review:
     report_success: Gracias por tu reporte. Nuestro equipo lo revisará en breve.
     report_error: Se produjo un error al enviar tu reporte.
     remove_upvote: Quitar voto
+    back: 'Volver a la montaña rusa'
+    placeholder: 'Comparte tu experiencia en esta montaña rusa...'
     form:
         title: 'Reseña sobre {name}'
 
@@ -387,6 +419,7 @@ register:
     subtitle: 'Por favor, complete todos los campos a continuación'
     link_sent: '¡Cuenta creada! Por favor, revise su correo electrónico ({email}) y haga clic en el enlace para activar su cuenta.'
     rate_limit_exceeded: 'Demasiados intentos de registro. Por favor, inténtalo de nuevo más tarde.'
+    already_have_account: '¿Ya tienes una cuenta?'
     form:
         email: Correo electrónico
         first_name: Nombre
@@ -425,6 +458,16 @@ notif:
         gotnotif: 'Acabas de recibir una nueva notificación en Captain Coaster:'
         view: 'Ver esto en <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Para dejar de recibirlo, cambie sus <a href="{link_path}">preferencias de notificación</a>.'
+
+coaster_search:
+    title: 'Buscar montañas rusas'
+    description: 'Encuentra montañas rusas por nombre, ubicación, fabricante y más'
+    subtitle: 'Usa los filtros para encontrar tu próximo viaje'
+    num_found: '{num} montañas rusas encontradas'
+    no_results: 'No se encontraron montañas rusas'
+    no_results_hint: 'Intenta ajustar tus filtros'
+    empty_title: 'Comienza tu búsqueda'
+    empty_description: 'Usa los filtros para descubrir montañas rusas por ubicación, fabricante, tipo y más'
 
 nearby:
     title: Busca una montaña rusa
@@ -471,9 +514,28 @@ banner:
 search_index:
     title: Buscar
     more: Ver todos los resultados
-    noResult: No hay resultados
+    noResult: No se encontraron resultados
     noTerm: No hay término de búsqueda
     short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
+    results_for: 'Resultados para "{query}"'
+    try_different: Prueba con otro término de búsqueda
+    showing_results: 'Mostrando {count} de {total} resultados'
+    filter:
+        all: Todo
+        coasters: Montañas rusas
+        parks: Parques
+        users: Usuarios
+    coaster_count: >-
+        {count, plural,
+            =1 {1 montaña rusa}
+            other {# montañas rusas}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {Sin valoraciones}
+            =1 {1 valoración}
+            other {# valoraciones}
+        }
     coasters_found: >-
         {num, plural,
             =0 {No se han encontrado montañas rusas}

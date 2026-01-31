@@ -1,21 +1,69 @@
 {% extends "layouts/base.html.twig" %}
 
+{% import "macros/_macros_helpers.html.twig" as helper %}
+
 {% set title = 'user_list.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    {# info alert #}
-    <div class="alert alert-info alert-dismissible fade show flex items-start gap-2" role="alert">
-        {{ ux_icon('tabler:info-circle', {'class': 'icon-sm shrink-0 mt-1'}) }}
-        <div>
-            <h6 class="alert-heading font-semibold mb-1">{{ 'user_list.info.title'|trans }}</h6>
-            <p class="mb-0">{{ 'user_list.info.text'|trans }}</p>
-        </div>
-        <button type="button" class="p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800" onclick="this.parentElement.remove()" aria-label="Close">
-            {{ ux_icon('tabler:x', {'class': 'w-4 h-4'}) }}
-        </button>
+  {# Hero Section #}
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-1">
+      {{ ux_icon('tabler:users', {'class': 'w-7 h-7 inline-block text-green-500 mr-2', 'aria-hidden': 'true'}) }}
+      {{ 'user_list.title'|trans }}
+    </h1>
+    <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+      {{ 'user_list.info.text'|trans }}
+    </p>
+  </div>
+
+  {# Users Grid #}
+  {% if users|length > 0 %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {% for user in users %}
+        <article class="group bg-white dark:bg-neutral-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-neutral-100 dark:border-neutral-800">
+          <a href="{{ path('user_show', {'slug': user.0.slug}) }}" class="block p-4">
+            <div class="flex items-center gap-4">
+              {# Profile Picture #}
+              <div class="relative shrink-0">
+                {{ helper.profilePicture(user.0, 'w-14 h-14 rounded-full object-cover ring-2 ring-white dark:ring-neutral-800 group-hover:ring-cc-blue-200 dark:group-hover:ring-cc-blue-800 transition-all duration-300') }}
+                {# Rating count badge #}
+                <span class="absolute -bottom-1 -right-1 inline-flex items-center justify-center min-w-6 h-6 px-1.5 text-xs font-bold rounded-full bg-cc-blue-600 text-white ring-2 ring-white dark:ring-neutral-900">
+                  {{ user.total_ratings }}
+                </span>
+              </div>
+
+              {# User Info #}
+              <div class="flex-1 min-w-0">
+                <h2 class="font-semibold text-neutral-900 dark:text-white truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+                  {{ user.0.displayName }}
+                </h2>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+                  {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
+                </p>
+                <p class="text-sm text-cc-blue-600 dark:text-cc-blue-400 font-medium mt-1">
+                  {{ 'user_list.rating'|trans({'count': user.total_ratings}) }}
+                </p>
+              </div>
+
+              {# Arrow indicator #}
+              <div class="shrink-0 text-neutral-300 dark:text-neutral-600 group-hover:text-cc-blue-500 transition-colors">
+                {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </div>
+            </div>
+          </a>
+        </article>
+      {% endfor %}
     </div>
-    {# /info alert #}
-    {% include 'User/_list_users.html.twig' with {'users': users, 'border': true} %}
-    {{ knp_pagination_render(users) }}
+
+    <div class="mt-6">
+      {{ knp_pagination_render(users) }}
+    </div>
+  {% else %}
+    {% include 'components/empty_state.html.twig' with {
+      icon: 'tabler:users-group',
+      title: 'user_list.title'|trans,
+      description: 'user_list.info.text'|trans
+    } %}
+  {% endif %}
 {% endblock %}

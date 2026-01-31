@@ -1,0 +1,80 @@
+{% extends "layouts/base.html.twig" %}
+
+{% import "macros/_macros_helpers.html.twig" as helper %}
+{% import "macros/ui.html.twig" as ui %}
+
+{% set title = 'coaster.reviews.page_title'|trans({'%name%': coaster.name}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="mb-6">
+        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+           class="inline-flex items-center text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors mb-4">
+            {{ ux_icon('tabler:arrow-left', {'class': 'w-4 h-4 mr-1', 'aria-hidden': 'true'}) }}
+            {{ coaster.name }}
+        </a>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">
+                {{ 'review.title'|trans }}
+                <span class="text-neutral-500 dark:text-neutral-400 font-normal">({{ reviews.getTotalItemCount() }})</span>
+            </h1>
+            <div class="flex items-center gap-3">
+                {% if reviews.getTotalItemCount() > 1 %}
+                    <form class="inline-block">
+                        <input type="hidden" name="page" value="{{ reviews.page|default(1) }}">
+                        <select name="filters[sort]"
+                                onchange="this.form.submit()"
+                                class="block w-full rounded-lg border-0 py-1.5 pl-3 pr-8 text-sm text-neutral-900 dark:text-white ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors">
+                            <option value="" {% if filters.sort is not defined or filters.sort == '' %}selected{% endif %}>
+                                {{ 'filters.sorts.default'|trans }}
+                            </option>
+                            <option value="updatedAt|asc" {% if filters.sort is defined and filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                                {{ 'filters.sorts.reviews.updatedAt.asc'|trans }}
+                            </option>
+                            <option value="updatedAt|desc" {% if filters.sort is defined and filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                                {{ 'filters.sorts.reviews.updatedAt.desc'|trans }}
+                            </option>
+                            <option value="value|desc" {% if filters.sort is defined and filters.sort == 'value|desc' %}selected{% endif %}>
+                                {{ 'filters.sorts.reviews.value.desc'|trans }}
+                            </option>
+                            <option value="value|asc" {% if filters.sort is defined and filters.sort == 'value|asc' %}selected{% endif %}>
+                                {{ 'filters.sorts.reviews.value.asc'|trans }}
+                            </option>
+                        </select>
+                    </form>
+                {% endif %}
+                {% if coaster.isRateable %}
+                    <a href="{{ path('review_form', {'id': coaster.id}) }}"
+                       class="inline-flex items-center px-4 py-2 bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium rounded-full transition-colors">
+                        {{ ux_icon('tabler:circle-plus', {'class': 'w-4 h-4 mr-1.5', 'aria-hidden': 'true'}) }}
+                        {{ 'review.send'|trans }}
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if reviews.getTotalItemCount() > 0 %}
+        <div class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
+            <ul class="divide-y divide-neutral-100 dark:divide-neutral-800">
+                {% for review in reviews %}
+                    <li class="p-6">
+                        {% include 'Review/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if reviews.getTotalItemCount() > 25 %}
+                <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-t border-neutral-100 dark:border-neutral-700">
+                    {{ knp_pagination_render(reviews) }}
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html.twig' with {
+            icon: 'tabler:messages',
+            title: 'review_list.no_review'|trans,
+            action_url: coaster.isRateable ? path('review_form', {'id': coaster.id}) : null,
+            action_label: coaster.isRateable ? 'review.send'|trans : null
+        } %}
+    {% endif %}
+{% endblock %}

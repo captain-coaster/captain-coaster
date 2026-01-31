@@ -93,15 +93,23 @@ coaster:
         kiddie: Kiddie
         indoor: Indoor
         formerNames: Anciens noms
+        features: Caractéristiques
     parkcoaster: 'Coasters de {name}'
     video:
         title: Vidéo Onride
     photos:
         title: Photos
+        page_title: 'Photos de {name}'
         empty: "Oups, nous n'avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes !"
         button: Envoyer une photo
         all: Voir toutes les photos
         loading: Chargement des photos...
+    reviews:
+        featured: 'Ce que disent les riders'
+        see_all: 'Voir les {count} avis'
+        page_title: 'Avis sur {name}'
+        empty: "Pas encore d'avis pour ce coaster."
+        be_first: 'Sois le premier à donner ton avis !'
     location: Localisation
 
 image_upload:
@@ -125,12 +133,24 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { coaster ouvert } other { coasters ouverts }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    operating: 'En service'
+    total: 'Total'
+    ranked: 'Classés'
+    ratings: 'Notes'
+    best_ranked: 'Meilleur coaster classé'
+    view_map: 'Voir sur la carte'
+    login_to_rate: 'Connectez-vous pour noter'
+    nearby: 'Parcs à proximité'
+    no_coasters: 'Aucun coaster'
+    no_coasters_desc: "Ce parc n'a pas encore de coasters répertoriés."
 
 coaster_ranking:
     title: Classement Mondial des Roller Coasters
     description: 'Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par 3000 utilisateurs du monde entier.'
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: Pas de coaster
+    new: nouveau
+    stats: 'Statistiques'
     info:
         title: 'Mis à jour : {rankingMonth}'
         next: 'Prochaine mise à jour {date}'
@@ -148,6 +168,16 @@ map_index:
     title: Carte des coasters
     description: "Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n'as pas encore ridé sur cette carte interactive."
     results: Résultats
+
+map:
+    parks_count: 'parcs'
+    legend:
+        title: 'Légende'
+        coaster: 'coaster'
+        coasters: 'coasters'
+    popup:
+        coasters: 'coasters'
+        no_coasters: 'Aucun coaster trouvé pour ce parc.'
 
 filters:
     title: Filtres
@@ -305,6 +335,8 @@ review:
     report_success: "Merci pour votre signalement. Notre équipe va l'examiner prochainement."
     report_error: "Une erreur s'est produite lors de l'envoi de votre signalement."
     remove_upvote: Retirer le vote positif
+    back: 'Retour au coaster'
+    placeholder: 'Partagez votre expérience sur ce coaster...'
     form:
         title: 'Avis sur {name}'
 
@@ -387,6 +419,7 @@ register:
     subtitle: Veuillez remplir tous les champs ci-dessous
     link_sent: 'Compte créé ! Veuillez vérifier votre email ({email}) et cliquer sur le lien pour activer votre compte.'
     rate_limit_exceeded: "Trop de tentatives d'inscription. Veuillez réessayer plus tard."
+    already_have_account: 'Vous avez déjà un compte ?'
     form:
         email: Email
         first_name: Prénom
@@ -425,6 +458,16 @@ notif:
         gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'
         view: 'Afficher ceci sur <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="{link_path}">préférences de notification</a>.'
+
+coaster_search:
+    title: 'Rechercher des coasters'
+    description: 'Trouvez des montagnes russes par nom, lieu, constructeur et plus'
+    subtitle: 'Utilisez les filtres pour trouver votre prochain ride'
+    num_found: '{num} coasters trouvés'
+    no_results: 'Aucun coaster trouvé'
+    no_results_hint: 'Essayez de modifier vos filtres'
+    empty_title: 'Lancez votre recherche'
+    empty_description: 'Utilisez les filtres pour découvrir des montagnes russes par lieu, constructeur, type et plus'
 
 nearby:
     title: Coasters à proximité
@@ -471,9 +514,28 @@ banner:
 search_index:
     title: Recherche
     more: Voir tous les résultats
-    noResult: Aucun résultat
+    noResult: Aucun résultat trouvé
     noTerm: Pas de terme recherché
     short: Votre recherche est trop courte et doit contenir plus de 2 caractères.
+    results_for: 'Résultats pour "{query}"'
+    try_different: Essayez un autre terme de recherche
+    showing_results: 'Affichage de {count} sur {total} résultats'
+    filter:
+        all: Tout
+        coasters: Coasters
+        parks: Parcs
+        users: Utilisateurs
+    coaster_count: >-
+        {count, plural,
+            =1 {1 coaster}
+            other {# coasters}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {Aucune note}
+            =1 {1 note}
+            other {# notes}
+        }
     coasters_found: >-
         {num, plural,
             =0 {Aucun coaster trouvé}

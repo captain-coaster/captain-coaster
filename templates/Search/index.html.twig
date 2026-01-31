@@ -1,148 +1,155 @@
 {% extends "layouts/base.html.twig" %}
 
-{% set title = '"' ~ query ~ '"'|default('search_index.noTerm'|trans()) %}
+{% set title = query ? ('"' ~ query ~ '"') : 'search_index.noTerm'|trans() %}
 {% set subTitle = 'search_index.title'|trans %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 
 {% block body %}
-    {% if query|length < 2 %}
-        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-            <div class="empty-state">
-                <div class="empty-state-icon">
+    <div data-controller="search-results">
+        {# Search Header #}
+        <div class="mb-4 md:mb-6">
+            <h1 class="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white">
+                {% if query %}
+                    {{ 'search_index.results_for'|trans({'%query%': query}) }}
+                {% else %}
+                    {{ 'search_index.title'|trans }}
+                {% endif %}
+            </h1>
+        </div>
+
+        {% if query|length < 2 %}
+            {# Empty state - query too short #}
+            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 md:p-12 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 mb-4">
                     {{ ux_icon('tabler:search', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
                 </div>
                 <p class="text-neutral-600 dark:text-neutral-400">{{ 'search_index.short'|trans() }}</p>
             </div>
-        </section>
-    {% elseif error is defined %}
-        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-            <div class="empty-state">
-                <div class="empty-state-icon">
+
+        {% elseif error is defined %}
+            {# Error state #}
+            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 md:p-12 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
                     {{ ux_icon('tabler:alert-triangle', {'class': 'w-8 h-8 text-red-500', 'aria-hidden': 'true'}) }}
                 </div>
                 <p class="text-red-600 dark:text-red-400">{{ error }}</p>
             </div>
-        </section>
-    {% elseif results is empty %}
-        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-            <div class="empty-state">
-                <div class="empty-state-icon">
-                    {{ ux_icon('tabler:search', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
+
+        {% elseif results is empty %}
+            {# No results state #}
+            <div class="bg-white dark:bg-neutral-900 rounded-2xl p-8 md:p-12 text-center">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 mb-4">
+                    {{ ux_icon('tabler:mood-empty', {'class': 'w-8 h-8 text-neutral-400', 'aria-hidden': 'true'}) }}
                 </div>
-                <p class="text-neutral-600 dark:text-neutral-400">{{ 'search_index.noResult'|trans() }}</p>
-            </div>
-        </section>
-    {% else %}
-        <section class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm" data-controller="search-results">
-            <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
-                <h1 class="text-lg font-semibold text-neutral-900 dark:text-white">
-                    {{ 'search_index.unified_results_found'|trans({'%num%': totalResults, '%query%': query}) }}
-                </h1>
+                <p class="text-lg font-medium text-neutral-900 dark:text-white mb-2">{{ 'search_index.noResult'|trans() }}</p>
+                <p class="text-neutral-500 dark:text-neutral-400">{{ 'search_index.try_different'|trans() }}</p>
             </div>
 
-            <div class="search-results-container">
-                {% for result in results %}
-                    <div class="search-result-item search-result-item-page" 
-                         data-search-results-target="resultItem"
-                         data-action="click->search-results#selectResult"
-                         data-type="{{ result.entity_type }}" 
-                         data-id="{{ result.id }}" 
-                         data-slug="{{ result.slug }}">
-                        
-                        <div class="search-result-emoji">{{ result.emoji }}</div>
-                        
-                        <div class="flex-1 min-w-0">
-                            <div class="text-base font-semibold text-neutral-900 dark:text-white mb-1 truncate">{{ result.name }}</div>
-                            {% if result.subtitle %}
-                                <div class="text-sm text-neutral-600 dark:text-neutral-400 truncate">
-                                    {% if result.entity_type == 'park' and result.subtitle starts with 'country.' %}
-                                        {{ result.subtitle|trans({}, 'database') }}
-                                    {% else %}
-                                        {{ result.subtitle }}
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        {% if result.entity_type == 'coaster' and result.image %}
-                            <div class="shrink-0 w-24 h-18 rounded-lg overflow-hidden">
-                                <img class="w-full h-full object-cover"
-                                     src="{{ pictures_cdn }}/280x210/{{ result.image }}" 
-                                     alt="{{ result.name }}"
-                                     loading="lazy">
-                            </div>
-                        {% endif %}
-                    </div>
+        {% else %}
+            {# Type filter tabs #}
+            <div class="flex gap-2 mb-4 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
+                {% set types = [
+                    {'key': 'all', 'label': 'search_index.filter.all'|trans, 'icon': 'tabler:list'},
+                    {'key': 'coaster', 'label': 'search_index.filter.coasters'|trans, 'icon': 'tabler:roller-coaster'},
+                    {'key': 'park', 'label': 'search_index.filter.parks'|trans, 'icon': 'tabler:trees'},
+                    {'key': 'user', 'label': 'search_index.filter.users'|trans, 'icon': 'tabler:users'}
+                ] %}
+                {% for typeItem in types %}
+                    <a href="{{ path('search_index', {'query': query, 'type': typeItem.key}) }}"
+                       class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors
+                              {{ activeType == typeItem.key 
+                                 ? 'bg-cc-blue-600 text-white' 
+                                 : 'bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700' }}">
+                        {{ ux_icon(typeItem.icon, {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+                        <span>{{ typeItem.label }}</span>
+                        <span class="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full text-xs
+                                     {{ activeType == typeItem.key 
+                                        ? 'bg-white/20 text-white' 
+                                        : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-400' }}">
+                            {{ countByType[typeItem.key] }}
+                        </span>
+                    </a>
                 {% endfor %}
             </div>
-        </section>
 
-        {% if pagination and pagination.total > 1 %}
-            <nav class="mt-6" aria-label="Search pagination">
-                <ul class="flex items-center justify-center gap-1">
-                    {% if pagination.has_previous %}
-                        <li>
-                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
-                               href="{{ path('search_index', {'query': query, 'page': pagination.previous}) }}" 
-                               aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 dark:text-neutral-600 cursor-not-allowed">&laquo;</span>
-                        </li>
+            {# Results count #}
+            <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-4">
+                {{ 'search_index.showing_results'|trans({'%count%': results|length, '%total%': countByType[activeType]}) }}
+            </p>
+
+            {# Results grid #}
+            <div class="grid gap-3 md:gap-4">
+                {% for result in results %}
+                    {% if result.entity_type == 'coaster' %}
+                        {{ include('Search/_result_coaster.html.twig', {result: result}, with_context = false) }}
+                    {% elseif result.entity_type == 'park' %}
+                        {{ include('Search/_result_park.html.twig', {result: result}, with_context = false) }}
+                    {% elseif result.entity_type == 'user' %}
+                        {{ include('Search/_result_user.html.twig', {result: result}, with_context = false) }}
                     {% endif %}
+                {% endfor %}
+            </div>
 
-                    {% set start_page = max(1, pagination.current - 2) %}
-                    {% set end_page = min(pagination.total, pagination.current + 2) %}
-
-                    {% if start_page > 1 %}
-                        <li>
-                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
-                               href="{{ path('search_index', {'query': query, 'page': 1}) }}">1</a>
-                        </li>
-                        {% if start_page > 2 %}
-                            <li><span class="inline-flex items-center justify-center w-10 h-10 text-neutral-400">...</span></li>
+            {# Pagination #}
+            {% if pagination and pagination.total > 1 %}
+                <nav class="mt-6" aria-label="Search pagination">
+                    <ul class="flex items-center justify-center gap-1">
+                        {% if pagination.has_previous %}
+                            <li>
+                                <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                                   href="{{ path('search_index', {'query': query, 'type': activeType, 'page': pagination.previous}) }}" 
+                                   aria-label="Previous">
+                                    {{ ux_icon('tabler:chevron-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                                </a>
+                            </li>
                         {% endif %}
-                    {% endif %}
 
-                    {% for page in start_page..end_page %}
-                        <li>
-                            {% if page == pagination.current %}
-                                <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-cc-blue-600 text-white font-medium">{{ page }}</span>
-                            {% else %}
-                                <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
-                                   href="{{ path('search_index', {'query': query, 'page': page}) }}">{{ page }}</a>
+                        {% set start_page = max(1, pagination.current - 2) %}
+                        {% set end_page = min(pagination.total, pagination.current + 2) %}
+
+                        {% if start_page > 1 %}
+                            <li>
+                                <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                                   href="{{ path('search_index', {'query': query, 'type': activeType, 'page': 1}) }}">1</a>
+                            </li>
+                            {% if start_page > 2 %}
+                                <li><span class="inline-flex items-center justify-center w-10 h-10 text-neutral-400">…</span></li>
                             {% endif %}
-                        </li>
-                    {% endfor %}
-
-                    {% if end_page < pagination.total %}
-                        {% if end_page < pagination.total - 1 %}
-                            <li><span class="inline-flex items-center justify-center w-10 h-10 text-neutral-400">...</span></li>
                         {% endif %}
-                        <li>
-                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
-                               href="{{ path('search_index', {'query': query, 'page': pagination.total}) }}">{{ pagination.total }}</a>
-                        </li>
-                    {% endif %}
 
-                    {% if pagination.has_next %}
-                        <li>
-                            <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" 
-                               href="{{ path('search_index', {'query': query, 'page': pagination.next}) }}" 
-                               aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    {% else %}
-                        <li>
-                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 dark:text-neutral-600 cursor-not-allowed">&raquo;</span>
-                        </li>
-                    {% endif %}
-                </ul>
-            </nav>
+                        {% for page in start_page..end_page %}
+                            <li>
+                                {% if page == pagination.current %}
+                                    <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-cc-blue-600 text-white font-medium">{{ page }}</span>
+                                {% else %}
+                                    <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                                       href="{{ path('search_index', {'query': query, 'type': activeType, 'page': page}) }}">{{ page }}</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+
+                        {% if end_page < pagination.total %}
+                            {% if end_page < pagination.total - 1 %}
+                                <li><span class="inline-flex items-center justify-center w-10 h-10 text-neutral-400">…</span></li>
+                            {% endif %}
+                            <li>
+                                <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                                   href="{{ path('search_index', {'query': query, 'type': activeType, 'page': pagination.total}) }}">{{ pagination.total }}</a>
+                            </li>
+                        {% endif %}
+
+                        {% if pagination.has_next %}
+                            <li>
+                                <a class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                                   href="{{ path('search_index', {'query': query, 'type': activeType, 'page': pagination.next}) }}" 
+                                   aria-label="Next">
+                                    {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
 {% endblock %}

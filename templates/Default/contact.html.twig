@@ -1,38 +1,115 @@
 {% extends "layouts/base.html.twig" %}
 
 {% set title = 'contact.title'|trans %}
-{% set openedSidebar = true %}
+
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="max-w-2xl mx-auto">
-    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-8">
-      <div class="mb-6">
-        <h1 class="text-display-sm text-neutral-900 dark:text-white mb-2">{{ title }}</h1>
-        <p class="text-neutral-900 dark:text-white text-neutral-600 dark:text-neutral-400">
-          {{ 'contact.description'|trans }}
-        </p>
-      </div>
+    <div class="max-w-2xl mx-auto">
+        <!-- Card -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <!-- Header -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-cc-warm-500 to-cc-warm-600 text-white mb-4 shadow-lg shadow-cc-warm-500/25">
+                        {{ ux_icon('tabler:message-circle', {'class': 'w-7 h-7', 'aria-hidden': 'true'}) }}
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+                        {{ title }}
+                    </h1>
+                    <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+                        {{ 'form.description'|trans }}
+                    </p>
+                </div>
 
-      {{ form_errors(form) }}
-      {{ form_start(form, {'attr': {'class': 'recaptcha-form'}}) }}
-      
-      <div class="space-y-6">
-        {{ form_row(form.name) }}
-        {{ form_row(form.email) }}
-        {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
-        {{ form_widget(form.recaptcha) }}
-        {{ form_rest(form) }}
-      </div>
+                <!-- Form errors -->
+                {% if form.vars.errors|length > 0 %}
+                    <div class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50" role="alert">
+                        <div class="flex items-start gap-3">
+                            {{ ux_icon('tabler:alert-circle', {'class': 'w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                            <div class="text-sm text-red-700 dark:text-red-300">
+                                {{ form_errors(form) }}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
 
-      <div class="flex justify-end pt-6 border-t border-neutral-200 dark:border-neutral-700 mt-8">
-        <button id="contact_btn" type="submit" class="inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
-          {{ 'contact.send'|trans }}
-          {{ ux_icon('tabler:arrow-right', {'class': 'w-4 h-4 ml-2'}) }}
-        </button>
-      </div>
-      
-      {{ form_end(form) }}
+                {{ form_start(form, {'attr': {'class': 'space-y-5 recaptcha-form'}}) }}
+                
+                <!-- Name field -->
+                <div>
+                    <label for="{{ form.name.vars.id }}" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        {{ 'contact.form.name'|trans }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:user', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+                        </div>
+                        {{ form_widget(form.name, {
+                            'attr': {
+                                'class': 'block w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200 disabled:bg-neutral-100 dark:disabled:bg-neutral-800 disabled:text-neutral-500',
+                                'placeholder': 'contact.form.name'|trans
+                            },
+                            'label': false
+                        }) }}
+                    </div>
+                    {{ form_errors(form.name) }}
+                </div>
+
+                <!-- Email field -->
+                <div>
+                    <label for="{{ form.email.vars.id }}" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        {{ 'contact.form.email'|trans }}
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            {{ ux_icon('tabler:mail', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+                        </div>
+                        {{ form_widget(form.email, {
+                            'attr': {
+                                'class': 'block w-full pl-12 pr-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200 disabled:bg-neutral-100 dark:disabled:bg-neutral-800 disabled:text-neutral-500',
+                                'placeholder': 'you@example.com'
+                            },
+                            'label': false
+                        }) }}
+                    </div>
+                    {{ form_errors(form.email) }}
+                </div>
+
+                <!-- Message field -->
+                <div>
+                    <label for="{{ form.message.vars.id }}" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                        {{ 'contact.form.message'|trans }}
+                        <span class="text-red-500">*</span>
+                    </label>
+                    {{ form_widget(form.message, {
+                        'attr': {
+                            'class': 'block w-full px-4 py-3 rounded-xl border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:border-transparent transition-all duration-200 resize-none',
+                            'rows': '5',
+                            'placeholder': 'contact.form.message'|trans
+                        },
+                        'label': false
+                    }) }}
+                    {{ form_errors(form.message) }}
+                </div>
+
+                <!-- Recaptcha (hidden) -->
+                <div class="hidden">
+                    {{ form_widget(form.recaptcha) }}
+                </div>
+                
+                {{ form_rest(form) }}
+
+                <!-- Submit button -->
+                <button type="submit" 
+                        class="w-full flex justify-center items-center gap-2 px-6 py-3 text-base font-semibold rounded-xl text-white bg-gradient-to-r from-cc-warm-600 to-cc-warm-500 hover:from-cc-warm-700 hover:to-cc-warm-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-warm-500 dark:focus:ring-offset-neutral-900 shadow-lg shadow-cc-warm-500/25 hover:shadow-cc-warm-500/40 transition-all duration-200">
+                    {{ ux_icon('tabler:send', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                    {{ 'contact.send'|trans }}
+                </button>
+                
+                {{ form_end(form) }}
+            </div>
+        </div>
     </div>
-  </div>
 {% endblock %}

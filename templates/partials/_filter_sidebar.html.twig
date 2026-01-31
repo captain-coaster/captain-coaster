@@ -1,11 +1,12 @@
-<aside class="fixed inset-y-0 right-0 w-80 max-w-full transform translate-x-full transition-transform duration-300 bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 z-50 lg:relative lg:translate-x-0 lg:w-64 lg:z-auto overflow-y-auto"
-       data-controller="drawer"
-       data-drawer-id-value="filterSidebar"
-       data-drawer-placement-value="end"
-       aria-labelledby="filterSidebarLabel"
-       aria-hidden="true"
+{# Filter Sidebar - Mobile: slide-in drawer, Desktop: fixed sidebar #}
+<aside class="
+       fixed inset-y-0 right-0 w-80 max-w-full transform translate-x-full z-50 
+       lg:translate-x-0 lg:w-64 lg:top-20 lg:bottom-4 lg:right-4 xl:right-8 lg:inset-y-auto
+       bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 
+       lg:border lg:rounded-xl lg:shadow-sm
+       overflow-y-auto transition-transform duration-300"
+       data-controller="filter-sidebar {% if filterConfig is defined %}filter{% endif %}"
        {% if filterConfig is defined %}
-         data-controller="drawer filter"
          {% for key, value in filterConfig %}
            {% if key == 'map_outlet' %}
              data-filter-map-outlet="{{ value }}"
@@ -13,246 +14,130 @@
              data-filter-{{ key|replace({'_': '-'}) }}-value="{{ value }}"
            {% endif %}
          {% endfor %}
-       {% endif %}>
+       {% endif %}
+       aria-labelledby="filterSidebarLabel">
     
-    <!-- Drawer header (mobile only) -->
-    <div class="lg:hidden px-6 py-4 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between">
+    {# Drawer header (mobile only) #}
+    <div class="lg:hidden px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between sticky top-0 bg-white dark:bg-neutral-900 z-10">
         <h5 class="text-lg font-semibold text-neutral-900 dark:text-white" id="filterSidebarLabel">{{ 'filters.title'|trans }}</h5>
-        <button type="button" class="p-2 rounded-lg text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500" data-action="click->drawer#close" aria-label="Close">
+        <button type="button" 
+                class="p-2 rounded-lg text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                data-action="filter-sidebar#close"
+                aria-label="Close">
             {{ ux_icon('tabler:x', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
         </button>
     </div>
     
-    <div class="p-6">
-        <form id="form-filter" action="#" class="space-y-4">
-            <!-- Section title (desktop only) -->
-            <h6 class="hidden lg:block text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400 mb-4">
+    <div class="p-4">
+        <form id="form-filter" action="#" class="space-y-3">
+            {# Section title (desktop only) #}
+            <h6 class="hidden lg:block text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400 mb-3">
                 {{ 'filters.title'|trans }}
             </h6>
 
-            <input id="form-user" name="filters[user]" type="hidden"
-                   value="{{ filters.user|default(app.user.id|default('')) }}">
-            <input id="form-ridden" name="filters[ridden]" type="hidden" value="{{ filters.ridden|default('') }}">
-            <input id="form-latitude" name="filters[latitude]" type="hidden">
-            <input id="form-longitude" name="filters[longitude]" type="hidden">
+            <input name="filters[user]" type="hidden" value="{{ filters.user|default(app.user.id|default('')) }}">
+            <input name="filters[ridden]" type="hidden" value="{{ filters.ridden|default('') }}">
             <input type="hidden" name="page" value="1">
 
-            {# Status Filter #}
+            {# Toggle filters #}
             {% if filterConfig.excluded_filters is not defined or 'status' not in filterConfig.excluded_filters %}
-            <div data-controller="toggle-switch">
-                <div class="flex items-center">
-                    <input class="w-11 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full peer appearance-none cursor-pointer transition-colors duration-200 checked:bg-cc-blue-600 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2" 
-                           type="checkbox" 
-                           role="switch" 
-                           id="filterStatus"
-                           name="filters[status]"
-                           data-toggle-switch-target="checkbox"
-                           data-action="toggle-switch#toggle"
-                           {% if filters.status is defined and filters.status == "on" %} checked{% endif %}>
-                    <label class="ml-3 text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer" for="filterStatus">{{ 'filters.status'|trans }}</label>
-                </div>
-            </div>
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="filters[status]" 
+                       class="w-10 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full appearance-none cursor-pointer checked:bg-cc-blue-600 transition-colors relative
+                              before:content-[''] before:absolute before:top-1 before:left-1 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 checked:before:translate-x-4"
+                       {% if filters.status is defined and filters.status == "on" %}checked{% endif %}>
+                <span class="text-sm text-neutral-700 dark:text-neutral-300">{{ 'filters.status'|trans }}</span>
+            </label>
             {% endif %}
 
-            {# Sort by Distance #}
-            {% if filterConfig.excluded_filters is not defined or 'sortByDistance' not in filterConfig.excluded_filters %}
-            <div data-controller="toggle-switch">
-                <div class="flex items-center">
-                    <input class="w-11 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full peer appearance-none cursor-pointer transition-colors duration-200 checked:bg-cc-blue-600 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2" 
-                           type="checkbox" 
-                           role="switch" 
-                           id="filterSortByDistance"
-                           name="filters[sortByDistance]"
-                           data-toggle-switch-target="checkbox"
-                           data-action="filter#toggleGeolocation toggle-switch#toggle"
-                           {% if filters.sortByDistance is defined and filters.sortByDistance == "on" %} checked{% endif %}>
-                    <label class="ml-3 text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer" for="filterSortByDistance">{{ 'filters.sortByDistance'|trans }}</label>
-                </div>
-                <input type="hidden" name="filters[latitude]" data-filter-target="latitude" value="{{ filters.latitude|default('') }}">
-                <input type="hidden" name="filters[longitude]" data-filter-target="longitude" value="{{ filters.longitude|default('') }}">
-            </div>
-            {% endif %}
-
-            {# Special Filters #}
             {% if filterConfig.excluded_filters is not defined or 'new' not in filterConfig.excluded_filters %}
-            <div data-controller="toggle-switch">
-                <div class="flex items-center">
-                    <input class="w-11 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full peer appearance-none cursor-pointer transition-colors duration-200 checked:bg-cc-blue-600 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2" 
-                           type="checkbox" 
-                           role="switch" 
-                           id="filterNew"
-                           name="filters[new]"
-                           data-toggle-switch-target="checkbox"
-                           data-action="toggle-switch#toggle"
-                           {% if filters.new is defined and filters.new == "on" %} checked{% endif %}>
-                    <label class="ml-3 text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer" for="filterNew">{{ 'filters.new'|trans }}</label>
-                </div>
-            </div>
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="filters[new]"
+                       class="w-10 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full appearance-none cursor-pointer checked:bg-cc-blue-600 transition-colors relative
+                              before:content-[''] before:absolute before:top-1 before:left-1 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 checked:before:translate-x-4"
+                       {% if filters.new is defined and filters.new == "on" %}checked{% endif %}>
+                <span class="text-sm text-neutral-700 dark:text-neutral-300">{{ 'filters.new'|trans }}</span>
+            </label>
             {% endif %}
 
-            {% if filterConfig.excluded_filters is not defined or 'kiddie' not in filterConfig.excluded_filters %}
-            <div data-controller="toggle-switch">
-                <div class="flex items-center">
-                    <input class="w-11 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full peer appearance-none cursor-pointer transition-colors duration-200 checked:bg-cc-blue-600 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2" 
-                           type="checkbox" 
-                           role="switch" 
-                           id="filterKiddie"
-                           name="filters[kiddie]"
-                           data-toggle-switch-target="checkbox"
-                           data-action="toggle-switch#toggle"
-                           {% if filters.kiddie is defined and filters.kiddie == "on" %} checked{% endif %}>
-                    <label class="ml-3 text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer" for="filterKiddie">{{ 'filters.kiddie'|trans }}</label>
-                </div>
-            </div>
-            {% endif %}
-
-            {# User-specific Filter #}
             {% if (filterConfig.excluded_filters is not defined or 'notridden' not in filterConfig.excluded_filters) and filters.ridden is not defined %}
-            <div data-controller="toggle-switch">
-                <div class="flex items-center">
-                    <input class="w-11 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full peer appearance-none cursor-pointer transition-colors duration-200 checked:bg-cc-blue-600 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" 
-                           type="checkbox" 
-                           role="switch" 
-                           id="filterNotRidden"
-                           name="filters[notridden]"
-                           data-toggle-switch-target="checkbox"
-                           data-action="toggle-switch#toggle"
-                           {% if not is_granted('ROLE_USER') %} disabled{% endif %}
-                           {% if filters.notridden is defined and filters.notridden == "on" %} checked{% endif %}>
-                    <label class="ml-3 text-sm font-medium text-neutral-700 dark:text-neutral-300 cursor-pointer" for="filterNotRidden">{{ 'filters.notridden'|trans }}</label>
-                </div>
-            </div>
+            <label class="flex items-center gap-3 cursor-pointer {% if not is_granted('ROLE_USER') %}opacity-50{% endif %}">
+                <input type="checkbox" name="filters[notridden]"
+                       class="w-10 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full appearance-none cursor-pointer checked:bg-cc-blue-600 transition-colors relative
+                              before:content-[''] before:absolute before:top-1 before:left-1 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 checked:before:translate-x-4 disabled:cursor-not-allowed"
+                       {% if not is_granted('ROLE_USER') %}disabled{% endif %}
+                       {% if filters.notridden is defined and filters.notridden == "on" %}checked{% endif %}>
+                <span class="text-sm text-neutral-700 dark:text-neutral-300">{{ 'filters.notridden'|trans }}</span>
+            </label>
             {% endif %}
 
-            {# Name Filter - Search first #}
+            {# Text search #}
             {% if filterConfig.excluded_filters is not defined or 'name' not in filterConfig.excluded_filters %}
-            <div>
-                <input type="text" 
-                       class="block w-full rounded-lg border-0 py-2.5 px-3 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                       name="filters[name]"
-                       value="{{ filters.name|default('') }}"
-                       placeholder="{{ 'filters.name'|trans }}">
-            </div>
+            <input type="text" name="filters[name]" value="{{ filters.name|default('') }}"
+                   class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-cc-blue-500"
+                   placeholder="{{ 'filters.name'|trans }}">
             {% endif %}
 
-            {# Score Filter - Important metric #}
-            {% if filterConfig.excluded_filters is not defined or 'score' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[score]">
-                    <option value="">{{ 'filters.score'|trans }}</option>
-                    {% for i in range(10, 90, 10) %}
-                        <option value="{{ i }}" {% if filters.score is defined and filters.score == i %}selected{% endif %}>{{ 'filters.atleast'|trans({'count': i}) }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            {% endif %}
-
-            {# Location Filters #}
+            {# Select filters #}
             {% if filterConfig.excluded_filters is not defined or 'continent' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[continent]">
-                    <option value="">{{ 'filters.continent'|trans }}</option>
-                    {% if filtersForm.continent is defined %}
-                        {% for continent in filtersForm.continent %}
-                            <option value="{{ continent.id }}" {% if filters.continent is defined and filters.continent == continent.id %}selected{% endif %}>{{ continent.name|trans({}, 'database') }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
+            <select name="filters[continent]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.continent'|trans }}</option>
+                {% for continent in filtersForm.continent|default([]) %}
+                    <option value="{{ continent.id }}" {% if filters.continent is defined and filters.continent == continent.id %}selected{% endif %}>{{ continent.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
             {% endif %}
 
             {% if filterConfig.excluded_filters is not defined or 'country' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[country]">
-                    <option value="">{{ 'filters.country'|trans }}</option>
-                    {% if filtersForm.country is defined %}
-                        {% for country in filtersForm.country %}
-                            <option value="{{ country.id }}" {% if filters.country is defined and filters.country == country.id %}selected{% endif %}>{{ country.name|trans({}, 'database') }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
+            <select name="filters[country]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.country'|trans }}</option>
+                {% for country in filtersForm.country|default([]) %}
+                    <option value="{{ country.id }}" {% if filters.country is defined and filters.country == country.id %}selected{% endif %}>{{ country.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
             {% endif %}
 
-            {# Manufacturer & Model - Related to coaster type #}
             {% if filterConfig.excluded_filters is not defined or 'manufacturer' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[manufacturer]">
-                    <option value="">{{ 'filters.manufacturer'|trans }}</option>
-                    {% for manufacturer in filtersForm.manufacturer %}
-                        <option value="{{ manufacturer.id }}" {% if filters.manufacturer is defined and filters.manufacturer == manufacturer.id %}selected{% endif %}>{{ manufacturer.name }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            <select name="filters[manufacturer]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.manufacturer'|trans }}</option>
+                {% for manufacturer in filtersForm.manufacturer|default([]) %}
+                    <option value="{{ manufacturer.id }}" {% if filters.manufacturer is defined and filters.manufacturer == manufacturer.id %}selected{% endif %}>{{ manufacturer.name }}</option>
+                {% endfor %}
+            </select>
             {% endif %}
 
-            {% if filterConfig.excluded_filters is not defined or 'model' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[model]">
-                    <option value="">{{ 'filters.model'|trans }}</option>
-                    {% if filtersForm.model is defined %}
-                        {% for model in filtersForm.model %}
-                            <option value="{{ model.id }}" {% if filters.model is defined and filters.model == model.id %}selected{% endif %}>{{ model.name }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
-            {% endif %}
-
-            {# Coaster Characteristics #}
             {% if filterConfig.excluded_filters is not defined or 'materialType' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[materialType]">
-                    <option value="">{{ 'filters.materialType'|trans }}</option>
-                    {% if filtersForm.materialType is defined %}
-                        {% for type in filtersForm.materialType %}
-                            <option value="{{ type.id }}" {% if filters.materialType is defined and filters.materialType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
+            <select name="filters[materialType]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.materialType'|trans }}</option>
+                {% for type in filtersForm.materialType|default([]) %}
+                    <option value="{{ type.id }}" {% if filters.materialType is defined and filters.materialType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
             {% endif %}
 
             {% if filterConfig.excluded_filters is not defined or 'seatingType' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[seatingType]">
-                    <option value="">{{ 'filters.seatingType'|trans }}</option>
-                    {% if filtersForm.seatingType is defined %}
-                        {% for type in filtersForm.seatingType %}
-                            <option value="{{ type.id }}" {% if filters.seatingType is defined and filters.seatingType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
-                        {% endfor %}
-                    {% endif %}
-                </select>
-            </div>
+            <select name="filters[seatingType]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.seatingType'|trans }}</option>
+                {% for type in filtersForm.seatingType|default([]) %}
+                    <option value="{{ type.id }}" {% if filters.seatingType is defined and filters.seatingType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
             {% endif %}
 
             {% if filterConfig.excluded_filters is not defined or 'openingDate' not in filterConfig.excluded_filters %}
-            <div>
-                <select class="block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm transition-colors duration-200" 
-                        name="filters[openingDate]">
-                    <option value="">{{ 'filters.openingDate'|trans }}</option>
-                    {% for openingDate in filtersForm.openingDate %}
-                        <option value="{{ openingDate.year }}" {% if filters.openingDate is defined and filters.openingDate == openingDate.year %}selected{% endif %}>{{ openingDate.year }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            <select name="filters[openingDate]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.openingDate'|trans }}</option>
+                {% for openingDate in filtersForm.openingDate|default([]) %}
+                    <option value="{{ openingDate.year }}" {% if filters.openingDate is defined and filters.openingDate == openingDate.year %}selected{% endif %}>{{ openingDate.year }}</option>
+                {% endfor %}
+            </select>
             {% endif %}
 
-            {# Clear Filters Button #}
-            <div>
-                <button type="button" 
-                        class="w-full inline-flex justify-center items-center px-4 py-2.5 border border-neutral-300 dark:border-neutral-600 text-sm font-medium rounded-lg shadow-sm text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 transition-colors duration-200" 
-                        onclick="window.location.href = window.location.pathname;">
-                    {{ 'filters.clear'|trans }}
-                </button>
-            </div>
+            {# Clear button #}
+            <button type="button" onclick="window.location.href = window.location.pathname;"
+                    class="w-full py-2 px-3 text-sm font-medium text-neutral-600 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors">
+                {{ 'filters.clear'|trans }}
+            </button>
         </form>
     </div>
 </aside>

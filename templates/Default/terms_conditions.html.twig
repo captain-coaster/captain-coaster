@@ -1,16 +1,39 @@
 {% extends "layouts/base.html.twig" %}
 
 {% set title = 'policy.title'|trans([], 'policy') %}
+
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <article class="bg-white dark:bg-neutral-900 rounded-2xl overflow-hidden shadow-sm">
-    <div class="p-8 prose prose-neutral dark:prose-invert max-w-none">
-      <section class="mb-12">
-        <div class="text-neutral-700 dark:text-neutral-300">
-          {{ 'policy.content'|trans({'{contact_link}': path('default_contact')}, 'policy')|raw }}
+    <div class="max-w-3xl mx-auto">
+        <!-- Card -->
+        <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden">
+            <div class="p-6 sm:p-8">
+                <!-- Header -->
+                <div class="text-center mb-8 pb-6 border-b border-neutral-200 dark:border-neutral-800">
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-neutral-700 to-neutral-800 dark:from-neutral-600 dark:to-neutral-700 text-white mb-4 shadow-lg shadow-neutral-500/25">
+                        {{ ux_icon('tabler:shield-check', {'class': 'w-7 h-7', 'aria-hidden': 'true'}) }}
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-neutral-900 dark:text-white mb-2">
+                        {{ title }}
+                    </h1>
+                    <p class="text-neutral-500 dark:text-neutral-400 text-sm">
+                        {{ 'app.name'|trans }}
+                    </p>
+                </div>
+
+                <!-- Content -->
+                <article class="policy-content prose prose-neutral dark:prose-invert prose-sm sm:prose-base max-w-none
+                    prose-headings:font-semibold prose-headings:text-neutral-900 dark:prose-headings:text-white
+                    prose-h2:text-lg prose-h2:mt-8 prose-h2:mb-4 prose-h2:pb-2 prose-h2:border-b prose-h2:border-neutral-200 dark:prose-h2:border-neutral-800
+                    prose-p:text-neutral-600 dark:prose-p:text-neutral-400 prose-p:leading-relaxed
+                    prose-li:text-neutral-600 dark:prose-li:text-neutral-400
+                    prose-strong:text-neutral-800 dark:prose-strong:text-neutral-200 prose-strong:font-medium
+                    prose-a:text-cc-blue-600 dark:prose-a:text-cc-blue-400 prose-a:no-underline hover:prose-a:underline
+                    prose-ul:my-4 prose-ul:space-y-2">
+                    {{ 'policy.content'|trans({'{contact_link}': path('default_contact')}, 'policy')|raw }}
+                </article>
+            </div>
         </div>
-      </section>
     </div>
-  </article>
 {% endblock %}

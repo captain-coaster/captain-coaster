@@ -10,7 +10,8 @@
 
 {% set readonly = readonly|default(false) %}
 
-<div class="csrf-protection" data-controller="csrf-protection rating"
+<div class="csrf-protection flex items-center justify-center gap-1" 
+     data-controller="csrf-protection rating"
      data-csrf-protection-token-value="{{ csrf_token('rating') }}"
      data-rating-csrf-protection-outlet=".csrf-protection"
      data-rating-coaster-id-value="{{ coaster.id }}"

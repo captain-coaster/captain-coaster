@@ -88,6 +88,68 @@ class CoasterController extends BaseController
         );
     }
 
+    /** Dedicated images page for a coaster */
+    #[Route(path: '/{slug}/images', name: 'coaster_images', methods: ['GET'])]
+    public function imagesPage(
+        EntityManagerInterface $em,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster
+    ): Response {
+        $userLikes = [];
+        if (($user = $this->getUser()) instanceof UserInterface) {
+            $userLikes = $em
+                ->getRepository(LikedImage::class)
+                ->findUserLikes($user)
+                ->getSingleColumnResult();
+        }
+
+        return $this->render(
+            'Coaster/images.html.twig',
+            [
+                'userLikes' => $userLikes,
+                'coaster' => $coaster,
+            ]
+        );
+    }
+
+    /** Dedicated reviews page for a coaster
+     * @param array<string, mixed> $filters
+     */
+    #[Route(path: '/{slug}/reviews', name: 'coaster_reviews', methods: ['GET'])]
+    public function reviewsPage(
+        Request $request,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        PaginatorInterface $paginator,
+        #[MapQueryParameter]
+        int $page = 1,
+        #[MapQueryParameter]
+        array $filters = []
+    ): Response {
+        $user = $this->getUser();
+        $displayReviewsInAllLanguages = false;
+        if ($user instanceof \App\Entity\User) {
+            $displayReviewsInAllLanguages = $user->isDisplayReviewsInAllLanguages();
+        }
+
+        $pagination = $paginator->paginate(
+            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages, $filters),
+            $page,
+            25
+        );
+
+        return $this->render(
+            'Coaster/reviews.html.twig',
+            [
+                'reviews' => $pagination,
+                'coaster' => $coaster,
+                'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+                'filters' => $filters,
+            ]
+        );
+    }
+
     /** Async loads images for a coaster */
     #[Route(
         path: '/{slug}/images/ajax/{imageNumber}',
@@ -217,6 +279,8 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'featuredReviews' => $riddenCoasterRepository->getFeaturedReviews($coaster, $request->getLocale(), 3),
+                'totalReviews' => $riddenCoasterRepository->countCoasterReviewsWithText($coaster),
             ]
         );
     }

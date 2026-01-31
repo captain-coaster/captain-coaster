@@ -1,14 +1,14 @@
 {% import "macros/_macros_helpers.html.twig" as helper %}
 
 <div data-controller="drawer">
-<nav class="fixed top-0 left-0 right-0 bg-neutral-50/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 z-50" role="navigation" aria-label="{{ 'nav.main.label'|trans({}, 'navigation') }}">
+<nav class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-neutral-900/95 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800 z-50" role="navigation" aria-label="{{ 'nav.main.label'|trans({}, 'navigation') }}">
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
       {# Left section: Hamburger (mobile) + Logo #}
       <div class="flex items-center space-x-2 sm:space-x-3">
         {# Hamburger menu (mobile only) - transforms to X when open #}
         <button 
-          class="md:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+          class="md:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 hover:text-cc-blue-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" 
           type="button" 
           data-action="click->drawer#toggle"
           aria-label="{{ 'nav.toggle.label'|trans({}, 'navigation') }}"
@@ -22,7 +22,7 @@
         </button>
 
         {# Logo #}
-        <a class="flex items-center text-neutral-900 dark:text-white hover:opacity-80 transition-opacity duration-200" href="{{ path('default_index') }}">
+        <a class="flex items-center text-cc-blue-600 dark:text-white hover:opacity-80 transition-opacity duration-200" href="{{ path('default_index') }}">
           <svg class="h-6 md:h-8 w-auto" viewBox="0 0 220.3 32" xmlns="http://www.w3.org/2000/svg">
             <path fill="#5D87D5" d="M30.9,12v14.6L26.3,32l-9.6-5.4l-9.5,5l-4.4-5V12c0-6.6,6.2-12,14-12C24.5,0,30.9,5.4,30.9,12z"/>
             <path fill="#4767A3" d="M16.7,0v26.6l-9.5,5l-4.4-5V12C2.7,5.4,9,0,16.7,0z"/>
@@ -70,7 +70,7 @@
                 id="search-coaster"
                 name="query"
                 type="search"
-                class="block w-full pl-10 pr-12 py-2.5 border-0 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-sm text-neutral-900 dark:text-white placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:ring-2 focus:ring-cc-blue-500 focus:outline-none transition-all duration-200"
+                class="block w-full pl-10 pr-12 py-2.5 border border-neutral-200 dark:border-neutral-700 rounded-xl bg-neutral-50 dark:bg-neutral-800 text-sm text-neutral-900 dark:text-white placeholder-neutral-500 focus:bg-white dark:focus:bg-neutral-700 focus:ring-2 focus:ring-cc-blue-500/50 focus:border-cc-blue-500 focus:outline-none transition-all duration-200"
                 placeholder="{{ 'app.header.search'|trans }}"
                 data-search-target="input"
                 data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
@@ -81,7 +81,7 @@
                 aria-haspopup="listbox"
               >
               <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                <kbd class="hidden xl:inline-flex items-center px-2 py-1 text-xs font-medium text-neutral-500 bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-400 rounded border border-neutral-300 dark:border-neutral-600" id="search-shortcut">
+                <kbd class="hidden xl:inline-flex items-center px-2 py-1 text-xs font-medium text-neutral-500 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-700 rounded border border-neutral-200 dark:border-neutral-600" id="search-shortcut">
                   <span id="search-shortcut-key">Ctrl</span>K
                 </kbd>
               </div>
@@ -95,11 +95,12 @@
 
       {# Right section: Actions #}
       <div class="flex items-center space-x-1 sm:space-x-2">
-        {# Mobile search button #}
+        {# Mobile search button - dispatches modal:open event #}
         <button 
-          class="md:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+          class="md:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 hover:text-cc-blue-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" 
           type="button" 
-          onclick="openModal('searchModal')"
+          data-action="global#openModal"
+          data-global-modal-id-param="searchModal"
           aria-label="{{ 'nav.search.label'|trans({}, 'navigation') }}"
         >
           {{ ux_icon('tabler:search', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
@@ -112,7 +113,7 @@
           {# Notifications bell icon with badge count #}
           <div class="relative" data-controller="dropdown">
             <button 
-              class="relative inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+              class="relative inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 hover:text-cc-blue-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" 
               type="button" 
               data-action="click->dropdown#toggle"
               data-dropdown-target="button"
@@ -151,14 +152,14 @@
           {# User profile (desktop only) #}
           <div class="hidden lg:block relative" data-controller="dropdown">
             <button 
-              class="flex items-center space-x-2 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+              class="flex items-center space-x-2 p-1 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" 
               type="button" 
               data-action="click->dropdown#toggle"
               data-dropdown-target="button"
               aria-expanded="false"
               aria-label="{{ 'nav.profile.menu'|trans({}, 'navigation') }}"
             >
-              {{ helper.profilePicture(app.user, 'w-8 h-8 rounded-full') }}
+              {{ helper.profilePicture(app.user, 'w-8 h-8 rounded-full ring-2 ring-neutral-200 dark:ring-neutral-700') }}
             </button>
             <div class="absolute right-0 z-50 mt-2 w-56 bg-neutral-50 dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200 dark:border-neutral-700 hidden" data-dropdown-target="menu">
               <div class="py-2">
@@ -194,14 +195,14 @@
           {# User profile dropdown (mobile) #}
           <div class="lg:hidden relative" data-controller="dropdown">
             <button 
-              class="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" 
+              class="inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" 
               type="button" 
               data-action="click->dropdown#toggle"
               data-dropdown-target="button"
               aria-expanded="false"
               aria-label="{{ 'nav.profile.menu'|trans({}, 'navigation') }}"
             >
-              {{ helper.profilePicture(app.user, 'w-6 h-6 rounded-full') }}
+              {{ helper.profilePicture(app.user, 'w-6 h-6 rounded-full ring-2 ring-neutral-200 dark:ring-neutral-700') }}
             </button>
             <div class="absolute right-0 z-50 mt-2 w-56 bg-neutral-50 dark:bg-neutral-800 rounded-xl shadow-lg border border-neutral-200 dark:border-neutral-700 hidden" data-dropdown-target="menu">
               <div class="py-2">
@@ -231,8 +232,8 @@
           </div>
         {% else %}
           {# Login button #}
-          <a class="hidden lg:inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" href="{{ path('login') }}">{{ 'navbar.login'|trans({}, 'navigation') }}</a>
-          <a class="lg:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 dark:text-neutral-400 hover:text-cc-blue-600 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2 transition-colors duration-200" href="{{ path('login') }}">
+          <a class="hidden lg:inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" href="{{ path('login') }}">{{ 'navbar.login'|trans({}, 'navigation') }}</a>
+          <a class="lg:hidden inline-flex items-center justify-center p-1.5 sm:p-2 rounded-lg text-neutral-600 hover:text-cc-blue-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200" href="{{ path('login') }}">
             {{ ux_icon('tabler:user', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
           </a>
         {% endif %}

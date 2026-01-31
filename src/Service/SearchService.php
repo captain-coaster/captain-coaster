@@ -169,11 +169,15 @@ class SearchService
                         name: $result['name'],
                         slug: $result['slug'],
                         type: 'coaster',
-                        image: null,
+                        image: $result['imagePath'] ?? null,
                         subtitle: $result['parkName'] ?? null,
                         metadata: [
                             'park' => $result['parkName'] ?? null,
                             'country' => $result['countryName'] ?? null,
+                            'rank' => $result['rank'] ?? null,
+                            'score' => $result['score'] ?? null,
+                            'totalRatings' => $result['totalRatings'] ?? 0,
+                            'status' => $result['statusName'] ?? null,
                         ]
                     );
                 case 'park':
@@ -185,6 +189,7 @@ class SearchService
                         subtitle: $result['countryName'] ?? null,
                         metadata: [
                             'country' => $result['countryName'] ?? null,
+                            'coasterCount' => $result['coasterCount'] ?? 0,
                         ]
                     );
                 case 'user':
@@ -193,7 +198,8 @@ class SearchService
                         name: $result['name'],
                         slug: $result['slug'],
                         type: 'user',
-                        subtitle: \sprintf('%d ratings', $result['totalRatings'] ?? 0),
+                        image: $result['profilePicture'] ?? null,
+                        subtitle: null,
                         metadata: [
                             'totalRatings' => $result['totalRatings'] ?? 0,
                         ]
@@ -250,15 +256,24 @@ class SearchService
         usort($allResults, fn ($a, $b) => $b['relevance_score'] <=> $a['relevance_score']);
 
         $totalResults = \count($allResults);
-        $totalPages = ceil($totalResults / $perPage);
+        $totalPages = (int) ceil($totalResults / $perPage);
         $offset = ($page - 1) * $perPage;
 
         // Get results for current page
         $paginatedResults = \array_slice($allResults, $offset, $perPage);
 
+        // Count by type for filter tabs
+        $countByType = [
+            'all' => $totalResults,
+            'coaster' => \count($coasterResults),
+            'park' => \count($parkResults),
+            'user' => \count($userResults),
+        ];
+
         return [
             'results' => $paginatedResults,
             'totalResults' => $totalResults,
+            'countByType' => $countByType,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'perPage' => $perPage,

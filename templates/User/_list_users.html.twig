@@ -1,32 +1,38 @@
 {% import "macros/_macros_helpers.html.twig" as helper %}
 
-<div class="grid grid-cols-1 md:grid-cols-12 gap-4 gap-3">
-    {% for user in users %}
-        <div class="lg:col-span-4 md:col-span-6">
-            <div class="{% if border %}bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden {% endif %}h-100">
-                <div class="{% if border %}p-6 {% endif %}">
-                    <div class="flex gap-3">
-                        <div class="shrink-0">
-                            {{ helper.profilePicture(user.0, 'rounded-full img-md') }}
-                        </div>
-                        <div class="flex-1">
-                            <h6 class="mb-1">
-                                <a href="{{ path('user_show', {'slug': user.0.slug}) }}">
-                                    {{ user.0.displayName }}
-                                </a>
-                            </h6>
-                            <p class="text-neutral-600 dark:text-neutral-400 text-sm mb-2">
-                                {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
-                            </p>
-                            <h6 class="font-semibold mb-0">
-                                <a href="{{ path('user_ratings', {'id': user.0.id}) }}">
-                                    {{ 'user_list.rating'|trans({'count': user.total_ratings}) }}
-                                </a>
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {% for user in users %}
+    <article class="group bg-white dark:bg-neutral-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-neutral-100 dark:border-neutral-800">
+      <a href="{{ path('user_show', {'slug': user.0.slug}) }}" class="block p-4">
+        <div class="flex items-center gap-4">
+          {# Profile Picture #}
+          <div class="relative shrink-0">
+            {{ helper.profilePicture(user.0, 'w-14 h-14 rounded-full object-cover ring-2 ring-white dark:ring-neutral-800 group-hover:ring-cc-blue-200 dark:group-hover:ring-cc-blue-800 transition-all duration-300') }}
+            {# Rating count badge #}
+            <span class="absolute -bottom-1 -right-1 inline-flex items-center justify-center min-w-[1.5rem] h-6 px-1.5 text-xs font-bold rounded-full bg-cc-blue-600 text-white ring-2 ring-white dark:ring-neutral-900">
+              {{ user.total_ratings }}
+            </span>
+          </div>
+
+          {# User Info #}
+          <div class="flex-1 min-w-0">
+            <h2 class="font-semibold text-neutral-900 dark:text-white truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+              {{ user.0.displayName }}
+            </h2>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+              {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
+            </p>
+            <p class="text-sm text-cc-blue-600 dark:text-cc-blue-400 font-medium mt-1">
+              {{ 'user_list.rating'|trans({'count': user.total_ratings}) }}
+            </p>
+          </div>
+
+          {# Arrow indicator #}
+          <div class="shrink-0 text-neutral-300 dark:text-neutral-600 group-hover:text-cc-blue-500 transition-colors">
+            {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+          </div>
         </div>
-    {% endfor %}
+      </a>
+    </article>
+  {% endfor %}
 </div>
