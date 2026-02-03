@@ -47,4 +47,15 @@ class ReviewUpvoteRepository extends ServiceEntityRepository
 
         return (int) $result;
     }
+
+    /** Delete all upvotes given by a user */
+    public function deleteByUser(User $user): void
+    {
+        $this->createQueryBuilder('u')
+            ->delete()
+            ->where('u.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
+    }
 }

@@ -141,4 +141,25 @@ class UserRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    /**
+     * Find users banned before a given date who still have data to purge.
+     *
+     * @return User[]
+     */
+    public function findUsersBannedBefore(\DateTime $before): array
+    {
+        /** @var User[] $result */
+        $result = $this->createQueryBuilder('u')
+            ->leftJoin('u.ratings', 'r')
+            ->where('u.bannedAt IS NOT NULL')
+            ->andWhere('u.bannedAt <= :before')
+            ->andWhere('u.deletedAt IS NULL')
+            ->andWhere('r.id IS NOT NULL')
+            ->setParameter('before', $before)
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
 }
