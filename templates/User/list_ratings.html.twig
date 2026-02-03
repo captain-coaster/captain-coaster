@@ -5,14 +5,7 @@
 {% set title = 'users.ratings.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
-{% block stylesheets %}
 
-{% endblock %}
-
-{% block javascripts %}
-
-  <script src="{{ asset('js/pages/rating.js') }}"></script>
-{% endblock %}
 
 {% block body %}
   {% include 'Includes/rating_table.html.twig' with {'ratings': ratings} only %}
