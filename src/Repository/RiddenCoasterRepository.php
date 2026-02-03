@@ -145,7 +145,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->leftJoin('r.coaster', 'co')
             ->where('r.coaster = :coasterId')
             ->andWhere('u.enabled = 1')
-            ->orderBy('languagePriority', 'asc')
             ->setParameter('coasterId', $coaster->getId())
             ->setParameter('locale', $locale)
             ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages);
@@ -181,9 +180,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Default sort: prioritizes reviews with text in user's language first,
+     * then sorts by review score (upvotes - downvotes), then by date.
+     * This ensures users see relevant, high-quality content at the top.
+     */
     private function defaultSort(QueryBuilder $query): void
     {
         $query
+            ->addOrderBy('languagePriority', 'ASC')
             ->addOrderBy('r.score', 'DESC')
             ->addOrderBy('r.updatedAt', 'DESC');
     }
