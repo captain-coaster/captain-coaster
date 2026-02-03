@@ -333,7 +333,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
+            ->andWhere('u.enabled = 1')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -344,8 +346,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
-            ->join('r.user', 'u')
+            ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
+            ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setParameter('locale', $locale)
