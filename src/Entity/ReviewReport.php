@@ -56,6 +56,12 @@ class ReviewReport
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $reviewerName = null;
 
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $reviewerId = null;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $ratingValue = null;
+
     #[ORM\Column(type: Types::STRING, length: 20)]
     private string $reason;
 
@@ -215,19 +221,55 @@ class ReviewReport
         return $this;
     }
 
+    public function getReviewerId(): ?int
+    {
+        return $this->reviewerId;
+    }
+
+    public function setReviewerId(?int $reviewerId): self
+    {
+        $this->reviewerId = $reviewerId;
+
+        return $this;
+    }
+
+    public function getRatingValue(): ?float
+    {
+        return $this->ratingValue;
+    }
+
+    public function setRatingValue(?float $ratingValue): self
+    {
+        $this->ratingValue = $ratingValue;
+
+        return $this;
+    }
+
     /** Get the review content, either from the stored snapshot or the live review */
     public function getDisplayContent(): string
     {
+        // First check stored snapshot
         if ($this->reviewContent) {
             return $this->reviewContent;
         }
 
-        $reviewContent = $this->review?->getReview();
-        if ($reviewContent) {
-            return $reviewContent;
+        // If review still exists, get its content (may be null for rating-only)
+        if ($this->review) {
+            return $this->review->getReview() ?? '';
         }
 
-        return '[Deleted review]';
+        // Review was deleted - status column already indicates this
+        return '';
+    }
+
+    /** Get the rating value, either from the stored snapshot or the live review */
+    public function getDisplayRating(): ?float
+    {
+        if ($this->ratingValue) {
+            return $this->ratingValue;
+        }
+
+        return $this->review?->getValue();
     }
 
     /** Get the coaster name, either from the stored snapshot or the live review */
@@ -237,12 +279,7 @@ class ReviewReport
             return $this->coasterName;
         }
 
-        $coasterName = $this->review?->getCoaster()?->getName();
-        if ($coasterName) {
-            return $coasterName;
-        }
-
-        return '[Deleted]';
+        return $this->review?->getCoaster()?->getName() ?? '';
     }
 
     /** Get the reviewer name, either from the stored snapshot or the live review */
@@ -252,11 +289,16 @@ class ReviewReport
             return $this->reviewerName;
         }
 
-        $userName = $this->review?->getUser()?->getDisplayName();
-        if ($userName) {
-            return $userName;
+        return $this->review?->getUser()?->getDisplayName() ?? '';
+    }
+
+    /** Get the reviewer ID, either from the stored snapshot or the live review */
+    public function getDisplayReviewerId(): ?int
+    {
+        if ($this->reviewerId) {
+            return $this->reviewerId;
         }
 
-        return '[Deleted user]';
+        return $this->review?->getUser()?->getId();
     }
 }

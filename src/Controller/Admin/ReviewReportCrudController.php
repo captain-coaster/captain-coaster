@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\ReviewReport;
-use App\Entity\User;
+use App\Repository\ReviewReportRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\ActionGroup;
@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
@@ -33,7 +34,8 @@ class ReviewReportCrudController extends AbstractCrudController
 {
     public function __construct(
         private readonly AdminUrlGenerator $adminUrlGenerator,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ReviewReportRepository $reportRepository
     ) {
     }
 
@@ -48,7 +50,7 @@ class ReviewReportCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Review Report')
             ->setEntityLabelInPlural('Review Reports')
             ->setSearchFields(['id', 'user.displayName', 'reviewContent', 'reason'])
-            ->setDefaultSort(['createdAt' => 'DESC'])
+            ->setDefaultSort(['resolved' => 'ASC', 'createdAt' => 'DESC'])
             ->showEntityActionsInlined()
             ->setPaginatorPageSize(25);
     }
@@ -146,7 +148,24 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->formatValue(fn ($value, $entity) => $entity?->getUser()?->getDisplayName() ?? '[Deleted]'),
             TextField::new('displayReviewerName', 'Reviewer')
                 ->hideOnForm()
-                ->formatValue(fn ($value, $entity) => $entity?->getDisplayReviewerName() ?? '[Unknown]'),
+                ->formatValue(function ($value, $entity) {
+                    $name = $entity?->getDisplayReviewerName();
+                    if (!$name) {
+                        return '';
+                    }
+                    $userId = $entity->getDisplayReviewerId();
+                    if (!$userId) {
+                        return $name;
+                    }
+                    $url = $this->adminUrlGenerator
+                        ->setController(UserCrudController::class)
+                        ->setAction(Action::DETAIL)
+                        ->setEntityId($userId)
+                        ->generateUrl();
+
+                    return \sprintf('<a href="%s">%s</a>', $url, htmlspecialchars($name));
+                })
+                ->renderAsHtml(),
             TextField::new('displayCoasterName', 'Coaster')
                 ->hideOnForm()
                 ->formatValue(fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
@@ -159,6 +178,10 @@ class ReviewReportCrudController extends AbstractCrudController
                     ReviewReport::REASON_INAPPROPRIATE => 'warning',
                     ReviewReport::REASON_SPAM => 'danger',
                 ]),
+            NumberField::new('displayRating', 'Rating')
+                ->hideOnForm()
+                ->setNumDecimals(1)
+                ->formatValue(fn ($value, $entity) => $entity?->getDisplayRating() ? $entity->getDisplayRating().'/5' : '-'),
         ];
 
         // Show different content fields based on page
@@ -242,17 +265,21 @@ class ReviewReportCrudController extends AbstractCrudController
         $coasterName = $review->getCoaster()->getName() ?? 'Unknown';
         $reviewerName = $review->getUser()->getDisplayName() ?? 'Unknown';
 
+        // Mark all pending reports for this review as review deleted
+        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        foreach ($relatedReports as $report) {
+            $report->setStatus(ReviewReport::STATUS_REVIEW_DELETED);
+        }
+
         // Delete the review
         $this->entityManager->remove($review);
-
-        // Mark report as review deleted
-        $reviewReport->setStatus(ReviewReport::STATUS_REVIEW_DELETED);
         $this->entityManager->flush();
 
         $this->addFlash('success', \sprintf(
-            'Review by %s for %s has been deleted and report marked as review deleted.',
+            'Review by %s for %s has been deleted and %d report(s) marked as review deleted.',
             $reviewerName,
-            $coasterName
+            $coasterName,
+            \count($relatedReports)
         ));
 
         return $this->redirectToIndex();
@@ -263,10 +290,9 @@ class ReviewReportCrudController extends AbstractCrudController
     {
         /** @var ReviewReport $contextReport */
         $contextReport = $context->getEntity()->getInstance();
-        $reportId = $contextReport->getId();
 
         // Re-fetch the entity to ensure it's managed
-        $reviewReport = $this->entityManager->find(ReviewReport::class, $reportId);
+        $reviewReport = $this->entityManager->find(ReviewReport::class, $contextReport->getId());
         if (!$reviewReport) {
             $this->addFlash('error', 'Report not found.');
 
@@ -293,16 +319,15 @@ class ReviewReportCrudController extends AbstractCrudController
         } else {
             // Disable the user - UserListener handles related cleanup
             $user->setEnabled(false);
-            $this->entityManager->flush();
             $this->addFlash('success', \sprintf('User %s has been disabled.', $user->getDisplayName()));
         }
 
-        // Re-fetch the report to ensure we have fresh data
-        $reviewReport = $this->entityManager->find(ReviewReport::class, $reportId);
-        if ($reviewReport) {
-            $reviewReport->setStatus(ReviewReport::STATUS_USER_BANNED);
-            $this->entityManager->flush();
+        // Mark all pending reports for this review as user banned
+        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        foreach ($relatedReports as $report) {
+            $report->setStatus(ReviewReport::STATUS_USER_BANNED);
         }
+        $this->entityManager->flush();
 
         return $this->redirectToIndex();
     }
@@ -326,11 +351,20 @@ class ReviewReportCrudController extends AbstractCrudController
             return $this->redirectToIndex();
         }
 
-        // Just mark as no action taken
-        $reviewReport->setStatus(ReviewReport::STATUS_NO_ACTION);
+        // Mark all pending reports for this review as no action
+        $review = $reviewReport->getReview();
+        if ($review) {
+            $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+            foreach ($relatedReports as $report) {
+                $report->setStatus(ReviewReport::STATUS_NO_ACTION);
+            }
+        } else {
+            // Review was deleted, just mark this report
+            $reviewReport->setStatus(ReviewReport::STATUS_NO_ACTION);
+        }
         $this->entityManager->flush();
 
-        $this->addFlash('info', 'Report marked as no action taken.');
+        $this->addFlash('info', 'Report(s) marked as no action taken.');
 
         return $this->redirectToIndex();
     }

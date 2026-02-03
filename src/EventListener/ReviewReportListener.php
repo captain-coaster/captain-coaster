@@ -25,6 +25,9 @@ class ReviewReportListener
     /** After persist: send Discord notification */
     public function postPersist(ReviewReport $reviewReport, PostPersistEventArgs $event): void
     {
+        $review = $reviewReport->getReview();
+        $reviewText = $review->getReview();
+
         $discordOptions = (new DiscordOptions())
             ->addEmbed(
                 (new DiscordEmbed())
@@ -32,7 +35,7 @@ class ReviewReportListener
                     ->addField(
                         (new DiscordFieldEmbedObject())
                             ->name('Coaster')
-                            ->value($reviewReport->getReview()->getCoaster()->getName())
+                            ->value($review->getCoaster()->getName())
                             ->inline(false)
                     )
                     ->addField(
@@ -43,14 +46,14 @@ class ReviewReportListener
                     )
                     ->addField(
                         (new DiscordFieldEmbedObject())
-                            ->name('Reported content')
-                            ->value($reviewReport->getReview()->getReview() ? mb_substr($reviewReport->getReview()->getReview(), 0, 1000, 'UTF-8') : '')
+                            ->name('Rating')
+                            ->value((string) $review->getValue().'/5')
                             ->inline(false)
                     )
                     ->addField(
                         (new DiscordFieldEmbedObject())
-                            ->name('Rating')
-                            ->value((string) $reviewReport->getReview()->getValue())
+                            ->name('Reported content')
+                            ->value($reviewText ? mb_substr($reviewText, 0, 1000, 'UTF-8') : '(no text)')
                             ->inline(false)
                     )
                     ->addField(

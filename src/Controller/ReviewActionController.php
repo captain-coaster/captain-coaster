@@ -88,6 +88,15 @@ class ReviewActionController extends BaseController
     public function reportAction(Request $request, RiddenCoaster $review): JsonResponse
     {
         $user = $this->getUser();
+
+        // Prevent users from reporting their own reviews
+        if ($review->getUser() === $user) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Cannot report your own review',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         $hasReported = $this->reportRepository->hasUserReported($user, $review);
 
         if ($hasReported) {
@@ -115,6 +124,8 @@ class ReviewActionController extends BaseController
         $report->setReviewContent($review->getReview());
         $report->setCoasterName($review->getCoaster()->getName());
         $report->setReviewerName($review->getUser()->getDisplayName());
+        $report->setReviewerId($review->getUser()->getId());
+        $report->setRatingValue($review->getValue());
 
         $this->entityManager->persist($report);
         $this->entityManager->flush();

@@ -68,4 +68,20 @@ class ReviewReportRepository extends ServiceEntityRepository
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery();
     }
+
+    /**
+     * Find all pending reports for a specific review.
+     *
+     * @return ReviewReport[]
+     */
+    public function findPendingReportsForReview(RiddenCoaster $review): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.review = :review')
+            ->andWhere('r.status = :status')
+            ->setParameter('review', $review)
+            ->setParameter('status', ReviewReport::STATUS_PENDING)
+            ->getQuery()
+            ->getResult();
+    }
 }
