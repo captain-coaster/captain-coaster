@@ -99,6 +99,7 @@
                 </div>
               </fieldset>
 
+              {% if form.apiKey is defined %}
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.advanced'|trans }}</legend>
 
@@ -108,6 +109,7 @@
                   {{ form_errors(form.apiKey) }}
                 </div>
               </fieldset>
+              {% endif %}
 
               <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
                 <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }}</b>

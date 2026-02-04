@@ -12,7 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Table(name: 'users')]
@@ -30,7 +29,6 @@ class User implements UserInterface
         $this->badges = new ArrayCollection();
         $this->notifications = new ArrayCollection();
         $this->images = new ArrayCollection();
-        $this->apiKey = Uuid::v4()->toRfc4122();
     }
 
     private const string ROLE_DEFAULT = 'ROLE_USER';
@@ -119,8 +117,8 @@ class User implements UserInterface
     #[ORM\JoinColumn(nullable: true)]
     private ?Park $homePark = null;
 
-    #[ORM\Column(type: Types::STRING, unique: true, nullable: false)]
-    private string $apiKey;
+    #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
+    private ?string $apiKey = null;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
     private bool $addTodayDateWhenRating = false;
@@ -503,16 +501,21 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getApiKey(): string
+    public function getApiKey(): ?string
     {
         return $this->apiKey;
     }
 
-    public function setApiKey(string $apiKey): static
+    public function setApiKey(?string $apiKey): static
     {
         $this->apiKey = $apiKey;
 
         return $this;
+    }
+
+    public function hasApiKey(): bool
+    {
+        return null !== $this->apiKey;
     }
 
     public function addImage(Image $image): static

@@ -149,13 +149,15 @@ class ProfileSettingsForm extends AbstractType
             'label' => 'profile.settings.preferences.addTodayDateWhenRating.label',
         ]);
 
-        // Advanced section
-        $builder->add('apiKey', TextType::class, [
-            'required' => false,
-            'disabled' => true,
-            'label' => 'profile.settings.advanced.apiKey.label',
-            'attr' => ['class' => 'form-control'],
-        ]);
+        // Advanced section - only show API key if user has one
+        if ($user->hasApiKey()) {
+            $builder->add('apiKey', TextType::class, [
+                'required' => false,
+                'disabled' => true,
+                'label' => 'profile.settings.advanced.apiKey.label',
+                'attr' => ['class' => 'form-control'],
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
