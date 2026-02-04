@@ -50,6 +50,21 @@ policy:
 
         <p><strong>Problème :</strong> Contenu publié sans autorisation ? <a href="{contact_link}">Contactez-nous</a> pour suppression.</p>
 
+        <h2>Utilisation de l'API</h2>
+        <p><strong>Finalité :</strong> L'API est fournie principalement pour un usage personnel et exploratoire.</p>
+
+        <p><strong>Disponibilité :</strong> Nous ne garantissons pas un niveau de disponibilité (uptime) du service spécifique.</p>
+
+        <p><strong>Limitation de débit :</strong> L'accès à l'API est limité par utilisateur. Les requêtes excessives peuvent entraîner une révocation temporaire ou permanente de l'accès.</p>
+
+        <p><strong>Modifications :</strong> Nous pouvons introduire des changements (breaking changes) sans préavis.</p>
+
+        <p><strong>Usage commercial :</strong> L'utilisation de l'API à des fins commerciales est strictement interdite.</p>
+
+        <p><strong>Accès :</strong> Nous nous réservons le droit de révoquer l'accès à l'API à tout moment.</p>
+
+        <p><strong>Exactitude des données :</strong> Les données de l'API sont fournies "en l'état" sans garantie. Nous ne garantissons ni l'exhaustivité ni l'exactitude.</p>
+
         <h2>Responsabilité</h2>
         <p>Captain Coaster ne garantit pas l'exactitude des informations partagées par la communauté. Nous modérons mais ne pouvons tout vérifier.</p>
 
