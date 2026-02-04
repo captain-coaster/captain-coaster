@@ -79,10 +79,6 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $this->logger->error('Google authentication failed', [
-            'exception' => $exception->getMessage(),
-        ]);
-
         // Store the authentication exception in session for display on login page
         $request->getSession()->set('_security.last_error', $exception);
 
