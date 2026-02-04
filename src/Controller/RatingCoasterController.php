@@ -9,6 +9,7 @@ use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -100,11 +101,17 @@ class RatingCoasterController extends AbstractController
         Request $request,
         RiddenCoaster $rating,
         EntityManagerInterface $em,
-        CsrfTokenManagerInterface $csrfTokenManager
+        CsrfTokenManagerInterface $csrfTokenManager,
+        LoggerInterface $logger
     ): JsonResponse {
         // Validate CSRF token
         $token = $request->request->get('_token');
         if (!$token || !$csrfTokenManager->isTokenValid(new CsrfToken('rating', (string) $token))) {
+            $logger->error('Invalid CSRF token on rating_delete', [
+                'referer' => $request->headers->get('referer', 'unknown'),
+                'rating_id' => $rating->getId(),
+            ]);
+
             return new JsonResponse(['error' => 'Invalid CSRF token'], Response::HTTP_FORBIDDEN);
         }
 

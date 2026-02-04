@@ -2,7 +2,9 @@
 {% set locale = app.request.locale %}
 
 <div class="media"
-     data-controller="review-actions"
+     data-controller="csrf-protection review-actions"
+     data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+     data-review-actions-csrf-protection-outlet=".media"
      data-review-actions-id-value="{{ review.id }}"
      data-review-actions-upvoted-value="false"
      data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"

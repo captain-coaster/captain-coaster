@@ -15,7 +15,7 @@ export default class extends Controller {
         'expandButton',
         'collapseButton',
     ];
-    static outlets = ['modal'];
+    static outlets = ['modal', 'csrf-protection'];
     static values = {
         id: Number,
         upvoted: Boolean,
@@ -117,11 +117,18 @@ export default class extends Controller {
             return;
         }
 
+        const headers = { 'X-Requested-With': 'XMLHttpRequest' };
+        let body = null;
+
+        if (this.hasCsrfProtectionOutlet) {
+            headers['Content-Type'] = 'application/x-www-form-urlencoded';
+            body = `_token=${this.csrfProtectionOutlet.getToken()}`;
+        }
+
         fetch(this.deleteUrlValue, {
             method: 'DELETE',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-            },
+            headers,
+            body,
         })
             .then((response) => response.json())
             .then((data) => {
@@ -204,7 +211,9 @@ export default class extends Controller {
                     // Re-enable submit button on error
                     if (submitButton) {
                         submitButton.disabled = false;
-                        submitButton.textContent = trans('review.submit_report');
+                        submitButton.textContent = trans(
+                            'review.submit_report'
+                        );
                     }
                     this._showNotification(
                         data.message || trans('review.report_error'),
