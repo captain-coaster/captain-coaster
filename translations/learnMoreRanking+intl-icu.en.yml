@@ -1,15 +1,15 @@
-title: 'How does the ranking works?'
+title: 'How does the ranking work?'
 brief:
     title: "Captain Coaster's ranking in brief"
     text:
-        "<p>Captain Coaster's ranking is based on a <b>pairwise comparison system</b>. The comparisons are deduced from your Tops and Ratings. The more detailed they are, the better!</p>
-        <p>The Top is more precise whereas ratings are faster to use. In order to improve your influence on the ranking, we recommend you to <b>rate all your ridden coasters</b>, and then to <b>order your highest rated coasters</b> in your Top.</p>"
+        "<p>Captain Coaster's ranking is based on a <b>pairwise comparison system</b>. Comparisons are derived from your Tops and Ratings — the more detailed they are, the better!</p>
+        <p>Tops are more precise, while ratings are quicker to use. To maximize your influence on the ranking, we recommend you <b>rate all your ridden coasters</b>, then <b>order your highest-rated coasters</b> in your Top.</p>"
 principles:
     title: 'Ranking principles'
     text:
-        '<p><b>For each coaster in the ranking, we compute a duel with all other coasters</b> in the database to find out which one is the best.</p>
-        <p>Only mutual riders can say whether they prefer one or the other as they have ridden both. This piece of information can be supplied by rating both or ordering both in your Top. <b>The duel is won by the coaster getting a majority of positive comparisons.</b><br/>Then the results of these duels are computed to designate the winner. If a coaster wins all its duels, it will be number 1. Another losing against n°1 and winning against all others will be the number 2, etc. The score reflects this proportion.</p>
-        <p>The algorithm is built to <b>reflect the real tendency and tastes of all riders</b> involved.<br/>First there is no mass effect: the amount of ratings for a coaster has no influence. It is not a popularity contest! Rare coasters have the same opportunity to be well ranked than most popular.</p>
-        <p>For your information, ranking 1 coaster brings 0 comparisons, which means no influence at all. Ranking 10 coasters brings 45 comparisons, ranking 20 coasters brings 190 comparisons, etc.</p>
-        <p>As a consequence the more you ride (and then rate) coasters, the more comparisons you bring and therefore the more you weigh on the ranking. This encourages you, firstly to rate all your ridden coasters, secondly to ride more and more coasters!</p>
-        <p>Please note that <b>a single person cannot disrupt the whole ranking.</b> Everyone has influence, but one person alone with an antagonistic point of view on a coaster will not change its score by 100%, it’s always the majority point of view that matters.</p>'
+        "<p><b>For each coaster in the ranking, we compute a head-to-head duel against every other coaster</b> in the database to determine which one is better.</p>
+        <p>Only riders who have experienced both coasters can weigh in on a duel. This comparison comes from rating both coasters or ordering both in your Top. <b>The duel is won by the coaster with the majority of favorable comparisons.</b><br/>The results of all these duels are then combined to produce the final ranking. If a coaster wins all its duels, it takes the #1 spot. A coaster that only loses to #1 but beats everyone else becomes #2, and so on. The score reflects this proportion of duels won.</p>
+        <p>The algorithm is designed to <b>reflect the genuine preferences and tastes of all participating riders</b>.<br/>There is no mass effect: the total number of ratings a coaster receives has no influence. This is not a popularity contest! Rare coasters have the same chance of ranking well as the most popular ones.</p>
+        <p>For reference: rating just 1 coaster generates 0 comparisons, meaning no influence at all. Rating 10 coasters generates 45 comparisons, rating 20 coasters generates 190 comparisons, and so on.</p>
+        <p>The more coasters you ride and rate, the more comparisons you contribute — and the greater your influence on the ranking. This encourages you to rate all your ridden coasters, and to keep riding more!</p>
+        <p>Keep in mind that <b>a single person cannot disrupt the entire ranking</b>. Everyone has influence, but one person with a contrarian opinion on a coaster won't drastically change its score — the majority view always prevails.</p>"

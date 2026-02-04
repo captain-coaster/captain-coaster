@@ -1,16 +1,15 @@
 title: 'Wie funktioniert das Ranking?'
 brief:
-    title: 'Das Ranking des Captain’s in Kurzform'
+    title: 'Das Captain Coaster Ranking in Kürze'
     text:
-        '<p>Captain Coaster’s Ranking basiert auf einem <b>paarweisen Vergleichssystem</b>. Die Vergleiche werden aus deinen Tops und den Bewertungen abgeleitet. Je detaillierter diese sind, desto besser!</p>
-        <p>Die Tops sind präziser, wohingegen die Bewertungen schneller zu verwenden sind. Um deinen Einfluss auf das Ranking zu verbessern, empfehlen wir dir, </b>alle deine gefahrenen Achterbahnenzu bewerten</b> und anschließend <b>deine bestbewerteten Achterbahnen</b> in deine Tops hinzuzufügen.</p>'
+        '<p>Das Ranking von Captain Coaster basiert auf einem <b>paarweisen Vergleichssystem</b>. Die Vergleiche werden aus deinen Tops und Bewertungen abgeleitet — je detaillierter sie sind, desto besser!</p>
+        <p>Tops sind präziser, während Bewertungen schneller zu vergeben sind. Um deinen Einfluss auf das Ranking zu maximieren, empfehlen wir dir, <b>alle deine gefahrenen Achterbahnen zu bewerten</b> und dann <b>deine bestbewerteten Achterbahnen</b> in deinem Top zu ordnen.</p>'
 principles:
-    title: 'Ranking Prinzipien'
+    title: 'Ranking-Prinzipien'
     text:
-        '<p><b>Für jede Achterbahn in dem Ranking berechnen wir ein Duell mit allen anderen Achterbahnen</b> in der Datenbank, um herauszufinden, welche die beste ist.</p>
-        <p>Es können nur Personen sagen, ob sie die eine oder andere Achterbahn bevorzugen, wenn beide sie gefahren sind. Diese Information wird bereitgestellt, indem beide bewertet werden oder beide in den Tops sind.
-        <b>Das Duell wird von der Achterbahn gewonnen, die die Mehrheit der positiven Vergleiche erhält.</b><br/>Anschließend werden die Ergebnisse dieser Duelle berechnet, um den Sieger zu ermitteln. Wenn eine Achterbahn alle ihre Duelle gewinnt, ist diese die Nummer 1. Eine andere, die gegen die Nummer 1 verliert aber gegen alle anderen gewinnt, wird die Nummer 2, usw. Die Punktzahl spiegelt dieses Verhältnis wider.</p>
-        <p>Der Algorithmus ist so aufgebaut, dass er <b>die tatsächlichen Tendenzen und Vorlieben aller beteiligten Fahrer widerspiegelt</b>.<br/>Erstens gibt es keinen Masseneffekt: Die Anzahl der einzelnen Bewertungen für eine Achterbahn hat keinen Einfluss. Es ist kein Beliebtheitswettbewerb! Seltene Achterbahnen haben die gleichen Chancen auf eine gute Platzierung wie die beliebtesten.</p>
-        <p>Zu deiner Information: die Bewertung einer einzelnen Achterbahn bringt keine Vergleiche. Das heißt, dass es überhaupt keinen Einfluss auf das Ranking hat. Die Bewertung von zehn Achterbahnen bringt 45 Vergleiche, die Bewertung von 20 Achterbahnen 190 Vergleiche usw.</p>
-        <p>Das heißt also: je mehr Achterbahnen du fährst (und anschließend bewertest), desto mehr Vergleiche werden erstellt und umso stärker ist dein Einfluss auf das Ranking. Das motiviert dich erstens, alle deine gefahrenen Achterbahnen zu bewerten und zweitens, immer mehr und mehr Achterbahnen zu fahren!</p>
-        <p>Bitte beachte, dass eine einzelne Person nicht das gesamte Ranking beeinflussen kann.</b> Jeder hat Einfluss, aber eine Person allein mit einer Gegensätzlichen Meinung zu einer Achterbahn, wird deren Punktestand nicht zu 100% ändern. Es kommt immer auf die Meinung der Mehrheit an.</p>'
+        '<p><b>Für jede Achterbahn im Ranking berechnen wir ein direktes Duell gegen jede andere Achterbahn</b> in der Datenbank, um zu ermitteln, welche besser ist.</p>
+        <p>Nur Fahrer, die beide Achterbahnen erlebt haben, können zu einem Duell beitragen. Dieser Vergleich stammt aus der Bewertung beider Achterbahnen oder deren Platzierung in deinem Top. <b>Das Duell gewinnt die Achterbahn mit der Mehrheit der positiven Vergleiche.</b><br/>Die Ergebnisse aller Duelle werden dann kombiniert, um das finale Ranking zu erstellen. Wenn eine Achterbahn alle ihre Duelle gewinnt, belegt sie Platz 1. Eine Achterbahn, die nur gegen die Nr. 1 verliert, aber alle anderen schlägt, wird Nr. 2, und so weiter. Der Score spiegelt dieses Verhältnis gewonnener Duelle wider.</p>
+        <p>Der Algorithmus ist darauf ausgelegt, <b>die echten Vorlieben und Geschmäcker aller teilnehmenden Fahrer widerzuspiegeln</b>.<br/>Es gibt keinen Masseneffekt: Die Gesamtzahl der Bewertungen einer Achterbahn hat keinen Einfluss. Das ist kein Beliebtheitswettbewerb! Seltene Achterbahnen haben die gleichen Chancen auf eine gute Platzierung wie die beliebtesten.</p>
+        <p>Zur Information: Die Bewertung von nur einer Achterbahn erzeugt 0 Vergleiche, also keinen Einfluss. Die Bewertung von 10 Achterbahnen erzeugt 45 Vergleiche, die Bewertung von 20 Achterbahnen erzeugt 190 Vergleiche, und so weiter.</p>
+        <p>Je mehr Achterbahnen du fährst und bewertest, desto mehr Vergleiche trägst du bei — und desto größer ist dein Einfluss auf das Ranking. Das motiviert dich, alle deine gefahrenen Achterbahnen zu bewerten und immer mehr zu fahren!</p>
+        <p>Bedenke, dass <b>eine einzelne Person nicht das gesamte Ranking durcheinanderbringen kann</b>. Jeder hat Einfluss, aber eine Person mit einer gegensätzlichen Meinung zu einer Achterbahn wird deren Score nicht drastisch verändern — die Mehrheitsmeinung setzt sich immer durch.</p>'
