@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -37,8 +36,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )
 ]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'manufacturer' => 'exact'])]
-#[ApiFilter(filterClass: OrderFilter::class, properties: ['id', 'rank' => ['nulls_comparison' => 'nulls_largest']], arguments: ['orderParameterName' => 'order'])]
-#[ApiFilter(filterClass: RangeFilter::class, properties: ['rank', 'totalRatings'])]
+#[ApiFilter(filterClass: OrderFilter::class, properties: ['id'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(filterClass: ExistsFilter::class, properties: ['mainImage'])]
 #[Assert\Expression(
     '(this.getPrice() and this.getCurrency()) or (!this.getPrice() and !this.getCurrency())',
@@ -174,15 +172,12 @@ class Coaster implements \Stringable
     private int $totalTopsIn = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    #[Groups(['read_coaster'])]
     private int $validDuels = 0;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 14, scale: 11, nullable: true)]
-    #[Groups(['read_coaster'])]
     private ?string $score = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
-    #[Groups(['list_coaster', 'read_coaster'])]
     private ?int $rank = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
