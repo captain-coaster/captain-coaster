@@ -4,3 +4,9 @@ ride_date:
     before_opening: La fecha del viaje no puede ser anterior a la apertura de la montaña rusa.
     after_closing: La fecha del viaje no puede ser posterior al cierre de la montaña rusa.
     future: La fecha del viaje no puede estar en el futuro.
+
+# Image upload validation
+image_upload:
+    form:
+        copyright_agreement:
+            required: 'Debe confirmar que tiene los derechos para subir esta foto.'

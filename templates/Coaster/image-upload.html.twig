@@ -14,44 +14,43 @@
     {% endfor %}
     <div class="panel panel-flat">
         <div class="panel-body">
-            {{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
-            <div class="form-group {% if form.file.vars.errors|length > 0 %}has-error{% endif %}">
-                {{ form_label(form.file, "", {'label_attr': {'class': 'text-bold col-lg-2'}}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
-                    {{ form_errors(form.file) }}
-                    <span class="help-block">{{ 'image_upload.form.file.helper'|trans }}</span>
-                </div>
+            {{ form_start(form, {'attr': {'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'image_upload.form.uploading'|trans, 'data-form-submit-required-error-value': 'image_upload.form.copyright_agreement.required'|trans({}, 'validators'), 'data-action': 'submit->form-submit#submit'}}) }}
+            <div class="form-group">
+                {{ form_label(form.file, "", {'label_attr': {'class': 'control-label text-bold'}}) }}
+                {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.file) }}
+                <span class="help-block">{{ 'image_upload.form.file.helper'|trans }}</span>
             </div>
-            <div class="form-group {% if form.credit.vars.errors|length > 0 %}has-error{% endif %}">
-                {{ form_label(form.credit, "", {'label_attr': {'class': 'text-bold col-lg-2'}}) }}
-                <div class="col-lg-10">
-                    {{ form_widget(form.credit) }}
-                    {{ form_errors(form.credit) }}
-                    <span class="help-block">{{ 'image_upload.form.credit.helper'|trans }}</span>
-                </div>
+            <div class="form-group">
+                {{ form_label(form.credit, "", {'label_attr': {'class': 'control-label text-bold'}}) }}
+                {{ form_widget(form.credit, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.credit) }}
             </div>
-            <div class="form-group toggle-switch-form-group" data-controller="toggle-switch">
-                {{ form_row(form.watermarked, {'attr': {'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="{{ form.watermarked.vars.full_name }}" id="{{ form.watermarked.vars.id }}" value="1"{% if form.watermarked.vars.checked %} checked{% endif %}>
+                        {{ 'image_upload.form.watermark.label'|trans }}
+                    </label>
+                </div>
                 <span class="help-block">{{ 'image_upload.form.watermark.helper'|trans }}</span>
+                {% do form.watermarked.setRendered %}
+            </div>
+            <div class="form-group {% if form.copyrightAgreement.vars.errors|length > 0 %}has-error{% endif %}">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" name="{{ form.copyrightAgreement.vars.full_name }}" id="{{ form.copyrightAgreement.vars.id }}" value="1"{% if form.copyrightAgreement.vars.checked %} checked{% endif %} data-form-submit-target="requiredCheckbox">
+                        {{ 'image_upload.form.copyright_agreement.label'|trans }}
+                    </label>
+                </div>
+                {{ form_errors(form.copyrightAgreement) }}
+                {% do form.copyrightAgreement.setRendered %}
             </div>
             <div class="form-group">
                 {{ form_widget(form.upload, {'attr': {'class': 'btn btn-primary'}}) }}
-                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="btn btn-warning">
-                    {{ 'image_upload.form.back'|trans }}
-                </a>
             </div>
             {{ form_rest(form) }}
             {{ form_end(form) }}
         </div>
     </div>
-{% endblock %}
-
-{% block javascripts %}
-    <script type="text/javascript">
-        $('form').submit(function(){
-            const $btn = $(this).find('button[type=submit]');
-            $btn.prop('disabled', true).text('{{ 'image_upload.form.uploading'|trans }}');
-        });
-    </script>
 {% endblock %}

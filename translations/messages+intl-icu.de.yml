@@ -111,6 +111,8 @@ image_upload:
         watermark:
             label: 'Wasserzeichen "Captain Coaster"'
             helper: 'Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden.'
+        copyright_agreement:
+            label: 'Ich bestätige, dass ich das Urheberrecht an diesem Foto besitze oder die schriftliche Genehmigung des Rechteinhabers erhalten habe. Ich gewähre Captain Coaster eine Lizenz zur Anzeige dieses Fotos auf der Website. Ich verstehe, dass Dritte dieses Foto nicht ohne meine Erlaubnis wiederverwenden dürfen.'
         upload: Mein Bild einreichen
         uploading: 'Hochladen...'
         back: Zurück zu Achterbahn

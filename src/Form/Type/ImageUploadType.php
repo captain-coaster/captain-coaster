@@ -39,6 +39,16 @@ class ImageUploadType extends AbstractType
                 ['label' => 'image_upload.form.credit.label', 'required' => true]
             )
             ->add(
+                'copyrightAgreement',
+                CheckboxType::class,
+                [
+                    'label' => 'image_upload.form.copyright_agreement.label',
+                    'required' => true,
+                    'mapped' => false,
+                    'constraints' => [new NotBlank(['message' => 'image_upload.form.copyright_agreement.required'])],
+                ]
+            )
+            ->add(
                 'upload',
                 SubmitType::class,
                 ['label' => 'image_upload.form.upload']

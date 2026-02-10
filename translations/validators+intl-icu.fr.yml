@@ -4,3 +4,9 @@ ride_date:
     before_opening: La date de passage ne peut pas être antérieure à l'ouverture du coaster.
     after_closing: La date de passage ne peut pas être postérieure à la fermeture du coaster.
     future: La date de passage ne peut pas être dans le futur.
+
+# Image upload validation
+image_upload:
+    form:
+        copyright_agreement:
+            required: 'Vous devez confirmer que vous avez les droits pour envoyer cette photo.'

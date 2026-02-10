@@ -106,6 +106,8 @@ image_upload:
         watermark:
             label: 'Watermark "Captain Coaster"'
             helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'
+        copyright_agreement:
+            label: 'I confirm that I own the copyright to this photo or have written permission from the copyright holder. I grant Captain Coaster a license to display this photo on the site. I understand that third parties cannot reuse this photo without my permission.'
         upload: 'Submit my picture'
         uploading: 'Uploading...'
         back: 'Back to coaster'

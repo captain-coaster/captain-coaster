@@ -111,6 +111,8 @@ image_upload:
         watermark:
             label: 'Watermark "Captain Coaster"'
             helper: Puede elegir marcar la foto con un logotipo de Captain Coaster para evitar su reutilización en otros sitios web.
+        copyright_agreement:
+            label: 'Confirmo que poseo los derechos de autor de esta foto o que he obtenido el permiso por escrito del titular de los derechos. Concedo a Captain Coaster una licencia para mostrar esta foto en el sitio. Entiendo que terceros no pueden reutilizar esta foto sin mi permiso.'
         upload: Enviar mi foto
         uploading: 'Subiendo...'
         back: Volver a la montaña rusa
