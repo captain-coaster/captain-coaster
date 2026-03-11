@@ -13,7 +13,7 @@ app:
     title:
         default: 'Willkommen!'
     header:
-        search: 'Voltron, Holiday Park...'
+        search: '100% Wolf, Freizeitpark Plohn...'
     search:
         suggestions: 'Suchvorschläge'
         searching: 'Suche läuft...'

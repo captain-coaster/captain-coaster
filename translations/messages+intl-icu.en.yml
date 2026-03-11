@@ -13,7 +13,7 @@ app:
     title:
         default: 'Welcome!'
     header:
-        search: 'Rapterra, Epic Universe...'
+        search: 'Fast & Furious, Six Flags Over Texas...'
     search:
         suggestions: 'Search suggestions'
         searching: 'Searching...'

@@ -13,7 +13,7 @@ app:
     title:
         default: 'Bienvenue !'
     header:
-        search: 'Wild Buffalo, Parc Astérix...'
+        search: 'Kyûbi Unchained, Walygator...'
     search:
         suggestions: 'Suggestions de recherche'
         searching: 'Recherche en cours...'
