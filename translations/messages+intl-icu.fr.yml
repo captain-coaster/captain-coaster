@@ -125,7 +125,7 @@ park:
 
 coaster_ranking:
     title: Classement Mondial des Roller Coasters
-    description: 'Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par 3000 utilisateurs du monde entier.'
+    description: 'Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par plus de 20 000 utilisateurs du monde entier.'
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: Pas de coaster
     info:

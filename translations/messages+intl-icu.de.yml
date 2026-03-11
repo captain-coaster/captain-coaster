@@ -125,7 +125,7 @@ park:
 
 coaster_ranking:
     title: Weltrangliste der Achterbahnen
-    description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 3000 Benutzern weltweit.'
+    description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 20.000 Benutzern weltweit.'
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'Keine Achterbahnen gefunden!'
     info:
