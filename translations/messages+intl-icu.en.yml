@@ -13,7 +13,7 @@ app:
     title:
         default: 'Welcome!'
     header:
-        search: 'Rapterra, Epic Universe...'
+        search: 'Fast & Furious, Six Flags Over Texas...'
     search:
         suggestions: 'Search suggestions'
         searching: 'Searching...'
@@ -120,7 +120,7 @@ park:
 
 coaster_ranking:
     title: 'World Roller Coaster Rankings'
-    description: "Discover the world's best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide."
+    description: "Discover the world's best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from over 20.000 users worldwide."
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'No coasters found!'
     info:
