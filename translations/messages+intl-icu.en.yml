@@ -199,9 +199,11 @@ profile:
     badge: 'Badges'
     banner:
         title: 'Personal banner'
-        text: 'Here is your personal banner, showing your ratings and Top 3! Banner can take a few hours to update.'
+        text: ~
         getbbcode: 'Copy BBCode (forums)'
         gethtml: 'Copy html'
+        copied: 'Copied!'
+        unavailable: 'Rate and rank coasters to generate your personal banner! Banner can take a few hours to update.'
     stats:
         title: 'Overview'
         coasters: 'coasters'

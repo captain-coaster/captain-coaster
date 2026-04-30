@@ -204,9 +204,11 @@ profile:
     badge: Abzeichen
     banner:
         title: Persönliches Banner
-        text: 'Hier ist Ihr personalisiertes Banner, mit Ihren Bewertungen und Ihren Top 3! Die Aktualisierung des Banners kann einige Stunden dauern.'
+        text: ~
         getbbcode: Kopiere BBCode (Foren)
         gethtml: Kopiere HTML
+        copied: 'Kopiert!'
+        unavailable: 'Bewerte und ranke Achterbahnen, um dein persönliches Banner zu erstellen! Die Aktualisierung kann einige Stunden dauern.'
     stats:
         title: 'Überblick'
         coasters: 'Achterbahnen'

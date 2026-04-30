@@ -204,9 +204,11 @@ profile:
     badge: Badges
     banner:
         title: Bannière personnalisée
-        text: 'Voici ta bannière personnalisée, avec tes notes et ton Top 3 ! La mise à jour de la bannière peut prendre quelques heures.'
+        text: ~
         getbbcode: Copier le BBCode (forums)
         gethtml: Copier en html
+        copied: 'Copié !'
+        unavailable: 'Note et classe des coasters pour générer ta bannière personnalisée ! La mise à jour peut prendre quelques heures.'
     stats:
         title: 'Statistiques'
         coasters: 'coasters'
