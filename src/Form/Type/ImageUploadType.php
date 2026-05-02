@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class ImageUploadType.
+ * @extends AbstractType<Image>
  */
 class ImageUploadType extends AbstractType
 {

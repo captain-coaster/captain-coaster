@@ -21,6 +21,7 @@ class LikedImageRepository extends ServiceEntityRepository
         parent::__construct($registry, LikedImage::class);
     }
 
+    /** @return Query<mixed, mixed> */
     public function findUserLikes(User $user): Query
     {
         return $this->getEntityManager()

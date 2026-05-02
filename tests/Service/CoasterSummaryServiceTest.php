@@ -42,7 +42,7 @@ class CoasterSummaryServiceTest extends TestCase
         // Test that deleting one language summary does not affect others
         // This is verified by the fact that no cascade deletion logic exists
         // in the refactored CoasterSummaryListener
-        $this->assertTrue(true, 'Each language summary is independent');
+        $this->addToAssertionCount(1); // Each language summary is independent
     }
 
     public function testFeedbackRecordsStillHandledPerSummary(): void

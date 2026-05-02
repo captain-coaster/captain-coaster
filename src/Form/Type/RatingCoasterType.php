@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class RatingCoasterType.
+ * @extends AbstractType<RiddenCoaster>
  */
 class RatingCoasterType extends AbstractType
 {

@@ -20,6 +20,9 @@ use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * @extends AbstractType<RiddenCoaster>
+ */
 class ReviewType extends AbstractType
 {
     public function __construct(protected TranslatorInterface $translator)

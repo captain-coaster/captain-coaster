@@ -53,9 +53,7 @@ class SearchCacheService
 
     public function invalidateSearchCache(): void
     {
-        if ($this->cache instanceof CacheItemPoolInterface) {
-            $this->cache->clear();
-        }
+        $this->cache->clear();
     }
 
     public function invalidateAutocompleteCache(): void

@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TopType.
+ * @extends AbstractType<Top>
  */
 class TopType extends AbstractType
 {

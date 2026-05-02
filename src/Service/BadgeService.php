@@ -80,15 +80,14 @@ class BadgeService
         }
 
         // Check in Top first (priority)
-        if (null !== $user->getMainTop()) {
-            /** @var TopCoaster $topCoaster */
-            foreach ($user->getMainTop()->getTopCoasters() as $topCoaster) {
-                if ('Katun' === $topCoaster->getCoaster()->getName()) {
-                    $katun = $topCoaster->getPosition();
-                }
-                if ('iSpeed' === $topCoaster->getCoaster()->getName()) {
-                    $ispeed = $topCoaster->getPosition();
-                }
+        $mainTop = $user->getMainTop();
+        /** @var TopCoaster $topCoaster */
+        foreach ($mainTop->getTopCoasters() as $topCoaster) {
+            if ('Katun' === $topCoaster->getCoaster()->getName()) {
+                $katun = $topCoaster->getPosition();
+            }
+            if ('iSpeed' === $topCoaster->getCoaster()->getName()) {
+                $ispeed = $topCoaster->getPosition();
             }
         }
 

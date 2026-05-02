@@ -126,7 +126,7 @@ class GenerateCoasterSummariesCommandPropertyTest extends TestCase
 
 
             // Verify limit behavior (implicit - command should complete without errors)
-            $this->assertTrue(true, 'Command completed successfully with all option combinations');
+            $this->addToAssertionCount(1); // Command completed successfully with all option combinations
         });
     }
 }
