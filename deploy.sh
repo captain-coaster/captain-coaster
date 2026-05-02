@@ -123,6 +123,18 @@ warm_cache() {
     success "Cache warmed up"
 }
 
+# Function to reload PHP-FPM to clear OPcache
+reload_php_fpm() {
+    log "Reloading PHP-FPM to clear OPcache..."
+    if sudo systemctl reload php8.5-fpm 2>/dev/null; then
+        success "PHP-FPM reloaded"
+    elif sudo service php8.5-fpm reload 2>/dev/null; then
+        success "PHP-FPM reloaded"
+    else
+        warning "Could not reload PHP-FPM automatically. Run manually: sudo systemctl reload php8.5-fpm"
+    fi
+}
+
 # Function to verify deployment
 verify_deployment() {
     log "Verifying deployment..."
@@ -231,6 +243,7 @@ case "${1:-help}" in
     "cache")
         clear_cache
         warm_cache
+        reload_php_fpm
         ;;
     "verify")
         verify_deployment

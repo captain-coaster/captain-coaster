@@ -1,4 +1,4 @@
-FROM php:8.4.13-fpm-alpine
+FROM php:8.5.4-fpm-alpine
 
 # Install Git
 RUN apk add --no-cache git

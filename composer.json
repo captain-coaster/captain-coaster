@@ -6,7 +6,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^8.4",
+        "php": "^8.5",
         "ext-json": "*",
         "api-platform/core": "^4.0",
         "aws/aws-sdk-php": "^3.0",
@@ -79,7 +79,7 @@
             "symfony/runtime": true
         },
         "platform": {
-            "php": "8.4.13"
+            "php": "8.5.4"
         },
         "preferred-install": {
             "*": "dist"
