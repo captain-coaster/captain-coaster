@@ -71,7 +71,7 @@ class BadgeService
     {
         // Check for already given Team badge
         $currentBadge = $user->getBadges()->filter(
-            fn (Badge $badge) => self::BADGE_TYPE_TEAM == $badge->getType()
+            static fn (Badge $badge) => self::BADGE_TYPE_TEAM == $badge->getType()
         );
 
         // You can be only in one team !

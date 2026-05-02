@@ -15,7 +15,7 @@ jobs:
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.4'
+                  php-version: '8.5'
                   extensions: redis, xsl
 
             - name: Lint Composer config
@@ -24,6 +24,7 @@ jobs:
             - uses: php-actions/composer@v6
               id: install
               with:
+                  php_version: '8.5'
                   php_extensions: redis xsl
                   memory_limit: 256M
 
@@ -31,10 +32,12 @@ jobs:
               run: vendor/bin/phpunit
 
             - uses: php-actions/phpstan@v3
+              with:
+                  php_version: '8.5'
 
             - name: PHP-CS-Fixer
-              # php-cs-fixer v3.90.0
-              uses: docker://oskarstark/php-cs-fixer-ga@sha256:4cff5e369642fa2ce75238310a457c784ded88dbe0400474292f69218e099a4a
+              # php-cs-fixer v3.95.1
+              uses: docker://oskarstark/php-cs-fixer-ga@sha256:2b9424218def75c73ce4f9e88a79099609d2479e4fa38bb969047c047eab4327
               with:
                   args: --diff --dry-run
 

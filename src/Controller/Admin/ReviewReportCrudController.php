@@ -145,7 +145,7 @@ class ReviewReportCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('user', 'Reporter')
                 ->autocomplete()
-                ->formatValue(fn ($value, $entity) => $entity?->getUser()?->getDisplayName() ?? '[Deleted]'),
+                ->formatValue(static fn ($value, $entity) => $entity?->getUser()?->getDisplayName() ?? '[Deleted]'),
             TextField::new('displayReviewerName', 'Reviewer')
                 ->hideOnForm()
                 ->formatValue(function ($value, $entity) {
@@ -168,7 +168,7 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->renderAsHtml(),
             TextField::new('displayCoasterName', 'Coaster')
                 ->hideOnForm()
-                ->formatValue(fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
+                ->formatValue(static fn ($value, $entity) => $entity?->getDisplayCoasterName() ?? '[Unknown]'),
             ChoiceField::new('reason')
                 ->setChoices([
                     'Inappropriate language' => ReviewReport::REASON_INAPPROPRIATE,
@@ -181,14 +181,14 @@ class ReviewReportCrudController extends AbstractCrudController
             NumberField::new('displayRating', 'Rating')
                 ->hideOnForm()
                 ->setNumDecimals(1)
-                ->formatValue(fn ($value, $entity) => $entity?->getDisplayRating() ? $entity->getDisplayRating().'/5' : '-'),
+                ->formatValue(static fn ($value, $entity) => $entity?->getDisplayRating() ? $entity->getDisplayRating().'/5' : '-'),
         ];
 
         // Show different content fields based on page
         if (Crud::PAGE_INDEX === $pageName) {
             $fields[] = TextareaField::new('displayContent', 'Reported Content')
                 ->hideOnForm()
-                ->formatValue(function ($value, $entity) {
+                ->formatValue(static function ($value, $entity) {
                     if (!$entity) {
                         return '[No content]';
                     }
@@ -203,7 +203,7 @@ class ReviewReportCrudController extends AbstractCrudController
         } else {
             $fields[] = TextareaField::new('displayContent', 'Reported Content')
                 ->hideOnForm()
-                ->formatValue(fn ($value, $entity) => $entity?->getDisplayContent() ?? '[No content]');
+                ->formatValue(static fn ($value, $entity) => $entity?->getDisplayContent() ?? '[No content]');
         }
 
         $fields[] = ChoiceField::new('status')

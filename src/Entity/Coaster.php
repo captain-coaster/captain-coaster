@@ -33,8 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['list_coaster']]),
     ],
     normalizationContext: ['groups' => ['list_coaster', 'read_coaster']]
-)
-]
+)]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'manufacturer' => 'exact'])]
 #[ApiFilter(filterClass: OrderFilter::class, properties: ['id'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(filterClass: ExistsFilter::class, properties: ['mainImage'])]

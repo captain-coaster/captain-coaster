@@ -27,7 +27,7 @@ class SearchResponseDTO
         $formattedResults = [];
         foreach ($this->results as $type => $typeResults) {
             $formattedResults[$type] = array_map(
-                fn (SearchResultDTO $result) => $result->toArray(),
+                static fn (SearchResultDTO $result) => $result->toArray(),
                 $typeResults
             );
         }

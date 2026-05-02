@@ -62,9 +62,8 @@ class SearchService
                 $response->debug = ['source' => 'redis_cache', 'cache_key' => $cacheKey];
 
                 return $response;
-            } else {
-                error_log("💾 REDIS CACHE MISS for query: '{$query}'");
             }
+            error_log("💾 REDIS CACHE MISS for query: '{$query}'");
         } catch (\Exception $e) {
             // If caching fails, continue without cache
             error_log('Search cache error: '.$e->getMessage());
@@ -161,7 +160,7 @@ class SearchService
      */
     private function formatSearchResults(array $results, string $type): array
     {
-        return array_map(function ($result) use ($type) {
+        return array_map(static function ($result) use ($type) {
             switch ($type) {
                 case 'coaster':
                     return new SearchResultDTO(
@@ -247,7 +246,7 @@ class SearchService
         }
 
         // Sort by relevance score (higher is better)
-        usort($allResults, fn ($a, $b) => $b['relevance_score'] <=> $a['relevance_score']);
+        usort($allResults, static fn ($a, $b) => $b['relevance_score'] <=> $a['relevance_score']);
 
         $totalResults = \count($allResults);
         $totalPages = ceil($totalResults / $perPage);

@@ -42,7 +42,7 @@ class ReviewType extends AbstractType
                     'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'required' => false,
-                    'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('p')
+                    'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
                         ->where('p.type = :pro')
                         ->setParameter('pro', Tag::PRO),
                     'label' => 'review.pros',
@@ -57,7 +57,7 @@ class ReviewType extends AbstractType
                     'choice_translation_domain' => 'database',
                     'multiple' => true,
                     'required' => false,
-                    'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('c')
+                    'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('c')
                         ->where('c.type = :con')
                         ->setParameter('con', Tag::CON),
                     'label' => 'review.cons',
@@ -68,7 +68,7 @@ class ReviewType extends AbstractType
                 ChoiceType::class,
                 [
                     'choices' => $options['locales'],
-                    'choice_label' => fn ($value) => $value,
+                    'choice_label' => static fn ($value) => $value,
                     'required' => true,
                     'label' => 'review.language',
                 ]

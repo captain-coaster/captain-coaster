@@ -64,8 +64,8 @@ class CoasterSummaryCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $regenerateAction)
             ->add(Crud::PAGE_DETAIL, $regenerateAction)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->update(Crud::PAGE_INDEX, Action::DELETE, fn (Action $action) => $action)
-            ->update(Crud::PAGE_DETAIL, Action::DELETE, fn (Action $action) => $action)
+            ->update(Crud::PAGE_INDEX, Action::DELETE, static fn (Action $action) => $action)
+            ->update(Crud::PAGE_DETAIL, Action::DELETE, static fn (Action $action) => $action)
             ->disable(Action::NEW)
             ->disable(Action::EDIT);
     }
@@ -92,10 +92,10 @@ class CoasterSummaryCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('coaster')
                 ->setLabel('Coaster')
-                ->formatValue(fn ($value, CoasterSummary $entity) => $entity->getCoaster()?->getName() ?? 'N/A'),
+                ->formatValue(static fn ($value, CoasterSummary $entity) => $entity->getCoaster()?->getName() ?? 'N/A'),
             TextField::new('language')
                 ->setLabel('Language')
-                ->formatValue(function ($value) {
+                ->formatValue(static function ($value) {
                     return match ($value) {
                         'en' => 'English',
                         'fr' => 'French',
@@ -125,7 +125,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
                 NumberField::new('feedbackRatio')
                     ->setLabel('Feedback Ratio')
                     ->setNumDecimals(4)
-                    ->formatValue(fn ($value, CoasterSummary $entity) => \sprintf('%.2f%% (%d total votes)', $entity->getFeedbackRatio() * 100, $entity->getTotalVotes())),
+                    ->formatValue(static fn ($value, CoasterSummary $entity) => \sprintf('%.2f%% (%d total votes)', $entity->getFeedbackRatio() * 100, $entity->getTotalVotes())),
                 IntegerField::new('positiveVotes')->setLabel('Positive Votes'),
                 IntegerField::new('negativeVotes')->setLabel('Negative Votes'),
                 IntegerField::new('reviewsAnalyzed')->setLabel('Reviews Analyzed'),
