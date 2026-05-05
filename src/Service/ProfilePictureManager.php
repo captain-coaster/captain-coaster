@@ -87,26 +87,22 @@ class ProfilePictureManager
     {
         $oldPicture = $user->getProfilePicture();
         if (null !== $oldPicture) {
-            try {
-                // Add exists check to avoid unnecessary delete attempts
-                if ($this->profilePicturesFilesystem->fileExists($oldPicture)) {
-                    $this->profilePicturesFilesystem->delete($oldPicture);
-                }
-            } catch (\Exception $e) {
-                $this->logger->warning('Failed to delete old profile picture: '.$e->getMessage());
-            }
+            $this->deleteProfilePicture($oldPicture);
         }
     }
 
-    /** Delete a profile picture file. */
+    /**
+     * Delete a profile picture file.
+     *
+     * S3's DeleteObject is idempotent, so there is no need to check existence
+     * beforehand (which would require extra IAM permissions).
+     */
     public function deleteProfilePicture(string $filename): void
     {
         try {
-            if ($this->profilePicturesFilesystem->fileExists($filename)) {
-                $this->profilePicturesFilesystem->delete($filename);
-            }
+            $this->profilePicturesFilesystem->delete($filename);
         } catch (\Exception $e) {
-            $this->logger->warning('Failed to delete profile picture', [
+            $this->logger->error('Failed to delete profile picture', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
             ]);
