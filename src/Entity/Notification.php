@@ -22,7 +22,7 @@ class Notification
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $message = null;
+    private string $message = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $parameter = null;
@@ -32,10 +32,10 @@ class Notification
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $type = null;
+    private string $type = '';
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $isRead = false;
+    private bool $isRead = false;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]

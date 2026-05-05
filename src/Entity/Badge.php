@@ -20,16 +20,16 @@ class Badge
     private ?int $id = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $name = null;
+    private string $name = '';
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private ?string $type = null;
+    private string $type = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    private ?string $filenameFr = null;
+    private string $filenameFr = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
-    private ?string $filenameEn = null;
+    private string $filenameEn = '';
 
     /** @var Collection<int, User> */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'badges')]
@@ -45,38 +45,38 @@ class Badge
         return $this->id;
     }
 
-    public function setType(?string $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }
 
-    public function setFilenameFr(?string $filenameFr): static
+    public function setFilenameFr(string $filenameFr): static
     {
         $this->filenameFr = $filenameFr;
 
         return $this;
     }
 
-    public function getFilenameFr(): ?string
+    public function getFilenameFr(): string
     {
         return $this->filenameFr;
     }
 
-    public function setFilenameEn(?string $filenameEn): static
+    public function setFilenameEn(string $filenameEn): static
     {
         $this->filenameEn = $filenameEn;
 
         return $this;
     }
 
-    public function getFilenameEn(): ?string
+    public function getFilenameEn(): string
     {
         return $this->filenameEn;
     }
@@ -99,14 +99,14 @@ class Badge
         return $this->users;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }

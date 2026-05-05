@@ -29,10 +29,10 @@ class Restraint implements \Stringable
     private ?int $id = null;
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['read_restraint', 'read_coaster'])]
-    private ?string $name = null;
+    private string $name = '';
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private ?string $slug = null;
+    private string $slug = '';
     /** @var Collection<int, Coaster> */
     #[ORM\OneToMany(targetEntity: Coaster::class, mappedBy: 'restraint')]
     private Collection $coasters;

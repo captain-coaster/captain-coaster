@@ -22,22 +22,22 @@ class Ranking
     private ?int $id = null;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $ratingNumber = null;
+    private int $ratingNumber = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $topNumber = null;
+    private int $topNumber = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $coasterInTopNumber = null;
+    private int $coasterInTopNumber = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $comparisonNumber = null;
+    private int $comparisonNumber = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $userNumber = null;
+    private int $userNumber = 0;
 
     #[ORM\Column(type: Types::INTEGER)]
-    private ?int $rankedCoasterNumber = null;
+    private int $rankedCoasterNumber = 0;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]

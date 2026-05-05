@@ -6,15 +6,14 @@ parameters:
         - tests
     ignoreErrors:
         - '#Function Eris\\Generator\\[a-zA-Z_]+ not found\.#'
-        # Doctrine entity pattern: properties are nullable for pre-persist state, DB columns are non-nullable
+        # Timestampable DateTime properties are null before first persist, Gedmo sets them automatically
         -
             identifier: doctrine.columnType
-            paths:
-                - src/Entity/
+            reportUnmatched: false
+        # Non-nullable associations are null before persist but required in database
         -
             identifier: doctrine.associationType
-            paths:
-                - src/Entity/
+            reportUnmatched: false
         # EasyAdmin AdminContext generic types - third-party library limitation
         - '#has parameter \$context with generic class EasyCorp\\Bundle\\EasyAdminBundle\\Context\\AdminContext but does not specify its types#'
         # AWS SDK Result generic types in tests - third-party library limitation

@@ -23,10 +23,10 @@ class Tag implements \Stringable
     private ?int $id = null;
 
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
-    private ?string $name = null;
+    private string $name = '';
 
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
-    private ?string $type = null;
+    private string $type = '';
 
     public function __toString(): string
     {

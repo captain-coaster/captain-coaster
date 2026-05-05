@@ -52,7 +52,7 @@ class Coaster implements \Stringable
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     #[Groups(['list_coaster', 'read_coaster'])]
-    private ?string $name = null;
+    private string $name = '';
 
     /** @var array<string>|null */
     #[ORM\Column(name: 'formerNames', type: Types::SIMPLE_ARRAY, nullable: true)]
@@ -65,7 +65,7 @@ class Coaster implements \Stringable
         'relationSlugField' => 'slug',
         'separator' => '-',
     ])]
-    private ?string $slug = null;
+    private string $slug = '';
 
     #[ORM\ManyToOne(targetEntity: MaterialType::class)]
     #[ORM\JoinColumn]
@@ -208,7 +208,7 @@ class Coaster implements \Stringable
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $enabled = false;
+    private bool $enabled = false;
 
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $youtubeId = null;
@@ -234,12 +234,12 @@ class Coaster implements \Stringable
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -260,12 +260,12 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
 
-    public function setSlug(?string $slug): static
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
 

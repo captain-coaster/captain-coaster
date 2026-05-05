@@ -27,11 +27,11 @@ class Launch implements \Stringable
 
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Groups(['read_launch', 'read_coaster'])]
-    private ?string $name = null;
+    private string $name = '';
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private ?string $slug = null;
+    private string $slug = '';
 
     /** @var Collection<int, Coaster> */
     #[ORM\ManyToMany(targetEntity: Coaster::class, mappedBy: 'launchs')]
@@ -52,26 +52,26 @@ class Launch implements \Stringable
         return $this->id;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setSlug(?string $slug): static
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
