@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c7559eb486c867701e3a77e2f50ebb6b",
+    "content-hash": "280fc2f1fa962386adc194fb8939397c",
     "packages": [
         {
             "name": "api-platform/core",
@@ -1939,67 +1939,6 @@
             "time": "2025-03-06T22:45:56+00:00"
         },
         {
-            "name": "excelwebzone/recaptcha-bundle",
-            "version": "v1.5.42",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/excelwebzone/EWZRecaptchaBundle.git",
-                "reference": "c1728fab6dc1a880e1b76298c5092f2ca25dac8f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/excelwebzone/EWZRecaptchaBundle/zipball/c1728fab6dc1a880e1b76298c5092f2ca25dac8f",
-                "reference": "c1728fab6dc1a880e1b76298c5092f2ca25dac8f",
-                "shasum": ""
-            },
-            "require": {
-                "google/recaptcha": "^1.1",
-                "php": "^7.1 || ^8.0",
-                "symfony/form": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
-                "symfony/framework-bundle": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
-                "symfony/security-bundle": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
-                "symfony/validator": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
-                "symfony/yaml": "^2.8 || ^3.0 || ^4.0 || ^5.0 || ^6.0 || ^7.0",
-                "twig/twig": "^1.40 || ^2.9 || ^3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7 || ^8 || ^9.5"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "symfony": {
-                    "allow-contrib": "true"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "EWZ\\Bundle\\RecaptchaBundle\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael H. Arieli",
-                    "email": "excelwebzone@gmail.com",
-                    "homepage": "http://excelwebzone.com/"
-                }
-            ],
-            "description": "This bundle provides easy reCAPTCHA form field integration",
-            "homepage": "https://github.com/excelwebzone/EWZRecaptchaBundle",
-            "keywords": [
-                "recaptcha"
-            ],
-            "support": {
-                "issues": "https://github.com/excelwebzone/EWZRecaptchaBundle/issues",
-                "source": "https://github.com/excelwebzone/EWZRecaptchaBundle/tree/v1.5.42"
-            },
-            "abandoned": true,
-            "time": "2025-02-03T20:57:06+00:00"
-        },
-        {
             "name": "friendsofsymfony/jsrouting-bundle",
             "version": "3.6.1",
             "source": {
@@ -2210,59 +2149,6 @@
                 }
             ],
             "time": "2025-12-13T19:37:35+00:00"
-        },
-        {
-            "name": "google/recaptcha",
-            "version": "1.5",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/google/recaptcha.git",
-                "reference": "c57f0b96babc8c9fb64cb555cd7b2c5aadfbe58d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/google/recaptcha/zipball/c57f0b96babc8c9fb64cb555cd7b2c5aadfbe58d",
-                "reference": "c57f0b96babc8c9fb64cb555cd7b2c5aadfbe58d",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=8.4"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.95",
-                "php-coveralls/php-coveralls": "^2.9.1",
-                "phpstan/phpstan": "^2.1.51",
-                "phpunit/phpunit": "^13.1"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-main": "1.4.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "ReCaptcha\\": "src/ReCaptcha"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Client library for reCAPTCHA, a free service that protects websites from spam and abuse.",
-            "homepage": "https://www.google.com/recaptcha/",
-            "keywords": [
-                "Abuse",
-                "captcha",
-                "recaptcha",
-                "spam"
-            ],
-            "support": {
-                "forum": "https://groups.google.com/forum/#!forum/recaptcha",
-                "issues": "https://github.com/google/recaptcha/issues",
-                "source": "https://github.com/google/recaptcha"
-            },
-            "time": "2026-04-27T09:26:38+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3686,6 +3572,65 @@
                 "source": "https://github.com/1up-lab/OneupFlysystemBundle/tree/4.14.1"
             },
             "time": "2025-12-03T07:59:40+00:00"
+        },
+        {
+            "name": "pixelopen/cloudflare-turnstile-bundle",
+            "version": "0.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Pixel-Open/cloudflare-turnstile-bundle.git",
+                "reference": "c16de40d8bc998f1fcc6a6835721dfe1bfdfb9bd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Pixel-Open/cloudflare-turnstile-bundle/zipball/c16de40d8bc998f1fcc6a6835721dfe1bfdfb9bd",
+                "reference": "c16de40d8bc998f1fcc6a6835721dfe1bfdfb9bd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/form": "^5.0|^6.0|^7.0|^8.0",
+                "symfony/framework-bundle": "^5.0|^6.0|^7.0|^8.0",
+                "symfony/http-client": "^5.0|^6.0|^7.0|^8.0",
+                "symfony/twig-bundle": "^5.0|^6.0|^7.0|^8.0",
+                "symfony/validator": "^5.0|^6.0|^7.0|^8.0",
+                "symfony/yaml": "^5.0|^6.0|^7.0|^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.0",
+                "phpstan/phpstan-symfony": "^2.0",
+                "phpunit/phpunit": "^10.0|^11.0",
+                "rector/rector": "^2.0",
+                "symplify/easy-coding-standard": "^12.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "PixelOpen\\CloudflareTurnstileBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pixel Open Team",
+                    "homepage": "https://pixel-open.org/projects/symfony-bundle-cloudflare-turnstile/"
+                }
+            ],
+            "description": "A simple package to help integrate Cloudflare Turnstile on Symfony.",
+            "keywords": [
+                "Symfony Bundle",
+                "captcha",
+                "cloudflare-turnstile",
+                "form security"
+            ],
+            "support": {
+                "issues": "https://github.com/Pixel-Open/cloudflare-turnstile-bundle/issues",
+                "source": "https://github.com/Pixel-Open/cloudflare-turnstile-bundle/tree/0.5.0"
+            },
+            "time": "2026-03-08T19:47:59+00:00"
         },
         {
             "name": "psr/cache",

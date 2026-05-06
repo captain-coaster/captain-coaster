@@ -1559,33 +1559,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     script_attributes?: array<string, scalar|Param|null>,
  *     link_attributes?: array<string, scalar|Param|null>,
  * }
- * @psalm-type EwzRecaptchaConfig = array{
- *     public_key?: scalar|Param|null,
- *     private_key?: scalar|Param|null,
- *     enabled?: bool|Param, // Default: true
- *     verify_host?: bool|Param, // Default: false
- *     ajax?: bool|Param, // Default: false
- *     locale_key?: scalar|Param|null, // Default: "%kernel.default_locale%"
- *     api_host?: scalar|Param|null, // Default: "www.google.com"
- *     locale_from_request?: bool|Param, // Default: false
- *     version?: int|Param, // Default: 2
- *     hide_badge?: bool|Param, // Default: false
- *     score_threshold?: float|Param, // Default: 0.5
- *     timeout?: int|Param, // Default: null
- *     trusted_roles?: list<scalar|Param|null>,
- *     http_proxy?: array{
- *         host?: scalar|Param|null, // Default: null
- *         port?: scalar|Param|null, // Default: null
- *         auth?: scalar|Param|null, // Default: null
- *     },
- *     service_definition?: list<array{ // Default: []
- *             service_name?: scalar|Param|null,
- *             options?: array{
- *                 action_name?: scalar|Param|null,
- *                 script_nonce_csp?: scalar|Param|null,
- *             },
- *         }>,
- * }
  * @psalm-type WebProfilerConfig = array{
  *     toolbar?: bool|array{ // Profiler toolbar configuration
  *         enabled?: bool|Param, // Default: false
@@ -2114,6 +2087,11 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     },
  *     ignore_not_found?: bool|Param, // Ignore error when an icon is not found. Set to 'true' to fail silently. // Default: false
  * }
+ * @psalm-type PixelOpenCloudflareTurnstileConfig = array{
+ *     enable?: bool|Param, // Default: true
+ *     key?: scalar|Param|null,
+ *     secret?: scalar|Param|null,
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -2128,7 +2106,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *     monolog?: MonologConfig,
  *     webpack_encore?: WebpackEncoreConfig,
- *     ewz_recaptcha?: EwzRecaptchaConfig,
  *     oneup_flysystem?: OneupFlysystemConfig,
  *     api_platform?: ApiPlatformConfig,
  *     twig_extra?: TwigExtraConfig,
@@ -2137,6 +2114,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     stimulus?: StimulusConfig,
  *     ux_translator?: UxTranslatorConfig,
  *     ux_icons?: UxIconsConfig,
+ *     pixel_open_cloudflare_turnstile?: PixelOpenCloudflareTurnstileConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -2152,7 +2130,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *         monolog?: MonologConfig,
  *         webpack_encore?: WebpackEncoreConfig,
- *         ewz_recaptcha?: EwzRecaptchaConfig,
  *         web_profiler?: WebProfilerConfig,
  *         oneup_flysystem?: OneupFlysystemConfig,
  *         api_platform?: ApiPlatformConfig,
@@ -2163,6 +2140,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stimulus?: StimulusConfig,
  *         ux_translator?: UxTranslatorConfig,
  *         ux_icons?: UxIconsConfig,
+ *         pixel_open_cloudflare_turnstile?: PixelOpenCloudflareTurnstileConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -2178,7 +2156,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *         monolog?: MonologConfig,
  *         webpack_encore?: WebpackEncoreConfig,
- *         ewz_recaptcha?: EwzRecaptchaConfig,
  *         oneup_flysystem?: OneupFlysystemConfig,
  *         api_platform?: ApiPlatformConfig,
  *         twig_extra?: TwigExtraConfig,
@@ -2187,6 +2164,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stimulus?: StimulusConfig,
  *         ux_translator?: UxTranslatorConfig,
  *         ux_icons?: UxIconsConfig,
+ *         pixel_open_cloudflare_turnstile?: PixelOpenCloudflareTurnstileConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -2202,7 +2180,6 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stof_doctrine_extensions?: StofDoctrineExtensionsConfig,
  *         monolog?: MonologConfig,
  *         webpack_encore?: WebpackEncoreConfig,
- *         ewz_recaptcha?: EwzRecaptchaConfig,
  *         web_profiler?: WebProfilerConfig,
  *         oneup_flysystem?: OneupFlysystemConfig,
  *         api_platform?: ApiPlatformConfig,
@@ -2212,6 +2189,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         stimulus?: StimulusConfig,
  *         ux_translator?: UxTranslatorConfig,
  *         ux_icons?: UxIconsConfig,
+ *         pixel_open_cloudflare_turnstile?: PixelOpenCloudflareTurnstileConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

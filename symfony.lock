@@ -95,19 +95,6 @@
     "egulias/email-validator": {
         "version": "2.1.7"
     },
-    "excelwebzone/recaptcha-bundle": {
-        "version": "1.5",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "1.5",
-            "ref": "fd4da7bc71749db65bc83abf5d164bfa9c839cf4"
-        },
-        "files": [
-            "config/packages/dev/ewz_recaptcha.yaml",
-            "config/packages/ewz_recaptcha.yaml"
-        ]
-    },
     "fig/link-util": {
         "version": "1.0.0"
     },
@@ -140,18 +127,6 @@
     },
     "gedmo/doctrine-extensions": {
         "version": "v2.4.36"
-    },
-    "google/recaptcha": {
-        "version": "1.2",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "1.1",
-            "ref": "e5a4aa21f2e98d7440ae9aab6b56e307f99dd084"
-        },
-        "files": [
-            "config/packages/google_recaptcha.yaml"
-        ]
     },
     "guzzlehttp/guzzle": {
         "version": "6.3.3"
@@ -229,6 +204,18 @@
             "phpunit.dist.xml",
             "tests/bootstrap.php",
             "bin/phpunit"
+        ]
+    },
+    "pixelopen/cloudflare-turnstile-bundle": {
+        "version": "0.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.1",
+            "ref": "6173b9aff0056dd99ca70a2caa940cc7bcac0b4b"
+        },
+        "files": [
+            "config/packages/pixel_open_cloudflare_turnstile.yaml"
         ]
     },
     "psr/cache": {

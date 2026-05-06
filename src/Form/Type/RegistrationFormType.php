@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Form\Type;
 
 use App\Entity\User;
-use EWZ\Bundle\RecaptchaBundle\Form\Type\EWZRecaptchaV3Type;
-use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrueV3;
+use PixelOpen\CloudflareTurnstileBundle\Type\TurnstileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -51,7 +50,7 @@ class RegistrationFormType extends AbstractType
                 ]
             );
 
-        $builder->add('recaptcha', EWZRecaptchaV3Type::class, ['mapped' => false, 'constraints' => [new IsTrueV3()]]);
+        $builder->add('recaptcha', TurnstileType::class, ['mapped' => false, 'label' => false, 'attr' => ['data-appearance' => 'interaction-only']]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

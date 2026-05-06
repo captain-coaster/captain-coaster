@@ -6,7 +6,7 @@
 
 {% block body %}
   {{ form_errors(form) }}
-  {{ form_start(form, {'attr': {'class': 'recaptcha-form'}}) }}
+  {{ form_start(form) }}
   {{ form_row(form.name) }}
   {{ form_row(form.email) }}
   {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
