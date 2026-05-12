@@ -1,0 +1,12 @@
+{# Empty state shown before search or when no filters applied #}
+<div class="bg-white dark:bg-neutral-900 rounded-xl p-8 sm:p-12 text-center">
+  <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-cc-blue-50 dark:bg-cc-blue-900/20 flex items-center justify-center">
+    {{ ux_icon('tabler:search', {'class': 'w-8 h-8 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+  </div>
+  <h2 class="text-lg font-semibold text-neutral-900 dark:text-white mb-2">
+    {{ 'coaster_search.empty_title'|trans }}
+  </h2>
+  <p class="text-neutral-500 dark:text-neutral-400 text-sm max-w-md mx-auto">
+    {{ 'coaster_search.empty_description'|trans }}
+  </p>
+</div>

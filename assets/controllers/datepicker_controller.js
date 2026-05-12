@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static values = {
@@ -127,7 +128,7 @@ export default class extends Controller {
         }
 
         errorEl.textContent = message;
-        errorEl.style.display = 'block';
+        show(errorEl);
     }
 
     clearError() {
@@ -136,7 +137,7 @@ export default class extends Controller {
         const errorEl =
             this.element.parentNode.querySelector('.datepicker-error');
         if (errorEl) {
-            errorEl.style.display = 'none';
+            hide(errorEl);
         }
     }
 

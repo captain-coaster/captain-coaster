@@ -1,0 +1,58 @@
+/*
+ * Typography Base Styles - Tailwind CSS v4
+ * Font loading and base text styles
+ */
+
+@layer base {
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Better focus styles for accessibility */
+    :focus-visible {
+        outline: 2px solid var(--color-cc-blue-500);
+        outline-offset: 2px;
+    }
+
+    /* Default body styles */
+    body {
+        font-family: var(--font-family-sans);
+        color: var(--color-neutral-900);
+        background-color: var(--color-neutral-50);
+        line-height: var(
+            --line-height-normal
+        ); /* 1.5 for optimal readability */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Dark mode body */
+    .dark body {
+        color: var(--color-neutral-100);
+        background-color: var(--color-neutral-900);
+    }
+
+    /* Typography utilities for systematic scaling */
+    .text-dense {
+        font-size: var(--font-size-sm); /* 14px for navigation, lists */
+        line-height: var(--line-height-snug); /* 1.375 */
+    }
+
+    .text-standard {
+        font-size: var(--font-size-base); /* 15px for standard content */
+        line-height: var(--line-height-normal); /* 1.5 */
+    }
+
+    .text-reading {
+        font-size: var(--font-size-lg); /* 16px for reading content */
+        line-height: var(--line-height-relaxed); /* 1.625 */
+    }
+
+    /* Responsive typography scaling */
+    @media (min-width: 768px) {
+        .text-reading {
+            line-height: var(--line-height-loose); /* 2.0 on larger screens */
+        }
+    }
+}

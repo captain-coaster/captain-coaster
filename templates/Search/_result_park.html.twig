@@ -1,0 +1,36 @@
+{# Park search result card #}
+<a href="{{ path('redirect_park_show', {'slug': result.slug}) }}"
+   class="group flex items-center gap-3 md:gap-4 p-3 md:p-4 bg-white dark:bg-neutral-900 rounded-xl hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors">
+    
+    {# Icon #}
+    <div class="shrink-0 w-12 h-12 md:w-14 md:h-14 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+        {{ ux_icon('tabler:trees', {'class': 'w-6 h-6 md:w-7 md:h-7 text-emerald-600 dark:text-emerald-400', 'aria-hidden': 'true'}) }}
+    </div>
+
+    {# Content #}
+    <div class="flex-1 min-w-0">
+        <h3 class="font-semibold text-neutral-900 dark:text-white truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+            {{ result.name }}
+        </h3>
+        <p class="text-sm text-neutral-500 dark:text-neutral-400 truncate">
+            {% if result.subtitle starts with 'country.' %}
+                {{ result.subtitle|trans({}, 'database') }}
+            {% else %}
+                {{ result.subtitle }}
+            {% endif %}
+        </p>
+        
+        {# Coaster count #}
+        {% if result.metadata.coasterCount > 0 %}
+            <div class="flex items-center gap-1 mt-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+                {{ ux_icon('tabler:rollercoaster', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+                <span>{{ 'search_index.coaster_count'|trans({'%count%': result.metadata.coasterCount}) }}</span>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Arrow #}
+    <div class="hidden md:flex items-center shrink-0">
+        {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-300 dark:text-neutral-600 group-hover:text-cc-blue-500 transition-colors', 'aria-hidden': 'true'}) }}
+    </div>
+</a>

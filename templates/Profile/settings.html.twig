@@ -1,150 +1,174 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
+
+{% import "macros/_macros_helpers.html.twig" as helper %}
 
 {% set title = 'profile.settings.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
-{% block stylesheets %}
-{% endblock %}
-
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
-        {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
+  <div class="max-w-2xl mx-auto">
+    {# Header #}
+    <div class="flex items-center gap-3 mb-6">
+      <a href="{{ path('profile') }}" 
+         class="p-2 rounded-lg text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+      </a>
+      <div class="min-w-0 flex-1">
+        <h1 class="text-lg font-bold text-neutral-900 dark:text-white truncate">
+          {{ 'profile.settings.title'|trans }}
+        </h1>
       </div>
     </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
-          <!-- settings form -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h6 class="panel-title">{{ 'profile.settings.title'|trans }}</h6>
-            </div>
-            <div class="panel-body">
-              {{ form_start(form) }}
 
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.name'|trans }}</legend>
-
-                <div class="form-group{% if form.firstName.vars.errors|length > 0 %} has-error{% endif %}">
-                  {{ form_label(form.firstName) }}
-                  {{ form_widget(form.firstName) }}
-                  {% for error in form.firstName.vars.errors %}
-                    <span class="help-block text-danger">{{ error.message }}</span>
-                  {% endfor %}
-                  <small class="text-muted">
-                    {{ 'profile.settings.name.change_limit'|trans }}
-                  </small>
-                </div>
-
-                <div class="form-group{% if form.lastName.vars.errors|length > 0 %} has-error{% endif %}">
-                  {{ form_label(form.lastName) }}
-                  {{ form_widget(form.lastName) }}
-                  {% for error in form.lastName.vars.errors %}
-                    <span class="help-block text-danger">{{ error.message }}</span>
-                  {% endfor %}
-                  <small class="text-muted">
-                    {{ 'profile.settings.name.change_limit'|trans }}
-                  </small>
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.displayNameFormat) }}
-                  {{ form_widget(form.displayNameFormat) }}
-                  {{ form_errors(form.displayNameFormat) }}
-                  <small class="text-muted">{{ 'profile.settings.name.format.help'|trans }}</small>
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.profilePicture) }}
-                  {{ form_widget(form.profilePicture) }}
-                  {{ form_errors(form.profilePicture) }}
-                </div>
-              </fieldset>
-
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.preferences'|trans }}</legend>
-
-                <div class="form-group">
-                  {{ form_label(form.emailNotification) }}
-                  {{ form_widget(form.emailNotification) }}
-                  {{ form_errors(form.emailNotification) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.preferredLocale) }}
-                  {{ form_widget(form.preferredLocale) }}
-                  {{ form_errors(form.preferredLocale) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.imperial) }}
-                  {{ form_widget(form.imperial) }}
-                  {{ form_errors(form.imperial) }}
-                </div>
-
-                <div class="form-group">
-                  {{ form_label(form.homePark) }}
-                  {{ form_widget(form.homePark) }}
-                  {{ form_errors(form.homePark) }}
-                </div>
-
-                <div class="toggle-switch-form-group" data-controller="toggle-switch">
-                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
-                </div>
-
-                <div class="toggle-switch-form-group" data-controller="toggle-switch">
-                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
-                </div>
-              </fieldset>
-
-              {% if form.apiKey is defined %}
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.advanced'|trans }}</legend>
-
-                <div class="form-group">
-                  {{ form_label(form.apiKey) }}
-                  {{ form_widget(form.apiKey) }}
-                  {{ form_errors(form.apiKey) }}
-                </div>
-              </fieldset>
-              {% endif %}
-
-              <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
-                <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }}</b>
-                {{ 'profile.settings.save'|trans }}
-              </button>
-
-              {{ form_rest(form) }}
-              {{ form_end(form) }}
-            </div>
-          </div>
-          <!-- /settings form -->
-
-          <!-- delete account section -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h6 class="panel-title">{{ 'profile.delete_account.title'|trans }}</h6>
-            </div>
-            <div class="panel-body">
-              <p class="text-semibold">{{ 'profile.delete_account.warning'|trans }}</p>
-              <ul class="list-unstyled">
-                <li>• {{ 'profile.delete_account.immediate_logout'|trans }}</li>
-                <li>• {{ 'profile.delete_account.permanent_after_month'|trans }}</li>
-              </ul>
-              <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
-                <button type="submit" class="btn btn-danger btn-labeled btn-labeled-right">
-                  <b>{{ ux_icon('heroicons:trash', {'class': 'icon-size-16'}) }}</b>
-                  {{ 'profile.delete_account.button'|trans }}
-                </button>
-              </form>
-            </div>
-          </div>
-          <!-- /delete account section -->
+    {# Name change warning #}
+    {% if not canChangeName %}
+      <div class="mb-4 p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800" role="alert">
+        <div class="flex items-start gap-3">
+          {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 text-yellow-600 dark:text-yellow-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+          <p class="text-sm text-yellow-800 dark:text-yellow-200">{{ 'profile.settings.name.change_limit'|trans }}</p>
         </div>
       </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+
+    {# Name Settings #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-4">
+      <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+          {{ ux_icon('tabler:user', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.settings.sections.name'|trans }}
+        </h2>
+      </div>
+      <div class="p-4 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            {{ form_label(form.firstName) }}
+            {{ form_widget(form.firstName) }}
+            {{ form_errors(form.firstName) }}
+          </div>
+          <div>
+            {{ form_label(form.lastName) }}
+            {{ form_widget(form.lastName) }}
+            {{ form_errors(form.lastName) }}
+          </div>
+        </div>
+
+        <div>
+          {{ form_label(form.displayNameFormat) }}
+          {{ form_widget(form.displayNameFormat) }}
+          {{ form_errors(form.displayNameFormat) }}
+          <p class="mt-1.5 text-xs text-neutral-500 dark:text-neutral-400">{{ 'profile.settings.name.format.help'|trans }}</p>
+        </div>
+
+        <div>
+          {{ form_label(form.profilePicture) }}
+          {{ form_widget(form.profilePicture) }}
+          {{ form_errors(form.profilePicture) }}
+        </div>
+      </div>
+    </section>
+
+    {# Preferences #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-4">
+      <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+          {{ ux_icon('tabler:settings', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.settings.sections.preferences'|trans }}
+        </h2>
+      </div>
+      <div class="p-4 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            {{ form_label(form.preferredLocale) }}
+            {{ form_widget(form.preferredLocale) }}
+            {{ form_errors(form.preferredLocale) }}
+          </div>
+          <div>
+            {{ form_label(form.homePark) }}
+            {{ form_widget(form.homePark) }}
+            {{ form_errors(form.homePark) }}
+          </div>
+        </div>
+
+        <div>
+          {{ form_label(form.emailNotification) }}
+          {{ form_widget(form.emailNotification) }}
+          {{ form_errors(form.emailNotification) }}
+        </div>
+
+        <div>
+          {{ form_label(form.imperial) }}
+          {{ form_widget(form.imperial) }}
+          {{ form_errors(form.imperial) }}
+        </div>
+
+        <div class="toggle-switch-form-group" data-controller="toggle-switch">
+          {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+        </div>
+
+        <div class="toggle-switch-form-group" data-controller="toggle-switch">
+          {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+        </div>
+      </div>
+    </section>
+
+    {# Advanced #}
+    {% if form.apiKey is defined %}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 overflow-hidden mb-4">
+      <div class="px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
+        <h2 class="text-sm font-semibold text-neutral-900 dark:text-white flex items-center gap-2">
+          {{ ux_icon('tabler:code', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.settings.sections.advanced'|trans }}
+        </h2>
+      </div>
+      <div class="p-4">
+        {{ form_label(form.apiKey) }}
+        {{ form_widget(form.apiKey) }}
+        {{ form_errors(form.apiKey) }}
+      </div>
+    </section>
+    {% endif %}
+
+    {# Save Button #}
+    <div class="flex justify-end mb-6">
+      <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium rounded-xl bg-cc-blue-600 text-white hover:bg-cc-blue-700 transition-colors">
+        {{ 'profile.settings.save'|trans }}
+        {{ ux_icon('tabler:check', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      </button>
     </div>
+
+    {{ form_rest(form) }}
+    {{ form_end(form) }}
+
+    {# Delete Account - Danger Zone #}
+    <section class="bg-white dark:bg-neutral-900 rounded-xl border border-red-200 dark:border-red-900/50 overflow-hidden">
+      <div class="px-4 py-3 border-b border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20">
+        <h2 class="text-sm font-semibold text-red-700 dark:text-red-400 flex items-center gap-2">
+          {{ ux_icon('tabler:alert-triangle', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+          {{ 'profile.delete_account.title'|trans }}
+        </h2>
+      </div>
+      <div class="p-4">
+        <p class="text-sm text-neutral-700 dark:text-neutral-300 mb-3">{{ 'profile.delete_account.warning'|trans }}</p>
+        <ul class="text-xs text-neutral-500 dark:text-neutral-400 space-y-1 mb-4">
+          <li class="flex items-center gap-2">
+            {{ ux_icon('tabler:logout', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'profile.delete_account.immediate_logout'|trans }}
+          </li>
+          <li class="flex items-center gap-2">
+            {{ ux_icon('tabler:trash', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'profile.delete_account.permanent_after_month'|trans }}
+          </li>
+        </ul>
+        <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
+          <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-lg transition-colors">
+            {{ ux_icon('tabler:trash', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'profile.delete_account.button'|trans }}
+          </button>
+        </form>
+      </div>
+    </section>
   </div>
 {% endblock %}

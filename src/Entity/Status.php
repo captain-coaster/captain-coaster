@@ -51,6 +51,9 @@ class Status implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private int $order;
 
+    #[ORM\Column(length: 15, options: ['default' => 'neutral'])]
+    private ?string $color = null;
+
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
@@ -140,6 +143,18 @@ class Status implements \Stringable
     public function setOrder(int $order): static
     {
         $this->order = $order;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }

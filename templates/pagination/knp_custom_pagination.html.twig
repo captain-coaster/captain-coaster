@@ -1,72 +1,102 @@
 {% if pageCount > 1 %}
-    <div class="text-center content-group pt-20">
-        <ul class="pagination">
-            {% if previous is defined %}
-                <li class="page-item">
-                    <a class="page-link" rel="prev" data-page="{{ previous }}"
-                       href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&laquo;</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&laquo;</span>
-                </li>
-            {% endif %}
-            {% if startPage > 1 %}
-                <li class="page-item">
-                    <a class="page-link" data-page="1"
-                       href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
-                </li>
-                {% if startPage == 3 %}
-                    <li class="page-item">
-                        <a class="page-link" data-page="2"
-                           href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
-                    </li>
-                {% elseif startPage != 2 %}
-                    <li class="page-item disabled">
-                        <span class="page-link">&hellip;</span>
-                    </li>
-                {% endif %}
-            {% endif %}
-            {% for page in pagesInRange %}
-                {% if page != current %}
-                    <li class="page-item">
-                        <a class="page-link" data-page="{{ page }}"
-                           href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
-                    </li>
-                {% else %}
-                    <li class="page-item active">
-                        <span class="page-link" data-page="{{ page }}">{{ page }}</span>
-                    </li>
-                {% endif %}
-            {% endfor %}
-            {% if pageCount > endPage %}
-                {% if pageCount > (endPage + 1) %}
-                    {% if pageCount > (endPage + 2) %}
-                        <li class="page-item disabled">
-                            <span class="page-link">&hellip;</span>
-                        </li>
-                    {% else %}
-                        <li class="page-item">
-                            <a class="page-link" data-page="{{ pageCount -1 }}"
-                               href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
-                        </li>
-                    {% endif %}
-                {% endif %}
-                <li class="page-item">
-                    <a class="page-link" data-page="{{ pageCount }}"
-                       href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
-                </li>
-            {% endif %}
-            {% if next is defined %}
-                <li class="page-item">
-                    <a class="page-link" rel="next" data-page="{{ next }}"
-                       href="{{ path(route, query|merge({(pageParameterName): next})) }}">&raquo;</a>
-                </li>
-            {% else %}
-                <li class="page-item disabled">
-                    <span class="page-link">&raquo;</span>
-                </li>
-            {% endif %}
-        </ul>
-    </div>
+<nav class="flex justify-center mt-6" aria-label="Pagination">
+  <ul class="pagination inline-flex items-center gap-1">
+    {# Previous #}
+    {% if previous is defined %}
+      <li>
+        <a class="flex items-center justify-center w-10 h-10 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+           rel="prev" 
+           data-page="{{ previous }}"
+           href="{{ path(route, query|merge({(pageParameterName): previous})) }}"
+           aria-label="Previous">
+          {{ ux_icon('tabler:chevron-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </a>
+      </li>
+    {% else %}
+      <li>
+        <span class="flex items-center justify-center w-10 h-10 rounded-lg text-neutral-300 dark:text-neutral-700 cursor-not-allowed" aria-disabled="true">
+          {{ ux_icon('tabler:chevron-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </span>
+      </li>
+    {% endif %}
+
+    {# First page #}
+    {% if startPage > 1 %}
+      <li>
+        <a class="flex items-center justify-center min-w-10 h-10 px-3 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-sm font-medium" 
+           data-page="1"
+           href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+      </li>
+      {% if startPage == 3 %}
+        <li>
+          <a class="flex items-center justify-center min-w-10 h-10 px-3 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-sm font-medium" 
+             data-page="2"
+             href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
+        </li>
+      {% elseif startPage != 2 %}
+        <li>
+          <span class="flex items-center justify-center w-10 h-10 text-neutral-400 dark:text-neutral-600 text-sm">…</span>
+        </li>
+      {% endif %}
+    {% endif %}
+
+    {# Page numbers #}
+    {% for page in pagesInRange %}
+      {% if page != current %}
+        <li>
+          <a class="flex items-center justify-center min-w-10 h-10 px-3 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-sm font-medium" 
+             data-page="{{ page }}"
+             href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+        </li>
+      {% else %}
+        <li>
+          <span class="flex items-center justify-center min-w-10 h-10 px-3 rounded-lg bg-cc-blue-600 text-white text-sm font-medium" 
+                data-page="{{ page }}"
+                aria-current="page">{{ page }}</span>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {# Last pages #}
+    {% if pageCount > endPage %}
+      {% if pageCount > (endPage + 1) %}
+        {% if pageCount > (endPage + 2) %}
+          <li>
+            <span class="flex items-center justify-center w-10 h-10 text-neutral-400 dark:text-neutral-600 text-sm">…</span>
+          </li>
+        {% else %}
+          <li>
+            <a class="flex items-center justify-center min-w-10 h-10 px-3 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-sm font-medium" 
+               data-page="{{ pageCount - 1 }}"
+               href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount - 1 }}</a>
+          </li>
+        {% endif %}
+      {% endif %}
+      <li>
+        <a class="flex items-center justify-center min-w-10 h-10 px-3 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors text-sm font-medium" 
+           data-page="{{ pageCount }}"
+           href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+      </li>
+    {% endif %}
+
+    {# Next #}
+    {% if next is defined %}
+      <li>
+        <a class="flex items-center justify-center w-10 h-10 rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+           rel="next" 
+           data-page="{{ next }}"
+           href="{{ path(route, query|merge({(pageParameterName): next})) }}"
+           aria-label="Next">
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </a>
+      </li>
+    {% else %}
+      <li>
+        <span class="flex items-center justify-center w-10 h-10 rounded-lg text-neutral-300 dark:text-neutral-700 cursor-not-allowed" aria-disabled="true">
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
 {% endif %}

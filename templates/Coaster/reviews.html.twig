@@ -1,0 +1,75 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'coaster.reviews.page_title'|trans({'%name%': coaster.name}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {# Sort + add review #}
+    <div class="flex items-center justify-between gap-3 mb-6">
+        <div class="flex items-center gap-2">
+            {% if reviews.getTotalItemCount() > 1 %}
+                <form class="inline-block">
+                    <input type="hidden" name="page" value="{{ reviews.page|default(1) }}">
+                    <select name="filters[sort]"
+                            onchange="this.form.submit()"
+                            class="rounded-lg border-0 py-1.5 pl-3 pr-8 text-sm text-neutral-900 dark:text-white ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors">
+                        <option value="" {% if filters.sort is not defined or filters.sort == '' %}selected{% endif %}>
+                            {{ 'filters.sorts.default'|trans }}
+                        </option>
+                        <option value="updatedAt|asc" {% if filters.sort is defined and filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                            {{ 'filters.sorts.reviews.updatedAt.asc'|trans }}
+                        </option>
+                        <option value="updatedAt|desc" {% if filters.sort is defined and filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                            {{ 'filters.sorts.reviews.updatedAt.desc'|trans }}
+                        </option>
+                        <option value="value|desc" {% if filters.sort is defined and filters.sort == 'value|desc' %}selected{% endif %}>
+                            {{ 'filters.sorts.reviews.value.desc'|trans }}
+                        </option>
+                        <option value="value|asc" {% if filters.sort is defined and filters.sort == 'value|asc' %}selected{% endif %}>
+                            {{ 'filters.sorts.reviews.value.asc'|trans }}
+                        </option>
+                    </select>
+                </form>
+            {% endif %}
+            <span class="text-sm text-neutral-500 dark:text-neutral-400">{{ reviews.getTotalItemCount() }} {{ 'review.title'|trans|lower }}</span>
+        </div>
+        {% if coaster.isRateable %}
+            <a href="{{ path('review_form', {'id': coaster.id}) }}"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg transition-colors">
+                {{ ux_icon('tabler:circle-plus', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+                <span class="hidden sm:inline">{{ 'review.send'|trans }}</span>
+            </a>
+        {% endif %}
+    </div>
+
+    {% if reviews.getTotalItemCount() > 0 %}
+        <div class="space-y-3">
+            {% for review in reviews %}
+                {% include 'components/review_card.html.twig' with {
+                    review: review,
+                    variant: 'full',
+                    showCoaster: false,
+                    showActions: true,
+                    showReport: true,
+                    showDelete: true,
+                    expandable: true,
+                    maxReviewLength: 0,
+                    displayReviewsInAllLanguages: displayReviewsInAllLanguages,
+                    upvotedReviewIds: upvotedReviewIds|default([])
+                } only %}
+            {% endfor %}
+        </div>
+        {% if reviews.getTotalItemCount() > 25 %}
+            <div class="mt-6">
+                {{ knp_pagination_render(reviews) }}
+            </div>
+        {% endif %}
+    {% else %}
+        {% include 'components/empty_state.html.twig' with {
+            icon: 'tabler:messages',
+            title: 'review_list.no_review'|trans,
+            action_url: coaster.isRateable ? path('review_form', {'id': coaster.id}) : null,
+            action_label: coaster.isRateable ? 'review.send'|trans : null
+        } %}
+    {% endif %}
+{% endblock %}

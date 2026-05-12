@@ -272,6 +272,39 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get reviews that were recently liked (upvoted), showing community-validated content.
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function getLatestLikedReviews(string $locale = 'en', int $limit = 3, bool $displayReviewsInAllLanguages = false): array
+    {
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->addSelect(
+                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+            )
+            ->addSelect('u')
+            ->addSelect('MAX(ru.createdAt) AS HIDDEN lastUpvotedAt')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->innerJoin('r.upvotes', 'ru')
+            ->where('r.review IS NOT NULL')
+            ->andWhere('u.enabled = 1')
+            ->groupBy('r.id, u.id')
+            ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('lastUpvotedAt', 'desc')
+            ->setMaxResults($limit)
+            ->setParameter('locale', $locale)
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getResult();
+    }
+
+    /**
      * Get latest ratings from enabled users only.
      *
      * @return array<int, RiddenCoaster>
@@ -583,6 +616,63 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         } catch (\Exception) {
             return $default;
         }
+    }
+
+    /**
+     * Get featured reviews for a coaster (high-rated with text content).
+     * Prioritizes reviews in the user's locale, sorted by score and upvotes.
+     *
+     * @param Coaster $coaster The coaster to get reviews for
+     * @param string  $locale  The preferred language
+     * @param int     $limit   Maximum number of reviews to retrieve
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function getFeaturedReviews(Coaster $coaster, string $locale = 'en', int $limit = 3): array
+    {
+        // First query: get IDs without collection joins to avoid row multiplication
+        /** @var list<int> $ids */
+        $ids = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r.id')
+            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :coasterId')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('u.enabled = 1')
+            ->andWhere('r.value >= 3')
+            ->orderBy('languagePriority', 'ASC')
+            ->addOrderBy('r.score', 'DESC')
+            ->setParameter('coasterId', $coaster->getId())
+            ->setParameter('locale', $locale)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        if ([] === $ids) {
+            return [];
+        }
+
+        // Second query: fetch full entities with eager-loaded collections
+        $reviews = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'u', 'p', 'c')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->leftJoin('r.pros', 'p')
+            ->leftJoin('r.cons', 'c')
+            ->where('r.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+
+        // Preserve original ordering
+        $idOrder = array_flip($ids);
+        usort($reviews, static fn (RiddenCoaster $a, RiddenCoaster $b): int => $idOrder[$a->getId()] <=> $idOrder[$b->getId()]);
+
+        return $reviews;
     }
 
     /**

@@ -1,19 +1,18 @@
-import { Controller } from '@hotwired/stimulus';
+import BaseController from './base_controller.js';
+import { show, hide } from '../js/utils/dom.js';
+import { scaleUp } from '../js/utils/animation.js';
 import { trans } from '../translator';
 
 /**
- * Review actions controller for handling upvotes and reports
- * Optimized for Bootstrap 3.x with efficient jQuery usage
+ * Review actions controller for handling upvotes, reports, and review expand/collapse
  */
-export default class extends Controller {
+export default class extends BaseController {
     static targets = [
         'upvoteButton',
         'upvoteCount',
         'reportButton',
         'reportModal',
         'reviewContent',
-        'expandButton',
-        'collapseButton',
     ];
     static outlets = ['modal', 'csrf-protection'];
     static values = {
@@ -27,23 +26,17 @@ export default class extends Controller {
     };
 
     connect() {
-        // Initialize the upvote button state based on the upvoted value
         if (this.hasUpvoteButtonTarget && this.upvotedValue) {
-            this._updateUpvoteButtonState();
+            this.#updateUpvoteButtonState();
         }
 
-        // Set up modal event listeners for better integration
-        this._setupModalEventListeners();
-
-        // Initialize responsive truncation
-        this._initializeResponsiveTruncation();
-        this._boundHandleResize = this._handleResize.bind(this);
-        window.addEventListener('resize', this._boundHandleResize);
+        this.#initializeResponsiveTruncation();
+        this.#boundHandleResize = this.#handleResize.bind(this);
+        window.addEventListener('resize', this.#boundHandleResize);
     }
 
     disconnect() {
-        // Clean up event listeners
-        window.removeEventListener('resize', this._boundHandleResize);
+        window.removeEventListener('resize', this.#boundHandleResize);
     }
 
     /**
@@ -52,13 +45,9 @@ export default class extends Controller {
     upvote(event) {
         event.preventDefault();
 
-        if (!this.hasUpvoteUrlValue) {
-            console.error('Upvote URL not provided');
-            return;
-        }
+        if (!this.hasUpvoteUrlValue) return;
 
-        // Add zoom animation
-        this._addZoomAnimation();
+        this.#addZoomAnimation();
 
         fetch(this.upvoteUrlValue, {
             method: 'POST',
@@ -66,39 +55,34 @@ export default class extends Controller {
                 'X-Requested-With': 'XMLHttpRequest',
             },
         })
-            .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
             .then((data) => {
                 if (data.success) {
-                    // Update the upvote count
                     if (this.hasUpvoteCountTarget) {
                         this.upvoteCountTarget.textContent = data.upvoteCount;
                     }
-
-                    // Toggle the upvoted state
                     this.upvotedValue = data.action === 'added';
-                    this._updateUpvoteButtonState();
-                } else if (data.error) {
-                    // Handle errors (like self-upvoting)
-                    console.warn('Upvote error:', data.error);
+                    this.#updateUpvoteButtonState();
                 }
             })
             .catch((error) => {
-                console.error('Error toggling upvote:', error);
+                console.error('Upvote error:', error);
             });
     }
 
     /**
-     * Open the report modal using the modal controller
+     * Open the report modal
      */
     openReportModal(event) {
         event.preventDefault();
 
-        // Try to use the modal outlet first (modern approach)
-        if (this.hasModalOutlet) {
-            this.modalOutlet.show();
-        } else if (this.hasReportModalTarget) {
-            // Fallback to direct Bootstrap 3.x modal API for compatibility
-            $(this.reportModalTarget).modal('show');
+        if (this.hasReportModalTarget) {
+            this.reportModalTarget.classList.remove('hidden');
         }
     }
 
@@ -112,10 +96,7 @@ export default class extends Controller {
             return;
         }
 
-        if (!this.hasDeleteUrlValue) {
-            console.error('Delete URL not provided');
-            return;
-        }
+        if (!this.hasDeleteUrlValue) return;
 
         const headers = { 'X-Requested-With': 'XMLHttpRequest' };
         let body = null;
@@ -133,24 +114,18 @@ export default class extends Controller {
             .then((response) => response.json())
             .then((data) => {
                 if (data.state === 'success') {
-                    // Remove the entire list item (including title) from the DOM
                     const listItem = this.element.closest('li');
                     if (listItem) {
                         listItem.remove();
                     } else {
                         this.element.remove();
                     }
-                    this._showNotification(
-                        'Review deleted successfully',
-                        'success'
-                    );
                 } else {
-                    this._showNotification('Failed to delete review', 'danger');
+                    this.showError('Failed to delete review');
                 }
             })
-            .catch((error) => {
-                console.error('Error deleting review:', error);
-                this._showNotification('Failed to delete review', 'danger');
+            .catch(() => {
+                this.showError('Failed to delete review');
             });
     }
 
@@ -160,21 +135,16 @@ export default class extends Controller {
     submitReport(event) {
         event.preventDefault();
 
-        if (!this.hasReportUrlValue) {
-            console.error('Report URL not provided');
-            return;
-        }
+        if (!this.hasReportUrlValue) return;
 
         const form = event.currentTarget;
         const submitButton = form.querySelector('button[type="submit"]');
 
-        // Prevent double submission by disabling the submit button immediately
+        if (submitButton?.disabled) return;
+
         if (submitButton) {
-            if (submitButton.disabled) {
-                return; // Already submitting
-            }
             submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
+            submitButton.textContent = trans('review.submit_report');
         }
 
         const formData = new FormData(form);
@@ -189,132 +159,109 @@ export default class extends Controller {
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    // Hide the modal using the modal controller or fallback to jQuery
-                    if (this.hasModalOutlet) {
-                        this.modalOutlet.hide();
-                    } else if (this.hasReportModalTarget) {
-                        $(this.reportModalTarget).modal('hide');
+                    if (this.hasReportModalTarget) {
+                        this.reportModalTarget.classList.add('hidden');
                     }
-
-                    // Disable the report button
                     if (this.hasReportButtonTarget) {
                         this.reportButtonTarget.disabled = true;
-                        this.reportButtonTarget.classList.add('disabled');
                     }
-
-                    // Show a success message
-                    this._showNotification(
-                        trans('review.report_success'),
-                        'success'
-                    );
+                    this.showSuccess(trans('review.report_success'));
                 } else {
-                    // Re-enable submit button on error
                     if (submitButton) {
                         submitButton.disabled = false;
-                        submitButton.textContent = trans(
-                            'review.submit_report'
-                        );
                     }
-                    this._showNotification(
-                        data.message || trans('review.report_error'),
-                        'danger'
+                    this.showError(
+                        data.message || trans('review.report_error')
                     );
                 }
             })
-            .catch((error) => {
-                console.error('Error submitting report:', error);
-                // Re-enable submit button on error
+            .catch(() => {
                 if (submitButton) {
                     submitButton.disabled = false;
-                    submitButton.textContent = trans('review.submit_report');
                 }
-                this._showNotification(trans('review.report_error'), 'danger');
+                this.showError(trans('review.report_error'));
             });
     }
 
     /**
-     * Add zoom animation to the upvote button icon
-     * @private
+     * Close the report modal
      */
-    _addZoomAnimation() {
-        if (!this.hasUpvoteButtonTarget) return;
+    closeReportModal(event) {
+        event.preventDefault();
 
-        const icon = this.upvoteButtonTarget.querySelector('svg');
-        if (!icon) return;
-
-        icon.style.transform = 'scale(1.3)';
-        icon.style.transition = 'transform 0.2s ease';
-
-        setTimeout(() => {
-            icon.style.transform = 'scale(1)';
-        }, 200);
-    }
-
-    /**
-     * Update the upvote button state based on the upvoted value
-     * @private
-     */
-    _updateUpvoteButtonState() {
-        if (this.hasUpvoteButtonTarget) {
-            if (this.upvotedValue) {
-                this.upvoteButtonTarget.classList.add('active');
-                this.upvoteButtonTarget.setAttribute(
-                    'title',
-                    trans('review.remove_upvote')
-                );
-                // Add a visual indicator for upvoted state
-                const icon = this.upvoteButtonTarget.querySelector('i');
-                if (icon) {
-                    icon.classList.add('text-primary');
-                }
-            } else {
-                this.upvoteButtonTarget.classList.remove('active');
-                this.upvoteButtonTarget.setAttribute(
-                    'title',
-                    trans('review.upvote')
-                );
-                // Remove visual indicator
-                const icon = this.upvoteButtonTarget.querySelector('i');
-                if (icon) {
-                    icon.classList.remove('text-primary');
-                }
-            }
+        if (this.hasReportModalTarget) {
+            this.reportModalTarget.classList.add('hidden');
         }
     }
 
     /**
      * Toggle between short and full review content
-     * @param {Event} event - The click event
      */
     toggleReview(event) {
         event.preventDefault();
 
-        if (this.hasReviewContentTarget) {
-            const reviewContent = this.reviewContentTarget;
-            const shortReview = reviewContent.querySelector('.review-short');
-            const fullReview = reviewContent.querySelector('.review-full');
+        if (!this.hasReviewContentTarget) return;
 
-            // Toggle visibility
-            if (shortReview.style.display !== 'none') {
-                shortReview.style.display = 'none';
-                fullReview.style.display = 'block';
-            } else {
-                shortReview.style.display = 'block';
-                fullReview.style.display = 'none';
-            }
+        const shortReview =
+            this.reviewContentTarget.querySelector('.review-short');
+        const fullReview =
+            this.reviewContentTarget.querySelector('.review-full');
+
+        if (shortReview && !shortReview.classList.contains('hidden')) {
+            hide(shortReview);
+            if (fullReview) show(fullReview);
+        } else {
+            if (shortReview) show(shortReview);
+            if (fullReview) hide(fullReview);
         }
     }
 
-    /**
-     * Initialize responsive truncation based on screen size
-     * @private
-     */
-    _initializeResponsiveTruncation() {
+    /** @private */
+    #addZoomAnimation() {
+        if (!this.hasUpvoteButtonTarget) return;
+
+        const icon = this.upvoteButtonTarget.querySelector('svg');
+        if (icon) scaleUp(icon, 200);
+    }
+
+    /** @private */
+    #updateUpvoteButtonState() {
+        if (!this.hasUpvoteButtonTarget) return;
+
+        const icon = this.upvoteButtonTarget.querySelector('svg');
+        if (!icon) return;
+
+        const size = icon.classList.contains('w-3')
+            ? 'w-3 h-3'
+            : icon.classList.contains('w-3.5')
+              ? 'w-3.5 h-3.5'
+              : 'w-4 h-4';
+
+        if (this.upvotedValue) {
+            this.upvoteButtonTarget.setAttribute(
+                'title',
+                trans('review.remove_upvote')
+            );
+            icon.outerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="${size} text-red-500" aria-hidden="true">
+                <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+            </svg>`;
+        } else {
+            this.upvoteButtonTarget.setAttribute(
+                'title',
+                trans('review.upvote')
+            );
+            icon.outerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="${size}" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+            </svg>`;
+        }
+    }
+
+    /** @private */
+    #initializeResponsiveTruncation() {
         if (!this.hasReviewContentTarget) return;
 
         const fullText = this.reviewContentTarget.dataset.fullText;
         if (!fullText) {
-            // Store the full text on first load
             const fullReview =
                 this.reviewContentTarget.querySelector('.review-full');
             if (fullReview) {
@@ -323,29 +270,25 @@ export default class extends Controller {
             }
         }
 
-        this._updateTruncation();
+        this.#updateTruncation();
     }
 
-    /**
-     * Handle window resize events
-     * @private
-     */
-    _handleResize() {
-        // Debounce resize events
-        clearTimeout(this._resizeTimeout);
-        this._resizeTimeout = setTimeout(() => {
-            this._updateTruncation();
+    /** @private */
+    #handleResize() {
+        clearTimeout(this.#resizeTimeout);
+        this.#resizeTimeout = setTimeout(() => {
+            this.#updateTruncation();
         }, 150);
     }
 
-    /**
-     * Update truncation based on current screen size
-     * @private
-     */
-    _updateTruncation() {
+    #resizeTimeout = null;
+    #boundHandleResize = null;
+
+    /** @private */
+    #updateTruncation() {
         if (!this.hasReviewContentTarget) return;
 
-        const isMobile = window.innerWidth < 768; // Bootstrap's tablet breakpoint
+        const isMobile = window.innerWidth < 768;
         const maxLength = isMobile
             ? this.mobileLengthValue
             : this.desktopLengthValue;
@@ -359,69 +302,17 @@ export default class extends Controller {
             this.reviewContentTarget.querySelector('.review-full');
 
         if (fullText.length > maxLength) {
-            // Show truncated version
             if (shortReview) {
-                const truncated = fullText.slice(0, maxLength);
-                const textNode = shortReview.childNodes[0];
-                if (textNode && textNode.nodeType === Node.TEXT_NODE) {
-                    textNode.textContent = truncated + '... ';
+                const textP = shortReview.querySelector('p');
+                if (textP) {
+                    textP.textContent = fullText.slice(0, maxLength) + '...';
                 }
+                show(shortReview);
             }
+            if (fullReview) hide(fullReview);
         } else {
-            // Text is short enough, hide expand/collapse buttons
-            if (shortReview) {
-                shortReview.style.display = 'none';
-            }
-            if (fullReview) {
-                fullReview.style.display = 'block';
-            }
-            const expandButton =
-                this.reviewContentTarget.querySelector('.expand-review');
-            const collapseButton =
-                this.reviewContentTarget.querySelector('.collapse-review');
-            if (expandButton) expandButton.style.display = 'none';
-            if (collapseButton) collapseButton.style.display = 'none';
-        }
-    }
-
-    /**
-     * Set up modal event listeners for better integration
-     * @private
-     */
-    _setupModalEventListeners() {
-        // Removed duplicate event listeners that were causing double submissions
-        // The form already has data-action="review-actions#submitReport" which handles submission
-    }
-
-    /**
-     * Show a notification using the notification controller
-     * @param {string} message - The message to display
-     * @param {string} type - The type of notification (success, info, warning, danger)
-     * @private
-     */
-    _showNotification(message, type = 'info') {
-        // Get the global notification controller
-        const notificationController =
-            this.application.getControllerForElementAndIdentifier(
-                document.getElementById('notifications'),
-                'notification'
-            );
-
-        if (notificationController) {
-            // Use the appropriate method based on notification type
-            switch (type) {
-                case 'success':
-                    notificationController.showSuccess(message);
-                    break;
-                case 'warning':
-                    notificationController.showWarning(message);
-                    break;
-                case 'danger':
-                    notificationController.showDanger(message);
-                    break;
-                default:
-                    notificationController.showInfo(message);
-            }
+            if (shortReview) hide(shortReview);
+            if (fullReview) show(fullReview);
         }
     }
 }

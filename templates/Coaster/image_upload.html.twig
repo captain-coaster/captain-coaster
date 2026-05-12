@@ -1,0 +1,57 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'image_upload.title'|trans({'%coaster%': coaster.name}) %}
+{% set openedSidebar = true %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="p-4 rounded-lg border mb-4 {% if label == 'success' %}bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400{% elseif label == 'danger' or label == 'error' %}bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400{% else %}bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-6">
+            {{ form_start(form, {'attr': {'class': 'space-y-6', 'data-controller': 'image-upload'}}) }}
+            
+            <div class="{% if form.file.vars.errors|length > 0 %}border-red-500{% endif %}">
+                {{ form_label(form.file, null, {'label_attr': {'class': 'block text-sm font-medium text-neutral-900 dark:text-white mb-2'}}) }}
+                <div>
+                    {{ form_widget(form.file, {'attr': {'class': 'block w-full text-sm text-neutral-900 dark:text-white border border-neutral-300 dark:border-neutral-600 rounded-lg cursor-pointer bg-neutral-50 dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-cc-blue-500'}}) }}
+                    {{ form_errors(form.file) }}
+                    <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ 'image_upload.form.file.helper'|trans }}</p>
+                </div>
+            </div>
+            
+            <div class="{% if form.credit.vars.errors|length > 0 %}border-red-500{% endif %}">
+                {{ form_label(form.credit, null, {'label_attr': {'class': 'block text-sm font-medium text-neutral-900 dark:text-white mb-2'}}) }}
+                <div>
+                    {{ form_widget(form.credit, {'attr': {'class': 'block w-full rounded-lg border-neutral-300 dark:border-neutral-600 dark:bg-neutral-800 dark:text-white focus:ring-cc-blue-500 focus:border-cc-blue-500'}}) }}
+                    {{ form_errors(form.credit) }}
+                    <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ 'image_upload.form.credit.helper'|trans }}</p>
+                </div>
+            </div>
+            
+            <div data-controller="toggle-switch">
+                {{ form_row(form.watermarked, {'attr': {'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+                <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">{{ 'image_upload.form.watermark.helper'|trans }}</p>
+            </div>
+            
+            <div class="flex gap-3">
+                {{ form_widget(form.upload, {'attr': {
+                    'class': 'inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+                    'data-image-upload-target': 'submitButton'
+                }}) }}
+                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-lg bg-neutral-200 text-neutral-700 hover:bg-neutral-300 dark:bg-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-500 transition-colors duration-200">
+                    {{ 'image_upload.form.back'|trans }}
+                </a>
+            </div>
+            
+            {{ form_rest(form) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

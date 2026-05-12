@@ -1,5 +1,4 @@
 import { Controller } from '@hotwired/stimulus';
-import { renderStarRating } from '../js/utils/star-rating';
 
 /**
  * Top List Search Controller
@@ -442,6 +441,32 @@ export default class extends Controller {
     }
 
     /**
+     * Render star rating HTML
+     * Simple inline version for dynamic content
+     */
+    renderStarRating(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating - fullStars >= 0.5;
+
+        let html = '<span class="inline-flex items-center text-cc-warm-500">';
+
+        // Full stars - using Tabler star-filled
+        for (let i = 0; i < fullStars; i++) {
+            html +=
+                '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8.243 7.34l-6.38.925-.67.1a1 1 0 0 0-.55 1.705l4.61 4.494-.957 6.36-.1.65a1 1 0 0 0 1.463.98l5.693-2.992 5.693 2.992a1 1 0 0 0 1.463-.98l-.1-.65-.957-6.36 4.61-4.494a1 1 0 0 0-.55-1.705l-.67-.1-6.38-.925-2.818-5.79a1 1 0 0 0-1.794 0l-2.818 5.79z"/></svg>';
+        }
+
+        // Half star - using Tabler star-half-filled
+        if (hasHalfStar) {
+            html +=
+                '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1l2.818 5.79 6.38.925c.67.1 1.12.633 1.12 1.329 0 .27-.08.53-.23.74l-4.61 4.494.957 6.36c.1.67-.267 1.329-.937 1.329-.27 0-.54-.08-.74-.23L12 18.745V1z"/></svg>';
+        }
+
+        html += '</span>';
+        return html;
+    }
+
+    /**
      * Add coaster to the top list
      */
     addCoasterToList(coasterId, coasterName, parkName, rating) {
@@ -501,7 +526,7 @@ export default class extends Controller {
                         coasterContent.parentNode.appendChild(ratingEl);
                     }
                 }
-                ratingEl.innerHTML = renderStarRating(rating);
+                ratingEl.innerHTML = this.renderStarRating(rating);
             } else if (ratingEl) {
                 ratingEl.remove();
             }
@@ -586,7 +611,7 @@ export default class extends Controller {
         const ratingEl = newItem.querySelector('.coaster-rating');
         if (ratingEl) {
             if (rating && rating !== '' && rating !== '0') {
-                ratingEl.innerHTML = renderStarRating(rating);
+                ratingEl.innerHTML = this.renderStarRating(rating);
             } else {
                 ratingEl.remove();
             }

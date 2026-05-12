@@ -1,0 +1,70 @@
+/*
+ * Form Components - Tailwind CSS v4
+ * Form-specific component styles
+ */
+
+@layer components {
+    /* Custom range slider styling - requires vendor prefixes */
+    input[type='range'].slider {
+        -webkit-appearance: none;
+        appearance: none;
+    }
+
+    input[type='range'].slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: var(--color-cc-blue-500);
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    input[type='range'].slider::-moz-range-thumb {
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        background: var(--color-cc-blue-500);
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* Focus styles for better accessibility */
+    input[type='range'].slider:focus::-webkit-slider-thumb {
+        box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+    }
+
+    input[type='range'].slider:focus::-moz-range-thumb {
+        box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+    }
+
+    /* Action Icon Button - complex interactive pattern with focus states */
+    .action-icon {
+        @apply p-2 rounded-lg text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-offset-2;
+        transition: var(--transition-colors);
+        border-radius: var(--radius-lg);
+    }
+
+    .action-icon:focus {
+        box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+    }
+
+    /* Link Styles - consistent pattern across app */
+    .link {
+        @apply text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300;
+        transition: var(--transition-colors);
+    }
+
+    /* Empty State - reusable component pattern */
+    .empty-state {
+        @apply px-6 py-12 text-center;
+    }
+
+    .empty-state-icon {
+        @apply w-16 h-16 bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center mx-auto mb-4;
+        border-radius: var(--radius-2xl);
+    }
+}

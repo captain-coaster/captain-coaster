@@ -1,0 +1,321 @@
+{#
+  Reusable review card component.
+
+  Parameters:
+    - review: RiddenCoaster entity (required)
+    - variant: 'compact' (horizontal scroll card) or 'full' (list item) — default 'compact'
+    - displayReviewsInAllLanguages: bool — default false
+    - showCoaster: bool — show coaster name/link — default true
+    - showActions: bool — show edit button — default false
+    - showReport: bool — show report button/modal — default false
+    - showDelete: bool — show delete button — default false
+    - expandable: bool — enable expand/collapse for long reviews — default false
+    - maxReviewLength: int — truncate review text (0 = no truncation) — default 150
+
+  Usage:
+    {% include 'components/review_card.html.twig' with {
+      review: review,
+      variant: 'compact',
+      displayReviewsInAllLanguages: false
+    } only %}
+#}
+
+{% import "macros/_macros_helpers.html.twig" as helper %}
+{% import "macros/ui.html.twig" as ui %}
+
+{% set variant = variant|default('compact') %}
+{% set displayReviewsInAllLanguages = displayReviewsInAllLanguages|default(false) %}
+{% set showCoaster = showCoaster|default(true) %}
+{% set showActions = showActions|default(false) %}
+{% set showReport = showReport|default(false) %}
+{% set showDelete = showDelete|default(false) %}
+{% set expandable = expandable|default(false) %}
+{% set maxReviewLength = maxReviewLength|default(150) %}
+{% set locale = app.request.locale %}
+{% set canShowReview = review.review and (displayReviewsInAllLanguages or review.language == locale) %}
+
+{% set upvotedReviewIds = upvotedReviewIds|default([]) %}
+{% set isUpvoted = review.id in upvotedReviewIds %}
+
+{% if variant == 'compact' %}
+  {# ── Compact variant: tight card for horizontal scroll ── #}
+  <article class="flex-none w-64 snap-start rounded-2xl bg-white dark:bg-neutral-700/50 p-3"
+           data-controller="review-actions"
+           data-review-actions-id-value="{{ review.id }}"
+           data-review-actions-upvoted-value="{{ isUpvoted ? 'true' : 'false' }}"
+           data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}">
+    {# Header: avatar + coaster name + star rating #}
+    <div class="flex items-center gap-2.5 mb-2">
+      <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="shrink-0">
+        <img src="{{ pictures_cdn }}/profile-pictures/{{ review.user.profilePicture|default('default_user.png') }}"
+             alt="" class="w-8 h-8 rounded-full object-cover">
+      </a>
+      <div class="min-w-0 flex-1">
+        {% if showCoaster %}
+          <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}"
+             class="block font-semibold text-sm text-neutral-900 dark:text-white truncate hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
+            {{ review.coaster.name }}
+          </a>
+          <div class="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+            <span class="truncate">{{ review.user.displayName }}</span>
+          </div>
+        {% else %}
+          <a href="{{ path('user_show', {'slug': review.user.slug}) }}"
+             class="block font-semibold text-sm text-neutral-900 dark:text-white truncate hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
+            {{ review.user.displayName }}
+          </a>
+        {% endif %}
+      </div>
+      <div class="shrink-0 flex items-center gap-1">
+        {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        <span class="text-sm font-bold text-neutral-900 dark:text-white">{{ review.value }}</span>
+      </div>
+    </div>
+
+    {# Review text #}
+    {% if canShowReview %}
+      {% if review.review|length > 150 %}
+        <div class="review-content cursor-pointer" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}" data-action="click->review-actions#toggleReview">
+          <div class="review-short">
+            <p class="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed line-clamp-3 mb-2">
+              {{ review.review|slice(0, 150) }}…
+            </p>
+          </div>
+          <div class="review-full hidden">
+            <p class="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed mb-2">
+              {{ review.review }}
+            </p>
+          </div>
+        </div>
+      {% else %}
+        <p class="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed mb-2">
+          {{ review.review }}
+        </p>
+      {% endif %}
+    {% endif %}
+
+    {# Pros/Cons pills #}
+    {% if review.pros|length > 0 or review.cons|length > 0 %}
+      <div class="flex flex-wrap gap-1 mb-2">
+        {% for pro in review.pros|slice(0, 2) %}
+          <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400">
+            {{ ux_icon('tabler:thumb-up', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+            {{ pro.name|trans([], 'database') }}
+          </span>
+        {% endfor %}
+        {% for con in review.cons|slice(0, 1) %}
+          <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400">
+            {{ ux_icon('tabler:thumb-down', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+            {{ con.name|trans([], 'database') }}
+          </span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Footer: upvotes + time #}
+    <div class="flex items-center justify-between text-xs text-neutral-400">
+      <time datetime="{{ review.updatedAt|date('c') }}">{{ review.updatedAt|ago }}</time>
+      <span class="inline-flex items-center gap-1">
+        <span data-review-actions-target="upvoteCount">{{ review.upvoteCounter }}</span>
+        <button type="button"
+                class="p-0.5 rounded hover:text-red-500 transition-colors"
+                data-action="review-actions#upvote"
+                data-review-actions-target="upvoteButton"
+                title="{{ 'review.upvote'|trans }}">
+          {{ ux_icon('tabler:heart', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+        </button>
+      </span>
+    </div>
+  </article>
+
+{% else %}
+  {# ── Full variant: wide card for vertical lists ── #}
+  <article class="rounded-2xl bg-neutral-50 dark:bg-neutral-800 overflow-hidden"
+           data-controller="review-actions"
+           data-review-actions-id-value="{{ review.id }}"
+           data-review-actions-upvoted-value="{{ isUpvoted ? 'true' : 'false' }}"
+           data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"
+           {% if showReport %}data-review-actions-report-url-value="{{ path('review_report', {'id': review.id, '_locale': locale}) }}"{% endif %}
+           {% if showDelete %}data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}"{% endif %}
+           data-review-actions-mobile-length-value="150"
+           data-review-actions-desktop-length-value="600">
+    {% if showCoaster %}
+      <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}"
+         class="flex items-center gap-3 px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 dark:hover:bg-neutral-700/50 transition-colors">
+        {% if review.coaster.mainImage is not null %}
+          <img src="{{ pictures_cdn }}/280x210/{{ review.coaster.mainImage.filename }}"
+               class="w-12 h-12 rounded-lg object-cover shrink-0"
+               alt="{{ review.coaster.name }}"
+               loading="lazy">
+        {% endif %}
+        <div class="flex-1 min-w-0">
+          <div class="font-semibold text-sm text-neutral-900 dark:text-white truncate">{{ review.coaster.name }}</div>
+          <div class="text-xs text-neutral-500 dark:text-neutral-400 truncate">{{ review.coaster.park.name }}</div>
+        </div>
+        <div class="shrink-0 flex items-center gap-1">
+          {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+          <span class="text-sm font-bold text-neutral-900 dark:text-white">{{ review.value }}</span>
+        </div>
+      </a>
+    {% endif %}
+
+    <div class="p-4">
+      {# User header #}
+      <div class="flex items-center gap-2.5 mb-3">
+        <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="shrink-0">
+          {{ helper.profilePicture(review.user, 'w-9 h-9 rounded-full object-cover') }}
+        </a>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2">
+            <a href="{{ path('user_show', {'slug': review.user.slug}) }}"
+               class="font-semibold text-sm text-neutral-900 dark:text-white hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">
+              {{ review.user.displayName }}
+            </a>
+            <span class="text-xs text-neutral-400 dark:text-neutral-500">
+              <time datetime="{{ review.updatedAt|date('c') }}">{{ review.updatedAt|ago }}</time>
+            </span>
+          </div>
+          {% if not showCoaster %}
+            <div class="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+              {{ ux_icon('tabler:star-filled', {'class': 'w-3 h-3 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+              {{ review.value }}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Pros/Cons #}
+      {% if review.pros|length > 0 or review.cons|length > 0 %}
+        <div class="flex flex-wrap gap-1.5 mb-3">
+          {% for pro in review.pros %}
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400">
+              {{ ux_icon('tabler:thumb-up', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+              {{ pro.name|trans([], 'database') }}
+            </span>
+          {% endfor %}
+          {% for con in review.cons %}
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400">
+              {{ ux_icon('tabler:thumb-down', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+              {{ con.name|trans([], 'database') }}
+            </span>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {# Review text #}
+      {% if canShowReview %}
+        {% if expandable and review.review|length > 150 %}
+          <div class="review-content cursor-pointer" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}" data-action="click->review-actions#toggleReview">
+            <div class="review-short">
+              <p class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                {{ review.review|slice(0, 150) }}…
+              </p>
+            </div>
+            <div class="review-full hidden">
+              <p class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+                {{ review.review }}
+              </p>
+            </div>
+          </div>
+        {% else %}
+          <p class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">
+            {% if maxReviewLength > 0 and review.review|length > maxReviewLength %}
+              {{ review.review|slice(0, maxReviewLength) ~ '…' }}
+            {% else %}
+              {{ review.review }}
+            {% endif %}
+          </p>
+        {% endif %}
+      {% endif %}
+
+      {# Footer #}
+      <div class="flex items-center gap-4 mt-3 text-sm">
+        <span class="inline-flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+          <span data-review-actions-target="upvoteCount">{{ review.upvoteCounter }}</span>
+          <button type="button"
+                  class="p-0.5 rounded hover:text-red-500 transition-colors"
+                  data-action="review-actions#upvote"
+                  data-review-actions-target="upvoteButton"
+                  title="{{ 'review.upvote'|trans }}">
+            {{ ux_icon('tabler:heart', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+          </button>
+        </span>
+        {% if showReport and is_granted('ROLE_USER') %}
+          <button type="button"
+                  class="p-0.5 rounded text-neutral-500 hover:text-neutral-700 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-neutral-300 dark:hover:bg-neutral-700 transition-colors"
+                  data-action="review-actions#openReportModal"
+                  data-review-actions-target="reportButton"
+                  title="{{ 'review.report'|trans }}">
+            {{ ux_icon('tabler:flag', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+          </button>
+        {% endif %}
+        {% if showActions and is_granted('update', review) %}
+          <a href="{{ path('review_form', {'id': review.coaster.id}) }}"
+             class="p-0.5 rounded text-neutral-500 hover:text-cc-blue-600 hover:bg-cc-blue-50 dark:text-neutral-400 dark:hover:text-cc-blue-400 dark:hover:bg-cc-blue-900/20 transition-colors"
+             title="{{ 'review.update'|trans }}">
+            {{ ux_icon('tabler:edit', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+          </a>
+        {% endif %}
+        {% if showDelete and is_granted('delete', review) %}
+          <button type="button"
+                  class="p-0.5 rounded text-neutral-500 hover:text-red-600 hover:bg-red-50 dark:text-neutral-400 dark:hover:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+                  data-action="review-actions#deleteReview"
+                  title="{{ 'review.delete'|trans }}">
+            {{ ux_icon('tabler:trash', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+          </button>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Report Modal #}
+    {% if showReport and is_granted('ROLE_USER') %}
+      <div id="reportModal-{{ review.id }}"
+           class="fixed inset-0 z-50 hidden overflow-y-auto"
+           tabindex="-1"
+           data-review-actions-target="reportModal"
+           aria-labelledby="reportModalLabel-{{ review.id }}"
+           aria-hidden="true">
+        <div class="flex min-h-full items-end sm:items-center justify-center p-0 sm:p-4">
+          <div class="fixed inset-0 bg-black/50 transition-opacity" data-action="click->review-actions#closeReportModal" aria-hidden="true"></div>
+          <div class="relative bg-white dark:bg-neutral-900 rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-sm max-h-[85vh] overflow-y-auto">
+            <div class="px-6 py-4 border-b border-neutral-200 dark:border-neutral-700 flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-neutral-900 dark:text-white" id="reportModalLabel-{{ review.id }}">
+                {{ 'review.report_title'|trans }}
+              </h3>
+              <button type="button"
+                      class="p-2 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                      data-action="click->review-actions#closeReportModal"
+                      aria-label="Close">
+                {{ ux_icon('tabler:x', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </button>
+            </div>
+            <form data-action="review-actions#submitReport">
+              <div class="p-6">
+                <label class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                  {{ 'review.report_reason'|trans }}
+                </label>
+                <select name="reason"
+                        class="block w-full rounded-lg border-0 py-2.5 px-3 text-neutral-900 dark:text-white ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors"
+                        autofocus>
+                  <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
+                  <option value="spam">{{ 'review.reason.spam'|trans }}</option>
+                </select>
+              </div>
+              <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-t border-neutral-200 dark:border-neutral-700 flex justify-end gap-3 rounded-b-2xl">
+                <button type="button"
+                        class="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded-lg transition-colors"
+                        data-action="click->review-actions#closeReportModal">
+                  {{ 'review.cancel'|trans }}
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-cc-blue-600 hover:bg-cc-blue-700 rounded-lg transition-colors">
+                  {{ 'review.submit_report'|trans }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </article>
+{% endif %}

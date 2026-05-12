@@ -1,0 +1,15 @@
+{# Mobile Drawer - Appears instantly, below navbar #}
+<div 
+  class="md:hidden fixed left-0 right-0 top-16 bottom-0 z-40 opacity-0 invisible transition-opacity duration-200 ease-in-out bg-neutral-50 dark:bg-neutral-900"
+  data-drawer-target="panel"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'nav.mobile.label'|trans({}, 'navigation') }}"
+>
+  <div class="h-full overflow-y-auto">
+    <nav class="flex flex-col h-full px-4 py-6" role="navigation">
+      {% include 'partials/_nav_content.html.twig' %}
+    </nav>
+  </div>
+</div>

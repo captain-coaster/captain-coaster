@@ -53,7 +53,7 @@ class ConnectController extends AbstractController
             if (false === $limit->isAccepted()) {
                 $this->addFlash('danger', $translator->trans('login.rate_limit_exceeded'));
 
-                return $this->render('connect/login.html.twig', [
+                return $this->render('Connect/login.html.twig', [
                     'error' => $authenticationUtils->getLastAuthenticationError(),
                     'rateLimitExceeded' => true,
                 ]);
@@ -94,7 +94,7 @@ class ConnectController extends AbstractController
             $request->getSession()->set('locale_at_login', $request->getLocale());
         }
 
-        return $this->render('connect/login.html.twig', [
+        return $this->render('Connect/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
             'rateLimitExceeded' => false,
         ]);

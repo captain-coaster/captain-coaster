@@ -62,7 +62,7 @@ class TopController extends BaseController
             return $this->redirectToRoute('top_edit', ['id' => $top->getId()]);
         }
 
-        return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => true]);
+        return $this->render('Top/edit_details.html.twig', ['form' => $form, 'create' => true]);
     }
 
     /** Displays all tops. */
@@ -151,7 +151,7 @@ class TopController extends BaseController
             return $this->redirectToRoute('top_show', ['id' => $top->getId()]);
         }
 
-        return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => false]);
+        return $this->render('Top/edit_details.html.twig', ['form' => $form, 'create' => false]);
     }
 
     /** Deletes a top. */

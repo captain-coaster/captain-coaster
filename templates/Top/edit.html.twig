@@ -1,6 +1,7 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import 'helper.html.twig' as helper %}
+{% import 'macros/_macros_helpers.html.twig' as helper %}
+{% import 'macros/ui.html.twig' as ui %}
 
 {% set title = topName %}
 {% block title %}{{ title }}{% endblock %}
@@ -14,13 +15,13 @@
       data-coaster-id="{% if form.vars.data is not null %}{{ form.vars.data.coaster.id }}{% endif %}"
       data-position="{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}"
       data-top-list-target="item">
-    <div style="display: none;">{{ form_widget(form) }}</div>
+    <div class="hidden">{{ form_widget(form) }}</div>
 
     {# Drag Area with Position Number #}
     <div class="drag-area">
       <div class="position-number">{% if form.vars.data is not null %}{{ form.vars.data.position }}{% else %}1{% endif %}</div>
       <div class="drag-indicator">
-        {{ ux_icon('heroicons:bars-3', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('tabler:menu-2', {'class': 'w-4 h-4'}) }}
       </div>
     </div>
 
@@ -36,7 +37,7 @@
       {% if form.vars.data is not null %}
         {% set userRating = app.user.rating(form.vars.data.coaster).value|default(null) %}
         {% if userRating %}
-          <span class="coaster-rating">{{ helper.starRating(userRating) }}</span>
+          <span class="coaster-rating">{{ ui.starRating(userRating, 'sm') }}</span>
         {% endif %}
       {% endif %}
     </div>
@@ -44,32 +45,32 @@
     {# Single Actions Menu #}
     <div class="coaster-menu">
       <div class="dropdown">
-        <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
-          {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }}
+        <button type="button" class="menu-btn"  aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
+          {{ ux_icon('tabler:settings', {'class': 'icon-sm'}) }}
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
+        <ul class="dropdown-menu dropdown-menu-end">
           <li>
-            <a href="#" data-action="click->top-list#moveToTop">
-              {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4'}) }}
+            <a class="dropdown-item" href="#" data-action="click->top-list#moveToTop">
+              {{ ux_icon('tabler:arrow-up', {'class': 'icon-xs mr-2'}) }}
               {{ 'actions.move_to_top'|trans({}, 'top') }}
             </a>
           </li>
           <li>
-            <a href="#" data-action="click->top-list#moveToBottom">
-              {{ ux_icon('heroicons:arrow-down', {'class': 'w-4 h-4'}) }}
+            <a class="dropdown-item" href="#" data-action="click->top-list#moveToBottom">
+              {{ ux_icon('tabler:arrow-down', {'class': 'icon-xs mr-2'}) }}
               {{ 'actions.move_to_bottom'|trans({}, 'top') }}
             </a>
           </li>
           <li>
-            <a href="#" data-action="click->top-list#moveToPosition">
-              {{ ux_icon('heroicons:arrows-up-down', {'class': 'w-4 h-4'}) }}
+            <a class="dropdown-item" href="#" data-action="click->top-list#moveToPosition">
+              {{ ux_icon('tabler:arrows-vertical', {'class': 'icon-xs mr-2'}) }}
               {{ 'actions.move_to_position'|trans({}, 'top') }}
             </a>
           </li>
-          <li class="dropdown-divider"></li>
+          <li><hr class="dropdown-divider"></li>
           <li>
-            <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
-              {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4'}) }}
+            <a class="dropdown-item text-danger" href="#" data-action="click->top-list#removeCoaster">
+              {{ ux_icon('tabler:trash', {'class': 'icon-xs mr-2'}) }}
               {{ 'actions.remove'|trans({}, 'top') }}
             </a>
           </li>
@@ -86,13 +87,13 @@
         data-coaster-id=""
         data-position="1"
         data-top-list-target="item">
-      <div style="display: none;"></div>
+      <div class="hidden"></div>
 
       {# Drag Area with Position Number #}
       <div class="drag-area">
         <div class="position-number">1</div>
         <div class="drag-indicator">
-          {{ ux_icon('heroicons:bars-3', {'class': 'w-4 h-4'}) }}
+          {{ ux_icon('tabler:menu-2', {'class': 'w-4 h-4'}) }}
         </div>
       </div>
 
@@ -109,32 +110,32 @@
       {# Single Actions Menu #}
       <div class="coaster-menu">
         <div class="dropdown">
-          <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
-            {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }}
+          <button type="button" class="menu-btn"  aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
+            {{ ux_icon('tabler:settings', {'class': 'icon-sm'}) }}
           </button>
-          <ul class="dropdown-menu dropdown-menu-right">
+          <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <a href="#" data-action="click->top-list#moveToTop">
-                {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4'}) }}
+              <a class="dropdown-item" href="#" data-action="click->top-list#moveToTop">
+                {{ ux_icon('tabler:arrow-up', {'class': 'icon-xs mr-2'}) }}
                 {{ 'actions.move_to_top'|trans({}, 'top') }}
               </a>
             </li>
             <li>
-              <a href="#" data-action="click->top-list#moveToBottom">
-                {{ ux_icon('heroicons:arrow-down', {'class': 'w-4 h-4'}) }}
+              <a class="dropdown-item" href="#" data-action="click->top-list#moveToBottom">
+                {{ ux_icon('tabler:arrow-down', {'class': 'icon-xs mr-2'}) }}
                 {{ 'actions.move_to_bottom'|trans({}, 'top') }}
               </a>
             </li>
             <li>
-              <a href="#" data-action="click->top-list#moveToPosition">
-                {{ ux_icon('heroicons:arrows-up-down', {'class': 'w-4 h-4'}) }}
+              <a class="dropdown-item" href="#" data-action="click->top-list#moveToPosition">
+                {{ ux_icon('tabler:arrows-vertical', {'class': 'icon-xs mr-2'}) }}
                 {{ 'actions.move_to_position'|trans({}, 'top') }}
               </a>
             </li>
-            <li class="dropdown-divider"></li>
+            <li><hr class="dropdown-divider"></li>
             <li>
-              <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
-                {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4'}) }}
+              <a class="dropdown-item text-danger" href="#" data-action="click->top-list#removeCoaster">
+                {{ ux_icon('tabler:trash', {'class': 'icon-xs mr-2'}) }}
                 {{ 'actions.remove'|trans({}, 'top') }}
               </a>
             </li>
@@ -145,48 +146,47 @@
   </template>
 
   {# Help Section - Collapsible #}
-  <div class="panel panel-flat mb-3" data-controller="collapse">
-    <div class="panel-body">
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-3" data-controller="collapse">
+    <div class="p-6">
       <button type="button" 
-              class="btn btn-link p-0 text-decoration-none w-100"
+              class="p-0 no-underline w-full flex items-center justify-between text-left hover:opacity-80 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 rounded-lg"
               data-action="click->collapse#toggle"
-              aria-expanded="false"
-              style="text-align: left; display: flex; align-items: center; justify-content: space-between;">
-        <span style="display: flex; align-items: center; gap: 8px;">
-          {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5 text-primary'}) }}
-          <strong>{{ 'help.title'|trans({}, 'top') }}</strong>
+              aria-expanded="false">
+        <span class="flex items-center gap-2">
+          {{ ux_icon('tabler:info-circle', {'class': 'w-5 h-5 text-cc-blue-600 dark:text-cc-blue-400'}) }}
+          <strong class="text-neutral-900 dark:text-white">{{ 'help.title'|trans({}, 'top') }}</strong>
         </span>
-        <span data-collapse-target="icon" style="transition: transform 0.2s ease;">
-          {{ ux_icon('heroicons:chevron-down', {'class': 'w-5 h-5 text-muted'}) }}
+        <span data-collapse-target="icon" class="transition-transform duration-200">
+          {{ ux_icon('tabler:chevron-down', {'class': 'w-5 h-5 text-neutral-500 dark:text-neutral-400'}) }}
         </span>
       </button>
       
-      <div data-collapse-target="content" style="display: none; margin-top: 12px; padding-left: 32px;">
-        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #666;">
-          <li style="margin-bottom: 6px;">{{ 'help.search'|trans({}, 'top') }}</li>
-          <li style="margin-bottom: 6px;">{{ 'help.reorder'|trans({}, 'top') }}</li>
-          <li style="margin-bottom: 6px;">{{ 'help.actions'|trans({}, 'top') }}</li>
-          <li style="margin-bottom: 0;">{{ 'help.autosave'|trans({}, 'top') }}</li>
+      <div data-collapse-target="content" class="hidden mt-3 pl-4">
+        <ul class="mb-0 pl-3 text-sm text-neutral-600 dark:text-neutral-400 space-y-1">
+          <li>{{ 'help.search'|trans({}, 'top') }}</li>
+          <li>{{ 'help.reorder'|trans({}, 'top') }}</li>
+          <li>{{ 'help.actions'|trans({}, 'top') }}</li>
+          <li>{{ 'help.autosave'|trans({}, 'top') }}</li>
         </ul>
       </div>
     </div>
   </div>
 
   {# Search Component for Adding Coasters - Mobile-optimized #}
-  <div class="panel panel-flat mb-3">
-    <div class="panel-body p-3">
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-3">
+    <div class="p-6 p-3">
       <div data-controller="top-search" 
            data-top-search-url-value="{{ path('top_ajax_search') }}"
            data-top-search-list-controller-value="top-list"
-           class="search-container">
+           class="search-container top-search-container">
         <input type="search" 
                data-top-search-target="input"
                data-action="input->top-search#search keydown->top-search#handleKeydown"
-               class="form-control form-control-lg"
+               class="block w-full rounded-lg border-0 py-3 px-4 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 text-base transition-colors duration-200"
                placeholder="{{ 'search.placeholder'|trans({}, 'top') }}"
                autocomplete="off"
                aria-label="{{ 'search.placeholder'|trans({}, 'top') }}"
-               style="font-size: 16px;">
+               class="text-base">
         <div data-top-search-target="dropdown" class="search-dropdown">
           <div data-top-search-target="results"></div>
         </div>
@@ -195,18 +195,19 @@
   </div>
 
   {{ form_start(form) }}
-  <div class="panel panel-flat mb-3">
+  <div class="bg-white dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden mb-3">
     {% if form.vars.errors is not empty %}
-      <div class="panel-heading">
-        <div class="alert alert-danger alert-styled-left alert-dismissible mt-2">
-          {{ form_errors(form) }}
+      <div class="px-6 py-4 bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700">
+        <div class="flex items-start gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-200">
+          {{ ux_icon('tabler:alert-triangle', {'class': 'w-5 h-5 shrink-0 mt-0.5'}) }}
+          <div class="flex-1">{{ form_errors(form) }}</div>
         </div>
       </div>
     {% endif %}
-    <div class="panel-body p-0 p-md-2">
+    <div class="p-6 p-0 md:p-2">
       <ul id="top-coaster"
           data-prototype="{{ form_widget(form.topCoasters.vars.prototype)|e('html_attr') }}"
-          class="media-list media-list-container list-unstyled mb-0"
+          class="media-list media-list-container list-none mb-0"
           data-controller="top-list"
           data-top-list-target="list"
           data-top-list-auto-save-url-value="{{ path('top_auto_save', {'id': form.vars.data.id}) }}"
@@ -223,11 +224,5 @@
 {% endblock %}
 
 {% block javascripts %}
-  {# Load top list specific JavaScript bundle #}
-  {{ encore_entry_script_tags('top-list') }}
-{% endblock %}
-
-{% block stylesheets %}
-  {# Load top list specific CSS bundle #}
-  {{ encore_entry_link_tags('top-list') }}
+  {# All JavaScript is now in the main app bundle #}
 {% endblock %}

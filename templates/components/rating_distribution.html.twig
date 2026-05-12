@@ -1,0 +1,58 @@
+{#
+  Rating distribution bar component.
+  A single gradient bar where each segment's width is proportional to the count.
+  Colors go from red (low ratings) to green (high ratings).
+
+  Parameters:
+    - countRatings: array of {value: float, count: int} from getRatingStatsForCoaster()
+    - totalRatings: int (optional, computed if not provided)
+
+  Usage:
+    {% include 'components/rating_distribution.html.twig' with {
+      countRatings: countRatings
+    } only %}
+#}
+
+{% set totalRatings = totalRatings|default(0) %}
+{% if totalRatings == 0 %}
+    {% for cr in countRatings %}
+        {% set totalRatings = totalRatings + cr.count %}
+    {% endfor %}
+{% endif %}
+
+{% if totalRatings > 0 %}
+    {% set ratingValues = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0] %}
+    {% set ratingColors = [
+        'hsl(0, 60%, 45%)',
+        'hsl(12, 55%, 47%)',
+        'hsl(25, 55%, 48%)',
+        'hsl(35, 55%, 48%)',
+        'hsl(45, 55%, 48%)',
+        'hsl(55, 55%, 45%)',
+        'hsl(70, 50%, 42%)',
+        'hsl(85, 50%, 40%)',
+        'hsl(100, 50%, 38%)',
+        'hsl(120, 50%, 35%)'
+    ] %}
+
+    <div class="flex rounded-full overflow-hidden h-7" role="img" aria-label="{{ 'coaster.rating.distribution'|trans|default('Rating distribution') }}">
+        {% for i, val in ratingValues %}
+            {% set count = 0 %}
+            {% for cr in countRatings %}
+                {% if cr.value == val %}
+                    {% set count = cr.count %}
+                {% endif %}
+            {% endfor %}
+            {% set pct = (count / totalRatings * 100)|round(1) %}
+            {% if pct > 0 %}
+                <div class="flex items-center justify-center text-white text-[10px] font-bold whitespace-nowrap transition-all"
+                     style="width: {{ pct }}%; background-color: {{ ratingColors[i] }}; min-width: {% if pct > 3 %}0{% else %}0{% endif %}px;"
+                     title="{{ val }}★ — {{ count }} ({{ pct|round(0) }}%)">
+                    {% if pct >= 8 %}
+                        {{ val|number_format(val == (val|round(0)) ? 0 : 1) }}★
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

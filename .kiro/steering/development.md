@@ -2,7 +2,7 @@
 inclusion: always
 ---
 
-# Development Standards, Tech & Architecture
+# Development Standards & Quality Requirements
 
 ## Technology Stack & Environment
 
@@ -16,18 +16,9 @@ inclusion: always
 - **AWS SDK** - S3 for images, SES for email
 - **Google OAuth2** - Primary authentication, secondary is passwordless login using email
 - **EasyAdmin 4** - Admin interface at `/team`
-- **Webpack Encore** build system
-- **Stimulus** controllers
-- **Limitless HTML Template** using their own CSS, based on Bootstrap 3
-- **Bootstrap 3.4.X** mainly for CSS, few JS components used
-- **Twig** templating
-- **Heroicons using Symfony UX Icons**
-
-### Development Environment
-
-- **Server**: https://localhost:8000 (to be run as background command)
-- **Asset compilation**: `npm run dev-server` (to be run as background command)
-- **Database**: MariaDB with Doctrine migrations
+- **Vite** build system (migrating from Webpack Encore)
+- **Stimulus** controllers with **Tailwind CSS v4**
+- **Twig** templating with **Symfony UX Icons** (Tabler Icons)
 
 ### Code Quality Tools
 
@@ -35,20 +26,30 @@ inclusion: always
 - **PHP CS Fixer** - PSR-12 compliance
 - **PHPUnit** - Testing framework
 
+### Development Environment Commands
+
+- **Server**: `symfony server:start --listen-ip 0.0.0.0` (to be run as background command)
+- **Asset Server**: `npm run dev` (to be run as background command)
+- **Asset Build**: `npm run build`
+- **PHPUnit**: `vendor/bin/phpunit`
+- **PHPStan**: `vendor/bin/phpstan`
+- **PHP CS Fixer**: `vendor/bin/php-cs-fixer fix`
+
 ## Core Development Principles
 
-- **KISS**: Keep It Simple - choose the simplest solution that works
-- **Readability First**: Code is read more than written
-- **Minimal Code**: Write only what's absolutely necessary
+- **KISS**: Keep It Super Simple - choose the simplest solution that works
+- **NEVER OVER ENGINEER**
 - **Mobile-First**: 75% of users are mobile - prioritize mobile experience
 - **25% desktop users** - Desktop is secondary but must remain functional
 - **Stimulus-first**: Use Stimulus controllers over jQuery
 - **CSS separation**: NO CSS styles in JavaScript or Twig files
+- **Utility-first CSS**: Use Tailwind utilities directly in templates
+- **JavaScript utilities**: Use shared utility modules instead of inline style manipulation
 
 ## Critical Requirements
 
 - **Strict typing**: ALL PHP files MUST start with `declare(strict_types=1);`
-- **Code Quality**: PHPStan, php-cs-fixer and phpunit MUST PASS (see commands below)
+- **Code Quality**: PHPStan, php-cs-fixer and phpunit MUST PASS
 - **Type hints**: Use return types and parameter types everywhere
 - **Translations**: All user-facing text MUST be translated in the 4 supported languages (EN, FR, ES, DE)
 - **Domain-specific translations per feature** - Use appropriate translation domains (messages, database, etc.)
@@ -106,30 +107,29 @@ Maintain strict separation of concerns:
 - **One assertion per concept**: Keep tests focused
 - **Use data providers**: For testing multiple scenarios
 
-## CRITICAL: Dev Environment commands
+## Frontend Development Standards
 
-**THERE IS ONLY ONE COMMAND TO RUN TESTS:**
+### CSS Architecture
 
-```bash
-vendor/bin/phpunit
-```
+- **Tailwind CSS v4** utility-first approach
+- Use utilities directly in templates, avoid `@apply` except for complex patterns
 
-### Optional Variations (but still just phpunit):
+### JavaScript Architecture
 
-```bash
-# Run specific test file
-vendor/bin/phpunit tests/Service/CoasterSummaryServiceTest.php
+- **Stimulus controllers** extending `base_controller.js`
+- **Utility modules** in `assets/js/utils/` for DOM manipulation, animations, API calls
+- **No inline styles** - use utility functions instead
+- **Class-based animations** over inline style manipulation
 
-# Run specific test method
-vendor/bin/phpunit --filter testMethodName
+### Icon System
 
-# Run tests with coverage (optional)
-vendor/bin/phpunit --coverage-html coverage/
-```
+- **Tabler Icons only** via Symfony UX Icons
+- Consistent sizing: `w-3 h-3` to `w-8 h-8`
+- Always include `aria-hidden="true"` for decorative icons
 
-**PLEASE RUN NPM AND SYMFONY WEB SERVER AS BACKGROUND COMMANDS TO CHECK LOGS**
+## Translation Domains
 
-```bash
-npm run dev-server
-symfony server:start --listen-ip 0.0.0.0
-```
+- `messages`: General UI text
+- `database`: Entity-related text
+- `validators`: Form validation messages
+- `security`: Authentication/authorization text

@@ -1,11 +1,6 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
-
-{% set openedSidebar = true %}
 {% set hideTitle = true %}
-
-{% set title = 'index.title'|trans %}
 {% block title %}{{ 'index.header.title'|trans }}{% endblock %}
 
 {% block header %}
@@ -17,165 +12,203 @@
 {% endblock %}
 
 {% block body %}
-  <!-- info alert -->
+  {# Hero: Featured coaster image with link to gallery #}
+  {% if image %}
+    <a href="{{ path('coaster_images', {'slug': image.coaster.slug}) }}" 
+       class="block -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-6 relative group">
+      <div class="aspect-4/3 sm:aspect-21/9 overflow-hidden">
+        <img src="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" 
+             alt="{{ image.coaster.name }}"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent"></div>
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">{{ image.coaster.name }}</h1>
+        <p class="text-white/80 text-sm mt-1">{{ image.coaster.park.name }}</p>
+        {% if image.credit %}
+          <p class="text-white/50 text-xs mt-2">{{ 'image.credit'|trans({'name': image.credit}) }}</p>
+        {% endif %}
+      </div>
+    </a>
+  {% endif %}
+
+  {# Quick actions for guests #}
   {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-      <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span
-            class="sr-only">Close</span>
-      </button>
-      <h6 class="alert-heading text-semibold">
-        {{ 'index.header.title'|trans }}
-      </h6>
-      {{ 'index.header.info'|trans({'%link_path%': path('login')})|raw }}
+    <div class="flex gap-3 mb-6 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+      <a href="{{ path('ranking_index') }}" class="flex-none flex items-center gap-2 px-4 py-3 rounded-xl bg-linear-to-r from-cc-blue-500 to-cc-blue-600 text-white text-sm font-medium shadow-lg shadow-cc-blue-500/25">
+        {{ ux_icon('tabler:trophy', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        {{ 'coaster_ranking.title'|trans }}
+      </a>
+      <a href="{{ path('map_index') }}" class="flex-none flex items-center gap-2 px-4 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm font-medium">
+        {{ ux_icon('tabler:map-pin', {'class': 'w-5 h-5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        {{ 'map_index.title'|trans }}
+      </a>
+      <a href="{{ path('login') }}" class="flex-none flex items-center gap-2 px-4 py-3 rounded-xl bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white text-sm font-medium">
+        {{ ux_icon('tabler:user-plus', {'class': 'w-5 h-5 text-green-500', 'aria-hidden': 'true'}) }}
+        {{ 'navbar.login'|trans({}, 'navigation') }}
+      </a>
     </div>
   {% endif %}
-  <!-- /info alert -->
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-body">
-        <div class="row text-center">
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:star', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              {{ stats.nb_ratings }}
-              {% if stats.nb_new_ratings > 0 %}
-                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
-              {% endif %}
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:user-group', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('user_list') }}">{{ stats.nb_users }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:camera', {'class': 'w-8 h-8 display-inline-block text-info'}) }}</p>
-            <h5 class="text-semibold no-margin">{{ stats.nb_images }}</h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
+
+  {# Community stats bar #}
+  <div class="grid grid-cols-4 rounded-2xl bg-neutral-50 dark:bg-neutral-800 mb-6 divide-x divide-neutral-200 dark:divide-neutral-700">
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-neutral-900 dark:text-white leading-none">
+        {{ stats.nb_ratings|number_format }}
+        {% if stats.nb_new_ratings > 0 %}
+          <span class="text-[10px] font-semibold text-green-600 dark:text-green-400 align-top">+{{ stats.nb_new_ratings }}</span>
+        {% endif %}
+      </div>
+      <div class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ 'index.stats.ratings'|trans }}</div>
+    </div>
+    <a href="{{ path('review_list') }}" class="py-3 text-center hover:bg-neutral-100 dark:hover:bg-neutral-700/50 transition-colors">
+      <div class="text-base sm:text-lg font-bold text-neutral-900 dark:text-white leading-none">{{ stats.nb_reviews|number_format }}</div>
+      <div class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ 'index.stats.reviews'|trans }}</div>
+    </a>
+    <a href="{{ path('user_list') }}" class="py-3 text-center hover:bg-neutral-100 dark:hover:bg-neutral-700/50 transition-colors">
+      <div class="text-base sm:text-lg font-bold text-neutral-900 dark:text-white leading-none">{{ stats.nb_users|number_format }}</div>
+      <div class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ 'index.stats.users'|trans }}</div>
+    </a>
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-neutral-900 dark:text-white leading-none">{{ stats.nb_images|number_format }}</div>
+      <div class="text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-400 mt-1">{{ 'index.stats.images'|trans }}</div>
+    </div>
+  </div>
+
+  {# Contribute CTA for logged-in users #}
+  {% if missingImages|length > 0 %}
+    <section class="p-5 rounded-2xl bg-linear-to-r from-cc-warm-500 to-orange-500 text-white">
+      <div class="flex items-start gap-4">
+        <div class="p-3 rounded-xl bg-white/20">
+          {{ ux_icon('tabler:camera', {'class': 'w-6 h-6', 'aria-hidden': 'true'}) }}
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-lg">{{ 'index.missingImages'|trans }}</h3>
+          <div class="flex flex-wrap gap-2 mt-3">
+            {% for missingImage in missingImages|slice(0, 4) %}
+              <a href="{{ path('coaster_images_upload', {'slug': missingImage.coaster.slug}) }}"
+                 class="px-3 py-1.5 rounded-full text-sm font-medium bg-white/20 hover:bg-white/30 transition-colors">
+                {{ missingImage.coaster.name }}
+              </a>
+            {% endfor %}
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-sm-6">
-      <!-- Thumbnail with image and button -->
-      <div class="thumbnail">
-          <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
-          <div class="thumb">
-            <img src="{{ pictures_cdn }}/600x336/{{ image.filename }}"
-                 alt="{{ image.coaster.name }}">
-            <div class="caption-overflow"></div>
-          </div>
+    </section>
+  {% endif %}
+
+  {# Top Ranked coasters #}
+  {% if topRanked|length > 0 %}
+    <section class="mb-8 mt-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+          {{ ux_icon('tabler:trophy', {'class': 'w-5 h-5 text-cc-warm-500 inline-block mr-1', 'aria-hidden': 'true'}) }}
+          {{ 'index.top_ranked'|trans }}
+        </h2>
+        <a href="{{ path('ranking_index') }}" class="text-sm text-cc-blue-600 dark:text-cc-blue-400 font-medium">
+          {{ 'review.all'|trans }}
         </a>
+      </div>
 
-        <div class="caption text-center">
-          <h5 class="text-semibold no-margin">
-              <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
-                 class="btn btn-info">
-              {{ image.coaster.name }}
-            </a>
-          </h5>
-          <p class="text-muted mb-15 mt-5">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
-        </div>
-      </div>
-      <!-- /thumbnail with image and button -->
-      <!-- latest ratings -->
-      <div class="panel panel-flat border-top-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'rating.last'|trans }}</h6>
-        </div>
-        <div class="panel-body">
-          <ul class="list-feed">
-            {% for ratingItem in ratingFeed %}
-              <li>
-                <a class="text-bold" href="{{ path('user_show', {'slug': ratingItem.user.slug}) }}">
-                  {{ ratingItem.user.displayName }}
-                </a>
-                {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
-                  <a href="{{ path('show_coaster', {'id': ratingItem.coaster.id, 'slug': ratingItem.coaster.slug}) }}">
-                  {{ ratingItem.coaster.name }}
-                </a>
-                <div class="text-muted">
-                  {{ ratingItem.updatedAt|ago }}
+      <div class="grid grid-cols-3 gap-2 sm:gap-3">
+        {% for coaster in topRanked %}
+          <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}" class="group relative rounded-2xl overflow-hidden aspect-3/4 shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40 transition-shadow duration-300">
+            {% if coaster.mainImage is not null %}
+              <img src="{{ pictures_cdn }}/1440x1440/{{ coaster.mainImage.filename }}" 
+                   alt="{{ coaster.name }}"
+                   class="w-full h-full scale-125 object-cover transition-transform duration-500 group-hover:scale-130"
+                   loading="lazy">
+            {% else %}
+              <div class="w-full h-full bg-neutral-200 dark:bg-neutral-700"></div>
+            {% endif %}
+            <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute top-2 left-2">
+              <span class="inline-flex items-center justify-center w-7 h-7 md:w-10 md:h-10 rounded-full text-xs md:text-md font-bold
+                {% if loop.index == 1 %}bg-cc-warm-500 text-white
+                {% elseif loop.index == 2 %}bg-neutral-300 text-neutral-800
+                {% else %}bg-amber-700 text-white{% endif %}">
+                #{{ coaster.rank }}
+              </span>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
+              <h3 class="font-semibold text-white text-xs sm:text-sm leading-tight line-clamp-2">{{ coaster.name }}</h3>
+              <p class="text-white/70 text-xs truncate mt-0.5">{{ coaster.park.name }}</p>
+              {% if coaster.score %}
+                <div class="flex items-center gap-1 mt-1">
+                  <span class="text-xs font-bold text-white px-1.5 py-0.5 rounded-md" style="background-color: hsl({{ coaster.score * 1.2 }}, 50%, 50%);">{{ coaster.score|number_format(1, ',') }}%</span>
                 </div>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
+              {% endif %}
+            </div>
+          </a>
+        {% endfor %}
       </div>
-      <!-- /latests ratings -->
+    </section>
+  {% endif %}
+
+  {# 🎢 Recent ratings #}
+  <section class="mb-8">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+        {{ ux_icon('tabler:star', {'class': 'w-5 h-5 text-cc-warm-500 inline-block mr-1', 'aria-hidden': 'true'}) }}
+        {{ 'rating.last'|trans }}
+      </h2>
     </div>
-    <div class="col-sm-6">
-      <!-- latest reviews -->
-      <div class="panel panel-flat">
-        <div class="panel-heading">
-          <h6 class="panel-title text-semibold">
-            {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
-            {{ 'review.last'|trans }}
-          </h6>
-          <div class="heading-elements">
-            <a href="{{ path('review_list') }}" class="heading-text">
-              {{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6 position-right'}) }}
-              {{ 'review.all'|trans }}
+    
+    <div class="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+      {% for rating in ratingFeed %}
+        <article class="flex-none w-72 sm:w-auto snap-start rounded-2xl bg-neutral-50 dark:bg-neutral-800 p-4">
+          <div class="flex items-start justify-between gap-3">
+            <a href="{{ path('show_coaster', {'id': rating.coaster.id, 'slug': rating.coaster.slug}) }}" class="min-w-0 group">
+              <h3 class="font-semibold text-sm text-neutral-900 dark:text-white truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+                {{ rating.coaster.name }}
+              </h3>
+              <p class="text-xs text-neutral-500 dark:text-neutral-400 truncate">{{ rating.coaster.park.name }}</p>
             </a>
+            <div class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-lg bg-cc-warm-100 dark:bg-cc-warm-900/30">
+              {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+              <span class="text-sm font-bold text-cc-warm-700 dark:text-cc-warm-400">{{ rating.value }}</span>
+            </div>
           </div>
-        </div>
-
-        <div class="panel-body">
-          <ul class="media-list media-list-bordered stack-media-on-mobile reviews-list">
-            {% for review in reviews %}
-              <li class="media review-list-item">
-                <div class="review-coaster-info">
-                  <h6 class="media-heading text-semibold">
-                    <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                      {{ review.coaster.name }}
-                    </a>
-                    -
-                    <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                      {{ review.coaster.park.name }}
-                    </a>
-                  </h6>
-                </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-      <!-- /latest reviews -->
-      <!-- no images -->
-      {% if missingImages|length > 1 %}
-      <div class="panel panel-flat border-top-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'index.missingImages'|trans }}</h6>
-        </div>
-        <div class="panel-body">
-          <ul class="list-feed">
-            {% for rating in missingImages %}
-              <li>
-                <a href="{{ path('coaster_images_upload', {'slug': rating.coaster.slug}) }}">
-                  {{ rating.coaster.name }} • {{ rating.coaster.park.name }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
+          <div class="flex items-center gap-2 mt-3 pt-3 border-t border-neutral-200 dark:border-neutral-700">
+            <a href="{{ path('user_show', {'slug': rating.user.slug}) }}" class="shrink-0">
+              <img src="{{ pictures_cdn }}/profile-pictures/{{ rating.user.profilePicture|default('default_user.png') }}" 
+                   alt="" class="w-6 h-6 rounded-full object-cover">
+            </a>
+            <span class="text-xs text-neutral-500 dark:text-neutral-400 truncate">
+              <a href="{{ path('user_show', {'slug': rating.user.slug}) }}" class="hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors">{{ rating.user.displayName }}</a>
+              · {{ rating.updatedAt|ago }}
+            </span>
+          </div>
+        </article>
+      {% endfor %}
     </div>
-    {% endif %}
-    <!-- /no images -->
-  </div>
+  </section>
+
+  {# Community favorites: Horizontal scroll review cards #}
+  {% if reviews|length > 0 %}
+    <section class="mb-8">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+          {{ ux_icon('tabler:heart', {'class': 'w-5 h-5 text-red-500 inline-block mr-1', 'aria-hidden': 'true'}) }}
+          {{ 'index.community_favorites'|trans }}
+        </h2>
+        <a href="{{ path('review_list') }}" class="text-sm text-cc-blue-600 dark:text-cc-blue-400 font-medium">
+          {{ 'review.all'|trans }}
+        </a>
+      </div>
+
+      <div class="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+        {% for review in reviews %}
+          {% include 'components/review_card.html.twig' with {
+            review: review,
+            variant: 'compact',
+            displayReviewsInAllLanguages: displayReviewsInAllLanguages,
+            maxReviewLength: 120
+          } only %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
 {% endblock %}
 
 {% block javascripts %}

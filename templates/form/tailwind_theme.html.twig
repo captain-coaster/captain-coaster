@@ -1,0 +1,204 @@
+{% extends 'form_div_layout.html.twig' %}
+
+{# Tailwind CSS Form Theme for Captain Coaster - Modern, Accessible, Joyful #}
+
+{%- block form_widget_simple -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' block w-full rounded-lg border-0 py-2.5 px-3 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm sm:leading-6 transition-colors duration-200')|trim
+    }) -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block textarea_widget -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' block w-full rounded-lg border-0 py-2.5 px-3 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm sm:leading-6 transition-colors duration-200 resize-y min-h-[100px]')|trim
+    }) -%}
+    {{- parent() -}}
+{%- endblock textarea_widget -%}
+
+{%- block choice_widget_collapsed -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' block w-full rounded-lg border-0 py-2.5 px-3 pr-10 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm sm:leading-6 transition-colors duration-200')|trim
+    }) -%}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed -%}
+
+{%- block checkbox_widget -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' h-4 w-4 rounded border-neutral-300 dark:border-neutral-600 text-cc-blue-600 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors duration-200')|trim
+    }) -%}
+    {{- parent() -}}
+{%- endblock checkbox_widget -%}
+
+{%- block radio_widget -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' h-4 w-4 border-neutral-300 dark:border-neutral-600 text-cc-blue-600 focus:ring-cc-blue-500 dark:bg-neutral-800 transition-colors duration-200')|trim
+    }) -%}
+    {{- parent() -}}
+{%- endblock radio_widget -%}
+
+{%- block form_label -%}
+    {% if label is not same as(false) -%}
+        {%- set label_attr = label_attr|merge({
+            class: (label_attr.class|default('') ~ ' block text-sm font-medium leading-6 text-neutral-900 dark:text-white mb-2')|trim
+        }) -%}
+        {%- if required -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class ~ ' required')|trim}) -%}
+        {%- endif -%}
+        <label{% if label_attr %} {% for attrname, attrvalue in label_attr %}{{ attrname }}="{{ attrvalue }}"{% endfor %}{% endif %} for="{{ id }}">
+            {{- label|trans({}, translation_domain) -}}
+            {%- if required -%}
+                <span class="text-red-500 ml-1" aria-label="{{ 'form.required'|trans }}">*</span>
+            {%- endif -%}
+        </label>
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <div class="mt-2" role="alert" aria-live="polite">
+            {%- for error in errors -%}
+                <p class="text-sm text-red-600 dark:text-red-400 flex items-center">
+                    {{ ux_icon('tabler:alert-triangle', {
+                        'class': 'w-4 h-4 mr-1 shrink-0',
+                        'aria-hidden': 'true'
+                    }) }}
+                    {{ error.message }}
+                </p>
+            {%- endfor -%}
+        </div>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{%- block form_help -%}
+    {%- if help is not empty -%}
+        <div class="mt-2 text-sm text-neutral-600 dark:text-neutral-400" id="{{ id }}_help">
+            {{ help|trans({}, translation_domain)|raw }}
+        </div>
+    {%- endif -%}
+{%- endblock form_help -%}
+
+{%- block form_row -%}
+    <div class="mb-6">
+        {{- form_label(form) -}}
+        {{- form_widget(form) -}}
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row -%}
+
+{%- block submit_widget -%}
+    {%- set type = type|default('submit') -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' inline-flex justify-center items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200')|trim
+    }) -%}
+    <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>
+        {{- label|trans({}, translation_domain) -}}
+    </button>
+{%- endblock submit_widget -%}
+
+{%- block button_widget -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' inline-flex justify-center items-center px-4 py-2 border border-neutral-300 dark:border-neutral-600 text-sm font-medium rounded-lg shadow-sm text-neutral-700 dark:text-neutral-200 bg-white dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 transition-colors duration-200')|trim
+    }) -%}
+    <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>
+        {{- label|trans({}, translation_domain) -}}
+    </button>
+{%- endblock button_widget -%}
+
+{# File upload widget with modern drag & drop styling #}
+{%- block file_widget -%}
+    <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-neutral-300 dark:border-neutral-600 border-dashed rounded-lg hover:border-cc-blue-400 dark:hover:border-cc-blue-500 transition-colors duration-200">
+        <div class="space-y-1 text-center">
+            {{ ux_icon('tabler:cloud-upload', {
+                'class': 'mx-auto h-12 w-12 text-neutral-400',
+                'aria-hidden': 'true'
+            }) }}
+            <div class="flex text-sm text-neutral-600 dark:text-neutral-400">
+                <label for="{{ id }}" class="relative cursor-pointer rounded-md font-medium text-cc-blue-600 hover:text-cc-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-cc-blue-500">
+                    <span>{{ 'form.file.upload'|trans }}</span>
+                    <input{{ block('widget_attributes') }} type="file" class="sr-only">
+                </label>
+                <p class="pl-1">{{ 'form.file.drag_drop'|trans }}</p>
+            </div>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400">
+                {{ 'form.file.formats'|trans }}
+            </p>
+        </div>
+    </div>
+{%- endblock file_widget -%}
+
+{# Entity (select) widget with search styling #}
+{%- block entity_widget -%}
+    {{- block('choice_widget') -}}
+{%- endblock entity_widget -%}
+
+{# Checkbox row with better layout #}
+{%- block checkbox_row -%}
+    <div class="mb-6">
+        <div class="flex items-start">
+            <div class="flex items-center h-5">
+                {{- form_widget(form) -}}
+            </div>
+            <div class="ml-3 text-sm">
+                {{- form_label(form) -}}
+                {{- form_help(form) -}}
+            </div>
+        </div>
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock checkbox_row -%}
+
+{# Radio button row with better layout #}
+{%- block radio_row -%}
+    <div class="mb-4">
+        <div class="flex items-start">
+            <div class="flex items-center h-5">
+                {{- form_widget(form) -}}
+            </div>
+            <div class="ml-3 text-sm">
+                {{- form_label(form) -}}
+            </div>
+        </div>
+    </div>
+{%- endblock radio_row -%}
+
+{# Choice widget expanded (radio buttons or checkboxes) #}
+{%- block choice_widget_expanded -%}
+    <div class="space-y-3" {% if id is defined %}id="{{ id }}"{% endif %}>
+        {%- for child in form %}
+            {{- form_widget(child) -}}
+        {%- endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{# Form start with better styling #}
+{%- block form_start -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' space-y-6')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_start -%}
+
+{# Range widget (sliders) #}
+{%- block range_widget -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer slider')|trim
+    }) -%}
+    {{- parent() -}}
+{%- endblock range_widget -%}
+
+{# Search widget #}
+{%- block search_widget -%}
+    {%- set type = type|default('search') -%}
+    {%- set attr = attr|merge({
+        class: (attr.class|default('') ~ ' block w-full rounded-lg border-0 py-2.5 pl-10 pr-3 text-neutral-900 dark:text-white shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600 placeholder:text-neutral-400 focus:ring-2 focus:ring-inset focus:ring-cc-blue-500 dark:bg-neutral-800 sm:text-sm sm:leading-6 transition-colors duration-200')|trim
+    }) -%}
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            {{ ux_icon('tabler:search', {
+                'class': 'h-5 w-5 text-neutral-400',
+                'aria-hidden': 'true'
+            }) }}
+        </div>
+        {{- parent() -}}
+    </div>
+{%- endblock search_widget -%}

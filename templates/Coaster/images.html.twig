@@ -1,0 +1,74 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'coaster.photos.page_title'|trans({'%name%': coaster.name}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <div class="flex items-center justify-between mb-6">
+        <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+           class="inline-flex items-center text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 transition-colors">
+            {{ ux_icon('tabler:arrow-left', {'class': 'w-4 h-4 mr-1', 'aria-hidden': 'true'}) }}
+            {{ coaster.name }}
+        </a>
+        <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}"
+           class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-cc-blue-600 hover:text-cc-blue-700 dark:text-cc-blue-400 dark:hover:text-cc-blue-300 border border-cc-blue-200 dark:border-cc-blue-800 hover:border-cc-blue-300 dark:hover:border-cc-blue-700 rounded-lg transition-colors">
+            {{ ux_icon('tabler:upload', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'coaster.photos.button'|trans }}
+        </a>
+    </div>
+
+    {% if coaster.images|length > 0 %}
+        <div data-controller="gallery" data-gallery-name-value="coaster-images-full">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for image in coaster.images %}
+                    <div class="group relative rounded-xl overflow-hidden"
+                         data-controller="image-like"
+                         data-image-like-image-id-value="{{ image.id }}"
+                         data-image-like-locale-value="{{ app.request.locale }}"
+                         data-image-like-liked-value="{% if image.id in userLikes %}true{% else %}false{% endif %}">
+                        <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
+                           data-gallery-target="link"
+                           data-credit="{{ image.credit|default('') }}"
+                           class="block">
+                            <div class="aspect-4/3 overflow-hidden">
+                                <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                     alt="{{ coaster.name }}"
+                                     loading="lazy">
+                            </div>
+                        </a>
+                        {# Heart — top-right, visible on hover (desktop) or always (mobile) #}
+                        <div class="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+                            <button type="button"
+                                    data-action="click->image-like#toggle"
+                                    data-image-like-target="icon"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm text-white/90 hover:text-red-400 hover:bg-black/60 transition-all duration-200 focus:outline-none">
+                            </button>
+                        </div>
+                        {# Credit + likes — bottom, visible on hover (desktop) or always (mobile) #}
+                        <div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/60 to-transparent px-3 pt-8 pb-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+                            <div class="flex items-center justify-between">
+                                {% if image.credit %}
+                                    <span class="text-xs font-medium text-white/90 truncate mr-2">{{ image.credit }}</span>
+                                {% else %}
+                                    <span></span>
+                                {% endif %}
+                                <div class="flex items-center gap-1 shrink-0">
+                                    {{ ux_icon('tabler:heart-filled', {'class': 'w-3 h-3 text-red-400', 'aria-hidden': 'true'}) }}
+                                    <span data-image-like-target="counter" class="text-xs font-medium text-white/90">{{ image.likeCounter }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        {% include 'components/empty_state.html.twig' with {
+            icon: 'tabler:photo',
+            title: 'coaster.photos.empty'|trans,
+            action_url: path('coaster_images_upload', {'slug': coaster.slug}),
+            action_label: 'coaster.photos.button'|trans
+        } %}
+    {% endif %}
+{% endblock %}

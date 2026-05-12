@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { lockScroll, unlockScroll, show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static targets = ['link'];
@@ -7,6 +8,7 @@ export default class extends Controller {
         this.currentIndex = 0;
         this.images = this.linkTargets.map((link) => ({
             src: link.href,
+            credit: link.dataset.credit || '',
         }));
         this.touchStartX = 0;
         this.touchEndX = 0;
@@ -35,7 +37,8 @@ export default class extends Controller {
         overlay.innerHTML = `
             <div class="captain-gallery-container">
                 <div class="captain-gallery-loader"></div>
-                <img class="captain-gallery-image" src="" alt="" style="display: none;">
+                <img class="captain-gallery-image hidden" src="" alt="">
+                <div class="captain-gallery-credit"></div>
                 <button class="captain-gallery-close">&times;</button>
                 <button class="captain-gallery-prev">&larr;</button>
                 <button class="captain-gallery-next">&rarr;</button>
@@ -45,12 +48,13 @@ export default class extends Controller {
         this.overlay = overlay;
         this.image = overlay.querySelector('.captain-gallery-image');
         this.loader = overlay.querySelector('.captain-gallery-loader');
+        this.credit = overlay.querySelector('.captain-gallery-credit');
 
         this.bindEvents();
         this.loadImage();
 
         document.body.appendChild(overlay);
-        document.body.style.overflow = 'hidden';
+        lockScroll();
     }
 
     bindEvents() {
@@ -109,21 +113,31 @@ export default class extends Controller {
     }
 
     loadImage() {
-        const { src } = this.images[this.currentIndex];
+        const { src, credit } = this.images[this.currentIndex];
 
         // Show loader
-        this.loader.style.display = 'block';
-        this.image.style.display = 'none';
+        show(this.loader);
+        hide(this.image);
+
+        // Update credit
+        if (this.credit) {
+            this.credit.textContent = credit;
+            if (credit) {
+                show(this.credit);
+            } else {
+                hide(this.credit);
+            }
+        }
 
         // Load image
         const img = new Image();
         img.onload = () => {
             this.image.src = src;
-            this.loader.style.display = 'none';
-            this.image.style.display = 'block';
+            hide(this.loader);
+            show(this.image);
         };
         img.onerror = () => {
-            this.loader.style.display = 'none';
+            hide(this.loader);
         };
         img.src = src;
     }
@@ -146,7 +160,7 @@ export default class extends Controller {
 
     close() {
         document.removeEventListener('keydown', this.keyHandler);
-        document.body.style.overflow = '';
+        unlockScroll();
         this.overlay?.remove();
     }
 }

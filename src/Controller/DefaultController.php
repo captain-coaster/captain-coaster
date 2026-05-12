@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Form\Type\ContactType;
+use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\StatService;
@@ -50,7 +51,7 @@ class DefaultController extends BaseController
      * @throws \Exception
      */
     #[Route(path: '/', name: 'default_index', methods: ['GET'])]
-    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
+    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, CoasterRepository $coasterRepository): Response
     {
         $displayReviewsInAllLanguages = false;
         $missingImages = [];
@@ -63,7 +64,8 @@ class DefaultController extends BaseController
             'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
             'image' => $imageRepository->findLatestLikedImage(),
             'stats' => $statService->getIndexStats(),
-            'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, $displayReviewsInAllLanguages),
+            'reviews' => $riddenCoasterRepository->getLatestLikedReviews($request->getLocale(), 3, $displayReviewsInAllLanguages),
+            'topRanked' => $coasterRepository->getTopRanked(3),
             'missingImages' => $missingImages,
             'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
         ]);
@@ -102,7 +104,7 @@ class DefaultController extends BaseController
             $message = (new Email())
                 ->to($contactMailTo)
                 ->subject($translator->trans('contact.email.title'))
-                ->html($this->renderView('Default/contact_mail.txt.twig', [
+                ->html($this->renderView('email/contact.txt.twig', [
                     'name' => $formData['name'],
                     'message' => $formData['message'],
                     'isLoggedIn' => (bool) $user,

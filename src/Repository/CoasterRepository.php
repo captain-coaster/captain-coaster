@@ -94,9 +94,22 @@ class CoasterRepository extends ServiceEntityRepository
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c.id', 'c.name', 'c.slug', 'p.name as parkName', 'co.name as countryName')
+            ->select(
+                'c.id',
+                'c.name',
+                'c.slug',
+                'p.name as parkName',
+                'co.name as countryName',
+                'c.rank',
+                'c.score',
+                'c.totalRatings',
+                's.name as statusName',
+                'i.filename as imagePath'
+            )
             ->leftJoin('c.park', 'p')
             ->leftJoin('p.country', 'co')
+            ->leftJoin('c.status', 's')
+            ->leftJoin('c.mainImage', 'i')
             ->where('c.name LIKE :query OR c.slug LIKE :slugQuery')
             ->setParameter('query', '%'.$query.'%')
             ->setParameter('slugQuery', '%'.str_replace(' ', '-', $query).'%')
@@ -189,6 +202,22 @@ class CoasterRepository extends ServiceEntityRepository
         }
 
         return $query;
+    }
+
+    /** @return array<int, Coaster> */
+    public function getTopRanked(int $limit = 3): array
+    {
+        $query = $this->createQueryBuilder('c')
+            ->leftJoin('c.park', 'p')
+            ->leftJoin('c.mainImage', 'i')
+            ->where('c.rank IS NOT NULL')
+            ->orderBy('c.rank', 'ASC')
+            ->setMaxResults($limit)
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getResult();
     }
 
     /**

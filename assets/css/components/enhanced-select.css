@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Enhanced Select Component
+   Custom dropdown replacement for native select elements
+   ========================================================================== */
+
+.enhanced-select-container {
+    @apply relative w-full;
+}
+
+.enhanced-select-display {
+    @apply flex flex-wrap items-center gap-1.5 min-h-[42px] w-full rounded-lg border-0 py-2 px-3;
+    @apply text-neutral-900 dark:text-white bg-white dark:bg-neutral-800;
+    @apply shadow-sm ring-1 ring-inset ring-neutral-300 dark:ring-neutral-600;
+    @apply cursor-pointer transition-colors duration-200;
+}
+
+.enhanced-select-container.open .enhanced-select-display {
+    @apply ring-2 ring-cc-blue-500;
+}
+
+.enhanced-select-display .placeholder {
+    @apply text-neutral-400 text-sm;
+}
+
+.enhanced-select-display .selected-text {
+    @apply text-sm;
+}
+
+/* Tags for multiple selection */
+.enhanced-select-display .tag {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium;
+    @apply bg-cc-blue-100 dark:bg-cc-blue-900/30 text-cc-blue-700 dark:text-cc-blue-300;
+}
+
+.enhanced-select-display .tag-remove {
+    @apply ml-0.5 text-cc-blue-500 hover:text-cc-blue-700 dark:hover:text-cc-blue-200;
+    @apply cursor-pointer font-bold text-sm leading-none;
+}
+
+/* Dropdown popup */
+.enhanced-select-popup {
+    @apply absolute z-50 w-full mt-1 bg-white dark:bg-neutral-800 rounded-lg shadow-lg;
+    @apply ring-1 ring-neutral-200 dark:ring-neutral-700 overflow-hidden;
+    @apply opacity-0 invisible translate-y-1 transition-all duration-150;
+}
+
+.enhanced-select-popup.show {
+    @apply opacity-100 visible translate-y-0;
+}
+
+/* Search input */
+.enhanced-select-search {
+    @apply p-2 border-b border-neutral-100 dark:border-neutral-700;
+}
+
+.enhanced-select-search input {
+    @apply w-full px-3 py-2 text-sm rounded-md;
+    @apply bg-neutral-50 dark:bg-neutral-700 text-neutral-900 dark:text-white;
+    @apply border-0 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-600;
+    @apply placeholder:text-neutral-400 focus:ring-2 focus:ring-cc-blue-500 focus:outline-none;
+}
+
+/* Options list */
+.enhanced-select-options {
+    @apply max-h-60 overflow-y-auto py-1;
+}
+
+.enhanced-select-option {
+    @apply px-3 py-2 text-sm text-neutral-700 dark:text-neutral-300 cursor-pointer;
+    @apply hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors;
+}
+
+.enhanced-select-option.selected {
+    @apply bg-cc-blue-50 dark:bg-cc-blue-900/20 text-cc-blue-700 dark:text-cc-blue-300 font-medium;
+}
+
+.enhanced-select-option.disabled {
+    @apply opacity-50 cursor-not-allowed hover:bg-transparent dark:hover:bg-transparent;
+}
+
+/* Maximum selection message */
+.enhanced-select-max-message {
+    @apply px-3 py-2 text-xs text-cc-warm-600 dark:text-cc-warm-400 bg-cc-warm-50 dark:bg-cc-warm-900/20;
+    @apply border-t border-neutral-100 dark:border-neutral-700;
+}

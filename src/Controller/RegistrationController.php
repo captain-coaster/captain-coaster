@@ -47,7 +47,7 @@ class RegistrationController extends AbstractController
             if (false === $limit->isAccepted()) {
                 $this->addFlash('danger', $translator->trans('register.rate_limit_exceeded'));
 
-                return $this->render('registration/register.html.twig', [
+                return $this->render('Registration/register.html.twig', [
                     'registrationForm' => $form,
                 ]);
             }
@@ -83,7 +83,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        return $this->render('registration/register.html.twig', [
+        return $this->render('Registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
     }

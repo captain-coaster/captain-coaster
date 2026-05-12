@@ -1,0 +1,143 @@
+{# Filter Sidebar - Mobile: slide-in drawer, Desktop: fixed sidebar #}
+<aside class="
+       fixed inset-y-0 right-0 w-80 max-w-full transform translate-x-full z-50 
+       lg:translate-x-0 lg:w-64 lg:top-20 lg:bottom-4 lg:right-4 xl:right-8 lg:inset-y-auto
+       bg-white dark:bg-neutral-900 border-l border-neutral-200 dark:border-neutral-800 
+       lg:border lg:rounded-xl lg:shadow-sm
+       overflow-y-auto transition-transform duration-300"
+       data-controller="filter-sidebar {% if filterConfig is defined %}filter{% endif %}"
+       {% if filterConfig is defined %}
+         {% for key, value in filterConfig %}
+           {% if key == 'map_outlet' %}
+             data-filter-map-outlet="{{ value }}"
+           {% elseif key in ['endpoint', 'container_id', 'update_url', 'debounce_delay'] %}
+             data-filter-{{ key|replace({'_': '-'}) }}-value="{{ value }}"
+           {% endif %}
+         {% endfor %}
+       {% endif %}
+       aria-labelledby="filterSidebarLabel">
+    
+    {# Drawer header (mobile only) #}
+    <div class="lg:hidden px-4 py-3 border-b border-neutral-200 dark:border-neutral-800 flex items-center justify-between sticky top-0 bg-white dark:bg-neutral-900 z-10">
+        <h5 class="text-lg font-semibold text-neutral-900 dark:text-white" id="filterSidebarLabel">{{ 'filters.title'|trans }}</h5>
+        <button type="button" 
+                class="p-2 rounded-lg text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors" 
+                data-action="filter-sidebar#close"
+                aria-label="Close">
+            {{ ux_icon('tabler:x', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </button>
+    </div>
+    
+    <div class="p-4">
+        <form id="form-filter" action="#" class="space-y-3">
+            {# Section title (desktop only) #}
+            <h6 class="hidden lg:block text-xs font-semibold uppercase text-neutral-500 dark:text-neutral-400 mb-3">
+                {{ 'filters.title'|trans }}
+            </h6>
+
+            <input name="filters[user]" type="hidden" value="{{ filters.user|default(app.user.id|default('')) }}">
+            <input name="filters[ridden]" type="hidden" value="{{ filters.ridden|default('') }}">
+            <input type="hidden" name="page" value="1">
+
+            {# Toggle filters #}
+            {% if filterConfig.excluded_filters is not defined or 'status' not in filterConfig.excluded_filters %}
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="filters[status]" 
+                       class="w-10 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full appearance-none cursor-pointer checked:bg-cc-blue-600 transition-colors relative
+                              before:content-[''] before:absolute before:top-1 before:left-1 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 checked:before:translate-x-4"
+                       {% if filters.status is defined and filters.status == "on" %}checked{% endif %}>
+                <span class="text-sm text-neutral-700 dark:text-neutral-300">{{ 'filters.status'|trans }}</span>
+            </label>
+            {% endif %}
+
+            {% if filterConfig.excluded_filters is not defined or 'new' not in filterConfig.excluded_filters %}
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" name="filters[new]"
+                       class="w-10 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full appearance-none cursor-pointer checked:bg-cc-blue-600 transition-colors relative
+                              before:content-[''] before:absolute before:top-1 before:left-1 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 checked:before:translate-x-4"
+                       {% if filters.new is defined and filters.new == "on" %}checked{% endif %}>
+                <span class="text-sm text-neutral-700 dark:text-neutral-300">{{ 'filters.new'|trans }}</span>
+            </label>
+            {% endif %}
+
+            {% if (filterConfig.excluded_filters is not defined or 'notridden' not in filterConfig.excluded_filters) and filters.ridden is not defined %}
+            <label class="flex items-center gap-3 cursor-pointer {% if not is_granted('ROLE_USER') %}opacity-50{% endif %}">
+                <input type="checkbox" name="filters[notridden]"
+                       class="w-10 h-6 bg-neutral-200 dark:bg-neutral-700 rounded-full appearance-none cursor-pointer checked:bg-cc-blue-600 transition-colors relative
+                              before:content-[''] before:absolute before:top-1 before:left-1 before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-transform before:duration-200 checked:before:translate-x-4 disabled:cursor-not-allowed"
+                       {% if not is_granted('ROLE_USER') %}disabled{% endif %}
+                       {% if filters.notridden is defined and filters.notridden == "on" %}checked{% endif %}>
+                <span class="text-sm text-neutral-700 dark:text-neutral-300">{{ 'filters.notridden'|trans }}</span>
+            </label>
+            {% endif %}
+
+            {# Text search #}
+            {% if filterConfig.excluded_filters is not defined or 'name' not in filterConfig.excluded_filters %}
+            <input type="text" name="filters[name]" value="{{ filters.name|default('') }}"
+                   class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 placeholder:text-neutral-400 focus:ring-2 focus:ring-cc-blue-500"
+                   placeholder="{{ 'filters.name'|trans }}">
+            {% endif %}
+
+            {# Select filters #}
+            {% if filterConfig.excluded_filters is not defined or 'continent' not in filterConfig.excluded_filters %}
+            <select name="filters[continent]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.continent'|trans }}</option>
+                {% for continent in filtersForm.continent|default([]) %}
+                    <option value="{{ continent.id }}" {% if filters.continent is defined and filters.continent == continent.id %}selected{% endif %}>{{ continent.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% if filterConfig.excluded_filters is not defined or 'country' not in filterConfig.excluded_filters %}
+            <select name="filters[country]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.country'|trans }}</option>
+                {% for country in filtersForm.country|default([]) %}
+                    <option value="{{ country.id }}" {% if filters.country is defined and filters.country == country.id %}selected{% endif %}>{{ country.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% if filterConfig.excluded_filters is not defined or 'manufacturer' not in filterConfig.excluded_filters %}
+            <select name="filters[manufacturer]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.manufacturer'|trans }}</option>
+                {% for manufacturer in filtersForm.manufacturer|default([]) %}
+                    <option value="{{ manufacturer.id }}" {% if filters.manufacturer is defined and filters.manufacturer == manufacturer.id %}selected{% endif %}>{{ manufacturer.name }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% if filterConfig.excluded_filters is not defined or 'materialType' not in filterConfig.excluded_filters %}
+            <select name="filters[materialType]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.materialType'|trans }}</option>
+                {% for type in filtersForm.materialType|default([]) %}
+                    <option value="{{ type.id }}" {% if filters.materialType is defined and filters.materialType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% if filterConfig.excluded_filters is not defined or 'seatingType' not in filterConfig.excluded_filters %}
+            <select name="filters[seatingType]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.seatingType'|trans }}</option>
+                {% for type in filtersForm.seatingType|default([]) %}
+                    <option value="{{ type.id }}" {% if filters.seatingType is defined and filters.seatingType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {% if filterConfig.excluded_filters is not defined or 'openingDate' not in filterConfig.excluded_filters %}
+            <select name="filters[openingDate]" class="w-full rounded-lg border-0 py-2 px-3 text-sm text-neutral-900 dark:text-white bg-neutral-50 dark:bg-neutral-800 ring-1 ring-inset ring-neutral-200 dark:ring-neutral-700 focus:ring-2 focus:ring-cc-blue-500">
+                <option value="">{{ 'filters.openingDate'|trans }}</option>
+                {% for openingDate in filtersForm.openingDate|default([]) %}
+                    <option value="{{ openingDate.year }}" {% if filters.openingDate is defined and filters.openingDate == openingDate.year %}selected{% endif %}>{{ openingDate.year }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+
+            {# Clear button #}
+            <button type="button" onclick="window.location.href = window.location.pathname;"
+                    class="w-full py-2 px-3 text-sm font-medium text-neutral-600 dark:text-neutral-300 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors">
+                {{ 'filters.clear'|trans }}
+            </button>
+        </form>
+    </div>
+</aside>

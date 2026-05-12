@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static targets = ['container'];
@@ -27,7 +28,7 @@ export default class extends Controller {
             })
             .catch((error) => {
                 console.error('Error loading images:', error);
-                this.containerTarget.style.display = 'none';
+                hide(this.containerTarget);
             });
     }
 

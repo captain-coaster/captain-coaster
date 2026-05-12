@@ -58,4 +58,29 @@ class ReviewUpvoteRepository extends ServiceEntityRepository
             ->getQuery()
             ->execute();
     }
+
+    /**
+     * Get all review IDs that a user has upvoted.
+     *
+     * @param array<int> $reviewIds
+     *
+     * @return array<int>
+     */
+    public function getUpvotedReviewIds(User $user, array $reviewIds): array
+    {
+        if ([] === $reviewIds) {
+            return [];
+        }
+
+        $results = $this->createQueryBuilder('u')
+            ->select('IDENTITY(u.review)')
+            ->where('u.user = :user')
+            ->andWhere('u.review IN (:reviewIds)')
+            ->setParameter('user', $user)
+            ->setParameter('reviewIds', $reviewIds)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        return array_map('intval', $results);
+    }
 }

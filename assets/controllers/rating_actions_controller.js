@@ -1,6 +1,7 @@
-import { Controller } from '@hotwired/stimulus';
+import BaseController from './base_controller.js';
+import { show, hide } from '../js/utils/dom.js';
 
-export default class extends Controller {
+export default class extends BaseController {
     static targets = ['deleteButton', 'title'];
     static values = {
         ratingId: Number,
@@ -9,7 +10,6 @@ export default class extends Controller {
         rateText: String,
         myRatingText: String,
     };
-    static outlets = ['csrf-protection'];
 
     connect() {
         this.boundShowDelete = this.showDelete.bind(this);
@@ -35,9 +35,11 @@ export default class extends Controller {
             const headers = { 'X-Requested-With': 'XMLHttpRequest' };
             let body = null;
 
-            if (this.csrfProtectionOutlet) {
+            // Use base controller's CSRF token method
+            const token = this.getCsrfToken();
+            if (token) {
                 headers['Content-Type'] = 'application/x-www-form-urlencoded';
-                body = `_token=${this.csrfProtectionOutlet.getToken()}`;
+                body = `_token=${token}`;
             }
 
             const url = Routing.generate('rating_delete', {
@@ -61,12 +63,12 @@ export default class extends Controller {
                 timestamp: new Date().toISOString(),
             });
 
-            // Show user-friendly error message
+            // Show user-friendly error message using base controller
             const errorMsg = error.message.includes('Network')
                 ? 'Network error. Please check your connection.'
                 : 'Unable to delete rating. Please try again.';
 
-            this.dispatch('error', { detail: { message: errorMsg } });
+            this.showError(errorMsg);
         }
     }
 
@@ -113,9 +115,11 @@ export default class extends Controller {
         if (this.hasDeleteButtonTarget) {
             // Only show if we have a valid rating ID
             const shouldShow = this.hasRatingIdValue && this.ratingIdValue > 0;
-            this.deleteButtonTarget.style.display = shouldShow
-                ? 'inline-flex'
-                : 'none';
+            if (shouldShow) {
+                show(this.deleteButtonTarget);
+            } else {
+                hide(this.deleteButtonTarget);
+            }
         }
     }
 

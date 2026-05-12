@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { show, hide } from '../js/utils/dom.js';
 
 export default class extends Controller {
     static targets = ['dateInput', 'dateContainer', 'calendarButton'];
@@ -35,7 +36,8 @@ export default class extends Controller {
 
         if (!this.hasDateContainerTarget) return;
 
-        const isVisible = this.dateContainerTarget.classList.contains('show');
+        const isVisible =
+            !this.dateContainerTarget.classList.contains('hidden');
 
         if (isVisible) {
             this.hideDatePicker();
@@ -47,7 +49,7 @@ export default class extends Controller {
     showDatePicker() {
         if (!this.hasDateContainerTarget) return;
 
-        this.dateContainerTarget.classList.add('show');
+        show(this.dateContainerTarget);
 
         // Update Today button state when showing picker
         this.updateTodayButton();
@@ -81,7 +83,7 @@ export default class extends Controller {
 
     hideDatePicker() {
         if (!this.hasDateContainerTarget) return;
-        this.dateContainerTarget.classList.remove('show');
+        hide(this.dateContainerTarget);
 
         // Save if value changed when closing
         if (this.hasDateInputTarget && this.originalValue !== undefined) {
@@ -217,9 +219,11 @@ export default class extends Controller {
 
         // Show/hide the button
         if (this.hasCalendarButtonTarget) {
-            this.calendarButtonTarget.style.display = shouldShow
-                ? 'inline-flex'
-                : 'none';
+            if (shouldShow) {
+                show(this.calendarButtonTarget);
+            } else {
+                hide(this.calendarButtonTarget);
+            }
         }
     }
 

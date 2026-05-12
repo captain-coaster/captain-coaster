@@ -7,9 +7,11 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
+use App\Entity\User;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
+use App\Repository\ReviewUpvoteRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ImageManager;
 use App\Service\SummaryFeedbackService;
@@ -80,10 +82,80 @@ class CoasterController extends BaseController
         }
 
         return $this->render(
-            'Coaster/image-upload.html.twig',
+            'Coaster/image_upload.html.twig',
             [
                 'form' => $form,
                 'coaster' => $coaster,
+            ]
+        );
+    }
+
+    /** Dedicated images page for a coaster */
+    #[Route(path: '/{slug}/images', name: 'coaster_images', methods: ['GET'])]
+    public function imagesPage(
+        EntityManagerInterface $em,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster
+    ): Response {
+        $userLikes = [];
+        if (($user = $this->getUser()) instanceof UserInterface) {
+            $userLikes = $em
+                ->getRepository(LikedImage::class)
+                ->findUserLikes($user)
+                ->getSingleColumnResult();
+        }
+
+        return $this->render(
+            'Coaster/images.html.twig',
+            [
+                'userLikes' => $userLikes,
+                'coaster' => $coaster,
+            ]
+        );
+    }
+
+    /** Dedicated reviews page for a coaster.
+     * @param array<string, mixed> $filters
+     */
+    #[Route(path: '/{slug}/reviews', name: 'coaster_reviews', methods: ['GET'])]
+    public function reviewsPage(
+        Request $request,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        ReviewUpvoteRepository $reviewUpvoteRepository,
+        PaginatorInterface $paginator,
+        #[MapQueryParameter]
+        int $page = 1,
+        #[MapQueryParameter]
+        array $filters = []
+    ): Response {
+        $user = $this->getUser();
+        $displayReviewsInAllLanguages = false;
+        if ($user instanceof User) {
+            $displayReviewsInAllLanguages = $user->isDisplayReviewsInAllLanguages();
+        }
+
+        $pagination = $paginator->paginate(
+            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages, $filters),
+            $page,
+            25
+        );
+
+        $upvotedReviewIds = [];
+        if ($user instanceof User) {
+            $reviewIds = array_map(fn ($review) => $review->getId(), (array) $pagination->getItems());
+            $upvotedReviewIds = $reviewUpvoteRepository->getUpvotedReviewIds($user, $reviewIds);
+        }
+
+        return $this->render(
+            'Coaster/reviews.html.twig',
+            [
+                'reviews' => $pagination,
+                'coaster' => $coaster,
+                'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+                'filters' => $filters,
+                'upvotedReviewIds' => $upvotedReviewIds,
             ]
         );
     }
@@ -217,6 +289,8 @@ class CoasterController extends BaseController
                 'rating' => $rating,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'featuredReviews' => $riddenCoasterRepository->getFeaturedReviews($coaster, $request->getLocale(), 3),
+                'totalReviews' => $riddenCoasterRepository->countCoasterReviewsWithText($coaster),
             ]
         );
     }

@@ -1,46 +1,45 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
+
+{% import "macros/ui.html.twig" as ui %}
 
 {% set title = 'review_list.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="panel panel-flat">
-      <div class="panel-heading">
-        <h6 class="panel-title text-semibold">
-          {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
-          {{ 'review.title'|trans }}
-        </h6>
-      </div>
-
-      {% if reviews.getTotalItemCount() > 0 %}
-        <div class="panel-body">
-          <ul class="media-list media-list-bordered">
-            {% for review in reviews %}
-              <li>
-                <div class="media-heading">
-                  <h6 class="text-semibold">
-                    <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                      {{ review.coaster.name }}
-                    </a>
-                    -
-                    <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                      {{ review.coaster.park.name }}
-                    </a>
-                  </h6>
-                </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': true} %}
-              </li>
-            {% endfor %}
-          </ul>
-          {{ knp_pagination_render(reviews) }}
-        </div>
-      {% else %}
-        <div class="panel-body text-center text-muted">
-          {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
-          <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
-        </div>
-      {% endif %}
-    </div>
+  {# Hero Section #}
+  <div class="mb-6">
+    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white mb-1">
+      {{ ux_icon('tabler:message-circle', {'class': 'w-7 h-7 inline-block text-cc-blue-500 mr-2', 'aria-hidden': 'true'}) }}
+      {{ 'review.title'|trans }}
+    </h1>
+    <p class="text-neutral-600 dark:text-neutral-400 text-sm">
+      {{ 'review.share'|trans }}
+    </p>
   </div>
+
+  {% if reviews.getTotalItemCount() > 0 %}
+    {# Reviews Feed #}
+    <div class="space-y-4">
+      {% for review in reviews %}
+        {% include 'components/review_card.html.twig' with {
+          review: review,
+          variant: 'full',
+          displayReviewsInAllLanguages: true,
+          showCoaster: true,
+          showActions: true,
+          maxReviewLength: 300
+        } only %}
+      {% endfor %}
+    </div>
+
+    <div class="mt-6">
+      {{ knp_pagination_render(reviews) }}
+    </div>
+  {% else %}
+    {% include 'components/empty_state.html.twig' with {
+      icon: 'tabler:message-circle-off',
+      title: 'review_list.no_review'|trans,
+      description: 'review.share'|trans
+    } %}
+  {% endif %}
 {% endblock %}

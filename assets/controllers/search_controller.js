@@ -203,14 +203,14 @@ export default class extends Controller {
         let allResults = [];
 
         // Combine all results into a single array with type info
-        if (results.coasters) {
-            allResults = allResults.concat(
-                results.coasters.map((item) => ({ ...item, emoji: '🎢' }))
-            );
-        }
         if (results.parks) {
             allResults = allResults.concat(
                 results.parks.map((item) => ({ ...item, emoji: '🎡' }))
+            );
+        }
+        if (results.coasters) {
+            allResults = allResults.concat(
+                results.coasters.map((item) => ({ ...item, emoji: '🎢' }))
             );
         }
         if (results.users) {
@@ -380,6 +380,7 @@ export default class extends Controller {
         if (!this.hasDropdownTarget) return;
 
         this.isOpen = true;
+        this.dropdownTarget.classList.remove('hidden');
         this.dropdownTarget.classList.add('show');
         this.element.classList.add('search-open');
 
@@ -395,6 +396,7 @@ export default class extends Controller {
         if (!this.hasDropdownTarget) return;
 
         this.isOpen = false;
+        this.dropdownTarget.classList.add('hidden');
         this.dropdownTarget.classList.remove('show');
         this.element.classList.remove('search-open');
         this.selectedIndex = -1;
