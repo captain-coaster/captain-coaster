@@ -64,8 +64,6 @@ class ProfilePictureManager
      */
     private function handleUpload(User $user, mixed $stream, string $extension): string
     {
-        $this->deleteOldProfilePicture($user);
-
         $userId = $user->getId();
         if (null === $userId) {
             throw new \RuntimeException('Cannot upload profile picture for user without ID');
@@ -73,12 +71,14 @@ class ProfilePictureManager
 
         $filename = $this->generateFilename($userId, $extension);
 
-        // Use writeStream instead of write for better memory efficiency
+        // Write first, then delete old — avoids losing the picture if the upload fails
         $this->profilePicturesFilesystem->writeStream(
             $filename,
             $stream,
             ['Metadata' => ['type' => 'profile']]
         );
+
+        $this->deleteOldProfilePicture($user);
 
         return $filename;
     }
