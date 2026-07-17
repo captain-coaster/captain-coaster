@@ -65,7 +65,7 @@ class Coaster implements \Stringable
         'relationSlugField' => 'slug',
         'separator' => '-',
     ])]
-    private string $slug = '';
+    private ?string $slug = null;
 
     #[ORM\ManyToOne(targetEntity: MaterialType::class)]
     #[ORM\JoinColumn]
@@ -260,12 +260,12 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
