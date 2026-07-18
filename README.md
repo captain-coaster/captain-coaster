@@ -12,25 +12,26 @@ Join us in shaping the world's best roller coaster rankings!
 
 1. Clone the project
 2. Install [Symfony CLI](https://symfony.com/download)
-3. Install PHP 8.3 locally
-4. Install Composer dependencies
+3. Install PHP 8.5 locally
+4. Install [Composer](https://getcomposer.org/download/) locally
+5. Install Composer dependencies
     ```shell
     composer install
     ```
-5. Start the database services using Docker
+6. Start the database services using Docker
     ```shell
     docker-compose up -d
     ```
     This will start:
-    - MariaDB 10.11
+    - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
-6. Create a `captain` database on adminer, and import a dump file
-7. Start the Symfony development server
+7. Create a `captain` database on adminer, and import a dump file
+8. Start the Symfony development server
     ```shell
     symfony server:start
     ```
-8. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
+9. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
 
 ### Option 2: Full Docker Setup
 
@@ -41,8 +42,8 @@ Join us in shaping the world's best roller coaster rankings!
     ```
     Containers provided:
     - nginx on localhost:8080
-    - PHP 8.3
-    - MariaDB 10.11
+    - PHP 8.5
+    - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
 3. Install composer dependencies
