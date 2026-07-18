@@ -40,7 +40,7 @@
         "symfony/messenger": "7.*",
         "symfony/monolog-bundle": "^3.0",
         "symfony/notifier": "7.*",
-        "symfony/rate-limiter": "7.*",
+        "symfony/rate-limiter": "8.*",
         "symfony/redis-messenger": "7.*",
         "symfony/runtime": "7.*",
         "symfony/security-bundle": "7.*",
