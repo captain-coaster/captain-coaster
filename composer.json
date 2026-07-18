@@ -38,7 +38,7 @@
         "symfony/lock": "7.*",
         "symfony/mailer": "7.*",
         "symfony/messenger": "7.*",
-        "symfony/monolog-bundle": "^3.0",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/notifier": "7.*",
         "symfony/rate-limiter": "7.*",
         "symfony/redis-messenger": "7.*",
