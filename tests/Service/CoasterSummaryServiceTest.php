@@ -334,9 +334,7 @@ class CoasterSummaryServiceTest extends TestCase
     private function getPrivateMethod(object $object, string $methodName): \ReflectionMethod
     {
         $reflection = new \ReflectionClass($object);
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
 
-        return $method;
+        return $reflection->getMethod($methodName);
     }
 }
