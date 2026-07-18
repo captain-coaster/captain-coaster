@@ -49,7 +49,7 @@
         "symfony/translation": "7.*",
         "symfony/twig-bundle": "7.*",
         "symfony/ux-icons": "^2.31",
-        "symfony/ux-translator": "^2.13",
+        "symfony/ux-translator": "^3.3",
         "symfony/validator": "7.*",
         "symfony/webpack-encore-bundle": "^2.0",
         "twig/cssinliner-extra": "^3.8",
