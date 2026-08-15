@@ -71,7 +71,16 @@ disable_maintenance() {
 # Function to update code
 update_code() {
     log "Updating code from repository..."
-    git pull origin main
+    git fetch origin
+    if ! git merge --ff-only origin/main; then
+        # Local branch diverged from origin/main — e.g. history was
+        # rewritten upstream (a squash/amend + force-push). Resync to
+        # match origin rather than leaving the deploy stuck. Safe here
+        # specifically because this checkout only ever tracks main and
+        # is never the place local work is authored.
+        warning "Local branch diverged from origin/main, resetting to match"
+        git reset --hard origin/main
+    fi
     success "Code updated"
 }
 
@@ -180,14 +189,25 @@ verify_deployment() {
 # No DB backup step here on purpose — that's handled by dedicated backup
 # tooling outside this script, not duplicated here.
 full_deploy() {
-    local old_commit
-    old_commit=$(git rev-parse HEAD)
+    if [ -z "${DEPLOY_CONTINUE:-}" ]; then
+        # First pass: pull, then hand off to the script file we just
+        # pulled. Bash already parsed this function's body into memory
+        # before update_code runs — a git pull mid-script does NOT
+        # hot-swap that, so without this re-exec, every step below would
+        # silently keep running pre-pull logic even after deploy.sh
+        # itself changed (observed in practice: a fix to the asset-build
+        # condition was ignored on the deploy that pulled it in).
+        local old_commit
+        old_commit=$(git rev-parse HEAD)
+        enable_maintenance
+        update_code
+        DEPLOY_OLD_COMMIT="$old_commit" DEPLOY_CONTINUE=1 exec "$0" deploy
+    fi
 
-    enable_maintenance
-    update_code
-
+    # Second pass: fresh process, this file read fresh from disk — every
+    # function below is guaranteed to be the version that was just pulled.
     local changed
-    changed=$(git diff --name-only "$old_commit" HEAD)
+    changed=$(git diff --name-only "$DEPLOY_OLD_COMMIT" HEAD)
 
     if echo "$changed" | grep -q '^composer\.lock$'; then
         install_dependencies
