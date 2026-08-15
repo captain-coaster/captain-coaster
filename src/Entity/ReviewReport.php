@@ -68,7 +68,7 @@ class ReviewReport
     #[ORM\Column(type: Types::BOOLEAN)]
     private bool $resolved = false;
 
-    #[ORM\Column(type: Types::STRING, length: 20)]
+    #[ORM\Column(type: Types::STRING, length: 20, options: ['default' => self::STATUS_PENDING])]
     private string $status = self::STATUS_PENDING;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
