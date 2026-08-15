@@ -24,14 +24,32 @@ class CoasterSearchController extends AbstractController
     ) {
     }
 
+    /** @param array<string, mixed> $filters */
     #[Route(path: '/', name: 'coaster_search_index', methods: ['GET'])]
-    public function indexAction(): Response
-    {
+    public function indexAction(
+        #[MapQueryParameter]
+        array $filters = [],
+        #[MapQueryParameter]
+        int $page = 1
+    ): Response {
+        $validatedFilters = $this->filterService->validateAndAuthorize(
+            $filters,
+            'search',
+            $this->getUser()
+        );
+
+        $pagination = $this->paginator->paginate(
+            $this->coasterRepository->findForSearch($validatedFilters),
+            $page,
+            20
+        );
+
         return $this->render(
             'CoasterSearch/index.html.twig',
             [
-                'filters' => [],
+                'filters' => $validatedFilters,
                 'filtersForm' => $this->filterService->getFilterData(),
+                'coasters' => $pagination,
             ]
         );
     }

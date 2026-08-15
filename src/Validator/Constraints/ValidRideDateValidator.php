@@ -22,7 +22,7 @@ class ValidRideDateValidator extends ConstraintValidator
             throw new UnexpectedValueException($value, RiddenCoaster::class);
         }
 
-        $riddenAt = $value->getRiddenAt();
+        $riddenAt = $value->getFirstRiddenAt();
         $coaster = $value->getCoaster();
 
         // If no ride date is set, validation passes
@@ -35,7 +35,7 @@ class ValidRideDateValidator extends ConstraintValidator
         $today->setTime(23, 59, 59);
         if ($riddenAt > $today) {
             $this->context->buildViolation($constraint->futureMessage)
-                ->atPath('riddenAt')
+                ->atPath('firstRiddenAt')
                 ->addViolation();
 
             return;
@@ -45,7 +45,7 @@ class ValidRideDateValidator extends ConstraintValidator
         $openingDate = $coaster->getOpeningDate();
         if (null !== $openingDate && $riddenAt < $openingDate) {
             $this->context->buildViolation($constraint->beforeOpeningMessage)
-                ->atPath('riddenAt')
+                ->atPath('firstRiddenAt')
                 ->addViolation();
 
             return;
@@ -55,7 +55,37 @@ class ValidRideDateValidator extends ConstraintValidator
         $closingDate = $coaster->getClosingDate();
         if (null !== $closingDate && $riddenAt > $closingDate) {
             $this->context->buildViolation($constraint->afterClosingMessage)
-                ->atPath('riddenAt')
+                ->atPath('firstRiddenAt')
+                ->addViolation();
+
+            return;
+        }
+
+        // ── Last ride date (optional) ──────────────────────────────────────
+        $lastRiddenAt = $value->getLastRiddenAt();
+        if (null === $lastRiddenAt) {
+            return;
+        }
+
+        if ($lastRiddenAt > $today) {
+            $this->context->buildViolation($constraint->futureMessage)
+                ->atPath('lastRiddenAt')
+                ->addViolation();
+
+            return;
+        }
+
+        if ($lastRiddenAt < $riddenAt) {
+            $this->context->buildViolation($constraint->lastBeforeFirstMessage)
+                ->atPath('lastRiddenAt')
+                ->addViolation();
+
+            return;
+        }
+
+        if (null !== $closingDate && $lastRiddenAt > $closingDate) {
+            $this->context->buildViolation($constraint->afterClosingMessage)
+                ->atPath('lastRiddenAt')
                 ->addViolation();
         }
     }

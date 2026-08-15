@@ -107,10 +107,10 @@ class BadgeService
         /** @var RiddenCoaster $rating */
         foreach ($user->getRatings() as $rating) {
             if ('Katun' === $rating->getCoaster()->getName()) {
-                $katun = $rating->getValue();
+                $katun = $rating->getRating();
             }
             if ('iSpeed' === $rating->getCoaster()->getName()) {
-                $ispeed = $rating->getValue();
+                $ispeed = $rating->getRating();
             }
         }
 

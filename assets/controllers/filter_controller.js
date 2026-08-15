@@ -1,42 +1,67 @@
-import { Controller } from '@hotwired/stimulus';
+import BaseController from './base_controller.js';
 
 /**
- * Unified Filter Controller - Handles filtering for ranking, nearby, and map pages
+ * Filter Controller
  *
- * Configurable via data attributes:
- * - data-filter-endpoint-value: AJAX endpoint URL
- * - data-filter-container-id-value: Target container for results
- * - data-filter-update-url-value: Enable browser URL updates
- * - data-filter-debounce-delay-value: Debounce delay for text inputs
+ * Handles filter form changes and dispatches to the appropriate target:
+ * - Map page: calls mapController.filterData()
+ * - Search/Ranking pages: fetches HTML from endpoint and replaces container content
+ *
+ * Also supports client-side text filtering when no endpoint is configured.
+ *
+ * Usage (map):
+ * <aside data-controller="filter-sidebar filter"
+ *        data-filter-map-outlet=".map-container"
+ *        data-filter-update-url-value="true">
+ *
+ * Usage (search/ranking):
+ * <aside data-controller="filter-sidebar filter"
+ *        data-filter-endpoint-value="/api/search"
+ *        data-filter-container-id-value="search-result"
+ *        data-filter-update-url-value="true">
+ *
+ * Usage (client-side text filter):
+ * <div data-controller="filter">
+ *   <input data-filter-target="input" data-action="input->filter#filter">
+ *   <div data-filter-target="list">
+ *     <div data-filter-target="item" data-filter-text="...">...</div>
+ *   </div>
+ *   <div class="hidden" data-filter-target="empty">No results</div>
+ * </div>
  */
-export default class extends Controller {
-    static outlets = ['map'];
-    static targets = ['latitude', 'longitude'];
+export default class extends BaseController {
     static values = {
-        endpoint: String,
-        containerId: String,
+        mapOutlet: { type: String, default: '' },
+        endpoint: { type: String, default: '' },
+        containerId: { type: String, default: '' },
         updateUrl: { type: Boolean, default: false },
-        debounceDelay: { type: Number, default: 300 },
-        mapOutlet: String,
+        debounceDelay: { type: Number, default: 400 },
     };
 
+    static targets = ['input', 'list', 'item', 'empty'];
+
     connect() {
-        this.debounceTimer = null;
-        this.geolocating = false;
-        this.setupEventListeners();
-
-        // Make controller accessible
+        // Make controller accessible externally
         this.element.filterController = this;
+        this.debounceTimer = null;
 
-        // Set up popstate handling if URL updates are enabled
-        if (this.updateUrlValue) {
-            this.setupPopstateHandler();
-            this.restoreFiltersFromUrl();
+        // If we have an endpoint or map outlet, set up form change listeners
+        if (this.endpointValue || this.mapOutletValue) {
+            this.setupFormListeners();
         }
 
-        // Auto-trigger initial load if endpoint is provided
-        if (this.hasEndpointValue) {
-            this.filterData();
+        // Intercept pagination clicks inside the results container so paging
+        // stays on the public route and loads in place (the async endpoint is
+        // XHR-only and would 404 on a full navigation).
+        if (this.endpointValue && this.containerIdValue) {
+            this.container = document.getElementById(this.containerIdValue);
+            if (this.container) {
+                this.boundPaginationClick = this.handlePaginationClick.bind(this);
+                this.container.addEventListener(
+                    'click',
+                    this.boundPaginationClick
+                );
+            }
         }
     }
 
@@ -44,230 +69,165 @@ export default class extends Controller {
         if (this.debounceTimer) {
             clearTimeout(this.debounceTimer);
         }
-
-        // Clean up popstate listener
-        if (this.boundPopstateHandler) {
-            window.removeEventListener('popstate', this.boundPopstateHandler);
+        if (this.container && this.boundPaginationClick) {
+            this.container.removeEventListener(
+                'click',
+                this.boundPaginationClick
+            );
         }
     }
 
-    setupEventListeners() {
-        // Use event delegation for better performance
-        this.element.addEventListener('change', this.handleChange.bind(this));
-        this.element.addEventListener('input', this.handleInput.bind(this));
+    /**
+     * Handle a click on a pagination link rendered inside the results container.
+     */
+    handlePaginationClick(event) {
+        const link = event.target.closest('a[data-page]');
+        if (!link || !this.container.contains(link)) return;
+
+        event.preventDefault();
+        this.applyFilters(parseInt(link.dataset.page, 10) || 1);
+        this.container.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    setupPopstateHandler() {
-        this.boundPopstateHandler = this.handlePopState.bind(this);
-        window.addEventListener('popstate', this.boundPopstateHandler);
-    }
+    /**
+     * Set up change/input listeners on the filter form
+     */
+    setupFormListeners() {
+        const form =
+            this.element.querySelector('form') ||
+            document.getElementById('form-filter');
+        if (!form) return;
 
-    handleChange(event) {
-        if (this.isFilterInput(event.target)) {
-            // Skip filter if geolocation is in progress
-            if (!this.geolocating) {
-                this.filterData();
-            }
-        }
-    }
+        // Listen for changes on selects and checkboxes (immediate)
+        form.addEventListener('change', () => this.debouncedApplyFilters());
 
-    // Geolocation toggle handler
-    toggleGeolocation(event) {
-        if (event.target.checked) {
-            this.requestGeolocation();
-        } else {
-            this.clearGeolocation();
-        }
-    }
-
-    requestGeolocation() {
-        if (!navigator.geolocation) {
-            event.target.checked = false;
-            return;
-        }
-
-        this.geolocating = true;
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
-                    this.latitudeTarget.value =
-                        position.coords.latitude.toFixed(6);
-                    this.longitudeTarget.value =
-                        position.coords.longitude.toFixed(6);
-                }
-                this.geolocating = false;
-                this.filterData();
-            },
-            () => {
-                // On error, uncheck the toggle and clear coordinates
-                const toggle = this.element.querySelector(
-                    'input[name="filters[sortByDistance]"]'
-                );
-                if (toggle) toggle.checked = false;
-                this.clearGeolocation();
-                this.geolocating = false;
-            },
-            { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
-        );
-    }
-
-    clearGeolocation() {
-        if (this.hasLatitudeTarget && this.hasLongitudeTarget) {
-            this.latitudeTarget.value = '';
-            this.longitudeTarget.value = '';
-        }
-        this.filterData();
-    }
-
-    handleInput(event) {
-        if (this.isFilterInput(event.target) && event.target.type === 'text') {
-            this.debouncedFilterData();
-        }
-    }
-
-    isFilterInput(element) {
-        return (
-            element.matches('select[name^="filters"]') ||
-            element.matches('input[name^="filters"]') ||
-            element.matches('input[name="page"]')
-        );
-    }
-
-    debouncedFilterData() {
-        clearTimeout(this.debounceTimer);
-        this.debounceTimer = setTimeout(() => {
-            this.filterData();
-        }, this.debounceDelayValue);
-    }
-
-    async filterData() {
-        // Handle map outlet (for map pages)
-        if (this.hasMapOutlet) {
-            this.mapOutlet.filterData();
-            return;
-        }
-
-        // Handle AJAX filtering (for ranking/nearby pages)
-        if (!this.hasEndpointValue || !this.hasContainerIdValue) {
-            return;
-        }
-
-        try {
-            const form = this.element.querySelector('form');
-            const formData = new FormData(form);
-            const params = new URLSearchParams();
-
-            // Only include non-empty values
-            for (const [key, value] of formData.entries()) {
-                if (value && value.trim() !== '') {
-                    params.set(key, value);
-                }
-            }
-
-            const response = await fetch(`${this.endpointValue}?${params}`, {
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-            });
-
-            if (!response.ok) throw new Error('Network response was not ok');
-
-            const data = await response.text();
-            document.getElementById(this.containerIdValue).innerHTML = data;
-
-            this.setupPagination();
-
-            if (this.updateUrlValue) {
-                this.updateBrowserUrl();
-            }
-        } catch (error) {
-            console.error('Filter request failed:', error);
-        }
-    }
-
-    setupPagination() {
-        const container = document.getElementById(this.containerIdValue);
-        if (!container) return;
-
-        container.querySelectorAll('ul.pagination a').forEach((link) => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const url = new URL(link.href);
-                const page = url.searchParams.get('page');
-
-                const pageInput =
-                    this.element.querySelector('input[name="page"]');
-                if (pageInput) {
-                    pageInput.value = page || 1;
-                }
-
-                this.filterData().then(() => {
-                    container.scrollIntoView({ behavior: 'smooth' });
-                });
-            });
+        // Listen for text input (debounced)
+        form.querySelectorAll('input[type="text"]').forEach((input) => {
+            input.addEventListener('input', () => this.debouncedApplyFilters());
         });
     }
 
-    updateBrowserUrl() {
-        const form = this.element.querySelector('form');
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
+    /**
+     * Debounced filter application
+     */
+    debouncedApplyFilters() {
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+        }
+        this.debounceTimer = setTimeout(() => {
+            this.applyFilters();
+        }, this.debounceDelayValue);
+    }
 
-        // Only include non-empty values (exclude user field)
-        for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '' && !key.includes('[user]')) {
+    /**
+     * Apply filters — route to the correct handler.
+     * @param {number} page — page to load (defaults to 1; a filter change resets paging)
+     */
+    applyFilters(page = 1) {
+        if (this.mapOutletValue) {
+            this.applyMapFilters();
+        } else if (this.endpointValue) {
+            this.applyAjaxFilters(page);
+        }
+
+        if (this.updateUrlValue) {
+            this.updateBrowserUrl(page);
+        }
+    }
+
+    /**
+     * Map filtering: call mapController.filterData()
+     */
+    applyMapFilters() {
+        const mapElement = document.querySelector(this.mapOutletValue);
+        if (mapElement && mapElement.mapController) {
+            mapElement.mapController.filterData();
+        }
+    }
+
+    /**
+     * Build URL params from the filter form, overriding the page.
+     */
+    buildParams(page = 1) {
+        const form = this.element.querySelector('form');
+        if (!form) return null;
+
+        const params = new URLSearchParams();
+        for (const [key, value] of new FormData(form).entries()) {
+            if (value && value.trim() !== '') {
                 params.set(key, value);
             }
         }
-
-        const queryString = params.toString();
-        const newUrl =
-            window.location.pathname + (queryString ? '?' + queryString : '');
-
-        window.history.pushState(null, '', newUrl);
+        params.set('page', String(page));
+        return params;
     }
 
-    // Restore filters from URL on page load
-    restoreFiltersFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        if (params.toString() === '') return;
+    /**
+     * AJAX filtering: fetch HTML from endpoint and replace container
+     */
+    applyAjaxFilters(page = 1) {
+        const params = this.buildParams(page);
+        if (!params) return;
 
-        const form = this.element.querySelector('form');
-
-        // Apply URL parameters to form
-        for (const [key, value] of params.entries()) {
-            const input = form.querySelector(`[name="${key}"]`);
-            if (input) {
-                if (input.type === 'checkbox') {
-                    input.checked = value === 'on';
-                } else {
-                    input.value = value;
+        fetch(`${this.endpointValue}?${params}`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`Filter request failed: ${response.status}`);
                 }
-            }
-        }
+                return response.text();
+            })
+            .then((html) => {
+                const container = document.getElementById(
+                    this.containerIdValue
+                );
+                if (container) {
+                    container.innerHTML = html;
+                }
+            })
+            .catch((error) => {
+                console.error('Filter request failed:', error);
+            });
     }
 
-    // Handle browser back/forward
-    handlePopState() {
-        if (!this.updateUrlValue) return;
+    /**
+     * Update browser URL with current filter params
+     */
+    updateBrowserUrl(page = 1) {
+        const params = this.buildParams(page);
+        if (!params) return;
 
-        const params = new URLSearchParams(window.location.search);
-        const form = this.element.querySelector('form');
-
-        // Reset form
-        form.reset();
-
-        // Apply URL parameters to form
-        for (const [key, value] of params.entries()) {
-            const input = form.querySelector(`[name="${key}"]`);
-            if (input) {
-                if (input.type === 'checkbox') {
-                    input.checked = value === 'on';
-                } else {
-                    input.value = value;
-                }
-            }
+        // Drop page=1 from the URL to keep it clean.
+        if (params.get('page') === '1') {
+            params.delete('page');
         }
 
-        this.filterData();
+        const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+        window.history.replaceState({}, '', newUrl);
+    }
+
+    /**
+     * Client-side text filter (legacy behavior)
+     */
+    filter() {
+        const query = this.hasInputTarget
+            ? this.inputTarget.value.toLowerCase().trim()
+            : '';
+
+        let visibleCount = 0;
+
+        this.itemTargets.forEach((item) => {
+            const text = (
+                item.dataset.filterText || item.textContent
+            ).toLowerCase();
+            const matches = !query || text.includes(query);
+            item.style.display = matches ? '' : 'none';
+            if (matches) visibleCount++;
+        });
+
+        if (this.hasEmptyTarget) {
+            this.emptyTarget.classList.toggle('hidden', visibleCount > 0);
+        }
     }
 }

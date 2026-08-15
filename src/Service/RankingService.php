@@ -12,6 +12,8 @@ use App\Entity\TopCoaster;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Cache\CacheItemPoolInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class RankingService
 {
@@ -37,8 +39,12 @@ class RankingService
     /** @var array<int> */
     private array $rejectedCoasters = [];
 
-    public function __construct(private readonly EntityManagerInterface $em, private readonly UserRepository $userRepository)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly UserRepository $userRepository,
+        #[Autowire(service: 'doctrine.result_cache_pool')]
+        private readonly CacheItemPoolInterface $doctrineResultCache,
+    ) {
     }
 
     /**
@@ -85,6 +91,10 @@ class RankingService
             $this->createRankingEntry();
             // remove coasters not ranked anymore
             $this->disableNonRankedCoasters();
+            // Publish: flip every cached ranking view (homepage top-ranked + the
+            // month-cached ranking pages) atomically. The whole result-cache pool
+            // is cleared so nothing serves the previous month after this point.
+            $this->doctrineResultCache->clear();
         }
 
         return $coasterList;

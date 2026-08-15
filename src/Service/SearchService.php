@@ -41,35 +41,23 @@ class SearchService
     /** Search across all entity types with caching support. */
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
-        $fromCache = false;
         $cacheKey = $this->getCacheKey($query);
 
         try {
             $cachedResults = $this->cacheService->getCachedResults($cacheKey);
 
             if (null !== $cachedResults) {
-                $fromCache = true;
-                error_log("🔥 REDIS CACHE HIT for query: '{$query}'");
-
-                $response = new SearchResponseDTO(
+                return new SearchResponseDTO(
                     $query,
                     $cachedResults['results'],
                     $cachedResults['totalResults'],
                     $cachedResults['hasMore']
                 );
-
-                // Add debug info to response
-                $response->debug = ['source' => 'redis_cache', 'cache_key' => $cacheKey];
-
-                return $response;
             }
-            error_log("💾 REDIS CACHE MISS for query: '{$query}'");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If caching fails, continue without cache
-            error_log('Search cache error: '.$e->getMessage());
         }
 
-        error_log("🔍 DATABASE QUERY for query: '{$query}'");
         $coasters = $this->searchCoasters($query, $limit);
         $parks = $this->searchParks($query, $limit);
         $users = $this->searchUsers($query, $limit);
@@ -90,9 +78,6 @@ class SearchService
 
         $response = new SearchResponseDTO($query, $results, $totalResults, $hasMore);
 
-        // Add debug info to response
-        $response->debug = ['source' => 'database', 'cached' => false];
-
         try {
             // Cache the results
             $this->cacheService->setCachedResults($cacheKey, [
@@ -100,13 +85,24 @@ class SearchService
                 'totalResults' => $totalResults,
                 'hasMore' => $hasMore,
             ]);
-            error_log("💾 REDIS CACHE SET for query: '{$query}'");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If caching fails, continue without cache
-            error_log('Search cache set error: '.$e->getMessage());
         }
 
         return $response;
+    }
+
+    /**
+     * Return recent and upcoming coaster names for search placeholder rotation.
+     *
+     * @return array<int, string>
+     */
+    public function searchRecent(): array
+    {
+        /** @var CoasterRepository $repository */
+        $repository = $this->em->getRepository(Coaster::class);
+
+        return $repository->findRecentForPlaceholder();
     }
 
     /**
@@ -133,6 +129,7 @@ class SearchService
         /** @var ParkRepository $repository */
         $repository = $this->em->getRepository(Park::class);
         $results = $repository->findBySearchQuery($query, $limit);
+        $results = $this->attachParkImages($results);
 
         return $this->formatSearchResults($results, 'park');
     }
@@ -168,11 +165,15 @@ class SearchService
                         name: $result['name'],
                         slug: $result['slug'],
                         type: 'coaster',
-                        image: null,
+                        image: $result['imagePath'] ?? null,
                         subtitle: $result['parkName'] ?? null,
                         metadata: [
                             'park' => $result['parkName'] ?? null,
                             'country' => $result['countryName'] ?? null,
+                            'rank' => $result['rank'] ?? null,
+                            'score' => $result['score'] ?? null,
+                            'totalRatings' => $result['totalRatings'] ?? 0,
+                            'status' => $result['statusName'] ?? null,
                         ]
                     );
                 case 'park':
@@ -181,9 +182,11 @@ class SearchService
                         name: $result['name'],
                         slug: $result['slug'],
                         type: 'park',
+                        image: $result['imagePath'] ?? null,
                         subtitle: $result['countryName'] ?? null,
                         metadata: [
                             'country' => $result['countryName'] ?? null,
+                            'coasterCount' => $result['coasterCount'] ?? 0,
                         ]
                     );
                 case 'user':
@@ -192,7 +195,8 @@ class SearchService
                         name: $result['name'],
                         slug: $result['slug'],
                         type: 'user',
-                        subtitle: \sprintf('%d ratings', $result['totalRatings'] ?? 0),
+                        image: $result['profilePicture'] ?? null,
+                        subtitle: null,
                         metadata: [
                             'totalRatings' => $result['totalRatings'] ?? 0,
                         ]
@@ -208,56 +212,63 @@ class SearchService
      *
      * @return array<string, mixed>
      */
-    public function searchAllWithPagination(string $query, int $page = 1, int $perPage = 20): array
+    /** @return array<string, mixed> */
+    public function searchAllWithPagination(string $query, int $page = 1, int $perPage = 20, string $typeFilter = 'all'): array
     {
-        // Get all results without limit first to calculate totals
         $coasterResults = $this->searchCoastersUnlimited($query);
         $parkResults = $this->searchParksUnlimited($query);
         $userResults = $this->searchUsersUnlimited($query);
 
-        // Combine all results into a single array with relevance scoring
         $allResults = [];
 
-        // Add coasters with type info
         foreach ($coasterResults as $result) {
             $allResults[] = array_merge($result->toArray(), [
                 'entity_type' => 'coaster',
-                'emoji' => '🎢',
                 'relevance_score' => $this->calculateRelevanceScore($result->name, $query),
             ]);
         }
 
-        // Add parks with type info
         foreach ($parkResults as $result) {
             $allResults[] = array_merge($result->toArray(), [
                 'entity_type' => 'park',
-                'emoji' => '🎡',
                 'relevance_score' => $this->calculateRelevanceScore($result->name, $query),
             ]);
         }
 
-        // Add users with type info
         foreach ($userResults as $result) {
             $allResults[] = array_merge($result->toArray(), [
                 'entity_type' => 'user',
-                'emoji' => '👤',
                 'relevance_score' => $this->calculateRelevanceScore($result->name, $query),
             ]);
         }
 
-        // Sort by relevance score (higher is better)
         usort($allResults, static fn ($a, $b) => $b['relevance_score'] <=> $a['relevance_score']);
 
-        $totalResults = \count($allResults);
-        $totalPages = ceil($totalResults / $perPage);
-        $offset = ($page - 1) * $perPage;
+        // Count by type before filtering (always shows full counts in tabs)
+        $countByType = [
+            'all' => \count($allResults),
+            'coaster' => \count($coasterResults),
+            'park' => \count($parkResults),
+            'user' => \count($userResults),
+        ];
 
-        // Get results for current page
+        // Filter by type before pagination so page slices are correct
+        if ('all' !== $typeFilter) {
+            $allResults = array_values(array_filter(
+                $allResults,
+                static fn ($r) => $r['entity_type'] === $typeFilter
+            ));
+        }
+
+        $totalResults = \count($allResults);
+        $totalPages = (int) ceil($totalResults / $perPage);
+        $offset = ($page - 1) * $perPage;
         $paginatedResults = \array_slice($allResults, $offset, $perPage);
 
         return [
             'results' => $paginatedResults,
             'totalResults' => $totalResults,
+            'countByType' => $countByType,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'perPage' => $perPage,
@@ -298,9 +309,51 @@ class SearchService
     {
         /** @var ParkRepository $repository */
         $repository = $this->em->getRepository(Park::class);
-        $results = $repository->findBySearchQuery($query, 1000); // High limit for comprehensive search
+        $results = $repository->findBySearchQuery($query, 1000);
+        $results = $this->attachParkImages($results);
 
         return $this->formatSearchResults($results, 'park');
+    }
+
+    /**
+     * Attach best-ranked coaster image to each park result row.
+     *
+     * @param array<int, array<string, mixed>> $parkRows
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function attachParkImages(array $parkRows): array
+    {
+        if (empty($parkRows)) {
+            return $parkRows;
+        }
+
+        $parkIds = array_column($parkRows, 'id');
+
+        $rows = $this->em->createQueryBuilder()
+            ->select('IDENTITY(c.park) as parkId, img.filename as imageFilename')
+            ->from(Coaster::class, 'c')
+            ->join('c.mainImage', 'img')
+            ->where('c.park IN (:parkIds)')
+            ->andWhere('c.rank IS NOT NULL')
+            ->setParameter('parkIds', $parkIds)
+            ->orderBy('c.rank', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        $imageByPark = [];
+        foreach ($rows as $row) {
+            $pid = (int) $row['parkId'];
+            if (!isset($imageByPark[$pid])) {
+                $imageByPark[$pid] = (string) $row['imageFilename'];
+            }
+        }
+
+        foreach ($parkRows as &$row) {
+            $row['imagePath'] = $imageByPark[(int) $row['id']] ?? null;
+        }
+
+        return $parkRows;
     }
 
     /**

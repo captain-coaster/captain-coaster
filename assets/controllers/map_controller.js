@@ -6,8 +6,11 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        markers: Array, // Try Array - Stimulus might auto-parse JSON
+        markers: Array,
         parkId: String,
+        defaultLat: { type: Number, default: 46.5197 },
+        defaultLng: { type: Number, default: 6.6323 },
+        defaultZoom: { type: Number, default: 6 },
     };
 
     static targets = ['container'];
@@ -30,18 +33,31 @@ export default class extends Controller {
             const L = await import('leaflet');
             await import('leaflet/dist/leaflet.css');
 
-            // Fix default marker icons (Leaflet + Webpack issue)
+            // Fix default marker icons for Vite (ES modules)
+            const iconRetinaUrl = new URL(
+                'leaflet/dist/images/marker-icon-2x.png',
+                import.meta.url
+            ).href;
+            const iconUrl = new URL(
+                'leaflet/dist/images/marker-icon.png',
+                import.meta.url
+            ).href;
+            const shadowUrl = new URL(
+                'leaflet/dist/images/marker-shadow.png',
+                import.meta.url
+            ).href;
+
             delete L.Icon.Default.prototype._getIconUrl;
             L.Icon.Default.mergeOptions({
-                iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-                iconUrl: require('leaflet/dist/images/marker-icon.png'),
-                shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+                iconRetinaUrl,
+                iconUrl,
+                shadowUrl,
             });
 
             // Create map with world copy jump enabled
             this.map = L.map(this.containerTarget, {
                 worldCopyJump: true,
-            }).setView([46.5197, 6.6323], 6);
+            }).setView([this.defaultLatValue, this.defaultLngValue], this.defaultZoomValue);
 
             // Add CartoDB Voyager tile layer (colorful, English labels worldwide)
             L.tileLayer(
@@ -126,15 +142,16 @@ export default class extends Controller {
             _locale: document.documentElement.lang || 'en',
         });
 
-        // Get current form data directly (simple approach)
-        const form = document.querySelector('form');
-        const formData = new FormData(form);
+        // Get current form data directly
+        const form = document.getElementById('form-filter');
         const params = new URLSearchParams();
 
-        // Only include non-empty values
-        for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '') {
-                params.set(key, value);
+        if (form) {
+            const formData = new FormData(form);
+            for (const [key, value] of formData.entries()) {
+                if (value && value.trim() !== '') {
+                    params.set(key, value);
+                }
             }
         }
 
@@ -177,14 +194,15 @@ export default class extends Controller {
             _locale: document.documentElement.lang || 'en',
         });
 
-        const form = document.querySelector('form');
-        const formData = new FormData(form);
+        const form = document.getElementById('form-filter');
         const params = new URLSearchParams();
 
-        // Only include non-empty values
-        for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '') {
-                params.set(key, value);
+        if (form) {
+            const formData = new FormData(form);
+            for (const [key, value] of formData.entries()) {
+                if (value && value.trim() !== '') {
+                    params.set(key, value);
+                }
             }
         }
 

@@ -1,0 +1,19 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'new.title'|trans({}, 'top') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <twig:PageHeader
+      title="{{ title }}"
+      subtitle="{{ 'new.subtitle'|trans({}, 'top') }}"
+      icon="tabler:list-numbers"
+      backUrl="{{ path('top_explore') }}"
+      backLabel="{{ 'show.back'|trans({}, 'top') }}"
+    />
+
+    {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_widget(form.save, {'label': 'new.form.submit'|trans({}, 'top')}) }}
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,0 +1,74 @@
+{#
+  ProfileProgress — one widget consolidating the user's progression bars:
+  next rank, next milestone, and Top-100 completion.
+
+  Props:
+    - progress (required): array{top100_ridden:int, top100_size:int}
+    - rank (required): rank array from StatService::computeRank()
+    - milestone (required): array{ridden:int, next:int, remaining:int, progress_pct:int}
+#}
+{% props progress, rank, milestone %}
+
+{% set top100Total = progress.top100_size > 0 ? progress.top100_size : 1 %}
+{% set top100Pct = (progress.top100_ridden / top100Total * 100)|round %}
+
+<section class="bg-surface rounded-2xl border border-line p-4 mb-6">
+  <h2 class="text-sm font-semibold text-content inline-flex items-center gap-1.5 mb-4">
+    {{ ux_icon('tabler:trending-up', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+    {{ 'profile.progress.title'|trans }}
+  </h2>
+
+  {# Next rank — only show if there's a next tier to reach #}
+  {% if rank.next_key %}
+  <div class="mb-4">
+    <div class="flex items-center justify-between mb-1.5">
+      <span class="text-xs font-medium text-content-secondary inline-flex items-center gap-1.5">
+        {{ ux_icon('tabler:chevron-up', {'class': 'w-3.5 h-3.5 text-purple-500', 'aria-hidden': 'true'}) }}
+        {{ 'profile.progress.next_rank'|trans }}
+      </span>
+      <span class="text-xs font-bold text-content">
+        {{ ('profile.rank.' ~ rank.next_key)|trans }}
+        <span class="ml-1 text-content-muted font-normal">({{ rank.progress_pct }}%)</span>
+      </span>
+    </div>
+    <div class="h-2.5 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
+      <div class="h-full rounded-full bg-gradient-to-r from-purple-400 to-purple-500 transition-all" style="width: {{ rank.progress_pct }}%"></div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# Next milestone #}
+  <div class="mb-4">
+    <div class="flex items-center justify-between mb-1.5">
+      <span class="text-xs font-medium text-content-secondary inline-flex items-center gap-1.5">
+        {{ ux_icon('tabler:flag', {'class': 'w-3.5 h-3.5 text-green-500', 'aria-hidden': 'true'}) }}
+        {{ 'profile.progress.next_milestone'|trans({'count': milestone.next}) }}
+      </span>
+      <span class="text-xs font-bold text-content tabular-nums">
+        {{ milestone.ridden }}<span class="text-content-muted font-normal">/{{ milestone.next }}</span>
+      </span>
+    </div>
+    <div class="h-2.5 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
+      <div class="h-full rounded-full bg-green-500 dark:bg-green-400 transition-all" style="width: {{ milestone.progress_pct }}%"></div>
+    </div>
+  </div>
+
+  {# Top 100 #}
+  {% if progress.top100_size > 0 %}
+    <div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-xs font-medium text-content-secondary inline-flex items-center gap-1.5">
+          {{ ux_icon('tabler:trophy', {'class': 'w-3.5 h-3.5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+          {{ 'profile.progress.top100'|trans }}
+        </span>
+        <span class="text-xs font-bold text-content tabular-nums">
+          {{ progress.top100_ridden }}<span class="text-content-muted font-normal">/{{ progress.top100_size }}</span>
+          <span class="ml-1 text-content-muted">({{ top100Pct }}%)</span>
+        </span>
+      </div>
+      <div class="h-2.5 rounded-full overflow-hidden bg-neutral-200 dark:bg-neutral-700">
+        <div class="h-full rounded-full bg-gradient-to-r from-cc-warm-400 to-cc-warm-500 transition-all" style="width: {{ top100Pct }}%"></div>
+      </div>
+    </div>
+  {% endif %}
+</section>

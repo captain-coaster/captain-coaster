@@ -1,0 +1,35 @@
+{#
+    Empty State Component
+
+    Usage:
+    <twig:EmptyState icon="tabler:search" :title="'x.title'|trans" :description="'x.desc'|trans" />
+    <twig:EmptyState icon="tabler:search" :title="..." :action="{ url: path('...'), text: 'Clear'|trans }" />
+#}
+{% props icon = null, title = null, message = null, description = null, action = null %}
+
+<div class="px-6 py-12 text-center">
+    <div class="w-16 h-16 bg-surface-muted rounded-2xl flex items-center justify-center mx-auto mb-4">
+        {% if icon %}
+            <twig:ux:icon :name="icon" class="w-8 h-8 text-neutral-400" />
+        {% endif %}
+    </div>
+
+    {% if title %}
+        <h3 class="text-lg font-semibold text-content mb-2">
+            {{ title }}
+        </h3>
+    {% endif %}
+
+    {% if message or description %}
+        <p class="text-content-tertiary mb-6">
+            {{ message ?? description }}
+        </p>
+    {% endif %}
+
+    {% if action %}
+        <a href="{{ action.url }}"
+           class="inline-flex items-center px-4 py-2 border border-line-input text-sm font-medium rounded-lg text-neutral-700 dark:text-neutral-200 bg-surface-raised hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors duration-200">
+            {{ action.text }}
+        </a>
+    {% endif %}
+</div>

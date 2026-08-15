@@ -1,86 +1,126 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% set title = top.name %}
-{% set subTitle = top.user.displayName %}
-{% block title %}{{ title }} • {{ subTitle }}{% endblock %}
+{% set titleText = top.isCustom
+  ? top.name
+  : (top.isRanking ? 'type.ranking'|trans({}, 'top') : 'type.bucket'|trans({}, 'top')) %}
+{% block title %}{{ titleText }}{% endblock %}
 
-{% block body %}
-  <div class="panel panel-white panel-flat">
-    <div class="panel-heading">
-      <div class="row">
-        <div class="col-sm-8">
-          <ul class="list-inline no-margin">
-            <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
-            <li>
-              {{ ux_icon('heroicons:user', {'class': 'w-6 h-6 position-left'}) }}
-              <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
-            </li>
-            <li>
-              {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }}
-              {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
-            </li>
-          </ul>
-        </div>
-        {% if is_granted('edit', top) or is_granted('delete', top) %}
-          <div class="col-sm-4 text-right">
-            {% if is_granted('edit', top) %}
-              <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm">
-                {{ ux_icon('heroicons:pencil', {'class': 'w-5 h-5'}) }}
-              </a>
-            {% endif %}
-            {% if is_granted('delete', top) %}
-              <a href="{{ path('top_delete', {'id': top.id}) }}"
-                 onclick="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');"
-                 class="btn bg-danger-400 btn-sm">
-                {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5'}) }}
-              </a>
-            {% endif %}
-          </div>
-        {% endif %}
+{# Cover image: always the #1 coaster's main image (per design decision). #}
+{% set coverCoaster = top.topCoasters|length > 0 ? top.topCoasters[0].coaster : null %}
+{% set coverImage = (coverCoaster and coverCoaster.mainImage is not null) ? pictures_cdn ~ '/1440x1440/' ~ coverCoaster.mainImage.filename : null %}
+
+{% block header %}
+  {% set shareDesc = top.topCoasters|length > 0 ? top.topCoasters|slice(0, 3)|map(tc => tc.coaster.name)|join(', ') : titleText %}
+  <meta property="og:title" content="{{ titleText }} • Captain Coaster"/>
+  <meta property="og:description" content="{{ shareDesc }}"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="{{ url('top_show', {'id': top.id}) }}"/>
+  {% if coverImage %}
+    <meta property="og:image" content="{{ coverImage }}"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+  {% endif %}
+{% endblock %}
+
+{% block hero %}
+  {# Mirrors the home & Coaster show hero pattern: full-bleed image, scrim, type pill top-left,
+     share + like buttons top-right, title + "by …" at the bottom inside the content column. #}
+  <div class="relative">
+    {% if coverImage %}
+      <div class="relative h-[40vh] min-h-[300px] max-h-[450px] overflow-hidden">
+        <img src="{{ coverImage }}" alt="{{ titleText }}" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent"></div>
       </div>
+    {% else %}
+      <div class="relative h-[30vh] min-h-[240px] max-h-[350px] bg-linear-to-br from-cc-blue-600 to-cc-warm-500"></div>
+    {% endif %}
+
+    {# Type pill — top-left, aligned with content padding #}
+    <div class="absolute top-4 left-4 sm:top-6 sm:left-6 lg:left-8">
+      <twig:TopTypeBadge :top="top" size="md" short="true" />
     </div>
 
-    <ul class="media-list">
-      {% for topCoaster in top.topCoasters %}
-        {% set coaster = topCoaster.coaster %}
-        <li class="media panel-body stack-media-on-mobile">
-          <div class="media-left">
-            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-              {% if coaster.mainImage is not null %}
-                <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
-                     class="img-rounded"
-                     style="width:96px;"
-                     alt="{{ coaster.name }}">
-              {% endif %}
-            </a>
-          </div>
+    {# Action buttons — top-right (share, like for custom). Owner gets edit pill below the hero. #}
+    <div class="absolute top-3 right-3 sm:top-6 sm:right-6 lg:right-8 flex items-center gap-2">
+      {% if top.isCustom %}
+        <twig:LikeButton :top="top" :liked="userHasLiked ?? false" variant="overlay" />
+      {% endif %}
+      <twig:ShareButton
+        :url="url('top_show', {'id': top.id})"
+        :title="titleText"
+        :text="'show.share.title'|trans({'name': titleText}, 'top')"
+        variant="overlay"
+      />
+    </div>
 
-          <div class="media-body">
-            <h2 class="media-heading text-semibold">
-              <a style="color:#333;" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                {{ topCoaster.position }}&nbsp;-&nbsp;{{ coaster.name }}
-              </a>
-            </h2>
-
-            <ul class="list-inline list-inline-separate text-muted mb-10">
-              {% if coaster.manufacturer %}
-                <li>
-                  <a class="text-muted" href="{{ path('ranking_index', {'filters[manufacturer]': coaster.manufacturer.id}) }}">
-                    {{ coaster.manufacturer.name }}
-                  </a>
-
-                </li>
-              {% endif %}
-              <li>
-                <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                  {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
-                </a>
-              </li>
-            </ul>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+    {# Bottom — title + by …  #}
+    <div class="absolute bottom-0 left-0 right-0 pb-4 sm:pb-6 lg:pb-8">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">{{ titleText }}</h1>
+        <p class="text-white/80 text-sm mt-1 inline-flex items-center gap-3">
+          <a href="{{ path('user_show', {'slug': top.user.slug}) }}" class="inline-flex items-center gap-1.5 hover:text-white transition-colors">
+            <twig:UserAvatar :user="top.user" class="w-5 h-5 rounded-full object-cover" />
+            {{ top.user.displayName }}
+          </a>
+          <span class="text-white/40">·</span>
+          <span class="inline-flex items-center gap-1">
+            {{ ux_icon('tabler:list-numbers', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ top.topCoasters|length }}
+          </span>
+          <span class="text-white/40">·</span>
+          <span class="inline-flex items-center gap-1">
+            {{ ux_icon('tabler:clock', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ top.updatedAt|ago }}
+          </span>
+        </p>
+      </div>
+    </div>
   </div>
+{% endblock %}
 
+{% block body %}
+  {# "Feeds the global ranking" caption — Top Coasters only, sits above the list. #}
+  {% if top.isRanking %}
+    <p class="text-xs text-content-muted inline-flex items-center gap-1 mb-4"
+       title="{{ 'show.feeds_rankings.tooltip'|trans({}, 'top') }}">
+      {{ ux_icon('tabler:info-circle', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+      {{ 'show.feeds_rankings.label'|trans({}, 'top') }}
+    </p>
+  {% endif %}
+
+  {# Owner actions — subtle inline row (edit). Delete sits at the bottom of the page. #}
+  {% if is_granted('edit', top) %}
+    <div class="flex items-center gap-2 mb-4">
+      <a href="{{ path('top_edit', {'id': top.id}) }}"
+         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-lg bg-cc-blue-100 dark:bg-cc-blue-900/30 text-cc-blue-700 dark:text-cc-blue-400 hover:bg-cc-blue-200 dark:hover:bg-cc-blue-900/50 transition-colors">
+        {{ ux_icon('tabler:edit', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        {{ 'update'|trans({}, 'top') }}
+      </a>
+    </div>
+  {% endif %}
+
+  {# Coaster list #}
+  {% if top.topCoasters|length > 0 %}
+    <div class="space-y-2">
+      {% for topCoaster in top.topCoasters %}
+        <twig:TopListRow :topCoaster="topCoaster" />
+      {% endfor %}
+    </div>
+  {% else %}
+    <twig:EmptyState icon="tabler:list-numbers" :title="'show.empty.title'|trans({}, 'top')" :description="'show.empty.description'|trans({}, 'top')" />
+  {% endif %}
+
+  {# Delete (subtle, end of page). #}
+  {% if is_granted('delete', top) %}
+    <div class="mt-8 flex justify-center">
+      <form method="post" action="{{ path('top_delete', {'id': top.id}) }}"
+            onsubmit="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');">
+        <input type="hidden" name="_token" value="{{ csrf_token('top_delete' ~ top.id) }}">
+        <button type="submit"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+          {{ ux_icon('tabler:trash', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+          {{ 'delete'|trans({}, 'top') }}
+        </button>
+      </form>
+    </div>
+  {% endif %}
 {% endblock %}

@@ -1,0 +1,47 @@
+page_title: 'Iniciar sesión'
+
+welcome:
+    heading: 'Bienvenido'
+    subtext: 'Introduce tu email para iniciar sesión o crear una cuenta.'
+    email_label: 'Dirección de email'
+    email_placeholder: 'tu@ejemplo.com'
+    cta: 'Continuar'
+    or: 'o'
+    google: 'Continuar con Google'
+    terms: 'Al continuar, aceptas nuestros <a href="{terms_url}" class="underline">Términos y Condiciones</a>.'
+
+register:
+    back: 'Atrás'
+    new_account_chip: 'nueva cuenta'
+    heading: 'Una cosa más'
+    subtext: '¿Cómo deberíamos llamarte en Captain Coaster?'
+    first_name_label: 'Nombre'
+    last_name_label: 'Apellido'
+    cta: 'Crear cuenta'
+
+sent:
+    heading: 'Comprueba tu bandeja de entrada'
+    body: 'Hemos enviado un enlace a <strong>{email}</strong>. Haz clic en él para iniciar sesión — caduca en 15 minutos.'
+    wrong_email: '¿Email incorrecto?'
+    start_over: 'Empezar de nuevo'
+
+error:
+    rate_limit: 'Demasiados intentos. Por favor, inténtalo de nuevo más tarde.'
+    authentication_failed: 'Error de autenticación. Por favor, inténtalo de nuevo.'
+    account_banned: 'Tu cuenta ha sido desactivada. Por favor, contáctanos si crees que esto es un error.'
+    account_deleted: 'Tu cuenta ha sido eliminada y ya no es accesible.'
+
+email:
+    login_subject: 'Inicia sesión en Captain Coaster'
+    login_h1: '¡Listo para despachar!'
+    login_p1: 'Para iniciar sesión en Captain Coaster, haz clic en el botón de abajo. Este enlace caduca en 15 minutos.'
+    login_button: 'Iniciar sesión'
+    login_p2: 'Recibiste este email porque solicitaste un enlace de inicio de sesión. Si no fuiste tú, ignóralo.'
+
+activation:
+    subject: 'Bienvenido — activa tu cuenta en Captain Coaster'
+    h1: '¡Bienvenido a bordo!'
+    p1: 'Para activar tu cuenta de Captain Coaster, haz clic en el botón de abajo. Este enlace caduca en 15 minutos.'
+    button: 'Activar mi cuenta'
+    p2: 'Recibiste este email porque creaste una cuenta en Captain Coaster.'
+    verified: 'Tu email {email} ha sido verificado. ¡Bienvenido a Captain Coaster!'

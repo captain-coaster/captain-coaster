@@ -185,6 +185,15 @@
             "config/packages/oneup_flysystem.yaml"
         ]
     },
+    "pentatrion/vite-bundle": {
+        "version": "8.2",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "6.5",
+            "ref": "3a6673f248f8fc1dd364dadfef4c5b381d1efab6"
+        }
+    },
     "phpstan/phpstan": {
         "version": "1.10",
         "recipe": {
@@ -634,6 +643,18 @@
         },
         "files": []
     },
+    "symfony/ux-autocomplete": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.6",
+            "ref": "07d9602b7231ba355f484305d6cea58310c01741"
+        },
+        "files": [
+            "config/routes/ux_autocomplete.yaml"
+        ]
+    },
     "symfony/ux-icons": {
         "version": "2.31",
         "recipe": {
@@ -647,18 +668,16 @@
             "config/packages/ux_icons.yaml"
         ]
     },
-    "symfony/ux-translator": {
-        "version": "2.36",
+    "symfony/ux-live-component": {
+        "version": "3.1",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
-            "version": "2.32",
-            "ref": "20e2abac415da4c3a9a6bafa059a6419beb74593"
+            "version": "2.6",
+            "ref": "b7130b7b5ddc2f8994bd6149d7c093b184782f0c"
         },
         "files": [
-            "assets/translator.js",
-            "config/packages/ux_translator.yaml",
-            "var/translations/index.js"
+            "config/routes/ux_live_component.yaml"
         ]
     },
     "symfony/ux-twig-component": {
@@ -705,22 +724,6 @@
         "files": [
             "config/packages/web_profiler.yaml",
             "config/routes/web_profiler.yaml"
-        ]
-    },
-    "symfony/webpack-encore-bundle": {
-        "version": "2.4",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "main",
-            "version": "2.2",
-            "ref": "3a870e92b23917ae95f0796a0599b1aca11d4bfd"
-        },
-        "files": [
-            "assets/app.js",
-            "assets/styles/app.css",
-            "config/packages/webpack_encore.yaml",
-            "package.json",
-            "webpack.config.js"
         ]
     },
     "symfony/yaml": {

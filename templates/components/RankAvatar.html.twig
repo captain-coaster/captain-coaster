@@ -1,0 +1,33 @@
+{#
+  RankAvatar — a user's avatar wrapped with a tier-colored glowing ring.
+  The instantly-recognisable "grade" worn across the site (profile, navbar, reviews).
+  Higher ranks get a subtle glow effect for prestige.
+
+  Props:
+    - user (required): User entity
+    - size: 'sm' | 'md' (default) | 'lg'
+    - rank: tier key; if null it's resolved from the user's Captain Score (memoized)
+#}
+{% props user, size = 'md', rank = null %}
+
+{% set tier = rank ?? profile_rank(user) %}
+
+{% set tiers = {
+  rookie:     {ring: 'ring-neutral-300',  glow: ''},
+  enthusiast: {ring: 'ring-green-400',    glow: ''},
+  rider:      {ring: 'ring-cc-blue-400',  glow: ''},
+  veteran:    {ring: 'ring-purple-400',   glow: 'shadow-[0_0_6px_rgba(168,85,247,0.4)]'},
+  expert:     {ring: 'ring-amber-400',    glow: 'shadow-[0_0_8px_rgba(245,158,11,0.5)]'},
+  legend:     {ring: 'ring-cc-warm-400',  glow: 'shadow-[0_0_10px_rgba(230,184,0,0.6)]'},
+} %}
+{% set sizes = {
+  sm: {av: 'w-7 h-7',   ring: 'ring-2'},
+  md: {av: 'w-10 h-10', ring: 'ring-2'},
+  lg: {av: 'w-24 h-24', ring: 'ring-[3px]'},
+} %}
+{% set s = tiers[tier] ?? tiers.rookie %}
+{% set z = sizes[size] ?? sizes.md %}
+
+<span class="relative inline-block shrink-0 rounded-full {{ s.glow }}">
+  <twig:UserAvatar :user="user" class="{{ z.av }} rounded-full {{ z.ring }} {{ s.ring }}" />
+</span>

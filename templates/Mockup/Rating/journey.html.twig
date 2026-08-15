@@ -1,0 +1,140 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mockup · Mon parcours{% endblock %}
+
+{% block body %}
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-4">
+      <a href="{{ path('mockup_rating_index') }}" class="inline-flex items-center gap-1 text-xs text-content-muted hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        Mockups index
+      </a>
+    </div>
+
+    {# ── Header ─────────────────────────────────────────────────────── #}
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-content flex items-center gap-2">
+        {{ ux_icon('tabler:road', {'class': 'w-6 h-6 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        Mon parcours
+      </h1>
+      <p class="text-sm text-content-muted mt-1">Tous tes rides, par ordre chronologique.</p>
+    </div>
+
+    {# ── Stats bar ──────────────────────────────────────────────────── #}
+    <div class="grid grid-cols-4 rounded-2xl overflow-hidden bg-surface-sunken mb-6 divide-x divide-neutral-200 dark:divide-neutral-700">
+      <div class="py-3 text-center">
+        <div class="text-base sm:text-lg font-bold text-content leading-none">247</div>
+        <div class="text-[10px] sm:text-xs text-content-muted mt-1">Coasters</div>
+      </div>
+      <div class="py-3 text-center">
+        <div class="text-base sm:text-lg font-bold text-content leading-none">12</div>
+        <div class="text-[10px] sm:text-xs text-content-muted mt-1">Pays</div>
+      </div>
+      <div class="py-3 text-center">
+        <div class="text-base sm:text-lg font-bold text-content leading-none">23</div>
+        <div class="text-[10px] sm:text-xs text-content-muted mt-1">Constructeurs</div>
+      </div>
+      <div class="py-3 text-center">
+        <div class="text-base sm:text-lg font-bold text-cc-warm-500 leading-none">2018</div>
+        <div class="text-[10px] sm:text-xs text-content-muted mt-1">Depuis</div>
+      </div>
+    </div>
+
+    {# ── Filtres pills ──────────────────────────────────────────────── #}
+    <div class="flex items-center gap-1.5 mb-6 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="group">
+      {{ ux_icon('tabler:filter', {'class': 'w-4 h-4 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+      {% for label in ['Tous', 'Cette année', '2024', '2023', '2022'] %}
+        <button type="button" class="shrink-0 inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+              {{ loop.first
+                ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+                : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">{{ label }}</button>
+      {% endfor %}
+    </div>
+
+    {# ── Timeline par année ─────────────────────────────────────────── #}
+    <div class="space-y-8">
+      {% for yearBlock in years %}
+        <section>
+          {# Year header sticky #}
+          <div class="flex items-center justify-between mb-4 sticky top-16 z-10 -mx-4 px-4 py-2 bg-neutral-50/90 dark:bg-neutral-900/90 backdrop-blur">
+            <h2 class="text-xl font-bold text-content">{{ yearBlock.year }}</h2>
+            <span class="text-sm text-content-muted">{{ yearBlock.count }} rides</span>
+          </div>
+
+          {# Timeline — vertical line + dots #}
+          <ol class="relative border-l-2 border-line-strong pl-5 space-y-3">
+            {% for ride in yearBlock.rides %}
+
+              {# Cherche si ce ride a un milestone attaché #}
+              {% set rideMilestones = [] %}
+              {% for m in yearBlock.milestones %}
+                {% if m.sublabel == ride.name %}
+                  {% set rideMilestones = rideMilestones|merge([m]) %}
+                {% endif %}
+              {% endfor %}
+
+              <li class="relative">
+                {# Dot sur la ligne — plus grand si milestone #}
+                {% if rideMilestones|length > 0 %}
+                  <span class="absolute -left-[1.7rem] top-3 w-5 h-5 rounded-full bg-cc-warm-500 ring-4 ring-cc-warm-100 dark:ring-cc-warm-900/30 flex items-center justify-center">
+                    {{ ux_icon(rideMilestones[0].icon, {'class': 'w-3 h-3 text-white', 'aria-hidden': 'true'}) }}
+                  </span>
+                {% else %}
+                  <span class="absolute -left-[1.55rem] top-3.5 w-3 h-3 rounded-full bg-surface border-2 border-cc-blue-400"></span>
+                {% endif %}
+
+                {# Carte ride — fond + bordure spéciale si milestone #}
+                <article class="flex items-start gap-3 px-3 py-2.5 rounded-xl border transition-colors
+                                {{ rideMilestones|length > 0
+                                   ? 'bg-cc-warm-50 dark:bg-cc-warm-900/10 border-cc-warm-300 dark:border-cc-warm-700'
+                                   : 'bg-surface-raised border-neutral-100 dark:border-neutral-700' }}">
+
+                  {# Image stub #}
+                  <div class="w-12 h-9 rounded-lg bg-surface-strong shrink-0 flex items-center justify-center mt-0.5">
+                    {{ ux_icon('tabler:roller-skating', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                  </div>
+
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-sm text-content flex items-center gap-1.5 flex-wrap">
+                      {{ ride.name }}
+                      {% if ride.isReride %}
+                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-cc-warm-100 dark:bg-cc-warm-900/30 text-cc-warm-700 dark:text-cc-warm-300">
+                          {{ ux_icon('tabler:refresh', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+                          re-ride
+                        </span>
+                      {% endif %}
+                    </div>
+                    <div class="text-xs text-content-muted truncate">{{ ride.park }} · {{ ride.date|date('d M') }}</div>
+
+                    {# Milestones attachés — mention sous le nom du coaster #}
+                    {% for m in rideMilestones %}
+                      <div class="flex items-center gap-1.5 mt-1.5">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold
+                                     bg-{{ m.color }}-100 dark:bg-{{ m.color }}-900/30 text-{{ m.color }}-700 dark:text-{{ m.color }}-300 border border-{{ m.color }}-200 dark:border-{{ m.color }}-700">
+                          {{ ux_icon(m.icon, {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+                          {{ m.label }}
+                        </span>
+                      </div>
+                    {% endfor %}
+                  </div>
+
+                  {# Note #}
+                  <div class="shrink-0 inline-flex items-center gap-1 mt-0.5">
+                    {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+                    <span class="text-sm font-bold text-content">{{ ride.value }}</span>
+                  </div>
+
+                </article>
+              </li>
+
+            {% endfor %}
+          </ol>
+        </section>
+      {% endfor %}
+    </div>
+
+    <div class="mt-8 text-center text-sm text-content-muted">
+      <a href="#" class="text-cc-blue-600 dark:text-cc-blue-400 hover:underline">Charger plus d'années</a>
+    </div>
+  </div>
+{% endblock %}

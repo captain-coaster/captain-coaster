@@ -1,0 +1,65 @@
+{#
+  TopListRow — read-only ranked coaster row used on a list's show page.
+  Follows the ProfileCoasterRow pattern (full-height flush-left thumbnail).
+
+  Layout: position pill · full-height image · coaster name + park · rating star
+  Rank colours per Ranking page: gold #1 · silver #2 · bronze #3 · neutral rest.
+
+  Props:
+    - topCoaster (required): TopCoaster entity (carries position + coaster)
+#}
+{% props topCoaster %}
+
+{% set coaster = topCoaster.coaster %}
+{% set rating = (app.user) ? app.user.rating(coaster).rating|default(null) : null %}
+{% set formattedRating = rating ? (rating|round == rating ? rating|number_format(0) : rating|number_format(1)) : null %}
+
+<div class="relative bg-surface rounded-xl border border-line hover:border-line-strong transition-colors overflow-hidden">
+  <div class="flex items-stretch gap-3">
+
+    {# Position — ranking-tier badge #}
+    <div class="shrink-0 self-stretch flex items-center justify-center w-10 pl-1">
+      <twig:RankBadge :rank="topCoaster.position" size="md" hash="false" />
+    </div>
+
+    {# Full-height thumbnail #}
+    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+       class="shrink-0 self-stretch w-20" tabindex="-1" aria-hidden="true">
+      {% if coaster.mainImage is not null %}
+        <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+             class="w-full h-full object-cover"
+             alt="{{ coaster.name }}"
+             loading="lazy">
+      {% else %}
+        <div class="w-full h-full bg-surface-muted flex items-center justify-center">
+          {{ ux_icon('tabler:roller-coaster', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+        </div>
+      {% endif %}
+    </a>
+
+    {# Coaster info — name + park (no manufacturer per feedback) #}
+    <div class="flex-1 min-w-0 py-3 pr-3">
+      <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+         class="font-semibold text-sm text-content hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors leading-snug block truncate after:absolute after:inset-0">
+        {{ coaster.name }}
+      </a>
+      <a href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}"
+         class="relative z-10 text-xs text-content-muted hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors truncate block mt-0.5">
+        {{ coaster.park.name }}
+      </a>
+    </div>
+
+    {# Rating — one filled star + the number (baseline pattern) #}
+    {% if formattedRating %}
+      <div class="relative z-10 shrink-0 self-center pr-3 flex items-center gap-1">
+        {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        <span class="text-sm font-bold text-content tabular-nums">{{ formattedRating }}</span>
+      </div>
+    {% elseif coaster.score is not null %}
+      <div class="relative z-10 shrink-0 self-center pr-3 flex items-center gap-1 px-2 py-1 rounded-lg bg-cc-warm-100 dark:bg-cc-warm-900/30">
+        {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        <span class="text-xs font-semibold text-cc-warm-700 dark:text-cc-warm-400 tabular-nums">{{ coaster.score|number_format(1) }}</span>
+      </div>
+    {% endif %}
+  </div>
+</div>

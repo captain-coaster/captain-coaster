@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Coaster;
+use App\Entity\Park;
 use App\Entity\RiddenCoaster;
+use App\Entity\Status;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
@@ -36,6 +39,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->createQueryBuilder()
                 ->select('count(1) as nb_rating')
                 ->from(RiddenCoaster::class, 'r')
+                ->where('r.rating IS NOT NULL')
                 ->getQuery();
 
             $query->enableResultCache(600);
@@ -165,15 +169,20 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /** @param array<string, mixed> $filters */
     private function sort(QueryBuilder $query, array $filters): void
     {
-        $sortingOptions = ['value', 'updatedAt'];
+        // Map of allowed sort keys (URL/UI value) to DQL field names
+        $sortingOptions = [
+            'value' => 'r.rating',
+            'rating' => 'r.rating',
+            'updatedAt' => 'r.updatedAt',
+        ];
 
         if (\array_key_exists('sort', $filters) && '' !== $filters['sort'] && str_contains($filters['sort'], '|')) {
             $sort = explode('|', $filters['sort']);
 
-            if (!\in_array($sort[0], $sortingOptions) || !\in_array($sort[1], ['ASC', 'DESC', 'asc', 'desc'])) {
+            if (!\array_key_exists($sort[0], $sortingOptions) || !\in_array($sort[1], ['ASC', 'DESC', 'asc', 'desc'])) {
                 $this->defaultSort($query);
             } else {
-                $query->addOrderBy('r.'.$sort[0], $sort[1]);
+                $query->addOrderBy($sortingOptions[$sort[0]], $sort[1]);
             }
         } else {
             $this->defaultSort($query);
@@ -272,6 +281,63 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Get a random selection of recent, community-validated reviews for the homepage.
+     *
+     * Algorithm:
+     *   - Fetch a pool of 20 qualifying reviews (upvoteCounter >= 3, last 90 days)
+     *   - Shuffle and return $limit — changes on every page load, no two visits show the same set
+     *   - Language priority: user's locale first, then others
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function getLatestLikedReviews(string $locale = 'en', int $limit = 3, bool $displayReviewsInAllLanguages = false): array
+    {
+        $minUpvotes = 3;
+        $sinceDate = new \DateTime('-90 days');
+        $poolSize = 20;
+
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->addSelect(
+                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+            )
+            ->addSelect('u')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.review IS NOT NULL')
+            ->andWhere('u.enabled = 1')
+            ->andWhere('r.upvoteCounter >= :minUpvotes')
+            ->andWhere('r.updatedAt >= :sinceDate')
+            ->orderBy('languagePriority', 'asc')
+            ->addOrderBy('r.upvoteCounter', 'desc')
+            ->addOrderBy('r.updatedAt', 'desc')
+            ->setMaxResults($poolSize)
+            ->setParameter('locale', $locale)
+            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
+            ->setParameter('minUpvotes', $minUpvotes)
+            ->setParameter('sinceDate', $sinceDate)
+            ->getQuery();
+
+        $query->enableResultCache(3600); // 1h — pool is stable, randomisation is PHP-side
+
+        /** @var array<int, RiddenCoaster> $pool */
+        $pool = $query->getResult();
+
+        if (\count($pool) <= $limit) {
+            return $pool;
+        }
+
+        // Random selection from the pool — different on every request.
+        $keys = array_rand($pool, $limit);
+        if (!\is_array($keys)) {
+            $keys = [$keys];
+        }
+
+        return array_values(array_intersect_key($pool, array_flip($keys)));
+    }
+
+    /**
      * Get latest ratings from enabled users only.
      *
      * @return array<int, RiddenCoaster>
@@ -284,6 +350,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
             ->where('u.enabled = 1')
+            ->andWhere('r.rating IS NOT NULL')
             ->orderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
             ->getQuery();
@@ -294,9 +361,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /** @return QueryBuilder */
-    public function getUserRatings(User $user)
+    public function getUserRatings(User $user, ?string $search = null)
     {
-        return $this->getEntityManager()
+        $qb = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r', 'm', 'c', 'p', 's')
             ->from(RiddenCoaster::class, 'r')
@@ -307,6 +374,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->join('c.park', 'p')
             ->where('r.user = :user')
             ->setParameter('user', $user);
+
+        if (null !== $search && '' !== $search) {
+            $qb->andWhere('c.name LIKE :search OR p.name LIKE :search')
+               ->setParameter('search', '%'.addcslashes($search, '%_\\').'%');
+        }
+
+        return $qb;
     }
 
     /** @return QueryBuilder */
@@ -417,7 +491,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Get rating statistics for a coaster.
      *
-     * @return array<int, array{value: float, count: int}>
+     * @return array<int, array{rating: float, count: int}>
      */
     public function getRatingStatsForCoaster(Coaster $coaster): array
     {
@@ -425,13 +499,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r.value')
+            ->select('r.rating')
             ->addselect('COUNT(r.id) AS count')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
             ->where('r.coaster = :id')
             ->andWhere('u.enabled = 1')
-            ->groupby('r.value')
+            ->andWhere('r.rating IS NOT NULL')
+            ->groupby('r.rating')
             ->setParameter('id', $id)
             ->getQuery()
             ->getResult();
@@ -492,6 +567,101 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * Captain ranking scores of every ranked coaster the user has ridden.
+     * Kiddies and hold-ranking coasters are excluded by virtue of having
+     * no rank/score in the ranking pipeline.
+     *
+     * Used to feed the Captain Score calculator for a rider.
+     *
+     * @return list<float>
+     */
+    public function findRankedCoasterScoresForUser(User $user): array
+    {
+        $rows = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c.score AS score')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->where('r.user = :user')
+            ->andWhere('c.rank IS NOT NULL')
+            ->andWhere('c.score IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_values(array_map(static fn (array $row): float => (float) $row['score'], $rows));
+    }
+
+    /**
+     * Ids of ranked coasters the user has ridden — used to highlight rows on the ranking.
+     *
+     * @return array<int, int>
+     */
+    public function findRankedRiddenCoasterIds(User $user): array
+    {
+        $rows = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('IDENTITY(r.coaster) as id')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->where('r.user = :user')
+            ->andWhere('c.rank IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_map(static fn (array $row): int => (int) $row['id'], $rows);
+    }
+
+    /**
+     * How many coasters of the "top 100" progress cohort the user has ridden.
+     * The cohort is the best-ranked non-demolished coasters up to $cutoffRank
+     * (see CoasterRepository::findTop100CohortBounds), so the result is ≤ size.
+     */
+    public function countRiddenInTop100Cohort(User $user, int $cutoffRank): int
+    {
+        if ($cutoffRank < 1) {
+            return 0;
+        }
+
+        return (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('COUNT(r.id)')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.status', 's')
+            ->where('r.user = :user')
+            ->andWhere('c.rank <= :cutoff')
+            ->andWhere('s.name != :defunct')
+            ->setParameter('user', $user)
+            ->setParameter('cutoff', $cutoffRank)
+            ->setParameter('defunct', Status::CLOSED_DEFINITELY)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Count of demolished (definitively closed) top-100 coasters the user got to
+     * ride before they closed — celebrated on the ranking page.
+     */
+    public function countRiddenDefunctTop100(User $user): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('COUNT(r.id)')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.status', 's')
+            ->where('r.user = :user')
+            ->andWhere('c.rank <= 100')
+            ->andWhere('s.name = :defunct')
+            ->setParameter('user', $user)
+            ->setParameter('defunct', Status::CLOSED_DEFINITELY)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /** @return mixed|string */
     public function getMostRiddenManufacturer(User $user)
     {
@@ -542,12 +712,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->addSelect('r.value AS rating', 'c.id AS coaster')
+            ->addSelect('r.rating AS rating', 'c.id AS coaster')
             ->from(RiddenCoaster::class, 'r')
             ->join('r.coaster', 'c')
             ->where('r.user = :id')
             ->andWhere('c.kiddie = 0')
             ->andWhere('c.holdRanking = 0')
+            ->andWhere('r.rating IS NOT NULL')
             ->setParameter('id', $userId)
             ->getQuery()
             ->getResult();
@@ -583,6 +754,63 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         } catch (\Exception) {
             return $default;
         }
+    }
+
+    /**
+     * Get featured reviews for a coaster (high-rated with text content).
+     * Prioritizes reviews in the user's locale, sorted by score and upvotes.
+     *
+     * @param Coaster $coaster The coaster to get reviews for
+     * @param string  $locale  The preferred language
+     * @param int     $limit   Maximum number of reviews to retrieve
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function getFeaturedReviews(Coaster $coaster, string $locale = 'en', int $limit = 3): array
+    {
+        // First query: get IDs without collection joins to avoid row multiplication
+        /** @var list<int> $ids */
+        $ids = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r.id')
+            ->addSelect('CASE WHEN r.language = :locale THEN 0 ELSE 1 END AS HIDDEN languagePriority')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :coasterId')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('u.enabled = 1')
+            ->andWhere('r.rating >= 3')
+            ->orderBy('languagePriority', 'ASC')
+            ->addOrderBy('r.score', 'DESC')
+            ->setParameter('coasterId', $coaster->getId())
+            ->setParameter('locale', $locale)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        if ([] === $ids) {
+            return [];
+        }
+
+        // Second query: fetch full entities with eager-loaded collections
+        $reviews = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'u', 'p', 'c')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->leftJoin('r.pros', 'p')
+            ->leftJoin('r.cons', 'c')
+            ->where('r.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getResult();
+
+        // Preserve original ordering
+        $idOrder = array_flip($ids);
+        usort($reviews, static fn (RiddenCoaster $a, RiddenCoaster $b): int => $idOrder[$a->getId()] <=> $idOrder[$b->getId()]);
+
+        return $reviews;
     }
 
     /**
@@ -642,5 +870,365 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Find all RiddenCoasters for a user in a specific park.
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function findByUserAndPark(User $user, Park $park): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'c')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->where('r.user = :user')
+            ->andWhere('c.park = :park')
+            ->setParameter('user', $user)
+            ->setParameter('park', $park)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find RiddenCoasters for a user's journey, sorted by firstRiddenAt DESC.
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function findByUserForJourney(User $user, ?int $year = null): array
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'c', 'p')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.park', 'p')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('r.firstRiddenAt', 'DESC');
+
+        if (null !== $year) {
+            $qb->andWhere('r.firstRiddenAt >= :yearStart')
+                ->andWhere('r.firstRiddenAt < :yearEnd')
+                ->setParameter('yearStart', new \DateTimeImmutable("$year-01-01"))
+                ->setParameter('yearEnd', new \DateTimeImmutable(($year + 1).'-01-01'));
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /** @return array{total: int, parks: int, countries: int, since: int|null} */
+    public function getJourneyStats(User $user): array
+    {
+        $result = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select(
+                'COUNT(r.id) as total',
+                'COUNT(DISTINCT p.id) as parks',
+                'COUNT(DISTINCT country.id) as countries',
+                'MIN(r.firstRiddenAt) as since',
+            )
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.park', 'p')
+            ->leftJoin('p.country', 'country')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleResult();
+
+        $since = $result['since'];
+
+        return [
+            'total' => (int) $result['total'],
+            'parks' => (int) $result['parks'],
+            'countries' => (int) $result['countries'],
+            // DQL returns MIN(DateTime) as a string "YYYY-MM-DD HH:MM:SS"
+            'since' => $since ? (int) substr((string) $since, 0, 4) : null,
+        ];
+    }
+
+    /** @return list<int> Years with at least one dated ride, sorted DESC. */
+    public function findAvailableRideYears(User $user): array
+    {
+        $rows = $this->getEntityManager()->getConnection()->fetchAllAssociative(
+            'SELECT DISTINCT YEAR(first_ridden_at) AS y FROM ridden_coaster WHERE user_id = :userId AND first_ridden_at IS NOT NULL ORDER BY y DESC',
+            ['userId' => $user->getId()],
+        );
+
+        return array_map(static fn (array $row): int => (int) $row['y'], $rows);
+    }
+
+    /**
+     * Return a map of coaster ID → milestone number (50, 100, 150 …) for the user's dated rides.
+     *
+     * @return array<int, int>
+     */
+    public function findMilestoneCoasterIds(User $user, int $interval = 50): array
+    {
+        $rows = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('IDENTITY(r.coaster) as coasterId', 'r.firstRiddenAt', 'r.id')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.firstRiddenAt IS NOT NULL')
+            ->setParameter('user', $user)
+            ->orderBy('r.firstRiddenAt', 'ASC')
+            ->addOrderBy('r.id', 'ASC')
+            ->getQuery()
+            ->getResult(AbstractQuery::HYDRATE_SCALAR);
+
+        $milestones = [];
+        foreach ($rows as $i => $row) {
+            $num = $i + 1;
+            if (0 === $num % $interval) {
+                $milestones[(int) $row['coasterId']] = $num;
+            }
+        }
+
+        return $milestones;
+    }
+
+    /** Get a QueryBuilder for RiddenCoasters without a rating (ridden only). */
+    public function findRiddenOnlyByUser(User $user): QueryBuilder
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'c', 'p')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.park', 'p')
+            ->where('r.user = :user')
+            ->andWhere('r.rating IS NULL')
+            ->setParameter('user', $user);
+    }
+
+    /** Get a QueryBuilder for RiddenCoasters with a rating. */
+    public function findRatedByUser(User $user): QueryBuilder
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'c', 'p')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.park', 'p')
+            ->where('r.user = :user')
+            ->andWhere('r.rating IS NOT NULL')
+            ->setParameter('user', $user);
+    }
+
+    /** Count coasters a user rode for the first time during the current calendar year. */
+    public function countNewCoastersThisYear(User $user): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.firstRiddenAt >= :yearStart')
+            ->setParameter('user', $user)
+            ->setParameter('yearStart', new \DateTimeImmutable(date('Y').'-01-01'))
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Total rides during the current calendar year — counts each ride from re-rides
+     * by checking lastRiddenAt for re-rides happening this year, and firstRiddenAt
+     * for first-time rides. Falls back to firstRiddenAt-based count for simplicity.
+     */
+    public function countTotalRidesThisYear(User $user): int
+    {
+        // First-time rides this year
+        $firstRides = (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.firstRiddenAt >= :yearStart')
+            ->setParameter('user', $user)
+            ->setParameter('yearStart', new \DateTimeImmutable(date('Y').'-01-01'))
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        // Re-rides this year (lastRiddenAt this year, but firstRiddenAt earlier;
+        // we don't know how many re-rides happened this year exactly, so we count
+        // each such ridden coaster as +1 ride for the year).
+        $reRides = (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.lastRiddenAt >= :yearStart')
+            ->andWhere('r.rideCount > 1')
+            ->andWhere('(r.firstRiddenAt IS NULL OR r.firstRiddenAt < :yearStart)')
+            ->setParameter('user', $user)
+            ->setParameter('yearStart', new \DateTimeImmutable(date('Y').'-01-01'))
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return $firstRides + $reRides;
+    }
+
+    /**
+     * Most recently touched rides (rated or not) for the profile activity feed.
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function findRecentActivity(User $user, int $limit = 6): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'c', 'p')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.park', 'p')
+            ->where('r.user = :user')
+            ->orderBy('r.updatedAt', 'DESC')
+            ->setParameter('user', $user)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Count ridden coasters with a rating for a user. */
+    public function countRatedForUser(User $user): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.rating IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * The "biggest" coaster a user has ridden for a numeric metric — used for
+     * personal-record superlatives on the profile (tallest, fastest, longest, most inversions).
+     */
+    public function findUserSuperlativeByMetric(User $user, string $metric): ?Coaster
+    {
+        if (!\in_array($metric, ['height', 'speed', 'length', 'inversionsNumber'], true)) {
+            return null;
+        }
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c')
+            ->from(Coaster::class, 'c')
+            ->innerJoin(RiddenCoaster::class, 'r', 'WITH', 'r.coaster = c')
+            ->where('r.user = :user')
+            ->andWhere(\sprintf('c.%s IS NOT NULL', $metric))
+            ->andWhere(\sprintf('c.%s > 0', $metric))
+            ->orderBy(\sprintf('c.%s', $metric), 'DESC')
+            ->setParameter('user', $user)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /** Oldest (ASC) or newest (DESC) coaster a user has ridden, by opening date. */
+    public function findUserCoasterByOpeningDate(User $user, string $direction = 'ASC'): ?Coaster
+    {
+        $direction = 'DESC' === strtoupper($direction) ? 'DESC' : 'ASC';
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c')
+            ->from(Coaster::class, 'c')
+            ->innerJoin(RiddenCoaster::class, 'r', 'WITH', 'r.coaster = c')
+            ->where('r.user = :user')
+            ->andWhere('c.openingDate IS NOT NULL')
+            ->orderBy('c.openingDate', $direction)
+            ->setParameter('user', $user)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /** Total rides for a user, counting re-rides (sum of rideCount). */
+    public function getTotalRideCount(User $user): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('COALESCE(SUM(r.rideCount), 0)')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /** Average rating a user gives (null if they have rated nothing). */
+    public function getUserAverageRating(User $user): ?float
+    {
+        $avg = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('AVG(r.rating)')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.rating IS NOT NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return null !== $avg ? round((float) $avg, 2) : null;
+    }
+
+    /**
+     * Distribution of a user's own ratings, grouped by star value.
+     *
+     * @return array<int, array{rating: float, count: int}>
+     */
+    public function getUserRatingDistribution(User $user): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r.rating')
+            ->addSelect('COUNT(r.id) AS count')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.user = :user')
+            ->andWhere('r.rating IS NOT NULL')
+            ->groupBy('r.rating')
+            ->orderBy('r.rating', 'ASC')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Most-ridden vocabulary value (materialType, seatingType, or model) for a user.
+     *
+     * @return array{name: string, nb: int}|null
+     */
+    public function getMostRiddenByVocabulary(User $user, string $assoc): ?array
+    {
+        if (!\in_array($assoc, ['materialType', 'seatingType', 'model'], true)) {
+            return null;
+        }
+
+        try {
+            return $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(1) as nb')
+                ->addSelect('v.name as name')
+                ->from(RiddenCoaster::class, 'r')
+                ->join('r.coaster', 'c')
+                ->join(\sprintf('c.%s', $assoc), 'v')
+                ->where('r.user = :user')
+                ->setParameter('user', $user)
+                ->groupBy('v.id')
+                ->orderBy('nb', 'desc')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getSingleResult();
+        } catch (\Exception) {
+            return null;
+        }
     }
 }

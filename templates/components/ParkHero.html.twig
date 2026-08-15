@@ -1,0 +1,59 @@
+{#
+  ParkHero — image-led hero card for the park show page.
+  Uses the best-ranked coaster's photo as the background, but the title
+  is the park itself.
+
+  Designed to be rendered inside the layout's {% block hero %} slot:
+  spans the full width of the main area; inner text is constrained to
+  the default content width to align with the body below.
+
+  Props:
+    - park (required): Park entity
+    - country (required): translated country name
+    - bestCoaster: optional Coaster used for the background picture
+
+  Usage (inside {% block hero %}):
+    <twig:ParkHero :park="park" country="..." :bestCoaster="stats.bestRanked" />
+#}
+{% props park, country, bestCoaster = null %}
+
+<div class="relative">
+  {% if bestCoaster and bestCoaster.mainImage %}
+    <div class="relative h-[40vh] min-h-[300px] max-h-[450px] overflow-hidden">
+      <img src="{{ pictures_cdn }}/1440x1440/{{ bestCoaster.mainImage.filename }}"
+           alt="{{ park.name }}"
+           class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-black/10"></div>
+    </div>
+  {% else %}
+    <div class="relative h-[40vh] min-h-[300px] max-h-[450px] bg-linear-to-br from-cc-blue-600 to-cc-warm-500"></div>
+  {% endif %}
+
+  {# Top row: map button aligned to content right edge (like coaster hero) #}
+  <div class="absolute inset-0 flex flex-col justify-between pb-4 sm:pb-6 lg:pb-8">
+    <div class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-3 sm:pt-6 flex justify-end">
+      {% if park.latitude is not null and park.longitude is not null %}
+        <a href="{{ path('map_index', {'parkslug': park.slug}) }}"
+           class="inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-colors"
+           aria-label="{{ 'park.view_map'|trans }}" title="{{ 'park.view_map'|trans }}">
+          {{ ux_icon('tabler:map-pin', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+        </a>
+      {% endif %}
+    </div>
+
+    {# Bottom: park identity #}
+    <div class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+      <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">{{ park.name }}</h1>
+      {% if park.formerNames %}
+        <p class="text-white/50 text-xs mt-0.5 flex items-center gap-1">
+          {{ ux_icon('tabler:history', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+          <span class="italic">{{ 'park.formerly'|trans }}: {{ park.formerNames|join(', ') }}</span>
+        </p>
+      {% endif %}
+      <p class="text-white/80 text-sm mt-1 flex items-center gap-1.5">
+        {{ ux_icon('tabler:map-pin', {'class': 'w-3.5 h-3.5 shrink-0', 'aria-hidden': 'true'}) }}
+        {{ country }}
+      </p>
+    </div>
+  </div>
+</div>

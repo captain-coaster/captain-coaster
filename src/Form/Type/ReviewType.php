@@ -32,7 +32,7 @@ class ReviewType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('value', NumberType::class, [
+            ->add('rating', NumberType::class, [
                 'required' => true,
                 'html5' => true,
             ])
@@ -49,6 +49,8 @@ class ReviewType extends AbstractType
                         ->where('p.type = :pro')
                         ->setParameter('pro', Tag::PRO),
                     'label' => 'review.pros',
+                    'autocomplete' => true,
+                    'tom_select_options' => ['maxItems' => 3],
                 ]
             )
             ->add(
@@ -64,6 +66,8 @@ class ReviewType extends AbstractType
                         ->where('c.type = :con')
                         ->setParameter('con', Tag::CON),
                     'label' => 'review.cons',
+                    'autocomplete' => true,
+                    'tom_select_options' => ['maxItems' => 3],
                 ]
             )
             ->add(
@@ -85,7 +89,7 @@ class ReviewType extends AbstractType
                 ]
             )
             ->add(
-                'riddenAt',
+                'firstRiddenAt',
                 DateType::class,
                 [
                     'required' => false,

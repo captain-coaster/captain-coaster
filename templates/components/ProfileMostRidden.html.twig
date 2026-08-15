@@ -1,0 +1,35 @@
+{#
+  ProfileMostRidden — the categories the user rides most (manufacturer, model, country).
+  Ride-frequency, unrelated to ratings.
+
+  Props:
+    - taste (required): stats.taste array (manufacturer, model, country)
+#}
+{% props taste %}
+
+{% set tiles = [
+  {icon: 'tabler:tools',         label: 'profile.taste.manufacturer'|trans, value: (taste.manufacturer and taste.manufacturer.nb > 0) ? taste.manufacturer.name : null},
+  {icon: 'tabler:roller-coaster', label: 'profile.taste.model'|trans,        value: (taste.model and taste.model.nb > 0) ? taste.model.name : null},
+  {icon: 'tabler:world',          label: 'profile.taste.country'|trans,      value: (taste.country and taste.country.nb > 0) ? taste.country.name|trans([], 'database') : null},
+] %}
+
+{% set hasAny = tiles|filter(t => t.value is not null)|length > 0 %}
+
+{% if hasAny %}
+  <section class="mb-6">
+    <twig:SectionHeading icon="tabler:heart-handshake" iconColor="text-cc-blue-500" title="{{ 'profile.most_ridden.title'|trans }}" />
+    <div class="grid grid-cols-3 gap-3">
+      {% for tile in tiles %}
+        {% if tile.value %}
+          <div class="bg-surface rounded-xl border border-line p-3 text-center">
+            <div class="w-8 h-8 rounded-full bg-surface-muted flex items-center justify-center mx-auto mb-2">
+              {{ ux_icon(tile.icon, {'class': 'w-4 h-4 text-content-tertiary', 'aria-hidden': 'true'}) }}
+            </div>
+            <div class="text-sm font-semibold text-content truncate">{{ tile.value }}</div>
+            <div class="text-[10px] text-content-muted uppercase tracking-wide mt-0.5">{{ tile.label }}</div>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}

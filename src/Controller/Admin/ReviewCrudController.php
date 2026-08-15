@@ -44,7 +44,7 @@ class ReviewCrudController extends AbstractCrudController
         return $filters
             ->add(EntityFilter::new('user')->autocomplete())
             ->add(EntityFilter::new('coaster')->autocomplete())
-            ->add('value')
+            ->add('rating')
             ->add('updatedAt');
     }
 
@@ -60,8 +60,10 @@ class ReviewCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('user')->autocomplete(),
             AssociationField::new('coaster')->autocomplete(),
-            DateField::new('riddenAt')->hideOnIndex(),
-            NumberField::new('value'),
+            DateField::new('firstRiddenAt')->hideOnIndex(),
+            DateField::new('lastRiddenAt')->hideOnIndex()->setFormTypeOption('disabled', true),
+            IntegerField::new('rideCount')->hideOnIndex()->setFormTypeOption('disabled', true),
+            NumberField::new('rating'),
             AssociationField::new('pros')->hideOnIndex(),
             AssociationField::new('cons')->hideOnIndex(),
             TextField::new('language')->hideOnIndex(),

@@ -1,0 +1,140 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mockup · Park show{% endblock %}
+
+{% block body %}
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-4">
+      <a href="{{ path('mockup_rating_index') }}" class="inline-flex items-center gap-1 text-xs text-content-muted hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        Mockups index
+      </a>
+    </div>
+
+    <div class="mb-4">
+      <h1 class="text-2xl font-bold text-content">Cedar Point</h1>
+      <p class="text-sm text-content-muted mt-0.5">Sandusky, USA</p>
+    </div>
+
+    {# ── Stats perso ─────────────────────────────────────────────────── #}
+    <div class="grid grid-cols-4 rounded-2xl overflow-hidden bg-surface-sunken mb-5 divide-x divide-neutral-200 dark:divide-neutral-700">
+      <div class="py-3 text-center">
+        <div class="text-base font-bold text-content leading-none">3</div>
+        <div class="text-[10px] text-content-muted mt-1">Notés</div>
+      </div>
+      <div class="py-3 text-center">
+        <div class="text-base font-bold text-green-600 dark:text-green-400 leading-none">1</div>
+        <div class="text-[10px] text-content-muted mt-1">Ridés</div>
+      </div>
+      <div class="py-3 text-center">
+        <div class="text-base font-bold text-cc-warm-600 dark:text-cc-warm-400 leading-none">13</div>
+        <div class="text-[10px] text-cc-warm-600 dark:text-cc-warm-400 mt-1 font-medium">À découvrir</div>
+      </div>
+      <div class="py-3 text-center">
+        <div class="text-base font-bold text-pink-600 dark:text-pink-400 leading-none">1</div>
+        <div class="text-[10px] text-content-muted mt-1">Wishlist</div>
+      </div>
+    </div>
+
+    {# ── Liste coasters ──────────────────────────────────────────────── #}
+    <div class="space-y-2">
+      {% for c in coasters %}
+        <article class="bg-surface-raised rounded-2xl border border-neutral-100 dark:border-neutral-700 overflow-hidden">
+          <div class="flex gap-3 p-3">
+
+            {# Colonne gauche : image + note sous la photo #}
+            <div class="shrink-0 flex flex-col gap-1.5">
+              <a href="#" class="block">
+                <div class="w-16 h-16 rounded-xl bg-surface-strong flex items-center justify-center">
+                  {{ ux_icon('tabler:roller-skating', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+                </div>
+              </a>
+              {# Note sous la photo — étoiles + croix juste à côté #}
+              {% include 'Mockup/Rating/_widget.html.twig' with {
+                state: c.state,
+                rating: {value: c.value, rideCount: 1},
+                variant: 'compact'
+              } only %}
+            </div>
+
+            {# Colonne centre : nom + specs + score/rank sur ligne dédiée #}
+            <div class="flex-1 min-w-0">
+              <a href="#" class="font-semibold text-sm text-content hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors truncate block">
+                {{ c.name }}
+              </a>
+              <div class="flex items-center gap-2 text-xs text-content-muted mt-0.5">
+                <span>{{ c.manufacturer }}</span>
+                <span>·</span>
+                <span>{{ c.year }}</span>
+              </div>
+              {# Score + rank sur leur propre ligne #}
+              {% if c.score %}
+                <div class="flex items-center gap-1.5 mt-1.5">
+                  <span class="text-sm font-bold text-cc-blue-600 dark:text-cc-blue-400">{{ c.score|number_format(1, ',') }}%</span>
+                  <span class="text-xs text-content-subtle">#{{ c.rank }}</span>
+                </div>
+              {% endif %}
+            </div>
+
+            {# Colonne droite : 2 boutons ronds empilés #}
+            <div class="shrink-0 flex flex-col gap-1.5 justify-center">
+              {# Ridden toggle #}
+              <button type="button"
+                      class="w-10 h-10 rounded-full flex items-center justify-center transition-all
+                             {{ c.state in ['ridden', 'rated']
+                                ? 'bg-green-500 text-white shadow-sm shadow-green-500/30'
+                                : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-400 hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900/20' }}"
+                      aria-label="{{ c.state in ['ridden', 'rated'] ? 'Ridden ✓' : 'Mark as ridden' }}"
+                      title="{{ c.state in ['ridden', 'rated'] ? 'Ridden ✓' : 'Mark as ridden' }}">
+                {{ ux_icon(c.state in ['ridden', 'rated'] ? 'tabler:circle-check-filled' : 'tabler:circle-check', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </button>
+              {# +1 ride si ridden, wishlist sinon #}
+              {% if c.state in ['ridden', 'rated'] %}
+                <button type="button"
+                        class="w-10 h-10 rounded-full flex items-center justify-center transition-all bg-cc-warm-400 text-white hover:bg-cc-warm-500 shadow-sm shadow-cc-warm-400/30"
+                        aria-label="+1 ride today"
+                        title="+1 ride today">
+                  {{ ux_icon('tabler:refresh', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                </button>
+              {% else %}
+                <button type="button"
+                        class="w-10 h-10 rounded-full flex items-center justify-center transition-all
+                               {{ c.state == 'wishlist'
+                                  ? 'bg-pink-500 text-white shadow-sm shadow-pink-500/30'
+                                  : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-400 hover:bg-pink-100 hover:text-pink-600 dark:hover:bg-pink-900/20' }}"
+                        aria-label="{{ c.state == 'wishlist' ? 'Remove from wishlist' : 'Add to wishlist' }}"
+                        title="{{ c.state == 'wishlist' ? 'In your wishlist' : 'Add to wishlist' }}">
+                  {{ ux_icon(c.state == 'wishlist' ? 'tabler:bookmark-filled' : 'tabler:bookmark', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                </button>
+              {% endif %}
+            </div>
+
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+    {# ── Parcs proches ───────────────────────────────────────────────── #}
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold text-content mb-4">Parcs proches</h2>
+      <div class="space-y-2">
+        {% for park in [
+          {name: 'Kings Island', distance: '4h 12min'},
+          {name: 'Six Flags Great Adventure', distance: '7h 30min'},
+        ] %}
+          <a href="#" class="flex items-center gap-3 p-4 bg-surface-raised rounded-xl border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 transition-colors">
+            <div class="w-10 h-10 bg-cc-blue-100 dark:bg-cc-blue-900/30 rounded-full flex items-center justify-center shrink-0">
+              {{ ux_icon('tabler:map-pin', {'class': 'w-5 h-5 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-content truncate">{{ park.name }}</p>
+              <p class="text-sm text-content-muted">{{ park.distance }}</p>
+            </div>
+            {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+
+  </div>
+{% endblock %}

@@ -126,5 +126,6 @@ continent.america: 'América'
 continent.asia: 'Asia'
 continent.africa: 'África'
 continent.oceania: 'Oceanía'
+continent.world: 'Mundo'
 
 data.unknown: 'Desconocido'

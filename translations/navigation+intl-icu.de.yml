@@ -1,0 +1,85 @@
+# Navigation translations - German
+nav:
+    main:
+        label: 'Hauptnavigation'
+    sidebar:
+        label: 'Seitennavigation'
+    mobile:
+        label: 'Mobile Navigation'
+    bottom:
+        label: 'Untere Navigation'
+    footer:
+        label: 'Fußzeile'
+    skip:
+        main: 'Zum Hauptinhalt springen'
+    toggle:
+        label: 'Navigationsmenü umschalten'
+    search:
+        label: 'Suchen'
+    theme:
+        toggle: 'Dunklen/hellen Modus umschalten'
+        system: 'System'
+        light: 'Hell'
+        dark: 'Dunkel'
+    notifications:
+        label: 'Benachrichtigungen'
+    profile:
+        menu: 'Profilmenü'
+    close: 'Schließen'
+    back: 'Zurück'
+    menu: 'Menü'
+    primary: 'Haupt'
+    secondary: 'Mehr'
+    language: 'Sprache'
+    user:
+        profile: 'Angemeldet'
+    home_nav: 'Startseite'
+    rankings_nav: 'Rankings'
+    discover_nav: 'Entdecken'
+    map_nav: 'Karte'
+    profile_nav: 'Profil'
+    home:
+        full_label: 'Zur Startseite gehen'
+    rankings:
+        full_label: 'Achterbahn-Rankings anzeigen'
+    discover:
+        full_label: 'Achterbahnen suchen und entdecken'
+    map:
+        full_label: 'Achterbahn-Karte anzeigen'
+
+# Navbar specific
+navbar:
+    profile: 'Mein Profil'
+    rating: 'Meine Bewertungen'
+    tops: 'Meine Listen'
+    my_coasters: 'Meine Coaster'
+    my_map: 'Meine Karte'
+    journey: 'Meine Reise'
+    logout: 'Abmelden'
+    login: 'Anmelden'
+    settings: 'Einstellungen'
+
+userzone:
+    ridden: '{count, plural, =0 {Noch keine Coaster} one {# Coaster gefahren} other {# Coaster gefahren}}'
+
+# Sidebar specific
+sidebar:
+    index: 'Startseite'
+    ranking: 'Rankings'
+    records: 'Rekorde'
+    search: 'Entdecken'
+    map: 'Karte'
+    top: 'Top Listen'
+    review: 'Bewertungen'
+    blog: 'Blog'
+    contact: 'Kontakt'
+    language: 'Sprache'
+    current: 'Aktuell'
+    account: 'Konto'
+    theme: 'Design'
+    mobile_language: 'Sprache'
+    login: 'Anmelden'
+
+main:
+    content:
+        label: 'Hauptinhalt'

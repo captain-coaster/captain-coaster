@@ -1,22 +1,41 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'contact.title'|trans %}
-{% set openedSidebar = true %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  {{ form_errors(form) }}
-  {{ form_start(form) }}
-  {{ form_row(form.name) }}
-  {{ form_row(form.email) }}
-  {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
-  {{ form_widget(form.recaptcha) }}
-  {{ form_rest(form) }}
-  <div class="text-right">
-    <button id="contact_btn" type="submit" class="btn btn-primary">
-      {{ 'contact.send'|trans }}
-      {{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6 position-right'}) }}
-    </button>
-  </div>
-  {{ form_end(form) }}
+    <twig:PageHeader
+      title="{{ title }}"
+      icon="tabler:message-circle"
+      subtitle="{{ 'form.description'|trans }}"
+    />
+
+    {% if form.vars.errors|length > 0 %}
+        <div class="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50" role="alert">
+            <div class="flex items-start gap-3">
+                {{ ux_icon('tabler:alert-circle', {'class': 'w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5', 'aria-hidden': 'true'}) }}
+                <div class="text-sm text-red-700 dark:text-red-300">
+                    {{ form_errors(form) }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {{ form_start(form, {'attr': {'class': 'recaptcha-form'}}) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.message) }}
+
+        <div class="hidden">
+            {{ form_widget(form.recaptcha) }}
+        </div>
+
+        {{ form_rest(form) }}
+
+        <button type="submit"
+                class="inline-flex items-center gap-2 px-6 py-3 text-sm font-medium rounded-xl text-white bg-cc-blue-600 hover:bg-cc-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cc-blue-500 transition-colors">
+            {{ ux_icon('tabler:send', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'contact.send'|trans }}
+        </button>
+    {{ form_end(form) }}
 {% endblock %}

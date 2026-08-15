@@ -1,0 +1,49 @@
+{#
+  ProfileRecords — the user's personal-best superlatives (tallest / fastest / longest /
+  most inversions / oldest / newest coaster ridden) plus a total-rides headline.
+
+  Props:
+    - records (required): stats.records array from StatService::getProfileStats()
+#}
+{% props records %}
+
+{% set tiles = [
+  {key: 'tallest',         icon: 'tabler:arrow-big-up-lines', iconBg: 'bg-cc-blue-100 dark:bg-cc-blue-900/30', iconText: 'text-cc-blue-600 dark:text-cc-blue-400', coaster: records.tallest,         metric: 'height',           unit: 'm_or_f'},
+  {key: 'fastest',         icon: 'tabler:bolt',               iconBg: 'bg-amber-100 dark:bg-amber-900/30',     iconText: 'text-amber-600 dark:text-amber-400',     coaster: records.fastest,         metric: 'speed',            unit: 'kph_or_mph'},
+  {key: 'longest',         icon: 'tabler:ruler-measure',      iconBg: 'bg-green-100 dark:bg-green-900/30',      iconText: 'text-green-600 dark:text-green-400',     coaster: records.longest,         metric: 'length',           unit: 'm_or_f'},
+  {key: 'most_inversions', icon: 'tabler:rotate-clockwise',   iconBg: 'bg-purple-100 dark:bg-purple-900/30',   iconText: 'text-purple-600 dark:text-purple-400',   coaster: records.most_inversions, metric: 'inversionsNumber', unit: null},
+  {key: 'oldest',          icon: 'tabler:hourglass',          iconBg: 'bg-orange-100 dark:bg-orange-900/30',   iconText: 'text-orange-600 dark:text-orange-400',   coaster: records.oldest,          metric: 'openingDate',      unit: 'year'},
+  {key: 'newest',          icon: 'tabler:sparkles',           iconBg: 'bg-pink-100 dark:bg-pink-900/30',       iconText: 'text-pink-600 dark:text-pink-400',       coaster: records.newest,          metric: 'openingDate',      unit: 'year'},
+] %}
+
+<section class="mb-6">
+  <twig:SectionHeading icon="tabler:medal" iconColor="text-cc-warm-500" title="{{ 'profile.records.title'|trans }}" />
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    {% for tile in tiles %}
+      {% if tile.coaster %}
+        {% if tile.unit == 'm_or_f' %}
+          {% set value = m_or_f(attribute(tile.coaster, tile.metric)) %}
+        {% elseif tile.unit == 'kph_or_mph' %}
+          {% set value = kph_or_mph(attribute(tile.coaster, tile.metric)) %}
+        {% elseif tile.unit == 'year' %}
+          {% set value = tile.coaster.openingDate|date('Y') %}
+        {% else %}
+          {% set value = attribute(tile.coaster, tile.metric) %}
+        {% endif %}
+
+        <a href="{{ path('show_coaster', {'id': tile.coaster.id, 'slug': tile.coaster.slug}) }}"
+           class="block bg-surface rounded-xl border border-line p-3 hover:border-line-strong transition-colors group">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-8 h-8 rounded-full {{ tile.iconBg }} flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              {{ ux_icon(tile.icon, {'class': 'w-4 h-4 ' ~ tile.iconText, 'aria-hidden': 'true'}) }}
+            </div>
+            <span class="text-[10px] text-content-muted uppercase tracking-wide leading-tight">{{ ('profile.records.' ~ tile.key)|trans }}</span>
+          </div>
+          <div class="text-lg font-bold text-content tabular-nums leading-tight">{{ value }}</div>
+          <div class="text-xs text-content-muted truncate">{{ tile.coaster.name }}</div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>

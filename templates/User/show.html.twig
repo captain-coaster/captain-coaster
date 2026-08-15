@@ -1,94 +1,36 @@
-{% extends "base.html.twig" %}
-
-{% import "helper.html.twig" as helper %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'user_profile.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
-        <!-- infos user -->
-        <div class="panel">
-          <div class="panel-body text-center">
-            <div class="display-inline-block">
-              {{ helper.profilePicture(user, 'img-circle img-lg') }}
-            </div>
+    <twig:ProfileHero :user="user" :rank="stats.rank ?? null" :isOwnProfile="false" />
 
-            <h6 class="text-semibold no-margin-bottom">
-              {{ user.displayName }}
-            </h6>
-          </div>
+    <twig:ProfileLinks :user="user" :images_counter="images_counter" :isOwnProfile="false" />
 
-          <div class="list-group no-border no-padding-top">
-            <a href="{{ path('user_ratings', {'id': user.id}) }}" class="list-group-item">
-              {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }}
-              {{ 'user_profile.ratings'|trans }}
-              <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
-            </a>
-            <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
-              {{ ux_icon('heroicons:megaphone', {'class': 'w-6 h-6'}) }}
-              {{ 'user_profile.reviews'|trans }}
-            </a>
-            {% if user.mainTop.id %}
-              <a href="{{ path('top_show', {'id': user.mainTop.id}) }}" class="list-group-item">
-                {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }}
-                {{ 'user_profile.main_top'|trans }}
-                <span class="badge bg-teal-400 pull-right">{{ user.mainTop.topCoasters|length }}</span>
-              </a>
-            {% endif %}
-            {% if user.tops|length > 1 %}
-              <a href="{{ path('user_tops', {'id': user.id}) }}" class="list-group-item">
-                {{ ux_icon('heroicons:trophy', {'class': 'w-6 h-6'}) }}
-                {{ 'user_profile.tops'|trans }}
-                <span class="badge bg-teal-400 pull-right">{{ user.tops|length }}</span>
-              </a>
-            {% endif %}
-              {% if images_counter > 0 %}
-              <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
-                {{ ux_icon('heroicons:camera', {'class': 'w-6 h-6'}) }}
-                {{ 'user_profile.pictures'|trans }}
-                  <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
-              </a>
-            {% endif %}
-            <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">
-              {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }}
-              {{ 'user_profile.map'|trans }}
-            </a>
-          </div>
-        </div>
-        <!-- /infos user -->
-      </div>
-    </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
-          <!-- stats -->
-          {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
-          <!-- stats -->
-          <!-- badges -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{ 'profile.badge'|trans }}</h3>
-            </div>
+    {% if stats|length > 0 %}
+      <twig:ProfileScore :score="stats.score" />
+      <twig:ProfileProgress :progress="stats.progress" :rank="stats.rank" :milestone="stats.milestone" />
+      <twig:ProfileRecords :records="stats.records" />
+      <twig:ProfileTaste :taste="stats.taste" />
+      <twig:ProfileMostRidden :taste="stats.taste" />
+      <twig:ProfileThisYear :thisYear="stats.this_year" />
+    {% else %}
+      <twig:EmptyState
+        icon="tabler:roller-coaster"
+        :title="'user_profile.empty.title'|trans({'name': user.displayName})"
+        :description="'user_profile.empty.description'|trans" />
+    {% endif %}
 
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-sm-3" style="margin-bottom: 40px;">
-                  <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
-                </div>
-                {% for badge in user.badges %}
-                  <div class="col-sm-3" style="margin-bottom: 40px;">
-                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <!-- /badges -->
-        </div>
-      </div>
-    </div>
-  </div>
+    {% if recentActivity|default([])|length > 0 %}
+      <section class="mb-6">
+        <twig:SectionHeading
+          icon="tabler:history"
+          iconColor="text-cc-blue-500"
+          title="{{ 'profile.activity.title'|trans }}"
+          seeAllUrl="{{ path('user_ratings', {'id': user.id}) }}"
+          seeAllLabel="{{ 'profile.activity.see_all'|trans }}" />
+        <twig:ProfileActivity :activity="recentActivity" />
+      </section>
+    {% endif %}
 {% endblock %}

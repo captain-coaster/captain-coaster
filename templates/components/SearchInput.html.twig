@@ -1,0 +1,15 @@
+{#
+    Site Search — input + dropdown powered by SearchDropdown Live Component
+    + search-nav Stimulus controller (keyboard nav, recent searches).
+
+    variant="desktop": inline navbar form with ⌘K/Ctrl+K hint
+    variant="mobile":  full-screen modal overlay
+
+    <twig:SearchInput />
+    <twig:SearchInput variant="mobile" />
+#}
+{% props variant = 'desktop' %}
+
+<form class="{{ variant == 'mobile' ? 'flex-1' : 'w-full' }}" action="{{ path('search_index') }}" method="get">
+    {{ component('SearchDropdown', {variant: variant, locale: app.request.locale}) }}
+</form>

@@ -1,0 +1,60 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}{{ 'records.title'|trans }}{% endblock %}
+
+{% block body %}
+  <twig:PageHeader
+    title="{{ 'records.title'|trans }}"
+    subtitle="{{ 'records.subtitle'|trans }}"
+    icon="tabler:medal"
+    iconColor="text-cc-warm-500"
+  />
+
+  {# ── Continent filter pills ──────────────────────────────────────────── #}
+  <div class="flex items-center gap-1.5 mb-6 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="group" aria-label="{{ 'records.filter_by_continent'|trans }}">
+    {{ ux_icon('tabler:world', {'class': 'w-4 h-4 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+    {% for pill in continentPills %}
+      {% set isActive = currentContinent == pill.slug %}
+      {% set href = pill.slug ? path('records_index', { continent: pill.slug }) : path('records_index') %}
+      <a href="{{ href }}"
+         class="shrink-0 inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+           {{ isActive
+             ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+             : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}"
+         {{ isActive ? 'aria-current="true"' : '' }}>
+        {{ pill.name|trans({}, 'database') }}
+      </a>
+    {% endfor %}
+  </div>
+
+  {# ── Records categories ──────────────────────────────────────────────── #}
+  <div class="space-y-8">
+    {% for record in records %}
+      <section>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold text-content flex items-center gap-2">
+            {{ ux_icon(record.icon, {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+            {{ ('records.categories.' ~ record.key)|trans }}
+          </h2>
+        </div>
+
+        {% if record.coasters|length > 0 %}
+          <ol class="space-y-2">
+            {% for entry in record.coasters %}
+              {% include 'Records/_record_row.html.twig' with {
+                coaster: entry.coaster,
+                rank: entry.rank,
+                metric: record.metric,
+                unit: record.unit,
+              } only %}
+            {% endfor %}
+          </ol>
+        {% else %}
+          <div class="bg-surface rounded-xl border border-line p-4 text-center text-xs text-content-muted">
+            {{ 'records.empty'|trans }}
+          </div>
+        {% endif %}
+      </section>
+    {% endfor %}
+  </div>
+{% endblock %}

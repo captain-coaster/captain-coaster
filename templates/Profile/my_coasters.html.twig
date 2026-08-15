@@ -1,0 +1,138 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'profile.my_coasters.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <twig:PageHeader
+    title="{{ title }}"
+    icon="tabler:roller-coaster"
+    backUrl="{{ path('profile') }}"
+    backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+  />
+  {# ── Tabs ────────────────────────────────────────────────────────────── #}
+  <div class="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="tablist">
+    {% set tabs = [
+      { key: 'all', label: 'profile.my_coasters.tabs.all'|trans, count: allCount },
+      { key: 'rated', label: 'profile.my_coasters.tabs.rated'|trans, count: ratedCount },
+      { key: 'ridden', label: 'profile.my_coasters.tabs.ridden'|trans, count: riddenOnlyCount },
+      { key: 'wishlist', label: 'profile.my_coasters.tabs.wishlist'|trans, count: wishlistCount },
+    ] %}
+    {% for t in tabs %}
+      {% set isActive = tab == t.key %}
+      {% set nudge = t.key == 'ridden' and t.count > 0 and not isActive %}
+      <a href="{{ path('profile_my_coasters', { tab: t.key, q: search }|filter(v => v)) }}"
+         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+           {{ isActive
+             ? 'bg-cc-blue-600 text-white shadow-sm'
+             : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}"
+         role="tab"
+         aria-selected="{{ isActive ? 'true' : 'false' }}">
+        {{ t.label }}
+        <span class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full text-[10px] font-bold
+          {{ isActive
+            ? 'bg-white/20 text-white'
+            : (nudge
+              ? 'bg-cc-warm-100 text-cc-warm-700 dark:bg-cc-warm-900/40 dark:text-cc-warm-300'
+              : 'bg-surface-strong text-content-muted') }}">
+          {{ t.count }}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+
+  {# ── "Left to rate" nudge — drives users to the unrated (ridden) coasters ── #}
+  {% if riddenOnlyCount > 0 and tab != 'ridden' %}
+    <a href="{{ path('profile_my_coasters', { tab: 'ridden' }) }}"
+       class="flex items-center gap-2 mb-4 px-3 py-2 rounded-xl bg-cc-warm-50 dark:bg-cc-warm-900/15 text-cc-warm-700 dark:text-cc-warm-300 text-xs font-medium hover:bg-cc-warm-100 dark:hover:bg-cc-warm-900/25 transition-colors">
+      {{ ux_icon('tabler:star-half', {'class': 'w-4 h-4 shrink-0', 'aria-hidden': 'true'}) }}
+      <span class="flex-1">{{ 'profile.my_coasters.to_rate'|trans({'count': riddenOnlyCount}) }}</span>
+      {{ ux_icon('tabler:chevron-right', {'class': 'w-4 h-4 shrink-0', 'aria-hidden': 'true'}) }}
+    </a>
+  {% endif %}
+
+  {# ── Search ──────────────────────────────────────────────────────────── #}
+  <form method="get" action="{{ path('profile_my_coasters') }}" class="mb-4" data-controller="auto-submit" data-auto-submit-debounce-value="400">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        {{ ux_icon('tabler:search', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+      </div>
+      <input
+        type="search"
+        name="q"
+        value="{{ search }}"
+        class="block w-full pl-9 pr-10 py-2.5 rounded-xl border border-line-strong bg-surface text-sm text-content placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 focus:border-cc-blue-500 transition-all"
+        placeholder="{{ 'profile.ratings.search_placeholder'|trans }}"
+        autocomplete="off"
+        data-action="input->auto-submit#debounce"
+      >
+      {% if search %}
+        <a href="{{ path('profile_my_coasters', { tab: tab, sort: sort }|filter(v => v)) }}"
+           class="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+           aria-label="{{ 'filters.clear'|trans }}">
+          {{ ux_icon('tabler:x', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        </a>
+      {% endif %}
+    </div>
+    {% if tab != 'all' %}
+      <input type="hidden" name="tab" value="{{ tab }}">
+    {% endif %}
+    {% if sort != 'recent' %}
+      <input type="hidden" name="sort" value="{{ sort }}">
+    {% endif %}
+  </form>
+
+  {# ── Sort pills ──────────────────────────────────────────────────────── #}
+  <div class="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="group" aria-label="{{ 'profile.ratings.sort_by'|trans }}">
+    {{ ux_icon('tabler:arrows-sort', {'class': 'w-4 h-4 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+    {% set sortPills = [
+      { key: 'recent', label: 'profile.my_coasters.sort.recent'|trans },
+      { key: 'rating', label: 'profile.my_coasters.sort.rating'|trans },
+      { key: 'date', label: 'profile.my_coasters.sort.date'|trans },
+      { key: 'name', label: 'profile.my_coasters.sort.name'|trans },
+    ] %}
+    {% for pill in sortPills %}
+      {% set isActive = sort == pill.key %}
+      {# Hide rating/date sort for wishlist tab #}
+      {% if not isWishlistTab or pill.key in ['recent', 'name'] %}
+        <a href="{{ path('profile_my_coasters', { tab: tab, q: search, sort: pill.key }|filter(v => v)) }}"
+           class="inline-flex items-center gap-0.5 px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+             {{ isActive
+               ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+               : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">
+          {{ pill.label }}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  {# ── Results list ────────────────────────────────────────────────────── #}
+  {% if results.getTotalItemCount() > 0 %}
+    <div class="space-y-2">
+      {% for item in results %}
+        {% if isWishlistTab %}
+          <twig:ProfileCoasterRow :coaster="item.coaster" :riddenCoaster="null" :wishlist="item" />
+        {% else %}
+          <twig:ProfileCoasterRow :coaster="item.coaster" :riddenCoaster="item" :wishlist="null" />
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {# ── Pagination ──────────────────────────────────────────────────────── #}
+    <div class="mt-6">
+      {{ knp_pagination_render(results) }}
+    </div>
+
+  {% elseif search %}
+    {# No results for this search #}
+    <div class="py-12 text-center text-content-muted">
+      {{ ux_icon('tabler:search-off', {'class': 'w-10 h-10 mx-auto mb-3 opacity-40', 'aria-hidden': 'true'}) }}
+      <p class="text-sm font-medium">{{ 'profile.ratings.no_results'|trans }}</p>
+      <a href="{{ path('profile_my_coasters', { tab: tab }) }}" class="mt-2 inline-block text-xs text-cc-blue-600 dark:text-cc-blue-400 hover:underline">
+        {{ 'filters.clear'|trans }}
+      </a>
+    </div>
+  {% else %}
+    <twig:EmptyState icon="tabler:roller-skating" :title="'profile.my_coasters.title'|trans" />
+  {% endif %}
+{% endblock %}

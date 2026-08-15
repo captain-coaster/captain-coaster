@@ -31,7 +31,7 @@ class ImageRepository extends ServiceEntityRepository
             ->setMaxResults(1)
             ->getQuery();
 
-        $query->enableResultCache(300);
+        $query->enableResultCache(3600); // 1h — consistent with other hero candidates
 
         return $query->getSingleResult();
     }

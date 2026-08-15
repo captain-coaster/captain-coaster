@@ -1,0 +1,99 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mockups — Rating experience{% endblock %}
+
+{% block body %}
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-content">Rating experience — UI mockups</h1>
+      <p class="text-sm text-content-muted mt-1">
+        UI-only previews. No backend, no DB writes. Hardcoded fake data. Dev environment only.
+      </p>
+    </div>
+
+    {# ── Coaster show widget — 5 states ─────────────────────────────────── #}
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold text-content mb-3 flex items-center gap-2">
+        {{ ux_icon('tabler:layout-list', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+        Coaster page · widget + journal
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        {% for key, label in states %}
+          <a href="{{ path('mockup_rating_coaster', {state: key}) }}"
+             class="flex items-center justify-between gap-3 p-4 rounded-xl bg-surface-raised border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 hover:shadow-sm transition-all">
+            <div class="min-w-0">
+              <div class="font-medium text-sm text-content">{{ label }}</div>
+              <div class="text-xs text-content-muted mt-0.5">/{{ key }}</div>
+            </div>
+            {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+
+    {# ── Reviews section ─────────────────────────────────────────────────── #}
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold text-content mb-3 flex items-center gap-2">
+        {{ ux_icon('tabler:message-circle', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+        Reviews section · my review + 4 others
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <a href="{{ path('mockup_rating_reviews', {state: 'with_my_review'}) }}"
+           class="flex items-center justify-between gap-3 p-4 rounded-xl bg-surface-raised border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 hover:shadow-sm transition-all">
+          <div>
+            <div class="font-medium text-sm text-content">With my review</div>
+            <div class="text-xs text-content-muted mt-0.5">My review highlighted + 4 community</div>
+          </div>
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+        </a>
+        <a href="{{ path('mockup_rating_reviews', {state: 'without_my_review'}) }}"
+           class="flex items-center justify-between gap-3 p-4 rounded-xl bg-surface-raised border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 hover:shadow-sm transition-all">
+          <div>
+            <div class="font-medium text-sm text-content">Without my review</div>
+            <div class="text-xs text-content-muted mt-0.5">CTA + 5 community reviews</div>
+          </div>
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+        </a>
+      </div>
+    </section>
+
+    {# ── Other mockups ───────────────────────────────────────────────────── #}
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold text-content mb-3 flex items-center gap-2">
+        {{ ux_icon('tabler:map-2', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+        Other pages
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <a href="{{ path('mockup_rating_journey') }}"
+           class="flex items-center justify-between gap-3 p-4 rounded-xl bg-surface-raised border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 hover:shadow-sm transition-all">
+          <div>
+            <div class="font-medium text-sm text-content">Journey · chronological + milestones</div>
+            <div class="text-xs text-content-muted mt-0.5">Timeline grouped by year, with milestones</div>
+          </div>
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+        </a>
+        <a href="{{ path('mockup_rating_park') }}"
+           class="flex items-center justify-between gap-3 p-4 rounded-xl bg-surface-raised border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 hover:shadow-sm transition-all">
+          <div>
+            <div class="font-medium text-sm text-content">Park show · compact widget per row</div>
+            <div class="text-xs text-content-muted mt-0.5">List of coasters with inline state</div>
+          </div>
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+        </a>
+        <a href="{{ path('mockup_rating_my_ratings') }}"
+           class="flex items-center justify-between gap-3 p-4 rounded-xl bg-surface-raised border border-neutral-100 dark:border-neutral-700 hover:border-cc-blue-300 hover:shadow-sm transition-all sm:col-span-2">
+          <div>
+            <div class="font-medium text-sm text-content">My ratings · tabs + filters</div>
+            <div class="text-xs text-content-muted mt-0.5">Profile/ratings — Notées · Vues · Wishlist</div>
+          </div>
+          {{ ux_icon('tabler:chevron-right', {'class': 'w-5 h-5 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+        </a>
+      </div>
+    </section>
+
+    <div class="rounded-xl bg-cc-blue-50 dark:bg-cc-blue-900/20 border border-cc-blue-200 dark:border-cc-blue-800 p-4 text-xs text-cc-blue-800 dark:text-cc-blue-300">
+      {{ ux_icon('tabler:info-circle', {'class': 'w-4 h-4 inline mr-1', 'aria-hidden': 'true'}) }}
+      These mockups are pure UI. Buttons trigger nothing real. Update <code class="font-mono text-[11px] bg-surface-raised px-1 rounded">.kiro/specs/rating-experience/discovery.md</code> with feedback.
+    </div>
+  </div>
+{% endblock %}

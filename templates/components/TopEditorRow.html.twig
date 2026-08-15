@@ -1,0 +1,85 @@
+{#
+  TopEditorRow — compact draggable row for the editor.
+
+  Props:
+    - topCoaster: TopCoaster entity
+#}
+{% props topCoaster %}
+
+{% set coaster = topCoaster.coaster %}
+{% set position = topCoaster.position %}
+{% set rating = app.user ? app.user.rating(coaster).rating|default(null) : null %}
+{% set formattedRating = rating ? (rating|round == rating ? rating|number_format(0) : rating|number_format(1)) : null %}
+
+<li class="coaster-entry group flex items-center gap-2 sm:gap-3 bg-surface rounded-xl border border-line px-2 sm:px-3 py-2 transition-shadow"
+    data-coaster-id="{{ coaster.id }}"
+    data-position="{{ position }}">
+
+  {# Drag handle #}
+  <div class="drag-handle flex items-center shrink-0 p-1.5 -m-1.5 cursor-grab active:cursor-grabbing touch-none select-none text-content-muted hover:text-content">
+    {{ ux_icon('tabler:grip-vertical', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+  </div>
+
+  {# Position #}
+  <div class="position-number shrink-0 w-7 flex items-center justify-center">
+    <twig:RankBadge :rank="position" size="sm" hash="false" />
+  </div>
+
+  {# Coaster info #}
+  <div class="coaster-content flex-1 min-w-0">
+    <div class="coaster-main text-sm">
+      <span class="coaster-name font-semibold text-content truncate block leading-tight">{{ coaster.name }}</span>
+      <span class="coaster-park text-content-muted truncate block text-xs leading-tight mt-0.5">{{ coaster.park.name }}</span>
+    </div>
+  </div>
+
+  {# Rating #}
+  {% if formattedRating %}
+    <div class="coaster-rating shrink-0 flex items-center gap-1">
+      {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+      <span class="text-sm font-bold text-content tabular-nums">{{ formattedRating }}</span>
+    </div>
+  {% endif %}
+
+  {# Move-to menu #}
+  <details class="relative shrink-0 group/menu">
+    <summary class="list-none flex items-center justify-center w-7 h-7 rounded-md text-content-muted hover:text-content hover:bg-surface-muted cursor-pointer transition-colors [&::-webkit-details-marker]:hidden"
+             aria-label="{{ 'editor.actions.more'|trans({}, 'top') }}"
+             title="{{ 'editor.actions.more'|trans({}, 'top') }}">
+      {{ ux_icon('tabler:dots-vertical', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+    </summary>
+    <div class="absolute right-0 top-full mt-1 z-20 min-w-[12rem] rounded-xl border border-line bg-surface shadow-lg overflow-hidden">
+      <button type="button"
+              data-action="click->top-sort#moveToTop"
+              data-coaster-id="{{ coaster.id }}"
+              class="w-full flex items-center gap-2 px-3 py-2 text-sm text-content hover:bg-surface-muted text-left transition-colors">
+        {{ ux_icon('tabler:arrow-up-to-arc', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        {{ 'editor.actions.move_to_top'|trans({}, 'top') }}
+      </button>
+      <button type="button"
+              data-action="click->top-sort#moveToBottom"
+              data-coaster-id="{{ coaster.id }}"
+              class="w-full flex items-center gap-2 px-3 py-2 text-sm text-content hover:bg-surface-muted text-left transition-colors">
+        {{ ux_icon('tabler:arrow-down-to-arc', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        {{ 'editor.actions.move_to_bottom'|trans({}, 'top') }}
+      </button>
+      <button type="button"
+              data-action="click->top-sort#promptMoveToPosition"
+              data-coaster-id="{{ coaster.id }}"
+              class="w-full flex items-center gap-2 px-3 py-2 text-sm text-content hover:bg-surface-muted text-left transition-colors">
+        {{ ux_icon('tabler:arrows-move-vertical', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        {{ 'editor.actions.move_to_position'|trans({}, 'top') }}
+      </button>
+    </div>
+  </details>
+
+  {# Quick remove — calls removeCoaster LiveAction on the TopListEditor component #}
+  <button type="button"
+          data-action="live#action"
+          data-live-action-param="removeCoaster"
+          data-live-coaster-id-param="{{ coaster.id }}"
+          class="shrink-0 p-1.5 rounded-md text-content-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+          aria-label="{{ 'actions.remove'|trans({}, 'top') }}">
+    {{ ux_icon('tabler:x', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+  </button>
+</li>

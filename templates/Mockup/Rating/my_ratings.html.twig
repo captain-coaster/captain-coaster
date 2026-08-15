@@ -1,0 +1,148 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mockup · Mes coasters{% endblock %}
+
+{% block body %}
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-4">
+      <a href="{{ path('mockup_rating_index') }}" class="inline-flex items-center gap-1 text-xs text-content-muted hover:text-cc-blue-600 dark:hover:text-cc-blue-400">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        Mockups index
+      </a>
+    </div>
+
+    <div class="mb-5">
+      <h1 class="text-2xl font-bold text-content">Mes coasters</h1>
+    </div>
+
+    {# ── Stats bar ──────────────────────────────────────────────────── #}
+    <div class="grid grid-cols-3 gap-2 mb-5">
+      <div class="bg-surface rounded-xl border border-line p-3 text-center">
+        <div class="text-xl font-bold text-content">247</div>
+        <div class="text-[10px] text-content-muted uppercase tracking-wide mt-0.5">Notés</div>
+      </div>
+      <div class="bg-surface rounded-xl border border-line p-3 text-center">
+        <div class="text-xl font-bold text-green-600 dark:text-green-400">18</div>
+        <div class="text-[10px] text-content-muted uppercase tracking-wide mt-0.5">Ridés</div>
+      </div>
+      <div class="bg-surface rounded-xl border border-line p-3 text-center">
+        <div class="text-xl font-bold text-pink-600 dark:text-pink-400">42</div>
+        <div class="text-[10px] text-content-muted uppercase tracking-wide mt-0.5">Wishlist</div>
+      </div>
+    </div>
+
+    {# ── Onglets avec compteurs ──────────────────────────────────────── #}
+    <div class="flex gap-1 mb-4 p-1 rounded-xl bg-surface-muted" role="tablist">
+      <button type="button" class="flex-1 px-2 py-2 rounded-lg text-xs font-semibold bg-white dark:bg-neutral-700 text-content shadow-sm" role="tab" aria-selected="true">
+        Tous <span class="text-neutral-400 font-normal">(307)</span>
+      </button>
+      <button type="button" class="flex-1 px-2 py-2 rounded-lg text-xs font-medium text-content-tertiary hover:text-neutral-900 dark:hover:text-neutral-200" role="tab">
+        Notés <span class="text-neutral-400 font-normal">(247)</span>
+      </button>
+      <button type="button" class="flex-1 px-2 py-2 rounded-lg text-xs font-medium text-content-tertiary hover:text-neutral-900 dark:hover:text-neutral-200" role="tab">
+        Ridés <span class="text-neutral-400 font-normal">(18)</span>
+      </button>
+      <button type="button" class="flex-1 px-2 py-2 rounded-lg text-xs font-medium text-content-tertiary hover:text-neutral-900 dark:hover:text-neutral-200" role="tab">
+        Wishlist <span class="text-neutral-400 font-normal">(42)</span>
+      </button>
+    </div>
+
+    {# ── Search ──────────────────────────────────────────────────────── #}
+    <div class="relative mb-4">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        {{ ux_icon('tabler:search', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+      </div>
+      <input type="search" class="block w-full pl-9 pr-3 py-2.5 rounded-xl border border-line-strong bg-surface text-sm text-content placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50" placeholder="Chercher dans mes coasters">
+    </div>
+
+    {# ── Sort pills ──────────────────────────────────────────────────── #}
+    <div class="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+      {{ ux_icon('tabler:arrows-sort', {'class': 'w-4 h-4 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+      {% for label in ['Récents', 'Note', 'Date de ride', 'Coaster'] %}
+        <button type="button" class="shrink-0 inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+              {{ loop.first
+                ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+                : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">{{ label }}</button>
+      {% endfor %}
+    </div>
+
+    {# ── Liste — même layout que Park/show ───────────────────────────── #}
+    <div class="space-y-2">
+      {% for r in rows %}
+        <article class="bg-surface-raised rounded-2xl border border-neutral-100 dark:border-neutral-700 overflow-hidden">
+          <div class="flex gap-3 p-3">
+
+            {# Colonne gauche : image + note sous la photo #}
+            <div class="shrink-0 flex flex-col gap-1.5">
+              <a href="#" class="block">
+                <div class="w-16 h-16 rounded-xl bg-surface-strong flex items-center justify-center">
+                  {{ ux_icon('tabler:roller-skating', {'class': 'w-6 h-6 text-neutral-400', 'aria-hidden': 'true'}) }}
+                </div>
+              </a>
+              {# Note sous la photo #}
+              {% include 'Mockup/Rating/_widget.html.twig' with {
+                state: r.state,
+                rating: {value: r.value, rideCount: r.rideCount},
+                variant: 'compact'
+              } only %}
+            </div>
+
+            {# Colonne centre : nom + parc + score/rank + date #}
+            <div class="flex-1 min-w-0">
+              <a href="#" class="font-semibold text-sm text-content truncate block">{{ r.name }}</a>
+              <div class="flex items-center gap-1 mt-0.5">
+                <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-{{ r.statusColor }}-400"></span>
+                <span class="text-xs text-content-muted truncate">{{ r.park }}</span>
+              </div>
+              {# Date + re-ride count #}
+              {% if r.date %}
+                <div class="flex items-center gap-2 mt-1.5">
+                  <div class="text-[10px] text-content-subtle flex items-center gap-0.5">
+                    {{ ux_icon('tabler:calendar', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+                    {{ r.date|date('d/m/Y') }}
+                  </div>
+                  {% if r.rideCount > 1 %}
+                    <div class="text-[10px] text-cc-warm-500 flex items-center gap-0.5">
+                      {{ ux_icon('tabler:refresh', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+                      × {{ r.rideCount }}
+                    </div>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+
+            {# Colonne droite : 2 boutons ronds — identique Park #}
+            <div class="shrink-0 flex flex-col gap-1.5 justify-center">
+              <button type="button"
+                      class="w-10 h-10 rounded-full flex items-center justify-center transition-all
+                             {{ r.state in ['ridden', 'rated']
+                                ? 'bg-green-500 text-white shadow-sm shadow-green-500/30'
+                                : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-400 hover:bg-green-100 hover:text-green-600 dark:hover:bg-green-900/20' }}"
+                      aria-label="{{ r.state in ['ridden', 'rated'] ? 'Ridden ✓' : 'Mark as ridden' }}">
+                {{ ux_icon(r.state in ['ridden', 'rated'] ? 'tabler:circle-check-filled' : 'tabler:circle-check', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </button>
+              {% if r.state in ['ridden', 'rated'] %}
+                <button type="button"
+                        class="w-10 h-10 rounded-full flex items-center justify-center transition-all bg-cc-warm-400 text-white hover:bg-cc-warm-500 shadow-sm shadow-cc-warm-400/30"
+                        aria-label="+1 ride today">
+                  {{ ux_icon('tabler:refresh', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                </button>
+              {% else %}
+                <button type="button"
+                        class="w-10 h-10 rounded-full flex items-center justify-center transition-all
+                               {{ r.state == 'wishlist'
+                                  ? 'bg-pink-500 text-white shadow-sm shadow-pink-500/30'
+                                  : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-400 hover:bg-pink-100 hover:text-pink-600 dark:hover:bg-pink-900/20' }}"
+                        aria-label="{{ r.state == 'wishlist' ? 'Remove from wishlist' : 'Add to wishlist' }}">
+                  {{ ux_icon(r.state == 'wishlist' ? 'tabler:bookmark-filled' : 'tabler:bookmark', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                </button>
+              {% endif %}
+            </div>
+
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+
+  </div>
+{% endblock %}

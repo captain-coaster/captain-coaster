@@ -1,0 +1,47 @@
+page_title: 'Connexion'
+
+welcome:
+    heading: 'Bienvenue'
+    subtext: 'Entrez votre email pour vous connecter ou créer un compte.'
+    email_label: 'Adresse email'
+    email_placeholder: 'vous@exemple.com'
+    cta: 'Continuer'
+    or: 'ou'
+    google: 'Continuer avec Google'
+    terms: 'En continuant, vous acceptez nos <a href="{terms_url}" class="underline">Conditions Générales</a>.'
+
+register:
+    back: 'Retour'
+    new_account_chip: 'nouveau compte'
+    heading: 'Encore une chose'
+    subtext: 'Comment doit-on vous appeler sur Captain Coaster ?'
+    first_name_label: 'Prénom'
+    last_name_label: 'Nom'
+    cta: 'Créer mon compte'
+
+sent:
+    heading: 'Vérifiez votre boîte mail'
+    body: 'Nous avons envoyé un lien à <strong>{email}</strong>. Cliquez dessus pour vous connecter — il expire dans 15 minutes.'
+    wrong_email: 'Mauvais email ?'
+    start_over: 'Recommencer'
+
+error:
+    rate_limit: 'Trop de tentatives. Veuillez réessayer plus tard.'
+    authentication_failed: "Échec de l'authentification. Veuillez réessayer."
+    account_banned: "Votre compte a été désactivé. Veuillez nous contacter si vous pensez qu'il s'agit d'une erreur."
+    account_deleted: "Votre compte a été supprimé et n'est plus accessible."
+
+email:
+    login_subject: 'Connexion à Captain Coaster'
+    login_h1: 'Prêt au dispatch !'
+    login_p1: 'Pour vous connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expire dans 15 minutes.'
+    login_button: 'Se connecter'
+    login_p2: "Vous avez reçu cet email car vous avez demandé un lien de connexion. Si ce n'était pas vous, ignorez cet email."
+
+activation:
+    subject: 'Bienvenue — activez votre compte Captain Coaster'
+    h1: 'Bienvenue à bord !'
+    p1: 'Pour activer votre compte Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expire dans 15 minutes.'
+    button: 'Activer mon compte'
+    p2: 'Vous avez reçu cet email car vous avez créé un compte sur Captain Coaster.'
+    verified: 'Votre email {email} a été vérifié. Bienvenue sur Captain Coaster !'

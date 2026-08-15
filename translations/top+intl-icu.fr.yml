@@ -1,62 +1,139 @@
-# Top List translations - French
+# Lists translations - French
+
+module:
+    lists: 'Listes'
+    my_lists: 'Mes Listes'
+    explore: 'Explorer les listes'
+
+type:
+    ranking: 'Top Coasters'
+    bucket: 'Bucket List'
+    custom: 'Liste perso'
+    custom_plural: 'Listes perso'
+
+type_short:
+    ranking: 'Top'
+    bucket: 'Bucket'
+    custom: 'Perso'
 
 new:
-    title: 'Créer un nouveau top'
+    title: 'Créer une liste perso'
+    subtitle: 'Donnez-lui un nom. Vous pourrez ajouter des coasters ensuite.'
     form:
-        name: 'Nom de votre top :'
-        type: 'Est-ce un Top ou un Flop ?'
-        flop: 'Flop (le plus bas est le meilleur)'
-        top: 'Top (le plus haut est le meilleur)'
-        submit: 'Créer un nouveau top'
+        name: 'Nom'
+        submit: 'Créer la liste'
+    back: 'Retour'
 
-editDetails:
-    title: 'Modifier un top'
-    form:
-        submit: 'Mettre à jour le top'
+explore:
+    title: 'Explorer les listes'
+    subtitle: 'Découvrez les Top Coasters, Bucket Lists et listes perso de la communauté.'
+    create: 'Nouvelle liste'
+    filter:
+        all: 'Toutes'
+        top_coasters: 'Top Coasters'
+        buckets: 'Bucket Lists'
+        custom: 'Perso'
+    search:
+        placeholder: 'Rechercher une liste ou un membre…'
+        clear: 'Effacer'
+    empty:
+        title: 'Aucune liste trouvée'
+        description: 'Essayez un autre filtre ou un autre terme de recherche.'
+        clear: 'Réinitialiser'
+
+show:
+    back: 'Retour aux listes'
+    by: 'par'
+    more: '{count, plural, one {# coaster de plus} other {# coasters de plus}}'
+    coasters: '{count, plural, one {# coaster} other {# coasters}}'
+    feeds_rankings:
+        label: 'Alimente le classement mondial'
+        tooltip: 'Les notes sur les coasters de votre Top Coasters contribuent au classement mondial.'
+    private:
+        label: 'Privée'
+    empty:
+        title: 'Cette liste est vide'
+        description: 'Ajoutez des coasters pour commencer.'
+    share:
+        button: 'Partager'
+        copy: 'Copier le lien'
+        copied: 'Lien copié'
+        title: '{name} sur Captain Coaster'
+
+editor:
+    done: 'Terminé'
+    rename: 'Renommer la liste'
+    rename_save: 'Enregistrer'
+    visibility:
+        public: 'Publique'
+        private: 'Privée'
+        title: 'Visibilité'
+    cover:
+        choose: 'Choisir une image'
+        none: 'Pas d''image'
+        title: 'Image de couverture'
+    onboarding:
+        title: 'Ajoutez votre premier coaster'
+        description: 'Utilisez la recherche ci-dessus. Glissez pour réordonner. Appuyez sur × pour retirer. Tout s''enregistre automatiquement.'
+    actions:
+        move_to_top: 'Placer en premier'
+        move_to_bottom: 'Placer en dernier'
+        move_to_position: 'Placer à la position…'
+        move_to_position_prompt: 'Entrez la position (1-{max})'
+        invalid_position: 'Position invalide'
+        remove: 'Retirer'
+        more: 'Plus d''actions'
+
+my_lists:
+    title: 'Mes Listes'
+    top_coasters:
+        title: 'Top Coasters'
+        subtitle: 'Votre classement perso — ces notes alimentent le classement mondial.'
+        view: 'Voir'
+        edit: 'Modifier'
+        start: 'Commencer votre Top Coasters'
+        start_cta: 'Ajoutez des coasters à votre Top Coasters.'
+    bucket:
+        title: 'Bucket List'
+        subtitle: 'Les coasters que vous voulez rider.'
+        view: 'Voir'
+        edit: 'Modifier'
+        start: 'Commencer votre Bucket List'
+        start_cta: 'Notez les coasters que vous voulez essayer.'
+    custom:
+        title: 'Listes perso'
+        subtitle: 'Listes thématiques que vous créez.'
+        new: 'Nouvelle liste perso'
+        empty_title: 'Aucune liste perso pour le moment'
+        empty_description: 'Créez des listes thématiques — meilleurs woodies, meilleurs inversions, vos rides 2025…'
+        empty_cta: 'Créer votre première liste'
+
+likes:
+    like: 'Aimer'
+    unlike: 'Ne plus aimer'
+    count: '{count, plural, =0 {Aucun like} one {# like} other {# likes}}'
+    liked_label: 'Aimés'
 
 list:
-    title: 'Les derniers tops'
-    more: 'Voir plus'
-    updated: 'dernière mise à jour'
     by: 'par'
-    infotitle: 'Tous vos tops sont sur cette page !'
-    info: "Les tops sont le meilleur moyen de partager votre passion : dites-nous quel RMC est le meilleur de la planète, les pires kiddies du Texas, ou pourquoi pas les meilleurs coasters aquatiques avec un LIM ! C'est vous qui décidez !"
-    create_first: 'Créer mon premier Top Coasters'
-    create: 'Créer un top personnalisé'
 
-title: 'Mes Top Coasters'
+user:
+    lists_count: '{count, plural, =0 {Aucune liste} one {# liste} other {# listes}}'
+
 update: 'Modifier'
-update_details: 'Changer le nom'
 delete: 'Supprimer'
-delete_confirmation: 'Supprimer ?'
-find: 'Trouver un coaster...'
+delete_confirmation: 'Supprimer cette liste ?'
 
 search:
-    placeholder: 'Rechercher un coaster à ajouter...'
+    placeholder: 'Rechercher un coaster à ajouter…'
     no_results: 'Aucun coaster trouvé'
+    no_results_for_query: 'Aucune attraction pour « {query} »'
     already_in_list: 'Déjà dans votre liste'
 
-help:
-    title: 'Comment utiliser votre Top List'
-    search: 'Recherchez des coasters à ajouter à votre liste'
-    reorder: 'Appuyez longuement sur le numéro de position, puis faites glisser pour réorganiser'
-    actions: 'Utilisez le menu pour déplacer ou supprimer rapidement des coasters'
-    autosave: 'Les modifications sont enregistrées automatiquement'
-
 actions:
-    move_to_top: 'Déplacer en haut'
-    move_to_bottom: 'Déplacer en bas'
-    move_to_position: 'Déplacer à la position...'
-    remove: 'Supprimer'
-    position_prompt: 'Entrez la position (1-{max}) :'
+    remove: 'Retirer'
 
 save_status:
-    saving: 'Enregistrement...'
+    saving: 'Enregistrement…'
     saved: 'Enregistré'
-    error: "Erreur d'enregistrement. Nouvelle tentative..."
-
-errors:
-    save_failed: "Échec de l'enregistrement des modifications. Veuillez réessayer."
-    invalid_position: 'Position invalide. Veuillez entrer un nombre entre 1 et {max}.'
-    add_failed: "Échec de l'ajout du coaster. Veuillez réessayer."
-    duplicate: 'Ce coaster est déjà dans votre liste.'
+    error: 'Échec — nouvelle tentative'

@@ -9,8 +9,8 @@ use App\Entity\LikedImage;
 use App\Entity\User;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Repository\TopLikeRepository;
 use App\Repository\TopRepository;
-use App\Repository\UserRepository;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -29,20 +29,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[Route(path: '/users')]
 class UserController extends BaseController
 {
-    /** List all users. */
-    #[Route(path: '/{page}', name: 'user_list', requirements: ['page' => '\d+'], methods: ['GET'])]
-    public function listAction(UserRepository $userRepository, PaginatorInterface $paginator, int $page = 1): Response
-    {
-        return $this->render(
-            'User/list.html.twig',
-            ['users' => $paginator->paginate(
-                $userRepository->getAllUsersWithTotalRatingsQuery(),
-                $page,
-                21
-            )]
-        );
-    }
-
     /** Show all user's ratings. */
     #[Route(path: '/{id}/ratings/{page}', name: 'user_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listRatingsAction(
@@ -61,7 +47,7 @@ class UserController extends BaseController
                 $page,
                 30,
                 [
-                    'defaultSortFieldName' => 'r.riddenAt',
+                    'defaultSortFieldName' => 'r.firstRiddenAt',
                     'defaultSortDirection' => 'desc',
                 ]
             );
@@ -114,19 +100,47 @@ class UserController extends BaseController
         );
     }
 
-    /** Show all user's top. */
+    /** Show all of a user's lists, split into Top Coasters / Bucket List / Custom Lists. */
     #[Route(path: '/{id}/tops', name: 'user_tops', methods: ['GET'])]
-    public function listTops(User $user, TopRepository $topRepository): Response
+    public function listTops(User $user, TopRepository $topRepository, TopLikeRepository $likeRepository): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
         }
 
+        $tops = $topRepository->findAllByUser($user);
+        $isOwnProfile = $this->getUser() === $user;
+
+        $topCoasters = null;
+        $bucketList = null;
+        $customLists = [];
+
+        foreach ($tops as $top) {
+            if ($top->isRanking()) {
+                $topCoasters = $top;
+            } elseif ($top->isBucket()) {
+                $bucketList = $top;
+            } else {
+                // Hide private custom lists from non-owners.
+                if (!$isOwnProfile && !$top->isPublic()) {
+                    continue;
+                }
+                $customLists[] = $top;
+            }
+        }
+
+        $currentUser = $this->getUser();
+        $likedIds = $currentUser instanceof User ? $likeRepository->findLikedTopIds($currentUser) : [];
+
         return $this->render(
             'User/tops.html.twig',
             [
-                'tops' => $topRepository->findAllByUser($user),
                 'user' => $user,
+                'isOwnProfile' => $isOwnProfile,
+                'topCoasters' => $topCoasters,
+                'bucketList' => $bucketList,
+                'customLists' => $customLists,
+                'likedIds' => $likedIds,
             ]
         );
     }
@@ -174,7 +188,7 @@ class UserController extends BaseController
 
     /** Display a user. */
     #[Route(path: '/{slug}', name: 'user_show', options: ['expose' => true], methods: ['GET'])]
-    public function showAction(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, StatService $statService, ImageRepository $imageRepository): Response
+    public function showAction(#[MapEntity(mapping: ['slug' => 'slug'])] User $user, StatService $statService, ImageRepository $imageRepository, RiddenCoasterRepository $riddenCoasterRepository): Response
     {
         if (!$user->isEnabled()) {
             throw new NotFoundHttpException();
@@ -184,8 +198,9 @@ class UserController extends BaseController
             'User/show.html.twig',
             [
                 'user' => $user,
-                'stats' => $statService->getUserStats($user),
+                'stats' => $statService->getProfileStats($user),
                 'images_counter' => $imageRepository->countUserEnabledImages($user),
+                'recentActivity' => $riddenCoasterRepository->findRecentActivity($user, 6),
             ]
         );
     }

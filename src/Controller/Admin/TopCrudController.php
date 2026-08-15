@@ -10,7 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -40,7 +40,7 @@ class TopCrudController extends AbstractCrudController
     {
         return $filters
             ->add(EntityFilter::new('user')->autocomplete())
-            ->add('main')
+            ->add('type')
             ->add('updatedAt');
     }
 
@@ -55,7 +55,11 @@ class TopCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
             AssociationField::new('user')->autocomplete(),
-            BooleanField::new('main'),
+            ChoiceField::new('type')->setChoices([
+                'Ranking' => Top::TYPE_RANKING,
+                'Bucket' => Top::TYPE_BUCKET,
+                'Custom' => Top::TYPE_CUSTOM,
+            ]),
             AssociationField::new('topCoasters')->onlyOnIndex(),
             DateTimeField::new('createdAt')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
             DateTimeField::new('updatedAt')->hideWhenCreating()->setFormTypeOption('disabled', 'disabled'),

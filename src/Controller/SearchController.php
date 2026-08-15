@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Repository\CoasterRepository;
 use App\Service\SearchService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,6 +15,44 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/search')]
 class SearchController extends AbstractController
 {
+    #[Route(path: '/nearby', name: 'search_nearby', methods: ['GET'])]
+    public function nearbyCoasters(Request $request, CoasterRepository $coasterRepository): JsonResponse
+    {
+        $lat = (float) $request->query->get('lat', '0');
+        $lng = (float) $request->query->get('lng', '0');
+
+        if (0.0 === $lat || 0.0 === $lng) {
+            return new JsonResponse([]);
+        }
+
+        $coasters = $coasterRepository->findNearbyCoasters($lat, $lng, 150, 5);
+
+        $result = array_map(static fn (array $c): array => [
+            'id' => $c['id'],
+            'name' => $c['name'],
+            'slug' => $c['slug'],
+            'image' => $c['mainImage'],
+            'subtitle' => $c['parkName'],
+        ], $coasters);
+
+        $response = new JsonResponse($result);
+        $response->setPublic();
+        $response->setMaxAge(300);
+
+        return $response;
+    }
+
+    #[Route(path: '/recent', name: 'search_recent', methods: ['GET'])]
+    public function recentCoasters(SearchService $searchService): JsonResponse
+    {
+        $names = $searchService->searchRecent();
+        $response = new JsonResponse($names);
+        $response->setPublic();
+        $response->setMaxAge(3600);
+
+        return $response;
+    }
+
     /** Modern API search endpoint for real-time search suggestions. */
     #[Route(path: '/api', name: 'api_search', methods: ['GET'])]
     public function apiSearch(
@@ -73,6 +112,12 @@ class SearchController extends AbstractController
     {
         $query = $request->query->get('query');
         $page = max(1, (int) $request->query->get('page', '1'));
+        $type = $request->query->get('type', 'all');
+
+        // Validate type filter
+        if (!\in_array($type, ['all', 'coaster', 'park', 'user'], true)) {
+            $type = 'all';
+        }
 
         // If no query or query too short, show empty search page
         if (empty($query) || \strlen($query) < 2) {
@@ -81,30 +126,36 @@ class SearchController extends AbstractController
                 'results' => null,
                 'pagination' => null,
                 'totalResults' => 0,
+                'countByType' => ['all' => 0, 'coaster' => 0, 'park' => 0, 'user' => 0],
+                'activeType' => $type,
             ]);
         }
 
         try {
-            // Get unified search results with pagination
-            $searchResults = $searchService->searchAllWithPagination($query, $page, 20);
+            $searchResults = $searchService->searchAllWithPagination($query, $page, 20, $type);
 
             return $this->render('Search/index.html.twig', [
                 'query' => $query,
                 'results' => $searchResults['results'],
                 'pagination' => $searchResults['pagination'],
                 'totalResults' => $searchResults['totalResults'],
+                'countByType' => $searchResults['countByType'],
                 'currentPage' => $page,
                 'hasMore' => $searchResults['hasMore'],
+                'activeType' => $type,
             ]);
         } catch (\Exception $e) {
-            // Log error and show empty results
-            error_log('Search error: '.$e->getMessage());
+            if ('dev' === $this->getParameter('kernel.environment')) {
+                throw $e;
+            }
 
             return $this->render('Search/index.html.twig', [
                 'query' => $query,
                 'results' => [],
                 'pagination' => null,
                 'totalResults' => 0,
+                'countByType' => ['all' => 0, 'coaster' => 0, 'park' => 0, 'user' => 0],
+                'activeType' => $type,
                 'error' => 'Search temporarily unavailable',
             ]);
         }

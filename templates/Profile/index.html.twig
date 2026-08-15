@@ -1,54 +1,37 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'profile.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
-        {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-      </div>
-    </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
-          <!-- stats -->
-          {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
-          <!-- stats -->
-          <!-- banner -->
-          <div class="panel">
-            <div class="panel-body">
-              <h4 class="content-group-lg">
-                {{ 'profile.banner.title'|trans }}
-              </h4>
-              <div id="my-banner" class="text-center content-group">
-                  {% include 'Profile/banner.html.twig' with {'user': user} only %}
-              </div>
-            </div>
-          </div>
-          <!-- banner -->
-          <!-- badges -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h3 class="panel-title">{{ 'profile.badge'|trans }}</h3>
-            </div>
-            <div class="panel-body">
-              <div class="row">
-                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
-                  <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
-                </div>
-                {% for badge in user.badges %}
-                  <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
-                    <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
-                  </div>
-                {% endfor %}
-              </div>
-            </div>
-          </div>
-          <!-- /badges -->
-        </div>
-      </div>
-    </div>
-  </div>
+    <twig:ProfileHero :user="user" :rank="stats.rank ?? null" :isOwnProfile="true" />
+
+    <twig:ProfileLinks :user="user" :images_counter="images_counter" :isOwnProfile="true" />
+
+    {% if stats|length > 0 %}
+      <twig:ProfileScore :score="stats.score" />
+      <twig:ProfileProgress :progress="stats.progress" :rank="stats.rank" :milestone="stats.milestone" />
+      <twig:ProfileRecords :records="stats.records" />
+      <twig:ProfileTaste :taste="stats.taste" />
+      <twig:ProfileMostRidden :taste="stats.taste" />
+      <twig:ProfileThisYear :thisYear="stats.this_year" />
+    {% else %}
+      <twig:EmptyState
+        icon="tabler:roller-coaster"
+        :title="'profile.empty.title'|trans"
+        :description="'profile.empty.description'|trans"
+        :action="{ url: path('profile_my_coasters', {'tab': 'all'}), text: 'profile.empty.action'|trans }" />
+    {% endif %}
+
+    {% if recentActivity|default([])|length > 0 %}
+      <section class="mb-6">
+        <twig:SectionHeading
+          icon="tabler:history"
+          iconColor="text-cc-blue-500"
+          title="{{ 'profile.activity.title'|trans }}"
+          seeAllUrl="{{ path('profile_my_coasters', {'tab': 'rated'}) }}"
+          seeAllLabel="{{ 'profile.activity.see_all'|trans }}" />
+        <twig:ProfileActivity :activity="recentActivity" />
+      </section>
+    {% endif %}
 {% endblock %}

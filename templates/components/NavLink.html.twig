@@ -1,0 +1,20 @@
+{#
+    NavLink — a sidebar/drawer navigation item with tokenized active/inactive styling.
+
+    <twig:NavLink :href="path('ranking_index')" icon="tabler:trophy"
+                  :label="'sidebar.ranking'|trans({}, 'navigation')"
+                  :active="currentRoute == 'ranking_index'" />
+    <twig:NavLink href="https://blog.example.com" icon="tabler:news" :label="..." external />
+#}
+{% props href, icon = null, label = '', active = false, external = false %}
+
+<a
+    href="{{ href }}"
+    {% if external %}target="_blank" rel="noopener"{% endif %}
+    class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-200 {{ active ? 'bg-cc-blue-50 text-cc-blue-700 dark:bg-cc-blue-900/30 dark:text-cc-blue-400' : 'text-content-secondary hover:bg-surface-muted hover:text-content' }}"
+    {% if active %}aria-current="page"{% endif %}
+>
+    {% if icon %}<twig:ux:icon :name="icon" class="mr-3 w-5 h-5 shrink-0" aria-hidden="true" />{% endif %}
+    <span class="truncate">{{ label }}</span>
+    {% if external %}<twig:ux:icon name="tabler:external-link" class="ml-auto w-4 h-4 opacity-50" aria-hidden="true" />{% endif %}
+</a>

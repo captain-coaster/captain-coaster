@@ -1,0 +1,48 @@
+{#
+  LikeButton — heart toggle + count for Custom Lists.
+  Hides itself for non-custom lists.
+
+  Props:
+    - top (required): Top entity
+    - liked: bool — initial state for the current user (default false)
+    - variant: 'compact' (icon-only on cards) | 'full' (icon + label, used near share button)
+#}
+{% props top, liked = false, variant = 'compact' %}
+
+{# Self-likes are not allowed — hide button for the list owner. #}
+{% set isOwner = app.user and app.user.id == top.user.id %}
+{% if top.isCustom and not isOwner %}
+  {% set base = 'inline-flex items-center gap-1 rounded-full transition-colors' %}
+  {% set sizing = variant == 'full' ? 'px-3 py-2 text-sm' : 'px-2 py-1 text-xs' %}
+  {% set iconSize = variant == 'full' ? 'w-4 h-4' : 'w-3.5 h-3.5' %}
+
+  {% if is_granted('ROLE_USER') %}
+    <button type="button"
+            data-controller="toggle-action"
+            data-toggle-action-url-value="{{ path('top_like', {'id': top.id}) }}"
+            data-toggle-action-token-value="{{ csrf_token('top_like' ~ top.id) }}"
+            data-toggle-action-active-value="{{ liked ? 'true' : 'false' }}"
+            data-toggle-action-method-value="POST"
+            data-toggle-action-optimistic-value="true"
+            data-action="click->toggle-action#toggle"
+            class="{{ base }} {{ sizing }} data-[active=true]:bg-red-100 data-[active=true]:text-red-600 data-[active=true]:dark:bg-red-900/30 data-[active=true]:dark:text-red-400 data-[active=true]:hover:bg-red-200 data-[active=true]:dark:hover:bg-red-900/50 data-[active=false]:bg-surface-muted data-[active=false]:text-content-tertiary data-[active=false]:hover:bg-neutral-200 data-[active=false]:dark:hover:bg-neutral-700"
+            aria-pressed="{{ liked ? 'true' : 'false' }}"
+            aria-label="{{ (liked ? 'likes.unlike' : 'likes.like')|trans({}, 'top') }}">
+      <span data-when="on" class="{{ liked ? '' : 'hidden' }}">
+        {{ ux_icon('tabler:heart-filled', {'class': iconSize, 'aria-hidden': 'true'}) }}
+      </span>
+      <span data-when="off" class="{{ liked ? 'hidden' : '' }}">
+        {{ ux_icon('tabler:heart', {'class': iconSize, 'aria-hidden': 'true'}) }}
+      </span>
+      <span data-toggle-action-target="count" class="tabular-nums font-semibold">{{ top.likesCount }}</span>
+    </button>
+  {% else %}
+    {# Guests: read-only counter, link to login on click #}
+    <a href="{{ path('login') }}"
+       class="{{ base }} {{ sizing }} bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700"
+       aria-label="{{ 'likes.like'|trans({}, 'top') }}">
+      {{ ux_icon('tabler:heart', {'class': iconSize, 'aria-hidden': 'true'}) }}
+      <span class="tabular-nums font-semibold">{{ top.likesCount }}</span>
+    </a>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,35 @@
+{#
+  ProfileTaste — how the user rates: average rating + mood + rating distribution.
+
+  Props:
+    - taste (required): stats.taste array from StatService::getProfileStats()
+#}
+{% props taste %}
+
+{% set avg = taste.average_rating %}
+{% set mood = avg is null ? null : (avg >= 3.5 ? 'generous' : (avg >= 2.5 ? 'balanced' : 'critical')) %}
+
+{% if avg is not null %}
+  <section class="mb-6">
+    <twig:SectionHeading icon="tabler:chart-pie" iconColor="text-cc-blue-500" title="{{ 'profile.taste.title'|trans }}" />
+
+    <div class="bg-surface rounded-2xl border border-line p-4">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-3xl font-bold text-content tabular-nums">{{ avg }}</span>
+          <span class="text-sm text-content-muted">/ 5</span>
+        </div>
+        {% if mood %}
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-surface-muted text-content-secondary">
+            {{ ux_icon('tabler:mood-smile', {'class': 'w-3.5 h-3.5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+            {{ ('profile.taste.mood.' ~ mood)|trans }}
+          </span>
+        {% endif %}
+      </div>
+      {% if taste.distribution|length > 0 %}
+        <twig:RatingDistribution :countRatings="taste.distribution" />
+      {% endif %}
+      <p class="text-[11px] text-content-muted mt-2">{{ 'profile.taste.based_on'|trans({'count': taste.rated_count}) }}</p>
+    </div>
+  </section>
+{% endif %}

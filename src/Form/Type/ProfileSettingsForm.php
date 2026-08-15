@@ -147,11 +147,6 @@ class ProfileSettingsForm extends AbstractType
             'label' => 'profile.settings.preferences.displayReviewsInAllLanguages.label',
         ]);
 
-        $builder->add('addTodayDateWhenRating', CheckboxType::class, [
-            'required' => false,
-            'label' => 'profile.settings.preferences.addTodayDateWhenRating.label',
-        ]);
-
         // Advanced section - only show API key if user has one
         if ($user->hasApiKey()) {
             $builder->add('apiKey', TextType::class, [

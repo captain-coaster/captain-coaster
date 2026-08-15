@@ -1,62 +1,139 @@
-# Top List translations - English
+# Lists translations - English
+
+module:
+    lists: 'Lists'
+    my_lists: 'My Lists'
+    explore: 'Explore Lists'
+
+type:
+    ranking: 'Top Coasters'
+    bucket: 'Bucket List'
+    custom: 'Custom List'
+    custom_plural: 'Custom Lists'
+
+type_short:
+    ranking: 'Top'
+    bucket: 'Bucket'
+    custom: 'Custom'
 
 new:
-    title: 'Create a new top'
+    title: 'Create a custom list'
+    subtitle: 'Give it a name. You can add coasters next.'
     form:
-        name: 'Name of your top:'
-        type: 'Is it a Top or a Flop?'
-        flop: 'Flop (lower is better)'
-        top: 'Top (higher is better)'
-        submit: 'Create new top'
+        name: 'Name'
+        submit: 'Create list'
+    back: 'Back'
 
-editDetails:
-    title: 'Update a top'
-    form:
-        submit: 'Update the top'
+explore:
+    title: 'Explore Lists'
+    subtitle: 'Browse Top Coasters, Bucket Lists, and Custom Lists from the community.'
+    create: 'New list'
+    filter:
+        all: 'All'
+        top_coasters: 'Top Coasters'
+        buckets: 'Bucket Lists'
+        custom: 'Custom'
+    search:
+        placeholder: 'Search lists or owners…'
+        clear: 'Clear'
+    empty:
+        title: 'No lists found'
+        description: 'Try a different filter or search term.'
+        clear: 'Clear filters'
+
+show:
+    back: 'Back to Lists'
+    by: 'by'
+    more: '{count, plural, one {# more coaster} other {# more coasters}}'
+    coasters: '{count, plural, one {# coaster} other {# coasters}}'
+    feeds_rankings:
+        label: 'Feeds the global ranking'
+        tooltip: 'Ratings on coasters in your Top Coasters list contribute to the world ranking.'
+    private:
+        label: 'Private'
+    empty:
+        title: 'This list is empty'
+        description: 'Add coasters to get started.'
+    share:
+        button: 'Share'
+        copy: 'Copy link'
+        copied: 'Link copied'
+        title: '{name} on Captain Coaster'
+
+editor:
+    done: 'Done'
+    rename: 'Rename list'
+    rename_save: 'Save'
+    visibility:
+        public: 'Public'
+        private: 'Private'
+        title: 'Visibility'
+    cover:
+        choose: 'Choose cover'
+        none: 'No cover'
+        title: 'Cover image'
+    onboarding:
+        title: 'Add your first coaster'
+        description: 'Use the search above. Drag to reorder. Tap × to remove. Changes save automatically.'
+    actions:
+        move_to_top: 'Move to top'
+        move_to_bottom: 'Move to bottom'
+        move_to_position: 'Move to position…'
+        move_to_position_prompt: 'Enter position (1-{max})'
+        invalid_position: 'Invalid position'
+        remove: 'Remove'
+        more: 'More actions'
+
+my_lists:
+    title: 'My Lists'
+    top_coasters:
+        title: 'Top Coasters'
+        subtitle: 'Your ranked favourites — these ratings shape the global ranking.'
+        view: 'View'
+        edit: 'Edit'
+        start: 'Start your Top Coasters'
+        start_cta: 'Add coasters to your Top Coasters list.'
+    bucket:
+        title: 'Bucket List'
+        subtitle: 'Coasters you want to ride.'
+        view: 'View'
+        edit: 'Edit'
+        start: 'Start your Bucket List'
+        start_cta: 'Save coasters you want to ride one day.'
+    custom:
+        title: 'Custom Lists'
+        subtitle: 'Themed lists you create.'
+        new: 'New Custom List'
+        empty_title: 'No custom lists yet'
+        empty_description: 'Build themed lists — best wooden, best inversions, your 2025 rides…'
+        empty_cta: 'Create your first list'
+
+likes:
+    like: 'Like'
+    unlike: 'Unlike'
+    count: '{count, plural, =0 {No likes yet} one {# like} other {# likes}}'
+    liked_label: 'Liked'
 
 list:
-    title: 'The latest tops'
-    more: 'See more'
-    updated: 'last updated'
     by: 'by'
-    infotitle: 'All your tops are on this page!'
-    info: "Tops are the best way to share your passion: tell us which RMC is the best on the Planet, the worst kiddies in Texas, or why not the best water coasters with a LIM! It's up to you!"
-    create_first: 'Create my first Top Coasters'
-    create: 'Create a custom top'
 
-title: 'My Top Coasters'
-update: 'Update'
-update_details: 'Change name'
+user:
+    lists_count: '{count, plural, =0 {No lists yet} one {# list} other {# lists}}'
+
+update: 'Edit'
 delete: 'Delete'
-delete_confirmation: 'Delete?'
-find: 'Find a coaster...'
+delete_confirmation: 'Delete this list?'
 
 search:
-    placeholder: 'Search for a coaster to add...'
+    placeholder: 'Search for a coaster to add…'
     no_results: 'No coasters found'
+    no_results_for_query: 'No coasters found for "{query}"'
     already_in_list: 'Already in your list'
 
-help:
-    title: 'How to use your Top List'
-    search: 'Search for coasters to add to your list'
-    reorder: 'Tap and hold the position number, then drag to reorder'
-    actions: 'Use the menu to quickly move or remove coasters'
-    autosave: 'Changes are saved automatically'
-
 actions:
-    move_to_top: 'Move to top'
-    move_to_bottom: 'Move to bottom'
-    move_to_position: 'Move to position...'
     remove: 'Remove'
-    position_prompt: 'Enter position (1-{max}):'
 
 save_status:
-    saving: 'Saving...'
+    saving: 'Saving…'
     saved: 'Saved'
-    error: 'Error saving. Retrying...'
-
-errors:
-    save_failed: 'Failed to save changes. Please try again.'
-    invalid_position: 'Invalid position. Please enter a number between 1 and {max}.'
-    add_failed: 'Failed to add coaster. Please try again.'
-    duplicate: 'This coaster is already in your list.'
+    error: 'Save failed — retrying'

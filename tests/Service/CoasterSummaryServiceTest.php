@@ -324,7 +324,7 @@ class CoasterSummaryServiceTest extends TestCase
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster($coaster);
         $riddenCoaster->setUser($user);
-        $riddenCoaster->setValue($rating);
+        $riddenCoaster->setRating($rating);
         $riddenCoaster->setReview($review);
         $riddenCoaster->setLanguage('en');
 

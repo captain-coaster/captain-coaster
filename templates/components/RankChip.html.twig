@@ -1,0 +1,26 @@
+{#
+  RankChip — a proud, gradient tier badge derived from the Captain Score.
+  Reusable site-wide (navbar, profile, …).
+
+  Props:
+    - rank (required): tier key (rookie | enthusiast | rider | veteran | expert | legend)
+    - size: 'sm' (default) | 'md'
+#}
+{% props rank, size = 'sm' %}
+
+{% set tiers = {
+  rookie:     {grad: 'from-neutral-400 to-neutral-500',  icon: 'tabler:windmill'},
+  enthusiast: {grad: 'from-green-400 to-green-500',       icon: 'tabler:flame'},
+  rider:      {grad: 'from-cc-blue-400 to-cc-blue-500',   icon: 'tabler:roller-coaster'},
+  veteran:    {grad: 'from-purple-400 to-purple-500',     icon: 'tabler:star-filled'},
+  expert:     {grad: 'from-amber-400 to-amber-500',       icon: 'tabler:medal'},
+  legend:     {grad: 'from-cc-warm-400 to-cc-warm-600',   icon: 'tabler:crown'},
+} %}
+{% set s = tiers[rank] ?? tiers.rookie %}
+{% set pad = size == 'md' ? 'px-3 py-1 text-sm' : 'px-2 py-0.5 text-xs' %}
+{% set ic = size == 'md' ? 'w-4 h-4' : 'w-3 h-3' %}
+
+<span class="inline-flex items-center gap-1.5 rounded-full font-bold text-white bg-gradient-to-r {{ s.grad }} shadow-sm {{ pad }}">
+  {{ ux_icon(s.icon, {'class': ic, 'aria-hidden': 'true'}) }}
+  {{ ('profile.rank.' ~ rank)|trans }}
+</span>

@@ -1,0 +1,26 @@
+{#
+    UserZone — a slim identity card pinned at the bottom of the sidebar / drawer.
+
+    Authenticated only: avatar + name + ridden count (coaster icon + number), linking to the
+    profile. Personal actions live in the top-bar avatar menu; login lives in the navbar — so
+    there is nothing to render for anonymous visitors.
+#}
+{% set currentRoute = app.request.attributes.get('_route') %}
+
+{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+    {% set user = app.user %}
+    <a
+        href="{{ path('profile') }}"
+        class="flex items-center gap-3 p-3 rounded-xl bg-surface-muted border transition-colors duration-200 {{ currentRoute == 'profile' ? 'border-cc-blue-300 dark:border-cc-blue-700' : 'border-line-strong hover:border-cc-blue-300 dark:hover:border-cc-blue-700' }}"
+    >
+        <twig:RankAvatar :user="user" size="md" />
+        <span class="min-w-0 flex-1">
+            <span class="block text-sm font-semibold text-content truncate">{{ user.displayName }}</span>
+            <span class="mt-0.5 inline-flex items-center gap-1 text-xs text-content-muted" aria-label="{{ 'userzone.ridden'|trans({count: user_ridden_count(user)}, 'navigation') }}">
+                {{ ux_icon('tabler:roller-coaster', {'class': 'w-3.5 h-3.5 shrink-0', 'aria-hidden': 'true'}) }}
+                {{ user_ridden_count(user) }}
+            </span>
+        </span>
+        {{ ux_icon('tabler:chevron-right', {'class': 'w-4 h-4 text-content-muted shrink-0', 'aria-hidden': 'true'}) }}
+    </a>
+{% endif %}

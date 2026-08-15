@@ -1,0 +1,30 @@
+{#
+  ProfileHero — identity: avatar with rank ring, name, rank badge, home park.
+  Features a subtle gradient backdrop at the top for visual depth.
+
+  Props:
+    - user (required): User entity
+    - rank: rank array from StatService::computeRank() or null
+    - isOwnProfile (default false)
+#}
+{% props user, rank = null, isOwnProfile = false %}
+
+<section class="text-center mb-6 pt-6">
+  <div class="mb-3 inline-block">
+    <twig:RankAvatar :user="user" size="lg" :rank="rank ? rank.key : null" />
+  </div>
+
+  <h1 class="text-2xl font-bold text-content mb-2">{{ user.displayName }}</h1>
+
+  {% if rank %}
+    <div class="mb-1.5">
+      <twig:RankChip :rank="rank.key" size="md" />
+    </div>
+  {% endif %}
+  {% if user.homePark %}
+    <div class="inline-flex items-center gap-1 text-xs text-content-muted">
+      {{ ux_icon('tabler:map-pin', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+      {{ user.homePark.name }}
+    </div>
+  {% endif %}
+</section>

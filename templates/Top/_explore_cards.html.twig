@@ -1,0 +1,3 @@
+{% for top in tops %}
+  <twig:TopCard :top="top" :liked="top.id in (likedIds ?? [])" />
+{% endfor %}

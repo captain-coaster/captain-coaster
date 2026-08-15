@@ -7,15 +7,14 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\Top;
 use App\Entity\TopCoaster;
+use App\Entity\User;
 use App\Form\Type\TopDetailsType;
-use App\Form\Type\TopType;
+use App\Repository\TopLikeRepository;
 use App\Repository\TopRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\Form\Form;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,32 +27,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route(path: '/tops')]
 class TopController extends BaseController
 {
-    /** Create a new top. */
+    /** Create a new custom list. */
     #[Route(path: '/new', name: 'top_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function newAction(Request $request, EntityManagerInterface $em, TopRepository $topRepository): Response
+    public function newAction(Request $request, EntityManagerInterface $em): Response
     {
         $top = new Top();
-        $mainTop = $topRepository->findOneBy(['user' => $this->getUser(), 'main' => true]);
+        $top->setType(Top::TYPE_CUSTOM);
 
-        // Very first top, redirect to main top edit
-        if (!$mainTop instanceof Top) {
-            $top->setName('Top Coasters');
-            $top->setMain(true);
-            $top->setUser($this->getUser());
-
-            $em->persist($top);
-            $em->flush();
-
-            return $this->redirectToRoute('top_edit', ['id' => $top->getId()]);
-        }
-
-        // Else go to form to create a custom top
         $form = $this->createForm(TopDetailsType::class, $top);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $top->setMain(false);
             $top->setUser($this->getUser());
 
             $em->persist($top);
@@ -62,22 +47,73 @@ class TopController extends BaseController
             return $this->redirectToRoute('top_edit', ['id' => $top->getId()]);
         }
 
-        return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => true]);
+        return $this->render('Top/new.html.twig', ['form' => $form]);
     }
 
-    /** Displays all tops. */
-    #[Route(path: '/', name: 'top_list', methods: ['GET'])]
-    public function list(PaginatorInterface $paginator, EntityManagerInterface $em, #[MapQueryParameter] int $page = 1): Response
-    {
+    /**
+     * Explore public lists (Top Coasters + Bucket Lists + Custom Lists).
+     * Returns a card fragment on XHR for infinite scroll.
+     */
+    #[Route(path: '/', name: 'top_explore', methods: ['GET'])]
+    public function explore(
+        Request $request,
+        PaginatorInterface $paginator,
+        EntityManagerInterface $em,
+        TopLikeRepository $likeRepository,
+        #[MapQueryParameter]
+        int $page = 1,
+        #[MapQueryParameter]
+        ?string $type = null,
+        #[MapQueryParameter]
+        ?string $q = null,
+    ): Response {
+        $type = $this->normaliseExploreType($type);
+        $q = null !== $q ? trim($q) : null;
+        if ('' === $q) {
+            $q = null;
+        }
+
+        /** @var TopRepository $repo */
+        $repo = $em->getRepository(Top::class);
+
         try {
-            $pagination = $paginator->paginate($em->getRepository(Top::class)->findAllTops(), $page, 9, ['wrap-queries' => true]);
+            $pagination = $paginator->paginate($repo->findPublicTops($type, $q), $page, 12, ['wrap-queries' => true]);
         } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
 
-        return $this->render('Top/list.html.twig', [
+        $likedIds = ($this->getUser() instanceof User) ? $likeRepository->findLikedTopIds($this->getUser()) : [];
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('Top/_explore_cards.html.twig', [
+                'tops' => $pagination,
+                'type' => $type,
+                'q' => $q,
+                'likedIds' => $likedIds,
+            ]);
+        }
+
+        return $this->render('Top/explore.html.twig', [
             'tops' => $pagination,
+            'type' => $type,
+            'q' => $q,
+            'counts' => $repo->countPublicTopsByType(),
+            'likedIds' => $likedIds,
         ]);
+    }
+
+    private function normaliseExploreType(?string $type): ?string
+    {
+        if (null === $type || '' === $type || 'all' === $type) {
+            return null;
+        }
+
+        return match ($type) {
+            'top_coaster', Top::TYPE_RANKING => Top::TYPE_RANKING,
+            'bucket', Top::TYPE_BUCKET => Top::TYPE_BUCKET,
+            'custom', Top::TYPE_CUSTOM => Top::TYPE_CUSTOM,
+            default => null,
+        };
     }
 
     /**
@@ -87,83 +123,88 @@ class TopController extends BaseController
      * @throws NonUniqueResultException
      */
     #[Route(path: '/{id}', name: 'top_show', methods: ['GET'])]
-    public function show(Top $top, EntityManagerInterface $em): Response
+    #[IsGranted('view', 'top', statusCode: 403)]
+    public function show(Top $top, EntityManagerInterface $em, TopLikeRepository $likeRepository): Response
     {
+        $userHasLiked = false;
+        if ($top->isCustom() && $this->getUser() instanceof User) {
+            $userHasLiked = null !== $likeRepository->findOneByUserAndTop($this->getUser(), $top);
+        }
+
         return $this->render('Top/show.html.twig', [
             'top' => $em->getRepository(Top::class)->getTopWithData($top),
+            'userHasLiked' => $userHasLiked,
         ]);
     }
 
     /**
-     * Edits a top.
+     * Edits a top. All persistence happens through the auto-save endpoint.
      *
-     * @throws \Exception
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    #[Route(path: '/{id}/edit', name: 'top_edit', methods: ['GET', 'POST'])]
+    #[Route(path: '/{id}/edit', name: 'top_edit', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     #[IsGranted('edit', 'top', statusCode: 403)]
-    public function edit(Request $request, Top $top, EntityManagerInterface $em): Response
+    public function edit(Top $top, EntityManagerInterface $em): Response
     {
-        $originalCoasters = new ArrayCollection();
-        foreach ($top->getTopCoasters() as $coaster) {
-            $originalCoasters->add($coaster);
-        }
-
-        /** @var Form $form */
-        $form = $this->createForm(TopType::class, $top);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($originalCoasters as $coaster) {
-                if (!$top->getTopCoasters()->contains($coaster)) {
-                    $em->remove($coaster);
-                }
-            }
-
-            // need to update manually because only TopCoaster changes
-            $top->setUpdatedAt(new \DateTime());
-            $em->persist($top);
-            $em->flush();
-
-            return $this->redirectToRoute('top_show', ['id' => $top->getId()]);
-        }
-
         return $this->render('Top/edit.html.twig', [
-            'form' => $form,
-            'topName' => $top->getName(),
+            'top' => $em->getRepository(Top::class)->getTopWithData($top),
         ]);
     }
 
-    /** Edits details of a top (name, type). */
-    #[Route(path: '/{id}/edit-details', name: 'top_edit_details', methods: ['GET', 'POST'])]
+    /** Toggle a custom list's public/private flag. */
+    #[Route(path: '/{id}/visibility', name: 'top_visibility', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     #[IsGranted('edit-details', 'top', statusCode: 403)]
-    public function editDetails(Request $request, Top $top, EntityManagerInterface $em): Response
+    public function visibility(Request $request, Top $top, EntityManagerInterface $em): RedirectResponse
     {
-        /** @var Form $form */
-        $form = $this->createForm(TopDetailsType::class, $top);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($top);
-            $em->flush();
-
-            return $this->redirectToRoute('top_show', ['id' => $top->getId()]);
+        if (!$this->isCsrfTokenValid('top_visibility'.$top->getId(), (string) $request->request->get('_token'))) {
+            throw new BadRequestHttpException('Invalid CSRF token');
         }
 
-        return $this->render('Top/edit-details.html.twig', ['form' => $form, 'create' => false]);
+        $top->setIsPublic(!$top->isPublic());
+        $top->setUpdatedAt(new \DateTime());
+        $em->flush();
+
+        return $this->redirectToRoute('top_edit', ['id' => $top->getId()]);
+    }
+
+    /** Rename a custom list (inline from the editor). */
+    #[Route(path: '/{id}/rename', name: 'top_rename', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    #[IsGranted('edit-details', 'top', statusCode: 403)]
+    public function rename(Request $request, Top $top, EntityManagerInterface $em): Response
+    {
+        if (!$this->isCsrfTokenValid('top_rename'.$top->getId(), (string) $request->request->get('_token'))) {
+            throw new BadRequestHttpException('Invalid CSRF token');
+        }
+
+        $name = trim($request->request->getString('name'));
+        if ('' !== $name) {
+            $top->setName($name);
+            $top->setUpdatedAt(new \DateTime());
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('top_edit', ['id' => $top->getId()]);
     }
 
     /** Deletes a top. */
-    #[Route(path: '/{id}/delete', name: 'top_delete', methods: ['GET'])]
+    #[Route(path: '/{id}/delete', name: 'top_delete', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     #[IsGranted('delete', 'top', statusCode: 403)]
-    public function delete(Top $top, EntityManagerInterface $em): RedirectResponse
+    public function delete(Request $request, Top $top, EntityManagerInterface $em): RedirectResponse
     {
+        if (!$this->isCsrfTokenValid('top_delete'.$top->getId(), (string) $request->request->get('_token'))) {
+            throw new BadRequestHttpException('Invalid CSRF token');
+        }
+
+        $ownerId = $top->getUser()->getId();
         $em->remove($top);
         $em->flush();
 
-        return $this->redirectToRoute('top_list');
+        return $this->redirectToRoute('user_tops', ['id' => $ownerId]);
     }
 
     /** Ajax route for autocomplete search (search "q" parameter). */

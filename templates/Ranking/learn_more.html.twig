@@ -1,0 +1,104 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'title'|trans([], 'learnMoreRanking') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <twig:PageHeader
+    title="{{ title }}"
+    backUrl="{{ path('ranking_index') }}"
+    backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+  />
+
+  {# ── Le classement en chiffres ── #}
+  {% if ranking is defined %}
+    <section class="mb-10">
+      <h2 class="text-lg font-semibold text-content mb-4">
+        {{ ux_icon('tabler:chart-bar', {'class': 'w-5 h-5 text-cc-blue-500 inline-block mr-1.5 align-text-bottom', 'aria-hidden': 'true'}) }}
+        {{ 'coaster_ranking.info.in_numbers'|trans }}
+      </h2>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+        <div class="bg-surface rounded-2xl border border-line p-4">
+          <div class="text-xs text-content-muted mb-2 flex items-center gap-1.5">
+            {{ ux_icon('tabler:roller-coaster', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.info.coasters_ranked.long'|trans }}
+          </div>
+          <div class="text-2xl font-bold text-content">{{ ranking.rankedCoasterNumber|shortNum }}</div>
+          {% if previousRanking is defined and ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber > 0 %}
+            <div class="text-xs text-green-600 font-semibold mt-1">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</div>
+          {% endif %}
+        </div>
+
+        <div class="bg-surface rounded-2xl border border-line p-4">
+          <div class="text-xs text-content-muted mb-2 flex items-center gap-1.5">
+            {{ ux_icon('tabler:star', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.info.ratings'|trans }}
+          </div>
+          <div class="text-2xl font-bold text-content">{{ ranking.ratingNumber|shortNum }}</div>
+          {% if previousRanking is defined and ranking.ratingNumber - previousRanking.ratingNumber > 1000 %}
+            <div class="text-xs text-green-600 font-semibold mt-1">+{{ (ranking.ratingNumber - previousRanking.ratingNumber)|shortNum }}</div>
+          {% endif %}
+        </div>
+
+        <div class="bg-surface rounded-2xl border border-line p-4">
+          <div class="text-xs text-content-muted mb-2 flex items-center gap-1.5">
+            {{ ux_icon('tabler:users', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.info.users'|trans }}
+          </div>
+          <div class="text-2xl font-bold text-content">{{ ranking.userNumber|shortNum }}</div>
+          {% if previousRanking is defined and ranking.userNumber - previousRanking.userNumber > 0 %}
+            <div class="text-xs text-green-600 font-semibold mt-1">+{{ ranking.userNumber - previousRanking.userNumber }}</div>
+          {% endif %}
+        </div>
+
+        <div class="bg-surface rounded-2xl border border-line p-4">
+          <div class="text-xs text-content-muted mb-2 flex items-center gap-1.5">
+            {{ ux_icon('tabler:swords', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.info.comparisons.long'|trans }}
+          </div>
+          <div class="text-2xl font-bold text-content">{{ ranking.comparisonNumber|shortNum }}</div>
+          {% if previousRanking is defined and ranking.comparisonNumber - previousRanking.comparisonNumber > 1000 %}
+            <div class="text-xs text-green-600 font-semibold mt-1">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% set nextRankingDate = 'now'|date_modify('first day of next month midnight 1 minute') %}
+      <p class="text-xs text-content-muted flex items-center gap-1.5">
+        {{ ux_icon('tabler:clock', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
+      </p>
+    </section>
+  {% endif %}
+
+  {# ── En bref — tinted block ── #}
+  <section class="mb-8">
+    <h2 class="text-lg font-semibold text-content mb-4">
+      {{ ux_icon('tabler:info-circle', {'class': 'w-5 h-5 text-cc-blue-500 inline-block mr-1.5 align-text-bottom', 'aria-hidden': 'true'}) }}
+      {{ 'brief.title'|trans([], 'learnMoreRanking') }}
+    </h2>
+    <div class="rounded-2xl bg-cc-blue-50 dark:bg-cc-blue-900/10 ring-1 ring-cc-blue-100 dark:ring-cc-blue-900/30 p-5 sm:p-6">
+      <div class="prose prose-neutral dark:prose-invert prose-sm max-w-none">
+        {{ 'brief.text'|trans([], 'learnMoreRanking')|raw }}
+      </div>
+    </div>
+  </section>
+
+  {# ── Principes — plain prose ── #}
+  <section class="mb-10">
+    <h2 class="text-lg font-semibold text-content mb-4">
+      {{ ux_icon('tabler:scale', {'class': 'w-5 h-5 text-cc-warm-500 inline-block mr-1.5 align-text-bottom', 'aria-hidden': 'true'}) }}
+      {{ 'principles.title'|trans([], 'learnMoreRanking') }}
+    </h2>
+    <div class="prose prose-neutral dark:prose-invert prose-sm max-w-none">
+      {{ 'principles.text'|trans([], 'learnMoreRanking')|raw }}
+    </div>
+  </section>
+
+  {# ── Back link ── #}
+  <a href="{{ path('ranking_index') }}" class="inline-flex items-center gap-1.5 text-sm text-cc-blue-600 dark:text-cc-blue-400 font-medium hover:underline">
+    {{ ux_icon('tabler:arrow-left', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+    {{ 'coaster_ranking.title'|trans }}
+  </a>
+{% endblock %}

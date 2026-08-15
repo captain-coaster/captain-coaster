@@ -1,0 +1,59 @@
+{#
+  ProfileActivity — recent rides displayed consistently with the ProfileCoasterRow layout:
+  full-height flush-left thumbnail, coaster info, and rating on the right.
+
+  Props:
+    - activity (required): array of RiddenCoaster, most recent first
+#}
+{% props activity %}
+
+<div class="space-y-2">
+  {% for r in activity %}
+    {% set coaster = r.coaster %}
+    {% set rideDate = r.firstRiddenAt ?? r.updatedAt %}
+    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+       class="block bg-surface rounded-xl border border-line hover:border-line-strong transition-colors overflow-hidden">
+      <div class="flex items-stretch gap-3">
+
+        {# Thumbnail — full row height, flush left #}
+        <div class="shrink-0 self-stretch w-16">
+          {% if coaster.mainImage is not null %}
+            <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                 class="w-full h-full object-cover"
+                 alt="{{ coaster.name }}"
+                 loading="lazy">
+          {% else %}
+            <div class="w-full h-full bg-surface-muted flex items-center justify-center">
+              {{ ux_icon('tabler:roller-coaster', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+            </div>
+          {% endif %}
+        </div>
+
+        {# Coaster info #}
+        <div class="flex-1 min-w-0 py-2.5">
+          <div class="font-medium text-sm text-content truncate leading-snug">{{ coaster.name }}</div>
+          <div class="text-xs text-content-muted truncate mt-0.5">{{ coaster.park.name }}</div>
+          <div class="text-[10px] text-content-subtle mt-0.5 flex items-center gap-0.5">
+            {{ ux_icon('tabler:calendar', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+            {{ rideDate|format_datetime('short', 'none') }}
+          </div>
+        </div>
+
+        {# Rating — single star with number, or ridden check #}
+        <div class="shrink-0 self-center pr-3">
+          {% if r.rating %}
+            <div class="inline-flex items-center gap-0.5">
+              {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-400', 'aria-hidden': 'true'}) }}
+              <span class="text-sm font-semibold text-content-secondary tabular-nums">{{ r.rating }}</span>
+            </div>
+          {% else %}
+            <span class="inline-flex items-center gap-0.5 text-[11px] font-medium text-green-600 dark:text-green-400">
+              {{ ux_icon('tabler:check', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            </span>
+          {% endif %}
+        </div>
+
+      </div>
+    </a>
+  {% endfor %}
+</div>

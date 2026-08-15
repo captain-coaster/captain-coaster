@@ -1,12 +1,16 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'coaster_search.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
+{% block header %}
+  <meta name="description" content="{{ 'coaster_search.description'|trans }}"/>
+{% endblock %}
+
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-  {% include 'Includes/filter_sidebar.html.twig' with {
+  {% include 'partials/_filter_sidebar.html.twig' with {
     'filters': filters, 
     'filtersForm': filtersForm,
     'filterConfig': {
@@ -19,8 +23,24 @@
 {% endblock %}
 
 {% block body %}
-  <div id="search-result"></div>
-{% endblock %}
+  <twig:PageHeader
+    title="{{ 'coaster_search.title'|trans }}"
+    subtitle="{{ 'coaster_search.description'|trans }}"
+    icon="tabler:search"
+  />
 
-{% block javascripts %}
+  {# Results container - updated via AJAX on filter change #}
+  <div id="search-result">
+    {% include 'CoasterSearch/results.html.twig' with { coasters: coasters } only %}
+  </div>
+  
+  {# Mobile filter button - sticky at bottom #}
+  <div class="lg:hidden fixed bottom-4 right-4 z-40">
+    <button type="button"
+            class="flex items-center gap-2 px-4 py-3 bg-cc-blue-600 hover:bg-cc-blue-700 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2"
+            data-action="global#openFilterSidebar">
+      {{ ux_icon('tabler:adjustments-horizontal', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+      <span>{{ 'filters.title'|trans }}</span>
+    </button>
+  </div>
 {% endblock %}

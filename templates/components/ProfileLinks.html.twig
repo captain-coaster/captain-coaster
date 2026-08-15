@@ -1,0 +1,36 @@
+{#
+  ProfileLinks — slim, secondary navigation pills (reviews, tops, photos, map).
+  The primary "ratings" destination is surfaced contextually via the activity "see all" link.
+
+  Props:
+    - user (required): User entity
+    - images_counter (default 0)
+    - isOwnProfile (default false)
+#}
+{% props user, images_counter = 0, isOwnProfile = false %}
+
+{% set links = [] %}
+{% set links = links|merge([{ url: path('user_reviews', {'id': user.id}), icon: 'tabler:message-circle', label: isOwnProfile ? 'profile.menu.reviews'|trans : 'user_profile.reviews'|trans }]) %}
+{% if user.mainTop.id %}
+  {% set links = links|merge([{ url: path('top_show', {'id': user.mainTop.id}), icon: 'tabler:trophy', label: isOwnProfile ? 'profile.menu.main_top'|trans : 'user_profile.main_top'|trans }]) %}
+{% endif %}
+{% if isOwnProfile or user.tops|length > 1 %}
+  {% set links = links|merge([{ url: path('user_tops', {'id': user.id}), icon: 'tabler:list-numbers', label: isOwnProfile ? 'profile.menu.tops'|trans : 'user_profile.tops'|trans }]) %}
+{% endif %}
+{% if images_counter > 0 %}
+  {% set links = links|merge([{ url: path('user_pictures', {'id': user.id}), icon: 'tabler:camera', label: isOwnProfile ? 'profile.menu.photos'|trans : 'user_profile.pictures'|trans }]) %}
+{% endif %}
+{% set links = links|merge([{ url: path('map_user', {'id': user.id}), icon: 'tabler:map', label: isOwnProfile ? 'profile.menu.map'|trans : 'user_profile.map'|trans }]) %}
+{% if isOwnProfile %}
+  {% set links = links|merge([{ url: path('profile_settings'), icon: 'tabler:settings', label: 'profile.menu.settings'|trans }]) %}
+{% endif %}
+
+<div class="flex flex-wrap items-center justify-center gap-2 mb-6">
+  {% for link in links %}
+    <a href="{{ link.url }}"
+       class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm bg-surface-muted text-content-secondary hover:bg-surface-strong hover:text-content transition-colors">
+      {{ ux_icon(link.icon, {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      {{ link.label }}
+    </a>
+  {% endfor %}
+</div>

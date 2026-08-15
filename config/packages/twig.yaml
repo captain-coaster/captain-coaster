@@ -1,11 +1,11 @@
 twig:
-    form_themes: ["bootstrap_3_layout.html.twig"]
-    default_path: "%kernel.project_dir%/templates"
+    form_themes: ['form/tailwind_theme.html.twig']
+    default_path: '%kernel.project_dir%/templates'
     globals:
-        locales: "%app_locales_array%"
-        pictures_cdn: "%env(PICTURES_CDN)%"
+        locales: '%app_locales_array%'
+        pictures_cdn: '%env(PICTURES_CDN)%'
         units: '@App\Service\UnitsService'
-    file_name_pattern: "*.twig"
+    file_name_pattern: '*.twig'
 
 when@test:
     twig:

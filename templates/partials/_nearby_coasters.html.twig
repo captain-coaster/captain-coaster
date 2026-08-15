@@ -1,0 +1,36 @@
+{#
+  Nearby coasters partial — rendered server-side by the /api/nearby-coasters endpoint.
+  Consumed by the nearby-coasters Stimulus controller via innerHTML.
+
+  Parameters:
+    - coasters: array of coaster data from CoasterRepository::findNearbyCoasters()
+    - kmLabel: translated "km" string
+#}
+
+{% for coaster in coasters %}
+  <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+     class="group flex-none w-56 sm:w-auto sm:min-w-0 snap-start rounded-2xl overflow-hidden ring-1 ring-black/5 dark:ring-white/5 hover:ring-black/10 dark:hover:ring-white/10 bg-surface transition-all duration-300 block">
+    <div class="relative aspect-4/3 overflow-hidden">
+      {% if coaster.mainImage %}
+        <img src="{{ pictures_cdn }}/600x336/{{ coaster.mainImage }}"
+             alt="{{ coaster.name }}"
+             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+             loading="lazy">
+      {% else %}
+        <div class="w-full h-full bg-linear-to-br from-cc-blue-400 to-cc-blue-600"></div>
+      {% endif %}
+      <div class="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent"></div>
+      <twig:RankPill :coaster="coaster" class="absolute top-2 right-2 text-[10px]" />
+      <span class="absolute bottom-2 left-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-black/60 text-white backdrop-blur-sm">
+        {{ ux_icon('tabler:map-pin', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+        {{ coaster.distance }} {{ kmLabel }}
+      </span>
+    </div>
+    <div class="p-3">
+      <h3 class="font-semibold text-sm text-content truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+        {{ coaster.name }}
+      </h3>
+      <p class="text-xs text-content-muted truncate mt-0.5">{{ coaster.parkName }}</p>
+    </div>
+  </a>
+{% endfor %}

@@ -1,0 +1,87 @@
+{% set currentRoute = app.request.attributes.get('_route') %}
+
+{#
+  Navigation content shared between desktop sidebar and mobile drawer.
+  Order: primary nav → settings (language + theme) + user card, flowing
+  naturally rather than pinned to the bottom — on a short menu that leaves
+  a lot of leftover height, a trailing gap reads better than a big gap
+  wedged between two groups. A faint ambient glow fills that trailing
+  space so it looks designed rather than cut off.
+  Personal links and logout live in the top-bar avatar menu, not here.
+#}
+
+<div class="relative flex flex-col flex-1 min-h-0">
+  {# Ambient glow — fills whatever space is left below the content, doesn't push anything #}
+  <div class="pointer-events-none absolute inset-x-0 bottom-0 h-48 -z-10 bg-gradient-to-t from-cc-blue-500/[0.05] to-transparent" aria-hidden="true"></div>
+
+  {# Primary navigation #}
+  <div class="space-y-1">
+    <twig:NavLink :href="path('default_index')" icon="tabler:home" :label="'sidebar.index'|trans({}, 'navigation')" :active="currentRoute == 'default_index'" />
+    <twig:NavLink :href="path('ranking_index')" icon="tabler:trophy" :label="'sidebar.ranking'|trans({}, 'navigation')" :active="currentRoute == 'ranking_index'" />
+    <twig:NavLink :href="path('records_index')" icon="tabler:medal" :label="'sidebar.records'|trans({}, 'navigation')" :active="currentRoute == 'records_index'" />
+    <twig:NavLink :href="path('coaster_search_index')" icon="tabler:compass" :label="'sidebar.search'|trans({}, 'navigation')" :active="currentRoute == 'coaster_search_index'" />
+    <twig:NavLink :href="path('map_index')" icon="tabler:map-pin" :label="'sidebar.map'|trans({}, 'navigation')" :active="currentRoute == 'map_index'" />
+    <twig:NavLink :href="path('top_explore')" icon="tabler:list-numbers" :label="'sidebar.top'|trans({}, 'navigation')" :active="currentRoute == 'top_explore'" />
+    <twig:NavLink :href="path('review_list')" icon="tabler:message-2" :label="'sidebar.review'|trans({}, 'navigation')" :active="currentRoute == 'review_list'" />
+    <twig:NavLink href="https://blog.captaincoaster.com" icon="tabler:news" :label="'sidebar.blog'|trans({}, 'navigation')" external />
+  </div>
+
+  {# Settings + user card, directly below the nav links #}
+  <div class="pt-6 space-y-4">
+    {# Settings (Language + Theme) #}
+    <div class="space-y-1 border-t border-line-strong pt-4">
+      {# Language — inline locale pills (consistent with the footer) #}
+      {% if currentRoute %}
+        {% set route = app.request.attributes.get('_route') %}
+        {% set route_params = app.request.attributes.get('_route_params') %}
+        {% set params = route_params|merge(app.request.query.all) %}
+        <div class="flex items-center justify-between gap-2 px-3 py-2">
+          <span class="flex items-center text-sm font-medium text-content-secondary">
+            {{ ux_icon('tabler:language', {'class': 'w-5 h-5 shrink-0 md:mr-0 mr-3', 'aria-hidden': 'true'}) }}
+            <span class="md:hidden">{{ 'nav.language'|trans({}, 'navigation') }}</span>
+          </span>
+          <div class="flex items-center gap-0.5">
+            {% for locale in locales %}
+              <a
+                href="{{ path(route, params|merge({ _locale: locale })) }}"
+                class="px-2 py-1 rounded-md text-xs uppercase font-semibold transition-colors duration-200 {{ locale == app.request.locale ? 'bg-cc-blue-100 text-cc-blue-700 dark:bg-cc-blue-900/40 dark:text-cc-blue-300' : 'text-content-muted hover:bg-surface-muted hover:text-content' }}"
+                {{ locale == app.request.locale ? 'aria-current="true"' : '' }}
+              >{{ locale }}</a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {# Theme — segmented control with a sliding indicator #}
+      <div class="flex items-center justify-between px-3 py-2" data-controller="theme-selector">
+        <span class="flex items-center">
+          {{ ux_icon('tabler:palette', {'class': 'w-5 h-5 shrink-0 text-content-secondary md:mr-0 mr-3', 'aria-hidden': 'true'}) }}
+          <span class="text-sm font-medium text-content-secondary md:hidden">{{ 'sidebar.theme'|trans({}, 'navigation') }}</span>
+        </span>
+        <div class="relative flex items-center bg-surface-muted rounded-full p-1">
+          <span
+            class="absolute top-1 bottom-1 left-1 w-8 rounded-full bg-white dark:bg-neutral-700 shadow-sm transition-transform duration-200 ease-out"
+            data-theme-selector-target="indicator"
+            aria-hidden="true"
+          ></span>
+          {% set themes = {'system': 'tabler:device-desktop', 'light': 'tabler:sun', 'dark': 'tabler:moon'} %}
+          {% for theme, icon in themes %}
+            <button
+              type="button"
+              class="relative z-10 flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-200 text-content-muted data-active:text-cc-blue-600 dark:data-active:text-cc-blue-400"
+              data-action="click->theme-selector#setTheme"
+              data-theme="{{ theme }}"
+              data-theme-selector-target="button"
+              aria-label="{{ ('nav.theme.' ~ theme)|trans({}, 'navigation') }}"
+            >
+              {{ ux_icon(icon, {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            </button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {# User identity card (authenticated only; login lives in the navbar) #}
+    <twig:UserZone />
+  </div>
+</div>

@@ -27,9 +27,30 @@ index:
     stats:
         ratings: 'ratings'
         reviews: 'reviews'
-        users: 'users'
         images: 'pictures'
+        my_coasters: 'my coasters'
+        new_24h: '+{count} in 24h'
+        today: 'today'
     missingImages: 'We are looking for pictures of these coasters!'
+    top_ranked: 'Top Ranked'
+    community_favorites: 'Featured reviews'
+    community: 'Community'
+    hero:
+        badge:
+            new: 'New'
+            upcoming: 'Coming soon'
+            hot: 'Hot'
+            photo: 'Featured photo'
+        opened_on: 'Opened {date}'
+        opens_on: 'Opens {date}'
+        hot_subtitle: 'Most rated this week'
+    nearby:
+        title: 'Nearby'
+        cta_description: 'Discover roller coasters around your location.'
+        cta_button: 'Use my location'
+        privacy: 'Your location is used only for this search and is never stored on our servers.'
+        loading: 'Looking for coasters near you…'
+        km: 'km'
 
 coaster:
     score:
@@ -41,15 +62,23 @@ coaster:
         quality: 'Quality Score'
         worldrank: 'World Rank'
         overview: 'At a Glance'
+    stats:
+        height: 'Height'
+        length: 'Length'
+        speed: 'Speed'
+        inversions: 'Inversions'
     rating:
         action: 'Rate this coaster!'
         my_rating: 'My rating'
+        section_title: 'Community ratings'
         notenough: 'Not enough ratings for this coaster!'
-        mustlogin: 'You must be logged in to rate.'
+        mustlogin: 'Log in to rate'
         login: 'Log in'
-        sendreview: 'or click here to write a review'
-        updatereview: 'update my review'
-        delete: 'delete'
+        sendreview: 'Write a review'
+        updatereview: 'Edit review'
+        delete: 'Delete'
+        add_date: 'Add ride date'
+        tap_to_rate_hint: 'Tap a star to rate — this also marks it as ridden.'
         text: 'Score based on {count_rating} ratings and {count_top} tops'
         details: 'Detailed user ratings'
         distribution: 'Rating distribution'
@@ -83,15 +112,41 @@ coaster:
         kiddie: 'Kiddie'
         indoor: 'Indoor'
         formerNames: 'Former names'
+        features: 'Features'
     parkcoaster: 'Also in {name}'
     video:
         title: 'Onride Video'
     photos:
         title: 'Photos'
+        page_title: 'Photos of {name}'
         empty: "Oops, we don't have any photos yet for this coaster, but you can send yours!"
         button: 'Upload a picture'
         all: 'See all pictures'
         loading: 'Loading photos...'
+    reviews:
+        featured: 'What riders say'
+        see_all: 'See all reviews'
+        page_title: 'Reviews of {name}'
+        empty: 'No reviews yet for this coaster.'
+        be_first: 'Be the first to review!'
+    journal:
+        title: 'My rides'
+        ridden: 'Ridden'
+        wishlist: 'Wishlist'
+        reride: '+1 ride'
+        first_ride: 'First ride'
+        rides_count: '{count, plural, one {ride} other {rides}}'
+        last_ride: 'Last ride'
+        confirm_remove_ridden: 'This will also delete your rating. Continue?'
+        reride_added: '+1 ride added'
+        reride_undo: 'Undo'
+        not_tracked: 'Not tracked yet'
+        on_wishlist: 'On your wishlist'
+        tap_to_rate: 'Tap to rate'
+        tap_to_reride: 'tap to re-ride'
+        log_another: 'Log another ride'
+        remove: 'Remove'
+        add_date: 'Add date'
     location: 'Location'
 
 image_upload:
@@ -102,7 +157,6 @@ image_upload:
             helper: 'The file must be in JPEG format and less than 15MB in size. Small images could be rejected.'
         credit:
             label: 'Who took this picture?'
-            helper: 'You may only upload pictures if you are the original author or have obtained authorization from the original author.'
         watermark:
             label: 'Watermark "Captain Coaster"'
             helper: 'You can choose to watermark the picture with a Captain Coaster logo to avoid reuse on other websites.'
@@ -117,16 +171,63 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    operating: 'Operating'
+    total: 'Total'
+    ranked: 'Ranked'
+    ratings: 'Ratings'
+    best_ranked: 'Best ranked coaster'
+    view_map: 'View on map'
+    formerly: 'Formerly known as'
+    login_to_rate: 'Log in to rate'
+    login_subtitle: 'Track your rides, rate coasters and build your wishlist'
+    nearby: 'Nearby parks'
+    no_coasters: 'No coasters'
+    no_coasters_desc: 'This park has no coasters listed yet.'
+    coasters:
+        title: 'Coasters'
+        soon: 'Coming Soon'
+        new: 'New'
+        legacy: 'Legacy'
+    hero:
+        badge: 'Best ranked'
+        best_coaster: 'Best coaster'
+    stats:
+        rated: 'Rated'
+        ridden: 'Ridden'
+        not_rated: 'Not rated'
+        not_ridden: 'Not ridden'
+        missing: 'To explore'
+        wishlist: 'Wishlist'
+    progress:
+        title: 'Your progress'
+        aria: '{rated} rated, {ridden} ridden out of {total} operating coasters'
+        complete: 'Park complete — every coaster rated'
+        encourage_rate: '{ count, plural, one {Rate # coaster you rode to track your favourites} other {Rate # coasters you rode to track your favourites}}'
+        encourage_explore: '{ count, plural, one {# coaster left to discover} other {# coasters left to discover}}'
+        encourage_start: '{ count, plural, one {Mark coasters as ridden — # to discover} other {Mark coasters as ridden — # to discover}}'
+        legacy_ridden: '{ count, plural, one {+ # legendary coaster ridden before it closed} other {+ # legendary coasters ridden before they closed}}'
 
 coaster_ranking:
     title: 'World Roller Coaster Rankings'
     description: "Discover the world's best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from 3000 users worldwide."
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'No coasters found!'
+    new: 'new'
+    ridden: "You've ridden this"
+    progress:
+        title: 'Your top 100'
+        aria: "You've ridden {count} of {total} top coasters"
+        complete: "You've ridden the entire operating top 100!"
+        remaining: '{count, plural, one {# coaster left to ride in the top 100} other {# coasters left to ride in the top 100}}'
+        defunct_ridden: '{count, plural, one {# legendary coaster you rode before it closed} other {# legendary coasters you rode before they closed}}'
+    stats: 'Stats'
     info:
         title: 'Last Updated: {rankingMonth}'
         next: 'Next update {date}'
+        last_update: 'Last update: {date}'
         learn_more: 'Learn more about the ranking'
+        learn_more_short: 'About'
+        in_numbers: 'The ranking in numbers'
         coasters_ranked:
             short: 'coasters'
             long: 'ranked coasters'
@@ -140,6 +241,16 @@ map_index:
     title: 'Coasters Map'
     description: 'Discover where are the most amazing roller coasters nearby, the next year hits or the B&M you have not ridden yet with this interactive map.'
     results: 'Results'
+
+map:
+    parks_count: 'parks'
+    legend:
+        title: 'Legend'
+        coaster: 'coaster'
+        coasters: 'coasters'
+    popup:
+        coasters: 'coasters'
+        no_coasters: 'No coasters found for this park.'
 
 filters:
     title: 'Filters'
@@ -175,9 +286,12 @@ user_profile:
     ratings: 'Show their ratings'
     reviews: 'Show their reviews'
     main_top: 'Show their Top Coasters'
-    tops: 'Show their other tops'
+    tops: 'Show their other lists'
     map: 'Show their coaster map'
     pictures: 'Show their pictures'
+    empty:
+        title: '{name} has no rides yet'
+        description: 'This rider has not rated any coaster yet.'
 
 user_list:
     title: 'Our riders'
@@ -191,12 +305,67 @@ profile:
     title: 'My Profile'
     menu:
         ratings: 'My ratings'
-        tops: 'My tops'
+        tops: 'My Lists'
         map: 'My map'
         photos: 'My photos'
         reviews: 'My reviews'
+        main_top: 'My Top Coasters'
         settings: 'Settings'
     badge: 'Badges'
+    badge_welcome: 'Welcome'
+    score:
+        section_title: 'Captain scores'
+        captain:
+            label: 'Captain Score'
+        quality:
+            label: 'Quality Score'
+        explanation: '{ count, plural, one { Computed from # ranked coaster you have ridden. } other { Computed from # ranked coasters you have ridden. }}'
+        empty: "We don't have a Captain Score for you yet — rate some ranked coasters to get started."
+    rank:
+        rookie: 'Rookie'
+        enthusiast: 'Enthusiast'
+        rider: 'Rider'
+        veteran: 'Veteran'
+        expert: 'Expert'
+        legend: 'Legend'
+    most_ridden:
+        title: 'Most ridden'
+    this_year:
+        title: 'In {year}'
+        new_coasters: 'New coasters ridden'
+        total_rides: 'Total rides'
+    records:
+        title: 'Personal records'
+        tallest: 'Tallest'
+        fastest: 'Fastest'
+        longest: 'Longest'
+        most_inversions: 'Most inversions'
+        oldest: 'Oldest'
+        newest: 'Newest'
+    taste:
+        title: 'Rating taste'
+        mood:
+            generous: 'Generous'
+            balanced: 'Balanced'
+            critical: 'Critical'
+        based_on: '{count, plural, one {Based on # rating} other {Based on # ratings}}'
+        manufacturer: 'Most ridden manufacturer'
+        model: 'Most ridden model'
+        country: 'Most ridden country'
+    progress:
+        title: 'Progress'
+        next_rank: 'Next rank'
+        next_milestone: 'Next milestone ({count})'
+        max_rank: 'Top rank reached'
+        top100: 'World TOP 100'
+    activity:
+        title: 'Recent activity'
+        see_all: 'See all'
+        ridden: 'Ridden'
+    empty:
+        title: 'No rides yet'
+        description: 'Start rating the coasters you have ridden to build your profile.'
+        action: 'Add my coasters'
     banner:
         title: 'Personal banner'
         text: ~
@@ -222,6 +391,37 @@ profile:
         park_count: '{count, plural, =0 {No parks} =1 {1 park} other {# parks}}'
     ratings:
         title: 'My Ratings'
+        avg: 'Avg. rating'
+        sort_by: 'Sort by'
+        search_placeholder: 'Search by coaster or park…'
+        no_results: 'No ratings match your search'
+        results: 'results'
+    my_coasters:
+        title: 'My Coasters'
+        tabs:
+            all: 'All'
+            rated: 'Rated'
+            ridden: 'Ridden'
+            wishlist: 'Wishlist'
+        sort:
+            recent: 'Recent'
+            rating: 'Rating'
+            date: 'Ride date'
+            name: 'Coaster'
+        to_rate: '{count, plural, one {# coaster left to rate} other {# coasters left to rate}}'
+    journey:
+        title: 'My Journey'
+        subtitle: 'All your rides, in chronological order.'
+        stats:
+            coasters: 'Coasters'
+            countries: 'Countries'
+            parks: 'Parks'
+            since: 'Since'
+        undated: 'Undated'
+        add_date: 'Add date'
+        all_years: 'All'
+        filter_by_year: 'Filter by year'
+        milestone: '{n}th coaster'
     settings:
         title: 'Profile Settings'
         sections:
@@ -256,8 +456,7 @@ profile:
                 label: 'Display distances and statistics in'
             displayReviewsInAllLanguages:
                 label: 'Display reviews written in different languages'
-            addTodayDateWhenRating:
-                label: "Add today's date on a new rating"
+
         advanced:
             apiKey:
                 label: 'API Key'
@@ -299,12 +498,14 @@ review:
     report_success: 'Thank you for your report. Our team will review it shortly.'
     report_error: 'An error occurred while submitting your report.'
     remove_upvote: 'Remove upvote'
+    back: 'Back to coaster'
+    placeholder: 'Share your experience riding this coaster...'
     form:
         title: 'Review about {name}'
 
 users:
     tops:
-        title: 'Tops • {name}'
+        title: 'Lists • {name}'
     ratings:
         title: 'Ratings • {name}'
         coaster: 'Coaster'
@@ -328,14 +529,18 @@ review_list:
 rating:
     last: 'Latest ratings'
     action: 'rated {value} stars'
+    delete: 'Delete rating'
+    confirm_delete: 'Delete this rating?'
 
 navbar:
     profile: 'My profile'
     settings: 'Settings'
     rating: 'My ratings'
+    my_coasters: 'My coasters'
+    journey: 'My Journey'
     login: 'Sign in'
     logout: 'Logout'
-    tops: 'My tops'
+    tops: 'My Lists'
     my_map: 'My map'
 
 sidebar:
@@ -350,45 +555,23 @@ sidebar:
     contact: 'Get in touch'
     logout: 'Logout'
     login: 'Sign in'
+    account: 'Account'
+    language: 'Language'
+    current: 'Current'
+    mobile_language: 'Language'
+    theme: 'Dark/Light Mode'
 
 footer:
     terms: 'Privacy Policy'
-
-login:
-    title: 'Sign in to Captain Coaster'
-    subtitle: 'Send a login link to your email'
-    send_link: 'Send login link'
-    redirect_to_register: 'New to Captain Coaster? <a href="{link_path}">Create an account</a>'
-    or_sign_in_with: 'or'
-    connect_with_google: 'Connect with google'
-
-    terms: 'By continuing, you confirm that you accept our <a href="{link_path}">Terms &amp; Conditions</a>'
-    email:
-        title: 'Sign in to Captain Coaster'
-        h1: 'Ready to dispatch!'
-        paragraph1: 'To sign in to Captain Coaster, click the button below. This link will expire in 15 minutes.'
-        button: 'Sign in'
-        paragraph2: 'You received this email because you are trying to sign in to Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email.'
-    link_sent: 'If an account is associated with {email}, you will receive a login link. Click on the link to sign in'
-    rate_limit_exceeded: 'Too many login attempts. Please try again later.'
-
-register:
-    title: 'Create an account'
-    subtitle: 'Please fill in all the fields below'
-    link_sent: 'Account created! Please check your email ({email}) and click on the link to activate your account.'
-    rate_limit_exceeded: 'Too many registration attempts. Please try again later.'
-    form:
-        email: 'Email'
-        first_name: 'First Name'
-        last_name: 'Last Name'
-        submit: 'Create an account'
-    email:
-        title: 'Confirm your email'
-        h1: 'Welcome aboard!'
-        paragraph1: 'To use Captain Coaster, click the verification button. This link is valid for'
-        button: 'Activate'
-        paragraph2: 'You received this email because you created an account on Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email.'
-    email_verified: 'Your email {email} has been verified. Welcome to Captain Coaster!'
+    tagline: "The ultimate guide for roller coaster enthusiasts. Rate, write reviews, and craft top lists for the coasters you've ridden."
+    crafted: 'Crafted with {heart} by coaster enthusiasts'
+    discover:
+        title: 'Discover'
+    community:
+        title: 'Community'
+    legal:
+        title: 'Legal'
+        about_ranking: 'About the ranking'
 
 contact:
     title: 'Get in touch'
@@ -418,8 +601,11 @@ notif:
 
 coaster_search:
     title: 'Search Coasters'
+    description: 'Find roller coasters by name, location, manufacturer and more'
     num_found: '{num} coasters found'
-    no_results: 'No coasters found matching your criteria'
+    num_found_label: 'coasters found'
+    no_results: 'No coasters found'
+    no_results_hint: 'Try adjusting your filters'
 
 image:
     credit: 'Credit: {name}'
@@ -459,9 +645,28 @@ banner:
 search_index:
     title: Search
     more: See all results
-    noResult: No results
+    noResult: No results found
     noTerm: No search term
     short: Your search is too short and must contain more than 2 characters.
+    results_for: 'Results for "{query}"'
+    try_different: Try a different search term
+    showing_results: 'Showing {count} of {total} results'
+    filter:
+        all: All
+        coasters: Coasters
+        parks: Parks
+        users: Users
+    coaster_count: >-
+        {count, plural,
+            =1 {1 coaster}
+            other {# coasters}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {No ratings}
+            =1 {1 rating}
+            other {# ratings}
+        }
     coasters_found: >-
         {num, plural,
             =0 {No coasters found}
@@ -486,3 +691,35 @@ search_index:
             =1 {1 result found for "{query}"}
             other {# results found for "{query}"}
         }
+# Form-related translations
+form:
+    required: 'Required field'
+    file:
+        upload: 'Upload a file'
+        drag_drop: 'or drag and drop'
+    description: "Have a question, suggestion, or just want to say hello? We'd love to hear from you!"
+
+# Records page — world records (tallest, longest, fastest, most inversions)
+records:
+    title: 'World Records'
+    subtitle: 'The biggest and boldest coasters out there'
+    filter_by_continent: 'Filter by continent'
+    empty: 'No records to show'
+    categories:
+        tallest: 'Tallest'
+        longest: 'Longest'
+        fastest: 'Fastest'
+        most_inversions: 'Most Inversions'
+    metrics:
+        height: 'Height'
+        length: 'Length'
+        speed: 'Speed'
+        inversionsNumber: 'Inversions'
+
+search:
+    type:
+        coasters: 'Coasters'
+        parks: 'Parks'
+        users: 'Users'
+    show_all: 'See all results for "{query}"'
+    no_results: 'No results for "{query}"'

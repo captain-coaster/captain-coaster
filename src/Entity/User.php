@@ -120,9 +120,6 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, unique: true, nullable: true)]
     private ?string $apiKey = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
-    private bool $addTodayDateWhenRating = false;
-
     /** @var array<string> */
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
@@ -402,7 +399,7 @@ class User implements UserInterface
     public function getMainTop(): Top
     {
         foreach ($this->tops as $top) {
-            if ($top->isMain()) {
+            if ($top->isRanking()) {
                 return $top;
             }
         }
@@ -534,18 +531,6 @@ class User implements UserInterface
     public function getImages(): ?Collection
     {
         return $this->images;
-    }
-
-    public function setAddTodayDateWhenRating(bool $addTodayDateWhenRating): static
-    {
-        $this->addTodayDateWhenRating = $addTodayDateWhenRating;
-
-        return $this;
-    }
-
-    public function isAddTodayDateWhenRating(): bool
-    {
-        return $this->addTodayDateWhenRating;
     }
 
     /** @return array<string> */

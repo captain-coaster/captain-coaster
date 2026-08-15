@@ -1,76 +1,91 @@
-{% extends 'base.html.twig' %}
-
-{% import "helper.html.twig" as helper %}
+{% extends "layouts/base.html.twig" %}
 
 {% set title = 'users.tops.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="panel panel-body stack-media-on-mobile">
-    <div class="media-left">
-      <a href="#" class="btn btn-link btn-icon text-teal">
-        {{ ux_icon('heroicons:clipboard', {'class': 'w-8 h-8 no-edge-top'}) }}
-      </a>
-    </div>
-    <div class="media-body media-middle">
-      <h6 class="media-heading text-semibold">{{ 'list.infotitle'|trans({}, 'top') }}</h6>
-      {{ 'list.info'|trans({}, 'top') }}
-    </div>
-    <div class="media-right media-middle">
-      <a href="{{ path('top_new') }}" class="btn bg-teal-400 btn-lg">{{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 position-left'}) }}
-        {% if tops|length == 0 %}{{ 'list.create_first'|trans({}, 'top') }}{% else %}{{ 'list.create'|trans({}, 'top') }}{% endif %}
-      </a>
-    </div>
-  </div>
+  <twig:PageHeader
+    title="{{ isOwnProfile ? 'my_lists.title'|trans({}, 'top') : user.displayName }}"
+  />
 
-  <div class="row">
-    {% for top in tops %}
-      <div class="col-lg-4 col-sm-6">
-        <div class="thumbnail">
-          <div class="caption">
-            <div class="content-group-sm media">
-              <div class="media-left">
-                {{ helper.profilePicture(top.user) }}
-              </div>
-              <div class="media-body">
-                <h6 class="text-semibold no-margin">
-                  {% if top.main %}{{ ux_icon('heroicons:check', {'class': 'w-6 h-6 text-size-mini position-left'}) }}{% endif %}
-                  <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
-                    {{ top.name }}
-                  </a>
-                </h6>
-              </div>
-            </div>
-            <ul class="list-feed">
-              {% for i in 0..2 %}
-                {% if top.topCoasters[i] is defined %}
-                  <li>
-                    {{ i + 1 }} -
-                    <a href="{{ path('show_coaster', {'id': top.topCoasters[i].coaster.id, 'slug': top.topCoasters[i].coaster.slug}) }}"
-                       class="text-default">
-                      {{ top.topCoasters[i].coaster.name }}
-                    </a>
-                  </li>
-                {% else %}
-                  <li>&nbsp;</li>
-                {% endif %}
-              {% endfor %}
-            </ul>
-            <div class="media">
-              <a href="{{ path('top_show', {'id': top.id}) }}">
-                {{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }} {{ 'list.more'|trans({}, 'top') }}
-              </a>
-            </div>
-            <ul class="list-inline media">
-              <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
-              <li>
-                {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
-              </li>
-            </ul>
-          </div>
+  {# ── Top Coasters section ────────────────────────────────────────── #}
+  <section class="mb-8">
+    <twig:SectionHeading
+      icon="tabler:trophy"
+      iconColor="text-cc-warm-500"
+      :title="'my_lists.top_coasters.title'|trans({}, 'top')"
+    />
+    {% if topCoasters and topCoasters.topCoasters|length > 0 %}
+      {# Compact card — section heading already identifies the list. #}
+      <twig:TopCard :top="topCoasters" :compact="true" />
+    {% elseif isOwnProfile %}
+      <article class="bg-surface rounded-2xl border border-line p-5 text-center">
+        <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-2xl flex items-center justify-center mx-auto mb-3">
+          {{ ux_icon('tabler:trophy', {'class': 'w-6 h-6 text-green-600 dark:text-green-400', 'aria-hidden': 'true'}) }}
         </div>
-      </div>
-    {% endfor %}
-  </div>
-{% endblock %}
+        <h3 class="font-semibold text-content mb-1">{{ 'my_lists.top_coasters.start'|trans({}, 'top') }}</h3>
+        <p class="text-sm text-content-tertiary mb-4">{{ 'my_lists.top_coasters.start_cta'|trans({}, 'top') }}</p>
+        {% if topCoasters %}
+          <a href="{{ path('top_edit', {'id': topCoasters.id}) }}"
+             class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 transition-colors">
+            {{ ux_icon('tabler:plus', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'my_lists.top_coasters.edit'|trans({}, 'top') }}
+          </a>
+        {% endif %}
+      </article>
+    {% endif %}
+  </section>
 
+  {# ── Bucket List section ────────────────────────────────────────── #}
+  <section class="mb-8">
+    <twig:SectionHeading
+      icon="tabler:bucket"
+      iconColor="text-cc-warm-500"
+      :title="'my_lists.bucket.title'|trans({}, 'top')"
+    />
+    {% if bucketList and bucketList.topCoasters|length > 0 %}
+      <twig:TopCard :top="bucketList" :compact="true" />
+    {% elseif isOwnProfile %}
+      <article class="bg-surface rounded-2xl border border-line p-5 text-center">
+        <div class="w-12 h-12 bg-cc-warm-100 dark:bg-cc-warm-900/30 rounded-2xl flex items-center justify-center mx-auto mb-3">
+          {{ ux_icon('tabler:bucket', {'class': 'w-6 h-6 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+        </div>
+        <h3 class="font-semibold text-content mb-1">{{ 'my_lists.bucket.start'|trans({}, 'top') }}</h3>
+        <p class="text-sm text-content-tertiary">{{ 'my_lists.bucket.start_cta'|trans({}, 'top') }}</p>
+      </article>
+    {% endif %}
+  </section>
+
+  {# ── Custom Lists section — keep the list name, drop "by xxx" via showUser=false ─ #}
+  <section class="mb-8">
+    <twig:SectionHeading
+      icon="tabler:list"
+      iconColor="text-cc-blue-500"
+      :title="'my_lists.custom.title'|trans({}, 'top')"
+      :count="customLists|length"
+    />
+    {% if customLists|length > 0 %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {% for top in customLists %}
+          <twig:TopCard :top="top" :showUser="false" :liked="top.id in (likedIds ?? [])" />
+        {% endfor %}
+        {% if isOwnProfile %}
+          <a href="{{ path('top_new') }}"
+             class="group flex flex-col items-center justify-center min-h-[180px] rounded-2xl border-2 border-dashed border-line-strong bg-surface hover:border-cc-blue-300 hover:bg-cc-blue-50/30 dark:hover:bg-cc-blue-900/10 transition-colors">
+            <div class="w-12 h-12 rounded-2xl bg-cc-blue-100 dark:bg-cc-blue-900/30 flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
+              {{ ux_icon('tabler:plus', {'class': 'w-6 h-6 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+            </div>
+            <span class="text-sm font-medium text-content">{{ 'my_lists.custom.new'|trans({}, 'top') }}</span>
+          </a>
+        {% endif %}
+      </div>
+    {% elseif isOwnProfile %}
+      <twig:EmptyState
+        icon="tabler:list"
+        :title="'my_lists.custom.empty_title'|trans({}, 'top')"
+        :description="'my_lists.custom.empty_description'|trans({}, 'top')"
+        :action="{ url: path('top_new'), text: 'my_lists.custom.empty_cta'|trans({}, 'top') }"
+      />
+    {% endif %}
+  </section>
+{% endblock %}

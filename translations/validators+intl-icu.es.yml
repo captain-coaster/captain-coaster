@@ -4,6 +4,9 @@ ride_date:
     before_opening: La fecha del viaje no puede ser anterior a la apertura de la montaña rusa.
     after_closing: La fecha del viaje no puede ser posterior al cierre de la montaña rusa.
     future: La fecha del viaje no puede estar en el futuro.
+    last_before_first: 'La fecha del último viaje no puede ser anterior a la del primero.'
+ride_count:
+    invalid: 'El número de viajes debe ser al menos 1.'
 
 # Image upload validation
 image_upload:

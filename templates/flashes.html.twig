@@ -1,8 +1,0 @@
-{% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="alert alert-{{ label|default('info') }} alert-styled-left alert-arrow-left alert-bordered">
-            <button type="button" class="close" data-dismiss="alert"><span>×</span><span class="sr-only">Close</span></button>
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endfor %}

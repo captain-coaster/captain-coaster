@@ -1,0 +1,74 @@
+{#
+    ProfileMenu — the top-bar avatar with a dropdown of personal links + logout.
+
+    Owns everything "me": the drawer/sidebar hold only generic navigation.
+    Rendered for authenticated users only (the navbar guards the unauthenticated case).
+#}
+{% set user = app.user %}
+{% set currentRoute = app.request.attributes.get('_route') %}
+
+{% set items = [
+    { route: 'profile_my_coasters', icon: 'tabler:roller-coaster', label: 'navbar.my_coasters', params: {} },
+    { route: 'user_tops',           icon: 'tabler:list-numbers',   label: 'navbar.tops',        params: { id: user.id } },
+    { route: 'profile_journey',     icon: 'tabler:map-route',      label: 'navbar.journey',     params: {} },
+    { route: 'map_user',            icon: 'tabler:map-pin',        label: 'navbar.my_map',      params: { id: user.id } },
+    { route: 'profile_settings',    icon: 'tabler:settings',       label: 'navbar.settings',    params: {} },
+] %}
+
+<div class="relative" data-controller="dropdown">
+    <button
+        type="button"
+        class="inline-flex items-center justify-center h-9 w-9 rounded-lg hover:bg-surface-muted focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200"
+        data-action="click->dropdown#toggle"
+        data-dropdown-target="button"
+        aria-expanded="false"
+        aria-haspopup="true"
+        aria-label="{{ 'nav.profile.menu'|trans({}, 'navigation') }}"
+    >
+        <twig:RankAvatar :user="user" size="sm" />
+    </button>
+
+    <div
+        class="hidden animate-fade-in absolute right-0 z-50 mt-2 w-60 origin-top-right bg-surface-raised rounded-xl shadow-lg border border-line overflow-hidden"
+        data-dropdown-target="menu"
+    >
+        {# Header → profile #}
+        <a href="{{ path('profile') }}" class="flex items-center gap-3 p-3 hover:bg-surface-muted transition-colors duration-200">
+            <twig:RankAvatar :user="user" size="md" />
+            <span class="min-w-0">
+                <span class="block text-sm font-semibold text-content truncate">{{ user.displayName }}</span>
+                <span class="mt-1 flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 text-xs text-content-muted" aria-label="{{ 'userzone.ridden'|trans({count: user_ridden_count(user)}, 'navigation') }}">
+                        {{ ux_icon('tabler:roller-coaster', {'class': 'w-3.5 h-3.5 shrink-0', 'aria-hidden': 'true'}) }}
+                        {{ user_ridden_count(user) }}
+                    </span>
+                    <twig:RankChip :rank="profile_rank(user)" />
+                </span>
+            </span>
+        </a>
+
+        <div class="border-t border-line-strong py-1">
+            {% for item in items %}
+                {% set isActive = currentRoute == item.route %}
+                <a
+                    href="{{ path(item.route, item.params) }}"
+                    class="flex items-center gap-3 px-3 py-2 text-sm transition-colors duration-200 {{ isActive ? 'bg-cc-blue-50 text-cc-blue-700 dark:bg-cc-blue-900/30 dark:text-cc-blue-400' : 'text-content-secondary hover:bg-surface-muted hover:text-content' }}"
+                    {{ isActive ? 'aria-current="page"' : '' }}
+                >
+                    {{ ux_icon(item.icon, {'class': 'w-4 h-4 shrink-0 text-content-muted', 'aria-hidden': 'true'}) }}
+                    <span class="truncate">{{ item.label|trans({}, 'navigation') }}</span>
+                </a>
+            {% endfor %}
+        </div>
+
+        <div class="border-t border-line-strong py-1">
+            <a
+                href="{{ path('logout') }}"
+                class="flex items-center gap-3 px-3 py-2 text-sm text-content-secondary hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors duration-200"
+            >
+                {{ ux_icon('tabler:logout', {'class': 'w-4 h-4 shrink-0', 'aria-hidden': 'true'}) }}
+                <span>{{ 'navbar.logout'|trans({}, 'navigation') }}</span>
+            </a>
+        </div>
+    </div>
+</div>

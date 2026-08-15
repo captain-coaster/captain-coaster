@@ -1,0 +1,48 @@
+{#
+  ProfileScore — Captain Quality Score (CQS) and Captain Strength Score (CSS)
+                 for a rider, based on the captain ranking of the coasters they
+                 have ridden.
+
+  Props:
+    - score (required): {
+        ridden:        int,           total ridden coaster count
+        quality:       float|null,    CQS — null if no ranked coasters
+        strength:      float|null,    CSS — null if no ranked coasters
+        ranked_count:  int,           coasters from the captain ranking
+      }
+#}
+{% props score %}
+
+<section class="mb-6">
+  <div class="bg-surface rounded-2xl border border-line-strong p-5">
+    <div class="flex items-center justify-center gap-1.5 text-[10px] font-semibold uppercase tracking-widest text-content-muted mb-3">
+      {{ ux_icon('tabler:anchor', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+      {{ 'profile.score.section_title'|trans }}
+    </div>
+
+    {% if score.ranked_count > 0 and score.quality is not null %}
+      <div class="grid grid-cols-2 gap-4 text-center">
+        <div>
+          <div class="text-[10px] font-semibold uppercase tracking-widest text-content-muted mb-1">
+            {{ 'profile.score.captain.label'|trans }}
+          </div>
+          <div class="text-4xl font-black tabular-nums leading-none text-content">{{ score.strength|round(0, 'common')|number_format(0, '.', '') }}</div>
+        </div>
+        <div>
+          <div class="text-[10px] font-semibold uppercase tracking-widest text-content-muted mb-1">
+            {{ 'profile.score.quality.label'|trans }}
+          </div>
+          <div class="text-4xl font-black tabular-nums leading-none text-cc-blue-500">{{ score.quality|round(0, 'common')|number_format(0, '.', '') }}</div>
+        </div>
+      </div>
+      <p class="text-xs text-content-muted mt-3 text-center max-w-xs mx-auto">
+        {{ 'profile.score.explanation'|trans({ count: score.ranked_count }) }}
+      </p>
+    {% else %}
+      <div class="text-center">
+        <div class="text-5xl font-black tabular-nums leading-none text-content">{{ score.ridden }}</div>
+        <p class="text-xs text-content-muted mt-2 max-w-xs mx-auto">{{ 'profile.score.empty'|trans }}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>

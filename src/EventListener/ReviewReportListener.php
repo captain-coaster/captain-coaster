@@ -47,7 +47,7 @@ class ReviewReportListener
                     ->addField(
                         (new DiscordFieldEmbedObject())
                             ->name('Rating')
-                            ->value((string) $review->getValue().'/5')
+                            ->value(null !== $review->getRating() ? (string) $review->getRating().'/5' : 'N/A')
                             ->inline(false)
                     )
                     ->addField(

@@ -1,0 +1,50 @@
+{#
+  StarRating — unified half-star widget.
+  Props:
+    value      : current rating 0..5 (half steps) or null
+    size       : star px size (default 20)
+    readonly   : display only (default false)
+    showValue  : render the numeric echo next to the stars (default false)
+    mode       : 'standalone' | 'live' | 'form'
+    coasterId  : required for standalone
+    ratingId   : RiddenCoaster id (standalone, for clear)
+    formFieldId: hidden field id (form mode)
+#}
+{% props
+    value = null,
+    size = 20,
+    readonly = false,
+    showValue = false,
+    mode = 'standalone',
+    coasterId = null,
+    ratingId = null,
+    formFieldId = null
+%}
+
+<div class="inline-flex items-center gap-2 csrf-protection"
+     data-controller="csrf-protection star-rating"
+     data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+     data-star-rating-csrf-protection-outlet=".csrf-protection"
+     data-star-rating-value-value="{{ value ?? 0 }}"
+     data-star-rating-size-value="{{ size }}"
+     data-star-rating-show-value-value="{{ showValue ? 'true' : 'false' }}"
+     data-star-rating-mode-value="{{ mode }}"
+     data-star-rating-readonly-value="{{ readonly or not is_granted('ROLE_USER') ? 'true' : 'false' }}"
+     {% if coasterId %}data-star-rating-coaster-id-value="{{ coasterId }}"{% endif %}
+     {% if ratingId %}data-star-rating-rating-id-value="{{ ratingId }}"{% endif %}
+     {% if formFieldId %}data-star-rating-form-field-id-value="{{ formFieldId }}"{% endif %}
+     data-star-rating-locale-value="{{ app.request.locale }}">
+    {% if showValue %}
+        <span data-star-rating-target="value"
+              class="text-sm font-semibold tabular-nums text-content-secondary min-w-8">
+            {{ value ? value|number_format(1) : '–' }}
+        </span>
+    {% endif %}
+    {% if mode == 'standalone' and not readonly %}
+        <button type="button" data-star-rating-target="clear" data-action="click->star-rating#clear"
+                class="{{ value ? '' : 'hidden ' }}ml-1 p-0.5 rounded text-content-subtle hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                aria-label="{{ 'coaster.rating.delete'|trans }}" title="{{ 'coaster.rating.delete'|trans }}">
+            {{ ux_icon('tabler:x', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        </button>
+    {% endif %}
+</div>

@@ -1,0 +1,96 @@
+{# templates/components/TopListEditor.html.twig #}
+<div {{ attributes.defaults({'class': ''}) }}>
+
+  {# ── Search ── #}
+  <div class="mb-4">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        {{ ux_icon('tabler:search', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+      </div>
+      <input type="search"
+             data-model="debounce(300)|query"
+             value="{{ query }}"
+             class="block w-full pl-9 pr-3 py-2.5 rounded-xl border border-line-strong bg-surface text-sm text-content placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 focus:border-cc-blue-500 transition-all"
+             placeholder="{{ 'search.placeholder'|trans({}, 'top') }}"
+             autocomplete="off"
+             aria-label="{{ 'search.placeholder'|trans({}, 'top') }}">
+    </div>
+
+    {# ── Dropdown ── #}
+    {% if query|length >= 2 %}
+      <div class="relative">
+        <div class="absolute z-30 left-0 right-0 mt-1 bg-surface rounded-xl border border-line shadow-lg overflow-hidden max-h-80 overflow-y-auto transition-opacity data-[live-loading]:opacity-60">
+          {% set results = this.results %}
+          {% if results|length > 0 %}
+            {% for result in results %}
+              <button type="button"
+                      class="w-full flex items-center gap-3 px-4 py-2.5 text-left transition-colors
+                             {% if result.alreadyInList %}
+                               opacity-60 cursor-not-allowed
+                             {% else %}
+                               hover:bg-surface-raised cursor-pointer
+                             {% endif %}"
+                      {% if not result.alreadyInList %}
+                        data-action="live#action"
+                        data-live-action-param="addCoaster"
+                        data-live-coaster-id-param="{{ result.id }}"
+                      {% else %}
+                        disabled
+                      {% endif %}>
+                {% if result.image %}
+                  <img src="{{ pictures_cdn }}/96x96/{{ result.image }}"
+                       class="w-8 h-8 rounded-lg object-cover shrink-0" alt="" loading="lazy">
+                {% else %}
+                  <div class="w-8 h-8 rounded-lg bg-surface-muted flex items-center justify-center shrink-0">
+                    {{ ux_icon('tabler:roller-coaster', {'class': 'w-4 h-4 text-content-muted', 'aria-hidden': 'true'}) }}
+                  </div>
+                {% endif %}
+                <div class="flex-1 min-w-0">
+                  <div class="text-sm font-semibold text-content truncate">{{ result.coaster }}</div>
+                  <div class="text-xs text-content-muted truncate">{{ result.park }}</div>
+                </div>
+                <div class="shrink-0 flex items-center gap-2">
+                  {% if result.rating %}
+                    <span class="text-xs font-bold text-content flex items-center gap-0.5">
+                      {{ ux_icon('tabler:star-filled', {'class': 'w-3 h-3 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+                      {{ result.rating|round(1) }}
+                    </span>
+                  {% endif %}
+                  {% if result.alreadyInList %}
+                    <span class="text-xs font-medium text-content-muted bg-surface-muted rounded-full px-2 py-0.5">
+                      {{ 'search.already_in_list'|trans({}, 'top') }}
+                    </span>
+                  {% endif %}
+                </div>
+              </button>
+            {% endfor %}
+          {% else %}
+            <div class="px-4 py-6 text-center">
+              <p class="text-sm text-content-muted">{{ 'search.no_results_for_query'|trans({'query': query}, 'top') }}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  {# ── Coaster list ── #}
+  {% set items = this.items %}
+  {% if items|length > 0 %}
+    <ul class="space-y-2 list-none p-0 m-0"
+        data-controller="top-sort"
+        data-top-sort-top-id-value="{{ topId }}">
+      {% for tc in items %}
+        <twig:TopEditorRow :topCoaster="tc" />
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="mt-4 rounded-2xl border border-line bg-surface p-6 text-center">
+      <div class="w-12 h-12 bg-cc-blue-100 dark:bg-cc-blue-900/30 rounded-2xl flex items-center justify-center mx-auto mb-3">
+        {{ ux_icon('tabler:search', {'class': 'w-6 h-6 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+      </div>
+      <h3 class="font-semibold text-content mb-1">{{ 'editor.onboarding.title'|trans({}, 'top') }}</h3>
+      <p class="text-sm text-content-tertiary">{{ 'editor.onboarding.description'|trans({}, 'top') }}</p>
+    </div>
+  {% endif %}
+</div>

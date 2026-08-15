@@ -1,0 +1,107 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'module.explore'|trans({}, 'top') %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <twig:PageHeader
+    title="{{ title }}"
+    subtitle="{{ 'explore.subtitle'|trans({}, 'top') }}"
+    icon="tabler:list-tree"
+  />
+  {# ── Create button (authenticated) ────────────────────────────────── #}
+  {% if is_granted('ROLE_USER') %}
+    <div class="flex justify-end -mt-3 mb-4">
+      <a href="{{ path('top_new') }}"
+         class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg bg-cc-blue-600 text-white hover:bg-cc-blue-700 transition-colors">
+        {{ ux_icon('tabler:plus', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        <span class="hidden sm:inline">{{ 'explore.create'|trans({}, 'top') }}</span>
+      </a>
+    </div>
+  {% endif %}
+
+  {# ── Filter pills (mirrors My Coasters tabs pattern) ───────────────── #}
+  {% set totalCount = counts.ranking + counts.bucket + counts.custom %}
+  {% set filters = [
+    { key: 'all',         label: 'explore.filter.all'|trans({}, 'top'),         count: totalCount },
+    { key: 'top_coaster', label: 'explore.filter.top_coasters'|trans({}, 'top'), count: counts.ranking },
+    { key: 'bucket',      label: 'explore.filter.buckets'|trans({}, 'top'),     count: counts.bucket },
+    { key: 'custom',      label: 'explore.filter.custom'|trans({}, 'top'),      count: counts.custom },
+  ] %}
+  {% set activeKey = type is null ? 'all' : (type == 'ranking' ? 'top_coaster' : type) %}
+  <div class="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="tablist">
+    {% for f in filters %}
+      {% set isActive = activeKey == f.key %}
+      {% set queryArgs = { type: f.key == 'all' ? null : f.key, q: q }|filter(v => v) %}
+      <a href="{{ path('top_explore', queryArgs) }}"
+         class="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+           {{ isActive
+             ? 'bg-cc-blue-600 text-white shadow-sm'
+             : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}"
+         role="tab"
+         aria-selected="{{ isActive ? 'true' : 'false' }}">
+        {{ f.label }}
+        <span class="inline-flex items-center justify-center min-w-5 h-5 px-1 rounded-full text-[10px] font-bold
+          {{ isActive ? 'bg-white/20 text-white' : 'bg-surface-strong text-content-muted' }}">
+          {{ f.count }}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+
+  {# ── Search bar (My Coasters pattern) ──────────────────────────────── #}
+  <form method="get" action="{{ path('top_explore') }}" class="mb-5" data-controller="auto-submit" data-auto-submit-debounce-value="400">
+    <div class="relative">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        {{ ux_icon('tabler:search', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+      </div>
+      <input
+        type="search"
+        name="q"
+        value="{{ q }}"
+        class="block w-full pl-9 pr-10 py-2.5 rounded-xl border border-line-strong bg-surface text-sm text-content placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 focus:border-cc-blue-500 transition-all"
+        placeholder="{{ 'explore.search.placeholder'|trans({}, 'top') }}"
+        autocomplete="off"
+        data-action="input->auto-submit#debounce"
+      >
+      {% if q %}
+        <a href="{{ path('top_explore', { type: activeKey == 'all' ? null : activeKey }|filter(v => v)) }}"
+           class="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300"
+           aria-label="{{ 'explore.search.clear'|trans({}, 'top') }}">
+          {{ ux_icon('tabler:x', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        </a>
+      {% endif %}
+    </div>
+    {% if activeKey != 'all' %}
+      <input type="hidden" name="type" value="{{ activeKey }}">
+    {% endif %}
+  </form>
+
+  {# ── Card grid + infinite scroll ───────────────────────────────────── #}
+  {% if tops|length > 0 %}
+    <div data-controller="infinite-scroll"
+         data-infinite-scroll-url-value="{{ path('top_explore', { type: activeKey == 'all' ? null : activeKey, q: q }|filter(v => v)) }}"
+         data-infinite-scroll-next-page-value="{{ tops.getCurrentPageNumber() + 1 }}"
+         data-infinite-scroll-total-pages-value="{{ tops.getPageCount() }}">
+      <div data-infinite-scroll-target="items" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {% include 'Top/_explore_cards.html.twig' %}
+      </div>
+      <div data-infinite-scroll-target="sentinel" class="h-10 flex items-center justify-center mt-4">
+        {% if tops.getCurrentPageNumber() < tops.getPageCount() %}
+          {{ ux_icon('tabler:loader-2', {'class': 'w-5 h-5 text-content-muted animate-spin', 'aria-hidden': 'true'}) }}
+        {% endif %}
+      </div>
+    </div>
+  {% elseif q %}
+    <div class="py-12 text-center text-content-muted">
+      {{ ux_icon('tabler:search-off', {'class': 'w-10 h-10 mx-auto mb-3 opacity-40', 'aria-hidden': 'true'}) }}
+      <p class="text-sm font-medium">{{ 'explore.empty.title'|trans({}, 'top') }}</p>
+      <a href="{{ path('top_explore', { type: activeKey == 'all' ? null : activeKey }|filter(v => v)) }}"
+         class="mt-2 inline-block text-xs text-cc-blue-600 dark:text-cc-blue-400 hover:underline">
+        {{ 'explore.empty.clear'|trans({}, 'top') }}
+      </a>
+    </div>
+  {% else %}
+    <twig:EmptyState icon="tabler:list-tree" :title="'explore.empty.title'|trans({}, 'top')" :description="'explore.empty.description'|trans({}, 'top')" />
+  {% endif %}
+{% endblock %}

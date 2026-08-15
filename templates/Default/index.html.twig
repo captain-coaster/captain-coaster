@@ -1,11 +1,6 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
-
-{% set openedSidebar = true %}
 {% set hideTitle = true %}
-
-{% set title = 'index.title'|trans %}
 {% block title %}{{ 'index.header.title'|trans }}{% endblock %}
 
 {% block header %}
@@ -16,166 +11,257 @@
   <meta property="og:image" content="{{ absolute_url(asset('images/logo_big.png')) }}"/>
 {% endblock %}
 
-{% block body %}
-  <!-- info alert -->
-  {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-      <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span
-            class="sr-only">Close</span>
-      </button>
-      <h6 class="alert-heading text-semibold">
-        {{ 'index.header.title'|trans }}
-      </h6>
-      {{ 'index.header.info'|trans({'%link_path%': path('login')})|raw }}
-    </div>
+{% block hero %}
+  {# ── Hero — rotates randomly between: upcoming coaster / new coaster / hot coaster / featured photo ── #}
+  {% if hero %}
+    {% set heroCoaster = hero.coaster ?? null %}
+    {% set heroImage   = hero.image ?? null %}
+    {% set heroLink    = heroCoaster
+        ? path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug})
+        : (heroImage ? path('coaster_images', {'slug': heroImage.coaster.slug}) : '#') %}
+    {% set heroPicture = heroCoaster
+        ? (heroCoaster.mainImage ? heroCoaster.mainImage.filename : null)
+        : (heroImage ? heroImage.filename : null) %}
+    {% set heroTitle = heroCoaster
+        ? heroCoaster.name
+        : (heroImage ? heroImage.coaster.name : '') %}
+    {% set heroSubtitle = heroCoaster
+        ? heroCoaster.park.name
+        : (heroImage ? heroImage.coaster.park.name : '') %}
+
+    <a href="{{ heroLink }}" class="block relative group">
+      <div class="relative h-[40vh] min-h-[300px] max-h-[450px] overflow-hidden">
+        {% if heroPicture %}
+          <img src="{{ pictures_cdn }}/1440x1440/{{ heroPicture }}"
+               alt="{{ heroTitle }}"
+               class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+        {% else %}
+          <div class="w-full h-full bg-linear-to-br from-cc-blue-500 to-cc-warm-500"></div>
+        {% endif %}
+        <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent"></div>
+      </div>
+
+      {# Type badge — top-left, aligned with content padding #}
+      <div class="absolute top-4 left-4 sm:top-6 sm:left-6 lg:left-8">
+        {% if hero.type == 'new' %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-green-500 text-white shadow-lg backdrop-blur-sm">
+            {{ ux_icon('tabler:sparkles', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'index.hero.badge.new'|trans }}
+          </span>
+        {% elseif hero.type == 'upcoming' %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-cc-blue-500 text-white shadow-lg backdrop-blur-sm">
+            {{ ux_icon('tabler:calendar-event', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'index.hero.badge.upcoming'|trans }}
+          </span>
+        {% elseif hero.type == 'hot' %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-cc-warm-500 text-white shadow-lg backdrop-blur-sm">
+            {{ ux_icon('tabler:flame', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'index.hero.badge.hot'|trans }}
+          </span>
+        {% elseif hero.type == 'photo' %}
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-pink-500 text-white shadow-lg backdrop-blur-sm">
+            {{ ux_icon('tabler:heart-filled', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+            {{ 'index.hero.badge.photo'|trans }}
+          </span>
+        {% endif %}
+      </div>
+
+      {# Bottom info — constrained to default content width to align with body below #}
+      <div class="absolute bottom-0 left-0 right-0 pb-4 sm:pb-6 lg:pb-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 class="text-2xl sm:text-3xl font-bold text-white leading-tight">{{ heroTitle }}</h1>
+          <p class="text-white/80 text-sm mt-1">{{ heroSubtitle }}</p>
+
+          {% if hero.type == 'new' and heroCoaster.openingDate %}
+            <p class="text-white/70 text-xs mt-2 flex items-center gap-1.5">
+              {{ ux_icon('tabler:calendar', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+              {{ 'index.hero.opened_on'|trans({'date': heroCoaster.openingDate|format_datetime('long', 'none')}) }}
+            </p>
+          {% elseif hero.type == 'upcoming' and heroCoaster.openingDate %}
+            <p class="text-white/70 text-xs mt-2 flex items-center gap-1.5">
+              {{ ux_icon('tabler:calendar', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+              {{ 'index.hero.opens_on'|trans({'date': heroCoaster.openingDate|format_datetime('long', 'none')}) }}
+            </p>
+          {% elseif hero.type == 'hot' %}
+            <p class="text-white/70 text-xs mt-2 flex items-center gap-1.5">
+              {{ ux_icon('tabler:flame', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+              {{ 'index.hero.hot_subtitle'|trans }}
+            </p>
+          {% elseif hero.type == 'photo' and heroImage and heroImage.credit %}
+            <p class="text-white/50 text-xs mt-2">{{ 'image.credit'|trans({'name': heroImage.credit}) }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </a>
   {% endif %}
-  <!-- /info alert -->
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-body">
-        <div class="row text-center">
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:star', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              {{ stats.nb_ratings }}
-              {% if stats.nb_new_ratings > 0 %}
-                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
-              {% endif %}
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:user-group', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('user_list') }}">{{ stats.nb_users }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:camera', {'class': 'w-8 h-8 display-inline-block text-info'}) }}</p>
-            <h5 class="text-semibold no-margin">{{ stats.nb_images }}</h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
-          </div>
-        </div>
+{% endblock %}
+
+{% block body %}
+  {# Quick actions for guests — removed per design decision (hero CTA is sufficient) #}
+
+  {# Community stats bar — 4 cells: ratings / 24h new / reviews / images #}
+  <div class="grid grid-cols-4 bg-surface rounded-2xl overflow-hidden border border-line mb-6 divide-x divide-line-strong">
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-content leading-none">{{ stats.nb_ratings|shortNum }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'index.stats.ratings'|trans }}</div>
+    </div>
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-green-600 dark:text-green-400 leading-none">
+        {% if stats.nb_new_ratings > 0 %}+{{ stats.nb_new_ratings|shortNum }}{% else %}—{% endif %}
       </div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'index.stats.today'|trans }}</div>
+    </div>
+    <a href="{{ path('review_list') }}" class="py-3 text-center hover:bg-surface-muted transition-colors">
+      <div class="text-base sm:text-lg font-bold text-content leading-none">{{ stats.nb_reviews|shortNum }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'index.stats.reviews'|trans }}</div>
+    </a>
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-content leading-none">{{ stats.nb_images|shortNum }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'index.stats.images'|trans }}</div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-6">
-      <!-- Thumbnail with image and button -->
-      <div class="thumbnail">
-          <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
-          <div class="thumb">
-            <img src="{{ pictures_cdn }}/600x336/{{ image.filename }}"
-                 alt="{{ image.coaster.name }}">
-            <div class="caption-overflow"></div>
-          </div>
-        </a>
 
-        <div class="caption text-center">
-          <h5 class="text-semibold no-margin">
-              <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
-                 class="btn btn-info">
-              {{ image.coaster.name }}
-            </a>
-          </h5>
-          <p class="text-muted mb-15 mt-5">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
-        </div>
-      </div>
-      <!-- /thumbnail with image and button -->
-      <!-- latest ratings -->
-      <div class="panel panel-flat border-top-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'rating.last'|trans }}</h6>
-        </div>
-        <div class="panel-body">
-          <ul class="list-feed">
-            {% for ratingItem in ratingFeed %}
-              <li>
-                <a class="text-bold" href="{{ path('user_show', {'slug': ratingItem.user.slug}) }}">
-                  {{ ratingItem.user.displayName }}
-                </a>
-                {{ 'rating.action'|trans({'%value%': ratingItem.value}) }}
-                  <a href="{{ path('show_coaster', {'id': ratingItem.coaster.id, 'slug': ratingItem.coaster.slug}) }}">
-                  {{ ratingItem.coaster.name }}
-                </a>
-                <div class="text-muted">
-                  {{ ratingItem.updatedAt|ago }}
-                </div>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
-      <!-- /latests ratings -->
-    </div>
-    <div class="col-sm-6">
-      <!-- latest reviews -->
-      <div class="panel panel-flat">
-        <div class="panel-heading">
-          <h6 class="panel-title text-semibold">
-            {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
-            {{ 'review.last'|trans }}
-          </h6>
-          <div class="heading-elements">
-            <a href="{{ path('review_list') }}" class="heading-text">
-              {{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6 position-right'}) }}
-              {{ 'review.all'|trans }}
-            </a>
-          </div>
-        </div>
+  {# Top Ranked coasters — 5 in horizontal scroll, no park name, no score #}
+  {% if topRanked|length > 0 %}
+    <section class="mb-8 mt-8">
+      <twig:SectionHeading
+        icon="tabler:trophy"
+        iconColor="text-cc-warm-500"
+        title="{{ 'index.top_ranked'|trans }}"
+        seeAllUrl="{{ path('ranking_index') }}"
+        seeAllLabel="{{ 'review.all'|trans }}"
+      />
 
-        <div class="panel-body">
-          <ul class="media-list media-list-bordered stack-media-on-mobile reviews-list">
-            {% for review in reviews %}
-              <li class="media review-list-item">
-                <div class="review-coaster-info">
-                  <h6 class="media-heading text-semibold">
-                    <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                      {{ review.coaster.name }}
-                    </a>
-                    -
-                    <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                      {{ review.coaster.park.name }}
-                    </a>
-                  </h6>
-                </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
+      {# scroll-padding-* aligns the snap on the inner edge so the first card has breathing room #}
+      <div class="flex gap-3 overflow-x-auto pb-2 -mx-4 sm:mx-0 snap-x snap-mandatory scrollbar-hide scroll-px-4 sm:scroll-px-0 px-4 sm:px-0 sm:grid sm:grid-cols-5 sm:overflow-visible">
+        {% for coaster in topRanked %}
+          <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+             class="group relative shrink-0 w-40 sm:w-auto sm:min-w-0 snap-start rounded-2xl overflow-hidden aspect-3/4 ring-1 ring-black/5 dark:ring-white/5 hover:ring-black/10 dark:hover:ring-white/10 transition-all duration-300">
+            {% if coaster.mainImage is not null %}
+              <img src="{{ pictures_cdn }}/1440x1440/{{ coaster.mainImage.filename }}"
+                   alt="{{ coaster.name }}"
+                   class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                   loading="lazy">
+            {% else %}
+              <div class="w-full h-full bg-surface-strong"></div>
+            {% endif %}
+            <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent"></div>
+            <div class="absolute top-2 left-2">
+              <twig:RankBadge :rank="coaster.rank" size="lg" overlay="true" />
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 p-3">
+              <h3 class="font-semibold text-white text-sm leading-tight line-clamp-2">{{ coaster.name }}</h3>
+            </div>
+          </a>
+        {% endfor %}
       </div>
-      <!-- /latest reviews -->
-      <!-- no images -->
-      {% if missingImages|length > 1 %}
-      <div class="panel panel-flat border-top-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'index.missingImages'|trans }}</h6>
-        </div>
-        <div class="panel-body">
-          <ul class="list-feed">
-            {% for rating in missingImages %}
-              <li>
-                <a href="{{ path('coaster_images_upload', {'slug': rating.coaster.slug}) }}">
-                  {{ rating.coaster.name }} • {{ rating.coaster.park.name }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
+    </section>
+  {% endif %}
+
+  {# Nearby coasters — geolocation widget, JS-driven, opt-in via CTA #}
+  <section class="mb-8"
+           data-controller="nearby-coasters"
+           data-nearby-coasters-km-label-value="{{ 'index.nearby.km'|trans }}">
+    <twig:SectionHeading
+      icon="tabler:map-pin"
+      title="{{ 'index.nearby.title'|trans }}"
+    />
+
+    {# CTA — shown by default, hidden once results arrive #}
+    <div data-nearby-coasters-target="cta" class="bg-surface rounded-2xl border border-line p-5 text-center">
+      <p class="text-sm text-content-tertiary mb-3">
+        {{ 'index.nearby.cta_description'|trans }}
+      </p>
+      <button type="button"
+              data-action="click->nearby-coasters#enable"
+              class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cc-blue-600 hover:bg-cc-blue-700 text-white text-sm font-medium transition-colors">
+        {{ ux_icon('tabler:map-pin', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        {{ 'index.nearby.cta_button'|trans }}
+      </button>
+      <p class="text-xs text-content-subtle mt-3">
+        {{ 'index.nearby.privacy'|trans }}
+      </p>
     </div>
-    {% endif %}
-    <!-- /no images -->
-  </div>
+
+    {# Loading state #}
+    <div data-nearby-coasters-target="loading" class="hidden flex items-center justify-center py-8 text-content-muted">
+      {{ ux_icon('tabler:loader-2', {'class': 'w-5 h-5 animate-spin mr-2', 'aria-hidden': 'true'}) }}
+      <span class="text-sm">{{ 'index.nearby.loading'|trans }}</span>
+    </div>
+
+    {# Results — populated by server-rendered HTML from /api/nearby-coasters #}
+    <div data-nearby-coasters-target="results" class="hidden">
+      <div data-nearby-coasters-target="list"
+           class="flex gap-3 overflow-x-auto pb-2 -mx-4 sm:mx-0 snap-x snap-mandatory scrollbar-hide scroll-px-4 sm:scroll-px-0 px-4 sm:px-0 sm:grid sm:grid-cols-5 sm:overflow-visible"></div>
+    </div>
+  </section>
+
+  {# Recent ratings — consistent with review cards style #}
+  <section class="mb-8">
+    <twig:SectionHeading
+      icon="tabler:star"
+      iconColor="text-cc-warm-500"
+      title="{{ 'rating.last'|trans }}"
+    />
+
+    <div class="flex gap-3 overflow-x-auto pb-4 -mx-4 sm:mx-0 snap-x snap-mandatory scrollbar-hide scroll-px-4 sm:scroll-px-0 px-4 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible">
+      {% for rating in ratingFeed %}
+        <article class="flex-none w-72 sm:w-auto snap-start bg-surface rounded-2xl border border-line p-4">
+          {# Header: avatar + coaster name + star rating #}
+          <div class="flex items-center gap-3">
+            <a href="{{ path('user_show', {'slug': rating.user.slug}) }}" class="shrink-0">
+              <twig:UserAvatar :user="rating.user" class="w-9 h-9 rounded-full object-cover" />
+            </a>
+            <div class="min-w-0 flex-1">
+              <a href="{{ path('show_coaster', {'id': rating.coaster.id, 'slug': rating.coaster.slug}) }}" class="block group">
+                <h3 class="font-semibold text-sm text-content truncate group-hover:text-cc-blue-600 dark:group-hover:text-cc-blue-400 transition-colors">
+                  {{ rating.coaster.name }}
+                </h3>
+              </a>
+              <a href="{{ path('user_show', {'slug': rating.user.slug}) }}" class="text-xs text-content-muted truncate hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors block">
+                {{ rating.user.displayName }}
+              </a>
+            </div>
+            <div class="shrink-0 flex items-center gap-1">
+              {{ ux_icon('tabler:star-filled', {'class': 'w-4 h-4 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+              <span class="text-sm font-bold text-content">{{ rating.rating }}</span>
+            </div>
+          </div>
+
+          {# Footer: time #}
+          <div class="flex items-center mt-3 text-xs text-content-subtle">
+            <time datetime="{{ rating.updatedAt|date('c') }}">{{ rating.updatedAt|ago }}</time>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# Featured reviews — random selection from recent, community-validated pool #}
+  {% if reviews|length > 0 %}
+    <section class="mb-8">
+      <twig:SectionHeading
+        icon="tabler:message-circle"
+        title="{{ 'index.community_favorites'|trans }}"
+        seeAllUrl="{{ path('review_list') }}"
+        seeAllLabel="{{ 'review.all'|trans }}"
+      />
+
+      <div class="flex gap-3 overflow-x-auto pb-4 -mx-4 sm:mx-0 snap-x snap-mandatory scrollbar-hide scroll-px-4 sm:scroll-px-0 px-4 sm:px-0 sm:grid sm:grid-cols-3 sm:overflow-visible items-start">
+        {% for review in reviews %}
+          <twig:ReviewCard
+            :review="review"
+            variant="compact"
+            :displayReviewsInAllLanguages="displayReviewsInAllLanguages"
+            :maxReviewLength="120"
+          />
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {# Contribute CTA — discreet card at the bottom #}
+  {# TODO: find a better way to ask users to contribute photos (email digest, profile badge) #}
 {% endblock %}
 
 {% block javascripts %}

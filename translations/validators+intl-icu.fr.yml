@@ -4,6 +4,9 @@ ride_date:
     before_opening: La date de passage ne peut pas être antérieure à l'ouverture du coaster.
     after_closing: La date de passage ne peut pas être postérieure à la fermeture du coaster.
     future: La date de passage ne peut pas être dans le futur.
+    last_before_first: 'La date du dernier ride ne peut pas précéder celle du premier.'
+ride_count:
+    invalid: 'Le nombre de rides doit être au moins 1.'
 
 # Image upload validation
 image_upload:

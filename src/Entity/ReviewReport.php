@@ -269,7 +269,7 @@ class ReviewReport
             return $this->ratingValue;
         }
 
-        return $this->review?->getValue();
+        return $this->review?->getRating();
     }
 
     /** Get the coaster name, either from the stored snapshot or the live review */

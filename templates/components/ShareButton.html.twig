@@ -1,0 +1,35 @@
+{#
+  ShareButton — uses the Web Share API when available, falls back to clipboard copy.
+  On copy success, the share icon briefly swaps to a checkmark in place (no separate
+  toast that gets cut off by hero overlays).
+
+  Props:
+    - url (required): canonical URL to share
+    - title: window title for the native share sheet
+    - text: short description for the native share sheet
+    - variant: 'overlay' (circular dark-glass for hero overlays) | 'ghost' (default)
+#}
+{% props url, title = '', text = '', variant = 'ghost' %}
+
+{% if variant == 'overlay' %}
+  {% set baseClass = 'inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 active:scale-95 transition-all' %}
+  {% set iconClass = 'w-5 h-5' %}
+{% else %}
+  {% set baseClass = 'inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface border border-line text-content hover:bg-surface-muted transition-colors' %}
+  {% set iconClass = 'w-4 h-4' %}
+{% endif %}
+
+<button type="button"
+        data-controller="share"
+        data-share-url-value="{{ url }}"
+        data-share-title-value="{{ title }}"
+        data-share-text-value="{{ text }}"
+        data-share-action="click->share#share"
+        data-action="click->share#share"
+        class="{{ baseClass }}"
+        aria-label="{{ 'show.share.button'|trans({}, 'top') }}"
+        title="{{ 'show.share.button'|trans({}, 'top') }}">
+  <span data-share-target="icon">
+    {{ ux_icon('tabler:share', {'class': iconClass, 'aria-hidden': 'true'}) }}
+  </span>
+</button>

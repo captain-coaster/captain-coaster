@@ -56,7 +56,7 @@ class CoasterSummaryServiceEnhancedDataPropertyTest extends TestCase
 
     /**
      * **Feature: coaster-summary-refactor, Property 4: Enhanced Source Data Inclusion**
-     * **Validates: Requirements 1.5, 4.1, 4.2, 4.3, 4.5**
+     * **Validates: Requirements 1.5, 4.1, 4.2, 4.3, 4.5**.
      *
      * For any coaster summary generation, the AI prompt should include review ratings alongside
      * review text, coaster status information, and global rating percentage when available.
@@ -104,7 +104,7 @@ class CoasterSummaryServiceEnhancedDataPropertyTest extends TestCase
             for ($i = 0; $i < $reviewCount; ++$i) {
                 $review = new RiddenCoaster();
                 $review->setReview("This is a test review {$i} in {$language}");
-                $review->setValue(random_int(1, 10)); // Random rating 1-10
+                $review->setRating((float) random_int(1, 10) / 2); // Random rating 0.5-5.0
                 $review->setCoaster($coaster); // Set coaster reference
                 $reviews[] = $review;
             }
@@ -129,12 +129,13 @@ class CoasterSummaryServiceEnhancedDataPropertyTest extends TestCase
             $capturedPrompt = '';
             $bedrockService
                 ->method('invokeModel')
-                ->willReturnCallback(function (string $prompt) use (&$capturedPrompt) {
+                ->willReturnCallback(static function (string $prompt) use (&$capturedPrompt) {
                     $capturedPrompt = $prompt;
+
                     return [
                         'success' => true,
                         'content' => json_encode([
-                            'summary' => "Generated summary with enhanced data",
+                            'summary' => 'Generated summary with enhanced data',
                             'pros' => ['Pro 1'],
                             'cons' => ['Con 1'],
                         ]),
@@ -165,7 +166,7 @@ class CoasterSummaryServiceEnhancedDataPropertyTest extends TestCase
             // Verify coaster context data is included in the prompt
             $this->assertStringContainsString('<coaster_context>', $capturedPrompt);
             $this->assertStringContainsString("Status: {$statusName}", $capturedPrompt);
-            
+
             // Verify global rating percentage is included when available
             $expectedRatingPercent = round(($averageRating / 10) * 100, 1);
             $this->assertStringContainsString("Community Rating: {$expectedRatingPercent}% based on {$totalRatings} ratings", $capturedPrompt);
@@ -181,7 +182,7 @@ class CoasterSummaryServiceEnhancedDataPropertyTest extends TestCase
             // Verify successful generation
             $this->assertArrayHasKey('summary', $result);
             $this->assertInstanceOf(CoasterSummary::class, $result['summary']);
-            $this->assertSame("Generated summary with enhanced data", $result['summary']->getSummary());
+            $this->assertSame('Generated summary with enhanced data', $result['summary']->getSummary());
         });
     }
 }

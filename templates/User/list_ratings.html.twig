@@ -1,12 +1,57 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% block title %}{{ 'users.ratings.title'|trans({'%name%': user.displayName}) }}{% endblock %}
 
-{% set title = 'users.ratings.title'|trans({'%name%': user.displayName}) %}
-{% block title %}{{ title }}{% endblock %}
-
-
-
+{# Tailwind JIT safelist for dynamic status colors #}
 {% block body %}
-  {% include 'Includes/rating_table.html.twig' with {'ratings': ratings} only %}
+<div class="hidden bg-green-400 bg-red-400 bg-yellow-400 bg-purple-400 bg-neutral-400"></div>
+
+  <twig:PageHeader
+    title="{{ user.displayName }}"
+    subtitle="{{ 'user_list.rating'|trans({'count': ratings.getTotalItemCount()}) }}"
+    backUrl="{{ path('user_show', {'slug': user.slug}) }}"
+    backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+  />
+
+  {% if ratings.getTotalItemCount() > 0 %}
+
+    {# ── Sort pills ─────────────────────────────────────────────────────── #}
+    {% set sortField = app.request.query.get('sort', 'r.updatedAt') %}
+    {% set sortDir   = app.request.query.get('direction', 'desc') %}
+    <div class="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="group" aria-label="{{ 'profile.ratings.sort_by'|trans }}">
+      {{ ux_icon('tabler:arrows-sort', {'class': 'w-4 h-4 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+      {% set sortPills = [
+        { label: 'users.ratings.coaster'|trans,      field: 'c.name' },
+        { label: 'users.ratings.rating'|trans,       field: 'r.rating' },
+        { label: 'users.ratings.ridden_at'|trans,    field: 'r.firstRiddenAt' },
+        { label: 'users.ratings.opening_date'|trans, field: 'c.openingDate' },
+      ] %}
+      {% for pill in sortPills %}
+        {% set isActive = sortField == pill.field %}
+        <span class="inline-flex items-center gap-0.5 px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+          {{ isActive
+            ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+            : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">
+          {{ knp_pagination_sortable(ratings, pill.label, pill.field) }}
+          {% if isActive %}
+            {{ ux_icon(sortDir == 'asc' ? 'tabler:arrow-up' : 'tabler:arrow-down', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+          {% endif %}
+        </span>
+      {% endfor %}
+    </div>
+
+    {# ── Ratings list ─────────────────────────────────────────────────────── #}
+    <div class="space-y-2">
+      {% for rating in ratings %}
+        {% include 'Rating/_rating_row.html.twig' with { rating: rating } only %}
+      {% endfor %}
+    </div>
+
+    <div class="mt-6">
+      {{ knp_pagination_render(ratings) }}
+    </div>
+
+  {% else %}
+    <twig:EmptyState icon="tabler:star" :title="'user_profile.ratings'|trans" />
+  {% endif %}
 {% endblock %}

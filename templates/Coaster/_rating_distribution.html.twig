@@ -3,12 +3,12 @@
     Displays a horizontal bar chart showing the distribution of ratings
     
     Parameters:
-    - countRatings: array of rating counts with 'value' and 'count' properties
+    - countRatings: array of rating counts with 'rating' and 'count' properties
 #}
 
-<div class="panel panel-white">
-    <div class="panel-heading">
-        <h6>
+<div class="bg-neutral-50 dark:bg-neutral-900 rounded-2xl shadow-sm overflow-hidden">
+    <div class="px-6 py-4 bg-surface-sunken border-b border-neutral-100 dark:border-neutral-700">
+        <h6 class="text-lg font-semibold text-content mb-0">
             {{ 'coaster.rating.distribution'|trans }}
         </h6>
     </div>
@@ -24,9 +24,9 @@
                     {% for countRating in countRatings %}
                         {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
                         {% if percentage > 0 %}
-                            <div class="rating-segment rating-{{ countRating.value|replace({'.': '-'}) }}" 
+                            <div class="rating-segment rating-{{ countRating.rating|replace({'.': '-'}) }}" 
                                  style="width: {{ percentage }}%"
-                                 title="{{ countRating.value }}: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
+                                 title="{{ countRating.rating }}: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -37,7 +37,7 @@
                         {% if percentage > 0 %}
                             <div class="rating-label" style="width: {{ percentage }}%">
                                 {% if percentage > 5 %}
-                                    {{ countRating.value }}★
+                                    {{ countRating.rating }}★
                                 {% endif %}
                             </div>
                         {% endif %}

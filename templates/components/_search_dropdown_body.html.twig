@@ -1,0 +1,120 @@
+{# templates/components/_search_dropdown_body.html.twig #}
+{% if query|length < 2 %}
+    {# Stimulus fills this with localStorage recent searches #}
+    <div data-search-nav-target="recentSearches"></div>
+{% else %}
+    {% set response = this.results %}
+    {% if response and (response.results.coasters|length > 0 or response.results.parks|length > 0 or response.results.users|length > 0) %}
+
+        {# Coasters #}
+        {% if response.results.coasters|length > 0 %}
+            <p class="px-4 pt-2 pb-1 text-xs font-semibold text-content-muted uppercase tracking-wide">
+                {{ 'search.type.coasters'|trans }}
+            </p>
+            {% for result in response.results.coasters %}
+                <a href="{{ path('redirect_coaster_show', {slug: result.slug}) }}"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-surface-raised transition-colors"
+                   data-result-url="{{ path('redirect_coaster_show', {slug: result.slug}) }}"
+                   data-action="click->search-nav#saveAndNavigate">
+                    {% if result.image %}
+                        <img src="{{ pictures_cdn }}/96x96/{{ result.image }}"
+                             class="w-8 h-8 rounded-lg object-cover shrink-0"
+                             alt="" loading="lazy">
+                    {% else %}
+                        <div class="w-8 h-8 rounded-lg bg-surface-muted flex items-center justify-center shrink-0">
+                            {{ ux_icon('tabler:roller-coaster', {'class': 'w-4 h-4 text-content-muted', 'aria-hidden': 'true'}) }}
+                        </div>
+                    {% endif %}
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium text-content truncate">{{ result.name }}</div>
+                        {% if result.subtitle %}
+                            <div class="text-xs text-content-muted truncate">{{ result.subtitle }}</div>
+                        {% endif %}
+                    </div>
+                    {% if result.metadata.rank is defined and result.metadata.rank %}
+                        <span class="text-xs font-medium text-content-tertiary shrink-0">#{{ result.metadata.rank }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        {% endif %}
+
+        {# Parks #}
+        {% if response.results.parks|length > 0 %}
+            <p class="px-4 pt-3 pb-1 text-xs font-semibold text-content-muted uppercase tracking-wide">
+                {{ 'search.type.parks'|trans }}
+            </p>
+            {% for result in response.results.parks %}
+                <a href="{{ path('redirect_park_show', {slug: result.slug}) }}"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-surface-raised transition-colors"
+                   data-result-url="{{ path('redirect_park_show', {slug: result.slug}) }}"
+                   data-action="click->search-nav#saveAndNavigate">
+                    {% if result.image %}
+                        <img src="{{ pictures_cdn }}/96x96/{{ result.image }}"
+                             class="w-8 h-8 rounded-lg object-cover shrink-0"
+                             alt="" loading="lazy">
+                    {% else %}
+                        <div class="w-8 h-8 rounded-lg bg-surface-muted flex items-center justify-center shrink-0">
+                            {{ ux_icon('tabler:map-pin', {'class': 'w-4 h-4 text-content-muted', 'aria-hidden': 'true'}) }}
+                        </div>
+                    {% endif %}
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium text-content truncate">{{ result.name }}</div>
+                        {% if result.metadata.country is defined and result.metadata.country %}
+                            <div class="text-xs text-content-muted truncate">
+                                {{ result.metadata.country }}
+                                {% if result.metadata.coasterCount is defined %}
+                                    · {{ result.metadata.coasterCount }} coasters
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        {% endif %}
+
+        {# Users #}
+        {% if response.results.users|length > 0 %}
+            <p class="px-4 pt-3 pb-1 text-xs font-semibold text-content-muted uppercase tracking-wide">
+                {{ 'search.type.users'|trans }}
+            </p>
+            {% for result in response.results.users %}
+                <a href="{{ path('user_show', {slug: result.slug}) }}"
+                   class="flex items-center gap-3 px-4 py-2.5 hover:bg-surface-raised transition-colors"
+                   data-result-url="{{ path('user_show', {slug: result.slug}) }}"
+                   data-action="click->search-nav#saveAndNavigate">
+                    {% if result.image %}
+                        <img src="{{ pictures_cdn }}/user/{{ result.image }}"
+                             class="w-8 h-8 rounded-full object-cover shrink-0"
+                             alt="" loading="lazy">
+                    {% else %}
+                        <div class="w-8 h-8 rounded-full bg-surface-muted flex items-center justify-center shrink-0">
+                            {{ ux_icon('tabler:user', {'class': 'w-4 h-4 text-content-muted', 'aria-hidden': 'true'}) }}
+                        </div>
+                    {% endif %}
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-medium text-content truncate">{{ result.name }}</div>
+                        {% if result.metadata.totalRatings is defined %}
+                            <div class="text-xs text-content-muted">{{ result.metadata.totalRatings }} ratings</div>
+                        {% endif %}
+                    </div>
+                </a>
+            {% endfor %}
+        {% endif %}
+
+        {# Show all footer #}
+        <div class="px-4 pt-2 pb-1 border-t border-line mt-1">
+            <a href="{{ this.resultsUrl }}"
+               class="text-xs text-cc-blue-600 dark:text-cc-blue-400 hover:underline"
+               data-result-url="{{ this.resultsUrl }}"
+               data-action="click->search-nav#saveAndNavigate">
+                {{ 'search.show_all'|trans({'query': query}) }}
+            </a>
+        </div>
+
+    {% else %}
+        {# No results #}
+        <div class="px-4 py-6 text-center">
+            <p class="text-sm text-content-muted">{{ 'search.no_results'|trans({'query': query}) }}</p>
+        </div>
+    {% endif %}
+{% endif %}

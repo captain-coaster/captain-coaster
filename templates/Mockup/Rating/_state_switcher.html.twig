@@ -1,0 +1,19 @@
+{#
+  Quick state switcher. Helps you preview all states without going back to index.
+#}
+<div class="mb-4 flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+  <a href="{{ path('mockup_rating_index') }}" class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-surface-muted text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+    {{ ux_icon('tabler:arrow-left', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+    Index
+  </a>
+  <span class="shrink-0 text-xs text-neutral-400">·</span>
+  {% for key, label in states %}
+    <a href="{{ path('mockup_rating_coaster', {state: key}) }}"
+       class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+              {{ key == state
+                ? 'bg-cc-blue-600 text-white'
+                : 'bg-surface-muted text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">
+      {{ key }}
+    </a>
+  {% endfor %}
+</div>

@@ -87,7 +87,6 @@ class UserCrudController extends AbstractCrudController
         yield FormField::addPanel('Settings')->onlyOnForms();
         yield TextField::new('preferredLocale')->onlyOnForms();
         yield BooleanField::new('emailNotification')->onlyOnForms();
-        yield BooleanField::new('addTodayDateWhenRating')->onlyOnForms();
         yield BooleanField::new('imperial')->onlyOnForms();
         yield BooleanField::new('displayReviewsInAllLanguages')->onlyOnForms();
 

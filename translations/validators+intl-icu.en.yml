@@ -8,6 +8,9 @@ ride_date:
     before_opening: The ride date cannot be before the coaster opened.
     after_closing: The ride date cannot be after the coaster closed.
     future: The ride date cannot be in the future.
+    last_before_first: 'The last ride date cannot be before the first ride date.'
+ride_count:
+    invalid: 'The ride count must be at least 1.'
 
 # Image upload validation
 image_upload:

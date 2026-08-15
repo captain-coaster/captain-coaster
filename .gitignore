@@ -1,6 +1,18 @@
 .DS_Store
 .idea
 
+###> playwright-mcp ###
+/.playwright-mcp/
+###< playwright-mcp ###
+
+###> visual-screenshots ###
+/screenshots/
+###< visual-screenshots ###
+
+###> generated assets (copied from node_modules by postinstall) ###
+/assets/fonts/
+###< generated assets ###
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -10,14 +22,6 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
-
-###> symfony/webpack-encore-bundle ###
-/node_modules/
-/public/build/
-npm-debug.log
-yarn-error.log
-###< symfony/webpack-encore-bundle ###
-
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
@@ -31,3 +35,11 @@ phpstan.neon
 /phpunit.xml
 /.phpunit.cache/
 ###< phpunit/phpunit ###
+
+###> pentatrion/vite-bundle ###
+/node_modules/
+/public/build/
+###< pentatrion/vite-bundle ###
+.superpowers/
+
+.worktrees/

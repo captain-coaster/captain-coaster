@@ -230,7 +230,7 @@ class CoasterSummaryService
         $negative = 0;
 
         foreach ($riddenCoasters as $riddenCoaster) {
-            $rating = $riddenCoaster->getValue();
+            $rating = $riddenCoaster->getRating();
             if (null === $rating) {
                 continue;
             }

@@ -1,0 +1,34 @@
+{# Coaster search result row #}
+<a href="{{ path('redirect_coaster_show', {'slug': result.slug}) }}"
+   class="group flex items-center gap-3 px-4 py-3 hover:bg-surface-muted transition-colors">
+
+    {# Thumbnail #}
+    <div class="shrink-0 w-10 h-10 rounded-full overflow-hidden bg-surface-muted flex items-center justify-center">
+        {% if result.image %}
+            <img src="{{ pictures_cdn }}/280x210/{{ result.image }}"
+                 alt=""
+                 class="w-full h-full object-cover"
+                 loading="lazy">
+        {% else %}
+            {{ ux_icon('tabler:rollercoaster', {'class': 'w-5 h-5 text-neutral-300 dark:text-neutral-600', 'aria-hidden': 'true'}) }}
+        {% endif %}
+    </div>
+
+    {# Name + park #}
+    <div class="flex-1 min-w-0">
+        <div class="font-medium text-sm text-content truncate group-hover:text-cc-blue-600 transition-colors">
+            {{ result.name }}
+        </div>
+        <div class="text-xs text-content-tertiary truncate">{{ result.subtitle }}</div>
+    </div>
+
+    {# Rank badge — score-based HSL color (green=top, red=bottom), same formula as coaster show page #}
+    {% if result.metadata.rank and result.metadata.score %}
+        <span class="shrink-0 inline-flex items-center justify-center min-w-7 h-5 px-1.5 rounded-full text-xs font-bold text-white"
+              style="background-color: hsl({{ (result.metadata.score * 1.2)|round }}, 50%, 45%);">
+            #{{ result.metadata.rank }}
+        </span>
+    {% endif %}
+
+    {{ ux_icon('tabler:chevron-right', {'class': 'w-4 h-4 text-neutral-300 dark:text-neutral-600 shrink-0', 'aria-hidden': 'true'}) }}
+</a>

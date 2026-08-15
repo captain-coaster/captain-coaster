@@ -1,0 +1,19 @@
+{# Ranking Results — full-width leaderboard rows #}
+{% set riddenIds = riddenIds|default([]) %}
+
+{% if coasters|length > 0 %}
+  <div class="space-y-2">
+    {% for coaster in coasters %}
+      <twig:RankingRow :coaster="coaster" :ridden="coaster.id in riddenIds" />
+    {% endfor %}
+  </div>
+
+  {{ knp_pagination_render(coasters) }}
+{% elseif filtered|default(false) %}
+  <twig:EmptyState
+    icon="tabler:mood-empty"
+    :title="'coaster_ranking.no_results'|trans"
+    :action="{ url: path('ranking_index'), text: 'filters.clear'|trans }" />
+{% else %}
+  <twig:EmptyState icon="tabler:mood-empty" :title="'coaster_ranking.no_results'|trans" />
+{% endif %}

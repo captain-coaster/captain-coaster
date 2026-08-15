@@ -16,6 +16,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: TopRepository::class)]
 class Top
 {
+    public const string TYPE_RANKING = 'ranking';
+    public const string TYPE_BUCKET = 'bucket';
+    public const string TYPE_CUSTOM = 'custom';
+
     #[ORM\Column(type: Types::INTEGER), ORM\Id, ORM\GeneratedValue]
     private ?int $id = null;
 
@@ -23,7 +27,17 @@ class Top
     private string $name;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $type = 'top';
+    private string $type = self::TYPE_CUSTOM;
+
+    #[ORM\Column(name: 'is_public', type: Types::BOOLEAN, options: ['default' => true])]
+    private bool $isPublic = true;
+
+    #[ORM\ManyToOne(targetEntity: Coaster::class)]
+    #[ORM\JoinColumn(name: 'cover_coaster_id', referencedColumnName: 'id', nullable: true, onDelete: 'SET NULL')]
+    private ?Coaster $coverCoaster = null;
+
+    #[ORM\Column(name: 'likes_count', type: Types::INTEGER, options: ['default' => 0])]
+    private int $likesCount = 0;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'tops')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
@@ -34,9 +48,6 @@ class Top
     #[ORM\OrderBy(['position' => 'ASC'])]
     #[CaptainConstraints\UniqueCoaster]
     private Collection $topCoasters;
-
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $main = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
@@ -112,14 +123,67 @@ class Top
         return $this->topCoasters;
     }
 
-    public function isMain(): bool
+    public function isRanking(): bool
     {
-        return $this->main;
+        return self::TYPE_RANKING === $this->type;
     }
 
-    public function setMain(bool $main): static
+    public function isBucket(): bool
     {
-        $this->main = $main;
+        return self::TYPE_BUCKET === $this->type;
+    }
+
+    public function isCustom(): bool
+    {
+        return self::TYPE_CUSTOM === $this->type;
+    }
+
+    public function isPublic(): bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): static
+    {
+        $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
+    public function getCoverCoaster(): ?Coaster
+    {
+        return $this->coverCoaster;
+    }
+
+    public function setCoverCoaster(?Coaster $coverCoaster): static
+    {
+        $this->coverCoaster = $coverCoaster;
+
+        return $this;
+    }
+
+    public function getLikesCount(): int
+    {
+        return $this->likesCount;
+    }
+
+    public function setLikesCount(int $likesCount): static
+    {
+        $this->likesCount = $likesCount;
+
+        return $this;
+    }
+
+    public function incrementLikesCount(): static
+    {
+        ++$this->likesCount;
+
+        return $this;
+    }
+
+    public function decrementLikesCount(): static
+    {
+        $this->likesCount = max(0, $this->likesCount - 1);
 
         return $this;
     }

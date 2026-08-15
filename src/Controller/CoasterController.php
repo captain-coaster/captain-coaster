@@ -7,10 +7,13 @@ namespace App\Controller;
 use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
+use App\Entity\User;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
+use App\Repository\ReviewUpvoteRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Repository\TopCoasterRepository;
 use App\Service\ImageManager;
 use App\Service\SummaryFeedbackService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -80,10 +83,80 @@ class CoasterController extends BaseController
         }
 
         return $this->render(
-            'Coaster/image-upload.html.twig',
+            'Coaster/image_upload.html.twig',
             [
                 'form' => $form,
                 'coaster' => $coaster,
+            ]
+        );
+    }
+
+    /** Dedicated images page for a coaster */
+    #[Route(path: '/{slug}/images', name: 'coaster_images', methods: ['GET'])]
+    public function imagesPage(
+        EntityManagerInterface $em,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster
+    ): Response {
+        $userLikes = [];
+        if (($user = $this->getUser()) instanceof UserInterface) {
+            $userLikes = $em
+                ->getRepository(LikedImage::class)
+                ->findUserLikes($user)
+                ->getSingleColumnResult();
+        }
+
+        return $this->render(
+            'Coaster/images.html.twig',
+            [
+                'userLikes' => $userLikes,
+                'coaster' => $coaster,
+            ]
+        );
+    }
+
+    /** Dedicated reviews page for a coaster.
+     * @param array<string, mixed> $filters
+     */
+    #[Route(path: '/{slug}/reviews', name: 'coaster_reviews', methods: ['GET'])]
+    public function reviewsPage(
+        Request $request,
+        #[MapEntity(mapping: ['slug' => 'slug'])]
+        Coaster $coaster,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        ReviewUpvoteRepository $reviewUpvoteRepository,
+        PaginatorInterface $paginator,
+        #[MapQueryParameter]
+        int $page = 1,
+        #[MapQueryParameter]
+        array $filters = []
+    ): Response {
+        $user = $this->getUser();
+        $displayReviewsInAllLanguages = false;
+        if ($user instanceof User) {
+            $displayReviewsInAllLanguages = $user->isDisplayReviewsInAllLanguages();
+        }
+
+        $pagination = $paginator->paginate(
+            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages, $filters),
+            $page,
+            25
+        );
+
+        $upvotedReviewIds = [];
+        if ($user instanceof User) {
+            $reviewIds = array_map(static fn ($review) => $review->getId(), (array) $pagination->getItems());
+            $upvotedReviewIds = $reviewUpvoteRepository->getUpvotedReviewIds($user, $reviewIds);
+        }
+
+        return $this->render(
+            'Coaster/reviews.html.twig',
+            [
+                'reviews' => $pagination,
+                'coaster' => $coaster,
+                'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+                'filters' => $filters,
+                'upvotedReviewIds' => $upvotedReviewIds,
             ]
         );
     }
@@ -112,40 +185,6 @@ class CoasterController extends BaseController
                 'userLikes' => $userLikes,
                 'coaster' => $coaster,
                 'number' => $imageNumber,
-            ]
-        );
-    }
-
-    /** Async loads AI summary for a coaster */
-    #[Route(
-        path: '/{slug}/summary/ajax',
-        name: 'coaster_summary_ajax_load',
-        options: ['expose' => true],
-        methods: ['GET'],
-        condition: 'request.isXmlHttpRequest()'
-    )]
-    public function ajaxLoadSummary(
-        Request $request,
-        #[MapEntity(mapping: ['slug' => 'slug'])]
-        Coaster $coaster,
-        CoasterSummaryRepository $coasterSummaryRepository,
-        SummaryFeedbackService $summaryFeedbackService
-    ): Response {
-        $user = $this->getUser();
-        $coasterSummary = $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale());
-
-        // Get user's current feedback state for the summary
-        $userFeedbackState = null;
-        if ($coasterSummary) {
-            $ipAddress = $request->getClientIp() ?? '127.0.0.1';
-            $userFeedbackState = $summaryFeedbackService->getUserFeedbackState($coasterSummary, $user, $ipAddress);
-        }
-
-        return $this->render(
-            'Coaster/_ai_summary.html.twig',
-            [
-                'coasterSummary' => $coasterSummary,
-                'userFeedbackState' => $userFeedbackState,
             ]
         );
     }
@@ -198,14 +237,29 @@ class CoasterController extends BaseController
         Request $request,
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
-        CoasterRepository $coasterRepository
+        CoasterRepository $coasterRepository,
+        TopCoasterRepository $topCoasterRepository,
+        CoasterSummaryRepository $coasterSummaryRepository,
+        SummaryFeedbackService $summaryFeedbackService
     ): Response {
-        $rating = null;
+        $riddenCoaster = null;
+        $wishlist = null;
         $user = null;
         if ($this->isGranted('ROLE_USER')) {
             $user = $this->getUser();
-            $rating = $riddenCoasterRepository->findOneBy(
+            $riddenCoaster = $riddenCoasterRepository->findOneBy(
                 ['coaster' => $coaster, 'user' => $user]
+            );
+            $wishlist = $topCoasterRepository->findBucketByUserAndCoaster($user, $coaster);
+        }
+
+        $coasterSummary = $coasterSummaryRepository->findByCoasterAndLanguage($coaster, $request->getLocale());
+        $userFeedbackState = null;
+        if ($coasterSummary) {
+            $userFeedbackState = $summaryFeedbackService->getUserFeedbackState(
+                $coasterSummary,
+                $user,
+                $request->getClientIp() ?? '127.0.0.1'
             );
         }
 
@@ -214,9 +268,14 @@ class CoasterController extends BaseController
             [
                 'countRatings' => $riddenCoasterRepository->getRatingStatsForCoaster($coaster),
                 'coaster' => $coaster,
-                'rating' => $rating,
+                'riddenCoaster' => $riddenCoaster,
+                'wishlist' => $wishlist,
                 'user' => $user,
                 'coasters' => $coasterRepository->findAllCoastersInPark($coaster->getPark()),
+                'featuredReviews' => $riddenCoasterRepository->getFeaturedReviews($coaster, $request->getLocale(), 3),
+                'totalReviews' => $riddenCoasterRepository->countCoasterReviewsWithText($coaster),
+                'coasterSummary' => $coasterSummary,
+                'userFeedbackState' => $userFeedbackState,
             ]
         );
     }

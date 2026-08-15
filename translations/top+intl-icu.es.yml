@@ -1,62 +1,139 @@
-# Top List translations - Spanish
+# Lists translations - Spanish
+
+module:
+    lists: 'Listas'
+    my_lists: 'Mis Listas'
+    explore: 'Explorar listas'
+
+type:
+    ranking: 'Top Coasters'
+    bucket: 'Bucket List'
+    custom: 'Lista personal'
+    custom_plural: 'Listas personales'
+
+type_short:
+    ranking: 'Top'
+    bucket: 'Bucket'
+    custom: 'Personal'
 
 new:
-    title: 'Crear un nuevo top'
+    title: 'Crear una lista personal'
+    subtitle: 'Dale un nombre. Podrás añadir montañas rusas a continuación.'
     form:
-        name: 'Nombre de tu top:'
-        type: '¿Es un Top o un Flop?'
-        flop: 'Flop (el más bajo es mejor)'
-        top: 'Top (el más alto es mejor)'
-        submit: 'Crear nuevo top'
+        name: 'Nombre'
+        submit: 'Crear lista'
+    back: 'Volver'
 
-editDetails:
-    title: 'Actualizar un top'
-    form:
-        submit: 'Actualizar el top'
+explore:
+    title: 'Explorar listas'
+    subtitle: 'Descubre Top Coasters, Bucket Lists y listas personales de la comunidad.'
+    create: 'Nueva lista'
+    filter:
+        all: 'Todas'
+        top_coasters: 'Top Coasters'
+        buckets: 'Bucket Lists'
+        custom: 'Personales'
+    search:
+        placeholder: 'Buscar listas o usuarios…'
+        clear: 'Limpiar'
+    empty:
+        title: 'No se encontraron listas'
+        description: 'Prueba con otro filtro o término de búsqueda.'
+        clear: 'Limpiar filtros'
+
+show:
+    back: 'Volver a las listas'
+    by: 'por'
+    more: '{count, plural, one {# montaña rusa más} other {# montañas rusas más}}'
+    coasters: '{count, plural, one {# montaña rusa} other {# montañas rusas}}'
+    feeds_rankings:
+        label: 'Alimenta el ranking mundial'
+        tooltip: 'Las valoraciones de las montañas rusas de tu Top Coasters contribuyen al ranking mundial.'
+    private:
+        label: 'Privada'
+    empty:
+        title: 'Esta lista está vacía'
+        description: 'Añade montañas rusas para empezar.'
+    share:
+        button: 'Compartir'
+        copy: 'Copiar enlace'
+        copied: 'Enlace copiado'
+        title: '{name} en Captain Coaster'
+
+editor:
+    done: 'Hecho'
+    rename: 'Renombrar la lista'
+    rename_save: 'Guardar'
+    visibility:
+        public: 'Pública'
+        private: 'Privada'
+        title: 'Visibilidad'
+    cover:
+        choose: 'Elegir imagen'
+        none: 'Sin imagen'
+        title: 'Imagen de portada'
+    onboarding:
+        title: 'Añade tu primera montaña rusa'
+        description: 'Usa el buscador de arriba. Arrastra para reordenar. Toca × para quitar. Todo se guarda automáticamente.'
+    actions:
+        move_to_top: 'Mover al principio'
+        move_to_bottom: 'Mover al final'
+        move_to_position: 'Mover a la posición…'
+        move_to_position_prompt: 'Introduce la posición (1-{max})'
+        invalid_position: 'Posición no válida'
+        remove: 'Quitar'
+        more: 'Más acciones'
+
+my_lists:
+    title: 'Mis Listas'
+    top_coasters:
+        title: 'Top Coasters'
+        subtitle: 'Tus favoritas — estas valoraciones contribuyen al ranking mundial.'
+        view: 'Ver'
+        edit: 'Editar'
+        start: 'Empezar tu Top Coasters'
+        start_cta: 'Añade montañas rusas a tu Top Coasters.'
+    bucket:
+        title: 'Bucket List'
+        subtitle: 'Las montañas rusas que quieres montar.'
+        view: 'Ver'
+        edit: 'Editar'
+        start: 'Empezar tu Bucket List'
+        start_cta: 'Guarda las montañas rusas que quieres montar.'
+    custom:
+        title: 'Listas personales'
+        subtitle: 'Listas temáticas que tú creas.'
+        new: 'Nueva lista personal'
+        empty_title: 'Aún no hay listas personales'
+        empty_description: 'Crea listas temáticas — mejores de madera, mejores inversiones, tus 2025…'
+        empty_cta: 'Crear tu primera lista'
+
+likes:
+    like: 'Me gusta'
+    unlike: 'Ya no me gusta'
+    count: '{count, plural, =0 {Sin "me gusta"} one {# "me gusta"} other {# "me gusta"}}'
+    liked_label: 'Favoritas'
 
 list:
-    title: 'Los últimos tops'
-    more: 'Ver más'
-    updated: 'última actualización'
     by: 'por'
-    infotitle: '¡Todos tus tops están en esta página!'
-    info: 'Los tops son la mejor manera de compartir tu pasión: dinos qué RMC es el mejor del planeta, los peores kiddies de Texas, o por qué no las mejores montañas rusas acuáticas con un LIM. ¡Tú decides!'
-    create_first: 'Crear mi primer Top Coasters'
-    create: 'Crear un top personalizado'
 
-title: 'Mis Top Coasters'
-update: 'Actualizar'
-update_details: 'Cambiar nombre'
+user:
+    lists_count: '{count, plural, =0 {Sin listas} one {# lista} other {# listas}}'
+
+update: 'Editar'
 delete: 'Eliminar'
-delete_confirmation: '¿Eliminar?'
-find: 'Buscar una montaña rusa...'
+delete_confirmation: '¿Eliminar esta lista?'
 
 search:
-    placeholder: 'Buscar una montaña rusa para añadir...'
+    placeholder: 'Buscar una montaña rusa para añadir…'
     no_results: 'No se encontraron montañas rusas'
+    no_results_for_query: 'Sin resultados para "{query}"'
     already_in_list: 'Ya está en tu lista'
 
-help:
-    title: 'Cómo usar tu Top List'
-    search: 'Busca montañas rusas para añadir a tu lista'
-    reorder: 'Mantén presionado el número de posición y arrastra para reordenar'
-    actions: 'Usa el menú para mover o eliminar montañas rusas rápidamente'
-    autosave: 'Los cambios se guardan automáticamente'
-
 actions:
-    move_to_top: 'Mover al principio'
-    move_to_bottom: 'Mover al final'
-    move_to_position: 'Mover a la posición...'
-    remove: 'Eliminar'
-    position_prompt: 'Introduce la posición (1-{max}):'
+    remove: 'Quitar'
 
 save_status:
-    saving: 'Guardando...'
+    saving: 'Guardando…'
     saved: 'Guardado'
-    error: 'Error al guardar. Reintentando...'
-
-errors:
-    save_failed: 'Error al guardar los cambios. Por favor, inténtalo de nuevo.'
-    invalid_position: 'Posición inválida. Por favor, introduce un número entre 1 y {max}.'
-    add_failed: 'Error al añadir la montaña rusa. Por favor, inténtalo de nuevo.'
-    duplicate: 'Esta montaña rusa ya está en tu lista.'
+    error: 'Error al guardar — reintentando'

@@ -1,0 +1,57 @@
+{#
+  Page Header — standard title block for all pages.
+
+  Two modes:
+    - Top-level page (no backUrl): title + optional subtitle, no back arrow
+    - Sub-page (backUrl provided): icon-only back arrow + title + optional subtitle
+
+  Usage:
+    Top-level:
+      <twig:PageHeader title="{{ 'ranking.title'|trans }}" />
+      <twig:PageHeader title="{{ 'ranking.title'|trans }}" subtitle="{{ 'ranking.subtitle'|trans }}" />
+      <twig:PageHeader title="{{ 'ranking.title'|trans }}" icon="tabler:trophy" iconColor="text-cc-warm-500" />
+
+    Sub-page:
+      <twig:PageHeader
+          title="{{ 'profile.settings.title'|trans }}"
+          backUrl="{{ path('profile') }}"
+          backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+      />
+
+  Props:
+    - title (required): translated page title string
+    - subtitle: optional secondary line below the title
+    - icon: optional Tabler icon name shown before the title (e.g. tabler:trophy)
+    - iconColor: Tailwind colour class for the icon — warm for ratings/achievements, blue for everything else
+    - backUrl: optional URL — presence triggers the back arrow (sub-page mode)
+    - backLabel: accessible aria-label for the back button (recommended when backUrl is set)
+#}
+{% props
+    title,
+    subtitle = null,
+    icon = null,
+    iconColor = 'text-cc-blue-500',
+    backUrl = null,
+    backLabel = null
+%}
+
+<div class="flex items-center gap-3 mb-6">
+  {% if backUrl %}
+    <a href="{{ backUrl }}"
+       class="shrink-0 p-2 rounded-lg text-content-muted hover:text-content hover:bg-surface-muted transition-colors"
+       {% if backLabel %}aria-label="{{ backLabel }}"{% endif %}>
+      {{ ux_icon('tabler:arrow-left', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+    </a>
+  {% endif %}
+  <div class="min-w-0 flex-1">
+    <h1 class="text-lg font-bold text-content truncate flex items-center gap-2">
+      {% if icon %}
+        {{ ux_icon(icon, {'class': 'w-5 h-5 ' ~ iconColor ~ ' shrink-0', 'aria-hidden': 'true'}) }}
+      {% endif %}
+      {{ title }}
+    </h1>
+    {% if subtitle %}
+      <p class="text-xs text-content-muted mt-0.5">{{ subtitle }}</p>
+    {% endif %}
+  </div>
+</div>

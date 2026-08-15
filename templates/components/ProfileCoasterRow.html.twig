@@ -1,0 +1,124 @@
+{#
+  ProfileCoasterRow — dense coaster row for the "My Coasters" page and park pages.
+
+  Layout: full-height flush-left thumbnail · info (name · subtitle · ride dates) · right column.
+  Right column adapts per context:
+    - rateable + logged in: interactive stars (works for both ridden and non-ridden coasters)
+      + delete button (only when ridden)
+    - wishlist tab: a single bookmark toggle
+    - non-rateable or anonymous: nothing
+
+  Props:
+    - coaster (required): Coaster entity
+    - riddenCoaster: optional RiddenCoaster (null on the wishlist tab or unridden)
+    - wishlist: optional Wishlist (null unless on the wishlist tab)
+    - showManufacturer: when true, shows manufacturer instead of park name as subtitle
+#}
+{% props coaster, riddenCoaster = null, wishlist = null, showManufacturer = false %}
+
+<div class="relative bg-surface rounded-xl border border-line hover:border-line-strong transition-colors overflow-hidden"
+     id="tr-coaster-{{ coaster.id }}">
+  <div class="flex items-stretch gap-3">
+
+    {# Thumbnail — fills the full row height, flush to the left edge #}
+    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+       class="shrink-0 self-stretch w-20" tabindex="-1" aria-hidden="true">
+      {% if coaster.mainImage is not null %}
+        <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+             class="w-full h-full object-cover"
+             alt="{{ coaster.name }}"
+             loading="lazy">
+      {% else %}
+        <div class="w-full h-full bg-surface-muted flex items-center justify-center">
+          {{ ux_icon('tabler:roller-skating', {'class': 'w-5 h-5 text-neutral-400', 'aria-hidden': 'true'}) }}
+        </div>
+      {% endif %}
+    </a>
+
+    {# Coaster info #}
+    <div class="flex-1 min-w-0 py-2.5">
+      <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+         class="font-medium text-sm text-content hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors leading-snug block truncate after:absolute after:inset-0">
+        {{ coaster.name }}
+      </a>
+      <div class="mt-0.5">
+        {% if showManufacturer %}
+          <span class="text-xs text-content-muted truncate">
+            {{- coaster.manufacturer ? coaster.manufacturer.name : '' -}}
+          </span>
+        {% else %}
+          <span class="text-xs text-content-muted truncate">{{ coaster.park.name }}</span>
+        {% endif %}
+      </div>
+      {% if riddenCoaster %}
+        {% if riddenCoaster.firstRiddenAt %}
+          <div class="text-[10px] text-content-subtle mt-0.5 flex items-center gap-0.5">
+            {{ ux_icon('tabler:calendar', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+            {{ riddenCoaster.firstRiddenAt|date('d/m/Y') }}
+          </div>
+        {% else %}
+          <div class="text-[10px] text-content-muted mt-0.5 flex items-center gap-0.5">
+            {{ ux_icon('tabler:calendar-off', {'class': 'w-3 h-3 shrink-0', 'aria-hidden': 'true'}) }}
+            {{ 'profile.journey.undated'|trans }}
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+    {# Right column — raised above the stretched title link so it stays interactive #}
+    <div class="relative z-10 shrink-0 self-center py-2.5 pr-3 flex items-center gap-2">
+      {% if wishlist %}
+        {# Wishlist tab: bucket toggle only #}
+        <div data-controller="bucket-toggle"
+             data-bucket-toggle-coaster-id-value="{{ coaster.id }}"
+             data-bucket-toggle-bucketed-value="true"
+             data-bucket-toggle-locale-value="{{ app.request.locale }}"
+             data-bucket-toggle-token-value="{{ csrf_token('wishlist') }}">
+          <button type="button" data-action="click->bucket-toggle#toggle"
+                  class="p-1 rounded-md transition-colors"
+                  aria-label="{{ 'coaster.journal.wishlist'|trans }}" title="{{ 'coaster.journal.wishlist'|trans }}">
+            <span data-bucket-toggle-target="off" class="hidden text-neutral-400 hover:text-cc-warm-500">
+              {{ ux_icon('tabler:bucket', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+            </span>
+            <span data-bucket-toggle-target="on" class="text-cc-warm-500 hover:text-cc-warm-600">
+              {{ ux_icon('tabler:bucket', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+            </span>
+          </button>
+        </div>
+      {% elseif coaster.isRateable and is_granted('ROLE_USER') %}
+        {# Rate / unrate #}
+        <twig:StarRating
+          :value="riddenCoaster and riddenCoaster.rating ? riddenCoaster.rating : null"
+          :size="16"
+          mode="standalone"
+          :coasterId="coaster.id"
+          :ratingId="riddenCoaster ? riddenCoaster.id : null"
+          :readonly="riddenCoaster and not is_granted('update', riddenCoaster)"
+        />
+        {# Tick / untick — only when user is allowed to rate this coaster #}
+        {% if is_granted('rate', coaster) %}
+          <div class="csrf-protection" data-controller="csrf-protection ridden-toggle"
+               data-csrf-protection-token-value="{{ csrf_token('rating') }}"
+               data-ridden-toggle-csrf-protection-outlet=".csrf-protection"
+               data-ridden-toggle-coaster-id-value="{{ coaster.id }}"
+               data-ridden-toggle-ridden-coaster-id-value="{{ riddenCoaster ? riddenCoaster.id : 0 }}"
+               data-ridden-toggle-ridden-value="{{ riddenCoaster ? 'true' : 'false' }}"
+               data-ridden-toggle-locale-value="{{ app.request.locale }}"
+               data-ridden-toggle-confirm-remove-value="{{ riddenCoaster and riddenCoaster.rating ? 'coaster.journal.confirm_remove_ridden'|trans : '' }}">
+            <button type="button" data-action="click->ridden-toggle#toggle"
+                    class="p-1 rounded-md transition-colors"
+                    aria-label="{{ 'coaster.journal.ridden'|trans }}" title="{{ 'coaster.journal.ridden'|trans }}">
+              <span data-ridden-toggle-target="off" class="{{ riddenCoaster ? 'hidden' : '' }} text-neutral-400 hover:text-green-600">
+                {{ ux_icon('tabler:circle-check', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </span>
+              <span data-ridden-toggle-target="on" class="{{ riddenCoaster ? '' : 'hidden' }} text-green-600 dark:text-green-400">
+                {{ ux_icon('tabler:circle-check-filled', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+              </span>
+            </button>
+          </div>
+        {% endif %}
+      {% endif %}
+    </div>
+
+  </div>
+</div>

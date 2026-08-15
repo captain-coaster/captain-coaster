@@ -1,0 +1,48 @@
+{#
+    UserAvatar — renders a user's profile picture or a roller-coaster icon fallback.
+
+    Props:
+      - user:  User entity (required) — must expose getProfilePicture() and getDisplayName()
+      - class: CSS classes applied to the <img> and the fallback <div> (default: 'w-10 h-10 rounded-full')
+
+    When the user has no profile picture, a colored circle with a roller-coaster icon is rendered.
+    When a profile picture is set but fails to load (stale/missing CDN file), the same icon
+    fallback is swapped in on the <img>'s error event via avatar_fallback_controller.js.
+    The color is deterministic per user (derived from display name length).
+#}
+{% props user, class = 'w-10 h-10 rounded-full' %}
+
+{%- set palettes = [
+    ['text-indigo-600 dark:text-indigo-400',  'bg-indigo-100 dark:bg-indigo-900/40'],
+    ['text-violet-600 dark:text-violet-400',  'bg-violet-100 dark:bg-violet-900/40'],
+    ['text-pink-600 dark:text-pink-400',      'bg-pink-100 dark:bg-pink-900/40'],
+    ['text-amber-600 dark:text-amber-400',    'bg-amber-100 dark:bg-amber-900/40'],
+    ['text-emerald-600 dark:text-emerald-400','bg-emerald-100 dark:bg-emerald-900/40'],
+    ['text-blue-600 dark:text-blue-400',      'bg-blue-100 dark:bg-blue-900/40'],
+    ['text-red-600 dark:text-red-400',        'bg-red-100 dark:bg-red-900/40'],
+    ['text-teal-600 dark:text-teal-400',      'bg-teal-100 dark:bg-teal-900/40'],
+] -%}
+{%- set pair = palettes[(user.displayName|length) % (palettes|length)] -%}
+
+{% if user.profilePicture %}
+    <div class="contents" data-controller="avatar-fallback">
+        <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
+             class="{{ class }} object-cover"
+             alt="{{ user.displayName }}"
+             loading="lazy"
+             data-avatar-fallback-target="image"
+             data-action="error->avatar-fallback#error">
+        <div class="{{ class }} {{ pair[1] }} hidden items-center justify-center shrink-0"
+             aria-label="{{ user.displayName }}"
+             role="img"
+             data-avatar-fallback-target="fallback">
+            {{ ux_icon('tabler:roller-coaster', {'class': 'w-1/2 h-1/2 ' ~ pair[0], 'aria-hidden': 'true'}) }}
+        </div>
+    </div>
+{% else %}
+    <div class="{{ class }} {{ pair[1] }} flex items-center justify-center shrink-0"
+         aria-label="{{ user.displayName }}"
+         role="img">
+        {{ ux_icon('tabler:roller-coaster', {'class': 'w-1/2 h-1/2 ' ~ pair[0], 'aria-hidden': 'true'}) }}
+    </div>
+{% endif %}

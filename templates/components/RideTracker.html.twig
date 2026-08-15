@@ -1,0 +1,236 @@
+{% set rc = this.riddenCoaster %}
+{% set ridden = rc is not null %}
+{% set hasRating = ridden and rc.rating is not null %}
+{% set totalRatings = 0 %}
+{% set ratingSum = 0 %}
+{% for cr in countRatings %}
+  {% set totalRatings = totalRatings + cr.count %}
+  {% set ratingSum = ratingSum + (cr.rating * cr.count) %}
+{% endfor %}
+{% set avgRating = totalRatings > 0 ? (ratingSum / totalRatings) : null %}
+
+<div {{ attributes }} class="space-y-4"
+     data-action="ride:marked@document->live#$render ride:removed@document->live#$render wishlist:changed@document->live#$render">
+  {% if app.user %}
+    {# ── My rating + Community ratings side by side on desktop ───────────── #}
+    <div class="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start space-y-6 lg:space-y-0">
+      <section>
+        <h2 class="text-lg font-semibold text-content mb-3 flex items-center gap-1.5">
+          {{ ux_icon('tabler:star', {'class': 'w-5 h-5 text-cc-warm-500 shrink-0', 'aria-hidden': 'true'}) }}
+          {{ 'coaster.rating.my_rating'|trans }}
+          {% if avgRating %}
+            <span class="ml-auto text-xs font-medium text-content-muted inline-flex items-center gap-1">
+              {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+              {{ avgRating|number_format(1) }} · {{ totalRatings }}
+            </span>
+          {% endif %}
+        </h2>
+        <div class="flex items-center justify-center sm:justify-start gap-2">
+          <twig:StarRating
+            :value="hasRating ? rc.rating : null"
+            :size="36"
+            mode="live"
+            :coasterId="coasterId"
+          />
+          {% if hasRating %}
+            <button type="button" data-action="live#action" data-live-action-param="clearRating"
+                    class="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-full text-content-subtle hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    aria-label="{{ 'coaster.rating.delete'|trans }}">
+              {{ ux_icon('tabler:x', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            </button>
+          {% endif %}
+        </div>
+        {% if not ridden %}
+          <p class="mt-2 text-xs text-content-subtle">{{ 'coaster.rating.tap_to_rate_hint'|trans }}</p>
+        {% endif %}
+      </section>
+
+      {# ── Community ratings ─────────────────────────────────────────────── #}
+      <section>
+        <twig:SectionHeading
+          icon="tabler:chart-bar"
+          iconColor="text-cc-blue-500"
+          title="{{ 'coaster.rating.section_title'|trans }}"
+          :count="totalRatings > 0 ? totalRatings : null"
+        />
+        {% if totalRatings > 0 %}
+          <twig:RatingDistribution :countRatings="countRatings" :totalRatings="totalRatings" />
+        {% else %}
+          <p class="text-sm text-content-muted">{{ 'coaster.rating.notenough'|trans }}</p>
+        {% endif %}
+      </section>
+    </div>
+
+    {# ── Ride-log (boarding pass) — full-width, only when ridden ─────────── #}
+    {% if ridden %}
+      <div class="rounded-2xl bg-surface border border-line p-4">
+        <h2 class="text-sm font-semibold text-content mb-3 flex items-center gap-1.5">
+          {{ ux_icon('tabler:ticket', {'class': 'w-4 h-4 text-cc-blue-500 shrink-0', 'aria-hidden': 'true'}) }}
+          {{ 'coaster.journal.title'|trans }}
+        </h2>
+
+        {# Rides tile: icon-labeled header + count stepper [ − ]  count  [ + ] #}
+        <div class="rounded-xl bg-surface-muted p-3">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="w-6 h-6 rounded-full bg-cc-warm-100 dark:bg-cc-warm-900/30 flex items-center justify-center shrink-0">
+              {{ ux_icon('tabler:repeat', {'class': 'w-3.5 h-3.5 text-cc-warm-600 dark:text-cc-warm-400', 'aria-hidden': 'true'}) }}
+            </span>
+            <span class="text-[10px] font-semibold uppercase tracking-widest text-content-muted leading-none">
+              {{ 'coaster.journal.rides_count'|trans({'count': rc.rideCount}) }}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" data-action="live#action" data-live-action-param="removeReride"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-surface-strong hover:bg-surface-raised active:scale-95 transition-all {{ rc.rideCount <= 1 ? 'opacity-30 pointer-events-none' : '' }}"
+                    aria-label="Remove a ride">
+              {{ ux_icon('tabler:minus', {'class': 'w-4 h-4 text-content', 'aria-hidden': 'true'}) }}
+            </button>
+
+            {% if this.editingCount %}
+              <form data-action="submit->live#action:prevent" data-live-action-param="setRideCount">
+                <input type="number" min="1"
+                       data-model="rideCountInput"
+                       value="{{ this.rideCountInput }}"
+                       class="w-16 text-center rounded-lg ring-1 ring-line-input bg-surface px-2 py-1 text-xl font-bold text-cc-warm-500"
+                       autofocus>
+              </form>
+            {% else %}
+              <button type="button" data-action="live#action" data-live-action-param="toggleEditingCount"
+                      class="text-2xl font-bold text-cc-warm-500 leading-none tabular-nums hover:underline decoration-dotted"
+                      title="{{ 'coaster.journal.rides_count'|trans({'count': rc.rideCount}) }}">
+                {{ rc.rideCount }}
+              </button>
+            {% endif %}
+
+            <button type="button" data-action="live#action" data-live-action-param="addReride"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-cc-warm-500 hover:bg-cc-warm-600 text-white active:scale-95 transition-all"
+                    aria-label="Add a ride">
+              {{ ux_icon('tabler:plus', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            </button>
+          </div>
+        </div>
+
+        {# Date tiles — grid, two side by side. Same icon-tile shell as the rides tile. #}
+        {# Each card uses Stimulus date-picker: button calls showPicker() on an off-screen input. #}
+        {# Input is position:fixed off-screen (not display:none/opacity:0) so showPicker() works on all browsers. #}
+        <div class="mt-2 grid grid-cols-2 gap-2">
+          {# First ride #}
+          <div data-controller="date-picker">
+            <button type="button"
+                    data-action="click->date-picker#open"
+                    class="w-full rounded-xl bg-surface-muted hover:bg-surface-strong transition-colors cursor-pointer text-left p-3">
+              <span class="flex items-center gap-2 mb-2">
+                <span class="w-6 h-6 rounded-full bg-cc-blue-100 dark:bg-cc-blue-900/30 flex items-center justify-center shrink-0">
+                  {{ ux_icon('tabler:calendar-event', {'class': 'w-3.5 h-3.5 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+                </span>
+                <span class="text-[10px] font-semibold uppercase tracking-widest text-content-muted leading-none">
+                  {{ 'coaster.journal.first_ride'|trans }}
+                </span>
+              </span>
+              <span class="text-sm font-semibold text-content leading-snug">
+                {{ rc.firstRiddenAt ? rc.firstRiddenAt|format_datetime('medium', 'none') : '—' }}
+              </span>
+            </button>
+            <input type="date"
+                   data-date-picker-target="input"
+                   data-model="firstDateInput"
+                   data-action="change->live#action"
+                   data-live-action-param="setFirstDate"
+                   value="{{ rc.firstRiddenAt ? rc.firstRiddenAt|date('Y-m-d') : '' }}"
+                   max="{{ 'now'|date('Y-m-d') }}"
+                   aria-label="{{ 'coaster.journal.first_ride'|trans }}"
+                   style="position:fixed;left:-9999px;top:-9999px">
+          </div>
+
+          {# Last ride — only when ridden more than once #}
+          {% if rc.rideCount > 1 %}
+            <div data-controller="date-picker">
+              <button type="button"
+                      data-action="click->date-picker#open"
+                      class="w-full rounded-xl bg-surface-muted hover:bg-surface-strong transition-colors cursor-pointer text-left p-3">
+                <span class="flex items-center gap-2 mb-2">
+                  <span class="w-6 h-6 rounded-full bg-cc-blue-100 dark:bg-cc-blue-900/30 flex items-center justify-center shrink-0">
+                    {{ ux_icon('tabler:calendar-event', {'class': 'w-3.5 h-3.5 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+                  </span>
+                  <span class="text-[10px] font-semibold uppercase tracking-widest text-content-muted leading-none">
+                    {{ 'coaster.journal.last_ride'|trans }}
+                  </span>
+                </span>
+                <span class="text-sm font-semibold text-content leading-snug">
+                  {{ rc.lastRiddenAt ? rc.lastRiddenAt|format_datetime('medium', 'none') : '—' }}
+                </span>
+              </button>
+              <input type="date"
+                     data-date-picker-target="input"
+                     data-model="lastDateInput"
+                     data-action="change->live#action"
+                     data-live-action-param="setLastDate"
+                     value="{{ rc.lastRiddenAt ? rc.lastRiddenAt|date('Y-m-d') : '' }}"
+                     max="{{ 'now'|date('Y-m-d') }}"
+                     aria-label="{{ 'coaster.journal.last_ride'|trans }}"
+                     style="position:fixed;left:-9999px;top:-9999px">
+            </div>
+          {% else %}
+            {# Placeholder keeps the grid balanced when there's only one ride #}
+            <div class="rounded-xl bg-surface-muted/50 opacity-40 p-3">
+              <span class="flex items-center gap-2 mb-2">
+                <span class="w-6 h-6 rounded-full bg-cc-blue-100 dark:bg-cc-blue-900/30 flex items-center justify-center shrink-0">
+                  {{ ux_icon('tabler:calendar-event', {'class': 'w-3.5 h-3.5 text-cc-blue-600 dark:text-cc-blue-400', 'aria-hidden': 'true'}) }}
+                </span>
+                <span class="text-[10px] font-semibold uppercase tracking-widest text-content-muted leading-none">
+                  {{ 'coaster.journal.last_ride'|trans }}
+                </span>
+              </span>
+              <span class="text-sm font-semibold text-content-muted leading-snug">—</span>
+            </div>
+          {% endif %}
+        </div>
+
+        {% if this.error %}
+          <p class="mt-2 text-xs text-red-500">{{ this.error }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% else %}
+    {# Anonymous: readonly stars + login hint, community alongside ──────── #}
+    <div class="lg:grid lg:grid-cols-2 lg:gap-6 lg:items-start space-y-6 lg:space-y-0">
+      <section>
+        <h2 class="text-lg font-semibold text-content mb-3 flex items-center gap-1.5">
+          {{ ux_icon('tabler:star', {'class': 'w-5 h-5 text-cc-warm-500 shrink-0', 'aria-hidden': 'true'}) }}
+          {{ 'coaster.rating.my_rating'|trans }}
+          {% if avgRating %}
+            <span class="ml-auto text-xs font-medium text-content-muted inline-flex items-center gap-1">
+              {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-cc-warm-500', 'aria-hidden': 'true'}) }}
+              {{ avgRating|number_format(1) }} · {{ totalRatings }}
+            </span>
+          {% endif %}
+        </h2>
+        <twig:StarRating :value="null" :size="36" :readonly="true" />
+        <p class="mt-3 text-xs text-content-muted">
+          <a href="{{ path('login') }}" class="text-cc-blue-600 dark:text-cc-blue-400 font-medium hover:underline">{{ 'navbar.login'|trans({}, 'navigation') }}</a>
+        </p>
+      </section>
+
+      <section>
+        <twig:SectionHeading
+          icon="tabler:chart-bar"
+          iconColor="text-cc-blue-500"
+          title="{{ 'coaster.rating.section_title'|trans }}"
+          :count="totalRatings > 0 ? totalRatings : null"
+        />
+        {% if totalRatings > 0 %}
+          <twig:RatingDistribution :countRatings="countRatings" :totalRatings="totalRatings" />
+        {% else %}
+          <p class="text-sm text-content-muted">{{ 'coaster.rating.notenough'|trans }}</p>
+        {% endif %}
+      </section>
+    </div>
+  {% endif %}
+
+  <span data-controller="ride-sync"
+        data-ride-sync-coaster-id-value="{{ coasterId }}"
+        data-ride-sync-ridden-value="{{ ridden ? 'true' : 'false' }}"
+        data-ride-sync-ridden-coaster-id-value="{{ ridden ? rc.id : 0 }}"
+        hidden></span>
+</div>

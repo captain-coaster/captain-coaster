@@ -1,0 +1,21 @@
+{#
+  ProfileThisYear — a section spotlighting the current year's activity.
+
+  Props:
+    - thisYear (required): array{year:int, new_coasters:int, total_rides:int}
+#}
+{% props thisYear %}
+
+<section class="mb-6">
+  <twig:SectionHeading icon="tabler:calendar-star" iconColor="text-cc-warm-500" title="{{ 'profile.this_year.title'|trans({'year': thisYear.year}) }}" />
+  <div class="grid grid-cols-2 gap-3">
+    <div class="bg-surface rounded-xl border border-line p-4 text-center">
+      <div class="text-3xl font-bold text-content tabular-nums leading-none">{{ thisYear.new_coasters }}</div>
+      <div class="text-xs text-content-muted mt-1.5">{{ 'profile.this_year.new_coasters'|trans }}</div>
+    </div>
+    <div class="bg-surface rounded-xl border border-line p-4 text-center">
+      <div class="text-3xl font-bold text-content tabular-nums leading-none">{{ thisYear.total_rides }}</div>
+      <div class="text-xs text-content-muted mt-1.5">{{ 'profile.this_year.total_rides'|trans }}</div>
+    </div>
+  </div>
+</section>

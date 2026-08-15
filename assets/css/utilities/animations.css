@@ -1,0 +1,54 @@
+/*
+ * Custom Animation Utilities - Tailwind CSS v4
+ */
+
+@layer utilities {
+    /* Text balance for better typography */
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    /* Gradient text */
+    .text-gradient {
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        background-image: linear-gradient(
+            to right,
+            var(--color-cc-blue-500),
+            var(--color-cc-warm-400)
+        );
+    }
+}
+
+@utility animate-fade-in {
+    animation: var(--animate-fade-in);
+}
+
+@utility animate-slide-up {
+    animation: var(--animate-slide-up);
+}
+
+@utility animate-bounce-gentle {
+    animation: var(--animate-bounce-gentle);
+}
+
+@utility animate-pulse-subtle {
+    animation: var(--animate-pulse-subtle);
+}
+
+@utility interactive-lift {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+@utility interactive-press {
+    transform: translateY(1px);
+    box-shadow: var(--shadow-sm);
+}
+
+@utility focus-visible-ring {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--focus-ring-color);
+}

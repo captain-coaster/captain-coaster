@@ -1,0 +1,73 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'coaster.photos.page_title'|trans({'%name%': coaster.name}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <twig:PageHeader
+      title="{{ coaster.name }}"
+      subtitle="{{ title }}"
+      backUrl="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+      backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+    />
+    {% if coaster.images|length > 0 %}
+        <div data-controller="lightbox" data-lightbox-name-value="image-grid-full">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {% for image in coaster.images %}
+                    <div class="group relative rounded-xl overflow-hidden"
+                         data-controller="toggle-action"
+                         data-toggle-action-url-value="{{ path('like_image_async', {'id': image.id}) }}"
+                         data-toggle-action-active-value="{% if image.id in userLikes %}true{% else %}false{% endif %}"
+                         data-toggle-action-method-value="GET"
+                         data-toggle-action-animation-value="zoom"
+                         data-toggle-action-silent-status-value="403">
+                        <a href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
+                           data-lightbox-target="link"
+                           data-credit="{{ image.credit|default('') }}"
+                           class="block">
+                            <div class="aspect-4/3 overflow-hidden">
+                                <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                     alt="{{ coaster.name }}"
+                                     loading="lazy">
+                            </div>
+                        </a>
+                        {# Heart — top-right, visible on hover (desktop) or always (mobile) #}
+                        <div class="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+                            <button type="button"
+                                    data-action="click->toggle-action#toggle"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm text-white/90 hover:text-red-400 hover:bg-black/60 transition-all duration-200 focus:outline-none">
+                                <span data-when="on" class="{% if image.id not in userLikes %}hidden{% endif %}">
+                                    {{ ux_icon('tabler:heart-filled', {'class': 'w-4 h-4 text-red-400', 'aria-hidden': 'true'}) }}
+                                </span>
+                                <span data-when="off" class="{% if image.id in userLikes %}hidden{% endif %}">
+                                    {{ ux_icon('tabler:heart', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+                                </span>
+                            </button>
+                        </div>
+                        {# Credit + likes — bottom, visible on hover (desktop) or always (mobile) #}
+                        <div class="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/60 to-transparent px-3 pt-8 pb-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+                            <div class="flex items-center justify-between">
+                                {% if image.credit %}
+                                    <span class="text-xs font-medium text-white/90 truncate mr-2">{{ image.credit }}</span>
+                                {% else %}
+                                    <span></span>
+                                {% endif %}
+                                <div class="flex items-center gap-1 shrink-0">
+                                    {{ ux_icon('tabler:heart-filled', {'class': 'w-3 h-3 text-red-400', 'aria-hidden': 'true'}) }}
+                                    <span data-toggle-action-target="count" class="text-xs font-medium text-white/90">{{ image.likeCounter }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <twig:EmptyState
+            icon="tabler:photo"
+            :title="'coaster.photos.empty'|trans"
+            :action="{ url: path('coaster_images_upload', {'slug': coaster.slug}), text: 'coaster.photos.button'|trans }"
+        />
+    {% endif %}
+{% endblock %}

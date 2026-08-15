@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -86,24 +85,6 @@ class UserRepository extends ServiceEntityRepository
         return $result;
     }
 
-    /** Count all users. */
-    public function countAll(): int
-    {
-        try {
-            $query = $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('count(1) as nb_users')
-                ->from(User::class, 'u')
-                ->getQuery();
-
-            $query->enableResultCache(600);
-
-            return (int) $query->getSingleScalarResult();
-        } catch (NonUniqueResultException) {
-            return 0;
-        }
-    }
-
     /**
      * Optimized search method for API with limited results and better performance.
      *
@@ -113,7 +94,13 @@ class UserRepository extends ServiceEntityRepository
     {
         /** @var array<int, array<string, mixed>> $result */
         $result = $this->createQueryBuilder('u')
-            ->select('u.id', 'u.displayName as name', 'u.slug', 'COUNT(r.id) as totalRatings')
+            ->select(
+                'u.id',
+                'u.displayName as name',
+                'u.slug',
+                'u.profilePicture',
+                'COUNT(r.id) as totalRatings'
+            )
             ->leftJoin('u.ratings', 'r')
             ->where('u.enabled = 1')
             ->andWhere('u.displayName LIKE :query OR u.slug LIKE :slugQuery')

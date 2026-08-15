@@ -22,6 +22,7 @@ class Status implements \Stringable
 {
     final public const string OPERATING = 'status.operating';
     final public const string CLOSED_DEFINITELY = 'status.closed.definitely';
+    final public const string CLOSED_TEMPORARILY = 'status.closed.temporarily';
 
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
@@ -50,6 +51,9 @@ class Status implements \Stringable
 
     #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private int $order;
+
+    #[ORM\Column(length: 15, options: ['default' => 'neutral'])]
+    private ?string $color = null;
 
     public function __construct()
     {
@@ -140,6 +144,18 @@ class Status implements \Stringable
     public function setOrder(int $order): static
     {
         $this->order = $order;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): static
+    {
+        $this->color = $color;
 
         return $this;
     }

@@ -1,0 +1,295 @@
+/* ==========================================================================
+   Tom Select — Custom Theme
+   Standalone theme (default CSS disabled in controllers.json).
+   Uses Captain Coaster design tokens from app.css @theme.
+   ========================================================================== */
+
+/* ── Hide the original <select> that Tom Select replaces ─────────────────── */
+/* The form theme adds ring/shadow to the <select>; Tom Select sets
+   display:none on it but the element stays in the DOM and its box-shadow
+   can bleed through. Kill every visual property on it. */
+.ts-wrapper + select,
+select.tomselected {
+    display: none !important;
+    visibility: hidden !important;
+    box-shadow: none !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* ── Wrapper ─────────────────────────────────────────────────────────────── */
+.ts-wrapper {
+    position: relative;
+    display: flex;
+    min-height: 42px;
+    width: 100%;
+}
+
+.ts-hidden-accessible {
+    border: 0 !important;
+    clip: rect(0 0 0 0) !important;
+    clip-path: inset(50%) !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    position: absolute !important;
+    width: 1px !important;
+    white-space: nowrap !important;
+}
+
+/* ── Control (the visible input box) ─────────────────────────────────────── */
+.ts-control {
+    /* Reset Tom Select's padding-right override driven by --ts-pr-min */
+    --ts-pr-min: 0.5rem;
+    --ts-pr-caret: 0px;
+    --ts-pr-clear-button: 0px;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    min-height: 42px;
+    padding: 6px 10px !important;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+
+    font-family: inherit;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--color-neutral-900);
+    background-color: var(--surface-raised);
+
+    border: 1px solid var(--color-neutral-300);
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-sm);
+    cursor: text;
+    transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
+}
+
+.dark .ts-control {
+    color: white;
+    /* background-color handled by var(--surface-raised) → neutral-800 in dark */
+    border-color: var(--color-neutral-600);
+}
+
+/* Focus state */
+.ts-wrapper.focus .ts-control {
+    border-color: var(--color-cc-blue-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cc-blue-500) 15%, transparent);
+    outline: none;
+}
+
+/* Inline search input */
+.ts-control > input {
+    flex: 1 1 auto;
+    min-width: 4rem;
+    display: inline-block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 none !important;
+    background: none !important;
+    line-height: inherit !important;
+    box-shadow: none !important;
+    outline: none !important;
+    color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.ts-control > input::placeholder {
+    color: var(--color-neutral-400);
+}
+
+/* ── Selected item tags (multi) ───────────────────────────────────────────── */
+.ts-wrapper.multi .ts-control [data-value] {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+
+    background-color: var(--color-cc-blue-100);
+    color: var(--color-cc-blue-700);
+    border: 1px solid var(--color-cc-blue-200);
+
+    /* Reset tom-select defaults */
+    text-shadow: none;
+    box-shadow: none;
+    background-image: none;
+}
+
+.dark .ts-wrapper.multi .ts-control [data-value] {
+    background-color: color-mix(in srgb, var(--color-cc-blue-600) 20%, transparent);
+    color: var(--color-cc-blue-300);
+    border-color: color-mix(in srgb, var(--color-cc-blue-600) 30%, transparent);
+}
+
+/* Remove button on tags */
+.ts-wrapper.plugin-remove_button .item .remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2px 0 6px;
+    margin-left: 2px;
+    border: 0 none !important;
+    border-left: 0 none !important;
+    background: none;
+    color: var(--color-cc-blue-500);
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 100ms ease;
+    text-decoration: none;
+}
+
+.ts-wrapper.plugin-remove_button .item .remove:hover {
+    opacity: 1;
+    background: none;
+}
+
+.ts-wrapper.plugin-remove_button:not(.rtl) .item {
+    padding-right: 0 !important;
+}
+
+/* ── Dropdown panel ───────────────────────────────────────────────────────── */
+.ts-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    margin-top: 4px;
+    box-sizing: border-box;
+
+    background-color: var(--surface-raised);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 0.5rem;
+    box-shadow:
+        0 4px 6px -1px rgb(0 0 0 / 0.1),
+        0 2px 4px -2px rgb(0 0 0 / 0.1);
+    overflow: hidden;
+}
+
+.dark .ts-dropdown {
+    /* background handled by var(--surface-raised) → neutral-800 in dark */
+    border-color: var(--color-neutral-700);
+}
+
+/* Scrollable content area */
+.ts-dropdown-content {
+    overflow: hidden auto;
+    max-height: 220px;
+    scroll-behavior: smooth;
+}
+
+/* ── Dropdown options ─────────────────────────────────────────────────────── */
+.ts-dropdown .option,
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+    padding: 8px 12px;
+    font-size: 0.875rem;
+    color: var(--color-neutral-700);
+    cursor: pointer;
+    transition: background-color 100ms ease;
+}
+
+.dark .ts-dropdown .option,
+.dark .ts-dropdown .no-results {
+    color: var(--color-neutral-300);
+}
+
+/* Hover / keyboard-active */
+.ts-dropdown .option.active {
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+}
+
+.dark .ts-dropdown .option.active {
+    background-color: var(--color-neutral-700);
+    color: white;
+}
+
+/* Already selected */
+.ts-dropdown .option.selected {
+    background-color: var(--color-cc-blue-50);
+    color: var(--color-cc-blue-700);
+    font-weight: 500;
+}
+
+.dark .ts-dropdown .option.selected {
+    background-color: color-mix(in srgb, var(--color-cc-blue-600) 15%, transparent);
+    color: var(--color-cc-blue-300);
+}
+
+.ts-dropdown .option.selected.active {
+    background-color: var(--color-cc-blue-100);
+}
+
+.dark .ts-dropdown .option.selected.active {
+    background-color: color-mix(in srgb, var(--color-cc-blue-600) 25%, transparent);
+}
+
+/* Disabled (max items reached) */
+.ts-dropdown .option[data-disabled],
+.ts-dropdown .option.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Search highlight */
+.ts-dropdown .highlight {
+    background-color: color-mix(in srgb, var(--color-cc-blue-500) 15%, transparent);
+    border-radius: 2px;
+}
+
+/* No results */
+.ts-dropdown .no-results {
+    color: var(--color-neutral-400);
+    cursor: default;
+    font-style: italic;
+}
+
+/* ── Dropdown search input (plugin-dropdown_input) ────────────────────────── */
+.ts-dropdown .dropdown-input-wrap {
+    padding: 8px;
+    border-bottom: 1px solid var(--color-neutral-100);
+}
+
+.dark .ts-dropdown .dropdown-input-wrap {
+    border-bottom-color: var(--color-neutral-700);
+}
+
+.ts-dropdown .dropdown-input {
+    display: block;
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: var(--color-neutral-900);
+    background-color: var(--color-neutral-50);
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 0.375rem;
+    box-shadow: none;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 150ms ease;
+}
+
+.dark .ts-dropdown .dropdown-input {
+    color: white;
+    background-color: var(--color-neutral-700);
+    border-color: var(--color-neutral-600);
+}
+
+.ts-dropdown .dropdown-input:focus {
+    border-color: var(--color-cc-blue-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cc-blue-500) 15%, transparent);
+}

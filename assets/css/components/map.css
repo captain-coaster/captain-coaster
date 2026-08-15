@@ -1,0 +1,269 @@
+/* ==========================================================================
+   Map Component Styles
+   Custom styles for Leaflet map markers and popups
+   ========================================================================== */
+
+/* Color tokens — all hardcoded values centralized here.
+   Status hex values match DB status.color field; do not change without a DB migration. */
+:root {
+    --map-text: var(--color-neutral-900);
+    --map-text-secondary: var(--color-neutral-500);
+    --map-text-muted: var(--color-neutral-400);
+    --map-popup-bg: #ffffff;
+    --map-popup-border: rgba(0, 0, 0, 0.1);
+    --map-border: var(--color-neutral-200);
+    --map-item-divider: var(--color-neutral-100);
+    --map-controls-bg: #ffffff;
+    --map-controls-hover: var(--color-neutral-100);
+    --map-controls-border: var(--color-neutral-200);
+    --map-attribution-bg: rgba(255, 255, 255, 0.8);
+    --map-attribution-link: var(--color-cc-blue-500);
+    --map-status-operating: #22c55e;
+    --map-status-closed: #ef4444;
+    --map-status-construction: #f59e0b;
+    --map-status-sbno: var(--color-neutral-400);
+}
+
+.dark {
+    --map-text: var(--color-neutral-50);
+    --map-text-secondary: var(--color-neutral-400);
+    --map-text-muted: var(--color-neutral-500);
+    --map-popup-bg: var(--color-neutral-900);
+    --map-popup-border: rgba(255, 255, 255, 0.1);
+    --map-border: #333333;
+    --map-item-divider: var(--color-neutral-800);
+    --map-controls-bg: var(--color-neutral-800);
+    --map-controls-hover: var(--color-neutral-700);
+    --map-controls-border: var(--color-neutral-700);
+    --map-attribution-bg: rgba(23, 23, 23, 0.8);
+    --map-attribution-link: var(--color-cc-blue-300);
+}
+
+/* Ensure map doesn't overlap dropdowns and modals */
+.leaflet-pane,
+.leaflet-control-container {
+    z-index: 1 !important;
+}
+
+.leaflet-top,
+.leaflet-bottom {
+    z-index: 2 !important;
+}
+
+/* Marker styles */
+.coaster-marker {
+    background: transparent !important;
+    border: none !important;
+}
+
+.coaster-marker-inner {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+.coaster-marker-inner:hover {
+    transform: scale(1.15);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Leaflet popup overrides */
+.leaflet-popup-content-wrapper {
+    padding: 0;
+    border-radius: 16px;
+    border: none;
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    background: var(--map-popup-bg);
+    border: 1px solid var(--map-popup-border);
+}
+
+.leaflet-popup-content {
+    margin: 0;
+    min-width: 220px;
+    max-width: 280px;
+    line-height: 1.4;
+}
+
+.leaflet-popup-tip {
+    box-shadow: none;
+    background: var(--map-popup-bg);
+}
+
+.leaflet-popup-close-button {
+    color: var(--map-text-muted) !important;
+    font-size: 20px !important;
+    padding: 8px 10px !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.leaflet-popup-close-button:hover {
+    color: var(--map-text) !important;
+}
+
+/* Map popup component */
+.map-popup {
+    font-family: var(--font-sans);
+}
+
+.map-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--map-border);
+    color: var(--map-text);
+    text-decoration: none;
+}
+
+.map-popup-title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.map-popup-link-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.3;
+    flex-shrink: 0;
+}
+
+/* Override default link colors inside popup */
+.leaflet-popup-content .map-popup a,
+.leaflet-popup-content .map-popup a:visited,
+.leaflet-popup-content .map-popup a:hover,
+.leaflet-popup-content .map-popup a:active {
+    color: inherit;
+    text-decoration: none;
+}
+
+.leaflet-popup-content .map-popup .map-popup-header,
+.leaflet-popup-content .map-popup .map-popup-item {
+    color: var(--map-text);
+}
+
+.map-popup-list {
+    max-height: 240px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.map-popup-list::-webkit-scrollbar {
+    display: none;
+}
+
+.map-popup-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    color: var(--map-text);
+    text-decoration: none;
+}
+
+.map-popup-item:not(:last-child) {
+    border-bottom: 1px solid var(--map-item-divider);
+}
+
+.map-popup-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.map-popup-status--operating {
+    background-color: var(--map-status-operating);
+}
+
+.map-popup-status--closed {
+    background-color: var(--map-status-closed);
+}
+
+.map-popup-status--construction {
+    background-color: var(--map-status-construction);
+}
+
+.map-popup-status--sbno {
+    background-color: var(--map-status-sbno);
+}
+
+.map-popup-name {
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.map-popup-rank {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--map-text-muted);
+    flex-shrink: 0;
+}
+
+.map-popup-empty {
+    padding: 20px 16px;
+    font-size: 13px;
+    color: var(--map-text-secondary);
+    text-align: center;
+}
+
+/* Leaflet controls styling */
+.leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    background: var(--map-controls-bg) !important;
+}
+
+.leaflet-control-zoom a {
+    width: 36px !important;
+    height: 36px !important;
+    line-height: 36px !important;
+    color: var(--map-text) !important;
+    background: var(--map-controls-bg) !important;
+    border-bottom: 1px solid var(--map-controls-border) !important;
+}
+
+.leaflet-control-zoom a:last-child {
+    border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background-color: var(--map-controls-hover) !important;
+}
+
+/* Attribution styling */
+.leaflet-control-attribution {
+    font-size: 10px;
+    background: var(--map-attribution-bg) !important;
+    padding: 2px 6px !important;
+    border-radius: 4px 0 0 0;
+    color: var(--map-text-secondary);
+}
+
+.leaflet-control-attribution a {
+    color: var(--map-attribution-link);
+}

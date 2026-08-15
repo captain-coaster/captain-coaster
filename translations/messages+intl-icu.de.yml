@@ -27,9 +27,30 @@ index:
     stats:
         ratings: Ratings
         reviews: Rezensionen
-        users: Benutzer
         images: Bilder
+        my_coasters: 'meine Coaster'
+        new_24h: '+{count} in 24h'
+        today: 'heute'
     missingImages: 'Wir suchen nach Bildern dieser Achterbahn!'
+    top_ranked: 'Bestplatzierte'
+    community_favorites: 'Empfohlene Rezensionen'
+    community: 'Community'
+    hero:
+        badge:
+            new: 'Neu'
+            upcoming: 'Demnächst'
+            hot: 'Angesagt'
+            photo: 'Foto-Highlight'
+        opened_on: 'Eröffnet am {date}'
+        opens_on: 'Eröffnet am {date}'
+        hot_subtitle: 'Diese Woche am meisten bewertet'
+    nearby:
+        title: 'In deiner Nähe'
+        cta_description: 'Entdecke Achterbahnen in deiner Umgebung.'
+        cta_button: 'Standort verwenden'
+        privacy: 'Dein Standort wird nur für diese Suche verwendet und nie auf unseren Servern gespeichert.'
+        loading: 'Suche nach Coastern in deiner Nähe…'
+        km: 'km'
 
 coaster:
     score:
@@ -41,6 +62,11 @@ coaster:
         quality: 'Qualitätsbewertung'
         worldrank: 'Weltrangliste'
         overview: 'Auf einen Blick'
+    stats:
+        height: 'Höhe'
+        length: 'Länge'
+        speed: 'Geschwindigkeit'
+        inversions: 'Inversionen'
     quality:
         excellent: 'Ausgezeichnet'
         good: 'Gut'
@@ -49,12 +75,15 @@ coaster:
     rating:
         action: 'Bewerte diese Achterbahn!'
         my_rating: 'Meine Bewertung'
+        section_title: 'Community-Bewertungen'
         notenough: 'Nicht genügend Bewertungen für diese Achterbahn!'
-        mustlogin: 'Zum Bewerten musst du eingeloggt sein!'
+        mustlogin: 'Zum Bewerten einloggen'
         login: Einloggen
-        sendreview: 'Oder klicke hier, um eine Rezension zu schreiben'
-        updatereview: Aktualisiere meine Rezension
+        sendreview: 'Rezension schreiben'
+        updatereview: 'Rezension bearbeiten'
         delete: Löschen
+        add_date: 'Datum hinzufügen'
+        tap_to_rate_hint: 'Tippe auf einen Stern zur Bewertung — das markiert auch den Besuch.'
         text: 'Punktzahl basiert auf {count_rating} Bewertungen und {count_top} Tops'
         details: 'Detaillierte Benutzerbewertungen'
         distribution: 'Bewertungsverteilung'
@@ -88,15 +117,41 @@ coaster:
         kiddie: Kinder
         indoor: Indoor
         formerNames: Ehemalige Namen
+        features: Merkmale
     parkcoaster: 'Auch in {name}'
     video:
         title: Onride Video
     photos:
         title: Fotos
+        page_title: 'Fotos von {name}'
         empty: 'Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!'
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
         loading: Laden von Fotos
+    reviews:
+        featured: 'Was die Fahrer sagen'
+        see_all: 'Alle Rezensionen ansehen'
+        page_title: 'Rezensionen von {name}'
+        empty: 'Noch keine Rezensionen für diese Achterbahn.'
+        be_first: 'Sei der Erste, der eine Rezension schreibt!'
+    journal:
+        title: 'Meine Fahrten'
+        ridden: 'Gefahren'
+        wishlist: 'Wishlist'
+        reride: '+1 Fahrt'
+        first_ride: 'Erste Fahrt'
+        rides_count: '{count, plural, one {Fahrt} other {Fahrten}}'
+        last_ride: 'Letzte Fahrt'
+        confirm_remove_ridden: 'Dies löscht auch deine Bewertung. Fortfahren?'
+        reride_added: '+1 Fahrt hinzugefügt'
+        reride_undo: 'Rückgängig'
+        not_tracked: 'Noch nicht erfasst'
+        on_wishlist: 'Auf deiner Wishlist'
+        tap_to_rate: 'Zum Bewerten tippen'
+        tap_to_reride: 'für eine weitere Fahrt tippen'
+        log_another: 'Weitere Fahrt eintragen'
+        remove: 'Entfernen'
+        add_date: 'Datum hinzufügen'
     location: Standort
 
 image_upload:
@@ -107,7 +162,6 @@ image_upload:
             helper: Die Datei muss im JPEG-Format vorliegen und weniger als 15 MB groß sein. Zu kleine Bilder könnten abgelehnt werden.
         credit:
             label: 'Wer hat dieses Bild gemacht?'
-            helper: 'Sie dürfen nur Bilder hochladen, wenn Sie der ursprüngliche Autor sind oder die Genehmigung des ursprünglichen Autors erhalten haben.'
         watermark:
             label: 'Wasserzeichen "Captain Coaster"'
             helper: 'Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden.'
@@ -122,16 +176,63 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
+    operating: 'In Betrieb'
+    total: 'Gesamt'
+    ranked: 'Gerankt'
+    ratings: 'Bewertungen'
+    best_ranked: 'Bestplatzierte Achterbahn'
+    view_map: 'Auf Karte anzeigen'
+    formerly: 'Früher bekannt als'
+    login_to_rate: 'Anmelden zum Bewerten'
+    login_subtitle: 'Verfolge deine Fahrten, bewerte Achterbahnen und erstelle deine Wishlist'
+    nearby: 'Parks in der Nähe'
+    no_coasters: 'Keine Achterbahnen'
+    no_coasters_desc: 'Dieser Park hat noch keine gelisteten Achterbahnen.'
+    coasters:
+        title: 'Achterbahnen'
+        soon: 'Demnächst'
+        new: 'Neu'
+        legacy: 'Vermächtnis'
+    hero:
+        badge: 'Bestplatziert'
+        best_coaster: 'Beste Achterbahn'
+    stats:
+        rated: 'Bewertet'
+        ridden: 'Gefahren'
+        not_rated: 'Nicht bewertet'
+        not_ridden: 'Nicht gefahren'
+        missing: 'Zu entdecken'
+        wishlist: 'Wishlist'
+    progress:
+        title: 'Dein Fortschritt'
+        aria: '{rated} bewertet, {ridden} gefahren von {total} Achterbahnen in Betrieb'
+        complete: 'Park komplett — alle Achterbahnen bewertet'
+        encourage_rate: '{ count, plural, one {Bewerte # gefahrene Achterbahn, um deine Favoriten zu verfolgen} other {Bewerte # gefahrene Achterbahnen, um deine Favoriten zu verfolgen}}'
+        encourage_explore: '{ count, plural, one {# Achterbahn noch zu entdecken} other {# Achterbahnen noch zu entdecken}}'
+        encourage_start: '{ count, plural, one {Markiere Achterbahnen als gefahren — # zu entdecken} other {Markiere Achterbahnen als gefahren — # zu entdecken}}'
+        legacy_ridden: '{ count, plural, one {+ # legendäre Achterbahn gefahren vor der Schließung} other {+ # legendäre Achterbahnen gefahren vor der Schließung}}'
 
 coaster_ranking:
     title: Weltrangliste der Achterbahnen
     description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 3000 Benutzern weltweit.'
     duel_number: '{ count, plural, one { # duel } other { # duels }}'
     no_results: 'Keine Achterbahnen gefunden!'
+    new: neu
+    ridden: 'Bereits gefahren'
+    progress:
+        title: 'Deine Top 100'
+        aria: 'Du bist {count} von {total} Top-Coastern gefahren'
+        complete: 'Du bist die komplette aktive Top 100 gefahren!'
+        remaining: '{count, plural, one {# Coaster fehlt in den Top 100} other {# Coaster fehlen in den Top 100}}'
+        defunct_ridden: '{count, plural, one {# legendärer Coaster, den du vor der Schließung gefahren bist} other {# legendäre Coaster, die du vor der Schließung gefahren bist}}'
+    stats: 'Statistiken'
     info:
         title: 'Letzte Aktualisierung: {rankingMonth}'
         next: 'Nächste Aktualisierung {date}'
+        last_update: 'Letzte Aktualisierung: {date}'
         learn_more: Erfahre mehr über das Ranking
+        learn_more_short: 'Info'
+        in_numbers: 'Das Ranking in Zahlen'
         coasters_ranked:
             short: Achterbahnen
             long: Eingestufte Achterbahnen
@@ -145,6 +246,16 @@ map_index:
     title: Achterbahn Landkarte
     description: 'Entdecke mit dieser interaktiven Karte, wo sich die coolsten Achterbahnen in der Nähe befinden, die besten des nächsten Jahres oder die B&M-Bahnen, die du bisher noch nicht gefahren bist.'
     results: Ergebnisse
+
+map:
+    parks_count: 'Parks'
+    legend:
+        title: 'Legende'
+        coaster: 'Achterbahn'
+        coasters: 'Achterbahnen'
+    popup:
+        coasters: 'Achterbahnen'
+        no_coasters: 'Keine Achterbahnen für diesen Park gefunden.'
 
 filters:
     title: Filter
@@ -180,9 +291,12 @@ user_profile:
     ratings: Zeige dessen Bewertungen
     reviews: Zeige dessen Rezensionen
     main_top: Zeige dessen Top Achterbahnen
-    tops: Zeige dessen Tops
+    tops: Zeige dessen weitere Listen
     map: Zeige dessen Achterbahn-Landkarte
     pictures: Zeige dessen Bilder
+    empty:
+        title: '{name} hat noch keine Fahrten'
+        description: 'Dieser Fahrer hat noch keine Achterbahn bewertet.'
 
 user_list:
     title: Unsere Fahrer
@@ -196,12 +310,67 @@ profile:
     title: Mein Profil
     menu:
         ratings: Meine Bewertungen
-        tops: Meine Tops
+        tops: Meine Listen
         map: Meine Karte
         photos: Meine Fotos
         reviews: Meine Rezensionen
+        main_top: Meine Top-Achterbahnen
         settings: Einstellungen
     badge: Abzeichen
+    badge_welcome: Willkommen
+    score:
+        section_title: 'Captain-Werte'
+        captain:
+            label: 'Captain Score'
+        quality:
+            label: 'Quality Score'
+        explanation: '{ count, plural, one { Berechnet aus # gerankter Achterbahn, die du gefahren bist. } other { Berechnet aus # gerankten Achterbahnen, die du gefahren bist. }}'
+        empty: 'Wir haben noch keinen Captain Score für dich — bewerte ein paar gerankte Achterbahnen, um loszulegen.'
+    rank:
+        rookie: Neuling
+        enthusiast: Enthusiast
+        rider: Fahrer
+        veteran: Veteran
+        expert: Experte
+        legend: Legende
+    most_ridden:
+        title: Am häufigsten
+    this_year:
+        title: 'In {year}'
+        new_coasters: Neue Achterbahnen
+        total_rides: Fahrten insgesamt
+    records:
+        title: Persönliche Rekorde
+        tallest: Höchste
+        fastest: Schnellste
+        longest: Längste
+        most_inversions: Meiste Inversionen
+        oldest: Älteste
+        newest: Neueste
+    taste:
+        title: Bewertungsstil
+        mood:
+            generous: Großzügig
+            balanced: Ausgewogen
+            critical: Kritisch
+        based_on: '{count, plural, one {Basiert auf # Bewertung} other {Basiert auf # Bewertungen}}'
+        manufacturer: Häufigster Hersteller
+        model: Häufigstes Modell
+        country: Häufigstes Land
+    progress:
+        title: Fortschritt
+        next_rank: Nächster Rang
+        next_milestone: 'Nächster Meilenstein ({count})'
+        max_rank: Höchster Rang erreicht
+        top100: Welt TOP 100
+    activity:
+        title: Letzte Aktivität
+        see_all: Alle anzeigen
+        ridden: Gefahren
+    empty:
+        title: Noch keine Fahrten
+        description: Bewerte die Achterbahnen, die du gefahren bist, um dein Profil aufzubauen.
+        action: Meine Achterbahnen hinzufügen
     banner:
         title: Persönliches Banner
         text: ~
@@ -228,6 +397,37 @@ profile:
         country_count: '{count, plural, =0 {keine Länder} =1 {1 Land} other {# Länder}}'
     ratings:
         title: Meine Bewertungen
+        avg: 'Ø Bewertung'
+        sort_by: 'Sortieren nach'
+        search_placeholder: 'Nach Achterbahn oder Park suchen…'
+        no_results: 'Keine Bewertungen entsprechen Ihrer Suche'
+        results: 'Ergebnisse'
+    my_coasters:
+        title: 'Meine Coasters'
+        tabs:
+            all: 'Alle'
+            rated: 'Bewertet'
+            ridden: 'Gefahren'
+            wishlist: 'Wishlist'
+        sort:
+            recent: 'Neueste'
+            rating: 'Bewertung'
+            date: 'Fahrdatum'
+            name: 'Coaster'
+        to_rate: '{count, plural, one {# Coaster noch zu bewerten} other {# Coaster noch zu bewerten}}'
+    journey:
+        title: 'Meine Reise'
+        subtitle: 'Alle deine Fahrten in chronologischer Reihenfolge.'
+        stats:
+            coasters: 'Coasters'
+            countries: 'Länder'
+            parks: 'Parks'
+            since: 'Seit'
+        undated: 'Ohne Datum'
+        add_date: 'Datum hinzufügen'
+        all_years: 'Alle'
+        filter_by_year: 'Nach Jahr filtern'
+        milestone: '{n}. Coaster'
     settings:
         title: Profileinstellungen
         sections:
@@ -262,8 +462,7 @@ profile:
                 label: Anzeigen von Entfernungen und Statistiken in
             displayReviewsInAllLanguages:
                 label: Anzeigen in verschiedenen Sprachen verfasste Bewertungen
-            addTodayDateWhenRating:
-                label: Heutiges Datum bei einer neuen Bewertung hinzufügen
+
         advanced:
             apiKey:
                 label: API-Schlüssel
@@ -305,12 +504,14 @@ review:
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
     remove_upvote: Positive Bewertung entfernen
+    back: 'Zurück zur Achterbahn'
+    placeholder: 'Teile deine Erfahrung mit dieser Achterbahn...'
     form:
         title: 'Rezension über {name}'
 
 users:
     tops:
-        title: 'Tops • {name}'
+        title: 'Listen • {name}'
     ratings:
         title: 'Bewertungen • {name}'
         coaster: Achterbahn
@@ -334,14 +535,18 @@ review_list:
 rating:
     last: Neueste Bewertungen
     action: 'Mit {value} Sternen bewertet'
+    delete: 'Bewertung löschen'
+    confirm_delete: 'Diese Bewertung löschen?'
 
 navbar:
     profile: Mein Profil
     settings: Einstellungen
     rating: Meine Bewertungen
+    my_coasters: Meine Coasters
+    journey: Meine Reise
     login: Anmelden
     logout: Abmelden
-    tops: Meine Tops
+    tops: Meine Listen
     my_map: Meine Karte
 
 sidebar:
@@ -356,44 +561,23 @@ sidebar:
     contact: Kontaktiere uns
     logout: Abmelden
     login: Anmelden
+    account: Konto
+    language: Sprache
+    current: Aktuell
+    mobile_language: Sprache
+    theme: Dunkler/Heller Modus
 
 footer:
     terms: Datenschutzrichtlinie
-
-login:
-    title: Anmelden bei Captain Coaster
-    subtitle: Sende einen Anmelde-Link an deine E-Mail-Adresse
-    send_link: Anmelde-Link senden
-    redirect_to_register: 'Neu bei Captain Coaster? <a href="{link_path}">Konto erstellen</a>'
-    or_sign_in_with: oder
-    connect_with_google: Mit Google anmelden
-    terms: 'Durch die Fortsetzung bestätigen Sie, dass Sie unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a> akzeptieren.'
-    email:
-        title: Anmelden bei Captain Coaster
-        h1: 'Bereit zum Versand!'
-        paragraph1: 'Um sich bei Captain Coaster anzumelden, klicken Sie auf die Schaltfläche unten. Dieser Link verfällt in 15 Minuten.'
-        button: Anmelden
-        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie versuchen, sich bei Captain Coaster anzumelden. Wenn Sie nicht sicher sind, warum Sie diese E-Mail erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
-    link_sent: 'Wenn ein Konto mit {email} verknüpft ist, erhalten Sie einen Anmelde-Link. Klicken Sie auf den Link, um sich anzumelden.'
-    rate_limit_exceeded: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.'
-
-register:
-    title: Ein Konto erstellen
-    subtitle: Bitte füllen Sie alle untenstehenden Felder aus
-    link_sent: 'Konto erstellt! Bitte überprüfen Sie Ihre E-Mail ({email}) und klicken Sie auf den Link, um Ihr Konto zu aktivieren.'
-    rate_limit_exceeded: 'Zu viele Registrierungsversuche. Bitte versuchen Sie es später erneut.'
-    form:
-        email: E-Mail
-        first_name: Vorname
-        last_name: Nachname
-        submit: Ein Konto erstellen
-    email:
-        title: Bestätigen Sie Ihre E-Mail
-        h1: 'Willkommen an Bord!'
-        paragraph1: 'Um Captain Coaster zu nutzen, klicken Sie auf den Bestätigungsbutton. Dieser Link ist gültig für'
-        button: Aktivieren
-        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie ein Konto bei Captain Coaster erstellt haben. Wenn Sie nicht sicher sind, warum Sie diese Nachricht erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
-    email_verified: 'Ihre E-Mail {email} wurde verifiziert. Willkommen bei Captain Coaster!'
+    tagline: 'Der ultimative Leitfaden für Achterbahn-Enthusiasten. Bewerte, schreibe Rezensionen und erstelle Top-Listen für die Achterbahnen, die du gefahren bist.'
+    crafted: 'Mit {heart} gemacht von Achterbahn-Enthusiasten'
+    discover:
+        title: Entdecken
+    community:
+        title: Community
+    legal:
+        title: Rechtliches
+        about_ranking: 'Über die Rangliste'
 
 contact:
     title: Kontaktiere uns
@@ -420,6 +604,14 @@ notif:
         gotnotif: 'Du hast gerade eine neue Benachrichtigung auf Captain Coaster erhalten:'
         view: 'Sehe es dir auf <a href="{link_path}">CaptainCoaster.com</a> an'
         unsubscribe: 'Um dies nicht mehr zu erhalten, ändere bitte deine <a href="{link_path}">Benachrichtigungseinstellungen</a>.'
+
+coaster_search:
+    title: 'Achterbahnen suchen'
+    description: 'Finde Achterbahnen nach Name, Standort, Hersteller und mehr'
+    num_found: '{num} Achterbahnen gefunden'
+    num_found_label: 'Achterbahnen gefunden'
+    no_results: 'Keine Achterbahnen gefunden'
+    no_results_hint: 'Versuche, deine Filter anzupassen'
 
 nearby:
     title: Finde Achterbahnen in der Nähe
@@ -466,9 +658,28 @@ banner:
 search_index:
     title: Suche
     more: Alle Ergebnisse anzeigen
-    noResult: Keine Ergebnisse
+    noResult: Keine Ergebnisse gefunden
     noTerm: Kein Suchbegriff
     short: Ihre Suche ist zu kurz und muss mehr als 2 Zeichen enthalten.
+    results_for: 'Ergebnisse für "{query}"'
+    try_different: Versuchen Sie einen anderen Suchbegriff
+    showing_results: 'Zeige {count} von {total} Ergebnissen'
+    filter:
+        all: Alle
+        coasters: Achterbahnen
+        parks: Parks
+        users: Benutzer
+    coaster_count: >-
+        {count, plural,
+            =1 {1 Achterbahn}
+            other {# Achterbahnen}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {Keine Bewertungen}
+            =1 {1 Bewertung}
+            other {# Bewertungen}
+        }
     coasters_found: >-
         {num, plural,
             =0 {Keine Achterbahnen gefunden}
@@ -493,3 +704,35 @@ search_index:
             =1 {1 Ergebnis für "{query}" gefunden}
             other {# Ergebnisse für "{query}" gefunden}
         }
+# Form-related translations
+form:
+    required: 'Pflichtfeld'
+    file:
+        upload: 'Datei hochladen'
+        drag_drop: 'oder per Drag & Drop'
+    description: 'Haben Sie eine Frage, einen Vorschlag, oder möchten Sie einfach nur Hallo sagen? Wir würden gerne von Ihnen hören!'
+
+# Records page — Weltrekorde (höchste, längste, schnellste, meiste Inversionen)
+records:
+    title: 'Weltrekorde'
+    subtitle: 'Die beeindruckendsten Achterbahnen der Welt'
+    filter_by_continent: 'Nach Kontinent filtern'
+    empty: 'Keine Rekorde zum Anzeigen'
+    categories:
+        tallest: 'Höchste'
+        longest: 'Längste'
+        fastest: 'Schnellste'
+        most_inversions: 'Meiste Inversionen'
+    metrics:
+        height: 'Höhe'
+        length: 'Länge'
+        speed: 'Geschwindigkeit'
+        inversionsNumber: 'Inversionen'
+
+search:
+    type:
+        coasters: 'Achterbahnen'
+        parks: 'Parks'
+        users: 'Benutzer'
+    show_all: 'Alle Ergebnisse für „{query}" anzeigen'
+    no_results: 'Keine Ergebnisse für „{query}"'

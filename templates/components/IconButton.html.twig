@@ -1,0 +1,22 @@
+{#
+    Icon Button — square, tappable control used across the navbar.
+
+    44px hit area on mobile (WCAG 2.2 / iOS), 36px on md+ where a pointer is likely.
+    Renders a <button type="button"> by default, or an <a> when `href` is set.
+    Pass `icon` for a single glyph, or use the default slot for custom content
+    (hamburger open/close icons, a notification badge, …). `relative` is on the
+    base so slotted badges can position with `absolute`.
+
+    <twig:IconButton icon="tabler:bell" :label="'...'|trans" data-action="..." />
+    <twig:IconButton href="{{ path('login') }}" icon="tabler:user" :label="..." />
+    <twig:IconButton :label="..." data-action="click->drawer#toggle" class="md:hidden">…</twig:IconButton>
+#}
+{% props icon = null, href = null, label = null %}
+
+{% set classes = 'relative inline-flex items-center justify-center h-9 w-9 rounded-lg text-content-tertiary hover:text-cc-blue-600 hover:bg-surface-muted dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-cc-blue-500/50 transition-colors duration-200' %}
+{% set tag = href is not null ? 'a' : 'button' %}
+
+<{{ tag }} {{ attributes.defaults({ class: classes }) }}{% if href is not null %} href="{{ href }}"{% else %} type="button"{% endif %}{% if label %} aria-label="{{ label }}"{% endif %}>
+    {% if icon %}<twig:ux:icon :name="icon" class="w-5 h-5" aria-hidden="true" />{% endif %}
+    {% block content %}{% endblock %}
+</{{ tag }}>

@@ -1,0 +1,9 @@
+<!-- Desktop Sidebar -->
+<aside class="hidden md:flex md:flex-col md:w-(--sidebar-width) md:fixed md:inset-y-0 md:pt-16 bg-surface border-r border-line">
+  <div class="flex flex-col flex-1 min-h-0">
+    <!-- Navigation -->
+    <nav class="flex flex-col flex-1 px-3 py-4 overflow-y-auto" aria-label="{{ 'nav.sidebar.label'|trans({}, 'navigation') }}">
+      {% include 'partials/_nav_content.html.twig' %}
+    </nav>
+  </div>
+</aside>

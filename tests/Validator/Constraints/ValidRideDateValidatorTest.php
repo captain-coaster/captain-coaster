@@ -25,7 +25,7 @@ class ValidRideDateValidatorTest extends TestCase
         $this->validator = new ValidRideDateValidator();
         $this->context = $this->createMock(ExecutionContextInterface::class);
         $this->violationBuilder = $this->createMock(ConstraintViolationBuilderInterface::class);
-        
+
         $this->validator->initialize($this->context);
     }
 
@@ -34,7 +34,7 @@ class ValidRideDateValidatorTest extends TestCase
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster(new Coaster());
         $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(null);
+        $riddenCoaster->setFirstRiddenAt(null);
 
         $constraint = new ValidRideDate();
 
@@ -49,15 +49,15 @@ class ValidRideDateValidatorTest extends TestCase
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster(new Coaster());
         $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('+1 day'));
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('+1 day'));
 
         $constraint = new ValidRideDate();
 
         $this->violationBuilder->expects($this->once())
             ->method('atPath')
-            ->with('riddenAt')
+            ->with('firstRiddenAt')
             ->willReturnSelf();
-        
+
         $this->violationBuilder->expects($this->once())
             ->method('addViolation');
 
@@ -77,15 +77,15 @@ class ValidRideDateValidatorTest extends TestCase
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster($coaster);
         $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('2019-12-31'));
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2019-12-31'));
 
         $constraint = new ValidRideDate();
 
         $this->violationBuilder->expects($this->once())
             ->method('atPath')
-            ->with('riddenAt')
+            ->with('firstRiddenAt')
             ->willReturnSelf();
-        
+
         $this->violationBuilder->expects($this->once())
             ->method('addViolation');
 
@@ -105,15 +105,15 @@ class ValidRideDateValidatorTest extends TestCase
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster($coaster);
         $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('2021-01-01'));
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2021-01-01'));
 
         $constraint = new ValidRideDate();
 
         $this->violationBuilder->expects($this->once())
             ->method('atPath')
-            ->with('riddenAt')
+            ->with('firstRiddenAt')
             ->willReturnSelf();
-        
+
         $this->violationBuilder->expects($this->once())
             ->method('addViolation');
 
@@ -134,12 +134,109 @@ class ValidRideDateValidatorTest extends TestCase
         $riddenCoaster = new RiddenCoaster();
         $riddenCoaster->setCoaster($coaster);
         $riddenCoaster->setUser(new User());
-        $riddenCoaster->setRiddenAt(new \DateTime('2020-06-15'));
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2020-06-15'));
 
         $constraint = new ValidRideDate();
 
         $this->context->expects($this->never())
             ->method('buildViolation');
+
+        $this->validator->validate($riddenCoaster, $constraint);
+    }
+
+    public function testLastRideBeforeFirstRideIsInvalid(): void
+    {
+        $riddenCoaster = new RiddenCoaster();
+        $riddenCoaster->setCoaster(new Coaster());
+        $riddenCoaster->setUser(new User());
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2026-05-10'));
+        $riddenCoaster->setLastRiddenAt(new \DateTime('2026-05-01'));
+
+        $constraint = new ValidRideDate();
+
+        $this->violationBuilder->expects($this->once())
+            ->method('atPath')
+            ->with('lastRiddenAt')
+            ->willReturnSelf();
+
+        $this->violationBuilder->expects($this->once())
+            ->method('addViolation');
+
+        $this->context->expects($this->once())
+            ->method('buildViolation')
+            ->with($constraint->lastBeforeFirstMessage)
+            ->willReturn($this->violationBuilder);
+
+        $this->validator->validate($riddenCoaster, $constraint);
+    }
+
+    public function testLastRideInFutureIsInvalid(): void
+    {
+        $riddenCoaster = new RiddenCoaster();
+        $riddenCoaster->setCoaster(new Coaster());
+        $riddenCoaster->setUser(new User());
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2026-05-10'));
+        $riddenCoaster->setLastRiddenAt(new \DateTime('2999-01-01'));
+
+        $constraint = new ValidRideDate();
+
+        $this->violationBuilder->expects($this->once())
+            ->method('atPath')
+            ->with('lastRiddenAt')
+            ->willReturnSelf();
+
+        $this->violationBuilder->expects($this->once())
+            ->method('addViolation');
+
+        $this->context->expects($this->once())
+            ->method('buildViolation')
+            ->with($constraint->futureMessage)
+            ->willReturn($this->violationBuilder);
+
+        $this->validator->validate($riddenCoaster, $constraint);
+    }
+
+    public function testValidLastRidePasses(): void
+    {
+        $riddenCoaster = new RiddenCoaster();
+        $riddenCoaster->setCoaster(new Coaster());
+        $riddenCoaster->setUser(new User());
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2026-05-10'));
+        $riddenCoaster->setLastRiddenAt(new \DateTime('2026-05-20'));
+
+        $constraint = new ValidRideDate();
+
+        $this->context->expects($this->never())
+            ->method('buildViolation');
+
+        $this->validator->validate($riddenCoaster, $constraint);
+    }
+
+    public function testLastRideAfterClosingIsInvalid(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setClosingDate(new \DateTime('2020-01-01'));
+
+        $riddenCoaster = new RiddenCoaster();
+        $riddenCoaster->setCoaster($coaster);
+        $riddenCoaster->setUser(new User());
+        $riddenCoaster->setFirstRiddenAt(new \DateTime('2019-12-01'));
+        $riddenCoaster->setLastRiddenAt(new \DateTime('2021-01-01'));
+
+        $constraint = new ValidRideDate();
+
+        $this->violationBuilder->expects($this->once())
+            ->method('atPath')
+            ->with('lastRiddenAt')
+            ->willReturnSelf();
+
+        $this->violationBuilder->expects($this->once())
+            ->method('addViolation');
+
+        $this->context->expects($this->once())
+            ->method('buildViolation')
+            ->with($constraint->afterClosingMessage)
+            ->willReturn($this->violationBuilder);
 
         $this->validator->validate($riddenCoaster, $constraint);
     }

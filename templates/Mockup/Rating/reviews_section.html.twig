@@ -1,0 +1,31 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mockup · Reviews ({{ state }}){% endblock %}
+
+{% block body %}
+  <div class="max-w-3xl mx-auto">
+    <div class="mb-4 flex items-center gap-2 overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+      <a href="{{ path('mockup_rating_index') }}" class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-surface-muted text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors">
+        {{ ux_icon('tabler:arrow-left', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        Index
+      </a>
+      <span class="shrink-0 text-xs text-neutral-400">·</span>
+      <a href="{{ path('mockup_rating_reviews', {state: 'with_my_review'}) }}"
+         class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+                {{ state == 'with_my_review'
+                  ? 'bg-cc-blue-600 text-white'
+                  : 'bg-surface-muted text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">with my review</a>
+      <a href="{{ path('mockup_rating_reviews', {state: 'without_my_review'}) }}"
+         class="shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+                {{ state == 'without_my_review'
+                  ? 'bg-cc-blue-600 text-white'
+                  : 'bg-surface-muted text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">without my review</a>
+    </div>
+
+    <p class="text-sm text-content-muted mb-4">
+      Section avis, déplacée hors du widget de note. Sur la fiche coaster réelle elle apparaît plus bas.
+    </p>
+
+    {% include 'Mockup/Rating/_reviews_block.html.twig' with {coaster: coaster, reviews: reviews, myReview: myReview} only %}
+  </div>
+{% endblock %}

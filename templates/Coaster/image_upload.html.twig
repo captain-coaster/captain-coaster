@@ -1,0 +1,51 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'image_upload.title'|trans({'coaster': coaster.name}) %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+    <twig:PageHeader
+      title="{{ coaster.name }}"
+      subtitle="{{ title }}"
+      icon="tabler:upload"
+      backUrl="{{ path('coaster_images', {'slug': coaster.slug}) }}"
+      backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+    />
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="p-4 rounded-lg border mb-4
+                {% if label == 'success' %}bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400
+                {% elseif label == 'danger' or label == 'error' %}bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400
+                {% else %}bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {{ form_start(form, {'attr': {'data-controller': 'image-upload'}}) }}
+
+        {{ form_row(form.file, {
+            'help': 'image_upload.form.file.helper'|trans
+        }) }}
+
+        {{ form_row(form.credit) }}
+
+        {{ form_row(form.watermarked, {
+            'help': 'image_upload.form.watermark.helper'|trans
+        }) }}
+
+        {{ form_row(form.copyrightAgreement) }}
+
+        <div class="flex gap-3">
+            {{ form_widget(form.upload, {
+                'attr': {'data-image-upload-target': 'submitButton'}
+            }) }}
+            <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+               class="inline-flex items-center justify-center px-6 py-3 text-sm font-medium rounded-lg bg-surface-muted text-content-secondary hover:bg-surface-strong transition-colors">
+                {{ 'image_upload.form.back'|trans }}
+            </a>
+        </div>
+
+    {{ form_end(form) }}
+{% endblock %}

@@ -27,9 +27,30 @@ index:
     stats:
         ratings: notas
         reviews: reseñas
-        users: usuarios
         images: fotos
+        my_coasters: 'mis coasters'
+        new_24h: '+{count} en 24h'
+        today: 'hoy'
     missingImages: '¡Buscamos fotos para esta montaña rusa!'
+    top_ranked: 'Mejor clasificados'
+    community_favorites: 'Reseñas destacadas'
+    community: 'Comunidad'
+    hero:
+        badge:
+            new: 'Nuevo'
+            upcoming: 'Próximamente'
+            hot: 'Popular'
+            photo: 'Foto destacada'
+        opened_on: 'Abierta el {date}'
+        opens_on: 'Abre el {date}'
+        hot_subtitle: 'La más calificada esta semana'
+    nearby:
+        title: 'Cerca de ti'
+        cta_description: 'Descubre las montañas rusas alrededor de tu ubicación.'
+        cta_button: 'Usar mi ubicación'
+        privacy: 'Tu ubicación se usa solo para esta búsqueda y nunca se almacena en nuestros servidores.'
+        loading: 'Buscando coasters cerca de ti…'
+        km: 'km'
 
 coaster:
     score:
@@ -41,6 +62,11 @@ coaster:
         quality: 'Puntuación de Calidad'
         worldrank: 'Clasificación Mundial'
         overview: 'De un Vistazo'
+    stats:
+        height: 'Altura'
+        length: 'Longitud'
+        speed: 'Velocidad'
+        inversions: 'Inversiones'
     quality:
         excellent: 'Excelente'
         good: 'Bueno'
@@ -49,12 +75,15 @@ coaster:
     rating:
         action: '¡Califica esta montaña rusa!'
         my_rating: 'Mi calificación'
+        section_title: 'Calificaciones de la comunidad'
         notenough: '¡No hay suficientes notas para esta montaña rusa!'
-        mustlogin: Debe iniciar sesión para calificar.
+        mustlogin: 'Inicia sesión para calificar'
         login: Iniciar sesión
-        sendreview: o haga clic aquí para escribir una reseña
-        updatereview: cambiar mi reseña
-        delete: borrar
+        sendreview: 'Escribir reseña'
+        updatereview: 'Editar reseña'
+        delete: Borrar
+        add_date: 'Añadir fecha'
+        tap_to_rate_hint: 'Toca una estrella para puntuar — esto también lo marca como montado.'
         text: 'Resultado basada en {count_rating} notas y {count_top} tops'
         details: Valoraciones detalladas de los usuarios
         distribution: 'Distribución de calificaciones'
@@ -88,15 +117,41 @@ coaster:
         kiddie: Kiddie
         indoor: Indoor
         formerNames: Nombres anteriores
+        features: Características
     parkcoaster: 'También en {name}'
     video:
         title: POV Onride
     photos:
         title: Fotos
+        page_title: 'Fotos de {name}'
         empty: '¡Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
         button: Subir una foto
         all: Ver todas las fotos
         loading: Carga de fotos
+    reviews:
+        featured: 'Lo que dicen los riders'
+        see_all: 'Ver todas las reseñas'
+        page_title: 'Reseñas de {name}'
+        empty: 'Aún no hay reseñas para esta montaña rusa.'
+        be_first: '¡Sé el primero en opinar!'
+    journal:
+        title: 'Mis rides'
+        ridden: 'Montada'
+        wishlist: 'Wishlist'
+        reride: '+1 ride'
+        first_ride: 'Primer ride'
+        rides_count: '{count, plural, one {ride} other {rides}}'
+        last_ride: 'Último ride'
+        confirm_remove_ridden: 'Esto también eliminará tu valoración. ¿Continuar?'
+        reride_added: '+1 ride añadido'
+        reride_undo: 'Deshacer'
+        not_tracked: 'Aún sin seguir'
+        on_wishlist: 'En tu wishlist'
+        tap_to_rate: 'Toca para valorar'
+        tap_to_reride: 'toca para repetir'
+        log_another: 'Registrar otro ride'
+        remove: 'Quitar'
+        add_date: 'Añadir fecha'
     location: Localización
 
 image_upload:
@@ -107,7 +162,6 @@ image_upload:
             helper: Imágen debe estar en formato JPEG y tener un tamaño inferior a 15MB. Imágen pequeña podrían ser rechazadas.
         credit:
             label: '¿Quién tomó esta foto?'
-            helper: Solo puede subir fotos si es el autor original o si ha obtenido la autorización del autor original.
         watermark:
             label: 'Watermark "Captain Coaster"'
             helper: Puede elegir marcar la foto con un logotipo de Captain Coaster para evitar su reutilización en otros sitios web.
@@ -122,16 +176,63 @@ image_upload:
 park:
     opened_coasters: '{ count, plural, one { montaña rusa abierta } other { montañas rusas abierta }}'
     kiddies: '{ count, plural, one { montaña rusa infantil } other { montañas rusas infantiles }}'
+    operating: 'En funcionamiento'
+    total: 'Total'
+    ranked: 'Clasificadas'
+    ratings: 'Valoraciones'
+    best_ranked: 'Mejor montaña rusa clasificada'
+    view_map: 'Ver en el mapa'
+    formerly: 'Anteriormente'
+    login_to_rate: 'Inicia sesión para valorar'
+    login_subtitle: 'Registra tus viajes, valora montañas rusas y crea tu wishlist'
+    nearby: 'Parques cercanos'
+    no_coasters: 'Sin montañas rusas'
+    no_coasters_desc: 'Este parque aún no tiene montañas rusas listadas.'
+    coasters:
+        title: 'Montañas rusas'
+        soon: 'Próximamente'
+        new: 'Nuevo'
+        legacy: 'Legado'
+    hero:
+        badge: 'Mejor clasificada'
+        best_coaster: 'Mejor montaña rusa'
+    stats:
+        rated: 'Valoradas'
+        ridden: 'Montadas'
+        not_rated: 'Sin valorar'
+        not_ridden: 'Sin montar'
+        missing: 'Por explorar'
+        wishlist: 'Wishlist'
+    progress:
+        title: 'Tu progreso'
+        aria: '{rated} valoradas, {ridden} montadas de {total} montañas rusas en funcionamiento'
+        complete: 'Parque completo — todas las montañas rusas valoradas'
+        encourage_rate: '{ count, plural, one {Valora # montaña rusa que has montado para seguir tus favoritas} other {Valora # montañas rusas que has montado para seguir tus favoritas}}'
+        encourage_explore: '{ count, plural, one {# montaña rusa por descubrir} other {# montañas rusas por descubrir}}'
+        encourage_start: '{ count, plural, one {Marca montañas rusas como montadas — # por descubrir} other {Marca montañas rusas como montadas — # por descubrir}}'
+        legacy_ridden: '{ count, plural, one {+ # montaña rusa legendaria montada antes de cerrar} other {+ # montañas rusas legendarias montadas antes de cerrar}}'
 
 coaster_ranking:
     title: Clasificación mundial de montañas rusas
     description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
     duel_number: '{ count, plural, one { # duelo } other { # duelos }}'
     no_results: '¡no se han encontrado montañas rusas!'
+    new: nuevo
+    ridden: 'Ya la has montado'
+    progress:
+        title: 'Tu top 100'
+        aria: 'Has montado {count} de las {total} mejores montañas rusas'
+        complete: '¡Has montado todo el top 100 en activo!'
+        remaining: '{count, plural, one {# montaña rusa por montar en el top 100} other {# montañas rusas por montar en el top 100}}'
+        defunct_ridden: '{count, plural, one {# montaña rusa legendaria que montaste antes de su cierre} other {# montañas rusas legendarias que montaste antes de su cierre}}'
+    stats: 'Estadísticas'
     info:
         title: 'Última actualización: {rankingMonth}'
         next: 'Próxima actualización {date}'
+        last_update: 'Última actualización: {date}'
         learn_more: Más información sobre la clasificación
+        learn_more_short: 'Acerca de'
+        in_numbers: 'La clasificación en cifras'
         coasters_ranked:
             short: montañas rusas
             long: montañas rusas clasificados
@@ -145,6 +246,16 @@ map_index:
     title: 'Mapa de montañas rusas'
     description: 'Descubre dónde están las montañas rusas más increíbles de los alrededores, los éxitos del próximo año o el B&M que aún no has montado con este mapa interactivo.'
     results: Resultados
+
+map:
+    parks_count: 'parques'
+    legend:
+        title: 'Leyenda'
+        coaster: 'montaña rusa'
+        coasters: 'montañas rusas'
+    popup:
+        coasters: 'montañas rusas'
+        no_coasters: 'No se encontraron montañas rusas para este parque.'
 
 filters:
     title: Filtros
@@ -180,9 +291,12 @@ user_profile:
     ratings: Mostrar sus notas
     reviews: 'Mostrar sus reseñas'
     main_top: 'Mostrar sus Top Coasters'
-    tops: 'Mostrar sus otros tops'
+    tops: 'Mostrar sus otras listas'
     map: 'Mostrar su mapa de montañas rusas'
     pictures: 'Mostrar sus fotos'
+    empty:
+        title: '{name} aún no tiene atracciones'
+        description: 'Este usuario aún no ha valorado ninguna montaña rusa.'
 
 user_list:
     title: Nuestros usuarios
@@ -196,12 +310,67 @@ profile:
     title: Mi perfil
     menu:
         ratings: Mis notas
-        tops: Mis tops
+        tops: Mis Listas
         map: Mi mapa
         photos: Mis fotos
         reviews: Mis reseñas
+        main_top: Mi Top Coasters
         settings: Configuración
     badge: Insignias
+    badge_welcome: Bienvenido
+    score:
+        section_title: 'Puntuaciones Captain'
+        captain:
+            label: 'Captain Score'
+        quality:
+            label: 'Quality Score'
+        explanation: '{ count, plural, one { Calculado a partir de # montaña rusa clasificada que has montado. } other { Calculado a partir de # montañas rusas clasificadas que has montado. }}'
+        empty: 'Aún no tenemos un Captain Score para ti — puntúa algunas montañas rusas clasificadas para empezar.'
+    rank:
+        rookie: Principiante
+        enthusiast: Aficionado
+        rider: Rider
+        veteran: Veterano
+        expert: Experto
+        legend: Leyenda
+    most_ridden:
+        title: Las más frecuentes
+    this_year:
+        title: 'En {year}'
+        new_coasters: Nuevas atracciones
+        total_rides: Total de rides
+    records:
+        title: Récords personales
+        tallest: La más alta
+        fastest: La más rápida
+        longest: La más larga
+        most_inversions: Más inversiones
+        oldest: La más antigua
+        newest: La más reciente
+    taste:
+        title: Estilo de valoración
+        mood:
+            generous: Generoso
+            balanced: Equilibrado
+            critical: Exigente
+        based_on: '{count, plural, one {Basado en # valoración} other {Basado en # valoraciones}}'
+        manufacturer: Fabricante más frecuente
+        model: Modelo más frecuente
+        country: País más frecuente
+    progress:
+        title: Progreso
+        next_rank: Próximo rango
+        next_milestone: 'Próximo hito ({count})'
+        max_rank: Rango máximo alcanzado
+        top100: TOP 100 mundial
+    activity:
+        title: Actividad reciente
+        see_all: Ver todo
+        ridden: Montada
+    empty:
+        title: Aún no hay atracciones
+        description: Empieza a valorar las montañas rusas que has montado para construir tu perfil.
+        action: Añadir mis atracciones
     banner:
         title: Banner personalizado
         text: ~
@@ -227,6 +396,37 @@ profile:
         park_count: '{count, plural, =0 {Ningún parque} =1 {1 parque} other {# parques}}'
     ratings:
         title: Mis notas
+        avg: 'Nota media'
+        sort_by: 'Ordenar por'
+        search_placeholder: 'Buscar por montaña rusa o parque…'
+        no_results: 'Ninguna nota coincide con tu búsqueda'
+        results: 'resultados'
+    my_coasters:
+        title: 'Mis Coasters'
+        tabs:
+            all: 'Todos'
+            rated: 'Valorados'
+            ridden: 'Montados'
+            wishlist: 'Wishlist'
+        sort:
+            recent: 'Recientes'
+            rating: 'Nota'
+            date: 'Fecha de ride'
+            name: 'Coaster'
+        to_rate: '{count, plural, one {# coaster por valorar} other {# coasters por valorar}}'
+    journey:
+        title: 'Mi Recorrido'
+        subtitle: 'Todos tus viajes en orden cronológico.'
+        stats:
+            coasters: 'Coasters'
+            countries: 'Países'
+            parks: 'Parques'
+            since: 'Desde'
+        undated: 'Sin fecha'
+        add_date: 'Añadir fecha'
+        all_years: 'Todos'
+        filter_by_year: 'Filtrar por año'
+        milestone: 'Coaster n.° {n}'
     settings:
         title: Configuración del perfil
         sections:
@@ -261,8 +461,7 @@ profile:
                 label: Mostrar distancias y estadísticas en
             displayReviewsInAllLanguages:
                 label: Mostrar reseñas escritas en diferentes lenguas
-            addTodayDateWhenRating:
-                label: Añadir la fecha de hoy en una nueva calificación
+
         advanced:
             apiKey:
                 label: Clave API
@@ -304,12 +503,14 @@ review:
     report_success: Gracias por tu reporte. Nuestro equipo lo revisará en breve.
     report_error: Se produjo un error al enviar tu reporte.
     remove_upvote: Quitar voto
+    back: 'Volver a la montaña rusa'
+    placeholder: 'Comparte tu experiencia en esta montaña rusa...'
     form:
         title: 'Reseña sobre {name}'
 
 users:
     tops:
-        title: 'Tops • {name}'
+        title: 'Listas • {name}'
     ratings:
         title: 'Clasificación • {name}'
         coaster: Montaña rusa
@@ -333,14 +534,18 @@ review_list:
 rating:
     last: Últimas notas
     action: 'calificó {value} estrellas'
+    delete: 'Eliminar valoración'
+    confirm_delete: '¿Eliminar esta valoración?'
 
 navbar:
     profile: Mi perfil
     settings: Ajustes
     rating: Mis notas
+    my_coasters: Mis Coasters
+    journey: Mi Recorrido
     login: Iniciar sesión
     logout: Cerrar sesión
-    tops: 'Mis tops'
+    tops: 'Mis Listas'
     my_map: Mi mapa
 
 sidebar:
@@ -355,44 +560,23 @@ sidebar:
     contact: Estar en contacto
     logout: Cerrar sesión
     login: Iniciar sesión
+    account: Cuenta
+    language: Idioma
+    current: Actual
+    mobile_language: Idioma
+    theme: Modo Oscuro/Claro
 
 footer:
     terms: Términos de Uso
-
-login:
-    title: Iniciar sesión en Captain Coaster
-    subtitle: Enviar un enlace de inicio de sesión a tu correo electrónico
-    send_link: Enviar enlace de inicio de sesión
-    redirect_to_register: '¿Eres nuevo en Captain Coaster? <a href="{link_path}">Crea una cuenta</a>'
-    or_sign_in_with: o
-    connect_with_google: Conectar con Google
-    terms: 'Al continuar, confirmas que aceptas nuestros <a href="{link_path}">Términos y Condiciones</a>'
-    email:
-        title: Iniciar sesión en Captain Coaster
-        h1: '¡Listo para despachar!'
-        paragraph1: 'Para iniciar sesión en Captain Coaster, haz clic en el botón de abajo. Este enlace expirará en 15 minutos.'
-        button: Iniciar sesión
-        paragraph2: 'Recibiste este correo electrónico porque estás intentando iniciar sesión en Captain Coaster. Si no estás seguro(a) de por qué estás recibiendo esto, contáctanos respondiendo a este correo electrónico.'
-    link_sent: 'Si hay una cuenta asociada con {email}, recibirás un enlace de inicio de sesión. Haz clic en el enlace para iniciar sesión.'
-    rate_limit_exceeded: 'Demasiados intentos de inicio de sesión. Por favor, inténtalo de nuevo más tarde.'
-
-register:
-    title: Crear una cuenta
-    subtitle: 'Por favor, complete todos los campos a continuación'
-    link_sent: '¡Cuenta creada! Por favor, revise su correo electrónico ({email}) y haga clic en el enlace para activar su cuenta.'
-    rate_limit_exceeded: 'Demasiados intentos de registro. Por favor, inténtalo de nuevo más tarde.'
-    form:
-        email: Correo electrónico
-        first_name: Nombre
-        last_name: Apellido
-        submit: Crear una cuenta
-    email:
-        title: Confirma tu correo electrónico
-        h1: '¡Bienvenido a bordo!'
-        paragraph1: 'Para usar Captain Coaster, haga clic en el botón de verificación. Este enlace es válido por'
-        button: Activar
-        paragraph2: 'Recibió este correo electrónico porque creó una cuenta en Captain Coaster. Si no está seguro de por qué está recibiendo esto, por favor contáctenos respondiendo a este correo electrónico.'
-    email_verified: 'Su correo electrónico {email} ha sido verificado. ¡Bienvenido a Captain Coaster!'
+    tagline: 'La guía definitiva para los entusiastas de las montañas rusas. Califica, escribe reseñas y crea listas para las montañas rusas que has montado.'
+    crafted: 'Hecho con {heart} por aficionados a las montañas rusas'
+    discover:
+        title: Descubrir
+    community:
+        title: Comunidad
+    legal:
+        title: Legal
+        about_ranking: 'Sobre la clasificación'
 
 contact:
     title: Estar en contacto
@@ -419,6 +603,14 @@ notif:
         gotnotif: 'Acabas de recibir una nueva notificación en Captain Coaster:'
         view: 'Ver esto en <a href="{link_path}">CaptainCoaster.com</a>'
         unsubscribe: 'Para dejar de recibirlo, cambie sus <a href="{link_path}">preferencias de notificación</a>.'
+
+coaster_search:
+    title: 'Buscar montañas rusas'
+    description: 'Encuentra montañas rusas por nombre, ubicación, fabricante y más'
+    num_found: '{num} montañas rusas encontradas'
+    num_found_label: 'montañas rusas encontradas'
+    no_results: 'No se encontraron montañas rusas'
+    no_results_hint: 'Intenta ajustar tus filtros'
 
 nearby:
     title: Busca una montaña rusa
@@ -465,9 +657,28 @@ banner:
 search_index:
     title: Buscar
     more: Ver todos los resultados
-    noResult: No hay resultados
+    noResult: No se encontraron resultados
     noTerm: No hay término de búsqueda
     short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
+    results_for: 'Resultados para "{query}"'
+    try_different: Prueba con otro término de búsqueda
+    showing_results: 'Mostrando {count} de {total} resultados'
+    filter:
+        all: Todo
+        coasters: Montañas rusas
+        parks: Parques
+        users: Usuarios
+    coaster_count: >-
+        {count, plural,
+            =1 {1 montaña rusa}
+            other {# montañas rusas}
+        }
+    rating_count: >-
+        {count, plural,
+            =0 {Sin valoraciones}
+            =1 {1 valoración}
+            other {# valoraciones}
+        }
     coasters_found: >-
         {num, plural,
             =0 {No se han encontrado montañas rusas}
@@ -492,3 +703,35 @@ search_index:
             =1 {1 resultado encontrado para "{query}"}
             other {# resultados encontrados para "{query}"}
         }
+# Form-related translations
+form:
+    required: 'Campo obligatorio'
+    file:
+        upload: 'Subir un archivo'
+        drag_drop: 'o arrastrar y soltar'
+    description: '¿Tienes una pregunta, sugerencia, o simplemente quieres saludar? ¡Nos encantaría saber de ti!'
+
+# Records page — récords mundiales (más alto, más largo, más rápido, más inversiones)
+records:
+    title: 'Récords Mundiales'
+    subtitle: 'Las montañas rusas más impresionantes del mundo'
+    filter_by_continent: 'Filtrar por continente'
+    empty: 'No hay récords para mostrar'
+    categories:
+        tallest: 'Más alto'
+        longest: 'Más largo'
+        fastest: 'Más rápido'
+        most_inversions: 'Más inversiones'
+    metrics:
+        height: 'Altura'
+        length: 'Longitud'
+        speed: 'Velocidad'
+        inversionsNumber: 'Inversiones'
+
+search:
+    type:
+        coasters: 'Atracciones'
+        parks: 'Parques'
+        users: 'Usuarios'
+    show_all: 'Ver todos los resultados de "{query}"'
+    no_results: 'Sin resultados para "{query}"'

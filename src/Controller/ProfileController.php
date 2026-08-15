@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\RiddenCoaster;
+use App\Entity\Top;
 use App\Entity\User;
 use App\Form\Type\ProfileSettingsForm;
 use App\Repository\ImageRepository;
+use App\Repository\RiddenCoasterRepository;
+use App\Repository\TopCoasterRepository;
 use App\Service\AccountDeletionService;
 use App\Service\ProfilePictureManager;
 use App\Service\StatService;
@@ -16,7 +18,6 @@ use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -29,14 +30,16 @@ class ProfileController extends BaseController
     public function index(
         StatService $statService,
         ImageRepository $imageRepository,
+        RiddenCoasterRepository $riddenCoasterRepository,
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
 
         return $this->render('Profile/index.html.twig', [
             'user' => $user,
-            'stats' => $statService->getUserStats($user),
+            'stats' => $statService->getProfileStats($user),
             'images_counter' => $imageRepository->countUserEnabledImages($user),
+            'recentActivity' => $riddenCoasterRepository->findRecentActivity($user, 6),
         ]);
     }
 
@@ -48,29 +51,158 @@ class ProfileController extends BaseController
         return $this->redirectToRoute('profile');
     }
 
-    /** Show my ratings. */
-    #[Route(path: '/profile/ratings/{page}', name: 'profile_ratings', requirements: ['page' => '\d+'], methods: ['GET'])]
+    /** Legacy ratings route — folded into My Coasters (rated tab). */
+    #[Route(path: '/profile/ratings/{page}', name: 'profile_ratings', requirements: ['page' => '\d+'], defaults: ['page' => 1], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
-    public function ratingsAction(EntityManagerInterface $em, PaginatorInterface $paginator, int $page = 1): Response
+    public function ratingsAction(): Response
     {
+        return $this->redirectToRoute('profile_my_coasters', ['tab' => 'rated'], Response::HTTP_MOVED_PERMANENTLY);
+    }
+
+    /** Show my journey (chronological timeline). */
+    #[Route(path: '/profile/journey', name: 'profile_journey', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function journey(
+        Request $request,
+        RiddenCoasterRepository $riddenCoasterRepository,
+    ): Response {
         /** @var User $user */
         $user = $this->getUser();
 
-        $query = $em
-            ->getRepository(RiddenCoaster::class)
-            ->getUserRatings($user);
+        $yearParam = $request->query->get('year');
+        $showAll = 'all' === $yearParam;
+        $yearFilter = (!$showAll && null !== $yearParam) ? (int) $yearParam : null;
 
-        try {
-            $ratings = $paginator->paginate($query, $page, 30, [
-                'defaultSortFieldName' => 'r.updatedAt',
-                'defaultSortDirection' => 'desc',
-            ]);
-        } catch (\UnexpectedValueException) {
-            throw new BadRequestHttpException();
+        $availableYears = $riddenCoasterRepository->findAvailableRideYears($user);
+
+        // Default to most recent year to avoid loading all rides at once
+        if (!$showAll && null === $yearFilter && [] !== $availableYears) {
+            return $this->redirectToRoute('profile_journey', ['year' => $availableYears[0]]);
         }
 
-        return $this->render('Profile/ratings.html.twig', [
-            'ratings' => $ratings,
+        $riddenCoasters = $riddenCoasterRepository->findByUserForJourney($user, $yearFilter);
+        $milestones = $riddenCoasterRepository->findMilestoneCoasterIds($user);
+        $stats = $riddenCoasterRepository->getJourneyStats($user);
+
+        $byYear = [];
+        $undated = [];
+
+        foreach ($riddenCoasters as $rc) {
+            $firstRiddenAt = $rc->getFirstRiddenAt();
+            if (null !== $firstRiddenAt) {
+                $byYear[(int) $firstRiddenAt->format('Y')][] = $rc;
+            } else {
+                $undated[] = $rc;
+            }
+        }
+
+        krsort($byYear);
+
+        return $this->render('Profile/journey.html.twig', [
+            'byYear' => $byYear,
+            'undated' => $undated,
+            'stats' => $stats,
+            'availableYears' => $availableYears,
+            'yearFilter' => $yearFilter,
+            'showAll' => $showAll,
+            'milestones' => $milestones,
+        ]);
+    }
+
+    /** Show my coasters (rated, ridden, wishlist). */
+    #[Route(path: '/profile/my-coasters', name: 'profile_my_coasters', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function myCoasters(
+        Request $request,
+        RiddenCoasterRepository $riddenCoasterRepository,
+        TopCoasterRepository $topCoasterRepository,
+        PaginatorInterface $paginator,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $tab = $request->query->getString('tab', 'all');
+        $search = trim($request->query->getString('q'));
+        // Ridden-only entries have no rating and no meaningful "recent" order, so default them to ride date.
+        $sort = $request->query->getString('sort', 'ridden' === $tab ? 'date' : 'recent');
+        $page = $request->query->getInt('page', 1);
+
+        if ('' === $search) {
+            $search = null;
+        }
+
+        // Counts for tabs
+        $ratedCount = (int) (clone $riddenCoasterRepository->findRatedByUser($user))
+            ->select('COUNT(r.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $riddenOnlyCount = (int) (clone $riddenCoasterRepository->findRiddenOnlyByUser($user))
+            ->select('COUNT(r.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+        $wishlistCount = $topCoasterRepository->countBucketByUser($user);
+        $allCount = $ratedCount + $riddenOnlyCount;
+
+        // Build query based on tab
+        $isWishlistTab = 'wishlist' === $tab;
+
+        if ($isWishlistTab) {
+            $qb = $topCoasterRepository->createQueryBuilder('w')
+                ->join('w.coaster', 'c')
+                ->join('c.park', 'p')
+                ->join('w.top', 't')
+                ->where('t.user = :user')
+                ->andWhere('t.type = :bucket')
+                ->setParameter('user', $user)
+                ->setParameter('bucket', Top::TYPE_BUCKET);
+
+            if (null !== $search) {
+                $qb->andWhere('c.name LIKE :search OR p.name LIKE :search')
+                    ->setParameter('search', '%'.addcslashes($search, '%_\\').'%');
+            }
+
+            // Sorting for the bucket list (newest added = highest position)
+            match ($sort) {
+                'name' => $qb->orderBy('c.name', 'ASC'),
+                default => $qb->orderBy('w.position', 'DESC'),
+            };
+        } else {
+            $qb = match ($tab) {
+                'rated' => $riddenCoasterRepository->findRatedByUser($user),
+                'ridden' => $riddenCoasterRepository->findRiddenOnlyByUser($user),
+                default => $riddenCoasterRepository->getUserRatings($user),
+            };
+
+            if (null !== $search) {
+                $qb->andWhere('c.name LIKE :search OR p.name LIKE :search')
+                    ->setParameter('search', '%'.addcslashes($search, '%_\\').'%');
+            }
+
+            // Sorting for ridden coasters
+            match ($sort) {
+                'rating' => $qb->orderBy('r.rating', 'DESC'),
+                'date' => $qb->orderBy('r.firstRiddenAt', 'DESC'),
+                'name' => $qb->orderBy('c.name', 'ASC'),
+                default => $qb->orderBy('r.updatedAt', 'DESC'),
+            };
+        }
+
+        // Ordering is applied above; point KNP's sort param at an unused name so it
+        // doesn't try to interpret our `sort` value (recent/rating/date/name) as a column.
+        $results = $paginator->paginate($qb, $page, 30, [
+            'sortFieldParameterName' => '_disabled',
+        ]);
+
+        return $this->render('Profile/my_coasters.html.twig', [
+            'results' => $results,
+            'tab' => $tab,
+            'search' => $search ?? '',
+            'sort' => $sort,
+            'allCount' => $allCount,
+            'ratedCount' => $ratedCount,
+            'riddenOnlyCount' => $riddenOnlyCount,
+            'wishlistCount' => $wishlistCount,
+            'isWishlistTab' => $isWishlistTab,
         ]);
     }
 
@@ -80,7 +212,6 @@ class ProfileController extends BaseController
     public function settings(
         Request $request,
         EntityManagerInterface $em,
-        ImageRepository $imageRepository,
         ProfilePictureManager $profilePictureManager,
         TranslatorInterface $translator
     ): Response {
@@ -126,7 +257,6 @@ class ProfileController extends BaseController
             'form' => $form,
             'user' => $user,
             'canChangeName' => $user->canChangeName(),
-            'images_counter' => $imageRepository->countUserEnabledImages($user),
         ]);
     }
 

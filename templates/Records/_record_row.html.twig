@@ -1,0 +1,62 @@
+{#
+  Single record row — used by Records/index.
+
+  Parameters:
+    - coaster (required): Coaster entity
+    - rank (required): podium rank (1 / 2 / 3)
+    - metric (required): metric name (height, length, speed, inversionsNumber)
+    - unit (optional): unit-formatter twig function name (m_or_f, kph_or_mph) or null
+#}
+
+{# Resolve the metric value via Twig attribute() so a single template handles all metrics #}
+{% set value = attribute(coaster, metric) %}
+
+{# Format the value (units service for height/length/speed, raw integer for inversions) #}
+{% set displayValue = value %}
+{% if unit == 'm_or_f' %}
+  {% set displayValue = units.m_or_f(value) %}
+{% elseif unit == 'kph_or_mph' %}
+  {% set displayValue = units.kph_or_mph(value) %}
+{% endif %}
+
+<li class="bg-surface rounded-xl border border-line hover:border-line-strong transition-colors">
+  <div class="flex items-center gap-3 px-3 py-2.5">
+
+    <twig:RankBadge :rank="rank" size="sm" hash="false" />
+
+    {# Thumbnail #}
+    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+       class="shrink-0" tabindex="-1" aria-hidden="true">
+      {% if coaster.mainImage is not null %}
+        <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+             class="w-12 h-9 rounded-lg object-cover"
+             alt="{{ coaster.name }}"
+             loading="lazy">
+      {% else %}
+        <div class="w-12 h-9 rounded-lg bg-surface-muted flex items-center justify-center">
+          {{ ux_icon('tabler:roller-coaster', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+        </div>
+      {% endif %}
+    </a>
+
+    {# Coaster info #}
+    <div class="flex-1 min-w-0">
+      <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+         class="font-medium text-sm text-content hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors leading-snug block truncate">
+        {{ coaster.name }}
+      </a>
+      <div class="flex items-center gap-1 mt-0.5">
+        <span class="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-{{ coaster.status.color ?? 'neutral' }}-400"
+              title="{{ coaster.status.name|trans([], 'database') }}"></span>
+        <span class="text-xs text-content-muted truncate">{{ coaster.park.name }}</span>
+      </div>
+    </div>
+
+    {# Metric value #}
+    <div class="shrink-0 text-right">
+      <div class="text-base font-bold text-content tabular-nums leading-tight">{{ displayValue }}</div>
+      <div class="text-[10px] text-content-muted uppercase tracking-wide">{{ ('records.metrics.' ~ metric)|trans }}</div>
+    </div>
+
+  </div>
+</li>

@@ -1,0 +1,73 @@
+{# templates/components/SearchDropdown.html.twig #}
+<div {{ attributes.defaults({
+    'data-controller': 'search-nav',
+    'class': 'relative'
+}) }}>
+
+    {# Search icon + input #}
+    <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            {{ ux_icon('tabler:search', {'class': 'w-5 h-5 text-content-subtle', 'aria-hidden': 'true'}) }}
+        </div>
+
+        {% if variant == 'mobile' %}
+            <input
+                type="search"
+                name="query"
+                value="{{ query }}"
+                data-model="debounce(200)|query"
+                data-search-nav-target="input"
+                data-action="keydown->search-nav#handleKeydown focus->search-nav#handleFocus blur->search-nav#handleBlur input->search-nav#handleInput"
+                class="block w-full pl-10 pr-4 py-3 text-base border-0 rounded-xl bg-surface-muted text-content placeholder-content-subtle focus:bg-white dark:focus:bg-neutral-700 focus:ring-2 focus:ring-cc-blue-500 focus:outline-none transition-all duration-200"
+                placeholder="{{ 'app.header.search'|trans }}"
+                autocomplete="off"
+                aria-expanded="false"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+            >
+        {% else %}
+            <input
+                id="search-coaster"
+                name="query"
+                type="search"
+                value="{{ query }}"
+                data-model="debounce(200)|query"
+                data-search-nav-target="input"
+                data-action="keydown->search-nav#handleKeydown focus->search-nav#handleFocus blur->search-nav#handleBlur input->search-nav#handleInput"
+                class="block w-full pl-10 pr-12 py-2.5 border border-line-strong rounded-xl bg-surface-sunken text-sm text-content placeholder-content-subtle focus:bg-white dark:focus:bg-neutral-700 focus:ring-2 focus:ring-cc-blue-500/50 focus:border-cc-blue-500 focus:outline-none transition-all duration-200"
+                placeholder="{{ 'app.header.search'|trans }}"
+                autocomplete="off"
+                role="combobox"
+                aria-expanded="false"
+                aria-autocomplete="list"
+                aria-haspopup="listbox"
+            >
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                <kbd class="hidden xl:inline-flex items-center px-2 py-1 text-xs font-medium text-content-muted bg-surface-muted rounded border border-line-strong" id="search-shortcut">
+                    <span id="search-shortcut-key">Ctrl</span>K
+                </kbd>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Dropdown #}
+    {% if variant == 'mobile' %}
+        <div class="fixed inset-x-0 top-[65px] bottom-0 overflow-y-auto bg-neutral-50 dark:bg-neutral-900 hidden"
+             data-search-nav-target="dropdown"
+             role="listbox"
+             aria-label="{{ 'app.search.suggestions'|trans }}">
+            <div class="py-2 transition-opacity data-[live-loading]:opacity-60">
+                {% include 'components/_search_dropdown_body.html.twig' %}
+            </div>
+        </div>
+    {% else %}
+        <div class="absolute z-50 w-full mt-2 bg-surface-sunken rounded-xl shadow-lg border border-line-strong hidden"
+             data-search-nav-target="dropdown"
+             role="listbox"
+             aria-label="{{ 'app.search.suggestions'|trans }}">
+            <div class="py-2 transition-opacity data-[live-loading]:opacity-60">
+                {% include 'components/_search_dropdown_body.html.twig' %}
+            </div>
+        </div>
+    {% endif %}
+</div>

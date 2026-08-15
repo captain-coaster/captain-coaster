@@ -1,0 +1,69 @@
+{% extends "layouts/base.html.twig" %}
+
+{% block title %}Mockup · Coaster show ({{ state }}){% endblock %}
+
+{% block body %}
+  <div class="max-w-3xl mx-auto">
+    {% include 'Mockup/Rating/_state_switcher.html.twig' %}
+
+    {# ── Hero ─────────────────────────────────────────────────────────── #}
+    <div class="relative -mx-4 sm:-mx-6 lg:-mx-8 -mt-2 mb-4">
+      <div class="relative h-[30vh] min-h-[220px] max-h-[340px] bg-linear-to-br from-cc-blue-600 to-cc-warm-500 overflow-hidden">
+        <div class="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-black/0"></div>
+      </div>
+      <div class="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+        <div class="max-w-3xl mx-auto">
+          <h1 class="text-2xl sm:text-3xl font-bold text-white">{{ coaster.name }}</h1>
+          <div class="flex items-center gap-3">
+            <a href="#" class="text-base text-white/90 hover:text-white">{{ coaster.park }}, {{ coaster.country }}</a>
+            <div class="ml-auto flex items-center gap-2">
+              <span class="text-sm font-bold text-white px-2.5 py-0.5 rounded-lg bg-cc-blue-500">{{ coaster.score|number_format(1, ',') }}%</span>
+              <span class="text-sm font-bold text-white/90 px-2.5 py-0.5 rounded-lg bg-white/20 backdrop-blur-sm">#{{ coaster.rank }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+
+      {# ── SECTION A : Mon journal ──────────────────────────────────── #}
+      {# Le widget full inclut la section A (journal) + section B (note) #}
+      {% include 'Mockup/Rating/_widget.html.twig' with {state: state, rating: rating, variant: 'full'} only %}
+
+      {# ── Community Ratings ────────────────────────────────────────── #}
+      <section class="rounded-2xl bg-surface-sunken overflow-hidden">
+        <div class="px-5 pt-4 pb-2">
+          <h2 class="text-base font-semibold text-content flex items-center gap-2">
+            {{ ux_icon('tabler:star', {'class': 'w-5 h-5 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+            Notes des riders
+            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-cc-blue-100 text-cc-blue-800 dark:bg-cc-blue-900/20 dark:text-cc-blue-400">1 247</span>
+          </h2>
+        </div>
+        <div class="px-5 pb-4 space-y-1.5">
+          {% for star, pct in {'5': 62, '4': 24, '3': 9, '2': 3, '1': 2} %}
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-medium text-content-muted w-3">{{ star }}</span>
+              {{ ux_icon('tabler:star-filled', {'class': 'w-3 h-3 text-cc-warm-400', 'aria-hidden': 'true'}) }}
+              <div class="flex-1 h-1.5 bg-surface-strong rounded-full overflow-hidden">
+                <div class="h-full bg-cc-warm-400 rounded-full" style="width: {{ pct }}%"></div>
+              </div>
+              <span class="text-xs text-content-muted w-8 text-right">{{ pct }}%</span>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      {# ── SECTION C : Avis ─────────────────────────────────────────── #}
+      {# Règle : bouton "Écrire un avis" seulement si ridden #}
+      {% set isRidden = state in ['ridden', 'rated'] %}
+      {% include 'Mockup/Rating/_reviews_block.html.twig' with {
+        coaster: coaster,
+        reviews: reviews,
+        myReview: myReview,
+        canWrite: isRidden
+      } only %}
+
+    </div>
+  </div>
+{% endblock %}

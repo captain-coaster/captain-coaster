@@ -1,0 +1,47 @@
+page_title: 'Anmelden'
+
+welcome:
+    heading: 'Willkommen'
+    subtext: 'Gib deine E-Mail-Adresse ein, um dich anzumelden oder ein Konto zu erstellen.'
+    email_label: 'E-Mail-Adresse'
+    email_placeholder: 'du@beispiel.de'
+    cta: 'Weiter'
+    or: 'oder'
+    google: 'Mit Google fortfahren'
+    terms: 'Durch Fortfahren akzeptierst du unsere <a href="{terms_url}" class="underline">Allgemeinen Geschäftsbedingungen</a>.'
+
+register:
+    back: 'Zurück'
+    new_account_chip: 'neues Konto'
+    heading: 'Noch eine Sache'
+    subtext: 'Wie sollen wir dich auf Captain Coaster nennen?'
+    first_name_label: 'Vorname'
+    last_name_label: 'Nachname'
+    cta: 'Konto erstellen'
+
+sent:
+    heading: 'Überprüfe deinen Posteingang'
+    body: 'Wir haben einen Link an <strong>{email}</strong> gesendet. Klicke darauf, um dich anzumelden — er läuft in 15 Minuten ab.'
+    wrong_email: 'Falsche E-Mail?'
+    start_over: 'Neu beginnen'
+
+error:
+    rate_limit: 'Zu viele Versuche. Bitte versuche es später erneut.'
+    authentication_failed: 'Authentifizierung fehlgeschlagen. Bitte versuche es erneut.'
+    account_banned: 'Dein Konto wurde deaktiviert. Bitte kontaktiere uns, wenn du glaubst, dass dies ein Fehler ist.'
+    account_deleted: 'Dein Konto wurde gelöscht und ist nicht mehr zugänglich.'
+
+email:
+    login_subject: 'Anmelden bei Captain Coaster'
+    login_h1: 'Bereit zum Versand!'
+    login_p1: 'Um dich bei Captain Coaster anzumelden, klicke auf den untenstehenden Button. Dieser Link läuft in 15 Minuten ab.'
+    login_button: 'Anmelden'
+    login_p2: 'Du hast diese E-Mail erhalten, weil du einen Anmelde-Link angefordert hast. Wenn du das nicht warst, ignoriere diese E-Mail.'
+
+activation:
+    subject: 'Willkommen — aktiviere dein Captain Coaster-Konto'
+    h1: 'Willkommen an Bord!'
+    p1: 'Um dein Captain Coaster-Konto zu aktivieren, klicke auf den untenstehenden Button. Dieser Link läuft in 15 Minuten ab.'
+    button: 'Mein Konto aktivieren'
+    p2: 'Du hast diese E-Mail erhalten, weil du ein Konto auf Captain Coaster erstellt hast.'
+    verified: 'Deine E-Mail {email} wurde verifiziert. Willkommen bei Captain Coaster!'

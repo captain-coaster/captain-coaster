@@ -1,0 +1,53 @@
+page_title: 'Sign in'
+
+# ── State 1: email entry ──────────────────────────────────────────────────────
+welcome:
+    heading: 'Welcome'
+    subtext: 'Enter your email to sign in or create an account.'
+    email_label: 'Email address'
+    email_placeholder: 'you@example.com'
+    cta: 'Continue'
+    or: 'or'
+    google: 'Continue with Google'
+    terms: 'By continuing you accept our <a href="{terms_url}" class="underline">Terms &amp; Conditions</a>.'
+
+# ── State 2: name collection (new users only) ─────────────────────────────────
+register:
+    back: 'Back'
+    new_account_chip: 'new account'
+    heading: 'One last thing'
+    subtext: 'What should we call you on Captain Coaster?'
+    first_name_label: 'First name'
+    last_name_label: 'Last name'
+    cta: 'Create account'
+
+# ── State 3: check inbox ──────────────────────────────────────────────────────
+sent:
+    heading: 'Check your inbox'
+    body: 'We sent a link to <strong>{email}</strong>. Click it to sign in — it expires in 15 minutes.'
+    wrong_email: 'Wrong email?'
+    start_over: 'Start over'
+
+# ── Flash / error messages ────────────────────────────────────────────────────
+error:
+    rate_limit: 'Too many attempts. Please try again later.'
+    authentication_failed: 'Authentication failed. Please try again.'
+    account_banned: 'Your account has been deactivated. Please contact us if you believe this is an error.'
+    account_deleted: 'Your account has been deleted and is no longer accessible.'
+
+# ── Login email (magic link for returning users) ──────────────────────────────
+email:
+    login_subject: 'Sign in to Captain Coaster'
+    login_h1: 'Ready to dispatch!'
+    login_p1: 'To sign in to Captain Coaster, click the button below. This link expires in 15 minutes.'
+    login_button: 'Sign in'
+    login_p2: 'You received this email because you requested a sign-in link. If this was not you, ignore it.'
+
+# ── Activation email (magic link for new users) ───────────────────────────────
+activation:
+    subject: 'Welcome — activate your Captain Coaster account'
+    h1: 'Welcome aboard!'
+    p1: 'To activate your Captain Coaster account, click the button below. This link expires in 15 minutes.'
+    button: 'Activate my account'
+    p2: 'You received this email because you created an account on Captain Coaster.'
+    verified: 'Your email {email} has been verified. Welcome to Captain Coaster!'

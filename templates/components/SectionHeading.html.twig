@@ -1,0 +1,66 @@
+{#
+  Section Heading — section title block with optional count pill, arrow link, and action links.
+
+  Usage:
+    <twig:SectionHeading
+        icon="tabler:star"
+        iconColor="text-cc-warm-500"
+        title="{{ 'rating.last'|trans }}"
+        :count="42"
+        seeAllUrl="{{ path('review_list') }}"
+        seeAllLabel="{{ 'review.all'|trans }}"
+    />
+
+  Props:
+    - icon (required): Tabler icon name (e.g. tabler:star)
+    - iconColor: Tailwind colour class for the icon
+                 Convention: text-cc-warm-500 for ratings/achievements, text-cc-blue-500 for everything else
+    - title (required): translated title string
+    - count: optional number badge displayed beside the title
+    - seeAllUrl: optional URL — renders a → arrow icon link on the right
+    - seeAllLabel: accessible aria-label for the arrow link (default: 'review.all'|trans)
+    - extraLink: optional action label rendered below the title row (e.g. "Write a review")
+    - extraLinkUrl: URL for the action link
+    - extraLinkIcon: optional icon for the action link
+#}
+{% props
+    icon,
+    iconColor = 'text-cc-blue-500',
+    title,
+    count = null,
+    seeAllUrl = null,
+    seeAllLabel = null,
+    extraLink = null,
+    extraLinkUrl = null,
+    extraLinkIcon = null
+%}
+
+<div class="mb-4">
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-semibold text-content flex items-center gap-1.5">
+      {{ ux_icon(icon, {'class': 'w-5 h-5 ' ~ iconColor ~ ' shrink-0', 'aria-hidden': 'true'}) }}
+      {{ title }}
+      {% if count is not null %}
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-surface-strong text-content-secondary align-middle">
+          {{ count }}
+        </span>
+      {% endif %}
+    </h2>
+    {% if seeAllUrl %}
+      <a href="{{ seeAllUrl }}"
+         aria-label="{{ seeAllLabel ?? 'review.all'|trans }}"
+         class="shrink-0 p-1.5 rounded-lg text-content-muted hover:text-content hover:bg-surface-muted transition-colors">
+        {{ ux_icon('tabler:arrow-right', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+      </a>
+    {% endif %}
+  </div>
+  {% if extraLink and extraLinkUrl %}
+    <a href="{{ extraLinkUrl }}"
+       class="mt-1.5 inline-flex items-center gap-1.5 text-xs text-content-muted hover:text-content-secondary transition-colors">
+      {% if extraLinkIcon %}
+        {{ ux_icon(extraLinkIcon, {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+      {% endif %}
+      {{ extraLink }}
+    </a>
+  {% endif %}
+</div>

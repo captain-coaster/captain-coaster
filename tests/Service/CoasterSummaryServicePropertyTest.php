@@ -8,7 +8,6 @@ use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
-use App\Entity\User;
 use App\Entity\VocabularyGuide;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\VocabularyGuideRepository;
@@ -18,7 +17,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Eris\Generator;
 use Eris\TestTrait;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
@@ -62,7 +60,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
     /**
      * **Feature: coaster-summary-refactor, Property 1: Direct Generation Consistency**
-     * **Validates: Requirements 1.1, 1.2**
+     * **Validates: Requirements 1.1, 1.2**.
      *
      * For any supported language and coaster with sufficient reviews, generating a summary
      * should use the same methodology regardless of the target language, without requiring
@@ -172,7 +170,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
     /**
      * **Feature: coaster-summary-refactor, Property 2: Vocabulary Guide Integration**
-     * **Validates: Requirements 1.4, 2.1**
+     * **Validates: Requirements 1.4, 2.1**.
      *
      * For any language with an available vocabulary guide, the generated AI prompt should
      * incorporate the vocabulary guide content and use it during summary generation.
@@ -232,12 +230,13 @@ class CoasterSummaryServicePropertyTest extends TestCase
             $capturedPrompt = '';
             $bedrockService
                 ->method('invokeModel')
-                ->willReturnCallback(function (string $prompt) use (&$capturedPrompt) {
+                ->willReturnCallback(static function (string $prompt) use (&$capturedPrompt) {
                     $capturedPrompt = $prompt;
+
                     return [
                         'success' => true,
                         'content' => json_encode([
-                            'summary' => "Generated summary in language",
+                            'summary' => 'Generated summary in language',
                             'pros' => ['Pro 1'],
                             'cons' => ['Con 1'],
                         ]),
@@ -279,7 +278,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
     /**
      * **Feature: coaster-summary-refactor, Property 6: Backward Compatibility Preservation**
-     * **Validates: Requirements 1.3**
+     * **Validates: Requirements 1.3**.
      *
      * For any existing CoasterSummary record, the refactored service should be able to
      * read and process it without data loss or corruption.
@@ -358,7 +357,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
     /**
      * **Feature: coaster-summary-refactor, Property 4: Enhanced Source Data Inclusion**
-     * **Validates: Requirements 1.5, 4.1, 4.2, 4.3, 4.5**
+     * **Validates: Requirements 1.5, 4.1, 4.2, 4.3, 4.5**.
      *
      * For any coaster summary generation, the AI prompt should include review ratings alongside
      * review text, coaster status information, and global rating percentage when available.
@@ -406,7 +405,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
             for ($i = 0; $i < $reviewCount; ++$i) {
                 $review = new RiddenCoaster();
                 $review->setReview("This is a test review {$i} in {$language}");
-                $review->setValue(random_int(1, 10)); // Random rating 1-10
+                $review->setRating((float) random_int(1, 10) / 2); // Random rating 0.5-5.0
                 $review->setCoaster($coaster); // Set coaster reference
                 $reviews[] = $review;
             }
@@ -431,12 +430,13 @@ class CoasterSummaryServicePropertyTest extends TestCase
             $capturedPrompt = '';
             $bedrockService
                 ->method('invokeModel')
-                ->willReturnCallback(function (string $prompt) use (&$capturedPrompt) {
+                ->willReturnCallback(static function (string $prompt) use (&$capturedPrompt) {
                     $capturedPrompt = $prompt;
+
                     return [
                         'success' => true,
                         'content' => json_encode([
-                            'summary' => "Generated summary with enhanced data",
+                            'summary' => 'Generated summary with enhanced data',
                             'pros' => ['Pro 1'],
                             'cons' => ['Con 1'],
                         ]),
@@ -467,7 +467,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
             // Verify coaster context data is included in the prompt
             $this->assertStringContainsString('<coaster_context>', $capturedPrompt);
             $this->assertStringContainsString("Status: {$statusName}", $capturedPrompt);
-            
+
             // Verify global rating percentage is included when available
             $expectedRatingPercent = round(($averageRating / 10) * 100, 1);
             $this->assertStringContainsString("Community Rating: {$expectedRatingPercent}% based on {$totalRatings} ratings", $capturedPrompt);
@@ -483,7 +483,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
             // Verify successful generation
             $this->assertArrayHasKey('summary', $result);
             $this->assertInstanceOf(CoasterSummary::class, $result['summary']);
-            $this->assertSame("Generated summary with enhanced data", $result['summary']->getSummary());
+            $this->assertSame('Generated summary with enhanced data', $result['summary']->getSummary());
         });
     }
 }

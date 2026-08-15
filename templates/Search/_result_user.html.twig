@@ -1,0 +1,30 @@
+{# User search result row #}
+<a href="{{ path('user_show', {'slug': result.slug}) }}"
+   class="group flex items-center gap-3 px-4 py-3 hover:bg-surface-muted transition-colors">
+
+    {# Avatar #}
+    <div class="shrink-0 w-10 h-10 rounded-full overflow-hidden bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center">
+        {% if result.image %}
+            <img src="{{ pictures_cdn }}/profile-pictures/{{ result.image }}"
+                 alt=""
+                 class="w-full h-full object-cover"
+                 loading="lazy">
+        {% else %}
+            {{ ux_icon('tabler:user', {'class': 'w-5 h-5 text-violet-600 dark:text-violet-400', 'aria-hidden': 'true'}) }}
+        {% endif %}
+    </div>
+
+    {# Username + rating count #}
+    <div class="flex-1 min-w-0">
+        <div class="font-medium text-sm text-content truncate group-hover:text-cc-blue-600 transition-colors">
+            {{ result.name }}
+        </div>
+        {% if result.metadata.totalRatings > 0 %}
+            <div class="text-xs text-content-tertiary">
+                {{ 'search_index.rating_count'|trans({'%count%': result.metadata.totalRatings}) }}
+            </div>
+        {% endif %}
+    </div>
+
+    {{ ux_icon('tabler:chevron-right', {'class': 'w-4 h-4 text-neutral-300 dark:text-neutral-600 shrink-0', 'aria-hidden': 'true'}) }}
+</a>

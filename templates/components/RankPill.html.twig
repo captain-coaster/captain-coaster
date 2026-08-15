@@ -1,0 +1,21 @@
+{#
+  RankPill — score-colored ranking badge that links to the coaster's ranking page.
+
+  Props:
+    - coaster (required): the Coaster entity (needs .score, .rank)
+    - class: extra Tailwind classes (e.g. "ml-auto text-sm px-2.5 rounded-lg")
+
+  Renders nothing if the coaster has no score or rank.
+#}
+{% props coaster, class = '' %}
+
+{% if coaster.score is not null and coaster.rank %}
+    {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
+    {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
+    <a href="{{ path('ranking_index', {'page': page}) }}"
+       class="inline-flex items-center font-bold text-white px-2 py-0.5 rounded-md shadow-sm hover:brightness-110 transition-all {{ class }}"
+       style="background-color: hsl({{ coaster.score * 1.2 }}, 50%, 50%);"
+       title="{{ coaster.score|number_format(1, ',') }}%">
+        #{{ coaster.rank }}
+    </a>
+{% endif %}

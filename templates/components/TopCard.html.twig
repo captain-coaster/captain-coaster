@@ -1,0 +1,95 @@
+{#
+  TopCard — grid card for a list (Explore, My Lists).
+
+  Two layouts:
+    - Standard (default): avatar (if showUser) + title + (showUser → "by …") + short pill
+                          + top-3 preview + "+ N more" + footer (count · time · like)
+    - Compact (compact=true): no header at all — just top-3 + "+ N more" + footer.
+      Used in My Lists for ranking/bucket sections where the section heading already
+      identifies the list.
+
+  Props:
+    - top (required): Top entity
+    - showUser: render the author avatar + "by …" line (default true; false on My Lists)
+    - liked: bool — current user has liked this list (custom only)
+    - compact: bool — skip the title/avatar/pill row entirely
+#}
+{% props top, showUser = true, liked = false, compact = false %}
+
+{% set total = top.topCoasters|length %}
+{% set extra = total > 3 ? total - 3 : 0 %}
+{% set titleText = top.isCustom
+  ? top.name
+  : (top.isRanking ? 'type.ranking'|trans({}, 'top') : 'type.bucket'|trans({}, 'top')) %}
+
+<article class="group relative bg-surface rounded-2xl border border-line hover:border-cc-blue-300 dark:hover:border-cc-blue-700 transition-all duration-300 overflow-hidden flex flex-col">
+  {% if not compact %}
+    {# Header — avatar + title + (by user) + short pill + private lock #}
+    <div class="p-4 pb-3">
+      <div class="flex items-start gap-3">
+        {% if showUser %}
+          <a href="{{ path('user_show', {'slug': top.user.slug}) }}" class="relative z-10 shrink-0">
+            <twig:UserAvatar :user="top.user" class="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-neutral-800" />
+          </a>
+        {% endif %}
+        <div class="flex-1 min-w-0">
+          <h2 class="font-semibold text-content truncate leading-tight">
+            <a href="{{ path('top_show', {'id': top.id}) }}" class="hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors after:absolute after:inset-0">
+              {{ titleText }}
+            </a>
+          </h2>
+          {% if showUser %}
+            <p class="text-xs text-content-muted mt-0.5 truncate">
+              {{ 'list.by'|trans({}, 'top') }} {{ top.user.displayName }}
+            </p>
+          {% endif %}
+        </div>
+        <div class="shrink-0 flex flex-col items-end gap-1.5">
+          <twig:TopTypeBadge :top="top" size="xs" short="true" />
+          {% if top.isCustom and not top.isPublic %}
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-surface-muted text-content-tertiary">
+              {{ ux_icon('tabler:lock', {'class': 'w-2.5 h-2.5', 'aria-hidden': 'true'}) }}
+              {{ 'show.private.label'|trans({}, 'top') }}
+            </span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {# Top 3 preview #}
+  <div class="px-4 {{ compact ? 'pt-4' : '' }} pb-3 flex-1">
+    <ol class="space-y-1.5">
+      {% for topCoaster in top.topCoasters|slice(0, 3) %}
+        <li class="flex items-center gap-3">
+          <twig:RankBadge :rank="loop.index" size="xs" hash="false" />
+          <span class="flex-1 text-sm text-content-secondary truncate">{{ topCoaster.coaster.name }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+    {% if extra > 0 %}
+      <p class="text-xs text-content-muted mt-2 pl-8">
+        + {{ 'show.more'|trans({'count': extra}, 'top') }}
+      </p>
+    {% endif %}
+  </div>
+
+  {# Footer — coaster count + last-updated + like #}
+  <div class="px-4 py-3 bg-surface-sunken border-t border-line flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 text-xs text-content-muted">
+      <span class="inline-flex items-center gap-1">
+        {{ ux_icon('tabler:list-numbers', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        {{ total }}
+      </span>
+      <span class="inline-flex items-center gap-1">
+        {{ ux_icon('tabler:clock', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+        {{ top.updatedAt|ago }}
+      </span>
+    </div>
+    {% if top.isCustom %}
+      <div class="relative z-10">
+        <twig:LikeButton :top="top" :liked="liked" />
+      </div>
+    {% endif %}
+  </div>
+</article>

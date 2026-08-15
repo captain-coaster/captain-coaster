@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "layouts/base.html.twig" %}
 
 {% block title %}
     {% if user is defined %}
@@ -17,7 +17,7 @@
 {% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
-    {% include 'Includes/filter_sidebar.html.twig' with {
+    {% include 'partials/_filter_sidebar.html.twig' with {
         'filters': filters,
         'filtersForm': filtersForm,
         'filterConfig': {
@@ -29,14 +29,31 @@
 {% endblock %}
 
 {% block wide_body %}
-    <div id="map-container"
-         data-controller="map"
-         data-map-markers-value="{{ markers|json_encode }}"
-         data-map-park-id-value="{{ parkId|default('') }}"
-         class="map-container">
-        <div data-map-target="container" id="map" style="height:94vh;"></div>
-    </div>
-{% endblock %}
+    <div class="relative flex flex-col h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)]">
+        <div class="px-4 sm:px-6 lg:px-8 pt-4">
+            <twig:PageHeader
+                title="{{ user is defined ? ('users.map.title'|trans({'%name%': user.displayName})) : ('map_index.title'|trans) }}"
+                icon="tabler:map"
+            />
+        </div>
 
-{% block javascripts %}
+        {# Map container #}
+        <div id="map-container"
+             data-controller="map"
+             data-map-markers-value="{{ markers|json_encode }}"
+             data-map-park-id-value="{{ parkId|default('') }}"
+             class="map-container flex-1 min-h-0 w-full">
+            <div data-map-target="container" id="map" class="h-full w-full"></div>
+        </div>
+
+        {# Mobile filter button - sticky at bottom #}
+        <div class="lg:hidden absolute bottom-4 right-4 z-20">
+            <button type="button"
+                    class="flex items-center gap-2 px-4 py-3 bg-cc-blue-600 hover:bg-cc-blue-700 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2"
+                    data-action="global#openFilterSidebar">
+                {{ ux_icon('tabler:adjustments-horizontal', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+                <span>{{ 'filters.title'|trans }}</span>
+            </button>
+        </div>
+    </div>
 {% endblock %}

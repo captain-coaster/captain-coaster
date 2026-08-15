@@ -67,7 +67,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+        $mockRiddenCoaster->method('getRating')->willReturn(8.0);
         
         $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
             ->willReturn([$mockRiddenCoaster]);
@@ -120,7 +120,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+        $mockRiddenCoaster->method('getRating')->willReturn(8.0);
         
         $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
             ->willReturn([$mockRiddenCoaster]);
@@ -168,7 +168,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+        $mockRiddenCoaster->method('getRating')->willReturn(8.0);
         
         $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
             ->willReturn([$mockRiddenCoaster]);
@@ -241,7 +241,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+        $mockRiddenCoaster->method('getRating')->willReturn(8.0);
         
         $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
             ->willReturn([$mockRiddenCoaster]);
@@ -303,7 +303,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+        $mockRiddenCoaster->method('getRating')->willReturn(8.0);
         
         $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
             ->willReturn([$mockRiddenCoaster]);

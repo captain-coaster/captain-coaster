@@ -1,0 +1,98 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'coaster_ranking.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+  <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
+{% endblock %}
+
+{% set pageHasFilters = true %}
+
+{% block secondary_sidebar %}
+  {% include 'partials/_filter_sidebar.html.twig' with {
+    'filters': filters|default({}),
+    'filtersForm': filtersForm,
+    'filterConfig': {
+      'endpoint': path('ranking_search_async'),
+      'container_id': 'ranking-result',
+      'update_url': true,
+      'excluded_filters': ['score', 'kiddie', 'sortByDistance']
+    }
+  } only %}
+{% endblock %}
+
+{% block body %}
+    <twig:PageHeader
+      title="{{ title }}"
+      icon="tabler:trophy"
+      iconColor="text-cc-warm-500"
+      subtitle="{{ ranking ? 'coaster_ranking.info.last_update'|trans({'%date%': ranking.computedAt|format_datetime('long', 'none')}) : null }}"
+    />
+
+    {# ── Top-100 progress (logged-in) ─────────────────────────────────── #}
+    {% if top100 is not null and top100.total > 0 %}
+      {% set riddenTop100 = top100.ridden %}
+      {% set totalTop100 = top100.total %}
+      {% set top100Pct = (riddenTop100 / totalTop100 * 100)|round %}
+      <section class="bg-surface rounded-2xl border border-line p-4 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-medium text-content inline-flex items-center gap-1.5">
+            {{ ux_icon('tabler:target-arrow', {'class': 'w-4 h-4 text-cc-blue-500', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.progress.title'|trans }}
+          </span>
+          <span class="text-sm font-bold text-content tabular-nums">
+            {{ riddenTop100 }}<span class="text-content-muted font-normal">/{{ totalTop100 }}</span>
+            <span class="ml-1 text-xs font-medium text-content-muted">({{ top100Pct }}%)</span>
+          </span>
+        </div>
+        <div class="h-2.5 rounded-full overflow-hidden bg-surface-strong" role="img"
+             aria-label="{{ 'coaster_ranking.progress.aria'|trans({'count': riddenTop100, 'total': totalTop100}) }}">
+          <div class="h-full rounded-full bg-linear-to-r from-cc-blue-500 to-green-500 transition-all duration-500"
+               style="width: {{ top100Pct }}%"></div>
+        </div>
+        {% if riddenTop100 >= totalTop100 %}
+          <p class="mt-2.5 text-xs font-medium text-green-700 dark:text-green-400 inline-flex items-center gap-1.5">
+            {{ ux_icon('tabler:trophy', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.progress.complete'|trans }}
+          </p>
+        {% else %}
+          <p class="mt-2.5 text-xs text-content-muted">
+            {{ 'coaster_ranking.progress.remaining'|trans({'count': totalTop100 - riddenTop100}) }}
+          </p>
+        {% endif %}
+
+        {# Celebrate defunct legends the user rode before they closed #}
+        {% if top100.defunctRidden > 0 %}
+          <p class="mt-2 text-xs font-medium text-cc-warm-700 dark:text-cc-warm-300 inline-flex items-center gap-1.5">
+            {{ ux_icon('tabler:medal', {'class': 'w-4 h-4 text-cc-warm-500 shrink-0', 'aria-hidden': 'true'}) }}
+            {{ 'coaster_ranking.progress.defunct_ridden'|trans({'count': top100.defunctRidden}) }}
+          </p>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    <div id="ranking-result">
+      {% include 'Ranking/results.html.twig' with {'coasters': coasters, 'filtered': filtered, 'riddenIds': riddenIds} only %}
+    </div>
+
+    {# ── Learn more — moved to the bottom ─────────────────────────────── #}
+    <div class="mt-8 pt-4 border-t border-line text-center">
+      <a href="{{ path('ranking_learn_more') }}"
+         class="inline-flex items-center gap-1 text-sm text-cc-blue-600 dark:text-cc-blue-400 font-medium hover:underline">
+        {{ ux_icon('tabler:info-circle', {'class': 'w-4 h-4', 'aria-hidden': 'true'}) }}
+        {{ 'coaster_ranking.info.learn_more'|trans }}
+      </a>
+    </div>
+  </div>
+
+  {# Mobile filter button - sticky at bottom #}
+  <div class="lg:hidden fixed bottom-4 right-4 z-40">
+    <button type="button"
+            class="flex items-center gap-2 px-4 py-3 bg-cc-blue-600 hover:bg-cc-blue-700 text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-cc-blue-500 focus:ring-offset-2"
+            data-action="global#openFilterSidebar">
+      {{ ux_icon('tabler:adjustments-horizontal', {'class': 'w-5 h-5', 'aria-hidden': 'true'}) }}
+      <span>{{ 'filters.title'|trans }}</span>
+    </button>
+  </div>
+{% endblock %}

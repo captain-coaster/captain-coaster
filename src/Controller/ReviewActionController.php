@@ -124,7 +124,7 @@ class ReviewActionController extends BaseController
         $report->setCoasterName($review->getCoaster()->getName());
         $report->setReviewerName($review->getUser()->getDisplayName());
         $report->setReviewerId($review->getUser()->getId());
-        $report->setRatingValue($review->getValue());
+        $report->setRatingValue($review->getRating());
 
         $this->entityManager->persist($report);
         $this->entityManager->flush();

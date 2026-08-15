@@ -21,6 +21,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(options: ['collate' => 'utf8mb4_unicode_ci', 'charset' => 'utf8mb4'])]
 class RiddenCoaster
 {
+    /** Allowed rating values (half-star steps). `null` means ridden without a rating. */
+    public const array ALLOWED_RATINGS = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
+
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -34,9 +37,9 @@ class RiddenCoaster
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
-    #[ORM\Column(name: 'rating', type: Types::FLOAT, nullable: false)]
-    #[Assert\Choice([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0], strict: true)]
-    private float $value = 0.0;
+    #[ORM\Column(name: 'rating', type: Types::FLOAT, nullable: true)]
+    #[Assert\Choice(choices: self::ALLOWED_RATINGS)]
+    private ?float $rating = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $review = null;
@@ -77,11 +80,17 @@ class RiddenCoaster
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'language', 'pros', 'cons'])]
+    #[Gedmo\Timestampable(on: 'change', field: ['rating', 'review', 'language', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $riddenAt = null;
+    private ?\DateTimeInterface $firstRiddenAt = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $lastRiddenAt = null;
+
+    #[ORM\Column(type: Types::INTEGER)]
+    private int $rideCount = 1;
 
     public function __construct()
     {
@@ -121,16 +130,16 @@ class RiddenCoaster
         return $this->user;
     }
 
-    public function setValue(float $value): self
+    public function setRating(?float $rating): self
     {
-        $this->value = $value;
+        $this->rating = $rating;
 
         return $this;
     }
 
-    public function getValue(): ?float
+    public function getRating(): ?float
     {
-        return $this->value;
+        return $this->rating;
     }
 
     public function setReview(?string $review): self
@@ -303,15 +312,39 @@ class RiddenCoaster
         return $this->updatedAt;
     }
 
-    public function setRiddenAt(?\DateTime $riddenAt): self
+    public function setFirstRiddenAt(?\DateTime $firstRiddenAt): self
     {
-        $this->riddenAt = $riddenAt;
+        $this->firstRiddenAt = $firstRiddenAt;
 
         return $this;
     }
 
-    public function getRiddenAt(): ?\DateTimeInterface
+    public function getFirstRiddenAt(): ?\DateTimeInterface
     {
-        return $this->riddenAt;
+        return $this->firstRiddenAt;
+    }
+
+    public function setLastRiddenAt(?\DateTime $lastRiddenAt): self
+    {
+        $this->lastRiddenAt = $lastRiddenAt;
+
+        return $this;
+    }
+
+    public function getLastRiddenAt(): ?\DateTimeInterface
+    {
+        return $this->lastRiddenAt;
+    }
+
+    public function setRideCount(int $rideCount): self
+    {
+        $this->rideCount = $rideCount;
+
+        return $this;
+    }
+
+    public function getRideCount(): int
+    {
+        return $this->rideCount;
     }
 }

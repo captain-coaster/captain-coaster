@@ -1,0 +1,219 @@
+{% extends "layouts/base.html.twig" %}
+
+{% set title = 'profile.journey.title'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block body %}
+  <twig:PageHeader
+    title="{{ title }}"
+    subtitle="{{ 'profile.journey.subtitle'|trans }}"
+    icon="tabler:road"
+    iconColor="text-cc-warm-500"
+    backUrl="{{ path('profile') }}"
+    backLabel="{{ 'nav.back'|trans({}, 'navigation') }}"
+  />
+
+  {# ── Stats bar ───────────────────────────────────────────────────────── #}
+  <div class="grid grid-cols-4 rounded-2xl overflow-hidden bg-surface-sunken mb-6 divide-x divide-neutral-200 dark:divide-neutral-700">
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-content leading-none">{{ stats.total }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'profile.journey.stats.coasters'|trans }}</div>
+    </div>
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-content leading-none">{{ stats.countries }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'profile.journey.stats.countries'|trans }}</div>
+    </div>
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-content leading-none">{{ stats.parks }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'profile.journey.stats.parks'|trans }}</div>
+    </div>
+    <div class="py-3 text-center">
+      <div class="text-base sm:text-lg font-bold text-cc-warm-500 leading-none">{{ stats.since ?? '—' }}</div>
+      <div class="text-[10px] sm:text-xs text-content-muted mt-1">{{ 'profile.journey.stats.since'|trans }}</div>
+    </div>
+  </div>
+
+  {# ── Year filter pills ───────────────────────────────────────────────── #}
+  {% if availableYears|length > 1 %}
+    <div class="flex items-center gap-1.5 mb-6 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide" role="group" aria-label="{{ 'profile.journey.filter_by_year'|trans }}">
+      {{ ux_icon('tabler:filter', {'class': 'w-4 h-4 text-neutral-400 shrink-0', 'aria-hidden': 'true'}) }}
+      <a href="{{ path('profile_journey', {year: 'all'}) }}"
+         class="shrink-0 inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+           {{ showAll
+             ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+             : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">
+        {{ 'profile.journey.all_years'|trans }}
+      </a>
+      {% for year in availableYears %}
+        <a href="{{ path('profile_journey', { year: year }) }}"
+           class="shrink-0 inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors
+             {{ yearFilter == year
+               ? 'bg-cc-blue-100 dark:bg-cc-blue-900/40 text-cc-blue-700 dark:text-cc-blue-300'
+               : 'bg-surface-muted text-content-tertiary hover:bg-neutral-200 dark:hover:bg-neutral-700' }}">
+          {{ year }}
+        </a>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# ── Timeline ────────────────────────────────────────────────────────── #}
+  {% if byYear|length > 0 or undated|length > 0 %}
+
+    <div class="space-y-8">
+      {% for year, rides in byYear %}
+        <section>
+          {# Sticky year header #}
+          <div class="flex items-center justify-between mb-4 sticky top-16 z-10 -mx-4 px-4 py-2 bg-neutral-50/90 dark:bg-neutral-900/90 backdrop-blur">
+            <h2 class="text-xl font-bold text-content">{{ year }}</h2>
+            <span class="text-sm text-content-muted">
+              {{ rides|length }} {{ 'profile.journey.stats.coasters'|trans }}
+            </span>
+          </div>
+
+          <ol class="relative border-l-2 border-line-strong pl-5 space-y-3">
+            {% for rc in rides %}
+              {% set coaster = rc.coaster %}
+              {% set milestone = milestones[coaster.id] ?? null %}
+              <li class="relative">
+
+                {# Timeline dot #}
+                {% if milestone %}
+                  <span class="absolute -left-[1.55rem] top-3.5 w-3 h-3 rounded-full bg-cc-warm-500 ring-2 ring-cc-warm-200 dark:ring-cc-warm-900/50"></span>
+                {% else %}
+                  <span class="absolute -left-[1.55rem] top-3.5 w-3 h-3 rounded-full bg-surface border-2 border-cc-blue-400"></span>
+                {% endif %}
+
+                <article class="flex items-start gap-3 px-3 py-2.5 rounded-xl border transition-colors
+                  {{ milestone
+                    ? 'bg-cc-warm-50 dark:bg-cc-warm-900/10 border-cc-warm-200 dark:border-cc-warm-800'
+                    : 'bg-surface-raised border-neutral-100 dark:border-neutral-700 hover:border-neutral-200 dark:hover:border-neutral-600' }}">
+
+                  {# Thumbnail #}
+                  <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+                     class="shrink-0" tabindex="-1" aria-hidden="true">
+                    {% if coaster.mainImage is not null %}
+                      <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                           class="w-12 h-9 rounded-lg object-cover"
+                           alt="{{ coaster.name }}"
+                           loading="lazy">
+                    {% else %}
+                      <div class="w-12 h-9 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center">
+                        {{ ux_icon('tabler:roller-skating', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                      </div>
+                    {% endif %}
+                  </a>
+
+                  {# Coaster info #}
+                  <div class="flex-1 min-w-0">
+                    <div class="font-medium text-sm text-content flex items-center gap-1.5 flex-wrap">
+                      <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+                         class="hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors truncate">
+                        {{ coaster.name }}
+                      </a>
+                      {% if rc.rideCount > 1 %}
+                        <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-cc-warm-100 dark:bg-cc-warm-900/30 text-cc-warm-700 dark:text-cc-warm-300 shrink-0">
+                          {{ ux_icon('tabler:refresh', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+                          re-ride
+                        </span>
+                      {% endif %}
+                    </div>
+                    <div class="flex items-center gap-1 mt-0.5 text-xs text-content-muted">
+                      {% if coaster.status is not null %}
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-{{ coaster.status.color ?? 'neutral' }}-400"
+                              title="{{ coaster.status.name|trans([], 'database') }}"></span>
+                      {% endif %}
+                      <span class="truncate">{{ coaster.park.name }}</span>
+                      {% if rc.firstRiddenAt %}
+                        <span class="shrink-0">· {{ rc.firstRiddenAt|date('d M') }}</span>
+                      {% endif %}
+                    </div>
+                    {% if milestone %}
+                      <div class="mt-1.5">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-cc-warm-100 dark:bg-cc-warm-900/30 text-cc-warm-700 dark:text-cc-warm-300 border border-cc-warm-200 dark:border-cc-warm-700">
+                          {{ ux_icon('tabler:trophy', {'class': 'w-3.5 h-3.5', 'aria-hidden': 'true'}) }}
+                          {{ 'profile.journey.milestone'|trans({'n': milestone}) }}
+                        </span>
+                      </div>
+                    {% endif %}
+                  </div>
+
+                  {# Rating #}
+                  {% if rc.rating is not null %}
+                    <div class="shrink-0 inline-flex items-center gap-0.5">
+                      {{ ux_icon('tabler:star-filled', {'class': 'w-3.5 h-3.5 text-cc-warm-400', 'aria-hidden': 'true'}) }}
+                      <span class="text-sm font-semibold text-content-secondary">{{ rc.rating }}</span>
+                    </div>
+                  {% endif %}
+
+                </article>
+              </li>
+            {% endfor %}
+          </ol>
+        </section>
+      {% endfor %}
+
+      {# ── Undated section ───────────────────────────────────────────── #}
+      {% if undated|length > 0 %}
+        <section>
+          <div class="flex items-center justify-between mb-3 mt-2">
+            <h2 class="text-sm font-semibold text-content-muted flex items-center gap-1.5">
+              {{ ux_icon('tabler:calendar-off', {'class': 'w-4 h-4 shrink-0', 'aria-hidden': 'true'}) }}
+              {{ 'profile.journey.undated'|trans }}
+            </h2>
+            <span class="text-xs text-content-subtle">{{ undated|length }}</span>
+          </div>
+
+          <ol class="relative border-l-2 border-line-strong pl-5 space-y-3">
+            {% for rc in undated %}
+              {% set coaster = rc.coaster %}
+              <li class="relative">
+                <span class="absolute -left-[1.55rem] top-3.5 w-3 h-3 rounded-full bg-surface border-2 border-line-input"></span>
+
+                <article class="flex items-start gap-3 px-3 py-2.5 rounded-xl border bg-surface-raised border-neutral-100 dark:border-neutral-700 hover:border-neutral-200 dark:hover:border-neutral-600 transition-colors">
+
+                  <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+                     class="shrink-0" tabindex="-1" aria-hidden="true">
+                    {% if coaster.mainImage is not null %}
+                      <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                           class="w-12 h-9 rounded-lg object-cover"
+                           alt="{{ coaster.name }}"
+                           loading="lazy">
+                    {% else %}
+                      <div class="w-12 h-9 rounded-lg bg-neutral-100 dark:bg-neutral-700 flex items-center justify-center">
+                        {{ ux_icon('tabler:roller-skating', {'class': 'w-4 h-4 text-neutral-400', 'aria-hidden': 'true'}) }}
+                      </div>
+                    {% endif %}
+                  </a>
+
+                  <div class="flex-1 min-w-0">
+                    <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+                       class="font-medium text-sm text-content hover:text-cc-blue-600 dark:hover:text-cc-blue-400 transition-colors truncate block">
+                      {{ coaster.name }}
+                    </a>
+                    <div class="flex items-center gap-1 mt-0.5 text-xs text-content-muted">
+                      {% if coaster.status is not null %}
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0 bg-{{ coaster.status.color ?? 'neutral' }}-400"></span>
+                      {% endif %}
+                      <span class="truncate">{{ coaster.park.name }}</span>
+                    </div>
+                  </div>
+
+                  <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}"
+                     class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-medium text-cc-blue-600 dark:text-cc-blue-400 bg-cc-blue-50 dark:bg-cc-blue-900/20 hover:bg-cc-blue-100 dark:hover:bg-cc-blue-900/40 transition-colors">
+                    {{ ux_icon('tabler:calendar-plus', {'class': 'w-3 h-3', 'aria-hidden': 'true'}) }}
+                    {{ 'profile.journey.add_date'|trans }}
+                  </a>
+
+                </article>
+              </li>
+            {% endfor %}
+          </ol>
+        </section>
+      {% endif %}
+    </div>
+
+  {% else %}
+    {# Empty state #}
+    <twig:EmptyState icon="tabler:map-route" :title="'profile.journey.title'|trans" />
+  {% endif %}
+{% endblock %}
