@@ -201,7 +201,11 @@ full_deploy() {
         log "package-lock.json unchanged, skipping install-node"
     fi
 
-    if echo "$changed" | grep -qE '^(assets/|package\.json$|webpack\.config\.js$)'; then
+    # package-lock.json is included here too, not just assets/ and
+    # package.json: a changed lockfile means node_modules content changed,
+    # which can change compiled output (e.g. a bundled polyfill version)
+    # even when no source file under assets/ was touched.
+    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|webpack\.config\.js$)'; then
         build_assets
     else
         log "no asset changes, skipping build"
