@@ -4,6 +4,11 @@
 # This script demonstrates best practices for deploying with maintenance mode
 
 set -e
+# Without this, a failure in the middle of a pipe is invisible to `set -e`
+# — only the last command's exit code is checked, so e.g. `foo | gzip`
+# would report success even if `foo` failed and gzip just compressed
+# nothing. Cheap insurance for any pipe used in this script, now or later.
+set -o pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -31,10 +36,27 @@ error() {
     echo -e "${RED}❌ $1${NC}"
 }
 
+# Function to reload nginx so its file-existence cache picks up the
+# maintenance.html toggle immediately. Without this, nginx's
+# open_file_cache (configured VPS-wide, not something this script owns)
+# can keep serving a stale cached result — observed in practice: enabling
+# maintenance takes effect immediately, but disabling it silently kept
+# serving 503s until nginx was reloaded.
+reload_nginx() {
+    if sudo systemctl reload nginx 2>/dev/null; then
+        success "nginx reloaded"
+    elif sudo service nginx reload 2>/dev/null; then
+        success "nginx reloaded"
+    else
+        warning "Could not reload nginx automatically. Run manually: sudo systemctl reload nginx"
+    fi
+}
+
 # Function to enable maintenance mode
 enable_maintenance() {
     log "Enabling maintenance mode..."
     cp "$PROJECT_DIR/maintenance.html" "$PROJECT_DIR/public/maintenance.html"
+    reload_nginx
     success "Maintenance mode enabled"
 }
 
@@ -42,6 +64,7 @@ enable_maintenance() {
 disable_maintenance() {
     log "Disabling maintenance mode..."
     rm -f "$PROJECT_DIR/public/maintenance.html"
+    reload_nginx
     success "Maintenance mode disabled"
 }
 
@@ -148,6 +171,58 @@ verify_deployment() {
     fi
 }
 
+# Function to run the full deploy in the right order, skipping steps that
+# the pulled changes don't actually touch. set -e (top of this script)
+# means any failure here stops the whole sequence immediately — and since
+# disable_maintenance only runs at the very end, maintenance mode stays on
+# if anything fails, rather than exposing a half-deployed site.
+#
+# No DB backup step here on purpose — that's handled by dedicated backup
+# tooling outside this script, not duplicated here.
+full_deploy() {
+    local old_commit
+    old_commit=$(git rev-parse HEAD)
+
+    enable_maintenance
+    update_code
+
+    local changed
+    changed=$(git diff --name-only "$old_commit" HEAD)
+
+    if echo "$changed" | grep -q '^composer\.lock$'; then
+        install_dependencies
+    else
+        log "composer.lock unchanged, skipping install"
+    fi
+
+    if echo "$changed" | grep -q '^package-lock\.json$'; then
+        install_node_dependencies
+    else
+        log "package-lock.json unchanged, skipping install-node"
+    fi
+
+    if echo "$changed" | grep -qE '^(assets/|package\.json$|webpack\.config\.js$)'; then
+        build_assets
+    else
+        log "no asset changes, skipping build"
+    fi
+
+    if echo "$changed" | grep -q '^migrations/'; then
+        run_migrations
+    else
+        log "no new migrations, skipping migrate"
+    fi
+
+    # cheap regardless of what changed — always safe to run
+    clear_cache
+    warm_cache
+    reload_php_fpm
+    verify_deployment
+    disable_maintenance
+
+    success "Deploy complete ($(echo "$changed" | wc -l | tr -d ' ') files changed)"
+}
+
 # Function to rollback deployment
 rollback() {
     error "Starting rollback process..."
@@ -183,6 +258,9 @@ show_usage() {
     echo "Usage: $0 [COMMAND]"
     echo ""
     echo "Commands:"
+    echo "  deploy       Full deploy: pull, install/build/migrate only what changed,"
+    echo "               cache, verify. Stops on first failure, leaving maintenance"
+    echo "               mode ON so nothing half-broken goes live."
     echo "  maintenance  [on|off|status] - Control maintenance mode"
     echo "  update       Pull latest code from repository"
     echo "  install      Install/update PHP dependencies"
@@ -194,7 +272,11 @@ show_usage() {
     echo "  rollback     Rollback code and optionally migrations"
     echo "  help         Show this help message"
     echo ""
-    echo "Example deployment workflow:"
+    echo "Normal deploy:"
+    echo "  $0 deploy"
+    echo ""
+    echo "Manual step-by-step (same steps 'deploy' runs, for when you want to"
+    echo "watch/control each stage yourself):"
     echo "  $0 maintenance on"
     echo "  $0 update"
     echo "  $0 install"
@@ -222,8 +304,8 @@ case "${1:-help}" in
             *) echo "Usage: $0 maintenance [on|off|status]" ;;
         esac
         ;;
-    "backup")
-        backup_database
+    "deploy")
+        full_deploy
         ;;
     "update")
         update_code
