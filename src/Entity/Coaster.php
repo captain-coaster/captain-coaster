@@ -33,8 +33,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['list_coaster']]),
     ],
     normalizationContext: ['groups' => ['list_coaster', 'read_coaster']]
-)
-]
+)]
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'manufacturer' => 'exact'])]
 #[ApiFilter(filterClass: OrderFilter::class, properties: ['id'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(filterClass: ExistsFilter::class, properties: ['mainImage'])]
@@ -53,7 +52,7 @@ class Coaster implements \Stringable
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
     #[Groups(['list_coaster', 'read_coaster'])]
-    private ?string $name = null;
+    private string $name = '';
 
     /** @var array<string>|null */
     #[ORM\Column(name: 'formerNames', type: Types::SIMPLE_ARRAY, nullable: true)]
@@ -209,7 +208,7 @@ class Coaster implements \Stringable
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
-    private ?bool $enabled = false;
+    private bool $enabled = false;
 
     #[ORM\Column(length: 12, nullable: true)]
     private ?string $youtubeId = null;
@@ -235,12 +234,12 @@ class Coaster implements \Stringable
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 

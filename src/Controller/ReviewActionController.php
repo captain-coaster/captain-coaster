@@ -61,25 +61,24 @@ class ReviewActionController extends BaseController
                 'action' => 'removed',
                 'upvoteCount' => $review->getUpvoteCount(),
             ]);
-        } else {
-            // User hasn't upvoted yet, so add an upvote
-            $upvote = new ReviewUpvote();
-            $upvote->setUser($user);
-            $upvote->setReview($review);
-
-            $this->entityManager->persist($upvote);
-            $review->setUpvoteCounter($review->getUpvoteCounter() + 1);
-            $this->entityManager->flush();
-
-            // Update the review score
-            $this->scoreService->updateScore($review);
-
-            return new JsonResponse([
-                'success' => true,
-                'action' => 'added',
-                'upvoteCount' => $review->getUpvoteCount(),
-            ]);
         }
+        // User hasn't upvoted yet, so add an upvote
+        $upvote = new ReviewUpvote();
+        $upvote->setUser($user);
+        $upvote->setReview($review);
+
+        $this->entityManager->persist($upvote);
+        $review->setUpvoteCounter($review->getUpvoteCounter() + 1);
+        $this->entityManager->flush();
+
+        // Update the review score
+        $this->scoreService->updateScore($review);
+
+        return new JsonResponse([
+            'success' => true,
+            'action' => 'added',
+            'upvoteCount' => $review->getUpvoteCount(),
+        ]);
     }
 
     /** Report a review */

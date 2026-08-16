@@ -204,9 +204,11 @@ profile:
     badge: Insignias
     banner:
         title: Banner personalizado
-        text: '¡Aquí tienes tu pancarta personalizada, mostrando tus calificaciones y Top 3! La actualización de la pancarta puede tardar unas horas.'
+        text: ~
         getbbcode: Copiar BBCode (foros)
         gethtml: Copiar html
+        copied: '¡Copiado!'
+        unavailable: '¡Califica y clasifica montañas rusas para generar tu banner personalizado! La actualización puede tardar unas horas.'
     stats:
         title: 'Visión general'
         coasters: 'montañas rusas'

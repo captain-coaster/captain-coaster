@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Index(name: 'idx_users_displayname_search', columns: ['display_name'])]
 #[ORM\Index(name: 'idx_users_slug_search', columns: ['slug'])]
 #[ORM\Index(name: 'idx_users_enabled_displayname', columns: ['enabled', 'display_name'])]
+#[ORM\Index(name: 'idx_users_deleted_at', columns: ['deleted_at'])]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface
@@ -54,7 +55,7 @@ class User implements UserInterface
     private string $firstName = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: false)]
-    private ?string $displayName = null;
+    private string $displayName = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['displayName'])]
@@ -89,14 +90,14 @@ class User implements UserInterface
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
-    private \DateTimeInterface $createdAt;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private \DateTimeInterface $lastLogin;
+    private ?\DateTimeInterface $lastLogin = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $nameChangedAt = null;
@@ -134,7 +135,7 @@ class User implements UserInterface
     private ?\DateTimeInterface $bannedAt = null;
 
     #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
-    private string $ipAddress;
+    private ?string $ipAddress = null;
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $imperial = false;
@@ -245,12 +246,12 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeInterface
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -281,12 +282,12 @@ class User implements UserInterface
         return $this->lastLogin;
     }
 
-    public function getDisplayName(): ?string
+    public function getDisplayName(): string
     {
         return $this->displayName;
     }
 
-    public function setDisplayName(?string $displayName): static
+    public function setDisplayName(string $displayName): static
     {
         $this->displayName = $displayName;
 
@@ -450,7 +451,7 @@ class User implements UserInterface
     /** @return Collection<int, Notification> */
     public function getUnreadNotifications(): Collection
     {
-        return $this->notifications->filter(fn (Notification $notif) => !$notif->getIsRead());
+        return $this->notifications->filter(static fn (Notification $notif) => !$notif->getIsRead());
     }
 
     public function isEmailNotification(): bool
@@ -615,12 +616,12 @@ class User implements UserInterface
         return !$this->enabled;
     }
 
-    public function getIpAddress(): string
+    public function getIpAddress(): ?string
     {
         return $this->ipAddress;
     }
 
-    public function setIpAddress(string $ipAddress): static
+    public function setIpAddress(?string $ipAddress): static
     {
         $this->ipAddress = $ipAddress;
 

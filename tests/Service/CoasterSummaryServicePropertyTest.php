@@ -166,7 +166,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
             // Verify that the same methodology is used regardless of language
             // (no translation-specific logic should be present)
-            $this->assertTrue(true, 'Direct generation completed successfully for all languages');
+            $this->addToAssertionCount(1); // Direct generation completed successfully for all languages
         });
     }
 
@@ -352,7 +352,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
             $this->assertSame($negativeVotes, $existingSummary->getNegativeVotes());
 
             // Verify no data corruption occurred
-            $this->assertTrue(true, 'Existing summary processed without data loss or corruption');
+            $this->addToAssertionCount(1); // Existing summary processed without data loss or corruption
         });
     }
 

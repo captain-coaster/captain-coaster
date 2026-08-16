@@ -49,7 +49,7 @@ class ReviewReportRepository extends ServiceEntityRepository
         return (int) $result;
     }
 
-    /** Find unresolved reports */
+    /** @return Query<mixed, mixed> Find unresolved reports */
     public function findUnresolvedReports(): Query
     {
         return $this->createQueryBuilder('r')
@@ -59,7 +59,7 @@ class ReviewReportRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
-    /** Find reports by reason */
+    /** @return Query<mixed, mixed> Find reports by reason */
     public function findByReason(string $reason): Query
     {
         return $this->createQueryBuilder('r')

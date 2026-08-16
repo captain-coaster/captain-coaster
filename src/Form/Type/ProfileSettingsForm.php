@@ -20,6 +20,9 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 
+/**
+ * @extends AbstractType<User>
+ */
 class ProfileSettingsForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -115,7 +118,7 @@ class ProfileSettingsForm extends AbstractType
 
         $builder->add('preferredLocale', ChoiceType::class, [
             'choices' => $locales,
-            'choice_label' => fn ($value) => $value,
+            'choice_label' => static fn ($value) => $value,
             'label' => 'profile.settings.preferences.preferredLocale',
             'attr' => ['class' => 'form-control'],
         ]);
@@ -126,7 +129,7 @@ class ProfileSettingsForm extends AbstractType
             'class' => Park::class,
             'placeholder' => 'profile.settings.preferences.homePark.placeholder',
             'attr' => ['class' => 'form-control'],
-            'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('p')
+            'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
                 ->orderBy('p.name', 'ASC'),
         ]);
 

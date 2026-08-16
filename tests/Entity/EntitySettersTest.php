@@ -29,9 +29,9 @@ class EntitySettersTest extends TestCase
         $badge->setFilenameEn('badge_en.png');
         $this->assertSame('badge_en.png', $badge->getFilenameEn());
         
-        // Test null values
-        $badge->setName(null);
-        $this->assertNull($badge->getName());
+        // Test empty string values
+        $badge->setName('');
+        $this->assertSame('', $badge->getName());
     }
 
     public function testLaunchSetters(): void
@@ -44,9 +44,9 @@ class EntitySettersTest extends TestCase
         $launch->setSlug('lsm-launch');
         $this->assertSame('lsm-launch', $launch->getSlug());
         
-        // Test null values
-        $launch->setName(null);
-        $this->assertNull($launch->getName());
+        // Test empty string values
+        $launch->setName('');
+        $this->assertSame('', $launch->getName());
     }
 
     public function testStatusSetters(): void
@@ -62,9 +62,9 @@ class EntitySettersTest extends TestCase
         $status->setType('open');
         $this->assertSame('open', $status->getType());
         
-        // Test null values
-        $status->setType(null);
-        $this->assertNull($status->getType());
+        // Test empty string values
+        $status->setType('');
+        $this->assertSame('', $status->getType());
     }
 
     public function testCoasterSetters(): void

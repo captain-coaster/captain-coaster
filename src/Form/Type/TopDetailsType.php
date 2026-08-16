@@ -14,7 +14,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
- * Class TopDetailsType.
+ * @extends AbstractType<Top>
  */
 class TopDetailsType extends AbstractType
 {

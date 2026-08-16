@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="100" viewBox="0 0 500 100">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a2228"/>
+      <stop offset="100%" stop-color="#2a363d"/>
+    </linearGradient>
+    <linearGradient id="accent-bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5d87d5"/>
+      <stop offset="40%" stop-color="#ffcd61"/>
+      <stop offset="100%" stop-color="#5d87d5"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="500" height="100" rx="5" fill="url(#bg)"/>
+  <rect width="3" height="100" rx="1.5" fill="url(#accent-bar)"/>
+
+  <!-- Logo (from logo_light.svg) -->
+  <g transform="translate(14, 15) scale(2.15)">
+    <path d="M30.9,12v14.6L26.3,32l-9.6-5.4l-9.5,5l-4.4-5V12c0-6.6,6.2-12,14-12C24.5,0,30.9,5.4,30.9,12z" fill="#5d87d5"/>
+    <path d="M16.7,0v26.6l-9.5,5l-4.4-5V12C2.7,5.4,9,0,16.7,0z" fill="#4767a3"/>
+    <polygon points="13.8,24.3 9.5,26.5 7.3,24.2" fill="#28343a"/>
+    <polygon points="19.6,24.3 23.8,26.5 26.1,24.2" fill="#28343a"/>
+    <polygon points="2.1,13.3 2.1,21.5 0,17.2 0,7.9" fill="#4767a3"/>
+    <polygon points="31.5,13.3 31.5,21.5 33.6,17.2 33.6,7.9" fill="#5d87d5"/>
+    <polygon points="19.3,11 16.7,9.6 14.1,11.1 14.6,7.9 12.4,5.7 15.4,5.2 16.7,2.4 18,5.2 20.9,5.7 18.8,7.9" fill="#ffcd61"/>
+    <polygon points="26.4,19.4 23.8,17.9 21.2,19.4 21.7,16.3 19.6,14.1 22.5,13.6 23.8,10.7 25.1,13.6 28,14 25.9,16.3" fill="#ffcd61"/>
+    <polygon points="12.2,19.7 9.6,18.3 7,19.8 7.5,16.6 5.3,14.4 8.3,13.9 9.6,11.1 10.9,13.9 13.8,14.4 11.7,16.6" fill="#ffcd61"/>
+  </g>
+
+  <!-- Stats -->
+  <text x="96" y="38" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="26" font-weight="700" fill="#ffffff">{{ coasters }}</text>
+  <text x="96" y="52" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#8899a6" letter-spacing="0.5">COASTERS</text>
+
+  <text x="96" y="76" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#b0bec5">{{ parks }}</text>
+  <text x="96" y="90" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#667788" letter-spacing="0.3">PARKS</text>
+
+  <text x="148" y="76" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="17" font-weight="600" fill="#b0bec5">{{ countries }}</text>
+  <text x="148" y="90" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" fill="#667788" letter-spacing="0.3">COUNTRIES</text>
+
+  <!-- Divider -->
+  <line x1="205" y1="12" x2="205" y2="88" stroke="#5d87d5" stroke-width="0.5" opacity="0.2"/>
+
+  <!-- Top 3 -->
+  <text x="222" y="22" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="11" font-weight="600" fill="#ffcd61" letter-spacing="1.2">MY TOP 3</text>
+
+  <!-- #1 Gold -->
+  <circle cx="231" cy="40" r="6" fill="#ffcd61"/>
+  <text x="231" y="43" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="9" font-weight="700" fill="#1a2228" text-anchor="middle">1</text>
+  <text x="244" y="44" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="15" font-weight="600" fill="#ffffff">{{ top1 }}</text>
+
+  <!-- Connector -->
+  <line x1="231" y1="46" x2="231" y2="55" stroke="#667788" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- #2 Silver -->
+  <circle cx="231" cy="61" r="5" fill="#b0bec5"/>
+  <text x="231" y="64" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="8" font-weight="700" fill="#1a2228" text-anchor="middle">2</text>
+  <text x="244" y="65" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#c0cdd5">{{ top2 }}</text>
+
+  <!-- Connector -->
+  <line x1="231" y1="66" x2="231" y2="75" stroke="#667788" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- #3 Bronze -->
+  <circle cx="231" cy="81" r="5" fill="#cd7f32"/>
+  <text x="231" y="84" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="8" font-weight="700" fill="#1a2228" text-anchor="middle">3</text>
+  <text x="244" y="84" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="13" fill="#9aabb5">{{ top3 }}</text>
+
+  <!-- Branding -->
+  <text x="492" y="95" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="8" fill="#4767a3" text-anchor="end" opacity="0.5">captaincoaster.com</text>
+</svg>

@@ -1,34 +1,40 @@
-{% set bannerUrl = pictures_cdn ~ '/banner/' ~ user.id ~ '.png' %}
-<img
-    src="{{ bannerUrl }}"
-    alt="{{ user.displayName }} stats"
-    class="img-responsive"
-/>
+{% set bannerUrl = pictures_cdn ~ '/banner/' ~ user.id ~ '.svg' %}
+{% set profileUrl = absolute_url(path('user_profile', {'id': user.id})) %}
+{% set bbcode = '[url=' ~ profileUrl ~ '][img]' ~ bannerUrl ~ '[/img][/url]' %}
+{% set htmlcode = '<a href="' ~ profileUrl ~ '"><img src="' ~ bannerUrl ~ '" alt="My Captain Coaster stats"/></a>' %}
+
+<div id="banner-image">
+  <img
+      src="{{ bannerUrl }}"
+      alt="{{ user.displayName }} stats"
+      class="img-responsive"
+      onerror="document.getElementById('banner-image').style.display='none';document.getElementById('banner-fallback').style.display='block';"
+  />
+</div>
+<div id="banner-fallback" style="display:none;">
+  <p class="text-muted">{{ 'profile.banner.unavailable'|trans }}</p>
+</div>
 <div class="col-sm-12 text-right">
   <ul class="list-inline no-margin-bottom">
     <li>
-      {% set bbcode = '[url='~ absolute_url(path('user_profile', {'id': user.id})) ~'][img]' ~ bannerUrl ~ '[/img][/url]' %}
-      {% set htmlcode = '<a href="'~ absolute_url(path('user_profile', {'id': user.id})) ~'"><img src="' ~ bannerUrl ~ '"/></a>' %}
-      <a onclick="copy(this);" class="btn btn-link" data-copy="{{ bbcode }}">
+      <button type="button" class="btn btn-link"
+              data-controller="clipboard"
+              data-clipboard-content-value="{{ bbcode|e('html_attr') }}"
+              data-clipboard-success-message-value="{{ 'profile.banner.copied'|trans }}"
+              data-action="clipboard#copy">
         {{ ux_icon('heroicons:clipboard-document', {'class': 'w-6 h-6 position-left'}) }}
         {{ 'profile.banner.getbbcode'|trans }}
-      </a>
+      </button>
     </li>
     <li>
-      <a onclick="copy(this);" class="btn btn-link" data-copy="{{ htmlcode }}">
+      <button type="button" class="btn btn-link"
+              data-controller="clipboard"
+              data-clipboard-content-value="{{ htmlcode|e('html_attr') }}"
+              data-clipboard-success-message-value="{{ 'profile.banner.copied'|trans }}"
+              data-action="clipboard#copy">
         {{ ux_icon('heroicons:document-duplicate', {'class': 'w-6 h-6 position-left'}) }}
         {{ 'profile.banner.gethtml'|trans }}
-      </a>
+      </button>
     </li>
   </ul>
 </div>
-<script type="application/javascript">
-    function copy(element) {
-        const el = document.createElement('textarea');
-        el.value = element.dataset.copy;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-    }
-</script>

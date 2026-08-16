@@ -23,11 +23,11 @@ class Currency implements \Stringable
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank]
-    private ?string $name = null;
+    private string $name = '';
 
     #[ORM\Column(type: Types::STRING, length: 10)]
     #[Assert\NotBlank]
-    private ?string $symbol = null;
+    private string $symbol = '';
 
     public function __toString(): string
     {

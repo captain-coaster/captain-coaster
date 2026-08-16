@@ -2,7 +2,7 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-    # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
+    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         login_link_provider:
             entity:
@@ -17,7 +17,8 @@ security:
 
         api_home:
             pattern: ^/api(/|/docs|/docs\.html)?$
-            security: false
+            context: main
+            lazy: true
 
         api_secured:
             custom_authenticators:
@@ -58,6 +59,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/team, roles: ROLE_CONTRIBUTOR }
+        - { path: ^/api(/|/docs|/docs\.html)?$, roles: ROLE_ADMIN }
         - { path: ^/api, roles: ROLE_USER }
         - { path: ^/login$, allow_if: '!is_authenticated()' }
 

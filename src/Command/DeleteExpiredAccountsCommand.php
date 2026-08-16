@@ -94,7 +94,7 @@ class DeleteExpiredAccountsCommand extends Command
         $io->note(\sprintf('Found %d banned user(s) to purge data from.', $totalUsers));
 
         // Collect user IDs first since we'll clear the EntityManager after each purge
-        $userIds = array_map(fn ($user) => $user->getId(), $users);
+        $userIds = array_map(static fn ($user) => $user->getId(), $users);
         $processedCount = 0;
 
         foreach ($userIds as $userId) {

@@ -20,6 +20,7 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    /** @return Query<mixed, mixed> */
     public function getAllUsersQuery(): Query
     {
         return $this->getEntityManager()
@@ -29,6 +30,7 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
+    /** @return Query<mixed, mixed> */
     public function getAllUsersWithTotalRatingsQuery(): Query
     {
         return $this->getEntityManager()

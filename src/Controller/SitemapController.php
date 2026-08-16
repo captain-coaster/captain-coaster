@@ -21,7 +21,7 @@ class SitemapController extends AbstractController
     /** Retrieve sitemap for pages. */
     public function indexAction(SitemapService $sitemapService): Response
     {
-        $urls = $this->sitemapCache->get('sitemap_urls', fn () => $sitemapService->getUrlsForPages());
+        $urls = $this->sitemapCache->get('sitemap_urls', static fn () => $sitemapService->getUrlsForPages());
 
         $response = $this->render('Sitemap/sitemap.xml.twig', ['urls' => $urls]);
         $response->headers->set('Content-Type', 'text/xml');
@@ -32,7 +32,7 @@ class SitemapController extends AbstractController
     /** Retrieve sitemap for images. */
     public function imageAction(SitemapService $sitemapService): Response
     {
-        $urls = $this->sitemapCache->get('sitemap_image', fn () => $sitemapService->getUrlsForImages());
+        $urls = $this->sitemapCache->get('sitemap_image', static fn () => $sitemapService->getUrlsForImages());
 
         $response = $this->render('Sitemap/sitemap_image.xml.twig', ['urls' => $urls]);
         $response->headers->set('Content-Type', 'text/xml');

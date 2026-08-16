@@ -22,12 +22,11 @@ class MainTag
     #[ORM\ManyToOne(targetEntity: Coaster::class, inversedBy: 'mainTags')]
     private ?Coaster $coaster = null;
 
-    /** @var Tag */
     #[ORM\ManyToOne(targetEntity: Tag::class)]
-    private $tag;
+    private ?Tag $tag = null;
 
     #[ORM\Column(name: 'rank', type: Types::INTEGER)]
-    private ?int $rank = null;
+    private int $rank = 0;
 
     /** Get id */
     public function getId(): int
@@ -66,7 +65,7 @@ class MainTag
     /**
      * Get tag.
      *
-     * @return Tag
+     * @return Tag|null
      */
     public function getTag()
     {

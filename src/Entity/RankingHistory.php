@@ -29,13 +29,13 @@ class RankingHistory
     private ?Coaster $coaster = null;
 
     #[ORM\Column(name: 'rank', type: Types::INTEGER)]
-    private ?int $rank = null;
+    private int $rank = 0;
 
     #[ORM\Column(name: 'score', type: Types::DECIMAL, precision: 14, scale: 11)]
-    private ?string $score = null;
+    private string $score = '0';
 
     #[ORM\Column(name: 'validDuels', type: Types::INTEGER)]
-    private ?int $validDuels = null;
+    private int $validDuels = 0;
 
     #[ORM\Column(name: 'totalTopsIn', type: Types::INTEGER, nullable: true)]
     private ?int $totalTopsIn = null;

@@ -6,7 +6,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": "^8.4",
+        "php": "^8.5",
         "ext-json": "*",
         "api-platform/core": "^4.0",
         "aws/aws-sdk-php": "^3.0",
@@ -15,7 +15,6 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^3.3",
         "easycorp/easyadmin-bundle": "^4",
-        "excelwebzone/recaptcha-bundle": "^1.5",
         "friendsofsymfony/jsrouting-bundle": "^3.0",
         "http-interop/http-factory-guzzle": "^1.2.0",
         "knplabs/knp-paginator-bundle": "^6",
@@ -24,6 +23,7 @@
         "league/flysystem-aws-s3-v3": "^3",
         "league/oauth2-google": "^4",
         "oneup/flysystem-bundle": "^4",
+        "pixelopen/cloudflare-turnstile-bundle": "^0.5.0",
         "stof/doctrine-extensions-bundle": "^1.14",
         "symfony/amazon-mailer": "7.*",
         "symfony/asset": "7.*",
@@ -38,18 +38,18 @@
         "symfony/lock": "7.*",
         "symfony/mailer": "7.*",
         "symfony/messenger": "7.*",
-        "symfony/monolog-bundle": "^3.0",
+        "symfony/monolog-bundle": "^4.0",
         "symfony/notifier": "7.*",
-        "symfony/rate-limiter": "7.*",
+        "symfony/rate-limiter": "8.*",
         "symfony/redis-messenger": "7.*",
         "symfony/runtime": "7.*",
         "symfony/security-bundle": "7.*",
-        "symfony/stimulus-bundle": "^2.23",
+        "symfony/stimulus-bundle": "^3.3",
         "symfony/stopwatch": "7.*",
-        "symfony/translation": "7.*",
+        "symfony/translation": "8.*",
         "symfony/twig-bundle": "7.*",
         "symfony/ux-icons": "^2.31",
-        "symfony/ux-translator": "^2.13",
+        "symfony/ux-translator": "^3.3",
         "symfony/validator": "7.*",
         "symfony/webpack-encore-bundle": "^2.0",
         "twig/cssinliner-extra": "^3.8",
@@ -58,11 +58,12 @@
         "twig/intl-extra": "^3.8"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "3.90.0",
+        "friendsofphp/php-cs-fixer": "3.95.15",
         "giorgiosironi/eris": "^1.0",
         "phpstan/extension-installer": "^1.3",
-        "phpstan/phpstan-doctrine": "^1.3",
-        "phpstan/phpstan-symfony": "^1.3",
+        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^11.5",
         "symfony/browser-kit": "7.*",
         "symfony/css-selector": "7.*",
@@ -79,7 +80,7 @@
             "symfony/runtime": true
         },
         "platform": {
-            "php": "8.4.13"
+            "php": "8.5.4"
         },
         "preferred-install": {
             "*": "dist"

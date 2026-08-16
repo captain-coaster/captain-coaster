@@ -145,7 +145,7 @@ class CoasterRepository extends ServiceEntityRepository
      *
      * @param array<string, mixed> $filters Validated and authorized filter array
      *
-     * @return Query Query object for pagination
+     * @return Query<mixed, mixed>
      */
     public function findForSearch(array $filters = []): Query
     {
@@ -169,7 +169,7 @@ class CoasterRepository extends ServiceEntityRepository
      *
      * @param array<string, mixed> $filters Validated and authorized filter array
      *
-     * @return Query Query object for pagination
+     * @return Query<mixed, mixed>
      */
     public function findForRanking(array $filters = []): Query
     {

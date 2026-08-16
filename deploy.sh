@@ -4,6 +4,11 @@
 # This script demonstrates best practices for deploying with maintenance mode
 
 set -e
+# Without this, a failure in the middle of a pipe is invisible to `set -e`
+# — only the last command's exit code is checked, so e.g. `foo | gzip`
+# would report success even if `foo` failed and gzip just compressed
+# nothing. Cheap insurance for any pipe used in this script, now or later.
+set -o pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -31,10 +36,27 @@ error() {
     echo -e "${RED}❌ $1${NC}"
 }
 
+# Function to reload nginx so its file-existence cache picks up the
+# maintenance.html toggle immediately. Without this, nginx's
+# open_file_cache (configured VPS-wide, not something this script owns)
+# can keep serving a stale cached result — observed in practice: enabling
+# maintenance takes effect immediately, but disabling it silently kept
+# serving 503s until nginx was reloaded.
+reload_nginx() {
+    if sudo systemctl reload nginx 2>/dev/null; then
+        success "nginx reloaded"
+    elif sudo service nginx reload 2>/dev/null; then
+        success "nginx reloaded"
+    else
+        warning "Could not reload nginx automatically. Run manually: sudo systemctl reload nginx"
+    fi
+}
+
 # Function to enable maintenance mode
 enable_maintenance() {
     log "Enabling maintenance mode..."
     cp "$PROJECT_DIR/maintenance.html" "$PROJECT_DIR/public/maintenance.html"
+    reload_nginx
     success "Maintenance mode enabled"
 }
 
@@ -42,13 +64,23 @@ enable_maintenance() {
 disable_maintenance() {
     log "Disabling maintenance mode..."
     rm -f "$PROJECT_DIR/public/maintenance.html"
+    reload_nginx
     success "Maintenance mode disabled"
 }
 
 # Function to update code
 update_code() {
     log "Updating code from repository..."
-    git pull origin main
+    git fetch origin
+    if ! git merge --ff-only origin/main; then
+        # Local branch diverged from origin/main — e.g. history was
+        # rewritten upstream (a squash/amend + force-push). Resync to
+        # match origin rather than leaving the deploy stuck. Safe here
+        # specifically because this checkout only ever tracks main and
+        # is never the place local work is authored.
+        warning "Local branch diverged from origin/main, resetting to match"
+        git reset --hard origin/main
+    fi
     success "Code updated"
 }
 
@@ -123,6 +155,18 @@ warm_cache() {
     success "Cache warmed up"
 }
 
+# Function to reload PHP-FPM to clear OPcache
+reload_php_fpm() {
+    log "Reloading PHP-FPM to clear OPcache..."
+    if sudo systemctl reload php8.5-fpm 2>/dev/null; then
+        success "PHP-FPM reloaded"
+    elif sudo service php8.5-fpm reload 2>/dev/null; then
+        success "PHP-FPM reloaded"
+    else
+        warning "Could not reload PHP-FPM automatically. Run manually: sudo systemctl reload php8.5-fpm"
+    fi
+}
+
 # Function to verify deployment
 verify_deployment() {
     log "Verifying deployment..."
@@ -134,6 +178,73 @@ verify_deployment() {
         error "Application verification failed"
         return 1
     fi
+}
+
+# Function to run the full deploy in the right order, skipping steps that
+# the pulled changes don't actually touch. set -e (top of this script)
+# means any failure here stops the whole sequence immediately — and since
+# disable_maintenance only runs at the very end, maintenance mode stays on
+# if anything fails, rather than exposing a half-deployed site.
+#
+# No DB backup step here on purpose — that's handled by dedicated backup
+# tooling outside this script, not duplicated here.
+full_deploy() {
+    if [ -z "${DEPLOY_CONTINUE:-}" ]; then
+        # First pass: pull, then hand off to the script file we just
+        # pulled. Bash already parsed this function's body into memory
+        # before update_code runs — a git pull mid-script does NOT
+        # hot-swap that, so without this re-exec, every step below would
+        # silently keep running pre-pull logic even after deploy.sh
+        # itself changed (observed in practice: a fix to the asset-build
+        # condition was ignored on the deploy that pulled it in).
+        local old_commit
+        old_commit=$(git rev-parse HEAD)
+        enable_maintenance
+        update_code
+        DEPLOY_OLD_COMMIT="$old_commit" DEPLOY_CONTINUE=1 exec "$0" deploy
+    fi
+
+    # Second pass: fresh process, this file read fresh from disk — every
+    # function below is guaranteed to be the version that was just pulled.
+    local changed
+    changed=$(git diff --name-only "$DEPLOY_OLD_COMMIT" HEAD)
+
+    if echo "$changed" | grep -q '^composer\.lock$'; then
+        install_dependencies
+    else
+        log "composer.lock unchanged, skipping install"
+    fi
+
+    if echo "$changed" | grep -q '^package-lock\.json$'; then
+        install_node_dependencies
+    else
+        log "package-lock.json unchanged, skipping install-node"
+    fi
+
+    # package-lock.json is included here too, not just assets/ and
+    # package.json: a changed lockfile means node_modules content changed,
+    # which can change compiled output (e.g. a bundled polyfill version)
+    # even when no source file under assets/ was touched.
+    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|webpack\.config\.js$)'; then
+        build_assets
+    else
+        log "no asset changes, skipping build"
+    fi
+
+    if echo "$changed" | grep -q '^migrations/'; then
+        run_migrations
+    else
+        log "no new migrations, skipping migrate"
+    fi
+
+    # cheap regardless of what changed — always safe to run
+    clear_cache
+    warm_cache
+    reload_php_fpm
+    verify_deployment
+    disable_maintenance
+
+    success "Deploy complete ($(echo "$changed" | wc -l | tr -d ' ') files changed)"
 }
 
 # Function to rollback deployment
@@ -171,6 +282,9 @@ show_usage() {
     echo "Usage: $0 [COMMAND]"
     echo ""
     echo "Commands:"
+    echo "  deploy       Full deploy: pull, install/build/migrate only what changed,"
+    echo "               cache, verify. Stops on first failure, leaving maintenance"
+    echo "               mode ON so nothing half-broken goes live."
     echo "  maintenance  [on|off|status] - Control maintenance mode"
     echo "  update       Pull latest code from repository"
     echo "  install      Install/update PHP dependencies"
@@ -182,7 +296,11 @@ show_usage() {
     echo "  rollback     Rollback code and optionally migrations"
     echo "  help         Show this help message"
     echo ""
-    echo "Example deployment workflow:"
+    echo "Normal deploy:"
+    echo "  $0 deploy"
+    echo ""
+    echo "Manual step-by-step (same steps 'deploy' runs, for when you want to"
+    echo "watch/control each stage yourself):"
     echo "  $0 maintenance on"
     echo "  $0 update"
     echo "  $0 install"
@@ -210,8 +328,8 @@ case "${1:-help}" in
             *) echo "Usage: $0 maintenance [on|off|status]" ;;
         esac
         ;;
-    "backup")
-        backup_database
+    "deploy")
+        full_deploy
         ;;
     "update")
         update_code
@@ -231,6 +349,7 @@ case "${1:-help}" in
     "cache")
         clear_cache
         warm_cache
+        reload_php_fpm
         ;;
     "verify")
         verify_deployment

@@ -14,6 +14,7 @@ class ProfilePictureManager
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly FilesystemOperator $profilePicturesFilesystem,
+        private readonly FilesystemOperator $profilePicturesCacheFilesystem,
     ) {
     }
 
@@ -63,8 +64,6 @@ class ProfilePictureManager
      */
     private function handleUpload(User $user, mixed $stream, string $extension): string
     {
-        $this->deleteOldProfilePicture($user);
-
         $userId = $user->getId();
         if (null === $userId) {
             throw new \RuntimeException('Cannot upload profile picture for user without ID');
@@ -72,12 +71,14 @@ class ProfilePictureManager
 
         $filename = $this->generateFilename($userId, $extension);
 
-        // Use writeStream instead of write for better memory efficiency
+        // Write first, then delete old — avoids losing the picture if the upload fails
         $this->profilePicturesFilesystem->writeStream(
             $filename,
             $stream,
             ['Metadata' => ['type' => 'profile']]
         );
+
+        $this->deleteOldProfilePicture($user);
 
         return $filename;
     }
@@ -87,26 +88,31 @@ class ProfilePictureManager
     {
         $oldPicture = $user->getProfilePicture();
         if (null !== $oldPicture) {
-            try {
-                // Add exists check to avoid unnecessary delete attempts
-                if ($this->profilePicturesFilesystem->fileExists($oldPicture)) {
-                    $this->profilePicturesFilesystem->delete($oldPicture);
-                }
-            } catch (\Exception $e) {
-                $this->logger->warning('Failed to delete old profile picture: '.$e->getMessage());
-            }
+            $this->deleteProfilePicture($oldPicture);
         }
     }
 
-    /** Delete a profile picture file. */
+    /**
+     * Delete a profile picture from both the original and the resized (CDN) buckets.
+     *
+     * S3's DeleteObject is idempotent, so there is no need to check existence
+     * beforehand (which would require extra IAM permissions).
+     */
     public function deleteProfilePicture(string $filename): void
     {
         try {
-            if ($this->profilePicturesFilesystem->fileExists($filename)) {
-                $this->profilePicturesFilesystem->delete($filename);
-            }
+            $this->profilePicturesFilesystem->delete($filename);
         } catch (\Exception $e) {
-            $this->logger->warning('Failed to delete profile picture', [
+            $this->logger->error('Failed to delete profile picture from original bucket', [
+                'filename' => $filename,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        try {
+            $this->profilePicturesCacheFilesystem->delete($filename);
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to delete profile picture from cache bucket', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
             ]);

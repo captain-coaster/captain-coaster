@@ -57,11 +57,11 @@ class RankingRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Query
+     * @return Query<mixed, mixed>
      *
      * @throws \Exception
      */
-    public function findCoastersRanked()
+    public function findCoastersRanked(): Query
     {
         $qb = $this->getEntityManager()
             ->createQueryBuilder()

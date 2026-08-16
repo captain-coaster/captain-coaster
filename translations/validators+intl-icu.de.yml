@@ -1,4 +1,8 @@
 top_coaster.duplicate: '{coaster} erscheint mehrmals. Entferne bitte die Duplikate.'
+
+# Blocked words in reviews
+blocked_words:
+    review: 'Deine Bewertung enthält nicht erlaubte Ausdrücke. Bitte formuliere sie um.'
 # Ride date validation
 ride_date:
     before_opening: Das Fahrdatum kann nicht vor der Eröffnung der Achterbahn liegen.

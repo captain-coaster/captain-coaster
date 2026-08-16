@@ -36,6 +36,7 @@ class ImageRepository extends ServiceEntityRepository
         return $query->getSingleResult();
     }
 
+    /** @return Query<mixed, mixed> */
     public function findUserImages(User $user): Query
     {
         return $this->getEntityManager()

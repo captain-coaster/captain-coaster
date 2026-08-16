@@ -31,14 +31,14 @@ class Status implements \Stringable
 
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
-    private ?string $name = null;
+    private string $name = '';
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private ?string $slug = null;
+    private string $slug = '';
 
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
-    private ?string $type = null;
+    private string $type = '';
 
     /** @var Collection<int, Coaster> */
     #[ORM\OneToMany(targetEntity: Coaster::class, mappedBy: 'status')]
@@ -46,7 +46,7 @@ class Status implements \Stringable
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['read_status'])]
-    private ?bool $isRateable = null;
+    private bool $isRateable = false;
 
     #[ORM\Column(type: Types::INTEGER, nullable: false)]
     private int $order;
@@ -66,26 +66,26 @@ class Status implements \Stringable
         return $this->id;
     }
 
-    public function setName(?string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setSlug(?string $slug): static
+    public function setSlug(string $slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getSlug(): string
     {
         return $this->slug;
     }
@@ -108,14 +108,14 @@ class Status implements \Stringable
         return $this->coasters;
     }
 
-    public function setType(?string $type): static
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): string
     {
         return $this->type;
     }

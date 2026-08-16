@@ -188,7 +188,7 @@ class Park implements \Stringable
     /** @return Collection<int, Coaster> */
     public function getOpenedCoasters(): Collection
     {
-        return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->getStatus()->getId());
+        return $this->getCoasters()->filter(static fn (Coaster $coaster) => 1 == $coaster->getStatus()->getId());
     }
 
     /** @return Collection<int, Coaster> */
@@ -205,13 +205,13 @@ class Park implements \Stringable
     /** @return Collection<int, Coaster> */
     public function getKiddies(): Collection
     {
-        return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->isKiddie());
+        return $this->getCoasters()->filter(static fn (Coaster $coaster) => 1 == $coaster->isKiddie());
     }
 
     /** @return Collection<int, Coaster> */
     public function getOperatingKiddies(): Collection
     {
-        return $this->getCoasters()->filter(fn (Coaster $coaster) => 1 == $coaster->isKiddie() && 1 == $coaster->getStatus()->getId());
+        return $this->getCoasters()->filter(static fn (Coaster $coaster) => 1 == $coaster->isKiddie() && 1 == $coaster->getStatus()->getId());
     }
 
     public function isEnabled(): bool

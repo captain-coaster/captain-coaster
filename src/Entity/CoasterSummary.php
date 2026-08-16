@@ -39,7 +39,7 @@ class CoasterSummary
     private string $language = 'en';
 
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $summary = null;
+    private string $summary = '';
 
     /** @var array<string> */
     #[ORM\Column(type: Types::JSON)]
@@ -102,7 +102,7 @@ class CoasterSummary
         return $this;
     }
 
-    public function getSummary(): ?string
+    public function getSummary(): string
     {
         return $this->summary;
     }

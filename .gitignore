@@ -1,6 +1,9 @@
 .DS_Store
 .idea
 
+# runtime maintenance-mode toggle, copied in/out by deploy.sh — not source
+/public/maintenance.html
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php

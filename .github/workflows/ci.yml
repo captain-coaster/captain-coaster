@@ -9,32 +9,43 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        permissions:
+            contents: read
         steps:
-            - uses: actions/checkout@v3
+            - uses: actions/checkout@v7
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
-                  php-version: '8.4'
+                  php-version: '8.5'
                   extensions: redis, xsl
+
+            - name: Get Composer cache directory
+              id: composer-cache
+              run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+
+            - name: Cache Composer dependencies
+              uses: actions/cache@v6
+              with:
+                  path: ${{ steps.composer-cache.outputs.dir }}
+                  key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+                  restore-keys: ${{ runner.os }}-composer-
 
             - name: Lint Composer config
               run: composer validate --strict
 
-            - uses: php-actions/composer@v6
-              id: install
-              with:
-                  php_extensions: redis xsl
-                  memory_limit: 256M
+            - name: Install Composer dependencies
+              run: composer install --no-interaction --prefer-dist --no-progress
 
             - name: Run PHPUnit tests
               run: vendor/bin/phpunit
 
-            - uses: php-actions/phpstan@v3
+            - name: PHPStan
+              run: vendor/bin/phpstan analyse
 
             - name: PHP-CS-Fixer
-              # php-cs-fixer v3.90.0
-              uses: docker://oskarstark/php-cs-fixer-ga@sha256:4cff5e369642fa2ce75238310a457c784ded88dbe0400474292f69218e099a4a
+              # php-cs-fixer v3.95.15
+              uses: docker://oskarstark/php-cs-fixer-ga@sha256:d4b207b4bcfd325c30d7ccd6482f92dc96911e882f55b91556c039564436c9df
               with:
                   args: --diff --dry-run
 

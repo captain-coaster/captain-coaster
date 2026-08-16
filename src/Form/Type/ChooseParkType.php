@@ -11,6 +11,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+/**
+ * @extends AbstractType<mixed>
+ */
 class ChooseParkType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -23,7 +26,7 @@ class ChooseParkType extends AbstractType
                     'required' => true,
                     'class' => Park::class,
                     'mapped' => false,
-                    'query_builder' => fn (EntityRepository $er) => $er->createQueryBuilder('p')
+                    'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
                         ->orderBy('p.name', 'ASC'),
                 ]
             )

@@ -38,8 +38,8 @@ class ShortNumberExtension extends AbstractExtension
         } elseif ($n >= 1_000_000_000_000) {
             // 1t+
             return number_format($n / 1_000_000_000_000, $precision).'T';
-        } else {
-            return '0';
         }
+
+        return '0';
     }
 }

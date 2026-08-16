@@ -25,9 +25,9 @@ class TopRepository extends ServiceEntityRepository
     /**
      * Tops must have at lest 3 ranked coasters inside.
      *
-     * @return Query
+     * @return Query<mixed, mixed>
      */
-    public function findAllTops()
+    public function findAllTops(): Query
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
@@ -57,8 +57,8 @@ class TopRepository extends ServiceEntityRepository
         }
     }
 
-    /** @return Query */
-    public function findAllCustomLists()
+    /** @return Query<mixed, mixed> */
+    public function findAllCustomLists(): Query
     {
         return $this->getEntityManager()
             ->createQueryBuilder()

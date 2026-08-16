@@ -1,4 +1,8 @@
 top_coaster.duplicate: '{coaster} aparece varias veces. Por favor, borráis los duplicados.'
+
+# Blocked words in reviews
+blocked_words:
+    review: 'Su reseña contiene términos que no están permitidos. Por favor, reformule su reseña.'
 # Ride date validation
 ride_date:
     before_opening: La fecha del viaje no puede ser anterior a la apertura de la montaña rusa.
