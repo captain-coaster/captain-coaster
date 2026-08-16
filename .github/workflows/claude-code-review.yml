@@ -12,11 +12,15 @@ on:
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # Only auto-review PRs opened by trusted collaborators, and only when the PR
+    # is not from a fork: GitHub withholds OIDC/secrets from fork-triggered
+    # pull_request runs, so a fork PR would otherwise start this job and fail on
+    # the OIDC token fetch, showing as a failed check instead of being skipped.
+    # Trusted collaborators can still get a review on a fork PR by commenting
+    # @claude, which isn't subject to this restriction (see claude.yml).
+    if: |
+      contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association) &&
+      github.event.pull_request.head.repo.full_name == github.repository
 
     runs-on: ubuntu-latest
     permissions:
