@@ -3,6 +3,10 @@ top_coaster.duplicate: '{coaster} appears several times. Please remove duplicate
 # Admin validators
 date_minimum:
     error: Year must be at least 1800.
+
+# Blocked words in reviews
+blocked_words:
+    review: 'Your review contains language that is not allowed here. Please rephrase and try again.'
 # Ride date validation
 ride_date:
     before_opening: The ride date cannot be before the coaster opened.
