@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+/screenshots/
 
 # runtime maintenance-mode toggle, copied in/out by deploy.sh — not source
 /public/maintenance.html
