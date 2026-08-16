@@ -125,4 +125,32 @@ class ReviewModerationServiceTest extends TestCase
 
         $this->assertNull($result);
     }
+
+    public function testAnalyzeHandlesUnpersistedEntityOnBedrockFailure(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        // Create a truly unpersisted review with no ID injection
+        $review = new RiddenCoaster();
+        $review->setCoaster($coaster);
+        $review->setValue(3.0);
+        $review->setReview('test review');
+
+        $bedrockService = $this->createMock(BedrockService::class);
+        $bedrockService->method('invokeModel')->willReturn([
+            'success' => false,
+            'error' => 'Throttled',
+            'error_code' => 'ThrottlingException',
+            'metadata' => [],
+        ]);
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('error')->with('Review moderation Bedrock call failed');
+
+        $service = new ReviewModerationService($bedrockService, $logger);
+        $result = $service->analyze($review);
+
+        $this->assertNull($result);
+    }
 }

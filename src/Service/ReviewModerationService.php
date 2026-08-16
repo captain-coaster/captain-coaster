@@ -25,6 +25,15 @@ class ReviewModerationService
     ) {
     }
 
+    private function reviewIdForLogging(RiddenCoaster $review): int|string
+    {
+        try {
+            return $review->getId();
+        } catch (\TypeError) {
+            return 'unpersisted';
+        }
+    }
+
     /**
      * @return array{language: string, category: string, confidence: ?string, explanation: ?string}|null
      *               null means the caller should skip this review and let the next cron run retry it
@@ -36,7 +45,7 @@ class ReviewModerationService
 
         if (!$response['success']) {
             $this->logger->error('Review moderation Bedrock call failed', [
-                'review_id' => $review->getId(),
+                'review_id' => $this->reviewIdForLogging($review),
                 'error' => $response['error'] ?? 'Unknown error',
                 'error_code' => $response['error_code'] ?? null,
                 'metadata' => $response['metadata'],
@@ -49,7 +58,7 @@ class ReviewModerationService
 
         if (null === $parsed) {
             $this->logger->warning('Review moderation response could not be parsed', [
-                'review_id' => $review->getId(),
+                'review_id' => $this->reviewIdForLogging($review),
                 'response_content' => substr($response['content'] ?? '', 0, 500),
                 'metadata' => $response['metadata'],
             ]);
