@@ -646,6 +646,33 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Reviews pending moderation analysis (moderatedAt is null), optionally
+     * restricted to those created or edited since a given time. Passing
+     * $since = null processes the full backlog (explicit --all mode).
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function findPendingAnalysis(?\DateTimeInterface $since, int $limit): array
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('r.moderatedAt IS NULL')
+            ->orderBy('r.id', 'ASC')
+            ->setMaxResults($limit);
+
+        if (null !== $since) {
+            $qb->andWhere('(r.createdAt > :since OR r.updatedAt > :since)')
+                ->setParameter('since', $since);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
      * Get reviews with text content for a specific coaster in a specific language.
      * Returns RiddenCoaster entities with review text and rating values.
      *

@@ -7,8 +7,10 @@ namespace App\Tests\Command;
 use App\Command\AnalyzeReviewsCommand;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
+use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewModerationService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
@@ -18,14 +20,23 @@ class AnalyzeReviewsCommandTest extends TestCase
 {
     private RiddenCoasterRepository&MockObject $riddenCoasterRepository;
     private ReviewModerationService&MockObject $moderationService;
+    private ReviewReportRepository&MockObject $reviewReportRepository;
+    private EntityManagerInterface&MockObject $entityManager;
     private CommandTester $commandTester;
 
     protected function setUp(): void
     {
         $this->riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
         $this->moderationService = $this->createMock(ReviewModerationService::class);
+        $this->reviewReportRepository = $this->createMock(ReviewReportRepository::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
 
-        $command = new AnalyzeReviewsCommand($this->riddenCoasterRepository, $this->moderationService);
+        $command = new AnalyzeReviewsCommand(
+            $this->riddenCoasterRepository,
+            $this->moderationService,
+            $this->reviewReportRepository,
+            $this->entityManager
+        );
 
         $application = new Application();
         $application->add($command);
@@ -105,11 +116,87 @@ class AnalyzeReviewsCommandTest extends TestCase
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
-    public function testNoOptionsFailsWithHelpfulMessage(): void
+    public function testDefaultModeQueriesPendingWithSinceWindow(): void
     {
+        $this->riddenCoasterRepository->expects($this->once())
+            ->method('findPendingAnalysis')
+            ->with($this->isInstanceOf(\DateTimeInterface::class), 50)
+            ->willReturn([]);
+
         $this->commandTester->execute([]);
 
-        $this->assertStringContainsString('--sample', $this->commandTester->getDisplay());
-        $this->assertSame(1, $this->commandTester->getStatusCode());
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testAllFlagPassesNullSince(): void
+    {
+        $this->riddenCoasterRepository->expects($this->once())
+            ->method('findPendingAnalysis')
+            ->with(null, 50)
+            ->willReturn([]);
+
+        $this->commandTester->execute(['--all' => true]);
+
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testFlaggedReviewCreatesReportWhenNotDryRun(): void
+    {
+        $review = $this->createPersistedReview(99, 'i fucking hate this coaster');
+
+        $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review]);
+        $this->moderationService->method('analyze')->willReturn([
+            'language' => 'en',
+            'category' => 'toxic',
+            'confidence' => 'high',
+            'explanation' => 'Pure insult, no substance.',
+        ]);
+        $this->reviewReportRepository->method('hasUnresolvedAiReport')->with($review)->willReturn(false);
+
+        $this->entityManager->expects($this->atLeastOnce())->method('persist');
+        $this->entityManager->expects($this->atLeastOnce())->method('flush');
+
+        $this->commandTester->execute([]);
+
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testDryRunDoesNotPersist(): void
+    {
+        $review = $this->createPersistedReview(100, 'i fucking hate this coaster');
+
+        $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review]);
+        $this->moderationService->method('analyze')->willReturn([
+            'language' => 'en',
+            'category' => 'toxic',
+            'confidence' => 'high',
+            'explanation' => 'Pure insult, no substance.',
+        ]);
+
+        $this->entityManager->expects($this->never())->method('flush');
+
+        $this->commandTester->execute(['--dry-run' => true]);
+
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testDuplicateAiReportIsSkipped(): void
+    {
+        $review = $this->createPersistedReview(101, 'i fucking hate this coaster');
+
+        $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review]);
+        $this->moderationService->method('analyze')->willReturn([
+            'language' => 'en',
+            'category' => 'toxic',
+            'confidence' => 'high',
+            'explanation' => 'Pure insult, no substance.',
+        ]);
+        $this->reviewReportRepository->method('hasUnresolvedAiReport')->willReturn(true);
+
+        $this->commandTester->execute([]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('already has a pending AI report', $output);
+        $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 }

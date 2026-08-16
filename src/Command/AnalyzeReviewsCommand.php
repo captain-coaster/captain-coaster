@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Coaster;
+use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
+use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewModerationService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,8 +22,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Analyzes reviews for moderation flags (toxic/spam/troll/offtopic/other) and
  * detects their language using AWS Bedrock.
  *
- * v1: calibration-only (--sample / --text). No database writes yet — that
- * lands once the calibration pass on this version is approved.
+ * By default, processes reviews created or edited in the last --since
+ * minutes and persists moderatedAt/language plus a ReviewReport for any
+ * flagged review. --sample/--text remain dry-run calibration modes.
  */
 #[AsCommand(
     name: 'app:analyze-reviews',
@@ -30,7 +34,9 @@ class AnalyzeReviewsCommand extends Command
 {
     public function __construct(
         private RiddenCoasterRepository $riddenCoasterRepository,
-        private ReviewModerationService $moderationService
+        private ReviewModerationService $moderationService,
+        private ReviewReportRepository $reviewReportRepository,
+        private EntityManagerInterface $entityManager
     ) {
         parent::__construct();
     }
@@ -38,13 +44,21 @@ class AnalyzeReviewsCommand extends Command
     protected function configure(): void
     {
         $this
+            ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of reviews to process', 50)
+            ->addOption('since', null, InputOption::VALUE_REQUIRED, 'Only process reviews created/edited in the last N minutes', 60)
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Ignore --since and process the full backlog (explicit backfill mode)')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Print results without writing to the database')
             ->addOption('sample', null, InputOption::VALUE_REQUIRED, 'Calibration mode: analyze N random reviews with text and print results (no persistence)')
             ->addOption('text', null, InputOption::VALUE_REQUIRED, 'Calibration mode: analyze one ad-hoc review text (not persisted), for testing hand-picked examples')
             ->addOption('rating', null, InputOption::VALUE_REQUIRED, 'Rating to use with --text', '3.0')
             ->addOption('coaster-name', null, InputOption::VALUE_REQUIRED, 'Coaster name to use with --text', 'Test Coaster')
             ->setHelp(
-                'Calibration tool: analyzes reviews and prints the LLM verdicts, without writing anything to the database.'."\n\n".
+                'Analyzes reviews for moderation flags and detects their language using AWS Bedrock.'."\n".
+                'By default, only processes reviews created or edited in the last --since minutes.'."\n\n".
                 'Examples:'."\n".
+                '  php bin/console app:analyze-reviews'."\n".
+                '  php bin/console app:analyze-reviews --limit=200 --since=120'."\n".
+                '  php bin/console app:analyze-reviews --all --limit=500 --dry-run'."\n".
                 '  php bin/console app:analyze-reviews --sample=20'."\n".
                 '  php bin/console app:analyze-reviews --text="i fucking hate this coaster" --rating=1'
             );
@@ -70,20 +84,82 @@ class AnalyzeReviewsCommand extends Command
         }
 
         $sample = $input->getOption('sample');
-        if (null === $sample) {
-            $io->error('Pass --sample=N or --text="..." to run a calibration check.');
+        if (null !== $sample) {
+            $reviews = $this->riddenCoasterRepository->findRandomReviewsWithText((int) $sample);
+            $io->note(\sprintf('Analyzing %d random review(s) (dry-run, no persistence)...', \count($reviews)));
 
-            return Command::FAILURE;
+            foreach ($reviews as $review) {
+                $this->printResult($io, $review, (string) $review->getId());
+            }
+
+            $io->success(\sprintf('Analyzed %d review(s).', \count($reviews)));
+
+            return Command::SUCCESS;
         }
 
-        $reviews = $this->riddenCoasterRepository->findRandomReviewsWithText((int) $sample);
-        $io->note(\sprintf('Analyzing %d random review(s) (dry-run, no persistence)...', \count($reviews)));
+        $limit = (int) $input->getOption('limit');
+        $dryRun = (bool) $input->getOption('dry-run');
+        $all = (bool) $input->getOption('all');
+        $since = $all ? null : new \DateTimeImmutable('-'.((int) $input->getOption('since')).' minutes');
+
+        $reviews = $this->riddenCoasterRepository->findPendingAnalysis($since, $limit);
+        $io->note(\sprintf(
+            'Processing %d pending review(s)%s.',
+            \count($reviews),
+            $all ? ' (full backlog)' : ' (since '.$since->format('Y-m-d H:i:s').')'
+        ));
+
+        $processed = 0;
+        $flagged = 0;
 
         foreach ($reviews as $review) {
-            $this->printResult($io, $review, (string) $review->getId());
+            $result = $this->moderationService->analyze($review);
+
+            if (null === $result) {
+                $io->writeln("  ⚠ Review {$review->getId()}: analysis failed, skipping (will retry next run)");
+                continue;
+            }
+
+            $io->writeln(\sprintf(
+                '  Review %d: language=%s category=%s confidence=%s',
+                $review->getId(),
+                $result['language'],
+                $result['category'],
+                $result['confidence'] ?? 'n/a'
+            ));
+
+            ++$processed;
+
+            if ($dryRun) {
+                continue;
+            }
+
+            $review->setLanguage($result['language']);
+            $review->setModeratedAt(new \DateTime());
+            $this->entityManager->persist($review);
+
+            if ('ok' !== $result['category']) {
+                if ($this->reviewReportRepository->hasUnresolvedAiReport($review)) {
+                    $io->writeln('    → already has a pending AI report for this review, skipping duplicate');
+                } else {
+                    $report = new ReviewReport();
+                    $report->setReview($review);
+                    $report->setUser(null);
+                    $report->setReason($result['category']);
+                    $report->setReviewContent($review->getReview());
+                    $report->setCoasterName($review->getCoaster()->getName());
+                    $report->setRatingValue($review->getValue());
+                    $report->setAiConfidence($result['confidence']);
+                    $report->setAiExplanation($result['explanation']);
+                    $this->entityManager->persist($report);
+                    ++$flagged;
+                }
+            }
+
+            $this->entityManager->flush();
         }
 
-        $io->success(\sprintf('Analyzed %d review(s).', \count($reviews)));
+        $io->success(\sprintf('Analyzed %d review(s), %d flagged.', $processed, $flagged));
 
         return Command::SUCCESS;
     }
