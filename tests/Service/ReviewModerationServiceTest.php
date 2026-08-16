@@ -154,6 +154,42 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testAnalyzeRejectsInvalidLanguageFormat(): void
+    {
+        $bedrockService = $this->createMock(BedrockService::class);
+        $bedrockService->method('invokeModel')->willReturn([
+            'success' => true,
+            'content' => '{"language":"english","category":"ok","confidence":"high","explanation":null}',
+            'metadata' => [],
+        ]);
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('warning');
+
+        $service = new ReviewModerationService($bedrockService, $logger);
+        $result = $service->analyze($this->createReview('a fine review'));
+
+        $this->assertNull($result);
+    }
+
+    public function testAnalyzeRejectsNonIso6391LanguageCode(): void
+    {
+        $bedrockService = $this->createMock(BedrockService::class);
+        $bedrockService->method('invokeModel')->willReturn([
+            'success' => true,
+            'content' => '{"language":"zh-Hant","category":"ok","confidence":"high","explanation":null}',
+            'metadata' => [],
+        ]);
+
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->once())->method('warning');
+
+        $service = new ReviewModerationService($bedrockService, $logger);
+        $result = $service->analyze($this->createReview('a fine review'));
+
+        $this->assertNull($result);
+    }
+
     public function testAnalyzeAcceptsNotRiddenCategory(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);

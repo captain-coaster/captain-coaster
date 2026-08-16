@@ -19,9 +19,17 @@ class ReviewModerationService
     private const VALID_CATEGORIES = ['ok', 'toxic', 'spam', 'troll', 'offtopic', 'not_ridden', 'other'];
     private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
 
+    /**
+     * Injected via Symfony/MonologBundle's parameter-name channel autowiring:
+     * a constructor argument named "$moderationLogger" resolves to the
+     * "moderation" monolog channel (see config/packages/monolog.yaml),
+     * which has its own handler outside the main fingers_crossed buffer so
+     * these warning-level records reach disk in prod instead of being
+     * silently discarded.
+     */
     public function __construct(
         private BedrockService $bedrockService,
-        private LoggerInterface $logger
+        private LoggerInterface $moderationLogger
     ) {
     }
 
@@ -44,7 +52,7 @@ class ReviewModerationService
         $response = $this->bedrockService->invokeModel($prompt, self::MODEL_KEY, self::MAX_TOKENS, 0.3);
 
         if (!$response['success']) {
-            $this->logger->error('Review moderation Bedrock call failed', [
+            $this->moderationLogger->error('Review moderation Bedrock call failed', [
                 'review_id' => $this->reviewIdForLogging($review),
                 'error' => $response['error'] ?? 'Unknown error',
                 'error_code' => $response['error_code'] ?? null,
@@ -57,7 +65,7 @@ class ReviewModerationService
         $parsed = $this->parseResponse($response['content'] ?? '');
 
         if (null === $parsed) {
-            $this->logger->warning('Review moderation response could not be parsed', [
+            $this->moderationLogger->warning('Review moderation response could not be parsed', [
                 'review_id' => $this->reviewIdForLogging($review),
                 'response_content' => substr($response['content'] ?? '', 0, 500),
                 'metadata' => $response['metadata'],
@@ -130,10 +138,15 @@ class ReviewModerationService
                 $confidence = null;
             }
 
+            $language = strtolower(trim($json['language']));
+            if (!preg_match('/^[a-z]{2}$/', $language)) {
+                return null;
+            }
+
             $explanation = $json['explanation'] ?? null;
 
             return [
-                'language' => strtolower(trim($json['language'])),
+                'language' => $language,
                 'category' => $json['category'],
                 'confidence' => $confidence,
                 'explanation' => \is_string($explanation) ? trim($explanation) : null,

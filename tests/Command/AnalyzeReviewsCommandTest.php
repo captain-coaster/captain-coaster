@@ -6,13 +6,16 @@ namespace App\Tests\Command;
 
 use App\Command\AnalyzeReviewsCommand;
 use App\Entity\Coaster;
+use App\Entity\ReviewReport;
 use App\Entity\RiddenCoaster;
+use App\Entity\User;
 use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -22,6 +25,7 @@ class AnalyzeReviewsCommandTest extends TestCase
     private ReviewModerationService&MockObject $moderationService;
     private ReviewReportRepository&MockObject $reviewReportRepository;
     private EntityManagerInterface&MockObject $entityManager;
+    private LoggerInterface&MockObject $moderationLogger;
     private CommandTester $commandTester;
 
     protected function setUp(): void
@@ -30,12 +34,14 @@ class AnalyzeReviewsCommandTest extends TestCase
         $this->moderationService = $this->createMock(ReviewModerationService::class);
         $this->reviewReportRepository = $this->createMock(ReviewReportRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->moderationLogger = $this->createMock(LoggerInterface::class);
 
         $command = new AnalyzeReviewsCommand(
             $this->riddenCoasterRepository,
             $this->moderationService,
             $this->reviewReportRepository,
-            $this->entityManager
+            $this->entityManager,
+            $this->moderationLogger
         );
 
         $application = new Application();
@@ -57,6 +63,13 @@ class AnalyzeReviewsCommandTest extends TestCase
         $reflection = new \ReflectionProperty(RiddenCoaster::class, 'id');
         $reflection->setAccessible(true);
         $reflection->setValue($review, $id);
+
+        $user = new User();
+        $user->setDisplayName('Jane Doe');
+        $userIdReflection = new \ReflectionProperty(User::class, 'id');
+        $userIdReflection->setAccessible(true);
+        $userIdReflection->setValue($user, 1000 + $id);
+        $review->setUser($user);
 
         return $review;
     }
@@ -153,12 +166,54 @@ class AnalyzeReviewsCommandTest extends TestCase
         ]);
         $this->reviewReportRepository->method('hasUnresolvedAiReport')->with($review)->willReturn(false);
 
-        $this->entityManager->expects($this->atLeastOnce())->method('persist');
+        $persisted = [];
+        $this->entityManager->expects($this->atLeastOnce())
+            ->method('persist')
+            ->willReturnCallback(function ($entity) use (&$persisted): void {
+                $persisted[] = $entity;
+            });
         $this->entityManager->expects($this->atLeastOnce())->method('flush');
 
         $this->commandTester->execute([]);
 
         $this->assertSame(0, $this->commandTester->getStatusCode());
+
+        $reports = array_values(array_filter($persisted, static fn ($entity) => $entity instanceof ReviewReport));
+        $this->assertCount(1, $reports);
+        $this->assertSame('Jane Doe', $reports[0]->getReviewerName());
+        $this->assertSame(1099, $reports[0]->getReviewerId());
+    }
+
+    public function testFlushFailureForOneReviewDoesNotAbortTheBatch(): void
+    {
+        $review1 = $this->createPersistedReview(201, 'a fine review');
+        $review2 = $this->createPersistedReview(202, 'another fine review');
+
+        $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review1, $review2]);
+        $this->moderationService->method('analyze')->willReturn([
+            'language' => 'en',
+            'category' => 'ok',
+            'confidence' => 'high',
+            'explanation' => null,
+        ]);
+
+        $flushCallCount = 0;
+        $this->entityManager->method('flush')->willReturnCallback(function () use (&$flushCallCount): void {
+            ++$flushCallCount;
+            if (1 === $flushCallCount) {
+                throw new \RuntimeException('DB connectivity blip');
+            }
+        });
+
+        $this->moderationLogger->expects($this->once())->method('error');
+
+        $this->commandTester->execute([]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+        $this->assertStringContainsString('Review 201', $output);
+        $this->assertStringContainsString('Review 202', $output);
+        $this->assertSame(2, $flushCallCount);
     }
 
     public function testDryRunDoesNotPersist(): void
