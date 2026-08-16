@@ -39,7 +39,6 @@ class BedrockService
             'id' => 'global.openai.gpt-5.6-luna',
             'input_cost_per_1k' => 0.0002,
             'output_cost_per_1k' => 0.0012,
-            'reasoning_effort' => 'low',
         ],
     ];
 

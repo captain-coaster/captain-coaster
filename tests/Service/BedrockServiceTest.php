@@ -147,6 +147,18 @@ class BedrockServiceTest extends TestCase
         $this->assertArrayNotHasKey('additionalModelRequestFields', $bedrockClient->lastConverseArgs);
     }
 
+    public function testReasoningEffortIsOmittedForGpt56Luna(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-5.6-luna'));
+
+        $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.5);
+
+        $this->assertArrayNotHasKey('additionalModelRequestFields', $bedrockClient->lastConverseArgs);
+    }
+
     public function testStopReasonIsCapturedInMetadata(): void
     {
         $bedrockClient = $this->createConverseSpyClient();
