@@ -32,4 +32,23 @@ class ReviewTypeTest extends TestCase
         $this->assertSame(RiddenCoaster::class, $options['data_class']);
         $this->assertSame(['Default', 'review_text'], $options['validation_groups']);
     }
+
+    public function testLanguageFieldIsNotBuiltIntoTheForm(): void
+    {
+        $translator = $this->createMock(TranslatorInterface::class);
+        $reviewType = new ReviewType($translator);
+
+        $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
+        $addedFieldNames = [];
+        $builder->method('add')
+            ->willReturnCallback(function (string $name) use (&$addedFieldNames, $builder) {
+                $addedFieldNames[] = $name;
+
+                return $builder;
+            });
+
+        $reviewType->buildForm($builder, ['locales' => ['en', 'fr', 'es', 'de']]);
+
+        $this->assertNotContains('language', $addedFieldNames);
+    }
 }
