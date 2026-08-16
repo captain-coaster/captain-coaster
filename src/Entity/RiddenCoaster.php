@@ -81,6 +81,9 @@ class RiddenCoaster
     #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'language', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $moderatedAt = null;
+
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $riddenAt = null;
 
@@ -136,6 +139,10 @@ class RiddenCoaster
 
     public function setReview(?string $review): self
     {
+        if ($review !== $this->review) {
+            $this->moderatedAt = null;
+        }
+
         $this->review = $review;
 
         return $this;
@@ -314,5 +321,17 @@ class RiddenCoaster
     public function getRiddenAt(): ?\DateTimeInterface
     {
         return $this->riddenAt;
+    }
+
+    public function getModeratedAt(): ?\DateTimeInterface
+    {
+        return $this->moderatedAt;
+    }
+
+    public function setModeratedAt(?\DateTimeInterface $moderatedAt): self
+    {
+        $this->moderatedAt = $moderatedAt;
+
+        return $this;
     }
 }
