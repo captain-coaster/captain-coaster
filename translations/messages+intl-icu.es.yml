@@ -13,7 +13,7 @@ app:
     title:
         default: Bienvenido
     header:
-        search: 'Batman, Port Aventura...'
+        search: 'Tecuani Beast, Six Flags Mexico...'
     search:
         suggestions: 'Sugerencias de búsqueda'
         searching: 'Buscando...'
