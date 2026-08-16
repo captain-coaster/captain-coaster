@@ -153,4 +153,24 @@ class ReviewModerationServiceTest extends TestCase
 
         $this->assertNull($result);
     }
+
+    public function testAnalyzeAcceptsNotRiddenCategory(): void
+    {
+        $bedrockService = $this->createMock(BedrockService::class);
+        $bedrockService->method('invokeModel')->willReturn([
+            'success' => true,
+            'content' => '{"language":"en","category":"not_ridden","confidence":"high","explanation":"Reviewer only comments on appearance, no ride experience described."}',
+            'metadata' => [],
+        ]);
+
+        $service = new ReviewModerationService($bedrockService, $this->createMock(LoggerInterface::class));
+        $result = $service->analyze($this->createReview('it looks nice', 3.0));
+
+        $this->assertSame([
+            'language' => 'en',
+            'category' => 'not_ridden',
+            'confidence' => 'high',
+            'explanation' => 'Reviewer only comments on appearance, no ride experience described.',
+        ], $result);
+    }
 }

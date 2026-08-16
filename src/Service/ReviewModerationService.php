@@ -16,7 +16,7 @@ class ReviewModerationService
     private const MODEL_KEY = 'gpt-5.6-luna';
     private const MAX_TOKENS = 500;
 
-    private const VALID_CATEGORIES = ['ok', 'toxic', 'spam', 'troll', 'offtopic', 'other'];
+    private const VALID_CATEGORIES = ['ok', 'toxic', 'spam', 'troll', 'offtopic', 'not_ridden', 'other'];
     private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
 
     public function __construct(
@@ -85,6 +85,7 @@ class ReviewModerationService
         $prompt .= "   - \"spam\": promotional content, gibberish, or repeated/copy-pasted text.\n";
         $prompt .= "   - \"troll\": deliberately provocative, absurd, or bad-faith content, not a genuine review.\n";
         $prompt .= "   - \"offtopic\": not actually about the ride experience.\n";
+        $prompt .= "   - \"not_ridden\": the reviewer indicates they never actually rode the coaster, either explicitly (states they couldn't ride, e.g. physical restriction or closure) or implicitly (only comments on appearance/anticipation, no actual ride experience described).\n";
         $prompt .= "   - \"other\": clearly problematic but doesn't fit the categories above.\n";
         $prompt .= "3. Rate your confidence in the category as \"low\", \"medium\", or \"high\".\n";
         $prompt .= "4. If category is not \"ok\", give a one-sentence explanation in English for a human moderator. If category is \"ok\", explanation must be null.\n";
