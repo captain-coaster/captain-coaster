@@ -39,6 +39,7 @@ class RiddenCoaster
     private float $value = 0.0;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[CaptainConstraints\NoBlockedWords(groups: ['review_text'])]
     private ?string $review = null;
 
     #[ORM\Column(type: Types::STRING, length: 5)]
