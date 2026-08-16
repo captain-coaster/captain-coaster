@@ -59,7 +59,7 @@ class ReviewReportListener
                     ->addField(
                         (new DiscordFieldEmbedObject())
                             ->name('Reported by')
-                            ->value($reviewReport->getUser()->getDisplayName())
+                            ->value($reviewReport->getUser()?->getDisplayName() ?? '🤖 AI moderation')
                             ->inline(false)
                     )
             );
