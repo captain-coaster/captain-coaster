@@ -159,6 +159,31 @@ class BedrockServiceTest extends TestCase
         $this->assertArrayNotHasKey('additionalModelRequestFields', $bedrockClient->lastConverseArgs);
     }
 
+    public function testTemperatureIsOmittedForModelsThatDontSupportIt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-5.6-luna'));
+
+        $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.3);
+
+        $this->assertArrayNotHasKey('temperature', $bedrockClient->lastConverseArgs['inferenceConfig']);
+    }
+
+    public function testTemperatureIsSentForModelsThatSupportIt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('nova2-lite'));
+
+        $service->invokeModel('prompt', 'nova2-lite', 500, 0.5);
+
+        $this->assertArrayHasKey('temperature', $bedrockClient->lastConverseArgs['inferenceConfig']);
+        $this->assertSame(0.5, $bedrockClient->lastConverseArgs['inferenceConfig']['temperature']);
+    }
+
     public function testStopReasonIsCapturedInMetadata(): void
     {
         $bedrockClient = $this->createConverseSpyClient();

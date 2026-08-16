@@ -39,6 +39,7 @@ class BedrockService
             'id' => 'global.openai.gpt-5.6-luna',
             'input_cost_per_1k' => 0.0002,
             'output_cost_per_1k' => 0.0012,
+            'supports_temperature' => false,
         ],
     ];
 
@@ -57,7 +58,7 @@ class BedrockService
         $model = self::MODELS[$modelKey ?? $this->modelKey];
 
         try {
-            $requestBody = $this->buildConverseRequest($prompt, $maxTokens, $temperature, $model['reasoning_effort'] ?? null);
+            $requestBody = $this->buildConverseRequest($prompt, $maxTokens, $temperature, $model['reasoning_effort'] ?? null, $model['supports_temperature'] ?? true);
 
             $response = $this->bedrockClient->converse($requestBody + ['modelId' => $model['id']]);
 
@@ -247,8 +248,16 @@ class BedrockService
      *
      * @return array<string, mixed>
      */
-    private function buildConverseRequest(string $prompt, int $maxTokens, float $temperature, ?string $reasoningEffort = null): array
+    private function buildConverseRequest(string $prompt, int $maxTokens, float $temperature, ?string $reasoningEffort = null, bool $supportsTemperature = true): array
     {
+        $inferenceConfig = [
+            'maxTokens' => $maxTokens,
+        ];
+
+        if ($supportsTemperature) {
+            $inferenceConfig['temperature'] = $temperature;
+        }
+
         $request = [
             'messages' => [
                 [
@@ -258,10 +267,7 @@ class BedrockService
                     ],
                 ],
             ],
-            'inferenceConfig' => [
-                'maxTokens' => $maxTokens,
-                'temperature' => $temperature,
-            ],
+            'inferenceConfig' => $inferenceConfig,
         ];
 
         if (null !== $reasoningEffort) {
