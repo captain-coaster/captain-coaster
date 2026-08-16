@@ -11,8 +11,16 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class NoBlockedWordsValidator extends ConstraintValidator
 {
+    /**
+     * Injected via Symfony/MonologBundle's parameter-name channel autowiring:
+     * a constructor argument named "$moderationLogger" resolves to the
+     * "moderation" monolog channel (see config/packages/monolog.yaml),
+     * which has its own handler outside the main fingers_crossed buffer so
+     * these info-level records reach disk in prod instead of being
+     * silently discarded.
+     */
     public function __construct(
-        private readonly LoggerInterface $logger,
+        private readonly LoggerInterface $moderationLogger,
     ) {
     }
 
@@ -31,7 +39,13 @@ class NoBlockedWordsValidator extends ConstraintValidator
         }
 
         if (BlockedWordList::matches($value)) {
-            $this->logger->info('Review submission blocked: contains a blocked word', [
+            // The validator only ever sees the raw string value being
+            // validated (it has no access to the request, the entity, or
+            // the current user), so the log context is limited to the
+            // review text itself — there's no user_id/coaster_id available
+            // here without a larger refactor of how this constraint is
+            // invoked.
+            $this->moderationLogger->info('Review submission blocked: contains a blocked word', [
                 'review_text' => $value,
             ]);
 

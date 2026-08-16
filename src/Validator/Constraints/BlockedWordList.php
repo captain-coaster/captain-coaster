@@ -40,6 +40,15 @@ final class BlockedWordList
 
         $regex = '/\b(?:'.implode('|', self::PATTERNS).')\b/iu';
 
-        return 1 === preg_match($regex, $text);
+        $result = preg_match($regex, $text);
+
+        // preg_match() returns false (not 0) on malformed UTF-8 with the /u
+        // modifier. Fail closed (treat as blocked) rather than silently
+        // letting unparseable input through.
+        if (false === $result) {
+            return true;
+        }
+
+        return 1 === $result;
     }
 }

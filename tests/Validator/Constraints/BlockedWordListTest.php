@@ -73,4 +73,20 @@ class BlockedWordListTest extends TestCase
     {
         $this->assertFalse(BlockedWordList::matches($text));
     }
+
+    /**
+     * Regression test for the whole-branch review finding: preg_match()
+     * with the /u modifier returns false (not 0) on malformed UTF-8, and
+     * `1 === preg_match(...)` treats false the same as "no match" — a
+     * silent bypass. Malformed UTF-8 must fail closed (be treated as
+     * blocked) instead.
+     */
+    public function testMatchesReturnsTrueForMalformedUtf8(): void
+    {
+        // Lone continuation byte (0x80): invalid as a standalone UTF-8
+        // sequence, guaranteed to make preg_match() return false under /u.
+        $malformed = "This ride is great \x80\xFF";
+
+        $this->assertTrue(BlockedWordList::matches($malformed));
+    }
 }

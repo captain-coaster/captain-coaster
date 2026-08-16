@@ -108,6 +108,7 @@ class ReviewType extends AbstractType
             [
                 'data_class' => RiddenCoaster::class,
                 'locales' => [],
+                'validation_groups' => ['Default', 'review_text'],
             ]
         );
     }
