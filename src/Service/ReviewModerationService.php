@@ -36,7 +36,7 @@ class ReviewModerationService
 
     /**
      * @return array{language: string, category: string, confidence: ?string, explanation: ?string}|null
-     *               null means the caller should skip this review and let the next cron run retry it
+     *                                                                                                   null means the caller should skip this review and let the next cron run retry it
      */
     public function analyze(RiddenCoaster $review): ?array
     {
@@ -104,9 +104,7 @@ class ReviewModerationService
         return $prompt;
     }
 
-    /**
-     * @return array{language: string, category: string, confidence: ?string, explanation: ?string}|null
-     */
+    /** @return array{language: string, category: string, confidence: ?string, explanation: ?string}|null */
     private function parseResponse(string $response): ?array
     {
         try {
