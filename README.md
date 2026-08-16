@@ -60,10 +60,6 @@ The project uses a modular Docker Compose setup:
 -   `docker-compose.yml` - Base configuration with database services (MariaDB, Redis, Adminer)
 -   `docker-compose.full.yml` - Imports the base configuration and adds web services (nginx, PHP, Node)
 
-## API Documentation
-
-The API documentation is available at `/api/docs` when the application is running.
-
 ## Contributing
 
 1. Fork the repository
