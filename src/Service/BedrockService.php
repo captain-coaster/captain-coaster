@@ -28,11 +28,18 @@ class BedrockService
             'id' => 'openai.gpt-oss-120b-1:0',
             'input_cost_per_1k' => 0.00015,
             'output_cost_per_1k' => 0.0006,
+            'reasoning_effort' => 'low',
         ],
         'nova2-lite' => [
             'id' => 'global.amazon.nova-2-lite-v1:0',
             'input_cost_per_1k' => 0.0003,
             'output_cost_per_1k' => 0.0025,
+        ],
+        'gpt-5.6-luna' => [
+            'id' => 'global.openai.gpt-5.6-luna',
+            'input_cost_per_1k' => 0.0002,
+            'output_cost_per_1k' => 0.0012,
+            'reasoning_effort' => 'low',
         ],
     ];
 
@@ -46,17 +53,18 @@ class BedrockService
     }
 
     /** @return array{success: bool, content?: string, error?: string, error_code?: string|null, metadata: array<string, mixed>} */
-    public function invokeModel(string $prompt, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6, bool $enableReasoning = false): array
+    public function invokeModel(string $prompt, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6): array
     {
         $model = self::MODELS[$modelKey ?? $this->modelKey];
 
         try {
-            $requestBody = $this->buildConverseRequest($prompt, $maxTokens, $temperature, $enableReasoning);
+            $requestBody = $this->buildConverseRequest($prompt, $maxTokens, $temperature, $model['reasoning_effort'] ?? null);
 
             $response = $this->bedrockClient->converse($requestBody + ['modelId' => $model['id']]);
 
             $result = $response->toArray();
             $metadata = $result['@metadata'];
+            $stopReason = $result['stopReason'] ?? null;
 
             // Debug: Log the response structure to understand token location
             $this->logger->debug('Converse API response structure', [
@@ -83,6 +91,7 @@ class BedrockService
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
                 'cost_usd' => round($totalCost, 6),
+                'stop_reason' => $stopReason,
             ];
 
             // Log successful requests for monitoring
@@ -93,7 +102,7 @@ class BedrockService
                 'output_tokens' => $outputTokens,
                 'cost_usd' => round($totalCost, 6),
                 'latency_ms' => $latencyMs,
-                'enable_reasoning' => $enableReasoning,
+                'stop_reason' => $stopReason,
                 'prompt_length' => \strlen($prompt),
                 'response_length' => \strlen($this->parseConverseResponse($result)),
             ]);
@@ -104,6 +113,7 @@ class BedrockService
             if (empty($content)) {
                 $this->logger->warning('Bedrock returned empty content', [
                     'model' => $model['id'],
+                    'stop_reason' => $stopReason,
                     'result_structure' => json_encode($result, \JSON_PRETTY_PRINT),
                 ]);
             }
@@ -124,7 +134,6 @@ class BedrockService
                 'request_id' => $e->getAwsRequestId(),
                 'max_tokens' => $maxTokens,
                 'temperature' => $temperature,
-                'enable_reasoning' => $enableReasoning,
                 'prompt_length' => \strlen($prompt),
                 'http_status_code' => $e->getStatusCode(),
                 'region' => $this->bedrockClient->getRegion(),
@@ -187,7 +196,6 @@ class BedrockService
                 'prompt_length' => \strlen($prompt),
                 'max_tokens' => $maxTokens,
                 'temperature' => $temperature,
-                'enable_reasoning' => $enableReasoning,
                 'request_body' => json_encode($requestBody, \JSON_PRETTY_PRINT),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -211,7 +219,6 @@ class BedrockService
                 'prompt_length' => \strlen($prompt),
                 'max_tokens' => $maxTokens,
                 'temperature' => $temperature,
-                'enable_reasoning' => $enableReasoning,
                 'request_body' => json_encode($requestBody, \JSON_PRETTY_PRINT),
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
@@ -241,7 +248,7 @@ class BedrockService
      *
      * @return array<string, mixed>
      */
-    private function buildConverseRequest(string $prompt, int $maxTokens, float $temperature, bool $enableReasoning = false): array
+    private function buildConverseRequest(string $prompt, int $maxTokens, float $temperature, ?string $reasoningEffort = null): array
     {
         $request = [
             'messages' => [
@@ -258,16 +265,11 @@ class BedrockService
             ],
         ];
 
-        // Note: Reasoning configuration may not be supported via Converse API for Nova 2 Lite
-        // Keeping this disabled until AWS documentation confirms the correct format
-        // if ($enableReasoning) {
-        //     $request['additionalModelRequestFields'] = [
-        //         'reasoningConfig' => [
-        //             'type' => 'enabled',
-        //             'maxReasoningEffort' => 'medium',
-        //         ],
-        //     ];
-        // }
+        if (null !== $reasoningEffort) {
+            $request['additionalModelRequestFields'] = [
+                'reasoning_effort' => $reasoningEffort,
+            ];
+        }
 
         return $request;
     }
@@ -289,8 +291,7 @@ class BedrockService
             }
         }
 
-        // Fallback to original logic
-        return $result['output']['message']['content'][0]['text'] ?? '';
+        return '';
     }
 
     /** Provides specific guidance based on AWS error codes */

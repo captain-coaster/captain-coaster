@@ -188,7 +188,7 @@ class CoasterSummaryService
         $coaster = $reviews[0]->getCoaster();
 
         $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language);
-        $response = $this->bedrockService->invokeModel($prompt, $modelKey, 1000, 0.5, true);
+        $response = $this->bedrockService->invokeModel($prompt, $modelKey, 2000, 0.5);
 
         if (!$response['success']) {
             $this->logger->error('Bedrock service error', [
