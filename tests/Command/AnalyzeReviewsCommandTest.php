@@ -15,7 +15,6 @@ use App\Service\ReviewModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -25,7 +24,6 @@ class AnalyzeReviewsCommandTest extends TestCase
     private ReviewModerationService&MockObject $moderationService;
     private ReviewReportRepository&MockObject $reviewReportRepository;
     private EntityManagerInterface&MockObject $entityManager;
-    private LoggerInterface&MockObject $moderationLogger;
     private CommandTester $commandTester;
 
     protected function setUp(): void
@@ -34,14 +32,12 @@ class AnalyzeReviewsCommandTest extends TestCase
         $this->moderationService = $this->createMock(ReviewModerationService::class);
         $this->reviewReportRepository = $this->createMock(ReviewReportRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->moderationLogger = $this->createMock(LoggerInterface::class);
 
         $command = new AnalyzeReviewsCommand(
             $this->riddenCoasterRepository,
             $this->moderationService,
             $this->reviewReportRepository,
-            $this->entityManager,
-            $this->moderationLogger
+            $this->entityManager
         );
 
         $application = new Application();
@@ -184,17 +180,24 @@ class AnalyzeReviewsCommandTest extends TestCase
         $this->assertSame(1099, $reports[0]->getReviewerId());
     }
 
-    public function testFlushFailureForOneReviewDoesNotAbortTheBatch(): void
+    /**
+     * Deliberately simple, no per-review error isolation: if persisting one
+     * review's result fails, the exception propagates and the whole command
+     * invocation fails. The entire batch (including reviews that would have
+     * succeeded) retries on the next cron tick — acceptable since this is a
+     * rare failure (e.g. a Discord webhook blip from ReviewReportListener)
+     * whose fallback is just "try again in 5-15 minutes," no data loss.
+     *
+     * A per-review isolation attempt was tried and reverted: clearing the
+     * EntityManager mid-loop over the single upfront-fetched $reviews array
+     * left every subsequent review "detached" and unpersistable — a worse
+     * failure mode than this simple one. Not worth the added complexity.
+     */
+    public function testFlushFailurePropagatesAndAbortsTheCommand(): void
     {
-        $review1 = $this->createPersistedReview(201, 'a fine review');
-        $review2 = $this->createPersistedReview(202, 'another fine review');
+        $review = $this->createPersistedReview(201, 'a fine review');
 
-        $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review1, $review2]);
-        // Both reviews are flagged (category=toxic) so each would increment $flagged
-        // inside the try block, before flush() runs. review1's flush throws; review2's
-        // succeeds. This lets us assert that a failed flush does NOT leave its report
-        // counted in the final summary (Fix 2), and that the failed review's UnitOfWork
-        // state is cleared before moving on (Fix 1).
+        $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review]);
         $this->moderationService->method('analyze')->willReturn([
             'language' => 'en',
             'category' => 'toxic',
@@ -202,26 +205,12 @@ class AnalyzeReviewsCommandTest extends TestCase
             'explanation' => 'Pure insult, no substance.',
         ]);
         $this->reviewReportRepository->method('hasUnresolvedAiReport')->willReturn(false);
+        $this->entityManager->method('flush')->willThrowException(new \RuntimeException('DB connectivity blip'));
 
-        $flushCallCount = 0;
-        $this->entityManager->method('flush')->willReturnCallback(function () use (&$flushCallCount): void {
-            ++$flushCallCount;
-            if (1 === $flushCallCount) {
-                throw new \RuntimeException('DB connectivity blip');
-            }
-        });
-
-        $this->moderationLogger->expects($this->once())->method('error');
-        $this->entityManager->expects($this->once())->method('clear');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('DB connectivity blip');
 
         $this->commandTester->execute([]);
-
-        $output = $this->commandTester->getDisplay();
-        $this->assertSame(0, $this->commandTester->getStatusCode());
-        $this->assertStringContainsString('Review 201', $output);
-        $this->assertStringContainsString('Review 202', $output);
-        $this->assertSame(2, $flushCallCount);
-        $this->assertStringContainsString('Analyzed 2 review(s), 1 flagged.', $output);
     }
 
     public function testDryRunDoesNotPersist(): void

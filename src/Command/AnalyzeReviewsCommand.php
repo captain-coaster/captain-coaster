@@ -11,7 +11,6 @@ use App\Repository\ReviewReportRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewModerationService;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,6 +25,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * By default, processes reviews created or edited in the last --since
  * minutes and persists moderatedAt/language plus a ReviewReport for any
  * flagged review. --sample/--text remain dry-run calibration modes.
+ *
+ * If persisting one review's result fails (e.g. a transient Discord webhook
+ * or DB error), the whole command invocation fails and the entire batch
+ * retries on the next cron tick — deliberately simple, no per-review error
+ * isolation. That would need careful handling of Doctrine's identity map
+ * across the loop (a first attempt at it introduced a worse bug: clearing
+ * the EntityManager mid-loop over the single upfront-fetched $reviews array
+ * left every subsequent review "detached" and unpersistable). Not worth the
+ * complexity for a rare failure whose fallback (retry next run, 5-15 min
+ * later, no data loss) is already fine.
  */
 #[AsCommand(
     name: 'app:analyze-reviews',
@@ -33,20 +42,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class AnalyzeReviewsCommand extends Command
 {
-    /**
-     * $moderationLogger is injected via Symfony/MonologBundle's parameter-name
-     * channel autowiring: a constructor argument named "$moderationLogger"
-     * resolves to the "moderation" monolog channel (see
-     * config/packages/monolog.yaml), which has its own handler outside the
-     * main fingers_crossed buffer so these error-level records reach disk
-     * in prod instead of being silently discarded.
-     */
     public function __construct(
         private RiddenCoasterRepository $riddenCoasterRepository,
         private ReviewModerationService $moderationService,
         private ReviewReportRepository $reviewReportRepository,
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $moderationLogger
+        private EntityManagerInterface $entityManager
     ) {
         parent::__construct();
     }
@@ -144,47 +144,31 @@ class AnalyzeReviewsCommand extends Command
                 continue;
             }
 
-            $isFlagged = false;
+            $review->setLanguage($result['language']);
+            $review->setModeratedAt(new \DateTime());
+            $this->entityManager->persist($review);
 
-            try {
-                $review->setLanguage($result['language']);
-                $review->setModeratedAt(new \DateTime());
-                $this->entityManager->persist($review);
-
-                if ('ok' !== $result['category']) {
-                    if ($this->reviewReportRepository->hasUnresolvedAiReport($review)) {
-                        $io->writeln('    → already has a pending AI report for this review, skipping duplicate');
-                    } else {
-                        $report = new ReviewReport();
-                        $report->setReview($review);
-                        $report->setUser(null);
-                        $report->setReason($result['category']);
-                        $report->setReviewContent($review->getReview());
-                        $report->setCoasterName($review->getCoaster()->getName());
-                        $report->setReviewerName($review->getUser()->getDisplayName());
-                        $report->setReviewerId($review->getUser()->getId());
-                        $report->setRatingValue($review->getValue());
-                        $report->setAiConfidence($result['confidence']);
-                        $report->setAiExplanation($result['explanation']);
-                        $this->entityManager->persist($report);
-                        $isFlagged = true;
-                    }
-                }
-
-                $this->entityManager->flush();
-
-                if ($isFlagged) {
+            if ('ok' !== $result['category']) {
+                if ($this->reviewReportRepository->hasUnresolvedAiReport($review)) {
+                    $io->writeln('    → already has a pending AI report for this review, skipping duplicate');
+                } else {
+                    $report = new ReviewReport();
+                    $report->setReview($review);
+                    $report->setUser(null);
+                    $report->setReason($result['category']);
+                    $report->setReviewContent($review->getReview());
+                    $report->setCoasterName($review->getCoaster()->getName());
+                    $report->setReviewerName($review->getUser()->getDisplayName());
+                    $report->setReviewerId($review->getUser()->getId());
+                    $report->setRatingValue($review->getValue());
+                    $report->setAiConfidence($result['confidence']);
+                    $report->setAiExplanation($result['explanation']);
+                    $this->entityManager->persist($report);
                     ++$flagged;
                 }
-            } catch (\Throwable $e) {
-                $this->moderationLogger->error('Failed to persist moderation result for review', [
-                    'review_id' => $review->getId(),
-                    'exception' => $e->getMessage(),
-                ]);
-                $io->writeln("  ⚠ Review {$review->getId()}: failed to save moderation result, skipping (will retry next run)");
-                $this->entityManager->clear();
-                continue;
             }
+
+            $this->entityManager->flush();
         }
 
         $io->success(\sprintf('Analyzed %d review(s), %d flagged.', $processed, $flagged));
