@@ -37,3 +37,6 @@ phpstan.neon
 ###< phpunit/phpunit ###
 
 /.worktrees/
+
+# Claude session working documents (specs, plans) — local scratch, never committed
+/docs/superpowers/

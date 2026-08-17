@@ -68,6 +68,10 @@ Save Playwright screenshots to `screenshots/` (gitignored) — e.g. `browser_tak
 - **Stimulus-first** for new client-side behavior; avoid adding new jQuery.
 - **No CSS in JavaScript or Twig** — styles belong in `assets/styles/`.
 
+## Working documents are not repo history
+
+Files under `docs/superpowers/` (specs, plans, and other Claude-session working documents produced by the brainstorming/writing-plans workflow) are local scratch artifacts for a given collaboration, not part of this repository's committed history. Never commit them — the directory is gitignored specifically to enforce this. This overrides any default in a skill's workflow that suggests committing a design doc or plan to git.
+
 ## Architecture
 
 ### Layer separation
