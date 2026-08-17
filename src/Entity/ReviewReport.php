@@ -16,10 +16,20 @@ class ReviewReport
 {
     public const REASON_INAPPROPRIATE = 'inappropriate';
     public const REASON_SPAM = 'spam';
+    public const REASON_TROLL = 'troll';
+    public const REASON_TOXIC = 'toxic';
+    public const REASON_OFFTOPIC = 'offtopic';
+    public const REASON_NOT_RIDDEN = 'not_ridden';
+    public const REASON_OTHER = 'other';
 
     public const REASONS = [
         self::REASON_INAPPROPRIATE,
         self::REASON_SPAM,
+        self::REASON_TROLL,
+        self::REASON_TOXIC,
+        self::REASON_OFFTOPIC,
+        self::REASON_NOT_RIDDEN,
+        self::REASON_OTHER,
     ];
 
     public const STATUS_PENDING = 'pending';
@@ -40,7 +50,7 @@ class ReviewReport
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: RiddenCoaster::class, inversedBy: 'reports')]
@@ -77,6 +87,12 @@ class ReviewReport
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $resolvedAt = null;
+
+    #[ORM\Column(type: Types::STRING, length: 10, nullable: true)]
+    private ?string $aiConfidence = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $aiExplanation = null;
 
     public function getId(): ?int
     {
@@ -181,6 +197,30 @@ class ReviewReport
     public function setResolvedAt(?\DateTimeInterface $resolvedAt): self
     {
         $this->resolvedAt = $resolvedAt;
+
+        return $this;
+    }
+
+    public function getAiConfidence(): ?string
+    {
+        return $this->aiConfidence;
+    }
+
+    public function setAiConfidence(?string $aiConfidence): self
+    {
+        $this->aiConfidence = $aiConfidence;
+
+        return $this;
+    }
+
+    public function getAiExplanation(): ?string
+    {
+        return $this->aiExplanation;
+    }
+
+    public function setAiExplanation(?string $aiExplanation): self
+    {
+        $this->aiExplanation = $aiExplanation;
 
         return $this;
     }

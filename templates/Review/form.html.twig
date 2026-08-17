@@ -70,15 +70,6 @@
         {{ form_widget(form.review, {'attr': {'class': 'form-control', 'cols': '5', 'rows': '5'}}) }}
         {{ form_errors(form.review) }}
       </div>
-      <div class="form-group">
-        {{ form_label(form.language, "", {'label_attr': {'class': 'control-label'}}) }}
-        {{ form_widget(form.language, {
-          'attr': {
-            'data-controller': 'enhanced-select',
-            'data-enhanced-select-placeholder-value': 'Select language...'
-          }
-        }) }}
-      </div>
       <div class="text-right">
         <button type="submit" class="btn btn-primary">
           {{ 'review.send'|trans }}

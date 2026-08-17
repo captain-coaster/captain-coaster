@@ -145,7 +145,13 @@ class ReviewReportCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             AssociationField::new('user', 'Reporter')
                 ->autocomplete()
-                ->formatValue(static fn ($value, $entity) => $entity?->getUser()?->getDisplayName() ?? '[Deleted]'),
+                ->formatValue(static function ($value, $entity) {
+                    if (!$entity instanceof ReviewReport) {
+                        return '[Deleted]';
+                    }
+
+                    return $entity->getUser()?->getDisplayName() ?? '🤖 AI moderation';
+                }),
             TextField::new('displayReviewerName', 'Reviewer')
                 ->hideOnForm()
                 ->formatValue(function ($value, $entity) {
@@ -173,10 +179,20 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->setChoices([
                     'Inappropriate language' => ReviewReport::REASON_INAPPROPRIATE,
                     'Spam' => ReviewReport::REASON_SPAM,
+                    'Troll' => ReviewReport::REASON_TROLL,
+                    'Toxic' => ReviewReport::REASON_TOXIC,
+                    'Off-topic' => ReviewReport::REASON_OFFTOPIC,
+                    'Not ridden' => ReviewReport::REASON_NOT_RIDDEN,
+                    'Other' => ReviewReport::REASON_OTHER,
                 ])
                 ->renderAsBadges([
                     ReviewReport::REASON_INAPPROPRIATE => 'warning',
                     ReviewReport::REASON_SPAM => 'danger',
+                    ReviewReport::REASON_TROLL => 'dark',
+                    ReviewReport::REASON_TOXIC => 'danger',
+                    ReviewReport::REASON_OFFTOPIC => 'secondary',
+                    ReviewReport::REASON_NOT_RIDDEN => 'info',
+                    ReviewReport::REASON_OTHER => 'secondary',
                 ]),
             NumberField::new('displayRating', 'Rating')
                 ->hideOnForm()
@@ -229,6 +245,15 @@ class ReviewReportCrudController extends AbstractCrudController
             $fields[] = DateTimeField::new('resolvedAt', 'Resolved At')
                 ->setFormat('MMM d, yyyy HH:mm')
                 ->setDisabled();
+        }
+
+        if (Crud::PAGE_DETAIL === $pageName) {
+            $fields[] = TextField::new('aiConfidence', 'AI Confidence')
+                ->setDisabled()
+                ->formatValue(static fn ($value) => $value ?? '—');
+            $fields[] = TextareaField::new('aiExplanation', 'AI Explanation')
+                ->hideOnForm()
+                ->formatValue(static fn ($value) => $value ?? '—');
         }
 
         return $fields;

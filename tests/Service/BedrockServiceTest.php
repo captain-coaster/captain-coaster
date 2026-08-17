@@ -13,6 +13,17 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
+ * Documents the `setMockResult()` method on the anonymous `BedrockRuntimeClient`
+ * subclass `createConverseSpyClient()` returns, so PHPStan can type-check calls
+ * to it (the public `lastConverseArgs` property is described separately via an
+ * inline object-shape PHPDoc, since object shapes cover real properties fine).
+ */
+interface ConverseSpyClient
+{
+    public function setMockResult(Result $result): void;
+}
+
+/**
  * **Feature: coaster-summary-refactor, Property 3: Unified Bedrock API Interface**
  *
  * Tests that the BedrockService uses the same Converse API request format
@@ -40,29 +51,7 @@ class BedrockServiceTest extends TestCase
             Generator\float(0.0, 1.0) // @phpstan-ignore-line
         )
         ->then(function (string $model, string $prompt, int $maxTokens, float $temperature) {
-            // Create an anonymous class extending BedrockRuntimeClient to mock converse()
-            $bedrockClient = new class extends BedrockRuntimeClient {
-                /** @var array<string, mixed>|null */
-                public ?array $lastConverseArgs = null;
-                private Result $mockResult;
-
-                public function __construct()
-                {
-                    // Skip parent constructor - we don't need actual AWS connection
-                }
-
-                public function setMockResult(Result $result): void
-                {
-                    $this->mockResult = $result;
-                }
-
-                public function converse(array $args = []): Result
-                {
-                    $this->lastConverseArgs = $args;
-
-                    return $this->mockResult;
-                }
-            };
+            $bedrockClient = $this->createConverseSpyClient();
 
             $logger = $this->createMock(LoggerInterface::class);
             $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
@@ -129,5 +118,124 @@ class BedrockServiceTest extends TestCase
         $mockResult->method('toArray')->willReturn($responseData);
 
         return $mockResult;
+    }
+
+    public function testReasoningEffortIsSentForModelsThatSupportIt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-oss-120b'));
+
+        $service->invokeModel('prompt', 'gpt-oss-120b', 500, 0.5);
+
+        $this->assertSame(
+            ['reasoning_effort' => 'low'],
+            $bedrockClient->lastConverseArgs['additionalModelRequestFields'] ?? null
+        );
+    }
+
+    public function testReasoningEffortIsOmittedForModelsThatDontSupportIt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('nova2-lite'));
+
+        $service->invokeModel('prompt', 'nova2-lite', 500, 0.5);
+
+        $this->assertArrayNotHasKey('additionalModelRequestFields', $bedrockClient->lastConverseArgs);
+    }
+
+    public function testReasoningEffortIsOmittedForGpt56Luna(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-5.6-luna'));
+
+        $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.5);
+
+        $this->assertArrayNotHasKey('additionalModelRequestFields', $bedrockClient->lastConverseArgs);
+    }
+
+    public function testTemperatureIsOmittedForModelsThatDontSupportIt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-5.6-luna'));
+
+        $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.3);
+
+        $this->assertArrayNotHasKey('temperature', $bedrockClient->lastConverseArgs['inferenceConfig']);
+    }
+
+    public function testTemperatureIsSentForModelsThatSupportIt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('nova2-lite'));
+
+        $service->invokeModel('prompt', 'nova2-lite', 500, 0.5);
+
+        $this->assertArrayHasKey('temperature', $bedrockClient->lastConverseArgs['inferenceConfig']);
+        $this->assertSame(0.5, $bedrockClient->lastConverseArgs['inferenceConfig']['temperature']);
+    }
+
+    public function testStopReasonIsCapturedInMetadata(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+
+        $mockResult = $this->createMock(Result::class);
+        $mockResult->method('toArray')->willReturn([
+            'output' => ['message' => ['content' => [['text' => '']]]],
+            'usage' => ['inputTokens' => 900, 'outputTokens' => 1000],
+            'stopReason' => 'max_tokens',
+            '@metadata' => ['headers' => []],
+        ]);
+        $bedrockClient->setMockResult($mockResult);
+
+        $result = $service->invokeModel('prompt', 'gpt-oss-120b', 1000, 0.5);
+
+        $this->assertSame('max_tokens', $result['metadata']['stop_reason']);
+    }
+
+    public function testInvokeModelHasNoEnableReasoningParameter(): void
+    {
+        $reflection = new \ReflectionMethod(BedrockService::class, 'invokeModel');
+        $paramNames = array_map(static fn (\ReflectionParameter $p) => $p->getName(), $reflection->getParameters());
+
+        $this->assertNotContains('enableReasoning', $paramNames);
+        $this->assertCount(4, $paramNames);
+    }
+
+    /** @return BedrockRuntimeClient&ConverseSpyClient&object{lastConverseArgs: ?array<string, mixed>} */
+    private function createConverseSpyClient(): BedrockRuntimeClient
+    {
+        return new class extends BedrockRuntimeClient implements ConverseSpyClient {
+            /** @var array<string, mixed>|null */
+            public ?array $lastConverseArgs = null;
+            private Result $mockResult;
+
+            public function __construct()
+            {
+            }
+
+            public function setMockResult(Result $result): void
+            {
+                $this->mockResult = $result;
+            }
+
+            public function converse(array $args = []): Result
+            {
+                $this->lastConverseArgs = $args;
+
+                return $this->mockResult;
+            }
+        };
     }
 }

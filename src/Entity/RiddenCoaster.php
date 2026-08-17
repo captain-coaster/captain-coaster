@@ -15,6 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
+#[ORM\Index(name: 'idx_ridden_coaster_moderated_at', columns: ['moderated_at'])]
 #[ORM\Entity(repositoryClass: RiddenCoasterRepository::class)]
 #[UniqueEntity(['coaster', 'user'])]
 #[CaptainConstraints\ValidRideDate]
@@ -78,8 +79,11 @@ class RiddenCoaster
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'language', 'pros', 'cons'])]
+    #[Gedmo\Timestampable(on: 'change', field: ['value', 'review', 'pros', 'cons'])]
     private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $moderatedAt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $riddenAt = null;
@@ -136,6 +140,10 @@ class RiddenCoaster
 
     public function setReview(?string $review): self
     {
+        if ($review !== $this->review) {
+            $this->moderatedAt = null;
+        }
+
         $this->review = $review;
 
         return $this;
@@ -314,5 +322,17 @@ class RiddenCoaster
     public function getRiddenAt(): ?\DateTimeInterface
     {
         return $this->riddenAt;
+    }
+
+    public function getModeratedAt(): ?\DateTimeInterface
+    {
+        return $this->moderatedAt;
+    }
+
+    public function setModeratedAt(?\DateTimeInterface $moderatedAt): self
+    {
+        $this->moderatedAt = $moderatedAt;
+
+        return $this;
     }
 }
