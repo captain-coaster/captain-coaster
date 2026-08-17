@@ -190,12 +190,18 @@ class AnalyzeReviewsCommandTest extends TestCase
         $review2 = $this->createPersistedReview(202, 'another fine review');
 
         $this->riddenCoasterRepository->method('findPendingAnalysis')->willReturn([$review1, $review2]);
+        // Both reviews are flagged (category=toxic) so each would increment $flagged
+        // inside the try block, before flush() runs. review1's flush throws; review2's
+        // succeeds. This lets us assert that a failed flush does NOT leave its report
+        // counted in the final summary (Fix 2), and that the failed review's UnitOfWork
+        // state is cleared before moving on (Fix 1).
         $this->moderationService->method('analyze')->willReturn([
             'language' => 'en',
-            'category' => 'ok',
+            'category' => 'toxic',
             'confidence' => 'high',
-            'explanation' => null,
+            'explanation' => 'Pure insult, no substance.',
         ]);
+        $this->reviewReportRepository->method('hasUnresolvedAiReport')->willReturn(false);
 
         $flushCallCount = 0;
         $this->entityManager->method('flush')->willReturnCallback(function () use (&$flushCallCount): void {
@@ -206,6 +212,7 @@ class AnalyzeReviewsCommandTest extends TestCase
         });
 
         $this->moderationLogger->expects($this->once())->method('error');
+        $this->entityManager->expects($this->once())->method('clear');
 
         $this->commandTester->execute([]);
 
@@ -214,6 +221,7 @@ class AnalyzeReviewsCommandTest extends TestCase
         $this->assertStringContainsString('Review 201', $output);
         $this->assertStringContainsString('Review 202', $output);
         $this->assertSame(2, $flushCallCount);
+        $this->assertStringContainsString('Analyzed 2 review(s), 1 flagged.', $output);
     }
 
     public function testDryRunDoesNotPersist(): void

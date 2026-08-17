@@ -144,6 +144,8 @@ class AnalyzeReviewsCommand extends Command
                 continue;
             }
 
+            $isFlagged = false;
+
             try {
                 $review->setLanguage($result['language']);
                 $review->setModeratedAt(new \DateTime());
@@ -165,17 +167,22 @@ class AnalyzeReviewsCommand extends Command
                         $report->setAiConfidence($result['confidence']);
                         $report->setAiExplanation($result['explanation']);
                         $this->entityManager->persist($report);
-                        ++$flagged;
+                        $isFlagged = true;
                     }
                 }
 
                 $this->entityManager->flush();
+
+                if ($isFlagged) {
+                    ++$flagged;
+                }
             } catch (\Throwable $e) {
                 $this->moderationLogger->error('Failed to persist moderation result for review', [
                     'review_id' => $review->getId(),
                     'exception' => $e->getMessage(),
                 ]);
                 $io->writeln("  ⚠ Review {$review->getId()}: failed to save moderation result, skipping (will retry next run)");
+                $this->entityManager->clear();
                 continue;
             }
         }
