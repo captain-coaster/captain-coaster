@@ -26,15 +26,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * minutes and persists moderatedAt/language plus a ReviewReport for any
  * flagged review. --sample/--text remain dry-run calibration modes.
  *
- * If persisting one review's result fails (e.g. a transient Discord webhook
- * or DB error), the whole command invocation fails and the entire batch
- * retries on the next cron tick — deliberately simple, no per-review error
- * isolation. That would need careful handling of Doctrine's identity map
- * across the loop (a first attempt at it introduced a worse bug: clearing
- * the EntityManager mid-loop over the single upfront-fetched $reviews array
- * left every subsequent review "detached" and unpersistable). Not worth the
- * complexity for a rare failure whose fallback (retry next run, 5-15 min
- * later, no data loss) is already fine.
+ * No per-review error isolation: a flush failure aborts the whole run and
+ * the batch retries next cron tick. Deliberate — see testFlushFailurePropagatesAndAbortsTheCommand.
  */
 #[AsCommand(
     name: 'app:analyze-reviews',

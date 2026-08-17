@@ -181,17 +181,7 @@ class AnalyzeReviewsCommandTest extends TestCase
     }
 
     /**
-     * Deliberately simple, no per-review error isolation: if persisting one
-     * review's result fails, the exception propagates and the whole command
-     * invocation fails. The entire batch (including reviews that would have
-     * succeeded) retries on the next cron tick — acceptable since this is a
-     * rare failure (e.g. a Discord webhook blip from ReviewReportListener)
-     * whose fallback is just "try again in 5-15 minutes," no data loss.
-     *
-     * A per-review isolation attempt was tried and reverted: clearing the
-     * EntityManager mid-loop over the single upfront-fetched $reviews array
-     * left every subsequent review "detached" and unpersistable — a worse
-     * failure mode than this simple one. Not worth the added complexity.
+     * A flush failure aborts the whole command; no per-review isolation.
      */
     public function testFlushFailurePropagatesAndAbortsTheCommand(): void
     {
