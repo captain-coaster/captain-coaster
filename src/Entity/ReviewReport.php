@@ -34,12 +34,14 @@ class ReviewReport
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_REVIEW_DELETED = 'review_deleted';
+    public const STATUS_REVIEW_TEXT_CLEARED = 'review_text_cleared';
     public const STATUS_USER_BANNED = 'user_banned';
     public const STATUS_NO_ACTION = 'no_action';
 
     public const STATUSES = [
         self::STATUS_PENDING,
         self::STATUS_REVIEW_DELETED,
+        self::STATUS_REVIEW_TEXT_CLEARED,
         self::STATUS_USER_BANNED,
         self::STATUS_NO_ACTION,
     ];
