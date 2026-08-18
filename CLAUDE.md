@@ -67,6 +67,7 @@ Save Playwright screenshots to `screenshots/` (gitignored) — e.g. `browser_tak
 - **Mobile-first**: ~75% of usage is mobile, ~25% desktop. Desktop is secondary but must stay functional.
 - **Stimulus-first** for new client-side behavior; avoid adding new jQuery.
 - **No CSS in JavaScript or Twig** — styles belong in `assets/styles/`.
+- **Terse code comments and PR descriptions.** No narration of the development process (what was tried, reverted, or caught in review), no restating what a diff already shows. A PR description states what changed, why, and what a reviewer needs to know — not a session log.
 
 ## Working documents are not repo history
 
