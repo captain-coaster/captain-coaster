@@ -88,6 +88,12 @@ class ReviewReportCrudController extends AbstractCrudController
                         ->displayIf(static fn ($entity) => null !== $entity->getReview())
                 )
                 ->addAction(
+                    Action::new('clearReviewText', 'Clear Review Text', 'fa fa-eraser')
+                        ->linkToCrudAction('clearReviewTextAction')
+                        ->addCssClass('text-warning')
+                        ->displayIf(static fn ($entity) => null !== $entity->getReview() && null !== $entity->getReview()->getReview())
+                )
+                ->addAction(
                     Action::new('disableUser', 'Ban User', 'fa fa-user-slash')
                         ->linkToCrudAction('disableUserAction')
                         ->addCssClass('text-warning')
@@ -226,12 +232,14 @@ class ReviewReportCrudController extends AbstractCrudController
             ->setChoices([
                 'Pending' => ReviewReport::STATUS_PENDING,
                 'Review Deleted' => ReviewReport::STATUS_REVIEW_DELETED,
+                'Review Text Cleared' => ReviewReport::STATUS_REVIEW_TEXT_CLEARED,
                 'User Banned' => ReviewReport::STATUS_USER_BANNED,
                 'No Action' => ReviewReport::STATUS_NO_ACTION,
             ])
             ->renderAsBadges([
                 ReviewReport::STATUS_PENDING => 'warning',
                 ReviewReport::STATUS_REVIEW_DELETED => 'danger',
+                ReviewReport::STATUS_REVIEW_TEXT_CLEARED => 'warning',
                 ReviewReport::STATUS_USER_BANNED => 'dark',
                 ReviewReport::STATUS_NO_ACTION => 'success',
             ])
@@ -302,6 +310,57 @@ class ReviewReportCrudController extends AbstractCrudController
 
         $this->addFlash('success', \sprintf(
             'Review by %s for %s has been deleted and %d report(s) marked as review deleted.',
+            $reviewerName,
+            $coasterName,
+            \count($relatedReports)
+        ));
+
+        return $this->redirectToIndex();
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    public function clearReviewTextAction(AdminContext $context): Response
+    {
+        /** @var ReviewReport $contextReport */
+        $contextReport = $context->getEntity()->getInstance();
+
+        // Re-fetch the entity to ensure it's managed
+        $reviewReport = $this->entityManager->find(ReviewReport::class, $contextReport->getId());
+        if (!$reviewReport) {
+            $this->addFlash('error', 'Report not found.');
+
+            return $this->redirectToIndex();
+        }
+
+        if (ReviewReport::STATUS_PENDING !== $reviewReport->getStatus()) {
+            $this->addFlash('error', 'This report has already been processed.');
+
+            return $this->redirectToIndex();
+        }
+
+        $review = $reviewReport->getReview();
+        if (!$review) {
+            $this->addFlash('error', 'The review has already been deleted.');
+
+            return $this->redirectToIndex();
+        }
+
+        $coasterName = $review->getCoaster()->getName() ?? 'Unknown';
+        $reviewerName = $review->getUser()->getDisplayName() ?? 'Unknown';
+
+        // Clear the text only — the rating stays intact and keeps contributing to the ranking
+        $review->setReview(null);
+        $this->entityManager->persist($review);
+
+        $relatedReports = $this->reportRepository->findPendingReportsForReview($review);
+        foreach ($relatedReports as $report) {
+            $report->setStatus(ReviewReport::STATUS_REVIEW_TEXT_CLEARED);
+        }
+
+        $this->entityManager->flush();
+
+        $this->addFlash('success', \sprintf(
+            'Review text by %s for %s has been cleared (rating kept) and %d report(s) marked accordingly.',
             $reviewerName,
             $coasterName,
             \count($relatedReports)
