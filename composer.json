@@ -30,7 +30,7 @@
         "symfony/cache": "7.*",
         "symfony/discord-notifier": "7.*",
         "symfony/dom-crawler": "7.*",
-        "symfony/dotenv": "7.*",
+        "symfony/dotenv": "8.*",
         "symfony/expression-language": "7.*",
         "symfony/flex": "^2.0",
         "symfony/form": "7.*",
