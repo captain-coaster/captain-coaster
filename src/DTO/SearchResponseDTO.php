@@ -6,9 +6,6 @@ namespace App\DTO;
 
 class SearchResponseDTO
 {
-    /** @var array<string, mixed> */
-    public array $debug = [];
-
     /**
      * @param array<string, array<SearchResultDTO>> $results
      * @param array<string, int>                    $totalResults
@@ -32,18 +29,11 @@ class SearchResponseDTO
             );
         }
 
-        $response = [
+        return [
             'query' => $this->query,
             'results' => $formattedResults,
             'totalResults' => $this->totalResults,
             'hasMore' => $this->hasMore,
         ];
-
-        // Add debug info if available
-        if (!empty($this->debug)) {
-            $response['debug'] = $this->debug;
-        }
-
-        return $response;
     }
 }

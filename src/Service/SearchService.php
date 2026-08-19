@@ -41,35 +41,23 @@ class SearchService
     /** Search across all entity types with caching support. */
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
-        $fromCache = false;
-        $cacheKey = $this->getCacheKey($query);
+        $cacheKey = $this->getCacheKey($query, $limit);
 
         try {
             $cachedResults = $this->cacheService->getCachedResults($cacheKey);
 
             if (null !== $cachedResults) {
-                $fromCache = true;
-                error_log("🔥 REDIS CACHE HIT for query: '{$query}'");
-
-                $response = new SearchResponseDTO(
+                return new SearchResponseDTO(
                     $query,
                     $cachedResults['results'],
                     $cachedResults['totalResults'],
                     $cachedResults['hasMore']
                 );
-
-                // Add debug info to response
-                $response->debug = ['source' => 'redis_cache', 'cache_key' => $cacheKey];
-
-                return $response;
             }
-            error_log("💾 REDIS CACHE MISS for query: '{$query}'");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If caching fails, continue without cache
-            error_log('Search cache error: '.$e->getMessage());
         }
 
-        error_log("🔍 DATABASE QUERY for query: '{$query}'");
         $coasters = $this->searchCoasters($query, $limit);
         $parks = $this->searchParks($query, $limit);
         $users = $this->searchUsers($query, $limit);
@@ -90,20 +78,14 @@ class SearchService
 
         $response = new SearchResponseDTO($query, $results, $totalResults, $hasMore);
 
-        // Add debug info to response
-        $response->debug = ['source' => 'database', 'cached' => false];
-
         try {
-            // Cache the results
             $this->cacheService->setCachedResults($cacheKey, [
                 'results' => $results,
                 'totalResults' => $totalResults,
                 'hasMore' => $hasMore,
             ]);
-            error_log("💾 REDIS CACHE SET for query: '{$query}'");
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If caching fails, continue without cache
-            error_log('Search cache set error: '.$e->getMessage());
         }
 
         return $response;
@@ -351,8 +333,8 @@ class SearchService
     }
 
     /** Generate cache key for search query. */
-    private function getCacheKey(string $query): string
+    private function getCacheKey(string $query, int $limit): string
     {
-        return 'search_all_'.md5(strtolower(trim($query)));
+        return 'search_all_'.$limit.'_'.md5(strtolower(trim($query)));
     }
 }
