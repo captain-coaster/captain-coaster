@@ -33,7 +33,7 @@
         "symfony/dotenv": "8.*",
         "symfony/expression-language": "8.*",
         "symfony/flex": "^2.0",
-        "symfony/form": "7.*",
+        "symfony/form": "8.*",
         "symfony/http-client": "8.*",
         "symfony/lock": "8.*",
         "symfony/mailer": "8.*",
