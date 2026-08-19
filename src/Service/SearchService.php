@@ -41,10 +41,8 @@ class SearchService
     /** Search across all entity types with caching support. */
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
-        $cacheKey = $this->getCacheKey($query, $limit);
-
         try {
-            $cachedResults = $this->cacheService->getCachedResults($cacheKey);
+            $cachedResults = $this->cacheService->getCachedResults($query, $limit);
 
             if (null !== $cachedResults) {
                 return new SearchResponseDTO(
@@ -79,7 +77,7 @@ class SearchService
         $response = new SearchResponseDTO($query, $results, $totalResults, $hasMore);
 
         try {
-            $this->cacheService->setCachedResults($cacheKey, [
+            $this->cacheService->setCachedResults($query, $limit, [
                 'results' => $results,
                 'totalResults' => $totalResults,
                 'hasMore' => $hasMore,
@@ -330,11 +328,5 @@ class SearchService
         similar_text($name, $query, $similarity);
 
         return $similarity;
-    }
-
-    /** Generate cache key for search query. */
-    private function getCacheKey(string $query, int $limit): string
-    {
-        return 'search_all_'.$limit.'_'.md5(strtolower(trim($query)));
     }
 }

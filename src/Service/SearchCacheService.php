@@ -19,9 +19,9 @@ class SearchCacheService
     }
 
     /** @return array<string, mixed>|null */
-    public function getCachedResults(string $query): ?array
+    public function getCachedResults(string $query, int $limit): ?array
     {
-        $cacheKey = $this->getCacheKey($query);
+        $cacheKey = $this->getCacheKey($query, $limit);
 
         try {
             $item = $this->cache->getItem($cacheKey);
@@ -37,9 +37,9 @@ class SearchCacheService
     }
 
     /** @param array<string, mixed> $results */
-    public function setCachedResults(string $query, array $results): void
+    public function setCachedResults(string $query, int $limit, array $results): void
     {
-        $cacheKey = $this->getCacheKey($query);
+        $cacheKey = $this->getCacheKey($query, $limit);
 
         try {
             $item = $this->cache->getItem($cacheKey);
@@ -56,8 +56,8 @@ class SearchCacheService
         $this->cache->clear();
     }
 
-    private function getCacheKey(string $query): string
+    private function getCacheKey(string $query, int $limit): string
     {
-        return self::CACHE_PREFIX.md5(strtolower(trim($query)));
+        return self::CACHE_PREFIX.$limit.'_'.md5(strtolower(trim($query)));
     }
 }
