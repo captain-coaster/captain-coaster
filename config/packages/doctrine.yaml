@@ -65,7 +65,7 @@ when@prod:
                 pool: doctrine.result_cache_pool
             metadata_cache_driver:
                 type: pool
-                pool: doctrine.metadata_cache_pool
+                pool: doctrine.system_cache_pool
 
     framework:
         cache:
@@ -74,5 +74,3 @@ when@prod:
                     adapter: cache.adapter.redis
                 doctrine.system_cache_pool:
                     adapter: cache.system
-                doctrine.metadata_cache_pool:
-                    adapter: cache.adapter.filesystem
