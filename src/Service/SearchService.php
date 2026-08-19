@@ -13,9 +13,14 @@ use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class SearchService
 {
+    private const int CACHE_TTL = 900; // 15 minutes
+
     final public const array COASTER = [
         'emoji' => '🎢',
         'route' => 'redirect_coaster_show',
@@ -34,59 +39,56 @@ class SearchService
     /** SearchService constructor. */
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly SearchCacheService $cacheService
+        #[Autowire(service: 'search.cache')]
+        private readonly CacheInterface $cache
     ) {
     }
 
     /** Search across all entity types with caching support. */
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
-        try {
-            $cachedResults = $this->cacheService->getCachedResults($query, $limit);
+        $cacheKey = 'search_all_'.$limit.'_'.md5(strtolower(trim($query)));
 
-            if (null !== $cachedResults) {
-                return new SearchResponseDTO(
-                    $query,
-                    $cachedResults['results'],
-                    $cachedResults['totalResults'],
-                    $cachedResults['hasMore']
-                );
-            }
+        try {
+            $data = $this->cache->get($cacheKey, function (ItemInterface $item) use ($query, $limit) {
+                $item->expiresAfter(self::CACHE_TTL);
+
+                return $this->computeSearchData($query, $limit);
+            });
         } catch (\Exception) {
-            // If caching fails, continue without cache
+            // If caching fails, search without it
+            $data = $this->computeSearchData($query, $limit);
         }
 
+        return new SearchResponseDTO($query, $data['results'], $data['totalResults'], $data['hasMore']);
+    }
+
+    /**
+     * @return array{
+     *     results: array<string, array<int, SearchResultDTO>>,
+     *     totalResults: array<string, int>,
+     *     hasMore: bool
+     * }
+     */
+    private function computeSearchData(string $query, int $limit): array
+    {
         $coasters = $this->searchCoasters($query, $limit);
         $parks = $this->searchParks($query, $limit);
         $users = $this->searchUsers($query, $limit);
 
-        $results = [
-            'coasters' => $coasters,
-            'parks' => $parks,
-            'users' => $users,
+        return [
+            'results' => [
+                'coasters' => $coasters,
+                'parks' => $parks,
+                'users' => $users,
+            ],
+            'totalResults' => [
+                'coasters' => \count($coasters),
+                'parks' => \count($parks),
+                'users' => \count($users),
+            ],
+            'hasMore' => \count($coasters) >= $limit || \count($parks) >= $limit || \count($users) >= $limit,
         ];
-
-        $totalResults = [
-            'coasters' => \count($coasters),
-            'parks' => \count($parks),
-            'users' => \count($users),
-        ];
-
-        $hasMore = \count($coasters) >= $limit || \count($parks) >= $limit || \count($users) >= $limit;
-
-        $response = new SearchResponseDTO($query, $results, $totalResults, $hasMore);
-
-        try {
-            $this->cacheService->setCachedResults($query, $limit, [
-                'results' => $results,
-                'totalResults' => $totalResults,
-                'hasMore' => $hasMore,
-            ]);
-        } catch (\Exception) {
-            // If caching fails, continue without cache
-        }
-
-        return $response;
     }
 
     /**
