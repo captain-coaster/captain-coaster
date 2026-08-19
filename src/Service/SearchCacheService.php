@@ -56,33 +56,6 @@ class SearchCacheService
         $this->cache->clear();
     }
 
-    public function invalidateAutocompleteCache(): void
-    {
-        try {
-            $this->cache->deleteItem('main_autocomplete');
-        } catch (\Exception) {
-            // If cache fails, silently continue
-        }
-    }
-
-    public function invalidateCoasterCache(): void
-    {
-        try {
-            $this->cache->deleteItem('coaster_search_all');
-        } catch (\Exception) {
-            // If cache fails, silently continue
-        }
-    }
-
-    public function invalidateParkCache(): void
-    {
-        try {
-            $this->cache->deleteItem('park_search_all');
-        } catch (\Exception) {
-            // If cache fails, silently continue
-        }
-    }
-
     /** @param array<string> $popularQueries */
     public function warmCache(array $popularQueries): void
     {
@@ -104,7 +77,6 @@ class SearchCacheService
 
     private function getCacheKey(string $query): string
     {
-        // Replace colon with underscore to avoid reserved character issues
-        return str_replace(':', '_', self::CACHE_PREFIX).md5(strtolower(trim($query)));
+        return self::CACHE_PREFIX.md5(strtolower(trim($query)));
     }
 }
