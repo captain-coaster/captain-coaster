@@ -56,25 +56,6 @@ class SearchCacheService
         $this->cache->clear();
     }
 
-    /** @param array<string> $popularQueries */
-    public function warmCache(array $popularQueries): void
-    {
-        foreach ($popularQueries as $query) {
-            $cacheKey = $this->getCacheKey($query);
-            try {
-                // Pre-warm cache with empty placeholder that will be filled by actual search
-                $item = $this->cache->getItem($cacheKey);
-                if (!$item->isHit()) {
-                    $item->set([]);
-                    $item->expiresAfter(self::CACHE_TTL);
-                    $this->cache->save($item);
-                }
-            } catch (\Exception) {
-                // If cache fails, silently continue
-            }
-        }
-    }
-
     private function getCacheKey(string $query): string
     {
         return self::CACHE_PREFIX.md5(strtolower(trim($query)));
