@@ -13,9 +13,14 @@ use App\Repository\CoasterRepository;
 use App\Repository\ParkRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class SearchService
 {
+    private const int CACHE_TTL = 900; // 15 minutes
+
     final public const array COASTER = [
         'emoji' => '🎢',
         'route' => 'redirect_coaster_show',
@@ -34,79 +39,56 @@ class SearchService
     /** SearchService constructor. */
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly SearchCacheService $cacheService
+        #[Autowire(service: 'search.cache_pool')]
+        private readonly CacheInterface $cache
     ) {
     }
 
     /** Search across all entity types with caching support. */
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
-        $fromCache = false;
-        $cacheKey = $this->getCacheKey($query);
+        $cacheKey = 'search_all_'.$limit.'_'.md5(strtolower(trim($query)));
 
         try {
-            $cachedResults = $this->cacheService->getCachedResults($cacheKey);
+            $data = $this->cache->get($cacheKey, function (ItemInterface $item) use ($query, $limit) {
+                $item->expiresAfter(self::CACHE_TTL);
 
-            if (null !== $cachedResults) {
-                $fromCache = true;
-                error_log("🔥 REDIS CACHE HIT for query: '{$query}'");
-
-                $response = new SearchResponseDTO(
-                    $query,
-                    $cachedResults['results'],
-                    $cachedResults['totalResults'],
-                    $cachedResults['hasMore']
-                );
-
-                // Add debug info to response
-                $response->debug = ['source' => 'redis_cache', 'cache_key' => $cacheKey];
-
-                return $response;
-            }
-            error_log("💾 REDIS CACHE MISS for query: '{$query}'");
-        } catch (\Exception $e) {
-            // If caching fails, continue without cache
-            error_log('Search cache error: '.$e->getMessage());
+                return $this->computeSearchData($query, $limit);
+            });
+        } catch (\Exception) {
+            // If caching fails, search without it
+            $data = $this->computeSearchData($query, $limit);
         }
 
-        error_log("🔍 DATABASE QUERY for query: '{$query}'");
+        return new SearchResponseDTO($query, $data['results'], $data['totalResults'], $data['hasMore']);
+    }
+
+    /**
+     * @return array{
+     *     results: array<string, array<int, SearchResultDTO>>,
+     *     totalResults: array<string, int>,
+     *     hasMore: bool
+     * }
+     */
+    private function computeSearchData(string $query, int $limit): array
+    {
         $coasters = $this->searchCoasters($query, $limit);
         $parks = $this->searchParks($query, $limit);
         $users = $this->searchUsers($query, $limit);
 
-        $results = [
-            'coasters' => $coasters,
-            'parks' => $parks,
-            'users' => $users,
+        return [
+            'results' => [
+                'coasters' => $coasters,
+                'parks' => $parks,
+                'users' => $users,
+            ],
+            'totalResults' => [
+                'coasters' => \count($coasters),
+                'parks' => \count($parks),
+                'users' => \count($users),
+            ],
+            'hasMore' => \count($coasters) >= $limit || \count($parks) >= $limit || \count($users) >= $limit,
         ];
-
-        $totalResults = [
-            'coasters' => \count($coasters),
-            'parks' => \count($parks),
-            'users' => \count($users),
-        ];
-
-        $hasMore = \count($coasters) >= $limit || \count($parks) >= $limit || \count($users) >= $limit;
-
-        $response = new SearchResponseDTO($query, $results, $totalResults, $hasMore);
-
-        // Add debug info to response
-        $response->debug = ['source' => 'database', 'cached' => false];
-
-        try {
-            // Cache the results
-            $this->cacheService->setCachedResults($cacheKey, [
-                'results' => $results,
-                'totalResults' => $totalResults,
-                'hasMore' => $hasMore,
-            ]);
-            error_log("💾 REDIS CACHE SET for query: '{$query}'");
-        } catch (\Exception $e) {
-            // If caching fails, continue without cache
-            error_log('Search cache set error: '.$e->getMessage());
-        }
-
-        return $response;
     }
 
     /**
@@ -348,11 +330,5 @@ class SearchService
         similar_text($name, $query, $similarity);
 
         return $similarity;
-    }
-
-    /** Generate cache key for search query. */
-    private function getCacheKey(string $query): string
-    {
-        return 'search_all_'.md5(strtolower(trim($query)));
     }
 }

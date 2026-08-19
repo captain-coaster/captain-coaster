@@ -23,7 +23,7 @@ class SitemapUpdateCommand extends Command
 {
     public function __construct(
         private readonly SitemapService $sitemapService,
-        #[Autowire(service: 'sitemap.cache')]
+        #[Autowire(service: 'sitemap.cache_pool')]
         private readonly CacheInterface $sitemapCache
     ) {
         parent::__construct();
