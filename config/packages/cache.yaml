@@ -16,10 +16,10 @@ framework:
         # Namespaced pools use the above "app" backend by default
         pools:
             # Search-related caching (Redis for fast access)
-            search.cache:
+            search.cache_pool:
                 adapter: cache.adapter.redis
 
             # Sitemap cache (Redis for persistent data across deployments)
-            sitemap.cache:
+            sitemap.cache_pool:
                 adapter: cache.adapter.redis
                 default_lifetime: 604800 # 7 days

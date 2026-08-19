@@ -13,7 +13,7 @@ class SearchCacheService
     private const string CACHE_PREFIX = 'search_';
 
     public function __construct(
-        #[Autowire(service: 'search.cache')]
+        #[Autowire(service: 'search.cache_pool')]
         private readonly CacheItemPoolInterface $cache
     ) {
     }

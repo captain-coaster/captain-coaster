@@ -13,7 +13,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 class SitemapController extends AbstractController
 {
     public function __construct(
-        #[Autowire(service: 'sitemap.cache')]
+        #[Autowire(service: 'sitemap.cache_pool')]
         private readonly CacheInterface $sitemapCache
     ) {
     }
