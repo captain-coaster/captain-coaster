@@ -16,7 +16,6 @@
         "doctrine/orm": "^3.3",
         "easycorp/easyadmin-bundle": "^4",
         "friendsofsymfony/jsrouting-bundle": "^3.0",
-        "http-interop/http-factory-guzzle": "^1.2.0",
         "knplabs/knp-paginator-bundle": "^6",
         "knplabs/knp-time-bundle": "^2",
         "knpuniversity/oauth2-client-bundle": "^2.15",
@@ -29,7 +28,6 @@
         "symfony/asset": "8.*",
         "symfony/cache": "7.*",
         "symfony/discord-notifier": "8.*",
-        "symfony/dom-crawler": "8.*",
         "symfony/dotenv": "8.*",
         "symfony/expression-language": "8.*",
         "symfony/flex": "^2.0",
@@ -37,11 +35,9 @@
         "symfony/http-client": "8.*",
         "symfony/lock": "8.*",
         "symfony/mailer": "8.*",
-        "symfony/messenger": "8.*",
         "symfony/monolog-bundle": "^4.0",
         "symfony/notifier": "8.*",
         "symfony/rate-limiter": "8.*",
-        "symfony/redis-messenger": "8.*",
         "symfony/runtime": "8.*",
         "symfony/security-bundle": "8.*",
         "symfony/stimulus-bundle": "^3.3",
@@ -117,7 +113,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "7.*"
+            "require": "8.*"
         }
     }
 }
