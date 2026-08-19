@@ -39,7 +39,7 @@ class SearchService
     /** SearchService constructor. */
     public function __construct(
         private readonly EntityManagerInterface $em,
-        #[Autowire(service: 'search.cache')]
+        #[Autowire(service: 'search.cache_pool')]
         private readonly CacheInterface $cache
     ) {
     }
