@@ -36,7 +36,7 @@ class RiddenCoaster
     private ?User $user = null;
 
     #[ORM\Column(name: 'rating', type: Types::FLOAT, nullable: false)]
-    #[Assert\Choice([0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0], strict: true)]
+    #[Assert\Choice(choices: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0], strict: true)]
     private float $value = 0.0;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

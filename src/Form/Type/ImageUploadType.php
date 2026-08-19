@@ -45,7 +45,7 @@ class ImageUploadType extends AbstractType
                     'label' => 'image_upload.form.copyright_agreement.label',
                     'required' => true,
                     'mapped' => false,
-                    'constraints' => [new NotBlank(['message' => 'image_upload.form.copyright_agreement.required'])],
+                    'constraints' => [new NotBlank(message: 'image_upload.form.copyright_agreement.required')],
                 ]
             )
             ->add(

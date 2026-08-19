@@ -38,10 +38,10 @@ class ProfileSettingsForm extends AbstractType
         // (?:[\p{L}\p{M}]+(?:[\s\'\-][\p{L}\p{M}]+)*) - one or more letters, optionally followed by space/apostrophe/hyphen and more letters
         // $ - end of string
         // This prevents: leading/trailing spaces, consecutive special chars, numbers, and most special characters
-        $nameRegex = new Regex([
-            'pattern' => '/^[\p{L}\p{M}]+(?:[\s\'\-][\p{L}\p{M}]+)*$/u',
-            'message' => $translator->trans('profile.settings.name.invalid_characters'),
-        ]);
+        $nameRegex = new Regex(
+            pattern: '/^[\p{L}\p{M}]+(?:[\s\'\-][\p{L}\p{M}]+)*$/u',
+            message: $translator->trans('profile.settings.name.invalid_characters'),
+        );
 
         // Name section
         // First name field (disabled if can't change name)
@@ -50,7 +50,7 @@ class ProfileSettingsForm extends AbstractType
             'disabled' => !$canChangeName,
             'constraints' => [
                 new NotBlank(),
-                new Length(['min' => 2, 'max' => 50]),
+                new Length(min: 2, max: 50),
                 $nameRegex,
             ],
             'attr' => [
@@ -64,7 +64,7 @@ class ProfileSettingsForm extends AbstractType
             'required' => false,
             'disabled' => !$canChangeName,
             'constraints' => [
-                new Length(['min' => 2, 'max' => 50]),
+                new Length(min: 2, max: 50),
                 $nameRegex,
             ],
             'attr' => [
@@ -95,13 +95,13 @@ class ProfileSettingsForm extends AbstractType
             'required' => false,
             'mapped' => false,
             'constraints' => [
-                new File([
-                    'maxSize' => '2M',
-                    'mimeTypes' => [
+                new File(
+                    maxSize: '2M',
+                    mimeTypes: [
                         'image/jpeg',
                         'image/png',
                     ],
-                ]),
+                ),
             ],
             'attr' => ['class' => 'form-control'],
         ]);
