@@ -24,7 +24,6 @@ use App\Entity\Status;
 use App\Entity\Tag;
 use App\Entity\Top;
 use App\Entity\User;
-use App\Entity\VocabularyGuide;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -61,7 +60,6 @@ class DashboardController extends AbstractDashboardController
         // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-dashboard');
         yield MenuItem::linkToCrud('Coaster', 'fas fa-sleigh', Coaster::class);
         yield MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class);
-        yield MenuItem::linkToCrud('Vocabulary Guides', 'fas fa-language', VocabularyGuide::class);
         yield MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class);
         yield MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class);
         yield MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class);

@@ -7,7 +7,6 @@ namespace App\Tests\Service;
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Repository\RiddenCoasterRepository;
-use App\Repository\VocabularyGuideRepository;
 use App\Service\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,7 +33,6 @@ class CoasterSummaryServiceBackfillTest extends TestCase
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
-        $vocabularyGuideRepository = $this->createMock(VocabularyGuideRepository::class);
         $bedrockService = $this->createMock(BedrockService::class);
         $bedrockService->method('invokeModel')->willReturn([
             'success' => true,
@@ -46,7 +44,6 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         $this->service = new CoasterSummaryService(
             $this->entityManager,
             $this->riddenCoasterRepository,
-            $vocabularyGuideRepository,
             $bedrockService,
             $logger
         );
@@ -73,9 +70,53 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         return $reviews;
     }
 
+    public function testEligibleWithFewNativeReviewsWhenTotalIsSufficient(): void
+    {
+        // 8 native French reviews alone would fail the old strict 20-review gate, but
+        // there's a genuine native base (>= MIN_NATIVE_REVIEWS_REQUIRED) and enough total
+        // content once backfill is available - should succeed.
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(8);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(25);
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(8));
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextExcludingLanguage')->willReturn($this->makeReviews(17));
+
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+
+        $this->assertNotNull($result['summary']);
+        $this->assertSame(8, $result['summary']->getReviewsAnalyzed());
+    }
+
+    public function testIneligibleWhenNativeReviewsBelowFloorRegardlessOfTotal(): void
+    {
+        // 3 native reviews is below MIN_NATIVE_REVIEWS_REQUIRED (5) - no genuine
+        // same-language audience yet, so backfill availability doesn't matter. The
+        // native gate short-circuits before countAllReviewsWithText is ever called.
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(3);
+        $this->riddenCoasterRepository->expects($this->never())->method('countAllReviewsWithText');
+
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+
+        $this->assertNull($result['summary']);
+        $this->assertSame('insufficient_reviews', $result['reason']); // @phpstan-ignore-line
+    }
+
+    public function testIneligibleWhenTotalInsufficientEvenWithNativeFloorMet(): void
+    {
+        // 10 native reviews clears the native floor, but total (any language) is only
+        // 12 - not enough content overall even with backfill.
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(10);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(12);
+
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
+
+        $this->assertNull($result['summary']);
+        $this->assertSame('insufficient_reviews', $result['reason']); // @phpstan-ignore-line
+    }
+
     public function testBackfillIsFetchedWhenPrimaryReviewsBelowFloor(): void
     {
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(30);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(1000);
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(30));
 
         $this->riddenCoasterRepository
@@ -94,6 +135,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
     public function testBackfillIsNotFetchedWhenPrimaryReviewsMeetFloor(): void
     {
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(150);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(1000);
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(150));
 
         $this->riddenCoasterRepository
@@ -109,6 +151,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
     public function testPreviewSummaryReportsBothPrimaryAndTotalReviewCounts(): void
     {
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(25);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(1000);
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(25));
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextExcludingLanguage')->willReturn($this->makeReviews(8));
 
@@ -127,6 +170,7 @@ class CoasterSummaryServiceBackfillTest extends TestCase
         // 0 primary reviews would naively ask for a 100-review backfill, but only
         // enough to reach REPRESENTATIVE_SAMPLE_FLOOR should ever be requested.
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')->willReturn(20);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(1000);
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')->willReturn($this->makeReviews(20));
 
         $this->riddenCoasterRepository

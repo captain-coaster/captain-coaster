@@ -261,29 +261,6 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 
-    public function testNoVocabGuideOptionIsPassedToGenerateSummary(): void
-    {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-
-        $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->summaryService->method('shouldUpdateSummary')->willReturn(true);
-        $this->summaryService
-            ->expects($this->once())
-            ->method('generateSummary')
-            ->with($coaster, null, 'fr', false)
-            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'ai_error']);
-
-        $this->commandTester->execute([
-            '--coaster-id' => '1',
-            '--languages' => 'fr',
-            '--no-vocab-guide' => true,
-        ]);
-
-        $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('Vocabulary guide disabled', $output);
-    }
-
     public function testMultipleLanguagesDoNotScopeTheEligibilityCount(): void
     {
         $coaster = new Coaster();
