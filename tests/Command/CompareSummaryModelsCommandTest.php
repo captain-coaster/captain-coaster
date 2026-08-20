@@ -154,25 +154,4 @@ class CompareSummaryModelsCommandTest extends TestCase
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('30 same-language + 70 backfilled = 100 total', $output);
     }
-
-    public function testNoVocabGuideOptionIsPassedThrough(): void
-    {
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $this->coasterRepository->method('find')->willReturn($coaster);
-        $this->coasterSummaryRepository->method('findByCoasterAndLanguage')->willReturn(null);
-
-        $this->summaryService
-            ->expects($this->exactly(2))
-            ->method('previewSummary')
-            ->with($coaster, $this->anything(), 'fr', false)
-            ->willReturn([
-                'summary' => 'A preview summary.', 'pros' => [], 'cons' => [], 'metadata' => [],
-                'review_count' => 50, 'total_review_count' => 50, 'model_key' => 'gpt-5.6-luna',
-            ]);
-
-        $this->commandTester->execute(['coaster-id' => '1', '--language' => 'fr', '--no-vocab-guide' => true]);
-
-        $this->assertSame(0, $this->commandTester->getStatusCode());
-    }
 }

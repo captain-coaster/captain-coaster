@@ -710,4 +710,29 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             return 0;
         }
     }
+
+    /**
+     * Count reviews with text content for a coaster across all languages. Used to check
+     * whether a coaster has enough content overall to generate a summary once backfill
+     * from other languages is taken into account (see CoasterSummaryService::MIN_REVIEWS_REQUIRED).
+     */
+    public function countAllReviewsWithText(Coaster $coaster): int
+    {
+        try {
+            return (int) $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(r.id)')
+                ->from(RiddenCoaster::class, 'r')
+                ->innerJoin('r.user', 'u')
+                ->where('r.coaster = :coasterId')
+                ->andWhere('r.review IS NOT NULL')
+                ->andWhere('TRIM(r.review) != \'\'')
+                ->andWhere('u.enabled = 1')
+                ->setParameter('coasterId', $coaster->getId())
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception) {
+            return 0;
+        }
+    }
 }

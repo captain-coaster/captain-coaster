@@ -42,7 +42,6 @@ class CompareSummaryModelsCommand extends Command
             ->addOption('language', 'l', InputOption::VALUE_REQUIRED, 'Target language (en, fr, es, de)', 'en')
             ->addOption('candidate-model', 'c', InputOption::VALUE_REQUIRED, 'Candidate model key to evaluate', 'gpt-5.6-luna')
             ->addOption('baseline-model', 'b', InputOption::VALUE_OPTIONAL, 'Baseline model key (defaults to the model normally used for this language)', null)
-            ->addOption('no-vocab-guide', null, InputOption::VALUE_NONE, 'Skip the vocabulary guide prompt section for both previews, to evaluate whether it still helps')
             ->setHelp(
                 "Generates two preview summaries (baseline vs candidate model) for the same coaster and language,\n".
                 "without saving either one. Also shows the currently stored summary and its user feedback for context.\n\n".
@@ -65,7 +64,6 @@ class CompareSummaryModelsCommand extends Command
         $candidateModel = (string) $input->getOption('candidate-model');
         $baselineModel = $input->getOption('baseline-model');
         $baselineModel = null !== $baselineModel ? (string) $baselineModel : null;
-        $includeVocabularyGuide = !$input->getOption('no-vocab-guide');
 
         $io->title(\sprintf('%s (#%d) — %s', $coaster->getName(), $coaster->getId(), strtoupper($language)));
 
@@ -85,11 +83,11 @@ class CompareSummaryModelsCommand extends Command
             $io->note('No stored summary for this coaster/language yet.');
         }
 
-        $io->section(\sprintf('Baseline (%s)%s', $baselineModel ?? 'service default', $includeVocabularyGuide ? '' : ' — no vocab guide'));
-        $this->renderPreview($io, $this->summaryService->previewSummary($coaster, $baselineModel, $language, $includeVocabularyGuide));
+        $io->section(\sprintf('Baseline (%s)', $baselineModel ?? 'service default'));
+        $this->renderPreview($io, $this->summaryService->previewSummary($coaster, $baselineModel, $language));
 
-        $io->section(\sprintf('Candidate (%s)%s', $candidateModel, $includeVocabularyGuide ? '' : ' — no vocab guide'));
-        $this->renderPreview($io, $this->summaryService->previewSummary($coaster, $candidateModel, $language, $includeVocabularyGuide));
+        $io->section(\sprintf('Candidate (%s)', $candidateModel));
+        $this->renderPreview($io, $this->summaryService->previewSummary($coaster, $candidateModel, $language));
 
         return Command::SUCCESS;
     }

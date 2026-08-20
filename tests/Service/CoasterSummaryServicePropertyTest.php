@@ -8,10 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
-use App\Entity\User;
-use App\Entity\VocabularyGuide;
 use App\Repository\RiddenCoasterRepository;
-use App\Repository\VocabularyGuideRepository;
 use App\Service\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,7 +23,6 @@ use Psr\Log\LoggerInterface;
  * Property-based tests for CoasterSummaryService.
  *
  * **Feature: coaster-summary-refactor, Property 1: Direct Generation Consistency**
- * **Feature: coaster-summary-refactor, Property 2: Vocabulary Guide Integration**
  * **Feature: coaster-summary-refactor, Property 4: Enhanced Source Data Inclusion**
  * **Feature: coaster-summary-refactor, Property 6: Backward Compatibility Preservation**
  */
@@ -38,23 +34,24 @@ class CoasterSummaryServicePropertyTest extends TestCase
     {
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
-        $vocabularyGuideRepository = $this->createMock(VocabularyGuideRepository::class);
         $bedrockService = $this->createMock(BedrockService::class);
         $logger = $this->createMock(LoggerInterface::class);
 
         $service = new CoasterSummaryService(
             $entityManager,
             $riddenCoasterRepository,
-            $vocabularyGuideRepository,
             $bedrockService,
             $logger
         );
+
+        // Plenty of total (any-language) reviews by default - these property tests
+        // exercise generation methodology, not the any-language eligibility gate.
+        $riddenCoasterRepository->method('countAllReviewsWithText')->willReturn(1000);
 
         return [
             'service' => $service,
             'entityManager' => $entityManager,
             'riddenCoasterRepository' => $riddenCoasterRepository,
-            'vocabularyGuideRepository' => $vocabularyGuideRepository,
             'bedrockService' => $bedrockService,
             'logger' => $logger,
         ];
@@ -81,7 +78,6 @@ class CoasterSummaryServicePropertyTest extends TestCase
             $service = $mocks['service'];
             $entityManager = $mocks['entityManager'];
             $riddenCoasterRepository = $mocks['riddenCoasterRepository'];
-            $vocabularyGuideRepository = $mocks['vocabularyGuideRepository'];
             $bedrockService = $mocks['bedrockService'];
 
             // Create coaster
@@ -107,18 +103,6 @@ class CoasterSummaryServicePropertyTest extends TestCase
                 ->method('getCoasterReviewsWithTextByLanguage')
                 ->with($coaster, $language, 600)
                 ->willReturn($reviews);
-
-            // Mock vocabulary guide (may or may not exist)
-            $vocabularyGuide = null;
-            if ('en' !== $language && random_int(0, 1)) {
-                $vocabularyGuide = new VocabularyGuide();
-                $vocabularyGuide->setLanguage($language);
-                $vocabularyGuide->setContent("Vocabulary guide for {$language}");
-            }
-
-            $vocabularyGuideRepository
-                ->method('findByLanguage')
-                ->willReturn($vocabularyGuide);
 
             // Mock successful AI response
             $aiResponse = json_encode([
@@ -167,113 +151,6 @@ class CoasterSummaryServicePropertyTest extends TestCase
             // Verify that the same methodology is used regardless of language
             // (no translation-specific logic should be present)
             $this->addToAssertionCount(1); // Direct generation completed successfully for all languages
-        });
-    }
-
-    /**
-     * **Feature: coaster-summary-refactor, Property 2: Vocabulary Guide Integration**
-     * **Validates: Requirements 1.4, 2.1**
-     *
-     * For any language with an available vocabulary guide, the generated AI prompt should
-     * incorporate the vocabulary guide content and use it during summary generation.
-     */
-    public function testVocabularyGuideIntegrationProperty(): void
-    {
-        $this->limitTo(3); // Limit to 3 iterations for faster testing
-        $this->forAll(
-            Generator\choose(0, 1000), // coaster ID
-            Generator\string(), // coaster name
-            Generator\elements(['en', 'fr', 'es', 'de']), // language
-            Generator\string(), // vocabulary guide content
-            Generator\choose(20, 100) // review count (sufficient reviews)
-        )->then(function (int $coasterId, string $coasterName, string $language, string $vocabularyContent, int $reviewCount): void {
-            $mocks = $this->createServiceWithMocks();
-            $service = $mocks['service'];
-            $entityManager = $mocks['entityManager'];
-            $riddenCoasterRepository = $mocks['riddenCoasterRepository'];
-            $vocabularyGuideRepository = $mocks['vocabularyGuideRepository'];
-            $bedrockService = $mocks['bedrockService'];
-
-            // Create coaster
-            $coaster = new Coaster();
-            $coaster->setName($coasterName ?: 'Test Coaster');
-
-            // Create mock reviews
-            $reviews = [];
-            for ($i = 0; $i < $reviewCount; ++$i) {
-                $review = new RiddenCoaster();
-                $review->setReview("This is a test review {$i} in {$language}");
-                $review->setCoaster($coaster); // Set coaster reference
-                $reviews[] = $review;
-            }
-
-            // Mock repository to return sufficient review count
-            $riddenCoasterRepository
-                ->method('countCoasterReviewsWithTextByLanguage')
-                ->with($coaster, $language)
-                ->willReturn($reviewCount);
-
-            $riddenCoasterRepository
-                ->method('getCoasterReviewsWithTextByLanguage')
-                ->with($coaster, $language, 600)
-                ->willReturn($reviews);
-
-            // Create vocabulary guide with content
-            $vocabularyGuide = new VocabularyGuide();
-            $vocabularyGuide->setLanguage($language);
-            $vocabularyGuide->setContent($vocabularyContent ?: 'Test vocabulary guide content');
-
-            $vocabularyGuideRepository
-                ->method('findByLanguage')
-                ->with($language)
-                ->willReturn($vocabularyGuide);
-
-            // Capture the prompt that gets sent to BedrockService
-            $capturedPrompt = '';
-            $bedrockService
-                ->method('invokeModel')
-                ->willReturnCallback(function (string $prompt) use (&$capturedPrompt) {
-                    $capturedPrompt = $prompt;
-                    return [
-                        'success' => true,
-                        'content' => json_encode([
-                            'summary' => "Generated summary in language",
-                            'pros' => ['Pro 1'],
-                            'cons' => ['Con 1'],
-                        ]),
-                        'metadata' => ['cost_usd' => 0.01],
-                    ];
-                });
-
-            // Mock entity manager
-            $repository = $this->createMock(EntityRepository::class);
-            $repository
-                ->method('findOneBy')
-                ->willReturn(null);
-
-            $entityManager
-                ->method('getRepository')
-                ->willReturn($repository);
-
-            $entityManager
-                ->method('persist')
-                ->with($this->isInstanceOf(CoasterSummary::class));
-
-            $entityManager
-                ->method('flush');
-
-            // Test vocabulary guide integration
-            $result = $service->generateSummary($coaster, 'gpt-5.6-luna', $language);
-
-            // Verify vocabulary guide content is incorporated in the prompt
-            $expectedVocabularyContent = $vocabularyContent ?: 'Test vocabulary guide content';
-            $this->assertStringContainsString('<vocabulary_guide>', $capturedPrompt);
-            $this->assertStringContainsString($expectedVocabularyContent, $capturedPrompt);
-            $this->assertStringContainsString('</vocabulary_guide>', $capturedPrompt);
-
-            // Verify successful generation
-            $this->assertArrayHasKey('summary', $result);
-            $this->assertInstanceOf(CoasterSummary::class, $result['summary']);
         });
     }
 
@@ -387,7 +264,6 @@ class CoasterSummaryServicePropertyTest extends TestCase
             $service = $mocks['service'];
             $entityManager = $mocks['entityManager'];
             $riddenCoasterRepository = $mocks['riddenCoasterRepository'];
-            $vocabularyGuideRepository = $mocks['vocabularyGuideRepository'];
             $bedrockService = $mocks['bedrockService'];
 
             // Create coaster with status and rating information
@@ -421,11 +297,6 @@ class CoasterSummaryServicePropertyTest extends TestCase
                 ->method('getCoasterReviewsWithTextByLanguage')
                 ->with($coaster, $language, 600)
                 ->willReturn($reviews);
-
-            // Mock vocabulary guide (optional)
-            $vocabularyGuideRepository
-                ->method('findByLanguage')
-                ->willReturn(null);
 
             // Capture the prompt that gets sent to BedrockService
             $capturedPrompt = '';

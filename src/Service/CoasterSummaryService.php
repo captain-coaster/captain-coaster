@@ -8,7 +8,6 @@ use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
 use App\Repository\RiddenCoasterRepository;
-use App\Repository\VocabularyGuideRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -28,8 +27,22 @@ class CoasterSummaryService
     /** Maximum number of reviews to analyze per coaster */
     private const MAX_REVIEWS_FOR_ANALYSIS = 600;
 
-    /** Minimum reviews required before generating a summary */
+    /**
+     * Minimum reviews required before generating a summary, counted across all languages
+     * combined (same-language reviews plus what backfill could supply) - this is a "is
+     * there enough to analyze at all" floor, not a same-language-only requirement.
+     */
     public const MIN_REVIEWS_REQUIRED = 20;
+
+    /**
+     * Minimum same-language reviews required, regardless of how much backfill is
+     * available. Below this, a summary would be almost entirely other-language content
+     * translated into the target language rather than reflecting a genuine same-language
+     * audience - low, since backfill plus a capable model already produces fluent,
+     * accurate output even from a minority-language sample (validated against production
+     * data), but not zero.
+     */
+    public const MIN_NATIVE_REVIEWS_REQUIRED = 5;
 
     /**
      * Below this many same-language reviews, backfill the analysis set with reviews from
@@ -41,7 +54,6 @@ class CoasterSummaryService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private RiddenCoasterRepository $riddenCoasterRepository,
-        private VocabularyGuideRepository $vocabularyGuideRepository,
         private BedrockService $bedrockService,
         private LoggerInterface $logger
     ) {
@@ -74,9 +86,9 @@ class CoasterSummaryService
      *
      * @return array{summary: CoasterSummary|null, metadata: array<string, mixed>|null, reason?: string, review_count?: int}
      */
-    public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en', bool $includeVocabularyGuide = true): array
+    public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en'): array
     {
-        $analysis = $this->runAnalysis($coaster, $modelKey, $language, $includeVocabularyGuide);
+        $analysis = $this->runAnalysis($coaster, $modelKey, $language);
 
         if (!isset($analysis['result'])) {
             if (isset($analysis['review_count'])) {
@@ -113,9 +125,9 @@ class CoasterSummaryService
      *
      * @return array{summary: string|null, pros: array<string>, cons: array<string>, metadata: array<string, mixed>|null, reason?: string, review_count?: int, total_review_count?: int, model_key?: string}
      */
-    public function previewSummary(Coaster $coaster, ?string $modelKey, string $language, bool $includeVocabularyGuide = true): array
+    public function previewSummary(Coaster $coaster, ?string $modelKey, string $language): array
     {
-        $analysis = $this->runAnalysis($coaster, $modelKey, $language, $includeVocabularyGuide);
+        $analysis = $this->runAnalysis($coaster, $modelKey, $language);
 
         if (!isset($analysis['result'])) {
             if (isset($analysis['review_count'])) {
@@ -141,14 +153,24 @@ class CoasterSummaryService
      *
      * @return array{status: 'ok'|'insufficient_reviews'|'ai_error', metadata: array<string, mixed>|null, review_count?: int, result?: array{aiAnalysis: array{summary: string, pros: array<string>, cons: array<string>}, reviewCount: int, totalReviewCount: int, resolvedModelKey: string}}
      */
-    private function runAnalysis(Coaster $coaster, ?string $modelKey, string $language, bool $includeVocabularyGuide = true): array
+    private function runAnalysis(Coaster $coaster, ?string $modelKey, string $language): array
     {
-        $currentReviewCount = $this->getReviewCount($coaster, $language);
+        $nativeReviewCount = $this->getReviewCount($coaster, $language);
 
-        if ($currentReviewCount < self::MIN_REVIEWS_REQUIRED) {
-            $this->logger->info('Not enough reviews to generate summary', ['coaster' => $coaster->getName(), 'language' => $language, 'reviews' => $currentReviewCount]);
+        if ($nativeReviewCount < self::MIN_NATIVE_REVIEWS_REQUIRED) {
+            $this->logger->info('Not enough same-language reviews to generate summary', ['coaster' => $coaster->getName(), 'language' => $language, 'reviews' => $nativeReviewCount]);
 
-            return ['status' => 'insufficient_reviews', 'metadata' => null, 'review_count' => $currentReviewCount];
+            return ['status' => 'insufficient_reviews', 'metadata' => null, 'review_count' => $nativeReviewCount];
+        }
+
+        // Enough of a genuine same-language base - now check there's enough content
+        // overall once backfill from other languages is taken into account.
+        $totalReviewCount = $this->riddenCoasterRepository->countAllReviewsWithText($coaster);
+
+        if ($totalReviewCount < self::MIN_REVIEWS_REQUIRED) {
+            $this->logger->info('Not enough reviews (any language) to generate summary', ['coaster' => $coaster->getName(), 'language' => $language, 'reviews' => $totalReviewCount]);
+
+            return ['status' => 'insufficient_reviews', 'metadata' => null, 'review_count' => $totalReviewCount];
         }
 
         $primaryReviews = $this->riddenCoasterRepository->getCoasterReviewsWithTextByLanguage($coaster, $language, self::MAX_REVIEWS_FOR_ANALYSIS);
@@ -162,7 +184,7 @@ class CoasterSummaryService
             $reviewsForAnalysis = [...$primaryReviews, ...$this->riddenCoasterRepository->getCoasterReviewsWithTextExcludingLanguage($coaster, $language, $backfillLimit)];
         }
 
-        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster->getName(), $modelKey, $language, $includeVocabularyGuide);
+        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster->getName(), $modelKey, $language);
 
         if (empty($aiAnalysis['summary'])) {
             $this->logger->error('AI analysis returned empty summary', [
@@ -236,7 +258,7 @@ class CoasterSummaryService
      *
      * @return array{summary: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
      */
-    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en', bool $includeVocabularyGuide = true): array
+    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en'): array
     {
         if (empty($reviews)) {
             return ['summary' => '', 'pros' => [], 'cons' => []];
@@ -245,7 +267,7 @@ class CoasterSummaryService
         // Get coaster entity from first review to access coaster context data
         $coaster = $reviews[0]->getCoaster();
 
-        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language, $includeVocabularyGuide);
+        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language);
         $response = $this->bedrockService->invokeModel($prompt, $modelKey, 2000, 0.5);
 
         if (!$response['success']) {
@@ -309,31 +331,12 @@ class CoasterSummaryService
         ];
     }
 
-    /** Gets vocabulary guide content for a language, with graceful handling of missing guides */
-    private function getVocabularyGuide(string $language): ?string
-    {
-        $vocabularyGuide = $this->vocabularyGuideRepository->findByLanguage($language);
-
-        if ($vocabularyGuide) {
-            return $vocabularyGuide->getContent();
-        }
-
-        // Log warning for missing vocabulary guides in non-English languages
-        if ('en' !== $language) {
-            $this->logger->warning('No vocabulary guide found for language', [
-                'language' => $language,
-            ]);
-        }
-
-        return null;
-    }
-
     /**
      * Builds the AI prompt for review analysis with enhanced source data and security sanitization.
      *
      * @param array<int, RiddenCoaster> $riddenCoasters
      */
-    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en', bool $includeVocabularyGuide = true): string
+    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
     {
         // Sanitize coaster name to prevent prompt injection
         $sanitizedName = preg_replace('/[^\w\s-]/', '', $coasterName);
@@ -363,12 +366,6 @@ class CoasterSummaryService
         $prompt .= "- Never mention safety, legal, maintenance, construction or security issues\n";
         $prompt .= "- Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative\n";
         $prompt .= "</analysis_task>\n\n";
-
-        // Include vocabulary guide for all languages (including English for consistency)
-        $vocabularyGuideContent = $includeVocabularyGuide ? $this->getVocabularyGuide($language) : null;
-        if ($vocabularyGuideContent) {
-            $prompt .= "<vocabulary_guide>\n{$vocabularyGuideContent}\n</vocabulary_guide>\n\n";
-        }
 
         // Coaster context section with enhanced formatting and rating distribution
         if ($coaster && $coaster->getStatus()) {
