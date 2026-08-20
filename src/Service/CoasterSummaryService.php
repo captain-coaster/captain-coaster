@@ -31,6 +31,13 @@ class CoasterSummaryService
     /** Minimum reviews required before generating a summary */
     public const MIN_REVIEWS_REQUIRED = 20;
 
+    /**
+     * Below this many same-language reviews, backfill the analysis set with reviews from
+     * other languages so thin-language coasters still get a representative sample. The
+     * summary is still always written in the target language regardless of source mix.
+     */
+    private const REPRESENTATIVE_SAMPLE_FLOOR = 100;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private RiddenCoasterRepository $riddenCoasterRepository,
@@ -40,10 +47,10 @@ class CoasterSummaryService
     ) {
     }
 
-    /** Gets count of reviews with text content for a coaster */
-    public function getReviewCount(Coaster $coaster): int
+    /** Gets count of reviews with text content for a coaster, scoped to a language */
+    public function getReviewCount(Coaster $coaster, string $language): int
     {
-        return $this->riddenCoasterRepository->countCoasterReviewsWithText($coaster);
+        return $this->riddenCoasterRepository->countCoasterReviewsWithTextByLanguage($coaster, $language);
     }
 
     /** Clears all feedback records for a summary when it's regenerated */
@@ -67,53 +74,23 @@ class CoasterSummaryService
      *
      * @return array{summary: CoasterSummary|null, metadata: array<string, mixed>|null, reason?: string, review_count?: int}
      */
-    public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en'): array
+    public function generateSummary(Coaster $coaster, ?string $modelKey = null, string $language = 'en', bool $includeVocabularyGuide = true): array
     {
-        $currentReviewCount = $this->getReviewCount($coaster);
+        $analysis = $this->runAnalysis($coaster, $modelKey, $language, $includeVocabularyGuide);
 
-        if ($currentReviewCount < self::MIN_REVIEWS_REQUIRED) {
-            $this->logger->info('Not enough reviews to generate summary', ['coaster' => $coaster->getName(), 'reviews' => $currentReviewCount]);
+        if (!isset($analysis['result'])) {
+            if (isset($analysis['review_count'])) {
+                return ['summary' => null, 'metadata' => $analysis['metadata'], 'reason' => $analysis['status'], 'review_count' => $analysis['review_count']];
+            }
 
-            return [
-                'summary' => null,
-                'metadata' => null,
-                'reason' => 'insufficient_reviews',
-                'review_count' => $currentReviewCount,
-            ];
-        }
-
-        $reviewsWithText = $this->riddenCoasterRepository->getCoasterReviewsWithText($coaster, self::MAX_REVIEWS_FOR_ANALYSIS);
-        $reviewCount = \count($reviewsWithText);
-
-        // Use Nova 2 Lite for French summaries if no specific model is requested
-        if (!$modelKey && 'fr' === $language) {
-            $modelKey = 'nova2-lite';
-        }
-
-        $aiAnalysis = $this->analyzeReviews($reviewsWithText, $coaster->getName(), $modelKey, $language);
-
-        if (empty($aiAnalysis['summary'])) {
-            $this->logger->error('AI analysis returned empty summary', [
-                'coaster' => $coaster->getName(),
-                'coaster_id' => $coaster->getId(),
-                'language' => $language,
-                'model_key' => $modelKey,
-                'review_count' => $reviewCount,
-                'metadata' => $aiAnalysis['metadata'] ?? null,
-            ]);
-
-            return [
-                'summary' => null,
-                'metadata' => $aiAnalysis['metadata'] ?? null,
-                'reason' => 'ai_error',
-            ];
+            return ['summary' => null, 'metadata' => $analysis['metadata'], 'reason' => $analysis['status']];
         }
 
         $summary = $this->findOrCreateSummary($coaster, $language);
-        $summary->setSummary($aiAnalysis['summary']);
-        $summary->setDynamicPros($aiAnalysis['pros']);
-        $summary->setDynamicCons($aiAnalysis['cons']);
-        $summary->setReviewsAnalyzed($reviewCount);
+        $summary->setSummary($analysis['result']['aiAnalysis']['summary']);
+        $summary->setDynamicPros($analysis['result']['aiAnalysis']['pros']);
+        $summary->setDynamicCons($analysis['result']['aiAnalysis']['cons']);
+        $summary->setReviewsAnalyzed($analysis['result']['reviewCount']);
         $summary->setLanguage($language);
 
         // Reset votes when summary is regenerated since content has changed
@@ -127,30 +104,111 @@ class CoasterSummaryService
         $this->entityManager->persist($summary);
         $this->entityManager->flush();
 
-        return ['summary' => $summary, 'metadata' => $aiAnalysis['metadata'] ?? null];
+        return ['summary' => $summary, 'metadata' => $analysis['metadata']];
     }
 
     /**
-     * Determines if a coaster summary should be updated
-     * Updates are needed if no summary exists, 20% more reviews, or summary is 180+ days old.
+     * Runs the same review analysis as generateSummary() but never persists anything.
+     * Used to preview/compare model output (e.g. for model evaluation tooling).
+     *
+     * @return array{summary: string|null, pros: array<string>, cons: array<string>, metadata: array<string, mixed>|null, reason?: string, review_count?: int, total_review_count?: int, model_key?: string}
+     */
+    public function previewSummary(Coaster $coaster, ?string $modelKey, string $language, bool $includeVocabularyGuide = true): array
+    {
+        $analysis = $this->runAnalysis($coaster, $modelKey, $language, $includeVocabularyGuide);
+
+        if (!isset($analysis['result'])) {
+            if (isset($analysis['review_count'])) {
+                return ['summary' => null, 'pros' => [], 'cons' => [], 'metadata' => $analysis['metadata'], 'reason' => $analysis['status'], 'review_count' => $analysis['review_count']];
+            }
+
+            return ['summary' => null, 'pros' => [], 'cons' => [], 'metadata' => $analysis['metadata'], 'reason' => $analysis['status']];
+        }
+
+        return [
+            'summary' => $analysis['result']['aiAnalysis']['summary'],
+            'pros' => $analysis['result']['aiAnalysis']['pros'],
+            'cons' => $analysis['result']['aiAnalysis']['cons'],
+            'metadata' => $analysis['metadata'],
+            'review_count' => $analysis['result']['reviewCount'],
+            'total_review_count' => $analysis['result']['totalReviewCount'],
+            'model_key' => $analysis['result']['resolvedModelKey'],
+        ];
+    }
+
+    /**
+     * Shared review-fetch + AI-analysis step used by both generateSummary() and previewSummary().
+     *
+     * @return array{status: 'ok'|'insufficient_reviews'|'ai_error', metadata: array<string, mixed>|null, review_count?: int, result?: array{aiAnalysis: array{summary: string, pros: array<string>, cons: array<string>}, reviewCount: int, totalReviewCount: int, resolvedModelKey: string}}
+     */
+    private function runAnalysis(Coaster $coaster, ?string $modelKey, string $language, bool $includeVocabularyGuide = true): array
+    {
+        $currentReviewCount = $this->getReviewCount($coaster, $language);
+
+        if ($currentReviewCount < self::MIN_REVIEWS_REQUIRED) {
+            $this->logger->info('Not enough reviews to generate summary', ['coaster' => $coaster->getName(), 'language' => $language, 'reviews' => $currentReviewCount]);
+
+            return ['status' => 'insufficient_reviews', 'metadata' => null, 'review_count' => $currentReviewCount];
+        }
+
+        $primaryReviews = $this->riddenCoasterRepository->getCoasterReviewsWithTextByLanguage($coaster, $language, self::MAX_REVIEWS_FOR_ANALYSIS);
+        $primaryReviewCount = \count($primaryReviews);
+
+        // Thin same-language sample: backfill with other-language reviews for a more
+        // representative consensus. The prompt still forces the output language.
+        $reviewsForAnalysis = $primaryReviews;
+        if ($primaryReviewCount < self::REPRESENTATIVE_SAMPLE_FLOOR) {
+            $backfillLimit = min(self::REPRESENTATIVE_SAMPLE_FLOOR, self::MAX_REVIEWS_FOR_ANALYSIS) - $primaryReviewCount;
+            $reviewsForAnalysis = [...$primaryReviews, ...$this->riddenCoasterRepository->getCoasterReviewsWithTextExcludingLanguage($coaster, $language, $backfillLimit)];
+        }
+
+        $aiAnalysis = $this->analyzeReviews($reviewsForAnalysis, $coaster->getName(), $modelKey, $language, $includeVocabularyGuide);
+
+        if (empty($aiAnalysis['summary'])) {
+            $this->logger->error('AI analysis returned empty summary', [
+                'coaster' => $coaster->getName(),
+                'coaster_id' => $coaster->getId(),
+                'language' => $language,
+                'model_key' => $modelKey,
+                'review_count' => \count($reviewsForAnalysis),
+                'metadata' => $aiAnalysis['metadata'] ?? null,
+            ]);
+
+            return ['status' => 'ai_error', 'metadata' => $aiAnalysis['metadata'] ?? null];
+        }
+
+        return [
+            'status' => 'ok',
+            'metadata' => $aiAnalysis['metadata'] ?? null,
+            'result' => [
+                'aiAnalysis' => $aiAnalysis,
+                // Same-language count only: this is what's persisted and what the
+                // regeneration-growth threshold in shouldUpdateSummary() compares against.
+                'reviewCount' => $primaryReviewCount,
+                'totalReviewCount' => \count($reviewsForAnalysis),
+                'resolvedModelKey' => $modelKey ?? BedrockService::DEFAULT_MODEL,
+            ],
+        ];
+    }
+
+    /**
+     * Determines if a coaster summary should be updated.
+     * Updates are needed if no summary exists yet, or enough new same-language reviews
+     * have arrived since the last generation. There's no time-based expiry: a summary
+     * with nothing new to say doesn't need regenerating, and this avoids resetting user
+     * feedback votes for no content-relevant reason. Use the admin "regenerate" action
+     * for cases where a coaster's status/rating context has changed without new reviews.
      */
     public function shouldUpdateSummary(Coaster $coaster, string $language = 'en'): bool
     {
         $summary = $this->entityManager->getRepository(CoasterSummary::class)
             ->findOneBy(['coaster' => $coaster, 'language' => $language]);
 
-        // No existing summary and enough reviews to create one
         if (!$summary) {
             return true;
         }
 
-        // Check if summary is stale first (fastest check)
-        if ($summary->getUpdatedAt() < new \DateTime('-180 days')) {
-            return true;
-        }
-
-        // Check for 20% more reviews with minimum threshold
-        $currentReviewCount = $this->getReviewCount($coaster);
+        $currentReviewCount = $this->getReviewCount($coaster, $language);
         $analyzedCount = $summary->getReviewsAnalyzed();
         $threshold = max(self::MIN_REVIEWS_REQUIRED, (int) ($analyzedCount * 0.2));
 
@@ -178,7 +236,7 @@ class CoasterSummaryService
      *
      * @return array{summary: string, pros: array<string>, cons: array<string>, metadata?: array<string, mixed>}
      */
-    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en'): array
+    private function analyzeReviews(array $reviews, string $coasterName, ?string $modelKey = null, string $language = 'en', bool $includeVocabularyGuide = true): array
     {
         if (empty($reviews)) {
             return ['summary' => '', 'pros' => [], 'cons' => []];
@@ -187,7 +245,7 @@ class CoasterSummaryService
         // Get coaster entity from first review to access coaster context data
         $coaster = $reviews[0]->getCoaster();
 
-        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language);
+        $prompt = $this->buildPrompt($reviews, $coasterName, $coaster, $language, $includeVocabularyGuide);
         $response = $this->bedrockService->invokeModel($prompt, $modelKey, 2000, 0.5);
 
         if (!$response['success']) {
@@ -275,7 +333,7 @@ class CoasterSummaryService
      *
      * @param array<int, RiddenCoaster> $riddenCoasters
      */
-    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
+    private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en', bool $includeVocabularyGuide = true): string
     {
         // Sanitize coaster name to prevent prompt injection
         $sanitizedName = preg_replace('/[^\w\s-]/', '', $coasterName);
@@ -289,37 +347,25 @@ class CoasterSummaryService
             'de' => 'German',
         ];
         $languageName = $languageNames[$language] ?? 'English';
-        $outputLanguageInstruction = 'en' === $language ? '' : " Write the summary and pros/cons in natural, fluent {$languageName} as if written by a native speaker enthusiast.";
+        $outputLanguageInstruction = "Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews below may be written in other languages — read them for content and sentiment, but always respond in {$languageName}.";
 
-        // Enhanced role definition for Nova 2 Lite
         $prompt = "You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze rider reviews for {$sanitizedName} and create an objective, balanced summary that helps future riders make informed decisions.\n\n";
 
-        // Enhanced instructions with better structure for Nova 2 Lite
         $prompt .= "<analysis_task>\n";
-        $prompt .= "Analyze the following {$reviewCount} reviews and their ratings to create:\n\n";
+        $prompt .= "Analyze the following {$reviewCount} reviews to create:\n\n";
         $prompt .= "1. SUMMARY: A truthful summary that reflects the actual consensus from reviews\n";
-        $prompt .= "   - FOLLOW THE SENTIMENT GUIDANCE provided in the coaster context\n";
-        $prompt .= "   - Use the rating distribution percentages to determine if opinions are divided\n";
+        $prompt .= "   - Use the rating distribution below to calibrate tone and gauge consensus, but never quote exact numbers or percentages in the summary\n";
         $prompt .= "   - MUST contain between 3 and 5 sentences\n\n";
-        $prompt .= "2. PROS: List the most frequently praised aspects (MAX 4 words each)\n";
-        $prompt .= "   - Only include aspects mentioned positively by multiple reviewers\n";
-        $prompt .= "   - For highly rated coasters: 3-5 pros\n";
-        $prompt .= "   - For poorly rated coasters: 1-2 pros (or none if truly bad)\n\n";
-        $prompt .= "3. CONS: List the most frequently criticized aspects (MAX 4 words each)\n";
-        $prompt .= "   - Only include aspects mentioned negatively by multiple reviewers\n";
-        $prompt .= "   - For highly rated coasters: 1-2 cons (or none if universally loved)\n";
-        $prompt .= "   - For poorly rated coasters: 3-5 cons\n\n";
+        $prompt .= "2. PROS/CONS: List the most frequently mentioned aspects (MAX 4 words each), only if raised by multiple reviewers\n";
+        $prompt .= "   - Scale the count to sentiment: highly rated -> 3-5 pros / 1-2 cons; poorly rated -> 1-2 pros / 3-5 cons; empty arrays are fine if unsupported by review content\n\n";
         $prompt .= "IMPORTANT GUIDELINES:\n";
-        if ($outputLanguageInstruction) {
-            $prompt .= "- {$outputLanguageInstruction}\n";
-        }
+        $prompt .= "- {$outputLanguageInstruction}\n";
         $prompt .= "- Never mention safety, legal, maintenance, construction or security issues\n";
         $prompt .= "- Be honest about the actual sentiment - don't force balance if reviews are overwhelmingly positive or negative\n";
-        $prompt .= "- Empty pros or cons arrays are acceptable if not supported by review content\n";
         $prompt .= "</analysis_task>\n\n";
 
         // Include vocabulary guide for all languages (including English for consistency)
-        $vocabularyGuideContent = $this->getVocabularyGuide($language);
+        $vocabularyGuideContent = $includeVocabularyGuide ? $this->getVocabularyGuide($language) : null;
         if ($vocabularyGuideContent) {
             $prompt .= "<vocabulary_guide>\n{$vocabularyGuideContent}\n</vocabulary_guide>\n\n";
         }
@@ -331,7 +377,8 @@ class CoasterSummaryService
             $prompt .= "Status: {$coaster->getStatus()->getName()}\n";
 
             if ($coaster->getAverageRating() && $coaster->getTotalRatings() > 0) {
-                $ratingPercent = round(((float) $coaster->getAverageRating() / 10) * 100, 1);
+                // Ratings are on a 0-5 scale (see RiddenCoasterRepository::updateAverageRatings())
+                $ratingPercent = round(((float) $coaster->getAverageRating() / 5) * 100, 1);
                 $prompt .= "Community Rating: {$ratingPercent}% based on {$coaster->getTotalRatings()} ratings\n";
 
                 // Add rating distribution analysis
@@ -352,20 +399,17 @@ class CoasterSummaryService
         }
         $prompt .= "</review_data>\n\n";
 
-        // Enhanced output format with examples
+        // Restated right after the (often very large) review data, close to generation,
+        // since instructions stated only once before tens of thousands of tokens of
+        // reviews are easy for the model to lose track of.
         $prompt .= "<output_format>\n";
-        $prompt .= "Respond with valid JSON in this exact format:\n";
+        $prompt .= "Reminder: respond in {$languageName}; summary is 3-5 sentences; never quote exact numbers or percentages.\n";
+        $prompt .= "Respond with valid JSON in this exact format, parseable directly:\n";
         $prompt .= "{\n";
         $prompt .= "  \"summary\": \"Your analysis in {$languageName} reflecting the actual review consensus\",\n";
         $prompt .= "  \"pros\": [\"positive aspect 1\", \"positive aspect 2\"],\n";
         $prompt .= "  \"cons\": [\"concern 1\"]\n";
         $prompt .= "}\n";
-        $prompt .= "\n";
-        $prompt .= "Notes:\n";
-        $prompt .= "- Pros and cons arrays can have 0-5 items each based on actual review content\n";
-        $prompt .= "- Empty arrays [] are valid if no consistent themes emerge\n";
-        $prompt .= "- Don't force artificial balance - reflect the true sentiment\n";
-        $prompt .= "Ensure your response is valid JSON that can be parsed directly.\n";
         $prompt .= '</output_format>';
 
         return $prompt;

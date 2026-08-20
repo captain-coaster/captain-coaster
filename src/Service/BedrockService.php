@@ -19,21 +19,11 @@ class BedrockService
 {
     /** Available AI models with their configurations */
     private const MODELS = [
-        'claude-haiku-4.5' => [
-            'id' => 'global.anthropic.claude-haiku-4-5-20251001-v1:0',
-            'input_cost_per_1k' => 0.001,
-            'output_cost_per_1k' => 0.005,
-        ],
         'gpt-oss-120b' => [
             'id' => 'openai.gpt-oss-120b-1:0',
             'input_cost_per_1k' => 0.00015,
             'output_cost_per_1k' => 0.0006,
             'reasoning_effort' => 'low',
-        ],
-        'nova2-lite' => [
-            'id' => 'global.amazon.nova-2-lite-v1:0',
-            'input_cost_per_1k' => 0.0003,
-            'output_cost_per_1k' => 0.0025,
         ],
         'gpt-5.6-luna' => [
             'id' => 'global.openai.gpt-5.6-luna',
@@ -43,7 +33,7 @@ class BedrockService
         ],
     ];
 
-    private const DEFAULT_MODEL = 'gpt-oss-120b';
+    public const DEFAULT_MODEL = 'gpt-5.6-luna';
 
     public function __construct(
         private BedrockRuntimeClient $bedrockClient,
@@ -55,7 +45,22 @@ class BedrockService
     /** @return array{success: bool, content?: string, error?: string, error_code?: string|null, metadata: array<string, mixed>} */
     public function invokeModel(string $prompt, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6): array
     {
-        $model = self::MODELS[$modelKey ?? $this->modelKey];
+        $resolvedModelKey = $modelKey ?? $this->modelKey;
+
+        if (!isset(self::MODELS[$resolvedModelKey])) {
+            $this->logger->error('Unknown Bedrock model key requested', [
+                'model_key' => $resolvedModelKey,
+                'available_models' => array_keys(self::MODELS),
+            ]);
+
+            return [
+                'success' => false,
+                'error' => \sprintf('Unknown model "%s". Available models: %s', $resolvedModelKey, implode(', ', array_keys(self::MODELS))),
+                'metadata' => ['model_key' => $resolvedModelKey],
+            ];
+        }
+
+        $model = self::MODELS[$resolvedModelKey];
 
         try {
             $requestBody = $this->buildConverseRequest($prompt, $maxTokens, $temperature, $model['reasoning_effort'] ?? null, $model['supports_temperature'] ?? true);
@@ -65,13 +70,6 @@ class BedrockService
             $result = $response->toArray();
             $metadata = $result['@metadata'];
             $stopReason = $result['stopReason'] ?? null;
-
-            // Debug: Log the response structure to understand token location
-            $this->logger->debug('Converse API response structure', [
-                'response_keys' => array_keys($result),
-                'usage_data' => $result['usage'] ?? 'not found',
-                'metadata_headers' => array_keys($metadata['headers'] ?? []),
-            ]);
 
             // For Converse API, token usage is in the 'usage' field, not headers
             $usage = $result['usage'] ?? [];

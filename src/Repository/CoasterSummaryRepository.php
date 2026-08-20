@@ -29,46 +29,33 @@ class CoasterSummaryRepository extends ServiceEntityRepository
     }
 
     /**
-     * Find coasters that have summaries in a specific language.
-     * Used for translate-only mode to load coasters with existing English summaries.
+     * Find coasters that have a summary in a specific language with negative votes at or
+     * above the specified threshold. Used by `app:generate-coaster-summaries --min-downvotes`
+     * to bulk-regenerate poorly rated summaries - scoped to one language so a downvoted EN
+     * summary doesn't also trigger regenerating an unrelated, perfectly good FR summary on
+     * the same coaster. A threshold of 0 matches every coaster with a summary in the
+     * language (negativeVotes is never negative), which is how --min-downvotes=0 resets
+     * every existing summary regardless of votes.
      *
-     * @param string   $language Language code (e.g., 'en')
-     * @param int|null $limit    Optional limit on results
-     *
-     * @return array<Coaster> Array of coaster entities ordered by ID
-     */
-    public function findCoastersWithSummaries(string $language, ?int $limit = null): array
-    {
-        $qb = $this->createQueryBuilder('cs')
-            ->select('c')
-            ->join('cs.coaster', 'c')
-            ->where('cs.language = :language')
-            ->orderBy('c.id', 'ASC')
-            ->setParameter('language', $language);
-
-        if ($limit) {
-            $qb->setMaxResults($limit);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /**
-     * Find coasters that have summaries with negative votes above the specified threshold.
-     * Used for force-bad-reviews mode to regenerate poorly rated summaries.
-     *
+     * @param string   $language          Language code (e.g., 'en')
      * @param int      $downvoteThreshold Minimum number of negative votes
      * @param int|null $limit             Optional limit on results
      *
      * @return array<Coaster> Array of coaster entities ordered by ID
      */
-    public function findCoastersWithBadReviews(int $downvoteThreshold, ?int $limit = null): array
+    public function findCoastersWithBadReviews(string $language, int $downvoteThreshold, ?int $limit = null): array
     {
-        $qb = $this->createQueryBuilder('cs')
+        $subQuery = $this->createQueryBuilder('cs')
+            ->select('IDENTITY(cs.coaster)')
+            ->where('cs.language = :language')
+            ->andWhere('cs.negativeVotes >= :threshold');
+
+        $qb = $this->getEntityManager()->createQueryBuilder()
             ->select('c')
-            ->join('cs.coaster', 'c')
-            ->where('cs.negativeVotes >= :threshold')
+            ->from(Coaster::class, 'c')
+            ->where($this->getEntityManager()->createQueryBuilder()->expr()->in('c.id', $subQuery->getDQL()))
             ->orderBy('c.id', 'ASC')
+            ->setParameter('language', $language)
             ->setParameter('threshold', $downvoteThreshold);
 
         if ($limit) {

@@ -99,13 +99,13 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
             // Mock repository to return sufficient review count
             $riddenCoasterRepository
-                ->method('countCoasterReviewsWithText')
-                ->with($coaster)
+                ->method('countCoasterReviewsWithTextByLanguage')
+                ->with($coaster, $language)
                 ->willReturn($reviewCount);
 
             $riddenCoasterRepository
-                ->method('getCoasterReviewsWithText')
-                ->with($coaster, 600)
+                ->method('getCoasterReviewsWithTextByLanguage')
+                ->with($coaster, $language, 600)
                 ->willReturn($reviews);
 
             // Mock vocabulary guide (may or may not exist)
@@ -153,7 +153,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
                 ->method('flush');
 
             // Test direct generation
-            $result = $service->generateSummary($coaster, 'nova2-lite', $language);
+            $result = $service->generateSummary($coaster, 'gpt-5.6-luna', $language);
 
             // Verify direct generation methodology
             $this->assertArrayHasKey('summary', $result);
@@ -209,13 +209,13 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
             // Mock repository to return sufficient review count
             $riddenCoasterRepository
-                ->method('countCoasterReviewsWithText')
-                ->with($coaster)
+                ->method('countCoasterReviewsWithTextByLanguage')
+                ->with($coaster, $language)
                 ->willReturn($reviewCount);
 
             $riddenCoasterRepository
-                ->method('getCoasterReviewsWithText')
-                ->with($coaster, 600)
+                ->method('getCoasterReviewsWithTextByLanguage')
+                ->with($coaster, $language, 600)
                 ->willReturn($reviews);
 
             // Create vocabulary guide with content
@@ -263,7 +263,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
                 ->method('flush');
 
             // Test vocabulary guide integration
-            $result = $service->generateSummary($coaster, 'nova2-lite', $language);
+            $result = $service->generateSummary($coaster, 'gpt-5.6-luna', $language);
 
             // Verify vocabulary guide content is incorporated in the prompt
             $expectedVocabularyContent = $vocabularyContent ?: 'Test vocabulary guide content';
@@ -371,7 +371,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
             Generator\string(), // coaster name
             Generator\elements(['en', 'fr', 'es', 'de']), // language
             Generator\elements(['Operating', 'Closed', 'Under Construction', 'SBNO']), // status name
-            Generator\choose(1, 10), // average rating (1-10)
+            Generator\choose(1, 5), // average rating (1-5, real ratings are on a 0-5 scale)
             Generator\choose(20, 500), // total ratings
             Generator\choose(20, 100) // review count (sufficient reviews)
         )->then(function (
@@ -413,13 +413,13 @@ class CoasterSummaryServicePropertyTest extends TestCase
 
             // Mock repository to return sufficient review count
             $riddenCoasterRepository
-                ->method('countCoasterReviewsWithText')
-                ->with($coaster)
+                ->method('countCoasterReviewsWithTextByLanguage')
+                ->with($coaster, $language)
                 ->willReturn($reviewCount);
 
             $riddenCoasterRepository
-                ->method('getCoasterReviewsWithText')
-                ->with($coaster, 600)
+                ->method('getCoasterReviewsWithTextByLanguage')
+                ->with($coaster, $language, 600)
                 ->willReturn($reviews);
 
             // Mock vocabulary guide (optional)
@@ -462,14 +462,14 @@ class CoasterSummaryServicePropertyTest extends TestCase
                 ->method('flush');
 
             // Test enhanced source data inclusion
-            $result = $service->generateSummary($coaster, 'nova2-lite', $language);
+            $result = $service->generateSummary($coaster, 'gpt-5.6-luna', $language);
 
             // Verify coaster context data is included in the prompt
             $this->assertStringContainsString('<coaster_context>', $capturedPrompt);
             $this->assertStringContainsString("Status: {$statusName}", $capturedPrompt);
             
             // Verify global rating percentage is included when available
-            $expectedRatingPercent = round(($averageRating / 10) * 100, 1);
+            $expectedRatingPercent = round(($averageRating / 5) * 100, 1);
             $this->assertStringContainsString("Community Rating: {$expectedRatingPercent}% based on {$totalRatings} ratings", $capturedPrompt);
             $this->assertStringContainsString('</coaster_context>', $capturedPrompt);
 

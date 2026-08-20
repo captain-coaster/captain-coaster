@@ -47,7 +47,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->commandTester = new CommandTester($command);
     }
 
-    public function testForceBadReviewsOption(): void
+    public function testMinDownvotesOption(): void
     {
         $coaster = new Coaster();
         $coaster->setName('Test Coaster');
@@ -55,11 +55,11 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->summaryRepository
             ->expects($this->once())
             ->method('findCoastersWithBadReviews')
-            ->with(5, null)
+            ->with('en', 5, null)
             ->willReturn([$coaster]);
 
         $this->commandTester->execute([
-            '--force-bad-reviews' => 5,
+            '--min-downvotes' => 5,
             '--dry-run' => true,
         ]);
 
@@ -67,6 +67,61 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->assertStringContainsString('Force regeneration mode', $output);
         $this->assertStringContainsString('5+', $output);
         $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testMinDownvotesZeroRegeneratesEveryExistingSummary(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->summaryRepository
+            ->expects($this->once())
+            ->method('findCoastersWithBadReviews')
+            ->with('fr', 0, null)
+            ->willReturn([$coaster]);
+
+        $this->commandTester->execute([
+            '--languages' => 'fr',
+            '--min-downvotes' => 0,
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('0+ downvotes', $output);
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testMinDownvotesRequiresExactlyOneLanguage(): void
+    {
+        $this->summaryRepository
+            ->expects($this->never())
+            ->method('findCoastersWithBadReviews');
+
+        $this->commandTester->execute([
+            '--languages' => 'en,fr',
+            '--min-downvotes' => 5,
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('requires exactly one --languages value', $output);
+        $this->assertSame(1, $this->commandTester->getStatusCode());
+    }
+
+    public function testMinDownvotesCannotBeCombinedWithCoasterId(): void
+    {
+        $this->coasterRepository->expects($this->never())->method('find');
+        $this->summaryRepository->expects($this->never())->method('findCoastersWithBadReviews');
+
+        $this->commandTester->execute([
+            '--coaster-id' => '123',
+            '--min-downvotes' => 5,
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('cannot be combined', $output);
+        $this->assertSame(1, $this->commandTester->getStatusCode());
     }
 
     public function testDefaultLanguageIsEnglish(): void
@@ -77,7 +132,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->coasterRepository
             ->expects($this->once())
             ->method('findEligibleForSummary')
-            ->with(20, null)
+            ->with(20, null, 'en')
             ->willReturn([$coaster]);
 
         $this->commandTester->execute([
@@ -97,7 +152,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->coasterRepository
             ->expects($this->once())
             ->method('findEligibleForSummary')
-            ->with(20, 5)
+            ->with(20, 5, 'en')
             ->willReturn([$coaster]);
 
         $this->commandTester->execute([
@@ -125,6 +180,28 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         ]);
 
         $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testCoasterIdAlwaysRegeneratesRegardlessOfDueness(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository->method('find')->willReturn($coaster);
+
+        // Not due for a regen, but --coaster-id was explicit - should still run.
+        $this->summaryService->method('shouldUpdateSummary')->willReturn(false);
+        $this->summaryService
+            ->expects($this->once())
+            ->method('generateSummary')
+            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'ai_error']);
+
+        $this->commandTester->execute([
+            '--coaster-id' => '123',
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringNotContainsString('Skipping', $output);
     }
 
     public function testInvalidCoasterIdReturnsError(): void
@@ -161,6 +238,68 @@ class GenerateCoasterSummariesCommandTest extends TestCase
 
         $output = $this->commandTester->getDisplay();
         $this->assertStringContainsString('Target languages: fr, es', $output);
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testSingleLanguageScopesTheEligibilityCount(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository
+            ->expects($this->once())
+            ->method('findEligibleForSummary')
+            ->with(20, 50, 'fr')
+            ->willReturn([$coaster]);
+
+        $this->commandTester->execute([
+            '--languages' => 'fr',
+            '--limit' => 50,
+            '--dry-run' => true,
+        ]);
+
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testNoVocabGuideOptionIsPassedToGenerateSummary(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository->method('find')->willReturn($coaster);
+        $this->summaryService->method('shouldUpdateSummary')->willReturn(true);
+        $this->summaryService
+            ->expects($this->once())
+            ->method('generateSummary')
+            ->with($coaster, null, 'fr', false)
+            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'ai_error']);
+
+        $this->commandTester->execute([
+            '--coaster-id' => '1',
+            '--languages' => 'fr',
+            '--no-vocab-guide' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Vocabulary guide disabled', $output);
+    }
+
+    public function testMultipleLanguagesDoNotScopeTheEligibilityCount(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository
+            ->expects($this->once())
+            ->method('findEligibleForSummary')
+            ->with(20, null, null)
+            ->willReturn([$coaster]);
+
+        $this->commandTester->execute([
+            '--languages' => 'en,fr',
+            '--dry-run' => true,
+        ]);
+
         $this->assertSame(0, $this->commandTester->getStatusCode());
     }
 

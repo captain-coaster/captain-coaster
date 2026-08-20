@@ -37,7 +37,7 @@ class BedrockServiceTest extends TestCase
      * **Property 3: Unified Bedrock API Interface**
      * **Validates: Requirements 3.2, 3.3, 3.4, 3.5**
      *
-     * For any supported Bedrock model (Nova 2 Lite, Claude Haiku, GPT OSS),
+     * For any supported Bedrock model (GPT OSS, GPT-5.6 Luna),
      * the BedrockService should use the same Converse API request format
      * and response parsing method regardless of the underlying model.
      */
@@ -45,7 +45,7 @@ class BedrockServiceTest extends TestCase
     {
         $this->limitTo(10);
         $this->forAll(
-            Generator\elements(['nova2-lite', 'claude-haiku-4.5', 'gpt-oss-120b']), // @phpstan-ignore-line
+            Generator\elements(['gpt-oss-120b', 'gpt-5.6-luna']), // @phpstan-ignore-line
             Generator\string(), // @phpstan-ignore-line
             Generator\choose(100, 2000), // @phpstan-ignore-line
             Generator\float(0.0, 1.0) // @phpstan-ignore-line
@@ -54,7 +54,7 @@ class BedrockServiceTest extends TestCase
             $bedrockClient = $this->createConverseSpyClient();
 
             $logger = $this->createMock(LoggerInterface::class);
-            $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
+            $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
 
             // Set up mock response
             $mockResult = $this->createMockBedrockResponse($model);
@@ -76,7 +76,8 @@ class BedrockServiceTest extends TestCase
 
             $this->assertArrayHasKey('inferenceConfig', $args);
             $this->assertArrayHasKey('maxTokens', $args['inferenceConfig']);
-            $this->assertArrayHasKey('temperature', $args['inferenceConfig']);
+            // Temperature presence is model-dependent (supports_temperature) - see the
+            // dedicated testTemperatureIsSentForModelsThatSupportIt/...DontSupportIt tests.
 
             // Verify unified response structure
             $this->assertArrayHasKey('success', $result);
@@ -135,18 +136,6 @@ class BedrockServiceTest extends TestCase
         );
     }
 
-    public function testReasoningEffortIsOmittedForModelsThatDontSupportIt(): void
-    {
-        $bedrockClient = $this->createConverseSpyClient();
-        $logger = $this->createMock(LoggerInterface::class);
-        $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
-        $bedrockClient->setMockResult($this->createMockBedrockResponse('nova2-lite'));
-
-        $service->invokeModel('prompt', 'nova2-lite', 500, 0.5);
-
-        $this->assertArrayNotHasKey('additionalModelRequestFields', $bedrockClient->lastConverseArgs);
-    }
-
     public function testReasoningEffortIsOmittedForGpt56Luna(): void
     {
         $bedrockClient = $this->createConverseSpyClient();
@@ -175,10 +164,10 @@ class BedrockServiceTest extends TestCase
     {
         $bedrockClient = $this->createConverseSpyClient();
         $logger = $this->createMock(LoggerInterface::class);
-        $service = new BedrockService($bedrockClient, $logger, 'nova2-lite');
-        $bedrockClient->setMockResult($this->createMockBedrockResponse('nova2-lite'));
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-oss-120b'));
 
-        $service->invokeModel('prompt', 'nova2-lite', 500, 0.5);
+        $service->invokeModel('prompt', 'gpt-oss-120b', 500, 0.5);
 
         $this->assertArrayHasKey('temperature', $bedrockClient->lastConverseArgs['inferenceConfig']);
         $this->assertSame(0.5, $bedrockClient->lastConverseArgs['inferenceConfig']['temperature']);
@@ -202,6 +191,26 @@ class BedrockServiceTest extends TestCase
         $result = $service->invokeModel('prompt', 'gpt-oss-120b', 1000, 0.5);
 
         $this->assertSame('max_tokens', $result['metadata']['stop_reason']);
+    }
+
+    public function testInvokeModelReturnsClearErrorForUnknownModelKey(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+
+        $result = $service->invokeModel('prompt', 'gtp-5.6-luna', 500, 0.5);
+
+        $this->assertFalse($result['success']);
+
+        if (!isset($result['error'])) {
+            $this->fail('Expected an error message to be present');
+        }
+
+        $this->assertStringContainsString('Unknown model "gtp-5.6-luna"', $result['error']);
+        $this->assertStringContainsString('gpt-oss-120b', $result['error']);
+        $this->assertStringContainsString('gpt-5.6-luna', $result['error']);
+        $this->assertNull($bedrockClient->lastConverseArgs);
     }
 
     public function testInvokeModelHasNoEnableReasoningParameter(): void

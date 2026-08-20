@@ -60,7 +60,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     public function testApiFailureLoggingWithDetailedContext(): void
     {
         // Setup sufficient reviews
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
         
         // Create a mock RiddenCoaster
@@ -69,7 +69,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
         $mockRiddenCoaster->method('getValue')->willReturn(8.0);
         
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
         // Setup vocabulary guide (optional)
@@ -81,7 +81,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([
                 'success' => false,
                 'error' => 'API rate limit exceeded',
-                'metadata' => ['model' => 'nova2-lite']
+                'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
         // Expect error logging with detailed context (both Bedrock service error and empty summary error)
@@ -99,7 +99,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 }
             });
 
-        $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
 
         $this->assertNull($result['summary']);
         $this->assertArrayHasKey('reason', $result);
@@ -113,7 +113,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     public function testMissingVocabularyGuideWarningLogging(): void
     {
         // Setup sufficient reviews
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
         
         // Create a mock RiddenCoaster
@@ -122,7 +122,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
         $mockRiddenCoaster->method('getValue')->willReturn(8.0);
         
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
         // Setup missing vocabulary guide for French
@@ -134,7 +134,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([
                 'success' => true,
                 'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": ["rough"]}',
-                'metadata' => ['model' => 'nova2-lite']
+                'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
         // Expect warning logging for missing vocabulary guide
@@ -149,7 +149,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 })
             );
 
-        $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'fr');
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
 
         $this->assertNotNull($result['summary']);
     }
@@ -161,7 +161,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     public function testNoWarningForMissingEnglishVocabularyGuide(): void
     {
         // Setup sufficient reviews
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
         
         // Create a mock RiddenCoaster
@@ -170,7 +170,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
         $mockRiddenCoaster->method('getValue')->willReturn(8.0);
         
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
         // Setup missing vocabulary guide for English
@@ -182,14 +182,14 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([
                 'success' => true,
                 'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": ["rough"]}',
-                'metadata' => ['model' => 'nova2-lite']
+                'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
         // Expect NO warning logging for missing English vocabulary guide
         $this->logger->expects($this->never())
             ->method('warning');
 
-        $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
 
         $this->assertNotNull($result['summary']);
     }
@@ -201,7 +201,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     public function testInsufficientReviewsInformationalLogging(): void
     {
         // Setup insufficient reviews (less than 20)
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(15);
 
         // Expect informational logging with review count details
@@ -218,7 +218,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 })
             );
 
-        $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
 
         $this->assertNull($result['summary']);
         $this->assertArrayHasKey('reason', $result);
@@ -234,7 +234,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     public function testAiResponseParsingFailureLogging(): void
     {
         // Setup sufficient reviews
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
         
         // Create a mock RiddenCoaster
@@ -243,7 +243,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
         $mockRiddenCoaster->method('getValue')->willReturn(8.0);
         
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
         // Setup vocabulary guide (optional)
@@ -255,7 +255,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([
                 'success' => true,
                 'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": [invalid json}',
-                'metadata' => ['model' => 'nova2-lite']
+                'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
         // Expect warning logging for JSON parsing failure
@@ -282,7 +282,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
                 })
             );
 
-        $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
 
         $this->assertNull($result['summary']);
         $this->assertArrayHasKey('reason', $result);
@@ -296,7 +296,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     public function testSuccessfulParsingDoesNotTriggerError(): void
     {
         // Setup sufficient reviews
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
         
         // Create a mock RiddenCoaster
@@ -305,7 +305,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $mockRiddenCoaster->method('getReview')->willReturn('Test review');
         $mockRiddenCoaster->method('getValue')->willReturn(8.0);
         
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithText')
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
         // Setup vocabulary guide (optional)
@@ -317,7 +317,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
             ->willReturn([
                 'success' => true,
                 'content' => '{"summary": "Great coaster with amazing airtime", "pros": ["fast", "smooth"], "cons": ["long queue"]}',
-                'metadata' => ['model' => 'nova2-lite']
+                'metadata' => ['model' => 'gpt-5.6-luna']
             ]);
 
         // Expect NO warning or error logging for successful parsing
@@ -326,7 +326,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->logger->expects($this->never())
             ->method('error');
 
-        $result = $this->service->generateSummary($this->coaster, 'nova2-lite', 'en');
+        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
 
         $this->assertNotNull($result['summary']);
         $this->assertArrayNotHasKey('reason', $result);

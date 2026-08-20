@@ -56,7 +56,7 @@ class GenerateCoasterSummariesCommandPropertyTest extends TestCase
      * **Feature: coaster-summary-refactor, Property 5: Command Option Processing**
      * **Validates: Requirements 5.2, 5.3, 5.4**
      *
-     * For any valid combination of command options (dry-run, force, force-bad-reviews, languages),
+     * For any valid combination of command options (dry-run, languages),
      * the GenerateCommand should parse and execute them correctly without conflicts.
      */
     public function testCommandOptionProcessingProperty(): void
