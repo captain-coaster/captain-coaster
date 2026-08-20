@@ -194,54 +194,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get only reviews with text content for a specific coaster (all languages).
-     * Returns RiddenCoaster entities with review text and rating values.
-     *
-     * @return array<int, RiddenCoaster>
-     */
-    public function getCoasterReviewsWithText(Coaster $coaster, ?int $limit = null): array
-    {
-        $qb = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r', 'u')
-            ->from(RiddenCoaster::class, 'r')
-            ->innerJoin('r.user', 'u')
-            ->where('r.coaster = :coasterId')
-            ->andWhere('r.review IS NOT NULL')
-            ->andWhere('TRIM(r.review) != \'\'')
-            ->andWhere('u.enabled = 1')
-            ->orderBy('r.updatedAt', 'desc')
-            ->setParameter('coasterId', $coaster->getId());
-
-        if ($limit) {
-            $qb->setMaxResults($limit);
-        }
-
-        return $qb->getQuery()->getResult();
-    }
-
-    /** Count reviews with text content for a specific coaster. */
-    public function countCoasterReviewsWithText(Coaster $coaster): int
-    {
-        try {
-            return (int) $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('count(r.id)')
-                ->from(RiddenCoaster::class, 'r')
-                ->innerJoin('r.user', 'u')
-                ->where('r.coaster = :coasterId')
-                ->andWhere('r.review IS NOT NULL')
-                ->andWhere('TRIM(r.review) != \'\'')
-                ->andWhere('u.enabled = 1')
-                ->setParameter('coasterId', $coaster->getId())
-                ->getQuery()
-                ->getSingleScalarResult();
-        } catch (\Exception) {
-            return 0;
-        }
-    }
-
-    /**
      * Get a random-ish sample of reviews with text content, for moderation
      * calibration. Uses a random offset rather than ORDER BY RAND() to avoid
      * a full-table sort — good enough for calibration sampling, not intended
@@ -703,5 +655,59 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Get reviews with text content for a coaster in languages OTHER than the given one.
+     * Used to backfill the analysis set for a thin-language summary with a more
+     * representative sample, while still writing the output in the target language.
+     *
+     * @return array<int, RiddenCoaster>
+     */
+    public function getCoasterReviewsWithTextExcludingLanguage(Coaster $coaster, string $excludeLanguage, int $limit): array
+    {
+        if ($limit <= 0) {
+            return [];
+        }
+
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r', 'u')
+            ->from(RiddenCoaster::class, 'r')
+            ->innerJoin('r.user', 'u')
+            ->where('r.coaster = :coasterId')
+            ->andWhere('r.language != :language')
+            ->andWhere('r.review IS NOT NULL')
+            ->andWhere('TRIM(r.review) != \'\'')
+            ->andWhere('u.enabled = 1')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setParameter('coasterId', $coaster->getId())
+            ->setParameter('language', $excludeLanguage)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /** Count reviews with text content for a specific coaster in a specific language. */
+    public function countCoasterReviewsWithTextByLanguage(Coaster $coaster, string $language): int
+    {
+        try {
+            return (int) $this->getEntityManager()
+                ->createQueryBuilder()
+                ->select('count(r.id)')
+                ->from(RiddenCoaster::class, 'r')
+                ->innerJoin('r.user', 'u')
+                ->where('r.coaster = :coasterId')
+                ->andWhere('r.language = :language')
+                ->andWhere('r.review IS NOT NULL')
+                ->andWhere('TRIM(r.review) != \'\'')
+                ->andWhere('u.enabled = 1')
+                ->setParameter('coasterId', $coaster->getId())
+                ->setParameter('language', $language)
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (\Exception) {
+            return 0;
+        }
     }
 }

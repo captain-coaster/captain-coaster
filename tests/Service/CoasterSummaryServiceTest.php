@@ -136,7 +136,7 @@ class CoasterSummaryServiceTest extends TestCase
         $coaster = new Coaster();
         $coaster->setName('Test Coaster');
         $coaster->setStatus($status);
-        $coaster->setAverageRating('8.5');
+        $coaster->setAverageRating('4.25'); // ratings are on a 0-5 scale
         $coaster->setTotalRatings(150);
 
         $reviews = [
@@ -280,9 +280,10 @@ class CoasterSummaryServiceTest extends TestCase
         $coaster->setName('Test Coaster');
         $reviews = [$this->createRiddenCoaster($coaster, 8.0, 'Test review')];
 
-        // Test English (no additional language instruction)
+        // English also gets an explicit instruction now, since backfilled reviews from
+        // other languages can be mixed into the analysis set for thin-language coasters.
         $promptEn = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'en');
-        $this->assertStringNotContainsString('Write the summary and pros/cons in natural, fluent English', $promptEn);
+        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent English', $promptEn);
 
         // Test French
         $promptFr = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'fr');

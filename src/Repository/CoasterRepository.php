@@ -389,13 +389,18 @@ class CoasterRepository extends ServiceEntityRepository
 
     /**
      * Find all enabled coasters with minimum number of reviews for AI summary generation.
+     * When $language is given, only reviews in that language count toward the threshold -
+     * important for --limit-paced backfill runs (e.g. French), where an any-language count
+     * would mostly select coasters that are eligible in some other language but not the
+     * target one, wasting most of the limit on cheap insufficient_reviews bailouts.
      *
-     * @param int      $minReviews Minimum number of reviews required
-     * @param int|null $limit      Optional limit on results
+     * @param int         $minReviews Minimum number of reviews required
+     * @param int|null    $limit      Optional limit on results
+     * @param string|null $language   Optional language to scope the review count to
      *
      * @return array<Coaster> Array of coaster entities ordered by ID
      */
-    public function findEligibleForSummary(int $minReviews, ?int $limit = null): array
+    public function findEligibleForSummary(int $minReviews, ?int $limit = null, ?string $language = null): array
     {
         $qb = $this->createQueryBuilder('c')
             ->select('c')
@@ -410,6 +415,11 @@ class CoasterRepository extends ServiceEntityRepository
             ->orderBy('c.id', 'ASC')
             ->setParameter('enabled', true)
             ->setParameter('minReviews', $minReviews);
+
+        if (null !== $language) {
+            $qb->andWhere('rc.language = :language')
+                ->setParameter('language', $language);
+        }
 
         if ($limit) {
             $qb->setMaxResults($limit);
