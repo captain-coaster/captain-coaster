@@ -389,18 +389,20 @@ class CoasterRepository extends ServiceEntityRepository
 
     /**
      * Find all enabled coasters with minimum number of reviews for AI summary generation.
-     * When $language is given, only reviews in that language count toward the threshold -
-     * important for --limit-paced backfill runs (e.g. French), where an any-language count
-     * would mostly select coasters that are eligible in some other language but not the
-     * target one, wasting most of the limit on cheap insufficient_reviews bailouts.
+     * When $language is given, the total (any-language) count still gates via $minReviews -
+     * important for --limit-paced backfill runs, where a strictly same-language count would
+     * miss coasters that CoasterSummaryService can now analyze via backfill from other
+     * languages - but $nativeMinReviews additionally requires a small genuine same-language
+     * presence, mirroring CoasterSummaryService's two-tier eligibility check.
      *
-     * @param int         $minReviews Minimum number of reviews required
-     * @param int|null    $limit      Optional limit on results
-     * @param string|null $language   Optional language to scope the review count to
+     * @param int         $minReviews       Minimum number of reviews required, any language
+     * @param int|null    $limit            Optional limit on results
+     * @param string|null $language         Optional language to also require a minimum native presence for
+     * @param int|null    $nativeMinReviews Minimum same-language reviews when $language is given (default 1)
      *
      * @return array<Coaster> Array of coaster entities ordered by ID
      */
-    public function findEligibleForSummary(int $minReviews, ?int $limit = null, ?string $language = null): array
+    public function findEligibleForSummary(int $minReviews, ?int $limit = null, ?string $language = null, ?int $nativeMinReviews = null): array
     {
         $qb = $this->createQueryBuilder('c')
             ->select('c')
@@ -417,8 +419,9 @@ class CoasterRepository extends ServiceEntityRepository
             ->setParameter('minReviews', $minReviews);
 
         if (null !== $language) {
-            $qb->andWhere('rc.language = :language')
-                ->setParameter('language', $language);
+            $qb->andHaving('SUM(CASE WHEN rc.language = :language THEN 1 ELSE 0 END) >= :nativeMinReviews')
+                ->setParameter('language', $language)
+                ->setParameter('nativeMinReviews', $nativeMinReviews ?? 1);
         }
 
         if ($limit) {

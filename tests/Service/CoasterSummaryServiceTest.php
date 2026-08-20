@@ -9,9 +9,7 @@ use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
 use App\Entity\User;
-use App\Entity\VocabularyGuide;
 use App\Repository\RiddenCoasterRepository;
-use App\Repository\VocabularyGuideRepository;
 use App\Service\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -91,36 +89,6 @@ class CoasterSummaryServiceTest extends TestCase
     }
 
     /**
-     * Test vocabulary guide inclusion in prompts.
-     * Requirements: 1.4.
-     */
-    public function testVocabularyGuideInclusionInPrompts(): void
-    {
-        $vocabularyGuide = new VocabularyGuide();
-        $vocabularyGuide->setLanguage('fr');
-        $vocabularyGuide->setContent('Use "montagnes russes" for roller coaster. Use formal language.');
-
-        $vocabularyRepo = $this->createMock(VocabularyGuideRepository::class);
-        $vocabularyRepo->method('findByLanguage')
-            ->with('fr')
-            ->willReturn($vocabularyGuide);
-
-        $service = $this->createCoasterSummaryService($vocabularyRepo);
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
-
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $reviews = [$this->createRiddenCoaster($coaster, 7.0, 'Bon manège!')];
-
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'fr');
-
-        $this->assertStringContainsString('<vocabulary_guide>', $prompt);
-        $this->assertStringContainsString('Use "montagnes russes" for roller coaster', $prompt);
-        $this->assertStringContainsString('</vocabulary_guide>', $prompt);
-        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent French', $prompt);
-    }
-
-    /**
      * Test coaster context data inclusion in prompts.
      * Requirements: 4.1, 4.2.
      */
@@ -190,35 +158,6 @@ class CoasterSummaryServiceTest extends TestCase
         // Verify review data section structure
         $this->assertStringContainsString('<review_data>', $prompt);
         $this->assertStringContainsString('</review_data>', $prompt);
-    }
-
-    /**
-     * Test prompt handles missing vocabulary guide gracefully.
-     * Requirements: 1.4.
-     */
-    public function testPromptHandlesMissingVocabularyGuideGracefully(): void
-    {
-        $vocabularyRepo = $this->createMock(VocabularyGuideRepository::class);
-        $vocabularyRepo->method('findByLanguage')
-            ->willReturn(null);
-
-        $logger = $this->createMock(LoggerInterface::class);
-        $logger->expects($this->once())
-            ->method('warning')
-            ->with('No vocabulary guide found for language', ['language' => 'es']);
-
-        $service = $this->createCoasterSummaryService($vocabularyRepo, $logger);
-        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
-
-        $coaster = new Coaster();
-        $coaster->setName('Test Coaster');
-        $reviews = [$this->createRiddenCoaster($coaster, 7.5, '¡Excelente montaña rusa!')];
-
-        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Test Coaster', $coaster, 'es');
-
-        // Should not contain vocabulary guide section
-        $this->assertStringNotContainsString('<vocabulary_guide>', $prompt);
-        $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent Spanish', $prompt);
     }
 
     /**
@@ -298,20 +237,16 @@ class CoasterSummaryServiceTest extends TestCase
         $this->assertStringContainsString('Write the summary and pros/cons in natural, fluent German', $promptDe);
     }
 
-    private function createCoasterSummaryService(
-        ?VocabularyGuideRepository $vocabularyRepo = null,
-        ?LoggerInterface $logger = null
-    ): CoasterSummaryService {
+    private function createCoasterSummaryService(?LoggerInterface $logger = null): CoasterSummaryService
+    {
         $entityManager = $this->createMock(EntityManagerInterface::class);
         $riddenCoasterRepo = $this->createMock(RiddenCoasterRepository::class);
-        $vocabularyRepo ??= $this->createMock(VocabularyGuideRepository::class);
         $bedrockService = $this->createMock(BedrockService::class);
         $logger ??= $this->createMock(LoggerInterface::class);
 
         return new CoasterSummaryService(
             $entityManager,
             $riddenCoasterRepo,
-            $vocabularyRepo,
             $bedrockService,
             $logger
         );

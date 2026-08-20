@@ -41,7 +41,6 @@ class GenerateCoasterSummariesCommand extends Command
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit number of coasters to process', null)
             ->addOption('min-downvotes', null, InputOption::VALUE_OPTIONAL, 'Bulk-regenerate coasters that already have a summary in the target language with at least this many downvotes (0 = every existing summary, regardless of votes). Requires a single --languages value.', null)
             ->addOption('languages', null, InputOption::VALUE_OPTIONAL, 'Target languages for generation (comma-separated: en,fr,es,de)', 'en')
-            ->addOption('no-vocab-guide', null, InputOption::VALUE_NONE, 'Skip the vocabulary guide prompt section - for real (persisted) A/B testing of whether it still helps')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate execution without calling Bedrock API')
             ->setHelp(
                 'Generates AI summaries for coasters with sufficient reviews (20+).'."\n".
@@ -53,7 +52,6 @@ class GenerateCoasterSummariesCommand extends Command
                 '  php bin/console app:generate-coaster-summaries --languages=en,fr,es'."\n".
                 '  php bin/console app:generate-coaster-summaries --languages=fr --min-downvotes=5'."\n".
                 '  php bin/console app:generate-coaster-summaries --languages=fr --min-downvotes=0'."\n".
-                '  php bin/console app:generate-coaster-summaries --coaster-id=123 --languages=fr --no-vocab-guide'."\n".
                 '  php bin/console app:generate-coaster-summaries --dry-run'
             );
     }
@@ -67,7 +65,6 @@ class GenerateCoasterSummariesCommand extends Command
         $minDownvotesOption = $input->getOption('min-downvotes');
         $minDownvotes = null !== $minDownvotesOption ? (int) $minDownvotesOption : null;
         $languagesOption = $input->getOption('languages');
-        $includeVocabularyGuide = !$input->getOption('no-vocab-guide');
         $dryRun = (bool) $input->getOption('dry-run');
 
         // Parse target languages
@@ -113,11 +110,17 @@ class GenerateCoasterSummariesCommand extends Command
             } elseif (null !== $minDownvotes) {
                 $coasters = $this->summaryRepository->findCoastersWithBadReviews($targetLanguages[0], $minDownvotes, $limit);
             } else {
-                // Scope the eligibility count to the target language when there's only one,
-                // so a --limit doesn't get wasted on coasters that are eligible in some
-                // other language but not the one actually being generated.
+                // Require a minimum same-language presence when there's a single target
+                // language, so a --limit doesn't get wasted on coasters that are eligible
+                // in some other language but have no genuine presence in the one actually
+                // being generated - mirrors CoasterSummaryService's two-tier eligibility.
                 $eligibilityLanguage = 1 === \count($targetLanguages) ? $targetLanguages[0] : null;
-                $coasters = $this->coasterRepository->findEligibleForSummary(CoasterSummaryService::MIN_REVIEWS_REQUIRED, $limit, $eligibilityLanguage);
+                $coasters = $this->coasterRepository->findEligibleForSummary(
+                    CoasterSummaryService::MIN_REVIEWS_REQUIRED,
+                    $limit,
+                    $eligibilityLanguage,
+                    CoasterSummaryService::MIN_NATIVE_REVIEWS_REQUIRED
+                );
             }
         } catch (\Exception $e) {
             $io->error("Error loading coasters: {$e->getMessage()}");
@@ -141,10 +144,6 @@ class GenerateCoasterSummariesCommand extends Command
 
         if (null !== $minDownvotes) {
             $io->note("Force regeneration mode: {$targetLanguages[0]} summaries with {$minDownvotes}+ downvotes".(0 === $minDownvotes ? ' (i.e. every existing summary)' : ''));
-        }
-
-        if (!$includeVocabularyGuide) {
-            $io->note('Vocabulary guide disabled for this run.');
         }
 
         foreach ($coasters as $coaster) {
@@ -172,7 +171,7 @@ class GenerateCoasterSummariesCommand extends Command
 
                     $io->writeln("  → Generating {$language} summary...");
 
-                    $result = $this->summaryService->generateSummary($coaster, null, $language, $includeVocabularyGuide);
+                    $result = $this->summaryService->generateSummary($coaster, null, $language);
 
                     if ($result['summary']) {
                         ++$summariesGenerated[$language];
@@ -195,7 +194,7 @@ class GenerateCoasterSummariesCommand extends Command
                         $failureMessage = "    ⚠ {$language} failed ({$reason})";
                         if ('insufficient_reviews' === $reason) {
                             $reviewCount = $result['review_count'] ?? 0;
-                            $failureMessage .= " - only {$reviewCount} reviews (need ".CoasterSummaryService::MIN_REVIEWS_REQUIRED.'+)';
+                            $failureMessage .= " - only {$reviewCount} reviews (need at least ".CoasterSummaryService::MIN_NATIVE_REVIEWS_REQUIRED." in {$language} and ".CoasterSummaryService::MIN_REVIEWS_REQUIRED.'+ total across all languages)';
                         } elseif ('ai_error' === $reason) {
                             $failureMessage .= ' - check AWS Bedrock service status and API limits';
                         }

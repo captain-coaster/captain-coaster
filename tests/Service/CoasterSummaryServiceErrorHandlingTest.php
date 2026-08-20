@@ -7,7 +7,6 @@ namespace App\Tests\Service;
 use App\Entity\Coaster;
 use App\Entity\Status;
 use App\Repository\RiddenCoasterRepository;
-use App\Repository\VocabularyGuideRepository;
 use App\Service\BedrockService;
 use App\Service\CoasterSummaryService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +22,6 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
 {
     private EntityManagerInterface&MockObject $entityManager;
     private RiddenCoasterRepository&MockObject $riddenCoasterRepository;
-    private VocabularyGuideRepository&MockObject $vocabularyGuideRepository;
     private BedrockService&MockObject $bedrockService;
     private LoggerInterface&MockObject $logger;
     private CoasterSummaryService $service;
@@ -33,14 +31,12 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->riddenCoasterRepository = $this->createMock(RiddenCoasterRepository::class);
-        $this->vocabularyGuideRepository = $this->createMock(VocabularyGuideRepository::class);
         $this->bedrockService = $this->createMock(BedrockService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->service = new CoasterSummaryService(
             $this->entityManager,
             $this->riddenCoasterRepository,
-            $this->vocabularyGuideRepository,
             $this->bedrockService,
             $this->logger
         );
@@ -62,7 +58,9 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         // Setup sufficient reviews
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
-        
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')
+            ->willReturn(25);
+
         // Create a mock RiddenCoaster
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
@@ -72,11 +70,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
-        // Setup vocabulary guide (optional)
-        $this->vocabularyGuideRepository->method('findByLanguage')
-            ->willReturn(null);
-
-        // Setup Bedrock service to return failure
+// Setup Bedrock service to return failure
         $this->bedrockService->method('invokeModel')
             ->willReturn([
                 'success' => false,
@@ -106,109 +100,57 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->assertEquals('ai_error', $result['reason']); // @phpstan-ignore-line
     }
 
+
     /**
-     * Test missing vocabulary guide warning logging
+     * Test insufficient same-language reviews informational logging (below the
+     * MIN_NATIVE_REVIEWS_REQUIRED floor - backfill can't help here, there just isn't
+     * a genuine same-language audience yet).
      * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
      */
-    public function testMissingVocabularyGuideWarningLogging(): void
+    public function testInsufficientNativeReviewsInformationalLogging(): void
     {
-        // Setup sufficient reviews
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
-            ->willReturn(25);
-        
-        // Create a mock RiddenCoaster
-        $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
-        $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
-        $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
-        
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
-            ->willReturn([$mockRiddenCoaster]);
+            ->willReturn(3);
 
-        // Setup missing vocabulary guide for French
-        $this->vocabularyGuideRepository->method('findByLanguage')
-            ->willReturn(null);
-
-        // Setup successful Bedrock response
-        $this->bedrockService->method('invokeModel')
-            ->willReturn([
-                'success' => true,
-                'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": ["rough"]}',
-                'metadata' => ['model' => 'gpt-5.6-luna']
-            ]);
-
-        // Expect warning logging for missing vocabulary guide
         $this->logger->expects($this->once())
-            ->method('warning')
+            ->method('info')
             ->with(
-                'No vocabulary guide found for language',
+                'Not enough same-language reviews to generate summary',
                 $this->callback(function ($context) {
-                    $this->assertArrayHasKey('language', $context);
-                    $this->assertEquals('fr', $context['language']);
+                    $this->assertArrayHasKey('coaster', $context);
+                    $this->assertArrayHasKey('reviews', $context);
+                    $this->assertEquals('Test Coaster', $context['coaster']);
+                    $this->assertEquals(3, $context['reviews']);
                     return true;
                 })
             );
 
-        $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'fr');
-
-        $this->assertNotNull($result['summary']);
-    }
-
-    /**
-     * Test no warning for missing English vocabulary guide
-     * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
-     */
-    public function testNoWarningForMissingEnglishVocabularyGuide(): void
-    {
-        // Setup sufficient reviews
-        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
-            ->willReturn(25);
-        
-        // Create a mock RiddenCoaster
-        $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
-        $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
-        $mockRiddenCoaster->method('getReview')->willReturn('Test review');
-        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
-        
-        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
-            ->willReturn([$mockRiddenCoaster]);
-
-        // Setup missing vocabulary guide for English
-        $this->vocabularyGuideRepository->method('findByLanguage')
-            ->willReturn(null);
-
-        // Setup successful Bedrock response
-        $this->bedrockService->method('invokeModel')
-            ->willReturn([
-                'success' => true,
-                'content' => '{"summary": "Test summary", "pros": ["fast"], "cons": ["rough"]}',
-                'metadata' => ['model' => 'gpt-5.6-luna']
-            ]);
-
-        // Expect NO warning logging for missing English vocabulary guide
-        $this->logger->expects($this->never())
-            ->method('warning');
-
         $result = $this->service->generateSummary($this->coaster, 'gpt-5.6-luna', 'en');
 
-        $this->assertNotNull($result['summary']);
+        $this->assertNull($result['summary']);
+        $this->assertArrayHasKey('reason', $result);
+        $this->assertEquals('insufficient_reviews', $result['reason']); // @phpstan-ignore-line
+        $this->assertArrayHasKey('review_count', $result);
+        $this->assertEquals(3, $result['review_count']); // @phpstan-ignore-line
     }
 
     /**
-     * Test insufficient reviews informational logging
+     * Test insufficient total (any-language) reviews informational logging - enough
+     * of a genuine same-language base, but not enough overall content even with
+     * backfill from other languages.
      * Requirements: 7.1, 7.2, 7.3, 7.4, 7.5
      */
-    public function testInsufficientReviewsInformationalLogging(): void
+    public function testInsufficientTotalReviewsInformationalLogging(): void
     {
-        // Setup insufficient reviews (less than 20)
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(15);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')
+            ->willReturn(15);
 
-        // Expect informational logging with review count details
         $this->logger->expects($this->once())
             ->method('info')
             ->with(
-                'Not enough reviews to generate summary',
+                'Not enough reviews (any language) to generate summary',
                 $this->callback(function ($context) {
                     $this->assertArrayHasKey('coaster', $context);
                     $this->assertArrayHasKey('reviews', $context);
@@ -236,7 +178,9 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         // Setup sufficient reviews
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
-        
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')
+            ->willReturn(25);
+
         // Create a mock RiddenCoaster
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
@@ -246,11 +190,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
-        // Setup vocabulary guide (optional)
-        $this->vocabularyGuideRepository->method('findByLanguage')
-            ->willReturn(null);
-
-        // Setup Bedrock service to return malformed JSON that will trigger JsonException
+// Setup Bedrock service to return malformed JSON that will trigger JsonException
         $this->bedrockService->method('invokeModel')
             ->willReturn([
                 'success' => true,
@@ -298,7 +238,9 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         // Setup sufficient reviews
         $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
             ->willReturn(25);
-        
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')
+            ->willReturn(25);
+
         // Create a mock RiddenCoaster
         $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
         $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
@@ -308,11 +250,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
             ->willReturn([$mockRiddenCoaster]);
 
-        // Setup vocabulary guide (optional)
-        $this->vocabularyGuideRepository->method('findByLanguage')
-            ->willReturn(null);
-
-        // Setup Bedrock service to return valid JSON
+// Setup Bedrock service to return valid JSON
         $this->bedrockService->method('invokeModel')
             ->willReturn([
                 'success' => true,
