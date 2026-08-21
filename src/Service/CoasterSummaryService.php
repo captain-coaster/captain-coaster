@@ -352,7 +352,7 @@ class CoasterSummaryService
             'de' => 'German',
         ];
         $languageName = $languageNames[$language] ?? 'English';
-        $outputLanguageInstruction = "Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews below may be written in other languages — read them for content and sentiment, but always respond in {$languageName}.";
+        $outputLanguageInstruction = "Write the summary and pros/cons in natural, fluent {$languageName}, as if written by a native speaker enthusiast. Some source reviews below may be written in other languages — read them for content and sentiment, but always respond in {$languageName}. When a source review uses enthusiast slang or jargon that has no natural equivalent in {$languageName}, convey the sensation it describes rather than translating it word-for-word.";
 
         $prompt = "You are an expert roller coaster analyst with deep knowledge of ride experiences and enthusiast terminology. Your task is to analyze rider reviews for {$sanitizedName} and create an objective, balanced summary that helps future riders make informed decisions.\n\n";
 
