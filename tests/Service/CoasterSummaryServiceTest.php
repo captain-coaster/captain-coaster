@@ -207,6 +207,26 @@ class CoasterSummaryServiceTest extends TestCase
     }
 
     /**
+     * Test prompt preserves accented/non-ASCII characters in coaster names.
+     * Requirements: Security.
+     */
+    public function testPromptPreservesAccentedCoasterNames(): void
+    {
+        $service = $this->createCoasterSummaryService();
+        $buildPromptMethod = $this->getPrivateMethod($service, 'buildPrompt');
+
+        $coaster = new Coaster();
+        $coaster->setName('Titánide');
+
+        $reviews = [$this->createRiddenCoaster($coaster, 7.0, 'Bon manège')];
+
+        $prompt = $buildPromptMethod->invoke($service, $reviews, 'Titánide', $coaster, 'fr');
+
+        $this->assertStringContainsString('Titánide', $prompt);
+        $this->assertStringNotContainsString('Titnide', $prompt);
+    }
+
+    /**
      * Test prompt includes proper language-specific instructions.
      * Requirements: Multi-language support.
      */

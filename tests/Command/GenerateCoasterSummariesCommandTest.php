@@ -204,6 +204,37 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->assertStringNotContainsString('Skipping', $output);
     }
 
+    public function testInsufficientReviewsDoesNotLogAtCommandLevel(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository->method('find')->willReturn($coaster);
+        $this->summaryService->method('generateSummary')
+            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'insufficient_reviews', 'review_count' => 3]);
+
+        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->never())->method('info');
+
+        $this->commandTester->execute(['--coaster-id' => '123']);
+    }
+
+    public function testAiErrorStillLogsAtErrorLevel(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->coasterRepository->method('find')->willReturn($coaster);
+        $this->summaryService->method('generateSummary')
+            ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'ai_error']);
+
+        $this->logger->expects($this->once())
+            ->method('error')
+            ->with('Failed to generate summary', $this->anything());
+
+        $this->commandTester->execute(['--coaster-id' => '123']);
+    }
+
     public function testInvalidCoasterIdReturnsError(): void
     {
         $this->coasterRepository

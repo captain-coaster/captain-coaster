@@ -25,10 +25,14 @@ class BedrockService
             'output_cost_per_1k' => 0.0006,
             'reasoning_effort' => 'low',
         ],
+        // Global CRIS, short-context rates from the model card:
+        // https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-openai-gpt-56-luna.html
         'gpt-5.6-luna' => [
             'id' => 'global.openai.gpt-5.6-luna',
             'input_cost_per_1k' => 0.0002,
             'output_cost_per_1k' => 0.0012,
+            'cache_read_cost_per_1k' => 0.00002,
+            'cache_write_cost_per_1k' => 0.00025,
             'supports_temperature' => false,
         ],
     ];
@@ -68,26 +72,30 @@ class BedrockService
             $response = $this->bedrockClient->converse($requestBody + ['modelId' => $model['id']]);
 
             $result = $response->toArray();
-            $metadata = $result['@metadata'];
             $stopReason = $result['stopReason'] ?? null;
 
-            // For Converse API, token usage is in the 'usage' field, not headers
+            // latencyMs lives under metrics, not a response header.
             $usage = $result['usage'] ?? [];
             $inputTokens = $usage['inputTokens'] ?? 0;
             $outputTokens = $usage['outputTokens'] ?? 0;
+            $cacheReadTokens = $usage['cacheReadInputTokens'] ?? 0;
+            $cacheWriteTokens = $usage['cacheWriteInputTokens'] ?? 0;
 
-            // Latency might still be in headers
-            $latencyMs = $metadata['headers']['x-amzn-bedrock-invocation-latency'] ?? null;
+            $latencyMs = $result['metrics']['latencyMs'] ?? null;
 
             $inputCost = ($inputTokens / 1000) * $model['input_cost_per_1k'];
             $outputCost = ($outputTokens / 1000) * $model['output_cost_per_1k'];
-            $totalCost = $inputCost + $outputCost;
+            $cacheReadCost = ($cacheReadTokens / 1000) * ($model['cache_read_cost_per_1k'] ?? $model['input_cost_per_1k']);
+            $cacheWriteCost = ($cacheWriteTokens / 1000) * ($model['cache_write_cost_per_1k'] ?? $model['input_cost_per_1k']);
+            $totalCost = $inputCost + $outputCost + $cacheReadCost + $cacheWriteCost;
 
             $metadata = [
                 'model' => $model['id'],
                 'latency_ms' => $latencyMs,
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
+                'cache_read_tokens' => $cacheReadTokens,
+                'cache_write_tokens' => $cacheWriteTokens,
                 'cost_usd' => round($totalCost, 6),
                 'stop_reason' => $stopReason,
             ];
@@ -98,6 +106,8 @@ class BedrockService
                 'model_key' => $modelKey ?? $this->modelKey,
                 'input_tokens' => $inputTokens,
                 'output_tokens' => $outputTokens,
+                'cache_read_tokens' => $cacheReadTokens,
+                'cache_write_tokens' => $cacheWriteTokens,
                 'cost_usd' => round($totalCost, 6),
                 'latency_ms' => $latencyMs,
                 'stop_reason' => $stopReason,
