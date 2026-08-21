@@ -208,8 +208,7 @@ class CoasterSummaryServiceTest extends TestCase
 
     /**
      * Test prompt preserves accented/non-ASCII characters in coaster names.
-     * \w alone is ASCII-only and was silently stripping accents (e.g. "Titánide" ->
-     * "Titnide") for the ~300 coasters with non-ASCII characters in their name.
+     * Requirements: Security.
      */
     public function testPromptPreservesAccentedCoasterNames(): void
     {

@@ -13,9 +13,7 @@ final class PromptNameSanitizer
 {
     public static function sanitize(string $name): string
     {
-        // preg_replace with the /u modifier returns null (not the original string) when
-        // given malformed UTF-8, instead of throwing - fall back to the original name
-        // rather than silently dropping it from the prompt.
+        // preg_replace returns null (not the input) on malformed UTF-8 with /u.
         return preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $name) ?? $name;
     }
 }

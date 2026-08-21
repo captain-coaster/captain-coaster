@@ -25,13 +25,8 @@ class BedrockService
             'output_cost_per_1k' => 0.0006,
             'reasoning_effort' => 'low',
         ],
-        // Rates below are the "Global CRIS, Short Context Window (272K)" row (our modelId
-        // uses the global. prefix, and prompts here stay well under 272K) from the model
-        // card's own pricing table, not the prompt-caching guide (that page only documents
-        // caching for this model via the Responses API - Converse caches it too, confirmed
-        // live, but AWS doesn't document why; this pricing table isn't scoped to a specific
-        // API, so it's the best available source for what a Converse-triggered cache
-        // read/write actually costs): https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-openai-gpt-56-luna.html
+        // Global CRIS, short-context rates from the model card:
+        // https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-openai-gpt-56-luna.html
         'gpt-5.6-luna' => [
             'id' => 'global.openai.gpt-5.6-luna',
             'input_cost_per_1k' => 0.0002,
@@ -79,10 +74,7 @@ class BedrockService
             $result = $response->toArray();
             $stopReason = $result['stopReason'] ?? null;
 
-            // latencyMs lives under metrics, not a response header. Bedrock applies prompt
-            // caching automatically for cache-capable models with no cachePoint required, so
-            // cacheReadInputTokens/cacheWriteInputTokens need their own rates below - otherwise
-            // a cache hit reports as if almost no input tokens were used at all.
+            // latencyMs lives under metrics, not a response header.
             $usage = $result['usage'] ?? [];
             $inputTokens = $usage['inputTokens'] ?? 0;
             $outputTokens = $usage['outputTokens'] ?? 0;

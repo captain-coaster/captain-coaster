@@ -23,8 +23,6 @@ class PromptNameSanitizerTest extends TestCase
 
     public function testFallsBackToOriginalStringOnInvalidUtf8(): void
     {
-        // preg_replace with the /u modifier returns null (not the input) on malformed
-        // UTF-8, instead of throwing - this must not silently blank the name.
         $invalidUtf8 = "Vol\xB1ge";
 
         $this->assertSame($invalidUtf8, PromptNameSanitizer::sanitize($invalidUtf8));

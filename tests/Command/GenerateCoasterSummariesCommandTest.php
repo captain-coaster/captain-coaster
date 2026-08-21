@@ -213,8 +213,6 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->summaryService->method('generateSummary')
             ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'insufficient_reviews', 'review_count' => 3]);
 
-        // CoasterSummaryService::runAnalysis() already logs this at info level - the
-        // command must not log it a second time, nor escalate it to error.
         $this->logger->expects($this->never())->method('error');
         $this->logger->expects($this->never())->method('info');
 

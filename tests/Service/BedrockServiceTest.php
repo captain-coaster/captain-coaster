@@ -237,12 +237,8 @@ class BedrockServiceTest extends TestCase
         $this->assertSame(58442, $result['metadata']['cache_read_tokens']);
         $this->assertSame(0, $result['metadata']['cache_write_tokens']);
 
-        // (2/1000)*0.0002 + (503/1000)*0.0012 + (58442/1000)*0.00002 + 0
         $expectedCost = (2 / 1000) * 0.0002 + (503 / 1000) * 0.0012 + (58442 / 1000) * 0.00002;
         $this->assertEqualsWithDelta(round($expectedCost, 6), $result['metadata']['cost_usd'], 0.0000001);
-
-        // Cost dominated by cache reads, not the misleadingly tiny "2" input tokens -
-        // this is exactly the case the old code under-reported.
         $this->assertGreaterThan((503 / 1000) * 0.0012, $result['metadata']['cost_usd']);
     }
 
