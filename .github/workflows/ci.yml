@@ -53,6 +53,8 @@ jobs:
 
             - name: Set up test database
               run: composer db-setup
+              env:
+                  APP_ENV: test
 
             - name: Run PHPUnit tests
               run: vendor/bin/phpunit
