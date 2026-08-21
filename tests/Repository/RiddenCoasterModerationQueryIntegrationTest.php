@@ -33,7 +33,9 @@ final class RiddenCoasterModerationQueryIntegrationTest extends RepositoryIntegr
         /** @var RiddenCoasterRepository $repository */
         $repository = $this->entityManager->getRepository(\App\Entity\RiddenCoaster::class);
 
-        $result = $repository->findPendingAnalysis(null, 100);
+        // Limit set well above any realistic base-fixture volume so this test's own
+        // rows (created last, highest ids) are never pushed out of the id-ordered window.
+        $result = $repository->findPendingAnalysis(null, 10000);
         $resultIds = array_map(static fn ($r) => $r->getId(), $result);
 
         $this->assertContains($pending->getId(), $resultIds);
