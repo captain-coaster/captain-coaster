@@ -24,6 +24,10 @@ final class UserFactory extends PersistentProxyObjectFactory
             'firstName' => $firstName,
             'displayName' => $firstName.' '.self::faker()->lastName(),
             'preferredLocale' => 'en',
+            // User::$enabled defaults to false; without this, UserChecker rejects
+            // every fixture user as banned, and review listings (which filter on
+            // u.enabled = 1) show no reviews at all.
+            'enabled' => true,
         ];
     }
 }
