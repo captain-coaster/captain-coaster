@@ -115,13 +115,20 @@ class CompareSummaryModelsCommand extends Command
             ? \sprintf('%d same-language + %d backfilled = %d total', $reviewCount, $totalReviewCount - $reviewCount, $totalReviewCount)
             : (string) $reviewCount;
 
+        $cacheReadTokens = $metadata['cache_read_tokens'] ?? 0;
+        $cacheWriteTokens = $metadata['cache_write_tokens'] ?? 0;
+        $cacheSuffix = ($cacheReadTokens > 0 || $cacheWriteTokens > 0)
+            ? \sprintf(' (%s cached, %s cache-write)', $cacheReadTokens, $cacheWriteTokens)
+            : '';
+
         $io->writeln(\sprintf(
-            'Model: %s | Reviews analyzed: %s | Latency: %sms | Tokens: %s+%s | Cost: $%s',
+            'Model: %s | Reviews analyzed: %s | Latency: %sms | Tokens: %s+%s%s | Cost: $%s',
             $preview['model_key'] ?? $metadata['model'] ?? 'unknown',
             $reviewsLabel,
             $metadata['latency_ms'] ?? '?',
             $metadata['input_tokens'] ?? '?',
             $metadata['output_tokens'] ?? '?',
+            $cacheSuffix,
             isset($metadata['cost_usd']) ? number_format((float) $metadata['cost_usd'], 4) : '?'
         ));
     }

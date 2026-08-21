@@ -24,7 +24,7 @@ interface ConverseSpyClient
 }
 
 /**
- * **Feature: coaster-summary-refactor, Property 3: Unified Bedrock API Interface**
+ * **Feature: coaster-summary-refactor, Property 3: Unified Bedrock API Interface**.
  *
  * Tests that the BedrockService uses the same Converse API request format
  * and response parsing method regardless of the underlying model.
@@ -35,7 +35,7 @@ class BedrockServiceTest extends TestCase
 
     /**
      * **Property 3: Unified Bedrock API Interface**
-     * **Validates: Requirements 3.2, 3.3, 3.4, 3.5**
+     * **Validates: Requirements 3.2, 3.3, 3.4, 3.5**.
      *
      * For any supported Bedrock model (GPT OSS, GPT-5.6 Luna),
      * the BedrockService should use the same Converse API request format
@@ -50,7 +50,7 @@ class BedrockServiceTest extends TestCase
             Generator\choose(100, 2000), // @phpstan-ignore-line
             Generator\float(0.0, 1.0) // @phpstan-ignore-line
         )
-        ->then(function (string $model, string $prompt, int $maxTokens, float $temperature) {
+        ->then(function (string $model, string $prompt, int $maxTokens, float $temperature): void {
             $bedrockClient = $this->createConverseSpyClient();
 
             $logger = $this->createMock(LoggerInterface::class);
@@ -103,15 +103,14 @@ class BedrockServiceTest extends TestCase
                 ],
             ],
             'usage' => [
-                'inputTokens' => rand(50, 200),
-                'outputTokens' => rand(20, 100),
+                'inputTokens' => random_int(50, 200),
+                'outputTokens' => random_int(20, 100),
+            ],
+            'metrics' => [
+                'latencyMs' => random_int(100, 1000),
             ],
             '@metadata' => [
-                'headers' => [
-                    'x-amzn-bedrock-invocation-latency' => rand(100, 1000),
-                    'x-amzn-bedrock-input-token-count' => rand(50, 200),
-                    'x-amzn-bedrock-output-token-count' => rand(20, 100),
-                ],
+                'headers' => [],
             ],
         ];
 
@@ -191,6 +190,60 @@ class BedrockServiceTest extends TestCase
         $result = $service->invokeModel('prompt', 'gpt-oss-120b', 1000, 0.5);
 
         $this->assertSame('max_tokens', $result['metadata']['stop_reason']);
+    }
+
+    public function testLatencyIsReadFromMetricsField(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+
+        $mockResult = $this->createMock(Result::class);
+        $mockResult->method('toArray')->willReturn([
+            'output' => ['message' => ['content' => [['text' => 'x']]]],
+            'usage' => ['inputTokens' => 10, 'outputTokens' => 5],
+            'metrics' => ['latencyMs' => 1234],
+            '@metadata' => ['headers' => []],
+        ]);
+        $bedrockClient->setMockResult($mockResult);
+
+        $result = $service->invokeModel('prompt', 'gpt-oss-120b', 500, 0.5);
+
+        $this->assertSame(1234, $result['metadata']['latency_ms']);
+    }
+
+    public function testCacheTokensAreCostedAtTheirOwnRates(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
+
+        $mockResult = $this->createMock(Result::class);
+        $mockResult->method('toArray')->willReturn([
+            'output' => ['message' => ['content' => [['text' => 'x']]]],
+            'usage' => [
+                'inputTokens' => 2,
+                'outputTokens' => 503,
+                'cacheReadInputTokens' => 58442,
+                'cacheWriteInputTokens' => 0,
+            ],
+            'metrics' => ['latencyMs' => 3942],
+            '@metadata' => ['headers' => []],
+        ]);
+        $bedrockClient->setMockResult($mockResult);
+
+        $result = $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.5);
+
+        $this->assertSame(58442, $result['metadata']['cache_read_tokens']);
+        $this->assertSame(0, $result['metadata']['cache_write_tokens']);
+
+        // (2/1000)*0.0002 + (503/1000)*0.0012 + (58442/1000)*0.00002 + 0
+        $expectedCost = (2 / 1000) * 0.0002 + (503 / 1000) * 0.0012 + (58442 / 1000) * 0.00002;
+        $this->assertEqualsWithDelta(round($expectedCost, 6), $result['metadata']['cost_usd'], 0.0000001);
+
+        // Cost dominated by cache reads, not the misleadingly tiny "2" input tokens -
+        // this is exactly the case the old code under-reported.
+        $this->assertGreaterThan((503 / 1000) * 0.0012, $result['metadata']['cost_usd']);
     }
 
     public function testInvokeModelReturnsClearErrorForUnknownModelKey(): void
