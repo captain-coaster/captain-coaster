@@ -7,7 +7,9 @@ namespace App\Factory;
 use App\Entity\RiddenCoaster;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
-/** @extends PersistentProxyObjectFactory<RiddenCoaster> */
+/**
+ * @extends PersistentProxyObjectFactory<RiddenCoaster>
+ */
 final class RiddenCoasterFactory extends PersistentProxyObjectFactory
 {
     public static function class(): string

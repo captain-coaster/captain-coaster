@@ -7,7 +7,9 @@ namespace App\Factory;
 use App\Entity\Park;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
-/** @extends PersistentProxyObjectFactory<Park> */
+/**
+ * @extends PersistentProxyObjectFactory<Park>
+ */
 final class ParkFactory extends PersistentProxyObjectFactory
 {
     public static function class(): string
