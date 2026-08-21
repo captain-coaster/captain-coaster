@@ -7,6 +7,7 @@ namespace App\Entity;
 use App\Repository\ContinentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Continent.
@@ -24,7 +25,8 @@ class Continent implements \Stringable
     private string $name = '';
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
-    private string $slug = '';
+    #[Gedmo\Slug(fields: ['name'])]
+    private ?string $slug = null;
 
     public function __toString(): string
     {
@@ -48,12 +50,12 @@ class Continent implements \Stringable
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function setSlug(string $slug): self
+    public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
 

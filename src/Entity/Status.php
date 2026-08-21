@@ -35,7 +35,7 @@ class Status implements \Stringable
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private string $slug = '';
+    private ?string $slug = null;
 
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
     private string $type = '';
@@ -78,14 +78,14 @@ class Status implements \Stringable
         return $this->name;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }

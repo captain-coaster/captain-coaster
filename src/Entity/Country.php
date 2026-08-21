@@ -28,7 +28,7 @@ class Country implements \Stringable
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private string $slug = '';
+    private ?string $slug = null;
 
     #[ORM\ManyToOne(targetEntity: Continent::class)]
     #[ORM\JoinColumn]
@@ -76,7 +76,7 @@ class Country implements \Stringable
     /**
      * Set slug.
      *
-     * @param string $slug
+     * @param string|null $slug
      *
      * @return Country
      */
@@ -90,7 +90,7 @@ class Country implements \Stringable
     /**
      * Get slug.
      *
-     * @return string
+     * @return string|null
      */
     public function getSlug()
     {
