@@ -77,9 +77,7 @@ class ReviewModerationService
 
     private function buildPrompt(RiddenCoaster $review): string
     {
-        // \w alone is ASCII-only and silently mangles accented coaster names - \p{L}/\p{N}
-        // with /u keep any Unicode letter/digit.
-        $sanitizedCoasterName = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $review->getCoaster()->getName());
+        $sanitizedCoasterName = PromptNameSanitizer::sanitize($review->getCoaster()->getName());
 
         $prompt = "You are a content moderator for a roller coaster review website. Analyze the following review and respond with strict JSON only.\n\n";
         $prompt .= "<review>\n";

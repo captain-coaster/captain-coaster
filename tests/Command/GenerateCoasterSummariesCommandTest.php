@@ -204,7 +204,7 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->assertStringNotContainsString('Skipping', $output);
     }
 
-    public function testInsufficientReviewsLogsAtInfoNotError(): void
+    public function testInsufficientReviewsDoesNotLogAtCommandLevel(): void
     {
         $coaster = new Coaster();
         $coaster->setName('Test Coaster');
@@ -213,10 +213,10 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         $this->summaryService->method('generateSummary')
             ->willReturn(['summary' => null, 'metadata' => null, 'reason' => 'insufficient_reviews', 'review_count' => 3]);
 
+        // CoasterSummaryService::runAnalysis() already logs this at info level - the
+        // command must not log it a second time, nor escalate it to error.
         $this->logger->expects($this->never())->method('error');
-        $this->logger->expects($this->once())
-            ->method('info')
-            ->with('Skipped: insufficient reviews', $this->anything());
+        $this->logger->expects($this->never())->method('info');
 
         $this->commandTester->execute(['--coaster-id' => '123']);
     }

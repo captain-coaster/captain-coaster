@@ -74,15 +74,10 @@ class BedrockService
             $result = $response->toArray();
             $stopReason = $result['stopReason'] ?? null;
 
-            // Converse API response schema: usage.{inputTokens,outputTokens,cacheReadInputTokens,
-            // cacheWriteInputTokens} and metrics.latencyMs (NOT a response header - there is no
-            // such header on this API, the old header-based lookup always silently returned null).
-            // Bedrock applies prompt caching automatically for cache-capable models even without a
-            // cachePoint in the request - confirmed live via raw response inspection - so
-            // cacheReadInputTokens/cacheWriteInputTokens need their own (heavily discounted /
-            // premium, respectively) rates, otherwise cost is wildly under-reported: a 600-review
-            // summary regen showed inputTokens=2 with cacheReadInputTokens=58442, which the old
-            // code priced as if only 2 tokens of input existed.
+            // latencyMs lives under metrics, not a response header. Bedrock applies prompt
+            // caching automatically for cache-capable models with no cachePoint required, so
+            // cacheReadInputTokens/cacheWriteInputTokens need their own rates below - otherwise
+            // a cache hit reports as if almost no input tokens were used at all.
             $usage = $result['usage'] ?? [];
             $inputTokens = $usage['inputTokens'] ?? 0;
             $outputTokens = $usage['outputTokens'] ?? 0;

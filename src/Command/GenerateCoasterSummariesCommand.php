@@ -189,15 +189,10 @@ class GenerateCoasterSummariesCommand extends Command
                         if ('insufficient_reviews' === $reason) {
                             // Expected, non-actionable: a candidate from the eligibility query
                             // no longer qualifies by generation time (e.g. review counts
-                            // changed in between). Already logged at info level inside
-                            // CoasterSummaryService - don't also escalate it to error here,
-                            // that's what was paging Discord for routine, benign skips.
-                            $this->logger->info('Skipped: insufficient reviews', [
-                                'coaster_id' => $coaster->getId(),
-                                'coaster_name' => $coaster->getName(),
-                                'language' => $language,
-                                'review_count' => $result['review_count'] ?? null,
-                            ]);
+                            // changed in between). CoasterSummaryService::runAnalysis() already
+                            // logs this at info level - don't log it again here, and don't
+                            // escalate it to error, that's what was paging Discord for routine,
+                            // benign skips.
                         } else {
                             $this->logger->error('Failed to generate summary', [
                                 'coaster_id' => $coaster->getId(),
