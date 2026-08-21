@@ -25,15 +25,27 @@ class BedrockService
             'output_cost_per_1k' => 0.0006,
             'reasoning_effort' => 'low',
         ],
+        // Rates below are the "Global CRIS" row (our modelId uses the global. prefix) from
+        // the model card's own pricing table, not the prompt-caching guide (that page only
+        // documents caching for this model via the Responses API - Converse caches it too,
+        // confirmed live, but AWS doesn't document why; this pricing table isn't scoped to
+        // a specific API, so it's the best available source for what a Converse-triggered
+        // cache read/write actually costs): https://docs.aws.amazon.com/bedrock/latest/userguide/model-card-openai-gpt-56-luna.html
         'gpt-5.6-luna' => [
             'id' => 'global.openai.gpt-5.6-luna',
             'input_cost_per_1k' => 0.0002,
             'output_cost_per_1k' => 0.0012,
-            'supports_temperature' => false,
-            // Bedrock caches this model's prompts automatically (see invokeModel()). Per AWS
-            // docs, cache reads are a 90% discount off the input rate, cache writes are 1.25x.
             'cache_read_cost_per_1k' => 0.00002,
             'cache_write_cost_per_1k' => 0.00025,
+            // Prompts whose total input (input + cache read + cache write) tokens exceed this
+            // move from the "Short Context Window (272K)" price row to "Long Context Window
+            // (1M)" - not a flat multiplier: input/cache rates double, output only rises 1.5x.
+            'long_context_threshold_tokens' => 272_000,
+            'long_context_input_cost_per_1k' => 0.0004,
+            'long_context_output_cost_per_1k' => 0.0018,
+            'long_context_cache_read_cost_per_1k' => 0.00004,
+            'long_context_cache_write_cost_per_1k' => 0.0005,
+            'supports_temperature' => false,
         ],
     ];
 
@@ -86,10 +98,18 @@ class BedrockService
 
             $latencyMs = $result['metrics']['latencyMs'] ?? null;
 
-            $inputCost = ($inputTokens / 1000) * $model['input_cost_per_1k'];
-            $outputCost = ($outputTokens / 1000) * $model['output_cost_per_1k'];
-            $cacheReadCost = ($cacheReadTokens / 1000) * ($model['cache_read_cost_per_1k'] ?? $model['input_cost_per_1k']);
-            $cacheWriteCost = ($cacheWriteTokens / 1000) * ($model['cache_write_cost_per_1k'] ?? $model['input_cost_per_1k']);
+            $totalInputTokens = $inputTokens + $cacheReadTokens + $cacheWriteTokens;
+            $isLongContext = isset($model['long_context_threshold_tokens']) && $totalInputTokens > $model['long_context_threshold_tokens'];
+
+            $inputRate = $isLongContext ? $model['long_context_input_cost_per_1k'] : $model['input_cost_per_1k'];
+            $outputRate = $isLongContext ? $model['long_context_output_cost_per_1k'] : $model['output_cost_per_1k'];
+            $cacheReadRate = ($isLongContext ? ($model['long_context_cache_read_cost_per_1k'] ?? null) : ($model['cache_read_cost_per_1k'] ?? null)) ?? $inputRate;
+            $cacheWriteRate = ($isLongContext ? ($model['long_context_cache_write_cost_per_1k'] ?? null) : ($model['cache_write_cost_per_1k'] ?? null)) ?? $inputRate;
+
+            $inputCost = ($inputTokens / 1000) * $inputRate;
+            $outputCost = ($outputTokens / 1000) * $outputRate;
+            $cacheReadCost = ($cacheReadTokens / 1000) * $cacheReadRate;
+            $cacheWriteCost = ($cacheWriteTokens / 1000) * $cacheWriteRate;
             $totalCost = $inputCost + $outputCost + $cacheReadCost + $cacheWriteCost;
 
             $metadata = [
