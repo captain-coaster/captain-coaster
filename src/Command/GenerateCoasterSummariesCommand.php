@@ -182,14 +182,29 @@ class GenerateCoasterSummariesCommand extends Command
                         $io->writeln("    Performance: {$metadata['latency_ms']}ms, {$metadata['input_tokens']}+{$metadata['output_tokens']} tokens, $".number_format($metadata['cost_usd'], 4));
                     } else {
                         $reason = $result['reason'] ?? 'unknown';
-                        $this->logger->error('Failed to generate summary', [
-                            'coaster_id' => $coaster->getId(),
-                            'coaster_name' => $coaster->getName(),
-                            'language' => $language,
-                            'reason' => $reason,
-                            'review_count' => $result['review_count'] ?? null,
-                            'metadata' => $result['metadata'] ?? null,
-                        ]);
+
+                        if ('insufficient_reviews' === $reason) {
+                            // Expected, non-actionable: a candidate from the eligibility query
+                            // no longer qualifies by generation time (e.g. review counts
+                            // changed in between). Already logged at info level inside
+                            // CoasterSummaryService - don't also escalate it to error here,
+                            // that's what was paging Discord for routine, benign skips.
+                            $this->logger->info('Skipped: insufficient reviews', [
+                                'coaster_id' => $coaster->getId(),
+                                'coaster_name' => $coaster->getName(),
+                                'language' => $language,
+                                'review_count' => $result['review_count'] ?? null,
+                            ]);
+                        } else {
+                            $this->logger->error('Failed to generate summary', [
+                                'coaster_id' => $coaster->getId(),
+                                'coaster_name' => $coaster->getName(),
+                                'language' => $language,
+                                'reason' => $reason,
+                                'review_count' => $result['review_count'] ?? null,
+                                'metadata' => $result['metadata'] ?? null,
+                            ]);
+                        }
 
                         $failureMessage = "    ⚠ {$language} failed ({$reason})";
                         if ('insufficient_reviews' === $reason) {

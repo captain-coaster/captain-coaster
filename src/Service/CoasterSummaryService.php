@@ -338,8 +338,10 @@ class CoasterSummaryService
      */
     private function buildPrompt(array $riddenCoasters, string $coasterName, ?Coaster $coaster, string $language = 'en'): string
     {
-        // Sanitize coaster name to prevent prompt injection
-        $sanitizedName = preg_replace('/[^\w\s-]/', '', $coasterName);
+        // Sanitize coaster name to prevent prompt injection. \w alone is ASCII-only, which
+        // was silently mangling accented names ("Titánide" -> "Titnide") for the ~300
+        // coasters with non-ASCII characters - \p{L}/\p{N} keep any Unicode letter/digit.
+        $sanitizedName = preg_replace('/[^\p{L}\p{N}\s\-]/u', '', $coasterName);
         $reviewCount = \count($riddenCoasters);
 
         // Language-specific instructions
