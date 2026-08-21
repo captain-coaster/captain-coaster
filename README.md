@@ -26,7 +26,18 @@ Join us in shaping the world's best roller coaster rankings!
     - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
-7. Create a `captain` database on adminer, and import a dump file
+7. Set up the database schema and load sample data
+    ```shell
+    composer db-setup
+    ```
+    This creates the database, builds the schema from the current entity
+    mappings, marks existing migrations as applied, and loads a small set of
+    sample parks/coasters/users so the app has something to show. If you
+    have access to a production database dump, you can import that instead —
+    it already contains a full schema and doesn't need this step, though you
+    should still run `bin/console doctrine:migrations:sync-metadata-storage`
+    and `bin/console doctrine:migrations:version --add --all` afterward if
+    its migration history isn't already up to date.
 8. Start the Symfony development server
     ```shell
     symfony server:start
@@ -50,7 +61,13 @@ Join us in shaping the world's best roller coaster rankings!
     ```shell
     docker exec -ti php-captain composer install
     ```
-4. Create a `captain` database on adminer, and import a dump file
+4. Set up the database schema and load sample data
+    ```shell
+    docker exec -ti php-captain composer db-setup
+    ```
+    Same as above: builds the schema, marks existing migrations as applied,
+    and loads sample data. A production dump can be imported instead if you
+    have access to one.
 5. Browse `localhost:8080`
 
 ## Docker Compose Structure
