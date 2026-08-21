@@ -26,7 +26,11 @@ Join us in shaping the world's best roller coaster rankings!
     - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
-7. Set up the database schema and load sample data
+7. Create a `.env.local` file with a working database connection
+    ```
+    DATABASE_URL=mysql://root:root123@127.0.0.1:3306/captain?serverVersion=mariadb-11.8.0&charset=utf8mb4
+    ```
+8. Set up the database schema and load sample data
     ```shell
     composer db-setup
     ```
@@ -38,11 +42,11 @@ Join us in shaping the world's best roller coaster rankings!
     should still run `bin/console doctrine:migrations:sync-metadata-storage`
     and `bin/console doctrine:migrations:version --add --all` afterward if
     its migration history isn't already up to date.
-8. Start the Symfony development server
+9. Start the Symfony development server
     ```shell
     symfony server:start
     ```
-9. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
+10. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
 
 ### Option 2: Full Docker Setup
 
@@ -61,14 +65,18 @@ Join us in shaping the world's best roller coaster rankings!
     ```shell
     docker exec -ti php-captain composer install
     ```
-4. Set up the database schema and load sample data
+4. Create a `.env.local` file with a working database connection
+    ```
+    DATABASE_URL=mysql://root:root123@db:3306/captain?serverVersion=mariadb-11.8.0&charset=utf8mb4
+    ```
+5. Set up the database schema and load sample data
     ```shell
     docker exec -ti php-captain composer db-setup
     ```
     Same as above: builds the schema, marks existing migrations as applied,
     and loads sample data. A production dump can be imported instead if you
     have access to one.
-5. Browse `localhost:8080`
+6. Browse `localhost:8080`
 
 ## Docker Compose Structure
 
