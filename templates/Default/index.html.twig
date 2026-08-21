@@ -70,6 +70,7 @@
   <div class="row">
     <div class="col-sm-6">
       <!-- Thumbnail with image and button -->
+      {% if image %}
       <div class="thumbnail">
           <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
           <div class="thumb">
@@ -89,6 +90,7 @@
           <p class="text-muted mb-15 mt-5">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
         </div>
       </div>
+      {% endif %}
       <!-- /thumbnail with image and button -->
       <!-- latest ratings -->
       <div class="panel panel-flat border-top-teal">

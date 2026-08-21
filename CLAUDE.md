@@ -142,7 +142,7 @@ PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP80Migration:risky` + `@PHP8
 
 ### Testing
 
-- **Unit tests only** — business logic in isolation, mocking repositories/`EntityManager`. No `KernelTestCase`/`WebTestCase` integration tests currently.
+- **Two test tiers**: unit tests (`{ClassName}Test.php`) mock repositories/`EntityManager` for isolated business logic — the default for `src/Service/`. Integration tests (`{ClassName}IntegrationTest.php`) extend `KernelTestCase` and hit a real database, seeded via Doctrine fixtures (`src/DataFixtures/`, built with `zenstruck/foundry` factories in `src/Factory/`) — used for `src/Repository/` custom-query correctness, where mocked-DQL assertions can't catch real query bugs. Each test runs inside a transaction rolled back by `dama/doctrine-test-bundle`, so fixture data loaded once (via `composer db-setup`, also what CI runs) stays intact across the whole suite.
 - **Property tests** for invariants, using Eris (`giorgiosironi/eris`) — see `tests/Service/CoasterSummaryServicePropertyTest.php` for the pattern. Keep variant counts modest; the whole suite should stay fast.
 - **Naming**: `{ClassName}Test.php` for unit tests, `{ClassName}PropertyTest.php` for property tests.
 - **Coverage expectations**: high coverage on `src/Service/` (business logic), request/response-only assertions on controllers, custom-query coverage on repositories.
