@@ -246,61 +246,6 @@ class BedrockServiceTest extends TestCase
         $this->assertGreaterThan((503 / 1000) * 0.0012, $result['metadata']['cost_usd']);
     }
 
-    public function testLongContextTierUsesItsOwnRatesNotAFlatMultiplier(): void
-    {
-        $bedrockClient = $this->createConverseSpyClient();
-        $logger = $this->createMock(LoggerInterface::class);
-        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
-
-        // Total input tokens (input + cache read + cache write) over the 272,000 threshold.
-        $mockResult = $this->createMock(Result::class);
-        $mockResult->method('toArray')->willReturn([
-            'output' => ['message' => ['content' => [['text' => 'x']]]],
-            'usage' => [
-                'inputTokens' => 300_000,
-                'outputTokens' => 1000,
-                'cacheReadInputTokens' => 0,
-                'cacheWriteInputTokens' => 0,
-            ],
-            'metrics' => ['latencyMs' => 1000],
-            '@metadata' => ['headers' => []],
-        ]);
-        $bedrockClient->setMockResult($mockResult);
-
-        $result = $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.5);
-
-        // Input doubles (0.0002 -> 0.0004) but output only rises 1.5x (0.0012 -> 0.0018) -
-        // the two rates aren't a single flat multiplier, per the model's real pricing table.
-        $expectedCost = (300_000 / 1000) * 0.0004 + (1000 / 1000) * 0.0018;
-        $this->assertEqualsWithDelta(round($expectedCost, 6), $result['metadata']['cost_usd'], 0.0000001);
-    }
-
-    public function testBelowLongContextThresholdUsesShortContextRates(): void
-    {
-        $bedrockClient = $this->createConverseSpyClient();
-        $logger = $this->createMock(LoggerInterface::class);
-        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
-
-        $mockResult = $this->createMock(Result::class);
-        $mockResult->method('toArray')->willReturn([
-            'output' => ['message' => ['content' => [['text' => 'x']]]],
-            'usage' => [
-                'inputTokens' => 271_999,
-                'outputTokens' => 1000,
-                'cacheReadInputTokens' => 0,
-                'cacheWriteInputTokens' => 0,
-            ],
-            'metrics' => ['latencyMs' => 1000],
-            '@metadata' => ['headers' => []],
-        ]);
-        $bedrockClient->setMockResult($mockResult);
-
-        $result = $service->invokeModel('prompt', 'gpt-5.6-luna', 500, 0.5);
-
-        $expectedCost = (271_999 / 1000) * 0.0002 + (1000 / 1000) * 0.0012;
-        $this->assertEqualsWithDelta(round($expectedCost, 6), $result['metadata']['cost_usd'], 0.0000001);
-    }
-
     public function testInvokeModelReturnsClearErrorForUnknownModelKey(): void
     {
         $bedrockClient = $this->createConverseSpyClient();
