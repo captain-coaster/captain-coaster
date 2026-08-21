@@ -190,6 +190,26 @@ class ReviewModerationServiceTest extends TestCase
         $this->assertNull($result);
     }
 
+    public function testBuildPromptPreservesAccentedCoasterNames(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Titánide');
+
+        $review = new RiddenCoaster();
+        $review->setCoaster($coaster);
+        $review->setValue(3.0);
+        $review->setReview('Bon manège');
+
+        $service = new ReviewModerationService($this->createMock(BedrockService::class), $this->createMock(LoggerInterface::class));
+
+        $reflection = new \ReflectionClass($service);
+        $buildPrompt = $reflection->getMethod('buildPrompt');
+        $prompt = $buildPrompt->invoke($service, $review);
+
+        $this->assertStringContainsString('Titánide', $prompt);
+        $this->assertStringNotContainsString('Titnide', $prompt);
+    }
+
     public function testAnalyzeAcceptsNotRiddenCategory(): void
     {
         $bedrockService = $this->createMock(BedrockService::class);
