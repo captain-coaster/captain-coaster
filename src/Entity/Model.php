@@ -30,7 +30,7 @@ class Model implements \Stringable
     private string $name = '';
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private string $slug = '';
+    private ?string $slug = null;
 
     public function __toString(): string
     {
@@ -74,7 +74,7 @@ class Model implements \Stringable
     /**
      * Set slug.
      *
-     * @param string $slug
+     * @param string|null $slug
      *
      * @return Model
      */
@@ -88,7 +88,7 @@ class Model implements \Stringable
     /**
      * Get slug.
      *
-     * @return string
+     * @return string|null
      */
     public function getSlug()
     {

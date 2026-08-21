@@ -26,7 +26,7 @@ class Continent implements \Stringable
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private string $slug = '';
+    private ?string $slug = null;
 
     public function __toString(): string
     {
@@ -50,12 +50,12 @@ class Continent implements \Stringable
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
 
-    public function setSlug(string $slug): self
+    public function setSlug(?string $slug): self
     {
         $this->slug = $slug;
 

@@ -31,7 +31,7 @@ class Launch implements \Stringable
 
     #[ORM\Column(name: 'slug', type: Types::STRING, length: 255, unique: true)]
     #[Gedmo\Slug(fields: ['name'])]
-    private string $slug = '';
+    private ?string $slug = null;
 
     /** @var Collection<int, Coaster> */
     #[ORM\ManyToMany(targetEntity: Coaster::class, mappedBy: 'launchs')]
@@ -64,14 +64,14 @@ class Launch implements \Stringable
         return $this->name;
     }
 
-    public function setSlug(string $slug): static
+    public function setSlug(?string $slug): static
     {
         $this->slug = $slug;
 
         return $this;
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
