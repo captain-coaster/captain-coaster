@@ -23,8 +23,10 @@ final class TaxonomyFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // Status "Operating" must be created first: id 1 is relied on elsewhere.
-        StatusFactory::createOne(['name' => 'Operating', 'type' => Status::OPERATING, 'isRateable' => true, 'order' => 1]);
-        StatusFactory::createOne(['name' => 'Closed', 'type' => Status::CLOSED_DEFINITELY, 'isRateable' => false, 'order' => 2]);
+        // name holds the machine key (matched by CoasterRepository/ParkRepository status
+        // filters and translated via the 'database' domain) - not a display string.
+        StatusFactory::createOne(['name' => Status::OPERATING, 'type' => Status::OPERATING, 'isRateable' => true, 'order' => 1]);
+        StatusFactory::createOne(['name' => Status::CLOSED_DEFINITELY, 'type' => Status::CLOSED_DEFINITELY, 'isRateable' => false, 'order' => 2]);
 
         $europe = ContinentFactory::createOne(['name' => 'Europe']);
         $northAmerica = ContinentFactory::createOne(['name' => 'North America']);

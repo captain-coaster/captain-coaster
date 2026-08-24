@@ -20,7 +20,7 @@ final class StatusFactory extends PersistentProxyObjectFactory
     protected function defaults(): array
     {
         return [
-            'name' => 'Operating',
+            'name' => Status::OPERATING,
             'type' => Status::OPERATING,
             'isRateable' => true,
             'order' => 1,

@@ -1,4 +1,5 @@
 <div class="panel panel-flat">
+  {% if ranking %}
   <div class="panel-heading has-visible-elements">
     <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|format_datetime('long', 'none')}) }}</h6>
     <div class="heading-elements visible-elements" style="display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -20,7 +21,7 @@
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.rankedCoasterNumber }}&nbsp;
-          {% if ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber > 0 %}
+          {% if previousRanking and ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber > 0 %}
             <span class="badge bg-blue-400">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</span>
           {% endif %}
         </h6>
@@ -32,7 +33,7 @@
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:star', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.ratingNumber|shortNum }}&nbsp;
-          {% if ranking.ratingNumber - previousRanking.ratingNumber > 1000 %}
+          {% if previousRanking and ranking.ratingNumber - previousRanking.ratingNumber > 1000 %}
             <span class="badge bg-blue-400">+{{ (ranking.ratingNumber - previousRanking.ratingNumber)|shortNum }}</span>
           {% endif %}
         </h6>
@@ -43,7 +44,7 @@
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:user-group', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.userNumber }}&nbsp;
-          {% if ranking.userNumber - previousRanking.userNumber > 0 %}
+          {% if previousRanking and ranking.userNumber - previousRanking.userNumber > 0 %}
             <span class="badge bg-blue-400">+{{ ranking.userNumber - previousRanking.userNumber }}</span>
           {% endif %}
         </h6>
@@ -54,7 +55,7 @@
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-6 h-6 position-left text-slate'}) }}<br/>{{ ranking.comparisonNumber|shortNum }}&nbsp;
-          {% if ranking.comparisonNumber - previousRanking.comparisonNumber > 1000 %}
+          {% if previousRanking and ranking.comparisonNumber - previousRanking.comparisonNumber > 1000 %}
             <span class="badge bg-blue-400">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</span>
           {% endif %}
         </h6>
@@ -63,4 +64,10 @@
       </div>
     </div>
   </div>
+  {% else %}
+  <div class="panel-body text-center text-muted">
+    {{ ux_icon('heroicons:chart-bar', {'class': 'w-8 h-8 position-left text-slate'}) }}
+    {{ 'coaster_ranking.info.not_computed'|trans }}
+  </div>
+  {% endif %}
 </div>
