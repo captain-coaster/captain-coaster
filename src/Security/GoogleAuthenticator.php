@@ -74,7 +74,13 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->router->generate('default_index'));
+        // No saved target path (e.g. /login opened directly, no referer) —
+        // fall back to the locale saved when the login page loaded, same as
+        // onAuthenticationFailure() below, instead of silently defaulting
+        // to English.
+        $locale = $request->getSession()->get('locale_at_login', $request->getLocale());
+
+        return new RedirectResponse($this->router->generate('default_index', ['_locale' => $locale]));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
