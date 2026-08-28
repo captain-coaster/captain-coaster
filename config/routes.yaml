@@ -8,6 +8,12 @@ admin:
     path: /team
     controller: App\Controller\Admin\DashboardController::index
 
+locale_switch:
+    path: /switch-locale/{locale}
+    controller: App\Controller\DefaultController::switchLocale
+    requirements:
+        locale: en|fr|es|de
+
 controllers:
     resource:
         path: ../src/Controller/

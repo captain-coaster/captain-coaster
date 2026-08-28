@@ -7,10 +7,12 @@ namespace App\Controller;
 use App\Form\Type\ContactType;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\LocalePreferenceService;
 use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,19 +29,46 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DefaultController extends BaseController
 {
-    /** Root of application without locale, redirect to browser language if defined. */
-    public function root(Request $request): RedirectResponse
+    /**
+     * Root of application without locale. Priority: a logged-in user's
+     * saved preferredLocale always wins (never null -- defaults to 'en'),
+     * otherwise LocalePreferenceService resolves cookie-then-browser-guess
+     * for anonymous visitors.
+     */
+    public function root(Request $request, LocalePreferenceService $localePreferenceService): RedirectResponse
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('default_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
-        }
+        $locale = $this->getUser()?->getPreferredLocale()
+            ?? $localePreferenceService->resolveAnonymousLocale($request);
 
-        /** @var array<string> $locales */
-        $locales = $this->getParameter('app_locales_array');
+        return $this->redirectToRoute('default_index', ['_locale' => $locale], 301);
+    }
 
-        return $this->redirectToRoute('default_index', [
-            '_locale' => $request->getPreferredLanguage($locales),
-        ], 301);
+    /**
+     * Sets the locale-preference cookie and redirects back to the
+     * equivalent page in the new locale. Only ever reached via an
+     * explicit navbar switcher click -- never set passively on ordinary
+     * page views, so visiting a link someone shared in another locale
+     * can never silently change what a later fresh visit defaults to.
+     */
+    public function switchLocale(Request $request, string $locale, LocalePreferenceService $localePreferenceService): RedirectResponse
+    {
+        $redirect = $request->query->get('redirect');
+        $target = $localePreferenceService->isSafeRedirectPath($redirect)
+            ? $redirect
+            : $this->generateUrl('root');
+
+        $response = new RedirectResponse($target);
+        $response->headers->setCookie(Cookie::create(
+            name: LocalePreferenceService::COOKIE_NAME,
+            value: $locale,
+            expire: strtotime('+1 year'),
+            path: '/',
+            secure: $request->isSecure(),
+            httpOnly: true,
+            sameSite: Cookie::SAMESITE_LAX,
+        ));
+
+        return $response;
     }
 
     /**
