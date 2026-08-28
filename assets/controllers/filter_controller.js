@@ -224,6 +224,17 @@ export default class extends Controller {
             window.location.pathname + (queryString ? '?' + queryString : '');
 
         window.history.pushState(null, '', newUrl);
+        this.updateLanguageSwitcherLinks(queryString);
+    }
+
+    // The language switcher's locale links are rendered server-side from
+    // the query string at initial page load. Filters applied afterward
+    // only exist in pushState (see above), so without this the switcher
+    // silently drops them when the user changes locale mid-filter.
+    updateLanguageSwitcherLinks(queryString) {
+        document.querySelectorAll('.language-switch a[href]').forEach((link) => {
+            link.search = queryString;
+        });
     }
 
     // Restore filters from URL on page load
