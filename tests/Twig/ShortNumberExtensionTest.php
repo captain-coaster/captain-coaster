@@ -14,6 +14,10 @@ class ShortNumberExtensionTest extends TestCase
     protected function setUp(): void
     {
         $this->extension = new ShortNumberExtension();
+        // formatNumber() defaults to \Locale::getDefault() when no locale is
+        // passed explicitly — pin it so these assertions don't depend on
+        // whatever locale a previous test left behind.
+        \Locale::setDefault('en');
     }
 
     public function testFormatNumberUnder1000(): void
@@ -66,5 +70,17 @@ class ShortNumberExtensionTest extends TestCase
         // Negative numbers fall through to else clause
         $this->assertSame('-0.1K', $this->extension->formatNumber(-100));
         $this->assertSame('-1.0K', $this->extension->formatNumber(-1000));
+    }
+
+    public function testFormatNumberUsesLocaleDecimalSeparator(): void
+    {
+        $this->assertSame('1,5K', $this->extension->formatNumber(1500, 1, 'fr'));
+        $this->assertSame('2,0M', $this->extension->formatNumber(2_000_000, 1, 'fr'));
+    }
+
+    public function testFormatNumberFollowsAmbientDefaultLocaleWhenNoneGiven(): void
+    {
+        \Locale::setDefault('fr');
+        $this->assertSame('1,5K', $this->extension->formatNumber(1500));
     }
 }
