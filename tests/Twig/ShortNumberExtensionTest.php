@@ -41,16 +41,25 @@ class ShortNumberExtensionTest extends TestCase
         $this->assertSame('999.0M', $this->extension->formatNumber(999_000_000));
     }
 
-    public function testFormatNumberBillions(): void
+    public function testFormatNumberBillionsAndAboveFallBackToFullGroupedDigits(): void
     {
-        $this->assertSame('1.0B', $this->extension->formatNumber(1_000_000_000));
-        $this->assertSame('5.5B', $this->extension->formatNumber(5_500_000_000));
+        // No "B"/"T" suffix: "billion" is 10^9 in English but 10^12 in
+        // French/German/Spanish (long scale) — a hardcoded letter would be
+        // silently wrong by a factor of 1000 in those locales.
+        $this->assertSame('1,000,000,000', $this->extension->formatNumber(1_000_000_000));
+        $this->assertSame('5,500,000,000', $this->extension->formatNumber(5_500_000_000));
+        $this->assertSame('1,000,000,000,000', $this->extension->formatNumber(1_000_000_000_000));
     }
 
-    public function testFormatNumberTrillions(): void
+    public function testFormatNumberBillionsAndAboveUseLocaleGroupingSeparator(): void
     {
-        $this->assertSame('1.0T', $this->extension->formatNumber(1_000_000_000_000));
-        $this->assertSame('10.0T', $this->extension->formatNumber(10_000_000_000_000));
+        // ICU's French grouping separator is U+202F (narrow no-break space),
+        // not a plain ASCII space — easy to get wrong by eye, so spelled out.
+        $narrowNoBreakSpace = "\u{202F}";
+        $this->assertSame(
+            "1{$narrowNoBreakSpace}000{$narrowNoBreakSpace}000{$narrowNoBreakSpace}000",
+            $this->extension->formatNumber(1_000_000_000, 1, 'fr')
+        );
     }
 
     public function testFormatNumberWithPrecision(): void

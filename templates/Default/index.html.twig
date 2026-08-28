@@ -37,7 +37,7 @@
           <div class="col-xs-3">
             <p>{{ ux_icon('heroicons:star', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
             <h5 class="text-semibold no-margin">
-              {{ stats.nb_ratings }}
+              {{ stats.nb_ratings|format_number }}
               {% if stats.nb_new_ratings > 0 %}
                 <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
               {% endif %}
@@ -47,20 +47,20 @@
           <div class="col-xs-3">
             <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
             <h5 class="text-semibold no-margin">
-              <a href="{{ path('review_list') }}">{{ stats.nb_reviews }}</a>
+              <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
           </div>
           <div class="col-xs-3">
             <p>{{ ux_icon('heroicons:user-group', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
             <h5 class="text-semibold no-margin">
-              <a href="{{ path('user_list') }}">{{ stats.nb_users }}</a>
+              <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
             </h5>
             <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
           </div>
           <div class="col-xs-3">
             <p>{{ ux_icon('heroicons:camera', {'class': 'w-8 h-8 display-inline-block text-info'}) }}</p>
-            <h5 class="text-semibold no-margin">{{ stats.nb_images }}</h5>
+            <h5 class="text-semibold no-margin">{{ stats.nb_images|format_number }}</h5>
             <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
           </div>
         </div>
