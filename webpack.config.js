@@ -116,6 +116,25 @@ Encore
     //     includeSubdirectories: true,
     // })
 
+    // MapLibre GL parses vector tiles in a Web Worker whose URL it resolves
+    // dynamically at runtime — that resolution doesn't survive Webpack
+    // bundling, so the worker silently fails to start. Copying the worker
+    // script as a static asset and pointing setWorkerUrl() at it (in
+    // map_controller.js) works around this.
+    .copyFiles({
+        from: "./node_modules/maplibre-gl/dist",
+        to: "vendor/maplibre-gl-worker.js",
+        pattern: /maplibre-gl-worker\.mjs$/,
+    })
+    // The worker's own source imports "./maplibre-gl-shared.mjs" as a
+    // relative module specifier — filename and .mjs extension must match
+    // exactly for that import to resolve next to it.
+    .copyFiles({
+        from: "./node_modules/maplibre-gl/dist",
+        to: "vendor/[name].[ext]",
+        pattern: /maplibre-gl-shared\.mjs$/,
+    })
+
     // Configure bundle splitting for stable vendor libraries
     .configureSplitChunks((splitChunks) => {
         splitChunks.cacheGroups = {
