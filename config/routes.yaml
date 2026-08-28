@@ -11,6 +11,7 @@ admin:
 locale_switch:
     path: /switch-locale/{locale}
     controller: App\Controller\DefaultController::switchLocale
+    methods: [GET]
     requirements:
         locale: en|fr|es|de
 

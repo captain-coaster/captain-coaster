@@ -55,7 +55,7 @@ class LocalePreferenceService
             return false;
         }
 
-        if (str_contains($path, '/../') || str_ends_with($path, '/..') || str_starts_with($path, '../')) {
+        if (str_contains($path, '/../') || str_ends_with($path, '/..')) {
             return false;
         }
 

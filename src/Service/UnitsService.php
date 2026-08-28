@@ -27,7 +27,7 @@ class UnitsService
     /** Browser locale regions that default to imperial when no user preference exists. */
     private const IMPERIAL_LANGUAGE_REGIONS = ['en_US'];
 
-    private const METERS_PER_FOOT = 3.281;
+    private const FEET_PER_METER = 3.281;
     private const KM_PER_MILE = 1.609;
 
     public function __construct(
@@ -70,7 +70,7 @@ class UnitsService
 
     public function metersToFeet(int $meters): int
     {
-        return (int) round($meters * self::METERS_PER_FOOT);
+        return (int) round($meters * self::FEET_PER_METER);
     }
 
     public function kphToMph(int $kph): int
