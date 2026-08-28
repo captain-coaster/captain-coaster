@@ -4,6 +4,14 @@
  * GeoJSON layer, styled via paint expressions in map_controller.js)
  */
 
+/* .content-wrapper is a table-cell sized by its content, so height:100%
+   on the map is circular (resolves to 0). Match the theme's own navbar
+   height (@navbar-height in variables-core.less) instead of guessing a
+   vh percentage, which always left a blank strip below the map. */
+#map {
+    height: calc(100vh - 46px);
+}
+
 /* Popup styling */
 .maplibregl-popup-content {
     font-size: 14px;
