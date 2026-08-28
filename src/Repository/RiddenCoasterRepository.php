@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
+use App\Entity\Status;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
@@ -455,22 +456,48 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Count ridden coasters for a user in Top 100.
      *
+     * nb_top100 counts ridden coasters within the overall Top 100 (closed/destroyed
+     * coasters included, since they still hold their all-time rank). nb_top100_operating
+     * counts ridden coasters within the top 100 *still-operating* coasters — a separate
+     * ranking with closed ones excluded entirely, not just the operating subset of the
+     * overall Top 100. Otherwise closed coasters occupying overall-Top-100 slots would
+     * make 100/100 operating permanently unreachable.
+     *
      * @return array{nb_top100: int, nb_top100_operating: int}|int
      */
     public function countTop100ForUser(User $user): array|int
     {
+        $operatingTop100Ids = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('c.id')
+            ->from(Coaster::class, 'c')
+            ->join('c.status', 's')
+            ->where('s.name = :operating')
+            ->andWhere('c.rank IS NOT NULL')
+            ->orderBy('c.rank', 'ASC')
+            ->setMaxResults(100)
+            ->setParameter('operating', Status::OPERATING)
+            ->getQuery()
+            ->getSingleColumnResult();
+
+        // Guard against an empty IN(), which Doctrine can't compile.
+        if ([] === $operatingTop100Ids) {
+            $operatingTop100Ids = [0];
+        }
+
         try {
             return $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select([
-                    'COUNT(1) as nb_top100',
-                    'SUM(CASE WHEN c.status = 1 THEN 1 ELSE 0 END) AS nb_top100_operating',
+                    'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
+                    'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
                 ])
                 ->from(RiddenCoaster::class, 'r')
                 ->join('r.coaster', 'c')
                 ->where('r.user = :user')
-                ->andWhere('c.rank <= 100')
+                ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
                 ->setParameter('user', $user)
+                ->setParameter('operatingTop100Ids', $operatingTop100Ids)
                 ->getQuery()
                 ->getSingleResult();
         } catch (NonUniqueResultException) {
