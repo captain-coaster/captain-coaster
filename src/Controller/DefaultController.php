@@ -52,8 +52,15 @@ class DefaultController extends BaseController
      */
     public function switchLocale(Request $request, string $locale, LocalePreferenceService $localePreferenceService): RedirectResponse
     {
-        $redirect = $request->query->get('redirect');
-        $target = $localePreferenceService->isSafeRedirectPath($redirect)
+        // ->all() rather than ->get(): a malformed ?redirect[]=x never
+        // throws BadRequestException here, it just fails the is_string()
+        // check below and falls through to root() like any other invalid
+        // redirect value -- matching this action's "anything invalid
+        // falls back to root" contract even for that shape of input.
+        $redirectParam = $request->query->all()['redirect'] ?? null;
+        $redirect = \is_string($redirectParam) ? $redirectParam : null;
+
+        $target = $localePreferenceService->isSafeRedirectPath($redirect, $locale)
             ? $redirect
             : $this->generateUrl('root');
 
@@ -63,7 +70,11 @@ class DefaultController extends BaseController
             value: $locale,
             expire: strtotime('+1 year'),
             path: '/',
-            secure: $request->isSecure(),
+            // Hardcoded true, matching security.yaml's remember-me cookie
+            // convention -- $request->isSecure() would return false behind
+            // a TLS-terminating proxy unless trusted_proxies is configured,
+            // which it isn't in any committed config here.
+            secure: true,
             httpOnly: true,
             sameSite: Cookie::SAMESITE_LAX,
         ));

@@ -42,10 +42,12 @@ class LocalePreferenceService
 
     /**
      * Guards the locale_switch action's redirect target against open
-     * redirects: only a relative, same-origin, locale-prefixed path is
-     * accepted — never an absolute URL or a protocol-relative one.
+     * redirects: only a relative, same-origin path prefixed with the exact
+     * locale being switched to is accepted — never an absolute URL, a
+     * protocol-relative one, or a path for a *different* locale than the
+     * one this redirect is switching to.
      */
-    public function isSafeRedirectPath(?string $path): bool
+    public function isSafeRedirectPath(?string $path, string $locale): bool
     {
         if (null === $path || '' === $path) {
             return false;
@@ -59,8 +61,8 @@ class LocalePreferenceService
             return false;
         }
 
-        $pattern = '#^/('.implode('|', array_map('preg_quote', $this->locales)).')(/|$)#';
-
-        return 1 === preg_match($pattern, $path);
+        return '/'.$locale === $path
+            || str_starts_with($path, '/'.$locale.'/')
+            || str_starts_with($path, '/'.$locale.'?');
     }
 }
