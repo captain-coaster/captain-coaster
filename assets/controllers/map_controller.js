@@ -163,7 +163,13 @@ export default class extends Controller {
 
     bindLayerInteractions() {
         this.map.on('click', this.MARKER_LAYER_ID, (e) => {
-            const feature = e.features[0];
+            // e.features isn't ordered by visual stacking (same quirk as
+            // queryRenderedFeatures) — pick by nb, same rule symbol-sort-key
+            // uses to decide which marker draws on top, so the one that
+            // opens is the one the user can actually see.
+            const feature = e.features.reduce((top, f) =>
+                f.properties.nb > top.properties.nb ? f : top
+            );
             this.showParkPopup(feature.properties, feature.geometry.coordinates);
         });
 
