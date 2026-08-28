@@ -55,6 +55,10 @@ class LocalePreferenceService
             return false;
         }
 
+        if (str_contains($path, '/../') || str_ends_with($path, '/..') || str_starts_with($path, '../')) {
+            return false;
+        }
+
         $pattern = '#^/('.implode('|', array_map('preg_quote', $this->locales)).')(/|$)#';
 
         return 1 === preg_match($pattern, $path);

@@ -69,4 +69,12 @@ class LocalePreferenceServiceTest extends TestCase
         $this->assertFalse($this->service->isSafeRedirectPath(null));
         $this->assertFalse($this->service->isSafeRedirectPath(''));
     }
+
+    public function testIsSafeRedirectPathRejectsDirectoryTraversal(): void
+    {
+        $this->assertFalse($this->service->isSafeRedirectPath('/en/../../etc'));
+        $this->assertFalse($this->service->isSafeRedirectPath('/fr/../../../admin'));
+        $this->assertFalse($this->service->isSafeRedirectPath('/../en/coasters'));
+        $this->assertFalse($this->service->isSafeRedirectPath('/de/path/..'));
+    }
 }
