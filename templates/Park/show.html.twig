@@ -60,7 +60,7 @@
                                             {{ infoPark.name }}
                                         </a>
                                         -
-                                        {{ units.km_or_mi(infoPark.distance) }}
+                                        {{ units.kmOrMi(infoPark.distance) }}
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -141,7 +141,7 @@
                                     {% if coaster.height is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {{ units.m_or_f(coaster.height) }}
+                                        {{ units.metersOrFeet(coaster.height) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -149,7 +149,7 @@
                                     {% if coaster.speed is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {{ units.kph_or_mph(coaster.speed) }}
+                                        {{ units.kphOrMph(coaster.speed) }}
                                     {% endif %}
                                 </li>
                                 <li>
@@ -157,7 +157,7 @@
                                     {% if coaster.length is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
-                                        {{ units.m_or_f(coaster.length) }}
+                                        {{ units.metersOrFeet(coaster.length) }}
                                     {% endif %}
                                 </li>
                                 <li>

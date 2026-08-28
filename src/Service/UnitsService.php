@@ -7,28 +7,33 @@ namespace App\Service;
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 
-class UnitsService extends AbstractExtension
+/**
+ * Resolves the visitor's metric/imperial preference and converts
+ * height/speed/distance accordingly.
+ *
+ * Precedence: a logged-in user's saved profile preference, then a guess
+ * from the browser's Accept-Language *region* (e.g. "en-US" vs "en-GB") —
+ * language alone isn't a reliable signal, since English is also the
+ * majority language in metric countries (UK, Canada, Australia...); see
+ * GitHub issue #108.
+ *
+ * Exposed to Twig via the `units` global (config/packages/twig.yaml),
+ * called directly as an object (units.metersOrFeet(...)), not as
+ * registered Twig functions/filters.
+ */
+class UnitsService
 {
-    private Security $security;
-    private RequestStack $requestStack;
+    /** Browser locale regions that default to imperial when no user preference exists. */
+    private const IMPERIAL_LANGUAGE_REGIONS = ['en_US'];
 
-    public function __construct(Security $security, RequestStack $requestStack)
-    {
-        $this->security = $security;
-        $this->requestStack = $requestStack;
-    }
+    private const METERS_PER_FOOT = 3.281;
+    private const KM_PER_MILE = 1.609;
 
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('is_imperial', [$this, 'isImperial']),
-            new TwigFunction('m_or_f', [$this, 'm_or_f']),
-            new TwigFunction('kph_or_mph', [$this, 'kph_or_mph']),
-            new TwigFunction('km_or_mi', [$this, 'km_or_mi']),
-        ];
+    public function __construct(
+        private readonly Security $security,
+        private readonly RequestStack $requestStack,
+    ) {
     }
 
     public function isImperial(): bool
@@ -39,35 +44,59 @@ class UnitsService extends AbstractExtension
             return $user->isImperial();
         }
 
-        // TODO cookies
-
-        return 'en' === $this->requestStack->getCurrentRequest()->getLocale();
+        return $this->guessImperialFromBrowserLocale();
     }
 
-    public function m_or_f(int $value): string
+    public function metersOrFeet(int $value): string
     {
-        if ($this->isImperial()) {
-            return round($value * 3.281).' ft';
-        }
-
-        return $value.' m';
+        return $this->isImperial()
+            ? $this->metersToFeet($value).' ft'
+            : $value.' m';
     }
 
-    public function kph_or_mph(int $value): string
+    public function kphOrMph(int $value): string
     {
-        if ($this->isImperial()) {
-            return round($value / 1.609).' mph';
-        }
-
-        return $value.' km/h';
+        return $this->isImperial()
+            ? $this->kphToMph($value).' mph'
+            : $value.' km/h';
     }
 
-    public function km_or_mi(int $value): string
+    public function kmOrMi(int $value): string
     {
-        if ($this->isImperial()) {
-            return round($value / 1.609).' mi';
+        return $this->isImperial()
+            ? $this->kmToMiles($value).' mi'
+            : $value.' km';
+    }
+
+    public function metersToFeet(int $meters): int
+    {
+        return (int) round($meters * self::METERS_PER_FOOT);
+    }
+
+    public function kphToMph(int $kph): int
+    {
+        return (int) round($kph / self::KM_PER_MILE);
+    }
+
+    public function kmToMiles(int $km): int
+    {
+        return (int) round($km / self::KM_PER_MILE);
+    }
+
+    /**
+     * Only the top-preferred browser language is checked, and only an
+     * explicit US region tag guesses imperial — a bare "en" with no
+     * region, or any non-US region, defaults to metric.
+     */
+    private function guessImperialFromBrowserLocale(): bool
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return false;
         }
 
-        return $value.' km';
+        $topLanguage = $request->getLanguages()[0] ?? null;
+
+        return \in_array($topLanguage, self::IMPERIAL_LANGUAGE_REGIONS, true);
     }
 }

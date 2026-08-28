@@ -51,9 +51,6 @@ services:
 
     Symfony\Bridge\Monolog\Handler\NotifierHandler: ~
 
-    App\Service\UnitsService:
-        class: App\Service\UnitsService
-
     Aws\BedrockRuntime\BedrockRuntimeClient:
         arguments:
             - version: 'latest'
