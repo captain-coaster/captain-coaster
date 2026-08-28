@@ -1,6 +1,11 @@
 const Encore = require("@symfony/webpack-encore");
 const path = require("path");
 
+// Single source of truth for the versioned vendor/ path below and the
+// matching setWorkerUrl() call in map_controller.js — keeps the two in
+// sync automatically whenever the maplibre-gl dependency is bumped.
+const maplibreGlVersion = require("maplibre-gl/package.json").version;
+
 // Manually configure the runtime environment if not already configured yet by the "encore" command.
 // It's useful when you use tools that rely on webpack.config.js file.
 if (!Encore.isRuntimeEnvironmentConfigured()) {
@@ -120,10 +125,15 @@ Encore
     // dynamically at runtime — that resolution doesn't survive Webpack
     // bundling, so the worker silently fails to start. Copying the worker
     // script as a static asset and pointing setWorkerUrl() at it (in
-    // map_controller.js) works around this.
+    // map_controller.js) works around this. The destination is namespaced
+    // under the installed maplibre-gl version (not Encore's usual content
+    // hash — the worker's own source imports its sibling file by a fixed
+    // relative filename, so hashing filenames independently would break
+    // that) so a version bump can't leave a stale worker/shared file
+    // cached under a URL a fresh main bundle still points at.
     .copyFiles({
         from: "./node_modules/maplibre-gl/dist",
-        to: "vendor/maplibre-gl-worker.js",
+        to: `vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.js`,
         pattern: /maplibre-gl-worker\.mjs$/,
     })
     // The worker's own source imports "./maplibre-gl-shared.mjs" as a
@@ -131,7 +141,7 @@ Encore
     // exactly for that import to resolve next to it.
     .copyFiles({
         from: "./node_modules/maplibre-gl/dist",
-        to: "vendor/[name].[ext]",
+        to: `vendor/maplibre-gl-${maplibreGlVersion}/[name].[ext]`,
         pattern: /maplibre-gl-shared\.mjs$/,
     })
 

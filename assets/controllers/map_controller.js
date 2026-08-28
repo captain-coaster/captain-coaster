@@ -42,13 +42,18 @@ export default class extends Controller {
         try {
             const maplibregl = await import('maplibre-gl');
             await import('maplibre-gl/dist/maplibre-gl.css');
+            const { version: maplibreGlVersion } = await import(
+                'maplibre-gl/package.json'
+            );
 
             this.maplibregl = maplibregl;
 
             // The worker URL MapLibre resolves at runtime doesn't survive
             // Webpack bundling; see webpack.config.js copyFiles() for why
-            // this static path exists.
-            maplibregl.setWorkerUrl('/build/vendor/maplibre-gl-worker.js');
+            // this static, version-namespaced path exists.
+            maplibregl.setWorkerUrl(
+                `/build/vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.js`
+            );
 
             this.map = new maplibregl.Map({
                 container: this.containerTarget,
@@ -61,9 +66,17 @@ export default class extends Controller {
 
             this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
+            // 'load' never fires on a style/tile load failure (e.g. an
+            // OpenFreeMap outage) — the try/catch around this method only
+            // covers synchronous setup, not that async case.
+            this.map.on('error', (e) => {
+                console.error('MapLibre error:', e.error);
+            });
+
             this.map.on('load', () => {
                 this.addParksLayer();
                 this.bindLayerInteractions();
+                this.mapLoaded = true;
 
                 if (this.parkIdValue) {
                     this.focusOnPark(this.parkIdValue);
@@ -275,9 +288,14 @@ export default class extends Controller {
         })
             .then((response) => response.json())
             .then((data) => {
+                // If the map hasn't fired 'load' yet, this.markersValue is
+                // still picked up when addParksLayer() eventually builds
+                // the source — nothing more to do here in that case.
                 this.markersValue = data;
-                this.ensureMarkerIcons(data);
-                this.map.getSource(this.SOURCE_ID).setData(this.toGeoJSON(data));
+                if (this.mapLoaded) {
+                    this.ensureMarkerIcons(data);
+                    this.map.getSource(this.SOURCE_ID).setData(this.toGeoJSON(data));
+                }
 
                 const filterElement = document.querySelector(
                     '[data-controller="filter"]'
