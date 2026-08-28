@@ -27,7 +27,7 @@
                                 </div>
                                 <div class="score-compact">
                                     <div>
-                                        <span class="score-number">{{ coaster.score|number_format(1, ',') }}</span><span class="score-percent">%</span>
+                                        <span class="score-number">{{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}</span><span class="score-percent">%</span>
                                     </div>
                                 </div>
                             </div>

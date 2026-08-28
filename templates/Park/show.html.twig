@@ -104,7 +104,7 @@
                             <h4 class="media-heading score-responsive mb-20 center"
                                 style="color: {{ helper.ratingColor(coaster.score) }};">
                                 {% if coaster.score %}
-                                    {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|number_format(1, ',') }}%
+                                    {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
                                 {% else %}
                                     &nbsp;
                                 {% endif %}

@@ -39,7 +39,7 @@
             </div>
             <div class="media-right text-center">
                 <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
-                    {{ coaster.score|number_format(1, ',') }}%
+                    {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
                 </h3>
                 <span class="text-muted mb-10 mt-10 text-nowrap">
             {{ 'coaster_ranking.duel_number'|trans({'count': coaster.validDuels}) }}
