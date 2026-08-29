@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Form\Type\ContactType;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\LocalePreferenceService;
 use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -27,19 +28,18 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  */
 class DefaultController extends BaseController
 {
-    /** Root of application without locale, redirect to browser language if defined. */
-    public function root(Request $request): RedirectResponse
+    /**
+     * Root of application without locale. Priority: a logged-in user's
+     * saved preferredLocale always wins (never null -- defaults to 'en'),
+     * otherwise LocalePreferenceService resolves cookie-then-browser-guess
+     * for anonymous visitors.
+     */
+    public function root(Request $request, LocalePreferenceService $localePreferenceService): RedirectResponse
     {
-        if ($this->getUser()) {
-            return $this->redirectToRoute('default_index', ['_locale' => $this->getUser()->getPreferredLocale()], 301);
-        }
+        $locale = $this->getUser()?->getPreferredLocale()
+            ?? $localePreferenceService->resolveAnonymousLocale($request);
 
-        /** @var array<string> $locales */
-        $locales = $this->getParameter('app_locales_array');
-
-        return $this->redirectToRoute('default_index', [
-            '_locale' => $request->getPreferredLanguage($locales),
-        ], 301);
+        return $this->redirectToRoute('default_index', ['_locale' => $locale], 301);
     }
 
     /**

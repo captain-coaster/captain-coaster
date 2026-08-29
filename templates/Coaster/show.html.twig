@@ -27,7 +27,7 @@
                                 </div>
                                 <div class="score-compact">
                                     <div>
-                                        <span class="score-number">{{ coaster.score|number_format(1, ',') }}</span><span class="score-percent">%</span>
+                                        <span class="score-number">{{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}</span><span class="score-percent">%</span>
                                     </div>
                                 </div>
                             </div>
@@ -86,7 +86,7 @@
                                 {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-12 h-12 text-warning-600'}) }}
                                 <div class="text-bold mt-5">
                                     {% if coaster.height is not empty %}
-                                        {{ units.m_or_f(coaster.height) }}
+                                        {{ units.metersOrFeet(coaster.height) }}
                                     {% else %}
                                         &nbsp;
                                     {% endif %}
@@ -98,7 +98,7 @@
                                 {{ ux_icon('heroicons:rocket-launch', {'class': 'w-12 h-12 text-success-400'}) }}
                                 <div class="text-bold mt-5">
                                     {% if coaster.speed is not empty %}
-                                        {{ units.kph_or_mph(coaster.speed) }}
+                                        {{ units.kphOrMph(coaster.speed) }}
                                     {% else %}
                                         &nbsp;
                                     {% endif %}
@@ -112,7 +112,7 @@
                                 {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-12 h-12 text-blue'}) }}
                                 <div class="text-bold mt-5">
                                     {% if coaster.length is not empty %}
-                                        {{ units.m_or_f(coaster.length) }}
+                                        {{ units.metersOrFeet(coaster.length) }}
                                     {% else %}
                                         &nbsp;
                                     {% endif %}
