@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -29,6 +30,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class UnitsService
 {
+    /** ISO 3166-1 alpha-2 country codes (from Cloudflare's CF-IPCountry header) that use imperial units. */
+    private const IMPERIAL_COUNTRIES = ['US', 'GB'];
+
     /** Browser locale regions that default to imperial when no user preference exists. */
     private const IMPERIAL_LANGUAGE_REGIONS = ['en_US', 'en_GB'];
 
@@ -87,6 +91,22 @@ class UnitsService
         return (int) round($km / self::KM_PER_MILE);
     }
 
+    public function guessUnitsFromRequest(Request $request): string
+    {
+        $cfCountry = $request->headers->get('CF-IPCountry');
+        if (\is_string($cfCountry)) {
+            return \in_array(strtoupper($cfCountry), self::IMPERIAL_COUNTRIES, true) ? 'imperial' : 'metric';
+        }
+
+        foreach ($request->getLanguages() as $language) {
+            if (str_contains($language, '_')) {
+                return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true) ? 'imperial' : 'metric';
+            }
+        }
+
+        return 'metric';
+    }
+
     /**
      * Walks the browser's language preferences in order and stops at the
      * first one that carries a region -- that region decides, imperial or
@@ -106,12 +126,6 @@ class UnitsService
             return false;
         }
 
-        foreach ($request->getLanguages() as $language) {
-            if (str_contains($language, '_')) {
-                return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true);
-            }
-        }
-
-        return false;
+        return 'imperial' === $this->guessUnitsFromRequest($request);
     }
 }
