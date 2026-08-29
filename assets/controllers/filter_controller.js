@@ -231,10 +231,20 @@ export default class extends Controller {
     // the query string at initial page load. Filters applied afterward
     // only exist in pushState (see above), so without this the switcher
     // silently drops them when the user changes locale mid-filter.
+    //
+    // Each link's own pathname (e.g. "/fr/map/") already carries its
+    // target locale, so setLocale is derived from that rather than kept
+    // in queryString -- overwriting the whole search string with just
+    // the filter params would otherwise silently drop it.
     updateLanguageSwitcherLinks(queryString) {
-        document.querySelectorAll('.language-switch a[href]').forEach((link) => {
-            link.search = queryString;
-        });
+        document
+            .querySelectorAll('.language-switch a[href]')
+            .forEach((link) => {
+                const locale = link.pathname.split('/')[1];
+                const params = new URLSearchParams(queryString);
+                params.set('setLocale', locale);
+                link.search = params.toString();
+            });
     }
 
     // Restore filters from URL on page load
