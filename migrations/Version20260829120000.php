@@ -16,15 +16,15 @@ final class Version20260829120000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql("ALTER TABLE user ADD preferred_units VARCHAR(20) DEFAULT 'metric' NOT NULL");
-        $this->addSql("UPDATE user SET preferred_units = 'imperial' WHERE imperial = 1");
-        $this->addSql('ALTER TABLE user DROP imperial');
+        $this->addSql("ALTER TABLE users ADD preferred_units VARCHAR(20) DEFAULT 'metric' NOT NULL");
+        $this->addSql("UPDATE users SET preferred_units = 'imperial' WHERE imperial = 1");
+        $this->addSql('ALTER TABLE users DROP imperial');
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE user ADD imperial TINYINT(1) DEFAULT 0 NOT NULL');
-        $this->addSql("UPDATE user SET imperial = 1 WHERE preferred_units = 'imperial'");
-        $this->addSql('ALTER TABLE user DROP preferred_units');
+        $this->addSql('ALTER TABLE users ADD imperial TINYINT(1) DEFAULT 0 NOT NULL');
+        $this->addSql("UPDATE users SET imperial = 1 WHERE preferred_units = 'imperial'");
+        $this->addSql('ALTER TABLE users DROP preferred_units');
     }
 }
