@@ -5,6 +5,9 @@
 # runtime maintenance-mode toggle, copied in/out by deploy.sh — not source
 /public/maintenance.html
 
+# deploy.sh's record of the pre-deploy commit, used by its rollback command
+/.deploy_previous_commit
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
