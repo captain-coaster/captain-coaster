@@ -24,6 +24,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class UnitsService
 {
+    public const COOKIE_NAME = 'units';
+
     /** ISO 3166-1 alpha-2 country codes (from Cloudflare's CF-IPCountry header) that use imperial units. */
     private const IMPERIAL_COUNTRIES = ['US', 'GB'];
 
@@ -46,7 +48,17 @@ class UnitsService
             return 'imperial' === $user->getPreferredUnits();
         }
 
-        return $this->guessImperialFromBrowserLocale();
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return false;
+        }
+
+        $cookieUnits = $request->cookies->get(self::COOKIE_NAME);
+        if (\is_string($cookieUnits) && \in_array($cookieUnits, ['metric', 'imperial'], true)) {
+            return 'imperial' === $cookieUnits;
+        }
+
+        return 'imperial' === $this->guessUnitsFromRequest($request);
     }
 
     public function metersOrFeet(int $value): string
@@ -124,20 +136,5 @@ class UnitsService
         }
 
         return 'metric';
-    }
-
-    /**
-     * Thin delegate to guessUnitsFromRequest() for isImperial() when
-     * RequestStack has a current request. Used only when no logged-in user
-     * is present. See guessUnitsFromRequest() for the detailed algorithm.
-     */
-    private function guessImperialFromBrowserLocale(): bool
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return false;
-        }
-
-        return 'imperial' === $this->guessUnitsFromRequest($request);
     }
 }

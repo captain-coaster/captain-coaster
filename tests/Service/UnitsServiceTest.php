@@ -244,4 +244,26 @@ class UnitsServiceTest extends TestCase
 
         $this->assertSame('metric', $this->service->guessUnitsFromRequest($request));
     }
+
+    public function testIsImperialForAnonymousUserUsesCookieOverAcceptLanguage(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $request = Request::create('/');
+        $request->headers->set('Accept-Language', 'fr-FR,fr;q=0.9');
+        $request->cookies->set(UnitsService::COOKIE_NAME, 'imperial');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserIgnoresInvalidCookieValue(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $request = Request::create('/');
+        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
+        $request->cookies->set(UnitsService::COOKIE_NAME, 'furlongs');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
 }
