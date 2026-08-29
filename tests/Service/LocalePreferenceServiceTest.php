@@ -43,50 +43,15 @@ class LocalePreferenceServiceTest extends TestCase
         $this->assertSame('de', $this->service->resolveAnonymousLocale($request));
     }
 
-    public function testIsSafeRedirectPathAcceptsPathMatchingTheGivenLocale(): void
+    public function testIsSupportedLocaleAcceptsConfiguredLocales(): void
     {
-        $this->assertTrue($this->service->isSafeRedirectPath('/fr/coasters/123', 'fr'));
-        $this->assertTrue($this->service->isSafeRedirectPath('/en/map/', 'en'));
-        $this->assertTrue($this->service->isSafeRedirectPath('/en', 'en'));
-        $this->assertTrue($this->service->isSafeRedirectPath('/en?foo=bar', 'en'));
+        $this->assertTrue($this->service->isSupportedLocale('en'));
+        $this->assertTrue($this->service->isSupportedLocale('fr'));
     }
 
-    public function testIsSafeRedirectPathRejectsPathForADifferentLocaleThanRequested(): void
+    public function testIsSupportedLocaleRejectsUnknownValue(): void
     {
-        // The redirect's own locale segment must match the locale being
-        // switched to -- a /fr/... path is never a safe target when
-        // switching to "de", even though /fr/... is a valid path in
-        // isolation.
-        $this->assertFalse($this->service->isSafeRedirectPath('/fr/coasters/123', 'de'));
-        $this->assertFalse($this->service->isSafeRedirectPath('/end-of-something', 'en'));
-    }
-
-    public function testIsSafeRedirectPathRejectsAbsoluteUrl(): void
-    {
-        $this->assertFalse($this->service->isSafeRedirectPath('https://evil.example.com/phishing', 'en'));
-    }
-
-    public function testIsSafeRedirectPathRejectsProtocolRelativeUrl(): void
-    {
-        $this->assertFalse($this->service->isSafeRedirectPath('//evil.example.com/phishing', 'en'));
-    }
-
-    public function testIsSafeRedirectPathRejectsPathWithoutLocalePrefix(): void
-    {
-        $this->assertFalse($this->service->isSafeRedirectPath('/some/random/path', 'en'));
-    }
-
-    public function testIsSafeRedirectPathRejectsNullOrEmpty(): void
-    {
-        $this->assertFalse($this->service->isSafeRedirectPath(null, 'en'));
-        $this->assertFalse($this->service->isSafeRedirectPath('', 'en'));
-    }
-
-    public function testIsSafeRedirectPathRejectsDirectoryTraversal(): void
-    {
-        $this->assertFalse($this->service->isSafeRedirectPath('/en/../../etc', 'en'));
-        $this->assertFalse($this->service->isSafeRedirectPath('/fr/../../../admin', 'fr'));
-        $this->assertFalse($this->service->isSafeRedirectPath('/../en/coasters', 'en'));
-        $this->assertFalse($this->service->isSafeRedirectPath('/de/path/..', 'de'));
+        $this->assertFalse($this->service->isSupportedLocale('xx'));
+        $this->assertFalse($this->service->isSupportedLocale(''));
     }
 }

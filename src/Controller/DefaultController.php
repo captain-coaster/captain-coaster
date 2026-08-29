@@ -12,7 +12,6 @@ use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,45 +40,6 @@ class DefaultController extends BaseController
             ?? $localePreferenceService->resolveAnonymousLocale($request);
 
         return $this->redirectToRoute('default_index', ['_locale' => $locale], 301);
-    }
-
-    /**
-     * Sets the locale-preference cookie and redirects back to the
-     * equivalent page in the new locale. Only ever reached via an
-     * explicit navbar switcher click -- never set passively on ordinary
-     * page views, so visiting a link someone shared in another locale
-     * can never silently change what a later fresh visit defaults to.
-     */
-    public function switchLocale(Request $request, string $locale, LocalePreferenceService $localePreferenceService): RedirectResponse
-    {
-        // ->all() rather than ->get(): a malformed ?redirect[]=x never
-        // throws BadRequestException here, it just fails the is_string()
-        // check below and falls through to root() like any other invalid
-        // redirect value -- matching this action's "anything invalid
-        // falls back to root" contract even for that shape of input.
-        $redirectParam = $request->query->all()['redirect'] ?? null;
-        $redirect = \is_string($redirectParam) ? $redirectParam : null;
-
-        $target = $localePreferenceService->isSafeRedirectPath($redirect, $locale)
-            ? $redirect
-            : $this->generateUrl('root');
-
-        $response = new RedirectResponse($target);
-        $response->headers->setCookie(Cookie::create(
-            name: LocalePreferenceService::COOKIE_NAME,
-            value: $locale,
-            expire: strtotime('+1 year'),
-            path: '/',
-            // Hardcoded true, matching security.yaml's remember-me cookie
-            // convention -- $request->isSecure() would return false behind
-            // a TLS-terminating proxy unless trusted_proxies is configured,
-            // which it isn't in any committed config here.
-            secure: true,
-            httpOnly: true,
-            sameSite: Cookie::SAMESITE_LAX,
-        ));
-
-        return $response;
     }
 
     /**
