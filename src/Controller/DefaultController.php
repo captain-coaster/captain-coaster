@@ -8,6 +8,7 @@ use App\Form\Type\ContactType;
 use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\LocalePreferenceService;
+use App\Service\ReviewLanguagePreferenceService;
 use App\Service\StatService;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -50,12 +51,11 @@ class DefaultController extends BaseController
      * @throws \Exception
      */
     #[Route(path: '/', name: 'default_index', methods: ['GET'])]
-    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository): Response
+    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, ReviewLanguagePreferenceService $reviewLanguagePreferenceService): Response
     {
-        $displayReviewsInAllLanguages = false;
+        $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
         $missingImages = [];
         if ($user = $this->getUser()) {
-            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
@@ -63,9 +63,9 @@ class DefaultController extends BaseController
             'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
             'image' => $imageRepository->findLatestLikedImage(),
             'stats' => $statService->getIndexStats(),
-            'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, $displayReviewsInAllLanguages),
+            'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, true),
             'missingImages' => $missingImages,
-            'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+            'preferredReviewLanguages' => $preferredReviewLanguages,
         ]);
     }
 
