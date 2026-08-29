@@ -13,16 +13,10 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Resolves the visitor's metric/imperial preference and converts
  * height/speed/distance accordingly.
  *
- * Precedence: a logged-in user's saved profile preference, then a guess
- * from the browser's Accept-Language preferences, walked in order for the
- * first entry that carries a *region* (e.g. "en-US" vs "en-GB") — language
- * alone isn't a reliable signal, since English is also the majority
- * language in fully metric countries (Canada, Australia); see GitHub
- * issue #108. The UK is a deliberate exception: despite officially
- * adopting metric, road distances and speed limits stay legally imperial
- * (miles, mph) there — exactly the units this service converts — so
- * en_GB is grouped with en_US rather than with the fully metric English
- * regions.
+ * Precedence: logged-in user's saved profile preference > Cloudflare's
+ * CF-IPCountry header > browser's Accept-Language region preferences >
+ * metric default. See guessUnitsFromRequest() for the CF-IPCountry and
+ * Accept-Language logic.
  *
  * Exposed to Twig via the `units` global (config/packages/twig.yaml),
  * called directly as an object (units.metersOrFeet(...)), not as
@@ -91,6 +85,31 @@ class UnitsService
         return (int) round($km / self::KM_PER_MILE);
     }
 
+    /**
+     * Guess metric/imperial from the request's CF-IPCountry header or
+     * Accept-Language preferences.
+     *
+     * **Primary signal: CF-IPCountry.** If Cloudflare's CF-IPCountry header
+     * is present, it takes absolute priority: checks the ISO 3166-1 alpha-2
+     * country code against our IMPERIAL_COUNTRIES list (['US', 'GB']).
+     * Returns 'imperial' if matched, 'metric' otherwise. Accept-Language is
+     * never consulted if this header exists.
+     *
+     * **Fallback: Accept-Language region preferences.** If CF-IPCountry is
+     * absent, walks the browser's language preferences in order, stopping at
+     * the first entry that carries a *region* (e.g. "en-US" vs "en-GB") —
+     * language alone isn't a reliable signal, since English is also the
+     * majority language in fully metric countries (Canada, Australia); see
+     * GitHub issue #108. The UK is a deliberate exception: despite officially
+     * adopting metric, road distances and speed limits stay legally imperial
+     * (miles, mph) there — exactly the units this service converts — so
+     * en_GB is grouped with en_US rather than with the fully metric English
+     * regions. No region found anywhere defaults to 'metric'.
+     *
+     * Request::getLanguages() parses and caches the Accept-Language header
+     * once per request, and the list is at most a handful of entries, so
+     * this is a negligible cost to pay on every request.
+     */
     public function guessUnitsFromRequest(Request $request): string
     {
         $cfCountry = $request->headers->get('CF-IPCountry');
@@ -108,16 +127,9 @@ class UnitsService
     }
 
     /**
-     * Walks the browser's language preferences in order and stops at the
-     * first one that carries a region -- that region decides, imperial or
-     * not. Bare, region-less languages (e.g. plain "en") are skipped: they
-     * can't disambiguate anything on their own, since English is the
-     * majority language in both imperial (US, UK) and metric (Canada,
-     * Australia...) countries. No region found anywhere defaults to
-     * metric. Request::getLanguages() parses and caches the
-     * Accept-Language header once per request, and the list is at most a
-     * handful of entries, so this is a negligible cost to pay on every
-     * request.
+     * Thin delegate to guessUnitsFromRequest() for isImperial() when
+     * RequestStack has a current request. Used only when no logged-in user
+     * is present. See guessUnitsFromRequest() for the detailed algorithm.
      */
     private function guessImperialFromBrowserLocale(): bool
     {
