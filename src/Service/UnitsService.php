@@ -13,10 +13,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * height/speed/distance accordingly.
  *
  * Precedence: a logged-in user's saved profile preference, then a guess
- * from the browser's Accept-Language *region* (e.g. "en-US" vs "en-GB") —
- * language alone isn't a reliable signal, since English is also the
- * majority language in fully metric countries (Canada, Australia); see
- * GitHub issue #108. The UK is a deliberate exception: despite officially
+ * from the browser's Accept-Language preferences, walked in order for the
+ * first entry that carries a *region* (e.g. "en-US" vs "en-GB") — language
+ * alone isn't a reliable signal, since English is also the majority
+ * language in fully metric countries (Canada, Australia); see GitHub
+ * issue #108. The UK is a deliberate exception: despite officially
  * adopting metric, road distances and speed limits stay legally imperial
  * (miles, mph) there — exactly the units this service converts — so
  * en_GB is grouped with en_US rather than with the fully metric English
@@ -88,10 +89,16 @@ class UnitsService
     }
 
     /**
-     * Only the top-preferred browser language is checked, and only an
-     * explicit US or GB region tag guesses imperial — a bare "en" with no
-     * region, or any other region (Canada, Australia...), defaults to
-     * metric.
+     * Walks the browser's language preferences in order and stops at the
+     * first one that carries a region -- that region decides, imperial or
+     * not. Bare, region-less languages (e.g. plain "en") are skipped: they
+     * can't disambiguate anything on their own, since English is the
+     * majority language in both imperial (US, UK) and metric (Canada,
+     * Australia...) countries. No region found anywhere defaults to
+     * metric. Request::getLanguages() parses and caches the
+     * Accept-Language header once per request, and the list is at most a
+     * handful of entries, so this is a negligible cost to pay on every
+     * request.
      */
     private function guessImperialFromBrowserLocale(): bool
     {
@@ -100,8 +107,12 @@ class UnitsService
             return false;
         }
 
-        $topLanguage = $request->getLanguages()[0] ?? null;
+        foreach ($request->getLanguages() as $language) {
+            if (str_contains($language, '_')) {
+                return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true);
+            }
+        }
 
-        return \in_array($topLanguage, self::IMPERIAL_LANGUAGE_REGIONS, true);
+        return false;
     }
 }

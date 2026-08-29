@@ -103,6 +103,65 @@ class UnitsServiceTest extends TestCase
         $this->assertFalse($this->service->isImperial());
     }
 
+    public function testIsImperialForAnonymousUserWithBareEnglishThenUsRegionGuessesImperial(): void
+    {
+        // A bare "en" alone is ambiguous and gets skipped; the next
+        // entry that carries a region (en-US) decides.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,en-US;q=0.9,fr;q=0.8,fr-FR;q=0.7');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithBareEnglishThenGbRegionGuessesImperial(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,en-GB;q=0.9');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithBareEnglishThenCaRegionDefaultsMetric(): void
+    {
+        // The first region found (en-CA) is not an imperial one --
+        // still metric.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,en-CA;q=0.9');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithBareEnglishThenNonEnglishDefaultsMetric(): void
+    {
+        // Nothing in second position to disambiguate with.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,fr;q=0.9');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserSkipsBareNonEnglishTopToFindUsRegion(): void
+    {
+        // A bare "fr" (no region) is just as uninformative as a bare
+        // "en" -- it's skipped, and the first region found anywhere in
+        // the list decides, regardless of which language it belongs to.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('fr,en-US;q=0.5');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserStopsAtFirstRegionEvenIfALaterOneIsImperial(): void
+    {
+        // The first region-qualified entry decides and the scan stops
+        // there -- a decisive metric region (fr-FR) is never overridden
+        // by an imperial region further down the list.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('fr-FR;q=0.9,en-US;q=0.5');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
     public function testIsImperialForAnonymousUserWithNoRequestDefaultsMetric(): void
     {
         $this->security->method('getUser')->willReturn(null);
