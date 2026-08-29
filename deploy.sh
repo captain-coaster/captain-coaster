@@ -12,6 +12,10 @@ set -o pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+# Commit HEAD pointed to right before the last deploy's update_code ran.
+# rollback() reads this to know exactly how far to undo, instead of
+# assuming a deploy only ever pulls a single commit.
+STATE_FILE="$PROJECT_DIR/.deploy_previous_commit"
 
 # Colors for output
 RED='\033[0;31m'
@@ -34,6 +38,14 @@ warning() {
 
 error() {
     echo -e "${RED}❌ $1${NC}"
+}
+
+# ERR trap for full_deploy()/rollback(): `set -e` would otherwise abort
+# silently, leaving the site in maintenance mode with no indication why.
+# Staying in maintenance on failure is deliberate (see full_deploy's
+# comment) — this only makes that state visible to whoever is watching.
+on_deploy_error() {
+    error "Operation failed partway through — site is still in maintenance mode. Fix the underlying issue, then run '$0 maintenance off' once it's safe."
 }
 
 # Function to reload nginx so its file-existence cache picks up the
@@ -180,34 +192,11 @@ verify_deployment() {
     fi
 }
 
-# Function to run the full deploy in the right order, skipping steps that
-# the pulled changes don't actually touch. set -e (top of this script)
-# means any failure here stops the whole sequence immediately — and since
-# disable_maintenance only runs at the very end, maintenance mode stays on
-# if anything fails, rather than exposing a half-deployed site.
-#
-# No DB backup step here on purpose — that's handled by dedicated backup
-# tooling outside this script, not duplicated here.
-full_deploy() {
-    if [ -z "${DEPLOY_CONTINUE:-}" ]; then
-        # First pass: pull, then hand off to the script file we just
-        # pulled. Bash already parsed this function's body into memory
-        # before update_code runs — a git pull mid-script does NOT
-        # hot-swap that, so without this re-exec, every step below would
-        # silently keep running pre-pull logic even after deploy.sh
-        # itself changed (observed in practice: a fix to the asset-build
-        # condition was ignored on the deploy that pulled it in).
-        local old_commit
-        old_commit=$(git rev-parse HEAD)
-        enable_maintenance
-        update_code
-        DEPLOY_OLD_COMMIT="$old_commit" DEPLOY_CONTINUE=1 exec "$0" deploy
-    fi
-
-    # Second pass: fresh process, this file read fresh from disk — every
-    # function below is guaranteed to be the version that was just pulled.
-    local changed
-    changed=$(git diff --name-only "$DEPLOY_OLD_COMMIT" HEAD)
+# Installs/builds only what $changed actually touched. Shared by
+# full_deploy() and rollback() so the detection patterns can't drift
+# between the forward and backward direction of the same operation.
+apply_dependency_changes() {
+    local changed="$1"
 
     if echo "$changed" | grep -q '^composer\.lock$'; then
         install_dependencies
@@ -230,6 +219,53 @@ full_deploy() {
     else
         log "no asset changes, skipping build"
     fi
+}
+
+# Closing sequence shared by full_deploy() and rollback() — cheap regardless
+# of what changed, always safe to run.
+finalize_deploy() {
+    clear_cache
+    warm_cache
+    reload_php_fpm
+    verify_deployment
+    disable_maintenance
+}
+
+# Function to run the full deploy in the right order, skipping steps that
+# the pulled changes don't actually touch. set -e (top of this script)
+# means any failure here stops the whole sequence immediately — and since
+# disable_maintenance only runs at the very end, maintenance mode stays on
+# if anything fails, rather than exposing a half-deployed site.
+#
+# No DB backup step here on purpose — that's handled by dedicated backup
+# tooling outside this script, not duplicated here.
+full_deploy() {
+    trap on_deploy_error ERR
+
+    if [ -z "${DEPLOY_CONTINUE:-}" ]; then
+        # First pass: pull, then hand off to the script file we just
+        # pulled. Bash already parsed this function's body into memory
+        # before update_code runs — a git pull mid-script does NOT
+        # hot-swap that, so without this re-exec, every step below would
+        # silently keep running pre-pull logic even after deploy.sh
+        # itself changed (observed in practice: a fix to the asset-build
+        # condition was ignored on the deploy that pulled it in).
+        local old_commit
+        old_commit=$(git rev-parse HEAD)
+        # Persisted so rollback() knows exactly what to undo, even across
+        # a separate invocation of this script.
+        echo "$old_commit" > "$STATE_FILE"
+        enable_maintenance
+        update_code
+        DEPLOY_OLD_COMMIT="$old_commit" DEPLOY_CONTINUE=1 exec "$0" deploy
+    fi
+
+    # Second pass: fresh process, this file read fresh from disk — every
+    # function below is guaranteed to be the version that was just pulled.
+    local changed
+    changed=$(git diff --name-only "$DEPLOY_OLD_COMMIT" HEAD)
+
+    apply_dependency_changes "$changed"
 
     if echo "$changed" | grep -q '^migrations/'; then
         run_migrations
@@ -237,39 +273,96 @@ full_deploy() {
         log "no new migrations, skipping migrate"
     fi
 
-    # cheap regardless of what changed — always safe to run
-    clear_cache
-    warm_cache
-    reload_php_fpm
-    verify_deployment
-    disable_maintenance
+    finalize_deploy
 
     success "Deploy complete ($(echo "$changed" | wc -l | tr -d ' ') files changed)"
 }
 
-# Function to rollback deployment
+# Function to rollback deployment. Mirrors full_deploy(): maintenance mode
+# wraps the mutating part, the same $changed-driven install/build steps
+# run, and the closing sequence is shared — so a rollback leaves the site
+# in as consistent a state as a forward deploy would, instead of just
+# moving the git HEAD.
 rollback() {
-    error "Starting rollback process..."
-    
-    # Ask about migration rollback
-    echo ""
-    read -p "Do you want to rollback database migrations? (y/N): " -n 1 -r
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        warning "Rolling back migrations..."
-        php bin/console doctrine:migrations:migrate prev --no-interaction
-        success "Migrations rolled back"
-    fi
-    
-    # Reset to previous git commit
-    warning "Resetting code to previous commit..."
-    git reset --hard HEAD~1
-    
+    trap on_deploy_error ERR
 
-    
-    # Clear cache
-    clear_cache
-    
+    if [ -z "${ROLLBACK_CONTINUE:-}" ]; then
+        error "Starting rollback process..."
+
+        # Undo exactly what the last deploy pulled, not just one commit —
+        # a deploy's update_code can fast-forward through several commits
+        # at once. Falls back to HEAD~1 if there's no recorded state (e.g.
+        # first run after this script was updated, or code moved outside
+        # deploy.sh) or the recorded commit no longer exists locally.
+        local target_commit=""
+        if [ -f "$STATE_FILE" ]; then
+            target_commit=$(cat "$STATE_FILE")
+        fi
+        if [ -z "$target_commit" ] || ! git cat-file -e "${target_commit}^{commit}" 2>/dev/null; then
+            warning "No valid recorded pre-deploy commit found, falling back to HEAD~1"
+            target_commit=$(git rev-parse HEAD~1)
+        fi
+
+        # Diff of the commit(s) we're about to undo. Same file list
+        # regardless of diff direction, so it doubles as the "what needs
+        # reinstalling after reset" check, same as full_deploy's $changed.
+        local changed
+        changed=$(git diff --name-only "$target_commit" HEAD)
+
+        # Count migration files actually added by the commit(s) being
+        # undone — `migrate prev` only steps back one version at a time,
+        # so a commit that added several needs several calls, not one.
+        local migration_count
+        migration_count=$(git diff --name-status "$target_commit" HEAD -- migrations/ | grep -c '^A' || true)
+
+        local do_migration_rollback="n"
+        if [ "$migration_count" -gt 0 ]; then
+            if [ -t 0 ]; then
+                echo ""
+                read -p "Do you want to rollback $migration_count migration(s)? (y/N): " -n 1 -r
+                echo ""
+                do_migration_rollback="$REPLY"
+            else
+                warning "Non-interactive shell: skipping migration rollback prompt. Run 'php bin/console doctrine:migrations:migrate prev' manually $migration_count time(s) if needed."
+            fi
+        else
+            log "No new migrations in this commit, skipping migration rollback prompt"
+        fi
+
+        # Only now, once every decision that needs a human is made, does
+        # the site actually need to go down — no reason to hold maintenance
+        # mode open while waiting on the prompt above.
+        enable_maintenance
+
+        # Migrations must be rolled back BEFORE the reset, while the
+        # migration classes from the commit(s) being undone still exist.
+        if [[ $do_migration_rollback =~ ^[Yy]$ ]]; then
+            warning "Rolling back $migration_count migration(s)..."
+            for ((i = 0; i < migration_count; i++)); do
+                php bin/console doctrine:migrations:migrate prev --no-interaction
+            done
+            success "Migrations rolled back"
+        fi
+
+        warning "Resetting code to previous commit..."
+        git reset --hard "$target_commit"
+        success "Code reset"
+
+        # Re-exec for the same reason full_deploy() does after update_code:
+        # the git reset above just changed deploy.sh on disk, but this
+        # process already has the old (being-undone) function bodies
+        # parsed in memory. Everything from here on must run the restored
+        # version of this script.
+        ROLLBACK_CHANGED="$changed" ROLLBACK_CONTINUE=1 exec "$0" rollback
+    fi
+
+    # Second pass: fresh process, this file read fresh from disk after the
+    # reset — every function below is guaranteed to be the restored version.
+    local changed="$ROLLBACK_CHANGED"
+
+    apply_dependency_changes "$changed"
+    finalize_deploy
+
     success "Rollback completed"
 }
 
