@@ -15,8 +15,12 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Precedence: a logged-in user's saved profile preference, then a guess
  * from the browser's Accept-Language *region* (e.g. "en-US" vs "en-GB") —
  * language alone isn't a reliable signal, since English is also the
- * majority language in metric countries (UK, Canada, Australia...); see
- * GitHub issue #108.
+ * majority language in fully metric countries (Canada, Australia); see
+ * GitHub issue #108. The UK is a deliberate exception: despite officially
+ * adopting metric, road distances and speed limits stay legally imperial
+ * (miles, mph) there — exactly the units this service converts — so
+ * en_GB is grouped with en_US rather than with the fully metric English
+ * regions.
  *
  * Exposed to Twig via the `units` global (config/packages/twig.yaml),
  * called directly as an object (units.metersOrFeet(...)), not as
@@ -25,7 +29,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class UnitsService
 {
     /** Browser locale regions that default to imperial when no user preference exists. */
-    private const IMPERIAL_LANGUAGE_REGIONS = ['en_US'];
+    private const IMPERIAL_LANGUAGE_REGIONS = ['en_US', 'en_GB'];
 
     private const FEET_PER_METER = 3.281;
     private const KM_PER_MILE = 1.609;
@@ -85,8 +89,9 @@ class UnitsService
 
     /**
      * Only the top-preferred browser language is checked, and only an
-     * explicit US region tag guesses imperial — a bare "en" with no
-     * region, or any non-US region, defaults to metric.
+     * explicit US or GB region tag guesses imperial — a bare "en" with no
+     * region, or any other region (Canada, Australia...), defaults to
+     * metric.
      */
     private function guessImperialFromBrowserLocale(): bool
     {

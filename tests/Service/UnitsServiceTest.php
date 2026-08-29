@@ -67,10 +67,30 @@ class UnitsServiceTest extends TestCase
         $this->assertTrue($this->service->isImperial());
     }
 
-    public function testIsImperialForAnonymousUserWithGbRegionDefaultsMetric(): void
+    public function testIsImperialForAnonymousUserWithGbRegionGuessesImperial(): void
     {
+        // The UK is officially metric but legally imperial for road
+        // distances and speeds (miles, mph) -- exactly the units this
+        // service converts -- so en-GB is treated as imperial like en-US.
         $this->security->method('getUser')->willReturn(null);
         $this->pushRequestWithAcceptLanguage('en-GB,en;q=0.9');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithCaRegionDefaultsMetric(): void
+    {
+        // Canada uses km/h for road speed limits, unlike the UK.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en-CA,en;q=0.9');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithAuRegionDefaultsMetric(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en-AU,en;q=0.9');
 
         $this->assertFalse($this->service->isImperial());
     }
