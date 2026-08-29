@@ -88,10 +88,13 @@ class UnitsService
     }
 
     /**
-     * Only the top-preferred browser language is checked, and only an
-     * explicit US or GB region tag guesses imperial — a bare "en" with no
-     * region, or any other region (Canada, Australia...), defaults to
-     * metric.
+     * The top-preferred browser language decides, with one disambiguation
+     * step: a bare "en" (no region) is genuinely ambiguous -- English is
+     * the majority language in both imperial (US, UK) and metric (Canada,
+     * Australia...) countries -- so when it's the top choice, the next
+     * language in preference order is consulted too. A region already
+     * present in top position (imperial or not) is never second-guessed;
+     * only a bare, region-less "en" falls through.
      */
     private function guessImperialFromBrowserLocale(): bool
     {
@@ -100,8 +103,13 @@ class UnitsService
             return false;
         }
 
-        $topLanguage = $request->getLanguages()[0] ?? null;
+        $languages = $request->getLanguages();
+        $topLanguage = $languages[0] ?? null;
 
-        return \in_array($topLanguage, self::IMPERIAL_LANGUAGE_REGIONS, true);
+        if (\in_array($topLanguage, self::IMPERIAL_LANGUAGE_REGIONS, true)) {
+            return true;
+        }
+
+        return 'en' === $topLanguage && \in_array($languages[1] ?? null, self::IMPERIAL_LANGUAGE_REGIONS, true);
     }
 }

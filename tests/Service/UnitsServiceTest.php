@@ -103,6 +103,54 @@ class UnitsServiceTest extends TestCase
         $this->assertFalse($this->service->isImperial());
     }
 
+    public function testIsImperialForAnonymousUserWithBareEnglishThenUsRegionGuessesImperial(): void
+    {
+        // A bare "en" alone is ambiguous; the next-preferred language
+        // (en-US) disambiguates it.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,en-US;q=0.9,fr;q=0.8,fr-FR;q=0.7');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithBareEnglishThenGbRegionGuessesImperial(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,en-GB;q=0.9');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithBareEnglishThenCaRegionDefaultsMetric(): void
+    {
+        // The disambiguating second choice is region-qualified but not
+        // an imperial region -- still metric.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,en-CA;q=0.9');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithBareEnglishThenNonEnglishDefaultsMetric(): void
+    {
+        // Nothing in second position to disambiguate with.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('en,fr;q=0.9');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserWithNonEnglishTopIgnoresLowerPriorityUsRegion(): void
+    {
+        // English-US buried behind a non-English top choice is not a
+        // signal -- only a bare "en" in top position triggers the
+        // second-choice fallback.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('fr,en-US;q=0.5');
+
+        $this->assertFalse($this->service->isImperial());
+    }
+
     public function testIsImperialForAnonymousUserWithNoRequestDefaultsMetric(): void
     {
         $this->security->method('getUser')->willReturn(null);
