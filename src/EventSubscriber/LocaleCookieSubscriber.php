@@ -11,18 +11,17 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
- * Persists the visitor's locale choice: any request carrying a valid
- * ?setLocale=xx query param (set by the navbar switcher link) gets the
- * locale cookie written on its response. No redirect is involved -- the
- * switcher links directly to the destination page, so there is no
- * redirect target to validate.
+ * Persists the visitor's locale choice: any request carrying a ?setLocale
+ * query param (set by the navbar switcher link) gets the locale cookie
+ * written on its response. setLocale is a presence flag, not a value --
+ * the cookie value comes from the request's already-resolved locale (the
+ * URL's _locale segment), so there's no separate value that could ever
+ * disagree with the page actually being viewed. No redirect is involved
+ * either -- the switcher links directly to the destination page, so
+ * there is no redirect target to validate.
  */
 class LocaleCookieSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly LocalePreferenceService $localePreferenceService)
-    {
-    }
-
     public static function getSubscribedEvents(): array
     {
         return [
@@ -36,14 +35,14 @@ class LocaleCookieSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $locale = $event->getRequest()->query->get('setLocale');
-        if (!\is_string($locale) || !$this->localePreferenceService->isSupportedLocale($locale)) {
+        $request = $event->getRequest();
+        if (!$request->query->has('setLocale')) {
             return;
         }
 
         $event->getResponse()->headers->setCookie(Cookie::create(
             name: LocalePreferenceService::COOKIE_NAME,
-            value: $locale,
+            value: $request->getLocale(),
             expire: strtotime('+1 year'),
             path: '/',
             // Hardcoded true, matching security.yaml's remember-me cookie
