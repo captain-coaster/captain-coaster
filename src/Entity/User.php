@@ -137,8 +137,8 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
     private ?string $ipAddress = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
-    private bool $imperial = false;
+    #[ORM\Column(type: Types::STRING, length: 20, nullable: false, options: ['default' => 'metric'])]
+    private string $preferredUnits = 'metric';
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
     private bool $displayReviewsInAllLanguages = false;
@@ -628,14 +628,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function isImperial(): bool
+    public function getPreferredUnits(): string
     {
-        return $this->imperial;
+        return $this->preferredUnits;
     }
 
-    public function setImperial(bool $imperial): static
+    public function setPreferredUnits(string $preferredUnits): static
     {
-        $this->imperial = $imperial;
+        $this->preferredUnits = $preferredUnits;
 
         return $this;
     }

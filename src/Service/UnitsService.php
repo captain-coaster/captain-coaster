@@ -43,10 +43,9 @@ class UnitsService
 
     public function isImperial(): bool
     {
-        /** @var User|null $user */
         $user = $this->security->getUser();
-        if ($user) {
-            return $user->isImperial();
+        if ($user instanceof User) {
+            return 'imperial' === $user->getPreferredUnits();
         }
 
         return $this->guessImperialFromBrowserLocale();

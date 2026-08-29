@@ -51,7 +51,7 @@ class UnitsServiceTest extends TestCase
     public function testIsImperialForLoggedInUserUsesProfilePreferenceRegardlessOfBrowserLanguage(): void
     {
         $user = $this->createMock(User::class);
-        $user->method('isImperial')->willReturn(true);
+        $user->method('getPreferredUnits')->willReturn('imperial');
         $this->security->method('getUser')->willReturn($user);
 
         $this->pushRequestWithAcceptLanguage('fr-FR,fr;q=0.9');

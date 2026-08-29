@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -88,7 +89,9 @@ class UserCrudController extends AbstractCrudController
         yield TextField::new('preferredLocale')->onlyOnForms();
         yield BooleanField::new('emailNotification')->onlyOnForms();
         yield BooleanField::new('addTodayDateWhenRating')->onlyOnForms();
-        yield BooleanField::new('imperial')->onlyOnForms();
+        yield ChoiceField::new('preferredUnits')
+            ->setChoices(['Metric' => 'metric', 'Imperial' => 'imperial'])
+            ->onlyOnForms();
         yield BooleanField::new('displayReviewsInAllLanguages')->onlyOnForms();
 
         // Edit page - Access
