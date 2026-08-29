@@ -92,7 +92,7 @@ class UserCrudController extends AbstractCrudController
         yield ChoiceField::new('preferredUnits')
             ->setChoices(['Metric' => 'metric', 'Imperial' => 'imperial'])
             ->onlyOnForms();
-        yield BooleanField::new('displayReviewsInAllLanguages')->onlyOnForms();
+        yield ArrayField::new('preferredReviewLanguages')->onlyOnForms();
 
         // Edit page - Access
         yield FormField::addPanel('Access')->onlyOnForms();

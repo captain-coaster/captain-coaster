@@ -259,8 +259,9 @@ profile:
                 metric: Sistema Internacional de unidades
                 imperial: Sistema anglosajón de unidades
                 label: Mostrar distancias y estadísticas en
-            displayReviewsInAllLanguages:
-                label: Mostrar reseñas escritas en diferentes lenguas
+            preferredReviewLanguages:
+                label: 'Mostrar reseñas escritas en'
+                help: 'Déjelo vacío para ver solo reseñas en su idioma.'
             addTodayDateWhenRating:
                 label: Añadir la fecha de hoy en una nueva calificación
         advanced:

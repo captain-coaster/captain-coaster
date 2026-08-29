@@ -259,8 +259,9 @@ profile:
                 metric: Unités métriques
                 imperial: Unités impériales
                 label: Afficher les distances et statistiques en
-            displayReviewsInAllLanguages:
-                label: Afficher les avis écrits en différentes langues
+            preferredReviewLanguages:
+                label: 'Afficher les avis écrits en'
+                help: 'Laissez vide pour ne voir que les avis dans votre langue.'
             addTodayDateWhenRating:
                 label: Ajouter la date du jour quand je note un nouveau coaster
         advanced:

@@ -90,8 +90,11 @@
                   {{ form_errors(form.homePark) }}
                 </div>
 
-                <div class="toggle-switch-form-group" data-controller="toggle-switch">
-                  {{ form_row(form.displayReviewsInAllLanguages, {'attr': {'class': 'toggle-input', 'data-toggle-switch-target': 'checkbox', 'data-action': 'toggle-switch#toggle'}}) }}
+                <div class="form-group">
+                  {{ form_label(form.preferredReviewLanguages) }}
+                  {{ form_widget(form.preferredReviewLanguages) }}
+                  <p class="help-block">{{ 'profile.settings.preferences.preferredReviewLanguages.help'|trans }}</p>
+                  {{ form_errors(form.preferredReviewLanguages) }}
                 </div>
 
                 <div class="toggle-switch-form-group" data-controller="toggle-switch">

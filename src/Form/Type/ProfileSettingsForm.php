@@ -142,9 +142,14 @@ class ProfileSettingsForm extends AbstractType
             'attr' => ['class' => 'form-control'],
         ]);
 
-        $builder->add('displayReviewsInAllLanguages', CheckboxType::class, [
+        $builder->add('preferredReviewLanguages', ChoiceType::class, [
+            'choices' => array_combine($locales, $locales),
+            'choice_label' => static fn ($value) => $value,
+            'multiple' => true,
+            'expanded' => true,
             'required' => false,
-            'label' => 'profile.settings.preferences.displayReviewsInAllLanguages.label',
+            'label' => 'profile.settings.preferences.preferredReviewLanguages.label',
+            'help' => 'profile.settings.preferences.preferredReviewLanguages.help',
         ]);
 
         $builder->add('addTodayDateWhenRating', CheckboxType::class, [

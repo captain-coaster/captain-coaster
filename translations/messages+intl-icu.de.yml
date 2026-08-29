@@ -260,8 +260,9 @@ profile:
                 metric: Internationale Einheitensystem
                 imperial: Britische Einheitensystem
                 label: Anzeigen von Entfernungen und Statistiken in
-            displayReviewsInAllLanguages:
-                label: Anzeigen in verschiedenen Sprachen verfasste Bewertungen
+            preferredReviewLanguages:
+                label: 'Bewertungen anzeigen in'
+                help: 'Leer lassen, um nur Bewertungen in Ihrer Sprache zu sehen.'
             addTodayDateWhenRating:
                 label: Heutiges Datum bei einer neuen Bewertung hinzufügen
         advanced:

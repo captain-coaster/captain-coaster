@@ -254,8 +254,9 @@ profile:
                 metric: 'Metric units'
                 imperial: 'Imperial units'
                 label: 'Display distances and statistics in'
-            displayReviewsInAllLanguages:
-                label: 'Display reviews written in different languages'
+            preferredReviewLanguages:
+                label: 'Show reviews written in'
+                help: 'Leave empty to only see reviews in your own language.'
             addTodayDateWhenRating:
                 label: "Add today's date on a new rating"
         advanced:
