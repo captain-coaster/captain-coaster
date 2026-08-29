@@ -1,7 +1,9 @@
 {% import "helper.html.twig" as helper %}
 
-{% set current_route = app.request.attributes.get('_route') %}
-{% set route_params = app.request.attributes.get('_route_params') %}
+{# Error pages are rendered from a sub-request with _route/_route_params
+   stripped, so both need a fallback or the merge below gets null. #}
+{% set current_route = app.request.attributes.get('_route')|default('default_index') %}
+{% set route_params = app.request.attributes.get('_route_params')|default({}) %}
 {# Excludes setLocale/setUnits so a previous switcher click doesn't linger
    in every subsequent link generated from this same request. #}
 {% set nav_params = (route_params|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
