@@ -16,7 +16,7 @@ final class Version20260829130000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $this->addSql('ALTER TABLE users ADD preferred_review_languages JSON NOT NULL');
+        $this->addSql('ALTER TABLE users ADD preferred_review_languages JSON DEFAULT \'[]\' NOT NULL');
         // Preserve the explicit "show everything" choice for users who had
         // it on; everyone else (the default) gets an empty array, which
         // means "only my own language" -- a deliberate behavior change

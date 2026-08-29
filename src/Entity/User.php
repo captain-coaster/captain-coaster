@@ -141,7 +141,7 @@ class User implements UserInterface
     private string $preferredUnits = 'metric';
 
     /** @var array<string> */
-    #[ORM\Column(type: Types::JSON)]
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
     private array $preferredReviewLanguages = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
