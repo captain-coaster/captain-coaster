@@ -6,6 +6,7 @@ namespace App\Tests\Security;
 
 use App\Security\GoogleAuthenticator;
 use App\Service\ProfilePictureManager;
+use App\Service\UnitsService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -25,6 +26,7 @@ class GoogleAuthenticatorTest extends TestCase
     private ProfilePictureManager&MockObject $profilePictureManager;
     private RouterInterface&MockObject $router;
     private LoggerInterface&MockObject $logger;
+    private UnitsService&MockObject $unitsService;
     private GoogleAuthenticator $authenticator;
 
     protected function setUp(): void
@@ -34,13 +36,15 @@ class GoogleAuthenticatorTest extends TestCase
         $this->profilePictureManager = $this->createMock(ProfilePictureManager::class);
         $this->router = $this->createMock(RouterInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->unitsService = $this->createMock(UnitsService::class);
 
         $this->authenticator = new GoogleAuthenticator(
             $this->clientRegistry,
             $this->em,
             $this->profilePictureManager,
             $this->router,
-            $this->logger
+            $this->logger,
+            $this->unitsService
         );
     }
 
@@ -98,5 +102,28 @@ class GoogleAuthenticatorTest extends TestCase
         $response = $this->authenticator->onAuthenticationSuccess($request, $token, 'main');
 
         $this->assertInstanceOf(RedirectResponse::class, $response);
+    }
+
+    public function testFindOrCreateUserInitializesPreferredUnitsFromRequest(): void
+    {
+        $googleUser = $this->createMock(\League\OAuth2\Client\Provider\GoogleUser::class);
+        $googleUser->method('getId')->willReturn('google-123');
+        $googleUser->method('getEmail')->willReturn('new@example.com');
+
+        $this->em->method('getRepository')->willReturn($this->createConfiguredMock(
+            \Doctrine\ORM\EntityRepository::class,
+            ['findOneBy' => null]
+        ));
+
+        $this->unitsService->expects($this->once())
+            ->method('guessUnitsFromRequest')
+            ->willReturn('imperial');
+
+        $request = $this->requestWithSession();
+
+        $reflection = new \ReflectionMethod($this->authenticator, 'findOrCreateUser');
+        $user = $reflection->invoke($this->authenticator, $googleUser, $request);
+
+        $this->assertSame('imperial', $user->getPreferredUnits());
     }
 }
