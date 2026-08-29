@@ -140,8 +140,9 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 20, nullable: false, options: ['default' => 'metric'])]
     private string $preferredUnits = 'metric';
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
-    private bool $displayReviewsInAllLanguages = false;
+    /** @var array<string> */
+    #[ORM\Column(type: Types::JSON)]
+    private array $preferredReviewLanguages = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deletedAt = null;
@@ -652,14 +653,30 @@ class User implements UserInterface
         return null;
     }
 
-    public function isDisplayReviewsInAllLanguages(): bool
+    /** @return array<string> */
+    public function getPreferredReviewLanguages(): array
     {
-        return $this->displayReviewsInAllLanguages;
+        return $this->preferredReviewLanguages;
     }
 
+    /** @param array<string> $preferredReviewLanguages */
+    public function setPreferredReviewLanguages(array $preferredReviewLanguages): static
+    {
+        $this->preferredReviewLanguages = $preferredReviewLanguages;
+
+        return $this;
+    }
+
+    /** @deprecated Use getPreferredReviewLanguages() with ReviewLanguagePreferenceService instead. True only when every supported locale is present — the old boolean's actual meaning. Still called by ProfileSettingsForm.php's binding and existing controllers. */
+    public function isDisplayReviewsInAllLanguages(): bool
+    {
+        return [] === array_diff(['en', 'fr', 'es', 'de'], $this->preferredReviewLanguages);
+    }
+
+    /** @deprecated use setPreferredReviewLanguages() instead */
     public function setDisplayReviewsInAllLanguages(bool $displayReviewsInAllLanguages): static
     {
-        $this->displayReviewsInAllLanguages = $displayReviewsInAllLanguages;
+        $this->preferredReviewLanguages = $displayReviewsInAllLanguages ? ['en', 'fr', 'es', 'de'] : [];
 
         return $this;
     }
