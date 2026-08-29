@@ -21,17 +21,23 @@
             </li>
           </ul>
         </div>
-        {% if is_granted('edit', top) or is_granted('delete', top) %}
+        {% if is_granted('edit', top) or is_granted('edit-details', top) or is_granted('delete', top) %}
           <div class="col-sm-4 text-right">
             {% if is_granted('edit', top) %}
-              <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm">
+              <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm" aria-label="{{ 'update'|trans({}, 'top') }}">
                 {{ ux_icon('heroicons:pencil', {'class': 'w-5 h-5'}) }}
+              </a>
+            {% endif %}
+            {% if is_granted('edit-details', top) %}
+              <a href="{{ path('top_edit_details', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm" aria-label="{{ 'update_details'|trans({}, 'top') }}">
+                {{ ux_icon('heroicons:cog-8-tooth', {'class': 'w-5 h-5'}) }}
               </a>
             {% endif %}
             {% if is_granted('delete', top) %}
               <a href="{{ path('top_delete', {'id': top.id}) }}"
                  onclick="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');"
-                 class="btn bg-danger-400 btn-sm">
+                 class="btn bg-danger-400 btn-sm"
+                 aria-label="{{ 'delete'|trans({}, 'top') }}">
                 {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5'}) }}
               </a>
             {% endif %}
