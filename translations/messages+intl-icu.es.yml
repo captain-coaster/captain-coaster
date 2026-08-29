@@ -342,6 +342,8 @@ navbar:
     logout: Cerrar sesión
     tops: 'Mis tops'
     my_map: Mi mapa
+    language: Idioma
+    units: Unidades
 
 sidebar:
     index: Pagina de inicio

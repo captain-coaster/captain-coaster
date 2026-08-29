@@ -23,28 +23,6 @@
       <li class="navbar-text">
         <span id="editor-saved" class="label bg-success"></span>
       </li>
-      <!-- language switcher -->
-      {% if app.request.attributes.get('_route') %}
-        <li class="dropdown language-switch">
-          <a class="dropdown-toggle" data-toggle="dropdown">
-            {{ app.request.locale|trans }}
-            <span class="caret"></span>
-          </a>
-          <ul class="dropdown-menu">
-            {% set route = app.request.attributes.get('_route') %}
-            {% set route_params = app.request.attributes.get('_route_params') %}
-            {% set params = route_params|merge(app.request.query.all) %}
-            {% for locale in locales|filter(v => v != app.request.locale) %}
-              <li>
-                <a href="{{ path(route, params|merge({ _locale: locale, setLocale: 1 })) }}">
-                  {{ locale|trans }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </li>
-      {% endif %}
-      <!-- /language switcher -->
       <!-- notifications -->
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <li class="dropdown">
@@ -87,37 +65,72 @@
             <i class="caret"></i>
           </a>
 
-          <ul class="dropdown-menu dropdown-menu-right">
-            <li>
-              <a href="{{ path('profile') }}">{{ ux_icon('heroicons:user', {'class': 'w-6 h-6'}) }} {{ 'navbar.profile'|trans }}</a>
-            </li>
-            <li>
-              <a href="{{ path('profile_settings') }}">
-                {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-6 h-6'}) }} {{ 'navbar.settings'|trans }}
-              </a>
-            </li>
-            <li>
-              <a href="{{ path('profile_ratings') }}">
-                {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }} {{ 'navbar.rating'|trans }}
-              </a>
-            </li>
-            <li>
-              <a href="{{ path('user_tops', {'id': app.user.id}) }}">
-                {{ ux_icon('heroicons:clipboard', {'class': 'w-6 h-6'}) }} {{ 'navbar.tops'|trans }}
-              </a>
-            </li>
-            <li>
-              <a href="{{ path('map_user', {'id': app.user.id}) }}">
-                {{ ux_icon('heroicons:map-pin', {'class': 'w-6 h-6'}) }} {{ 'navbar.my_map'|trans }}
-              </a>
+          <ul class="dropdown-menu dropdown-menu-right account-menu">
+            <li class="account-menu-header">
+              {{ helper.profilePicture(app.user, 'img-circle img-xs') }}
+              <div>
+                <div class="account-menu-name">{{ app.user.firstname }}</div>
+                <a href="{{ path('profile') }}">{{ 'navbar.profile'|trans }}</a>
+              </div>
             </li>
             <li class="divider"></li>
-            <li><a href="{{ path('logout') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-6 h-6'}) }} {{ 'navbar.logout'|trans }}</a>
+            <li class="account-menu-row">
+              <span class="account-menu-row-label">
+                {{ ux_icon('heroicons:language', {'class': 'w-5 h-5'}) }}
+                {{ 'navbar.language'|trans }}
+              </span>
+              <span class="account-menu-row-value">Français {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}</span>
+            </li>
+            <li class="account-menu-row">
+              <span class="account-menu-row-label">
+                {{ ux_icon('heroicons:scale', {'class': 'w-5 h-5'}) }}
+                {{ 'navbar.units'|trans }}
+              </span>
+              <span class="account-menu-row-value">Métrique {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}</span>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="{{ path('profile_settings') }}">{{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }} {{ 'navbar.settings'|trans }}</a>
+            </li>
+            <li>
+              <a href="{{ path('profile_ratings') }}">{{ ux_icon('heroicons:star', {'class': 'w-5 h-5'}) }} {{ 'navbar.rating'|trans }}</a>
+            </li>
+            <li>
+              <a href="{{ path('user_tops', {'id': app.user.id}) }}">{{ ux_icon('heroicons:clipboard', {'class': 'w-5 h-5'}) }} {{ 'navbar.tops'|trans }}</a>
+            </li>
+            <li>
+              <a href="{{ path('map_user', {'id': app.user.id}) }}">{{ ux_icon('heroicons:map-pin', {'class': 'w-5 h-5'}) }} {{ 'navbar.my_map'|trans }}</a>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="{{ path('logout') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-5 h-5'}) }} {{ 'navbar.logout'|trans }}</a>
             </li>
           </ul>
         </li>
       {% else %}
-        <li><a href="{{ path('login') }}">{{ 'navbar.login'|trans }}</a></li>
+        <li class="dropdown account-menu-anon">
+          <a class="dropdown-toggle" data-toggle="dropdown">
+            {{ ux_icon('heroicons:user-circle', {'class': 'w-8 h-8'}) }}
+          </a>
+          <ul class="dropdown-menu dropdown-menu-right account-menu">
+            <li class="account-menu-row">
+              <span class="account-menu-row-label">
+                {{ ux_icon('heroicons:language', {'class': 'w-5 h-5'}) }}
+                {{ 'navbar.language'|trans }}
+              </span>
+              <span class="account-menu-row-value">Français {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}</span>
+            </li>
+            <li class="account-menu-row">
+              <span class="account-menu-row-label">
+                {{ ux_icon('heroicons:scale', {'class': 'w-5 h-5'}) }}
+                {{ 'navbar.units'|trans }}
+              </span>
+              <span class="account-menu-row-value">Métrique {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}</span>
+            </li>
+            <li class="divider"></li>
+            <li><a href="{{ path('login') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-5 h-5'}) }} {{ 'navbar.login'|trans }}</a></li>
+          </ul>
+        </li>
       {% endif %}
       <!-- /user profile -->
     </ul>

@@ -342,6 +342,8 @@ navbar:
     logout: Déconnexion
     tops: Mes tops
     my_map: Ma carte
+    language: Langue
+    units: Unités
 
 sidebar:
     index: Accueil

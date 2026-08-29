@@ -343,6 +343,8 @@ navbar:
     logout: Abmelden
     tops: Meine Tops
     my_map: Meine Karte
+    language: Sprache
+    units: Einheiten
 
 sidebar:
     index: Home

@@ -337,6 +337,8 @@ navbar:
     logout: 'Logout'
     tops: 'My tops'
     my_map: 'My map'
+    language: 'Language'
+    units: 'Units'
 
 sidebar:
     index: 'Home'
