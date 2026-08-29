@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
+use App\Entity\User;
 use App\Service\LocalePreferenceService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -12,16 +15,22 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Persists the visitor's locale choice: any request carrying a ?setLocale
- * query param (set by the navbar switcher link) gets the locale cookie
- * written on its response. setLocale is a presence flag, not a value --
- * the cookie value comes from the request's already-resolved locale (the
- * URL's _locale segment), so there's no separate value that could ever
- * disagree with the page actually being viewed. No redirect is involved
- * either -- the switcher links directly to the destination page, so
- * there is no redirect target to validate.
+ * query param (set by the account-menu language row) applies it. Logged
+ * in, the choice writes straight to the profile -- no cookie is ever
+ * written or read for an authenticated visitor, in either direction.
+ * Anonymous, it sets the locale cookie exactly as before. setLocale is a
+ * presence flag, not a value -- the target locale is always the request's
+ * own already-resolved locale (the URL's _locale segment), never a
+ * separate value that could disagree with the page being viewed.
  */
 class LocaleCookieSubscriber implements EventSubscriberInterface
 {
+    public function __construct(
+        private readonly Security $security,
+        private readonly EntityManagerInterface $em,
+    ) {
+    }
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -40,15 +49,23 @@ class LocaleCookieSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $locale = $request->getLocale();
+        $user = $this->security->getUser();
+
+        if ($user instanceof User) {
+            if ($user->getPreferredLocale() !== $locale) {
+                $user->setPreferredLocale($locale);
+                $this->em->flush();
+            }
+
+            return;
+        }
+
         $event->getResponse()->headers->setCookie(Cookie::create(
             name: LocalePreferenceService::COOKIE_NAME,
-            value: $request->getLocale(),
+            value: $locale,
             expire: strtotime('+1 year'),
             path: '/',
-            // Hardcoded true, matching security.yaml's remember-me cookie
-            // convention -- $request->isSecure() would return false behind
-            // a TLS-terminating proxy unless trusted_proxies is configured,
-            // which it isn't in any committed config here.
             secure: true,
             httpOnly: true,
             sameSite: Cookie::SAMESITE_LAX,
