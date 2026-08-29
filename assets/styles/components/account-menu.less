@@ -30,3 +30,44 @@
     color: #767676;
     font-size: 12px;
 }
+
+// On mobile the collapsed navbar already required one tap to reveal
+// #navbar-mobile; requiring a second tap on a nested dropdown-toggle to
+// reveal the account menu duplicates that icon and shows an empty row
+// while the menu stays hidden. Render it inline instead, unconditionally,
+// reusing the theme's own inverse-navbar mobile dropdown colors (normally
+// gated behind `.open`, which this bypasses) so text stays legible against
+// the dark collapsed navbar background.
+@media (max-width: @grid-float-breakpoint-max) {
+    .dropdown-user > .dropdown-toggle,
+    .account-menu-anon > .dropdown-toggle {
+        display: none;
+    }
+    .navbar-nav > li > .dropdown-menu.account-menu {
+        display: block;
+        position: static;
+        float: none;
+        width: auto;
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        background-color: transparent;
+        color: @navbar-inverse-link-color;
+
+        a:not(.label-flat):not(.badge-flat) {
+            color: @navbar-inverse-link-color;
+        }
+
+        .divider {
+            background-color: fade(#fff, 10%);
+        }
+
+        .account-menu-row-value {
+            color: fade(@navbar-inverse-link-color, 70%);
+        }
+
+        .account-menu-row:hover {
+            background-color: fade(#000, 10%);
+        }
+    }
+}
