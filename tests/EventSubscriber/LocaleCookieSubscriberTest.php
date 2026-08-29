@@ -19,7 +19,7 @@ class LocaleCookieSubscriberTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->subscriber = new LocaleCookieSubscriber(new LocalePreferenceService(['en', 'fr', 'es', 'de']));
+        $this->subscriber = new LocaleCookieSubscriber();
     }
 
     private function respond(Request $request): Response
@@ -33,9 +33,10 @@ class LocaleCookieSubscriberTest extends TestCase
         return $response;
     }
 
-    public function testSetsLocaleCookieWhenSetLocaleIsSupported(): void
+    public function testSetsLocaleCookieToTheRequestsResolvedLocaleWhenSetLocaleIsPresent(): void
     {
-        $request = Request::create('/fr/map/?setLocale=fr');
+        $request = Request::create('/fr/map/?setLocale=1');
+        $request->setLocale('fr');
 
         $response = $this->respond($request);
 
@@ -47,18 +48,26 @@ class LocaleCookieSubscriberTest extends TestCase
         $this->assertTrue($cookie->isHttpOnly());
     }
 
-    public function testDoesNothingWhenSetLocaleIsMissing(): void
+    public function testSetsLocaleCookieRegardlessOfSetLocaleValue(): void
     {
-        $request = Request::create('/en/map/');
+        // setLocale is a presence flag, not a value -- any value (or an
+        // empty one) triggers the same behavior as long as the param
+        // exists. The cookie value always comes from the request's own
+        // resolved locale, never from the query string.
+        $request = Request::create('/de/map/?setLocale=whatever');
+        $request->setLocale('de');
 
         $response = $this->respond($request);
 
-        $this->assertCount(0, $response->headers->getCookies());
+        $cookie = $response->headers->getCookies()[0] ?? null;
+        $this->assertNotNull($cookie);
+        $this->assertSame('de', $cookie->getValue());
     }
 
-    public function testDoesNothingWhenSetLocaleIsNotSupported(): void
+    public function testDoesNothingWhenSetLocaleIsMissing(): void
     {
-        $request = Request::create('/en/map/?setLocale=xx');
+        $request = Request::create('/en/map/');
+        $request->setLocale('en');
 
         $response = $this->respond($request);
 
@@ -67,7 +76,8 @@ class LocaleCookieSubscriberTest extends TestCase
 
     public function testDoesNothingOnSubRequests(): void
     {
-        $request = Request::create('/fr/map/?setLocale=fr');
+        $request = Request::create('/fr/map/?setLocale=1');
+        $request->setLocale('fr');
         $kernel = $this->createMock(KernelInterface::class);
         $response = new Response();
         $event = new ResponseEvent($kernel, $request, HttpKernelInterface::SUB_REQUEST, $response);
