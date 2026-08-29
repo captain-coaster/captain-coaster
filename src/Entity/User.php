@@ -673,14 +673,6 @@ class User implements UserInterface
         return [] === array_diff(['en', 'fr', 'es', 'de'], $this->preferredReviewLanguages);
     }
 
-    /** @deprecated use setPreferredReviewLanguages() instead */
-    public function setDisplayReviewsInAllLanguages(bool $displayReviewsInAllLanguages): static
-    {
-        $this->preferredReviewLanguages = $displayReviewsInAllLanguages ? ['en', 'fr', 'es', 'de'] : [];
-
-        return $this;
-    }
-
     public function getDeletedAt(): ?\DateTimeInterface
     {
         return $this->deletedAt;

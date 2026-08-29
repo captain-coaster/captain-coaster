@@ -149,7 +149,6 @@ class ProfileSettingsForm extends AbstractType
             'expanded' => true,
             'required' => false,
             'label' => 'profile.settings.preferences.preferredReviewLanguages.label',
-            'help' => 'profile.settings.preferences.preferredReviewLanguages.help',
         ]);
 
         $builder->add('addTodayDateWhenRating', CheckboxType::class, [
