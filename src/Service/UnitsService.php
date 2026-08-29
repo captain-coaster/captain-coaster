@@ -13,10 +13,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * height/speed/distance accordingly.
  *
  * Precedence: a logged-in user's saved profile preference, then a guess
- * from the browser's Accept-Language *region* (e.g. "en-US" vs "en-GB") —
- * language alone isn't a reliable signal, since English is also the
- * majority language in fully metric countries (Canada, Australia); see
- * GitHub issue #108. The UK is a deliberate exception: despite officially
+ * from the browser's Accept-Language preferences, walked in order for the
+ * first entry that carries a *region* (e.g. "en-US" vs "en-GB") — language
+ * alone isn't a reliable signal, since English is also the majority
+ * language in fully metric countries (Canada, Australia); see GitHub
+ * issue #108. The UK is a deliberate exception: despite officially
  * adopting metric, road distances and speed limits stay legally imperial
  * (miles, mph) there — exactly the units this service converts — so
  * en_GB is grouped with en_US rather than with the fully metric English
@@ -88,13 +89,16 @@ class UnitsService
     }
 
     /**
-     * The top-preferred browser language decides, with one disambiguation
-     * step: a bare "en" (no region) is genuinely ambiguous -- English is
-     * the majority language in both imperial (US, UK) and metric (Canada,
-     * Australia...) countries -- so when it's the top choice, the next
-     * language in preference order is consulted too. A region already
-     * present in top position (imperial or not) is never second-guessed;
-     * only a bare, region-less "en" falls through.
+     * Walks the browser's language preferences in order and stops at the
+     * first one that carries a region -- that region decides, imperial or
+     * not. Bare, region-less languages (e.g. plain "en") are skipped: they
+     * can't disambiguate anything on their own, since English is the
+     * majority language in both imperial (US, UK) and metric (Canada,
+     * Australia...) countries. No region found anywhere defaults to
+     * metric. Request::getLanguages() parses and caches the
+     * Accept-Language header once per request, and the list is at most a
+     * handful of entries, so this is a negligible cost to pay on every
+     * request.
      */
     private function guessImperialFromBrowserLocale(): bool
     {
@@ -103,13 +107,12 @@ class UnitsService
             return false;
         }
 
-        $languages = $request->getLanguages();
-        $topLanguage = $languages[0] ?? null;
-
-        if (\in_array($topLanguage, self::IMPERIAL_LANGUAGE_REGIONS, true)) {
-            return true;
+        foreach ($request->getLanguages() as $language) {
+            if (str_contains($language, '_')) {
+                return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true);
+            }
         }
 
-        return 'en' === $topLanguage && \in_array($languages[1] ?? null, self::IMPERIAL_LANGUAGE_REGIONS, true);
+        return false;
     }
 }

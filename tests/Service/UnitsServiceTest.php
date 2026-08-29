@@ -105,8 +105,8 @@ class UnitsServiceTest extends TestCase
 
     public function testIsImperialForAnonymousUserWithBareEnglishThenUsRegionGuessesImperial(): void
     {
-        // A bare "en" alone is ambiguous; the next-preferred language
-        // (en-US) disambiguates it.
+        // A bare "en" alone is ambiguous and gets skipped; the next
+        // entry that carries a region (en-US) decides.
         $this->security->method('getUser')->willReturn(null);
         $this->pushRequestWithAcceptLanguage('en,en-US;q=0.9,fr;q=0.8,fr-FR;q=0.7');
 
@@ -123,8 +123,8 @@ class UnitsServiceTest extends TestCase
 
     public function testIsImperialForAnonymousUserWithBareEnglishThenCaRegionDefaultsMetric(): void
     {
-        // The disambiguating second choice is region-qualified but not
-        // an imperial region -- still metric.
+        // The first region found (en-CA) is not an imperial one --
+        // still metric.
         $this->security->method('getUser')->willReturn(null);
         $this->pushRequestWithAcceptLanguage('en,en-CA;q=0.9');
 
@@ -140,13 +140,24 @@ class UnitsServiceTest extends TestCase
         $this->assertFalse($this->service->isImperial());
     }
 
-    public function testIsImperialForAnonymousUserWithNonEnglishTopIgnoresLowerPriorityUsRegion(): void
+    public function testIsImperialForAnonymousUserSkipsBareNonEnglishTopToFindUsRegion(): void
     {
-        // English-US buried behind a non-English top choice is not a
-        // signal -- only a bare "en" in top position triggers the
-        // second-choice fallback.
+        // A bare "fr" (no region) is just as uninformative as a bare
+        // "en" -- it's skipped, and the first region found anywhere in
+        // the list decides, regardless of which language it belongs to.
         $this->security->method('getUser')->willReturn(null);
         $this->pushRequestWithAcceptLanguage('fr,en-US;q=0.5');
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserStopsAtFirstRegionEvenIfALaterOneIsImperial(): void
+    {
+        // The first region-qualified entry decides and the scan stops
+        // there -- a decisive metric region (fr-FR) is never overridden
+        // by an imperial region further down the list.
+        $this->security->method('getUser')->willReturn(null);
+        $this->pushRequestWithAcceptLanguage('fr-FR;q=0.9,en-US;q=0.5');
 
         $this->assertFalse($this->service->isImperial());
     }
