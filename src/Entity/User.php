@@ -667,12 +667,6 @@ class User implements UserInterface
         return $this;
     }
 
-    /** @deprecated Use getPreferredReviewLanguages() with ReviewLanguagePreferenceService instead. True only when every supported locale is present — the old boolean's actual meaning. Still called by ProfileSettingsForm.php's binding and existing controllers. */
-    public function isDisplayReviewsInAllLanguages(): bool
-    {
-        return [] === array_diff(['en', 'fr', 'es', 'de'], $this->preferredReviewLanguages);
-    }
-
     public function getDeletedAt(): ?\DateTimeInterface
     {
         return $this->deletedAt;

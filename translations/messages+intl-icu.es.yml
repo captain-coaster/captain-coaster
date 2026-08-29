@@ -261,7 +261,7 @@ profile:
                 label: Mostrar distancias y estadísticas en
             preferredReviewLanguages:
                 label: 'Mostrar reseñas escritas en'
-                help: 'Déjelo vacío para ver solo reseñas en su idioma.'
+                help: 'Déjelo vacío para ver solo reseñas en su idioma preferido.'
             addTodayDateWhenRating:
                 label: Añadir la fecha de hoy en una nueva calificación
         advanced:

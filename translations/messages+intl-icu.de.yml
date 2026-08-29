@@ -262,7 +262,7 @@ profile:
                 label: Anzeigen von Entfernungen und Statistiken in
             preferredReviewLanguages:
                 label: 'Bewertungen anzeigen in'
-                help: 'Leer lassen, um nur Bewertungen in Ihrer Sprache zu sehen.'
+                help: 'Leer lassen, um nur Bewertungen in Ihrer bevorzugten Sprache zu sehen.'
             addTodayDateWhenRating:
                 label: Heutiges Datum bei einer neuen Bewertung hinzufügen
         advanced:

@@ -1,3 +1,15 @@
+// Desktop navbar toggle avatar: smaller and ringed. Unlike the
+// account-menu-header avatar (which sits on the dropdown panel's light
+// background and so uses a dark fade(#000,10%) border), this one sits on
+// the dark top navbar in both mobile and desktop, so it needs the panel's
+// own dark-background variant (fade(#fff,20%), see the mobile media query
+// below) to actually be visible.
+.dropdown-user > .dropdown-toggle img {
+    width: 28px !important;
+    height: 28px !important;
+    border: 2px solid fade(#fff, 20%);
+}
+
 .account-menu-header {
     display: flex;
     align-items: center;
@@ -124,22 +136,31 @@
         }
     }
 
-    // Match the desktop toggle exactly: same 32px avatar (img-xs), same
-    // 6.5px 15px padding as .dropdown-toggle there -- so the mobile navbar
-    // bar comes out the same height as desktop's, not taller.
+    // Pin this one <li> to .navbar-header's own fixed height (46px) and
+    // center its content within that full height -- not a hand-tuned
+    // padding value, so it stays correct regardless of whether the icon
+    // inside is the 28px ringed avatar or the smaller plain svg.
     // Specificity note: ".navbar-toggle-icon > a" needs to beat Bootstrap
     // core's ".nav > li > a" (0,1,2), hence "li." rather than the class alone.
-    li.navbar-toggle-icon > a {
-        display: flex;
-        align-items: center;
-        padding: 6.5px 15px;
-        line-height: 0;
+    li.navbar-toggle-icon {
+        height: 46px;
+
+        > a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 15px;
+            line-height: 0;
+        }
     }
-    .navbar-toggle-icon img,
-    .navbar-toggle-icon svg {
-        width: 32px;
-        height: 32px;
+    .navbar-toggle-icon img {
+        width: 28px !important;
+        height: 28px !important;
+        border: 2px solid fade(#fff, 20%);
     }
+    // No size override for svg: it falls back to its natural w-8/h-8 size,
+    // same as the burger icon beside it.
 
     // Bootstrap's own .navbar-collapse.collapse caps this at 340px with an
     // inner scrollbar (fine for a short nav list, not for a full account

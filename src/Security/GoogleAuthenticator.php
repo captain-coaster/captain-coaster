@@ -113,7 +113,7 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
         if (!$user instanceof User) {
             $user = new User();
-            $user->setPreferredLocale($request->getSession()->get('locale_at_login', 'en'));
+            $user->setPreferredLocale($request->getSession()->get('locale_at_login', $request->getLocale()));
             $user->setPreferredUnits($this->unitsService->guessUnitsFromRequest($request));
             $user->setIpAddress($request->getClientIp());
             $user->setEnabled(true);

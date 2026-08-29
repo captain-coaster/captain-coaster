@@ -166,7 +166,7 @@ class CoasterController extends BaseController
         $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
 
         $pagination = $paginator->paginate(
-            $riddenCoasterRepository->getCoasterReviews($coaster, $preferredReviewLanguages[0] ?? $request->getLocale(), false, $filters),
+            $riddenCoasterRepository->getCoasterReviews($coaster, $preferredReviewLanguages, $filters),
             $page,
             25
         );

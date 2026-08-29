@@ -8,6 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\ReviewLanguagePreferenceService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Knp\Component\Pager\PaginatorInterface;
@@ -30,17 +31,14 @@ class ReviewController extends BaseController
         Request $request,
         RiddenCoasterRepository $riddenCoasterRepository,
         PaginatorInterface $paginator,
+        ReviewLanguagePreferenceService $reviewLanguagePreferenceService,
         int $page = 1
     ): Response {
-        $user = $this->getUser();
-        $displayReviewsInAllLanguages = false;
-        if (null !== $user) {
-            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
-        }
+        $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
 
         try {
             $pagination = $paginator->paginate(
-                $riddenCoasterRepository->findAllReviews($request->getLocale(), $displayReviewsInAllLanguages),
+                $riddenCoasterRepository->findAllReviews($preferredReviewLanguages),
                 $page,
                 10
             );
@@ -50,7 +48,10 @@ class ReviewController extends BaseController
 
         return $this->render(
             'Review/list.html.twig',
-            ['reviews' => $pagination]
+            [
+                'reviews' => $pagination,
+                'preferredReviewLanguages' => $preferredReviewLanguages,
+            ]
         );
     }
 

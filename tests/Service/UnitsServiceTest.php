@@ -202,47 +202,12 @@ class UnitsServiceTest extends TestCase
         $this->assertSame('6 mi', $this->service->kmOrMi(10));
     }
 
-    public function testGuessUnitsFromRequestUsesCfIpCountryUs(): void
-    {
-        $request = Request::create('/');
-        $request->headers->set('CF-IPCountry', 'US');
-
-        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
-    }
-
-    public function testGuessUnitsFromRequestUsesCfIpCountryGb(): void
-    {
-        $request = Request::create('/');
-        $request->headers->set('CF-IPCountry', 'GB');
-
-        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
-    }
-
-    public function testGuessUnitsFromRequestCfIpCountryMetricElsewhere(): void
-    {
-        $request = Request::create('/');
-        $request->headers->set('CF-IPCountry', 'FR');
-
-        $this->assertSame('metric', $this->service->guessUnitsFromRequest($request));
-    }
-
-    public function testGuessUnitsFromRequestFallsBackToAcceptLanguageWhenCfHeaderAbsent(): void
+    public function testGuessUnitsFromRequestUsesAcceptLanguage(): void
     {
         $request = Request::create('/');
         $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
 
         $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
-    }
-
-    public function testGuessUnitsFromRequestCfIpCountryTakesPriorityOverAcceptLanguage(): void
-    {
-        // CF-IPCountry says France (metric); Accept-Language alone would
-        // have said US (imperial) -- the real-country signal wins.
-        $request = Request::create('/');
-        $request->headers->set('CF-IPCountry', 'FR');
-        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
-
-        $this->assertSame('metric', $this->service->guessUnitsFromRequest($request));
     }
 
     public function testIsImperialForAnonymousUserUsesCookieOverAcceptLanguage(): void
@@ -295,28 +260,5 @@ class UnitsServiceTest extends TestCase
         $this->requestStack->push($request);
 
         $this->assertTrue($this->service->isImperial());
-    }
-
-    public function testGuessUnitsFromRequestTreatsCfIpCountryXxAsAbsentAndFallsBackToAcceptLanguage(): void
-    {
-        // Cloudflare sends 'XX' when the visitor's country is unknown --
-        // not a real country, so it shouldn't override a legitimate
-        // Accept-Language signal by forcing metric.
-        $request = Request::create('/');
-        $request->headers->set('CF-IPCountry', 'XX');
-        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
-
-        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
-    }
-
-    public function testGuessUnitsFromRequestTreatsCfIpCountryT1AsAbsentAndFallsBackToAcceptLanguage(): void
-    {
-        // Cloudflare sends 'T1' for Tor exit nodes -- also not a real
-        // country.
-        $request = Request::create('/');
-        $request->headers->set('CF-IPCountry', 'T1');
-        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
-
-        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
     }
 }

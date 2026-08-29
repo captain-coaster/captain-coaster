@@ -126,4 +126,27 @@ class GoogleAuthenticatorTest extends TestCase
 
         $this->assertSame('imperial', $user->getPreferredUnits());
     }
+
+    public function testFindOrCreateUserFallsBackToRequestLocaleWhenSessionHasNoLocaleAtLogin(): void
+    {
+        // locale_at_login intentionally not set in session -- must match
+        // onAuthenticationSuccess/onAuthenticationFailure's fallback
+        // (the request's own locale), not a hardcoded 'en'.
+        $googleUser = $this->createMock(\League\OAuth2\Client\Provider\GoogleUser::class);
+        $googleUser->method('getId')->willReturn('google-456');
+        $googleUser->method('getEmail')->willReturn('new2@example.com');
+
+        $this->em->method('getRepository')->willReturn($this->createConfiguredMock(
+            \Doctrine\ORM\EntityRepository::class,
+            ['findOneBy' => null]
+        ));
+
+        $request = $this->requestWithSession();
+        $request->setLocale('fr');
+
+        $reflection = new \ReflectionMethod($this->authenticator, 'findOrCreateUser');
+        $user = $reflection->invoke($this->authenticator, $googleUser, $request);
+
+        $this->assertSame('fr', $user->getPreferredLocale());
+    }
 }

@@ -256,7 +256,7 @@ profile:
                 label: 'Display distances and statistics in'
             preferredReviewLanguages:
                 label: 'Show reviews written in'
-                help: 'Leave empty to only see reviews in your own language.'
+                help: 'Leave empty to only see reviews in your preferred language.'
             addTodayDateWhenRating:
                 label: "Add today's date on a new rating"
         advanced:

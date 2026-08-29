@@ -261,7 +261,7 @@ profile:
                 label: Afficher les distances et statistiques en
             preferredReviewLanguages:
                 label: 'Afficher les avis écrits en'
-                help: 'Laissez vide pour ne voir que les avis dans votre langue.'
+                help: 'Laissez vide pour ne voir que les avis dans votre langue préférée.'
             addTodayDateWhenRating:
                 label: Ajouter la date du jour quand je note un nouveau coaster
         advanced:

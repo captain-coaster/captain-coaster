@@ -17,9 +17,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * parameter (so the very page carrying the switcher link already reflects
  * the new choice, before UnitsCookieSubscriber has persisted it for future
  * requests) > logged-in user's saved profile preference > cookie (anonymous
- * visitors) > Cloudflare's CF-IPCountry header > browser's Accept-Language
- * region preferences > metric default. See guessUnitsFromRequest() for the
- * CF-IPCountry and Accept-Language logic.
+ * visitors) > browser's Accept-Language region preferences > metric default.
+ * See guessUnitsFromRequest() for the Accept-Language logic.
  *
  * Exposed to Twig via the `units` global (config/packages/twig.yaml),
  * called directly as an object (units.metersOrFeet(...)), not as
@@ -31,12 +30,6 @@ class UnitsService
 
     /** Allow-listed values for the units preference, shared with UnitsCookieSubscriber. */
     public const VALID_UNITS = ['metric', 'imperial'];
-
-    /** ISO 3166-1 alpha-2 country codes (from Cloudflare's CF-IPCountry header) that use imperial units. */
-    private const IMPERIAL_COUNTRIES = ['US', 'GB'];
-
-    /** Non-country CF-IPCountry placeholder values -- unknown country ('XX'), Tor exit node ('T1'), or absent (''). Treated as no signal at all. */
-    private const NON_COUNTRY_CF_CODES = ['XX', 'T1', ''];
 
     /** Browser locale regions that default to imperial when no user preference exists. */
     private const IMPERIAL_LANGUAGE_REGIONS = ['en_US', 'en_GB'];
@@ -114,25 +107,10 @@ class UnitsService
     }
 
     /**
-     * Guess metric/imperial from the request's CF-IPCountry header or
-     * Accept-Language preferences.
+     * Guess metric/imperial from the request's Accept-Language preferences.
      *
-     * **Primary signal: CF-IPCountry.** If Cloudflare's CF-IPCountry header
-     * is present with a real country code, it takes absolute priority:
-     * checks the ISO 3166-1 alpha-2 country code against our
-     * IMPERIAL_COUNTRIES list (['US', 'GB']). Returns 'imperial' if matched,
-     * 'metric' otherwise. Accept-Language is never consulted if this header
-     * carries a real country.
-     *
-     * Cloudflare also sends non-country placeholder values -- `XX` for an
-     * unknown country and `T1` for Tor exit nodes -- which are treated as
-     * absent (fall through to Accept-Language) rather than as a real,
-     * non-matching country (which would force 'metric' and override a
-     * legitimate Accept-Language signal).
-     *
-     * **Fallback: Accept-Language region preferences.** If CF-IPCountry is
-     * absent, walks the browser's language preferences in order, stopping at
-     * the first entry that carries a *region* (e.g. "en-US" vs "en-GB") —
+     * Walks the browser's language preferences in order, stopping at the
+     * first entry that carries a *region* (e.g. "en-US" vs "en-GB") —
      * language alone isn't a reliable signal, since English is also the
      * majority language in fully metric countries (Canada, Australia); see
      * GitHub issue #108. The UK is a deliberate exception: despite officially
@@ -147,11 +125,6 @@ class UnitsService
      */
     public function guessUnitsFromRequest(Request $request): string
     {
-        $cfCountry = $request->headers->get('CF-IPCountry');
-        if (\is_string($cfCountry) && !\in_array(strtoupper($cfCountry), self::NON_COUNTRY_CF_CODES, true)) {
-            return \in_array(strtoupper($cfCountry), self::IMPERIAL_COUNTRIES, true) ? 'imperial' : 'metric';
-        }
-
         foreach ($request->getLanguages() as $language) {
             if (str_contains($language, '_')) {
                 return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true) ? 'imperial' : 'metric';
