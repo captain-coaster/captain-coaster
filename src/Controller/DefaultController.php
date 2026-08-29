@@ -63,7 +63,7 @@ class DefaultController extends BaseController
             'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
             'image' => $imageRepository->findLatestLikedImage(),
             'stats' => $statService->getIndexStats(),
-            'reviews' => $riddenCoasterRepository->getLatestReviews($request->getLocale(), 3, true),
+            'reviews' => $riddenCoasterRepository->getLatestReviews($preferredReviewLanguages[0] ?? $request->getLocale(), 3, false),
             'missingImages' => $missingImages,
             'preferredReviewLanguages' => $preferredReviewLanguages,
         ]);

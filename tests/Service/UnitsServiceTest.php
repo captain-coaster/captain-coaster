@@ -266,4 +266,57 @@ class UnitsServiceTest extends TestCase
 
         $this->assertTrue($this->service->isImperial());
     }
+
+    public function testIsImperialAppliesSetUnitsQueryParamImmediatelyRegardlessOfUserOrCookie(): void
+    {
+        // The very request carrying ?setUnits=imperial must already reflect
+        // it, before UnitsCookieSubscriber (KernelEvents::RESPONSE) has had
+        // a chance to persist it for future requests -- otherwise the page
+        // the visitor lands on after clicking the switcher still renders
+        // with the old units.
+        $user = $this->createMock(User::class);
+        $user->method('getPreferredUnits')->willReturn('metric');
+        $this->security->method('getUser')->willReturn($user);
+
+        $request = Request::create('/?setUnits=imperial');
+        $request->cookies->set(UnitsService::COOKIE_NAME, 'metric');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialIgnoresInvalidSetUnitsQueryParam(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getPreferredUnits')->willReturn('imperial');
+        $this->security->method('getUser')->willReturn($user);
+
+        $request = Request::create('/?setUnits=furlongs');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testGuessUnitsFromRequestTreatsCfIpCountryXxAsAbsentAndFallsBackToAcceptLanguage(): void
+    {
+        // Cloudflare sends 'XX' when the visitor's country is unknown --
+        // not a real country, so it shouldn't override a legitimate
+        // Accept-Language signal by forcing metric.
+        $request = Request::create('/');
+        $request->headers->set('CF-IPCountry', 'XX');
+        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
+
+        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
+    }
+
+    public function testGuessUnitsFromRequestTreatsCfIpCountryT1AsAbsentAndFallsBackToAcceptLanguage(): void
+    {
+        // Cloudflare sends 'T1' for Tor exit nodes -- also not a real
+        // country.
+        $request = Request::create('/');
+        $request->headers->set('CF-IPCountry', 'T1');
+        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
+
+        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
+    }
 }

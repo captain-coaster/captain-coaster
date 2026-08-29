@@ -13,10 +13,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * Resolves the visitor's metric/imperial preference and converts
  * height/speed/distance accordingly.
  *
- * Precedence: logged-in user's saved profile preference > Cloudflare's
- * CF-IPCountry header > browser's Accept-Language region preferences >
- * metric default. See guessUnitsFromRequest() for the CF-IPCountry and
- * Accept-Language logic.
+ * Precedence: the current request's own validated `?setUnits=` query
+ * parameter (so the very page carrying the switcher link already reflects
+ * the new choice, before UnitsCookieSubscriber has persisted it for future
+ * requests) > logged-in user's saved profile preference > cookie (anonymous
+ * visitors) > Cloudflare's CF-IPCountry header > browser's Accept-Language
+ * region preferences > metric default. See guessUnitsFromRequest() for the
+ * CF-IPCountry and Accept-Language logic.
  *
  * Exposed to Twig via the `units` global (config/packages/twig.yaml),
  * called directly as an object (units.metersOrFeet(...)), not as
@@ -26,8 +29,14 @@ class UnitsService
 {
     public const COOKIE_NAME = 'units';
 
+    /** Allow-listed values for the units preference, shared with UnitsCookieSubscriber. */
+    public const VALID_UNITS = ['metric', 'imperial'];
+
     /** ISO 3166-1 alpha-2 country codes (from Cloudflare's CF-IPCountry header) that use imperial units. */
     private const IMPERIAL_COUNTRIES = ['US', 'GB'];
+
+    /** Non-country CF-IPCountry placeholder values -- unknown country ('XX'), Tor exit node ('T1'), or absent (''). Treated as no signal at all. */
+    private const NON_COUNTRY_CF_CODES = ['XX', 'T1', ''];
 
     /** Browser locale regions that default to imperial when no user preference exists. */
     private const IMPERIAL_LANGUAGE_REGIONS = ['en_US', 'en_GB'];
@@ -43,18 +52,25 @@ class UnitsService
 
     public function isImperial(): bool
     {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request instanceof Request) {
+            $requestedUnits = $request->query->get('setUnits');
+            if (\is_string($requestedUnits) && \in_array($requestedUnits, self::VALID_UNITS, true)) {
+                return 'imperial' === $requestedUnits;
+            }
+        }
+
         $user = $this->security->getUser();
         if ($user instanceof User) {
             return 'imperial' === $user->getPreferredUnits();
         }
 
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
+        if (!$request instanceof Request) {
             return false;
         }
 
         $cookieUnits = $request->cookies->get(self::COOKIE_NAME);
-        if (\is_string($cookieUnits) && \in_array($cookieUnits, ['metric', 'imperial'], true)) {
+        if (\is_string($cookieUnits) && \in_array($cookieUnits, self::VALID_UNITS, true)) {
             return 'imperial' === $cookieUnits;
         }
 
@@ -102,10 +118,17 @@ class UnitsService
      * Accept-Language preferences.
      *
      * **Primary signal: CF-IPCountry.** If Cloudflare's CF-IPCountry header
-     * is present, it takes absolute priority: checks the ISO 3166-1 alpha-2
-     * country code against our IMPERIAL_COUNTRIES list (['US', 'GB']).
-     * Returns 'imperial' if matched, 'metric' otherwise. Accept-Language is
-     * never consulted if this header exists.
+     * is present with a real country code, it takes absolute priority:
+     * checks the ISO 3166-1 alpha-2 country code against our
+     * IMPERIAL_COUNTRIES list (['US', 'GB']). Returns 'imperial' if matched,
+     * 'metric' otherwise. Accept-Language is never consulted if this header
+     * carries a real country.
+     *
+     * Cloudflare also sends non-country placeholder values -- `XX` for an
+     * unknown country and `T1` for Tor exit nodes -- which are treated as
+     * absent (fall through to Accept-Language) rather than as a real,
+     * non-matching country (which would force 'metric' and override a
+     * legitimate Accept-Language signal).
      *
      * **Fallback: Accept-Language region preferences.** If CF-IPCountry is
      * absent, walks the browser's language preferences in order, stopping at
@@ -125,7 +148,7 @@ class UnitsService
     public function guessUnitsFromRequest(Request $request): string
     {
         $cfCountry = $request->headers->get('CF-IPCountry');
-        if (\is_string($cfCountry)) {
+        if (\is_string($cfCountry) && !\in_array(strtoupper($cfCountry), self::NON_COUNTRY_CF_CODES, true)) {
             return \in_array(strtoupper($cfCountry), self::IMPERIAL_COUNTRIES, true) ? 'imperial' : 'metric';
         }
 

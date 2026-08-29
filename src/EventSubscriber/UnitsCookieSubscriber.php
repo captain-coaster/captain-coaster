@@ -23,8 +23,6 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class UnitsCookieSubscriber implements EventSubscriberInterface
 {
-    private const VALID_UNITS = ['metric', 'imperial'];
-
     public function __construct(
         private readonly Security $security,
         private readonly EntityManagerInterface $em,
@@ -45,7 +43,7 @@ class UnitsCookieSubscriber implements EventSubscriberInterface
         }
 
         $units = $event->getRequest()->query->get('setUnits');
-        if (!\is_string($units) || !\in_array($units, self::VALID_UNITS, true)) {
+        if (!\is_string($units) || !\in_array($units, UnitsService::VALID_UNITS, true)) {
             return;
         }
 
