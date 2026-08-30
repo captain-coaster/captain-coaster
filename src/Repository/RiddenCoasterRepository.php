@@ -124,14 +124,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      *
      * @param array<string>        $preferredReviewLanguages
      * @param array<string, mixed> $filters
-     *
-     * @return array<int, RiddenCoaster>
      */
     public function getCoasterReviews(
         Coaster $coaster,
         array $preferredReviewLanguages = ['en'],
         array $filters = []
-    ): array {
+    ): QueryBuilder {
         // add joins to avoid multiple subqueries
         $query = $this->getEntityManager()
             ->createQueryBuilder()
@@ -152,8 +150,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         $this->applyFilters($query, $filters);
 
-        return $query->getQuery()
-            ->getResult();
+        return $query;
     }
 
     /** @param array<string, mixed> $filters */
