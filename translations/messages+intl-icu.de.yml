@@ -172,8 +172,8 @@ filters:
                 asc: Von der ältesten zur neuesten
                 desc: Von der neuesten zur ältesten
             value:
-                asc: Von der schlechtesten bis zu besten Bewertungen
-                desc: Von der besten bis zu schlechtesten Bewertungen
+                asc: Von der schlechtesten zur besten
+                desc: Von der besten zur schlechtesten
 
 user_profile:
     title: 'Profil • {name}'
@@ -260,8 +260,9 @@ profile:
                 metric: Internationale Einheitensystem
                 imperial: Britische Einheitensystem
                 label: Anzeigen von Entfernungen und Statistiken in
-            displayReviewsInAllLanguages:
-                label: Anzeigen in verschiedenen Sprachen verfasste Bewertungen
+            preferredReviewLanguages:
+                label: 'Bewertungen anzeigen in'
+                help: 'Leer lassen, um nur Bewertungen in Ihrer bevorzugten Sprache zu sehen.'
             addTodayDateWhenRating:
                 label: Heutiges Datum bei einer neuen Bewertung hinzufügen
         advanced:
@@ -343,6 +344,8 @@ navbar:
     logout: Abmelden
     tops: Meine Tops
     my_map: Meine Karte
+    language: Sprache
+    units: Einheiten
 
 sidebar:
     index: Home

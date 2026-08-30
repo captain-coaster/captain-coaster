@@ -1,0 +1,173 @@
+// Desktop navbar toggle avatar: smaller and ringed. Unlike the
+// account-menu-header avatar (which sits on the dropdown panel's light
+// background and so uses a dark fade(#000,10%) border), this one sits on
+// the dark top navbar in both mobile and desktop, so it needs the panel's
+// own dark-background variant (fade(#fff,20%), see the mobile media query
+// below) to actually be visible.
+.dropdown-user > .dropdown-toggle img {
+    width: 28px !important;
+    height: 28px !important;
+    border: 2px solid fade(#fff, 20%);
+}
+
+.account-menu-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px 10px;
+
+    // The theme caps any avatar under .dropdown-user at max-height: 30px
+    // (sized for the compact toggle-button avatar) with no !important --
+    // since max-height is a different property than img-lg's own
+    // `height: 44px !important`, that cap still wins and squashes this
+    // larger header avatar into an oval. img-lg's own !important is the
+    // established way to fight this theme's image-sizing rules, so match it.
+    img {
+        max-height: none !important;
+        border: 2px solid fade(#000, 10%);
+    }
+}
+.account-menu-name {
+    font-weight: 600;
+}
+.account-menu-row-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.account-menu-row-value {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #767676;
+    font-size: 12px;
+}
+
+// Every row in the panel -- plain links (Settings, My ratings, Logout...),
+// account-menu-row triggers (language, units, notifications), and their
+// nested submenu options (English, Metric units...) alike -- shares this
+// same icon/text + gap layout, so it lives on one shared selector instead
+// of being duplicated per row type. Descendant (not child) combinator: it
+// also needs to reach submenu option links two levels deeper.
+.account-menu li > a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+}
+// account-menu-row rows, and submenu options, additionally push something
+// (current value, unread count, the selected-option checkmark) to the right.
+.account-menu-row,
+.dropdown-submenu .dropdown-menu > li > a {
+    justify-content: space-between;
+}
+
+// The theme draws its own submenu-opens-here arrow via a background-image
+// data URI on ::after, positioned absolutely at a fixed right offset. Two
+// problems for our rows specifically: it can't pick up currentColor (it's
+// a rasterized image, not a live SVG), so it stays dark and unreadable
+// against this dark panel; and being absolutely positioned, it overlaps
+// long value text ("Unités métriques") instead of flowing after it. Our
+// own chevron-right icon inside account-menu-row-value replaces it.
+.dropdown-submenu > a.account-menu-row:after {
+    display: none;
+}
+
+// On mobile the collapsed navbar already required one tap to reveal
+// #navbar-mobile; requiring a second tap on a nested dropdown-toggle to
+// reveal the account menu duplicates that icon and shows an empty row
+// while the menu stays hidden. Render it inline instead, unconditionally,
+// reusing the theme's own inverse-navbar mobile dropdown colors (normally
+// gated behind `.open`, which this bypasses) so text stays legible against
+// the dark collapsed navbar background.
+@media (max-width: @grid-float-breakpoint-max) {
+    .dropdown-user > .dropdown-toggle,
+    .account-menu-anon > .dropdown-toggle {
+        display: none;
+    }
+    .navbar-nav > li > .dropdown-menu.account-menu {
+        display: block;
+        position: static;
+        float: none;
+        width: auto;
+        margin: 0;
+        border: 0;
+        box-shadow: none;
+        background-color: transparent;
+        color: @navbar-inverse-link-color;
+
+        a:not(.label-flat):not(.badge-flat) {
+            color: @navbar-inverse-link-color;
+        }
+
+        .divider {
+            background-color: fade(#fff, 10%);
+        }
+
+        .account-menu-row-value {
+            color: fade(@navbar-inverse-link-color, 70%);
+        }
+
+        .account-menu-header img {
+            border-color: fade(#fff, 20%);
+        }
+
+        // Every link's hover/focus/active state (not just .account-menu-row)
+        // -- otherwise plain rows (Settings, Logout, submenu option lists...)
+        // keep Bootstrap's light default tap-highlight background, which
+        // flashes white against this dark panel.
+        li > a:hover,
+        li > a:focus,
+        li > a:active {
+            background-color: fade(#000, 10%);
+        }
+
+        // Nested submenus (language, units, notifications) are themselves
+        // .dropdown-menu elements; the theme's own mobile stacking rules
+        // reset their position and box-shadow but not their light default
+        // background or their navbar-inverse border, which otherwise
+        // render as a boxed-in white panel with a visible double line
+        // (its own border plus the next divider right below it) inside
+        // this dark, borderless account panel.
+        .dropdown-menu {
+            background-color: transparent;
+            border: none;
+            box-shadow: none;
+        }
+    }
+
+    // Pin this one <li> to .navbar-header's own fixed height (46px) and
+    // center its content within that full height -- not a hand-tuned
+    // padding value, so it stays correct regardless of whether the icon
+    // inside is the 28px ringed avatar or the smaller plain svg.
+    // Specificity note: ".navbar-toggle-icon > a" needs to beat Bootstrap
+    // core's ".nav > li > a" (0,1,2), hence "li." rather than the class alone.
+    li.navbar-toggle-icon {
+        height: 46px;
+
+        > a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 0 15px;
+            line-height: 0;
+        }
+    }
+    .navbar-toggle-icon img {
+        width: 28px !important;
+        height: 28px !important;
+        border: 2px solid fade(#fff, 20%);
+    }
+    // No size override for svg: it falls back to its natural w-8/h-8 size,
+    // same as the burger icon beside it.
+
+    // Bootstrap's own .navbar-collapse.collapse caps this at 340px with an
+    // inner scrollbar (fine for a short nav list, not for a full account
+    // panel). Let it grow to its content height and let the page scroll
+    // instead of an inner scroll box.
+    #navbar-mobile.collapse {
+        max-height: none;
+        overflow-y: visible;
+    }
+}

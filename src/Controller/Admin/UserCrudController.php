@@ -13,16 +13,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * @extends AbstractCrudController<User>
  */
 class UserCrudController extends AbstractCrudController
 {
+    /** @param array<string> $locales */
+    public function __construct(
+        #[Autowire(param: 'app_locales_array')]
+        private readonly array $locales,
+    ) {
+    }
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -88,8 +97,13 @@ class UserCrudController extends AbstractCrudController
         yield TextField::new('preferredLocale')->onlyOnForms();
         yield BooleanField::new('emailNotification')->onlyOnForms();
         yield BooleanField::new('addTodayDateWhenRating')->onlyOnForms();
-        yield BooleanField::new('imperial')->onlyOnForms();
-        yield BooleanField::new('displayReviewsInAllLanguages')->onlyOnForms();
+        yield ChoiceField::new('preferredUnits')
+            ->setChoices(['Metric' => 'metric', 'Imperial' => 'imperial'])
+            ->onlyOnForms();
+        yield ChoiceField::new('preferredReviewLanguages')
+            ->setChoices(array_combine($this->locales, $this->locales))
+            ->allowMultipleChoices()
+            ->onlyOnForms();
 
         // Edit page - Access
         yield FormField::addPanel('Access')->onlyOnForms();

@@ -167,8 +167,8 @@ filters:
                 asc: 'Oldest to newest'
                 desc: 'Newest to oldest'
             value:
-                asc: 'Lowest to higher rating'
-                desc: 'Higher to lowest rating'
+                asc: 'Lowest to highest'
+                desc: 'Highest to lowest'
 
 user_profile:
     title: 'Profile • {name}'
@@ -254,8 +254,9 @@ profile:
                 metric: 'Metric units'
                 imperial: 'Imperial units'
                 label: 'Display distances and statistics in'
-            displayReviewsInAllLanguages:
-                label: 'Display reviews written in different languages'
+            preferredReviewLanguages:
+                label: 'Show reviews written in'
+                help: 'Leave empty to only see reviews in your preferred language.'
             addTodayDateWhenRating:
                 label: "Add today's date on a new rating"
         advanced:
@@ -337,6 +338,8 @@ navbar:
     logout: 'Logout'
     tops: 'My tops'
     my_map: 'My map'
+    language: 'Language'
+    units: 'Units'
 
 sidebar:
     index: 'Home'

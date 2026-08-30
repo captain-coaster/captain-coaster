@@ -11,6 +11,7 @@ use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopRepository;
 use App\Repository\UserRepository;
+use App\Service\ReviewLanguagePreferenceService;
 use App\Service\StatService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -81,8 +82,10 @@ class UserController extends BaseController
     /** Show all user's reviews. */
     #[Route(path: '/{id}/reviews/{page}', name: 'user_reviews', requirements: ['page' => '\d+'], methods: ['GET'])]
     public function listReviews(
+        Request $request,
         RiddenCoasterRepository $riddenCoasterRepository,
         PaginatorInterface $paginator,
+        ReviewLanguagePreferenceService $reviewLanguagePreferenceService,
         User $user,
         int $page = 1
     ): Response {
@@ -110,6 +113,7 @@ class UserController extends BaseController
             [
                 'reviews' => $pagination,
                 'user' => $user,
+                'preferredReviewLanguages' => $reviewLanguagePreferenceService->resolve($request),
             ]
         );
     }

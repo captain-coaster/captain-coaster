@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\Type\RegistrationFormType;
 use App\Notifier\CustomLoginLinkNotification;
 use App\Service\EmailValidationService;
+use App\Service\UnitsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +30,8 @@ class RegistrationController extends AbstractController
         EmailValidationService $emailValidator,
         RateLimiterFactory $registrationLimiter,
         NotifierInterface $notifier,
-        LoginLinkHandlerInterface $loginLinkHandler
+        LoginLinkHandlerInterface $loginLinkHandler,
+        UnitsService $unitsService
     ): Response {
         // Redirect if already logged in
         if ($this->getUser()) {
@@ -56,6 +58,7 @@ class RegistrationController extends AbstractController
             if ($emailValidator->isValidEmail($user->getEmail())) {
                 // Create user as enabled (no verification needed)
                 $user->setPreferredLocale($request->getLocale());
+                $user->setPreferredUnits($unitsService->guessUnitsFromRequest($request));
                 $ipAddress = $request->getClientIp();
                 if (null !== $ipAddress) {
                     $user->setIpAddress($ipAddress);

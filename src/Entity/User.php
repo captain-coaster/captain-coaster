@@ -137,11 +137,12 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 39, nullable: true)]
     private ?string $ipAddress = null;
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
-    private bool $imperial = false;
+    #[ORM\Column(type: Types::STRING, length: 20, nullable: false, options: ['default' => 'metric'])]
+    private string $preferredUnits = 'metric';
 
-    #[ORM\Column(type: Types::BOOLEAN, nullable: false, options: ['default' => 0])]
-    private bool $displayReviewsInAllLanguages = false;
+    /** @var array<string> */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $preferredReviewLanguages = [];
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $deletedAt = null;
@@ -628,14 +629,14 @@ class User implements UserInterface
         return $this;
     }
 
-    public function isImperial(): bool
+    public function getPreferredUnits(): string
     {
-        return $this->imperial;
+        return $this->preferredUnits;
     }
 
-    public function setImperial(bool $imperial): static
+    public function setPreferredUnits(string $preferredUnits): static
     {
-        $this->imperial = $imperial;
+        $this->preferredUnits = $preferredUnits;
 
         return $this;
     }
@@ -652,14 +653,16 @@ class User implements UserInterface
         return null;
     }
 
-    public function isDisplayReviewsInAllLanguages(): bool
+    /** @return array<string> */
+    public function getPreferredReviewLanguages(): array
     {
-        return $this->displayReviewsInAllLanguages;
+        return $this->preferredReviewLanguages;
     }
 
-    public function setDisplayReviewsInAllLanguages(bool $displayReviewsInAllLanguages): static
+    /** @param array<string> $preferredReviewLanguages */
+    public function setPreferredReviewLanguages(array $preferredReviewLanguages): static
     {
-        $this->displayReviewsInAllLanguages = $displayReviewsInAllLanguages;
+        $this->preferredReviewLanguages = $preferredReviewLanguages;
 
         return $this;
     }

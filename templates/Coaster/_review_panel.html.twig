@@ -57,7 +57,7 @@
                 <ul class="media-list media-list-bordered">
                     {%- for review in reviews -%}
                         <li>
-                            {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': displayReviewsInAllLanguages} %}
+                            {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}
                         </li>
                     {%- endfor -%}
                 </ul>

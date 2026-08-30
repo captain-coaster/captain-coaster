@@ -29,7 +29,7 @@
                     </a>
                   </h6>
                 </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'displayReviewsInAllLanguages': true} %}
+                {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}
               </li>
             {% endfor %}
           </ul>

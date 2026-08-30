@@ -133,18 +133,22 @@ class ProfileSettingsForm extends AbstractType
                 ->orderBy('p.name', 'ASC'),
         ]);
 
-        $builder->add('imperial', ChoiceType::class, [
+        $builder->add('preferredUnits', ChoiceType::class, [
             'choices' => [
-                'profile.settings.preferences.units.metric' => false,
-                'profile.settings.preferences.units.imperial' => true,
+                'profile.settings.preferences.units.metric' => 'metric',
+                'profile.settings.preferences.units.imperial' => 'imperial',
             ],
             'label' => 'profile.settings.preferences.units.label',
             'attr' => ['class' => 'form-control'],
         ]);
 
-        $builder->add('displayReviewsInAllLanguages', CheckboxType::class, [
+        $builder->add('preferredReviewLanguages', ChoiceType::class, [
+            'choices' => array_combine($locales, $locales),
+            'choice_label' => static fn ($value) => $value,
+            'multiple' => true,
+            'expanded' => true,
             'required' => false,
-            'label' => 'profile.settings.preferences.displayReviewsInAllLanguages.label',
+            'label' => 'profile.settings.preferences.preferredReviewLanguages.label',
         ]);
 
         $builder->add('addTodayDateWhenRating', CheckboxType::class, [

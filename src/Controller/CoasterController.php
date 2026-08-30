@@ -12,6 +12,7 @@ use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ImageManager;
+use App\Service\ReviewLanguagePreferenceService;
 use App\Service\SummaryFeedbackService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -160,16 +161,12 @@ class CoasterController extends BaseController
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, #[MapQueryParameter] int $page = 1, #[MapQueryParameter] array $filters = []): Response
+    public function ajaxLoadReviews(Request $request, RiddenCoasterRepository $riddenCoasterRepository, PaginatorInterface $paginator, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, ReviewLanguagePreferenceService $reviewLanguagePreferenceService, #[MapQueryParameter] int $page = 1, #[MapQueryParameter] array $filters = []): Response
     {
-        $user = $this->getUser();
-        $displayReviewsInAllLanguages = false;
-        if (null !== $user) {
-            $displayReviewsInAllLanguages = $this->getUser()->isDisplayReviewsInAllLanguages();
-        }
+        $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
 
         $pagination = $paginator->paginate(
-            $riddenCoasterRepository->getCoasterReviews($coaster, $request->getLocale(), $displayReviewsInAllLanguages, $filters),
+            $riddenCoasterRepository->getCoasterReviews($coaster, $preferredReviewLanguages, $filters),
             $page,
             25
         );
@@ -179,7 +176,7 @@ class CoasterController extends BaseController
             [
                 'reviews' => $pagination,
                 'coaster' => $coaster,
-                'displayReviewsInAllLanguages' => $displayReviewsInAllLanguages,
+                'preferredReviewLanguages' => $preferredReviewLanguages,
                 'filters' => $filters,
             ]
         );

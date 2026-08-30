@@ -172,8 +172,8 @@ filters:
                 asc: Du plus ancien au plus récent
                 desc: Du plus récent au plus ancien
             value:
-                asc: De la moins bonne à la meilleure note
-                desc: De la meilleure à la moins bonne note
+                asc: De la moins bonne à la meilleure
+                desc: De la meilleure à la moins bonne
 
 user_profile:
     title: 'Profil • {name}'
@@ -259,8 +259,9 @@ profile:
                 metric: Unités métriques
                 imperial: Unités impériales
                 label: Afficher les distances et statistiques en
-            displayReviewsInAllLanguages:
-                label: Afficher les avis écrits en différentes langues
+            preferredReviewLanguages:
+                label: 'Afficher les avis écrits en'
+                help: 'Laissez vide pour ne voir que les avis dans votre langue préférée.'
             addTodayDateWhenRating:
                 label: Ajouter la date du jour quand je note un nouveau coaster
         advanced:
@@ -342,6 +343,8 @@ navbar:
     logout: Déconnexion
     tops: Mes tops
     my_map: Ma carte
+    language: Langue
+    units: Unités
 
 sidebar:
     index: Accueil

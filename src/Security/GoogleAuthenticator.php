@@ -6,6 +6,7 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Service\ProfilePictureManager;
+use App\Service\UnitsService;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
@@ -37,7 +38,8 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
         private readonly EntityManagerInterface $em,
         private readonly ProfilePictureManager $profilePictureManager,
         private readonly RouterInterface $router,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly UnitsService $unitsService
     ) {
     }
 
@@ -111,7 +113,8 @@ class GoogleAuthenticator extends OAuth2Authenticator implements AuthenticationE
 
         if (!$user instanceof User) {
             $user = new User();
-            $user->setPreferredLocale($request->getSession()->get('locale_at_login', 'en'));
+            $user->setPreferredLocale($request->getSession()->get('locale_at_login', $request->getLocale()));
+            $user->setPreferredUnits($this->unitsService->guessUnitsFromRequest($request));
             $user->setIpAddress($request->getClientIp());
             $user->setEnabled(true);
         }

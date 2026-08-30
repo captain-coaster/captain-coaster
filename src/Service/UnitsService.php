@@ -6,22 +6,19 @@ namespace App\Service;
 
 use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Resolves the visitor's metric/imperial preference and converts
  * height/speed/distance accordingly.
  *
- * Precedence: a logged-in user's saved profile preference, then a guess
- * from the browser's Accept-Language preferences, walked in order for the
- * first entry that carries a *region* (e.g. "en-US" vs "en-GB") — language
- * alone isn't a reliable signal, since English is also the majority
- * language in fully metric countries (Canada, Australia); see GitHub
- * issue #108. The UK is a deliberate exception: despite officially
- * adopting metric, road distances and speed limits stay legally imperial
- * (miles, mph) there — exactly the units this service converts — so
- * en_GB is grouped with en_US rather than with the fully metric English
- * regions.
+ * Precedence: the current request's own validated `?setUnits=` query
+ * parameter (so the very page carrying the switcher link already reflects
+ * the new choice, before UnitsCookieSubscriber has persisted it for future
+ * requests) > logged-in user's saved profile preference > cookie (anonymous
+ * visitors) > browser's Accept-Language region preferences > metric default.
+ * See guessUnitsFromRequest() for the Accept-Language logic.
  *
  * Exposed to Twig via the `units` global (config/packages/twig.yaml),
  * called directly as an object (units.metersOrFeet(...)), not as
@@ -29,6 +26,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class UnitsService
 {
+    public const COOKIE_NAME = 'units';
+
+    /** Allow-listed values for the units preference, shared with UnitsCookieSubscriber. */
+    public const VALID_UNITS = ['metric', 'imperial'];
+
     /** Browser locale regions that default to imperial when no user preference exists. */
     private const IMPERIAL_LANGUAGE_REGIONS = ['en_US', 'en_GB'];
 
@@ -43,13 +45,29 @@ class UnitsService
 
     public function isImperial(): bool
     {
-        /** @var User|null $user */
-        $user = $this->security->getUser();
-        if ($user) {
-            return $user->isImperial();
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request instanceof Request) {
+            $requestedUnits = $request->query->get('setUnits');
+            if (\is_string($requestedUnits) && \in_array($requestedUnits, self::VALID_UNITS, true)) {
+                return 'imperial' === $requestedUnits;
+            }
         }
 
-        return $this->guessImperialFromBrowserLocale();
+        $user = $this->security->getUser();
+        if ($user instanceof User) {
+            return 'imperial' === $user->getPreferredUnits();
+        }
+
+        if (!$request instanceof Request) {
+            return false;
+        }
+
+        $cookieUnits = $request->cookies->get(self::COOKIE_NAME);
+        if (\is_string($cookieUnits) && \in_array($cookieUnits, self::VALID_UNITS, true)) {
+            return 'imperial' === $cookieUnits;
+        }
+
+        return 'imperial' === $this->guessUnitsFromRequest($request);
     }
 
     public function metersOrFeet(int $value): string
@@ -89,30 +107,30 @@ class UnitsService
     }
 
     /**
-     * Walks the browser's language preferences in order and stops at the
-     * first one that carries a region -- that region decides, imperial or
-     * not. Bare, region-less languages (e.g. plain "en") are skipped: they
-     * can't disambiguate anything on their own, since English is the
-     * majority language in both imperial (US, UK) and metric (Canada,
-     * Australia...) countries. No region found anywhere defaults to
-     * metric. Request::getLanguages() parses and caches the
-     * Accept-Language header once per request, and the list is at most a
-     * handful of entries, so this is a negligible cost to pay on every
-     * request.
+     * Guess metric/imperial from the request's Accept-Language preferences.
+     *
+     * Walks the browser's language preferences in order, stopping at the
+     * first entry that carries a *region* (e.g. "en-US" vs "en-GB") —
+     * language alone isn't a reliable signal, since English is also the
+     * majority language in fully metric countries (Canada, Australia); see
+     * GitHub issue #108. The UK is a deliberate exception: despite officially
+     * adopting metric, road distances and speed limits stay legally imperial
+     * (miles, mph) there — exactly the units this service converts — so
+     * en_GB is grouped with en_US rather than with the fully metric English
+     * regions. No region found anywhere defaults to 'metric'.
+     *
+     * Request::getLanguages() parses and caches the Accept-Language header
+     * once per request, and the list is at most a handful of entries, so
+     * this is a negligible cost to pay on every request.
      */
-    private function guessImperialFromBrowserLocale(): bool
+    public function guessUnitsFromRequest(Request $request): string
     {
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return false;
-        }
-
         foreach ($request->getLanguages() as $language) {
             if (str_contains($language, '_')) {
-                return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true);
+                return \in_array($language, self::IMPERIAL_LANGUAGE_REGIONS, true) ? 'imperial' : 'metric';
             }
         }
 
-        return false;
+        return 'metric';
     }
 }

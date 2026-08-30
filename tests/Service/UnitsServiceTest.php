@@ -51,7 +51,7 @@ class UnitsServiceTest extends TestCase
     public function testIsImperialForLoggedInUserUsesProfilePreferenceRegardlessOfBrowserLanguage(): void
     {
         $user = $this->createMock(User::class);
-        $user->method('isImperial')->willReturn(true);
+        $user->method('getPreferredUnits')->willReturn('imperial');
         $this->security->method('getUser')->willReturn($user);
 
         $this->pushRequestWithAcceptLanguage('fr-FR,fr;q=0.9');
@@ -200,5 +200,65 @@ class UnitsServiceTest extends TestCase
         $this->pushRequestWithAcceptLanguage('en-US,en;q=0.9');
 
         $this->assertSame('6 mi', $this->service->kmOrMi(10));
+    }
+
+    public function testGuessUnitsFromRequestUsesAcceptLanguage(): void
+    {
+        $request = Request::create('/');
+        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
+
+        $this->assertSame('imperial', $this->service->guessUnitsFromRequest($request));
+    }
+
+    public function testIsImperialForAnonymousUserUsesCookieOverAcceptLanguage(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $request = Request::create('/');
+        $request->headers->set('Accept-Language', 'fr-FR,fr;q=0.9');
+        $request->cookies->set(UnitsService::COOKIE_NAME, 'imperial');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialForAnonymousUserIgnoresInvalidCookieValue(): void
+    {
+        $this->security->method('getUser')->willReturn(null);
+        $request = Request::create('/');
+        $request->headers->set('Accept-Language', 'en-US,en;q=0.9');
+        $request->cookies->set(UnitsService::COOKIE_NAME, 'furlongs');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialAppliesSetUnitsQueryParamImmediatelyRegardlessOfUserOrCookie(): void
+    {
+        // The very request carrying ?setUnits=imperial must already reflect
+        // it, before UnitsCookieSubscriber (KernelEvents::RESPONSE) has had
+        // a chance to persist it for future requests -- otherwise the page
+        // the visitor lands on after clicking the switcher still renders
+        // with the old units.
+        $user = $this->createMock(User::class);
+        $user->method('getPreferredUnits')->willReturn('metric');
+        $this->security->method('getUser')->willReturn($user);
+
+        $request = Request::create('/?setUnits=imperial');
+        $request->cookies->set(UnitsService::COOKIE_NAME, 'metric');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
+    }
+
+    public function testIsImperialIgnoresInvalidSetUnitsQueryParam(): void
+    {
+        $user = $this->createMock(User::class);
+        $user->method('getPreferredUnits')->willReturn('imperial');
+        $this->security->method('getUser')->willReturn($user);
+
+        $request = Request::create('/?setUnits=furlongs');
+        $this->requestStack->push($request);
+
+        $this->assertTrue($this->service->isImperial());
     }
 }

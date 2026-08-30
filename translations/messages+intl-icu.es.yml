@@ -172,8 +172,8 @@ filters:
                 asc: De la más antigua a la más reciente
                 desc: De la más reciente a la más antigua
             value:
-                asc: De la nota más alta a la más baja
-                desc: De la nota más baja a la más alta
+                asc: De la más baja a la más alta
+                desc: De la más alta a la más baja
 
 user_profile:
     title: 'Perfil • {name}'
@@ -259,8 +259,9 @@ profile:
                 metric: Sistema Internacional de unidades
                 imperial: Sistema anglosajón de unidades
                 label: Mostrar distancias y estadísticas en
-            displayReviewsInAllLanguages:
-                label: Mostrar reseñas escritas en diferentes lenguas
+            preferredReviewLanguages:
+                label: 'Mostrar reseñas escritas en'
+                help: 'Déjelo vacío para ver solo reseñas en su idioma preferido.'
             addTodayDateWhenRating:
                 label: Añadir la fecha de hoy en una nueva calificación
         advanced:
@@ -342,6 +343,8 @@ navbar:
     logout: Cerrar sesión
     tops: 'Mis tops'
     my_map: Mi mapa
+    language: Idioma
+    units: Unidades
 
 sidebar:
     index: Pagina de inicio

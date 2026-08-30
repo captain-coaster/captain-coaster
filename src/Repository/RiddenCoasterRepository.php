@@ -11,6 +11,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -121,14 +122,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Get ratings for a specific coaster.
      *
+     * @param array<string>        $preferredReviewLanguages
      * @param array<string, mixed> $filters
      *
      * @return array<int, RiddenCoaster>
      */
     public function getCoasterReviews(
         Coaster $coaster,
-        string $locale = 'en',
-        bool $displayReviewsInAllLanguages = true,
+        array $preferredReviewLanguages = ['en'],
         array $filters = []
     ): array {
         // add joins to avoid multiple subqueries
@@ -136,7 +137,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r', 'p', 'c', 'u', 'up', 'co')
             ->addSelect(
-                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN r.language IN (:preferredReviewLanguages) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
@@ -147,8 +148,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->where('r.coaster = :coasterId')
             ->andWhere('u.enabled = 1')
             ->setParameter('coasterId', $coaster->getId())
-            ->setParameter('locale', $locale)
-            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages);
+            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages);
 
         $this->applyFilters($query, $filters);
 
@@ -231,15 +231,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Get latest text reviews ordered by language.
      *
+     * @param array<string> $preferredReviewLanguages
+     *
      * @return array<int, RiddenCoaster>
      */
-    public function getLatestReviews(string $locale = 'en', int $limit = 3, bool $displayReviewsInAllLanguages = false): array
+    public function getLatestReviews(array $preferredReviewLanguages = ['en'], int $limit = 3): array
     {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
             ->addSelect(
-                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN r.language IN (:preferredReviewLanguages) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->addSelect('u')
             ->from(RiddenCoaster::class, 'r')
@@ -249,8 +251,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
-            ->setParameter('locale', $locale)
-            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
+            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
             ->getQuery();
 
         $query->enableResultCache(300);
@@ -313,13 +314,17 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get all reviews ordered by language.
+     * Get reviews with text in one of the given languages. Unlike the other
+     * review listings, this feed excludes non-matching reviews entirely
+     * (rather than keeping the row and hiding its text) and applies no
+     * language-based sort priority -- it's a dedicated reading feed, so a
+     * rating-only row with its text hidden would just be dead weight.
      *
-     * @return array|mixed
+     * @param array<string> $preferredReviewLanguages
      *
-     * @throws NonUniqueResultException
+     * @return Query<mixed, mixed>
      */
-    public function findAllReviews(string $locale = 'en', bool $displayReviewsInAllLanguages = false)
+    public function findAllReviews(array $preferredReviewLanguages): Query
     {
         $count = $this->getEntityManager()
             ->createQueryBuilder()
@@ -327,24 +332,22 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
+            ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
+            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
             ->getQuery()
             ->getSingleScalarResult();
 
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r, u')
-            ->addSelect(
-                'CASE WHEN (r.language = :locale OR :displayReviewsInAllLanguages = 1) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
-            )
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
             ->where('r.review is not null')
+            ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
-            ->orderBy('languagePriority', 'asc')
-            ->addOrderBy('r.updatedAt', 'desc')
-            ->setParameter('locale', $locale)
-            ->setParameter('displayReviewsInAllLanguages', $displayReviewsInAllLanguages)
+            ->orderBy('r.updatedAt', 'desc')
+            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
             ->getQuery()
             ->setHint('knp_paginator.count', $count);
     }
