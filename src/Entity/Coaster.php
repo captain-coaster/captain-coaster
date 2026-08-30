@@ -183,7 +183,7 @@ class Coaster implements \Stringable
     private ?int $previousRank = null;
 
     /** @var Collection<int, RiddenCoaster> */
-    #[ORM\OneToMany(targetEntity: RiddenCoaster::class, mappedBy: 'coaster')]
+    #[ORM\OneToMany(targetEntity: RiddenCoaster::class, mappedBy: 'coaster', fetch: 'EXTRA_LAZY')]
     private Collection $ratings;
 
     /** @var Collection<int, MainTag> */
@@ -191,7 +191,7 @@ class Coaster implements \Stringable
     private Collection $mainTags;
 
     /** @var Collection<int, Image> */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'coaster')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'coaster', fetch: 'EXTRA_LAZY')]
     private Collection $images;
 
     #[ORM\OneToOne(targetEntity: Image::class, fetch: 'EAGER')]

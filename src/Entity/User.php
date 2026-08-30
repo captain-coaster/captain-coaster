@@ -68,27 +68,27 @@ class User implements UserInterface
     private ?string $profilePicture = null;
 
     /** @var Collection<int, RiddenCoaster> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class, fetch: 'EXTRA_LAZY')]
     private Collection $ratings;
 
     /** @var Collection<int, Top> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class, fetch: 'EXTRA_LAZY')]
     private Collection $tops;
 
     /** @var Collection<int, Badge> */
-    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users', fetch: 'EXTRA_LAZY')]
     #[ORM\JoinTable]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $badges;
 
     /** @var Collection<int, Notification> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, fetch: 'EXTRA_LAZY')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
     /** @var Collection<int, Image> */
-    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'], fetch: 'EXTRA_LAZY')]
     private Collection $images;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
