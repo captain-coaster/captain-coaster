@@ -11,6 +11,20 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: read
+        services:
+            mariadb:
+                image: mariadb:11.8
+                env:
+                    MARIADB_ROOT_PASSWORD: root123
+                ports:
+                    - 3306:3306
+                options: >-
+                    --health-cmd="healthcheck.sh --connect --innodb_initialized"
+                    --health-interval=10s
+                    --health-timeout=5s
+                    --health-retries=5
+        env:
+            DATABASE_URL: 'mysql://root:root123@127.0.0.1:3306/captain_test?serverVersion=mariadb-11.8.0&charset=utf8mb4'
         steps:
             - uses: actions/checkout@v7
 
@@ -36,6 +50,11 @@ jobs:
 
             - name: Install Composer dependencies
               run: composer install --no-interaction --prefer-dist --no-progress
+
+            - name: Set up test database
+              run: composer db-setup
+              env:
+                  APP_ENV: test
 
             - name: Run PHPUnit tests
               run: vendor/bin/phpunit

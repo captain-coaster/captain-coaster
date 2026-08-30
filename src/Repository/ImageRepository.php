@@ -21,7 +21,7 @@ class ImageRepository extends ServiceEntityRepository
         parent::__construct($registry, Image::class);
     }
 
-    public function findLatestLikedImage(): Image
+    public function findLatestLikedImage(): ?Image
     {
         $query = $this->createQueryBuilder('i')
             ->join(LikedImage::class, 'li', 'WITH', 'li.image = i.id')
@@ -33,7 +33,7 @@ class ImageRepository extends ServiceEntityRepository
 
         $query->enableResultCache(300);
 
-        return $query->getSingleResult();
+        return $query->getOneOrNullResult();
     }
 
     /** @return Query<mixed, mixed> */

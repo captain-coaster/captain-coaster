@@ -127,6 +127,7 @@ coaster_ranking:
         title: 'Last Updated: {rankingMonth}'
         next: 'Next update {date}'
         learn_more: 'Learn more about the ranking'
+        not_computed: "The ranking hasn't been computed yet. Check back after the next monthly update."
         coasters_ranked:
             short: 'coasters'
             long: 'ranked coasters'

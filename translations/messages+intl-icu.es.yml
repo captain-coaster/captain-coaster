@@ -132,6 +132,7 @@ coaster_ranking:
         title: 'Última actualización: {rankingMonth}'
         next: 'Próxima actualización {date}'
         learn_more: Más información sobre la clasificación
+        not_computed: 'La clasificación aún no se ha calculado. Vuelve después de la próxima actualización mensual.'
         coasters_ranked:
             short: montañas rusas
             long: montañas rusas clasificados

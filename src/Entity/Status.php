@@ -48,7 +48,7 @@ class Status implements \Stringable
     #[Groups(['read_status'])]
     private bool $isRateable = false;
 
-    #[ORM\Column(type: Types::INTEGER, nullable: false)]
+    #[ORM\Column(name: '`order`', type: Types::INTEGER, nullable: false)]
     private int $order;
 
     public function __construct()

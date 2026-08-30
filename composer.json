@@ -54,6 +54,8 @@
         "twig/intl-extra": "^3.8"
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^8.6",
+        "doctrine/doctrine-fixtures-bundle": "^4.3",
         "friendsofphp/php-cs-fixer": "3.95.18",
         "giorgiosironi/eris": "^1.0",
         "phpstan/extension-installer": "^1.3",
@@ -65,7 +67,8 @@
         "symfony/css-selector": "8.*",
         "symfony/debug-bundle": "8.*",
         "symfony/maker-bundle": "^1.0",
-        "symfony/web-profiler-bundle": "8.*"
+        "symfony/web-profiler-bundle": "8.*",
+        "zenstruck/foundry": "^2.12"
     },
     "config": {
         "allow-plugins": {
@@ -105,7 +108,14 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "phpstan": "vendor/bin/phpstan"
+        "phpstan": "vendor/bin/phpstan",
+        "db-setup": [
+            "@php bin/console doctrine:database:create --if-not-exists",
+            "@php bin/console doctrine:schema:create",
+            "@php bin/console doctrine:migrations:sync-metadata-storage",
+            "@php bin/console doctrine:migrations:version --add --all --no-interaction",
+            "@php bin/console doctrine:fixtures:load --no-interaction"
+        ]
     },
     "conflict": {
         "symfony/symfony": "*"

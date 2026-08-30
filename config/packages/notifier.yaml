@@ -12,3 +12,24 @@ framework:
             high: ['chat/discord_log']
             medium: []
             low: []
+
+# Chatter listeners (e.g. ReviewReportListener) fire unconditionally on entity
+# persist. Fixtures and tests must never be able to reach real Discord
+# webhooks, even if a real DSN ends up in a local .env.local.
+when@dev:
+    framework:
+        notifier:
+            chatter_transports:
+                discord_notif: 'null://null'
+                discord_log: 'null://null'
+                discord_picture: 'null://null'
+                discord_report: 'null://null'
+
+when@test:
+    framework:
+        notifier:
+            chatter_transports:
+                discord_notif: 'null://null'
+                discord_log: 'null://null'
+                discord_picture: 'null://null'
+                discord_report: 'null://null'

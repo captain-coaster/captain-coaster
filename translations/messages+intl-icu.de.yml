@@ -132,6 +132,7 @@ coaster_ranking:
         title: 'Letzte Aktualisierung: {rankingMonth}'
         next: 'Nächste Aktualisierung {date}'
         learn_more: Erfahre mehr über das Ranking
+        not_computed: 'Das Ranking wurde noch nicht berechnet. Schau nach der nächsten monatlichen Aktualisierung wieder vorbei.'
         coasters_ranked:
             short: Achterbahnen
             long: Eingestufte Achterbahnen

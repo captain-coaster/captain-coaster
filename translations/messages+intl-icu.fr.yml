@@ -132,6 +132,7 @@ coaster_ranking:
         title: 'Mis à jour : {rankingMonth}'
         next: 'Prochaine mise à jour {date}'
         learn_more: En apprendre plus sur le classement
+        not_computed: "Le classement n'a pas encore été calculé. Revenez après la prochaine mise à jour mensuelle."
         coasters_ranked:
             short: coasters
             long: coasters classés
