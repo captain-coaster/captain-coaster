@@ -358,7 +358,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             LEFT JOIN (
                 SELECT rc.coaster_id AS id, COUNT(rc.rating) AS nb
                 FROM ridden_coaster rc
-                INNER JOIN user u ON rc.user_id = u.id
+                INNER JOIN users u ON rc.user_id = u.id
                 WHERE u.enabled = 1
                 GROUP BY rc.coaster_id
             ) c2
@@ -384,7 +384,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             LEFT JOIN (
                 SELECT rc.coaster_id AS id, ROUND(AVG(rc.rating), 3) AS average
                 FROM ridden_coaster rc
-                INNER JOIN user u ON rc.user_id = u.id
+                INNER JOIN users u ON rc.user_id = u.id
                 WHERE u.enabled = 1
                 GROUP BY rc.coaster_id
                 HAVING COUNT(rc.rating) >= :minRatings
