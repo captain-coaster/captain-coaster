@@ -167,8 +167,8 @@ filters:
                 asc: 'Oldest to newest'
                 desc: 'Newest to oldest'
             value:
-                asc: 'Lowest to higher rating'
-                desc: 'Higher to lowest rating'
+                asc: 'Lowest to highest'
+                desc: 'Highest to lowest'
 
 user_profile:
     title: 'Profile • {name}'

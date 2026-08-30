@@ -172,8 +172,8 @@ filters:
                 asc: Von der ältesten zur neuesten
                 desc: Von der neuesten zur ältesten
             value:
-                asc: Von der schlechtesten bis zu besten Bewertungen
-                desc: Von der besten bis zu schlechtesten Bewertungen
+                asc: Von der schlechtesten zur besten
+                desc: Von der besten zur schlechtesten
 
 user_profile:
     title: 'Profil • {name}'

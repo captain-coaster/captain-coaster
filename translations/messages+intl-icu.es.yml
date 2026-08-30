@@ -172,8 +172,8 @@ filters:
                 asc: De la más antigua a la más reciente
                 desc: De la más reciente a la más antigua
             value:
-                asc: De la nota más alta a la más baja
-                desc: De la nota más baja a la más alta
+                asc: De la más baja a la más alta
+                desc: De la más alta a la más baja
 
 user_profile:
     title: 'Perfil • {name}'
