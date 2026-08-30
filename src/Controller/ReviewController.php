@@ -45,6 +45,7 @@ class ReviewController extends BaseController
         } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
+        $riddenCoasterRepository->preloadTags($pagination);
 
         return $this->render(
             'Review/list.html.twig',

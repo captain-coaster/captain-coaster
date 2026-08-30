@@ -294,6 +294,45 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('user', $user);
     }
 
+    /**
+     * Initialises the pros/cons collections of the given reviews, two queries total.
+     *
+     * Includes/_review_item.html.twig reads review.pros and review.cons, both lazy
+     * ManyToMany. Without this, rendering N reviews fires 2N collection-loading
+     * queries from inside Twig — invisible in the template's own timing, and the
+     * shape production's FPM slowlog caught at over a second.
+     *
+     * Not needed for getCoasterReviews(), which already fetch-joins both.
+     *
+     * @param iterable<mixed> $reviews
+     */
+    public function preloadTags(iterable $reviews): void
+    {
+        $ids = [];
+        foreach ($reviews as $review) {
+            if ($review instanceof RiddenCoaster) {
+                $ids[] = $review->getId();
+            }
+        }
+
+        if ([] === $ids) {
+            return;
+        }
+
+        // Two separate queries on purpose: joining both ManyToMany at once
+        // multiplies rows into a cartesian product.
+        foreach (['pros', 'cons'] as $association) {
+            $this
+                ->createQueryBuilder('r')
+                ->select('r', 't')
+                ->leftJoin('r.'.$association, 't')
+                ->where('r.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->getResult();
+        }
+    }
+
     /** @return QueryBuilder */
     public function getUserReviews(User $user)
     {
