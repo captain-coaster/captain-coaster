@@ -13,11 +13,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for RiddenCoasterRepository::countTop100ForUser().
+ * Unit tests for RiddenCoasterRepository.
  *
  * Uses real QueryBuilder instances (built against a mocked EntityManager) so the
  * generated DQL is genuine, only the final Query execution is stubbed — this
- * catches DQL-building regressions (e.g. a hardcoded Status id creeping back in)
+ * catches DQL-building regressions (e.g. a hardcoded Status id creeping back in,
+ * or a filter reverting to the un-indexable `review IS NOT NULL` predicate)
  * that a fully-mocked QueryBuilder would miss.
  */
 class RiddenCoasterRepositoryTest extends TestCase
@@ -101,5 +102,51 @@ class RiddenCoasterRepositoryTest extends TestCase
         $result = $this->repository->countTop100ForUser(new User());
 
         $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 0], $result);
+    }
+
+    public function testGetLatestReviewsFiltersOnHasReviewColumn(): void
+    {
+        $dql = null;
+        $this->em->method('createQuery')->willReturnCallback(function (string $capturedDql) use (&$dql) {
+            $dql = $capturedDql;
+
+            $query = $this->createMock(Query::class);
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
+            $query->method('enableResultCache')->willReturnSelf();
+            $query->method('getResult')->willReturn([]);
+
+            return $query;
+        });
+
+        $this->repository->getLatestReviews(['en', 'fr'], 3);
+
+        // Must use the generated has_review column (idx_ridden_coaster_has_review_updated_at)
+        // rather than `review IS NOT NULL`, which can't use an index on a longtext column.
+        $this->assertStringContainsString('r.hasReview = 1', $dql);
+        $this->assertStringNotContainsString('r.review', $dql);
+    }
+
+    public function testFindAllReviewsFiltersOnHasReviewColumn(): void
+    {
+        $capturedDql = [];
+        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$capturedDql) {
+            $capturedDql[] = $dql;
+
+            $query = $this->createMock(Query::class);
+            $query->method('getSingleScalarResult')->willReturn(0);
+            $query->method('setHint')->willReturnSelf();
+
+            return $query;
+        });
+
+        $this->repository->findAllReviews(['en', 'fr']);
+
+        $this->assertCount(2, $capturedDql, 'Expected one count query and one select query');
+        foreach ($capturedDql as $dql) {
+            $this->assertStringContainsString('r.hasReview = 1', $dql);
+            $this->assertStringNotContainsString('r.review', $dql);
+        }
     }
 }

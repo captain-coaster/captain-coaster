@@ -241,12 +241,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('r')
             ->addSelect(
-                'CASE WHEN r.language IN (:preferredReviewLanguages) AND r.review IS NOT NULL THEN 0 ELSE 1 END AS HIDDEN languagePriority'
+                'CASE WHEN r.language IN (:preferredReviewLanguages) THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
             ->addSelect('u')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
-            ->where('r.review is not null')
+            ->where('r.hasReview = 1')
             ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
@@ -331,7 +331,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
-            ->where('r.review is not null')
+            ->where('r.hasReview = 1')
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
             ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
@@ -343,7 +343,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->select('r, u')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
-            ->where('r.review is not null')
+            ->where('r.hasReview = 1')
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')

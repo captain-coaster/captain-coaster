@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
 #[ORM\Index(name: 'idx_ridden_coaster_moderated_at', columns: ['moderated_at'])]
+#[ORM\Index(name: 'idx_ridden_coaster_has_review_updated_at', columns: ['has_review', 'updated_at'])]
 #[ORM\Entity(repositoryClass: RiddenCoasterRepository::class)]
 #[UniqueEntity(['coaster', 'user'])]
 #[CaptainConstraints\ValidRideDate]
@@ -45,6 +46,10 @@ class RiddenCoaster
 
     #[ORM\Column(type: Types::STRING, length: 5)]
     private string $language = 'en';
+
+    /** DB-generated (mirrors `review IS NOT NULL`) for idx_ridden_coaster_has_review_updated_at -- never run schema:update --force, it'll try to drop the generated expression. */
+    #[ORM\Column(type: Types::BOOLEAN, insertable: false, updatable: false)]
+    private bool $hasReview = false;
 
     /** @var Collection<int, Tag> */
     #[ORM\ManyToMany(targetEntity: Tag::class)]
@@ -164,6 +169,11 @@ class RiddenCoaster
     public function getLanguage(): string
     {
         return $this->language;
+    }
+
+    public function isHasReview(): bool
+    {
+        return $this->hasReview;
     }
 
     public function addPro(Tag $pro): self
