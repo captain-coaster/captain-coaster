@@ -48,26 +48,45 @@ class UserRepository extends ServiceEntityRepository
     /**
      * Returns users that have recently updated ratings or tops.
      *
+     * Split into two single-join queries rather than one query with an OR spanning
+     * both joins: that shape forces a join across every rating and every top per
+     * user before the WHERE can filter anything, and prevents either side from
+     * using an index on updatedAt. Each half here can.
+     *
      * @return User[]
      */
     public function getUsersWithRecentRatingOrTopUpdate(int $sinceHours = 1): array
     {
         $date = new \DateTime('- '.$sinceHours.' hours');
 
-        /** @var User[] $result */
-        $result = $this->getEntityManager()
+        /** @var User[] $usersWithRecentRating */
+        $usersWithRecentRating = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
-            ->leftJoin('u.ratings', 'r')
-            ->leftJoin('u.tops', 'l')
+            ->innerJoin('u.ratings', 'r')
             ->where('r.updatedAt > :date')
-            ->orWhere('l.updatedAt > :date')
             ->setParameter('date', $date)
             ->getQuery()
             ->getResult();
 
-        return $result;
+        /** @var User[] $usersWithRecentTop */
+        $usersWithRecentTop = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->innerJoin('u.tops', 'l')
+            ->where('l.updatedAt > :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getResult();
+
+        $usersById = [];
+        foreach ([...$usersWithRecentRating, ...$usersWithRecentTop] as $user) {
+            $usersById[$user->getId()] = $user;
+        }
+
+        return array_values($usersById);
     }
 
     /** @return array<int, array{name: string, slug: string}> */
