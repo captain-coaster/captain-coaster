@@ -452,12 +452,6 @@ class User implements UserInterface
         return $this->notifications;
     }
 
-    /** @return Collection<int, Notification> */
-    public function getUnreadNotifications(): Collection
-    {
-        return $this->notifications->filter(static fn (Notification $notif) => !$notif->getIsRead());
-    }
-
     public function isEmailNotification(): bool
     {
         return $this->emailNotification;
