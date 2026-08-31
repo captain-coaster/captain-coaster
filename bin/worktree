@@ -66,7 +66,53 @@ cmd_setup() {
     "$SELF_DIR/db" clone "$db"
 }
 
+# A worktree is stale when git can no longer reach it, or its PR is finished.
+wt_pr_state() {
+    [ -n "$1" ] || { printf 'none'; return; }
+    state=$(gh pr list --state all --head "$1" --json state -q '.[0].state' 2>/dev/null || true)
+    [ -n "$state" ] || state=none
+    printf '%s' "$state"
+}
+
+wt_db_size_mb() {
+    # </dev/null: bin/db list shells out to `docker exec -i`, which otherwise
+    # inherits our caller's stdin — the worktree-list pipe in cmd_status — and
+    # drains the remaining rows out from under its `while read` loop.
+    "$SELF_DIR/db" list < /dev/null 2>/dev/null | awk -F'\t' -v d="$1" '$1 == d {print $2; found=1} END {if (!found) print "-"}'
+}
+
+cmd_status() {
+    stale_only=false
+    [ "${1:-}" = "--stale-only" ] && stale_only=true
+    main=$(wt_main_checkout)
+
+    git worktree list --porcelain | awk '
+        /^worktree /  { path = substr($0, 10); branch = ""; prunable = "no" }
+        /^branch /    { branch = substr($0, 8); sub("refs/heads/", "", branch) }
+        /^prunable /  { prunable = "yes" }
+        /^$/          { if (path != "") print path "\t" branch "\t" prunable; path = "" }
+        END           { if (path != "") print path "\t" branch "\t" prunable }
+    ' | while IFS="$(printf '\t')" read -r path branch prunable; do
+        if [ "$path" = "$main" ]; then
+            pr=local; db="captain"; stale=no
+        else
+            pr=$(wt_pr_state "$branch")
+            db=$(wt_db_name "$(basename "$path")")
+            stale=no
+            case "$pr" in MERGED|CLOSED) stale=yes ;; esac
+            [ "$prunable" = "yes" ] && stale=yes
+        fi
+        size=$(wt_db_size_mb "$db")
+        idx=$([ "$path" = "$main" ] && printf '0' || wt_redis_index "$(basename "$path")")
+        if [ "$stale_only" = true ] && [ "$stale" != yes ]; then
+            continue
+        fi
+        printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$path" "${branch:-detached}" "$pr" "$db" "$size" "$idx" "$stale"
+    done
+}
+
 case "${1:-}" in
-    setup) shift; cmd_setup "$@" ;;
-    *) die "usage: bin/worktree {setup}" ;;
+    setup)  shift; cmd_setup "$@" ;;
+    status) shift; cmd_status "$@" ;;
+    *) die "usage: bin/worktree {setup|status [--stale-only]}" ;;
 esac
