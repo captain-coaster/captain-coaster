@@ -27,14 +27,14 @@ cmd_setup() {
         :
     elif [ -f "$root/.env.local" ]; then
         if cmp -s "$root/.env.local" "$main/.env.local"; then
-            rm "$root/.env.local"
+            :
         else
             backup="$root/.env.local.orphan-$(date +%Y%m%d%H%M%S)"
             mv "$root/.env.local" "$backup"
             printf 'NOTE: this worktree had a diverged .env.local. Kept it at %s\n' "$backup"
         fi
     fi
-    [ -L "$root/.env.local" ] || ln -s "$main/.env.local" "$root/.env.local"
+    [ -L "$root/.env.local" ] || ln -sf "$main/.env.local" "$root/.env.local"
 
     # Per-worktree overrides. Symfony loads .env.dev.local after .env.local, so these win.
     base_dsn=$(sed -n 's/^DATABASE_URL=//p' "$main/.env.local" | tail -1 | tr -d '"')

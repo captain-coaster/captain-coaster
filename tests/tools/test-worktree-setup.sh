@@ -34,6 +34,29 @@ assert_eq "override sets a redis index in range" \
 assert_eq "override carries no secrets beyond the two overridden keys" \
     "$(grep -c '^[A-Z]' "$SCRATCH/.env.dev.local")" "2"
 
+# Identical file -> replaced with a symlink.
+SCRATCH2="$ROOT/.claude/worktrees/selftest2"
+git -C "$ROOT" worktree add -f --detach "$SCRATCH2" HEAD >/dev/null 2>&1
+cp "$MAIN/.env.local" "$SCRATCH2/.env.local"
+export WT_SKIP_DB_CLONE=1
+(cd "$SCRATCH2" && "$WT" setup >/dev/null 2>&1)
+assert_eq "identical .env.local is replaced with a symlink" \
+    "$(readlink "$SCRATCH2/.env.local")" "$MAIN/.env.local"
+"$ROOT/bin/db" drop captain_selftest2 --yes >/dev/null 2>&1
+git -C "$ROOT" worktree remove --force "$SCRATCH2" >/dev/null 2>&1
+
+# Diverged file -> moved aside, never deleted, then symlinked.
+SCRATCH3="$ROOT/.claude/worktrees/selftest3"
+git -C "$ROOT" worktree add -f --detach "$SCRATCH3" HEAD >/dev/null 2>&1
+printf 'DATABASE_URL=mysql://diverged\n' > "$SCRATCH3/.env.local"
+(cd "$SCRATCH3" && "$WT" setup >/dev/null 2>&1)
+assert_eq "diverged .env.local is backed up, not deleted" \
+    "$(ls "$SCRATCH3"/.env.local.orphan-* 2>/dev/null | wc -l | tr -d ' ')" "1"
+assert_eq "diverged .env.local is still symlinked after backup" \
+    "$(readlink "$SCRATCH3/.env.local")" "$MAIN/.env.local"
+"$ROOT/bin/db" drop captain_selftest3 --yes >/dev/null 2>&1
+git -C "$ROOT" worktree remove --force "$SCRATCH3" >/dev/null 2>&1
+
 assert_eq "second run is idempotent" \
     "$(cd "$SCRATCH" && "$WT" setup >/dev/null 2>&1; echo "rc=$?")" "rc=0"
 
