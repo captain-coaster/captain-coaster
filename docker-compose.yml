@@ -1,3 +1,5 @@
+name: captain-coaster
+
 services:
     db:
         image: mariadb:11.8
@@ -12,6 +14,8 @@ services:
             - MARIADB_AUTO_UPGRADE=1
     redis:
         image: 'redis:alpine'
+        container_name: redis-captain
+        restart: always
         ports:
             - '6379:6379'
     adminer:
