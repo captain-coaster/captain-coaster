@@ -136,9 +136,12 @@ cmd_gc() {
         "$SELF_DIR/db" drop "$db" --yes >/dev/null 2>&1 || true
     done
 
-    git worktree prune
-
-    if [ "$confirm" != "--yes" ]; then
+    if [ "$confirm" = "--yes" ]; then
+        # Only a real run reclaims dangling registrations — a dry run must
+        # change nothing on disk or in git's own state, matching this
+        # command's documented contract.
+        git worktree prune
+    else
         printf '\nRe-run with --yes to apply.\n'
     fi
 }
