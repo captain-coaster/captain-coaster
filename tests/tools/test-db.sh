@@ -26,4 +26,16 @@ assert_eq "drop removes a non-source database" \
     "$("$DB" drop "$TARGET" --yes >/dev/null 2>&1; "$DB" list | awk -v t="$TARGET" '$1 == t {print "present"}')" \
     ""
 
+assert_eq "drop refuses a name carrying a SQL injection payload" \
+    "$("$DB" drop 'captain_x`; DROP DATABASE `captain' --yes >/dev/null 2>&1; echo "rc=$?")" "rc=1"
+
+assert_eq "drop refuses a name with a trailing space" \
+    "$("$DB" drop 'captain_x ' --yes >/dev/null 2>&1; echo "rc=$?")" "rc=1"
+
+assert_eq "clone refuses a name with a shell metacharacter" \
+    "$("$DB" clone 'captain_x;y' >/dev/null 2>&1; echo "rc=$?")" "rc=1"
+
+assert_eq "captain survives every refused call" \
+    "$("$DB" list | awk '$1 == "captain" {print "present"}')" "present"
+
 assert_done

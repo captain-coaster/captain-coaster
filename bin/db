@@ -3,8 +3,6 @@
 # Credentials are read from the main checkout's DATABASE_URL so nothing is hardcoded.
 set -eu
 
-. "$(dirname "$0")/lib/worktree-lib.sh"
-
 CONTAINER=db-captain
 SOURCE_DB=captain
 
@@ -17,6 +15,15 @@ docker exec "$CONTAINER" true 2>/dev/null \
 mariadb_root() {
     docker exec -i "$CONTAINER" sh -c \
         'exec mariadb -uroot -p"$MYSQL_ROOT_PASSWORD" "$@"' sh "$@"
+}
+
+# Database names reach both SQL identifiers and an in-container shell command,
+# so anything outside this class is rejected rather than escaped.
+validate_db_name() {
+    case "$1" in
+        '') die "Database name must not be empty." ;;
+        *[!a-zA-Z0-9_]*) die "Refusing '$1': database names may only contain [a-zA-Z0-9_]." ;;
+    esac
 }
 
 db_exists() {
@@ -38,6 +45,7 @@ cmd_list() {
 
 cmd_clone() {
     target=${1:?usage: bin/db clone <target>}
+    validate_db_name "$target"
     [ "$target" != "$SOURCE_DB" ] || die "Refusing to clone $SOURCE_DB onto itself."
     if db_exists "$target"; then
         printf 'Database %s already exists, nothing to do.\n' "$target"
@@ -48,12 +56,23 @@ cmd_clone() {
     docker exec "$CONTAINER" sh -c \
         "mariadb-dump --single-transaction --routines --events -uroot -p\"\$MYSQL_ROOT_PASSWORD\" $SOURCE_DB \
          | mariadb -uroot -p\"\$MYSQL_ROOT_PASSWORD\" $target"
-    printf 'Done.\n'
+    _src_tables=$(mariadb_root -N -B -e \
+        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$SOURCE_DB'")
+    _dst_tables=$(mariadb_root -N -B -e \
+        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$target'")
+    if [ "$_src_tables" != "$_dst_tables" ]; then
+        mariadb_root -e "DROP DATABASE IF EXISTS \`$target\`"
+        die "Clone incomplete: $SOURCE_DB has $_src_tables tables, $target got $_dst_tables. Dropped the partial clone."
+    fi
+    printf 'Done (%s tables).\n' "$_dst_tables"
 }
 
 cmd_restore() {
     file=${1:?usage: bin/db restore <file.sql|file.sql.gz>}
     [ -f "$file" ] || die "No such file: $file"
+    case "$file" in
+        *.gz) gzip -t "$file" || die "Corrupt gzip archive: $file" ;;
+    esac
     printf 'Restoring %s into %s. This overwrites existing data.\n' "$file" "$SOURCE_DB"
     mariadb_root -e "CREATE DATABASE IF NOT EXISTS \`$SOURCE_DB\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
     case "$file" in
@@ -65,6 +84,7 @@ cmd_restore() {
 
 cmd_drop() {
     name=${1:?usage: bin/db drop <name> --yes}
+    validate_db_name "$name"
     [ "$name" != "$SOURCE_DB" ] || die "Refusing to drop $SOURCE_DB — it is the clone source."
     case "$name" in
         captain_*) ;;
