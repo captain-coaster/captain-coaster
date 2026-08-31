@@ -1,0 +1,27 @@
+{
+    "hooks": {
+        "SessionStart": [
+            {
+                "hooks": [
+                    { "type": "command", "command": ".claude/hooks/session-start.sh" }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    { "type": "command", "command": ".claude/hooks/pre-commit-check.sh" }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    { "type": "command", "command": ".claude/hooks/post-push-ci-watch.sh" }
+                ]
+            }
+        ]
+    }
+}
