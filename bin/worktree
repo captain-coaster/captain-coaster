@@ -86,13 +86,17 @@ cmd_status() {
     [ "${1:-}" = "--stale-only" ] && stale_only=true
     main=$(wt_main_checkout)
 
-    git worktree list --porcelain | awk '
+    # OFS is a single non-whitespace unit separator, not a tab: POSIX treats
+    # tab as "IFS whitespace" and collapses empty fields sitting between two
+    # of them (e.g. a detached-HEAD row's empty branch field), silently
+    # shifting prunable into branch. \037 is never collapsed.
+    git worktree list --porcelain | awk -v OFS="$(printf '\037')" '
         /^worktree /  { path = substr($0, 10); branch = ""; prunable = "no" }
         /^branch /    { branch = substr($0, 8); sub("refs/heads/", "", branch) }
         /^prunable /  { prunable = "yes" }
-        /^$/          { if (path != "") print path "\t" branch "\t" prunable; path = "" }
-        END           { if (path != "") print path "\t" branch "\t" prunable }
-    ' | while IFS="$(printf '\t')" read -r path branch prunable; do
+        /^$/          { if (path != "") print path, branch, prunable; path = "" }
+        END           { if (path != "") print path, branch, prunable }
+    ' | while IFS="$(printf '\037')" read -r path branch prunable; do
         if [ "$path" = "$main" ]; then
             pr=local; db="captain"; stale=no
         else
