@@ -91,7 +91,7 @@ php bin/console doctrine:migrations:migrate
 
 ### Verifying UI changes
 
-A dev server runs at `http://localhost:8000` — use the Playwright MCP tools against it to verify front-end work. Resize to a mobile viewport (e.g. 390×844) first, since ~75% of usage is mobile.
+A dev server runs locally — use the Playwright MCP tools against it to verify front-end work. The port varies per worktree (see `.claude/skills/dev-environment/SKILL.md`), so read the actual URL rather than assuming `localhost:8000`. Resize to a mobile viewport (e.g. 390×844) first, since ~75% of usage is mobile.
 
 Don't screenshot on every template save — it's slow and noisy. After finishing a UI-touching change, take an accessibility snapshot first to verify structure, then one mobile screenshot; only add a desktop screenshot if the snapshot reveals an issue.
 

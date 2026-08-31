@@ -32,6 +32,7 @@ assert_eq "post-push exits 0 when the branch has no PR" \
 BAD="$ROOT/src/Service/GateProbe.php"
 printf '<?php\nclass GateProbe { public function x() { return    1; } }\n' > "$BAD"
 git -C "$ROOT" add "$BAD"
+trap 'git -C "$ROOT" reset -q "$BAD" 2>/dev/null; rm -f "$BAD"' EXIT
 assert_eq "pre-commit blocks a style violation with exit 2" \
     "$(printf '{"tool_input":{"command":"git commit -m x"}}' \
         | sh "$H/pre-commit-check.sh" >/dev/null 2>&1; echo "rc=$?")" "rc=2"

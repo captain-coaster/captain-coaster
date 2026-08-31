@@ -3,20 +3,35 @@
 # Exit 2 is the only blocking exit code Claude Code honours for PreToolUse.
 set -u
 
-# Claude Code passes the tool input as JSON on stdin. The Bash matcher fires on
-# every Bash call, so this hook must decide for itself whether it applies:
-# without this gate the full suite would run on every command with a dirty index.
-command=$(cat 2>/dev/null | python3 -c \
-    'import json,sys; print(json.load(sys.stdin).get("tool_input",{}).get("command",""))' \
-    2>/dev/null || true)
-case "$command" in
-    *"git commit"*) ;;
-    *) exit 0 ;;
-esac
+# The Bash matcher fires on every Bash call, so this hook decides for itself
+# whether it applies. Extraction is done with sed rather than a JSON parser:
+# Claude Code controls this payload's shape (a flat {"tool_input":{"command":"..."}}
+# object), so a targeted regex is reliable here and has no external dependency
+# to fail open on.
+# -E (extended regex) is required for the alternation below: BSD sed's
+# default BRE mode doesn't support GNU's `\|` extension, and -E works
+# identically on both BSD (macOS) and GNU sed.
+command=$(sed -nE 's/.*"command"[[:space:]]*:[[:space:]]*"((\\.|[^"\\])*)".*/\1/p' | sed 's/\\"/"/g; s/\\\\/\\/g')
+
+# Anchored to command position (start of string, or after a separator) so a
+# command whose TEXT merely mentions "git commit" (e.g. `echo "git commit"`)
+# does not match, while `git -C dir commit ...` still does.
+is_git_subcommand() {
+    printf '%s' "$command" | grep -Eq "(^|[;&|]|&&)[[:space:]]*git([[:space:]]+-[^[:space:]]+)*[[:space:]]+$1([[:space:]]|\$)"
+}
+
+is_git_subcommand commit || exit 0
 
 cd "$(git rev-parse --show-toplevel)" || exit 0
 
-staged=$(git diff --cached --name-only --diff-filter=ACM)
+# `git commit -a`/`--all`/`-am` commits the working tree, not the index, so
+# the staged-files check must fall back to the working-tree diff in that case
+# or the gate silently sees nothing and exits 0 on a real commit.
+if printf '%s' "$command" | grep -Eq -- '(^|[[:space:]])(-a|--all|-am|-a[a-z]*m)([[:space:]]|$)'; then
+    staged=$(git diff --name-only --diff-filter=ACM)
+else
+    staged=$(git diff --cached --name-only --diff-filter=ACM)
+fi
 [ -n "$staged" ] || exit 0
 
 fail() { printf '%s\n' "$1" >&2; printf '%s\n' "$2" >&2; exit 2; }

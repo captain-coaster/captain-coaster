@@ -16,15 +16,25 @@ cmd_setup() {
         return 0
     fi
 
-    name=$(basename "$root")
+    # basename alone collides across worktrees that share a leaf directory
+    # name in different parents (e.g. tools that name every worktree after
+    # the repo) — fold in a short hash of the full path to disambiguate.
+    name="$(basename "$root")-$(printf '%s' "$root" | cksum | cut -d' ' -f1)"
     db=$(wt_db_name "$name")
     idx=$(wt_redis_index "$name")
 
     [ -f "$main/.env.local" ] || die "No .env.local in the main checkout ($main). Create it first."
 
     # .env.local must be a symlink so secrets live in exactly one place and cannot drift.
-    if [ -L "$root/.env.local" ]; then
+    # A symlink is only trusted when it actually points at the main checkout's
+    # file — dangling or pointed elsewhere is treated the same as a diverged
+    # regular file below, rather than silently left alone or overwritten.
+    if [ -L "$root/.env.local" ] && [ "$(readlink "$root/.env.local")" = "$main/.env.local" ]; then
         :
+    elif [ -L "$root/.env.local" ]; then
+        backup="$root/.env.local.orphan-$(date +%Y%m%d%H%M%S)"
+        mv "$root/.env.local" "$backup"
+        printf 'NOTE: this worktree had a stray .env.local symlink (dangling or wrong target). Kept it at %s\n' "$backup"
     elif [ -f "$root/.env.local" ]; then
         if cmp -s "$root/.env.local" "$main/.env.local"; then
             :
@@ -101,13 +111,15 @@ cmd_status() {
             pr=local; db="captain"; stale=no
         else
             pr=$(wt_pr_state "$branch")
-            db=$(wt_db_name "$(basename "$path")")
+            # Must match the name cmd_setup derived for this same path.
+            wtid="$(basename "$path")-$(printf '%s' "$path" | cksum | cut -d' ' -f1)"
+            db=$(wt_db_name "$wtid")
             stale=no
             case "$pr" in MERGED|CLOSED) stale=yes ;; esac
             [ "$prunable" = "yes" ] && stale=yes
         fi
         size=$(wt_db_size_mb "$db")
-        idx=$([ "$path" = "$main" ] && printf '0' || wt_redis_index "$(basename "$path")")
+        idx=$([ "$path" = "$main" ] && printf '0' || wt_redis_index "$wtid")
         if [ "$stale_only" = true ] && [ "$stale" != yes ]; then
             continue
         fi
@@ -131,7 +143,13 @@ cmd_gc() {
         printf 'Removing %s...\n' "$path"
         git worktree remove --force "$path" 2>/dev/null || true
         if [ "$branch" != detached ] && [ -n "$branch" ]; then
-            git branch -D "$branch" 2>/dev/null || true
+            if [ "$pr" = MERGED ]; then
+                git branch -D "$branch" 2>/dev/null || true
+            else
+                # Anything short of a merged PR might hold real, unpushed
+                # work — `-d` (safe delete) refuses rather than destroying it.
+                git branch -d "$branch" 2>/dev/null || true
+            fi
         fi
         "$SELF_DIR/db" drop "$db" --yes >/dev/null 2>&1 || true
     done

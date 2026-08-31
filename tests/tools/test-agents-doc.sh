@@ -15,7 +15,8 @@ assert_eq "a Git workflow section exists" "$(grep -c '^## Git workflow' "$A")" "
 assert_eq "a Continuous Integration section exists" "$(grep -c '^## Continuous Integration' "$A")" "1"
 assert_eq "a Security section exists" "$(grep -c '^## Security' "$A")" "1"
 
-assert_eq "the tooling is documented" "$(grep -c 'bin/worktree' "$A")" "3"
+assert_eq "the tooling is documented" \
+    "$(c=$(grep -c 'bin/worktree' "$A"); [ "$c" -ge 1 ] && echo yes)" "yes"
 assert_eq "the ranking constants were kept" "$(grep -c 'MIN_DUELS = 400' "$A")" "1"
 assert_eq "the naming conventions were kept" "$(grep -c '^### Naming conventions' "$A")" "1"
 

@@ -48,8 +48,17 @@ cmd_clone() {
     validate_db_name "$target"
     [ "$target" != "$SOURCE_DB" ] || die "Refusing to clone $SOURCE_DB onto itself."
     if db_exists "$target"; then
-        printf 'Database %s already exists, nothing to do.\n' "$target"
-        return 0
+        _existing_tables=$(mariadb_root -N -B -e \
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$target'")
+        _source_tables=$(mariadb_root -N -B -e \
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$SOURCE_DB'")
+        if [ "$_existing_tables" = "$_source_tables" ]; then
+            printf 'Database %s already exists, nothing to do.\n' "$target"
+            return 0
+        fi
+        printf 'Database %s exists but looks incomplete (%s/%s tables) — reclone.\n' \
+            "$target" "$_existing_tables" "$_source_tables"
+        mariadb_root -e "DROP DATABASE IF EXISTS \`$target\`"
     fi
     printf 'Cloning %s -> %s (this takes a minute)...\n' "$SOURCE_DB" "$target"
     mariadb_root -e "CREATE DATABASE \`$target\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"

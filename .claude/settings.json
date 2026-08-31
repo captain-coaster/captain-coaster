@@ -3,7 +3,7 @@
         "SessionStart": [
             {
                 "hooks": [
-                    { "type": "command", "command": ".claude/hooks/session-start.sh" }
+                    { "type": "command", "command": ".claude/hooks/session-start.sh", "timeout": 300 }
                 ]
             }
         ],
@@ -19,7 +19,7 @@
             {
                 "matcher": "Bash",
                 "hooks": [
-                    { "type": "command", "command": ".claude/hooks/post-push-ci-watch.sh" }
+                    { "type": "command", "command": ".claude/hooks/post-push-ci-watch.sh", "timeout": 660 }
                 ]
             }
         ]
