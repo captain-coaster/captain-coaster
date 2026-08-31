@@ -115,8 +115,37 @@ cmd_status() {
     done
 }
 
+cmd_gc() {
+    confirm=${1:-}
+    main=$(wt_main_checkout)
+
+    # The loop body runs in a subshell, so it must not set variables the
+    # caller needs afterwards. It only prints and removes.
+    cmd_status --stale-only | while IFS="$(printf '\t')" read -r path branch pr db size idx stale; do
+        [ "$path" != "$main" ] || continue
+        if [ "$confirm" != "--yes" ]; then
+            printf 'Would remove %s (branch %s, PR %s, database %s, %s MB)\n' \
+                "$path" "$branch" "$pr" "$db" "$size"
+            continue
+        fi
+        printf 'Removing %s...\n' "$path"
+        git worktree remove --force "$path" 2>/dev/null || true
+        if [ "$branch" != detached ] && [ -n "$branch" ]; then
+            git branch -D "$branch" 2>/dev/null || true
+        fi
+        "$SELF_DIR/db" drop "$db" --yes >/dev/null 2>&1 || true
+    done
+
+    git worktree prune
+
+    if [ "$confirm" != "--yes" ]; then
+        printf '\nRe-run with --yes to apply.\n'
+    fi
+}
+
 case "${1:-}" in
     setup)  shift; cmd_setup "$@" ;;
     status) shift; cmd_status "$@" ;;
-    *) die "usage: bin/worktree {setup|status [--stale-only]}" ;;
+    gc)     shift; cmd_gc "$@" ;;
+    *) die "usage: bin/worktree {setup|status [--stale-only]|gc [--yes]}" ;;
 esac
