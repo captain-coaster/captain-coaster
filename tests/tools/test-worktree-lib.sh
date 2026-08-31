@@ -35,4 +35,17 @@ assert_eq "redis url index is appended when absent" \
 
 assert_eq "empty input is rejected" "$(wt_db_name '' 2>/dev/null; echo "rc=$?")" "rc=1"
 
+assert_eq "slug returns 1 when nothing survives sanitising" \
+    "$(wt_slug '---' >/dev/null 2>&1; echo "rc=$?")" "rc=1"
+
+assert_eq "main checkout resolves to an existing directory" \
+    "$([ -d "$(wt_main_checkout)" ] && echo exists)" "exists"
+
+assert_eq "redis index matches the mandated formula for a known slug" \
+    "$(wt_redis_index 'db-perf-optim')" "13"
+
+assert_eq "dsn rewrite tolerates a query string in the redis url" \
+    "$(wt_redis_url_with_index 'redis://localhost:6379/0?timeout=5' 7)" \
+    "redis://localhost:6379/7?timeout=5"
+
 assert_done

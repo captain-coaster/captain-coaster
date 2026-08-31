@@ -9,12 +9,16 @@ wt_main_checkout() {
 
 # Directory name -> database-safe slug.
 wt_slug() {
-    printf '%s' "$1" \
+    local _slug_out
+    _slug_out=$(printf '%s' "$1" \
         | tr '[:upper:]' '[:lower:]' \
-        | sed -e 's/[^a-z0-9][^a-z0-9]*/_/g' -e 's/^_//' -e 's/_$//'
+        | sed -e 's/[^a-z0-9][^a-z0-9]*/_/g' -e 's/^_//' -e 's/_$//')
+    [ -n "$_slug_out" ] || return 1
+    printf '%s' "$_slug_out"
 }
 
 wt_db_name() {
+    local _slug
     _slug=$(wt_slug "$1")
     [ -n "$_slug" ] || return 1
     printf 'captain_%s' "$_slug"
@@ -23,6 +27,7 @@ wt_db_name() {
 # 1..15. cksum is POSIX and gives a CRC-32, so no external dependency.
 # Collisions only mean two worktrees share a Redis database; nothing corrupts.
 wt_redis_index() {
+    local _slug _sum
     _slug=$(wt_slug "$1")
     [ -n "$_slug" ] || return 1
     _sum=$(printf '%s' "$_slug" | cksum | cut -d' ' -f1)
@@ -30,14 +35,28 @@ wt_redis_index() {
 }
 
 # Replace the database segment of a Doctrine DSN, keeping any query string.
+# The query is split off first: a literal '?' must be percent-encoded inside
+# userinfo per RFC 3986, so the first '?' always starts the query.
 wt_dsn_with_db() {
-    printf '%s' "$1" | sed -E "s#/[^/?]+(\\?|\$)#/$2\\1#"
+    local _dsn_query _dsn_base
+    _dsn_query=''
+    case "$1" in
+        *\?*) _dsn_query="?${1#*\?}"; _dsn_base="${1%%\?*}" ;;
+        *)    _dsn_base="$1" ;;
+    esac
+    printf '%s/%s%s' "${_dsn_base%/*}" "$2" "$_dsn_query"
 }
 
 # Replace the trailing Redis database index, or append one if absent.
 wt_redis_url_with_index() {
+    local _redis_query _redis_base
+    _redis_query=''
     case "$1" in
-        */[0-9]|*/[0-9][0-9]) printf '%s' "$1" | sed -E "s#/[0-9]+\$#/$2#" ;;
-        *) printf '%s/%s' "$1" "$2" ;;
+        *\?*) _redis_query="?${1#*\?}"; _redis_base="${1%%\?*}" ;;
+        *)    _redis_base="$1" ;;
     esac
+    case "$_redis_base" in
+        */[0-9]|*/[0-9][0-9]) _redis_base="${_redis_base%/*}" ;;
+    esac
+    printf '%s/%s%s' "$_redis_base" "$2" "$_redis_query"
 }
