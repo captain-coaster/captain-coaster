@@ -39,7 +39,7 @@ CLONEDIR=$(mktemp -d)
 CLONE="$CLONEDIR/repo"
 git clone -q "$ROOT" "$CLONE" >/dev/null 2>&1
 
-CLONE_SCRATCH="$CLONE/gctest"
+CLONE_SCRATCH="$CLONE/gctest-$$"
 git -C "$CLONE" worktree add -f --detach "$CLONE_SCRATCH" HEAD >/dev/null 2>&1
 # Removing the directory directly (not via `git worktree remove`) leaves the
 # clone's own admin metadata behind — that mismatch is what makes
