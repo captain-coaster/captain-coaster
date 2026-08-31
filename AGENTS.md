@@ -42,8 +42,9 @@ Captain Coaster is a participative guide for roller coaster enthusiasts — user
 - `bin/worktree status` shows every worktree with its branch, PR state and
   database. Stale ones are reported at session start; `bin/worktree gc`
   reviews them and `--yes` applies the removal.
-- Pre-commit and post-push hooks run automatically — running php-cs-fixer and
-  phpunit earlier just avoids a failed-commit round trip.
+- A post-push hook watches CI automatically. There is no pre-commit hook —
+  run `vendor/bin/php-cs-fixer fix` and `vendor/bin/phpunit` yourself before
+  committing.
 
 ## Continuous Integration
 

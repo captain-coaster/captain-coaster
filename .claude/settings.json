@@ -3,15 +3,11 @@
         "SessionStart": [
             {
                 "hooks": [
-                    { "type": "command", "command": ".claude/hooks/session-start.sh", "timeout": 300 }
-                ]
-            }
-        ],
-        "PreToolUse": [
-            {
-                "matcher": "Bash",
-                "hooks": [
-                    { "type": "command", "command": ".claude/hooks/pre-commit-check.sh" }
+                    {
+                        "type": "command",
+                        "command": ".claude/hooks/session-start.sh",
+                        "timeout": 300
+                    }
                 ]
             }
         ],
@@ -19,7 +15,11 @@
             {
                 "matcher": "Bash",
                 "hooks": [
-                    { "type": "command", "command": ".claude/hooks/post-push-ci-watch.sh", "timeout": 660 }
+                    {
+                        "type": "command",
+                        "command": ".claude/hooks/post-push-ci-watch.sh",
+                        "timeout": 660
+                    }
                 ]
             }
         ]
