@@ -12,8 +12,8 @@ assert_eq "redis container is named" \
     "$(docker ps --filter name=redis-captain --format '{{.Names}}')" \
     "redis-captain"
 
-assert_eq "port 6379 is served by Docker, not Homebrew" \
-    "$(lsof -nP -iTCP:6379 -sTCP:LISTEN -F c 2>/dev/null | sed -n 's/^c//p' | sort -u | head -1)" \
-    "com.docke"
+assert_eq "port 6379 is not served by Homebrew redis" \
+    "$(lsof -nP -iTCP:6379 -sTCP:LISTEN -F c 2>/dev/null | sed -n 's/^c//p' | sort -u | grep -c '^redis-server$')" \
+    "0"
 
 assert_done

@@ -25,4 +25,8 @@ services:
         ports:
             - '8081:8080'
 volumes:
+    # Explicit name, decoupled from the Compose project and the directory.
+    # Without it the volume is prefixed with the project name, so every worktree
+    # that ran `docker compose up` silently created its own database.
     datamaria:
+        name: captain_data
