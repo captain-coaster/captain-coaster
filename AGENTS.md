@@ -26,15 +26,46 @@ Captain Coaster is a participative guide for roller coaster enthusiasts — user
 - **No CSS in JavaScript or Twig** — styles belong in `assets/styles/`.
 - **Terse code comments and PR descriptions.** No narration of the development process (what was tried, reverted, or caught in review), no restating what a diff already shows. A PR description states what changed, why, and what a reviewer needs to know — not a session log.
 
+## Git workflow
+
+- Create worktrees with the built-in `EnterWorktree` tool, not `git worktree add`.
+- `bin/worktree setup` provisions a worktree: it symlinks `.env.local` to the
+  main checkout's copy and generates `.env.dev.local` with that worktree's
+  `DATABASE_URL` and `REDIS_URL`. It runs automatically at session start.
+  Never edit `.env.local` — it holds live secrets and is shared by symlink.
+- `composer install` and `npm install` are required per worktree; `vendor/`
+  and `node_modules/` are not shared.
+- **Each worktree has its own database** (`captain_<slug>`, cloned from
+  `captain`). Migrations are forward-only and cannot affect another worktree.
+  `bin/db` handles `clone`, `restore`, `drop` and `list`.
+- Redis, MariaDB and Adminer run in shared containers. Never `docker compose down`.
+- `bin/worktree status` shows every worktree with its branch, PR state and
+  database. Stale ones are reported at session start; `bin/worktree gc`
+  reviews them and `--yes` applies the removal.
+- Pre-commit and post-push hooks run automatically — running php-cs-fixer and
+  phpunit earlier just avoids a failed-commit round trip.
+
+## Continuous Integration
+
+`.github/workflows/ci.yml` runs: composer validate, PHPUnit, PHPStan,
+php-cs-fixer, Twig lint, container lint, Doctrine schema validate, and a
+compromised-dependency audit.
+
+Pushing to a branch with an open PR triggers an automatic CI watch, so CI
+pass/fail is known before a PR is called ready. Never claim a PR is green
+without that output.
+
+## Security
+
+Run the `security-review` skill before opening a PR that touches
+authentication, user input handling, file uploads, external API or AI calls
+(`BedrockService`), or admin/EasyAdmin routes.
+
 ## Development commands
 
+Local startup is covered by the `dev-environment` skill — invoke it rather than running these by hand.
+
 ```bash
-# Start dev server (PHP)
-symfony server:start
-
-# Start Webpack Encore asset pipeline (required alongside Symfony server)
-npm run dev-server
-
 # Build assets for production
 npm run build
 
@@ -53,9 +84,6 @@ vendor/bin/php-cs-fixer fix
 
 # Code style check (dry-run)
 vendor/bin/php-cs-fixer fix --dry-run
-
-# Database services only (MariaDB + Redis + Adminer at :8081)
-docker-compose up -d
 
 # Doctrine migrations
 php bin/console doctrine:migrations:migrate
@@ -88,7 +116,7 @@ All user-facing routes are locale-prefixed: `/{_locale<en|fr|es|de>}/`. The root
 - **`Top`** / **`TopCoaster`** — user-curated ordered lists of coasters.
 - **`Ranking`** / **`RankingHistory`** — computed global ranking snapshots.
 - **`CoasterSummary`** — AI-generated summary (via `BedrockService`) stored per coaster.
-- **`Badge`** — achievement system for user engagement (candidate for a full refactor).
+- **`Badge`** — achievement system for user engagement.
 
 ### Ranking algorithm
 
@@ -138,7 +166,7 @@ PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP80Migration:risky` + `@PHP8
 
 ### Testing
 
-- **Unit tests only** — business logic in isolation, mocking repositories/`EntityManager`. No `KernelTestCase`/`WebTestCase` integration tests currently.
+- **Unit tests are the default** — business logic in isolation, mocking repositories/`EntityManager`. A few integration tests exist where mocks cannot prove correctness (`tests/Repository/RiddenCoasterModerationQueryTest.php`, `tests/Config/MonologConfigTest.php`).
 - **Property tests** for invariants, using Eris (`giorgiosironi/eris`) — see `tests/Service/CoasterSummaryServicePropertyTest.php` for the pattern. Keep variant counts modest; the whole suite should stay fast.
 - **Naming**: `{ClassName}Test.php` for unit tests, `{ClassName}PropertyTest.php` for property tests.
 - **Coverage expectations**: high coverage on `src/Service/` (business logic), request/response-only assertions on controllers, custom-query coverage on repositories.
