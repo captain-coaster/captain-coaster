@@ -23,5 +23,9 @@ branch=${CC_HOOK_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 gh pr view "$branch" --json url -q .url >/dev/null 2>&1 || exit 0
 
 printf 'Watching CI for %s...\n' "$branch"
-timeout 600 gh pr checks "$branch" --watch 2>&1 || true
+if command -v timeout >/dev/null 2>&1; then
+    timeout 600 gh pr checks "$branch" --watch 2>&1 || true
+else
+    gh pr checks "$branch" --watch 2>&1 || true
+fi
 exit 0
