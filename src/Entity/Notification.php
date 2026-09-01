@@ -13,6 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Notification.
  */
 #[ORM\Table(name: 'notification')]
+#[ORM\Index(name: 'idx_notification_user_unread', columns: ['user_id', 'is_read', 'created_at'])]
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 class Notification
 {

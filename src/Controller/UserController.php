@@ -107,6 +107,7 @@ class UserController extends BaseController
         } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
+        $riddenCoasterRepository->preloadTags($pagination);
 
         return $this->render(
             'User/list_reviews.html.twig',

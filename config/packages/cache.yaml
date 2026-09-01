@@ -19,7 +19,9 @@ framework:
             search.cache_pool:
                 adapter: cache.adapter.redis
 
-            # Sitemap cache (Redis for persistent data across deployments)
+            # Sitemap cache. Filesystem, not Redis: the payload reached 14.5 MB
+            # as a single key, and Redis is single-threaded — every GET of it
+            # stalled every other client, session reads included.
             sitemap.cache_pool:
-                adapter: cache.adapter.redis
+                adapter: cache.adapter.filesystem
                 default_lifetime: 604800 # 7 days
