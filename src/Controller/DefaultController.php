@@ -59,11 +59,14 @@ class DefaultController extends BaseController
             $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
         }
 
+        $reviews = $riddenCoasterRepository->getLatestReviews($preferredReviewLanguages, 3);
+        $riddenCoasterRepository->preloadTags($reviews);
+
         return $this->render('Default/index.html.twig', [
             'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
             'image' => $imageRepository->findLatestLikedImage(),
             'stats' => $statService->getIndexStats(),
-            'reviews' => $riddenCoasterRepository->getLatestReviews($preferredReviewLanguages, 3),
+            'reviews' => $reviews,
             'missingImages' => $missingImages,
             'preferredReviewLanguages' => $preferredReviewLanguages,
         ]);

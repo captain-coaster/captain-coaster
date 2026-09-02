@@ -11,7 +11,10 @@
       "ratingValue": "{{ (coaster.score * 5 / 100)|number_format(1, '.') }}",
       "bestRating": "5",
       "worstRating": "0",
-      "ratingCount": "{{ coaster.ratings|length }}"
+      {# totalRatings, not ratings|length: the collection is a plain OneToMany, so |length hydrates
+         every RiddenCoaster of the coaster (4,000+ entities, ~280ms) to print one number. The
+         denormalised column is also the more correct value — it counts ratings, not rides. #}
+      "ratingCount": "{{ coaster.totalRatings }}"
     }
   }
         </script>

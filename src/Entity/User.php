@@ -34,6 +34,9 @@ class User implements UserInterface
 
     private const string ROLE_DEFAULT = 'ROLE_USER';
 
+    /** Properties kept out of the serialized session token — see __serialize(). */
+    private const array NOT_SERIALIZED = ['ratings', 'tops', 'badges', 'notifications', 'images', 'homePark'];
+
     #[ORM\Id]
     #[ORM\Column(type: Types::INTEGER)]
     #[ORM\GeneratedValue]
@@ -65,27 +68,27 @@ class User implements UserInterface
     private ?string $profilePicture = null;
 
     /** @var Collection<int, RiddenCoaster> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: RiddenCoaster::class, fetch: 'EXTRA_LAZY')]
     private Collection $ratings;
 
     /** @var Collection<int, Top> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Top::class, fetch: 'EXTRA_LAZY')]
     private Collection $tops;
 
     /** @var Collection<int, Badge> */
-    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users')]
+    #[ORM\ManyToMany(targetEntity: Badge::class, inversedBy: 'users', fetch: 'EXTRA_LAZY')]
     #[ORM\JoinTable]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $badges;
 
     /** @var Collection<int, Notification> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, fetch: 'EXTRA_LAZY')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
     /** @var Collection<int, Image> */
-    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'uploader', targetEntity: Image::class, cascade: ['remove'], fetch: 'EXTRA_LAZY')]
     private Collection $images;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
@@ -449,12 +452,6 @@ class User implements UserInterface
         return $this->notifications;
     }
 
-    /** @return Collection<int, Notification> */
-    public function getUnreadNotifications(): Collection
-    {
-        return $this->notifications->filter(static fn (Notification $notif) => !$notif->getIsRead());
-    }
-
     public function isEmailNotification(): bool
     {
         return $this->emailNotification;
@@ -569,6 +566,43 @@ class User implements UserInterface
 
     public function eraseCredentials(): void
     {
+    }
+
+    /**
+     * Keeps collections and lazy relations out of the security token, which
+     * ContextListener serializes into the Redis session on every response.
+     * The navbar loads every notification of the user, and those used to ride
+     * along: production sessions reached 1.9 MB, read and rewritten on each
+     * request. refreshUser() reloads the entity from the database anyway.
+     *
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        $data = (array) $this;
+
+        foreach (self::NOT_SERIALIZED as $property) {
+            unset($data["\0".self::class."\0".$property]);
+        }
+
+        return $data;
+    }
+
+    /** @param array<string, mixed> $data */
+    public function __unserialize(array $data): void
+    {
+        foreach ($data as $key => $value) {
+            $position = strrpos((string) $key, "\0");
+            $this->{false === $position ? $key : substr((string) $key, $position + 1)} = $value;
+        }
+
+        // unserialize() skips the constructor, so the excluded collections would
+        // stay uninitialised and fatal on first access.
+        $this->ratings = new ArrayCollection();
+        $this->tops = new ArrayCollection();
+        $this->badges = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /** @return non-empty-string */

@@ -57,13 +57,14 @@
             </li>
             <li class="divider"></li>
             <!-- notifications -->
+            {% set unread_count = unread_notification_count() %}
             <li class="dropdown-submenu dropdown-submenu-hover dropdown-submenu-left">
               <a href="#" class="dropdown-toggle account-menu-row" data-toggle="dropdown">
                 <span class="account-menu-row-label">
                   {{ ux_icon('heroicons:bell', {'class': 'w-5 h-5'}) }}
                   {{ 'notif.title'|trans }}
-                  {% if app.user.unreadNotifications|length > 0 %}
-                    <span class="badge bg-warning-400">{{ app.user.unreadNotifications|length }}</span>
+                  {% if unread_count > 0 %}
+                    <span class="badge bg-warning-400">{{ unread_count }}</span>
                   {% endif %}
                 </span>
                 <span class="account-menu-row-value">
@@ -73,7 +74,7 @@
               <div class="dropdown-menu dropdown-content">
                 <div class="dropdown-content-heading">{{ 'notif.title'|trans }}</div>
                 <ul class="media-list dropdown-content-body width-350">
-                  {% for notif in app.user.unreadNotifications %}
+                  {% for notif in unread_notifications() %}
                     <li class="media">
                       <div class="media-left">
                         <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">

@@ -1,10 +1,11 @@
+{% set image_count = coaster.images|length %}
 <div class="panel panel-flat">
     <div class="panel-heading">
         <h6 class="panel-title">
             <span class="text-semibold">
                 {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
-                {% if coaster.images|length > 0 %}
-                    <span class="badge badge-primary">{{ coaster.images|length }}</span>
+                {% if image_count > 0 %}
+                    <span class="badge badge-primary">{{ image_count }}</span>
                 {% endif %}
             </span>
         </h6>
@@ -15,7 +16,7 @@
           </div>
     </div>
     
-    {% if coaster.images|length > 0 %}
+    {% if image_count > 0 %}
         <div class="panel-body" 
              data-controller="gallery" 
              data-gallery-name-value="coaster-images"
@@ -45,7 +46,7 @@
                 </div>
             {% endfor %}
         </div>
-        {% if number < coaster.images|length %}
+        {% if number < image_count %}
             <div class="panel-footer text-center">
                 <a id="show-all" class="btn btn-link">{{ 'coaster.photos.all'|trans }}</a>
             </div>
