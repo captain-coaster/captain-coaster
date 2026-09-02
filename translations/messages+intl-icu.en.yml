@@ -361,6 +361,7 @@ login:
     title: 'Sign in to Captain Coaster'
     subtitle: 'Send a login link to your email'
     send_link: 'Send login link'
+    sending: 'Sending...'
     redirect_to_register: 'New to Captain Coaster? <a href="{link_path}">Create an account</a>'
     or_sign_in_with: 'or'
     connect_with_google: 'Connect with google'
@@ -371,6 +372,7 @@ login:
         h1: 'Ready to dispatch!'
         paragraph1: 'To sign in to Captain Coaster, click the button below. This link will expire in 15 minutes.'
         button: 'Sign in'
+        copy_link: "If the button doesn't work, copy and paste this link into your browser:"
         paragraph2: 'You received this email because you are trying to sign in to Captain Coaster. If you are not sure why you are receiving this, please contact us by replying to this email.'
     link_sent: 'If an account is associated with {email}, you will receive a login link. Click on the link to sign in'
     rate_limit_exceeded: 'Too many login attempts. Please try again later.'

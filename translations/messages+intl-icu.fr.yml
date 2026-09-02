@@ -366,6 +366,7 @@ login:
     title: Se connecter
     subtitle: Envoyer un lien de connexion par email
     send_link: Envoyer un lien
+    sending: Envoi en cours...
     redirect_to_register: 'Nouveau sur Captain Coaster? <a href="{link_path}">Créez un compte</a>'
     or_sign_in_with: ou
     connect_with_google: Connexion avec google
@@ -375,6 +376,7 @@ login:
         h1: 'Prêt au dispatch !'
         paragraph1: 'Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes.'
         button: Connexion
+        copy_link: 'Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :'
         paragraph2: 'Vous recevez cet email car vous avez demandé à vous connecter à Captain Coaster. Si vous ne savez pas pourquoi vous recevez cet email, vous pouvez nous contacter en répondant à cet email.'
     link_sent: 'Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter.'
     rate_limit_exceeded: 'Trop de tentatives de connexion. Veuillez réessayer plus tard.'
