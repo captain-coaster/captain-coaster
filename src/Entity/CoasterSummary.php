@@ -19,6 +19,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
 #[ORM\Entity(repositoryClass: 'App\Repository\CoasterSummaryRepository')]
 #[ORM\Table(name: 'coaster_summary')]
 #[ORM\UniqueConstraint(name: 'unique_coaster_language', columns: ['coaster_id', 'language'])]
+#[ORM\Index(name: 'idx_coaster_summary_language_negative_votes', columns: ['language', 'negative_votes'])]
+#[ORM\Index(name: 'idx_coaster_summary_language_ai_model', columns: ['language', 'ai_model'])]
 class CoasterSummary
 {
     public function __construct()
@@ -52,13 +54,16 @@ class CoasterSummary
     #[ORM\Column(type: Types::INTEGER)]
     private int $reviewsAnalyzed = 0;
 
+    #[ORM\Column(type: Types::STRING, length: 64, nullable: true)]
+    private ?string $aiModel = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Gedmo\Timestampable(on: 'update')]
-    private ?\DateTimeInterface $updatedAt = null;
+    #[Gedmo\Timestampable(on: 'change', field: ['summary', 'dynamicPros', 'dynamicCons', 'reviewsAnalyzed', 'aiModel'])]
+    private ?\DateTimeInterface $regeneratedAt = null;
 
     /** @var Collection<int, SummaryFeedback> */
     #[ORM\OneToMany(mappedBy: 'summary', targetEntity: SummaryFeedback::class, cascade: ['remove'])]
@@ -154,6 +159,18 @@ class CoasterSummary
         return $this;
     }
 
+    public function getAiModel(): ?string
+    {
+        return $this->aiModel;
+    }
+
+    public function setAiModel(?string $aiModel): static
+    {
+        $this->aiModel = $aiModel;
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
@@ -166,14 +183,14 @@ class CoasterSummary
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getRegeneratedAt(): ?\DateTimeInterface
     {
-        return $this->updatedAt;
+        return $this->regeneratedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    public function setRegeneratedAt(\DateTimeInterface $regeneratedAt): static
     {
-        $this->updatedAt = $updatedAt;
+        $this->regeneratedAt = $regeneratedAt;
 
         return $this;
     }

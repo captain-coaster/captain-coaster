@@ -269,4 +269,33 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->assertNotNull($result['summary']);
         $this->assertArrayNotHasKey('reason', $result);
     }
+
+    /** Generated summaries record which model produced them, so stale ones can be found later. */
+    public function testGeneratedSummaryRecordsAiModelKey(): void
+    {
+        $this->riddenCoasterRepository->method('countCoasterReviewsWithTextByLanguage')
+            ->willReturn(25);
+        $this->riddenCoasterRepository->method('countAllReviewsWithText')
+            ->willReturn(25);
+
+        $mockRiddenCoaster = $this->createMock(\App\Entity\RiddenCoaster::class);
+        $mockRiddenCoaster->method('getCoaster')->willReturn($this->coaster);
+        $mockRiddenCoaster->method('getReview')->willReturn('Test review');
+        $mockRiddenCoaster->method('getValue')->willReturn(8.0);
+
+        $this->riddenCoasterRepository->method('getCoasterReviewsWithTextByLanguage')
+            ->willReturn([$mockRiddenCoaster]);
+
+        $this->bedrockService->method('invokeModel')
+            ->willReturn([
+                'success' => true,
+                'content' => '{"summary": "Great coaster with amazing airtime", "pros": ["fast"], "cons": []}',
+                'metadata' => ['model' => 'gpt-oss-120b'],
+            ]);
+
+        $result = $this->service->generateSummary($this->coaster, 'gpt-oss-120b', 'en');
+
+        $this->assertNotNull($result['summary']);
+        $this->assertSame('gpt-oss-120b', $result['summary']->getAiModel());
+    }
 }

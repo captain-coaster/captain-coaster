@@ -24,6 +24,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\ChoiceFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\NumericFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -33,7 +35,8 @@ use Symfony\Component\HttpFoundation\Response;
 class CoasterSummaryCrudController extends AbstractCrudController
 {
     public function __construct(
-        private readonly CoasterSummaryService $coasterSummaryService
+        private readonly CoasterSummaryService $coasterSummaryService,
+        private readonly AdminUrlGenerator $adminUrlGenerator
     ) {
     }
 
@@ -48,14 +51,14 @@ class CoasterSummaryCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('AI Summary')
             ->setEntityLabelInPlural('AI Summaries')
             ->setSearchFields(['coaster.name', 'language', 'summary'])
-            ->setDefaultSort(['updatedAt' => 'DESC'])
+            ->setDefaultSort(['regeneratedAt' => 'DESC'])
             ->showEntityActionsInlined()
             ->setPaginatorPageSize(25);
     }
 
     public function configureActions(Actions $actions): Actions
     {
-        $regenerateAction = Action::new('regenerate', '', 'fas fa-sync-alt')
+        $regenerateAction = Action::new('regenerate', 'Regenerate', 'fas fa-sync-alt')
             ->linkToCrudAction('regenerateSummary')
             ->setCssClass('btn btn-warning btn-sm')
             ->displayIf(static fn (CoasterSummary $summary): bool => null !== $summary->getCoaster());
@@ -82,8 +85,9 @@ class CoasterSummaryCrudController extends AbstractCrudController
             ]))
             ->add(NumericFilter::new('positiveVotes')->setLabel('👍 Positive Votes'))
             ->add(NumericFilter::new('negativeVotes')->setLabel('👎 Negative Votes'))
+            ->add(TextFilter::new('aiModel')->setLabel('AI Model'))
             ->add(DateTimeFilter::new('createdAt'))
-            ->add(DateTimeFilter::new('updatedAt'));
+            ->add(DateTimeFilter::new('regeneratedAt'));
     }
 
     public function configureFields(string $pageName): iterable
@@ -108,6 +112,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
 
         if (Crud::PAGE_INDEX === $pageName) {
             $fields = array_merge($fields, [
+                TextField::new('aiModel')->setLabel('AI Model'),
                 IntegerField::new('positiveVotes')->setLabel('👍 Up'),
                 IntegerField::new('negativeVotes')->setLabel('👎 Down'),
             ]);
@@ -129,8 +134,9 @@ class CoasterSummaryCrudController extends AbstractCrudController
                 IntegerField::new('positiveVotes')->setLabel('Positive Votes'),
                 IntegerField::new('negativeVotes')->setLabel('Negative Votes'),
                 IntegerField::new('reviewsAnalyzed')->setLabel('Reviews Analyzed'),
+                TextField::new('aiModel')->setLabel('AI Model'),
                 DateTimeField::new('createdAt')->setLabel('Created At'),
-                DateTimeField::new('updatedAt')->setLabel('Last Updated'),
+                DateTimeField::new('regeneratedAt')->setLabel('Last Regenerated'),
             ]);
         }
 
@@ -145,7 +151,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
         if (!$summary->getCoaster()) {
             $this->addFlash('error', 'Cannot regenerate summary: coaster not found.');
 
-            return $this->redirectToRoute('admin');
+            return $this->redirectToIndex();
         }
 
         try {
@@ -177,6 +183,22 @@ class CoasterSummaryCrudController extends AbstractCrudController
             ));
         }
 
-        return new RedirectResponse($context->getReferrer() ?? $this->generateUrl('admin'));
+        // EasyAdmin no longer includes a referrer in generated action URLs (deprecated
+        // since 4.8.11), so $context->getReferrer() is always null here. Fall back to
+        // the browser's Referer header (preserves index vs detail), then the CRUD index.
+        return new RedirectResponse($context->getRequest()->headers->get('referer') ?? $this->redirectToIndexUrl());
+    }
+
+    private function redirectToIndex(): RedirectResponse
+    {
+        return new RedirectResponse($this->redirectToIndexUrl());
+    }
+
+    private function redirectToIndexUrl(): string
+    {
+        return $this->adminUrlGenerator
+            ->setController(self::class)
+            ->setAction(Action::INDEX)
+            ->generateUrl();
     }
 }
