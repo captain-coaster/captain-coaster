@@ -55,7 +55,7 @@ class CoasterOpenCommand extends Command
             $this->em->flush();
 
             $this->chatter->send(
-                (new ChatMessage('We just opened '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🎉'))
+                new ChatMessage('We just opened '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🎉')
                     ->transport('discord_notif')
             );
         }

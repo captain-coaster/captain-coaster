@@ -1,3 +1,5 @@
+name: captain-coaster
+
 services:
     db:
         image: mariadb:11.8
@@ -12,6 +14,8 @@ services:
             - MARIADB_AUTO_UPGRADE=1
     redis:
         image: 'redis:alpine'
+        container_name: redis-captain
+        restart: always
         ports:
             - '6379:6379'
     adminer:
@@ -21,4 +25,8 @@ services:
         ports:
             - '8081:8080'
 volumes:
+    # Explicit name, decoupled from the Compose project and the directory.
+    # Without it the volume is prefixed with the project name, so every worktree
+    # that ran `docker compose up` silently created its own database.
     datamaria:
+        name: captain_data

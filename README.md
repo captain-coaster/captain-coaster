@@ -26,7 +26,8 @@ Join us in shaping the world's best roller coaster rankings!
     - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
-7. Create a `captain` database on adminer, and import a dump file
+7. Load the database
+    - With a dump: `gunzip -c path/to/dump.sql.gz | docker exec -i db-captain mariadb -uroot -proot123 captain`
 8. Start the Symfony development server
     ```shell
     symfony server:start
@@ -57,8 +58,14 @@ Join us in shaping the world's best roller coaster rankings!
 
 The project uses a modular Docker Compose setup:
 
--   `docker-compose.yml` - Base configuration with database services (MariaDB, Redis, Adminer)
--   `docker-compose.full.yml` - Imports the base configuration and adds web services (nginx, PHP, Node)
+- `docker-compose.yml` - Base configuration with database services (MariaDB, Redis, Adminer)
+- `docker-compose.full.yml` - Imports the base configuration and adds web services (nginx, PHP, Node)
+
+## Worktrees
+
+Each worktree gets its own database, cloned from `captain`, and its own
+generated `.env.dev.local`. See `AGENTS.md` and the `dev-environment` skill
+for the setup procedure.
 
 ## Contributing
 

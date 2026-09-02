@@ -102,7 +102,7 @@ class DefaultController extends BaseController
             /** @var string $contactMailTo */
             $contactMailTo = $this->getParameter('app_contact_mail_to');
 
-            $message = (new Email())
+            $message = new Email()
                 ->to($contactMailTo)
                 ->subject($translator->trans('contact.email.title'))
                 ->html($this->renderView('Default/contact_mail.txt.twig', [
@@ -119,7 +119,7 @@ class DefaultController extends BaseController
             $mailer->send($message);
 
             // send notification
-            $chatter->send((new ChatMessage('We just received new message from '.$formData['name']."\n\n".$formData['message']))->transport('discord_notif'));
+            $chatter->send(new ChatMessage('We just received new message from '.$formData['name']."\n\n".$formData['message'])->transport('discord_notif'));
 
             $this->addFlash('success', $translator->trans('contact.flash.success', ['%name%' => $formData['name']]));
 
