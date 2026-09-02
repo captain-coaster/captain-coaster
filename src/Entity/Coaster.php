@@ -186,10 +186,6 @@ class Coaster implements \Stringable
     #[ORM\OneToMany(targetEntity: RiddenCoaster::class, mappedBy: 'coaster', fetch: 'EXTRA_LAZY')]
     private Collection $ratings;
 
-    /** @var Collection<int, MainTag> */
-    #[ORM\OneToMany(targetEntity: MainTag::class, mappedBy: 'coaster')]
-    private Collection $mainTags;
-
     /** @var Collection<int, Image> */
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'coaster', fetch: 'EXTRA_LAZY')]
     private Collection $images;
@@ -220,7 +216,6 @@ class Coaster implements \Stringable
     {
         $this->launchs = new ArrayCollection();
         $this->ratings = new ArrayCollection();
-        $this->mainTags = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
 
@@ -642,12 +637,6 @@ class Coaster implements \Stringable
     public function getRatings(): Collection
     {
         return $this->ratings;
-    }
-
-    /** @return Collection<int, MainTag> */
-    public function getMainTags(): Collection
-    {
-        return $this->mainTags;
     }
 
     /** @return Collection<int, Image> */
