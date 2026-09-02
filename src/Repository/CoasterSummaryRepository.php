@@ -64,4 +64,38 @@ class CoasterSummaryRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->getResult();
     }
+
+    /**
+     * Find coasters whose summary in a specific language was generated with the given
+     * AI model key. Used by `app:generate-coaster-summaries --ai-model` to bulk-regenerate
+     * summaries left behind by a retired model - scoped to one language for the same
+     * reason as {@see findCoastersWithBadReviews()}.
+     *
+     * @param string   $language Language code (e.g., 'en')
+     * @param string   $aiModel  AI model key to match (e.g., 'gpt-oss-120b')
+     * @param int|null $limit    Optional limit on results
+     *
+     * @return array<Coaster> Array of coaster entities ordered by ID
+     */
+    public function findCoastersWithAiModel(string $language, string $aiModel, ?int $limit = null): array
+    {
+        $subQuery = $this->createQueryBuilder('cs')
+            ->select('IDENTITY(cs.coaster)')
+            ->where('cs.language = :language')
+            ->andWhere('cs.aiModel = :aiModel');
+
+        $qb = $this->getEntityManager()->createQueryBuilder()
+            ->select('c')
+            ->from(Coaster::class, 'c')
+            ->where($this->getEntityManager()->createQueryBuilder()->expr()->in('c.id', $subQuery->getDQL()))
+            ->orderBy('c.id', 'ASC')
+            ->setParameter('language', $language)
+            ->setParameter('aiModel', $aiModel);
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

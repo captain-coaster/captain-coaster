@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\CoasterSummary;
 use App\Service\SummaryFeedbackService;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -90,6 +91,22 @@ class SummaryFeedbackController extends BaseController
                 'feedbackRatio' => $summary->getFeedbackRatio(),
                 'userVote' => $userFeedbackState['isPositive'],
                 'hasVoted' => $userFeedbackState['hasVoted'],
+            ]);
+        } catch (UniqueConstraintViolationException) {
+            // A concurrent request (double-tap, retry, two tabs) already recorded this
+            // user/IP's vote between our existence check and insert - the vote is in,
+            // so report success rather than a spurious error. Doctrine closes the
+            // EntityManager after any flush failure, so we can't safely query fresh
+            // state here - $summary's in-memory counts predate the concurrent request's
+            // own increment (off by at most one, self-corrects on next page load).
+            return new JsonResponse([
+                'success' => true,
+                'positiveVotes' => $summary->getPositiveVotes(),
+                'negativeVotes' => $summary->getNegativeVotes(),
+                'totalVotes' => $summary->getTotalVotes(),
+                'feedbackRatio' => $summary->getFeedbackRatio(),
+                'userVote' => $isPositive,
+                'hasVoted' => true,
             ]);
         } catch (\Exception $e) {
             $this->logger->error('Error submitting summary feedback', [
