@@ -2,7 +2,6 @@ ai_summary:
     feedback:
         success: 'Thank you for your feedback!'
         error: 'An error occurred while submitting your feedback.'
-        error_token: 'Invalid security token.'
         error_session: 'Unable to submit feedback. Please refresh the page and try again.'
         button:
             helpful: 'Mark as helpful'

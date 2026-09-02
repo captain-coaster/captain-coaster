@@ -2,7 +2,6 @@ ai_summary:
     feedback:
         success: 'Merci pour votre retour !'
         error: "Une erreur s'est produite lors de l'envoi de votre retour."
-        error_token: 'Jeton de sécurité invalide.'
         error_session: 'Impossible de soumettre votre avis. Veuillez actualiser la page et réessayer.'
         button:
             helpful: 'Marquer comme utile'
