@@ -378,7 +378,7 @@ login:
         paragraph1: 'Um sich bei Captain Coaster anzumelden, klicken Sie auf die Schaltfläche unten. Dieser Link verfällt in 15 Minuten.'
         button: Anmelden
         copy_link: 'Falls die Schaltfläche nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:'
-        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie versuchen, sich bei Captain Coaster anzumelden. Wenn Sie nicht sicher sind, warum Sie diese E-Mail erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
+        paragraph2: 'Sie erhalten diese E-Mail, weil für Ihr Captain-Coaster-Konto ein Anmelde-Link angefordert wurde. Falls Sie das nicht waren, können Sie diese E-Mail einfach ignorieren — oder uns per Antwort Bescheid geben.'
     link_sent: 'Wenn ein Konto mit {email} verknüpft ist, erhalten Sie einen Anmelde-Link. Klicken Sie auf den Link, um sich anzumelden.'
     rate_limit_exceeded: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.'
 
