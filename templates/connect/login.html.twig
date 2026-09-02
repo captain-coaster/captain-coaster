@@ -25,21 +25,36 @@
                 </div>
             {% endfor %}
         {% endfor %}
-        <form action="{{ path('login') }}" method="POST">
+        {{ form_start(loginForm, {'attr': {'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'login.sending'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
             <div class="form-group has-feedback has-feedback-left">
-                <input type="email" name="email" class="form-control" placeholder="Email" required{% if rateLimitExceeded %} disabled{% endif %}>
+                {% set emailAttr = {'class': 'form-control', 'placeholder': 'Email'} %}
+                {% if rateLimitExceeded %}{% set emailAttr = emailAttr|merge({'disabled': 'disabled'}) %}{% endif %}
+                {{ form_widget(loginForm.email, {'attr': emailAttr}) }}
                 <div class="form-control-feedback">
                     {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6 text-muted'}) }}
                 </div>
             </div>
-            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            {% if not loginForm.email.vars.valid %}
+                <div class="alert alert-danger alert-bordered">
+                    {{ form_errors(loginForm.email) }}
+                </div>
+            {% endif %}
+            {{ form_errors(loginForm) }}
+            <div class="form-group">
+                {{ form_widget(loginForm.recaptcha) }}
+                {% if not loginForm.recaptcha.vars.valid %}
+                    <div class="alert alert-danger alert-bordered">
+                        {{ form_errors(loginForm.recaptcha) }}
+                    </div>
+                {% endif %}
+            </div>
             <div class="form-group">
                 <button type="submit"
                         class="btn bg-blue btn-block"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
             </div>
             <div
                 class="form-group text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
-        </form>
+        {{ form_end(loginForm) }}
         <div class="content-divider text-muted form-group">
             <span>{{ 'login.or_sign_in_with'|trans }}</span>
         </div>

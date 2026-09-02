@@ -4,21 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Notifier\CustomLoginLinkNotification;
-use App\Repository\UserRepository;
-use App\Service\EmailValidationService;
+use App\Form\Type\LoginFormType;
+use App\Service\LoginLinkService;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Notifier\NotifierInterface;
-use Symfony\Component\Notifier\Recipient\Recipient;
-use Symfony\Component\RateLimiter\RateLimiterFactory;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Http\LoginLink\LoginLinkHandlerInterface;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -34,52 +28,34 @@ class ConnectController extends AbstractController
     public function login(
         Request $request,
         AuthenticationUtils $authenticationUtils,
-        NotifierInterface $notifier,
-        LoginLinkHandlerInterface $loginLinkHandler,
-        UserRepository $userRepository,
         TranslatorInterface $translator,
-        RateLimiterFactory $loginLinkLimiter,
-        EmailValidationService $emailValidator,
+        LoginLinkService $loginLinkService,
     ): Response {
         // Redirect if already logged in
         if ($this->getUser()) {
             return $this->redirectToRoute('default_index');
         }
 
-        if ($request->isMethod('POST') && $email = $request->request->get('email')) {
-            $limiter = $loginLinkLimiter->create($request->getClientIp());
-            $limit = $limiter->consume(1);
+        $form = $this->createForm(LoginFormType::class);
+        $form->handleRequest($request);
+        $rateLimitExceeded = false;
+        $displayForm = $form;
 
-            if (false === $limit->isAccepted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
+            $emailString = (string) $form->get('email')->getData();
+
+            $rateLimitExceeded = $loginLinkService->requestLoginLink($emailString, $request->getClientIp());
+
+            if ($rateLimitExceeded) {
                 $this->addFlash('danger', $translator->trans('login.rate_limit_exceeded'));
-
-                return $this->render('connect/login.html.twig', [
-                    'error' => $authenticationUtils->getLastAuthenticationError(),
-                    'rateLimitExceeded' => true,
-                ]);
+            } else {
+                // always return success for account enumeration prevention
+                $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $emailString]));
             }
 
-            $emailString = (string) $email;
-
-            // Only send login link if email is valid
-            if ($emailValidator->isValidEmail($emailString)) {
-                $user = $userRepository->findOneBy(['email' => $emailString]);
-
-                if ($user instanceof User && $user->isEnabled()) {
-                    $notifier->send(
-                        new CustomLoginLinkNotification(
-                            $loginLinkHandler->createLoginLink($user),
-                            $translator->trans('login.email.title'),
-                            ['email']
-                        ),
-                        new Recipient($user->getEmail())
-                    );
-                }
-            }
-
-            // always return success for account enumeration prevention
-            $this->addFlash('success', $translator->trans('login.link_sent', ['email' => $emailString]));
-        } else {
+            // fresh form: the submitted one carries a spent Turnstile token
+            $displayForm = $this->createForm(LoginFormType::class);
+        } elseif (!$form->isSubmitted()) {
             // save referer to redirect after login
             $referer = $request->headers->get('referer');
             if ($referer) {
@@ -96,7 +72,8 @@ class ConnectController extends AbstractController
 
         return $this->render('connect/login.html.twig', [
             'error' => $authenticationUtils->getLastAuthenticationError(),
-            'rateLimitExceeded' => false,
+            'rateLimitExceeded' => $rateLimitExceeded,
+            'loginForm' => $displayForm,
         ]);
     }
 

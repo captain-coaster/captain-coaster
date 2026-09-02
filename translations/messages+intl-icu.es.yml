@@ -366,6 +366,7 @@ login:
     title: Iniciar sesión en Captain Coaster
     subtitle: Enviar un enlace de inicio de sesión a tu correo electrónico
     send_link: Enviar enlace de inicio de sesión
+    sending: Enviando...
     redirect_to_register: '¿Eres nuevo en Captain Coaster? <a href="{link_path}">Crea una cuenta</a>'
     or_sign_in_with: o
     connect_with_google: Conectar con Google
@@ -375,7 +376,8 @@ login:
         h1: '¡Listo para despachar!'
         paragraph1: 'Para iniciar sesión en Captain Coaster, haz clic en el botón de abajo. Este enlace expirará en 15 minutos.'
         button: Iniciar sesión
-        paragraph2: 'Recibiste este correo electrónico porque estás intentando iniciar sesión en Captain Coaster. Si no estás seguro(a) de por qué estás recibiendo esto, contáctanos respondiendo a este correo electrónico.'
+        copy_link: 'Si el botón no funciona, copia y pega este enlace en tu navegador:'
+        paragraph2: 'Recibes este correo porque se solicitó un enlace de inicio de sesión para tu cuenta de Captain Coaster. Si no fuiste tú, puedes ignorar este correo sin problema.'
     link_sent: 'Si hay una cuenta asociada con {email}, recibirás un enlace de inicio de sesión. Haz clic en el enlace para iniciar sesión.'
     rate_limit_exceeded: 'Demasiados intentos de inicio de sesión. Por favor, inténtalo de nuevo más tarde.'
 
