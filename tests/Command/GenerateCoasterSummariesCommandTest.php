@@ -120,7 +120,81 @@ class GenerateCoasterSummariesCommandTest extends TestCase
         ]);
 
         $output = $this->commandTester->getDisplay();
-        $this->assertStringContainsString('cannot be combined', $output);
+        $this->assertStringContainsString('cannot be', $output);
+        $this->assertStringContainsString('combined', $output);
+        $this->assertSame(1, $this->commandTester->getStatusCode());
+    }
+
+    public function testGeneratedWithModelOption(): void
+    {
+        $coaster = new Coaster();
+        $coaster->setName('Test Coaster');
+
+        $this->summaryRepository
+            ->expects($this->once())
+            ->method('findCoastersWithAiModel')
+            ->with('en', 'gpt-oss-120b', null)
+            ->willReturn([$coaster]);
+
+        $this->commandTester->execute([
+            '--generated-with-model' => 'gpt-oss-120b',
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('Force regeneration mode', $output);
+        $this->assertStringContainsString("'gpt-oss-120b'", $output);
+        $this->assertSame(0, $this->commandTester->getStatusCode());
+    }
+
+    public function testGeneratedWithModelRequiresExactlyOneLanguage(): void
+    {
+        $this->summaryRepository
+            ->expects($this->never())
+            ->method('findCoastersWithAiModel');
+
+        $this->commandTester->execute([
+            '--languages' => 'en,fr',
+            '--generated-with-model' => 'gpt-oss-120b',
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('requires exactly one --languages value', $output);
+        $this->assertSame(1, $this->commandTester->getStatusCode());
+    }
+
+    public function testGeneratedWithModelCannotBeCombinedWithCoasterId(): void
+    {
+        $this->coasterRepository->expects($this->never())->method('find');
+        $this->summaryRepository->expects($this->never())->method('findCoastersWithAiModel');
+
+        $this->commandTester->execute([
+            '--coaster-id' => '123',
+            '--generated-with-model' => 'gpt-oss-120b',
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('cannot be', $output);
+        $this->assertStringContainsString('combined', $output);
+        $this->assertSame(1, $this->commandTester->getStatusCode());
+    }
+
+    public function testGeneratedWithModelCannotBeCombinedWithMinDownvotes(): void
+    {
+        $this->summaryRepository->expects($this->never())->method('findCoastersWithBadReviews');
+        $this->summaryRepository->expects($this->never())->method('findCoastersWithAiModel');
+
+        $this->commandTester->execute([
+            '--min-downvotes' => 5,
+            '--generated-with-model' => 'gpt-oss-120b',
+            '--dry-run' => true,
+        ]);
+
+        $output = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('cannot be', $output);
+        $this->assertStringContainsString('combined', $output);
         $this->assertSame(1, $this->commandTester->getStatusCode());
     }
 

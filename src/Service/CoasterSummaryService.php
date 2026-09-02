@@ -104,6 +104,7 @@ class CoasterSummaryService
         $summary->setDynamicCons($analysis['result']['aiAnalysis']['cons']);
         $summary->setReviewsAnalyzed($analysis['result']['reviewCount']);
         $summary->setLanguage($language);
+        $summary->setAiModel($analysis['result']['resolvedModelKey']);
 
         // Reset votes when summary is regenerated since content has changed
         $summary->setPositiveVotes(0);
