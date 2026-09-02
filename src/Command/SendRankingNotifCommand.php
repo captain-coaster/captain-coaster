@@ -45,7 +45,7 @@ class SendRankingNotifCommand extends Command
         $dryRun = $input->getOption('dry-run');
 
         // dry run safety
-        if ('1' !== (new \DateTime())->format('j') && !$dryRun) {
+        if ('1' !== new \DateTime()->format('j') && !$dryRun) {
             $io->info('We are not first day of month. We do it dry-run anyway.');
             $dryRun = true;
         }
@@ -55,7 +55,7 @@ class SendRankingNotifCommand extends Command
             $io->error('Cannot find current ranking!');
         }
 
-        if ($currentRanking->getComputedAt() < (new \DateTime())->modify('-1 hour')) {
+        if ($currentRanking->getComputedAt() < new \DateTime()->modify('-1 hour')) {
             $io->error('Ranking not computed yet!');
 
             return Command::FAILURE;

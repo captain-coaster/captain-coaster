@@ -18,8 +18,8 @@ return $config
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHP80Migration:risky' => true,
-        '@PHP82Migration' => true,
+        '@PHP82Migration:risky' => true,
+        '@PHP85Migration' => true,
         'phpdoc_line_span' => ['const' => 'single', 'method' => 'single', 'property' => 'single'],
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'fully_qualified_strict_types' => ['import_symbols' => true],

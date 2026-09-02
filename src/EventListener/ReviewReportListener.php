@@ -28,36 +28,36 @@ class ReviewReportListener
         $review = $reviewReport->getReview();
         $reviewText = $review->getReview();
 
-        $discordOptions = (new DiscordOptions())
+        $discordOptions = new DiscordOptions()
             ->addEmbed(
-                (new DiscordEmbed())
+                new DiscordEmbed()
                     ->title('Nouveau signalement de note ou d\'avis')
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Coaster')
                             ->value($review->getCoaster()->getName())
                             ->inline(false)
                     )
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Reason')
                             ->value(ucfirst($reviewReport->getReason()))
                             ->inline(false)
                     )
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Rating')
                             ->value((string) $review->getValue().'/5')
                             ->inline(false)
                     )
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Reported content')
                             ->value($reviewText ? mb_substr($reviewText, 0, 1000, 'UTF-8') : '(no text)')
                             ->inline(false)
                     )
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Reported by')
                             ->value($reviewReport->getUser()?->getDisplayName() ?? '🤖 AI moderation')
                             ->inline(false)
@@ -65,7 +65,7 @@ class ReviewReportListener
             );
 
         $this->chatter->send(
-            (new ChatMessage(''))->transport('discord_report')->options($discordOptions)
+            new ChatMessage('')->transport('discord_report')->options($discordOptions)
         );
     }
 }

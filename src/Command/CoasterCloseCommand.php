@@ -55,7 +55,7 @@ class CoasterCloseCommand extends Command
             $this->em->flush();
 
             $this->chatter->send(
-                (new ChatMessage('We just definitely closed '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🚫'))
+                new ChatMessage('We just definitely closed '.$coaster->getName().' at '.$coaster->getPark()->getName().'! 🚫')
                     ->transport('discord_notif')
             );
         }

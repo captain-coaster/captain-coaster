@@ -53,20 +53,20 @@ class ImageListener
     {
         $imageUrl = $this->imagesEndpoint.'/1440x1440/'.$image->getFilename();
 
-        $discordOptions = (new DiscordOptions())
+        $discordOptions = new DiscordOptions()
             ->addEmbed(
-                (new DiscordEmbed())
+                new DiscordEmbed()
                     ->title($image->getCoaster()->getName().' - '.$image->getCoaster()->getPark()->getName())
                     ->url($imageUrl)
-                    ->thumbnail((new DiscordMediaEmbedObject())->url($imageUrl))
+                    ->thumbnail(new DiscordMediaEmbedObject()->url($imageUrl))
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Uploader')
                             ->value($image->getUploader()->getDisplayName())
                             ->inline(true)
                     )
                     ->addField(
-                        (new DiscordFieldEmbedObject())
+                        new DiscordFieldEmbedObject()
                             ->name('Credit')
                             ->value($image->getCredit())
                             ->inline(true)
@@ -74,7 +74,7 @@ class ImageListener
             );
 
         $this->chatter->send(
-            (new ChatMessage(''))->transport('discord_picture')->options($discordOptions)
+            new ChatMessage('')->transport('discord_picture')->options($discordOptions)
         );
     }
 

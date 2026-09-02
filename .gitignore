@@ -12,7 +12,6 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/.env.local.orphan-*
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -42,5 +41,6 @@ phpstan.neon
 
 /.worktrees/
 
-# Claude session working documents (specs, plans) — local scratch, never committed
-/docs/superpowers/
+# Local scratch: session working documents (specs, plans), runbooks, incident
+# notes. Never committed — this is a public repo.
+/docs/

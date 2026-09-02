@@ -90,7 +90,7 @@ class NotificationService
             $notification->getUser()->getPreferredLocale()
         );
 
-        $message = (new Email())
+        $message = new Email()
             ->to($notification->getUser()->getEmail())
             ->subject($subject)
             ->html(

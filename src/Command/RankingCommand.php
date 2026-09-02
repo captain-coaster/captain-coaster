@@ -45,7 +45,7 @@ class RankingCommand extends Command
         $dryRun = $input->getOption('dry-run');
 
         // dry run safety
-        if ('1' !== (new \DateTime())->format('j') && !$dryRun) {
+        if ('1' !== new \DateTime()->format('j') && !$dryRun) {
             $output->writeln('We are not first day of month. We do it dry-run anyway.');
             $dryRun = true;
         }
@@ -98,7 +98,7 @@ class RankingCommand extends Command
             $text = \sprintf("[%d] %s - %s (%s)\n", $coaster->getRank(), (null === $coaster->getPreviousRank()) ? '**'.$coaster->getName().'**' : $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
 
             if (\strlen($discordText) + \strlen($text) > 2000) {
-                $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));
+                $this->chatter->send(new ChatMessage($discordText)->transport('discord_log'));
                 $discordText = '';
 
                 // avoid discord rate limit
@@ -108,6 +108,6 @@ class RankingCommand extends Command
             $discordText .= $text;
         }
 
-        $this->chatter->send((new ChatMessage($discordText))->transport('discord_log'));
+        $this->chatter->send(new ChatMessage($discordText)->transport('discord_log'));
     }
 }
