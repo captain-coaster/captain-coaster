@@ -377,7 +377,7 @@ login:
         paragraph1: 'Para iniciar sesión en Captain Coaster, haz clic en el botón de abajo. Este enlace expirará en 15 minutos.'
         button: Iniciar sesión
         copy_link: 'Si el botón no funciona, copia y pega este enlace en tu navegador:'
-        paragraph2: 'Recibes este correo porque se solicitó un enlace de inicio de sesión para tu cuenta de Captain Coaster. Si no fuiste tú, puedes ignorar este correo sin problema, o responder para avisarnos.'
+        paragraph2: 'Recibes este correo porque se solicitó un enlace de inicio de sesión para tu cuenta de Captain Coaster. Si no fuiste tú, puedes ignorar este correo sin problema.'
     link_sent: 'Si hay una cuenta asociada con {email}, recibirás un enlace de inicio de sesión. Haz clic en el enlace para iniciar sesión.'
     rate_limit_exceeded: 'Demasiados intentos de inicio de sesión. Por favor, inténtalo de nuevo más tarde.'
 

@@ -377,7 +377,7 @@ login:
         paragraph1: 'Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes.'
         button: Connexion
         copy_link: 'Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :'
-        paragraph2: "Vous recevez cet email car un lien de connexion a été demandé pour votre compte Captain Coaster. Si ce n'est pas vous, vous pouvez ignorer cet email en toute sécurité — ou nous répondre pour nous le signaler."
+        paragraph2: "Vous recevez cet email car un lien de connexion a été demandé pour votre compte Captain Coaster. Si ce n'est pas vous, vous pouvez ignorer cet email en toute sécurité."
     link_sent: 'Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter.'
     rate_limit_exceeded: 'Trop de tentatives de connexion. Veuillez réessayer plus tard.'
 

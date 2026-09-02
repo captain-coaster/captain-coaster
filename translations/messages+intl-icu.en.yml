@@ -373,7 +373,7 @@ login:
         paragraph1: 'To sign in to Captain Coaster, click the button below. This link will expire in 15 minutes.'
         button: 'Sign in'
         copy_link: "If the button doesn't work, copy and paste this link into your browser:"
-        paragraph2: "You're receiving this email because a sign-in link was requested for your Captain Coaster account. If this wasn't you, you can safely ignore this email — or reply to let us know."
+        paragraph2: "You're receiving this email because a sign-in link was requested for your Captain Coaster account. If this wasn't you, you can safely ignore this email."
     link_sent: 'If an account is associated with {email}, you will receive a login link. Click on the link to sign in'
     rate_limit_exceeded: 'Too many login attempts. Please try again later.'
 
