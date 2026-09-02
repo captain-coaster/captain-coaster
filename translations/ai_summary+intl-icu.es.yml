@@ -1,9 +1,7 @@
 ai_summary:
     feedback:
-        prompt: '¿Qué te pareció?'
         success: '¡Gracias por tu opinión!'
         error: 'Ocurrió un error al enviar tu opinión.'
-        error_token: 'Token de seguridad inválido.'
         error_session: 'No se pudo enviar tu opinión. Por favor, actualiza la página e inténtalo de nuevo.'
         button:
             helpful: 'Marcar como útil'
@@ -11,6 +9,7 @@ ai_summary:
             voted_helpful: 'Votaste esto como útil'
             voted_not_helpful: 'Votaste esto como no útil'
     info:
+        short: 'Resumen generado por IA'
         based_on: 'Resumen generado por IA basado en {count, plural, =1 {1 reseña} other {# reseñas}}'
     panel:
         title: 'Reseña del Captain'

@@ -1,9 +1,7 @@
 ai_summary:
     feedback:
-        prompt: 'Wie fanden Sie es?'
         success: 'Vielen Dank für Ihr Feedback!'
         error: 'Beim Senden Ihres Feedbacks ist ein Fehler aufgetreten.'
-        error_token: 'Ungültiges Sicherheitstoken.'
         error_session: 'Feedback konnte nicht gesendet werden. Bitte laden Sie die Seite neu und versuchen Sie es erneut.'
         button:
             helpful: 'Als hilfreich markieren'
@@ -11,6 +9,7 @@ ai_summary:
             voted_helpful: 'Sie haben dies als hilfreich bewertet'
             voted_not_helpful: 'Sie haben dies als nicht hilfreich bewertet'
     info:
+        short: 'KI-generierte Zusammenfassung'
         based_on: 'KI-generierte Zusammenfassung basierend auf {count, plural, =1 {1 Bewertung} other {# Bewertungen}}'
     panel:
         title: 'Captain Bewertung'

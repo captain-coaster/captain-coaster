@@ -40,6 +40,7 @@ class GenerateCoasterSummariesCommand extends Command
             ->addOption('coaster-id', null, InputOption::VALUE_OPTIONAL, 'Generate summary for one specific coaster - always regenerates it, no due-ness check')
             ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit number of coasters to process', null)
             ->addOption('min-downvotes', null, InputOption::VALUE_OPTIONAL, 'Bulk-regenerate coasters that already have a summary in the target language with at least this many downvotes (0 = every existing summary, regardless of votes). Requires a single --languages value.', null)
+            ->addOption('generated-with-model', null, InputOption::VALUE_OPTIONAL, 'Bulk-regenerate summaries currently generated with this AI model key (e.g. gpt-oss-120b), replacing them with fresh summaries from the current default model - use this to migrate old summaries off a retired model. Requires a single --languages value.', null)
             ->addOption('languages', null, InputOption::VALUE_OPTIONAL, 'Target languages for generation (comma-separated: en,fr,es,de)', 'en')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate execution without calling Bedrock API')
             ->setHelp(
@@ -52,6 +53,7 @@ class GenerateCoasterSummariesCommand extends Command
                 '  php bin/console app:generate-coaster-summaries --languages=en,fr,es'."\n".
                 '  php bin/console app:generate-coaster-summaries --languages=fr --min-downvotes=5'."\n".
                 '  php bin/console app:generate-coaster-summaries --languages=fr --min-downvotes=0'."\n".
+                '  php bin/console app:generate-coaster-summaries --languages=en --generated-with-model=gpt-oss-120b'."\n".
                 '  php bin/console app:generate-coaster-summaries --dry-run'
             );
     }
@@ -64,6 +66,7 @@ class GenerateCoasterSummariesCommand extends Command
         $limit = $input->getOption('limit') ? (int) $input->getOption('limit') : null;
         $minDownvotesOption = $input->getOption('min-downvotes');
         $minDownvotes = null !== $minDownvotesOption ? (int) $minDownvotesOption : null;
+        $generatedWithModel = $input->getOption('generated-with-model');
         $languagesOption = $input->getOption('languages');
         $dryRun = (bool) $input->getOption('dry-run');
 
@@ -79,14 +82,26 @@ class GenerateCoasterSummariesCommand extends Command
             $targetLanguages = ['en'];
         }
 
-        if (null !== $minDownvotes && $coasterId) {
-            $io->error('--min-downvotes and --coaster-id cannot be combined - --coaster-id already always regenerates that one coaster regardless of votes, so --min-downvotes would have no effect.');
+        if (null !== $minDownvotes && null !== $generatedWithModel) {
+            $io->error('--min-downvotes and --generated-with-model cannot be combined - pick one selection criterion per run.');
+
+            return Command::FAILURE;
+        }
+
+        if ((null !== $minDownvotes || null !== $generatedWithModel) && $coasterId) {
+            $io->error('--min-downvotes/--generated-with-model and --coaster-id cannot be combined - --coaster-id already always regenerates that one coaster regardless of votes or AI model, so the other option would have no effect.');
 
             return Command::FAILURE;
         }
 
         if (null !== $minDownvotes && 1 !== \count($targetLanguages)) {
             $io->error('--min-downvotes requires exactly one --languages value (it targets a summary in that specific language - a downvoted EN summary should not also force-regenerate a good FR one).');
+
+            return Command::FAILURE;
+        }
+
+        if (null !== $generatedWithModel && 1 !== \count($targetLanguages)) {
+            $io->error('--generated-with-model requires exactly one --languages value (it targets a summary in that specific language).');
 
             return Command::FAILURE;
         }
@@ -109,6 +124,8 @@ class GenerateCoasterSummariesCommand extends Command
                 $coasters = [$coaster];
             } elseif (null !== $minDownvotes) {
                 $coasters = $this->summaryRepository->findCoastersWithBadReviews($targetLanguages[0], $minDownvotes, $limit);
+            } elseif (null !== $generatedWithModel) {
+                $coasters = $this->summaryRepository->findCoastersWithAiModel($targetLanguages[0], $generatedWithModel, $limit);
             } else {
                 // Require a minimum same-language presence when there's a single target
                 // language, so a --limit doesn't get wasted on coasters that are eligible
@@ -146,6 +163,10 @@ class GenerateCoasterSummariesCommand extends Command
             $io->note("Force regeneration mode: {$targetLanguages[0]} summaries with {$minDownvotes}+ downvotes".(0 === $minDownvotes ? ' (i.e. every existing summary)' : ''));
         }
 
+        if (null !== $generatedWithModel) {
+            $io->note("Force regeneration mode: replacing {$targetLanguages[0]} summaries currently generated with '{$generatedWithModel}'");
+        }
+
         foreach ($coasters as $coaster) {
             try {
                 $io->writeln("Processing ID {$coaster->getId()} {$coaster->getName()}...");
@@ -162,6 +183,7 @@ class GenerateCoasterSummariesCommand extends Command
                     // a deliberate choice - skip the due-ness check in both cases.
                     $shouldProcess = null !== $coasterId
                         || null !== $minDownvotes
+                        || null !== $generatedWithModel
                         || $this->summaryService->shouldUpdateSummary($coaster, $language);
 
                     if (!$shouldProcess) {
