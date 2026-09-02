@@ -34,6 +34,11 @@
                     {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6 text-muted'}) }}
                 </div>
             </div>
+            {% if not loginForm.email.vars.valid %}
+                <div class="alert alert-danger alert-bordered">
+                    {{ form_errors(loginForm.email) }}
+                </div>
+            {% endif %}
             {{ form_errors(loginForm) }}
             <div class="form-group">
                 {{ form_widget(loginForm.recaptcha) }}
