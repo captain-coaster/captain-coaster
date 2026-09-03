@@ -25,18 +25,34 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * @extends AbstractCrudController<ReviewReport>
  */
+#[IsGranted('ROLE_MODERATOR')]
 class ReviewReportCrudController extends AbstractCrudController
 {
+    private const CSRF_TOKEN_ID = 'review_report_moderation';
+
     public function __construct(
         private readonly AdminUrlGenerator $adminUrlGenerator,
         private readonly EntityManagerInterface $entityManager,
-        private readonly ReviewReportRepository $reportRepository
+        private readonly ReviewReportRepository $reportRepository,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
     ) {
+    }
+
+    private function actionUrl(int $entityId, string $crudAction): string
+    {
+        return $this->adminUrlGenerator
+            ->setController(self::class)
+            ->setAction($crudAction)
+            ->setEntityId($entityId)
+            ->set('token', $this->csrfTokenManager->getToken(self::CSRF_TOKEN_ID)->getValue())
+            ->generateUrl();
     }
 
     public static function getEntityFqcn(): string
@@ -47,8 +63,8 @@ class ReviewReportCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInSingular('Review Report')
-            ->setEntityLabelInPlural('Review Reports')
+            ->setEntityLabelInSingular('Report')
+            ->setEntityLabelInPlural('Reports')
             ->setSearchFields(['id', 'user.displayName', 'reviewContent', 'reason'])
             ->setDefaultSort(['resolved' => 'ASC', 'createdAt' => 'DESC'])
             ->showEntityActionsInlined()
@@ -78,34 +94,35 @@ class ReviewReportCrudController extends AbstractCrudController
                 ->addCssClass('text-info')
         );
 
-        // Add admin-only actions
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $moderationActions
-                ->addAction(
-                    Action::new('deleteReview', 'Delete Review', 'fa fa-trash')
-                        ->linkToCrudAction('deleteReviewAction')
-                        ->addCssClass('text-danger')
-                        ->displayIf(static fn ($entity) => null !== $entity->getReview())
-                )
-                ->addAction(
-                    Action::new('clearReviewText', 'Clear Review Text', 'fa fa-eraser')
-                        ->linkToCrudAction('clearReviewTextAction')
-                        ->addCssClass('text-warning')
-                        ->displayIf(static fn ($entity) => null !== $entity->getReview() && null !== $entity->getReview()->getReview())
-                )
-                ->addAction(
-                    Action::new('disableUser', 'Ban User', 'fa fa-user-slash')
-                        ->linkToCrudAction('disableUserAction')
-                        ->addCssClass('text-warning')
-                );
-        }
-
-        // Add action available to all moderators
-        $moderationActions->addAction(
-            Action::new('doNothing', 'No Action', 'fa fa-check')
-                ->linkToCrudAction('doNothingAction')
-                ->addCssClass('text-success')
-        );
+        // Moderation actions: writes need POST + CSRF token since they're reached via
+        // a dropdown link, not a real form submission (see actionUrl()).
+        $moderationActions
+            ->addAction(
+                Action::new('deleteReview', 'Delete Review', 'fa fa-trash')
+                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'deleteReviewAction'))
+                    ->renderAsForm()
+                    ->addCssClass('text-danger')
+                    ->displayIf(static fn ($entity) => null !== $entity->getReview())
+            )
+            ->addAction(
+                Action::new('clearReviewText', 'Clear Review Text', 'fa fa-eraser')
+                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'clearReviewTextAction'))
+                    ->renderAsForm()
+                    ->addCssClass('text-warning')
+                    ->displayIf(static fn ($entity) => null !== $entity->getReview() && null !== $entity->getReview()->getReview())
+            )
+            ->addAction(
+                Action::new('disableUser', 'Ban User', 'fa fa-user-slash')
+                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'disableUserAction'))
+                    ->renderAsForm()
+                    ->addCssClass('text-warning')
+            )
+            ->addAction(
+                Action::new('doNothing', 'No Action', 'fa fa-check')
+                    ->linkToUrl(fn ($entity) => $this->actionUrl($entity->getId(), 'doNothingAction'))
+                    ->renderAsForm()
+                    ->addCssClass('text-success')
+            );
 
         // Create actions dropdown for processed reports
         $processedActions = ActionGroup::new('processed', 'Actions')
@@ -267,9 +284,12 @@ class ReviewReportCrudController extends AbstractCrudController
         return $fields;
     }
 
-    #[IsGranted('ROLE_ADMIN')]
     public function deleteReviewAction(AdminContext $context): Response
     {
+        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
+            throw new InvalidCsrfTokenException();
+        }
+
         /** @var ReviewReport $contextReport */
         $contextReport = $context->getEntity()->getInstance();
 
@@ -318,9 +338,12 @@ class ReviewReportCrudController extends AbstractCrudController
         return $this->redirectToIndex();
     }
 
-    #[IsGranted('ROLE_ADMIN')]
     public function clearReviewTextAction(AdminContext $context): Response
     {
+        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
+            throw new InvalidCsrfTokenException();
+        }
+
         /** @var ReviewReport $contextReport */
         $contextReport = $context->getEntity()->getInstance();
 
@@ -369,9 +392,12 @@ class ReviewReportCrudController extends AbstractCrudController
         return $this->redirectToIndex();
     }
 
-    #[IsGranted('ROLE_ADMIN')]
     public function disableUserAction(AdminContext $context): Response
     {
+        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
+            throw new InvalidCsrfTokenException();
+        }
+
         /** @var ReviewReport $contextReport */
         $contextReport = $context->getEntity()->getInstance();
 
@@ -418,6 +444,10 @@ class ReviewReportCrudController extends AbstractCrudController
 
     public function doNothingAction(AdminContext $context): Response
     {
+        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
+            throw new InvalidCsrfTokenException();
+        }
+
         /** @var ReviewReport $contextReport */
         $contextReport = $context->getEntity()->getInstance();
 

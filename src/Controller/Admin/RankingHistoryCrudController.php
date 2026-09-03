@@ -16,10 +16,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\DateTimeFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * @extends AbstractCrudController<RankingHistory>
  */
+#[IsGranted('ROLE_ADMIN')]
 class RankingHistoryCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string

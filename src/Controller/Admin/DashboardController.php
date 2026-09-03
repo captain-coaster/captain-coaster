@@ -58,25 +58,33 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         // yield MenuItem::linkToDashboard('Dashboard', 'fa fa-dashboard');
-        yield MenuItem::linkToCrud('Coaster', 'fas fa-sleigh', Coaster::class);
-        yield MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class);
-        yield MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class);
-        yield MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class);
-        yield MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class);
-        yield MenuItem::linkToCrud('Pictures', 'fas fa-image', Image::class);
-        yield MenuItem::linkToCrud('Launch', 'fas fa-wind', Launch::class);
-        yield MenuItem::linkToCrud('Manufacturer', 'fas fa-industry', Manufacturer::class);
-        yield MenuItem::linkToCrud('Material Type', 'fas fa-cubes', MaterialType::class);
-        yield MenuItem::linkToCrud('Model', 'fas fa-copyright', Model::class);
-        yield MenuItem::linkToCrud('Park', 'fas fa-dharmachakra', Park::class);
-        yield MenuItem::linkToCrud('Ranking History', 'fas fa-trophy', RankingHistory::class);
-        yield MenuItem::linkToCrud('Restraint', 'fas fa-lock', Restraint::class);
-        yield MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class);
-        yield MenuItem::linkToCrud('Review Reports', 'fa fa-flag', ReviewReport::class);
-        yield MenuItem::linkToCrud('Seating Type', 'fa fa-chair', SeatingType::class);
-        yield MenuItem::linkToCrud('Status', 'fa fa-toggle-on', Status::class);
-        yield MenuItem::linkToCrud('Tag', 'fa fa-tag', Tag::class);
-        yield MenuItem::linkToCrud('Top', 'fa fa-list-ol', Top::class);
-        yield MenuItem::linkToCrud('User', 'fas fa-users', User::class);
+        yield MenuItem::subMenu('Content', 'fas fa-sleigh')->setSubItems([
+            MenuItem::linkToCrud('Coaster', 'fas fa-sleigh', Coaster::class),
+            MenuItem::linkToCrud('Park', 'fas fa-dharmachakra', Park::class),
+            MenuItem::linkToCrud('Manufacturer', 'fas fa-industry', Manufacturer::class),
+            MenuItem::linkToCrud('Model', 'fas fa-copyright', Model::class),
+            MenuItem::linkToCrud('Material Type', 'fas fa-cubes', MaterialType::class),
+            MenuItem::linkToCrud('Launch', 'fas fa-wind', Launch::class),
+            MenuItem::linkToCrud('Restraint', 'fas fa-lock', Restraint::class),
+            MenuItem::linkToCrud('Seating Type', 'fa fa-chair', SeatingType::class),
+            MenuItem::linkToCrud('Status', 'fa fa-toggle-on', Status::class),
+            MenuItem::linkToCrud('Continent', 'fa fa-globe', Continent::class),
+            MenuItem::linkToCrud('Country', 'fa fa-flag-usa', Country::class),
+            MenuItem::linkToCrud('Currency', 'fa fa-euro-sign', Currency::class),
+            MenuItem::linkToCrud('Pictures', 'fas fa-image', Image::class),
+        ]);
+
+        yield MenuItem::subMenu('Moderation', 'fa fa-shield-alt')->setPermission('ROLE_MODERATOR')->setSubItems([
+            MenuItem::linkToCrud('User', 'fas fa-users', User::class),
+            MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class),
+            MenuItem::linkToCrud('Reports', 'fa fa-flag', ReviewReport::class),
+            MenuItem::linkToCrud('Tag', 'fa fa-tag', Tag::class),
+            MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class),
+        ]);
+
+        yield MenuItem::subMenu('Administration', 'fa fa-user-shield')->setPermission('ROLE_ADMIN')->setSubItems([
+            MenuItem::linkToCrud('Top', 'fa fa-list-ol', Top::class),
+            MenuItem::linkToCrud('Ranking History', 'fas fa-trophy', RankingHistory::class),
+        ]);
     }
 }
