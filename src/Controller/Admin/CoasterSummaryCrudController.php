@@ -28,15 +28,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Filter\TextFilter;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * @extends AbstractCrudController<CoasterSummary>
  */
+#[IsGranted('ROLE_MODERATOR')]
 class CoasterSummaryCrudController extends AbstractCrudController
 {
+    private const CSRF_TOKEN_ID = 'coaster_summary_regenerate';
+
     public function __construct(
         private readonly CoasterSummaryService $coasterSummaryService,
-        private readonly AdminUrlGenerator $adminUrlGenerator
+        private readonly AdminUrlGenerator $adminUrlGenerator,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
     ) {
     }
 
@@ -59,7 +66,13 @@ class CoasterSummaryCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $regenerateAction = Action::new('regenerate', 'Regenerate', 'fas fa-sync-alt')
-            ->linkToCrudAction('regenerateSummary')
+            ->linkToUrl(fn (CoasterSummary $summary): string => $this->adminUrlGenerator
+                ->setController(self::class)
+                ->setAction('regenerateSummary')
+                ->setEntityId($summary->getId())
+                ->set('token', $this->csrfTokenManager->getToken(self::CSRF_TOKEN_ID)->getValue())
+                ->generateUrl())
+            ->renderAsForm()
             ->setCssClass('btn btn-warning btn-sm')
             ->displayIf(static fn (CoasterSummary $summary): bool => null !== $summary->getCoaster());
 
@@ -67,8 +80,7 @@ class CoasterSummaryCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $regenerateAction)
             ->add(Crud::PAGE_DETAIL, $regenerateAction)
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
-            ->update(Crud::PAGE_INDEX, Action::DELETE, static fn (Action $action) => $action)
-            ->update(Crud::PAGE_DETAIL, Action::DELETE, static fn (Action $action) => $action)
+            ->setPermission(Action::DELETE, 'ROLE_ADMIN')
             ->disable(Action::NEW)
             ->disable(Action::EDIT);
     }
@@ -145,6 +157,10 @@ class CoasterSummaryCrudController extends AbstractCrudController
 
     public function regenerateSummary(AdminContext $context): Response
     {
+        if (!$this->isCsrfTokenValid(self::CSRF_TOKEN_ID, $context->getRequest()->query->get('token'))) {
+            throw new InvalidCsrfTokenException();
+        }
+
         /** @var CoasterSummary $summary */
         $summary = $context->getEntity()->getInstance();
 

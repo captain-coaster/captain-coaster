@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Coaster;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -37,6 +39,11 @@ class CoasterCrudController extends AbstractCrudController
             ->setDefaultSort(['updatedAt' => 'DESC'])
             ->showEntityActionsInlined()
             ->setPaginatorPageSize(50);
+    }
+
+    public function configureActions(Actions $actions): Actions
+    {
+        return $actions->setPermission(Action::DELETE, 'ROLE_ADMIN');
     }
 
     public function configureFilters(Filters $filters): Filters

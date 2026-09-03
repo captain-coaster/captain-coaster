@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -19,10 +18,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
  * @extends AbstractCrudController<User>
  */
+#[IsGranted('ROLE_MODERATOR')]
 class UserCrudController extends AbstractCrudController
 {
     /** @param array<string> $locales */
@@ -107,7 +108,15 @@ class UserCrudController extends AbstractCrudController
 
         // Edit page - Access
         yield FormField::addPanel('Access')->onlyOnForms();
-        yield ArrayField::new('roles')->onlyOnForms()->setPermission('ROLE_SUPER_ADMIN');
+        yield ChoiceField::new('roles')
+            ->setChoices([
+                'Contributor' => 'ROLE_CONTRIBUTOR',
+                'Moderator' => 'ROLE_MODERATOR',
+                'Admin' => 'ROLE_ADMIN',
+            ])
+            ->allowMultipleChoices()
+            ->onlyOnForms()
+            ->setPermission('ROLE_ADMIN');
         yield TextField::new('apiKey')->onlyOnForms()->setFormTypeOption('disabled', true);
         yield TextField::new('ipAddress')->onlyOnForms()->setFormTypeOption('disabled', true);
 
