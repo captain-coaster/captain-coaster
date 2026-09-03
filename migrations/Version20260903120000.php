@@ -18,13 +18,26 @@ final class Version20260903120000 extends AbstractMigration
     {
         // JSON_SEARCH (rather than JSON_CONTAINS) because a few rows have `roles` stored
         // as a JSON object with non-sequential keys instead of a plain array.
-        $this->addSql('UPDATE users SET roles = \'["ROLE_MODERATOR"]\' WHERE JSON_SEARCH(roles, \'one\', \'ROLE_ADMIN\') IS NOT NULL');
-        $this->addSql('UPDATE users SET roles = \'["ROLE_ADMIN"]\' WHERE JSON_SEARCH(roles, \'one\', \'ROLE_SUPER_ADMIN\') IS NOT NULL');
+        // Single UPDATE with CASE WHEN, checked against the pre-update value, so a row
+        // holding both ROLE_ADMIN and ROLE_SUPER_ADMIN isn't collapsed to ROLE_MODERATOR
+        // by an earlier statement before the ROLE_SUPER_ADMIN branch can match it.
+        $this->addSql(
+            'UPDATE users SET roles = CASE '
+            .'WHEN JSON_SEARCH(roles, \'one\', \'ROLE_SUPER_ADMIN\') IS NOT NULL THEN \'["ROLE_ADMIN"]\' '
+            .'WHEN JSON_SEARCH(roles, \'one\', \'ROLE_ADMIN\') IS NOT NULL THEN \'["ROLE_MODERATOR"]\' '
+            .'ELSE roles END '
+            .'WHERE JSON_SEARCH(roles, \'one\', \'ROLE_ADMIN\') IS NOT NULL OR JSON_SEARCH(roles, \'one\', \'ROLE_SUPER_ADMIN\') IS NOT NULL'
+        );
     }
 
     public function down(Schema $schema): void
     {
-        $this->addSql('UPDATE users SET roles = \'["ROLE_SUPER_ADMIN"]\' WHERE JSON_SEARCH(roles, \'one\', \'ROLE_ADMIN\') IS NOT NULL');
-        $this->addSql('UPDATE users SET roles = \'["ROLE_ADMIN"]\' WHERE JSON_SEARCH(roles, \'one\', \'ROLE_MODERATOR\') IS NOT NULL');
+        $this->addSql(
+            'UPDATE users SET roles = CASE '
+            .'WHEN JSON_SEARCH(roles, \'one\', \'ROLE_ADMIN\') IS NOT NULL THEN \'["ROLE_SUPER_ADMIN"]\' '
+            .'WHEN JSON_SEARCH(roles, \'one\', \'ROLE_MODERATOR\') IS NOT NULL THEN \'["ROLE_ADMIN"]\' '
+            .'ELSE roles END '
+            .'WHERE JSON_SEARCH(roles, \'one\', \'ROLE_ADMIN\') IS NOT NULL OR JSON_SEARCH(roles, \'one\', \'ROLE_MODERATOR\') IS NOT NULL'
+        );
     }
 }
