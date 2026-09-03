@@ -106,6 +106,11 @@ class CoasterSummaryService
         $summary->setLanguage($language);
         $summary->setAiModel($analysis['result']['resolvedModelKey']);
 
+        // Gedmo's on:'change' strategy only updates existing rows, not new inserts
+        if (null === $summary->getId()) {
+            $summary->setRegeneratedAt(new \DateTime());
+        }
+
         // Reset votes when summary is regenerated since content has changed
         $summary->setPositiveVotes(0);
         $summary->setNegativeVotes(0);
