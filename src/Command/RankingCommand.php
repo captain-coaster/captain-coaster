@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\Coaster;
+use App\Event\RankingComputedEvent;
+use App\Repository\CoasterRepository;
 use App\Service\RankingService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -14,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[AsCommand(
     name: 'ranking:update',
@@ -24,7 +27,9 @@ class RankingCommand extends Command
 {
     public function __construct(
         private readonly RankingService $rankingService,
-        private readonly ChatterInterface $chatter
+        private readonly ChatterInterface $chatter,
+        private readonly CoasterRepository $coasterRepository,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
         parent::__construct();
     }
@@ -61,6 +66,11 @@ class RankingCommand extends Command
         }
 
         $output->writeln((string) $stopwatch->stop('ranking'));
+
+        if (!$dryRun) {
+            $highlightedCoaster = $this->coasterRepository->getNewlyRankedHighlightedCoaster();
+            $this->eventDispatcher->dispatch(new RankingComputedEvent($highlightedCoaster?->getName()));
+        }
 
         // send recap to discord only if dry run mode
         if ($input->getOption('send-discord') && $dryRun) {

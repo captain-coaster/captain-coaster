@@ -6,6 +6,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\LikedImageRepository;
+use App\Repository\NotificationRecipientRepository;
 use App\Repository\ReviewUpvoteRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -16,6 +17,7 @@ class AccountDeletionService
         private readonly EntityManagerInterface $em,
         private readonly LoggerInterface $logger,
         private readonly LikedImageRepository $likedImageRepository,
+        private readonly NotificationRecipientRepository $notificationRecipientRepository,
         private readonly ReviewUpvoteRepository $reviewUpvoteRepository,
         private readonly ProfilePictureManager $profilePictureManager
     ) {
@@ -78,9 +80,7 @@ class AccountDeletionService
         }
 
         // Delete notifications
-        foreach ($user->getNotifications() as $notification) {
-            $this->em->remove($notification);
-        }
+        $this->notificationRecipientRepository->deleteByUser($user);
 
         // Delete liked images
         $this->likedImageRepository->deleteByUser($user);

@@ -4,24 +4,75 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\Notification;
+use App\Entity\NotificationRecipient;
+use App\Entity\User;
+use App\Repository\NotificationRecipientRepository;
 use App\Service\NotificationService;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/notifications')]
 class NotificationController extends AbstractController
 {
+    private const int PAGE_SIZE = 20;
+
+    #[Route(path: '', name: 'notification_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
+    public function index(Request $request, NotificationRecipientRepository $notificationRecipientRepository): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $beforeCreatedAt = null;
+        if (null !== $before = $request->query->get('before')) {
+            $beforeCreatedAt = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $before) ?: null;
+        }
+        $beforeId = $request->query->getInt('beforeId') ?: null;
+
+        $recipients = $notificationRecipientRepository->findPageForUser($user, self::PAGE_SIZE + 1, $beforeCreatedAt, $beforeId);
+
+        $hasMore = \count($recipients) > self::PAGE_SIZE;
+        $recipients = \array_slice($recipients, 0, self::PAGE_SIZE);
+        $last = end($recipients) ?: null;
+
+        return $this->render('Notification/index.html.twig', [
+            'recipients' => $recipients,
+            'hasMore' => $hasMore,
+            'nextBefore' => $last?->getCreatedAt()?->format(\DateTimeInterface::ATOM),
+            'nextBeforeId' => $last?->getId(),
+        ]);
+    }
+
     /** Read a notification. */
     #[Route(path: '/{id}/read', name: 'notification_read', methods: ['GET'])]
-    public function readAction(Notification $notification, NotificationService $notifService, EntityManagerInterface $em): RedirectResponse
+    #[IsGranted('ROLE_USER')]
+    public function readAction(NotificationRecipient $recipient, NotificationService $notifService): RedirectResponse
     {
-        $notification->setIsRead(true);
-        $em->persist($notification);
-        $em->flush();
+        if ($recipient->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
 
-        return $this->redirect($notifService->getRedirectUrl($notification));
+        $notifService->markRead($recipient);
+
+        return $this->redirect($notifService->getRedirectUrl($recipient));
+    }
+
+    #[Route(path: '/mark-all-read', name: 'notification_mark_all_read', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function markAllRead(Request $request, NotificationRecipientRepository $notificationRecipientRepository): RedirectResponse
+    {
+        if (!$this->isCsrfTokenValid('notification_mark_all_read', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $notificationRecipientRepository->markAllReadForUser($user);
+
+        return $this->redirectToRoute('notification_index');
     }
 }

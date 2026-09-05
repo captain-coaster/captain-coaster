@@ -82,8 +82,8 @@ class User implements UserInterface
     #[ORM\InverseJoinColumn(nullable: false, onDelete: 'RESTRICT')]
     private Collection $badges;
 
-    /** @var Collection<int, Notification> */
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Notification::class, fetch: 'EXTRA_LAZY')]
+    /** @var Collection<int, NotificationRecipient> */
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: NotificationRecipient::class, fetch: 'EXTRA_LAZY')]
     #[ORM\OrderBy(['createdAt' => 'DESC'])]
     private Collection $notifications;
 
@@ -111,8 +111,8 @@ class User implements UserInterface
     #[ORM\Column(type: Types::STRING, length: 20, nullable: false, options: ['default' => 'full'])]
     private string $displayNameFormat = 'full';
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 1])]
-    private bool $emailNotification = true;
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => 0])]
+    private bool $emailNotification = false;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private string $preferredLocale = 'en';
@@ -434,19 +434,19 @@ class User implements UserInterface
         return $this->badges;
     }
 
-    public function addNotification(Notification $notification): static
+    public function addNotification(NotificationRecipient $notification): static
     {
         $this->notifications[] = $notification;
 
         return $this;
     }
 
-    public function removeNotification(Notification $notification): void
+    public function removeNotification(NotificationRecipient $notification): void
     {
         $this->notifications->removeElement($notification);
     }
 
-    /** @return Collection<int, Notification> */
+    /** @return Collection<int, NotificationRecipient> */
     public function getNotifications(): Collection
     {
         return $this->notifications;

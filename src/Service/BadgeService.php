@@ -8,8 +8,10 @@ use App\Entity\Badge;
 use App\Entity\RiddenCoaster;
 use App\Entity\TopCoaster;
 use App\Entity\User;
+use App\Event\BadgeAwardedEvent;
 use App\Repository\BadgeRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class BadgeService
 {
@@ -26,7 +28,7 @@ class BadgeService
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly NotificationService $notifService,
+        private readonly EventDispatcherInterface $eventDispatcher,
         private readonly BadgeRepository $badgeRepository
     ) {
     }
@@ -132,12 +134,7 @@ class BadgeService
         if (!$user->getBadges()->contains($badge)) {
             $user->addBadge($badge);
 
-            $this->notifService->send(
-                $user,
-                'notif.badge.message',
-                $badgeName,
-                $this->notifService::NOTIF_BADGE
-            );
+            $this->eventDispatcher->dispatch(new BadgeAwardedEvent($user, $badgeName));
         }
     }
 }

@@ -415,6 +415,9 @@ contact:
 notif:
     title: Aktivität
     empty: 'Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!'
+    markAllRead: 'Alle als gelesen markieren'
+    loadOlder: 'Ältere Benachrichtigungen laden'
+    emailDefaultChangedNotice: 'E-Mail-Benachrichtigungen sind jetzt standardmäßig deaktiviert — schalte sie in deinen <a href="{link_path}">Einstellungen</a> wieder ein.'
     badge:
         message: 'Schaue es dir an: Captain gab dir gerade das "{name}" Abzeichen!'
     ranking:

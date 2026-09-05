@@ -414,6 +414,9 @@ contact:
 notif:
     title: Activité
     empty: 'Rien de spécial pour le moment, va plutôt rider !'
+    markAllRead: 'Tout marquer comme lu'
+    loadOlder: 'Charger les notifications plus anciennes'
+    emailDefaultChangedNotice: 'Les notifications par e-mail sont désormais désactivées par défaut — réactive-les dans tes <a href="{link_path}">paramètres</a>.'
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "{name}" !'
     ranking:

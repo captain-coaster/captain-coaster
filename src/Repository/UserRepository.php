@@ -30,6 +30,20 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery();
     }
 
+    /**
+     * Every user, streamed rather than hydrated all at once — for broadcast
+     * fan-out (e.g. ranking notifications) where loading tens of thousands of
+     * entities into memory up front isn't necessary.
+     *
+     * @return iterable<int, User>
+     */
+    public function findAllIterable(): iterable
+    {
+        foreach ($this->getAllUsersQuery()->toIterable() as $user) {
+            yield $user;
+        }
+    }
+
     /** @return Query<mixed, mixed> */
     public function getAllUsersWithTotalRatingsQuery(): Query
     {

@@ -414,6 +414,9 @@ contact:
 notif:
     title: Actividad
     empty: '¡Nada especial ahora mismo, vaya a montar algunas montañas rusas!'
+    markAllRead: 'Marcar todo como leído'
+    loadOlder: 'Cargar notificaciones anteriores'
+    emailDefaultChangedNotice: 'Las notificaciones por correo ahora están desactivadas por defecto — actívalas de nuevo en tu <a href="{link_path}">configuración</a>.'
     badge:
         message: 'Echale un vistazo: ¡El Captain acaba de darte "{name}" la insignia!'
     ranking:

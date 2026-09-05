@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\User;
 use App\Repository\LikedImageRepository;
+use App\Repository\NotificationRecipientRepository;
 use App\Repository\ReviewUpvoteRepository;
 use App\Service\AccountDeletionService;
 use App\Service\ProfilePictureManager;
@@ -19,6 +20,7 @@ class AccountDeletionServiceTest extends TestCase
     private EntityManagerInterface&MockObject $entityManager;
     private LoggerInterface&MockObject $logger;
     private LikedImageRepository&MockObject $likedImageRepository;
+    private NotificationRecipientRepository&MockObject $notificationRecipientRepository;
     private ReviewUpvoteRepository&MockObject $reviewUpvoteRepository;
     private ProfilePictureManager&MockObject $profilePictureManager;
     private AccountDeletionService $service;
@@ -28,6 +30,7 @@ class AccountDeletionServiceTest extends TestCase
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->likedImageRepository = $this->createMock(LikedImageRepository::class);
+        $this->notificationRecipientRepository = $this->createMock(NotificationRecipientRepository::class);
         $this->reviewUpvoteRepository = $this->createMock(ReviewUpvoteRepository::class);
         $this->profilePictureManager = $this->createMock(ProfilePictureManager::class);
 
@@ -35,6 +38,7 @@ class AccountDeletionServiceTest extends TestCase
             $this->entityManager,
             $this->logger,
             $this->likedImageRepository,
+            $this->notificationRecipientRepository,
             $this->reviewUpvoteRepository,
             $this->profilePictureManager
         );
@@ -100,6 +104,7 @@ class AccountDeletionServiceTest extends TestCase
         $user->setProfilePicture('pp_42_abc123.jpg');
 
         $this->likedImageRepository->expects($this->once())->method('deleteByUser')->with($user);
+        $this->notificationRecipientRepository->expects($this->once())->method('deleteByUser')->with($user);
         $this->reviewUpvoteRepository->expects($this->once())->method('deleteByUser')->with($user);
         $this->profilePictureManager->expects($this->once())->method('deleteProfilePicture')->with('pp_42_abc123.jpg');
         $this->entityManager->expects($this->once())->method('flush');

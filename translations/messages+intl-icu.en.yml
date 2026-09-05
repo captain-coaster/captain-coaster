@@ -410,6 +410,9 @@ contact:
 notif:
     title: 'Activity'
     empty: 'Nothing special right now, go ride some coasters!'
+    markAllRead: 'Mark all read'
+    loadOlder: 'Load older notifications'
+    emailDefaultChangedNotice: 'Email notifications are now off by default — turn them back on in your <a href="{link_path}">settings</a>.'
     badge:
         message: 'Check it out: Captain just gave you the "{name}" badge!'
     ranking:
