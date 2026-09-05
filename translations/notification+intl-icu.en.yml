@@ -1,0 +1,17 @@
+notif:
+    title: 'Notifications'
+    empty: 'Nothing special right now, go ride some coasters!'
+    markAllRead: 'Mark all as read'
+    loadOlder: 'Load older notifications'
+    badge:
+        message: 'Check it out: Captain Coaster just gave you the "{name}" badge!'
+    announcement:
+        emailDefaultChanged: 'Email notifications are now off by default. Tap to turn them back on.'
+    ranking:
+        message: 'World Roller Coaster Rankings have just been updated!'
+        messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'
+    email:
+        title: '🎢 New notification on Captain Coaster'
+        gotnotif: 'You just received a new notification on Captain Coaster:'
+        view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
+        unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'

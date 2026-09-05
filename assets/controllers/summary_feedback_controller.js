@@ -232,13 +232,13 @@ export default class extends Controller {
      * @private
      */
     _showNotification(message, type = 'info') {
-        // Try to get the global notification controller
-        const notificationElement = document.getElementById('notifications');
+        // Try to get the global toast controller
+        const notificationElement = document.getElementById('toasts');
         if (notificationElement) {
             const notificationController =
                 this.application.getControllerForElementAndIdentifier(
                     notificationElement,
-                    'notification'
+                    'toast'
                 );
 
             if (notificationController) {

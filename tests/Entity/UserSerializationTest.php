@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\Notification;
+use App\Entity\NotificationRecipient;
 use App\Entity\User;
+use App\Enum\NotificationType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Security\Core\Authentication\Token\RememberMeToken;
@@ -35,8 +37,8 @@ final class UserSerializationTest extends TestCase
         $blob = serialize(new RememberMeToken($this->userWithNotifications(10), 'main'));
 
         $this->assertFalse(
-            str_contains($blob, Notification::class),
-            'The session token still carries Notification entities.'
+            str_contains($blob, NotificationRecipient::class),
+            'The session token still carries NotificationRecipient entities.'
         );
     }
 
@@ -109,16 +111,19 @@ final class UserSerializationTest extends TestCase
         $user->setDisplayName('Rider');
         $user->setSlug('rider');
 
-        for ($i = 0; $i < $count; ++$i) {
-            $notification = new Notification();
-            $notification->setUser($user);
-            $notification->setMessage('notif.ranking.messageWithNewCoaster');
-            $notification->setParameter('Blue Fire Megacoaster');
-            $notification->setType('ranking');
-            $notification->setIsRead(true);
-            $notification->setCreatedAt(new \DateTime());
+        $notification = new Notification();
+        $notification->setMessage('notif.ranking.messageWithNewCoaster');
+        $notification->setParameter('Blue Fire Megacoaster');
+        $notification->setType(NotificationType::Ranking);
 
-            $user->addNotification($notification);
+        for ($i = 0; $i < $count; ++$i) {
+            $recipient = new NotificationRecipient();
+            $recipient->setNotification($notification);
+            $recipient->setCreatedAt(new \DateTime());
+            $recipient->setUser($user);
+            $recipient->markRead();
+
+            $user->addNotification($recipient);
         }
 
         return $user;

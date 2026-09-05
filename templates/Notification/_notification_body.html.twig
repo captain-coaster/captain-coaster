@@ -1,0 +1,39 @@
+<div class="panel-body">
+  <ul class="media-list">
+    {% for recipient in recipients %}
+      {% set notification = recipient.notification %}
+      <li class="media notif-item{% if not recipient.isRead %} unread{% endif %}">
+        <div class="media-left">
+          <a href="{{ path('notification_read', {'id': recipient.id}) }}"
+             class="btn {{ notification.type.iconColorClass }} btn-rounded btn-icon btn-xs"
+             {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
+            {{ ux_icon(notification.type.icon, {'class': 'w-5 h-5'}) }}
+          </a>
+        </div>
+
+        <div class="media-body">
+          <a href="{{ path('notification_read', {'id': recipient.id}) }}"
+             {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
+            {% if notification.parameter is not null %}
+              {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans : notification.parameter}, 'notification') }}
+            {% else %}
+              {{ notification.message|trans({}, 'notification') }}
+            {% endif %}
+          </a>
+          <div class="media-annotation">{{ recipient.createdAt|ago }}</div>
+        </div>
+      </li>
+    {% else %}
+      <li>{{ 'notif.empty'|trans({}, 'notification') }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% if hasMore %}
+  <div class="panel-footer text-center">
+    <a href="{{ path('notification_index', {'count': nextCount}) }}"
+       class="btn btn-link"
+       data-action="click->notification-list#loadMore">
+      {{ 'notif.loadOlder'|trans({}, 'notification') }}
+    </a>
+  </div>
+{% endif %}

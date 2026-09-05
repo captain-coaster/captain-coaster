@@ -1,12 +1,13 @@
-{% set locale = notification.user.preferredLocale %}
+{% set notification = recipient.notification %}
+{% set locale = recipient.user.preferredLocale %}
 {% if notification.parameter is not null %}
-{% set paramNotif = notification.parameter|trans({}, 'messages', locale) %}
-{% set message = notification.message|trans({'%name%': paramNotif}, 'messages', locale) %}
+{% set paramNotif = notification.type.parameterIsTranslationKey ? notification.parameter|trans({}, 'messages', locale) : notification.parameter %}
+{% set message = notification.message|trans({'%name%': paramNotif}, 'notification', locale) %}
 {% else %}
-{% set message = notification.message|trans({}, 'messages', locale) %}
+{% set message = notification.message|trans({}, 'notification', locale) %}
 {% endif %}
-<p>{{ 'notif.email.gotnotif'|trans({}, 'messages', locale) }}</p>
+<p>{{ 'notif.email.gotnotif'|trans({}, 'notification', locale) }}</p>
 <p style="font-weight: bold;">{{ message }}</p>
 —
-<p>{{ 'notif.email.view'|trans({'%link_path%': url('notification_read', {'id': notification.id, '_locale': locale})}, 'messages', locale)|raw }}</p>
-<p>{{ 'notif.email.unsubscribe'|trans({'%link_path%': url('profile', {'_locale': locale})}, 'messages', locale)|raw }}</p>
+<p>{{ 'notif.email.view'|trans({'%link_path%': url('notification_read', {'id': recipient.id, '_locale': locale})}, 'notification', locale)|raw }}</p>
+<p>{{ 'notif.email.unsubscribe'|trans({'%link_path%': url('profile', {'_locale': locale})}, 'notification', locale)|raw }}</p>

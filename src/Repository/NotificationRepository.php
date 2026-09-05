@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\Notification;
-use App\Entity\User;
+use App\Enum\NotificationType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,68 +19,14 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    /** @return array<int, Notification> */
-    public function findUnreadForUser(User $user, int $limit): array
+    /**
+     * An existing content row with the exact same (type, message, parameter),
+     * for {@see NotificationService::send()} to reuse instead of creating a
+     * duplicate — e.g. every "rating1 badge" notification is the same content
+     * regardless of which user earned it.
+     */
+    public function findMatching(NotificationType $type, string $message, ?string $parameter): ?Notification
     {
-        return $this
-            ->createQueryBuilder('n')
-            ->where('n.user = :user')
-            ->andWhere('n.isRead = false')
-            ->setParameter('user', $user)
-            ->orderBy('n.createdAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function countUnreadForUser(User $user): int
-    {
-        return (int) $this
-            ->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->where('n.user = :user')
-            ->andWhere('n.isRead = false')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    /** Deletes read notifications created before $before. Returns the number of rows removed. */
-    public function deleteReadOlderThan(\DateTimeInterface $before): int
-    {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->delete(Notification::class, 'n')
-            ->where('n.isRead = true')
-            ->andWhere('n.createdAt < :before')
-            ->setParameter('before', $before)
-            ->getQuery()
-            ->execute();
-    }
-
-    public function countReadOlderThan(\DateTimeInterface $before): int
-    {
-        return (int) $this
-            ->createQueryBuilder('n')
-            ->select('COUNT(n.id)')
-            ->where('n.isRead = true')
-            ->andWhere('n.createdAt < :before')
-            ->setParameter('before', $before)
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    public function markTypeAsRead(string $type): int
-    {
-        return $this
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->update(Notification::class, 'n')
-            ->set('n.isRead', true)
-            ->where('n.type LIKE :type')
-            ->setParameter('type', $type)
-            ->getQuery()
-            ->execute();
+        return $this->findOneBy(['type' => $type, 'message' => $message, 'parameter' => $parameter]);
     }
 }

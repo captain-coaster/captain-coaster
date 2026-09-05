@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Repository\NotificationRepository;
+use App\Repository\NotificationRecipientRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,19 +13,21 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
- * SendRankingNotifCommand writes one row per user per run and nothing ever
- * removed them, so the table grew without bound. Read notifications are never
- * displayed again — only their row cost remains.
+ * Without this, notification rows accumulate without bound: a read
+ * notification is never displayed again, and a dormant account's unread
+ * broadcast notifications (e.g. monthly ranking updates) would otherwise
+ * never age out at all.
  */
 #[AsCommand(
     name: 'app:notification:purge',
-    description: 'Delete read notifications older than the retention window'
+    description: 'Delete notifications older than their retention window'
 )]
 class NotificationPurgeCommand extends Command
 {
-    private const int DEFAULT_RETENTION_DAYS = 90;
+    private const int READ_RETENTION_DAYS = 365;
+    private const int UNREAD_RETENTION_DAYS = 365;
 
-    public function __construct(private readonly NotificationRepository $notificationRepository)
+    public function __construct(private readonly NotificationRecipientRepository $notificationRecipientRepository)
     {
         parent::__construct();
     }
@@ -33,7 +35,8 @@ class NotificationPurgeCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('days', null, InputOption::VALUE_REQUIRED, 'Retention window in days', self::DEFAULT_RETENTION_DAYS)
+            ->addOption('read-days', null, InputOption::VALUE_REQUIRED, 'Retention window in days for read notifications', self::READ_RETENTION_DAYS)
+            ->addOption('unread-days', null, InputOption::VALUE_REQUIRED, 'Retention window in days for unread notifications', self::UNREAD_RETENTION_DAYS)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Show what would happen without actually doing it');
     }
 
@@ -41,25 +44,40 @@ class NotificationPurgeCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $days = (int) $input->getOption('days');
-        if ($days < 1) {
-            $io->error('--days must be a positive integer.');
+        $readDays = (int) $input->getOption('read-days');
+        $unreadDays = (int) $input->getOption('unread-days');
+        if ($readDays < 1 || $unreadDays < 1) {
+            $io->error('--read-days and --unread-days must be positive integers.');
 
             return Command::INVALID;
         }
 
-        $before = new \DateTimeImmutable(\sprintf('-%d days', $days));
+        $readBefore = new \DateTimeImmutable(\sprintf('-%d days', $readDays));
+        $unreadBefore = new \DateTimeImmutable(\sprintf('-%d days', $unreadDays));
 
         if ($input->getOption('dry-run')) {
             $io->warning('DRY RUN - No changes will be made.');
-            $io->success(\sprintf('%d read notifications older than %s would be deleted.', $this->notificationRepository->countReadOlderThan($before), $before->format('Y-m-d')));
+            $io->success(\sprintf(
+                '%d read notifications older than %s and %d unread notifications older than %s would be deleted.',
+                $this->notificationRecipientRepository->countReadOlderThan($readBefore),
+                $readBefore->format('Y-m-d'),
+                $this->notificationRecipientRepository->countUnreadOlderThan($unreadBefore),
+                $unreadBefore->format('Y-m-d')
+            ));
 
             return Command::SUCCESS;
         }
 
-        $deleted = $this->notificationRepository->deleteReadOlderThan($before);
+        $deletedRead = $this->notificationRecipientRepository->deleteReadOlderThan($readBefore);
+        $deletedUnread = $this->notificationRecipientRepository->deleteUnreadOlderThan($unreadBefore);
 
-        $io->success(\sprintf('Deleted %d read notifications older than %s.', $deleted, $before->format('Y-m-d')));
+        $io->success(\sprintf(
+            'Deleted %d read notifications older than %s and %d unread notifications older than %s.',
+            $deletedRead,
+            $readBefore->format('Y-m-d'),
+            $deletedUnread,
+            $unreadBefore->format('Y-m-d')
+        ));
 
         return Command::SUCCESS;
     }

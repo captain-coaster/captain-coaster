@@ -242,10 +242,11 @@ profile:
             format_changed_success: 'Your display name format has been updated successfully.'
         preferences:
             profilePicture: 'Profile Picture'
-            notificationPreference: 'Notification Preferences'
-            choices:
-                email: 'Web & Email'
-                notif: 'Web only'
+            notifications:
+                title: 'Notifications'
+                inApp: 'In-app'
+            emailNotification:
+                label: 'Email'
             preferredLocale: 'Preferred Language'
             homePark:
                 label: 'My Home Park'
@@ -406,20 +407,6 @@ contact:
         title: 'Contact Form - Captain Coaster'
     flash:
         success: 'Thank you {name}, your message was sent to Captain Coaster staff.'
-
-notif:
-    title: 'Activity'
-    empty: 'Nothing special right now, go ride some coasters!'
-    badge:
-        message: 'Check it out: Captain just gave you the "{name}" badge!'
-    ranking:
-        message: 'World Roller Coaster Rankings have just been updated!'
-        messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'
-    email:
-        title: '🎢 New notification on Captain Coaster'
-        gotnotif: 'You just received a new notification on Captain Coaster:'
-        view: 'View this on <a href="{link_path}">CaptainCoaster.com</a>'
-        unsubscribe: 'To stop receiving this, please change your <a href="{link_path}">notification preferences</a>.'
 
 coaster_search:
     title: 'Search Coasters'

@@ -49,7 +49,7 @@
         <!-- Content area -->
         <div class="content">
           {{ include('flashes.html.twig') }}
-          <div id="notifications" data-controller="notification" data-notification-target="container"></div>
+          <div id="toasts" data-controller="toast" data-toast-target="container"></div>
 
           {% block body %}{% endblock %}
 

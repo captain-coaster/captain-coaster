@@ -67,7 +67,13 @@
                 <legend>{{ 'profile.settings.sections.preferences'|trans }}</legend>
 
                 <div class="form-group">
-                  {{ form_label(form.emailNotification) }}
+                  <label class="control-label">{{ 'profile.settings.preferences.notifications.title'|trans }}</label>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" checked disabled>
+                      {{ 'profile.settings.preferences.notifications.inApp'|trans }}
+                    </label>
+                  </div>
                   {{ form_widget(form.emailNotification) }}
                   {{ form_errors(form.emailNotification) }}
                 </div>

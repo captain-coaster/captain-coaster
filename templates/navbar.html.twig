@@ -58,41 +58,16 @@
             <li class="divider"></li>
             <!-- notifications -->
             {% set unread_count = unread_notification_count() %}
-            <li class="dropdown-submenu dropdown-submenu-hover dropdown-submenu-left">
-              <a href="#" class="dropdown-toggle account-menu-row" data-toggle="dropdown">
+            <li>
+              <a href="{{ path('notification_index') }}" class="account-menu-row">
                 <span class="account-menu-row-label">
                   {{ ux_icon('heroicons:bell', {'class': 'w-5 h-5'}) }}
-                  {{ 'notif.title'|trans }}
+                  {{ 'notif.title'|trans({}, 'notification') }}
                   {% if unread_count > 0 %}
                     <span class="badge bg-warning-400">{{ unread_count }}</span>
                   {% endif %}
                 </span>
-                <span class="account-menu-row-value">
-                  {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}
-                </span>
               </a>
-              <div class="dropdown-menu dropdown-content">
-                <div class="dropdown-content-heading">{{ 'notif.title'|trans }}</div>
-                <ul class="media-list dropdown-content-body width-350">
-                  {% for notif in unread_notifications() %}
-                    <li class="media">
-                      <div class="media-left">
-                        <a href="#" class="btn bg-success-400 btn-rounded btn-icon btn-xs">
-                          {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}</a>
-                      </div>
-
-                      <div class="media-body">
-                        <a href="{{ path('notification_read', {'id': notif.id}) }}">
-                          {{ notif.message|trans({'%name%': notif.parameter|trans}) }}
-                        </a>
-                        <div class="media-annotation">{{ notif.createdAt|ago }}</div>
-                      </div>
-                    </li>
-                  {% else %}
-                    <li>{{ 'notif.empty'|trans }}</li>
-                  {% endfor %}
-                </ul>
-              </div>
             </li>
             <!-- /notifications -->
             <li class="divider"></li>

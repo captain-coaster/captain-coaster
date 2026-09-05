@@ -400,11 +400,11 @@ export default class extends Controller {
      * @private
      */
     _showNotification(message, type = 'info') {
-        // Get the global notification controller
+        // Get the global toast controller
         const notificationController =
             this.application.getControllerForElementAndIdentifier(
-                document.getElementById('notifications'),
-                'notification'
+                document.getElementById('toasts'),
+                'toast'
             );
 
         if (notificationController) {

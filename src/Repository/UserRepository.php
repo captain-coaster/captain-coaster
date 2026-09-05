@@ -27,7 +27,23 @@ class UserRepository extends ServiceEntityRepository
             ->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
+            ->where('u.enabled = 1')
+            ->andWhere('u.deletedAt IS NULL')
             ->getQuery();
+    }
+
+    /**
+     * Every enabled, non-deleted user, streamed rather than hydrated all at
+     * once — for broadcast fan-out (e.g. ranking notifications) where loading
+     * tens of thousands of entities into memory up front isn't necessary.
+     *
+     * @return iterable<int, User>
+     */
+    public function findAllIterable(): iterable
+    {
+        foreach ($this->getAllUsersQuery()->toIterable() as $user) {
+            yield $user;
+        }
     }
 
     /** @return Query<mixed, mixed> */

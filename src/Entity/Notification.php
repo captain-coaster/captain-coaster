@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Enum\NotificationType;
 use App\Repository\NotificationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Notification.
+ * Shared content for one notification event. Broadcast-style notifications
+ * (e.g. a ranking update) have one row here and many {@see NotificationRecipient}
+ * rows, instead of duplicating message/parameter/type per recipient.
  */
 #[ORM\Table(name: 'notification')]
-#[ORM\Index(name: 'idx_notification_user_unread', columns: ['user_id', 'is_read', 'created_at'])]
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 class Notification
 {
@@ -32,165 +34,52 @@ class Notification
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
-    private string $type = '';
+    #[ORM\Column(length: 20, enumType: NotificationType::class)]
+    private NotificationType $type;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
-    private bool $isRead = false;
-
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'notifications')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?User $user = null;
-
-    /**
-     * Get id.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * Set message.
-     *
-     * @param string $message
-     *
-     * @return Notification
-     */
-    public function setMessage($message)
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): static
     {
         $this->message = $message;
 
         return $this;
     }
 
-    /**
-     * Get message.
-     *
-     * @return string
-     */
-    public function getMessage()
+    public function getParameter(): ?string
     {
-        return $this->message;
+        return $this->parameter;
     }
 
-    /**
-     * Set createdAt.
-     *
-     * @param \DateTime $createdAt
-     *
-     * @return Notification
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    /**
-     * Get createdAt.
-     *
-     * @return \DateTimeInterface|null
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set type.
-     *
-     * @param string $type
-     *
-     * @return Notification
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set isRead.
-     *
-     * @param bool $isRead
-     *
-     * @return Notification
-     */
-    public function setIsRead($isRead)
-    {
-        $this->isRead = $isRead;
-
-        return $this;
-    }
-
-    /**
-     * Get isRead.
-     *
-     * @return bool
-     */
-    public function getIsRead()
-    {
-        return $this->isRead;
-    }
-
-    /**
-     * Set user.
-     *
-     * @return Notification
-     */
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user.
-     *
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * Set parameter.
-     *
-     * @param string $parameter
-     *
-     * @return Notification
-     */
-    public function setParameter($parameter)
+    public function setParameter(?string $parameter): static
     {
         $this->parameter = $parameter;
 
         return $this;
     }
 
-    /**
-     * Get parameter.
-     *
-     * @return string
-     */
-    public function getParameter()
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->parameter;
+        return $this->createdAt;
+    }
+
+    public function getType(): NotificationType
+    {
+        return $this->type;
+    }
+
+    public function setType(NotificationType $type): static
+    {
+        $this->type = $type;
+
+        return $this;
     }
 }
