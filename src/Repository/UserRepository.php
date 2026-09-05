@@ -125,15 +125,12 @@ class UserRepository extends ServiceEntityRepository
     public function countAll(): int
     {
         try {
-            $query = $this->getEntityManager()
+            return (int) $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb_users')
                 ->from(User::class, 'u')
-                ->getQuery();
-
-            $query->enableResultCache(600);
-
-            return (int) $query->getSingleScalarResult();
+                ->getQuery()
+                ->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }

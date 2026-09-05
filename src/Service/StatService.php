@@ -26,42 +26,36 @@ class StatService
     }
 
     /**
+     * Homepage stats are cached here, at the display layer, rather than in
+     * the repositories themselves: RankingService also calls
+     * RiddenCoasterRepository::countAll() to persist the monthly Ranking
+     * snapshot, and that write needs the real count, not a value that could
+     * be up to 10 minutes stale.
+     *
      * @return array<string, mixed>
      *
      * @throws \Exception
      */
     public function getIndexStats(): array
     {
-        $stats = [];
+        $riddenCoasterRepository = $this->em->getRepository(RiddenCoaster::class);
 
-        $stats['nb_ratings'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countAll();
+        return [
+            'nb_ratings' => $this->cachedCount('stats_nb_ratings', static fn () => $riddenCoasterRepository->countAll()),
+            'nb_new_ratings' => $this->cachedCount('stats_nb_new_ratings', static fn () => $riddenCoasterRepository->countNew(new \DateTime('-1 day'))),
+            'nb_reviews' => $this->cachedCount('stats_nb_reviews', static fn () => $riddenCoasterRepository->countReviews()),
+            'nb_users' => $this->cachedCount('stats_nb_users', fn () => $this->em->getRepository(User::class)->countAll()),
+            'nb_images' => $this->cachedCount('stats_nb_images', fn () => $this->em->getRepository(Image::class)->countAll()),
+        ];
+    }
 
-        // Cache under a fixed key so the "now - 1 day" boundary computed
-        // inside the callback doesn't itself defeat caching -- it only
-        // runs on a real cache miss, once per TTL.
-        $stats['nb_new_ratings'] = $this->cache->get('stats_nb_new_ratings', function (ItemInterface $item) {
+    private function cachedCount(string $key, callable $count): int
+    {
+        return $this->cache->get($key, static function (ItemInterface $item) use ($count) {
             $item->expiresAfter(600);
 
-            return $this->em
-                ->getRepository(RiddenCoaster::class)
-                ->countNew(new \DateTime('-1 day'));
+            return $count();
         });
-
-        $stats['nb_reviews'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countReviews();
-
-        $stats['nb_users'] = $this->em
-            ->getRepository(User::class)
-            ->countAll();
-
-        $stats['nb_images'] = $this->em
-            ->getRepository(Image::class)
-            ->countAll();
-
-        return $stats;
     }
 
     /** @return array<string, mixed> */

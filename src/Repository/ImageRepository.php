@@ -70,16 +70,13 @@ class ImageRepository extends ServiceEntityRepository
 
     public function countAll(): int
     {
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(Image::class, 'i')
             ->where('i.enabled = 1')
-            ->getQuery();
-
-        $query->enableResultCache(600);
-
-        return (int) $query->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /** @return array<Image> */

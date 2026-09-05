@@ -33,15 +33,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     public function countAll(): int
     {
         try {
-            $query = $this->getEntityManager()
+            return (int) $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb_rating')
                 ->from(RiddenCoaster::class, 'r')
-                ->getQuery();
-
-            $query->enableResultCache(600);
-
-            return (int) $query->getSingleScalarResult();
+                ->getQuery()
+                ->getSingleScalarResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
@@ -54,15 +51,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countReviews(): int
     {
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(r.review) as nb_review')
             ->from(RiddenCoaster::class, 'r')
-            ->getQuery();
-
-        $query->enableResultCache(600);
-
-        return (int) $query->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
