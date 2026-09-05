@@ -179,6 +179,19 @@ reload_php_fpm() {
     fi
 }
 
+# Function to restart the messenger worker (systemd service consuming the
+# async transport). A long-running CLI worker doesn't benefit from PHP-FPM's
+# OPcache reload above — without this, it keeps running whatever code was
+# loaded when it last started, indefinitely.
+restart_messenger_worker() {
+    log "Restarting messenger worker..."
+    if sudo systemctl restart captain-messenger.service 2>/dev/null; then
+        success "Messenger worker restarted"
+    else
+        warning "Could not restart messenger worker automatically. Run manually: sudo systemctl restart captain-messenger.service"
+    fi
+}
+
 # Function to verify deployment
 verify_deployment() {
     log "Verifying deployment..."
@@ -227,6 +240,7 @@ finalize_deploy() {
     clear_cache
     warm_cache
     reload_php_fpm
+    restart_messenger_worker
     verify_deployment
     disable_maintenance
 }
@@ -385,6 +399,7 @@ show_usage() {
     echo "  assets       Build production assets with Webpack Encore"
     echo "  migrate      Run database migrations"
     echo "  cache        Clear and warm cache"
+    echo "  messenger-restart  Restart the messenger worker (systemd)"
     echo "  verify       Verify deployment"
     echo "  rollback     Rollback code and optionally migrations"
     echo "  help         Show this help message"
@@ -401,6 +416,7 @@ show_usage() {
     echo "  $0 assets"
     echo "  $0 migrate"
     echo "  $0 cache"
+    echo "  $0 messenger-restart"
     echo "  $0 verify"
     echo "  $0 maintenance off"
 }
@@ -443,6 +459,9 @@ case "${1:-help}" in
         clear_cache
         warm_cache
         reload_php_fpm
+        ;;
+    "messenger-restart")
+        restart_messenger_worker
         ;;
     "verify")
         verify_deployment
