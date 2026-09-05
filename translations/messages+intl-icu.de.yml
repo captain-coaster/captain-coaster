@@ -248,9 +248,11 @@ profile:
             format_changed_success: Das Anzeigeformat Ihres Namens wurde erfolgreich aktualisiert.
         preferences:
             profilePicture: Profilbild
+            notifications:
+                title: Benachrichtigungen
+                inApp: In-app
             emailNotification:
-                label: 'Benachrichtigungen zusätzlich per E-Mail senden'
-                help: 'Deine Benachrichtigungen bleiben immer auf der Website sichtbar — das entscheidet nur, ob sie dir zusätzlich per E-Mail geschickt werden.'
+                label: E-Mail
             preferredLocale: Bevorzugte Sprache
             homePark:
                 label: Mein Heimatpark

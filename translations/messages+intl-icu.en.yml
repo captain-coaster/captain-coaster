@@ -242,9 +242,11 @@ profile:
             format_changed_success: 'Your display name format has been updated successfully.'
         preferences:
             profilePicture: 'Profile Picture'
+            notifications:
+                title: 'Notifications'
+                inApp: 'In-app'
             emailNotification:
-                label: 'Also email me my notifications'
-                help: "You'll always see your notifications on the site — this only decides whether they're also emailed to you."
+                label: 'Email'
             preferredLocale: 'Preferred Language'
             homePark:
                 label: 'My Home Park'

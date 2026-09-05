@@ -247,9 +247,11 @@ profile:
             format_changed_success: "Le format d'affichage de votre nom a été mis à jour avec succès."
         preferences:
             profilePicture: Photo de profil
+            notifications:
+                title: Notifications
+                inApp: In-app
             emailNotification:
-                label: "M'envoyer aussi mes notifications par e-mail"
-                help: "Vos notifications restent toujours visibles sur le site — ceci décide seulement si elles vous sont aussi envoyées par e-mail."
+                label: E-mail
             preferredLocale: Langue préférée
             homePark:
                 label: Mon home park

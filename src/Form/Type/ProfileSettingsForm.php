@@ -110,7 +110,6 @@ class ProfileSettingsForm extends AbstractType
         $builder->add('emailNotification', CheckboxType::class, [
             'required' => false,
             'label' => 'profile.settings.preferences.emailNotification.label',
-            'help' => 'profile.settings.preferences.emailNotification.help',
         ]);
 
         $builder->add('preferredLocale', ChoiceType::class, [
