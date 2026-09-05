@@ -39,6 +39,15 @@ class NotificationController extends AbstractController
         $recipients = \array_slice($recipients, 0, self::PAGE_SIZE);
         $last = end($recipients) ?: null;
 
+        if ($request->isXmlHttpRequest()) {
+            $response = $this->render('Notification/_notification_list.html.twig', ['recipients' => $recipients]);
+            $response->headers->set('X-Notification-Has-More', $hasMore ? '1' : '0');
+            $response->headers->set('X-Notification-Next-Before', (string) $last?->getCreatedAt()?->format(\DateTimeInterface::ATOM));
+            $response->headers->set('X-Notification-Next-Before-Id', (string) $last?->getId());
+
+            return $response;
+        }
+
         return $this->render('Notification/index.html.twig', [
             'recipients' => $recipients,
             'hasMore' => $hasMore,

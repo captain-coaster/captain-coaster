@@ -1,0 +1,13 @@
+// media-list rows read as identical whether read or unread with only
+// Bootstrap's own bg-light utility (too subtle a tint to register as a
+// state). An accent left border + tint + bold text is the standard
+// unread-row treatment and reads unambiguously at a glance.
+.notif-item.unread {
+    background-color: @color-primary-50;
+    border-left: 3px solid @color-primary-500;
+    padding-left: 12px;
+
+    .media-body a {
+        font-weight: 600;
+    }
+}

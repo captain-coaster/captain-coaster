@@ -1,0 +1,34 @@
+{% for recipient in recipients %}
+  {% set notification = recipient.notification %}
+  <li class="media notif-item{% if not recipient.isRead %} unread{% endif %}">
+    <div class="media-left">
+      {% set iconClass = {
+        'ranking': 'bg-primary',
+        'badge': 'bg-success-400',
+        'announcement': 'bg-warning-400',
+      }[notification.type.value] %}
+      <a href="{{ path('notification_read', {'id': recipient.id}) }}" class="btn {{ iconClass }} btn-rounded btn-icon btn-xs">
+        {% if notification.type.value == 'ranking' %}
+          {{ ux_icon('heroicons:chart-bar', {'class': 'w-5 h-5'}) }}
+        {% elseif notification.type.value == 'announcement' %}
+          {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5'}) }}
+        {% else %}
+          {{ ux_icon('heroicons-solid:star', {'class': 'w-5 h-5'}) }}
+        {% endif %}
+      </a>
+    </div>
+
+    <div class="media-body">
+      <a href="{{ path('notification_read', {'id': recipient.id}) }}">
+        {% if notification.parameter is not null %}
+          {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans : notification.parameter}) }}
+        {% else %}
+          {{ notification.message|trans }}
+        {% endif %}
+      </a>
+      <div class="media-annotation">{{ recipient.createdAt|ago }}</div>
+    </div>
+  </li>
+{% else %}
+  <li>{{ 'notif.empty'|trans }}</li>
+{% endfor %}
