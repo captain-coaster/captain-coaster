@@ -10,6 +10,8 @@ use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class StatService.
@@ -17,42 +19,43 @@ use Doctrine\ORM\EntityManagerInterface;
 class StatService
 {
     /** RatingService constructor. */
-    public function __construct(private readonly EntityManagerInterface $em)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly CacheInterface $cache,
+    ) {
     }
 
     /**
+     * Homepage stats are cached here, at the display layer, rather than in
+     * the repositories themselves: RankingService also calls
+     * RiddenCoasterRepository::countAll() to persist the monthly Ranking
+     * snapshot, and that write needs the real count, not a value that could
+     * be up to 10 minutes stale.
+     *
      * @return array<string, mixed>
      *
      * @throws \Exception
      */
     public function getIndexStats(): array
     {
-        $stats = [];
+        $riddenCoasterRepository = $this->em->getRepository(RiddenCoaster::class);
 
-        $stats['nb_ratings'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countAll();
+        return [
+            'nb_ratings' => $this->cachedCount('stats_nb_ratings', static fn () => $riddenCoasterRepository->countAll()),
+            'nb_new_ratings' => $this->cachedCount('stats_nb_new_ratings', static fn () => $riddenCoasterRepository->countNew(new \DateTime('-1 day'))),
+            'nb_reviews' => $this->cachedCount('stats_nb_reviews', static fn () => $riddenCoasterRepository->countReviews()),
+            'nb_users' => $this->cachedCount('stats_nb_users', fn () => $this->em->getRepository(User::class)->countAll()),
+            'nb_images' => $this->cachedCount('stats_nb_images', fn () => $this->em->getRepository(Image::class)->countAll()),
+        ];
+    }
 
-        $date = new \DateTime();
-        $date->sub(new \DateInterval('P1D'));
-        $stats['nb_new_ratings'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countNew($date);
+    private function cachedCount(string $key, callable $count): int
+    {
+        return $this->cache->get($key, static function (ItemInterface $item) use ($count) {
+            $item->expiresAfter(600);
 
-        $stats['nb_reviews'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countReviews();
-
-        $stats['nb_users'] = $this->em
-            ->getRepository(User::class)
-            ->countAll();
-
-        $stats['nb_images'] = $this->em
-            ->getRepository(Image::class)
-            ->countAll();
-
-        return $stats;
+            return $count();
+        });
     }
 
     /** @return array<string, mixed> */

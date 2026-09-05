@@ -24,14 +24,18 @@ class ImageRepository extends ServiceEntityRepository
     public function findLatestLikedImage(): Image
     {
         $query = $this->createQueryBuilder('i')
+            ->addSelect('c', 'st', 'mi')
             ->join(LikedImage::class, 'li', 'WITH', 'li.image = i.id')
+            ->innerJoin('i.coaster', 'c')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.mainImage', 'mi')
             ->where('i.enabled = 1')
             ->andWhere('i.credit IS NOT NULL')
             ->orderBy('li.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery();
 
-        $query->enableResultCache(300);
+        $query->enableResultCache(600);
 
         return $query->getSingleResult();
     }
@@ -66,16 +70,13 @@ class ImageRepository extends ServiceEntityRepository
 
     public function countAll(): int
     {
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(Image::class, 'i')
             ->where('i.enabled = 1')
-            ->getQuery();
-
-        $query->enableResultCache(600);
-
-        return (int) $query->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /** @return array<Image> */

@@ -54,20 +54,15 @@ class DefaultController extends BaseController
     public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, ReviewLanguagePreferenceService $reviewLanguagePreferenceService): Response
     {
         $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
-        $missingImages = [];
-        if ($user = $this->getUser()) {
-            $missingImages = $riddenCoasterRepository->findCoastersWithNoImage($user);
-        }
 
         $reviews = $riddenCoasterRepository->getLatestReviews($preferredReviewLanguages, 3);
-        $riddenCoasterRepository->preloadTags($reviews);
+        $riddenCoasterRepository->preloadTags($reviews, 300);
 
         return $this->render('Default/index.html.twig', [
             'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
             'image' => $imageRepository->findLatestLikedImage(),
             'stats' => $statService->getIndexStats(),
             'reviews' => $reviews,
-            'missingImages' => $missingImages,
             'preferredReviewLanguages' => $preferredReviewLanguages,
         ]);
     }
