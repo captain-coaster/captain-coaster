@@ -68,7 +68,12 @@ class RankingController extends AbstractController
             $pagination = $this->paginator->paginate(
                 $this->coasterRepository->findForRanking($validatedFilters),
                 $page,
-                self::COASTERS_PER_PAGE
+                self::COASTERS_PER_PAGE,
+                // Every join in findForRanking() is ManyToOne/OneToOne, so it can
+                // never duplicate a coaster row -- skip KnpPaginator's extra
+                // "distinct id" pre-query, which exists only to guard against
+                // *-to-many joins.
+                [PaginatorInterface::DISTINCT => false]
             );
         } catch (AccessDeniedHttpException $e) {
             throw $e;

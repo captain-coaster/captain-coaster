@@ -174,17 +174,36 @@ class CoasterRepository extends ServiceEntityRepository
     public function findForRanking(array $filters = []): Query
     {
         $qb = $this->createBaseQuery()
-            ->select('c', 'p', 'm')
+            ->select('c', 'p', 'm', 'country', 'st')
+            ->leftJoin('c.mainImage', 'mi')
+            ->addSelect('mi')
             ->andWhere('c.rank IS NOT NULL');
 
         $this->applyFilters($qb, $filters, 'ranking');
+
+        // Only skip caching when the query shape actually differs per user.
+        // filters['user'] alone is a no-op query-wise (see applyUserFilters)
+        // -- it's just the id the ridden/notridden toggles apply to -- but
+        // the frontend sends it on every request for a logged-in visitor,
+        // so gating on its mere presence disabled caching for all of them.
+        $hasUserSpecificFilter = 'on' === ($filters['ridden'] ?? null) || 'on' === ($filters['notridden'] ?? null);
+
+        // Every join here is ManyToOne/OneToOne, so a plain count can never
+        // over/under-count -- compute and cache it ourselves and hand it to
+        // KnpPaginator via a hint, instead of letting it run its own
+        // (uncached) COUNT(*) query on every request.
+        $countQuery = (clone $qb)->select('count(c.id)')->getQuery();
+        if (!$hasUserSpecificFilter) {
+            $countQuery->enableResultCache(300);
+        }
+        $count = (int) $countQuery->getSingleScalarResult();
+
         $qb->orderBy('c.rank', 'ASC');
 
         $query = $qb->getQuery();
+        $query->setHint('knp_paginator.count', $count);
 
-        // Only cache if no user-specific filters
-        $hasUserFilter = !empty($filters['user']);
-        if (!$hasUserFilter) {
+        if (!$hasUserSpecificFilter) {
             $query->enableResultCache(300); // Cache for 5 minutes - public data only
         }
 
