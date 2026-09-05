@@ -1,13 +1,52 @@
-// media-list rows read as identical whether read or unread with only
-// Bootstrap's own bg-light utility (too subtle a tint to register as a
-// state). An accent left border + tint + bold text is the standard
-// unread-row treatment and reads unambiguously at a glance.
-.notif-item.unread {
-    background-color: @color-primary-50;
-    border-left: 3px solid @color-primary-500;
-    padding-left: 12px;
-
+// Read/unread needs to register at a glance across a long list without
+// shouting on every row. A border-left accent + background tint (the
+// default reach for "unread row") reads as a solid block of color per
+// item and gets loud fast in a list of 15-20 - the treatment below instead
+// de-emphasizes read rows (muted text, faded icon) and marks unread with
+// weight plus a small dot, the same shape Gmail/GitHub/Linear converge on.
+.notif-item {
     .media-body a {
-        font-weight: 600;
+        // Overrides the theme's default link-blue: the message is content,
+        // not a "this is a link" affordance - only the hover/focus state
+        // below needs to signal that.
+        color: @text-color;
+
+        &:hover,
+        &:focus {
+            color: @color-primary-600;
+        }
+    }
+
+    &.unread {
+        .media-body a {
+            font-weight: 600;
+        }
+
+        .media-annotation {
+            position: relative;
+            padding-left: 11px;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                width: 6px;
+                height: 6px;
+                margin-top: -3px;
+                border-radius: 50%;
+                background-color: @color-primary-500;
+            }
+        }
+    }
+
+    &:not(.unread) {
+        .media-left .btn {
+            opacity: 0.5;
+        }
+
+        .media-annotation {
+            color: fade(@text-color, 45%);
+        }
     }
 }
