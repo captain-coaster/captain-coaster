@@ -9,6 +9,7 @@ use App\Entity\NotificationRecipient;
 use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Message\SendNotificationEmailMessage;
+use App\Repository\NotificationRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -22,20 +23,27 @@ class NotificationServiceTest extends TestCase
     private EntityManagerInterface&MockObject $em;
     private RouterInterface&MockObject $router;
     private MessageBusInterface&MockObject $messageBus;
+    private NotificationRepository&MockObject $notificationRepository;
     private NotificationService $service;
     private int $nextRecipientId = 1;
+    /** @var list<object> */
+    private array $persistedEntities = [];
 
     protected function setUp(): void
     {
         $this->em = $this->createMock(EntityManagerInterface::class);
         $this->router = $this->createMock(RouterInterface::class);
         $this->messageBus = $this->createMock(MessageBusInterface::class);
+        // Unstubbed calls return null (the declared ?Notification return type),
+        // i.e. "no match" — tests that care about a match configure it themselves.
+        $this->notificationRepository = $this->createMock(NotificationRepository::class);
 
-        $this->service = new NotificationService($this->em, $this->router, $this->messageBus);
+        $this->service = new NotificationService($this->em, $this->router, $this->messageBus, $this->notificationRepository);
 
         // Real Doctrine sets Notification::createdAt (Gedmo, on flush) and assigns
         // auto-increment ids on persist; both are stubbed here since flush() is mocked.
         $this->em->method('persist')->willReturnCallback(function (object $entity): void {
+            $this->persistedEntities[] = $entity;
             if ($entity instanceof Notification) {
                 $this->setPrivateProperty($entity, 'createdAt', new \DateTime());
             }
@@ -78,6 +86,31 @@ class NotificationServiceTest extends TestCase
             ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
         $this->service->send($user, NotificationType::Ranking, 'notif.ranking.message');
+    }
+
+    public function testSendReusesAMatchingNotificationInsteadOfCreatingOne(): void
+    {
+        $existing = new Notification();
+        $existing->setType(NotificationType::Badge);
+        $existing->setMessage('notif.badge.message');
+        $existing->setParameter('badge.rating1');
+        $this->setPrivateProperty($existing, 'createdAt', new \DateTime('-3 days'));
+
+        $this->notificationRepository
+            ->method('findMatching')
+            ->with(NotificationType::Badge, 'notif.badge.message', 'badge.rating1')
+            ->willReturn($existing);
+
+        $this->service->send($this->userWithEmailNotification(false), NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
+
+        // Only the recipient row is persisted — no duplicate Notification content row.
+        $this->assertCount(1, $this->persistedEntities);
+        $recipient = $this->persistedEntities[0];
+        $this->assertInstanceOf(NotificationRecipient::class, $recipient);
+        $this->assertSame($existing, $recipient->getNotification());
+        // The recipient's own timestamp reflects when *this* user got it, not
+        // when the reused content row was first created.
+        $this->assertNotEquals($existing->getCreatedAt(), $recipient->getCreatedAt());
     }
 
     public function testSendToUsersDispatchesOneEmailPerOptedInUser(): void

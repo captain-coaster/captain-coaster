@@ -9,6 +9,7 @@ use App\Entity\NotificationRecipient;
 use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Message\SendNotificationEmailMessage;
+use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -22,13 +23,22 @@ class NotificationService
         private readonly EntityManagerInterface $em,
         private readonly RouterInterface $router,
         private readonly MessageBusInterface $messageBus,
+        private readonly NotificationRepository $notificationRepository,
     ) {
     }
 
+    /**
+     * Reuses a matching content row rather than creating a new one — e.g.
+     * every "rating1 badge" notification is the same content regardless of
+     * which user earned it, unlike {@see sendToUsers()}'s broadcasts, which
+     * are each their own event even when the text repeats (e.g. two
+     * ranking updates with no new coaster to call out).
+     */
     public function send(User $user, NotificationType $type, string $message, ?string $parameter = null): void
     {
-        $notification = $this->createNotification($type, $message, $parameter);
-        $recipient = $this->addRecipient($notification, $notification->getCreatedAt(), $user);
+        $notification = $this->notificationRepository->findMatching($type, $message, $parameter)
+            ?? $this->createNotification($type, $message, $parameter);
+        $recipient = $this->addRecipient($notification, new \DateTime(), $user);
         $this->em->flush();
 
         $this->dispatchEmailIfEnabled($recipient, $user);
