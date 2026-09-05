@@ -27,32 +27,17 @@ class NotificationController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $beforeCreatedAt = null;
-        if (null !== $before = $request->query->get('before')) {
-            $beforeCreatedAt = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $before) ?: null;
-        }
-        $beforeId = $request->query->getInt('beforeId') ?: null;
+        $count = max($request->query->getInt('count', self::PAGE_SIZE), self::PAGE_SIZE);
+        $recipients = $notificationRecipientRepository->findPageForUser($user, $count + 1);
+        $hasMore = \count($recipients) > $count;
+        $recipients = \array_slice($recipients, 0, $count);
 
-        $recipients = $notificationRecipientRepository->findPageForUser($user, self::PAGE_SIZE + 1, $beforeCreatedAt, $beforeId);
+        $template = $request->isXmlHttpRequest() ? 'Notification/_notification_body.html.twig' : 'Notification/index.html.twig';
 
-        $hasMore = \count($recipients) > self::PAGE_SIZE;
-        $recipients = \array_slice($recipients, 0, self::PAGE_SIZE);
-        $last = end($recipients) ?: null;
-
-        if ($request->isXmlHttpRequest()) {
-            $response = $this->render('Notification/_notification_list.html.twig', ['recipients' => $recipients]);
-            $response->headers->set('X-Notification-Has-More', $hasMore ? '1' : '0');
-            $response->headers->set('X-Notification-Next-Before', (string) $last?->getCreatedAt()?->format(\DateTimeInterface::ATOM));
-            $response->headers->set('X-Notification-Next-Before-Id', (string) $last?->getId());
-
-            return $response;
-        }
-
-        return $this->render('Notification/index.html.twig', [
+        return $this->render($template, [
             'recipients' => $recipients,
             'hasMore' => $hasMore,
-            'nextBefore' => $last?->getCreatedAt()?->format(\DateTimeInterface::ATOM),
-            'nextBeforeId' => $last?->getId(),
+            'nextCount' => $count + self::PAGE_SIZE,
             'unreadCount' => $notificationRecipientRepository->countUnreadForUser($user),
         ]);
     }

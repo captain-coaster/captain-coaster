@@ -23,21 +23,9 @@
             </div>
           {% endif %}
         </div>
-        <div class="panel-body">
-          <ul class="media-list" data-notification-list-target="list">
-            {% include 'Notification/_notification_list.html.twig' %}
-          </ul>
+        <div data-notification-list-target="container">
+          {% include 'Notification/_notification_body.html.twig' %}
         </div>
-        {% if hasMore %}
-          <div class="panel-footer text-center">
-            <a href="{{ path('notification_index', {'before': nextBefore, 'beforeId': nextBeforeId}) }}"
-               class="btn btn-link"
-               data-notification-list-target="trigger"
-               data-action="click->notification-list#loadMore">
-              {{ 'notif.loadOlder'|trans }}
-            </a>
-          </div>
-        {% endif %}
       </div>
     </div>
   </div>

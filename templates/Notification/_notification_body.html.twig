@@ -1,0 +1,14 @@
+<div class="panel-body">
+  <ul class="media-list">
+    {% include 'Notification/_notification_list.html.twig' %}
+  </ul>
+</div>
+{% if hasMore %}
+  <div class="panel-footer text-center">
+    <a href="{{ path('notification_index', {'count': nextCount}) }}"
+       class="btn btn-link"
+       data-action="click->notification-list#loadMore">
+      {{ 'notif.loadOlder'|trans }}
+    </a>
+  </div>
+{% endif %}

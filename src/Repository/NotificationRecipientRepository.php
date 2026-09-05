@@ -32,14 +32,19 @@ class NotificationRecipientRepository extends ServiceEntityRepository
     }
 
     /**
-     * Keyset-paginated page of a user's notifications, newest first, with
-     * content eager-loaded to avoid N+1.
+     * A user's $limit most recent notifications, newest first, with content
+     * eager-loaded to avoid N+1. "Load older" re-requests this with a larger
+     * $limit (mirroring how the coaster page's own "load more photos" works)
+     * rather than paging by cursor — at realistic per-user volumes, re-reading
+     * the first N rows of an indexed, ordered scan costs nothing extra, and
+     * it avoids a page of cursor bookkeeping on both ends for a difference
+     * that would only matter at a row count this feature will never reach.
      *
      * @return array<int, NotificationRecipient>
      */
-    public function findPageForUser(User $user, int $limit, ?\DateTimeInterface $beforeCreatedAt = null, ?int $beforeId = null): array
+    public function findPageForUser(User $user, int $limit): array
     {
-        $qb = $this
+        return $this
             ->createQueryBuilder('nr')
             ->addSelect('n')
             ->join('nr.notification', 'n')
@@ -47,16 +52,9 @@ class NotificationRecipientRepository extends ServiceEntityRepository
             ->setParameter('user', $user)
             ->orderBy('nr.createdAt', 'DESC')
             ->addOrderBy('nr.id', 'DESC')
-            ->setMaxResults($limit);
-
-        if (null !== $beforeCreatedAt && null !== $beforeId) {
-            $qb
-                ->andWhere('nr.createdAt < :beforeCreatedAt OR (nr.createdAt = :beforeCreatedAt AND nr.id < :beforeId)')
-                ->setParameter('beforeCreatedAt', $beforeCreatedAt)
-                ->setParameter('beforeId', $beforeId);
-        }
-
-        return $qb->getQuery()->getResult();
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     public function markAllReadForUser(User $user): int
