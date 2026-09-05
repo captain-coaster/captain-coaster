@@ -7,6 +7,7 @@ namespace App\EventSubscriber;
 use App\Enum\NotificationType;
 use App\Event\BadgeAwardedEvent;
 use App\Event\RankingComputedEvent;
+use App\Repository\UserRepository;
 use App\Service\NotificationService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -18,8 +19,10 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class NotificationSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private readonly NotificationService $notificationService)
-    {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+        private readonly UserRepository $userRepository,
+    ) {
     }
 
     public static function getSubscribedEvents(): array
@@ -32,13 +35,15 @@ class NotificationSubscriber implements EventSubscriberInterface
 
     public function onRankingComputed(RankingComputedEvent $event): void
     {
+        $users = $this->userRepository->findAllIterable();
+
         if (null !== $event->highlightedCoasterName) {
-            $this->notificationService->sendToAllUsers(NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', $event->highlightedCoasterName);
+            $this->notificationService->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', $event->highlightedCoasterName);
 
             return;
         }
 
-        $this->notificationService->sendToAllUsers(NotificationType::Ranking, 'notif.ranking.message');
+        $this->notificationService->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.message');
     }
 
     public function onBadgeAwarded(BadgeAwardedEvent $event): void

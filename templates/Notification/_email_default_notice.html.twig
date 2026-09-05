@@ -1,6 +1,0 @@
-{% if app.user and not app.user.emailNotification %}
-  <div class="alert alert-info alert-dismissible" data-controller="dismissible-notice" data-dismissible-notice-key-value="email-notification-default-2026-09">
-    {{ 'notif.emailDefaultChangedNotice'|trans({'%link_path%': path('profile_settings')})|raw }}
-    <button type="button" class="close" data-action="dismissible-notice#dismiss" aria-label="Close">&times;</button>
-  </div>
-{% endif %}

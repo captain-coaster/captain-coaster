@@ -410,11 +410,12 @@ contact:
 notif:
     title: 'Activity'
     empty: 'Nothing special right now, go ride some coasters!'
-    markAllRead: 'Mark all read'
+    markAllRead: 'Mark all as read'
     loadOlder: 'Load older notifications'
-    emailDefaultChangedNotice: 'Email notifications are now off by default — turn them back on in your <a href="{link_path}">settings</a>.'
     badge:
         message: 'Check it out: Captain just gave you the "{name}" badge!'
+    announcement:
+        emailDefaultChanged: 'Email notifications are now off by default. Tap to turn them back on.'
     ranking:
         message: 'World Roller Coaster Rankings have just been updated!'
         messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'

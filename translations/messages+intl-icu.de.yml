@@ -417,9 +417,10 @@ notif:
     empty: 'Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!'
     markAllRead: 'Alle als gelesen markieren'
     loadOlder: 'Ältere Benachrichtigungen laden'
-    emailDefaultChangedNotice: 'E-Mail-Benachrichtigungen sind jetzt standardmäßig deaktiviert — schalte sie in deinen <a href="{link_path}">Einstellungen</a> wieder ein.'
     badge:
         message: 'Schaue es dir an: Captain gab dir gerade das "{name}" Abzeichen!'
+    announcement:
+        emailDefaultChanged: 'E-Mail-Benachrichtigungen sind jetzt standardmäßig deaktiviert. Tippe hier, um sie wieder einzuschalten.'
     ranking:
         message: 'Die Weltrangliste der Achterbahnen wurde gerade aktualisiert!'
         messageWithNewCoaster: 'Die Weltrangliste der Achterbahnen wurde gerade aktualisiert. {name} wurde zum Ranking hinzugefügt!'

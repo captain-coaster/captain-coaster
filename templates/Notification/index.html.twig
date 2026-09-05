@@ -4,18 +4,19 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  {% include 'Notification/_email_default_notice.html.twig' %}
   <div class="row">
     <div class="col-sm-12">
       <div class="panel panel-flat">
         <div class="panel-heading">
           <h6 class="panel-title">{{ 'notif.title'|trans }}</h6>
-          <div class="heading-elements visible-elements">
-            <form action="{{ path('notification_mark_all_read') }}" method="post">
-              <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-              <button type="submit" class="btn btn-link btn-float">{{ 'notif.markAllRead'|trans }}</button>
-            </form>
-          </div>
+          {% if unreadCount > 0 %}
+            <div class="heading-elements visible-elements">
+              <form action="{{ path('notification_mark_all_read') }}" method="post">
+                <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
+                <button type="submit" class="btn btn-link btn-float">{{ 'notif.markAllRead'|trans }}</button>
+              </form>
+            </div>
+          {% endif %}
         </div>
         <div class="panel-body">
           <ul class="media-list">
@@ -23,9 +24,16 @@
               {% set notification = recipient.notification %}
               <li class="media{% if not recipient.isRead %} bg-light{% endif %}">
                 <div class="media-left">
-                  <a href="{{ path('notification_read', {'id': recipient.id}) }}" class="btn {{ notification.type.value == 'ranking' ? 'bg-primary' : 'bg-success-400' }} btn-rounded btn-icon btn-xs">
+                  {% set iconClass = {
+                    'ranking': 'bg-primary',
+                    'badge': 'bg-success-400',
+                    'announcement': 'bg-warning-400',
+                  }[notification.type.value] %}
+                  <a href="{{ path('notification_read', {'id': recipient.id}) }}" class="btn {{ iconClass }} btn-rounded btn-icon btn-xs">
                     {% if notification.type.value == 'ranking' %}
                       {{ ux_icon('heroicons:chart-bar', {'class': 'w-5 h-5'}) }}
+                    {% elseif notification.type.value == 'announcement' %}
+                      {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5'}) }}
                     {% else %}
                       {{ ux_icon('heroicons-solid:star', {'class': 'w-5 h-5'}) }}
                     {% endif %}

@@ -413,12 +413,13 @@ contact:
 
 notif:
     title: Actividad
-    empty: '¡Nada especial ahora mismo, vaya a montar algunas montañas rusas!'
+    empty: '¡Nada especial ahora mismo, ve a montar algunas montañas rusas!'
     markAllRead: 'Marcar todo como leído'
     loadOlder: 'Cargar notificaciones anteriores'
-    emailDefaultChangedNotice: 'Las notificaciones por correo ahora están desactivadas por defecto — actívalas de nuevo en tu <a href="{link_path}">configuración</a>.'
     badge:
-        message: 'Echale un vistazo: ¡El Captain acaba de darte "{name}" la insignia!'
+        message: 'Échale un vistazo: ¡El Captain acaba de darte "{name}" la insignia!'
+    announcement:
+        emailDefaultChanged: 'Las notificaciones por correo ahora están desactivadas por defecto. Toca aquí para reactivarlas.'
     ranking:
         message: La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.
         messageWithNewCoaster: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. ¡{name} ha sido añadido al ranking!'

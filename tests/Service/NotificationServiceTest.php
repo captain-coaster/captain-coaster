@@ -9,7 +9,6 @@ use App\Entity\NotificationRecipient;
 use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Message\SendNotificationEmailMessage;
-use App\Repository\UserRepository;
 use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -23,7 +22,6 @@ class NotificationServiceTest extends TestCase
     private EntityManagerInterface&MockObject $em;
     private RouterInterface&MockObject $router;
     private MessageBusInterface&MockObject $messageBus;
-    private UserRepository&MockObject $userRepository;
     private NotificationService $service;
     private int $nextRecipientId = 1;
 
@@ -32,9 +30,8 @@ class NotificationServiceTest extends TestCase
         $this->em = $this->createMock(EntityManagerInterface::class);
         $this->router = $this->createMock(RouterInterface::class);
         $this->messageBus = $this->createMock(MessageBusInterface::class);
-        $this->userRepository = $this->createMock(UserRepository::class);
 
-        $this->service = new NotificationService($this->em, $this->router, $this->messageBus, $this->userRepository);
+        $this->service = new NotificationService($this->em, $this->router, $this->messageBus);
 
         // Real Doctrine sets Notification::createdAt (Gedmo, on flush) and assigns
         // auto-increment ids on persist; both are stubbed here since flush() is mocked.
@@ -80,14 +77,13 @@ class NotificationServiceTest extends TestCase
         $this->service->send($user, NotificationType::Ranking, 'notif.ranking.message');
     }
 
-    public function testSendToAllUsersDispatchesOneEmailPerOptedInUser(): void
+    public function testSendToUsersDispatchesOneEmailPerOptedInUser(): void
     {
         $users = [
             $this->userWithEmailNotification(true),
             $this->userWithEmailNotification(false),
             $this->userWithEmailNotification(true),
         ];
-        $this->userRepository->method('findAllIterable')->willReturn($users);
 
         $this->messageBus
             ->expects($this->exactly(2))
@@ -95,31 +91,29 @@ class NotificationServiceTest extends TestCase
             ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
         // Badge, not Ranking, since Ranking never emails by default (asserted separately) —
-        // this test is about the per-recipient opt-in filter within sendToAllUsers() itself.
-        $this->service->sendToAllUsers(NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
+        // this test is about the per-recipient opt-in filter within sendToUsers() itself.
+        $this->service->sendToUsers($users, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
     }
 
-    public function testSendToAllUsersNeverEmailsForRankingRegardlessOfOptIn(): void
+    public function testSendToUsersNeverEmailsForRankingRegardlessOfOptIn(): void
     {
         $users = [$this->userWithEmailNotification(true), $this->userWithEmailNotification(true)];
-        $this->userRepository->method('findAllIterable')->willReturn($users);
 
         $this->messageBus->expects($this->never())->method('dispatch');
 
-        $this->service->sendToAllUsers(NotificationType::Ranking, 'notif.ranking.message');
+        $this->service->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.message');
     }
 
-    public function testSendToAllUsersFlushesAndClearsAcrossBatches(): void
+    public function testSendToUsersFlushesAndClearsAcrossBatches(): void
     {
         $users = array_map(fn () => $this->userWithEmailNotification(false), range(1, 205));
-        $this->userRepository->method('findAllIterable')->willReturn($users);
 
         // 1 flush inside createNotification() + 1 at the 200-row batch boundary + 1 at the end;
         // clear() runs after each of the latter two.
         $this->em->expects($this->exactly(3))->method('flush');
         $this->em->expects($this->exactly(2))->method('clear');
 
-        $this->service->sendToAllUsers(NotificationType::Ranking, 'notif.ranking.message');
+        $this->service->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.message');
     }
 
     public function testGetRedirectUrlUsesTheNotificationTypesRoute(): void

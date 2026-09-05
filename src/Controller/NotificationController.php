@@ -44,6 +44,7 @@ class NotificationController extends AbstractController
             'hasMore' => $hasMore,
             'nextBefore' => $last?->getCreatedAt()?->format(\DateTimeInterface::ATOM),
             'nextBeforeId' => $last?->getId(),
+            'unreadCount' => $notificationRecipientRepository->countUnreadForUser($user),
         ]);
     }
 

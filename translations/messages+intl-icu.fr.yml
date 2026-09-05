@@ -416,9 +416,10 @@ notif:
     empty: 'Rien de spécial pour le moment, va plutôt rider !'
     markAllRead: 'Tout marquer comme lu'
     loadOlder: 'Charger les notifications plus anciennes'
-    emailDefaultChangedNotice: 'Les notifications par e-mail sont désormais désactivées par défaut — réactive-les dans tes <a href="{link_path}">paramètres</a>.'
     badge:
         message: 'Wahou, le Captain vient de te décerner le badge "{name}" !'
+    announcement:
+        emailDefaultChanged: 'Les notifications par e-mail sont désormais désactivées par défaut. Touche ici pour les réactiver.'
     ranking:
         message: "Le classement mondial des coasters du monde vient d'être mis à jour !"
         messageWithNewCoaster: "Le classement mondial des coasters du monde vient d'être mis à jour. {name} a été ajouté au classement !"

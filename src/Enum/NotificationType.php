@@ -8,28 +8,22 @@ enum NotificationType: string
 {
     case Ranking = 'ranking';
     case Badge = 'badge';
+    case Announcement = 'announcement';
 
     public function route(): string
     {
         return match ($this) {
             self::Ranking => 'ranking_index',
             self::Badge => 'profile',
+            self::Announcement => 'profile_settings',
         };
     }
 
     public function emailByDefault(): bool
     {
         return match ($this) {
-            self::Ranking => false,
+            self::Ranking, self::Announcement => false,
             self::Badge => true,
-        };
-    }
-
-    /** @return list<'in_app'|'email'> */
-    public function channels(): array
-    {
-        return match ($this) {
-            self::Ranking, self::Badge => ['in_app', 'email'],
         };
     }
 
@@ -42,7 +36,7 @@ enum NotificationType: string
     {
         return match ($this) {
             self::Badge => true,
-            self::Ranking => false,
+            self::Ranking, self::Announcement => false,
         };
     }
 }

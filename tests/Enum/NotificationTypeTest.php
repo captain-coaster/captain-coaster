@@ -19,19 +19,22 @@ class NotificationTypeTest extends TestCase
         $this->assertSame('profile', NotificationType::Badge->route());
     }
 
-    public function testRankingDoesNotEmailByDefault(): void
+    public function testAnnouncementRoutesToProfileSettings(): void
     {
-        $this->assertFalse(NotificationType::Ranking->emailByDefault());
+        $this->assertSame('profile_settings', NotificationType::Announcement->route());
     }
 
-    public function testBadgeEmailsByDefault(): void
+    public function testOnlyBadgeEmailsByDefault(): void
     {
+        $this->assertFalse(NotificationType::Ranking->emailByDefault());
         $this->assertTrue(NotificationType::Badge->emailByDefault());
+        $this->assertFalse(NotificationType::Announcement->emailByDefault());
     }
 
     public function testOnlyBadgeParameterIsATranslationKey(): void
     {
         $this->assertTrue(NotificationType::Badge->parameterIsTranslationKey());
         $this->assertFalse(NotificationType::Ranking->parameterIsTranslationKey());
+        $this->assertFalse(NotificationType::Announcement->parameterIsTranslationKey());
     }
 }

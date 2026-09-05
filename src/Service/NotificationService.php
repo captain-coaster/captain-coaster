@@ -9,21 +9,19 @@ use App\Entity\NotificationRecipient;
 use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Message\SendNotificationEmailMessage;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class NotificationService
 {
-    /** Rows per flush when fanning out to every user, to keep memory bounded. */
+    /** Rows per flush when fanning out to many users, to keep memory bounded. */
     private const int BATCH_SIZE = 200;
 
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly RouterInterface $router,
         private readonly MessageBusInterface $messageBus,
-        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -37,14 +35,16 @@ class NotificationService
     }
 
     /**
-     * Sends to every registered user, in memory-safe batches (used for
-     * broadcast-style notifications like ranking updates). Iterates users via
-     * a Doctrine generator rather than loading them all at once, and
-     * references the shared Notification content row by id (not the object
-     * itself) once the identity map has been cleared, to avoid re-loading it
-     * on every recipient.
+     * Sends to every user in $users, in memory-safe batches (used for
+     * broadcast-style notifications like ranking updates). Callers pass an
+     * iterable (typically a Doctrine generator, e.g. UserRepository::findAllIterable())
+     * rather than this service deciding what "everyone" means. References the
+     * shared Notification content row by id (not the object itself) once the
+     * identity map has been cleared, to avoid re-loading it on every recipient.
+     *
+     * @param iterable<int, User> $users
      */
-    public function sendToAllUsers(NotificationType $type, string $message, ?string $parameter = null): void
+    public function sendToUsers(iterable $users, NotificationType $type, string $message, ?string $parameter = null): void
     {
         $notification = $this->createNotification($type, $message, $parameter);
         $notificationId = $notification->getId();
@@ -54,7 +54,7 @@ class NotificationService
         $pendingEmails = [];
         $count = 0;
 
-        foreach ($this->userRepository->findAllIterable() as $user) {
+        foreach ($users as $user) {
             $notificationRef = $this->em->getReference(Notification::class, $notificationId);
             $recipient = $this->addRecipient($notificationRef, $createdAt, $user);
 

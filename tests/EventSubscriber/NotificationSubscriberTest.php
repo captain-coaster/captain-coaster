@@ -9,6 +9,7 @@ use App\Enum\NotificationType;
 use App\Event\BadgeAwardedEvent;
 use App\Event\RankingComputedEvent;
 use App\EventSubscriber\NotificationSubscriber;
+use App\Repository\UserRepository;
 use App\Service\NotificationService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -16,12 +17,14 @@ use PHPUnit\Framework\TestCase;
 class NotificationSubscriberTest extends TestCase
 {
     private NotificationService&MockObject $notificationService;
+    private UserRepository&MockObject $userRepository;
     private NotificationSubscriber $subscriber;
 
     protected function setUp(): void
     {
         $this->notificationService = $this->createMock(NotificationService::class);
-        $this->subscriber = new NotificationSubscriber($this->notificationService);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->subscriber = new NotificationSubscriber($this->notificationService, $this->userRepository);
     }
 
     public function testSubscribesToBothDomainEvents(): void
@@ -37,20 +40,26 @@ class NotificationSubscriberTest extends TestCase
 
     public function testRankingComputedWithoutHighlightedCoasterUsesTheGenericMessage(): void
     {
+        $users = [new User()];
+        $this->userRepository->method('findAllIterable')->willReturn($users);
+
         $this->notificationService
             ->expects($this->once())
-            ->method('sendToAllUsers')
-            ->with(NotificationType::Ranking, 'notif.ranking.message', null);
+            ->method('sendToUsers')
+            ->with($users, NotificationType::Ranking, 'notif.ranking.message', null);
 
         $this->subscriber->onRankingComputed(new RankingComputedEvent());
     }
 
     public function testRankingComputedWithHighlightedCoasterUsesTheCoasterMessage(): void
     {
+        $users = [new User()];
+        $this->userRepository->method('findAllIterable')->willReturn($users);
+
         $this->notificationService
             ->expects($this->once())
-            ->method('sendToAllUsers')
-            ->with(NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
+            ->method('sendToUsers')
+            ->with($users, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
 
         $this->subscriber->onRankingComputed(new RankingComputedEvent('Steel Vengeance'));
     }
