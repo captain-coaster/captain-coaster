@@ -24,14 +24,18 @@ class ImageRepository extends ServiceEntityRepository
     public function findLatestLikedImage(): Image
     {
         $query = $this->createQueryBuilder('i')
+            ->addSelect('c', 'st', 'mi')
             ->join(LikedImage::class, 'li', 'WITH', 'li.image = i.id')
+            ->innerJoin('i.coaster', 'c')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.mainImage', 'mi')
             ->where('i.enabled = 1')
             ->andWhere('i.credit IS NOT NULL')
             ->orderBy('li.id', 'DESC')
             ->setMaxResults(1)
             ->getQuery();
 
-        $query->enableResultCache(300);
+        $query->enableResultCache(600);
 
         return $query->getSingleResult();
     }

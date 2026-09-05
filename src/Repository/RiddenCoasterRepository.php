@@ -14,7 +14,6 @@ use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -73,17 +72,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countNew(\DateTime $date): int
     {
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
             ->where('r.createdAt > :date')
             ->setParameter('date', $date)
-            ->getQuery();
-
-        $query->enableResultCache(600);
-
-        return (int) $query->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     /**
@@ -240,9 +236,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->addSelect(
                 'CASE WHEN r.language IN (:preferredReviewLanguages) THEN 0 ELSE 1 END AS HIDDEN languagePriority'
             )
-            ->addSelect('u')
+            ->addSelect('u', 'c', 'p', 'st', 'mi')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.park', 'p')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.mainImage', 'mi')
             ->where('r.hasReview = 1')
             ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
@@ -265,9 +265,12 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         $query = $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r')
+            ->select('r', 'u', 'c', 'st', 'mi')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.mainImage', 'mi')
             ->where('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
             ->setMaxResults($limit)
@@ -304,9 +307,15 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      *
      * Not needed for getCoasterReviews(), which already fetch-joins both.
      *
+     * $resultCacheTtl should only be set by callers whose id set is shared
+     * sitewide and low-cardinality (e.g. "latest N reviews"). Paginated
+     * per-user/per-page listings must leave it null: their id set varies
+     * per page and per user, and caching those would fill the result cache
+     * with entries almost never reused before they expire.
+     *
      * @param iterable<mixed> $reviews
      */
-    public function preloadTags(iterable $reviews): void
+    public function preloadTags(iterable $reviews, ?int $resultCacheTtl = null): void
     {
         $ids = [];
         foreach ($reviews as $review) {
@@ -322,14 +331,19 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         // Two separate queries on purpose: joining both ManyToMany at once
         // multiplies rows into a cartesian product.
         foreach (['pros', 'cons'] as $association) {
-            $this
+            $query = $this
                 ->createQueryBuilder('r')
                 ->select('r', 't')
                 ->leftJoin('r.'.$association, 't')
                 ->where('r.id IN (:ids)')
                 ->setParameter('ids', $ids)
-                ->getQuery()
-                ->getResult();
+                ->getQuery();
+
+            if (null !== $resultCacheTtl) {
+                $query->enableResultCache($resultCacheTtl);
+            }
+
+            $query->getResult();
         }
     }
 
@@ -566,23 +580,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         } catch (\Exception) {
             return $default;
         }
-    }
-
-    public function findCoastersWithNoImage(UserInterface $user, int $max = 5): mixed
-    {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('r')
-            ->from(RiddenCoaster::class, 'r')
-            ->join('r.coaster', 'c')
-            ->where('r.user = :user')
-            ->andWhere('c.mainImage IS NULL')
-            ->orderBy('c.totalRatings', 'desc')
-            ->setFirstResult(random_int(0, $max * 2))
-            ->setMaxResults($max)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
     }
 
     /**

@@ -154,27 +154,7 @@
         </div>
       </div>
       <!-- /latest reviews -->
-      <!-- no images -->
-      {% if missingImages|length > 1 %}
-      <div class="panel panel-flat border-top-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'index.missingImages'|trans }}</h6>
-        </div>
-        <div class="panel-body">
-          <ul class="list-feed">
-            {% for rating in missingImages %}
-              <li>
-                <a href="{{ path('coaster_images_upload', {'slug': rating.coaster.slug}) }}">
-                  {{ rating.coaster.name }} • {{ rating.coaster.park.name }}
-                </a>
-              </li>
-            {% endfor %}
-          </ul>
-        </div>
-      </div>
     </div>
-    {% endif %}
-    <!-- /no images -->
   </div>
 {% endblock %}
 

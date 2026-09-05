@@ -10,6 +10,8 @@ use App\Entity\Park;
 use App\Entity\RiddenCoaster;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * Class StatService.
@@ -17,8 +19,10 @@ use Doctrine\ORM\EntityManagerInterface;
 class StatService
 {
     /** RatingService constructor. */
-    public function __construct(private readonly EntityManagerInterface $em)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly CacheInterface $cache,
+    ) {
     }
 
     /**
@@ -34,11 +38,16 @@ class StatService
             ->getRepository(RiddenCoaster::class)
             ->countAll();
 
-        $date = new \DateTime();
-        $date->sub(new \DateInterval('P1D'));
-        $stats['nb_new_ratings'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countNew($date);
+        // Cache under a fixed key so the "now - 1 day" boundary computed
+        // inside the callback doesn't itself defeat caching -- it only
+        // runs on a real cache miss, once per TTL.
+        $stats['nb_new_ratings'] = $this->cache->get('stats_nb_new_ratings', function (ItemInterface $item) {
+            $item->expiresAfter(600);
+
+            return $this->em
+                ->getRepository(RiddenCoaster::class)
+                ->countNew(new \DateTime('-1 day'));
+        });
 
         $stats['nb_reviews'] = $this->em
             ->getRepository(RiddenCoaster::class)

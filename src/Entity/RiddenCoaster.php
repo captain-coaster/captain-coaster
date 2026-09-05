@@ -17,6 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\UniqueConstraint(name: 'user_coaster_unique', columns: ['coaster_id', 'user_id'])]
 #[ORM\Index(name: 'idx_ridden_coaster_moderated_at', columns: ['moderated_at'])]
 #[ORM\Index(name: 'idx_ridden_coaster_has_review_updated_at', columns: ['has_review', 'updated_at'])]
+#[ORM\Index(name: 'idx_ridden_coaster_created_at', columns: ['created_at'])]
 #[ORM\Entity(repositoryClass: RiddenCoasterRepository::class)]
 #[UniqueEntity(['coaster', 'user'])]
 #[CaptainConstraints\ValidRideDate]

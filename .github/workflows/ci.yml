@@ -52,6 +52,15 @@ jobs:
             - name: Lint Twig templates
               run: ./bin/console lint:twig templates --env=prod
 
+            - name: Check all used icons are locked and committed
+              run: |
+                  ./bin/console ux:icons:lock
+                  if [ -n "$(git status --porcelain -- assets/icons)" ]; then
+                      echo "::error::An icon used in a template isn't committed under assets/icons/. Run 'php bin/console ux:icons:lock' locally and commit the result -- otherwise it falls back to a live api.iconify.design call in production."
+                      git status --porcelain -- assets/icons
+                      exit 1
+                  fi
+
             - name: Lint Parameters and Services
               run: ./bin/console lint:container --no-debug
 

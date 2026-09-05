@@ -29,7 +29,6 @@ index:
         reviews: Rezensionen
         users: Benutzer
         images: Bilder
-    missingImages: 'Wir suchen nach Bildern dieser Achterbahn!'
 
 coaster:
     score:
