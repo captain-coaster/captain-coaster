@@ -24,33 +24,50 @@ class RankingRepository extends ServiceEntityRepository
 
     public function findCurrent(): ?Ranking
     {
-        try {
-            return $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select('r')
-                ->from(Ranking::class, 'r')
-                ->orderBy('r.computedAt', 'desc')
-                ->setMaxResults(1)
-                ->getQuery()
-                ->getSingleResult();
-        } catch (NoResultException|NonUniqueResultException) {
-            return null;
-        }
+        return $this->fetchRanking(0, 'ranking_current');
     }
 
     /** @return mixed|null */
     public function findPrevious()
     {
+        return $this->fetchRanking(1, 'ranking_previous');
+    }
+
+    /**
+     * Cleared explicitly by RankingCacheSubscriber when a new ranking is
+     * computed -- the long TTL below is only a backstop for whenever that
+     * doesn't happen (e.g. a manual DB edit).
+     */
+    public function clearCache(): void
+    {
+        $resultCache = $this->getEntityManager()->getConfiguration()->getResultCache();
+        $resultCache?->deleteItem('ranking_current');
+        $resultCache?->deleteItem('ranking_previous');
+    }
+
+    /**
+     * Uses enableResultCache() with an explicit id (rather than a generic
+     * CacheInterface, as StatService does for its display-only counters)
+     * because the returned entity is used as a Doctrine association target
+     * by RankingHistoryManagerCommand ($rankingHistory->setRanking(...)) --
+     * it must stay a managed entity Doctrine recognizes on flush(), not a
+     * detached copy reconstructed from a generic cache's serialized value.
+     */
+    private function fetchRanking(int $offset, string $cacheId): ?Ranking
+    {
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('r')
                 ->from(Ranking::class, 'r')
                 ->orderBy('r.computedAt', 'desc')
                 ->setMaxResults(1)
-                ->setFirstResult(1)
-                ->getQuery()
-                ->getSingleResult();
+                ->setFirstResult($offset)
+                ->getQuery();
+
+            $query->enableResultCache(604800, $cacheId);
+
+            return $query->getSingleResult();
         } catch (NoResultException|NonUniqueResultException) {
             return null;
         }
