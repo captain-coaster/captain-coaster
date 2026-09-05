@@ -413,7 +413,7 @@ contact:
         success: 'Danke {name}, deine Nachricht wurde an das Captain Coaster-Team gesendet.'
 
 notif:
-    title: Aktivität
+    title: Benachrichtigungen
     empty: 'Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!'
     markAllRead: 'Alle als gelesen markieren'
     loadOlder: 'Ältere Benachrichtigungen laden'

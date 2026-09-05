@@ -412,7 +412,7 @@ contact:
         success: "Merci {name}, ton email a été envoyé à l'équipe de Captain Coaster."
 
 notif:
-    title: Activité
+    title: Notifications
     empty: 'Rien de spécial pour le moment, va plutôt rider !'
     markAllRead: 'Tout marquer comme lu'
     loadOlder: 'Charger les notifications plus anciennes'

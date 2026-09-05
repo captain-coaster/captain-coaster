@@ -412,7 +412,7 @@ contact:
         success: 'Gracias {name}, vuestro mensaje fue enviado al personal de Captain Coaster..'
 
 notif:
-    title: Actividad
+    title: Notificaciones
     empty: '¡Nada especial ahora mismo, ve a montar algunas montañas rusas!'
     markAllRead: 'Marcar todo como leído'
     loadOlder: 'Cargar notificaciones anteriores'

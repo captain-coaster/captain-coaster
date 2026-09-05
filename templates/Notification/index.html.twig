@@ -8,12 +8,17 @@
     <div class="col-sm-12">
       <div class="panel panel-flat" data-controller="notification-list">
         <div class="panel-heading">
-          <h6 class="panel-title">{{ 'notif.title'|trans }}</h6>
+          <h6 class="panel-title">
+            {{ 'notif.title'|trans }}
+            {% if unreadCount > 0 %}
+              <span class="badge badge-primary">{{ unreadCount }}</span>
+            {% endif %}
+          </h6>
           {% if unreadCount > 0 %}
             <div class="heading-elements visible-elements">
               <form action="{{ path('notification_mark_all_read') }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-                <button type="submit" class="btn btn-primary btn-sm">{{ 'notif.markAllRead'|trans }}</button>
+                <button type="submit" class="btn btn-primary btn-rounded btn-xs">{{ 'notif.markAllRead'|trans }}</button>
               </form>
             </div>
           {% endif %}
