@@ -272,12 +272,12 @@ export default class extends Controller {
     }
 
     showError(message) {
-        const notificationElement = document.getElementById('notifications');
+        const notificationElement = document.getElementById('toasts');
         if (notificationElement) {
             const notificationController =
                 this.application.getControllerForElementAndIdentifier(
                     notificationElement,
-                    'notification'
+                    'toast'
                 );
 
             if (notificationController) {

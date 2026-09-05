@@ -61,6 +61,15 @@ final class Version20260905130000 extends AbstractMigration
     {
         $this->addSql('ALTER TABLE notification ADD user_id INT DEFAULT NULL, ADD is_read TINYINT(1) DEFAULT NULL, CHANGE type type VARCHAR(255) NOT NULL');
 
+        // Content rows with no surviving recipient (already purged by
+        // app:notification:purge) have no user_id/is_read to restore and
+        // can't satisfy the NOT NULL below — the old schema has no
+        // equivalent row to roll back to, so drop them.
+        $this->addSql(<<<'SQL'
+            DELETE FROM notification
+            WHERE id NOT IN (SELECT DISTINCT notification_id FROM notification_recipient)
+            SQL);
+
         $this->addSql(<<<'SQL'
             UPDATE notification n
             INNER JOIN notification_recipient nr ON nr.notification_id = n.id

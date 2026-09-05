@@ -47,7 +47,7 @@ export default class extends Controller {
     }
 
     showNotification(message, type) {
-        const notificationElement = document.getElementById('notifications');
+        const notificationElement = document.getElementById('toasts');
         if (!notificationElement) {
             return;
         }
@@ -55,7 +55,7 @@ export default class extends Controller {
         const controller =
             this.application.getControllerForElementAndIdentifier(
                 notificationElement,
-                'notification'
+                'toast'
             );
 
         if (controller) {
