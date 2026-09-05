@@ -6,7 +6,7 @@
 {% block body %}
   <div class="row">
     <div class="col-sm-12">
-      <div class="panel panel-flat" data-controller="notification-list">
+      <div class="panel panel-flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
         <div class="panel-heading">
           <h6 class="panel-title">
             {{ 'notif.title'|trans }}
@@ -33,7 +33,7 @@
             <a href="{{ path('notification_index', {'before': nextBefore, 'beforeId': nextBeforeId}) }}"
                class="btn btn-link"
                data-notification-list-target="trigger"
-               data-action="notification-list#loadMore">
+               data-action="click->notification-list#loadMore">
               {{ 'notif.loadOlder'|trans }}
             </a>
           </div>

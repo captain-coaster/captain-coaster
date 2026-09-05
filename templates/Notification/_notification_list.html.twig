@@ -2,13 +2,16 @@
   {% set notification = recipient.notification %}
   <li class="media notif-item{% if not recipient.isRead %} unread{% endif %}">
     <div class="media-left">
-      <a href="{{ path('notification_read', {'id': recipient.id}) }}" class="btn {{ notification.type.iconColorClass }} btn-rounded btn-icon btn-xs">
+      <a href="{{ path('notification_read', {'id': recipient.id}) }}"
+         class="btn {{ notification.type.iconColorClass }} btn-rounded btn-icon btn-xs"
+         {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
         {{ ux_icon(notification.type.icon, {'class': 'w-5 h-5'}) }}
       </a>
     </div>
 
     <div class="media-body">
-      <a href="{{ path('notification_read', {'id': recipient.id}) }}">
+      <a href="{{ path('notification_read', {'id': recipient.id}) }}"
+         {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
         {% if notification.parameter is not null %}
           {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans : notification.parameter}) }}
         {% else %}

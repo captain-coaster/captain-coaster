@@ -3,6 +3,7 @@ import { Controller } from '@hotwired/stimulus';
 /** Appends the next page of notifications instead of navigating to it, so loading more never hides what's already on screen. */
 export default class extends Controller {
     static targets = ['list', 'trigger'];
+    static values = { markReadToken: String };
 
     loadMore(event) {
         event.preventDefault();
@@ -37,5 +38,23 @@ export default class extends Controller {
             .catch((error) => {
                 console.error('Error loading older notifications:', error);
             });
+    }
+
+    /**
+     * Fires on a real click only (never on the same link's GET, which stays
+     * side-effect-free — see NotificationController::readAction()). Uses
+     * sendBeacon rather than a blocking fetch so it never delays the
+     * navigation the click already started.
+     */
+    markRead(event) {
+        const url = event.currentTarget.getAttribute('data-mark-read-url');
+        if (!url) {
+            return;
+        }
+
+        const body = new FormData();
+        body.set('_token', this.markReadTokenValue);
+
+        navigator.sendBeacon(url, body);
     }
 }

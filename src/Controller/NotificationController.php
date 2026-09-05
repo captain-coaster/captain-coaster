@@ -57,7 +57,16 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    /** Read a notification. */
+    /**
+     * Redirects to a notification's target. Deliberately does not mark it
+     * read: this link is also the one used in emails, and mail-security
+     * gateways commonly prefetch every link in an incoming email to scan it
+     * before delivery — a GET here that mutated state would let a scanner
+     * silently mark notifications read before the recipient ever saw them,
+     * corrupting the readAt signal this whole thing exists to produce. Real
+     * in-app clicks mark read via markReadAjax() instead, fired
+     * client-side, which a non-JS prefetcher never triggers.
+     */
     #[Route(path: '/{id}/read', name: 'notification_read', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function readAction(NotificationRecipient $recipient, NotificationService $notifService): RedirectResponse
@@ -66,9 +75,25 @@ class NotificationController extends AbstractController
             throw $this->createAccessDeniedException();
         }
 
+        return $this->redirect($notifService->getRedirectUrl($recipient));
+    }
+
+    /** Marks a single notification read, fired via a client-side beacon on real clicks (see readAction()). */
+    #[Route(path: '/{id}/mark-read', name: 'notification_mark_read', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function markReadAjax(NotificationRecipient $recipient, Request $request, NotificationService $notifService): Response
+    {
+        if ($recipient->getUser() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (!$this->isCsrfTokenValid('notification_mark_read', (string) $request->request->get('_token'))) {
+            throw $this->createAccessDeniedException();
+        }
+
         $notifService->markRead($recipient);
 
-        return $this->redirect($notifService->getRedirectUrl($recipient));
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route(path: '/mark-all-read', name: 'notification_mark_all_read', methods: ['POST'])]
