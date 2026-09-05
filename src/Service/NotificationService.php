@@ -31,7 +31,7 @@ class NotificationService
         $recipient = $this->addRecipient($notification, $notification->getCreatedAt(), $user);
         $this->em->flush();
 
-        $this->dispatchEmailIfEnabled($recipient, $user, $type);
+        $this->dispatchEmailIfEnabled($recipient, $user);
     }
 
     /**
@@ -58,7 +58,7 @@ class NotificationService
             $notificationRef = $this->em->getReference(Notification::class, $notificationId);
             $recipient = $this->addRecipient($notificationRef, $createdAt, $user);
 
-            if ($user->isEmailNotification() && $type->emailByDefault()) {
+            if ($user->isEmailNotification()) {
                 $pendingEmails[] = $recipient;
             }
 
@@ -109,9 +109,9 @@ class NotificationService
         return $recipient;
     }
 
-    private function dispatchEmailIfEnabled(NotificationRecipient $recipient, User $user, NotificationType $type): void
+    private function dispatchEmailIfEnabled(NotificationRecipient $recipient, User $user): void
     {
-        if ($user->isEmailNotification() && $type->emailByDefault()) {
+        if ($user->isEmailNotification()) {
             $this->messageBus->dispatch(new SendNotificationEmailMessage($recipient->getId()));
         }
     }

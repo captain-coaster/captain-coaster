@@ -46,7 +46,7 @@ class NotificationServiceTest extends TestCase
         $this->em->method('getReference')->willReturn(new Notification());
     }
 
-    public function testSendDispatchesEmailWhenUserOptedInAndTypeDefaultsToEmail(): void
+    public function testSendDispatchesEmailWhenUserOptedIn(): void
     {
         $user = $this->userWithEmailNotification(true);
 
@@ -68,11 +68,14 @@ class NotificationServiceTest extends TestCase
         $this->service->send($user, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
     }
 
-    public function testSendDoesNotDispatchEmailWhenTypeDoesNotEmailByDefault(): void
+    public function testSendDispatchesEmailForAnyTypeWhenUserOptedIn(): void
     {
         $user = $this->userWithEmailNotification(true);
 
-        $this->messageBus->expects($this->never())->method('dispatch');
+        $this->messageBus
+            ->expects($this->once())
+            ->method('dispatch')
+            ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
         $this->service->send($user, NotificationType::Ranking, 'notif.ranking.message');
     }
@@ -90,16 +93,17 @@ class NotificationServiceTest extends TestCase
             ->method('dispatch')
             ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
-        // Badge, not Ranking, since Ranking never emails by default (asserted separately) —
-        // this test is about the per-recipient opt-in filter within sendToUsers() itself.
         $this->service->sendToUsers($users, NotificationType::Badge, 'notif.badge.message', 'badge.rating1');
     }
 
-    public function testSendToUsersNeverEmailsForRankingRegardlessOfOptIn(): void
+    public function testSendToUsersDispatchesForRankingWhenOptedIn(): void
     {
         $users = [$this->userWithEmailNotification(true), $this->userWithEmailNotification(true)];
 
-        $this->messageBus->expects($this->never())->method('dispatch');
+        $this->messageBus
+            ->expects($this->exactly(2))
+            ->method('dispatch')
+            ->willReturnCallback(static fn (object $message) => new Envelope($message));
 
         $this->service->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.message');
     }

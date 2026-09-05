@@ -242,12 +242,9 @@ profile:
             format_changed_success: 'Your display name format has been updated successfully.'
         preferences:
             profilePicture: 'Profile Picture'
-            notificationPreference:
-                label: 'Notification Preferences'
-                help: 'Only badge notifications are emailed today — everything else always shows up in your notifications, whichever option you pick.'
-            choices:
-                email: 'Web & Email'
-                notif: 'Web only'
+            emailNotification:
+                label: 'Also email me my notifications'
+                help: "You'll always see your notifications on the site — this only decides whether they're also emailed to you."
             preferredLocale: 'Preferred Language'
             homePark:
                 label: 'My Home Park'

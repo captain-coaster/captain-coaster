@@ -247,12 +247,9 @@ profile:
             format_changed_success: "Le format d'affichage de votre nom a été mis à jour avec succès."
         preferences:
             profilePicture: Photo de profil
-            notificationPreference:
-                label: Préférences de notification
-                help: "Seules les notifications de badge sont envoyées par e-mail pour le moment — le reste apparaît toujours dans vos notifications, quel que soit le choix sélectionné."
-            choices:
-                email: 'Web & Email'
-                notif: Web uniquement
+            emailNotification:
+                label: "M'envoyer aussi mes notifications par e-mail"
+                help: "Vos notifications restent toujours visibles sur le site — ceci décide seulement si elles vous sont aussi envoyées par e-mail."
             preferredLocale: Langue préférée
             homePark:
                 label: Mon home park

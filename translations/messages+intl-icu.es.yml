@@ -247,12 +247,9 @@ profile:
             format_changed_success: El formato de visualización de su nombre ha sido actualizado con éxito.
         preferences:
             profilePicture: Foto de perfil
-            notificationPreference:
-                label: Preferencias de notificación
-                help: 'Por ahora, solo las notificaciones de insignias se envían por correo electrónico; el resto siempre aparece en tus notificaciones, sea cual sea la opción elegida.'
-            choices:
-                email: Web y correo electrónico
-                notif: Sólo web
+            emailNotification:
+                label: 'Enviarme también mis notificaciones por correo electrónico'
+                help: 'Tus notificaciones siempre estarán visibles en el sitio — esto solo decide si además se te envían por correo electrónico.'
             preferredLocale: Lengua preferida
             homePark:
                 label: Mi home park

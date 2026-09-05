@@ -24,13 +24,6 @@ class NotificationTypeTest extends TestCase
         $this->assertSame('profile_settings', NotificationType::Announcement->route());
     }
 
-    public function testOnlyBadgeEmailsByDefault(): void
-    {
-        $this->assertFalse(NotificationType::Ranking->emailByDefault());
-        $this->assertTrue(NotificationType::Badge->emailByDefault());
-        $this->assertFalse(NotificationType::Announcement->emailByDefault());
-    }
-
     public function testOnlyBadgeParameterIsATranslationKey(): void
     {
         $this->assertTrue(NotificationType::Badge->parameterIsTranslationKey());

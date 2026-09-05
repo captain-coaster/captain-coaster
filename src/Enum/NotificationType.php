@@ -19,14 +19,6 @@ enum NotificationType: string
         };
     }
 
-    public function emailByDefault(): bool
-    {
-        return match ($this) {
-            self::Ranking, self::Announcement => false,
-            self::Badge => true,
-        };
-    }
-
     /**
      * Whether `Notification::parameter` is itself a translation key (e.g. a badge
      * name) rather than raw display text (e.g. a coaster name) — determines

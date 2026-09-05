@@ -248,12 +248,9 @@ profile:
             format_changed_success: Das Anzeigeformat Ihres Namens wurde erfolgreich aktualisiert.
         preferences:
             profilePicture: Profilbild
-            notificationPreference:
-                label: Benachrichtigungseinstellungen
-                help: 'Aktuell werden nur Abzeichen-Benachrichtigungen per E-Mail verschickt – alles andere erscheint unabhängig von deiner Wahl immer in deinen Benachrichtigungen.'
-            choices:
-                email: 'Web & E-Mail'
-                notif: Nur Web
+            emailNotification:
+                label: 'Benachrichtigungen zusätzlich per E-Mail senden'
+                help: 'Deine Benachrichtigungen bleiben immer auf der Website sichtbar — das entscheidet nur, ob sie dir zusätzlich per E-Mail geschickt werden.'
             preferredLocale: Bevorzugte Sprache
             homePark:
                 label: Mein Heimatpark
