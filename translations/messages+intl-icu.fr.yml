@@ -29,7 +29,6 @@ index:
         reviews: avis
         users: utilisateurs
         images: photos
-    missingImages: 'Nous recherchons des photos pour ces coasters !'
 
 coaster:
     score:

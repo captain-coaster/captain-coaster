@@ -164,6 +164,10 @@ clear_cache() {
 warm_cache() {
     log "Warming up cache..."
     php bin/console cache:warmup --env=prod
+    # ux-icons' cache isn't covered by cache:warmup (not a CacheWarmerInterface),
+    # and clear_cache wipes it every deploy -- without this, the first prod
+    # request needing an icon falls back to a live api.iconify.design call.
+    php bin/console ux:icons:warm-cache --env=prod
     success "Cache warmed up"
 }
 

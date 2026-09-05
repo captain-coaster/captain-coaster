@@ -29,7 +29,6 @@ index:
         reviews: reseñas
         users: usuarios
         images: fotos
-    missingImages: '¡Buscamos fotos para esta montaña rusa!'
 
 coaster:
     score:
