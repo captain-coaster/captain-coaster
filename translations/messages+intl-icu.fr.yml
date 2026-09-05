@@ -247,7 +247,9 @@ profile:
             format_changed_success: "Le format d'affichage de votre nom a été mis à jour avec succès."
         preferences:
             profilePicture: Photo de profil
-            notificationPreference: Préférences de notification
+            notificationPreference:
+                label: Préférences de notification
+                help: "Seules les notifications de badge sont envoyées par e-mail pour le moment — le reste apparaît toujours dans vos notifications, quel que soit le choix sélectionné."
             choices:
                 email: 'Web & Email'
                 notif: Web uniquement
@@ -410,24 +412,6 @@ contact:
         title: Contact - Captain Coaster
     flash:
         success: "Merci {name}, ton email a été envoyé à l'équipe de Captain Coaster."
-
-notif:
-    title: Notifications
-    empty: 'Rien de spécial pour le moment, va plutôt rider !'
-    markAllRead: 'Tout marquer comme lu'
-    loadOlder: 'Charger les notifications plus anciennes'
-    badge:
-        message: 'Wahou, le Captain vient de te décerner le badge "{name}" !'
-    announcement:
-        emailDefaultChanged: 'Les notifications par e-mail sont désormais désactivées par défaut. Touche ici pour les réactiver.'
-    ranking:
-        message: "Le classement mondial des coasters du monde vient d'être mis à jour !"
-        messageWithNewCoaster: "Le classement mondial des coasters du monde vient d'être mis à jour. {name} a été ajouté au classement !"
-    email:
-        title: 🎢 Nouvelle notification sur Captain Coaster
-        gotnotif: 'Tu viens de recevoir une notification sur Captain Coaster :'
-        view: 'Afficher ceci sur <a href="{link_path}">CaptainCoaster.com</a>'
-        unsubscribe: 'Pour ne plus recevoir ceci, merci de changer vos <a href="{link_path}">préférences de notification</a>.'
 
 nearby:
     title: Coasters à proximité

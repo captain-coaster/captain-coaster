@@ -248,7 +248,9 @@ profile:
             format_changed_success: Das Anzeigeformat Ihres Namens wurde erfolgreich aktualisiert.
         preferences:
             profilePicture: Profilbild
-            notificationPreference: Benachrichtigungseinstellungen
+            notificationPreference:
+                label: Benachrichtigungseinstellungen
+                help: 'Aktuell werden nur Abzeichen-Benachrichtigungen per E-Mail verschickt – alles andere erscheint unabhängig von deiner Wahl immer in deinen Benachrichtigungen.'
             choices:
                 email: 'Web & E-Mail'
                 notif: Nur Web
@@ -411,24 +413,6 @@ contact:
         title: Kontaktformular - Captain Coaster
     flash:
         success: 'Danke {name}, deine Nachricht wurde an das Captain Coaster-Team gesendet.'
-
-notif:
-    title: Benachrichtigungen
-    empty: 'Im Moment gibt es hier nichts Besonderes, fahr doch ein paar Achterbahnen!'
-    markAllRead: 'Alle als gelesen markieren'
-    loadOlder: 'Ältere Benachrichtigungen laden'
-    badge:
-        message: 'Schaue es dir an: Captain gab dir gerade das "{name}" Abzeichen!'
-    announcement:
-        emailDefaultChanged: 'E-Mail-Benachrichtigungen sind jetzt standardmäßig deaktiviert. Tippe hier, um sie wieder einzuschalten.'
-    ranking:
-        message: 'Die Weltrangliste der Achterbahnen wurde gerade aktualisiert!'
-        messageWithNewCoaster: 'Die Weltrangliste der Achterbahnen wurde gerade aktualisiert. {name} wurde zum Ranking hinzugefügt!'
-    email:
-        title: 🎢 Neue Benachrichtigung auf Captain Coaster
-        gotnotif: 'Du hast gerade eine neue Benachrichtigung auf Captain Coaster erhalten:'
-        view: 'Sehe es dir auf <a href="{link_path}">CaptainCoaster.com</a> an'
-        unsubscribe: 'Um dies nicht mehr zu erhalten, ändere bitte deine <a href="{link_path}">Benachrichtigungseinstellungen</a>.'
 
 nearby:
     title: Finde Achterbahnen in der Nähe

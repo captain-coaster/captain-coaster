@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'notif.title'|trans %}
+{% set title = 'notif.title'|trans({}, 'notification') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
@@ -9,7 +9,7 @@
       <div class="panel panel-flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
         <div class="panel-heading">
           <h6 class="panel-title">
-            {{ 'notif.title'|trans }}
+            {{ 'notif.title'|trans({}, 'notification') }}
             {% if unreadCount > 0 %}
               <span class="badge badge-primary">{{ unreadCount }}</span>
             {% endif %}
@@ -18,7 +18,7 @@
             <div class="heading-elements visible-elements">
               <form action="{{ path('notification_mark_all_read') }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-                <button type="submit" class="btn btn-primary btn-rounded btn-xs">{{ 'notif.markAllRead'|trans }}</button>
+                <button type="submit" class="btn btn-primary btn-rounded btn-xs">{{ 'notif.markAllRead'|trans({}, 'notification') }}</button>
               </form>
             </div>
           {% endif %}

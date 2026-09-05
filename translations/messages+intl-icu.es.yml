@@ -247,7 +247,9 @@ profile:
             format_changed_success: El formato de visualización de su nombre ha sido actualizado con éxito.
         preferences:
             profilePicture: Foto de perfil
-            notificationPreference: Preferencias de notificación
+            notificationPreference:
+                label: Preferencias de notificación
+                help: 'Por ahora, solo las notificaciones de insignias se envían por correo electrónico; el resto siempre aparece en tus notificaciones, sea cual sea la opción elegida.'
             choices:
                 email: Web y correo electrónico
                 notif: Sólo web
@@ -410,24 +412,6 @@ contact:
         title: Contacto de formulario Captain Coaster
     flash:
         success: 'Gracias {name}, vuestro mensaje fue enviado al personal de Captain Coaster..'
-
-notif:
-    title: Notificaciones
-    empty: '¡Nada especial ahora mismo, ve a montar algunas montañas rusas!'
-    markAllRead: 'Marcar todo como leído'
-    loadOlder: 'Cargar notificaciones anteriores'
-    badge:
-        message: 'Échale un vistazo: ¡El Captain acaba de darte "{name}" la insignia!'
-    announcement:
-        emailDefaultChanged: 'Las notificaciones por correo ahora están desactivadas por defecto. Toca aquí para reactivarlas.'
-    ranking:
-        message: La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. Mira el nuevo top 3.
-        messageWithNewCoaster: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. ¡{name} ha sido añadido al ranking!'
-    email:
-        title: 🎢 Nueva notificación en Captain Coaster
-        gotnotif: 'Acabas de recibir una nueva notificación en Captain Coaster:'
-        view: 'Ver esto en <a href="{link_path}">CaptainCoaster.com</a>'
-        unsubscribe: 'Para dejar de recibirlo, cambie sus <a href="{link_path}">preferencias de notificación</a>.'
 
 nearby:
     title: Busca una montaña rusa

@@ -15,16 +15,16 @@
           <a href="{{ path('notification_read', {'id': recipient.id}) }}"
              {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
             {% if notification.parameter is not null %}
-              {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans : notification.parameter}) }}
+              {{ notification.message|trans({'%name%': notification.type.parameterIsTranslationKey ? notification.parameter|trans : notification.parameter}, 'notification') }}
             {% else %}
-              {{ notification.message|trans }}
+              {{ notification.message|trans({}, 'notification') }}
             {% endif %}
           </a>
           <div class="media-annotation">{{ recipient.createdAt|ago }}</div>
         </div>
       </li>
     {% else %}
-      <li>{{ 'notif.empty'|trans }}</li>
+      <li>{{ 'notif.empty'|trans({}, 'notification') }}</li>
     {% endfor %}
   </ul>
 </div>
@@ -33,7 +33,7 @@
     <a href="{{ path('notification_index', {'count': nextCount}) }}"
        class="btn btn-link"
        data-action="click->notification-list#loadMore">
-      {{ 'notif.loadOlder'|trans }}
+      {{ 'notif.loadOlder'|trans({}, 'notification') }}
     </a>
   </div>
 {% endif %}

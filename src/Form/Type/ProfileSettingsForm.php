@@ -112,7 +112,7 @@ class ProfileSettingsForm extends AbstractType
                 'profile.settings.preferences.choices.email' => true,
                 'profile.settings.preferences.choices.notif' => false,
             ],
-            'label' => 'profile.settings.preferences.notificationPreference',
+            'label' => 'profile.settings.preferences.notificationPreference.label',
             'attr' => ['class' => 'form-control'],
         ]);
 

@@ -62,7 +62,7 @@
               <a href="{{ path('notification_index') }}" class="account-menu-row">
                 <span class="account-menu-row-label">
                   {{ ux_icon('heroicons:bell', {'class': 'w-5 h-5'}) }}
-                  {{ 'notif.title'|trans }}
+                  {{ 'notif.title'|trans({}, 'notification') }}
                   {% if unread_count > 0 %}
                     <span class="badge bg-warning-400">{{ unread_count }}</span>
                   {% endif %}

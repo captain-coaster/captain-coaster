@@ -33,7 +33,7 @@ final class SendNotificationEmailMessageHandler
         }
 
         $user = $recipient->getUser();
-        $subject = $this->translator->trans('notif.email.title', [], 'messages', $user->getPreferredLocale());
+        $subject = $this->translator->trans('notif.email.title', [], 'notification', $user->getPreferredLocale());
 
         $email = new Email()
             ->to($user->getEmail())
