@@ -17,7 +17,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for CoasterRepository::findForRanking().
+ * Unit tests for CoasterRepository::findForRanking() and findForSearch().
  *
  * Uses a real ManagerRegistry/ClassMetadata pair (rather than the simpler
  * onlyMethods(['getEntityManager']) partial mock used elsewhere) because
@@ -34,7 +34,7 @@ class CoasterRepositoryTest extends TestCase
     /** @var list<string> */
     private array $capturedDql = [];
 
-    /** @var list<array{lifetime: ?int}> */
+    /** @var list<array{lifetime: ?int, isCount: bool}> */
     private array $capturedResultCacheCalls = [];
 
     /** @var array<string, mixed> */
@@ -79,8 +79,8 @@ class CoasterRepositoryTest extends TestCase
 
                 return $query;
             });
-            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime) use ($query) {
-                $this->capturedResultCacheCalls[] = ['lifetime' => $lifetime];
+            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime) use ($query, $dql) {
+                $this->capturedResultCacheCalls[] = ['lifetime' => $lifetime, 'isCount' => str_contains($dql, 'count(c.id)')];
 
                 return $query;
             });
@@ -127,6 +127,29 @@ class CoasterRepositoryTest extends TestCase
 
         $this->assertContains('country', $selectedAliases);
         $this->assertContains('st', $selectedAliases);
+        $this->assertContains('mi', $selectedAliases);
+    }
+
+    public function testFindForSearchFetchJoinsParkCountryManufacturerMaterialTypeAndMainImage(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForSearch();
+
+        $dql = $this->mainEntityDql();
+
+        // Regression guard: these were previously joined (for filtering) but
+        // not selected, so Twig's coaster.park / .park.country / .manufacturer
+        // / .materialType / .mainImage access in results.html.twig lazy-loaded
+        // them one row at a time -- up to 20 rows per search page.
+        $matched = preg_match('/^SELECT (.*?) FROM /', $dql, $matches);
+        $this->assertSame(1, $matched, "Could not find a SELECT clause in DQL: $dql");
+        $selectedAliases = array_map('trim', explode(',', $matches[1]));
+
+        $this->assertContains('p', $selectedAliases);
+        $this->assertContains('country', $selectedAliases);
+        $this->assertContains('m', $selectedAliases);
+        $this->assertContains('mt', $selectedAliases);
         $this->assertContains('mi', $selectedAliases);
     }
 
@@ -214,7 +237,7 @@ class CoasterRepositoryTest extends TestCase
 
         $this->repository->findForShow(1);
 
-        $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
+        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
     }
 
     public function testFindAllCoastersInParkCachesForFiveMinutes(): void
@@ -223,7 +246,7 @@ class CoasterRepositoryTest extends TestCase
 
         $this->repository->findAllCoastersInPark(new Park());
 
-        $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
+        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
     }
 
     public function testFindAllCoastersInParkWithDetailsFetchJoinsManufacturerSeatingTypeAndMainImage(): void
@@ -252,6 +275,51 @@ class CoasterRepositoryTest extends TestCase
 
         $this->repository->findAllCoastersInParkWithDetails(new Park());
 
-        $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
+        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindForSearchSetsKnpPaginatorCountHintFromASeparateCountQuery(): void
+    {
+        $this->stubQueries(17);
+
+        $this->repository->findForSearch();
+
+        $this->assertSame(17, $this->capturedHints['knp_paginator.count']);
+    }
+
+    public function testFindForSearchCachesBothQueriesWithNoFilters(): void
+    {
+        $this->stubQueries(0);
+
+        // The default, filterless search (most visits) must be cacheable,
+        // same as findForRanking()'s default view.
+        $this->repository->findForSearch();
+
+        $this->assertCount(2, $this->capturedResultCacheCalls);
+        foreach ($this->capturedResultCacheCalls as $call) {
+            $this->assertSame(300, $call['lifetime']);
+        }
+    }
+
+    public function testFindForSearchDoesNotCacheWhenTheRiddenFilterIsActive(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForSearch(['user' => 42, 'ridden' => 'on']);
+
+        $this->assertSame([], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindForSearchCachesTheCountButNotTheMainQueryWhenSortingByDistance(): void
+    {
+        $this->stubQueries(0);
+
+        // The "park has coordinates" WHERE (shared by every visitor sorting
+        // by distance) makes the count cacheable, but the main query embeds
+        // the visitor's own lat/lng as bound parameters, so caching it would
+        // never hit.
+        $this->repository->findForSearch(['sortByDistance' => 'on', 'latitude' => 48.85, 'longitude' => 2.35]);
+
+        $this->assertSame([['lifetime' => 300, 'isCount' => true]], $this->capturedResultCacheCalls);
     }
 }

@@ -27,6 +27,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'coaster')]
 #[ORM\Index(name: 'idx_coaster_name_search', columns: ['name'])]
 #[ORM\Index(name: 'idx_coaster_slug_search', columns: ['slug'])]
+#[ORM\Index(name: 'idx_coaster_updated_at', columns: ['updated_at'])]
+#[ORM\Index(name: 'idx_coaster_opening_date', columns: ['openingDate'])]
+#[ORM\Index(name: 'idx_coaster_rank', columns: ['rank'])]
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['read_coaster']]),
