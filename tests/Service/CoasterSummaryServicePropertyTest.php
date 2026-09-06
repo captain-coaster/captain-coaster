@@ -8,6 +8,7 @@ use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
 use App\Entity\Status;
+use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\BedrockService;
 use App\Service\CoasterSummaryService;
@@ -40,6 +41,7 @@ class CoasterSummaryServicePropertyTest extends TestCase
         $service = new CoasterSummaryService(
             $entityManager,
             $riddenCoasterRepository,
+            $this->createMock(CoasterSummaryRepository::class),
             $bedrockService,
             $logger
         );

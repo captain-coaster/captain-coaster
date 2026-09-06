@@ -22,10 +22,35 @@ class CoasterSummaryRepository extends ServiceEntityRepository
     /**
      * Find a summary by coaster and language.
      * Works with the new ManyToOne schema with unique constraint on (coaster_id, language).
+     *
+     * Cached under a fixed per-(coaster,language) id, cleared explicitly by
+     * CoasterSummaryService::generateSummary() as soon as a summary is
+     * (re)generated -- the long TTL here is only a backstop for whenever
+     * that doesn't happen (e.g. a manual DB edit).
      */
     public function findByCoasterAndLanguage(Coaster $coaster, string $language): ?CoasterSummary
     {
-        return $this->findOneBy(['coaster' => $coaster, 'language' => $language]);
+        $query = $this->createQueryBuilder('cs')
+            ->where('cs.coaster = :coaster')
+            ->andWhere('cs.language = :language')
+            ->setParameter('coaster', $coaster)
+            ->setParameter('language', $language)
+            ->getQuery();
+
+        $query->enableResultCache(604800, $this->cacheId($coaster, $language));
+
+        return $query->getOneOrNullResult();
+    }
+
+    public function clearCacheFor(Coaster $coaster, string $language): void
+    {
+        $resultCache = $this->getEntityManager()->getConfiguration()->getResultCache();
+        $resultCache?->deleteItem($this->cacheId($coaster, $language));
+    }
+
+    private function cacheId(Coaster $coaster, string $language): string
+    {
+        return \sprintf('coaster_summary_%d_%s', $coaster->getId(), $language);
     }
 
     /**

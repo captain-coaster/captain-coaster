@@ -21,7 +21,7 @@
              data-controller="gallery" 
              data-gallery-name-value="coaster-images"
              data-gallery="coaster-images">
-            {% for image in coaster.images|slice(0, number) %}
+            {% for image in images %}
                 <div class="col-sm-3">
                     <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
                         <div class="thumb">

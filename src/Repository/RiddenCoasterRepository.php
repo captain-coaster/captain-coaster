@@ -457,7 +457,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         $id = $coaster->getId();
 
-        return $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r.value')
             ->addselect('COUNT(r.id) AS count')
@@ -467,8 +467,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('u.enabled = 1')
             ->groupby('r.value')
             ->setParameter('id', $id)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        // New ratings arrive live, unlike score/rank -- short TTL trades a
+        // few minutes of staleness for absorbing concurrent traffic to the
+        // same (often popular) coaster.
+        $query->enableResultCache(300);
+
+        return $query->getResult();
     }
 
     /**

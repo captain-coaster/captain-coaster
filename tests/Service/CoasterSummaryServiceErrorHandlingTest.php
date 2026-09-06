@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Entity\Coaster;
 use App\Entity\Status;
+use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\BedrockService;
 use App\Service\CoasterSummaryService;
@@ -37,6 +38,7 @@ class CoasterSummaryServiceErrorHandlingTest extends TestCase
         $this->service = new CoasterSummaryService(
             $this->entityManager,
             $this->riddenCoasterRepository,
+            $this->createMock(CoasterSummaryRepository::class),
             $this->bedrockService,
             $this->logger
         );

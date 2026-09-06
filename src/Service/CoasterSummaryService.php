@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\Coaster;
 use App\Entity\CoasterSummary;
 use App\Entity\RiddenCoaster;
+use App\Repository\CoasterSummaryRepository;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -54,6 +55,7 @@ class CoasterSummaryService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private RiddenCoasterRepository $riddenCoasterRepository,
+        private CoasterSummaryRepository $coasterSummaryRepository,
         private BedrockService $bedrockService,
         private LoggerInterface $logger
     ) {
@@ -121,6 +123,8 @@ class CoasterSummaryService
 
         $this->entityManager->persist($summary);
         $this->entityManager->flush();
+
+        $this->coasterSummaryRepository->clearCacheFor($coaster, $language);
 
         return ['summary' => $summary, 'metadata' => $analysis['metadata']];
     }

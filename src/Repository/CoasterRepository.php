@@ -123,19 +123,91 @@ class CoasterRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /** @return array<int, Coaster> */
+    /**
+     * Used by CoasterController's "also in this park" sidebar, which only
+     * renders status/name -- see findAllCoastersInParkWithDetails() for
+     * ParkController's own, more demanding coaster list.
+     *
+     * @return array<int, Coaster>
+     */
     public function findAllCoastersInPark(Park $park): array
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('c')
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('c', 's')
             ->from(Coaster::class, 'c')
             ->innerJoin('c.status', 's')
             ->andWhere('c.park = :park')
             ->setParameter('park', $park)
             ->orderBy('s.order', 'ASC')
             ->addOrderBy('c.score', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        // Only changes when a coaster is added/edited/removed for this park --
+        // a rare admin action, same profile as findForShow().
+        $query->enableResultCache(300);
+
+        return $query->getResult();
+    }
+
+    /**
+     * Used by ParkController's own coaster list (Park/show.html.twig), which
+     * additionally renders manufacturer/seatingType/mainImage per coaster --
+     * see findAllCoastersInPark() for the leaner sidebar version.
+     *
+     * @return array<int, Coaster>
+     */
+    public function findAllCoastersInParkWithDetails(Park $park): array
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('c', 's', 'm', 'st')
+            ->from(Coaster::class, 'c')
+            ->innerJoin('c.status', 's')
+            ->leftJoin('c.manufacturer', 'm')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.mainImage', 'mi')
+            ->addSelect('mi')
+            ->andWhere('c.park = :park')
+            ->setParameter('park', $park)
+            ->orderBy('s.order', 'ASC')
+            ->addOrderBy('c.score', 'DESC')
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getResult();
+    }
+
+    /**
+     * Find a coaster for the show page, fetch-joining every association
+     * show.html.twig renders directly off `coaster` (park, country,
+     * manufacturer, materialType, seatingType, model, status, restraint,
+     * currency, launchs), so Twig's property access doesn't lazy-load each
+     * one individually. mainImage is deliberately NOT joined here -- unlike
+     * on the list pages, show.html.twig never renders it, and since it's
+     * LAZY it simply never loads at all for this method instead of costing
+     * an extra query.
+     *
+     * Cacheable: score/rank/totalRatings only change via the batch ranking
+     * recompute, not per-rating, and everything else changes only on rare
+     * admin edits -- same TTL as findForRanking()/findForSearch().
+     */
+    public function findForShow(int $id): ?Coaster
+    {
+        $query = $this->createBaseQuery()
+            ->select('c', 'p', 'country', 'm', 'mt', 'st', 'model', 's')
+            ->leftJoin('c.restraint', 'restraint')
+            ->addSelect('restraint')
+            ->leftJoin('c.currency', 'currency')
+            ->addSelect('currency')
+            ->leftJoin('c.launchs', 'launch')
+            ->addSelect('launch')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getOneOrNullResult();
     }
 
     /**

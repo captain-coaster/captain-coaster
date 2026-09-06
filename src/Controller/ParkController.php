@@ -34,7 +34,7 @@ class ParkController extends AbstractController
             'Park/show.html.twig',
             [
                 'park' => $park,
-                'coasters' => $coasterRepository->findAllCoastersInPark($park),
+                'coasters' => $coasterRepository->findAllCoastersInParkWithDetails($park),
                 'closestParks' => $parkRepository->getClosestParks($park, 80, 300),
             ]
         );
