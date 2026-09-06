@@ -40,7 +40,12 @@ class ReviewController extends BaseController
             $pagination = $paginator->paginate(
                 $riddenCoasterRepository->findAllReviews($preferredReviewLanguages),
                 $page,
-                10
+                10,
+                // Every join in findAllReviews() is ManyToOne, so it can
+                // never duplicate a row -- skip KnpPaginator's extra
+                // "distinct id" pre-query, which exists only to guard
+                // against *-to-many joins.
+                [PaginatorInterface::DISTINCT => false]
             );
         } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();

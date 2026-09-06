@@ -364,13 +364,19 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * language-based sort priority -- it's a dedicated reading feed, so a
      * rating-only row with its text hidden would just be dead weight.
      *
+     * Fetch-joins coaster/park: Review/list.html.twig renders both per
+     * review (name/slug for its links), and they're plain LAZY ManyToOne --
+     * unlike Coaster's own EAGER associations, nothing loads them
+     * automatically, so up to 20 extra queries per page (10 reviews x
+     * coaster + park) without this.
+     *
      * @param array<string> $preferredReviewLanguages
      *
      * @return Query<mixed, mixed>
      */
     public function findAllReviews(array $preferredReviewLanguages): Query
     {
-        $count = $this->getEntityManager()
+        $countQuery = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
@@ -379,14 +385,25 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
             ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->getQuery();
 
+        // Shared by every visitor with the same language preference, and
+        // only changes when a review is added/edited -- same 300s TTL as
+        // the other public-listing counts (ranking, search).
+        $countQuery->enableResultCache(300);
+        $count = (int) $countQuery->getSingleScalarResult();
+
+        // Not cached: OFFSET grows with the requested page, so each page
+        // would be its own cache entry -- with reviews numbering in the tens
+        // of thousands, that's mostly entries reused by no one before they
+        // expire (same reasoning as preloadTags()'s per-page callers).
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r, u')
+            ->select('r, u, c, p')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.park', 'p')
             ->where('r.hasReview = 1')
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')

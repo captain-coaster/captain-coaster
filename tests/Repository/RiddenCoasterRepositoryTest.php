@@ -135,8 +135,12 @@ class RiddenCoasterRepositoryTest extends TestCase
             $capturedDql[] = $dql;
 
             $query = $this->createMock(Query::class);
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
             $query->method('getSingleScalarResult')->willReturn(0);
             $query->method('setHint')->willReturnSelf();
+            $query->method('enableResultCache')->willReturnSelf();
 
             return $query;
         });
@@ -148,5 +152,69 @@ class RiddenCoasterRepositoryTest extends TestCase
             $this->assertStringContainsString('r.hasReview = 1', $dql);
             $this->assertStringNotContainsString('r.review', $dql);
         }
+    }
+
+    public function testFindAllReviewsFetchJoinsCoasterAndPark(): void
+    {
+        $capturedDql = [];
+        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$capturedDql) {
+            $capturedDql[] = $dql;
+
+            $query = $this->createMock(Query::class);
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
+            $query->method('getSingleScalarResult')->willReturn(0);
+            $query->method('setHint')->willReturnSelf();
+            $query->method('enableResultCache')->willReturnSelf();
+
+            return $query;
+        });
+
+        $this->repository->findAllReviews(['en']);
+
+        // Regression guard: Review/list.html.twig reads review.coaster(.park)
+        // directly for every review -- coaster/park are plain LAZY
+        // ManyToOne, so without this, up to 20 extra queries fire per page
+        // (10 reviews x coaster + park).
+        $mainDql = null;
+        foreach ($capturedDql as $dql) {
+            if (!str_contains($dql, 'count(1)')) {
+                $mainDql = $dql;
+            }
+        }
+        $this->assertNotNull($mainDql, 'Expected a main (non-count) query to be captured');
+        $this->assertStringContainsString('INNER JOIN', $mainDql);
+        $this->assertStringContainsString('r.coaster', $mainDql);
+        $this->assertStringContainsString('c.park', $mainDql);
+    }
+
+    public function testFindAllReviewsCachesOnlyTheCountQuery(): void
+    {
+        $cachedLifetimes = [];
+        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$cachedLifetimes) {
+            $isCount = str_contains($dql, 'count(1)');
+
+            $query = $this->createMock(Query::class);
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
+            $query->method('getSingleScalarResult')->willReturn(0);
+            $query->method('setHint')->willReturnSelf();
+            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime) use ($query, &$cachedLifetimes, $isCount) {
+                $cachedLifetimes[] = ['lifetime' => $lifetime, 'isCount' => $isCount];
+
+                return $query;
+            });
+
+            return $query;
+        });
+
+        $this->repository->findAllReviews(['en']);
+
+        // Only the count is cacheable -- the main query's OFFSET grows with
+        // the requested page, so caching it would create one cache entry
+        // per page, most never reused before expiry.
+        $this->assertSame([['lifetime' => 300, 'isCount' => true]], $cachedLifetimes);
     }
 }
