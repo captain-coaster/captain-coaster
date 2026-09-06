@@ -24,7 +24,7 @@ class CountryRepository extends ServiceEntityRepository
 
     public function countForUser(User $user): int
     {
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(DISTINCT(co.id))')
             ->from(RiddenCoaster::class, 'r')
@@ -33,13 +33,7 @@ class CountryRepository extends ServiceEntityRepository
             ->join('p.country', 'co')
             ->where('r.user = :user')
             ->setParameter('user', $user)
-            ->getQuery();
-
-        // Feeds StatService::getUserStats() (every profile page view) and
-        // BannerService (S3 banner generation) -- 300s matches the other
-        // per-user stats it's cached alongside.
-        $query->enableResultCache(300);
-
-        return (int) $query->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 }

@@ -82,20 +82,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countForUser(User $user): int
     {
-        $query = $this->getEntityManager()
+        return (int) $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
             ->where('r.user = :user')
             ->setParameter('user', $user)
-            ->getQuery();
-
-        // Feeds StatService::getUserStats(), rendered on every profile page
-        // view (anyone's, not just the rider's own) -- 300s matches the
-        // other per-user stats it's cached alongside.
-        $query->enableResultCache(300);
-
-        return (int) $query->getSingleScalarResult();
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function countForCoaster(Coaster $coaster): ?int
@@ -510,8 +504,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->setMaxResults(1)
                 ->getQuery();
 
-            $query->enableResultCache(300);
-
             return $query->getSingleResult();
         } catch (NoResultException|NonUniqueResultException) {
             return $default;
@@ -546,10 +538,10 @@ class RiddenCoasterRepository extends ServiceEntityRepository
 
         // Identical for every user -- only the monthly ranking recompute
         // changes it -- so this is shared across every profile page view
-        // rather than recomputed per visit. Longer TTL than the per-user
-        // aggregate below since staleness here just means "up to an hour
-        // behind the last ranking run", never behind the viewed user's own
-        // activity.
+        // rather than recomputed per visit. The per-user aggregate below
+        // isn't cached: it's a single indexed, user-scoped query (a few ms
+        // even for the platform's most active rider), so caching it would
+        // only trade a negligible query for real staleness risk.
         $idsQuery->enableResultCache(3600);
         $operatingTop100Ids = $idsQuery->getSingleColumnResult();
 
@@ -572,8 +564,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->setParameter('user', $user)
                 ->setParameter('operatingTop100Ids', $operatingTop100Ids)
                 ->getQuery();
-
-            $query->enableResultCache(300);
 
             return $query->getSingleResult();
         } catch (NonUniqueResultException) {
@@ -599,8 +589,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->orderBy('nb', 'desc')
                 ->setMaxResults(1)
                 ->getQuery();
-
-            $query->enableResultCache(300);
 
             return $query->getSingleResult();
         } catch (\Exception) {
