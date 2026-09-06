@@ -149,17 +149,61 @@ class CoasterRepository extends ServiceEntityRepository
      */
     public function findForSearch(array $filters = []): Query
     {
-        $qb = $this->createBaseQuery()->select('c');
+        $qb = $this->createBaseQuery()
+            ->select('c', 'p', 'country', 'm', 'mt')
+            ->leftJoin('c.mainImage', 'mi')
+            ->addSelect('mi');
         $this->applyFilters($qb, $filters, 'search');
 
-        // Sort by distance if coordinates provided, otherwise by updatedAt
-        if ($this->hasValidCoordinates($filters)) {
-            $this->applyDistanceSort($qb, $filters['latitude'], $filters['longitude']);
-        } else {
-            $qb->orderBy('c.updatedAt', 'DESC');
+        $isDistanceSort = $this->hasValidCoordinates($filters);
+        if ($isDistanceSort) {
+            // Only the "park has coordinates" filter -- not the visitor's
+            // own lat/lng -- affects which rows match, so it has to be in
+            // before the count clone below. The HIDDEN distance SELECT and
+            // ORDER BY (added later, via applyDistanceSort()) only matter
+            // for the main query.
+            $qb->andWhere('p.latitude IS NOT NULL')->andWhere('p.longitude IS NOT NULL');
         }
 
-        return $qb->getQuery();
+        // Same gate as findForRanking(): filters['user'] alone is a no-op
+        // query-wise (see applyUserFilters) -- only an actual ridden/notridden
+        // toggle changes the query -- but the frontend sends it on every
+        // request for a logged-in visitor, so gating on its mere presence
+        // would disable caching for all of them.
+        $hasUserSpecificFilter = 'on' === ($filters['ridden'] ?? null) || 'on' === ($filters['notridden'] ?? null);
+
+        // Every join here is ManyToOne/OneToOne, so a plain count can never
+        // over/under-count -- compute and cache it ourselves and hand it to
+        // KnpPaginator via a hint, instead of letting it run its own
+        // (uncached) COUNT(*) query on every request.
+        $countQuery = (clone $qb)->select('count(c.id)')->getQuery();
+        if (!$hasUserSpecificFilter) {
+            $countQuery->enableResultCache(300);
+        }
+        $count = (int) $countQuery->getSingleScalarResult();
+
+        if ($isDistanceSort) {
+            $this->applyDistanceSort($qb, $filters['latitude'], $filters['longitude']);
+        } else {
+            // Newest coasters first; unknown opening dates sort last (NULLs
+            // sort lowest in DESC order). Ties (shared opening dates) broken
+            // by id for stable pagination.
+            $qb->orderBy('c.openingDate', 'DESC')->addOrderBy('c.id', 'DESC');
+        }
+
+        $query = $qb->getQuery();
+        $query->setHint('knp_paginator.count', $count);
+
+        // Distance sort binds the visitor's real-valued coordinates as query
+        // parameters -- Doctrine's result cache key includes them, so caching
+        // the main query here would never hit and would only fill the cache
+        // with entries reused by no one else. The count above is unaffected,
+        // since it depends on whether coordinates are set, not their value.
+        if (!$hasUserSpecificFilter && !$isDistanceSort) {
+            $query->enableResultCache(300); // Cache for 5 minutes - public data only
+        }
+
+        return $query;
     }
 
     /**
@@ -474,7 +518,9 @@ class CoasterRepository extends ServiceEntityRepository
     private function applyDistanceSort(QueryBuilder $qb, float $latitude, float $longitude): void
     {
         // Haversine formula for distance calculation (in km)
-        // Using a simplified version that works well for sorting purposes
+        // Using a simplified version that works well for sorting purposes.
+        // The "park has coordinates" WHERE is applied by the caller, before
+        // this -- it affects the row count, unlike this SELECT/ORDER BY.
         $qb->addSelect(
             '(6371 * ACOS(
                 COS(RADIANS(:userLat)) * COS(RADIANS(p.latitude)) *
@@ -482,8 +528,6 @@ class CoasterRepository extends ServiceEntityRepository
                 SIN(RADIANS(:userLat)) * SIN(RADIANS(p.latitude))
             )) AS HIDDEN distance'
         )
-            ->andWhere('p.latitude IS NOT NULL')
-            ->andWhere('p.longitude IS NOT NULL')
             ->setParameter('userLat', $latitude)
             ->setParameter('userLng', $longitude)
             ->orderBy('distance', 'ASC');

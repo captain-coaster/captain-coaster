@@ -55,7 +55,12 @@ class CoasterSearchController extends AbstractController
             $pagination = $this->paginator->paginate(
                 $this->coasterRepository->findForSearch($validatedFilters),
                 $page,
-                20
+                20,
+                // Every join in findForSearch() is ManyToOne/OneToOne, so it can
+                // never duplicate a coaster row -- skip KnpPaginator's extra
+                // "distinct id" pre-query, which exists only to guard against
+                // *-to-many joins.
+                [PaginatorInterface::DISTINCT => false]
             );
         } catch (AccessDeniedHttpException $e) {
             throw $e;
