@@ -5,42 +5,17 @@
 
 {% block body %}
   <div class="row">
-    <div class="panel panel-flat">
+    <div class="panel panel-flat" data-controller="review-list">
       <div class="panel-heading">
         <h6 class="panel-title text-semibold">
           {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
-          {{ 'review.title'|trans }}
+          {{ 'review_list.title'|trans }}
         </h6>
       </div>
 
-      {% if reviews.getTotalItemCount() > 0 %}
-        <div class="panel-body">
-          <ul class="media-list media-list-bordered">
-            {% for review in reviews %}
-              <li>
-                <div class="media-heading">
-                  <h6 class="text-semibold">
-                    <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
-                      {{ review.coaster.name }}
-                    </a>
-                    -
-                    <a href="{{ path('park_show', {'id': review.coaster.park.id, 'slug': review.coaster.park.slug}) }}">
-                      {{ review.coaster.park.name }}
-                    </a>
-                  </h6>
-                </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}
-              </li>
-            {% endfor %}
-          </ul>
-          {{ knp_pagination_render(reviews) }}
-        </div>
-      {% else %}
-        <div class="panel-body text-center text-muted">
-          {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
-          <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
-        </div>
-      {% endif %}
+      <div data-review-list-target="container">
+        {% include 'Review/_review_body.html.twig' %}
+      </div>
     </div>
   </div>
 {% endblock %}

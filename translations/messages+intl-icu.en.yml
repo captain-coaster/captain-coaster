@@ -323,8 +323,9 @@ users:
         title: 'Coasters map • {name}'
 
 review_list:
-    title: 'Coaster reviews'
+    title: 'Latest reviews'
     no_review: 'No review!'
+    load_more: 'Load more reviews'
 
 rating:
     last: 'Latest ratings'
@@ -348,7 +349,7 @@ sidebar:
     users: 'Our riders'
     map: 'Coasters map'
     top: 'Tops'
-    review: 'Coaster Reviews'
+    review: 'Latest Reviews'
     blog: 'Blog'
     contact: 'Get in touch'
     logout: 'Logout'

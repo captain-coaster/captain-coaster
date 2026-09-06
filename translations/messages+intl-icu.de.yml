@@ -329,8 +329,9 @@ users:
         title: 'Achterbahn Landkarte • {name}'
 
 review_list:
-    title: Achterbahn Rezensionen
+    title: Neueste Rezensionen
     no_review: 'Keine Rezension!'
+    load_more: 'Weitere Rezensionen laden'
 
 rating:
     last: Neueste Bewertungen
@@ -354,7 +355,7 @@ sidebar:
     users: Unsere Fahrer
     map: Achterbahn Landkarte
     top: Tops
-    review: Achterbahn Rezensionen
+    review: Neueste Rezensionen
     blog: Blog
     contact: Kontaktiere uns
     logout: Abmelden

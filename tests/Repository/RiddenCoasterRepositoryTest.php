@@ -131,24 +131,66 @@ class RiddenCoasterRepositoryTest extends TestCase
 
     public function testFindAllReviewsFiltersOnHasReviewColumn(): void
     {
-        $capturedDql = [];
-        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$capturedDql) {
-            $capturedDql[] = $dql;
+        $dql = null;
+        $this->em->method('createQuery')->willReturnCallback(function (string $capturedDql) use (&$dql) {
+            $dql = $capturedDql;
 
             $query = $this->createMock(Query::class);
-            $query->method('getSingleScalarResult')->willReturn(0);
-            $query->method('setHint')->willReturnSelf();
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
+            $query->method('getResult')->willReturn([]);
 
             return $query;
         });
 
-        $this->repository->findAllReviews(['en', 'fr']);
+        $this->repository->findAllReviews(['en', 'fr'], 11);
 
-        $this->assertCount(2, $capturedDql, 'Expected one count query and one select query');
-        foreach ($capturedDql as $dql) {
-            $this->assertStringContainsString('r.hasReview = 1', $dql);
-            $this->assertStringNotContainsString('r.review', $dql);
-        }
+        $this->assertStringContainsString('r.hasReview = 1', $dql);
+        $this->assertStringNotContainsString('r.review', $dql);
+    }
+
+    public function testFindAllReviewsFetchJoinsCoasterAndPark(): void
+    {
+        $dql = null;
+        $this->em->method('createQuery')->willReturnCallback(function (string $capturedDql) use (&$dql) {
+            $dql = $capturedDql;
+
+            $query = $this->createMock(Query::class);
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
+            $query->method('getResult')->willReturn([]);
+
+            return $query;
+        });
+
+        $this->repository->findAllReviews(['en'], 11);
+
+        // Regression guard: Review/list.html.twig reads review.coaster(.park)
+        // directly for every review -- coaster/park are plain LAZY
+        // ManyToOne, so without this, up to 20 extra queries fire per page
+        // (10 reviews x coaster + park).
+        $this->assertStringContainsString('INNER JOIN', $dql);
+        $this->assertStringContainsString('r.coaster', $dql);
+        $this->assertStringContainsString('c.park', $dql);
+    }
+
+    public function testFindAllReviewsUsesLimitFromCaller(): void
+    {
+        $query = $this->createMock(Query::class);
+        $query->method('setParameters')->willReturnSelf();
+        $query->method('setFirstResult')->willReturnSelf();
+        $query->expects($this->once())->method('setMaxResults')->with(11)->willReturnSelf();
+        $query->method('getResult')->willReturn([]);
+
+        // Exactly one query built -- $limit is the caller's responsibility
+        // (count+1, see ReviewController::listAction()): "load more"
+        // re-fetches from the top with a larger limit instead of a separate
+        // count query plus paging deeper into the result set.
+        $this->em->expects($this->once())->method('createQuery')->willReturn($query);
+
+        $this->repository->findAllReviews(['en'], 11);
     }
 
     public function testGetRatingStatsForCoasterCachesForFiveMinutes(): void

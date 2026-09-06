@@ -11,7 +11,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -364,36 +363,40 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * language-based sort priority -- it's a dedicated reading feed, so a
      * rating-only row with its text hidden would just be dead weight.
      *
+     * Fetch-joins coaster/park: Review/list.html.twig renders both per
+     * review (name/slug for its links), and they're plain LAZY ManyToOne --
+     * unlike Coaster's own EAGER associations, nothing loads them
+     * automatically, so up to 20 extra queries per page (10 reviews x
+     * coaster + park) without this.
+     *
+     * No OFFSET, ever: the listing grows $limit for each "load more" (see
+     * ReviewController::listAction()), so a deep load costs one bounded
+     * index scan instead of the COUNT + skip-N-rows cost a page-number
+     * scheme pays at depth. Same mechanism as
+     * NotificationRecipientRepository::findPageForUser().
+     *
      * @param array<string> $preferredReviewLanguages
      *
-     * @return Query<mixed, mixed>
+     * @return list<RiddenCoaster>
      */
-    public function findAllReviews(array $preferredReviewLanguages): Query
+    public function findAllReviews(array $preferredReviewLanguages, int $limit): array
     {
-        $count = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1)')
-            ->from(RiddenCoaster::class, 'r')
-            ->innerJoin('r.user', 'u')
-            ->where('r.hasReview = 1')
-            ->andWhere('r.language IN (:preferredReviewLanguages)')
-            ->andWhere('u.enabled = 1')
-            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
-            ->getQuery()
-            ->getSingleScalarResult();
-
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('r, u')
+            ->select('r, u, c, p')
             ->from(RiddenCoaster::class, 'r')
             ->innerJoin('r.user', 'u')
+            ->innerJoin('r.coaster', 'c')
+            ->innerJoin('c.park', 'p')
             ->where('r.hasReview = 1')
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
+            ->addOrderBy('r.id', 'desc')
             ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->setHint('knp_paginator.count', $count);
+            ->getResult();
     }
 
     /** Update totalRating for all coasters */
