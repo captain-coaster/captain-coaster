@@ -39,7 +39,11 @@ class UserController extends BaseController
             ['users' => $paginator->paginate(
                 $userRepository->getAllUsersWithTotalRatingsQuery(),
                 $page,
-                21
+                21,
+                // u.ratings is a plain (non-fetch) join used only to compute
+                // total_ratings -- GROUP BY r.user already collapses rows to
+                // one per user.
+                [PaginatorInterface::DISTINCT => false]
             )]
         );
     }
@@ -64,6 +68,9 @@ class UserController extends BaseController
                 [
                     'defaultSortFieldName' => 'r.riddenAt',
                     'defaultSortDirection' => 'desc',
+                    // Every join in getUserRatings() is ManyToOne, so it can
+                    // never duplicate a row.
+                    PaginatorInterface::DISTINCT => false,
                 ]
             );
         } catch (\UnexpectedValueException) {
@@ -102,6 +109,9 @@ class UserController extends BaseController
                     'wrap-queries' => true,
                     'defaultSortFieldName' => 'r.updatedAt',
                     'defaultSortDirection' => 'desc',
+                    // Every join in getUserReviews() is ManyToOne, so it can
+                    // never duplicate a row.
+                    PaginatorInterface::DISTINCT => false,
                 ]
             );
         } catch (\UnexpectedValueException) {
@@ -127,10 +137,13 @@ class UserController extends BaseController
             throw new NotFoundHttpException();
         }
 
+        $tops = $topRepository->findAllByUser($user);
+        $topRepository->preloadTopCoasters($tops);
+
         return $this->render(
             'User/tops.html.twig',
             [
-                'tops' => $topRepository->findAllByUser($user),
+                'tops' => $tops,
                 'user' => $user,
             ]
         );
@@ -153,6 +166,7 @@ class UserController extends BaseController
                     'wrap-queries' => true,
                     'defaultSortFieldName' => 'i.likeCounter',
                     'defaultSortDirection' => 'desc',
+                    PaginatorInterface::DISTINCT => false,
                 ]
             );
         } catch (\UnexpectedValueException) {

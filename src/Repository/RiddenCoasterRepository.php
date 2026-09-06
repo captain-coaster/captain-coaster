@@ -82,14 +82,20 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countForUser(User $user): int
     {
-        return (int) $this->getEntityManager()
+        $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('count(1)')
             ->from(RiddenCoaster::class, 'r')
             ->where('r.user = :user')
             ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleScalarResult();
+            ->getQuery();
+
+        // Feeds StatService::getUserStats(), rendered on every profile page
+        // view (anyone's, not just the rider's own) -- 300s matches the
+        // other per-user stats it's cached alongside.
+        $query->enableResultCache(300);
+
+        return (int) $query->getSingleScalarResult();
     }
 
     public function countForCoaster(Coaster $coaster): ?int
@@ -489,7 +495,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('co.name as name')
                 ->addSelect('count(1) as nb')
@@ -502,8 +508,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->orderBy('nb', 'desc')
                 ->setParameter('user', $user)
                 ->setMaxResults(1)
-                ->getQuery()
-                ->getSingleResult();
+                ->getQuery();
+
+            $query->enableResultCache(300);
+
+            return $query->getSingleResult();
         } catch (NoResultException|NonUniqueResultException) {
             return $default;
         }
@@ -523,7 +532,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function countTop100ForUser(User $user): array|int
     {
-        $operatingTop100Ids = $this->getEntityManager()
+        $idsQuery = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('c.id')
             ->from(Coaster::class, 'c')
@@ -533,8 +542,16 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->orderBy('c.rank', 'ASC')
             ->setMaxResults(100)
             ->setParameter('operating', Status::OPERATING)
-            ->getQuery()
-            ->getSingleColumnResult();
+            ->getQuery();
+
+        // Identical for every user -- only the monthly ranking recompute
+        // changes it -- so this is shared across every profile page view
+        // rather than recomputed per visit. Longer TTL than the per-user
+        // aggregate below since staleness here just means "up to an hour
+        // behind the last ranking run", never behind the viewed user's own
+        // activity.
+        $idsQuery->enableResultCache(3600);
+        $operatingTop100Ids = $idsQuery->getSingleColumnResult();
 
         // Guard against an empty IN(), which Doctrine can't compile.
         if ([] === $operatingTop100Ids) {
@@ -542,7 +559,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
         }
 
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select([
                     'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
@@ -554,8 +571,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
                 ->setParameter('user', $user)
                 ->setParameter('operatingTop100Ids', $operatingTop100Ids)
-                ->getQuery()
-                ->getSingleResult();
+                ->getQuery();
+
+            $query->enableResultCache(300);
+
+            return $query->getSingleResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
@@ -566,7 +586,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb')
                 ->addSelect('m.name as name')
@@ -578,8 +598,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->groupBy('m.id')
                 ->orderBy('nb', 'desc')
                 ->setMaxResults(1)
-                ->getQuery()
-                ->getSingleResult();
+                ->getQuery();
+
+            $query->enableResultCache(300);
+
+            return $query->getSingleResult();
         } catch (\Exception) {
             return $default;
         }
@@ -614,7 +637,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     {
         $default = ['name' => $this->translatorInterface->trans('data.unknown', [], 'database'), 'nb' => 0];
         try {
-            return $this->getEntityManager()
+            $query = $this->getEntityManager()
                 ->createQueryBuilder()
                 ->select('count(1) as nb')
                 ->addSelect('m.name as name')
@@ -630,8 +653,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->groupBy('m.id')
                 ->orderBy('nb', 'desc')
                 ->setMaxResults(1)
-                ->getQuery()
-                ->getSingleResult();
+                ->getQuery();
+
+            $query->enableResultCache(300);
+
+            return $query->getSingleResult();
         } catch (\Exception) {
             return $default;
         }

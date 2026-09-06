@@ -46,9 +46,31 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
-    /** @return Query<mixed, mixed> */
+    /**
+     * The full aggregate (join every rating, group by user, sort by count)
+     * has to run in full regardless of which page is requested -- no index
+     * can pre-sort by an aggregate, so this scans and sorts all enabled
+     * users on every call. The count is cached separately (a plain
+     * COUNT(DISTINCT u.id) -- there's no HAVING threshold to replicate here,
+     * unlike TopRepository::findAllTops()) and handed to KnpPaginator via a
+     * hint; the main page-of-21 query isn't, since OFFSET grows with the
+     * requested page.
+     *
+     * @return Query<mixed, mixed>
+     */
     public function getAllUsersWithTotalRatingsQuery(): Query
     {
+        $countQuery = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(distinct u.id)')
+            ->from(User::class, 'u')
+            ->innerJoin('u.ratings', 'r')
+            ->where('u.enabled = 1')
+            ->getQuery();
+
+        $countQuery->enableResultCache(300);
+        $count = (int) $countQuery->getSingleScalarResult();
+
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('u')
@@ -58,7 +80,8 @@ class UserRepository extends ServiceEntityRepository
             ->innerJoin('u.ratings', 'r', 'WITH', 'r.user = u')
             ->groupBy('r.user')
             ->orderBy('total_ratings', 'desc')
-            ->getQuery();
+            ->getQuery()
+            ->setHint('knp_paginator.count', $count);
     }
 
     /**

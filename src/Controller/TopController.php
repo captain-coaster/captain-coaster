@@ -67,13 +67,26 @@ class TopController extends BaseController
 
     /** Displays all tops. */
     #[Route(path: '/', name: 'top_list', methods: ['GET'])]
-    public function list(PaginatorInterface $paginator, EntityManagerInterface $em, #[MapQueryParameter] int $page = 1): Response
+    public function list(PaginatorInterface $paginator, TopRepository $topRepository, #[MapQueryParameter] int $page = 1): Response
     {
         try {
-            $pagination = $paginator->paginate($em->getRepository(Top::class)->findAllTops(), $page, 9, ['wrap-queries' => true]);
+            $pagination = $paginator->paginate(
+                $topRepository->findAllTops(),
+                $page,
+                9,
+                [
+                    'wrap-queries' => true,
+                    // t.topCoasters is a plain (non-fetch) join used only for
+                    // the HAVING filter -- GROUP BY t.id already collapses
+                    // rows to one per top, so the extra "distinct id" guard
+                    // KnpPaginator runs for *-to-many joins is redundant here.
+                    PaginatorInterface::DISTINCT => false,
+                ]
+            );
         } catch (\UnexpectedValueException) {
             throw new BadRequestHttpException();
         }
+        $topRepository->preloadTopCoasters($pagination);
 
         return $this->render('Top/list.html.twig', [
             'tops' => $pagination,

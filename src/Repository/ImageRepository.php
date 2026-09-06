@@ -41,13 +41,20 @@ class ImageRepository extends ServiceEntityRepository
         return $query->getSingleResult();
     }
 
-    /** @return Query<mixed, mixed> */
+    /**
+     * Fetch-joins coaster: User/images.html.twig reads image.coaster.name for
+     * every image, and it's a plain LAZY ManyToOne -- without this, up to 30
+     * extra queries per page (one per image).
+     *
+     * @return Query<mixed, mixed>
+     */
     public function findUserImages(User $user): Query
     {
         return $this->getEntityManager()
             ->createQueryBuilder()
-            ->select('i')
+            ->select('i', 'c')
             ->from(Image::class, 'i')
+            ->innerJoin('i.coaster', 'c')
             ->where('i.enabled = 1')
             ->andWhere('i.credit is not null')
             ->andWhere('i.uploader = :uploader')

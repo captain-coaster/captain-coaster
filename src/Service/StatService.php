@@ -63,13 +63,12 @@ class StatService
     {
         $stats = [];
 
-        if (0 === $this->em->getRepository(RiddenCoaster::class)->countForUser($user)) {
+        $nbCoasters = $this->em->getRepository(RiddenCoaster::class)->countForUser($user);
+        if (0 === $nbCoasters) {
             return $stats;
         }
 
-        $stats['nb_coasters'] = $this->em
-            ->getRepository(RiddenCoaster::class)
-            ->countForUser($user);
+        $stats['nb_coasters'] = $nbCoasters;
         $stats['nb_park'] = $this->em
             ->getRepository(Park::class)
             ->countForUser($user);
