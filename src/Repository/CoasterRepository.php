@@ -123,7 +123,13 @@ class CoasterRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    /** @return array<int, Coaster> */
+    /**
+     * Used by CoasterController's "also in this park" sidebar, which only
+     * renders status/name -- see findAllCoastersInParkWithDetails() for
+     * ParkController's own, more demanding coaster list.
+     *
+     * @return array<int, Coaster>
+     */
     public function findAllCoastersInPark(Park $park): array
     {
         $query = $this->getEntityManager()->createQueryBuilder()
@@ -138,6 +144,34 @@ class CoasterRepository extends ServiceEntityRepository
 
         // Only changes when a coaster is added/edited/removed for this park --
         // a rare admin action, same profile as findForShow().
+        $query->enableResultCache(300);
+
+        return $query->getResult();
+    }
+
+    /**
+     * Used by ParkController's own coaster list (Park/show.html.twig), which
+     * additionally renders manufacturer/seatingType/mainImage per coaster --
+     * see findAllCoastersInPark() for the leaner sidebar version.
+     *
+     * @return array<int, Coaster>
+     */
+    public function findAllCoastersInParkWithDetails(Park $park): array
+    {
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('c', 's', 'm', 'st')
+            ->from(Coaster::class, 'c')
+            ->innerJoin('c.status', 's')
+            ->leftJoin('c.manufacturer', 'm')
+            ->leftJoin('c.seatingType', 'st')
+            ->leftJoin('c.mainImage', 'mi')
+            ->addSelect('mi')
+            ->andWhere('c.park = :park')
+            ->setParameter('park', $park)
+            ->orderBy('s.order', 'ASC')
+            ->addOrderBy('c.score', 'DESC')
+            ->getQuery();
+
         $query->enableResultCache(300);
 
         return $query->getResult();

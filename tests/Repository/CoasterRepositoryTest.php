@@ -225,4 +225,33 @@ class CoasterRepositoryTest extends TestCase
 
         $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
     }
+
+    public function testFindAllCoastersInParkWithDetailsFetchJoinsManufacturerSeatingTypeAndMainImage(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findAllCoastersInParkWithDetails(new Park());
+
+        $dql = $this->mainEntityDql();
+
+        // Regression guard: Park/show.html.twig reads coaster.manufacturer /
+        // .seatingType / .mainImage for each coaster, unlike the sidebar
+        // version (findAllCoastersInPark()), which only needs status/name.
+        $matched = preg_match('/^SELECT (.*?) FROM /', $dql, $matches);
+        $this->assertSame(1, $matched, "Could not find a SELECT clause in DQL: $dql");
+        $selectedAliases = array_map('trim', explode(',', $matches[1]));
+
+        foreach (['s', 'm', 'st', 'mi'] as $alias) {
+            $this->assertContains($alias, $selectedAliases, "Expected alias '$alias' to be fetch-joined in: $dql");
+        }
+    }
+
+    public function testFindAllCoastersInParkWithDetailsCachesForFiveMinutes(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findAllCoastersInParkWithDetails(new Park());
+
+        $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
+    }
 }
