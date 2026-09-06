@@ -29,8 +29,16 @@ class Top
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private User $user;
 
-    /** @var Collection<int, TopCoaster> */
-    #[ORM\OneToMany(mappedBy: 'top', targetEntity: TopCoaster::class, cascade: ['persist', 'remove'])]
+    /**
+     * EXTRA_LAZY so `|length`/`|slice`/indexed access (User/tops.html.twig,
+     * Top/list.html.twig, User::getMainTop()) hit the DB directly instead of
+     * loading every TopCoaster row -- which, since TopCoaster::coaster is
+     * EAGER, would also cascade into a batch-loading every one of those
+     * coasters just to display a count.
+     *
+     * @var Collection<int, TopCoaster>
+     */
+    #[ORM\OneToMany(mappedBy: 'top', targetEntity: TopCoaster::class, cascade: ['persist', 'remove'], fetch: 'EXTRA_LAZY')]
     #[ORM\OrderBy(['position' => 'ASC'])]
     #[CaptainConstraints\UniqueCoaster]
     private Collection $topCoasters;
