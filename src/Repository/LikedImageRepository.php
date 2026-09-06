@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
@@ -31,6 +32,28 @@ class LikedImageRepository extends ServiceEntityRepository
             ->join('li.image', 'i')
             ->where('li.user = :user')
             ->setParameter('user', $user)
+            ->getQuery();
+    }
+
+    /**
+     * Same as findUserLikes(), scoped to one coaster's images -- the coaster
+     * page's photo panel only needs to know which of *this coaster's*
+     * images the user liked, not their full sitewide like history (which
+     * for an active user can be hundreds/thousands of rows).
+     *
+     * @return Query<mixed, mixed>
+     */
+    public function findUserLikesForCoaster(User $user, Coaster $coaster): Query
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('i.id')
+            ->from(LikedImage::class, 'li')
+            ->join('li.image', 'i')
+            ->where('li.user = :user')
+            ->andWhere('i.coaster = :coaster')
+            ->setParameter('user', $user)
+            ->setParameter('coaster', $coaster)
             ->getQuery();
     }
 

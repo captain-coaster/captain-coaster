@@ -7,6 +7,7 @@ namespace App\Service;
 use App\Entity\CoasterSummary;
 use App\Entity\SummaryFeedback;
 use App\Entity\User;
+use App\Repository\CoasterSummaryRepository;
 use App\Repository\SummaryFeedbackRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -22,6 +23,7 @@ class SummaryFeedbackService
     public function __construct(
         private EntityManagerInterface $entityManager,
         private SummaryFeedbackRepository $feedbackRepository,
+        private CoasterSummaryRepository $coasterSummaryRepository,
         private LoggerInterface $logger
     ) {
     }
@@ -120,6 +122,9 @@ class SummaryFeedbackService
         $summary->updateFeedbackMetrics();
 
         $this->entityManager->flush();
+
+        // Vote counts are part of the cached findByCoasterAndLanguage() result.
+        $this->coasterSummaryRepository->clearCacheFor($summary->getCoaster(), $summary->getLanguage());
 
         $this->logger->debug('Updated summary feedback metrics', [
             'summary_id' => $summary->getId(),

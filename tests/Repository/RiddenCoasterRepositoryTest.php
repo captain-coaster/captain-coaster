@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Repository;
 
+use App\Entity\Coaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -190,5 +191,31 @@ class RiddenCoasterRepositoryTest extends TestCase
         $this->em->expects($this->once())->method('createQuery')->willReturn($query);
 
         $this->repository->findAllReviews(['en'], 11);
+    }
+
+    public function testGetRatingStatsForCoasterCachesForFiveMinutes(): void
+    {
+        $capturedResultCacheCalls = [];
+        $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$capturedResultCacheCalls) {
+            $query = $this->createMock(Query::class);
+            $query->method('setFirstResult')->willReturnSelf();
+            $query->method('setMaxResults')->willReturnSelf();
+            $query->method('setParameters')->willReturnSelf();
+            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime) use ($query, &$capturedResultCacheCalls) {
+                $capturedResultCacheCalls[] = $lifetime;
+
+                return $query;
+            });
+            $query->method('getResult')->willReturn([]);
+
+            return $query;
+        });
+
+        $coaster = new Coaster();
+        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, 1);
+
+        $this->repository->getRatingStatsForCoaster($coaster);
+
+        $this->assertSame([300], $capturedResultCacheCalls);
     }
 }

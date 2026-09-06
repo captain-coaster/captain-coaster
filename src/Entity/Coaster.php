@@ -75,7 +75,7 @@ class Coaster implements \Stringable
     #[Groups(['read_coaster'])]
     private ?MaterialType $materialType = null;
 
-    #[ORM\ManyToOne(targetEntity: SeatingType::class, fetch: 'EAGER')]
+    #[ORM\ManyToOne(targetEntity: SeatingType::class)]
     #[ORM\JoinColumn]
     #[Groups(['read_coaster'])]
     private ?SeatingType $seatingType = null;
@@ -193,7 +193,7 @@ class Coaster implements \Stringable
     #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'coaster', fetch: 'EXTRA_LAZY')]
     private Collection $images;
 
-    #[ORM\OneToOne(targetEntity: Image::class, fetch: 'EAGER')]
+    #[ORM\OneToOne(targetEntity: Image::class)]
     #[ORM\JoinColumn(onDelete: 'SET NULL')]
     #[Groups(['read_coaster'])]
     private ?Image $mainImage = null;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\Coaster;
+use App\Entity\Park;
 use App\Repository\CoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -88,6 +89,7 @@ class CoasterRepositoryTest extends TestCase
                 $query->method('getSingleScalarResult')->willReturn($count);
             } else {
                 $query->method('getResult')->willReturn($rows);
+                $query->method('getOneOrNullResult')->willReturn($rows[0] ?? null);
             }
 
             return $query;
@@ -191,6 +193,89 @@ class CoasterRepositoryTest extends TestCase
         $this->repository->findForRanking(['user' => 42, 'notridden' => 'on']);
 
         $this->assertSame([], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindForShowFetchJoinsEveryAssociationTheTemplateRenders(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForShow(1);
+
+        $dql = $this->mainEntityDql();
+
+        // Regression guard: show.html.twig reads coaster.park(.country) /
+        // .manufacturer / .materialType / .seatingType / .model / .status /
+        // .restraint / .currency / .launchs directly -- each of these, if
+        // not selected here, lazy-loads on its own the moment the template
+        // touches it.
+        $matched = preg_match('/^SELECT (.*?) FROM /', $dql, $matches);
+        $this->assertSame(1, $matched, "Could not find a SELECT clause in DQL: $dql");
+        $selectedAliases = array_map('trim', explode(',', $matches[1]));
+
+        foreach (['p', 'country', 'm', 'mt', 'st', 'model', 's', 'restraint', 'currency', 'launch'] as $alias) {
+            $this->assertContains($alias, $selectedAliases, "Expected alias '$alias' to be fetch-joined in: $dql");
+        }
+
+        // mainImage is never rendered by show.html.twig (unlike the list
+        // pages) -- joining it here would only inflate the query and its
+        // cached payload for nothing.
+        $this->assertNotContains('mi', $selectedAliases);
+    }
+
+    public function testFindForShowFiltersByTheGivenId(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForShow(42);
+
+        $this->assertStringContainsString('WHERE c.id = :id', $this->mainEntityDql());
+    }
+
+    public function testFindForShowCachesTheResult(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForShow(1);
+
+        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindAllCoastersInParkCachesForFiveMinutes(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findAllCoastersInPark(new Park());
+
+        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindAllCoastersInParkWithDetailsFetchJoinsManufacturerSeatingTypeAndMainImage(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findAllCoastersInParkWithDetails(new Park());
+
+        $dql = $this->mainEntityDql();
+
+        // Regression guard: Park/show.html.twig reads coaster.manufacturer /
+        // .seatingType / .mainImage for each coaster, unlike the sidebar
+        // version (findAllCoastersInPark()), which only needs status/name.
+        $matched = preg_match('/^SELECT (.*?) FROM /', $dql, $matches);
+        $this->assertSame(1, $matched, "Could not find a SELECT clause in DQL: $dql");
+        $selectedAliases = array_map('trim', explode(',', $matches[1]));
+
+        foreach (['s', 'm', 'st', 'mi'] as $alias) {
+            $this->assertContains($alias, $selectedAliases, "Expected alias '$alias' to be fetch-joined in: $dql");
+        }
+    }
+
+    public function testFindAllCoastersInParkWithDetailsCachesForFiveMinutes(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findAllCoastersInParkWithDetails(new Park());
+
+        $this->assertSame([['lifetime' => 300, 'isCount' => false]], $this->capturedResultCacheCalls);
     }
 
     public function testFindForSearchSetsKnpPaginatorCountHintFromASeparateCountQuery(): void
