@@ -11,7 +11,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -370,33 +369,18 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * automatically, so up to 20 extra queries per page (10 reviews x
      * coaster + park) without this.
      *
+     * No OFFSET, ever: the listing grows $limit for each "load more" (see
+     * ReviewController::listAction()), so a deep load costs one bounded
+     * index scan instead of the COUNT + skip-N-rows cost a page-number
+     * scheme pays at depth. Same mechanism as
+     * NotificationRecipientRepository::findPageForUser().
+     *
      * @param array<string> $preferredReviewLanguages
      *
-     * @return Query<mixed, mixed>
+     * @return list<RiddenCoaster>
      */
-    public function findAllReviews(array $preferredReviewLanguages): Query
+    public function findAllReviews(array $preferredReviewLanguages, int $limit): array
     {
-        $countQuery = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('count(1)')
-            ->from(RiddenCoaster::class, 'r')
-            ->innerJoin('r.user', 'u')
-            ->where('r.hasReview = 1')
-            ->andWhere('r.language IN (:preferredReviewLanguages)')
-            ->andWhere('u.enabled = 1')
-            ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
-            ->getQuery();
-
-        // Shared by every visitor with the same language preference, and
-        // only changes when a review is added/edited -- same 300s TTL as
-        // the other public-listing counts (ranking, search).
-        $countQuery->enableResultCache(300);
-        $count = (int) $countQuery->getSingleScalarResult();
-
-        // Not cached: OFFSET grows with the requested page, so each page
-        // would be its own cache entry -- with reviews numbering in the tens
-        // of thousands, that's mostly entries reused by no one before they
-        // expire (same reasoning as preloadTags()'s per-page callers).
         return $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r, u, c, p')
@@ -408,9 +392,11 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->andWhere('r.language IN (:preferredReviewLanguages)')
             ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
+            ->addOrderBy('r.id', 'desc')
             ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
+            ->setMaxResults($limit)
             ->getQuery()
-            ->setHint('knp_paginator.count', $count);
+            ->getResult();
     }
 
     /** Update totalRating for all coasters */

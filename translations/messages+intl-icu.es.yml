@@ -328,8 +328,9 @@ users:
         title: 'Mapa de las montañas rusas • {name}'
 
 review_list:
-    title: Reseñas de montañas rusas
+    title: Últimas reseñas
     no_review: '¡No hay reseñas!'
+    load_more: 'Ver más reseñas'
 
 rating:
     last: Últimas notas
@@ -353,7 +354,7 @@ sidebar:
     users: Nuestros usuarios
     map: Mapa de las montañas rusas
     top: 'Tops'
-    review: Reseñas de montaña rusa
+    review: Últimas reseñas
     blog: Blog
     contact: Estar en contacto
     logout: Cerrar sesión

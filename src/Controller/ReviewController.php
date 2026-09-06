@@ -10,55 +10,54 @@ use App\Form\Type\ReviewType;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ReviewLanguagePreferenceService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
-use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route(path: '/reviews')]
 class ReviewController extends BaseController
 {
+    private const int PAGE_SIZE = 10;
+
     /**
-     * Show a list of reviews.
-     *
-     * @throws NonUniqueResultException
+     * Show a list of reviews, most recent first, growing by PAGE_SIZE on
+     * each "load more" -- see RiddenCoasterRepository::findAllReviews().
      */
-    #[Route(path: '/{page}', name: 'review_list', requirements: ['page' => '\d+'], methods: ['GET'])]
+    #[Route(path: '', name: 'review_list', methods: ['GET'])]
     public function listAction(
         Request $request,
         RiddenCoasterRepository $riddenCoasterRepository,
-        PaginatorInterface $paginator,
         ReviewLanguagePreferenceService $reviewLanguagePreferenceService,
-        int $page = 1
     ): Response {
         $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
 
-        try {
-            $pagination = $paginator->paginate(
-                $riddenCoasterRepository->findAllReviews($preferredReviewLanguages),
-                $page,
-                10,
-                // Every join in findAllReviews() is ManyToOne, so it can
-                // never duplicate a row -- skip KnpPaginator's extra
-                // "distinct id" pre-query, which exists only to guard
-                // against *-to-many joins.
-                [PaginatorInterface::DISTINCT => false]
-            );
-        } catch (\UnexpectedValueException) {
-            throw new BadRequestHttpException();
-        }
-        $riddenCoasterRepository->preloadTags($pagination);
+        $count = max($request->query->getInt('count', self::PAGE_SIZE), self::PAGE_SIZE);
+        $reviews = $riddenCoasterRepository->findAllReviews($preferredReviewLanguages, $count + 1);
+        $hasMore = \count($reviews) > $count;
+        $reviews = \array_slice($reviews, 0, $count);
+
+        $riddenCoasterRepository->preloadTags($reviews);
+
+        $template = $request->isXmlHttpRequest() ? 'Review/_review_body.html.twig' : 'Review/list.html.twig';
 
         return $this->render(
-            'Review/list.html.twig',
+            $template,
             [
-                'reviews' => $pagination,
+                'reviews' => $reviews,
                 'preferredReviewLanguages' => $preferredReviewLanguages,
+                'hasMore' => $hasMore,
+                'nextCount' => $count + self::PAGE_SIZE,
             ]
         );
+    }
+
+    /** Old numbered-page URLs (/reviews/2) redirect to the infinite-scroll listing. */
+    #[Route(path: '/{page}', name: 'review_list_legacy_page', requirements: ['page' => '\d+'], methods: ['GET'])]
+    public function legacyPageRedirect(): RedirectResponse
+    {
+        return $this->redirectToRoute('review_list', [], Response::HTTP_MOVED_PERMANENTLY);
     }
 
     /** Create or update a review. */

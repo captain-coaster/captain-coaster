@@ -328,8 +328,9 @@ users:
         title: 'Carte des coasters • {name}'
 
 review_list:
-    title: Tous les avis
+    title: Derniers avis
     no_review: 'Aucun avis !'
+    load_more: "Voir plus d'avis"
 
 rating:
     last: Dernières notes
@@ -353,7 +354,7 @@ sidebar:
     users: Nos riders
     map: Carte des coasters
     top: Les tops
-    review: Tous les avis
+    review: Derniers avis
     blog: Blog
     contact: Nous contacter
     logout: Déconnexion
