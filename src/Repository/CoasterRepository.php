@@ -147,8 +147,12 @@ class CoasterRepository extends ServiceEntityRepository
      * Find a coaster for the show page, fetch-joining every association
      * show.html.twig renders directly off `coaster` (park, country,
      * manufacturer, materialType, seatingType, model, status, restraint,
-     * currency, launchs, mainImage), so Twig's property access doesn't
-     * lazy-load each one individually.
+     * currency, launchs), so Twig's property access doesn't lazy-load each
+     * one individually. mainImage is deliberately NOT joined here -- unlike
+     * on the list pages, show.html.twig never renders it, so joining it
+     * would only inflate this query and its cached payload for nothing;
+     * being EAGER-mapped, it still loads via Doctrine's own small
+     * automatic query, same as findAllCoastersInPark()'s siblings.
      *
      * Cacheable: score/rank/totalRatings only change via the batch ranking
      * recompute, not per-rating, and everything else changes only on rare
@@ -164,8 +168,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->addSelect('currency')
             ->leftJoin('c.launchs', 'launch')
             ->addSelect('launch')
-            ->leftJoin('c.mainImage', 'mi')
-            ->addSelect('mi')
             ->where('c.id = :id')
             ->setParameter('id', $id)
             ->getQuery();

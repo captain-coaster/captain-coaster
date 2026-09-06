@@ -182,16 +182,21 @@ class CoasterRepositoryTest extends TestCase
 
         // Regression guard: show.html.twig reads coaster.park(.country) /
         // .manufacturer / .materialType / .seatingType / .model / .status /
-        // .restraint / .currency / .launchs / .mainImage directly -- each of
-        // these, if not selected here, lazy-loads on its own the moment the
-        // template touches it.
+        // .restraint / .currency / .launchs directly -- each of these, if
+        // not selected here, lazy-loads on its own the moment the template
+        // touches it.
         $matched = preg_match('/^SELECT (.*?) FROM /', $dql, $matches);
         $this->assertSame(1, $matched, "Could not find a SELECT clause in DQL: $dql");
         $selectedAliases = array_map('trim', explode(',', $matches[1]));
 
-        foreach (['p', 'country', 'm', 'mt', 'st', 'model', 's', 'restraint', 'currency', 'launch', 'mi'] as $alias) {
+        foreach (['p', 'country', 'm', 'mt', 'st', 'model', 's', 'restraint', 'currency', 'launch'] as $alias) {
             $this->assertContains($alias, $selectedAliases, "Expected alias '$alias' to be fetch-joined in: $dql");
         }
+
+        // mainImage is never rendered by show.html.twig (unlike the list
+        // pages) -- joining it here would only inflate the query and its
+        // cached payload for nothing.
+        $this->assertNotContains('mi', $selectedAliases);
     }
 
     public function testFindForShowFiltersByTheGivenId(): void
