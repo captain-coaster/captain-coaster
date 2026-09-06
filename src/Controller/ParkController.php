@@ -24,7 +24,7 @@ class ParkController extends AbstractController
     }
 
     /** Show park details. */
-    #[Route(path: '/{id}/{slug}', name: 'park_show', options: ['expose' => true], methods: ['GET'])]
+    #[Route(path: '/{id}/{slug}', name: 'park_show', requirements: ['id' => '\d+'], options: ['expose' => true], methods: ['GET'])]
     public function showAction(
         ParkRepository $parkRepository,
         Park $park,
