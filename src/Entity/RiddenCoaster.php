@@ -48,8 +48,14 @@ class RiddenCoaster
     #[ORM\Column(type: Types::STRING, length: 5)]
     private string $language = 'en';
 
-    /** DB-generated (mirrors `review IS NOT NULL`) for idx_ridden_coaster_has_review_updated_at -- never run schema:update --force, it'll try to drop the generated expression. */
-    #[ORM\Column(type: Types::BOOLEAN, insertable: false, updatable: false)]
+    /**
+     * DB-generated (mirrors `review IS NOT NULL`) for idx_ridden_coaster_has_review_updated_at.
+     * nullable: true because MariaDB doesn't support NOT NULL on generated
+     * columns at all, even though this one's expression can never produce
+     * NULL. Never run schema:update --force, it'll try to drop the
+     * generated expression.
+     */
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true, insertable: false, updatable: false)]
     private bool $hasReview = false;
 
     /** @var Collection<int, Tag> */
