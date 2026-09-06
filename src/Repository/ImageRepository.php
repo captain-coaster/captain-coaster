@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
@@ -77,6 +78,32 @@ class ImageRepository extends ServiceEntityRepository
             ->where('i.enabled = 1')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * Find the top N visible images for a coaster, same ordering/filter as
+     * Coaster::getImages() (enabled, likeCounter desc, updatedAt desc).
+     *
+     * Coaster::getImages() applies that via ->matching(Criteria), which
+     * Doctrine backs with a LazyCriteriaCollection for EXTRA_LAZY
+     * associations -- efficient for count()/contains(), but its slice()
+     * isn't optimized at all: it always initializes (loads every image)
+     * before slicing in PHP. The coaster page only ever needs the first
+     * $limit, so query for exactly that instead.
+     *
+     * @return array<Image>
+     */
+    public function findVisibleForCoaster(Coaster $coaster, int $limit): array
+    {
+        return $this->createQueryBuilder('i')
+            ->where('i.enabled = 1')
+            ->andWhere('i.coaster = :coaster')
+            ->setParameter('coaster', $coaster)
+            ->orderBy('i.likeCounter', 'DESC')
+            ->addOrderBy('i.updatedAt', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
     }
 
     /** @return array<Image> */

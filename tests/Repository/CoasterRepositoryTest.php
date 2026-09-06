@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\Coaster;
+use App\Entity\Park;
 use App\Repository\CoasterRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -88,6 +89,7 @@ class CoasterRepositoryTest extends TestCase
                 $query->method('getSingleScalarResult')->willReturn($count);
             } else {
                 $query->method('getResult')->willReturn($rows);
+                $query->method('getOneOrNullResult')->willReturn($rows[0] ?? null);
             }
 
             return $query;
@@ -168,5 +170,54 @@ class CoasterRepositoryTest extends TestCase
         $this->repository->findForRanking(['user' => 42, 'notridden' => 'on']);
 
         $this->assertSame([], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindForShowFetchJoinsEveryAssociationTheTemplateRenders(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForShow(1);
+
+        $dql = $this->mainEntityDql();
+
+        // Regression guard: show.html.twig reads coaster.park(.country) /
+        // .manufacturer / .materialType / .seatingType / .model / .status /
+        // .restraint / .currency / .launchs / .mainImage directly -- each of
+        // these, if not selected here, lazy-loads on its own the moment the
+        // template touches it.
+        $matched = preg_match('/^SELECT (.*?) FROM /', $dql, $matches);
+        $this->assertSame(1, $matched, "Could not find a SELECT clause in DQL: $dql");
+        $selectedAliases = array_map('trim', explode(',', $matches[1]));
+
+        foreach (['p', 'country', 'm', 'mt', 'st', 'model', 's', 'restraint', 'currency', 'launch', 'mi'] as $alias) {
+            $this->assertContains($alias, $selectedAliases, "Expected alias '$alias' to be fetch-joined in: $dql");
+        }
+    }
+
+    public function testFindForShowFiltersByTheGivenId(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForShow(42);
+
+        $this->assertStringContainsString('WHERE c.id = :id', $this->mainEntityDql());
+    }
+
+    public function testFindForShowCachesTheResult(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findForShow(1);
+
+        $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindAllCoastersInParkCachesForFiveMinutes(): void
+    {
+        $this->stubQueries(0);
+
+        $this->repository->findAllCoastersInPark(new Park());
+
+        $this->assertSame([['lifetime' => 300]], $this->capturedResultCacheCalls);
     }
 }

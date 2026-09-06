@@ -10,6 +10,7 @@ use App\Entity\LikedImage;
 use App\Form\Type\ImageUploadType;
 use App\Repository\CoasterRepository;
 use App\Repository\CoasterSummaryRepository;
+use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Service\ImageManager;
 use App\Service\ReviewLanguagePreferenceService;
@@ -97,13 +98,13 @@ class CoasterController extends BaseController
         methods: ['GET'],
         condition: 'request.isXmlHttpRequest()'
     )]
-    public function ajaxLoadImages(EntityManagerInterface $em, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $imageNumber = 8): Response
+    public function ajaxLoadImages(EntityManagerInterface $em, ImageRepository $imageRepository, #[MapEntity(mapping: ['slug' => 'slug'])] Coaster $coaster, int $imageNumber = 8): Response
     {
         $userLikes = [];
         if (($user = $this->getUser()) instanceof UserInterface) {
             $userLikes = $em
                 ->getRepository(LikedImage::class)
-                ->findUserLikes($user)
+                ->findUserLikesForCoaster($user, $coaster)
                 ->getSingleColumnResult();
         }
 
@@ -112,6 +113,7 @@ class CoasterController extends BaseController
             [
                 'userLikes' => $userLikes,
                 'coaster' => $coaster,
+                'images' => $imageRepository->findVisibleForCoaster($coaster, $imageNumber),
                 'number' => $imageNumber,
             ]
         );
@@ -193,6 +195,7 @@ class CoasterController extends BaseController
     #[Route(path: '/{id}/{slug}', name: 'show_coaster', options: ['expose' => true], methods: ['GET'])]
     public function showAction(
         Request $request,
+        #[MapEntity(expr: 'repository.findForShow(id)')]
         Coaster $coaster,
         RiddenCoasterRepository $riddenCoasterRepository,
         CoasterRepository $coasterRepository

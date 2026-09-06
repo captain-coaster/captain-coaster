@@ -126,16 +126,53 @@ class CoasterRepository extends ServiceEntityRepository
     /** @return array<int, Coaster> */
     public function findAllCoastersInPark(Park $park): array
     {
-        return $this->getEntityManager()->createQueryBuilder()
-            ->select('c')
+        $query = $this->getEntityManager()->createQueryBuilder()
+            ->select('c', 's')
             ->from(Coaster::class, 'c')
             ->innerJoin('c.status', 's')
             ->andWhere('c.park = :park')
             ->setParameter('park', $park)
             ->orderBy('s.order', 'ASC')
             ->addOrderBy('c.score', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        // Only changes when a coaster is added/edited/removed for this park --
+        // a rare admin action, same profile as findForShow().
+        $query->enableResultCache(300);
+
+        return $query->getResult();
+    }
+
+    /**
+     * Find a coaster for the show page, fetch-joining every association
+     * show.html.twig renders directly off `coaster` (park, country,
+     * manufacturer, materialType, seatingType, model, status, restraint,
+     * currency, launchs, mainImage), so Twig's property access doesn't
+     * lazy-load each one individually.
+     *
+     * Cacheable: score/rank/totalRatings only change via the batch ranking
+     * recompute, not per-rating, and everything else changes only on rare
+     * admin edits -- same TTL as findForRanking()/findForSearch().
+     */
+    public function findForShow(int $id): ?Coaster
+    {
+        $query = $this->createBaseQuery()
+            ->select('c', 'p', 'country', 'm', 'mt', 'st', 'model', 's')
+            ->leftJoin('c.restraint', 'restraint')
+            ->addSelect('restraint')
+            ->leftJoin('c.currency', 'currency')
+            ->addSelect('currency')
+            ->leftJoin('c.launchs', 'launch')
+            ->addSelect('launch')
+            ->leftJoin('c.mainImage', 'mi')
+            ->addSelect('mi')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery();
+
+        $query->enableResultCache(300);
+
+        return $query->getOneOrNullResult();
     }
 
     /**
