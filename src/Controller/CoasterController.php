@@ -192,7 +192,7 @@ class CoasterController extends BaseController
     }
 
     /** Show details of a coaster */
-    #[Route(path: '/{id}/{slug}', name: 'show_coaster', options: ['expose' => true], methods: ['GET'])]
+    #[Route(path: '/{id}/{slug}', name: 'show_coaster', requirements: ['id' => '\d+'], options: ['expose' => true], methods: ['GET'])]
     public function showAction(
         Request $request,
         #[MapEntity(expr: 'repository.findForShow(id)')]
