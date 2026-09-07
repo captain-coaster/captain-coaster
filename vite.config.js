@@ -40,9 +40,12 @@ export default defineConfig(({ command }) => ({
     },
 
     server: {
-        // Allow access from mobile devices on the local network.
+        // Allow access from mobile devices on the local network. Vite
+        // always allows numeric-IP Host headers regardless of
+        // allowedHosts, which is how LAN devices reach the dev server —
+        // so allowedHosts stays at its default (blocks hostname-based
+        // requests, e.g. DNS rebinding), just host needs widening.
         host: true,
-        allowedHosts: true,
     },
 
     plugins: [
