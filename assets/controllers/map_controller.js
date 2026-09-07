@@ -42,17 +42,16 @@ export default class extends Controller {
         try {
             const maplibregl = await import('maplibre-gl');
             await import('maplibre-gl/dist/maplibre-gl.css');
-            const { version: maplibreGlVersion } = await import(
-                'maplibre-gl/package.json'
-            );
+            const { version: maplibreGlVersion } =
+                await import('maplibre-gl/package.json');
 
             this.maplibregl = maplibregl;
 
             // The worker URL MapLibre resolves at runtime doesn't survive
-            // Webpack bundling; see webpack.config.js copyFiles() for why
+            // bundling; see vite.config.js's Symfony() copy option for why
             // this static, version-namespaced path exists.
             maplibregl.setWorkerUrl(
-                `/build/vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.js`
+                `/build/vendor/maplibre-gl-${maplibreGlVersion}/maplibre-gl-worker.mjs`
             );
 
             this.map = new maplibregl.Map({
@@ -64,7 +63,10 @@ export default class extends Controller {
                 maxZoom: 18,
             });
 
-            this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
+            this.map.addControl(
+                new maplibregl.NavigationControl(),
+                'top-right'
+            );
 
             // 'load' never fires on a style/tile load failure (e.g. an
             // OpenFreeMap outage) — the try/catch around this method only
@@ -132,7 +134,9 @@ export default class extends Controller {
         counts.forEach((nb) => {
             const id = this.markerIconId(nb);
             if (!this.registeredIcons.has(id)) {
-                this.map.addImage(id, this.createMarkerIcon(nb), { pixelRatio: 2 });
+                this.map.addImage(id, this.createMarkerIcon(nb), {
+                    pixelRatio: 2,
+                });
                 this.registeredIcons.add(id);
             }
         });
@@ -170,7 +174,10 @@ export default class extends Controller {
             const feature = e.features.reduce((top, f) =>
                 f.properties.nb > top.properties.nb ? f : top
             );
-            this.showParkPopup(feature.properties, feature.geometry.coordinates);
+            this.showParkPopup(
+                feature.properties,
+                feature.geometry.coordinates
+            );
         });
 
         this.map.on('mouseenter', this.MARKER_LAYER_ID, () => {
@@ -195,7 +202,10 @@ export default class extends Controller {
                 },
                 geometry: {
                     type: 'Point',
-                    coordinates: [parseFloat(park.longitude), parseFloat(park.latitude)],
+                    coordinates: [
+                        parseFloat(park.longitude),
+                        parseFloat(park.latitude),
+                    ],
                 },
             };
         });
@@ -250,7 +260,10 @@ export default class extends Controller {
     focusOnPark(parkId) {
         const park = (this.markersValue || []).find((p) => p.id == parkId);
         if (park) {
-            const coordinates = [parseFloat(park.longitude), parseFloat(park.latitude)];
+            const coordinates = [
+                parseFloat(park.longitude),
+                parseFloat(park.latitude),
+            ];
             this.map.setCenter(coordinates);
             this.map.setZoom(9);
             this.showParkPopup(
@@ -300,7 +313,9 @@ export default class extends Controller {
                 this.markersValue = data;
                 if (this.mapLoaded) {
                     this.ensureMarkerIcons(data);
-                    this.map.getSource(this.SOURCE_ID).setData(this.toGeoJSON(data));
+                    this.map
+                        .getSource(this.SOURCE_ID)
+                        .setData(this.toGeoJSON(data));
                 }
 
                 const filterElement = document.querySelector(

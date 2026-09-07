@@ -17,7 +17,7 @@
   <link rel="manifest" href="{{ asset('manifest.json') }}">
   {% block header %}{% endblock %}
   <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
-  {{ encore_entry_link_tags('app') }}
+  {{ reprise_entry_link_tags('app') }}
   {% if app.environment != 'dev' %}
   <script defer src="https://umami.captaincoaster.com/script.js" data-website-id="f4b63258-75c9-45d8-a774-40e0a228aa50"></script>
   {% endif %}
@@ -65,7 +65,7 @@
 <!-- /page container -->
 
 <!-- Core JS files -->
-{{ encore_entry_script_tags('app') }}
+{{ reprise_entry_script_tags('app') }}
 
 <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
 <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>

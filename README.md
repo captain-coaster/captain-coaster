@@ -18,7 +18,11 @@ Join us in shaping the world's best roller coaster rankings!
     ```shell
     composer install
     ```
-6. Start the database services using Docker
+6. Install Node dependencies
+    ```shell
+    npm install
+    ```
+7. Start the database services using Docker
     ```shell
     docker-compose up -d
     ```
@@ -26,13 +30,17 @@ Join us in shaping the world's best roller coaster rankings!
     - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
-7. Load the database
+8. Load the database
     - With a dump: `gunzip -c path/to/dump.sql.gz | docker exec -i db-captain mariadb -uroot -proot123 captain`
-8. Start the Symfony development server
+9. Start the Symfony development server
     ```shell
     symfony server:start
     ```
-9. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
+10. Start the Vite dev server (in a separate terminal)
+    ```shell
+    npm run dev-server
+    ```
+11. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
 
 ### Option 2: Full Docker Setup
 
