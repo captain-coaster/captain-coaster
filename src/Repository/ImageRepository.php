@@ -9,6 +9,7 @@ use App\Entity\Image;
 use App\Entity\LikedImage;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,23 +23,56 @@ class ImageRepository extends ServiceEntityRepository
         parent::__construct($registry, Image::class);
     }
 
+    /** @throws NoResultException */
     public function findLatestLikedImage(): Image
     {
+        // Two-step, same reasoning as RiddenCoasterRepository::getLatestRatings():
+        // ORDER BY + LIMIT on the joined `li` table combined with a WHERE on
+        // the driving `image` table is the same MariaDB optimizer pathology
+        // in mirror image -- get the most-recently-liked candidate ids off
+        // liked_image alone first (cheap, no join), then filter/hydrate that
+        // small set. Ranking is redone in PHP instead of an SQL `ORDER BY
+        // FIELD(...)` -- DQL has no equivalent function registered here.
+        $candidateIds = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('IDENTITY(li.image)')
+            ->from(LikedImage::class, 'li')
+            ->orderBy('li.id', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->enableResultCache(600)
+            ->getSingleColumnResult();
+
+        if ([] === $candidateIds) {
+            throw new NoResultException();
+        }
+
         $query = $this->createQueryBuilder('i')
             ->addSelect('c', 'st', 'mi')
-            ->join(LikedImage::class, 'li', 'WITH', 'li.image = i.id')
             ->innerJoin('i.coaster', 'c')
             ->leftJoin('c.seatingType', 'st')
             ->leftJoin('c.mainImage', 'mi')
-            ->where('i.enabled = 1')
+            ->where('i.id IN (:ids)')
+            ->andWhere('i.enabled = 1')
             ->andWhere('i.credit IS NOT NULL')
-            ->orderBy('li.id', 'DESC')
-            ->setMaxResults(1)
+            ->setParameter('ids', $candidateIds)
             ->getQuery();
 
         $query->enableResultCache(600);
 
-        return $query->getSingleResult();
+        /** @var array<int, Image> $matchesById */
+        $matchesById = [];
+        foreach ($query->getResult() as $match) {
+            $matchesById[$match->getId()] = $match;
+        }
+
+        foreach ($candidateIds as $id) {
+            if (isset($matchesById[$id])) {
+                return $matchesById[$id];
+            }
+        }
+
+        throw new NoResultException();
     }
 
     /**
