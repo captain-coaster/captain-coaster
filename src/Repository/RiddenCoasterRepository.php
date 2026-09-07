@@ -223,6 +223,30 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function getLatestReviews(array $preferredReviewLanguages = ['en'], int $limit = 3): array
     {
+        // Two-step, same reasoning as getLatestRatings() below: a WHERE on
+        // the joined `users` table alongside ORDER BY + LIMIT on
+        // ridden_coaster is a known MariaDB optimizer pathology (can degrade
+        // to scanning most of the table instead of stopping at LIMIT) --
+        // the plain updated_at index added in #374 didn't fully fix it, only
+        // made it less likely. Get candidate ids off the plain
+        // has_review/updated_at index first -- cheap and bounded regardless
+        // of plan -- then rank/hydrate that small set with the
+        // language-priority CASE and the joins.
+        $candidateIds = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r.id')
+            ->from(RiddenCoaster::class, 'r')
+            ->where('r.hasReview = 1')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setMaxResults($limit * 10)
+            ->getQuery()
+            ->enableResultCache(300)
+            ->getSingleColumnResult();
+
+        if ([] === $candidateIds) {
+            return [];
+        }
+
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
@@ -236,12 +260,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('c.park', 'p')
             ->leftJoin('c.seatingType', 'st')
             ->leftJoin('c.mainImage', 'mi')
-            ->where('r.hasReview = 1')
+            ->where('r.id IN (:ids)')
             ->andWhere('u.enabled = 1')
             ->orderBy('languagePriority', 'asc')
             ->addOrderBy('r.updatedAt', 'desc')
-            ->setMaxResults($limit)
+            ->setParameter('ids', $candidateIds)
             ->setParameter('preferredReviewLanguages', $preferredReviewLanguages)
+            ->setMaxResults($limit)
             ->getQuery();
 
         $query->enableResultCache(300);
@@ -256,6 +281,29 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      */
     public function getLatestRatings(int $limit = 6): array
     {
+        // Two steps on purpose: ORDER BY r.updatedAt + LIMIT together with a
+        // WHERE on the joined `users` table makes MariaDB abandon the cheap
+        // "index order, stop at LIMIT" plan and scan most of ridden_coaster
+        // instead (seen examining 2M+ rows / 13s in production even with the
+        // plain updated_at index from #374 in place -- that index alone
+        // doesn't force the optimizer to use it correctly here). Getting
+        // candidate ids off the bare, unfiltered index first keeps that scan
+        // to exactly $limit * 5 rows; the second query only ever touches that
+        // small id set, so filtering/joining there is free regardless of plan.
+        $candidateIds = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r.id')
+            ->from(RiddenCoaster::class, 'r')
+            ->orderBy('r.updatedAt', 'desc')
+            ->setMaxResults($limit * 5)
+            ->getQuery()
+            ->enableResultCache(300)
+            ->getSingleColumnResult();
+
+        if ([] === $candidateIds) {
+            return [];
+        }
+
         $query = $this->getEntityManager()
             ->createQueryBuilder()
             ->select('r', 'u', 'c', 'st', 'mi')
@@ -264,8 +312,10 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->innerJoin('r.coaster', 'c')
             ->leftJoin('c.seatingType', 'st')
             ->leftJoin('c.mainImage', 'mi')
-            ->where('u.enabled = 1')
+            ->where('r.id IN (:ids)')
+            ->andWhere('u.enabled = 1')
             ->orderBy('r.updatedAt', 'desc')
+            ->setParameter('ids', $candidateIds)
             ->setMaxResults($limit)
             ->getQuery();
 
