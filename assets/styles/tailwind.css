@@ -4,7 +4,7 @@
 /*
  * Preflight (Tailwind's base reset) is intentionally not imported above:
  * Bootstrap 3/Limitless still owns the page-wide reset until Phase 2
- * (docs/adr/0001-ui-modernization-phasing.md) removes it entirely. Running
+ * (captain-coaster/captain-coaster#380) removes it entirely. Running
  * both resets at once would bleed into markup that isn't migrated yet.
  */
 
@@ -37,7 +37,11 @@
  * Only variants actually reachable in this app are included: alert-success/
  * -danger/-warning/-info (all reachable via addFlash()), plus
  * alert-styled-left/alert-arrow-left/alert-dismissible/alert-component/
- * alert-heading (the only modifiers referenced in templates).
+ * alert-heading (the only *styled* modifiers referenced in templates).
+ * "alert-bordered" is also referenced in templates (flashes.html.twig,
+ * connect/login.html.twig, registration/register.html.twig) but was never
+ * defined in the original LESS either -- pre-existing dead weight, not
+ * something this migration should invent styling for.
  * alert-primary and the .ui-pnotify integration were never used and are
  * dropped. "alert-error" (also a real addFlash() value) intentionally gets
  * no color rule below, matching the current (accidental) unstyled look —
@@ -210,7 +214,7 @@ button.close {
  * verified against the compiled output before relying on it.
  */
 .pagination {
-    @apply m-0 mt-0 -mb-1.5 inline-block rounded-[3px] pl-0;
+    @apply m-0 -mb-1.5 inline-block rounded-[3px] pl-0;
 }
 
 .pagination > li {

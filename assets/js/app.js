@@ -23,7 +23,7 @@ import 'bootstrap/js/transition'; // Required dependency for other components
 import '../styles/app.less';
 
 // Tailwind v4 — components migrated off Bootstrap/LESS land here.
-// See docs/adr/0001-ui-modernization-phasing.md (Phase 2).
+// See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
 import '../styles/tailwind.css';
 
 // Import theme JavaScript files (migrated from public/js/core/) - Critical for layout
