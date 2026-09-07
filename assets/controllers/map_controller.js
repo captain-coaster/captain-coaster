@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used on the /map/ page
+
 /**
  * Map Controller - Stimulus component for MapLibre GL maps.
  * Parks are rendered as a single GeoJSON symbol layer, not one DOM node

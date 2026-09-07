@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used on the review form
+
 export default class extends Controller {
     static values = {
         multiple: Boolean,

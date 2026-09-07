@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used in the coaster rating panel
+
 export default class extends Controller {
     static targets = ['dateInput', 'dateContainer', 'calendarButton'];
     static values = {
