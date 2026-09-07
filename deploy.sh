@@ -125,7 +125,7 @@ install_node_dependencies() {
 
 # Function to build production assets
 build_assets() {
-    log "Building production assets with Webpack Encore..."
+    log "Building production assets with Vite..."
     
     # Check if npm is available
     if ! command -v npm &> /dev/null; then
@@ -231,7 +231,7 @@ apply_dependency_changes() {
     # package.json: a changed lockfile means node_modules content changed,
     # which can change compiled output (e.g. a bundled polyfill version)
     # even when no source file under assets/ was touched.
-    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|webpack\.config\.js$)'; then
+    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|vite\.config\.js$|postcss\.config\.js$)'; then
         build_assets
     else
         log "no asset changes, skipping build"
@@ -400,7 +400,7 @@ show_usage() {
     echo "  update       Pull latest code from repository"
     echo "  install      Install/update PHP dependencies"
     echo "  install-node Install/update Node.js dependencies (only if package-lock.json exists)"
-    echo "  assets       Build production assets with Webpack Encore"
+    echo "  assets       Build production assets with Vite"
     echo "  migrate      Run database migrations"
     echo "  cache        Clear and warm cache"
     echo "  messenger-restart  Restart the messenger worker (systemd)"
