@@ -1,6 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 import { renderStarRating } from '../js/utils/star-rating';
 
+// stimulusFetch: 'lazy' — only used on the top-list edit page
+
 /**
  * Top List Search Controller
  *

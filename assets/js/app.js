@@ -9,7 +9,7 @@
 import $ from 'jquery';
 
 // Make jQuery available globally for legacy scripts and Bootstrap 3.x
-global.$ = global.jQuery = $;
+window.$ = window.jQuery = $;
 
 // Import Bootstrap 3.3.7 JavaScript components with proper module imports
 // Only importing components that are actually used in the application

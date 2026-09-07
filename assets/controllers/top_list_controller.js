@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used on the top-list edit page
+
 /**
  * Modern Top List Controller - SortableJS Implementation
  *

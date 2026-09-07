@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used on ranking/map/search pages via the filter sidebar
+
 /**
  * Unified Filter Controller - Handles filtering for ranking, nearby, and map pages
  *

@@ -1,6 +1,6 @@
 ---
 name: dev-environment
-description: Use when starting, restarting, or stopping this project's local development environment - the Docker services, the Symfony server, and the Webpack Encore dev server.
+description: Use when starting, restarting, or stopping this project's local development environment - the Docker services, the Symfony server, and the Vite dev server.
 ---
 
 # Local development environment
@@ -27,7 +27,7 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
    The CLI picks a free port and prints the URL. Two worktrees get two ports; read the URL rather than assuming 8000.
 
-3. **Start Encore:** `npm run dev-server`.
+3. **Start Vite:** `npm run dev-server`.
 
 4. **Health check:** request the printed URL and confirm 200.
 

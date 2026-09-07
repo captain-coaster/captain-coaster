@@ -1,23 +1,16 @@
 {
+  "type": "module",
   "devDependencies": {
-    "@babel/core": "^7.17.0",
-    "@babel/preset-env": "^7.16.0",
     "@hotwired/stimulus": "^3.0.0",
-    "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
+    "@rollup/plugin-inject": "^5.0.5",
+    "@symfony/reprise": "^1.1.1",
     "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
-    "@symfony/webpack-encore": "^6.0.0",
     "autoprefixer": "^10.4.21",
-    "core-js": "^3.38.0",
     "intl-messageformat": "^10.5.11",
     "less": "^4.4.2",
-    "less-loader": "^12.3.0",
-    "postcss-loader": "^8.2.0",
+    "postcss": "^8.5.6",
     "prettier": "^3.6.2",
-    "webpack": "^5.74.0",
-    "webpack-bundle-analyzer": "^5.0.1",
-    "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.2",
-    "webpack-notifier": "^1.15.0"
+    "vite": "^8.2.2"
   },
   "license": "UNLICENSED",
   "private": true,
@@ -28,11 +21,10 @@
     "not IE 11"
   ],
   "scripts": {
-    "dev-server": "encore dev-server --hot",
-    "dev": "encore dev",
-    "watch": "encore dev --watch",
-    "build": "encore production --progress",
-    "build:analyze": "encore production --progress --analyze",
+    "dev-server": "vite",
+    "dev": "vite build --mode development",
+    "watch": "vite build --watch",
+    "build": "vite build",
     "clean": "rm -rf public/build/*",
     "format": "prettier --write \"assets/**/*.js\"",
     "format:check": "prettier --check \"assets/**/*.js\""

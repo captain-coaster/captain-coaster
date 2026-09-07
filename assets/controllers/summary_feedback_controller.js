@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used in the coaster AI summary block
+
 /**
  * Summary feedback controller for handling thumbs up/down voting on AI summaries
  */

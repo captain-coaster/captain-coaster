@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used on the search results page
+
 /**
  * Search Results Controller - Handles interactions on the comprehensive search results page
  *

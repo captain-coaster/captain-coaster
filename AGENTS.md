@@ -9,7 +9,7 @@ Captain Coaster is a participative guide for roller coaster enthusiasts — user
 - **Backend**: Symfony 7.x, PHP 8.5, Doctrine ORM
 - **Database**: MariaDB 11.8
 - **Cache/Queue**: Redis
-- **Frontend**: Webpack Encore, LESS, Bootstrap 3 (Limitless theme), Stimulus (Hotwire) — jQuery is still present for legacy pieces, being phased out in favor of Stimulus
+- **Frontend**: Vite (via `symfony/reprise`), LESS, Bootstrap 3 (Limitless theme), Stimulus (Hotwire) — jQuery is still present for legacy pieces, being phased out in favor of Stimulus
 - **API**: API Platform v4
 - **Admin**: EasyAdmin v4
 - **Storage**: AWS S3 via Flysystem
@@ -53,13 +53,12 @@ Current state:
 Assets live in `assets/`:
 
 - `js/` — vanilla JS entry points and utilities
-- `controllers/` — Stimulus controllers (one file per controller, named `*_controller.js`), auto-registered by `assets/bootstrap.js` scanning the directory. `controllers.json` is Symfony UX's registry for bundle-provided controllers (currently empty — no such bundles in use), not how local ones get registered
+- `controllers/` — Stimulus controllers (one file per controller, named `*_controller.js`), auto-registered via `vite.config.js`'s `stimulus` option and started from `assets/bootstrap.js`. `controllers.json` is Symfony UX's registry for bundle-provided controllers (currently empty — no such bundles in use), not how local ones get registered
 - `styles/app.less` — entry point, imports `components/`, `icons/`, `theme/` (Bootstrap 3 Limitless theme), `utilities/`
 
 Mid term aim:
 
-- Tailwind to replace Bootstrap and the legacy theme
-- Vite to replace Webpack Encore
+- Tailwind to replace Bootstrap and the legacy theme (LESS along with it)
 - Symfony UX Twig/Live Components and Stimulus as a default
 - No jQuery, vanilla JS
 

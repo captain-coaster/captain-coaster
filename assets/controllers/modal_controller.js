@@ -1,5 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 
+// stimulusFetch: 'lazy' — only used where review items render
+
 /**
  * Modal controller for Bootstrap 3.x modal management
  * Provides a modern Stimulus interface for Bootstrap modals while maintaining jQuery compatibility

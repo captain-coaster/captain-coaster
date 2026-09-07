@@ -1,6 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
 
+// stimulusFetch: 'lazy' — only used where review items render
+
 /**
  * Review actions controller for handling upvotes and reports
  * Optimized for Bootstrap 3.x with efficient jQuery usage

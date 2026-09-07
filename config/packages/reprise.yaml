@@ -1,0 +1,15 @@
+reprise:
+    script_attributes:
+        defer: false # Disabled for legacy jQuery compatibility
+
+framework:
+    assets:
+        json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+
+when@prod:
+    reprise:
+        # In prod we'd rather render nothing than let a missing entrypoints.json (or entry) take the app down with a 500.
+        strict_mode: false
+
+        # Cache the entrypoints.json (rebuild Symfony's cache when entrypoints.json changes)
+        cache: true
