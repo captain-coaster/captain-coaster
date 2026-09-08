@@ -384,6 +384,27 @@ label {
     font-weight: 400;
 }
 
+/*
+ * Bootstrap's normalize.less unconditionally forces
+ * `input[type=search] { box-sizing: content-box }` (a cross-browser fix,
+ * untouched, still active). Bootstrap's own forms.less immediately
+ * overrides that back to border-box specifically for search inputs —
+ * "Override content-box in Normalize (* isn't specific enough)", per its
+ * own comment — plus removes the iOS rounded-corner search styling so
+ * `.form-control` can style it instead. Switching forms.less to
+ * `(reference)` (see app.less) dropped this real, load-bearing rule along
+ * with the rest of the file's now-dead CSS output — missed until the
+ * search bar in the page header rendered ~40px wider than its container
+ * (padding/border added on top of the declared width instead of being
+ * included in it). `.form-control`'s own `width:100%` only prevents this
+ * class of bug when box-sizing is already border-box.
+ */
+input[type="search"] {
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
 .form-control {
     color: #333;
     background-color: #fff;
