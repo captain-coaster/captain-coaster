@@ -328,6 +328,24 @@ small,
     padding: 20px;
 }
 
+/*
+ * Bootstrap's panels.less does `.panel-body { &:extend(.clearfix all); }` --
+ * a LESS extend, not a normal nested declaration, easy to miss when reading
+ * the file top to bottom. Without it, a `.panel-body` whose direct children
+ * are floated (e.g. Bootstrap's `.col-xs-*` grid columns used without a
+ * `.row` wrapper) collapses to ~0 height and its content overflows below the
+ * panel's bottom edge. Caught on the ranking page's stats row.
+ */
+.panel-body:before,
+.panel-body:after {
+    content: " ";
+    display: table;
+}
+
+.panel-body:after {
+    clear: both;
+}
+
 .panel-flat > .panel-heading + .panel-body {
     padding-top: 0;
 }
