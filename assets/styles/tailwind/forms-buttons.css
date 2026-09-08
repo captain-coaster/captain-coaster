@@ -1,0 +1,532 @@
+/*
+ * .btn / .btn-group / .input-group / forms — migrated together:
+ * theme/bootstrap-limitless/{buttons,button-groups,input-groups,forms}.less
+ * + bootstrap/less/{buttons,button-groups,input-groups,forms}.less.
+ *
+ * `.btn-group`/`.btn-toolbar`/`.input-group` are entirely unused —
+ * grepped templates/, src/ and every Stimulus controller, zero hits (not
+ * even the enhanced-select controller generates one). Every rule in
+ * button-groups.less/input-groups.less requires one of those classes as
+ * an ancestor (checked line by line — no bare `.btn`/`.form-control` rule
+ * hides in either file), so both files are deleted outright with no
+ * Tailwind replacement, the same way `pager.less` was for media.
+ *
+ * .btn: only base + btn-default/-primary/-info/-danger/-link/-lg/-sm/-xs/
+ * -block/-rounded/-flat/-icon/-float(-lg)/-labeled(-right)/-block-group
+ * are used. Not used and dropped: btn-success/-warning/-xlg, the whole
+ * `.btn-group-*` size-override branch (dead, no btn-group),
+ * `.icon-2x` (never combined with btn-icon), and every
+ * `.input-group-* > .input-group-btn > .btn` sub-rule (dead, no
+ * input-group). `.btn-labeled`'s per-size (xlg/lg/sm/xs) padding variants
+ * are also dropped — the only two real usages (Profile/settings.html.twig)
+ * combine btn-labeled with no size class at all.
+ *
+ * Cross-file/cascade-position coupling, same check as `.badge`/`.label`:
+ * real usage combines `.btn` with non-`!important` `bg-*`/`border-*`/
+ * `text-*` helpers in several places (`btn bg-teal-400`, `btn
+ * bg-danger-400`, notification list's `btn {{ iconColorClass }}` —
+ * enumerated via the `NotificationType` enum: bg-primary/bg-success-400/
+ * bg-warning-400 — and `btn border-danger-800 text-danger-800 btn-flat`).
+ * Same fix as before: the base `.btn` rule doesn't set `background-color`
+ * at all, and its `border` shorthand is split into `border-width`/
+ * `border-style` so `border-color` is left free for a helper to set.
+ * `.btn-default/-primary/-info/-danger`'s own background-color/
+ * border-color are untouched (never combined with a bg-* or border-*
+ * helper in real usage, and Limitless's own
+ * `.btn[class*=bg-]:hover{color:#fff}` rule shows this coexistence was
+ * already an intentional pattern in the theme).
+ *
+ * forms: `.control-label` needs *zero* CSS — its only styling anywhere is
+ * nested under `.form-horizontal`, and the one template using
+ * `.form-horizontal` (Coaster/_review_panel.html.twig) never puts
+ * `.control-label` inside it. `.form-horizontal` itself turns out fully
+ * inert for the same reason: every one of its rules targets a descendant
+ * `.control-label` or an exact `.form-group` class, and the one real
+ * `.form-horizontal` form uses `.form-group-xs` alone (a different class,
+ * not `.form-group` + a size modifier) with no `.control-label` at all —
+ * so `.form-horizontal` is dropped too, verified via the compiled-CSS
+ * diff rather than assumed. `.radio` and everything radio-only is dropped
+ * (zero `<input type="radio">`/`.radio` usage anywhere). `.checkbox` itself
+ * *is* needed for 3 real cases (Coaster/image-upload.html.twig,
+ * Profile/settings.html.twig) — most `.checkbox` usage in templates is
+ * inside `.toggle-switch-form-group`, which already fully re-skins it via
+ * `assets/styles/components/toggle-switch.css` (untouched, unrelated to
+ * this migration).
+ */
+.btn {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.53846;
+}
+
+.btn::-moz-focus-inner {
+    border: 0;
+}
+
+.btn:hover,
+.btn:focus,
+.btn.focus {
+    color: #333;
+    text-decoration: none;
+    outline: 0;
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.05);
+}
+
+.btn:active,
+.btn.active {
+    background-image: none;
+    outline: 0;
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.1);
+}
+
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+}
+
+/* Buttons already colored via a bg-* helper still need white text on hover/focus. */
+.btn[class*="bg-"]:hover,
+.btn[class*="bg-"]:focus,
+.btn[class*="bg-"].focus {
+    color: #fff;
+}
+
+.btn-default {
+    color: #333;
+    background-color: #fcfcfc;
+    border-color: #ddd;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active {
+    background-color: #e3e3e3;
+    border-color: #bebebe;
+}
+
+.btn-default.disabled {
+    box-shadow: none;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #2196f3;
+    border-color: #2196f3;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active {
+    background-color: #0c7cd5;
+    border-color: #0b76cc;
+}
+
+.btn-primary.disabled {
+    box-shadow: none;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #00bcd4;
+    border-color: #00bcd4;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info.focus,
+.btn-info:active,
+.btn-info.active {
+    background-color: #008fa1;
+    border-color: #008697;
+}
+
+.btn-info.disabled {
+    box-shadow: none;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #f44336;
+    border-color: #f44336;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger.focus,
+.btn-danger:active,
+.btn-danger.active {
+    background-color: #ea1c0d;
+    border-color: #e11b0c;
+}
+
+.btn-danger.disabled {
+    box-shadow: none;
+}
+
+.btn-link {
+    color: #333;
+    font-weight: 400;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.btn-link,
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active {
+    border-color: transparent;
+}
+
+.btn-link:hover,
+.btn-link:focus {
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.btn-lg {
+    border-radius: 5px;
+    padding: 9px 15px;
+    font-size: 14px;
+    line-height: 1.42857;
+}
+
+.btn-lg.btn-rounded {
+    border-radius: 100px;
+}
+
+.btn-sm:not(.btn-rounded),
+.btn-xs:not(.btn-rounded) {
+    border-radius: 3px;
+}
+
+.btn-sm {
+    padding: 6px 11px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.btn-xs {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.btn-block + .btn-block {
+    margin-top: 10px;
+}
+
+.btn-rounded,
+.btn-rounded.btn-labeled > b,
+.btn-rounded img {
+    border-radius: 100px;
+}
+
+.btn-flat {
+    background-color: transparent;
+    border-width: 2px;
+}
+
+.btn-flat:hover,
+.btn-flat:focus {
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+.btn-flat:active {
+    opacity: 0.95;
+}
+
+.btn-icon {
+    padding-left: 9px;
+    padding-right: 9px;
+}
+
+.btn-icon.btn-xs {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.btn-float {
+    border-radius: 3px;
+    padding: 16px;
+}
+
+.btn-float.btn-link {
+    padding: 11px;
+}
+
+.btn-float i {
+    display: block;
+    margin: 0;
+    top: 0;
+}
+
+.btn-float img {
+    border-radius: 3px;
+}
+
+.btn-float > span {
+    display: block;
+    padding-top: 10px;
+    margin-bottom: -6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-float.btn-float-lg i {
+    font-size: 32px;
+}
+
+.btn-labeled {
+    padding-left: 48px;
+}
+
+.btn-labeled > b {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px;
+    display: block;
+    line-height: 1;
+}
+
+.btn-labeled > b > i {
+    top: 0;
+}
+
+.btn-labeled.btn-labeled-right {
+    padding-left: 12px;
+    padding-right: 48px;
+}
+
+.btn-labeled.btn-labeled-right > b {
+    left: auto;
+    right: -1px;
+    border-radius: 0 3px 3px 0;
+}
+
+.btn-block-group .btn {
+    border-radius: 0;
+    border-width: 1px 0 0 1px;
+}
+
+.btn-block-group .btn:last-child {
+    border-bottom-width: 1px;
+}
+
+.btn-block-group .btn-block + .btn-block {
+    margin-top: 0;
+}
+
+.btn-block-group div[class*="col-"]:first-child .btn:first-child {
+    border-radius: 3px 0 0;
+}
+
+.btn-block-group div[class*="col-"]:first-child .btn:last-child {
+    border-radius: 0 0 0 3px;
+}
+
+.btn-block-group div[class*="col-"]:last-child .btn {
+    border-right-width: 1px;
+}
+
+.btn-block-group div[class*="col-"]:last-child .btn:first-child {
+    border-radius: 0 3px 0 0;
+}
+
+.btn-block-group div[class*="col-"]:last-child .btn:last-child {
+    border-radius: 0 0 3px;
+}
+
+/*
+ * Generic `label` reset — every real `.checkbox label`/`.control-label`
+ * on the page depends on this (bootstrap/less/forms.less's un-classed
+ * `label{}` base rule, easy to miss since it targets the bare element,
+ * not a class). Confirmed via getComputedStyle before/after: dropping
+ * it silently turned every label's `display` from `inline-block` to the
+ * browser default `inline`.
+ */
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 7px;
+    font-weight: 400;
+}
+
+.form-control {
+    color: #333;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    width: 100%;
+    height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+    line-height: 1.53846;
+    transition:
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+    display: block;
+    box-shadow: none;
+}
+
+.form-control:focus {
+    border-color: #ddd;
+    outline: 0;
+    box-shadow: none;
+}
+
+.form-control[class*="bg-"]:focus {
+    border-color: transparent;
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control {
+    opacity: 1;
+    background-color: #fafafa;
+}
+
+.form-control[disabled],
+fieldset[disabled] .form-control {
+    cursor: not-allowed;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-group .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group-xs .form-control {
+    border-radius: 2px;
+    height: 32px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.checkbox {
+    position: relative;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.checkbox label {
+    cursor: pointer;
+    min-height: 20px;
+    margin-bottom: 0;
+    padding-left: 28px;
+    font-weight: 400;
+}
+
+.checkbox input[type="checkbox"] {
+    position: absolute;
+    margin-left: -20px;
+}
+
+.checkbox + .checkbox {
+    margin-top: 0;
+}
+
+.checkbox.disabled label,
+fieldset[disabled] .checkbox label {
+    cursor: not-allowed;
+}
+
+.help-block {
+    color: #999;
+    margin-top: 7px;
+    margin-bottom: 7px;
+    font-size: 12px;
+    display: block;
+}
+
+.has-feedback {
+    position: relative;
+}
+
+.has-feedback .form-control {
+    padding-right: 36px;
+}
+
+.has-feedback-left .form-control {
+    padding-left: 36px;
+    padding-right: 12px;
+}
+
+.has-feedback-left .form-control-feedback {
+    left: 0;
+    right: auto;
+}
+
+.form-control-feedback {
+    z-index: 3;
+    color: #333;
+    text-align: center;
+    pointer-events: none;
+    width: 38px;
+    height: 36px;
+    line-height: 36px;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.has-error .help-block,
+.has-error .checkbox {
+    color: #d84315;
+}
+
+.has-error .form-control {
+    border-color: #d84315;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.has-error .form-control:focus {
+    border-color: #aa3510;
+    box-shadow:
+        inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 6px #f08463;
+}
+
+.has-error .form-control-feedback {
+    color: #d84315;
+}
