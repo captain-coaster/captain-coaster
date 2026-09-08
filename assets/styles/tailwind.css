@@ -11,6 +11,23 @@
 @source "../../templates";
 
 /*
+ * Tailwind's built-in `.collapse` utility (visibility: collapse, meant for
+ * table rows) collides with Bootstrap 3's unrelated `.collapse` JS-toggle
+ * class (component-animations.less) -- @source above picks up the literal
+ * token from templates/navbar.html.twig's `navbar-collapse collapse` div.
+ * The layered utility can't override Bootstrap's unlayered `display`, but
+ * `visibility` is a property Bootstrap never sets there, so it applied
+ * unopposed and silently hid the whole #navbar-mobile block (both the
+ * left-side toggle and the right-side user/notifications dropdown) on
+ * every viewport -- visibility:collapse on a non-table element is
+ * equivalent to hidden per spec. Unlayered here so it wins the same way
+ * the rules below do.
+ */
+.collapse {
+    visibility: visible;
+}
+
+/*
  * Everything below is intentionally NOT inside `@layer components`.
  * CSS cascade layers always lose to unlayered rules, regardless of
  * selector specificity — and the LESS Bootstrap/Limitless files still
