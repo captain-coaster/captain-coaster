@@ -26,9 +26,7 @@
 @import 'bootstrap/less/normalize.less';
 @import 'bootstrap/less/print.less';
 @import 'bootstrap/less/scaffolding.less';
-@import 'bootstrap/less/type.less';
 @import 'bootstrap/less/grid.less';
-@import 'bootstrap/less/tables.less';
 
 // forms.less's own CSS is migrated to tailwind.css (Phase 2, captain-coaster/captain-coaster#380),
 // but bootstrap/less/navbar.less calls its `.form-inline()` mixin directly — (reference) keeps that
@@ -46,24 +44,14 @@
 @import 'bootstrap/less/dropdowns.less';
 @import 'bootstrap/less/navs.less';
 @import 'bootstrap/less/navbar.less';
-@import 'bootstrap/less/breadcrumbs.less';
-@import 'bootstrap/less/thumbnails.less';
-@import 'bootstrap/less/list-group.less';
-@import 'bootstrap/less/panels.less';
 @import 'bootstrap/less/modals.less';
 
 // Import theme overrides for high-usage Bootstrap components
 @import 'theme/bootstrap-limitless/scaffolding.less'; // 50% usage
-@import 'theme/bootstrap-limitless/type.less'; // 42% usage
 @import 'theme/bootstrap-limitless/dropdowns.less'; // 47% usage
 @import 'theme/bootstrap-limitless/navbar.less'; // 28% usage (but core component)
 @import 'theme/bootstrap-limitless/navs.less'; // 30% usage
 @import 'theme/bootstrap-limitless/modals.less'; // 55% usage
-@import 'theme/bootstrap-limitless/panels.less'; // 33% usage
-@import 'theme/bootstrap-limitless/thumbnails.less'; // 46% usage
-@import 'theme/bootstrap-limitless/breadcrumbs.less'; // 36% usage
-@import 'theme/bootstrap-limitless/tables.less'; // 29% usage
-@import 'theme/bootstrap-limitless/list-group.less'; // 38% usage
 
 // Import theme's core layout components (high usage)
 @import 'theme/core/layout/content.less'; // 100% usage
