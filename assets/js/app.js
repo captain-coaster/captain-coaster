@@ -22,6 +22,10 @@ import 'bootstrap/js/transition'; // Required dependency for other components
 // Import main stylesheet (includes Bootstrap 3.3.7 and custom theme)
 import '../styles/app.less';
 
+// Tailwind v4 — components migrated off Bootstrap/LESS land here.
+// See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
+import '../styles/tailwind.css';
+
 // Import theme JavaScript files (migrated from public/js/core/) - Critical for layout
 import './theme/theme';
 import './theme/layout_fixed_custom';

@@ -1,0 +1,296 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/*
+ * Preflight (Tailwind's base reset) is intentionally not imported above:
+ * Bootstrap 3/Limitless still owns the page-wide reset until Phase 2
+ * (captain-coaster/captain-coaster#380) removes it entirely. Running
+ * both resets at once would bleed into markup that isn't migrated yet.
+ */
+
+@source "../../templates";
+
+/*
+ * Everything below is intentionally NOT inside `@layer components`.
+ * CSS cascade layers always lose to unlayered rules, regardless of
+ * selector specificity — and the LESS Bootstrap/Limitless files still
+ * imported into app.less are unlayered plain CSS. `@layer components`
+ * silently broke `.pagination > li > a`'s background here: Bootstrap's
+ * own `a { background-color: transparent }` reset (scaffolding.less) has
+ * lower specificity but, being unlayered, still won over our layered,
+ * more specific rule. Written as plain top-level rules instead, so normal
+ * specificity/source-order decides against whatever Bootstrap CSS hasn't
+ * been migrated away yet — which is what we want during the transition.
+ * `@apply` works the same either way, layer or not.
+ */
+
+/*
+ * .alert — migrated from theme/bootstrap-limitless/alerts.less +
+ * bootstrap/less/alerts.less. Values below are copied from the compiled
+ * output of those two files (cascade already resolved), not re-derived
+ * from LESS variables, to guarantee an iso-visual result. Written as plain
+ * CSS rather than @apply: several rules here are pseudo-element icons
+ * (base64 SVG backgrounds) and precise absolute positioning that gain
+ * nothing from utility composition and are safer to keep as a verbatim
+ * copy of known-correct values.
+ *
+ * Only variants actually reachable in this app are included: alert-success/
+ * -danger/-warning/-info (all reachable via addFlash()), plus
+ * alert-styled-left/alert-arrow-left/alert-dismissible/alert-component/
+ * alert-heading (the only *styled* modifiers referenced in templates).
+ * "alert-bordered" is also referenced in templates (flashes.html.twig,
+ * connect/login.html.twig, registration/register.html.twig) but was never
+ * defined in the original LESS either -- pre-existing dead weight, not
+ * something this migration should invent styling for.
+ * alert-primary and the .ui-pnotify integration were never used and are
+ * dropped. "alert-error" (also a real addFlash() value) intentionally gets
+ * no color rule below, matching the current (accidental) unstyled look —
+ * "alert-error" was never a real Bootstrap/Limitless variant.
+ */
+.alert {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+
+.alert > p,
+.alert > ul {
+    margin-bottom: 0;
+}
+
+.alert > p + p {
+    margin-top: 5px;
+}
+
+.alert-heading {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.alert .close {
+    color: inherit;
+}
+
+.alert-dismissible,
+.alert-dismissable {
+    padding-right: 35px;
+}
+
+.alert-dismissible .close,
+.alert-dismissable .close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+}
+
+.alert-success {
+    color: #205823;
+    background-color: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.alert-info {
+    color: #00545c;
+    background-color: #e0f7fa;
+    border-color: #00bcd4;
+}
+
+.alert-warning {
+    color: #aa3510;
+    background-color: #fff3e0;
+    border-color: #ff9800;
+}
+
+.alert-danger {
+    color: #9c1f1f;
+    background-color: #fbe9e7;
+    border-color: #ff5722;
+}
+
+/* Only relevant paired with alert-styled-left, per the templates that use it. */
+.alert-component[class*="alert-styled-"] {
+    background-color: #fff;
+}
+
+.alert-styled-left {
+    border-left-width: 44px;
+}
+
+/* Decorative icon in the colored left border of a styled alert. */
+.alert[class*="alert-styled-"]:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: -44px;
+    width: 44px;
+    height: 16px;
+    margin-top: -8px;
+    line-height: 1;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xMS4yNSAxMS4yNS4wNDEtLjAyYS43NS43NSAwIDAgMSAxLjA2My44NTJsLS43MDggMi44MzZhLjc1Ljc1IDAgMCAwIDEuMDYzLjg1M2wuMDQxLS4wMjFNMjEgMTJhOSA5IDAgMSAxLTE4IDAgOSA5IDAgMCAxIDE4IDBabS05LTMuNzVoLjAwOHYuMDA4SDEyVjguMjVaIi8+PC9zdmc+);
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.alert[class*="alert-styled-"].alert-danger:after {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMiAyLjI1Yy01LjM4NSAwLTkuNzUgNC4zNjUtOS43NSA5Ljc1czQuMzY1IDkuNzUgOS43NSA5Ljc1IDkuNzUtNC4zNjUgOS43NS05Ljc1UzE3LjM4NSAyLjI1IDEyIDIuMjVabS0xLjcyIDYuOTdhLjc1Ljc1IDAgMSAwLTEuMDYgMS4wNkwxMC45NCAxMmwtMS43MiAxLjcyYS43NS43NSAwIDEgMCAxLjA2IDEuMDZMMTIgMTMuMDZsMS43MiAxLjcyYS43NS43NSAwIDEgMCAxLjA2LTEuMDZMMTMuMDYgMTJsMS43Mi0xLjcyYS43NS43NSAwIDEgMC0xLjA2LTEuMDZMMTIgMTAuOTRsLTEuNzItMS43MloiIGNsaXAtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==);
+}
+
+.alert[class*="alert-styled-"].alert-success:after {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yLjI1IDEyYzAtNS4zODUgNC4zNjUtOS43NSA5Ljc1LTkuNzVzOS43NSA0LjM2NSA5Ljc1IDkuNzUtNC4zNjUgOS43NS05Ljc1IDkuNzVTMi4yNSAxNy4zODUgMi4yNSAxMlptMTMuMzYtMS44MTRhLjc1Ljc1IDAgMSAwLTEuMjItLjg3MmwtMy4yMzYgNC41M0w5LjUzIDEyLjIyYS43NS43NSAwIDAgMC0xLjA2IDEuMDZsMi4yNSAyLjI1YS43NS43NSAwIDAgMCAxLjE0LS4wOTRsMy43NS01LjI1WiIgY2xpcC1ydWxlPSJldmVub2RkIi8+PC9zdmc+);
+}
+
+.alert[class*="alert-styled-"].alert-warning:after {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Ik0xMiA5djMuNzVtLTkuMzAzIDMuMzc2Yy0uODY2IDEuNS4yMTcgMy4zNzQgMS45NDggMy4zNzRoMTQuNzFjMS43MyAwIDIuODEzLTEuODc0IDEuOTQ4LTMuMzc0TDEzLjk0OSAzLjM3OGMtLjg2Ni0xLjUtMy4wMzItMS41LTMuODk4IDBMMi42OTcgMTYuMTI2Wk0xMiAxNS43NWguMDA3di4wMDhIMTJ2LS4wMDhaIi8+PC9zdmc+);
+}
+
+.alert[class*="alert-styled-"].alert-info:after {
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xMS4yNSAxMS4yNS4wNDEtLjAyYS43NS43NSAwIDAgMSAxLjA2My44NTJsLS43MDggMi44MzZhLjc1Ljc1IDAgMCAwIDEuMDYzLjg1M2wuMDQxLS4wMjFNMjEgMTJhOSA5IDAgMSAxLTE4IDAgOSA5IDAgMCAxIDE4IDBabS05LTMuNzVoLjAwOHYuMDA4SDEyVjguMjVaIi8+PC9zdmc+);
+}
+
+/* Small triangle notch at the edge of the colored left border. */
+.alert[class*="alert-arrow-"]:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -5px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid;
+    border-left-color: inherit;
+}
+
+/*
+ * .close — migrated from theme/bootstrap-limitless/close.less +
+ * bootstrap/less/close.less. Used standalone (dismiss a review-report
+ * modal) and inside .alert (that context — .alert .close,
+ * .alert-dismissible .close — already lives above, owned by the alert
+ * migration). Two upstream rules in modals.less
+ * (`.modal-header[class*="bg-"] .close` and the .modal-content
+ * variant) target this class for bg-tinted modal headers; no template
+ * uses one, so they're dead in practice and intentionally left
+ * untouched in modals.less until that file's own migration.
+ *
+ * @apply used here (unlike .alert) since every value maps to a plain
+ * Tailwind utility or a simple arbitrary one — nothing pseudo-element
+ * or icon-shaped that would fight the utility syntax.
+ */
+.close {
+    @apply float-right text-[19.5px] font-light leading-none text-black opacity-60;
+}
+
+.close:hover,
+.close:focus {
+    @apply cursor-pointer text-black no-underline opacity-100;
+    outline: 0;
+}
+
+button.close {
+    @apply cursor-pointer border-0 bg-transparent p-0 appearance-none;
+}
+
+.modal-header .close {
+    @apply absolute top-1/2 right-[20px] mt-0;
+}
+
+.modal-body .close {
+    margin-top: 0 !important;
+}
+
+/*
+ * .pagination — migrated from theme/bootstrap-limitless/pagination.less +
+ * bootstrap/less/pagination.less. Only the base + .pagination-sm variant
+ * are included (the only ones referenced in templates); pagination-lg/
+ * -xs/-flat/-rounded/-separated were never used and are dropped.
+ * Renders through two near-identical KNP pagination templates
+ * (custom + the bootstrap_v4 override) whose `.page-item`/`.page-link`
+ * classes carry no CSS at all in this app (Bootstrap 3 styles this
+ * structurally via `.pagination > li > a`, not by those class names) —
+ * verified against the compiled output before relying on it.
+ */
+.pagination {
+    @apply m-0 -mb-[6px] inline-block rounded-[3px] pl-0;
+}
+
+.pagination > li {
+    display: inline;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    @apply relative float-left border border-[#ddd] bg-white text-center text-[#333];
+    min-width: 36px;
+    padding: 7px 12px;
+    line-height: 1.53846;
+    text-decoration: none;
+    margin-left: -1px;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+    @apply z-2 bg-[#f5f5f5] text-[#333];
+    border-color: #ddd;
+}
+
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
+    @apply ml-0 rounded-l-[3px];
+}
+
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+    @apply rounded-r-[3px];
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+    @apply z-3 cursor-default text-white;
+    background-color: #2196f3;
+    border-color: #2196f3;
+}
+
+.pagination > .disabled > span,
+.pagination > .disabled > span:hover,
+.pagination > .disabled > span:focus,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
+    @apply cursor-not-allowed bg-transparent text-[#bbb];
+    border-color: #ddd;
+}
+
+.pagination-sm > li > a,
+.pagination-sm > li > span {
+    @apply text-[12px];
+    padding: 6px 11px;
+    line-height: 1.66667;
+    min-width: 34px;
+}
+
+.pagination-sm > li:first-child > a,
+.pagination-sm > li:first-child > span {
+    @apply rounded-l-[2px];
+}
+
+.pagination-sm > li:last-child > a,
+.pagination-sm > li:last-child > span {
+    @apply rounded-r-[2px];
+}
+
+/*
+ * .pager (theme/bootstrap-limitless/pager.less + bootstrap/less/pager.less)
+ * is intentionally NOT migrated: grepping templates/ and src/ found zero
+ * uses of "pager" anywhere in this app. Both files are deleted from
+ * app.less with no Tailwind replacement.
+ */

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import Symfony from '@symfony/reprise/vite';
 import inject from '@rollup/plugin-inject';
+import tailwindcss from '@tailwindcss/vite';
 
 // Single source of truth for the versioned vendor/ path below and the
 // matching setWorkerUrl() call in map_controller.js — keeps the two in
@@ -49,6 +50,7 @@ export default defineConfig(({ command }) => ({
     },
 
     plugins: [
+        tailwindcss(),
         Symfony({
             stimulus: 'assets/controllers.json',
             integrity: {
