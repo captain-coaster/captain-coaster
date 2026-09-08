@@ -311,3 +311,136 @@ button.close {
  * uses of "pager" anywhere in this app. Both files are deleted from
  * app.less with no Tailwind replacement.
  */
+
+/*
+ * .media — migrated from theme/bootstrap-limitless/media.less +
+ * bootstrap/less/media.less. Only variants actually referenced in
+ * templates/ are kept: media, media-body, media-list, media-list-bordered,
+ * media-heading, media-left, media-right, media-middle,
+ * media-annotation(.dotted) and stack-media-on-mobile. media-badge,
+ * media-header, media-list-linked, media-link, media-object, media-bottom
+ * and media-preview have zero uses anywhere and are dropped.
+ *
+ * navbar.less, sidebar.less, thumbnails.less, component-animation.less and
+ * theme/components/pages/{profile,user-list}.less all carry extra selectors
+ * referencing .media-* classes and .media-link for context (navbar
+ * dropdown, dark sidebar, profile cover, etc.) — checked each: every one is
+ * either a dead combination never actually rendered in this app (.profile-cover,
+ * .sidebar-user, .contact-details, .media-list-linked contexts don't
+ * appear in any template) or a real context override in a file this PR
+ * doesn't touch (components/notification-center.less's `.notif-item`
+ * rules on top of _notification_body.html.twig's markup), which keeps
+ * applying unchanged via the cascade regardless of where the base
+ * .media rules come from.
+ */
+.media {
+    @apply relative mt-[20px];
+}
+
+.media:first-child {
+    margin-top: 0;
+}
+
+.media.panel-body {
+    margin-top: 0;
+}
+
+.media,
+.media-body {
+    @apply overflow-visible;
+    zoom: 1;
+}
+
+.media-body {
+    @apply w-[10000px];
+}
+
+.media-left,
+.media-right,
+.media-body {
+    @apply relative table-cell align-top;
+}
+
+.media-middle {
+    @apply align-middle;
+}
+
+.media-heading {
+    @apply mt-0 mb-[2px] block;
+}
+
+.media-list {
+    @apply mb-0 list-none pl-0;
+}
+
+.media-right {
+    @apply pl-[20px];
+}
+
+.media-left {
+    @apply pr-[20px];
+}
+
+.media-annotation {
+    @apply text-[#999] text-[12px] font-normal;
+    line-height: 1.66667;
+}
+
+.media-heading .media-annotation {
+    @apply ml-[7px];
+}
+
+.media-annotation i {
+    @apply text-[13px];
+}
+
+/* Bullet before a "dotted" annotation (e.g. star rating · timestamp in a review row). */
+.media-annotation.dotted:not(.pull-right):before {
+    content: "\2022";
+    margin-right: 10px;
+}
+
+.media-list-bordered > li {
+    @apply border-t border-[#eee] mt-[15px] pt-[15px];
+}
+
+.media-list-bordered > li:first-child {
+    @apply border-t-0 pt-0;
+}
+
+/* Collapse a .media row to a stacked, centered layout below the tablet breakpoint. */
+@media (max-width: 768px) {
+    .stack-media-on-mobile:not(.text-left):not(.text-right) {
+        text-align: center;
+    }
+
+    .stack-media-on-mobile .media-annotation {
+        display: block;
+    }
+
+    .stack-media-on-mobile .media-annotation.dotted:not(.pull-right):before {
+        content: none;
+        margin: 0;
+    }
+
+    .stack-media-on-mobile .media-heading .media-annotation {
+        margin-left: 0;
+        margin-right: 0;
+        padding-bottom: 5px;
+    }
+
+    .stack-media-on-mobile .media-left,
+    .stack-media-on-mobile .media-right,
+    .stack-media-on-mobile .media-body {
+        @apply block w-auto px-0;
+    }
+
+    .stack-media-on-mobile .media-body,
+    .stack-media-on-mobile .media-right {
+        @apply mt-[15px];
+    }
+
+    .stack-media-on-mobile .media-heading {
+        @apply mb-[5px];
+    }
+}
