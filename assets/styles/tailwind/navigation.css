@@ -818,3 +818,26 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     }
 }
+
+/*
+ * account-menu.less (assets/styles/components/, not part of this migration)
+ * relies on out-ranking two of the base rules above -- `.account-menu li > a
+ * { display: flex }` (for the Language/Units rows' label-left, value-right
+ * layout) and `.dropdown-submenu > a.account-menu-row:after { display: none }`
+ * (to hide the submenu chevron this file draws via ::after, replaced by its
+ * own chevron-right icon inside .account-menu-row-value). Both are tied in
+ * specificity with the base rules here and used to win by simply coming
+ * later in app.less's cascade. Now that this CSS lives in tailwind.css
+ * (loaded after the *entire* app.less bundle), the tie flips the other way --
+ * `.dropdown-menu > li > a { display: block }` and the chevron ::after above
+ * started winning instead, breaking the account menu's row layout and
+ * showing a stray black chevron on Language/Units. Re-asserted here so
+ * order is deterministic regardless of account-menu.less's own position.
+ */
+.account-menu li > a {
+    display: flex;
+}
+
+.dropdown-submenu > a.account-menu-row:after {
+    display: none;
+}
