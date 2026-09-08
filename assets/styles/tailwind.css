@@ -195,7 +195,7 @@ button.close {
 }
 
 .modal-header .close {
-    @apply absolute top-1/2 right-5 mt-0;
+    @apply absolute top-1/2 right-[20px] mt-0;
 }
 
 .modal-body .close {
@@ -214,7 +214,7 @@ button.close {
  * verified against the compiled output before relying on it.
  */
 .pagination {
-    @apply m-0 -mb-1.5 inline-block rounded-[3px] pl-0;
+    @apply m-0 -mb-[6px] inline-block rounded-[3px] pl-0;
 }
 
 .pagination > li {
