@@ -332,6 +332,21 @@ button.close {
  * rules on top of _notification_body.html.twig's markup), which keeps
  * applying unchanged via the cascade regardless of where the base
  * .media rules come from.
+ *
+ * Two legacy-but-load-bearing quirks kept as-is rather than "cleaned up":
+ * `.media-body`'s `width:10000px` and the `table-cell` layout it's part of
+ * are Bootstrap 3's pre-flexbox trick for a two/three-column row with an
+ * auto-sized side column and a greedy center column. A flexbox rewrite
+ * would be the modern equivalent, but several templates (e.g.
+ * User/tops.html.twig) put `.media-left`/`.media-body`/`.media-right`
+ * directly under a `.panel-body`, with no `.media` element as the actual
+ * row container — table-cell layout works there because a browser
+ * auto-generates the anonymous table/row wrapper regardless of the
+ * parent's own `display`; `display:flex` has no equivalent auto-wrapping,
+ * so a flex rewrite would need a wrapper element added in those templates,
+ * which is template-markup work outside this CSS-only phase. The other
+ * quirk, `zoom:1` (an IE6/7 hasLayout trigger), had no such caveat and is
+ * dropped outright — dead weight in any browser this app still supports.
  */
 .media {
     @apply relative mt-[20px];
@@ -348,7 +363,6 @@ button.close {
 .media,
 .media-body {
     @apply overflow-visible;
-    zoom: 1;
 }
 
 .media-body {
