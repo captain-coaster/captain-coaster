@@ -3,8 +3,10 @@ import { Controller } from '@hotwired/stimulus';
 // stimulusFetch: 'lazy' — only used where review items render
 
 /**
- * Modal controller for Bootstrap 3.x modal management
- * Provides a modern Stimulus interface for Bootstrap modals while maintaining jQuery compatibility
+ * Modal controller -- replaces bootstrap/js/modal (jQuery plugin) with a
+ * plain implementation of the same show/hide/backdrop/focus/ESC behavior.
+ * Public API (show/hide/toggle, modal:* events) is unchanged so callers
+ * using the Stimulus outlet (review_actions_controller.js) need no changes.
  */
 export default class extends Controller {
     static targets = ['modal'];
@@ -12,39 +14,68 @@ export default class extends Controller {
         backdrop: { type: String, default: 'true' },
         keyboard: { type: Boolean, default: true },
         show: { type: Boolean, default: false },
-        remote: String,
     };
 
     connect() {
-        // Check if jQuery is available
-        if (typeof $ === 'undefined') {
-            console.error(
-                'Modal controller requires jQuery for Bootstrap 3.x compatibility'
-            );
-            return;
+        this._boundHandleKeydown = this._handleKeydown.bind(this);
+        this._boundHandleBackdropClick = this._handleBackdropClick.bind(this);
+        this._boundHandleDismissClick = this._handleDismissClick.bind(this);
+        this._backdropEl = null;
+
+        // Matches Bootstrap's own `[data-dismiss="modal"]` data-api (close
+        // button, cancel button) -- removed along with bootstrap/js/modal.
+        this.element.addEventListener('click', this._boundHandleDismissClick);
+
+        if (this.hasModalTarget && this.showValue) {
+            this.show();
         }
-
-        // Initialize the modal with Bootstrap 3.x options
-        this._initializeModal();
-
-        // Set up event listeners for Bootstrap modal events
-        this._setupEventListeners();
     }
 
     disconnect() {
-        // Clean up event listeners and modal instance
-        if (this.hasModalTarget) {
-            $(this.modalTarget).off('.modal-controller');
-            $(this.modalTarget).modal('hide');
-        }
+        this.element.removeEventListener(
+            'click',
+            this._boundHandleDismissClick
+        );
+        this._teardown();
     }
 
     /**
      * Show the modal
      */
     show() {
-        if (this.hasModalTarget) {
-            $(this.modalTarget).modal('show');
+        if (!this.hasModalTarget || this.isVisible) return;
+
+        const event = this._dispatchCustomEvent('modal:show');
+        if (event.defaultPrevented) return;
+
+        document.body.classList.add('modal-open');
+
+        if (this.backdropValue !== 'false') {
+            this._backdropEl = document.createElement('div');
+            this._backdropEl.className = 'modal-backdrop fade';
+            document.body.appendChild(this._backdropEl);
+            // Force reflow so the `.in` transition actually runs.
+            void this._backdropEl.offsetHeight;
+            this._backdropEl.classList.add('in');
+            this._backdropEl.addEventListener(
+                'click',
+                this._boundHandleBackdropClick
+            );
+        }
+
+        this.modalTarget.style.display = 'block';
+        void this.modalTarget.offsetHeight;
+        this.modalTarget.classList.add('in');
+
+        if (this.keyboardValue) {
+            document.addEventListener('keydown', this._boundHandleKeydown);
+        }
+
+        this._dispatchCustomEvent('modal:shown');
+
+        const autofocusElement = this.modalTarget.querySelector('[autofocus]');
+        if (autofocusElement) {
+            autofocusElement.focus();
         }
     }
 
@@ -52,107 +83,72 @@ export default class extends Controller {
      * Hide the modal
      */
     hide() {
-        if (this.hasModalTarget) {
-            $(this.modalTarget).modal('hide');
-        }
+        if (!this.hasModalTarget || !this.isVisible) return;
+
+        const event = this._dispatchCustomEvent('modal:hide');
+        if (event.defaultPrevented) return;
+
+        this.modalTarget.classList.remove('in');
+        this.modalTarget.style.display = 'none';
+
+        this._teardown();
+
+        this._dispatchCustomEvent('modal:hidden');
     }
 
     /**
      * Toggle the modal visibility
      */
     toggle() {
-        if (this.hasModalTarget) {
-            $(this.modalTarget).modal('toggle');
-        }
+        this.isVisible ? this.hide() : this.show();
     }
 
-    /**
-     * Handle show action from data-action
-     */
     handleShow(event) {
         event.preventDefault();
         this.show();
     }
 
-    /**
-     * Handle hide action from data-action
-     */
     handleHide(event) {
         event.preventDefault();
         this.hide();
     }
 
-    /**
-     * Handle toggle action from data-action
-     */
     handleToggle(event) {
         event.preventDefault();
         this.toggle();
     }
 
-    /**
-     * Initialize the modal with Bootstrap 3.x configuration
-     * @private
-     */
-    _initializeModal() {
-        if (!this.hasModalTarget) return;
-
-        const options = {
-            backdrop:
-                this.backdropValue === 'false' ? false : this.backdropValue,
-            keyboard: this.keyboardValue,
-            show: this.showValue,
-        };
-
-        // Add remote option if specified
-        if (this.hasRemoteValue) {
-            options.remote = this.remoteValue;
+    _handleKeydown(event) {
+        if (event.key === 'Escape') {
+            this.hide();
         }
-
-        // Initialize the Bootstrap modal with options
-        $(this.modalTarget).modal(options);
     }
 
-    /**
-     * Set up event listeners for Bootstrap modal events
-     * @private
-     */
-    _setupEventListeners() {
-        if (!this.hasModalTarget) return;
+    _handleBackdropClick() {
+        if (this.backdropValue !== 'static') {
+            this.hide();
+        }
+    }
 
-        const $modal = $(this.modalTarget);
+    _handleDismissClick(event) {
+        if (event.target.closest('[data-dismiss="modal"]')) {
+            event.preventDefault();
+            this.hide();
+        }
+    }
 
-        // Bootstrap 3.x modal events
-        $modal.on('show.bs.modal.modal-controller', (event) => {
-            this._dispatchCustomEvent('modal:show', { originalEvent: event });
-        });
+    _teardown() {
+        document.removeEventListener('keydown', this._boundHandleKeydown);
+        document.body.classList.remove('modal-open');
 
-        $modal.on('shown.bs.modal.modal-controller', (event) => {
-            this._dispatchCustomEvent('modal:shown', { originalEvent: event });
-
-            // Focus on autofocus elements when modal is shown
-            const autofocusElement =
-                this.modalTarget.querySelector('[autofocus]');
-            if (autofocusElement) {
-                autofocusElement.focus();
-            }
-        });
-
-        $modal.on('hide.bs.modal.modal-controller', (event) => {
-            this._dispatchCustomEvent('modal:hide', { originalEvent: event });
-        });
-
-        $modal.on('hidden.bs.modal.modal-controller', (event) => {
-            this._dispatchCustomEvent('modal:hidden', { originalEvent: event });
-        });
-
-        // Handle form submissions within the modal
-        $modal.on('submit.modal-controller', 'form', (event) => {
-            this._dispatchCustomEvent('modal:form-submit', {
-                originalEvent: event,
-                form: event.target,
-            });
-        });
+        if (this._backdropEl) {
+            this._backdropEl.removeEventListener(
+                'click',
+                this._boundHandleBackdropClick
+            );
+            this._backdropEl.remove();
+            this._backdropEl = null;
+        }
     }
 
     /**
@@ -171,13 +167,14 @@ export default class extends Controller {
         });
 
         this.modalTarget.dispatchEvent(event);
+        return event;
     }
 
     /**
      * Check if the modal is currently visible
      */
     get isVisible() {
-        return this.hasModalTarget && $(this.modalTarget).hasClass('in');
+        return this.hasModalTarget && this.modalTarget.classList.contains('in');
     }
 
     /**
@@ -185,26 +182,6 @@ export default class extends Controller {
      */
     get backdrop() {
         return document.querySelector('.modal-backdrop');
-    }
-
-    /**
-     * Static method to create modal instances programmatically
-     * Useful for dynamic modal creation while maintaining Bootstrap 3.x compatibility
-     */
-    static createModal(element, options = {}) {
-        // Ensure jQuery is available for Bootstrap 3.x
-        if (typeof $ === 'undefined') {
-            console.error(
-                'jQuery is required for Bootstrap 3.x modal functionality'
-            );
-            return null;
-        }
-
-        // Initialize with Bootstrap 3.x modal
-        const $modal = $(element);
-        $modal.modal(options);
-
-        return $modal;
     }
 
     /**

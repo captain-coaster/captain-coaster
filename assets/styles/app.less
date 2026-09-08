@@ -19,19 +19,12 @@
 @import 'theme/core/variables/variables-core.less';
 @import 'theme/core/variables/variables-custom.less';
 
-// Import theme's custom mixins (needed for navbar components)
-@import 'theme/core/mixins/nav-vertical-align.less';
 
 // Bootstrap Core CSS (high usage components only)
 @import 'bootstrap/less/normalize.less';
 @import 'bootstrap/less/print.less';
 @import 'bootstrap/less/scaffolding.less';
 @import 'bootstrap/less/grid.less';
-
-// forms.less's own CSS is migrated to tailwind.css (Phase 2, captain-coaster/captain-coaster#380),
-// but bootstrap/less/navbar.less calls its `.form-inline()` mixin directly — (reference) keeps that
-// mixin resolvable without emitting forms.less's now-dead CSS into the bundle.
-@import (reference) 'bootstrap/less/forms.less';
 
 // Bootstrap utilities (needed for mixins like .pull-left())
 @import 'bootstrap/less/utilities.less';
@@ -40,18 +33,15 @@
 @import 'bootstrap/less/responsive-utilities.less';
 
 // Bootstrap Components (20%+ usage based on analysis)
+// dropdowns/navs/navbar/modals CSS is migrated to tailwind/navigation.css
+// (Phase 2, captain-coaster/captain-coaster#380). component-animations.less
+// stays -- its .fade/.in/.collapse/.collapsing rules are still needed by
+// bootstrap/js/alert (flash messages, not yet migrated) and don't collide
+// with anything moved out, so there's nothing to port.
 @import 'bootstrap/less/component-animations.less';
-@import 'bootstrap/less/dropdowns.less';
-@import 'bootstrap/less/navs.less';
-@import 'bootstrap/less/navbar.less';
-@import 'bootstrap/less/modals.less';
 
 // Import theme overrides for high-usage Bootstrap components
 @import 'theme/bootstrap-limitless/scaffolding.less'; // 50% usage
-@import 'theme/bootstrap-limitless/dropdowns.less'; // 47% usage
-@import 'theme/bootstrap-limitless/navbar.less'; // 28% usage (but core component)
-@import 'theme/bootstrap-limitless/navs.less'; // 30% usage
-@import 'theme/bootstrap-limitless/modals.less'; // 55% usage
 
 // Import theme's core layout components (high usage)
 @import 'theme/core/layout/content.less'; // 100% usage

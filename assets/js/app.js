@@ -13,11 +13,14 @@ window.$ = window.jQuery = $;
 
 // Import Bootstrap 3.3.7 JavaScript components with proper module imports
 // Only importing components that are actually used in the application
-import 'bootstrap/js/dropdown'; // Used in navbar (language, notifications, user profile)
-import 'bootstrap/js/collapse'; // Used in mobile navbar toggle
 import 'bootstrap/js/alert'; // Used in flash messages and notifications
-import 'bootstrap/js/modal'; // Used in review report modal
 import 'bootstrap/js/transition'; // Required dependency for other components
+
+// dropdown/collapse/modal (navbar, account menu, review report modal) were
+// bootstrap/js/* jQuery plugins -- replaced by vanilla dropdown.js and the
+// collapse/modal Stimulus controllers as part of the Navigation cluster
+// migration (captain-coaster/captain-coaster#380).
+import './dropdown';
 
 // Import main stylesheet (includes Bootstrap 3.3.7 and custom theme)
 import '../styles/app.less';
@@ -37,5 +40,6 @@ import '../bootstrap';
 
 // Components are now handled by Stimulus controllers
 
-// Bootstrap components (dropdown, collapse, alert, modal) are initialized automatically
-// via data attributes and Stimulus controllers - no manual initialization needed
+// Alert (flash message dismiss) still initializes via data attributes.
+// Dropdown, collapse and modal are initialized via dropdown.js and
+// Stimulus controllers - no manual initialization needed.

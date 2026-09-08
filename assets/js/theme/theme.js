@@ -82,7 +82,7 @@ $(function () {
     // Mobile sidebar toggles
     $('.sidebar-mobile-main-toggle').on('click', function (e) {
         e.preventDefault();
-        $('#navbar-mobile').collapse('hide');
+        document.getElementById('navbar-mobile')?.classList.remove('in');
         $('body')
             .toggleClass('sidebar-mobile-main')
             .removeClass(
@@ -92,7 +92,7 @@ $(function () {
 
     $('.sidebar-mobile-secondary-toggle').on('click', function (e) {
         e.preventDefault();
-        $('#navbar-mobile').collapse('hide');
+        document.getElementById('navbar-mobile')?.classList.remove('in');
         $('body')
             .toggleClass('sidebar-mobile-secondary')
             .removeClass(
@@ -103,7 +103,7 @@ $(function () {
     // Opening the account/language collapse should close either sidebar,
     // same as the sidebar toggles already close each other above --
     // otherwise both panels can end up stacked open at once on mobile.
-    $('[data-target="#navbar-mobile"]').on('click', function () {
+    $('[data-action*="navbar-collapse#toggle"]').on('click', function () {
         $('body').removeClass(
             'sidebar-mobile-main sidebar-mobile-secondary sidebar-mobile-opposite sidebar-mobile-detached'
         );

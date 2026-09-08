@@ -8,14 +8,14 @@
    in every subsequent link generated from this same request. #}
 {% set nav_params = (route_params|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
 
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse navbar-fixed-top" data-controller="navbar-collapse">
   <div class="navbar-header">
     <a class="navbar-brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
     <ul class="nav navbar-nav visible-xs-block">
       <li class="navbar-toggle-icon">
-        <a data-toggle="collapse" data-target="#navbar-mobile">
+        <a data-action="click->navbar-collapse#toggle" aria-expanded="false">
           {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             {# Not img-xs: its fixed 32px fights the w-8 h-8 icons beside
                it, which render at 2rem like everything else here. #}
@@ -31,7 +31,7 @@
       {% endif %}
     </ul>
   </div>
-  <div class="navbar-collapse collapse" id="navbar-mobile">
+  <div class="navbar-collapse collapse" id="navbar-mobile" data-navbar-collapse-target="panel">
     <ul class="nav navbar-nav hidden-xs">
       <li>
         <a class="sidebar-control sidebar-main-toggle">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a>

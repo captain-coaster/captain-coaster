@@ -95,12 +95,8 @@ export default class extends Controller {
     openReportModal(event) {
         event.preventDefault();
 
-        // Try to use the modal outlet first (modern approach)
         if (this.hasModalOutlet) {
             this.modalOutlet.show();
-        } else if (this.hasReportModalTarget) {
-            // Fallback to direct Bootstrap 3.x modal API for compatibility
-            $(this.reportModalTarget).modal('show');
         }
     }
 
@@ -191,11 +187,8 @@ export default class extends Controller {
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
-                    // Hide the modal using the modal controller or fallback to jQuery
                     if (this.hasModalOutlet) {
                         this.modalOutlet.hide();
-                    } else if (this.hasReportModalTarget) {
-                        $(this.reportModalTarget).modal('hide');
                     }
 
                     // Disable the report button
