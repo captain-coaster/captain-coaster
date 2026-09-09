@@ -471,6 +471,7 @@ button.close {
 
 @import "./tailwind/normalize.css";
 @import "./tailwind/print.css";
+@import "./tailwind/grid.css";
 @import "./tailwind/scaffolding.css";
 @import "./tailwind/utilities.css";
 @import "./tailwind/responsive-utilities.css";

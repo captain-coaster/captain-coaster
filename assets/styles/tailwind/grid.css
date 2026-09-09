@@ -1,0 +1,133 @@
+/*
+ * Grid -- migrated: bootstrap/less/grid.less. The 12-column float grid,
+ * the last Bootstrap file in the app -- kept as the exact same class
+ * names (`row`, `col-{xs,sm,md,lg}-{N}`) real templates already use, not
+ * rewritten to Tailwind's own grid/flex utilities: this whole migration
+ * has always meant "same markup, CSS now authored in Tailwind's pipeline
+ * instead of Bootstrap's LESS," and grid is no different. `.container`/
+ * `.container-fluid` (this app's layout is fully custom, page-container/
+ * content-wrapper/sidebar -- Bootstrap's own outer container is never
+ * used), `.row-no-gutters`, and every `col-*-{offset,push,pull}-N` are
+ * all confirmed dead (grepped exact class tokens across templates/src,
+ * not just Bootstrap's own generated class list).
+ *
+ * Real usage across 21 templates (106 occurrences) needs only 12 of the
+ * 48 possible `col-{xs,sm,md,lg}-N` combinations: xs-{3,6}, sm-{3,4,6,
+ * 8,9,12}, md-{3,6}, lg-{4,9}. Every column's shared base rule
+ * (position/min-height/padding) is still needed on any of the 12 real
+ * classes above, so it stays selector-list-shared rather than being
+ * inlined per class. Breakpoints (769px/1025px/1200px) and the shared
+ * gutter (20px, `@grid-gutter-width`'s theme-overridden value already
+ * used throughout this migration) are copied from `lessc`'s own
+ * resolution, not hand-computed.
+ */
+.row {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+.row:before,
+.row:after {
+    display: table;
+    content: " ";
+}
+
+.row:after {
+    clear: both;
+}
+
+.col-xs-3,
+.col-sm-3,
+.col-md-3,
+.col-xs-6,
+.col-sm-6,
+.col-md-6,
+.col-sm-4,
+.col-lg-4,
+.col-sm-8,
+.col-sm-9,
+.col-lg-9,
+.col-sm-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.col-xs-3,
+.col-xs-6 {
+    float: left;
+}
+
+.col-xs-6 {
+    width: 50%;
+}
+
+.col-xs-3 {
+    width: 25%;
+}
+
+@media (min-width: 769px) {
+    .col-sm-3,
+    .col-sm-4,
+    .col-sm-6,
+    .col-sm-8,
+    .col-sm-9,
+    .col-sm-12 {
+        float: left;
+    }
+
+    .col-sm-12 {
+        width: 100%;
+    }
+
+    .col-sm-9 {
+        width: 75%;
+    }
+
+    .col-sm-8 {
+        width: 66.66666667%;
+    }
+
+    .col-sm-6 {
+        width: 50%;
+    }
+
+    .col-sm-4 {
+        width: 33.33333333%;
+    }
+
+    .col-sm-3 {
+        width: 25%;
+    }
+}
+
+@media (min-width: 1025px) {
+    .col-md-3,
+    .col-md-6 {
+        float: left;
+    }
+
+    .col-md-6 {
+        width: 50%;
+    }
+
+    .col-md-3 {
+        width: 25%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .col-lg-4,
+    .col-lg-9 {
+        float: left;
+    }
+
+    .col-lg-9 {
+        width: 75%;
+    }
+
+    .col-lg-4 {
+        width: 33.33333333%;
+    }
+}
