@@ -475,3 +475,4 @@ button.close {
 @import "./tailwind/panels-typography.css";
 @import "./tailwind/navigation.css";
 @import "./tailwind/layout.css";
+@import "./tailwind/colors.css";

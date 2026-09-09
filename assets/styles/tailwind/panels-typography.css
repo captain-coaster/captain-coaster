@@ -9,9 +9,8 @@
  * `.list-unstyled`, `.list-inline`(+`-condensed`/`-separate`, not `-bordered`,
  * unused), `.page-header`(+`-default`), `.page-title`/`.page-header-content`,
  * `.status-mark`, `.position-left`, `.content-divider`, `.icon-object`,
- * `.list-feed`, `.text-bold`/`-semibold`/`-size-small`/`-size-mini`, and the
- * five bare contextual text colors (`.text-muted/-primary/-success/-warning/
- * -danger`, not `-info`, unused) are kept. `.text-left/-lowercase/
+ * `.list-feed`, `.text-bold`/`-semibold`/`-size-small`/`-size-mini`, and
+ * `.text-muted` are kept. `.text-left/-lowercase/
  * -capitalize`, `blockquote`, `.lead`, `address`, `dl-horizontal`, `abbr`,
  * `mark`, `.heading-divided`, `.letter-icon`, `.img-preview`,
  * `.video-container`, `.text-black/-regular/-light/-thin/-italic/
@@ -26,11 +25,21 @@
  * class name. Verified with `getComputedStyle()` after removing type.less
  * that Tailwind's own layered utilities take over cleanly once the
  * unlayered Bootstrap version is gone. `.bg-primary/-success/-warning/
- * -danger` are dropped for a different reason: `theme/core/colors/
- * colors.less` (untouched) already defines a complete, later-in-cascade
- * version of all four (color + background + border) that's what actually
- * renders today — type.less's own copies are already dead weight *before*
- * this migration.
+ * -danger` were dropped from the start for a different reason:
+ * `theme/core/colors/colors.less` (untouched at the time) already defined
+ * a complete, later-in-cascade version of all four.
+ *
+ * **Correction (colors.less migration, tailwind/colors.css):** this
+ * cluster originally also kept `.text-primary/-success/-warning/-danger`
+ * (type.less's own bare contextual text colors), reasoning they were
+ * real and colors.less only touched `.bg-*`. That missed that
+ * colors.less *also* defines same-named `.text-*` rules with
+ * `!important`, and — like the four `.bg-*` above — already sat later in
+ * app.less's cascade. `!important` beats everything regardless of
+ * source order, so these four were already fully inert before this
+ * migration too; the colors.less migration removed them as dead code.
+ * `.text-muted` is the only one of the five actually still defined here:
+ * colors.less never touches it.
  *
  * type.less was scoped incompletely on the first pass — narrowed to "what
  * vanilla bootstrap type.less usually has" (headings, text-align, contextual
@@ -202,22 +211,6 @@ small,
 
 .text-muted {
     color: #999;
-}
-
-.text-primary {
-    color: #2196f3;
-}
-
-.text-success {
-    color: #43a047;
-}
-
-.text-warning {
-    color: #ef6c00;
-}
-
-.text-danger {
-    color: #d84315;
 }
 
 .text-bold {
