@@ -40,24 +40,12 @@
     .clearfix();
 }
 
-// responsive-utilities.less CSS is migrated to
-// tailwind/responsive-utilities.css (Phase 2, captain-coaster/captain-coaster#380).
-
-// dropdowns/navs/navbar/modals CSS is migrated to tailwind/navigation.css,
-// component-animations.less to tailwind/component-animations.css (Phase 2,
-// captain-coaster/captain-coaster#380). bootstrap/js/alert is now
-// alert_controller.js.
-
-// helpers.less CSS is migrated to tailwind/helpers.css, heading-elements.less
-// to tailwind/heading-elements.css (Phase 2, captain-coaster/captain-coaster#380).
-
-// Import form components
-// @import "theme/components/plugins/forms/checkboxes/uniform.less";     // 33% usage - file doesn't exist
-
-// Import high-usage page components (excluding login.less due to image path issues)
-// @import "theme/components/pages/login.less";              // 62% usage - has image path issues
-@import 'theme/components/pages/profile.less'; // 55% usage
-@import 'theme/components/pages/user-list.less'; // 75% usage
+// responsive-utilities.less, dropdowns/navs/navbar/modals,
+// component-animations.less, helpers.less, heading-elements.less and
+// theme/components/{ui,pages}/* (profile.less, user-list.less -- both
+// confirmed fully dead, no replacement needed) are all migrated or
+// removed as part of Phase 2 (captain-coaster/captain-coaster#380).
+// bootstrap/js/alert is now alert_controller.js.
 
 // Icon fonts removed - migrated to Heroicons SVG system
 
