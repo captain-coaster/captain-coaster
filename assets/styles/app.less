@@ -43,13 +43,10 @@
 // responsive-utilities.less CSS is migrated to
 // tailwind/responsive-utilities.css (Phase 2, captain-coaster/captain-coaster#380).
 
-// Bootstrap Components (20%+ usage based on analysis)
-// dropdowns/navs/navbar/modals CSS is migrated to tailwind/navigation.css
-// (Phase 2, captain-coaster/captain-coaster#380). component-animations.less
-// stays -- its .fade/.in/.collapse/.collapsing rules are still needed by
-// bootstrap/js/alert (flash messages, not yet migrated) and don't collide
-// with anything moved out, so there's nothing to port.
-@import 'bootstrap/less/component-animations.less';
+// dropdowns/navs/navbar/modals CSS is migrated to tailwind/navigation.css,
+// component-animations.less to tailwind/component-animations.css (Phase 2,
+// captain-coaster/captain-coaster#380). bootstrap/js/alert is now
+// alert_controller.js.
 
 // Import essential theme UI components (good usage)
 @import 'theme/components/ui/helpers.less'; // 26% usage

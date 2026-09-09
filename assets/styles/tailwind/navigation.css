@@ -432,10 +432,14 @@
     overflow-y: auto;
 }
 
-.navbar-collapse.collapsing {
-    transition-duration: 0.00000001s;
-}
-
+/*
+ * `.navbar-collapse.collapsing{transition-duration:.00000001s}` (a
+ * Limitless override disabling collapse.js's height animation) removed
+ * here: confirmed dead when migrating component-animations.less --
+ * `navbar_collapse_controller.js` toggles `.in` directly and no JS
+ * anywhere ever adds a `.collapsing` class, so nothing ever needed
+ * defeating.
+ */
 .navbar + .navbar-collapse {
     border-top: 0;
 }

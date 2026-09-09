@@ -472,6 +472,7 @@ button.close {
 @import "./tailwind/scaffolding.css";
 @import "./tailwind/utilities.css";
 @import "./tailwind/responsive-utilities.css";
+@import "./tailwind/component-animations.css";
 @import "./tailwind/labels-badges.css";
 @import "./tailwind/forms-buttons.css";
 @import "./tailwind/panels-typography.css";
