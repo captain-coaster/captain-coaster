@@ -21,14 +21,24 @@
 
 
 // Bootstrap Core CSS (high usage components only)
-// scaffolding.less CSS is migrated to tailwind/scaffolding.css
-// (Phase 2, captain-coaster/captain-coaster#380).
+// scaffolding.less CSS is migrated to tailwind/scaffolding.css,
+// utilities.less to tailwind/utilities.css (Phase 2,
+// captain-coaster/captain-coaster#380).
 @import 'bootstrap/less/normalize.less';
 @import 'bootstrap/less/print.less';
 @import 'bootstrap/less/grid.less';
 
-// Bootstrap utilities (needed for mixins like .pull-left())
-@import 'bootstrap/less/utilities.less';
+// bootstrap/less/mixins/grid.less's `.make-row()` mixin (used by
+// `.row` above) does `&:extend(.clearfix all)` -- LESS's extend needs an
+// actual `.clearfix` selector to attach to, which used to come from
+// utilities.less. Keeping this minimal invocation (not the whole file,
+// which had no other real use) so `.row` doesn't silently lose its
+// clearfix -- confirmed via a `WARNING: extend '.clearfix' has no
+// matches` build warning, and `.row`'s compiled output missing both
+// `:before`/`:after{display:table}` and `:after{clear:both}`, without it.
+.clearfix {
+    .clearfix();
+}
 
 // Bootstrap responsive utilities (needed for mobile/desktop visibility)
 @import 'bootstrap/less/responsive-utilities.less';
