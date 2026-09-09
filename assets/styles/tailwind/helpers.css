@@ -1,0 +1,147 @@
+/*
+ * Helpers -- migrated: theme/components/ui/helpers.less. A 121-class
+ * grab-bag (spacing, borders, sizing, display, opacity); grepped exact
+ * class tokens across templates/src (both `class="..."` attributes and
+ * macro string arguments like `helper.profilePicture(user, 'img-circle
+ * img-xs')`) to find the 30 real ones. `.border-top`/`.border-bottom`/
+ * `.border-radius` looked real under a loose word-boundary grep but
+ * turned out to be false positives -- every hit is actually
+ * `.border-{top,bottom}-{color}` (the Colors cluster's classes, a
+ * different rule already ported in colors.css) or, for `border-radius`,
+ * a literal inline `border-radius:` CSS property inside an HTML email
+ * template, not a class at all.
+ *
+ * These classes are NOT delegated to Tailwind's own same-named
+ * utilities the way `.sr-only`/`.text-center` were elsewhere in this
+ * migration: Tailwind's spacing scale (`m-5`, `mt-10`, ...) is
+ * `rem`-relative, and this site's root font-size is still 10px
+ * (scaffolding.css kept it iso-visual) -- Tailwind's `mt-10` would
+ * render at 25px here, not this file's literal 10px. Ported as plain
+ * px values instead, exactly matching the LESS source.
+ */
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
+}
+
+.m-10 {
+    margin: 10px !important;
+}
+
+.mt-5 {
+    margin-top: 5px !important;
+}
+
+.mt-10 {
+    margin-top: 10px !important;
+}
+
+.mb-5 {
+    margin-bottom: 5px !important;
+}
+
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.mb-15 {
+    margin-bottom: 15px !important;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
+}
+
+.ml-5 {
+    margin-left: 5px !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-padding-top {
+    padding-top: 0 !important;
+}
+
+.pt-10 {
+    padding-top: 10px !important;
+}
+
+.pt-15 {
+    padding-top: 15px !important;
+}
+
+.pt-20 {
+    padding-top: 20px !important;
+}
+
+.pb-10 {
+    padding-bottom: 10px !important;
+}
+
+.pl-15 {
+    padding-left: 15px !important;
+}
+
+.pr-15 {
+    padding-right: 15px !important;
+}
+
+.no-border {
+    border: 0 !important;
+}
+
+.border-lg {
+    border-width: 2px;
+}
+
+.border-bottom-xlg {
+    border-bottom: 3px solid;
+}
+
+.no-edge-top {
+    top: 0;
+}
+
+.display-block {
+    display: block;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.content-group-sm {
+    margin-bottom: 15px !important;
+}
+
+.content-group {
+    margin-bottom: 20px !important;
+}
+
+.content-group-lg {
+    margin-bottom: 30px !important;
+}
+
+.img-lg {
+    width: 44px !important;
+    height: 44px !important;
+}
+
+.img-sm {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.img-xs {
+    width: 32px !important;
+    height: 32px !important;
+}
