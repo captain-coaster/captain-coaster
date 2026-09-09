@@ -1,0 +1,124 @@
+/*
+ * Scaffolding -- migrated together: bootstrap/less/scaffolding.less +
+ * theme/bootstrap-limitless/scaffolding.less. The site-wide reset both
+ * files ever generate (box-sizing, html/body, links, images, misc.
+ * utility classes) -- everything below is either kept unconditionally
+ * (universal element resets other untouched files depend on) or a class
+ * checked against real template usage.
+ *
+ * `html{font-size:10px}` is kept as-is -- this is iso-visual, not the
+ * rem-scaling fix. `theme/core` (last item in this phase) is what
+ * actually owns the site's root font-size decision.
+ *
+ * Kept unconditionally (universal resets, not "usage" in the class sense):
+ * box-sizing:border-box on every element -- bootstrap/less/grid.less
+ * (untouched, still imported) computes column padding assuming it;
+ * html/body sizing (100% height, relative positioning) -- the sticky
+ * footer layout in theme/core/layout depends on it; the bare
+ * input/button/select/textarea font-inherit reset; `img{vertical-align:
+ * middle}`.
+ *
+ * `.img-rounded` and `a:focus` each had two competing declarations
+ * (bootstrap's own + a Limitless override) that tied on specificity and
+ * resolved by import order -- Limitless always came second, so its value
+ * (`.img-rounded{border-radius:3px}` over bootstrap's 5px,
+ * `a:focus{outline:0}` over bootstrap's focus-ring) is the one actually
+ * rendering today and the only one ported.
+ *
+ * Dropped, checked against templates/, src/ and translations/ (zero
+ * matches, including inside any `|raw`-rendered content): `.img-thumbnail`
+ * (unused, `.thumbnail` from the Panels & Typography cluster is a
+ * different, already-migrated class), `figure`/`figcaption` (both
+ * bootstrap's plain margin reset and Limitless's whole hover-reveal
+ * caption mechanism -- no `<figure>` anywhere), bare `hr` styling (no
+ * `<hr>` anywhere, static or rendered), `.hr-condensed`,
+ * `.sr-only-focusable`, `[role="button"]` (JS only ever sets
+ * `role="combobox"`/`"listbox"`, never `"button"`).
+ *
+ * `.sr-only` (used 3x, flash-message close buttons) is also NOT ported
+ * here even though it's real: Tailwind already ships its own `.sr-only`
+ * utility, `@source`-scanned from the same templates, so writing it again
+ * would just recreate the exact "two rules, one class name" situation
+ * `.collapse` caused for the navbar (see the top of tailwind.css) --
+ * except here both versions hide content the same way (mix of
+ * `clip`/`clip-path`), so it's a harmless duplicate rather than a bug.
+ * Confirmed live: Tailwind's utility alone keeps the close-button text
+ * screen-reader-only.
+ */
+* {
+    box-sizing: border-box;
+}
+
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-size: 10px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+    position: relative;
+    min-height: 100%;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.5384616;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+input,
+button,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+a {
+    color: #1e88e5;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover,
+a:focus {
+    color: #166dba;
+    text-decoration: none;
+}
+
+a:focus {
+    outline: 0;
+}
+
+img {
+    vertical-align: middle;
+}
+
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.img-rounded {
+    border-radius: 3px;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+
+.row-seamless {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.row-seamless > div[class*="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+}

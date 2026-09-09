@@ -21,9 +21,10 @@
 
 
 // Bootstrap Core CSS (high usage components only)
+// scaffolding.less CSS is migrated to tailwind/scaffolding.css
+// (Phase 2, captain-coaster/captain-coaster#380).
 @import 'bootstrap/less/normalize.less';
 @import 'bootstrap/less/print.less';
-@import 'bootstrap/less/scaffolding.less';
 @import 'bootstrap/less/grid.less';
 
 // Bootstrap utilities (needed for mixins like .pull-left())
@@ -39,9 +40,6 @@
 // bootstrap/js/alert (flash messages, not yet migrated) and don't collide
 // with anything moved out, so there's nothing to port.
 @import 'bootstrap/less/component-animations.less';
-
-// Import theme overrides for high-usage Bootstrap components
-@import 'theme/bootstrap-limitless/scaffolding.less'; // 50% usage
 
 // Import theme's core layout components (high usage)
 @import 'theme/core/layout/content.less'; // 100% usage
