@@ -474,3 +474,4 @@ button.close {
 @import "./tailwind/forms-buttons.css";
 @import "./tailwind/panels-typography.css";
 @import "./tailwind/navigation.css";
+@import "./tailwind/layout.css";

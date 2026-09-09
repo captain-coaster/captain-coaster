@@ -1,0 +1,112 @@
+/*
+ * Layout -- migrated together: theme/core/layout/{content,footer,
+ * component-animation}.less. `sidebar.less` (also theme/core/layout) is
+ * deliberately NOT part of this cluster despite living in the same
+ * folder -- it drives real jQuery toggle behavior (`layout_fixed_custom.js`,
+ * `theme.js`, the navbar's `sidebar-*-toggle` buttons) needing the same
+ * kind of Stimulus rewrite the Navigation cluster did, so it's its own,
+ * separately-scoped piece of this phase. Checked for selector coupling
+ * with `.content-wrapper` first: sidebar.less's only reference is
+ * `.sidebar-fixed-expanded .content-wrapper { padding-left: ... }`, a
+ * compound selector that keeps winning over the bare `.content-wrapper`
+ * base rule ported here regardless of cascade position (2 classes beats
+ * 1), so migrating content.less first doesn't risk that override.
+ *
+ * `.page-container`/`.page-content`/`.content-wrapper`/`.content` are
+ * base.html.twig's page shell -- rendered on every page, unconditional.
+ * `body[class*=navbar-bottom] .content { padding-bottom: ... }` and
+ * `.content:first-child` are both dropped: `navbar-bottom` is never a
+ * real body class anywhere, and `.content` is never actually a
+ * `:first-child` in practice -- `page_header.html.twig`'s `.page-header`
+ * always renders immediately before it inside `.content-wrapper` on
+ * every page that reaches this markup at all (Maps/index.html.twig
+ * overrides the whole `wide_body` block and never renders `.content`).
+ *
+ * `.footer`'s `&.navbar`/`-fixed-bottom` branch and `.footer-boxed` are
+ * dropped: `footer.html.twig` never combines `.footer` with `.navbar`,
+ * and `.footer-boxed`/`navbar-fixed-bottom` have zero real uses (the one
+ * `$('.navbar-fixed-bottom')` query in theme.js always matches nothing).
+ *
+ * component-animation.less scope trimmed to selectors real markup
+ * actually has: `.btn`, `.navbar-nav > li > a`, `.dropdown-menu > li >
+ * a`, `.list-group-item`, `.pagination > li > a/span`, `.close`, `.table
+ * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
+ * during resize). Everything else in that file's giant shared-declaration
+ * selector list targets jQuery-plugin widgets this app never uses
+ * (tokenfield, select2, dataTables, pikaday, spectrum, noUiSlider,
+ * fullcalendar, plupload, jQuery UI, AnyTime) or already-dead classes
+ * from earlier clusters (`.breadcrumb`, `.pager`, `.nav-tabs`/`.nav-pills`,
+ * `a.label`/`a.badge` -- neither is ever an anchor per the Labels &
+ * Badges audit, `.media-link`, `.navbar-link`, `.tag [data-role=remove]`,
+ * `.dropdown-menu > li > label` -- no template puts a bare `<label>`
+ * inside a `.dropdown-menu` item).
+ */
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+@media (min-width: 769px) {
+    .page-container {
+        width: 100%;
+        display: table;
+        table-layout: fixed;
+    }
+
+    @-moz-document url-prefix() {
+        .page-container {
+            height: 1px;
+        }
+    }
+
+    .page-content {
+        display: table-row;
+    }
+
+    .content-wrapper {
+        display: table-cell;
+        vertical-align: top;
+    }
+}
+
+.content-wrapper {
+    width: 100%;
+}
+
+.content {
+    padding: 0 20px 60px 20px;
+}
+
+.content:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.footer {
+    position: absolute;
+    bottom: 30px;
+}
+
+.no-transitions * {
+    transition: none !important;
+}
+
+.btn,
+.navbar-nav > li > a,
+.dropdown-menu > li > a,
+.list-group-item,
+.pagination > li > a,
+.pagination > li > span {
+    transition: all ease-in-out 0.15s;
+}
+
+.close {
+    transition: opacity ease-in-out 0.15s;
+}
+
+.table tr,
+.table th,
+.table td {
+    transition: background-color ease-in-out 0.15s;
+}

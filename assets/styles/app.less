@@ -42,9 +42,10 @@
 @import 'bootstrap/less/component-animations.less';
 
 // Import theme's core layout components (high usage)
-@import 'theme/core/layout/content.less'; // 100% usage
+// content.less/footer.less CSS is migrated to tailwind/layout.css
+// (Phase 2, captain-coaster/captain-coaster#380). sidebar.less stays --
+// its own cluster, not yet migrated.
 @import 'theme/core/layout/sidebar.less'; // 37% usage
-@import 'theme/core/layout/footer.less'; // 67% usage
 
 // Import essential theme UI components (good usage)
 @import 'theme/components/ui/helpers.less'; // 26% usage
@@ -60,7 +61,8 @@
 @import 'theme/components/pages/user-list.less'; // 75% usage
 
 // Import additional components for better UI support
-@import 'theme/core/layout/component-animation.less'; // 16% usage - needed for animations
+// component-animation.less CSS is migrated to tailwind/layout.css
+// (Phase 2, captain-coaster/captain-coaster#380).
 @import 'theme/core/colors/colors.less'; // 33% usage - needed for color classes
 
 // Icon fonts removed - migrated to Heroicons SVG system
