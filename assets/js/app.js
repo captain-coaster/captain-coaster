@@ -5,10 +5,12 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-// Import jQuery first (required for Bootstrap 3.x compatibility)
+// jQuery itself is a separate, not-yet-started removal from the one this
+// file's other comments track (captain-coaster/captain-coaster#380) --
+// theme.js and a few Stimulus controllers still reference $/jQuery as
+// globals instead of importing it (see vite.config.js's inject() plugin).
 import $ from 'jquery';
 
-// Make jQuery available globally for legacy scripts and Bootstrap 3.x
 window.$ = window.jQuery = $;
 
 // Every bootstrap/js/* plugin this app used is now gone: dropdown/collapse/
@@ -20,11 +22,14 @@ window.$ = window.jQuery = $;
 // plugins' own transition-detection -- nothing left needs it.
 import './dropdown';
 
-// Import main stylesheet (includes Bootstrap 3.3.7 and custom theme)
-import '../styles/app.less';
+// Bootstrap 3/Limitless are fully gone (Phase 2, captain-coaster/
+// captain-coaster#380) -- this is plain CSS now, `.css` since there's no
+// LESS left in the project to justify the `less` npm package or Vite's
+// LESS preprocessor config.
+import '../styles/app.css';
 
-// Tailwind v4 — components migrated off Bootstrap/LESS land here.
-// See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
+// Tailwind v4 — every component migrated off Bootstrap/Limitless lives
+// here. See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
 import '../styles/tailwind.css';
 
 // Import theme JavaScript files (migrated from public/js/core/) - Critical for layout

@@ -2,21 +2,15 @@
  *
  *  # Main stylesheet
  *
- *  Every Bootstrap 3/Limitless component and their LESS mixins/resets are
- *  migrated to Tailwind v4 (see assets/styles/tailwind.css) as of Phase 2
- *  (captain-coaster/captain-coaster#380), grid.less last. The 4 variable
- *  imports below have no remaining consumer as of this commit -- a
- *  remove-and-recompile check confirms it -- and are dropped next.
+ *  Every Bootstrap 3/Limitless component, their LESS mixins/resets, and
+ *  the theme's own variables are migrated to Tailwind v4 or dropped as
+ *  fully dead as of Phase 2 (captain-coaster/captain-coaster#380). What's
+ *  left is this app's own modern CSS components -- plain CSS from the
+ *  start, just re-homed here once nothing forced this file to stay LESS.
  *
  * ---------------------------------------------------------------------------- */
 
-@import 'bootstrap/less/variables.less';
-
-@import 'theme/core/colors/palette.less';
-@import 'theme/core/variables/variables-core.less';
-@import 'theme/core/variables/variables-custom.less';
-
-// Import modern CSS components
+/* Modern CSS components */
 @import 'components/forms.css';
 @import 'components/enhanced-select.css';
 @import 'components/toggle-switch.css';
@@ -33,9 +27,9 @@
 @import 'components/account-menu.css';
 @import 'components/notification-center.css';
 
-// Import utilities
+/* Utilities */
 @import 'icons/icons.css';
 @import 'utilities/review.css';
 
-// Import login page styles
+/* Login page styles */
 @import 'components/login.css';
