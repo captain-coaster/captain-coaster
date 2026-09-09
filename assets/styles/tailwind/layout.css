@@ -14,6 +14,14 @@
  *
  * `.page-container`/`.page-content`/`.content-wrapper`/`.content` are
  * base.html.twig's page shell -- rendered on every page, unconditional.
+ * Also dropped here (cleanup pass, captain-coaster/captain-coaster#380):
+ * a `@-moz-document url-prefix() { .page-container { height: 1px } }`
+ * hack, ported verbatim at first for an old Gecko `min-height` +
+ * `display:table` bug. `@-moz-document` without a URL argument has been
+ * disabled for regular web content since Firefox 59 (2018) -- long
+ * before this project's supported-browser floor -- so the rule was
+ * already inert in every browser this site ships to; not a behavior
+ * change to remove it.
  * `body[class*=navbar-bottom] .content { padding-bottom: ... }` and
  * `.content:first-child` are both dropped: `navbar-bottom` is never a
  * real body class anywhere, and `.content` is never actually a
@@ -51,12 +59,6 @@
         width: 100%;
         display: table;
         table-layout: fixed;
-    }
-
-    @-moz-document url-prefix() {
-        .page-container {
-            height: 1px;
-        }
     }
 
     .page-content {

@@ -2,10 +2,16 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /*
- * Preflight (Tailwind's base reset) is intentionally not imported above:
- * Bootstrap 3/Limitless still owns the page-wide reset until Phase 2
- * (captain-coaster/captain-coaster#380) removes it entirely. Running
- * both resets at once would bleed into markup that isn't migrated yet.
+ * Preflight (Tailwind's base reset) is still not imported above. The
+ * original reason ("Bootstrap 3/Limitless owns the page-wide reset until
+ * Phase 2 removes it") no longer applies -- captain-coaster/captain-
+ * coaster#380 is done, there's no more competing Bootstrap/Limitless
+ * reset to collide with. What's untested is the other direction:
+ * Preflight's own resets (list styles, table spacing, `<img>` becoming
+ * block, form-control appearance, etc.) against every element this
+ * migration did NOT explicitly restyle -- unlike the collision cases
+ * below, that's a real, unaudited surface, not a known-safe no-op.
+ * Deliberately left off pending its own pass, not an oversight.
  */
 
 @source "../../templates";
@@ -28,16 +34,22 @@
 }
 
 /*
- * Everything below is intentionally NOT inside `@layer components`.
- * CSS cascade layers always lose to unlayered rules, regardless of
- * selector specificity — and the LESS Bootstrap/Limitless files still
- * imported into app.less are unlayered plain CSS. `@layer components`
- * silently broke `.pagination > li > a`'s background here: Bootstrap's
- * own `a { background-color: transparent }` reset (scaffolding.less) has
- * lower specificity but, being unlayered, still won over our layered,
- * more specific rule. Written as plain top-level rules instead, so normal
- * specificity/source-order decides against whatever Bootstrap CSS hasn't
- * been migrated away yet — which is what we want during the transition.
+ * Everything below is still intentionally NOT inside `@layer components`,
+ * for a reason that's shifted: originally, the LESS Bootstrap/Limitless
+ * files app.css still imported were unlayered plain CSS, and `@layer
+ * components` silently lost to them regardless of specificity --
+ * `.pagination > li > a`'s background broke exactly that way against
+ * scaffolding.less's `a { background-color: transparent }`. Bootstrap/
+ * Limitless is gone now, but app.css's own pre-existing "modern CSS
+ * components" (search.css, top-list.css, forms.css, ...) are unlayered
+ * too and were never part of this migration's scope -- moving only the
+ * files below into `@layer components` risks the identical bug against
+ * that file set instead. Real upside if it's done carefully: a bare
+ * Tailwind utility added later (e.g. `mt-[20px]` on a `.panel`) would
+ * then correctly win over these components' own rules, which today it
+ * cannot, unlayered-vs-unlayered ties going to source order instead.
+ * Left unlayered for now -- matches current behavior, doesn't reopen a
+ * closed regression -- but worth its own pass, not a settled answer.
  * `@apply` works the same either way, layer or not.
  */
 
@@ -46,9 +58,10 @@
  * migrations (alerts/close/pagination/pager, media) inline; from the
  * `labels`/`badges` cluster onward each PR-sized cluster gets its own
  * file under `tailwind/`, imported below. Coarse-grained on purpose —
- * this whole tree is Phase 2 scaffolding, not a permanent architecture:
- * once Bootstrap/Limitless is fully gone, Phase 3's redesign pass
- * replaces this styling wholesale rather than refactoring it further.
+ * this whole tree was Phase 2 scaffolding, not a permanent architecture:
+ * now that Bootstrap/Limitless/LESS are fully gone (captain-coaster/
+ * captain-coaster#380), Phase 3's redesign pass is expected to replace
+ * this styling wholesale rather than refactor it further in place.
  */
 
 /*
