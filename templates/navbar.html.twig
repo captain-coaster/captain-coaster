@@ -15,7 +15,7 @@
     </a>
     <ul class="nav navbar-nav visible-xs-block">
       <li class="navbar-toggle-icon">
-        <a data-action="click->navbar-collapse#toggle" aria-expanded="false">
+        <a data-action="click->navbar-collapse#toggle click->sidebar#closeMobile" aria-expanded="false">
           {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             {# Not img-xs: its fixed 32px fights the w-8 h-8 icons beside
                it, which render at 2rem like everything else here. #}
@@ -25,16 +25,16 @@
           {% endif %}
         </a>
       </li>
-      <li><a class="sidebar-mobile-main-toggle">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a></li>
+      <li><a data-action="click->sidebar#toggleMobileMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a></li>
       {% if pageHasFilters is defined %}
-        <li><a class="sidebar-mobile-secondary-toggle">{{ ux_icon('heroicons:funnel', {'class': 'w-8 h-8'}) }}</a></li>
+        <li><a data-action="click->sidebar#toggleMobileSecondary">{{ ux_icon('heroicons:funnel', {'class': 'w-8 h-8'}) }}</a></li>
       {% endif %}
     </ul>
   </div>
   <div class="navbar-collapse collapse" id="navbar-mobile" data-navbar-collapse-target="panel">
     <ul class="nav navbar-nav hidden-xs">
       <li>
-        <a class="sidebar-control sidebar-main-toggle">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a>
+        <a data-action="click->sidebar#toggleMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a>
       </li>
     </ul>
     <ul class="nav navbar-nav navbar-right">

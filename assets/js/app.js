@@ -30,8 +30,10 @@ import '../styles/app.less';
 import '../styles/tailwind.css';
 
 // Import theme JavaScript files (migrated from public/js/core/) - Critical for layout
+// Sidebar toggling/hover-expand (formerly theme.js + layout_fixed_custom.js)
+// is now sidebar_controller.js as part of the Sidebar cluster migration
+// (captain-coaster/captain-coaster#380).
 import './theme/theme';
-import './theme/layout_fixed_custom';
 
 // Module loading is now handled by individual Stimulus controllers
 
