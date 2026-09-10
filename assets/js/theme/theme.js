@@ -7,27 +7,46 @@
  */
 
 // Remove transitions on page load
-$(window).on('load', function () {
-    $('body').removeClass('no-transitions');
+window.addEventListener('load', () => {
+    document.body.classList.remove('no-transitions');
 });
 
-$(function () {
-    // Initialize page
-    $('body').addClass('no-transitions');
+function init() {
+    document.body.classList.add('no-transitions');
 
-    // Disabled navbar links
-    $('.navbar-nav .disabled a').on('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
+    document.querySelectorAll('.navbar-nav .disabled a').forEach((link) => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
     });
 
-    $(
-        '.dropdown-menu:not(.dropdown-content), .dropdown-menu:not(.dropdown-content) .dropdown-submenu'
-    )
-        .has('li.active')
-        .addClass('active')
-        .parents(
-            '.navbar-nav .dropdown:not(.language-switch), .navbar-nav .dropup:not(.language-switch)'
+    const ANCESTOR_SELECTOR =
+        '.navbar-nav .dropdown:not(.language-switch), .navbar-nav .dropup:not(.language-switch)';
+
+    document
+        .querySelectorAll(
+            '.dropdown-menu:not(.dropdown-content), .dropdown-menu:not(.dropdown-content) .dropdown-submenu'
         )
-        .addClass('active');
-});
+        .forEach((menu) => {
+            if (!menu.querySelector('li.active')) return;
+
+            menu.classList.add('active');
+
+            for (
+                let node = menu.parentElement;
+                node;
+                node = node.parentElement
+            ) {
+                if (node.matches(ANCESTOR_SELECTOR)) {
+                    node.classList.add('active');
+                }
+            }
+        });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}

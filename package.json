@@ -2,7 +2,6 @@
   "type": "module",
   "devDependencies": {
     "@hotwired/stimulus": "^3.0.0",
-    "@rollup/plugin-inject": "^5.0.5",
     "@symfony/reprise": "^1.1.1",
     "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
     "@tailwindcss/vite": "^4.3.3",
@@ -31,7 +30,6 @@
     "format:check": "prettier --check \"assets/**/*.js\""
   },
   "dependencies": {
-    "jquery": "^3.7.1",
     "maplibre-gl": "^6.6.0",
     "sortablejs": "^1.15.6"
   },

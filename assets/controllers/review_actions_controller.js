@@ -5,7 +5,6 @@ import { trans } from '../translator';
 
 /**
  * Review actions controller for handling upvotes and reports
- * Optimized for Bootstrap 3.x with efficient jQuery usage
  */
 export default class extends Controller {
     static targets = [

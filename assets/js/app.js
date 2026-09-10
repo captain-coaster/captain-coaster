@@ -5,14 +5,6 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-// jQuery itself is a separate, not-yet-started removal from the one this
-// file's other comments track (captain-coaster/captain-coaster#380) --
-// theme.js and a few Stimulus controllers still reference $/jQuery as
-// globals instead of importing it (see vite.config.js's inject() plugin).
-import $ from 'jquery';
-
-window.$ = window.jQuery = $;
-
 // Every bootstrap/js/* plugin this app used is now gone: dropdown/collapse/
 // modal (navbar, account menu, review report modal) were replaced by vanilla
 // dropdown.js and Stimulus controllers as part of the Navigation cluster;
