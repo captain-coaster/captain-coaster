@@ -345,6 +345,10 @@ small,
     padding-top: 0;
 }
 
+.panel-body + .panel-body {
+    border-top: 1px solid #ddd;
+}
+
 .panel-heading {
     position: relative;
     border-top-left-radius: 3px;
