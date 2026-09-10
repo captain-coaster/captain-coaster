@@ -8,13 +8,11 @@
  * conflict) always needed to come from *somewhere* unlayered; this file is
  * now that source instead of the LESS bundle.
  *
- * `.fade`/`.fade.in` is real and needed by two things: the review-report
- * modal (`class="modal fade"` in _review_item.html.twig) and its backdrop
- * (`modal_controller.js` sets `className = 'modal-backdrop fade'` then
- * adds `.in`) -- `navigation.css`'s own `.modal-backdrop.fade`/`.in`
- * override the opacity values (0 -> 0.5, not 0 -> 1) but don't repeat the
- * `transition` property, so both the modal and its backdrop still depend
- * on this generic rule for the actual fade timing.
+ * `.fade`/`.fade.in` is real and needed by the review-report modal
+ * (`class="modal fade"` in _review_item.html.twig, toggled by
+ * modal_controller.js) -- its own backdrop is now the browser's native
+ * `<dialog>` `::backdrop`, styled directly in navigation.css, no longer
+ * a `.fade`-toggled element of its own.
  *
  * `.collapse`/`.in` is real too (`#navbar-mobile`'s `class="navbar-collapse
  * collapse"`, toggled via `.in` by navbar_collapse_controller.js).

@@ -30,15 +30,15 @@ export default class extends Controller {
     }
 
     showLightbox() {
-        const overlay = document.createElement('div');
+        const overlay = document.createElement('dialog');
         overlay.className = 'captain-gallery-lightbox';
         overlay.innerHTML = `
             <div class="captain-gallery-container">
                 <div class="captain-gallery-loader"></div>
                 <img class="captain-gallery-image" src="" alt="" style="display: none;">
-                <button class="captain-gallery-close">&times;</button>
-                <button class="captain-gallery-prev">&larr;</button>
-                <button class="captain-gallery-next">&rarr;</button>
+                <button class="captain-gallery-close" aria-label="Close">&times;</button>
+                <button class="captain-gallery-prev" aria-label="Previous image">&larr;</button>
+                <button class="captain-gallery-next" aria-label="Next image">&rarr;</button>
             </div>
         `;
 
@@ -51,6 +51,7 @@ export default class extends Controller {
 
         document.body.appendChild(overlay);
         document.body.style.overflow = 'hidden';
+        overlay.showModal();
     }
 
     bindEvents() {
@@ -62,8 +63,14 @@ export default class extends Controller {
             this.next();
         this.overlay.onclick = (e) => e.target === this.overlay && this.close();
 
+        // <dialog> handles ESC natively (fires 'cancel') -- still need our
+        // own listener for the arrow-key navigation.
+        this.overlay.addEventListener('cancel', (e) => {
+            e.preventDefault();
+            this.close();
+        });
+
         this.keyHandler = (e) => {
-            if (e.key === 'Escape') this.close();
             if (e.key === 'ArrowLeft') this.prev();
             if (e.key === 'ArrowRight') this.next();
         };
@@ -147,6 +154,7 @@ export default class extends Controller {
     close() {
         document.removeEventListener('keydown', this.keyHandler);
         document.body.style.overflow = '';
+        this.overlay?.close();
         this.overlay?.remove();
     }
 }
