@@ -1,6 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 
-// stimulusFetch: 'lazy' — only used where review items render
+// Not stimulusFetch: 'lazy' -- review items (and this modal) render on the
+// homepage and every coaster page, so a lazy chunk here never actually
+// avoids loading it, just adds a request most page loads make anyway.
 
 /**
  * Modal controller -- built on native <dialog> (showModal()/close()),

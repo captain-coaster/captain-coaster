@@ -1,7 +1,9 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
 
-// stimulusFetch: 'lazy' — only used where review items render
+// Not stimulusFetch: 'lazy' -- review items render on the homepage and
+// every coaster page, so a lazy chunk here never actually avoids loading
+// it, just adds a request most page loads make anyway.
 
 /**
  * Review actions controller for handling upvotes and reports

@@ -1,6 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 
-// stimulusFetch: 'lazy' — only used in the coaster rating panel
+// Not stimulusFetch: 'lazy' -- the rating panel renders on every coaster
+// page, so a lazy chunk here never actually avoids loading it, just adds
+// a request most page loads make anyway.
 
 export default class extends Controller {
     static targets = ['dateInput', 'dateContainer', 'calendarButton'];
