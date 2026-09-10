@@ -2,10 +2,16 @@
 @import "tailwindcss/utilities.css" layer(utilities);
 
 /*
- * Preflight (Tailwind's base reset) is intentionally not imported above:
- * Bootstrap 3/Limitless still owns the page-wide reset until Phase 2
- * (captain-coaster/captain-coaster#380) removes it entirely. Running
- * both resets at once would bleed into markup that isn't migrated yet.
+ * Preflight (Tailwind's base reset) is still not imported above. The
+ * original reason ("Bootstrap 3/Limitless owns the page-wide reset until
+ * Phase 2 removes it") no longer applies -- captain-coaster/captain-
+ * coaster#380 is done, there's no more competing Bootstrap/Limitless
+ * reset to collide with. What's untested is the other direction:
+ * Preflight's own resets (list styles, table spacing, `<img>` becoming
+ * block, form-control appearance, etc.) against every element this
+ * migration did NOT explicitly restyle -- unlike the collision cases
+ * below, that's a real, unaudited surface, not a known-safe no-op.
+ * Deliberately left off pending its own pass, not an oversight.
  */
 
 @source "../../templates";
@@ -28,17 +34,34 @@
 }
 
 /*
- * Everything below is intentionally NOT inside `@layer components`.
- * CSS cascade layers always lose to unlayered rules, regardless of
- * selector specificity — and the LESS Bootstrap/Limitless files still
- * imported into app.less are unlayered plain CSS. `@layer components`
- * silently broke `.pagination > li > a`'s background here: Bootstrap's
- * own `a { background-color: transparent }` reset (scaffolding.less) has
- * lower specificity but, being unlayered, still won over our layered,
- * more specific rule. Written as plain top-level rules instead, so normal
- * specificity/source-order decides against whatever Bootstrap CSS hasn't
- * been migrated away yet — which is what we want during the transition.
+ * Everything below is still intentionally NOT inside `@layer components`,
+ * for a reason that's shifted: originally, the LESS Bootstrap/Limitless
+ * files app.css still imported were unlayered plain CSS, and `@layer
+ * components` silently lost to them regardless of specificity --
+ * `.pagination > li > a`'s background broke exactly that way against
+ * scaffolding.less's `a { background-color: transparent }`. Bootstrap/
+ * Limitless is gone now, but app.css's own pre-existing "modern CSS
+ * components" (search.css, top-list.css, forms.css, ...) are unlayered
+ * too and were never part of this migration's scope -- moving only the
+ * files below into `@layer components` risks the identical bug against
+ * that file set instead. Real upside if it's done carefully: a bare
+ * Tailwind utility added later (e.g. `mt-[20px]` on a `.panel`) would
+ * then correctly win over these components' own rules, which today it
+ * cannot, unlayered-vs-unlayered ties going to source order instead.
+ * Left unlayered for now -- matches current behavior, doesn't reopen a
+ * closed regression -- but worth its own pass, not a settled answer.
  * `@apply` works the same either way, layer or not.
+ */
+
+/*
+ * File organization: this entry file holds the earliest, smallest
+ * migrations (alerts/close/pagination/pager, media) inline; from the
+ * `labels`/`badges` cluster onward each PR-sized cluster gets its own
+ * file under `tailwind/`, imported below. Coarse-grained on purpose —
+ * this whole tree was Phase 2 scaffolding, not a permanent architecture:
+ * now that Bootstrap/Limitless/LESS are fully gone (captain-coaster/
+ * captain-coaster#380), Phase 3's redesign pass is expected to replace
+ * this styling wholesale rather than refactor it further in place.
  */
 
 /*
@@ -311,3 +334,167 @@ button.close {
  * uses of "pager" anywhere in this app. Both files are deleted from
  * app.less with no Tailwind replacement.
  */
+
+/*
+ * .media — migrated from theme/bootstrap-limitless/media.less +
+ * bootstrap/less/media.less. Only variants actually referenced in
+ * templates/ are kept: media, media-body, media-list, media-list-bordered,
+ * media-heading, media-left, media-right, media-middle,
+ * media-annotation(.dotted) and stack-media-on-mobile. media-badge,
+ * media-header, media-list-linked, media-link, media-object, media-bottom
+ * and media-preview have zero uses anywhere and are dropped.
+ *
+ * navbar.less, sidebar.less, thumbnails.less, component-animation.less and
+ * theme/components/pages/{profile,user-list}.less all carry extra selectors
+ * referencing .media-* classes and .media-link for context (navbar
+ * dropdown, dark sidebar, profile cover, etc.) — checked each: every one is
+ * either a dead combination never actually rendered in this app (.profile-cover,
+ * .sidebar-user, .contact-details, .media-list-linked contexts don't
+ * appear in any template) or a real context override in a file this PR
+ * doesn't touch (components/notification-center.less's `.notif-item`
+ * rules on top of _notification_body.html.twig's markup), which keeps
+ * applying unchanged via the cascade regardless of where the base
+ * .media rules come from.
+ *
+ * Two legacy-but-load-bearing quirks kept as-is rather than "cleaned up":
+ * `.media-body`'s `width:10000px` and the `table-cell` layout it's part of
+ * are Bootstrap 3's pre-flexbox trick for a two/three-column row with an
+ * auto-sized side column and a greedy center column. A flexbox rewrite
+ * would be the modern equivalent, but several templates (e.g.
+ * User/tops.html.twig) put `.media-left`/`.media-body`/`.media-right`
+ * directly under a `.panel-body`, with no `.media` element as the actual
+ * row container — table-cell layout works there because a browser
+ * auto-generates the anonymous table/row wrapper regardless of the
+ * parent's own `display`; `display:flex` has no equivalent auto-wrapping,
+ * so a flex rewrite would need a wrapper element added in those templates,
+ * which is template-markup work outside this CSS-only phase. The other
+ * quirk, `zoom:1` (an IE6/7 hasLayout trigger), had no such caveat and is
+ * dropped outright — dead weight in any browser this app still supports.
+ */
+.media {
+    @apply relative mt-[20px];
+}
+
+.media:first-child {
+    margin-top: 0;
+}
+
+.media.panel-body {
+    margin-top: 0;
+}
+
+.media,
+.media-body {
+    @apply overflow-visible;
+}
+
+.media-body {
+    @apply w-[10000px];
+}
+
+.media-left,
+.media-right,
+.media-body {
+    @apply relative table-cell align-top;
+}
+
+.media-middle {
+    @apply align-middle;
+}
+
+.media-heading {
+    @apply mt-0 mb-[2px] block;
+}
+
+.media-list {
+    @apply mb-0 list-none pl-0;
+}
+
+.media-right {
+    @apply pl-[20px];
+}
+
+.media-left {
+    @apply pr-[20px];
+}
+
+.media-annotation {
+    @apply text-[#999] text-[12px] font-normal;
+    line-height: 1.66667;
+}
+
+.media-heading .media-annotation {
+    @apply ml-[7px];
+}
+
+.media-annotation i {
+    @apply text-[13px];
+}
+
+/* Bullet before a "dotted" annotation (e.g. star rating · timestamp in a review row). */
+.media-annotation.dotted:not(.pull-right):before {
+    content: "\2022";
+    margin-right: 10px;
+}
+
+.media-list-bordered > li {
+    @apply border-t border-[#eee] mt-[15px] pt-[15px];
+}
+
+.media-list-bordered > li:first-child {
+    @apply border-t-0 pt-0;
+}
+
+/* Collapse a .media row to a stacked, centered layout below the tablet breakpoint. */
+@media (max-width: 768px) {
+    .stack-media-on-mobile:not(.text-left):not(.text-right) {
+        text-align: center;
+    }
+
+    .stack-media-on-mobile .media-annotation {
+        display: block;
+    }
+
+    .stack-media-on-mobile .media-annotation.dotted:not(.pull-right):before {
+        content: none;
+        margin: 0;
+    }
+
+    .stack-media-on-mobile .media-heading .media-annotation {
+        margin-left: 0;
+        margin-right: 0;
+        padding-bottom: 5px;
+    }
+
+    .stack-media-on-mobile .media-left,
+    .stack-media-on-mobile .media-right,
+    .stack-media-on-mobile .media-body {
+        @apply block w-auto px-0;
+    }
+
+    .stack-media-on-mobile .media-body,
+    .stack-media-on-mobile .media-right {
+        @apply mt-[15px];
+    }
+
+    .stack-media-on-mobile .media-heading {
+        @apply mb-[5px];
+    }
+}
+
+@import "./tailwind/normalize.css";
+@import "./tailwind/print.css";
+@import "./tailwind/grid.css";
+@import "./tailwind/scaffolding.css";
+@import "./tailwind/utilities.css";
+@import "./tailwind/responsive-utilities.css";
+@import "./tailwind/component-animations.css";
+@import "./tailwind/helpers.css";
+@import "./tailwind/heading-elements.css";
+@import "./tailwind/labels-badges.css";
+@import "./tailwind/forms-buttons.css";
+@import "./tailwind/panels-typography.css";
+@import "./tailwind/navigation.css";
+@import "./tailwind/layout.css";
+@import "./tailwind/colors.css";
+@import "./tailwind/sidebar.css";

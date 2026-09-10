@@ -1,0 +1,110 @@
+/*
+ * Heading elements -- migrated: theme/components/ui/heading-elements.less
+ * (767 lines, a deep Limitless mega-component for search bars/toolbars/
+ * breadcrumbs inside panel headers and page headers). Real usage is just
+ * 4 elements: `page_header.html.twig`'s search bar, `ranking/info.html.twig`
+ * and `Notification/index.html.twig`'s panel-heading action rows (all
+ * three carry `.visible-elements`), and `Default/index.html.twig`'s bare
+ * `.heading-elements` "See all reviews" link (no `.visible-elements`).
+ * Every other class here (`.heading-elements-toggle`, `.breadcrumb-
+ * elements(-toggle)`, `.heading-thumbnails`, `.heading-btn(-group)`,
+ * `.not-collapsible`, `.panel-nav`, `.daterange-custom`, and the entire
+ * `.visible-elements` sub-tree for sliders/progress-bars/select2/
+ * jQuery-UI widgets none of which this app uses) is confirmed dead.
+ *
+ * The 4th real element turned out not to need any of this file's own
+ * hide/show logic at all: `assets/styles/components/top-list.css` (an
+ * existing app component, unrelated to Limitless) already has its own
+ * unconditional `.heading-elements:not(.visible-elements){display:none
+ * !important}`, added to hide the page-header search bar on pages
+ * setting `showSearchBar=false`. Being `!important` and global, it also
+ * permanently hides Default/index's un-related "See all reviews" link
+ * on every viewport -- confirmed live via `getComputedStyle()` and the
+ * DOM's own matched-rules list, not by reading the LESS. Since that
+ * element is always invisible regardless of what this file does, none
+ * of the original mobile-collapse-toggle plumbing for the *bare*
+ * `.heading-elements` case needed porting -- only the `.visible-elements`
+ * paths, which top-list.css's rule never touches.
+ *
+ * The two panel-heading mobile overrides (originally a base `.panel-
+ * heading &` rule then a `.panel-flat &` rule refining it) collapse to
+ * one: both real instances (ranking/info, Notification/index) are
+ * inside `.panel-flat`, so only the flat-panel-resolved values ever
+ * render. Background colors for both mobile "inside X" contexts
+ * (`darken(@page-header-default-bg,1%)` and `darken(@panel-bg,1%)`)
+ * resolve to the same off-white in this theme's palette, hardcoded
+ * once rather than distinguishing the two LESS color functions.
+ *
+ * Caught only by re-diffing computed styles against the pre-migration
+ * build, not by re-reading the LESS a second time: a *sibling* rule,
+ * `.visible-elements{.panel &{border-top:1px solid @panel-default-border;
+ * padding:@content-padding-large;padding-top:0}}`, also matches both
+ * panel-heading instances (`.panel-heading` is itself inside `.panel`,
+ * so the plain descendant combinator reaches it) -- easy to miss because
+ * it's not nested under the more obviously-relevant `.panel-heading &`
+ * block a few lines below it. Without it, both instances were missing
+ * their top border and left/right/bottom padding entirely.
+ */
+.heading-elements {
+    background-color: inherit;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    height: 36px;
+    margin-top: -18px;
+}
+
+.heading-elements.visible-elements {
+    text-align: center;
+}
+
+.heading-form .form-group {
+    margin-bottom: 0;
+}
+
+/*
+ * `.heading-form .form-group` (the global search bar's wrapper) belongs
+ * in this same unconditional vertical-spacing group in the source LESS --
+ * dropped during the port along with the rest of that selector list's
+ * dead siblings, but this one is real (search.css only re-zeroes it back
+ * to 0 on desktop, via its own `@media(min-width:769px)` override).
+ * Missing it collapsed the gap between the search bar and the navbar on
+ * mobile to 0.
+ */
+.heading-elements.visible-elements .heading-text,
+.heading-elements.visible-elements .heading-form .form-group {
+    margin-top: 20px;
+}
+
+.heading-elements.visible-elements .heading-text:not(.label):not(.badge) {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .heading-elements.visible-elements {
+        position: static;
+        margin-top: 0;
+        height: auto;
+    }
+
+    .page-header-content > .heading-elements.visible-elements {
+        background-color: #fcfcfc;
+        border-top: 1px solid #ddd;
+        z-index: 1002;
+        padding: 0 20px 20px;
+        margin-left: -20px;
+        margin-right: -20px;
+    }
+
+    .panel .heading-elements.visible-elements {
+        border-top: 1px solid #ddd;
+        padding: 20px;
+        padding-top: 0;
+    }
+
+    .panel-heading > .heading-elements.visible-elements {
+        margin: 20px -20px 0;
+        background-color: #fcfcfc;
+        border-bottom: 1px solid #ddd;
+    }
+}

@@ -5,30 +5,38 @@
  * (and its CSS file) in your base layout (base.html.twig).
  */
 
-// Import jQuery first (required for Bootstrap 3.x compatibility)
+// jQuery itself is a separate, not-yet-started removal from the one this
+// file's other comments track (captain-coaster/captain-coaster#380) --
+// theme.js and a few Stimulus controllers still reference $/jQuery as
+// globals instead of importing it (see vite.config.js's inject() plugin).
 import $ from 'jquery';
 
-// Make jQuery available globally for legacy scripts and Bootstrap 3.x
 window.$ = window.jQuery = $;
 
-// Import Bootstrap 3.3.7 JavaScript components with proper module imports
-// Only importing components that are actually used in the application
-import 'bootstrap/js/dropdown'; // Used in navbar (language, notifications, user profile)
-import 'bootstrap/js/collapse'; // Used in mobile navbar toggle
-import 'bootstrap/js/alert'; // Used in flash messages and notifications
-import 'bootstrap/js/modal'; // Used in review report modal
-import 'bootstrap/js/transition'; // Required dependency for other components
+// Every bootstrap/js/* plugin this app used is now gone: dropdown/collapse/
+// modal (navbar, account menu, review report modal) were replaced by vanilla
+// dropdown.js and Stimulus controllers as part of the Navigation cluster;
+// alert (flash message dismiss) by alert_controller.js as part of the
+// post-Phase-2 Bootstrap removal (captain-coaster/captain-coaster#380).
+// `bootstrap/js/transition` was only ever a shared dependency for those
+// plugins' own transition-detection -- nothing left needs it.
+import './dropdown';
 
-// Import main stylesheet (includes Bootstrap 3.3.7 and custom theme)
-import '../styles/app.less';
+// Bootstrap 3/Limitless are fully gone (Phase 2, captain-coaster/
+// captain-coaster#380) -- this is plain CSS now, `.css` since there's no
+// LESS left in the project to justify the `less` npm package or Vite's
+// LESS preprocessor config.
+import '../styles/app.css';
 
-// Tailwind v4 — components migrated off Bootstrap/LESS land here.
-// See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
+// Tailwind v4 — every component migrated off Bootstrap/Limitless lives
+// here. See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
 import '../styles/tailwind.css';
 
 // Import theme JavaScript files (migrated from public/js/core/) - Critical for layout
+// Sidebar toggling/hover-expand (formerly theme.js + layout_fixed_custom.js)
+// is now sidebar_controller.js as part of the Sidebar cluster migration
+// (captain-coaster/captain-coaster#380).
 import './theme/theme';
-import './theme/layout_fixed_custom';
 
 // Module loading is now handled by individual Stimulus controllers
 
@@ -36,6 +44,3 @@ import './theme/layout_fixed_custom';
 import '../bootstrap';
 
 // Components are now handled by Stimulus controllers
-
-// Bootstrap components (dropdown, collapse, alert, modal) are initialized automatically
-// via data attributes and Stimulus controllers - no manual initialization needed

@@ -1,0 +1,14 @@
+/*
+ * Utilities -- migrated: bootstrap/less/utilities.less. Only `.pull-right`
+ * (23 uses) is real; `.clearfix`, `.center-block`, `.pull-left`, `.hide`,
+ * `.show`, `.invisible`, `.text-hide`, `.hidden`, `.affix` are all
+ * confirmed dead (0 uses anywhere in templates/src/).
+ *
+ * `theme/components/ui/heading-elements.less` (untouched, its own future
+ * cluster) has a `.heading-elements:not(.not-collapsible) > .pull-right`
+ * rule -- an additive compound selector, not a competing override, so it
+ * doesn't affect migrating the base class now.
+ */
+.pull-right {
+    float: right !important;
+}

@@ -5,8 +5,8 @@
 
 {% block body %}
     {# info alert #}
-    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component">
-        <button type="button" class="close" data-dismiss="alert"><span>&times;</span><span class="sr-only">Close</span>
+    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component" data-controller="alert">
+        <button type="button" class="close" data-action="click->alert#close"><span>&times;</span><span class="sr-only">Close</span>
         </button>
         <h6 class="alert-heading text-semibold">{{ 'user_list.info.title'|trans }}</h6>
         <p>{{ 'user_list.info.text'|trans }}</p>

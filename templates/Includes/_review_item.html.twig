@@ -5,6 +5,7 @@
      data-controller="csrf-protection review-actions"
      data-csrf-protection-token-value="{{ csrf_token('rating') }}"
      data-review-actions-csrf-protection-outlet=".media"
+     data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
      data-review-actions-id-value="{{ review.id }}"
      data-review-actions-upvoted-value="false"
      data-review-actions-upvote-url-value="{{ path('review_upvote', {'id': review.id, '_locale': locale}) }}"
@@ -89,11 +90,10 @@
 
     <!-- Report Modal -->
     {% if is_granted('ROLE_USER') %}
-      <div id="reportModal-{{ review.id }}" 
-           class="modal fade" 
+      <div id="reportModal-{{ review.id }}"
+           class="modal fade"
            data-controller="modal"
            data-review-actions-target="reportModal"
-           data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
            data-modal-target="modal">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -106,7 +106,7 @@
               <div class="modal-body">
                 <div class="form-group">
                   <label>{{ 'review.report_reason'|trans }}</label>
-                  <select name="reason" class="form-control" autofocus>
+                  <select name="reason" class="form-control">
                     <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
                     <option value="spam">{{ 'review.reason.spam'|trans }}</option>
                   </select>

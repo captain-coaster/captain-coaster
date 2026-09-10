@@ -1,0 +1,611 @@
+/*
+ * Panels & Typography — migrated together: theme/bootstrap-limitless/
+ * {panels,type,tables,thumbnails,list-group}.less + bootstrap/less/
+ * {panels,type,tables,thumbnails,list-group}.less. `breadcrumbs.less`
+ * (both bootstrap + Limitless) is deleted outright with no replacement —
+ * `.breadcrumb` has zero uses anywhere in templates/src/.
+ *
+ * type.less scope: h1-h6/.h1-.h6, `small`/`.small`, `.text-uppercase`,
+ * `.list-unstyled`, `.list-inline`(+`-condensed`/`-separate`, not `-bordered`,
+ * unused), `.page-header`(+`-default`), `.page-title`/`.page-header-content`,
+ * `.status-mark`, `.position-left`, `.content-divider`, `.icon-object`,
+ * `.list-feed`, `.text-bold`/`-semibold`/`-size-small`/`-size-mini`, and
+ * `.text-muted` are kept. `.text-left/-lowercase/
+ * -capitalize`, `blockquote`, `.lead`, `address`, `dl-horizontal`, `abbr`,
+ * `mark`, `.heading-divided`, `.letter-icon`, `.img-preview`,
+ * `.video-container`, `.text-black/-regular/-light/-thin/-italic/
+ * -highlight`, `.text-size-large/-base`, `.list`, `.list-icons`, and the
+ * `.list-feed-*` variants are all confirmed dead and dropped. `.text-center`/
+ * `-right`/`-justify`/`-nowrap` are ALSO dropped even though used — Tailwind
+ * already generates identically-named utilities from `@source`-scanned
+ * templates (`text-center`, `text-right`, `text-justify` set the same
+ * `text-align` value; `text-nowrap` uses the modern `text-wrap: nowrap`
+ * instead of `white-space: nowrap`, equivalent for every real use here) —
+ * writing our own would just be a second, redundant source for the same
+ * class name. Verified with `getComputedStyle()` after removing type.less
+ * that Tailwind's own layered utilities take over cleanly once the
+ * unlayered Bootstrap version is gone. `.bg-primary/-success/-warning/
+ * -danger` were dropped from the start for a different reason:
+ * `theme/core/colors/colors.less` (untouched at the time) already defined
+ * a complete, later-in-cascade version of all four.
+ *
+ * **Correction (colors.less migration, tailwind/colors.css):** this
+ * cluster originally also kept `.text-primary/-success/-warning/-danger`
+ * (type.less's own bare contextual text colors), reasoning they were
+ * real and colors.less only touched `.bg-*`. That missed that
+ * colors.less *also* defines same-named `.text-*` rules with
+ * `!important`, and — like the four `.bg-*` above — already sat later in
+ * app.less's cascade. `!important` beats everything regardless of
+ * source order, so these four were already fully inert before this
+ * migration too; the colors.less migration removed them as dead code.
+ * `.text-muted` is the only one of the five actually still defined here:
+ * colors.less never touches it.
+ *
+ * type.less was scoped incompletely on the first pass — narrowed to "what
+ * vanilla bootstrap type.less usually has" (headings, text-align, contextual
+ * colors) instead of listing every actual selector in *this* file and
+ * checking each one, the way panels/list-group were scoped. That missed a
+ * batch of real, Limitless-specific classes — `.status-mark` in particular
+ * caused a real regression (a coaster-status dot rendered as flat unstyled
+ * inline text instead of a colored circle) caught only via screenshot, not
+ * `getComputedStyle()` diffing against assumptions. Re-audited by grepping
+ * every top-level selector in type.less and cross-checking each one against
+ * real usage before finalizing — the list above reflects that full pass.
+ *
+ * panels scope: `.panel`(+`[class*=border-top-/-bottom-]`), `.panel-body`,
+ * `.panel-heading`(+`.panel-flat`/`.panel-white` nesting), `.panel-title`
+ * (+h1-h6/.h1-.h6 sizing), `.panel-footer`. No contextual `.panel-primary/
+ * -success/-info/-warning/-danger`, `.panel-collapse`/`-group` (no
+ * Bootstrap-JS accordion anywhere in this app — confirmed via grep, no
+ * Stimulus rewrite needed here unlike navbar/dropdowns/modals),
+ * `.panel-bordered`, `.has-scroll`/`.has-bg-image`, or `.icons-list`
+ * (panel-heading control buttons) — zero uses of any of them.
+ *
+ * tables/thumbnails/list-group scope: `.table`(+`-responsive`) with no
+ * modifiers (`.table-striped/-bordered/-hover/-condensed`, contextual row
+ * states) — the one real `<table>` (Includes/rating_table.html.twig) uses
+ * none of them. `.thumbnail`(+`.caption`) and `.thumb`(+`.caption-overflow`)
+ * — `.thumb-rounded`/`.thumb-slide`/`.caption-zoom`/`-offset`/`-collapse`
+ * are dead. `.list-group`/`.list-group-item` base + hover only — `.active`/
+ * `.disabled` states, `.list-group-item-heading/-text`, and the four
+ * contextual `.list-group-item-*` colors are all dead (the `> .badge`/
+ * `.label` float rules for this pair already live in labels-badges.css,
+ * ported there since they're nested inside badges.less/labels.less, not
+ * list-group.less).
+ */
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    color: inherit;
+    font-family: inherit;
+    font-weight: 400;
+    line-height: 1.53846;
+    letter-spacing: -0.015em;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h1,
+.h1 {
+    font-size: 25px;
+}
+
+h2,
+.h2 {
+    font-size: 23px;
+}
+
+h3,
+.h3 {
+    font-size: 21px;
+}
+
+h4,
+.h4 {
+    font-size: 19px;
+}
+
+h5,
+.h5 {
+    font-size: 17px;
+}
+
+h6,
+.h6 {
+    font-size: 15px;
+}
+
+small,
+.small {
+    font-size: 92%;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.list-inline {
+    margin-left: 0;
+    padding-left: 0;
+    list-style: none;
+    font-size: 0;
+}
+
+.list-inline > li {
+    padding-left: 0;
+    padding-right: 20px;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.list-inline > li:last-child {
+    padding-right: 0;
+}
+
+.list-inline-condensed > li {
+    padding-right: 10px;
+}
+
+.list-inline-separate > li {
+    position: relative;
+    padding-right: 20px;
+}
+
+.list-inline-separate > li:before {
+    content: "\2022";
+    color: #ccc;
+    position: absolute;
+    top: 1px;
+    right: 8px;
+}
+
+.list-inline-separate > li:last-child:before {
+    content: none;
+}
+
+.page-header {
+    margin: 0;
+    padding: 0;
+    border-bottom: 0;
+}
+
+.page-header-default {
+    background-color: #fff;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 0 0 #ddd;
+}
+
+.text-muted {
+    color: #999;
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.text-semibold {
+    font-weight: 500;
+}
+
+.text-size-small {
+    font-size: 12px;
+}
+
+.text-size-mini {
+    font-size: 11px;
+}
+
+/*
+ * Second, systematic pass over type.less caught after an initial narrower
+ * scoping missed several real classes on first read (`.status-mark` in
+ * particular caused a real regression — a coaster-status dot rendering as
+ * flat, unstyled inline text instead of a colored circle). Listed every
+ * top-level selector in the file and cross-checked each one against real
+ * usage, rather than relying on "what bootstrap type.less usually has".
+ */
+.status-mark {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 2px solid;
+    border-radius: 50%;
+}
+
+.position-left {
+    margin-right: 7px;
+}
+
+.content-divider {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.icon-object {
+    display: inline-block;
+    margin: 10px;
+    padding: 20px;
+    text-align: center;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 50%;
+}
+
+.list-feed {
+    margin: 0;
+    padding: 7px 0;
+    list-style: none;
+}
+
+.page-title {
+    display: block;
+    position: relative;
+    padding: 32px 36px 32px 0;
+}
+
+.page-title h1,
+.page-title h2,
+.page-title h3,
+.page-title h4,
+.page-title h5,
+.page-title h6 {
+    margin: 0;
+}
+
+@media (min-width: 769px) {
+    .page-title {
+        padding-right: 0;
+    }
+}
+
+.page-header-content {
+    position: relative;
+    background-color: inherit;
+    padding: 0 20px;
+}
+
+/* Panels */
+.panel {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.panel[class*="border-top-"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.panel[class*="border-bottom-"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.panel-body {
+    position: relative;
+    padding: 20px;
+}
+
+/*
+ * Bootstrap's panels.less does `.panel-body { &:extend(.clearfix all); }` --
+ * a LESS extend, not a normal nested declaration, easy to miss when reading
+ * the file top to bottom. Without it, a `.panel-body` whose direct children
+ * are floated (e.g. Bootstrap's `.col-xs-*` grid columns used without a
+ * `.row` wrapper) collapses to ~0 height and its content overflows below the
+ * panel's bottom edge. Caught on the ranking page's stats row.
+ */
+.panel-body:before,
+.panel-body:after {
+    content: " ";
+    display: table;
+}
+
+.panel-body:after {
+    clear: both;
+}
+
+.panel-flat > .panel-heading + .panel-body {
+    padding-top: 0;
+}
+
+.panel-body + .panel-body {
+    border-top: 1px solid #ddd;
+}
+
+.panel-heading {
+    position: relative;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 15px 20px;
+    border-bottom: 1px solid transparent;
+}
+
+.panel-flat > .panel-heading {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #fff;
+}
+
+.panel-flat > .panel-heading > .panel-title {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+/*
+ * Only overrides border-bottom-*color* -- relies on `.panel-heading`'s own
+ * base rule for width/style. That base rule was ported as `border-bottom:
+ * 0` (a shorthand that also zeroes width/style, not just color), which
+ * silently defeated this override regardless of its higher specificity:
+ * a 0-width border renders nothing no matter what color wins the cascade.
+ * Fixed by porting the base rule as bootstrap's real `1px solid
+ * transparent` instead -- invisible everywhere else, visible here.
+ */
+.panel-white > .panel-heading {
+    background-color: #fff;
+    border-bottom-color: #ddd;
+}
+
+.panel-title {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: inherit;
+}
+
+h1.panel-title,
+.h1.panel-title {
+    font-size: 25px;
+}
+
+h2.panel-title,
+.h2.panel-title {
+    font-size: 23px;
+}
+
+h3.panel-title,
+.h3.panel-title {
+    font-size: 21px;
+}
+
+h4.panel-title,
+.h4.panel-title {
+    font-size: 19px;
+}
+
+h5.panel-title,
+.h5.panel-title {
+    font-size: 17px;
+}
+
+h6.panel-title,
+.h6.panel-title {
+    font-size: 15px;
+}
+
+.panel-footer {
+    position: relative;
+    padding: 7px 0;
+    background-color: #fcfcfc;
+    border-top: 1px solid #ddd;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.panel-footer:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+    padding: 12px 20px;
+    line-height: 1.53846;
+}
+
+.table > thead > tr > th {
+    border-bottom: 1px solid #bbb;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Only applies <768px in the original — Limitless customizes this breakpoint to 769px. */
+@media screen and (max-width: 768px) {
+    .table-responsive {
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        border: 1px solid #ddd;
+    }
+
+    .table-responsive > .table {
+        margin-bottom: 0;
+    }
+
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > tbody > tr > th,
+    .table-responsive > .table > tfoot > tr > th,
+    .table-responsive > .table > thead > tr > td,
+    .table-responsive > .table > tbody > tr > td,
+    .table-responsive > .table > tfoot > tr > td {
+        white-space: nowrap;
+    }
+}
+
+/* Thumbnails */
+.thumbnail {
+    display: block;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    padding: 3px;
+    line-height: 1.53846;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.thumbnail > img,
+.thumbnail a > img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.thumbnail > a {
+    display: block;
+}
+
+a.thumbnail:hover,
+a.thumbnail:focus,
+a.thumbnail.active {
+    border-color: #ddd;
+}
+
+.thumbnail .caption {
+    color: #333;
+    padding: 20px 17px 17px;
+}
+
+.thumbnail .caption .media-heading {
+    margin-top: 0;
+}
+
+.thumbnail .caption .media-heading:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.thumb {
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+.thumb img:not(.media-preview) {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+.thumb:not(.thumb-rounded) img {
+    border-radius: 3px;
+}
+
+.caption-overflow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    visibility: hidden;
+    opacity: 0;
+    border-radius: 3px;
+    transition: all 0.15s ease-in-out;
+}
+
+.caption-overflow span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    margin-top: -17px;
+    text-align: center;
+}
+
+.thumb:hover > .caption-overflow {
+    visibility: visible;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* List group */
+.list-group {
+    list-style: none;
+    margin-bottom: 0;
+    border: 1px solid #ddd;
+    padding: 7px 0;
+    border-radius: 3px;
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    background-color: transparent;
+    padding: 10px 20px;
+    border: 0;
+    margin-bottom: -1px;
+}
+
+a.list-group-item,
+button.list-group-item {
+    color: #333;
+}
+
+a.list-group-item:hover,
+button.list-group-item:hover,
+a.list-group-item:focus,
+button.list-group-item:focus {
+    color: #333;
+    background-color: #f5f5f5;
+    text-decoration: none;
+}

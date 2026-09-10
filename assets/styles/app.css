@@ -1,0 +1,35 @@
+/* ------------------------------------------------------------------------------
+ *
+ *  # Main stylesheet
+ *
+ *  Every Bootstrap 3/Limitless component, their LESS mixins/resets, and
+ *  the theme's own variables are migrated to Tailwind v4 or dropped as
+ *  fully dead as of Phase 2 (captain-coaster/captain-coaster#380). What's
+ *  left is this app's own modern CSS components -- plain CSS from the
+ *  start, just re-homed here once nothing forced this file to stay LESS.
+ *
+ * ---------------------------------------------------------------------------- */
+
+/* Modern CSS components */
+@import 'components/forms.css';
+@import 'components/enhanced-select.css';
+@import 'components/toggle-switch.css';
+@import 'components/map.css';
+@import 'components/search.css';
+@import 'components/top-list.css';
+@import 'components/image-gallery.css';
+@import 'components/rating.css';
+@import 'components/rating-actions.css';
+@import 'components/timeline.css';
+@import 'components/section-header.css';
+@import 'components/tooltip.css';
+@import 'components/toast.css';
+@import 'components/account-menu.css';
+@import 'components/notification-center.css';
+
+/* Utilities */
+@import 'icons/icons.css';
+@import 'utilities/review.css';
+
+/* Login page styles */
+@import 'components/login.css';

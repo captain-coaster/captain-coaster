@@ -1,0 +1,81 @@
+/*
+ * Print -- migrated: bootstrap/less/print.less (an H5BP print stylesheet
+ * plus a few Bootstrap-component overrides), entirely inside `@media
+ * print` -- invisible in normal browsing, so none of the live/computed-
+ * style verification used elsewhere in this migration applies; this is
+ * ported as-is rather than audited against screenshots.
+ *
+ * `pre`/`blockquote` and `abbr[title]` dropped: zero uses of any of the
+ * three anywhere in templates/src. `.dropup > .btn > .caret` and
+ * `.table-bordered` also dropped: `.dropup` has zero uses, and the
+ * app's one real `.caret` (navbar.html.twig's account-menu dropdown
+ * toggle) is inside an `<a class="dropdown-toggle">`, never a `.btn`;
+ * `.table-bordered` is confirmed unused (Panels & Typography cluster --
+ * the one real `<table>` uses no modifier classes).
+ */
+@media print {
+    *,
+    *:before,
+    *:after {
+        color: #000 !important;
+        text-shadow: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    a,
+    a:visited {
+        text-decoration: underline;
+    }
+
+    a[href]:after {
+        content: " (" attr(href) ")";
+    }
+
+    a[href^="#"]:after,
+    a[href^="javascript:"]:after {
+        content: "";
+    }
+
+    thead {
+        display: table-header-group;
+    }
+
+    tr,
+    img {
+        page-break-inside: avoid;
+    }
+
+    img {
+        max-width: 100% !important;
+    }
+
+    p,
+    h2,
+    h3 {
+        orphans: 3;
+        widows: 3;
+    }
+
+    h2,
+    h3 {
+        page-break-after: avoid;
+    }
+
+    .navbar {
+        display: none;
+    }
+
+    .label {
+        border: 1px solid #000;
+    }
+
+    .table {
+        border-collapse: collapse !important;
+    }
+
+    .table td,
+    .table th {
+        background-color: #fff !important;
+    }
+}

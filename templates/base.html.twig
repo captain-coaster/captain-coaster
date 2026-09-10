@@ -23,7 +23,7 @@
   {% endif %}
   {% block stylesheets %}{% endblock %}
 </head>
-<body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}">
+<body class="navbar-top {% if openedSidebar is not defined %}sidebar-xs{% endif %}" data-controller="sidebar">
 <!-- main navbar -->
 {{ include('navbar.html.twig') }}
 <!-- /main navbar -->

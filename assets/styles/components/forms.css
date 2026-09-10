@@ -39,14 +39,35 @@ input[type="date"]::-webkit-date-and-time-value {
     text-align: left;
 }
 
-/* Make calendar icon more visible */
+/*
+ * Make calendar icon more visible. Sized explicitly rather than left to
+ * scale with font-size: the 16px font forced above (anti-zoom) would
+ * otherwise inflate this icon noticeably larger than the rest of the
+ * field's chrome.
+ */
 input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
     opacity: 0.6;
+    width: 16px;
+    height: 16px;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover {
     opacity: 1;
+}
+
+/*
+ * `.datepicker-input` (added by datepicker_controller.js to the review
+ * form's ridden-date field) still gets font-size:16px!important from the
+ * base rule above -- can't go lower, iOS zooms the page on focus below
+ * that. Trims the surrounding box instead so it doesn't look oversized
+ * next to this page's other .form-control fields, mirroring the same
+ * "shrink everything but the font" fix applied to .small-date-input
+ * (assets/styles/components/rating-actions.css).
+ */
+.datepicker-input {
+    min-height: 40px;
+    padding: 6px 10px;
 }
 
 /* Desktop: reduce font size for better proportions (768px and up) */

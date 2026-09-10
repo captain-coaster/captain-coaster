@@ -26,15 +26,6 @@ export default defineConfig(({ command }) => ({
         },
     },
 
-    css: {
-        preprocessorOptions: {
-            less: {
-                // Enable inline JavaScript in LESS files (needed for Bootstrap 3.x)
-                javascriptEnabled: true,
-            },
-        },
-    },
-
     define: {
         // Legacy theme scripts (assets/js/theme/) assume Node's `global`.
         global: 'window',
