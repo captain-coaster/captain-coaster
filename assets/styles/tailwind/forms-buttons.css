@@ -78,6 +78,17 @@
     border: 0;
 }
 
+/*
+ * `color: #333` here is accurate to vanilla bootstrap's base `.btn:hover`
+ * (it's `.btn-default`'s own hover color, applied unconditionally at this
+ * level). In real Bootstrap it's harmless on colored variants because
+ * `.button-variant()`'s own `:hover/:focus/:active` block re-asserts
+ * `color: @color` at the point each variant is defined -- missed during
+ * the port here (only background-color/border-color were carried over),
+ * so every `.btn-primary/-info/-danger`'s white text silently fell back
+ * to this dark base color on hover/focus/active. Fixed by re-adding an
+ * explicit `color` to each variant's hover/focus/active group below.
+ */
 .btn:hover,
 .btn:focus,
 .btn.focus {
@@ -120,6 +131,7 @@ fieldset[disabled] .btn {
 .btn-default.focus,
 .btn-default:active,
 .btn-default.active {
+    color: #333;
     background-color: #e3e3e3;
     border-color: #bebebe;
 }
@@ -139,6 +151,7 @@ fieldset[disabled] .btn {
 .btn-primary.focus,
 .btn-primary:active,
 .btn-primary.active {
+    color: #fff;
     background-color: #0c7cd5;
     border-color: #0b76cc;
 }
@@ -158,6 +171,7 @@ fieldset[disabled] .btn {
 .btn-info.focus,
 .btn-info:active,
 .btn-info.active {
+    color: #fff;
     background-color: #008fa1;
     border-color: #008697;
 }
@@ -177,6 +191,7 @@ fieldset[disabled] .btn {
 .btn-danger.focus,
 .btn-danger:active,
 .btn-danger.active {
+    color: #fff;
     background-color: #ea1c0d;
     border-color: #e11b0c;
 }
