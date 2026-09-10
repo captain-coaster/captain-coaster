@@ -107,7 +107,7 @@ export default class extends Controller {
     deleteReview(event) {
         event.preventDefault();
 
-        if (!confirm('Are you sure you want to delete this review?')) {
+        if (!confirm(trans('review.delete_confirm'))) {
             return;
         }
 
@@ -140,16 +140,19 @@ export default class extends Controller {
                         this.element.remove();
                     }
                     this._showNotification(
-                        'Review deleted successfully',
+                        trans('review.delete_success'),
                         'success'
                     );
                 } else {
-                    this._showNotification('Failed to delete review', 'danger');
+                    this._showNotification(
+                        trans('review.delete_error'),
+                        'danger'
+                    );
                 }
             })
             .catch((error) => {
                 console.error('Error deleting review:', error);
-                this._showNotification('Failed to delete review', 'danger');
+                this._showNotification(trans('review.delete_error'), 'danger');
             });
     }
 
@@ -173,7 +176,7 @@ export default class extends Controller {
                 return; // Already submitting
             }
             submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
+            submitButton.textContent = trans('review.submitting');
         }
 
         const formData = new FormData(form);

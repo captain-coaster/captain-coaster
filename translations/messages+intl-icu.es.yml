@@ -207,6 +207,7 @@ profile:
         getbbcode: Copiar BBCode (foros)
         gethtml: Copiar html
         copied: '¡Copiado!'
+        copy_failed: Error al copiar
         unavailable: '¡Califica y clasifica montañas rusas para generar tu banner personalizado! La actualización puede tardar unas horas.'
     stats:
         title: 'Visión general'
@@ -305,6 +306,10 @@ review:
     report_success: Gracias por tu reporte. Nuestro equipo lo revisará en breve.
     report_error: Se produjo un error al enviar tu reporte.
     remove_upvote: Quitar voto
+    delete_confirm: ¿Estás seguro de que quieres eliminar esta reseña?
+    delete_success: Reseña eliminada correctamente
+    delete_error: No se pudo eliminar la reseña
+    submitting: Enviando...
     form:
         title: 'Reseña sobre {name}'
 
@@ -335,6 +340,9 @@ review_list:
 rating:
     last: Últimas notas
     action: 'calificó {value} estrellas'
+    delete_confirm: ¿Eliminar esta calificación?
+    delete_network_error: Error de red. La calificación no se guardó.
+    delete_error: No se pudo eliminar la calificación. Inténtalo de nuevo.
 
 navbar:
     profile: Mi perfil
@@ -484,3 +492,12 @@ search_index:
             =1 {1 resultado encontrado para "{query}"}
             other {# resultados encontrados para "{query}"}
         }
+
+gallery:
+    close: Cerrar
+    previous: Imagen anterior
+    next: Imagen siguiente
+
+map:
+    loading: Cargando...
+    error_loading: Error al cargar los datos

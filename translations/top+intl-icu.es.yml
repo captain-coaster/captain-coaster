@@ -35,6 +35,7 @@ search:
     placeholder: 'Buscar una montaña rusa para añadir...'
     no_results: 'No se encontraron montañas rusas'
     already_in_list: 'Ya está en tu lista'
+    aria_label: 'Resultados de búsqueda de montañas rusas'
 
 help:
     title: 'Cómo usar tu Top List'

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { trans } from '../translator';
 
 // stimulusFetch: 'lazy' — only used on the top-list edit page
 
@@ -221,16 +222,13 @@ export default class extends Controller {
 
         switch (status) {
             case 'saving':
-                statusElement.innerHTML =
-                    '<i class="icon-spinner2 spinner"></i> Saving...';
+                statusElement.innerHTML = `<i class="icon-spinner2 spinner"></i> ${trans('save_status.saving', {}, 'top')}`;
                 break;
             case 'saved':
-                statusElement.innerHTML =
-                    '<i class="icon-checkmark3"></i> Saved';
+                statusElement.innerHTML = `<i class="icon-checkmark3"></i> ${trans('save_status.saved', {}, 'top')}`;
                 break;
             case 'error':
-                statusElement.innerHTML =
-                    '<i class="icon-warning2"></i> Save failed';
+                statusElement.innerHTML = `<i class="icon-warning2"></i> ${trans('save_status.error', {}, 'top')}`;
                 break;
         }
 
@@ -339,7 +337,10 @@ export default class extends Controller {
         const maxPos = this.itemTargets.length;
 
         // Prompt user for new position
-        const newPosStr = prompt(`Enter position (1-${maxPos}):`, currentPos);
+        const newPosStr = prompt(
+            trans('actions.position_prompt', { max: maxPos }, 'top'),
+            currentPos
+        );
 
         // Validate input
         if (!newPosStr) {
@@ -350,9 +351,7 @@ export default class extends Controller {
         const newPos = parseInt(newPosStr);
 
         if (isNaN(newPos) || newPos < 1 || newPos > maxPos) {
-            alert(
-                `Invalid position. Please enter a number between 1 and ${maxPos}.`
-            );
+            alert(trans('errors.invalid_position', { max: maxPos }, 'top'));
             return;
         }
 

@@ -28,7 +28,7 @@ export default class extends SearchDropdown(Controller) {
     };
 
     get dropdownAriaLabel() {
-        return 'Search suggestions';
+        return trans('app.search.suggestions');
     }
 
     get loadingText() {

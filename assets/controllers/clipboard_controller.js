@@ -14,6 +14,7 @@ export default class extends Controller {
     static values = {
         content: String,
         successMessage: { type: String, default: 'Copied!' },
+        errorMessage: { type: String, default: 'Copy failed' },
     };
 
     async copy() {
@@ -21,7 +22,7 @@ export default class extends Controller {
             await navigator.clipboard.writeText(this.contentValue);
             this.showNotification(this.successMessageValue, 'success');
         } catch {
-            this.showNotification('Copy failed', 'danger');
+            this.showNotification(this.errorMessageValue, 'danger');
         }
     }
 

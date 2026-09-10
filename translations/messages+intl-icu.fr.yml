@@ -207,6 +207,7 @@ profile:
         getbbcode: Copier le BBCode (forums)
         gethtml: Copier en html
         copied: 'Copié !'
+        copy_failed: Échec de la copie
         unavailable: 'Note et classe des coasters pour générer ta bannière personnalisée ! La mise à jour peut prendre quelques heures.'
     stats:
         title: 'Statistiques'
@@ -305,6 +306,10 @@ review:
     report_success: "Merci pour votre signalement. Notre équipe va l'examiner prochainement."
     report_error: "Une erreur s'est produite lors de l'envoi de votre signalement."
     remove_upvote: Retirer le vote positif
+    delete_confirm: 'Êtes-vous sûr de vouloir supprimer cet avis ?'
+    delete_success: Avis supprimé avec succès
+    delete_error: "Échec de la suppression de l'avis"
+    submitting: Envoi en cours...
     form:
         title: 'Avis sur {name}'
 
@@ -335,6 +340,9 @@ review_list:
 rating:
     last: Dernières notes
     action: 'a mis la note de {value} à'
+    delete_confirm: 'Supprimer cette note ?'
+    delete_network_error: "Erreur réseau. La note n'a pas été enregistrée."
+    delete_error: Impossible de supprimer la note. Veuillez réessayer.
 
 navbar:
     profile: Mon Profil
@@ -484,3 +492,12 @@ search_index:
             =1 {1 résultat trouvé pour "{query}"}
             other {# résultats trouvés pour "{query}"}
         }
+
+gallery:
+    close: Fermer
+    previous: Image précédente
+    next: Image suivante
+
+map:
+    loading: Chargement...
+    error_loading: Erreur de chargement des données

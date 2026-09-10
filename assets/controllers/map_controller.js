@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { trans } from '../translator';
 
 // stimulusFetch: 'lazy' — only used on the /map/ page
 
@@ -222,7 +223,7 @@ export default class extends Controller {
 
         this.currentPopup = new this.maplibregl.Popup({ offset: 12 })
             .setLngLat(coordinates)
-            .setHTML('Loading...')
+            .setHTML(trans('map.loading'))
             .addTo(this.map);
 
         this.loadParkData(properties.id, this.currentPopup);
@@ -255,7 +256,7 @@ export default class extends Controller {
             })
             .catch((error) => {
                 console.error('Failed to load park data:', error);
-                popup.setHTML('Error loading data');
+                popup.setHTML(trans('map.error_loading'));
             });
     }
 

@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { trans } from '../translator';
 
 export default class extends Controller {
     static targets = ['link'];
@@ -36,9 +37,9 @@ export default class extends Controller {
             <div class="captain-gallery-container">
                 <div class="captain-gallery-loader"></div>
                 <img class="captain-gallery-image" src="" alt="" style="display: none;">
-                <button class="captain-gallery-close" aria-label="Close">&times;</button>
-                <button class="captain-gallery-prev" aria-label="Previous image">&larr;</button>
-                <button class="captain-gallery-next" aria-label="Next image">&rarr;</button>
+                <button class="captain-gallery-close" aria-label="${trans('gallery.close')}">&times;</button>
+                <button class="captain-gallery-prev" aria-label="${trans('gallery.previous')}">&larr;</button>
+                <button class="captain-gallery-next" aria-label="${trans('gallery.next')}">&rarr;</button>
             </div>
         `;
 

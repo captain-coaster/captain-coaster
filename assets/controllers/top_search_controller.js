@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import { renderStarRating } from '../js/utils/star-rating';
 import { SearchDropdown } from '../js/search-dropdown';
+import { trans } from '../translator';
 
 // stimulusFetch: 'lazy' — only used on the top-list edit page
 
@@ -32,11 +33,11 @@ export default class extends SearchDropdown(Controller) {
     };
 
     get dropdownAriaLabel() {
-        return 'Coaster search results';
+        return trans('search.aria_label', {}, 'top');
     }
 
     get loadingText() {
-        return 'Searching...';
+        return trans('app.search.searching');
     }
 
     buildSearchUrl(query) {
@@ -138,7 +139,7 @@ export default class extends SearchDropdown(Controller) {
     renderNoResults() {
         return `<div class="search-no-results">
             <div class="search-no-results-icon">🔍</div>
-            <div class="search-no-results-text">No coasters found</div>
+            <div class="search-no-results-text">${trans('search.no_results', {}, 'top')}</div>
         </div>`;
     }
 

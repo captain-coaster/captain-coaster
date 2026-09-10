@@ -207,6 +207,7 @@ profile:
         getbbcode: Kopiere BBCode (Foren)
         gethtml: Kopiere HTML
         copied: 'Kopiert!'
+        copy_failed: Kopieren fehlgeschlagen
         unavailable: 'Bewerte und ranke Achterbahnen, um dein persönliches Banner zu erstellen! Die Aktualisierung kann einige Stunden dauern.'
     stats:
         title: 'Überblick'
@@ -306,6 +307,10 @@ review:
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
     remove_upvote: Positive Bewertung entfernen
+    delete_confirm: Möchtest du diese Rezension wirklich löschen?
+    delete_success: Rezension erfolgreich gelöscht
+    delete_error: Rezension konnte nicht gelöscht werden
+    submitting: Wird gesendet...
     form:
         title: 'Rezension über {name}'
 
@@ -336,6 +341,9 @@ review_list:
 rating:
     last: Neueste Bewertungen
     action: 'Mit {value} Sternen bewertet'
+    delete_confirm: Diese Bewertung löschen?
+    delete_network_error: Netzwerkfehler. Bewertung wurde nicht gespeichert.
+    delete_error: Bewertung konnte nicht gelöscht werden. Bitte versuche es erneut.
 
 navbar:
     profile: Mein Profil
@@ -485,3 +493,12 @@ search_index:
             =1 {1 Ergebnis für "{query}" gefunden}
             other {# Ergebnisse für "{query}" gefunden}
         }
+
+gallery:
+    close: Schließen
+    previous: Vorheriges Bild
+    next: Nächstes Bild
+
+map:
+    loading: Lädt...
+    error_loading: Fehler beim Laden der Daten

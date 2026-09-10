@@ -35,6 +35,7 @@ search:
     placeholder: 'Achterbahn zum Hinzufügen suchen...'
     no_results: 'Keine Achterbahnen gefunden'
     already_in_list: 'Bereits in deiner Liste'
+    aria_label: 'Achterbahn-Suchergebnisse'
 
 help:
     title: 'So verwendest du deine Top List'
