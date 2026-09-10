@@ -19,6 +19,10 @@
     background: rgba(0, 0, 0, 90%);
 }
 
+.tooltip:hover .tooltip-content {
+    display: block;
+}
+
 .tooltip-arrow {
     position: absolute;
     top: -2.5px;
