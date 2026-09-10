@@ -566,3 +566,41 @@ fieldset[disabled] .checkbox label {
 .has-error .form-control-feedback {
     color: #d84315;
 }
+
+/*
+ * fieldset/legend ("Normalize non-controls" in bootstrap/less/forms.less)
+ * -- missed entirely during the port. bootstrap/less/normalize.less sets
+ * a visible `fieldset{border:1px solid #c0c0c0}` (ported to normalize.css
+ * for real, measured effect on <table>/<body>), but forms.less loads
+ * right after normalize.less in the original app.less and resets it back
+ * to `border:0` -- that reset never made it into any Tailwind file, so
+ * every real `<fieldset>` (3x, Profile/settings.html.twig) grew back a
+ * grey box border normalize.css alone doesn't show in production.
+ * Ported here (after normalize.css in tailwind.css's import order) so it
+ * wins the same way forms.less did.
+ */
+fieldset {
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 20px;
+    font-size: 12px;
+    line-height: inherit;
+    color: #333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+fieldset:first-child legend:first-child {
+    padding-top: 0;
+}
