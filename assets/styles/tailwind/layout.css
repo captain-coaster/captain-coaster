@@ -94,13 +94,22 @@
     transition: none !important;
 }
 
+/*
+ * `transition: all` here (a faithful port of component-animation.less)
+ * only ever animates `background-color`/`color` in practice for this
+ * selector group -- but "all" also lets a mobile WebKit tap promote the
+ * element to its own compositing layer for the transition, which can
+ * read as a sub-pixel text shift at the moment of tap (sidebar.css's own
+ * nav links use the narrow form below already, and don't show this).
+ * Scoped to the properties that actually change.
+ */
 .btn,
 .navbar-nav > li > a,
 .dropdown-menu > li > a,
 .list-group-item,
 .pagination > li > a,
 .pagination > li > span {
-    transition: all ease-in-out 0.15s;
+    transition: background-color ease-in-out 0.15s, color ease-in-out 0.15s;
 }
 
 .close {
