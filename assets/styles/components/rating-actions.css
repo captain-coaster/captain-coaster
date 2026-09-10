@@ -245,24 +245,31 @@
     }
 
     .date-picker-content-small {
-        min-width: 260px;
-        padding: 16px;
+        min-width: 220px;
+        padding: 12px;
     }
 
     .date-picker-label {
-        font-size: 14px;
-        margin-bottom: 10px;
+        font-size: 13px;
+        margin-bottom: 8px;
     }
 
+    /*
+     * font-size stays untouched here -- `components/forms.css`'s global
+     * `input[type="date"]{font-size:16px!important}` always wins (it's
+     * !important, on purpose: below 16px iOS auto-zooms the page on
+     * focus). Everything else around it is trimmed instead to keep the
+     * popup from looking oversized next to that fixed 16px text.
+     */
     .small-date-input {
-        padding: 10px 12px;
-        margin-bottom: 10px;
-        min-height: 44px;
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        min-height: 40px;
     }
 
     .tiny-btn {
-        padding: 10px 14px;
-        font-size: 14px;
+        padding: 8px 12px;
+        font-size: 13px;
     }
 
     .small-date-actions {
