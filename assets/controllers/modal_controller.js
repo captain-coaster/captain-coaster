@@ -183,37 +183,4 @@ export default class extends Controller {
     get backdrop() {
         return document.querySelector('.modal-backdrop');
     }
-
-    /**
-     * Utility method to handle form submissions within modals
-     * Provides consistent AJAX handling across all modals
-     */
-    handleFormSubmission(form, options = {}) {
-        const formData = new FormData(form);
-        const url = form.action || options.url;
-
-        if (!url) {
-            console.error('No URL provided for form submission');
-            return Promise.reject(new Error('No URL provided'));
-        }
-
-        return fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                ...options.headers,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .catch((error) => {
-                console.error('Form submission error:', error);
-                throw error;
-            });
-    }
 }
