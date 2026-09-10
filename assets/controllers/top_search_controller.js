@@ -1,20 +1,16 @@
 import { Controller } from '@hotwired/stimulus';
 import { renderStarRating } from '../js/utils/star-rating';
+import { SearchDropdown } from '../js/search-dropdown';
 
 // stimulusFetch: 'lazy' — only used on the top-list edit page
 
 /**
  * Top List Search Controller
  *
- * Specialized search component for adding coasters to Top Lists.
- * Integrates with top_list_controller for seamless coaster addition.
- *
- * Features:
- * - Search input with debouncing (300ms)
- * - AJAX search using existing endpoint
- * - Display coaster name, park name, and user rating
- * - Prevent duplicate coasters
- * - Visual feedback when coaster is added
+ * Specialized search component for adding coasters to Top Lists. Shared
+ * debounce/fetch/keyboard-nav/dropdown behavior lives in SearchDropdown
+ * (see assets/js/search-dropdown.js); this defines coaster search
+ * rendering and integration with top_list_controller for adding results.
  *
  * Usage:
  * <div data-controller="top-search"
@@ -27,8 +23,7 @@ import { renderStarRating } from '../js/utils/star-rating';
  *   </div>
  * </div>
  */
-export default class extends Controller {
-    static targets = ['input', 'dropdown', 'results'];
+export default class extends SearchDropdown(Controller) {
     static values = {
         url: String,
         listController: { type: String, default: 'top-list' },
@@ -36,152 +31,37 @@ export default class extends Controller {
         debounceDelay: { type: Number, default: 300 },
     };
 
-    connect() {
-        // Initialize state
-        this.debounceTimer = null;
-        this.currentRequest = null;
-        this.selectedIndex = -1;
-        this.isOpen = false;
-        this.lastQuery = '';
-
-        // Set up accessibility
-        this.setupAccessibility();
-
-        // Set up event listeners
-        this.setupEventListeners();
+    get dropdownAriaLabel() {
+        return 'Coaster search results';
     }
 
-    disconnect() {
-        // Clean up
-        if (this.debounceTimer) {
-            clearTimeout(this.debounceTimer);
-        }
-
-        if (this.currentRequest) {
-            this.currentRequest.abort();
-        }
-
-        document.removeEventListener('click', this.closeOnOutsideClick);
+    get loadingText() {
+        return 'Searching...';
     }
 
-    /**
-     * Set up accessibility attributes
-     */
-    setupAccessibility() {
-        if (this.hasInputTarget) {
-            this.inputTarget.setAttribute('role', 'combobox');
-            this.inputTarget.setAttribute('aria-expanded', 'false');
-            this.inputTarget.setAttribute('aria-autocomplete', 'list');
-            this.inputTarget.setAttribute('aria-haspopup', 'listbox');
-        }
-
-        if (this.hasDropdownTarget) {
-            this.dropdownTarget.setAttribute('role', 'listbox');
-            this.dropdownTarget.setAttribute(
-                'aria-label',
-                'Coaster search results'
-            );
-        }
+    buildSearchUrl(query) {
+        const url = new URL(this.urlValue, window.location.origin);
+        url.searchParams.set('q', query);
+        return url.toString();
     }
 
-    /**
-     * Set up event listeners
-     */
-    setupEventListeners() {
-        // Close dropdown when clicking outside
-        this.closeOnOutsideClick = (event) => {
-            if (this.element && !this.element.contains(event.target)) {
-                this.hideDropdown();
-            }
-        };
-        document.addEventListener('click', this.closeOnOutsideClick);
+    getKeyboardNavItems() {
+        return this.getClickableResultItems();
     }
 
-    /**
-     * Handle search input with debouncing
-     */
-    search(event) {
-        const query = event.target.value.trim();
-
-        // Clear previous timer
-        if (this.debounceTimer) {
-            clearTimeout(this.debounceTimer);
-        }
-
-        // Hide dropdown if query is too short
-        if (query.length < this.minLengthValue) {
-            this.hideDropdown();
-            return;
-        }
-
-        // Don't search if query hasn't changed
-        if (query === this.lastQuery) {
-            return;
-        }
-
-        // Debounce the search
-        this.debounceTimer = setTimeout(() => {
-            this.performSearch(query);
-        }, this.debounceDelayValue);
-    }
-
-    /**
-     * Execute AJAX search request
-     */
-    async performSearch(query) {
-        // Cancel previous request
-        if (this.currentRequest) {
-            this.currentRequest.abort();
-        }
-
-        this.lastQuery = query;
-
-        try {
-            // Show loading state
-            this.showLoadingState();
-
-            // Create AbortController for request cancellation
-            const controller = new AbortController();
-            this.currentRequest = controller;
-
-            const url = new URL(this.urlValue, window.location.origin);
-            url.searchParams.set('q', query);
-
-            const response = await fetch(url.toString(), {
-                method: 'GET',
-                headers: {
-                    Accept: 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                signal: controller.signal,
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            this.updateResults(data.items || [], query);
-            this.showDropdown();
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                // Request was cancelled, ignore
-                return;
-            }
-
-            console.error('Search error:', error);
-            this.showErrorState(error.message);
-        } finally {
-            this.currentRequest = null;
-        }
+    getClickableResultItems() {
+        return this.resultsTarget.querySelectorAll(
+            '.search-result-item:not(.search-result-duplicate)'
+        );
     }
 
     /**
      * Update dropdown with search results
      */
-    updateResults(items, query) {
+    updateResults(data, query) {
         if (!this.hasResultsTarget) return;
+
+        const items = data.items || [];
 
         // Get existing coaster IDs from the list to prevent duplicates
         const existingCoasterIds = this.getExistingCoasterIds();
@@ -207,7 +87,6 @@ export default class extends Controller {
     getExistingCoasterIds() {
         const existingIds = new Set();
 
-        // Find the top list controller
         const listElement = document.querySelector(
             `[data-controller~="${this.listControllerValue}"]`
         );
@@ -239,8 +118,8 @@ export default class extends Controller {
         const duplicateClass = isDuplicate ? 'search-result-duplicate' : '';
 
         return `
-            <div class="search-result-item ${duplicateClass}" 
-                 data-index="${index}" 
+            <div class="search-result-item ${duplicateClass}"
+                 data-index="${index}"
                  data-coaster-id="${item.id}"
                  data-coaster-name="${this.escapeHtml(item.coaster)}"
                  data-park-name="${this.escapeHtml(item.park)}"
@@ -256,162 +135,11 @@ export default class extends Controller {
         `;
     }
 
-    /**
-     * Highlight search terms in text
-     */
-    highlightSearchTerm(text, query) {
-        if (!text || !query) return this.escapeHtml(text);
-
-        const escapedText = this.escapeHtml(text);
-        const escapedQuery = this.escapeHtml(query).replace(
-            /[.*+?^${}()|[\]\\]/g,
-            '\\$&'
-        );
-        const regex = new RegExp(`(${escapedQuery})`, 'gi');
-
-        return escapedText.replace(regex, '<strong>$1</strong>');
-    }
-
-    /**
-     * Render no results state
-     */
     renderNoResults() {
         return `<div class="search-no-results">
             <div class="search-no-results-icon">🔍</div>
             <div class="search-no-results-text">No coasters found</div>
         </div>`;
-    }
-
-    /**
-     * Show loading state
-     */
-    showLoadingState() {
-        if (!this.hasResultsTarget) return;
-        this.resultsTarget.innerHTML = `<div class="search-loading">
-            <div class="search-loading-spinner"></div>
-            <div class="search-loading-text">Searching...</div>
-        </div>`;
-        this.showDropdown();
-    }
-
-    /**
-     * Show error state
-     */
-    showErrorState(message) {
-        if (!this.hasResultsTarget) return;
-        this.resultsTarget.innerHTML = `<div class="search-error">
-            <div class="search-error-icon">⚠️</div>
-            <div class="search-error-text">${this.escapeHtml(message)}</div>
-        </div>`;
-        this.showDropdown();
-    }
-
-    /**
-     * Show dropdown
-     */
-    showDropdown() {
-        if (!this.hasDropdownTarget) return;
-
-        this.isOpen = true;
-        this.dropdownTarget.classList.add('show');
-        this.element.classList.add('search-open');
-
-        if (this.hasInputTarget) {
-            this.inputTarget.setAttribute('aria-expanded', 'true');
-        }
-    }
-
-    /**
-     * Hide dropdown
-     */
-    hideDropdown() {
-        if (!this.hasDropdownTarget) return;
-
-        this.isOpen = false;
-        this.dropdownTarget.classList.remove('show');
-        this.element.classList.remove('search-open');
-        this.selectedIndex = -1;
-
-        if (this.hasInputTarget) {
-            this.inputTarget.setAttribute('aria-expanded', 'false');
-        }
-
-        this.clearSelection();
-    }
-
-    /**
-     * Handle keyboard navigation
-     */
-    handleKeydown(event) {
-        if (!this.isOpen) return;
-
-        const items = this.resultsTarget.querySelectorAll(
-            '.search-result-item:not(.search-result-duplicate)'
-        );
-
-        switch (event.key) {
-            case 'ArrowDown':
-                event.preventDefault();
-                this.selectedIndex = Math.min(
-                    this.selectedIndex + 1,
-                    items.length - 1
-                );
-                this.updateSelection(items);
-                break;
-
-            case 'ArrowUp':
-                event.preventDefault();
-                this.selectedIndex = Math.max(this.selectedIndex - 1, -1);
-                this.updateSelection(items);
-                break;
-
-            case 'Enter':
-                event.preventDefault();
-                if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
-                    this.selectItem(items[this.selectedIndex]);
-                }
-                break;
-
-            case 'Escape':
-                event.preventDefault();
-                this.hideDropdown();
-                break;
-        }
-    }
-
-    /**
-     * Update visual selection
-     */
-    updateSelection(items) {
-        this.clearSelection();
-
-        if (this.selectedIndex >= 0 && items[this.selectedIndex]) {
-            items[this.selectedIndex].classList.add('selected');
-            items[this.selectedIndex].scrollIntoView({
-                block: 'nearest',
-                behavior: 'smooth',
-            });
-        }
-    }
-
-    /**
-     * Clear selection
-     */
-    clearSelection() {
-        const selectedItems = this.resultsTarget.querySelectorAll('.selected');
-        selectedItems.forEach((item) => item.classList.remove('selected'));
-    }
-
-    /**
-     * Set up click handlers
-     */
-    setupResultClickHandlers() {
-        const resultItems = this.resultsTarget.querySelectorAll(
-            '.search-result-item:not(.search-result-duplicate)'
-        );
-        resultItems.forEach((item) => {
-            item.addEventListener('click', () => this.selectItem(item));
-        });
     }
 
     /**
@@ -428,18 +156,13 @@ export default class extends Controller {
             return;
         }
 
-        // Add coaster to the list
         this.addCoasterToList(coasterId, coasterName, parkName, rating);
 
-        // Clear search input
         if (this.hasInputTarget) {
             this.inputTarget.value = '';
         }
 
-        // Hide dropdown
         this.hideDropdown();
-
-        // Reset state
         this.lastQuery = '';
     }
 
@@ -447,7 +170,6 @@ export default class extends Controller {
      * Add coaster to the top list
      */
     addCoasterToList(coasterId, coasterName, parkName, rating) {
-        // Find the top list element
         const listElement = document.querySelector(
             `[data-controller~="${this.listControllerValue}"]`
         );
@@ -456,44 +178,36 @@ export default class extends Controller {
             return;
         }
 
-        // Get current position (add to end)
         const existingItems = listElement.querySelectorAll(
             '[data-top-list-target="item"]'
         );
         const newPosition = existingItems.length + 1;
 
-        // Clone an existing item as template if available
         if (existingItems.length > 0) {
             const newItem = existingItems[0].cloneNode(true);
 
-            // Update the new item with coaster data
             newItem.dataset.coasterId = coasterId;
             newItem.dataset.position = newPosition;
 
-            // Update position number
             const positionNumber = newItem.querySelector('.position-number');
             if (positionNumber) {
                 positionNumber.textContent = newPosition;
             }
 
-            // Update coaster name
             const coasterNameEl = newItem.querySelector('.coaster-name');
             if (coasterNameEl) {
                 coasterNameEl.textContent = coasterName;
             }
 
-            // Update park name
             const parkNameEl = newItem.querySelector('.coaster-park');
             if (parkNameEl) {
                 parkNameEl.textContent = parkName;
             }
 
-            // Update rating if provided
             let ratingEl = newItem.querySelector('.coaster-rating');
 
             if (rating && rating !== '' && rating !== '0') {
                 if (!ratingEl) {
-                    // Create rating element if it doesn't exist
                     ratingEl = document.createElement('span');
                     ratingEl.className = 'coaster-rating';
                     const coasterContent = newItem.querySelector(
@@ -508,13 +222,10 @@ export default class extends Controller {
                 ratingEl.remove();
             }
 
-            // Add to list
             listElement.appendChild(newItem);
 
-            // Show visual feedback
             this.showAddedFeedback(newItem);
         } else {
-            // Fallback to creating from scratch if no items exist
             const newItem = this.createListItem(
                 coasterId,
                 coasterName,
@@ -528,7 +239,6 @@ export default class extends Controller {
             }
         }
 
-        // Update positions and trigger auto-save (should handle new coasters)
         const topListController =
             this.application.getControllerForElementAndIdentifier(
                 listElement,
@@ -536,12 +246,10 @@ export default class extends Controller {
             );
 
         if (topListController) {
-            // Update positions first
             if (typeof topListController.updatePositions === 'function') {
                 topListController.updatePositions();
             }
 
-            // Then trigger auto-save (backend should handle new coasters)
             if (typeof topListController.debouncedSave === 'function') {
                 topListController.debouncedSave();
             }
@@ -552,39 +260,32 @@ export default class extends Controller {
      * Create a new list item by cloning the template
      */
     createListItem(coasterId, coasterName, parkName, rating, position) {
-        // Get the hidden template
         const template = document.getElementById('coaster-item-template');
         if (!template) {
             console.error('Coaster item template not found');
             return null;
         }
 
-        // Clone the template content
         const newItem = template.content.cloneNode(true).firstElementChild;
 
-        // Update with coaster data
         newItem.dataset.coasterId = coasterId;
         newItem.dataset.position = position;
 
-        // Update position number
         const positionNumber = newItem.querySelector('.position-number');
         if (positionNumber) {
             positionNumber.textContent = position;
         }
 
-        // Update coaster name
         const coasterNameEl = newItem.querySelector('.coaster-name');
         if (coasterNameEl) {
             coasterNameEl.textContent = coasterName;
         }
 
-        // Update park name
         const parkNameEl = newItem.querySelector('.coaster-park');
         if (parkNameEl) {
             parkNameEl.textContent = parkName;
         }
 
-        // Update rating if provided
         const ratingEl = newItem.querySelector('.coaster-rating');
         if (ratingEl) {
             if (rating && rating !== '' && rating !== '0') {
@@ -601,24 +302,11 @@ export default class extends Controller {
      * Show visual feedback when coaster is added
      */
     showAddedFeedback(item) {
-        // Add animation class
         item.classList.add('coaster-entry-added');
-
-        // Scroll into view
         item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
-        // Remove animation class after animation completes
         setTimeout(() => {
             item.classList.remove('coaster-entry-added');
         }, 1000);
-    }
-
-    /**
-     * Escape HTML to prevent XSS
-     */
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 }
