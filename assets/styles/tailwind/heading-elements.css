@@ -62,7 +62,17 @@
     margin-bottom: 0;
 }
 
-.heading-elements.visible-elements .heading-text {
+/*
+ * `.heading-form .form-group` (the global search bar's wrapper) belongs
+ * in this same unconditional vertical-spacing group in the source LESS --
+ * dropped during the port along with the rest of that selector list's
+ * dead siblings, but this one is real (search.css only re-zeroes it back
+ * to 0 on desktop, via its own `@media(min-width:769px)` override).
+ * Missing it collapsed the gap between the search bar and the navbar on
+ * mobile to 0.
+ */
+.heading-elements.visible-elements .heading-text,
+.heading-elements.visible-elements .heading-form .form-group {
     margin-top: 20px;
 }
 
