@@ -11,9 +11,9 @@
  *  breakpoints defined once per side, `.list-feed` diverging between the
  *  two) instead of one. Everything below is grouped by feature instead.
  *
- *  Everything below is now in `@layer components` (captain-coaster/
- *  captain-coaster#385, step 2) except `.collapse`, which stays unlayered
- *  on purpose -- see its own comment just above. colors.css used to need
+ *  The reset and Captain Coaster's element defaults sit in `@layer base`;
+ *  components sit in `@layer components`. `.collapse` stays unlayered on
+ *  purpose -- see its own comment just above. colors.css used to need
  *  the same treatment: several of its class names (`text-slate`,
  *  `*-blue-400`, `*-teal-400`, `*-indigo-400`, `*-orange-400`,
  *  `*-pink-400`) collided with Tailwind's own default color-scale
@@ -42,21 +42,15 @@
 @layer theme, base, components, utilities;
 
 @import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
 @import "tailwindcss/utilities.css" layer(utilities);
 @import "./tokens.css";
+@import "./base.css" layer(base);
 
 /*
- * Preflight (Tailwind's base reset) is still not imported above. The
- * original reason ("Bootstrap 3/Limitless owns the page-wide reset until
- * Phase 2 removes it") no longer applies -- captain-coaster/captain-
- * coaster#380 is done, there's no more competing Bootstrap/Limitless
- * reset to collide with. What's untested is the other direction:
- * Preflight's own resets (list styles, table spacing, `<img>` becoming
- * block, form-control appearance, etc.) against every element this
- * migration did NOT explicitly restyle -- unlike the collision cases
- * below, that's a real, unaudited surface, not a known-safe no-op.
- * Deliberately left off pending its own pass (captain-coaster/captain-
- * coaster#385, step 5).
+ * Preflight establishes Tailwind's element-level baseline. base.css below
+ * restores the few Captain Coaster defaults that are intentional rather
+ * than browser accidents; components then define the legacy UI explicitly.
  */
 
 @source "../../templates";
@@ -97,7 +91,6 @@
 @import "./buttons.css" layer(components);
 @import "./pagination.css" layer(components);
 @import "./media-object.css" layer(components);
-@import "./base.css" layer(components);
 @import "./print.css" layer(components);
 @import "./helpers.css" layer(components);
 @import "./responsive-visibility.css" layer(components);
