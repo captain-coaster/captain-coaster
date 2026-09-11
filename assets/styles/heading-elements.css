@@ -13,8 +13,8 @@
  * jQuery-UI widgets none of which this app uses) is confirmed dead.
  *
  * The 4th real element turned out not to need any of this file's own
- * hide/show logic at all: `assets/styles/components/top-list.css` (an
- * existing app component, unrelated to Limitless) already has its own
+ * hide/show logic at all: `assets/styles/top-list.css` (an existing app
+ * component, unrelated to Limitless) already has its own
  * unconditional `.heading-elements:not(.visible-elements){display:none
  * !important}`, added to hide the page-header search bar on pages
  * setting `showSearchBar=false`. Being `!important` and global, it also

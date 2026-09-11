@@ -2,34 +2,92 @@
  *
  *  # Main stylesheet
  *
- *  Every Bootstrap 3/Limitless component, their LESS mixins/resets, and
- *  the theme's own variables are migrated to Tailwind v4 or dropped as
- *  fully dead as of Phase 2 (captain-coaster/captain-coaster#380). What's
- *  left is this app's own modern CSS components -- plain CSS from the
- *  start, just re-homed here once nothing forced this file to stay LESS.
+ *  Single global entry (captain-coaster/captain-coaster#385 consolidation
+ *  pass) -- previously split across app.css (this app's own hand-written
+ *  "modern CSS components") and tailwind.css (the Phase 2 Bootstrap/
+ *  Limitless migration, captain-coaster/captain-coaster#380). That split
+ *  was an accident of migration history, not a real architecture
+ *  boundary -- it caused real, unaudited duplication (the same colors and
+ *  breakpoints defined once per side, `.list-feed` diverging between the
+ *  two) instead of one. Everything below is grouped by feature instead.
  *
- * ---------------------------------------------------------------------------- */
+ *  Import order approximates the two files' original combined load order
+ *  (app.css's own imports, then tailwind.css's) since nothing here is
+ *  layered yet -- unlayered same-specificity ties still resolve by source
+ *  order. captain-coaster/captain-coaster#385's next step wraps this in
+ *  `@layer components` and makes that ordering irrelevant for anything
+ *  layered.
+ *
+ *  score-card.css, rating-distribution.css, summary-feedback.css,
+ *  coaster-loading.css, youtube-thumbnail.css and top-list.css are
+ *  deliberately NOT imported here -- they're entry-scoped (coaster.js /
+ *  top-list.js), loaded only on the one page each actually needs, kept
+ *  out of every other page's bundle.
+ */
 
-/* Modern CSS components */
-@import 'components/forms.css';
-@import 'components/enhanced-select.css';
-@import 'components/toggle-switch.css';
-@import 'components/map.css';
-@import 'components/search.css';
-@import 'components/top-list.css';
-@import 'components/image-gallery.css';
-@import 'components/rating.css';
-@import 'components/rating-actions.css';
-@import 'components/timeline.css';
-@import 'components/section-header.css';
-@import 'components/tooltip.css';
-@import 'components/toast.css';
-@import 'components/account-menu.css';
-@import 'components/notification-center.css';
+@import "tailwindcss/theme.css";
+@import "tailwindcss/utilities.css";
 
-/* Utilities */
-@import 'icons/icons.css';
-@import 'utilities/review.css';
+/*
+ * Preflight (Tailwind's base reset) is still not imported above. The
+ * original reason ("Bootstrap 3/Limitless owns the page-wide reset until
+ * Phase 2 removes it") no longer applies -- captain-coaster/captain-
+ * coaster#380 is done, there's no more competing Bootstrap/Limitless
+ * reset to collide with. What's untested is the other direction:
+ * Preflight's own resets (list styles, table spacing, `<img>` becoming
+ * block, form-control appearance, etc.) against every element this
+ * migration did NOT explicitly restyle -- unlike the collision cases
+ * below, that's a real, unaudited surface, not a known-safe no-op.
+ * Deliberately left off pending its own pass (captain-coaster/captain-
+ * coaster#385, step 5).
+ */
 
-/* Login page styles */
-@import 'components/login.css';
+@source "../../templates";
+
+/*
+ * Tailwind's built-in `.collapse` utility (visibility: collapse, meant for
+ * table rows) collides with Bootstrap 3's unrelated `.collapse` JS-toggle
+ * class (responsive-visibility.css). @source above picks up the literal
+ * token from templates/navbar.html.twig's `navbar-collapse collapse` div.
+ * `visibility` is a property Bootstrap never sets there, so it applied
+ * unopposed and silently hid the whole #navbar-mobile block (both the
+ * left-side toggle and the right-side user/notifications dropdown) on
+ * every viewport -- visibility:collapse on a non-table element is
+ * equivalent to hidden per spec. Unlayered here so it wins regardless of
+ * source order.
+ */
+.collapse {
+    visibility: visible;
+}
+
+@import "./forms.css";
+@import "./toggle-switch.css";
+@import "./map.css";
+@import "./search.css";
+@import "./gallery.css";
+@import "./rating.css";
+@import "./timeline.css";
+@import "./section-header.css";
+@import "./tooltip.css";
+@import "./toast.css";
+@import "./account-menu.css";
+@import "./icons.css";
+@import "./review.css";
+@import "./layout.css";
+@import "./alerts.css";
+@import "./buttons.css";
+@import "./pagination.css";
+@import "./media-object.css";
+@import "./base.css";
+@import "./print.css";
+@import "./grid.css";
+@import "./helpers.css";
+@import "./responsive-visibility.css";
+@import "./heading-elements.css";
+@import "./labels-badges.css";
+@import "./typography.css";
+@import "./panels.css";
+@import "./tables-and-lists.css";
+@import "./navbar.css";
+@import "./colors.css";
+@import "./sidebar.css";

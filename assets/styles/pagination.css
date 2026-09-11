@@ -1,0 +1,85 @@
+/*
+ * .pagination — migrated from theme/bootstrap-limitless/pagination.less +
+ * bootstrap/less/pagination.less. Only the base + .pagination-sm variant
+ * are included (the only ones referenced in templates); pagination-lg/
+ * -xs/-flat/-rounded/-separated were never used and are dropped.
+ * Renders through two near-identical KNP pagination templates
+ * (custom + the bootstrap_v4 override) whose `.page-item`/`.page-link`
+ * classes carry no CSS at all in this app (Bootstrap 3 styles this
+ * structurally via `.pagination > li > a`, not by those class names) —
+ * verified against the compiled output before relying on it.
+ */
+.pagination {
+    @apply m-0 -mb-[6px] inline-block rounded-[3px] pl-0;
+}
+
+.pagination > li {
+    display: inline;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+    @apply relative float-left border border-[#ddd] bg-white text-center text-[#333];
+    min-width: 36px;
+    padding: 7px 12px;
+    line-height: 1.53846;
+    text-decoration: none;
+    margin-left: -1px;
+}
+
+.pagination > li > a:hover,
+.pagination > li > span:hover,
+.pagination > li > a:focus,
+.pagination > li > span:focus {
+    @apply z-2 bg-[#f5f5f5] text-[#333];
+    border-color: #ddd;
+}
+
+.pagination > li:first-child > a,
+.pagination > li:first-child > span {
+    @apply ml-0 rounded-l-[3px];
+}
+
+.pagination > li:last-child > a,
+.pagination > li:last-child > span {
+    @apply rounded-r-[3px];
+}
+
+.pagination > .active > a,
+.pagination > .active > span,
+.pagination > .active > a:hover,
+.pagination > .active > span:hover,
+.pagination > .active > a:focus,
+.pagination > .active > span:focus {
+    @apply z-3 cursor-default text-white;
+    background-color: #2196f3;
+    border-color: #2196f3;
+}
+
+.pagination > .disabled > span,
+.pagination > .disabled > span:hover,
+.pagination > .disabled > span:focus,
+.pagination > .disabled > a,
+.pagination > .disabled > a:hover,
+.pagination > .disabled > a:focus {
+    @apply cursor-not-allowed bg-transparent text-[#bbb];
+    border-color: #ddd;
+}
+
+.pagination-sm > li > a,
+.pagination-sm > li > span {
+    @apply text-[12px];
+    padding: 6px 11px;
+    line-height: 1.66667;
+    min-width: 34px;
+}
+
+.pagination-sm > li:first-child > a,
+.pagination-sm > li:first-child > span {
+    @apply rounded-l-[2px];
+}
+
+.pagination-sm > li:last-child > a,
+.pagination-sm > li:last-child > span {
+    @apply rounded-r-[2px];
+}

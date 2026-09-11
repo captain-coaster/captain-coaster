@@ -1,6 +1,17 @@
+/*
+ * Timeline (.list-feed) -- used on Top/list, Park/show, Default/index,
+ * User/tops. The container rule below used to be duplicated: type.less's
+ * migration (now typography.css) ported its own `.list-feed{padding:7px
+ * 0}` in parallel with this file's pre-existing `padding:10px 0` --
+ * unlayered-vs-unlayered, so whichever loaded last silently won (verified
+ * against the compiled build: 7px 0 was the one actually rendering).
+ * Consolidated here as the single source, keeping the value that's
+ * actually live today; the `> li` bullet/connector styling below was
+ * never duplicated, only the container's own padding was.
+ */
 .list-feed {
     margin: 0;
-    padding: 10px 0;
+    padding: 7px 0;
     list-style: none;
 }
 

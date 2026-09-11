@@ -1,0 +1,182 @@
+/*
+ * Small utility classes -- migrated together: theme/components/ui/helpers.less
+ * (a 121-class grab-bag; grepped exact class tokens across templates/src to
+ * find the 30 real ones), bootstrap/less/utilities.less (only `.pull-right`
+ * is real), and scaffolding's own image/row utility classes.
+ *
+ * These classes are NOT delegated to Tailwind's own same-named utilities
+ * the way `.sr-only`/`.text-center` are elsewhere: Tailwind's spacing scale
+ * (`m-5`, `mt-10`, ...) is `rem`-relative, and this site's root font-size
+ * is still 10px -- Tailwind's `mt-10` would render at 25px here, not this
+ * file's literal 10px. Ported as plain px values instead, exactly matching
+ * the LESS source. (captain-coaster/captain-coaster#385's font-size step
+ * unwinds the 10px root; revisit delegating these to Tailwind once it does.)
+ */
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
+}
+
+.m-10 {
+    margin: 10px !important;
+}
+
+.mt-5 {
+    margin-top: 5px !important;
+}
+
+.mt-10 {
+    margin-top: 10px !important;
+}
+
+.mb-5 {
+    margin-bottom: 5px !important;
+}
+
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.mb-15 {
+    margin-bottom: 15px !important;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
+}
+
+.ml-5 {
+    margin-left: 5px !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-padding-top {
+    padding-top: 0 !important;
+}
+
+.pt-10 {
+    padding-top: 10px !important;
+}
+
+.pt-15 {
+    padding-top: 15px !important;
+}
+
+.pt-20 {
+    padding-top: 20px !important;
+}
+
+.pb-10 {
+    padding-bottom: 10px !important;
+}
+
+.pl-15 {
+    padding-left: 15px !important;
+}
+
+.pr-15 {
+    padding-right: 15px !important;
+}
+
+.no-border {
+    border: 0 !important;
+}
+
+.border-lg {
+    border-width: 2px;
+}
+
+.border-bottom-xlg {
+    border-bottom: 3px solid;
+}
+
+.no-edge-top {
+    top: 0;
+}
+
+.display-block {
+    display: block;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.content-group-sm {
+    margin-bottom: 15px !important;
+}
+
+.content-group {
+    margin-bottom: 20px !important;
+}
+
+.content-group-lg {
+    margin-bottom: 30px !important;
+}
+
+.img-lg {
+    width: 44px !important;
+    height: 44px !important;
+}
+
+.img-sm {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.img-xs {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+/*
+ * bootstrap/less/utilities.less -- only `.pull-right` (23 uses) is real;
+ * `.clearfix`, `.center-block`, `.pull-left`, `.hide`, `.show`, `.invisible`,
+ * `.text-hide`, `.hidden`, `.affix` are all confirmed dead (0 uses anywhere
+ * in templates/src/).
+ */
+.pull-right {
+    float: right !important;
+}
+
+/*
+ * scaffolding's own image/row utility classes. `.img-rounded` and
+ * `.img-circle` had two competing declarations (bootstrap's own + a
+ * Limitless override) that tied on specificity and resolved by import
+ * order -- Limitless always came second, so its value
+ * (`.img-rounded{border-radius:3px}` over bootstrap's 5px) is the one
+ * actually rendering today and the only one ported.
+ */
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.img-rounded {
+    border-radius: 3px;
+}
+
+.img-circle {
+    border-radius: 50%;
+}
+
+.row-seamless {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.row-seamless > div[class*="col-"] {
+    padding-left: 0;
+    padding-right: 0;
+}

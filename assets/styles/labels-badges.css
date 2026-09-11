@@ -56,12 +56,12 @@
  *     `.breadcrumb`, `.menu-list`, `.dd-wrapper`, `.heading-thumbnails` and
  *     `.btn` combinations are all dead — no template/controller combines
  *     `.label`/`.badge` with any of them.
- *   - `assets/styles/utilities/review.css` already overrides
+ *   - `assets/styles/review.css` already overrides
  *     `.label-success`/`.label-danger`/`.label-rounded` with `!important`
  *     for review pro/con tags (the only place those two colors are used) —
  *     untouched here, keeps winning regardless of what this migration
  *     writes for those colors.
- *   - `assets/styles/components/top-list.css`'s `.top-search-container
+ *   - `assets/styles/top-list.css`'s `.top-search-container
  *     .search-result-item .badge`/`.search-result-duplicate .badge` rules
  *     are live (top_search_controller.js renders `.badge` client-side) —
  *     untouched, positioning-only, keeps applying.

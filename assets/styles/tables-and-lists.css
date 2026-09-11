@@ -1,0 +1,189 @@
+/*
+ * Tables, thumbnails, list-group -- migrated: theme/bootstrap-limitless/
+ * {tables,thumbnails,list-group}.less + bootstrap/less/{tables,thumbnails,
+ * list-group}.less. `.table`(+`-responsive`) with no modifiers
+ * (`.table-striped/-bordered/-hover/-condensed`, contextual row states) --
+ * the one real `<table>` (Includes/rating_table.html.twig) uses none of
+ * them. `.thumbnail`(+`.caption`) and `.thumb`(+`.caption-overflow`) --
+ * `.thumb-rounded`/`.thumb-slide`/`.caption-zoom`/`-offset`/`-collapse`
+ * are dead. `.list-group`/`.list-group-item` base + hover only -- `.active`/
+ * `.disabled` states, `.list-group-item-heading/-text`, and the four
+ * contextual `.list-group-item-*` colors are all dead (the `> .badge`/
+ * `.label` float rules for this pair live in labels-badges.css, nested
+ * inside badges.less/labels.less originally, not list-group.less).
+ */
+
+/* Tables */
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    vertical-align: middle;
+    border-top: 1px solid #ddd;
+    padding: 12px 20px;
+    line-height: 1.53846;
+}
+
+.table > thead > tr > th {
+    border-bottom: 1px solid #bbb;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Only applies <768px in the original -- Limitless customizes this breakpoint to 769px. */
+@media screen and (max-width: 768px) {
+    .table-responsive {
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        border: 1px solid #ddd;
+    }
+
+    .table-responsive > .table {
+        margin-bottom: 0;
+    }
+
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > tbody > tr > th,
+    .table-responsive > .table > tfoot > tr > th,
+    .table-responsive > .table > thead > tr > td,
+    .table-responsive > .table > tbody > tr > td,
+    .table-responsive > .table > tfoot > tr > td {
+        white-space: nowrap;
+    }
+}
+
+/* Thumbnails */
+.thumbnail {
+    display: block;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    padding: 3px;
+    line-height: 1.53846;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.thumbnail > img,
+.thumbnail a > img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.thumbnail > a {
+    display: block;
+}
+
+a.thumbnail:hover,
+a.thumbnail:focus,
+a.thumbnail.active {
+    border-color: #ddd;
+}
+
+.thumbnail .caption {
+    color: #333;
+    padding: 20px 17px 17px;
+}
+
+.thumbnail .caption .media-heading {
+    margin-top: 0;
+}
+
+.thumbnail .caption .media-heading:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.thumb {
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+.thumb img:not(.media-preview) {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+.thumb:not(.thumb-rounded) img {
+    border-radius: 3px;
+}
+
+.caption-overflow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    visibility: hidden;
+    opacity: 0;
+    border-radius: 3px;
+    transition: all 0.15s ease-in-out;
+}
+
+.caption-overflow span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    margin-top: -17px;
+    text-align: center;
+}
+
+.thumb:hover > .caption-overflow {
+    visibility: visible;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* List group */
+.list-group {
+    list-style: none;
+    margin-bottom: 0;
+    border: 1px solid #ddd;
+    padding: 7px 0;
+    border-radius: 3px;
+}
+
+.list-group-item {
+    position: relative;
+    display: block;
+    background-color: transparent;
+    padding: 10px 20px;
+    border: 0;
+    margin-bottom: -1px;
+}
+
+a.list-group-item,
+button.list-group-item {
+    color: #333;
+}
+
+a.list-group-item:hover,
+button.list-group-item:hover,
+a.list-group-item:focus,
+button.list-group-item:focus {
+    color: #333;
+    background-color: #f5f5f5;
+    text-decoration: none;
+}

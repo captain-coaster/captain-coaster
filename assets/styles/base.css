@@ -1,0 +1,161 @@
+/*
+ * Site-wide element resets -- migrated together: bootstrap/less/normalize.less
+ * (normalize.css v3.0.3) + bootstrap/less/scaffolding.less +
+ * theme/bootstrap-limitless/scaffolding.less's universal resets. Utility
+ * classes that used to live in scaffolding.less (.img-responsive,
+ * .img-rounded, .img-circle, .row-seamless) live in helpers.css instead --
+ * this file is only unconditional, element-level resets.
+ *
+ * Normalize.css is almost entirely obsolete: it exists to paper over old-
+ * browser bugs (IE 8-11, Firefox <22-39, Android 4.0, old Safari) this
+ * project's browserslist ("last 2 versions, >1%, not dead, not IE 11") no
+ * longer needs to support, and modern browsers already implement most of
+ * its resets as their real defaults.
+ *
+ * Verified with a live A/B build (temporarily dropping the import,
+ * rebuilding, and diffing `getComputedStyle()` against the checked-in
+ * build) rather than assuming from browser-support knowledge alone --
+ * caught two rules that still have a real, current effect and dropped
+ * several that looked plausible but measured identically either way:
+ *
+ * - `body{margin:0}`: real. Chromium still applies its own default body
+ *   margin (8px) without this. Zero uses of the *element* matter here --
+ *   it's universal.
+ * - `fieldset`/`legend`: real, and `<fieldset>`/`<legend>` are used 3x
+ *   (Profile/settings.html.twig). Without this, Chromium's own default
+ *   fieldset border renders `2px groove #efefef` instead of `1px solid
+ *   #c0c0c0`, and legend padding shifts from `0` to `0 2px`.
+ * - `table{border-collapse:collapse;border-spacing:0}` + `td,th{padding:
+ *   0}`: real. The one real `<table>` (Includes/rating_table.html.twig)
+ *   already carries Bootstrap's `.table` class, whose own higher-
+ *   specificity cell rules (tables-and-lists.css) win regardless -- but
+ *   the bare element rule was worth keeping anyway since `border-collapse`
+ *   measurably flips to `separate` without it.
+ * - `button::-moz-focus-inner`/`input::-moz-focus-inner`: kept as a
+ *   zero-risk Firefox-only fix for real `<button>`/`<input>` elements --
+ *   can't be verified via this project's Chromium-based Playwright
+ *   checks, but costs nothing to carry forward.
+ *
+ * Measured with NO real effect and dropped despite looking plausible:
+ * `a{background-color:transparent}` (already the Chromium default),
+ * `img{border:0}` (same), `button,input,optgroup,select,textarea{color:
+ * inherit;font:inherit;margin:0}` (Chromium already inherits font/color
+ * and zeroes margin on these today -- this was an early-2010s browser
+ * inconsistency fix), `input[type=search]{-webkit-appearance:textfield;
+ * box-sizing:content-box}` (forms.css already carries an explicit, later-
+ * loaded `input[type="search"]{box-sizing:border-box;appearance:none}` --
+ * see its own comment for the PR #382-era regression that rule fixed --
+ * so normalize's version was already fully overridden before this
+ * migration, not just after), `input[type=search]
+ * ::-webkit-search-cancel-button{-webkit-appearance:none}` (forms.css's
+ * `appearance:none` on the input itself already suppresses the native
+ * cancel decoration as a side effect in Chromium -- verified live, no
+ * stray native "x" appears even with a real typed value), and
+ * `h1{font-size:2em;margin:.67em 0}` (typography.css's own
+ * `h1{font-size:25px;...}` already wins regardless of source order,
+ * same specificity, loaded later).
+ *
+ * Every other rule in the original file (HTML5 element display defaults,
+ * `audio`/`canvas`/`progress`/`video`, `[hidden]`/`template`, `abbr`,
+ * `b`/`strong`, `dfn`, `mark`, `small`, `sub`/`sup`, `svg:not(:root)`,
+ * `figure`, `hr`, `pre`, `code`/`kbd`/`samp`, the rest of the form-control
+ * resets, `optgroup`) targets an element with zero real uses anywhere in
+ * templates/src, or (for `article`/`aside`/`section`/etc.) a display
+ * default every supported browser already applies natively without help.
+ */
+body {
+    margin: 0;
+}
+
+fieldset {
+    border: 1px solid #c0c0c0;
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+legend {
+    border: 0;
+    padding: 0;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+td,
+th {
+    padding: 0;
+}
+
+/*
+ * Kept unconditionally (universal resets, not "usage" in the class
+ * sense): box-sizing:border-box on every element -- grid.css computes
+ * column padding assuming it; html/body sizing (100% height, relative
+ * positioning) -- the sticky footer layout in layout.css depends on it;
+ * the bare input/button/select/textarea font-inherit reset;
+ * `img{vertical-align:middle}`.
+ *
+ * `html{font-size:10px}` is kept as-is -- this is iso-visual, not the
+ * rem-scaling fix (captain-coaster/captain-coaster#385's font-size step
+ * owns that).
+ */
+* {
+    box-sizing: border-box;
+}
+
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    font-size: 10px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+    position: relative;
+    min-height: 100%;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.5384616;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+input,
+button,
+select,
+textarea {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+a {
+    color: #1e88e5;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover,
+a:focus {
+    color: #166dba;
+    text-decoration: none;
+}
+
+a:focus {
+    outline: 0;
+}
+
+img {
+    vertical-align: middle;
+}

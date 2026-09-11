@@ -1,0 +1,145 @@
+/*
+ * Panels -- migrated: theme/bootstrap-limitless/panels.less +
+ * bootstrap/less/panels.less. Scope: `.panel`(+`[class*=border-top-/
+ * -bottom-]`), `.panel-body`, `.panel-heading`(+`.panel-flat`/`.panel-white`
+ * nesting), `.panel-title`(+h1-h6/.h1-.h6 sizing), `.panel-footer`. No
+ * contextual `.panel-primary/-success/-info/-warning/-danger`,
+ * `.panel-collapse`/`-group` (no Bootstrap-JS accordion anywhere in this
+ * app), `.panel-bordered`, `.has-scroll`/`.has-bg-image`, or `.icons-list`
+ * (panel-heading control buttons) -- zero uses of any of them.
+ */
+.panel {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: #fff;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.panel[class*="border-top-"] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.panel[class*="border-bottom-"] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.panel-body {
+    position: relative;
+    padding: 20px;
+}
+
+/*
+ * Bootstrap's panels.less does `.panel-body { &:extend(.clearfix all); }` --
+ * a LESS extend, not a normal nested declaration, easy to miss when reading
+ * the file top to bottom. Without it, a `.panel-body` whose direct children
+ * are floated (e.g. Bootstrap's `.col-xs-*` grid columns used without a
+ * `.row` wrapper) collapses to ~0 height and its content overflows below the
+ * panel's bottom edge. Caught on the ranking page's stats row.
+ */
+.panel-body:before,
+.panel-body:after {
+    content: " ";
+    display: table;
+}
+
+.panel-body:after {
+    clear: both;
+}
+
+.panel-flat > .panel-heading + .panel-body {
+    padding-top: 0;
+}
+
+.panel-body + .panel-body {
+    border-top: 1px solid #ddd;
+}
+
+.panel-heading {
+    position: relative;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 15px 20px;
+    border-bottom: 1px solid transparent;
+}
+
+.panel-flat > .panel-heading {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #fff;
+}
+
+.panel-flat > .panel-heading > .panel-title {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+/*
+ * Only overrides border-bottom-*color* -- relies on `.panel-heading`'s own
+ * base rule for width/style. That base rule was ported as `border-bottom:
+ * 0` (a shorthand that also zeroes width/style, not just color), which
+ * silently defeated this override regardless of its higher specificity:
+ * a 0-width border renders nothing no matter what color wins the cascade.
+ * Fixed by porting the base rule as bootstrap's real `1px solid
+ * transparent` instead -- invisible everywhere else, visible here.
+ */
+.panel-white > .panel-heading {
+    background-color: #fff;
+    border-bottom-color: #ddd;
+}
+
+.panel-title {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: inherit;
+}
+
+h1.panel-title,
+.h1.panel-title {
+    font-size: 25px;
+}
+
+h2.panel-title,
+.h2.panel-title {
+    font-size: 23px;
+}
+
+h3.panel-title,
+.h3.panel-title {
+    font-size: 21px;
+}
+
+h4.panel-title,
+.h4.panel-title {
+    font-size: 19px;
+}
+
+h5.panel-title,
+.h5.panel-title {
+    font-size: 17px;
+}
+
+h6.panel-title,
+.h6.panel-title {
+    font-size: 15px;
+}
+
+.panel-footer {
+    position: relative;
+    padding: 7px 0;
+    background-color: #fcfcfc;
+    border-top: 1px solid #ddd;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.panel-footer:after {
+    content: "";
+    display: table;
+    clear: both;
+}

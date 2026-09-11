@@ -1,0 +1,402 @@
+/*
+ * .btn -- migrated: theme/bootstrap-limitless/buttons.less +
+ * bootstrap/less/buttons.less. `.btn-group`/`.btn-toolbar`/`.input-group`
+ * are entirely unused -- grepped templates/, src/ and every Stimulus
+ * controller, zero hits (not even the enhanced-select controller
+ * generates one). Every rule in button-groups.less/input-groups.less
+ * requires one of those classes as an ancestor (checked line by line --
+ * no bare `.btn`/`.form-control` rule hides in either file), so both
+ * files are deleted outright with no Tailwind replacement, the same way
+ * `pager.less` was for media.
+ *
+ * Only base + btn-default/-primary/-info/-danger/-link/-lg/-sm/-xs/
+ * -block/-rounded/-flat/-icon/-float(-lg)/-labeled(-right)/-block-group
+ * are used. Not used and dropped: btn-success/-warning/-xlg, the whole
+ * `.btn-group-*` size-override branch (dead, no btn-group), `.icon-2x`
+ * (never combined with btn-icon), and every `.input-group-* >
+ * .input-group-btn > .btn` sub-rule (dead, no input-group).
+ * `.btn-labeled`'s per-size (xlg/lg/sm/xs) padding variants are also
+ * dropped -- the only two real usages (Profile/settings.html.twig)
+ * combine btn-labeled with no size class at all.
+ *
+ * Cross-file/cascade-position coupling, same check as `.badge`/`.label`:
+ * real usage combines `.btn` with non-`!important` `bg-*`/`border-*`/
+ * `text-*` helpers in several places (`btn bg-teal-400`, `btn
+ * bg-danger-400`, notification list's `btn {{ iconColorClass }}` --
+ * enumerated via the `NotificationType` enum: bg-primary/bg-success-400/
+ * bg-warning-400 -- and `btn border-danger-800 text-danger-800 btn-flat`).
+ * The base `.btn` rule doesn't set `background-color` at all, and its
+ * `border` shorthand is split into `border-width`/`border-style` so
+ * `border-color` is left free for a helper to set. `.btn-default/-primary/
+ * -info/-danger`'s own background-color/border-color are untouched (never
+ * combined with a bg-* or border-* helper in real usage, and Limitless's
+ * own `.btn[class*=bg-]:hover{color:#fff}` rule shows this coexistence was
+ * already an intentional pattern in the theme).
+ */
+.btn {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.53846;
+}
+
+.btn::-moz-focus-inner {
+    border: 0;
+}
+
+/*
+ * `color: #333` here is accurate to vanilla bootstrap's base `.btn:hover`
+ * (it's `.btn-default`'s own hover color, applied unconditionally at this
+ * level). In real Bootstrap it's harmless on colored variants because
+ * `.button-variant()`'s own `:hover/:focus/:active` block re-asserts
+ * `color: @color` at the point each variant is defined -- missed during
+ * the port here (only background-color/border-color were carried over),
+ * so every `.btn-primary/-info/-danger`'s white text silently fell back
+ * to this dark base color on hover/focus/active. Fixed by re-adding an
+ * explicit `color` to each variant's hover/focus/active group below.
+ */
+.btn:hover,
+.btn:focus,
+.btn.focus {
+    color: #333;
+    text-decoration: none;
+    outline: 0;
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.05);
+}
+
+.btn:active,
+.btn.active {
+    background-image: none;
+    outline: 0;
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.1);
+}
+
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+}
+
+/* Buttons already colored via a bg-* helper still need white text on hover/focus. */
+.btn[class*="bg-"]:hover,
+.btn[class*="bg-"]:focus,
+.btn[class*="bg-"].focus {
+    color: #fff;
+}
+
+.btn-default {
+    color: #333;
+    background-color: #fcfcfc;
+    border-color: #ddd;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus,
+.btn-default:active,
+.btn-default.active {
+    color: #333;
+    background-color: #e3e3e3;
+    border-color: #bebebe;
+}
+
+.btn-default.disabled {
+    box-shadow: none;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #2196f3;
+    border-color: #2196f3;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:active,
+.btn-primary.active {
+    color: #fff;
+    background-color: #0c7cd5;
+    border-color: #0b76cc;
+}
+
+.btn-primary.disabled {
+    box-shadow: none;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #00bcd4;
+    border-color: #00bcd4;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info.focus,
+.btn-info:active,
+.btn-info.active {
+    color: #fff;
+    background-color: #008fa1;
+    border-color: #008697;
+}
+
+.btn-info.disabled {
+    box-shadow: none;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #f44336;
+    border-color: #f44336;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger.focus,
+.btn-danger:active,
+.btn-danger.active {
+    color: #fff;
+    background-color: #ea1c0d;
+    border-color: #e11b0c;
+}
+
+.btn-danger.disabled {
+    box-shadow: none;
+}
+
+.btn-link {
+    color: #333;
+    font-weight: 400;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.btn-link,
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active {
+    border-color: transparent;
+}
+
+.btn-link:hover,
+.btn-link:focus {
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.btn-lg {
+    border-radius: 5px;
+    padding: 9px 15px;
+    font-size: 14px;
+    line-height: 1.42857;
+}
+
+.btn-lg.btn-rounded {
+    border-radius: 100px;
+}
+
+.btn-sm:not(.btn-rounded),
+.btn-xs:not(.btn-rounded) {
+    border-radius: 3px;
+}
+
+.btn-sm {
+    padding: 6px 11px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.btn-xs {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.btn-block + .btn-block {
+    margin-top: 10px;
+}
+
+.btn-rounded,
+.btn-rounded.btn-labeled > b,
+.btn-rounded img {
+    border-radius: 100px;
+}
+
+.btn-flat {
+    background-color: transparent;
+    border-width: 2px;
+}
+
+.btn-flat:hover,
+.btn-flat:focus {
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+.btn-flat:active {
+    opacity: 0.95;
+}
+
+.btn-icon {
+    padding-left: 9px;
+    padding-right: 9px;
+}
+
+.btn-icon.btn-xs {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.btn-float {
+    border-radius: 3px;
+    padding: 16px;
+}
+
+.btn-float.btn-link {
+    padding: 11px;
+}
+
+.btn-float i {
+    display: block;
+    margin: 0;
+    top: 0;
+}
+
+.btn-float img {
+    border-radius: 3px;
+}
+
+.btn-float > span {
+    display: block;
+    padding-top: 10px;
+    margin-bottom: -6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-float.btn-float-lg i {
+    font-size: 32px;
+}
+
+.btn-labeled {
+    padding-left: 48px;
+}
+
+.btn-labeled > b {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px;
+    display: block;
+    line-height: 1;
+}
+
+.btn-labeled > b > i {
+    top: 0;
+}
+
+.btn-labeled.btn-labeled-right {
+    padding-left: 12px;
+    padding-right: 48px;
+}
+
+.btn-labeled.btn-labeled-right > b {
+    left: auto;
+    right: -1px;
+    border-radius: 0 3px 3px 0;
+}
+
+.btn-block-group .btn {
+    border-radius: 0;
+    border-width: 1px 0 0 1px;
+}
+
+.btn-block-group .btn:last-child {
+    border-bottom-width: 1px;
+}
+
+.btn-block-group .btn-block + .btn-block {
+    margin-top: 0;
+}
+
+.btn-block-group div[class*="col-"]:first-child .btn:first-child {
+    border-radius: 3px 0 0;
+}
+
+.btn-block-group div[class*="col-"]:first-child .btn:last-child {
+    border-radius: 0 0 0 3px;
+}
+
+.btn-block-group div[class*="col-"]:last-child .btn {
+    border-right-width: 1px;
+}
+
+.btn-block-group div[class*="col-"]:last-child .btn:first-child {
+    border-radius: 0 3px 0 0;
+}
+
+.btn-block-group div[class*="col-"]:last-child .btn:last-child {
+    border-radius: 0 0 3px;
+}
+
+/*
+ * .close — migrated from theme/bootstrap-limitless/close.less +
+ * bootstrap/less/close.less. Used standalone (dismiss a review-report
+ * modal) and inside .alert (that context -- .alert .close,
+ * .alert-dismissible .close -- already lives in alerts.css, owned by
+ * the alert migration). Two upstream rules in modals.less
+ * (`.modal-header[class*="bg-"] .close` and the .modal-content
+ * variant) target this class for bg-tinted modal headers; no template
+ * uses one, so they're dead in practice and intentionally left
+ * untouched in navbar.css until that file's own migration.
+ *
+ * @apply used here (unlike .alert) since every value maps to a plain
+ * Tailwind utility or a simple arbitrary one -- nothing pseudo-element
+ * or icon-shaped that would fight the utility syntax.
+ */
+.close {
+    @apply float-right text-[19.5px] font-light leading-none text-black opacity-60;
+}
+
+.close:hover,
+.close:focus {
+    @apply cursor-pointer text-black no-underline opacity-100;
+    outline: 0;
+}
+
+button.close {
+    @apply cursor-pointer border-0 bg-transparent p-0 appearance-none;
+}
+
+.modal-header .close {
+    @apply absolute top-1/2 right-[20px] mt-0;
+}
+
+.modal-body .close {
+    margin-top: 0 !important;
+}
