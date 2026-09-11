@@ -1,11 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
 
-// stimulusFetch: 'lazy' — only used where review items render
+// Not stimulusFetch: 'lazy' -- review items render on the homepage and
+// every coaster page, so a lazy chunk here never actually avoids loading
+// it, just adds a request most page loads make anyway.
 
 /**
  * Review actions controller for handling upvotes and reports
- * Optimized for Bootstrap 3.x with efficient jQuery usage
  */
 export default class extends Controller {
     static targets = [
@@ -106,7 +107,7 @@ export default class extends Controller {
     deleteReview(event) {
         event.preventDefault();
 
-        if (!confirm('Are you sure you want to delete this review?')) {
+        if (!confirm(trans('review.delete_confirm'))) {
             return;
         }
 
@@ -139,16 +140,19 @@ export default class extends Controller {
                         this.element.remove();
                     }
                     this._showNotification(
-                        'Review deleted successfully',
+                        trans('review.delete_success'),
                         'success'
                     );
                 } else {
-                    this._showNotification('Failed to delete review', 'danger');
+                    this._showNotification(
+                        trans('review.delete_error'),
+                        'danger'
+                    );
                 }
             })
             .catch((error) => {
                 console.error('Error deleting review:', error);
-                this._showNotification('Failed to delete review', 'danger');
+                this._showNotification(trans('review.delete_error'), 'danger');
             });
     }
 
@@ -172,7 +176,7 @@ export default class extends Controller {
                 return; // Already submitting
             }
             submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
+            submitButton.textContent = trans('review.submitting');
         }
 
         const formData = new FormData(form);

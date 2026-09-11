@@ -1,33 +1,50 @@
 import { Controller } from '@hotwired/stimulus';
 
-// stimulusFetch: 'lazy' — only used where review items render
+// Not stimulusFetch: 'lazy' -- review items (and this modal) render on the
+// homepage and every coaster page, so a lazy chunk here never actually
+// avoids loading it, just adds a request most page loads make anyway.
 
 /**
- * Modal controller -- replaces bootstrap/js/modal (jQuery plugin) with a
- * plain implementation of the same show/hide/backdrop/focus/ESC behavior.
- * Public API (show/hide/toggle, modal:* events) is unchanged so callers
- * using the Stimulus outlet (review_actions_controller.js) need no changes.
+ * Modal controller -- built on native <dialog> (showModal()/close()),
+ * which gives focus-trap, ESC-to-close, [autofocus] handling, an implicit
+ * "dialog" ARIA role, and a ::backdrop for free, none of which the
+ * previous hand-rolled implementation had to fake. Public API (show/hide/
+ * toggle, modal:* events) is unchanged so callers using the Stimulus
+ * outlet (review_actions_controller.js) need no changes.
+ *
+ * The previous implementation's `backdrop`/`keyboard`/`show` config
+ * values are dropped -- unused everywhere in this codebase (this app has
+ * exactly one modal, using every default) and easy to reintroduce if a
+ * real need for them ever comes up.
  */
 export default class extends Controller {
     static targets = ['modal'];
-    static values = {
-        backdrop: { type: String, default: 'true' },
-        keyboard: { type: Boolean, default: true },
-        show: { type: Boolean, default: false },
-    };
 
     connect() {
-        this._boundHandleKeydown = this._handleKeydown.bind(this);
-        this._boundHandleBackdropClick = this._handleBackdropClick.bind(this);
         this._boundHandleDismissClick = this._handleDismissClick.bind(this);
-        this._backdropEl = null;
+        this._boundHandleBackdropClick = this._handleBackdropClick.bind(this);
+        this._boundHandleCancel = this._handleCancel.bind(this);
+        this._boundHandleClose = this._handleClose.bind(this);
 
         // Matches Bootstrap's own `[data-dismiss="modal"]` data-api (close
         // button, cancel button) -- removed along with bootstrap/js/modal.
         this.element.addEventListener('click', this._boundHandleDismissClick);
 
-        if (this.hasModalTarget && this.showValue) {
-            this.show();
+        if (this.hasModalTarget) {
+            this.modalTarget.addEventListener(
+                'click',
+                this._boundHandleBackdropClick
+            );
+            // ESC fires 'cancel' before closing -- route it through hide()
+            // so 'modal:hide' listeners can veto it like any other
+            // dismissal, instead of letting the dialog auto-close.
+            this.modalTarget.addEventListener(
+                'cancel',
+                this._boundHandleCancel
+            );
+            // Fires whenever close() actually runs (always via hide()
+            // below) -- the one place to clean up and dispatch modal:hidden.
+            this.modalTarget.addEventListener('close', this._boundHandleClose);
         }
     }
 
@@ -36,7 +53,21 @@ export default class extends Controller {
             'click',
             this._boundHandleDismissClick
         );
-        this._teardown();
+
+        if (this.hasModalTarget) {
+            this.modalTarget.removeEventListener(
+                'click',
+                this._boundHandleBackdropClick
+            );
+            this.modalTarget.removeEventListener(
+                'cancel',
+                this._boundHandleCancel
+            );
+            this.modalTarget.removeEventListener(
+                'close',
+                this._boundHandleClose
+            );
+        }
     }
 
     /**
@@ -49,34 +80,12 @@ export default class extends Controller {
         if (event.defaultPrevented) return;
 
         document.body.classList.add('modal-open');
-
-        if (this.backdropValue !== 'false') {
-            this._backdropEl = document.createElement('div');
-            this._backdropEl.className = 'modal-backdrop fade';
-            document.body.appendChild(this._backdropEl);
-            // Force reflow so the `.in` transition actually runs.
-            void this._backdropEl.offsetHeight;
-            this._backdropEl.classList.add('in');
-            this._backdropEl.addEventListener(
-                'click',
-                this._boundHandleBackdropClick
-            );
-        }
-
-        this.modalTarget.style.display = 'block';
+        this.modalTarget.showModal();
+        // Force reflow so the `.fade`/`.in` transition actually runs.
         void this.modalTarget.offsetHeight;
         this.modalTarget.classList.add('in');
 
-        if (this.keyboardValue) {
-            document.addEventListener('keydown', this._boundHandleKeydown);
-        }
-
         this._dispatchCustomEvent('modal:shown');
-
-        const autofocusElement = this.modalTarget.querySelector('[autofocus]');
-        if (autofocusElement) {
-            autofocusElement.focus();
-        }
     }
 
     /**
@@ -89,11 +98,7 @@ export default class extends Controller {
         if (event.defaultPrevented) return;
 
         this.modalTarget.classList.remove('in');
-        this.modalTarget.style.display = 'none';
-
-        this._teardown();
-
-        this._dispatchCustomEvent('modal:hidden');
+        this.modalTarget.close();
     }
 
     /**
@@ -118,18 +123,6 @@ export default class extends Controller {
         this.toggle();
     }
 
-    _handleKeydown(event) {
-        if (event.key === 'Escape') {
-            this.hide();
-        }
-    }
-
-    _handleBackdropClick() {
-        if (this.backdropValue !== 'static') {
-            this.hide();
-        }
-    }
-
     _handleDismissClick(event) {
         if (event.target.closest('[data-dismiss="modal"]')) {
             event.preventDefault();
@@ -137,18 +130,25 @@ export default class extends Controller {
         }
     }
 
-    _teardown() {
-        document.removeEventListener('keydown', this._boundHandleKeydown);
-        document.body.classList.remove('modal-open');
-
-        if (this._backdropEl) {
-            this._backdropEl.removeEventListener(
-                'click',
-                this._boundHandleBackdropClick
-            );
-            this._backdropEl.remove();
-            this._backdropEl = null;
+    _handleBackdropClick(event) {
+        // A click landing on the dialog element itself (not a descendant)
+        // means it hit the dialog's own box outside `.modal-dialog`'s
+        // content -- same "click outside the content" area Bootstrap's
+        // separate backdrop div used to catch.
+        if (event.target === this.modalTarget) {
+            this.hide();
         }
+    }
+
+    _handleCancel(event) {
+        event.preventDefault();
+        this.hide();
+    }
+
+    _handleClose() {
+        this.modalTarget.classList.remove('in');
+        document.body.classList.remove('modal-open');
+        this._dispatchCustomEvent('modal:hidden');
     }
 
     /**
@@ -174,46 +174,6 @@ export default class extends Controller {
      * Check if the modal is currently visible
      */
     get isVisible() {
-        return this.hasModalTarget && this.modalTarget.classList.contains('in');
-    }
-
-    /**
-     * Get the modal backdrop element
-     */
-    get backdrop() {
-        return document.querySelector('.modal-backdrop');
-    }
-
-    /**
-     * Utility method to handle form submissions within modals
-     * Provides consistent AJAX handling across all modals
-     */
-    handleFormSubmission(form, options = {}) {
-        const formData = new FormData(form);
-        const url = form.action || options.url;
-
-        if (!url) {
-            console.error('No URL provided for form submission');
-            return Promise.reject(new Error('No URL provided'));
-        }
-
-        return fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                ...options.headers,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .catch((error) => {
-                console.error('Form submission error:', error);
-                throw error;
-            });
+        return this.hasModalTarget && this.modalTarget.open;
     }
 }

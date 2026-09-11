@@ -702,16 +702,39 @@
     overflow: hidden;
 }
 
+/*
+ * `<dialog>`'s UA stylesheet gives it its own border/padding/background/
+ * width/height/margin (auto-sized, auto-centered) *and* a `max-width`/
+ * `max-height` of `calc(100% - <browser-specific inset>)` -- easy to miss
+ * since overriding width/height alone still leaves the dialog clamped
+ * ~16-32px short of the viewport on each axis. All overridden below back
+ * to plain-div behavior (edge-to-edge, `.modal-dialog`/`.modal-content`
+ * doing the actual visible styling, same as before). No `display` rule
+ * here: `dialog:not([open]) { display: none }` is a UA default already,
+ * and an unconditional override here would fight showModal()'s own
+ * visibility toggling instead of respecting `[open]`.
+ */
 .modal {
     position: fixed;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    z-index: 1050;
-    display: none;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
     overflow: hidden;
     outline: 0;
+}
+
+.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .modal.fade .modal-dialog {
@@ -742,24 +765,6 @@
     border-radius: 3px;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
     outline: 0;
-}
-
-.modal-backdrop {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1040;
-    background-color: #000;
-}
-
-.modal-backdrop.fade {
-    opacity: 0;
-}
-
-.modal-backdrop.in {
-    opacity: 0.5;
 }
 
 .modal-header {

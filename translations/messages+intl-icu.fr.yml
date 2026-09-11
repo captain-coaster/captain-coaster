@@ -207,6 +207,7 @@ profile:
         getbbcode: Copier le BBCode (forums)
         gethtml: Copier en html
         copied: 'Copié !'
+        copy_failed: Échec de la copie
         unavailable: 'Note et classe des coasters pour générer ta bannière personnalisée ! La mise à jour peut prendre quelques heures.'
     stats:
         title: 'Statistiques'
@@ -283,7 +284,9 @@ review:
     share: 'Partage ton expérience avec nous !'
     value: 'Il vaut combien, ce crédit ?'
     pros: 'Quels sont les principaux atouts de ce coaster ?'
+    pros_placeholder: "Choisis jusqu'à 3 atouts"
     cons: 'Et ses principaux défauts ?'
+    cons_placeholder: "Choisis jusqu'à 3 défauts"
     comment: "Envie d'être encore plus précis, raconte-nous ça !"
     language: Langue de cet avis
     send: Ajouter mon avis
@@ -305,6 +308,10 @@ review:
     report_success: "Merci pour votre signalement. Notre équipe va l'examiner prochainement."
     report_error: "Une erreur s'est produite lors de l'envoi de votre signalement."
     remove_upvote: Retirer le vote positif
+    delete_confirm: 'Êtes-vous sûr de vouloir supprimer cet avis ?'
+    delete_success: Avis supprimé avec succès
+    delete_error: "Échec de la suppression de l'avis"
+    submitting: Envoi en cours...
     form:
         title: 'Avis sur {name}'
 
@@ -335,6 +342,11 @@ review_list:
 rating:
     last: Dernières notes
     action: 'a mis la note de {value} à'
+    delete_confirm: 'Supprimer cette note ?'
+    delete_network_error: "Erreur réseau. La note n'a pas été enregistrée."
+    delete_error: Impossible de supprimer la note. Veuillez réessayer.
+    save_network_error: "Erreur réseau. La note n'a pas été enregistrée."
+    save_error: "Impossible d'enregistrer la note. Veuillez réessayer."
 
 navbar:
     profile: Mon Profil
@@ -454,12 +466,17 @@ error:
 banner:
     coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
+clipboard:
+    copied: 'Copié !'
+    copy_failed: Échec de la copie
+
 search_index:
     title: Recherche
     more: Voir tous les résultats
     noResult: Aucun résultat
     noTerm: Pas de terme recherché
     short: Votre recherche est trop courte et doit contenir plus de 2 caractères.
+    error: "Une erreur de recherche s'est produite"
     coasters_found: >-
         {num, plural,
             =0 {Aucun coaster trouvé}
@@ -484,3 +501,12 @@ search_index:
             =1 {1 résultat trouvé pour "{query}"}
             other {# résultats trouvés pour "{query}"}
         }
+
+gallery:
+    close: Fermer
+    previous: Image précédente
+    next: Image suivante
+
+map:
+    loading: Chargement...
+    error_loading: Erreur de chargement des données

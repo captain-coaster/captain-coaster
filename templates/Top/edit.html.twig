@@ -145,32 +145,26 @@
   </template>
 
   {# Help Section - Collapsible #}
-  <div class="panel panel-flat mb-3" data-controller="collapse">
-    <div class="panel-body">
-      <button type="button" 
-              class="btn btn-link p-0 text-decoration-none w-100"
-              data-action="click->collapse#toggle"
-              aria-expanded="false"
-              style="text-align: left; display: flex; align-items: center; justify-content: space-between;">
-        <span style="display: flex; align-items: center; gap: 8px;">
-          {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5 text-primary'}) }}
-          <strong>{{ 'help.title'|trans({}, 'top') }}</strong>
-        </span>
-        <span data-collapse-target="icon" style="transition: transform 0.2s ease;">
-          {{ ux_icon('heroicons:chevron-down', {'class': 'w-5 h-5 text-muted'}) }}
-        </span>
-      </button>
-      
-      <div data-collapse-target="content" style="display: none; margin-top: 12px; padding-left: 32px;">
-        <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #666;">
-          <li style="margin-bottom: 6px;">{{ 'help.search'|trans({}, 'top') }}</li>
-          <li style="margin-bottom: 6px;">{{ 'help.reorder'|trans({}, 'top') }}</li>
-          <li style="margin-bottom: 6px;">{{ 'help.actions'|trans({}, 'top') }}</li>
-          <li style="margin-bottom: 0;">{{ 'help.autosave'|trans({}, 'top') }}</li>
-        </ul>
-      </div>
+  <details class="panel panel-flat mb-3 help-section">
+    <summary class="panel-body">
+      <span style="display: flex; align-items: center; gap: 8px;">
+        {{ ux_icon('heroicons:information-circle', {'class': 'w-5 h-5 text-primary'}) }}
+        <strong>{{ 'help.title'|trans({}, 'top') }}</strong>
+      </span>
+      <span class="help-section-chevron">
+        {{ ux_icon('heroicons:chevron-down', {'class': 'w-5 h-5 text-muted'}) }}
+      </span>
+    </summary>
+
+    <div class="help-section-content">
+      <ul style="margin: 0; padding-left: 20px; font-size: 14px; color: #666;">
+        <li style="margin-bottom: 6px;">{{ 'help.search'|trans({}, 'top') }}</li>
+        <li style="margin-bottom: 6px;">{{ 'help.reorder'|trans({}, 'top') }}</li>
+        <li style="margin-bottom: 6px;">{{ 'help.actions'|trans({}, 'top') }}</li>
+        <li style="margin-bottom: 0;">{{ 'help.autosave'|trans({}, 'top') }}</li>
+      </ul>
     </div>
-  </div>
+  </details>
 
   {# Search Component for Adding Coasters - Mobile-optimized #}
   <div class="panel panel-flat mb-3">

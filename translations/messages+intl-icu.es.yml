@@ -207,6 +207,7 @@ profile:
         getbbcode: Copiar BBCode (foros)
         gethtml: Copiar html
         copied: '¡Copiado!'
+        copy_failed: Error al copiar
         unavailable: '¡Califica y clasifica montañas rusas para generar tu banner personalizado! La actualización puede tardar unas horas.'
     stats:
         title: 'Visión general'
@@ -283,7 +284,9 @@ review:
     share: '¡Comparte tu opinión con nosotros!'
     value: '¿Cuántas estrellas para esa montaña rusa?'
     pros: '¿Cuáles son sus principales ventajas?'
+    pros_placeholder: 'Elige hasta 3 ventajas'
     cons: '¿Y sus principales contras?'
+    cons_placeholder: 'Elige hasta 3 contras'
     comment: '¿Necesita más precisiones? ¡Cuéntanos!'
     language: Lengua
     send: Envía mi opinion
@@ -305,6 +308,10 @@ review:
     report_success: Gracias por tu reporte. Nuestro equipo lo revisará en breve.
     report_error: Se produjo un error al enviar tu reporte.
     remove_upvote: Quitar voto
+    delete_confirm: ¿Estás seguro de que quieres eliminar esta reseña?
+    delete_success: Reseña eliminada correctamente
+    delete_error: No se pudo eliminar la reseña
+    submitting: Enviando...
     form:
         title: 'Reseña sobre {name}'
 
@@ -335,6 +342,11 @@ review_list:
 rating:
     last: Últimas notas
     action: 'calificó {value} estrellas'
+    delete_confirm: ¿Eliminar esta calificación?
+    delete_network_error: Error de red. La calificación no se guardó.
+    delete_error: No se pudo eliminar la calificación. Inténtalo de nuevo.
+    save_network_error: Error de red. La calificación no se guardó.
+    save_error: No se pudo guardar la calificación. Inténtalo de nuevo.
 
 navbar:
     profile: Mi perfil
@@ -454,12 +466,17 @@ error:
 banner:
     coasters: '{count, plural, one {1 montaña rusa} other {# montañas rusas}}'
 
+clipboard:
+    copied: '¡Copiado!'
+    copy_failed: Error al copiar
+
 search_index:
     title: Buscar
     more: Ver todos los resultados
     noResult: No hay resultados
     noTerm: No hay término de búsqueda
     short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
+    error: 'Se produjo un error de búsqueda'
     coasters_found: >-
         {num, plural,
             =0 {No se han encontrado montañas rusas}
@@ -484,3 +501,12 @@ search_index:
             =1 {1 resultado encontrado para "{query}"}
             other {# resultados encontrados para "{query}"}
         }
+
+gallery:
+    close: Cerrar
+    previous: Imagen anterior
+    next: Imagen siguiente
+
+map:
+    loading: Cargando...
+    error_loading: Error al cargar los datos

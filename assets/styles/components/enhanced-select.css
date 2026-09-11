@@ -1,164 +1,69 @@
-/* Enhanced Select Component Styles - Unique class names to avoid Bootstrap conflicts */
-.enhanced-select-container {
-    position: relative;
-    width: 100%;
+/*
+ * Tom Select overrides -- restyles its own `.ts-*` classes (library CSS
+ * imported by enhanced_select_controller.js) to match this app's form
+ * controls instead of Tom Select's default look.
+ */
+/*
+ * Tom Select copies the original <select>'s classes (including
+ * `form-control`) onto `.ts-wrapper`. `.form-control`'s fixed `height: 36px`
+ * (forms-buttons.css) then clips the wrapper when selected tags wrap to a
+ * second line -- the overflow stays visible and bleeds into the next form
+ * field instead of growing the box. Override it back to auto-height here.
+ */
+/*
+ * `.form-control` also draws its own border/padding/background -- since
+ * `.ts-wrapper` carries that class too, without this it nests a second box
+ * around `.ts-control` below (visible as a double border). Neutralize the
+ * outer box entirely; `.ts-control` is the only one meant to be visible.
+ */
+.ts-wrapper.form-control {
+    height: auto;
+    min-height: 44px;
+    padding: 0;
+    border: none;
+    background: none;
 }
 
-.enhanced-select-display {
+.ts-wrapper .ts-control {
     min-height: 44px;
-    padding: 6px 30px 6px 12px;
+    padding: 6px 12px;
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    align-items: center;
 }
 
-.enhanced-select-display:hover {
-    border-color: #999;
-}
-
-.enhanced-select-container.open .enhanced-select-display {
+.ts-wrapper.focus .ts-control {
     border-color: #2196f3;
     box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
 }
 
-.enhanced-select-display .placeholder {
-    color: #999;
-    font-style: italic;
-}
-
-.enhanced-select-display .selected-text {
-    color: #333;
-}
-
-.enhanced-select-display .tag {
-    display: inline-block;
+/*
+ * Tom Select's own equivalent rules (`.ts-wrapper.multi .ts-control > div`,
+ * `.ts-dropdown .active`) tie or beat these on specificity and load after
+ * this file (their CSS is bundled with the lazy-loaded controller chunk,
+ * injected later at runtime) -- the extra `.ts-control`/`.ts-dropdown-
+ * content` qualifiers below aren't decorative, they're what makes these
+ * actually win instead of losing the cascade to load order.
+ */
+.ts-wrapper.plugin-remove_button .ts-control .item {
     background: #2196f3;
     color: #fff;
-    padding: 2px 20px 2px 8px;
-    margin: 2px 4px 2px 0;
+    border: none;
     border-radius: 3px;
-    position: relative;
     font-size: 12px;
 }
 
-.enhanced-select-display .tag-remove {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    line-height: 1;
-    padding: 0;
-    width: 12px;
-    height: 12px;
+.ts-wrapper.plugin-remove_button .ts-control .item .remove {
+    border-left-color: rgba(255, 255, 255, 0.3);
 }
 
-.enhanced-select-display .tag-remove:hover {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 50%;
-}
-
-/* Arrow indicator */
-.enhanced-select-display::after {
-    content: "";
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 0;
-    height: 0;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid #666;
-}
-
-.enhanced-select-container.open .enhanced-select-display::after {
-    transform: translateY(-50%) rotate(180deg);
-}
-
-/* Enhanced select popup */
-.enhanced-select-popup {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #fff;
+.ts-dropdown {
     border: 1px solid #ccc;
-    border-top: none;
     border-radius: 0 0 4px 4px;
-    max-height: 200px;
-    overflow-y: auto;
-    z-index: 1000;
-    display: none;
-}
-
-.enhanced-select-popup.show {
-    display: block;
-}
-
-/* Search input */
-.enhanced-select-search {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-}
-
-.enhanced-select-search input {
-    width: 100%;
-    padding: 6px 8px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
     font-size: 13px;
 }
 
-.enhanced-select-search input:focus {
-    border-color: #2196f3;
-    outline: none;
-}
-
-/* Options */
-.enhanced-select-options {
-    padding: 4px 0;
-}
-
-.enhanced-select-option {
-    padding: 8px 12px;
-    cursor: pointer;
-    font-size: 13px;
-    color: #333;
-}
-
-.enhanced-select-option:hover {
-    background-color: #f5f5f5;
-}
-
-.enhanced-select-option.selected {
+.ts-dropdown .ts-dropdown-content .active {
     background-color: #2196f3;
     color: #fff;
-}
-
-.enhanced-select-option.disabled {
-    color: #999;
-    cursor: not-allowed;
-    background-color: #f9f9f9;
-}
-
-.enhanced-select-option.disabled:hover {
-    background-color: #f9f9f9;
-}
-
-/* Maximum selection message */
-.enhanced-select-max-message {
-    padding: 8px 12px;
-    background: #f44336;
-    color: #fff;
-    font-size: 12px;
-    text-align: center;
 }

@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import Symfony from '@symfony/reprise/vite';
-import inject from '@rollup/plugin-inject';
 import tailwindcss from '@tailwindcss/vite';
 
 // Single source of truth for the versioned vendor/ path below and the
@@ -24,11 +23,6 @@ export default defineConfig(({ command }) => ({
             '@': fileURLToPath(new URL('./assets', import.meta.url)),
             '@images': fileURLToPath(new URL('./assets/images', import.meta.url)),
         },
-    },
-
-    define: {
-        // Legacy theme scripts (assets/js/theme/) assume Node's `global`.
-        global: 'window',
     },
 
     server: {
@@ -69,9 +63,5 @@ export default defineConfig(({ command }) => ({
                 },
             ],
         }),
-        // Replacement for Encore's autoProvidejQuery(): a few legacy files
-        // (theme scripts, some Stimulus controllers) reference $/jQuery as
-        // globals instead of importing it.
-        inject({ $: 'jquery', jQuery: 'jquery' }),
     ],
 }));

@@ -1,3 +1,44 @@
 ux_translator:
-    # Only include messages domain (exclude validators, security, etc.)
-    domains: ['messages' ,'database']
+    # Only include messages/database/top domains (exclude validators, security, etc.)
+    domains: ['messages', 'database', 'top']
+    # Every JS trans() call site is grep-able (`grep -rn "trans(" assets/`)
+    # -- keep this list in sync with those, not broader. `country.*` covers
+    # search_controller.js's one dynamic-key call (trans(country, {}, 'database')),
+    # which can't be listed literally.
+    keys_patterns:
+        - 'app.search.searching'
+        - 'app.search.suggestions'
+        - 'search_index.noResult'
+        - 'search_index.more'
+        - 'review.report_success'
+        - 'review.report_error'
+        - 'review.submit_report'
+        - 'review.remove_upvote'
+        - 'review.upvote'
+        - 'review.delete_confirm'
+        - 'review.delete_success'
+        - 'review.delete_error'
+        - 'review.submitting'
+        - 'rating.delete_confirm'
+        - 'rating.delete_network_error'
+        - 'rating.delete_error'
+        - 'rating.save_network_error'
+        - 'rating.save_error'
+        - 'review.pros_placeholder'
+        - 'review.cons_placeholder'
+        - 'search_index.error'
+        - 'clipboard.copied'
+        - 'clipboard.copy_failed'
+        - 'gallery.close'
+        - 'gallery.previous'
+        - 'gallery.next'
+        - 'map.loading'
+        - 'map.error_loading'
+        - 'save_status.saving'
+        - 'save_status.saved'
+        - 'save_status.error'
+        - 'actions.position_prompt'
+        - 'errors.invalid_position'
+        - 'search.aria_label'
+        - 'search.no_results'
+        - 'country.*'

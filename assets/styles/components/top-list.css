@@ -507,3 +507,29 @@
         background-color: #d4edda;
     }
 }
+
+/* Help section (collapsible), native <details>/<summary> */
+.help-section > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    list-style: none;
+}
+
+.help-section > summary::-webkit-details-marker {
+    display: none;
+}
+
+.help-section-chevron {
+    display: flex;
+    transition: transform 0.2s ease;
+}
+
+.help-section[open] .help-section-chevron {
+    transform: rotate(180deg);
+}
+
+.help-section-content {
+    padding: 0 20px 20px 32px;
+}

@@ -400,6 +400,34 @@ label {
 }
 
 /*
+ * Bootstrap's forms.less ("Remove inputs shadow in mobile browsers") reset
+ * `-webkit-appearance` on every text-like input type + textarea. Switching
+ * forms.less to `(reference)` dropped it for every type except `search`
+ * (fixed separately below) — missed until Mobile Safari's native
+ * `input[type=date]` rendered noticeably wider than its container: WebKit
+ * reserves extra layout space for the native calendar affordance outside
+ * the box model unless appearance is reset, so `box-sizing:border-box` and
+ * `width:100%` alone don't contain it. Not reproducible in Chromium, which
+ * is why the earlier live A/B pass against this migration didn't catch it.
+ */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="url"],
+input[type="tel"],
+textarea {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/*
  * Bootstrap's normalize.less unconditionally forces
  * `input[type=search] { box-sizing: content-box }` (a cross-browser fix,
  * untouched, still active). Bootstrap's own forms.less immediately

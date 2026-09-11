@@ -207,6 +207,7 @@ profile:
         getbbcode: Kopiere BBCode (Foren)
         gethtml: Kopiere HTML
         copied: 'Kopiert!'
+        copy_failed: Kopieren fehlgeschlagen
         unavailable: 'Bewerte und ranke Achterbahnen, um dein persönliches Banner zu erstellen! Die Aktualisierung kann einige Stunden dauern.'
     stats:
         title: 'Überblick'
@@ -284,7 +285,9 @@ review:
     share: 'Teile deine Meinung mit uns!'
     value: 'Wie viele Sterne für diese Achterbahn?'
     pros: 'Was sind ihre Pros?'
+    pros_placeholder: 'Wähle bis zu 3 Pros'
     cons: 'Und was ihre Contras?'
+    cons_placeholder: 'Wähle bis zu 3 Contras'
     comment: 'Willst du uns mehr über deine Fahrt erzählen?'
     language: Sprache deiner Rezension
     send: Sende meine Rezension
@@ -306,6 +309,10 @@ review:
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
     remove_upvote: Positive Bewertung entfernen
+    delete_confirm: Möchtest du diese Rezension wirklich löschen?
+    delete_success: Rezension erfolgreich gelöscht
+    delete_error: Rezension konnte nicht gelöscht werden
+    submitting: Wird gesendet...
     form:
         title: 'Rezension über {name}'
 
@@ -336,6 +343,11 @@ review_list:
 rating:
     last: Neueste Bewertungen
     action: 'Mit {value} Sternen bewertet'
+    delete_confirm: Diese Bewertung löschen?
+    delete_network_error: Netzwerkfehler. Bewertung wurde nicht gespeichert.
+    delete_error: Bewertung konnte nicht gelöscht werden. Bitte versuche es erneut.
+    save_network_error: Netzwerkfehler. Bewertung wurde nicht gespeichert.
+    save_error: Bewertung konnte nicht gespeichert werden. Bitte versuche es erneut.
 
 navbar:
     profile: Mein Profil
@@ -455,12 +467,17 @@ error:
 banner:
     coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
+clipboard:
+    copied: 'Kopiert!'
+    copy_failed: Kopieren fehlgeschlagen
+
 search_index:
     title: Suche
     more: Alle Ergebnisse anzeigen
     noResult: Keine Ergebnisse
     noTerm: Kein Suchbegriff
     short: Ihre Suche ist zu kurz und muss mehr als 2 Zeichen enthalten.
+    error: 'Bei der Suche ist ein Fehler aufgetreten'
     coasters_found: >-
         {num, plural,
             =0 {Keine Achterbahnen gefunden}
@@ -485,3 +502,12 @@ search_index:
             =1 {1 Ergebnis für "{query}" gefunden}
             other {# Ergebnisse für "{query}" gefunden}
         }
+
+gallery:
+    close: Schließen
+    previous: Vorheriges Bild
+    next: Nächstes Bild
+
+map:
+    loading: Lädt...
+    error_loading: Fehler beim Laden der Daten

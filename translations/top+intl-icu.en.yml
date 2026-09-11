@@ -35,6 +35,7 @@ search:
     placeholder: 'Search for a coaster to add...'
     no_results: 'No coasters found'
     already_in_list: 'Already in your list'
+    aria_label: 'Coaster search results'
 
 help:
     title: 'How to use your Top List'

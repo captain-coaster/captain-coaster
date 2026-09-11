@@ -69,16 +69,16 @@
 }
 
 /* Checked state */
-.toggle-switch-form-group.checked .checkbox label:after {
+.toggle-switch-form-group:has(input[type="checkbox"]:checked) .checkbox label:after {
     background-color: #26B99A;
 }
 
-.toggle-switch-form-group.checked .checkbox label:before {
+.toggle-switch-form-group:has(input[type="checkbox"]:checked) .checkbox label:before {
     right: 1px; /* Move handle to the left when checked */
 }
 
 /* Focus state */
-.toggle-switch-form-group.focused .checkbox label:after {
+.toggle-switch-form-group:focus-within .checkbox label:after {
     box-shadow: 0 0 0 2px rgba(38, 185, 154, 0.2);
 }
 

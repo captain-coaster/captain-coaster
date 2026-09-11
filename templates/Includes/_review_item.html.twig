@@ -90,11 +90,11 @@
 
     <!-- Report Modal -->
     {% if is_granted('ROLE_USER') %}
-      <div id="reportModal-{{ review.id }}"
-           class="modal fade"
-           data-controller="modal"
-           data-review-actions-target="reportModal"
-           data-modal-target="modal">
+      <dialog id="reportModal-{{ review.id }}"
+              class="modal fade"
+              data-controller="modal"
+              data-review-actions-target="reportModal"
+              data-modal-target="modal">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -120,7 +120,7 @@
             </form>
           </div>
         </div>
-      </div>
+      </dialog>
     {% endif %}
   </div>
 </div>

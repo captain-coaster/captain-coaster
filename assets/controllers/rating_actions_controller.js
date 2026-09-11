@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { trans } from '../translator';
 
 export default class extends Controller {
     static targets = ['deleteButton', 'title'];
@@ -29,7 +30,7 @@ export default class extends Controller {
     async delete(event) {
         event.preventDefault();
         if (!this.ratingIdValue) return;
-        if (!confirm('Delete this rating?')) return;
+        if (!confirm(trans('rating.delete_confirm'))) return;
 
         try {
             const headers = { 'X-Requested-With': 'XMLHttpRequest' };
@@ -63,10 +64,40 @@ export default class extends Controller {
 
             // Show user-friendly error message
             const errorMsg = error.message.includes('Network')
-                ? 'Network error. Please check your connection.'
-                : 'Unable to delete rating. Please try again.';
+                ? trans('rating.delete_network_error')
+                : trans('rating.delete_error');
 
-            this.dispatch('error', { detail: { message: errorMsg } });
+            this._showNotification(errorMsg, 'danger');
+        }
+    }
+
+    /**
+     * Show a notification using the global toast controller.
+     * @param {string} message
+     * @param {string} type - success, info, warning, danger
+     * @private
+     */
+    _showNotification(message, type = 'info') {
+        const notificationController =
+            this.application.getControllerForElementAndIdentifier(
+                document.getElementById('toasts'),
+                'toast'
+            );
+
+        if (!notificationController) return;
+
+        switch (type) {
+            case 'success':
+                notificationController.showSuccess(message);
+                break;
+            case 'warning':
+                notificationController.showWarning(message);
+                break;
+            case 'danger':
+                notificationController.showDanger(message);
+                break;
+            default:
+                notificationController.showInfo(message);
         }
     }
 
