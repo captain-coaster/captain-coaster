@@ -284,7 +284,9 @@ review:
     share: 'Partage ton expérience avec nous !'
     value: 'Il vaut combien, ce crédit ?'
     pros: 'Quels sont les principaux atouts de ce coaster ?'
+    pros_placeholder: "Choisis jusqu'à 3 atouts"
     cons: 'Et ses principaux défauts ?'
+    cons_placeholder: "Choisis jusqu'à 3 défauts"
     comment: "Envie d'être encore plus précis, raconte-nous ça !"
     language: Langue de cet avis
     send: Ajouter mon avis
@@ -343,6 +345,8 @@ rating:
     delete_confirm: 'Supprimer cette note ?'
     delete_network_error: "Erreur réseau. La note n'a pas été enregistrée."
     delete_error: Impossible de supprimer la note. Veuillez réessayer.
+    save_network_error: "Erreur réseau. La note n'a pas été enregistrée."
+    save_error: "Impossible d'enregistrer la note. Veuillez réessayer."
 
 navbar:
     profile: Mon Profil
@@ -462,12 +466,17 @@ error:
 banner:
     coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
+clipboard:
+    copied: 'Copié !'
+    copy_failed: Échec de la copie
+
 search_index:
     title: Recherche
     more: Voir tous les résultats
     noResult: Aucun résultat
     noTerm: Pas de terme recherché
     short: Votre recherche est trop courte et doit contenir plus de 2 caractères.
+    error: "Une erreur de recherche s'est produite"
     coasters_found: >-
         {num, plural,
             =0 {Aucun coaster trouvé}

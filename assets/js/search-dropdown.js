@@ -1,3 +1,5 @@
+import { trans } from '../translator';
+
 /**
  * Shared behavior for the two AJAX search-dropdown controllers
  * (search_controller.js -- site-wide search bar, top_search_controller.js
@@ -115,7 +117,7 @@ export function SearchDropdown(Base) {
                 const data = await response.json();
 
                 if (data.error) {
-                    throw new Error(data.message || 'Search error occurred');
+                    throw new Error(data.message || trans('search_index.error'));
                 }
 
                 this.updateResults(data, query);

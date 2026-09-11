@@ -67,7 +67,37 @@ export default class extends Controller {
                 ? trans('rating.delete_network_error')
                 : trans('rating.delete_error');
 
-            this.dispatch('error', { detail: { message: errorMsg } });
+            this._showNotification(errorMsg, 'danger');
+        }
+    }
+
+    /**
+     * Show a notification using the global toast controller.
+     * @param {string} message
+     * @param {string} type - success, info, warning, danger
+     * @private
+     */
+    _showNotification(message, type = 'info') {
+        const notificationController =
+            this.application.getControllerForElementAndIdentifier(
+                document.getElementById('toasts'),
+                'toast'
+            );
+
+        if (!notificationController) return;
+
+        switch (type) {
+            case 'success':
+                notificationController.showSuccess(message);
+                break;
+            case 'warning':
+                notificationController.showWarning(message);
+                break;
+            case 'danger':
+                notificationController.showDanger(message);
+                break;
+            default:
+                notificationController.showInfo(message);
         }
     }
 

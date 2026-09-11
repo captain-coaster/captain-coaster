@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { trans } from '../translator';
 
 /**
  * Clipboard controller for copying text to clipboard using the modern Clipboard API.
@@ -13,16 +14,16 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static values = {
         content: String,
-        successMessage: { type: String, default: 'Copied!' },
-        errorMessage: { type: String, default: 'Copy failed' },
+        successMessage: String,
+        errorMessage: String,
     };
 
     async copy() {
         try {
             await navigator.clipboard.writeText(this.contentValue);
-            this.showNotification(this.successMessageValue, 'success');
+            this.showNotification(this.successMessageValue || trans('clipboard.copied'), 'success');
         } catch {
-            this.showNotification(this.errorMessageValue, 'danger');
+            this.showNotification(this.errorMessageValue || trans('clipboard.copy_failed'), 'danger');
         }
     }
 

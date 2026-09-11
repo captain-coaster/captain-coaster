@@ -284,7 +284,9 @@ review:
     share: '¡Comparte tu opinión con nosotros!'
     value: '¿Cuántas estrellas para esa montaña rusa?'
     pros: '¿Cuáles son sus principales ventajas?'
+    pros_placeholder: 'Elige hasta 3 ventajas'
     cons: '¿Y sus principales contras?'
+    cons_placeholder: 'Elige hasta 3 contras'
     comment: '¿Necesita más precisiones? ¡Cuéntanos!'
     language: Lengua
     send: Envía mi opinion
@@ -343,6 +345,8 @@ rating:
     delete_confirm: ¿Eliminar esta calificación?
     delete_network_error: Error de red. La calificación no se guardó.
     delete_error: No se pudo eliminar la calificación. Inténtalo de nuevo.
+    save_network_error: Error de red. La calificación no se guardó.
+    save_error: No se pudo guardar la calificación. Inténtalo de nuevo.
 
 navbar:
     profile: Mi perfil
@@ -462,12 +466,17 @@ error:
 banner:
     coasters: '{count, plural, one {1 montaña rusa} other {# montañas rusas}}'
 
+clipboard:
+    copied: '¡Copiado!'
+    copy_failed: Error al copiar
+
 search_index:
     title: Buscar
     more: Ver todos los resultados
     noResult: No hay resultados
     noTerm: No hay término de búsqueda
     short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
+    error: 'Se produjo un error de búsqueda'
     coasters_found: >-
         {num, plural,
             =0 {No se han encontrado montañas rusas}
