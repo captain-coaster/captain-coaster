@@ -555,7 +555,8 @@
     padding-left: 7px;
 }
 
-.navbar-nav > .dropdown-user img {
+.navbar-nav > .dropdown-user > a > img {
+    display: inline-block;
     max-height: 30px;
     margin-top: -2.5px;
     border-radius: 50%;

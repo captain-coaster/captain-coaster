@@ -344,23 +344,24 @@ fieldset[disabled] .btn {
     margin-top: 0;
 }
 
-.btn-block-group div[class*="col-"]:first-child .btn:first-child {
+/* Direct grid children replace Bootstrap's former `col-*` wrappers. */
+.btn-block-group > :first-child .btn:first-child {
     border-radius: 3px 0 0;
 }
 
-.btn-block-group div[class*="col-"]:first-child .btn:last-child {
+.btn-block-group > :first-child .btn:last-child {
     border-radius: 0 0 0 3px;
 }
 
-.btn-block-group div[class*="col-"]:last-child .btn {
+.btn-block-group > :last-child .btn {
     border-right-width: 1px;
 }
 
-.btn-block-group div[class*="col-"]:last-child .btn:first-child {
+.btn-block-group > :last-child .btn:first-child {
     border-radius: 0 3px 0 0;
 }
 
-.btn-block-group div[class*="col-"]:last-child .btn:last-child {
+.btn-block-group > :last-child .btn:last-child {
     border-radius: 0 0 3px;
 }
 
