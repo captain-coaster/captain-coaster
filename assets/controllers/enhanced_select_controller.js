@@ -34,6 +34,23 @@ export default class extends Controller {
                 : 1,
             placeholder: this.placeholderValue || undefined,
         });
+
+        // Tom Select keeps the placeholder visible even once maxItems is
+        // reached, which reads as if more can still be typed -- blank it
+        // instead. It rewrites the input's placeholder from
+        // `settings.placeholder` on every state refresh (item add/remove,
+        // focus/blur), so mutating the DOM attribute directly would just
+        // get clobbered on the next one -- update the setting itself, then
+        // force a refresh.
+        if (this.multipleValue) {
+            const syncPlaceholder = () => {
+                this.tomSelect.settings.placeholder = this.tomSelect.isFull() ? '' : this.placeholderValue || '';
+                this.tomSelect.inputState();
+            };
+            this.tomSelect.on('item_add', syncPlaceholder);
+            this.tomSelect.on('item_remove', syncPlaceholder);
+            syncPlaceholder();
+        }
     }
 
     disconnect() {

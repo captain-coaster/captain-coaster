@@ -3,6 +3,27 @@
  * imported by enhanced_select_controller.js) to match this app's form
  * controls instead of Tom Select's default look.
  */
+/*
+ * Tom Select copies the original <select>'s classes (including
+ * `form-control`) onto `.ts-wrapper`. `.form-control`'s fixed `height: 36px`
+ * (forms-buttons.css) then clips the wrapper when selected tags wrap to a
+ * second line -- the overflow stays visible and bleeds into the next form
+ * field instead of growing the box. Override it back to auto-height here.
+ */
+/*
+ * `.form-control` also draws its own border/padding/background -- since
+ * `.ts-wrapper` carries that class too, without this it nests a second box
+ * around `.ts-control` below (visible as a double border). Neutralize the
+ * outer box entirely; `.ts-control` is the only one meant to be visible.
+ */
+.ts-wrapper.form-control {
+    height: auto;
+    min-height: 44px;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
 .ts-wrapper .ts-control {
     min-height: 44px;
     padding: 6px 12px;
