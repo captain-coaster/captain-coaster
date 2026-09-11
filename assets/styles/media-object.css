@@ -80,12 +80,14 @@
     @apply pr-[20px];
 }
 
-/* Preflight constrains images to their containing block. A media link must
- * therefore establish an intrinsic width instead of staying inline. */
+/* Preflight constrains media images to their containing block. Their table
+ * cell starts at zero width, so retain each image's intrinsic or explicit
+ * width instead. Links must also cease to be inline. */
 .media-left > a {
     display: inline-block;
 }
 
+.media-left > img,
 .media-left > a > img {
     max-width: none;
 }
