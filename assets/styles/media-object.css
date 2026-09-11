@@ -80,6 +80,16 @@
     @apply pr-[20px];
 }
 
+/* Preflight constrains images to their containing block. A media link must
+ * therefore establish an intrinsic width instead of staying inline. */
+.media-left > a {
+    display: inline-block;
+}
+
+.media-left > a > img {
+    max-width: none;
+}
+
 .media-annotation {
     @apply text-[var(--cc-gray-600)] text-[12px] font-normal;
     line-height: 1.66667;
