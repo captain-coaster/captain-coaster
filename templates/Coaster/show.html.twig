@@ -14,14 +14,14 @@
 {# {% endblock %} #}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="grid grid-cols-12 gap-5 items-start">
+        <div class="col-span-12 tablet:col-span-3">
             {% if coaster.isRateable %}
                 <!-- score -->
                 {% if coaster.score %}
                     <div class="panel panel-body">
-                        <div class="row">
-                            <div class="col-xs-6">
+                        <div class="grid grid-cols-2 gap-5">
+                            <div>
                                 <div class="text-muted text-size-small text-uppercase score-label">
                                     {{ 'coaster.score.title'|trans }}
                                 </div>
@@ -33,7 +33,7 @@
                             </div>
                             {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
                             {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
-                            <div class="col-xs-6">
+                            <div>
                                 <a href="{{ path('ranking_index', {'page': page}) }}" class="text-default rank-link">
                                     <div class="text-muted text-size-small text-uppercase score-label">
                                         {{ 'coaster.score.rank'|trans }}
@@ -79,8 +79,8 @@
             {% endif %}
             <!-- main carac -->
             <div class="content-group">
-                <div class="row row-seamless btn-block-group">
-                    <div class="col-xs-6">
+                <div class="grid grid-cols-2 gap-0 btn-block-group">
+                    <div>
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <div class="text-center">
                                 {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-7 h-7 text-warning-600'}) }}
@@ -106,7 +106,7 @@
                             </div>
                         </button>
                     </div>
-                    <div class="col-xs-6">
+                    <div>
                         <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
                             <div class="text-center">
                                 {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-7 h-7 text-cc-blue'}) }}
@@ -310,7 +310,7 @@
             <!-- removed until open street maps -->
             <!-- /coaster location -->
         </div>
-        <div class="col-sm-9">
+        <div class="col-span-12 tablet:col-span-9">
             <!-- AI Summary Section (loaded via AJAX) -->
             <div
                 data-controller="coaster-summary"

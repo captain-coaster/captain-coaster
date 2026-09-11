@@ -7,15 +7,11 @@
 {% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
+  <div class="grid grid-cols-12 gap-5 items-start">
+    <div class="col-span-12 tablet:col-span-3">
         {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-      </div>
     </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
+    <div class="col-span-12 tablet:col-span-9">
           <!-- settings form -->
           <div class="panel panel-flat">
             <div class="panel-heading">
@@ -152,8 +148,6 @@
             </div>
           </div>
           <!-- /delete account section -->
-        </div>
-      </div>
     </div>
   </div>
 {% endblock %}

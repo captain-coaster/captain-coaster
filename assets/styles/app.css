@@ -99,7 +99,6 @@
 @import "./media-object.css" layer(components);
 @import "./base.css" layer(components);
 @import "./print.css" layer(components);
-@import "./grid.css" layer(components);
 @import "./helpers.css" layer(components);
 @import "./responsive-visibility.css" layer(components);
 @import "./heading-elements.css" layer(components);

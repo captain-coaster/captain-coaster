@@ -15,8 +15,8 @@
       </span>
     </div>
   </div>
-  <div class="panel-body text-center">
-    <div class="col-xs-3">
+  <div class="panel-body grid grid-cols-12 gap-5 text-center">
+    <div class="col-span-3">
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.rankedCoasterNumber }}&nbsp;
@@ -28,7 +28,7 @@
         <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
       </div>
     </div>
-    <div class="col-xs-3">
+    <div class="col-span-3">
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:star', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.ratingNumber|shortNum }}&nbsp;
@@ -39,7 +39,7 @@
         <span class="text-muted text-size-small">{{ 'coaster_ranking.info.ratings'|trans }}</span>
       </div>
     </div>
-    <div class="col-xs-3">
+    <div class="col-span-3">
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:user-group', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.userNumber }}&nbsp;
@@ -50,7 +50,7 @@
         <span class="text-muted text-size-small">{{ 'coaster_ranking.info.users'|trans }}</span>
       </div>
     </div>
-    <div class="col-xs-3">
+    <div class="col-span-3">
       <div class="content-group">
         <h6 class="text-semibold no-margin">
           {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.comparisonNumber|shortNum }}&nbsp;

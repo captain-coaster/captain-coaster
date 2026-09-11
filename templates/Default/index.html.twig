@@ -30,45 +30,41 @@
     </div>
   {% endif %}
   <!-- /info alert -->
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-body">
-        <div class="row text-center">
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              {{ stats.nb_ratings|format_number }}
-              {% if stats.nb_new_ratings > 0 %}
-                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
-              {% endif %}
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:user-group', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:camera', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
-            <h5 class="text-semibold no-margin">{{ stats.nb_images|format_number }}</h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
-          </div>
-        </div>
+  <div class="panel panel-body">
+    <div class="grid grid-cols-12 gap-5 text-center">
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
+        <h5 class="text-semibold no-margin">
+          {{ stats.nb_ratings|format_number }}
+          {% if stats.nb_new_ratings > 0 %}
+            <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
+          {% endif %}
+        </h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
+      </div>
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
+        <h5 class="text-semibold no-margin">
+          <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
+        </h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
+      </div>
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:user-group', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
+        <h5 class="text-semibold no-margin">
+          <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
+        </h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
+      </div>
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:camera', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
+        <h5 class="text-semibold no-margin">{{ stats.nb_images|format_number }}</h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-6">
+  <div class="grid grid-cols-12 gap-5 items-start">
+    <div class="col-span-12 tablet:col-span-6">
       <!-- Thumbnail with image and button -->
       <div class="thumbnail">
           <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
@@ -116,7 +112,7 @@
       </div>
       <!-- /latests ratings -->
     </div>
-    <div class="col-sm-6">
+    <div class="col-span-12 tablet:col-span-6">
       <!-- latest reviews -->
       <div class="panel panel-flat">
         <div class="panel-heading">

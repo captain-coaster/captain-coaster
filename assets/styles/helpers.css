@@ -172,13 +172,3 @@
 .img-circle {
     border-radius: 50%;
 }
-
-.row-seamless {
-    margin-left: 0;
-    margin-right: 0;
-}
-
-.row-seamless > div[class*="col-"] {
-    padding-left: 0;
-    padding-right: 0;
-}

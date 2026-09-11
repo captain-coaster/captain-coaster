@@ -6,9 +6,9 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
+  <div class="grid grid-cols-12 gap-5">
     {% for top in tops %}
-      <div class="col-lg-4 col-sm-6">
+      <div class="col-span-12 tablet:col-span-6 wide:col-span-4">
         <div class="thumbnail">
           <div class="caption">
             <div class="content-group-sm media">
@@ -59,4 +59,3 @@
   </div>
   {{ knp_pagination_render(tops) }}
 {% endblock %}
-

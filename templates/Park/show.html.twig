@@ -9,12 +9,12 @@
 {% endif %}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="grid grid-cols-12 gap-5 items-start">
+        <div class="col-span-12 tablet:col-span-3">
             <!-- park stats -->
             <div class="panel panel-body">
-                <div class="row text-center">
-                    <div class="col-xs-6">
+                <div class="grid grid-cols-2 gap-5 text-center">
+                    <div>
                         <p>{{ ux_icon('heroicons:map-pin', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
                         <h5 class="text-semibold no-margin">
                             {{ park.openedCoasters|length }}
@@ -23,7 +23,7 @@
                             {{ 'park.opened_coasters'|trans({'count': park.openedCoasters|length}) }}
                         </div>
                     </div>
-                    <div class="col-xs-6">
+                    <div>
                         <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
                         <h5 class="text-semibold no-margin">
                             {{ park.operatingKiddies|length }}
@@ -33,8 +33,7 @@
                         </div>
                     </div>
                     {% if not is_granted('ROLE_USER') %}
-                        &nbsp;
-                        <div class="row">
+                        <div class="col-span-2">
                             <p class="text-muted content-group-sm">
                                 {{ 'coaster.rating.mustlogin'|trans }}
                             </p>
@@ -80,7 +79,7 @@
             <!-- removed until open street maps -->
             <!-- /coaster location -->
         </div>
-        <div class="col-sm-9">
+        <div class="col-span-12 tablet:col-span-9">
             <ul class="media-list content-group">
                 {% for coaster in coasters %}
                     <li class="media panel panel-body stack-media-on-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">

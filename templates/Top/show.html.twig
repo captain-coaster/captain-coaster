@@ -7,8 +7,8 @@
 {% block body %}
   <div class="panel panel-white panel-flat">
     <div class="panel-heading">
-      <div class="row">
-        <div class="col-sm-8">
+      <div class="grid grid-cols-12 gap-5">
+        <div class="col-span-12 tablet:col-span-8">
           <ul class="list-inline no-margin">
             <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-4 h-4 position-left'}) }} {{ top.topCoasters|length }}</li>
             <li>
@@ -22,7 +22,7 @@
           </ul>
         </div>
         {% if is_granted('edit', top) or is_granted('edit-details', top) or is_granted('delete', top) %}
-          <div class="col-sm-4 text-right">
+          <div class="col-span-12 tablet:col-span-4 text-right">
             {% if is_granted('edit', top) %}
               <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm" aria-label="{{ 'update'|trans({}, 'top') }}">
                 {{ ux_icon('heroicons:pencil', {'class': 'w-3.5 h-3.5'}) }}

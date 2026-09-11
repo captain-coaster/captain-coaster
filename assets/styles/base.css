@@ -3,7 +3,7 @@
  * (normalize.css v3.0.3) + bootstrap/less/scaffolding.less +
  * theme/bootstrap-limitless/scaffolding.less's universal resets. Utility
  * classes that used to live in scaffolding.less (.img-responsive,
- * .img-rounded, .img-circle, .row-seamless) live in helpers.css instead --
+ * .img-rounded, .img-circle) live in helpers.css instead --
  * this file is only unconditional, element-level resets.
  *
  * Normalize.css is almost entirely obsolete: it exists to paper over old-
@@ -96,8 +96,7 @@ th {
 
 /*
  * Kept unconditionally (universal resets, not "usage" in the class
- * sense): box-sizing:border-box on every element -- grid.css computes
- * column padding assuming it; html/body sizing (100% height, relative
+ * sense): box-sizing:border-box on every element; html/body sizing (100% height, relative
  * positioning) -- the sticky footer layout in layout.css depends on it;
  * the bare input/button/select/textarea font-inherit reset;
  * `img{vertical-align:middle}`.

@@ -38,7 +38,7 @@
  * the file top to bottom. Without it, a `.panel-body` whose direct children
  * are floated (e.g. Bootstrap's `.col-xs-*` grid columns used without a
  * `.row` wrapper) collapses to ~0 height and its content overflows below the
- * panel's bottom edge. Caught on the ranking page's stats row.
+ * panel's bottom edge. Kept for remaining floated media and utility content.
  */
 .panel-body:before,
 .panel-body:after {
@@ -48,6 +48,14 @@
 
 .panel-body:after {
     clear: both;
+}
+
+/* A grid contains its children by design; clearfix pseudo-elements would
+ * otherwise become anonymous grid items and shift the first real column. */
+.panel-body.grid:before,
+.panel-body.grid:after {
+    content: none;
+    display: none;
 }
 
 .panel-flat > .panel-heading + .panel-body {

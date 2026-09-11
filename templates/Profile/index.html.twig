@@ -4,15 +4,11 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
+  <div class="grid grid-cols-12 gap-5 items-start">
+    <div class="col-span-12 tablet:col-span-3">
         {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-      </div>
     </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
+    <div class="col-span-12 tablet:col-span-9">
           <!-- stats -->
           {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
           <!-- stats -->
@@ -34,12 +30,12 @@
               <h3 class="panel-title">{{ 'profile.badge'|trans }}</h3>
             </div>
             <div class="panel-body">
-              <div class="row">
-                <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
+              <div class="grid grid-cols-12 gap-5">
+                <div class="col-span-12 tablet:col-span-6 desktop:col-span-3 text-center" style="margin-bottom: 40px;">
                   <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
                 </div>
                 {% for badge in user.badges %}
-                  <div class="col-md-3 col-sm-6 text-center" style="margin-bottom: 40px;">
+                  <div class="col-span-12 tablet:col-span-6 desktop:col-span-3 text-center" style="margin-bottom: 40px;">
                     <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
                   </div>
                 {% endfor %}
@@ -47,8 +43,6 @@
             </div>
           </div>
           <!-- /badges -->
-        </div>
-      </div>
     </div>
   </div>
 {% endblock %}
