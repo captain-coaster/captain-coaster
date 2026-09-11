@@ -10,7 +10,7 @@
  * `th&`/`td&` sub-selectors are also dropped -- every real use here is a
  * plain `<span>`/`<ul>`, never a table element.
  */
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .hidden-xs {
         display: none !important;
     }
@@ -24,7 +24,7 @@
     display: none !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .visible-xs {
         display: block !important;
     }

@@ -42,89 +42,89 @@
 .bg-blue {
     background-color: #03a9f4;
     border-color: #03a9f4;
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .bg-blue-400 {
     background-color: #29b6f6;
     border-color: #29b6f6;
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .bg-primary {
-    background-color: #2196f3;
-    border-color: #2196f3;
-    color: #fff;
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
+    color: var(--cc-white);
 }
 
 .bg-primary-400 {
     background-color: #42a5f5;
     border-color: #42a5f5;
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .bg-success {
-    background-color: #4caf50;
-    border-color: #4caf50;
-    color: #fff;
+    background-color: var(--cc-success);
+    border-color: var(--cc-success);
+    color: var(--cc-white);
 }
 
 .bg-success-400 {
     background-color: #66bb6a;
     border-color: #66bb6a;
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .bg-info {
-    background-color: #00bcd4;
-    border-color: #00bcd4;
-    color: #fff;
+    background-color: var(--cc-info);
+    border-color: var(--cc-info);
+    color: var(--cc-white);
 }
 
 .bg-warning {
-    background-color: #ff5722;
-    border-color: #ff5722;
-    color: #fff;
+    background-color: var(--cc-warning);
+    border-color: var(--cc-warning);
+    color: var(--cc-white);
 }
 
 .bg-warning-400 {
     background-color: #ff7043;
     border-color: #ff7043;
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .bg-danger {
-    background-color: #f44336;
-    border-color: #f44336;
-    color: #fff;
+    background-color: var(--cc-danger);
+    border-color: var(--cc-danger);
+    color: var(--cc-white);
 }
 
 .bg-danger-400 {
     background-color: #ef5350;
     border-color: #ef5350;
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .bg-teal-400 {
-    background-color: #26a69a;
-    border-color: #26a69a;
-    color: #fff;
+    background-color: var(--cc-teal-400);
+    border-color: var(--cc-teal-400);
+    color: var(--cc-white);
 }
 
 .border-default {
-    border-color: #ddd;
+    border-color: var(--cc-gray-300);
 }
 
 .border-primary {
-    border-color: #2196f3;
+    border-color: var(--cc-primary);
 }
 
 .border-primary-600 {
-    border-color: #1e88e5;
+    border-color: var(--cc-primary-600);
 }
 
 .border-success {
-    border-color: #4caf50;
+    border-color: var(--cc-success);
 }
 
 .border-success-600 {
@@ -132,11 +132,11 @@
 }
 
 .border-info {
-    border-color: #00bcd4;
+    border-color: var(--cc-info);
 }
 
 .border-warning {
-    border-color: #ff5722;
+    border-color: var(--cc-warning);
 }
 
 .border-warning-400 {
@@ -148,7 +148,7 @@
 }
 
 .border-danger {
-    border-color: #f44336;
+    border-color: var(--cc-danger);
 }
 
 .border-danger-600 {
@@ -168,7 +168,7 @@
 }
 
 .border-top-primary {
-    border-top-color: #2196f3;
+    border-top-color: var(--cc-primary);
 }
 
 .border-top-teal {
@@ -194,19 +194,19 @@
 .text-primary,
 .text-primary:hover,
 .text-primary:focus {
-    color: #2196f3 !important;
+    color: var(--cc-primary) !important;
 }
 
 .text-primary-600,
 .text-primary-600:hover,
 .text-primary-600:focus {
-    color: #1e88e5 !important;
+    color: var(--cc-primary-600) !important;
 }
 
 .text-success,
 .text-success:hover,
 .text-success:focus {
-    color: #4caf50 !important;
+    color: var(--cc-success) !important;
 }
 
 .text-success-400,
@@ -224,13 +224,13 @@
 .text-info,
 .text-info:hover,
 .text-info:focus {
-    color: #00bcd4 !important;
+    color: var(--cc-info) !important;
 }
 
 .text-warning,
 .text-warning:hover,
 .text-warning:focus {
-    color: #ff5722 !important;
+    color: var(--cc-warning) !important;
 }
 
 .text-warning-400,
@@ -248,7 +248,7 @@
 .text-danger,
 .text-danger:hover,
 .text-danger:focus {
-    color: #f44336 !important;
+    color: var(--cc-danger) !important;
 }
 
 .text-danger-400,
@@ -278,7 +278,7 @@
 .text-teal-400,
 .text-teal-400:hover,
 .text-teal-400:focus {
-    color: #26a69a !important;
+    color: var(--cc-teal-400) !important;
 }
 
 .text-indigo-400,
@@ -308,5 +308,5 @@
 .text-default,
 .text-default:hover,
 .text-default:focus {
-    color: #333333 !important;
+    color: var(--cc-gray-900) !important;
 }

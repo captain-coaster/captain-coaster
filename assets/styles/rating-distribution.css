@@ -1,6 +1,14 @@
 /**
  * Rating Distribution Component
  * Pure CSS implementation for displaying rating distribution bars
+ *
+ * Entry-scoped (coaster.js), not imported into app.css -- its `768px`
+ * breakpoint below stays a literal rather than `theme(--breakpoint-tablet)`
+ * because `theme()` is a Tailwind build-time function that only resolves
+ * within the same compilation graph as tokens.css's `@theme` block, which
+ * this file isn't part of (unlike `var(--cc-*)` color references, which
+ * are a runtime browser feature and resolve fine from the global bundle
+ * loaded on the same page).
  */
 
 .rating-distribution {
@@ -105,7 +113,7 @@
 
 .no-ratings {
     text-align: center;
-    color: #9ca3af;
+    color: var(--cc-cool-gray-400);
     padding: 2rem;
     font-size: 0.875rem;
 }

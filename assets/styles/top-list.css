@@ -1,6 +1,14 @@
 /**
  * Top List Drag & Drop Styles
  * SortableJS integration for modern drag-and-drop functionality
+ *
+ * Entry-scoped (top-list.js), not imported into app.css -- its `768px`
+ * breakpoints below stay literals rather than `theme(--breakpoint-tablet)`
+ * because `theme()` is a Tailwind build-time function that only resolves
+ * within the same compilation graph as tokens.css's `@theme` block, which
+ * this file isn't part of (unlike `var(--cc-*)` color references, which
+ * are a runtime browser feature and resolve fine from the global bundle
+ * loaded on the same page).
  */
 
 /* Container styles */
@@ -16,7 +24,7 @@
     gap: 12px;
     padding: 12px;
     margin-bottom: 8px;
-    background: #fff;
+    background: var(--cc-white);
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     transition: all 0.2s ease;
@@ -64,7 +72,7 @@
 .position-number {
     font-size: 18px;
     font-weight: 700;
-    color: #6b7280;
+    color: var(--cc-cool-gray-500);
     line-height: 1;
     user-select: none;
     -webkit-user-select: none;
@@ -73,7 +81,7 @@
 }
 
 .drag-indicator {
-    color: #9ca3af;
+    color: var(--cc-cool-gray-400);
     opacity: 0.6;
     transition: opacity 0.2s ease;
     user-select: none;
@@ -84,7 +92,7 @@
 
 .drag-area:hover .drag-indicator {
     opacity: 1;
-    color: #6b7280;
+    color: var(--cc-cool-gray-500);
 }
 
 /* Coaster Content - Main info area */
@@ -114,7 +122,7 @@
 }
 
 .coaster-park {
-    color: #6b7280;
+    color: var(--cc-cool-gray-500);
     font-size: 14px;
 }
 
@@ -151,7 +159,7 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: #6b7280;
+    color: var(--cc-cool-gray-500);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -159,7 +167,7 @@
 
 .menu-btn:hover {
     background-color: #f3f4f6;
-    color: #374151;
+    color: var(--cc-cool-gray-600);
 }
 
 .menu-btn:active {
@@ -170,7 +178,7 @@
 .sortable-ghost {
     opacity: 0.4;
     background-color: #f9fafb;
-    border: 2px dashed #3b82f6;
+    border: 2px dashed var(--cc-focus-blue);
     border-radius: 8px;
 }
 
@@ -180,7 +188,7 @@
 
 /* SortableJS: Chosen item (when item is selected/grabbed) */
 .sortable-chosen {
-    border-color: #3b82f6;
+    border-color: var(--cc-focus-blue);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
 }
 
@@ -196,7 +204,7 @@
 /* SortableJS: Dragged item (the actual item being dragged) */
 .sortable-drag {
     opacity: 1;
-    border-color: #3b82f6;
+    border-color: var(--cc-focus-blue);
     box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
     z-index: 1000;
     transform: rotate(2deg);
@@ -232,13 +240,13 @@
 }
 
 .save-status-saved {
-    background-color: #28a745;
+    background-color: var(--cc-action-green);
     color: white;
     border: 1px solid #1e7e34;
 }
 
 .save-status-error {
-    background-color: #dc3545;
+    background-color: var(--cc-action-red);
     color: white;
     border: 1px solid #bd2130;
 }
@@ -341,12 +349,12 @@
 
 /* Accessibility improvements */
 .coaster-entry:focus-within {
-    outline: 2px solid #007bff;
+    outline: 2px solid var(--cc-action-blue);
     outline-offset: 2px;
 }
 
 .drag-handle:focus {
-    outline: 2px solid #007bff;
+    outline: 2px solid var(--cc-action-blue);
     outline-offset: 2px;
     border-radius: 2px;
 }
@@ -354,13 +362,13 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
     .sortable-ghost {
-        border-color: #000;
-        background-color: #fff;
+        border-color: var(--cc-black);
+        background-color: var(--cc-white);
     }
 
     .sortable-chosen,
     .sortable-drag {
-        border-color: #000;
+        border-color: var(--cc-black);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     }
 }
@@ -434,11 +442,11 @@
 .search-result-duplicate {
     opacity: 0.6;
     cursor: not-allowed;
-    background-color: #f8f9fa;
+    background-color: var(--cc-gray-25);
 }
 
 .search-result-duplicate:hover {
-    background-color: #f8f9fa;
+    background-color: var(--cc-gray-25);
 }
 
 .search-result-duplicate .badge {
@@ -463,7 +471,7 @@
     100% {
         transform: scale(1);
         opacity: 1;
-        background-color: #fff;
+        background-color: var(--cc-white);
     }
 }
 

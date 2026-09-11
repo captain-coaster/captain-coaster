@@ -4,7 +4,7 @@
  */
 
 .summary-feedback-section {
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--cc-gray-150);
     margin-top: 15px;
     padding-top: 15px;
 }
@@ -35,7 +35,7 @@
     border: 0;
     background: transparent;
     cursor: pointer;
-    color: #9ca3af;
+    color: var(--cc-cool-gray-400);
     transition: color 0.15s ease;
 }
 

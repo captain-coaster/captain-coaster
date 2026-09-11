@@ -67,7 +67,7 @@
     width: 25%;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .col-sm-3,
     .col-sm-4,
     .col-sm-6,
@@ -102,7 +102,7 @@
     }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: theme(--breakpoint-desktop)) {
     .col-md-3,
     .col-md-6 {
         float: left;
@@ -117,7 +117,7 @@
     }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: theme(--breakpoint-wide)) {
     .col-lg-4,
     .col-lg-9 {
         float: left;

@@ -104,7 +104,7 @@
 .nav .open > a:focus {
     background-color: transparent;
     border-color: transparent;
-    color: #333;
+    color: var(--cc-gray-900);
 }
 
 /* Caret: bootstrap's border-triangle base is fully neutralized by
@@ -166,19 +166,19 @@
     font-size: 13px;
     text-align: left;
     list-style: none;
-    background-color: #fff;
+    background-color: var(--cc-white);
     background-clip: padding-box;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cc-gray-300);
     border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    color: #333;
+    color: var(--cc-gray-900);
 }
 
 .dropdown-menu .divider {
     height: 1px;
     margin: 7px 0;
     overflow: hidden;
-    background-color: #e5e5e5;
+    background-color: var(--cc-gray-200);
 }
 
 .dropdown-menu > li {
@@ -196,7 +196,7 @@
     clear: both;
     font-weight: 400;
     line-height: 1.5384616;
-    color: #333;
+    color: var(--cc-gray-900);
     white-space: nowrap;
     outline: 0;
     overflow: hidden;
@@ -205,24 +205,24 @@
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
-    color: #333;
+    color: var(--cc-gray-900);
     text-decoration: none;
-    background-color: #f5f5f5;
+    background-color: var(--cc-gray-100);
 }
 
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
-    color: #fff;
+    color: var(--cc-white);
     text-decoration: none;
-    background-color: #2196f3;
+    background-color: var(--cc-primary);
     outline: 0;
 }
 
 .dropdown-menu > .disabled > a,
 .dropdown-menu > .disabled > a:hover,
 .dropdown-menu > .disabled > a:focus {
-    color: #999;
+    color: var(--cc-gray-600);
 }
 
 .dropdown-menu > .disabled > a:hover,
@@ -304,7 +304,7 @@
 .dropdown-menu > .dropdown-submenu:hover > a,
 .dropdown-menu > .dropdown-submenu:focus > a,
 .dropdown-menu > .dropdown-submenu.open > a {
-    background-color: #f5f5f5;
+    background-color: var(--cc-gray-100);
 }
 
 .dropdown-menu > .dropdown-submenu:hover > a:after,
@@ -324,14 +324,14 @@
     right: 100%;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .dropdown-menu > .dropdown-submenu-hover:hover > .dropdown-menu,
     .dropdown-menu > .dropdown-submenu-hover:focus > .dropdown-menu {
         display: block;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .dropdown-menu > .dropdown-submenu {
         position: static;
     }
@@ -375,7 +375,7 @@
     padding-right: 0;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar {
         border-radius: 3px;
         padding-left: 20px;
@@ -387,7 +387,7 @@
     min-width: 260px;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar-header {
         float: left;
         margin-left: -20px;
@@ -412,7 +412,7 @@
     padding-right: 15px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .navbar-header .navbar-nav > li + li {
         margin-top: 0;
     }
@@ -443,7 +443,7 @@
     border-top: 0;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar-collapse {
         width: auto;
         border-top: 0;
@@ -488,13 +488,13 @@
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar-fixed-top {
         border-radius: 0;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .navbar-fixed-top {
         position: static;
     }
@@ -502,7 +502,7 @@
 
 /* Body top padding to clear the fixed desktop navbar -- navbar is static
  * (in-flow) on mobile instead, so no compensation is needed there. */
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar-top {
         padding-top: 48px;
     }
@@ -568,7 +568,7 @@
     border-top-right-radius: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .navbar-nav {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
@@ -635,7 +635,7 @@
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar-nav {
         float: left;
         margin: 0;
@@ -647,7 +647,7 @@
     }
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .navbar-right {
         float: right !important;
         margin-right: -20px;
@@ -673,23 +673,23 @@
     background-color: #37474f;
     border-color: #37474f;
     border-bottom-color: rgba(255, 255, 255, 0.1);
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .navbar-inverse .navbar-nav > li > a {
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .navbar-inverse .navbar-nav > li > a:hover,
 .navbar-inverse .navbar-nav > li > a:focus {
-    color: #fff;
+    color: var(--cc-white);
     background-color: rgba(0, 0, 0, 0.1);
 }
 
 .navbar-inverse .navbar-nav > .open > a,
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
-    color: #fff;
+    color: var(--cc-white);
     background-color: rgba(0, 0, 0, 0.15);
 }
 
@@ -759,7 +759,7 @@
 
 .modal-content {
     position: relative;
-    background-color: #fff;
+    background-color: var(--cc-white);
     background-clip: padding-box;
     border: 1px solid transparent;
     border-radius: 3px;
@@ -815,7 +815,7 @@
     margin-left: 0;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .modal-dialog {
         width: 600px;
         margin: 30px auto;

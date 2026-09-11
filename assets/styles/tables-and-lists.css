@@ -28,13 +28,13 @@
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
     vertical-align: middle;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--cc-gray-300);
     padding: 12px 20px;
     line-height: 1.53846;
 }
 
 .table > thead > tr > th {
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid var(--cc-gray-500);
 }
 
 .table-responsive {
@@ -42,12 +42,12 @@
 }
 
 /* Only applies <768px in the original -- Limitless customizes this breakpoint to 769px. */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .table-responsive {
         width: 100%;
         margin-bottom: 15px;
         overflow-y: hidden;
-        border: 1px solid #ddd;
+        border: 1px solid var(--cc-gray-300);
     }
 
     .table-responsive > .table {
@@ -67,8 +67,8 @@
 /* Thumbnails */
 .thumbnail {
     display: block;
-    background-color: #fff;
-    border: 1px solid #ddd;
+    background-color: var(--cc-white);
+    border: 1px solid var(--cc-gray-300);
     border-radius: 3px;
     margin-bottom: 20px;
     padding: 3px;
@@ -93,11 +93,11 @@
 a.thumbnail:hover,
 a.thumbnail:focus,
 a.thumbnail.active {
-    border-color: #ddd;
+    border-color: var(--cc-gray-300);
 }
 
 .thumbnail .caption {
-    color: #333;
+    color: var(--cc-gray-900);
     padding: 20px 17px 17px;
 }
 
@@ -134,7 +134,7 @@ a.thumbnail.active {
     left: 0;
     width: 100%;
     height: 100%;
-    color: #fff;
+    color: var(--cc-white);
     visibility: hidden;
     opacity: 0;
     border-radius: 3px;
@@ -160,7 +160,7 @@ a.thumbnail.active {
 .list-group {
     list-style: none;
     margin-bottom: 0;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cc-gray-300);
     padding: 7px 0;
     border-radius: 3px;
 }
@@ -176,14 +176,14 @@ a.thumbnail.active {
 
 a.list-group-item,
 button.list-group-item {
-    color: #333;
+    color: var(--cc-gray-900);
 }
 
 a.list-group-item:hover,
 button.list-group-item:hover,
 a.list-group-item:focus,
 button.list-group-item:focus {
-    color: #333;
-    background-color: #f5f5f5;
+    color: var(--cc-gray-900);
+    background-color: var(--cc-gray-100);
     text-decoration: none;
 }

@@ -11,12 +11,16 @@
  *  breakpoints defined once per side, `.list-feed` diverging between the
  *  two) instead of one. Everything below is grouped by feature instead.
  *
- *  Import order approximates the two files' original combined load order
- *  (app.css's own imports, then tailwind.css's) since nothing here is
- *  layered yet -- unlayered same-specificity ties still resolve by source
- *  order. captain-coaster/captain-coaster#385's next step wraps this in
- *  `@layer components` and makes that ordering irrelevant for anything
- *  layered.
+ *  Everything below is now in `@layer components` (captain-coaster/
+ *  captain-coaster#385, step 2) except `.collapse` and colors.css, which
+ *  stay unlayered on purpose -- see their own comments just above their
+ *  imports. Being layered means a bare Tailwind utility class added later
+ *  in a template (e.g. `mt-[20px]` on a `.panel`) now correctly overrides
+ *  these components' own rules, which it couldn't before; import order
+ *  below still approximates the original app.css-then-tailwind.css load
+ *  order, but only matters now for ties *within* this layer, against each
+ *  other -- not against Tailwind's own utilities, which always win
+ *  regardless of source order once both sides are layered.
  *
  *  score-card.css, rating-distribution.css, summary-feedback.css,
  *  coaster-loading.css, youtube-thumbnail.css and top-list.css are
@@ -25,8 +29,11 @@
  *  out of every other page's bundle.
  */
 
-@import "tailwindcss/theme.css";
-@import "tailwindcss/utilities.css";
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "./tokens.css";
 
 /*
  * Preflight (Tailwind's base reset) is still not imported above. The
@@ -60,34 +67,49 @@
     visibility: visible;
 }
 
-@import "./forms.css";
-@import "./toggle-switch.css";
-@import "./map.css";
-@import "./search.css";
-@import "./gallery.css";
-@import "./rating.css";
-@import "./timeline.css";
-@import "./section-header.css";
-@import "./tooltip.css";
-@import "./toast.css";
-@import "./account-menu.css";
-@import "./icons.css";
-@import "./review.css";
-@import "./layout.css";
-@import "./alerts.css";
-@import "./buttons.css";
-@import "./pagination.css";
-@import "./media-object.css";
-@import "./base.css";
-@import "./print.css";
-@import "./grid.css";
-@import "./helpers.css";
-@import "./responsive-visibility.css";
-@import "./heading-elements.css";
-@import "./labels-badges.css";
-@import "./typography.css";
-@import "./panels.css";
-@import "./tables-and-lists.css";
-@import "./navbar.css";
+/*
+ * colors.css stays unlayered too, deliberately, for the same reason as
+ * `.collapse` above: `bg-blue-400`/`bg-teal-400`/`text-blue-400`/
+ * `text-teal-400`/`text-indigo-400`/`text-orange-400`/`text-pink-400`/
+ * `text-slate` are real, live classes (ranking/info, User/tops,
+ * User/show, Profile/_menu, Profile/user_stats, Profile/settings) whose
+ * names coincide with Tailwind's own default color-scale utilities --
+ * this theme's Material-derived hex values differ from Tailwind's
+ * defaults for those exact names, and colors.css only keeps rendering
+ * its own values (not Tailwind's) by staying unlayered, same mechanism
+ * as `.collapse`/`.sr-only` elsewhere in this migration. Verified: no
+ * other file in this tree defines a class matching Tailwind's
+ * `{color}-{shade}` naming, so this containment is complete, not partial.
+ */
 @import "./colors.css";
-@import "./sidebar.css";
+
+@import "./forms.css" layer(components);
+@import "./toggle-switch.css" layer(components);
+@import "./map.css" layer(components);
+@import "./search.css" layer(components);
+@import "./gallery.css" layer(components);
+@import "./rating.css" layer(components);
+@import "./timeline.css" layer(components);
+@import "./section-header.css" layer(components);
+@import "./tooltip.css" layer(components);
+@import "./toast.css" layer(components);
+@import "./account-menu.css" layer(components);
+@import "./icons.css" layer(components);
+@import "./review.css" layer(components);
+@import "./layout.css" layer(components);
+@import "./alerts.css" layer(components);
+@import "./buttons.css" layer(components);
+@import "./pagination.css" layer(components);
+@import "./media-object.css" layer(components);
+@import "./base.css" layer(components);
+@import "./print.css" layer(components);
+@import "./grid.css" layer(components);
+@import "./helpers.css" layer(components);
+@import "./responsive-visibility.css" layer(components);
+@import "./heading-elements.css" layer(components);
+@import "./labels-badges.css" layer(components);
+@import "./typography.css" layer(components);
+@import "./panels.css" layer(components);
+@import "./tables-and-lists.css" layer(components);
+@import "./navbar.css" layer(components);
+@import "./sidebar.css" layer(components);

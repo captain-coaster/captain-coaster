@@ -19,7 +19,7 @@
 
 .pagination > li > a,
 .pagination > li > span {
-    @apply relative float-left border border-[#ddd] bg-white text-center text-[#333];
+    @apply relative float-left border border-[var(--cc-gray-300)] bg-white text-center text-[var(--cc-gray-900)];
     min-width: 36px;
     padding: 7px 12px;
     line-height: 1.53846;
@@ -31,8 +31,8 @@
 .pagination > li > span:hover,
 .pagination > li > a:focus,
 .pagination > li > span:focus {
-    @apply z-2 bg-[#f5f5f5] text-[#333];
-    border-color: #ddd;
+    @apply z-2 bg-[var(--cc-gray-100)] text-[var(--cc-gray-900)];
+    border-color: var(--cc-gray-300);
 }
 
 .pagination > li:first-child > a,
@@ -52,8 +52,8 @@
 .pagination > .active > a:focus,
 .pagination > .active > span:focus {
     @apply z-3 cursor-default text-white;
-    background-color: #2196f3;
-    border-color: #2196f3;
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
 }
 
 .pagination > .disabled > span,
@@ -62,8 +62,8 @@
 .pagination > .disabled > a,
 .pagination > .disabled > a:hover,
 .pagination > .disabled > a:focus {
-    @apply cursor-not-allowed bg-transparent text-[#bbb];
-    border-color: #ddd;
+    @apply cursor-not-allowed bg-transparent text-[var(--cc-gray-500)];
+    border-color: var(--cc-gray-300);
 }
 
 .pagination-sm > li > a,

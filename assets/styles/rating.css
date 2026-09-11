@@ -42,11 +42,11 @@
 
 /* Half star - left filled, right empty */
 .rating-star.star-half .star-outline {
-    stroke: #ff5722;
+    stroke: var(--cc-warning);
 }
 
 .rating-star.star-half .star-fill-left {
-    stop-color: #ff5722;
+    stop-color: var(--cc-warning);
 }
 
 .rating-star.star-half .star-fill-right {
@@ -55,12 +55,12 @@
 
 /* Full star - completely filled */
 .rating-star.star-full .star-outline {
-    stroke: #ff5722;
+    stroke: var(--cc-warning);
 }
 
 .rating-star.star-full .star-fill-left,
 .rating-star.star-full .star-fill-right {
-    stop-color: #ff5722;
+    stop-color: var(--cc-warning);
 }
 
 /* Hover effect on desktop */
@@ -86,7 +86,7 @@
 }
 
 /* Mobile optimizations */
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .star-svg {
         width: 28px;
         height: 28px;
@@ -123,14 +123,14 @@
 
 .action-icon:hover {
     background: rgba(0, 123, 255, 0.1);
-    color: #007bff;
+    color: var(--cc-action-blue);
     transform: scale(1.1);
     text-decoration: none;
 }
 
 .action-icon.delete-icon:hover {
     background: rgba(220, 53, 69, 0.1);
-    color: #dc3545;
+    color: var(--cc-action-red);
 }
 
 .action-icon i {
@@ -153,7 +153,7 @@
     height: 20px;
     margin: -10px 0 0 -10px;
     border: 2px solid #f3f3f3;
-    border-top: 2px solid #007bff;
+    border-top: 2px solid var(--cc-action-blue);
     border-radius: 50%;
     animation: rating-spin 1s linear infinite;
 }
@@ -212,7 +212,7 @@
 /* Enhanced delete confirmation styling */
 .delete-icon.confirming {
     background: rgba(220, 53, 69, 0.2);
-    color: #dc3545;
+    color: var(--cc-action-red);
     animation: rating-pulse-delete 1s ease-in-out infinite;
 }
 
@@ -236,7 +236,7 @@
     right: 2px;
     width: 6px;
     height: 6px;
-    background: #28a745;
+    background: var(--cc-action-green);
     border-radius: 50%;
     border: 1px solid white;
 }
@@ -264,7 +264,7 @@
 
 .date-picker-content-small {
     background: white;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cc-gray-300);
     border-radius: 8px;
     padding: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -275,13 +275,13 @@
     display: block;
     font-size: 13px;
     font-weight: 500;
-    color: #333;
+    color: var(--cc-gray-900);
     margin-bottom: 8px;
 }
 
 .small-date-input {
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cc-gray-300);
     border-radius: 4px;
     padding: 8px;
     font-size: 14px;
@@ -290,7 +290,7 @@
 
 .small-date-input:focus {
     outline: none;
-    border-color: #007bff;
+    border-color: var(--cc-action-blue);
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
 
@@ -307,7 +307,7 @@
 .tiny-btn {
     flex: 1;
     background: #f8f9fa;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cc-gray-300);
     border-radius: 4px;
     padding: 6px 10px;
     font-size: 12px;
@@ -316,19 +316,19 @@
 }
 
 .today-btn:hover {
-    background: #007bff;
+    background: var(--cc-action-blue);
     color: white;
-    border-color: #007bff;
+    border-color: var(--cc-action-blue);
 }
 
 .clear-btn:hover {
-    background: #dc3545;
+    background: var(--cc-action-red);
     color: white;
-    border-color: #dc3545;
+    border-color: var(--cc-action-red);
 }
 
 /* Mobile adjustments */
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .rating-actions {
         gap: 20px;
     }

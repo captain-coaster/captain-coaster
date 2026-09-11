@@ -15,7 +15,7 @@
     padding: 5px 10px;
     z-index: 1;
     text-transform: initial;
-    color: #fff;
+    color: var(--cc-white);
     background: rgba(0, 0, 0, 90%);
 }
 

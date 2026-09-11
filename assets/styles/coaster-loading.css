@@ -20,5 +20,5 @@
 .photos-loading .panel-body,
 .reviews-loading .panel-body {
     padding: 30px 20px;
-    background: #fafafa;
+    background: var(--cc-gray-40);
 }

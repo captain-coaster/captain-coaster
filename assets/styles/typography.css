@@ -167,13 +167,13 @@ small,
 }
 
 .page-header-default {
-    background-color: #fff;
+    background-color: var(--cc-white);
     margin-bottom: 20px;
-    box-shadow: 0 1px 0 0 #ddd;
+    box-shadow: 0 1px 0 0 var(--cc-gray-300);
 }
 
 .text-muted {
-    color: #999;
+    color: var(--cc-gray-600);
 }
 
 .text-bold {
@@ -235,7 +235,7 @@ small,
     margin: 0;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .page-title {
         padding-right: 0;
     }

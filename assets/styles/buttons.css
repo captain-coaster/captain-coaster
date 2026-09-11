@@ -72,7 +72,7 @@
 .btn:hover,
 .btn:focus,
 .btn.focus {
-    color: #333;
+    color: var(--cc-gray-900);
     text-decoration: none;
     outline: 0;
     box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.05);
@@ -97,13 +97,13 @@ fieldset[disabled] .btn {
 .btn[class*="bg-"]:hover,
 .btn[class*="bg-"]:focus,
 .btn[class*="bg-"].focus {
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .btn-default {
-    color: #333;
-    background-color: #fcfcfc;
-    border-color: #ddd;
+    color: var(--cc-gray-900);
+    background-color: var(--cc-gray-50);
+    border-color: var(--cc-gray-300);
 }
 
 .btn-default:hover,
@@ -111,7 +111,7 @@ fieldset[disabled] .btn {
 .btn-default.focus,
 .btn-default:active,
 .btn-default.active {
-    color: #333;
+    color: var(--cc-gray-900);
     background-color: #e3e3e3;
     border-color: #bebebe;
 }
@@ -121,9 +121,9 @@ fieldset[disabled] .btn {
 }
 
 .btn-primary {
-    color: #fff;
-    background-color: #2196f3;
-    border-color: #2196f3;
+    color: var(--cc-white);
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
 }
 
 .btn-primary:hover,
@@ -131,7 +131,7 @@ fieldset[disabled] .btn {
 .btn-primary.focus,
 .btn-primary:active,
 .btn-primary.active {
-    color: #fff;
+    color: var(--cc-white);
     background-color: #0c7cd5;
     border-color: #0b76cc;
 }
@@ -141,9 +141,9 @@ fieldset[disabled] .btn {
 }
 
 .btn-info {
-    color: #fff;
-    background-color: #00bcd4;
-    border-color: #00bcd4;
+    color: var(--cc-white);
+    background-color: var(--cc-info);
+    border-color: var(--cc-info);
 }
 
 .btn-info:hover,
@@ -151,7 +151,7 @@ fieldset[disabled] .btn {
 .btn-info.focus,
 .btn-info:active,
 .btn-info.active {
-    color: #fff;
+    color: var(--cc-white);
     background-color: #008fa1;
     border-color: #008697;
 }
@@ -161,9 +161,9 @@ fieldset[disabled] .btn {
 }
 
 .btn-danger {
-    color: #fff;
-    background-color: #f44336;
-    border-color: #f44336;
+    color: var(--cc-white);
+    background-color: var(--cc-danger);
+    border-color: var(--cc-danger);
 }
 
 .btn-danger:hover,
@@ -171,7 +171,7 @@ fieldset[disabled] .btn {
 .btn-danger.focus,
 .btn-danger:active,
 .btn-danger.active {
-    color: #fff;
+    color: var(--cc-white);
     background-color: #ea1c0d;
     border-color: #e11b0c;
 }
@@ -181,7 +181,7 @@ fieldset[disabled] .btn {
 }
 
 .btn-link {
-    color: #333;
+    color: var(--cc-gray-900);
     font-weight: 400;
     border-radius: 0;
     background-color: transparent;

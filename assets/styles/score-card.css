@@ -19,7 +19,7 @@
 .score-compact .score-percent {
     font-size: 18px;
     font-weight: 400;
-    color: #6b7280;
+    color: var(--cc-cool-gray-500);
 }
 
 /* Score panel styles */

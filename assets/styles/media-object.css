@@ -81,7 +81,7 @@
 }
 
 .media-annotation {
-    @apply text-[#999] text-[12px] font-normal;
+    @apply text-[var(--cc-gray-600)] text-[12px] font-normal;
     line-height: 1.66667;
 }
 
@@ -100,7 +100,7 @@
 }
 
 .media-list-bordered > li {
-    @apply border-t border-[#eee] mt-[15px] pt-[15px];
+    @apply border-t border-[var(--cc-gray-150)] mt-[15px] pt-[15px];
 }
 
 .media-list-bordered > li:first-child {
@@ -108,7 +108,7 @@
 }
 
 /* Collapse a .media row to a stacked, centered layout below the tablet breakpoint. */
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .stack-media-on-mobile:not(.text-left):not(.text-right) {
         text-align: center;
     }

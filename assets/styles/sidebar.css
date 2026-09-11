@@ -75,13 +75,13 @@
  */
 .sidebar {
     background-color: #263238;
-    color: #fff;
+    color: var(--cc-white);
     position: relative;
     width: 100%;
     display: none;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .sidebar {
         display: table-cell;
         vertical-align: top;
@@ -98,15 +98,15 @@
 }
 
 .sidebar-default {
-    background-color: #fff;
+    background-color: var(--cc-white);
     color: #333333;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--cc-gray-300);
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .sidebar-default {
         border-bottom: 0;
-        border-right: 1px solid #ddd;
+        border-right: 1px solid var(--cc-gray-300);
     }
 }
 
@@ -115,7 +115,7 @@
     padding-bottom: 8px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .sidebar-mobile-main .sidebar-main,
     .sidebar-mobile-secondary .sidebar-secondary {
         display: block;
@@ -140,7 +140,7 @@
 }
 
 .sidebar-default .category-title {
-    border-bottom-color: #ddd;
+    border-bottom-color: var(--cc-gray-300);
 }
 
 .category-content {
@@ -186,7 +186,7 @@
 .navigation li a:hover,
 .navigation li a:focus {
     background-color: rgba(0, 0, 0, 0.1);
-    color: #fff;
+    color: var(--cc-white);
 }
 
 .navigation > li > a {
@@ -198,11 +198,11 @@
 .navigation > li.active > a,
 .navigation > li.active > a:hover,
 .navigation > li.active > a:focus {
-    background-color: #26a69a;
-    color: #fff;
+    background-color: var(--cc-teal-400);
+    color: var(--cc-white);
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .sidebar-xs .sidebar-main {
         width: 56px;
     }

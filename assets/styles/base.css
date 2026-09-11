@@ -68,7 +68,7 @@ body {
 }
 
 fieldset {
-    border: 1px solid #c0c0c0;
+    border: 1px solid var(--cc-gray-400);
     margin: 0 2px;
     padding: 0.35em 0.625em 0.75em;
 }
@@ -127,8 +127,8 @@ body {
     font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 13px;
     line-height: 1.5384616;
-    color: #333;
-    background-color: #f5f5f5;
+    color: var(--cc-gray-900);
+    background-color: var(--cc-gray-100);
 }
 
 input,
@@ -141,7 +141,7 @@ textarea {
 }
 
 a {
-    color: #1e88e5;
+    color: var(--cc-primary-600);
     text-decoration: none;
     cursor: pointer;
 }

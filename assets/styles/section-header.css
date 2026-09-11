@@ -25,7 +25,7 @@
         padding: 6px 12px !important;
         border-radius: 6px;
         border: 1px solid #e0e0e0;
-        background-color: #f8f9fa;
+        background-color: var(--cc-gray-25);
         color: #495057;
         overflow: hidden;
         white-space: nowrap;
@@ -34,14 +34,14 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
         &:hover {
-            border-color: #c0c0c0;
-            background-color: #fff;
+            border-color: var(--cc-gray-400);
+            background-color: var(--cc-white);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         &:focus {
-            border-color: #3b82f6;
-            background-color: #fff;
+            border-color: var(--cc-focus-blue);
+            background-color: var(--cc-white);
             outline: none;
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }

@@ -10,11 +10,11 @@
  */
 .panel {
     margin-bottom: 20px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--cc-gray-300);
     border-radius: 3px;
-    background-color: #fff;
+    background-color: var(--cc-white);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-    color: #333;
+    color: var(--cc-gray-900);
 }
 
 .panel[class*="border-top-"] {
@@ -55,7 +55,7 @@
 }
 
 .panel-body + .panel-body {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid var(--cc-gray-300);
 }
 
 .panel-heading {
@@ -69,7 +69,7 @@
 .panel-flat > .panel-heading {
     padding-top: 20px;
     padding-bottom: 20px;
-    background-color: #fff;
+    background-color: var(--cc-white);
 }
 
 .panel-flat > .panel-heading > .panel-title {
@@ -87,8 +87,8 @@
  * transparent` instead -- invisible everywhere else, visible here.
  */
 .panel-white > .panel-heading {
-    background-color: #fff;
-    border-bottom-color: #ddd;
+    background-color: var(--cc-white);
+    border-bottom-color: var(--cc-gray-300);
 }
 
 .panel-title {
@@ -132,8 +132,8 @@ h6.panel-title,
 .panel-footer {
     position: relative;
     padding: 7px 0;
-    background-color: #fcfcfc;
-    border-top: 1px solid #ddd;
+    background-color: var(--cc-gray-50);
+    border-top: 1px solid var(--cc-gray-300);
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }

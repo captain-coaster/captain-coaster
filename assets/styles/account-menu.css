@@ -97,7 +97,7 @@
  * gated behind `.open`, which this bypasses) so text stays legible against
  * the dark collapsed navbar background.
  */
-@media (max-width: 768px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .dropdown-user > .dropdown-toggle,
     .account-menu-anon > .dropdown-toggle {
         display: none;
@@ -112,11 +112,11 @@
         border: 0;
         box-shadow: none;
         background-color: transparent;
-        color: #fff;
+        color: var(--cc-white);
     }
 
     .navbar-nav > li > .dropdown-menu.account-menu a:not(.label-flat):not(.badge-flat) {
-        color: #fff;
+        color: var(--cc-white);
     }
 
     .navbar-nav > li > .dropdown-menu.account-menu .divider {
@@ -213,12 +213,12 @@
      * not a "this is a link" affordance - only the hover/focus state
      * below needs to signal that.
      */
-    color: #333;
+    color: var(--cc-gray-900);
 }
 
 .notif-item .media-body a:hover,
 .notif-item .media-body a:focus {
-    color: #1e88e5;
+    color: var(--cc-primary-600);
 }
 
 .notif-item.unread .media-body a {
@@ -239,7 +239,7 @@
     height: 6px;
     margin-top: -3px;
     border-radius: 50%;
-    background-color: #2196f3;
+    background-color: var(--cc-primary);
 }
 
 .notif-item:not(.unread) .media-left .btn {

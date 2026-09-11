@@ -62,17 +62,17 @@
 .alert-success {
     color: #205823;
     background-color: #e8f5e9;
-    border-color: #4caf50;
+    border-color: var(--cc-success);
 }
 
 .alert-info {
     color: #00545c;
     background-color: #e0f7fa;
-    border-color: #00bcd4;
+    border-color: var(--cc-info);
 }
 
 .alert-warning {
-    color: #aa3510;
+    color: var(--cc-warning-deep);
     background-color: #fff3e0;
     border-color: #ff9800;
 }
@@ -80,12 +80,12 @@
 .alert-danger {
     color: #9c1f1f;
     background-color: #fbe9e7;
-    border-color: #ff5722;
+    border-color: var(--cc-warning);
 }
 
 /* Only relevant paired with alert-styled-left, per the templates that use it. */
 .alert-component[class*="alert-styled-"] {
-    background-color: #fff;
+    background-color: var(--cc-white);
 }
 
 .alert-styled-left {

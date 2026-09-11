@@ -17,7 +17,7 @@
     *,
     *:before,
     *:after {
-        color: #000 !important;
+        color: var(--cc-black) !important;
         text-shadow: none !important;
         background: transparent !important;
         box-shadow: none !important;
@@ -67,7 +67,7 @@
     }
 
     .label {
-        border: 1px solid #000;
+        border: 1px solid var(--cc-black);
     }
 
     .table {
@@ -76,6 +76,6 @@
 
     .table td,
     .table th {
-        background-color: #fff !important;
+        background-color: var(--cc-white) !important;
     }
 }

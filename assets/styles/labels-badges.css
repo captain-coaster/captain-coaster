@@ -110,7 +110,7 @@
  * helper", not just the cross-*component* coupling check already in place.
  */
 .label {
-    color: #fff;
+    color: var(--cc-white);
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -131,33 +131,33 @@
 }
 
 .label-default {
-    background-color: #999;
-    border-color: #999;
+    background-color: var(--cc-gray-600);
+    border-color: var(--cc-gray-600);
 }
 
 .label-primary {
-    background-color: #2196f3;
-    border-color: #2196f3;
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
 }
 
 .label-success {
-    background-color: #4caf50;
-    border-color: #4caf50;
+    background-color: var(--cc-success);
+    border-color: var(--cc-success);
 }
 
 .label-info {
-    background-color: #00bcd4;
-    border-color: #00bcd4;
+    background-color: var(--cc-info);
+    border-color: var(--cc-info);
 }
 
 .label-warning {
-    background-color: #ff5722;
-    border-color: #ff5722;
+    background-color: var(--cc-warning);
+    border-color: var(--cc-warning);
 }
 
 .label-danger {
-    background-color: #f44336;
-    border-color: #f44336;
+    background-color: var(--cc-danger);
+    border-color: var(--cc-danger);
 }
 
 .label-rounded {
@@ -172,7 +172,7 @@
 .badge {
     display: inline-block;
     min-width: 10px;
-    color: #fff;
+    color: var(--cc-white);
     text-align: center;
     white-space: nowrap;
     vertical-align: baseline;
@@ -191,8 +191,8 @@
 }
 
 .badge-primary {
-    background-color: #2196f3;
-    border-color: #2196f3;
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
 }
 
 .badge-flat {
@@ -209,7 +209,7 @@
     margin-right: 5px;
 }
 
-@media (min-width: 769px) {
+@media (min-width: theme(--breakpoint-tablet)) {
     .list-group-item > .label {
         float: right;
     }

@@ -1,0 +1,90 @@
+/*
+ * Design tokens -- captain-coaster/captain-coaster#385, step 2. Wires the
+ * values that are actually duplicated across this consolidated tree
+ * (colors in 2+ files, every breakpoint) through a single source each,
+ * *without* changing any of them -- visually inert on its own. A value
+ * used in only one file is left as a literal; this isn't a full design
+ * system, just the mechanism plus what's demonstrably repeated today.
+ *
+ * Breakpoints use Tailwind's own `--breakpoint-*` @theme namespace, so
+ * `theme(--breakpoint-*)` can substitute the value inside `@media`
+ * conditions (plain CSS custom properties don't work there). This also
+ * generates a `tablet:`/`desktop:`/`wide:` Tailwind variant prefix as a
+ * side effect -- harmless, nothing currently uses those names.
+ *
+ * Colors are deliberately plain `:root` custom properties, NOT Tailwind's
+ * `--color-*` @theme namespace: that namespace auto-generates matching
+ * `bg-*`/`text-*`/`border-*` utility classes, which would collide by name
+ * with colors.css's own hand-authored classes of the same name
+ * (`bg-primary`, `text-danger`, ...) -- the exact "two rules, one class
+ * name" trap `.collapse` and `.sr-only` already hit earlier in this
+ * migration (see app.css). Prefixed `cc-` throughout to stay clear of
+ * Tailwind's own reserved token names.
+ *
+ * Four parallel, never-reconciled color palettes turned up while
+ * consolidating tailwind/*.css and components/*.css into one tree:
+ * this file's own "brand" set (Material-derived, from the Bootstrap/
+ * Limitless migration), an "action" set (Bootstrap 4/5's default blue/
+ * red/green, used in rating.css/search.css/top-list.css), a "focus" blue
+ * and "cool gray" scale (Tailwind's own default palette, used in
+ * toast.css/section-header.css/top-list.css/map.css/score-card.css), and
+ * one-off neutrals. Each is tokenized as its own group below -- merging
+ * their hex values would be a real visual change (Phase 3 territory),
+ * not a hardening one, so that reconciliation is left for Phase 3 to
+ * decide on purpose, not attempted here.
+ */
+@theme {
+    --breakpoint-tablet: 769px;
+    --breakpoint-desktop: 1025px;
+    --breakpoint-wide: 1200px;
+}
+
+:root {
+    /* Neutrals -- this app's own warm-gray scale (Material/Bootstrap-era). */
+    --cc-white: #fff;
+    --cc-black: #000;
+    --cc-gray-25: #f8f9fa;
+    --cc-gray-40: #fafafa;
+    --cc-gray-50: #fcfcfc;
+    --cc-gray-100: #f5f5f5;
+    --cc-gray-150: #eee;
+    --cc-gray-200: #e5e5e5;
+    --cc-gray-300: #ddd;
+    --cc-gray-350: #ccc;
+    --cc-gray-400: #c0c0c0;
+    --cc-gray-500: #bbb;
+    --cc-gray-600: #999;
+    --cc-gray-650: #666;
+    --cc-gray-900: #333;
+
+    /* Cool grays -- Tailwind's own default gray scale, used verbatim by
+     * map.css/score-card.css/top-list.css. A separate scale from the
+     * warm grays above on purpose: different hue, not a rename of it. */
+    --cc-cool-gray-400: #9ca3af;
+    --cc-cool-gray-500: #6b7280;
+    --cc-cool-gray-600: #374151;
+
+    /* Brand -- theme/core/colors/colors.less's Material-derived palette
+     * (colors.css), reused as-is in app.css, forms.css, labels-badges.css,
+     * navbar.css and typography.css. */
+    --cc-primary: #2196f3;
+    --cc-primary-600: #1e88e5;
+    --cc-info: #00bcd4;
+    --cc-success: #4caf50;
+    --cc-warning: #ff5722;
+    --cc-warning-deep: #aa3510;
+    --cc-danger: #f44336;
+    --cc-teal-400: #26a69a;
+
+    /* Action -- Bootstrap 4/5's default blue/red/green, used by the
+     * rating/search/top-list components (never reconciled with the
+     * Material brand palette above -- see the file header). */
+    --cc-action-blue: #007bff;
+    --cc-action-red: #dc3545;
+    --cc-action-green: #28a745;
+
+    /* Focus -- Tailwind's own default blue, used for focus rings and
+     * sortable-state affordances in toast.css/section-header.css/
+     * top-list.css. */
+    --cc-focus-blue: #3b82f6;
+}
