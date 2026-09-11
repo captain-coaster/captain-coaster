@@ -44,7 +44,7 @@ class RegistrationFormType extends AbstractType
                 SubmitType::class,
                 [
                     'attr' => [
-                        'class' => 'bg-blue btn btn-block',
+                        'class' => 'bg-cc-blue btn btn-block',
                     ],
                     'label' => 'register.form.submit',
                 ]

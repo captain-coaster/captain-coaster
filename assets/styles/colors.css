@@ -15,15 +15,35 @@
  * (0 uses anywhere) and every other color name/shade combination is
  * dropped.
  *
- * A few of these class names coincide with Tailwind's own generated
- * utilities (`text-slate`, `*-blue-400`, `*-teal-400`, `*-indigo-400`,
- * `*-orange-400`, `*-pink-400` are real Tailwind color-scale tokens) --
- * this theme's Material-derived hex values differ from Tailwind's
- * default palette for those names, so both a `@layer utilities` rule
- * and this unlayered one exist for the same class; unlayered always
- * wins regardless of source order (see the top of tailwind.css), so the
- * theme's color is what actually renders, same resolution as the
- * `.collapse`/`.sr-only` name collisions found earlier in this phase.
+ * A few of these class names used to coincide with Tailwind's own
+ * generated utilities: `text-slate`, `*-blue`, `*-blue-400`, `*-teal`,
+ * `*-teal-400`, `*-indigo-400`, `*-orange-400`, `*-pink-400` are all
+ * real Tailwind color-scale tokens, and this theme's Material-derived
+ * hex values differ from Tailwind's defaults for those names -- this
+ * file used to only keep rendering its own values by staying unlayered
+ * entirely (captain-coaster/captain-coaster#385, step 2), the same
+ * mechanism as the `.collapse`/`.sr-only` name collisions elsewhere in
+ * this migration. Fixed properly instead (step 2 follow-up): every
+ * colliding class renamed to a `cc-`-prefixed color name below
+ * (`blue`->`cc-blue`, `teal`->`cc-teal`, `indigo`->`cc-indigo`,
+ * `orange`->`cc-orange`, `pink`->`cc-pink`, `slate`->`cc-slate`), and
+ * every template/PHP class list referencing the old name updated to
+ * match (grepped across templates/, src/ and assets/, same as the
+ * original real-usage audit): connect/login.html.twig,
+ * src/Form/Type/RegistrationFormType.php (`bg-blue`->`bg-cc-blue`),
+ * Default/index.html.twig (`border-top-teal`->`border-top-cc-teal`),
+ * Coaster/show.html.twig, Park/show.html.twig (`text-blue`->
+ * `text-cc-blue`), page_header.html.twig (`border-blue-600`->
+ * `border-cc-blue-600`), User/images.html.twig (`border-top-blue`->
+ * `border-top-cc-blue`), Profile/_menu.html.twig, Profile/settings.html.twig,
+ * User/show.html.twig, User/tops.html.twig, ranking/info.html.twig
+ * (`bg-teal-400`->`bg-cc-teal-400`, `text-teal`->`text-cc-teal`,
+ * `text-slate`->`text-cc-slate`), Profile/user_stats.html.twig
+ * (`text-blue-400`/`text-indigo-400`/`text-teal-400`/`text-pink-400`/
+ * `text-orange-400`, each ->`text-cc-*` equivalent). No class below now
+ * matches Tailwind's own `{color}-{shade}` naming, so this file layers
+ * cleanly like every other file in this tree -- no more unlayered
+ * special case.
  *
  * `.bg-*` sets `background-color` + `border-color` + `color:#fff`
  * together (ported as one block, not split) since real usage never
@@ -39,13 +59,13 @@
  * dead code (`.text-muted`, the fifth "bare contextual text color" kept
  * by that cluster, is untouched: colors.less never defines it).
  */
-.bg-blue {
+.bg-cc-blue {
     background-color: #03a9f4;
     border-color: #03a9f4;
     color: var(--cc-white);
 }
 
-.bg-blue-400 {
+.bg-cc-blue-400 {
     background-color: #29b6f6;
     border-color: #29b6f6;
     color: var(--cc-white);
@@ -105,7 +125,7 @@
     color: var(--cc-white);
 }
 
-.bg-teal-400 {
+.bg-cc-teal-400 {
     background-color: var(--cc-teal-400);
     border-color: var(--cc-teal-400);
     color: var(--cc-white);
@@ -159,11 +179,11 @@
     border-color: #c62828;
 }
 
-.border-blue-600 {
+.border-cc-blue-600 {
     border-color: #039be5;
 }
 
-.border-top-blue {
+.border-top-cc-blue {
     border-top-color: #03a9f4;
 }
 
@@ -171,7 +191,7 @@
     border-top-color: var(--cc-primary);
 }
 
-.border-top-teal {
+.border-top-cc-teal {
     border-top-color: #009688;
 }
 
@@ -179,15 +199,15 @@
     border-top-color: #777;
 }
 
-.text-blue,
-.text-blue:hover,
-.text-blue:focus {
+.text-cc-blue,
+.text-cc-blue:hover,
+.text-cc-blue:focus {
     color: #03a9f4 !important;
 }
 
-.text-blue-400,
-.text-blue-400:hover,
-.text-blue-400:focus {
+.text-cc-blue-400,
+.text-cc-blue-400:hover,
+.text-cc-blue-400:focus {
     color: #29b6f6 !important;
 }
 
@@ -269,39 +289,39 @@
     color: #c62828 !important;
 }
 
-.text-teal,
-.text-teal:hover,
-.text-teal:focus {
+.text-cc-teal,
+.text-cc-teal:hover,
+.text-cc-teal:focus {
     color: #009688 !important;
 }
 
-.text-teal-400,
-.text-teal-400:hover,
-.text-teal-400:focus {
+.text-cc-teal-400,
+.text-cc-teal-400:hover,
+.text-cc-teal-400:focus {
     color: var(--cc-teal-400) !important;
 }
 
-.text-indigo-400,
-.text-indigo-400:hover,
-.text-indigo-400:focus {
+.text-cc-indigo-400,
+.text-cc-indigo-400:hover,
+.text-cc-indigo-400:focus {
     color: #5c6bc0 !important;
 }
 
-.text-orange-400,
-.text-orange-400:hover,
-.text-orange-400:focus {
+.text-cc-orange-400,
+.text-cc-orange-400:hover,
+.text-cc-orange-400:focus {
     color: #ffa726 !important;
 }
 
-.text-pink-400,
-.text-pink-400:hover,
-.text-pink-400:focus {
+.text-cc-pink-400,
+.text-cc-pink-400:hover,
+.text-cc-pink-400:focus {
     color: #ec407a !important;
 }
 
-.text-slate,
-.text-slate:hover,
-.text-slate:focus {
+.text-cc-slate,
+.text-cc-slate:hover,
+.text-cc-slate:focus {
     color: #607d8b !important;
 }
 

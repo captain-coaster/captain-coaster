@@ -21,7 +21,7 @@
  *
  * Cross-file/cascade-position coupling, same check as `.badge`/`.label`:
  * real usage combines `.btn` with non-`!important` `bg-*`/`border-*`/
- * `text-*` helpers in several places (`btn bg-teal-400`, `btn
+ * `text-*` helpers in several places (`btn bg-cc-teal-400`, `btn
  * bg-danger-400`, notification list's `btn {{ iconColorClass }}` --
  * enumerated via the `NotificationType` enum: bg-primary/bg-success-400/
  * bg-warning-400 -- and `btn border-danger-800 text-danger-800 btn-flat`).

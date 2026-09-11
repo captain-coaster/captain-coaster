@@ -69,15 +69,15 @@
  * A different, non-obvious hazard turned up here: `theme/core/colors/colors.less`
  * (imported near the *end* of app.less, after where `badges.less`/`labels.less`
  * used to sit) generates non-`!important` `.bg-*`/`.border-*` helper classes
- * (`.bg-teal-400`, `.border-warning-600`, ...) that several real `.badge`
- * usages combine with (`badge bg-teal-400`, `badge badge-flat
+ * (`.bg-cc-teal-400`, `.border-warning-600`, ...) that several real `.badge`
+ * usages combine with (`badge bg-cc-teal-400`, `badge badge-flat
  * border-warning-600 text-warning-600`). Originally badges.less/labels.less
  * came *before* colors.less in app.less, so the helper always won on tied
  * properties. Now that this component's CSS lives in tailwind.css — loaded
  * via its own later `import` in app.js, after the *entire* app.less bundle
  * including colors.less — the base `.badge{background-color:transparent;
  * border:1px solid transparent}` would sit *after* colors.less instead of
- * before it, flipping who wins and silently making `bg-teal-400` badges
+ * before it, flipping who wins and silently making `bg-cc-teal-400` badges
  * render with no fill (verified live: computed `background-color` came back
  * transparent instead of `#26a69a`). `text-*` helpers happen to be
  * `!important` in this codebase so `.badge{color:#fff}` was never at risk;

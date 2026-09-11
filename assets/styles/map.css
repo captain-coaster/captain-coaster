@@ -51,7 +51,7 @@
 }
 
 .popup-park-name a:hover {
-    color: var(--cc-cool-gray-600) !important;
+    color: var(--cc-gray-900) !important;
 }
 
 .popup-coasters {
@@ -64,7 +64,7 @@
 }
 
 .popup-coaster a {
-    color: var(--cc-cool-gray-600) !important;
+    color: var(--cc-gray-900) !important;
     text-decoration: none;
     display: flex;
     align-items: center;
@@ -84,7 +84,7 @@
 
 /* Close button */
 .maplibregl-popup-close-button {
-    color: var(--cc-cool-gray-500);
+    color: var(--cc-gray-650);
     font-size: 18px;
     font-weight: bold;
     padding: 8px;
@@ -95,5 +95,5 @@
 }
 
 .maplibregl-popup-close-button:hover {
-    color: var(--cc-cool-gray-600);
+    color: var(--cc-gray-900);
 }

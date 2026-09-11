@@ -22,7 +22,7 @@
     <a href="{{ path('profile_ratings') }}" class="list-group-item">
         {{ ux_icon('heroicons:star', {'class': 'w-6 h-6'}) }}
         {{ 'profile.menu.ratings'|trans }}
-        <span class="badge bg-teal-400 pull-right">{{ user.ratings|length }}</span>
+        <span class="badge bg-cc-teal-400 pull-right">{{ user.ratings|length }}</span>
     </a>
     <a href="{{ path('user_reviews', {'id': user.id}) }}" class="list-group-item">
         {{ ux_icon('heroicons:megaphone', {'class': 'w-6 h-6'}) }}
@@ -36,7 +36,7 @@
         <a href="{{ path('user_pictures', {'id': user.id}) }}" class="list-group-item">
         {{ ux_icon('heroicons:camera', {'class': 'w-6 h-6'}) }}
             {{ 'profile.menu.photos'|trans }}
-            <span class="badge bg-teal-400 pull-right">{{ images_counter }}</span>
+            <span class="badge bg-cc-teal-400 pull-right">{{ images_counter }}</span>
         </a>
     {% endif %}
     <a href="{{ path('map_user', {'id': user.id}) }}" class="list-group-item">

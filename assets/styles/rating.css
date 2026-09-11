@@ -122,15 +122,15 @@
 }
 
 .action-icon:hover {
-    background: rgba(0, 123, 255, 0.1);
-    color: var(--cc-action-blue);
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--cc-primary);
     transform: scale(1.1);
     text-decoration: none;
 }
 
 .action-icon.delete-icon:hover {
-    background: rgba(220, 53, 69, 0.1);
-    color: var(--cc-action-red);
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--cc-danger);
 }
 
 .action-icon i {
@@ -153,7 +153,7 @@
     height: 20px;
     margin: -10px 0 0 -10px;
     border: 2px solid #f3f3f3;
-    border-top: 2px solid var(--cc-action-blue);
+    border-top: 2px solid var(--cc-primary);
     border-radius: 50%;
     animation: rating-spin 1s linear infinite;
 }
@@ -189,7 +189,7 @@
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
     }
     100% {
         transform: scale(1);
@@ -202,7 +202,7 @@
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+        box-shadow: 0 0 10px rgba(244, 67, 54, 0.3);
     }
     100% {
         transform: scale(1);
@@ -211,8 +211,8 @@
 
 /* Enhanced delete confirmation styling */
 .delete-icon.confirming {
-    background: rgba(220, 53, 69, 0.2);
-    color: var(--cc-action-red);
+    background: rgba(244, 67, 54, 0.2);
+    color: var(--cc-danger);
     animation: rating-pulse-delete 1s ease-in-out infinite;
 }
 
@@ -236,7 +236,7 @@
     right: 2px;
     width: 6px;
     height: 6px;
-    background: var(--cc-action-green);
+    background: var(--cc-success);
     border-radius: 50%;
     border: 1px solid white;
 }
@@ -290,8 +290,8 @@
 
 .small-date-input:focus {
     outline: none;
-    border-color: var(--cc-action-blue);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: var(--cc-primary);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
 }
 
 .small-date-input:disabled {
@@ -316,15 +316,15 @@
 }
 
 .today-btn:hover {
-    background: var(--cc-action-blue);
+    background: var(--cc-primary);
     color: white;
-    border-color: var(--cc-action-blue);
+    border-color: var(--cc-primary);
 }
 
 .clear-btn:hover {
-    background: var(--cc-action-red);
+    background: var(--cc-danger);
     color: white;
-    border-color: var(--cc-action-red);
+    border-color: var(--cc-danger);
 }
 
 /* Mobile adjustments */

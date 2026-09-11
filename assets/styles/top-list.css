@@ -72,7 +72,7 @@
 .position-number {
     font-size: 18px;
     font-weight: 700;
-    color: var(--cc-cool-gray-500);
+    color: var(--cc-gray-650);
     line-height: 1;
     user-select: none;
     -webkit-user-select: none;
@@ -81,7 +81,7 @@
 }
 
 .drag-indicator {
-    color: var(--cc-cool-gray-400);
+    color: var(--cc-gray-600);
     opacity: 0.6;
     transition: opacity 0.2s ease;
     user-select: none;
@@ -92,7 +92,7 @@
 
 .drag-area:hover .drag-indicator {
     opacity: 1;
-    color: var(--cc-cool-gray-500);
+    color: var(--cc-gray-650);
 }
 
 /* Coaster Content - Main info area */
@@ -122,7 +122,7 @@
 }
 
 .coaster-park {
-    color: var(--cc-cool-gray-500);
+    color: var(--cc-gray-650);
     font-size: 14px;
 }
 
@@ -159,7 +159,7 @@
     padding: 0;
     border: none;
     background: transparent;
-    color: var(--cc-cool-gray-500);
+    color: var(--cc-gray-650);
     border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -167,7 +167,7 @@
 
 .menu-btn:hover {
     background-color: #f3f4f6;
-    color: var(--cc-cool-gray-600);
+    color: var(--cc-gray-900);
 }
 
 .menu-btn:active {
@@ -178,7 +178,7 @@
 .sortable-ghost {
     opacity: 0.4;
     background-color: #f9fafb;
-    border: 2px dashed var(--cc-focus-blue);
+    border: 2px dashed var(--cc-primary);
     border-radius: 8px;
 }
 
@@ -188,8 +188,8 @@
 
 /* SortableJS: Chosen item (when item is selected/grabbed) */
 .sortable-chosen {
-    border-color: var(--cc-focus-blue);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    border-color: var(--cc-primary);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
 }
 
 .sortable-chosen .drag-area {
@@ -204,8 +204,8 @@
 /* SortableJS: Dragged item (the actual item being dragged) */
 .sortable-drag {
     opacity: 1;
-    border-color: var(--cc-focus-blue);
-    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    border-color: var(--cc-primary);
+    box-shadow: 0 8px 24px rgba(33, 150, 243, 0.3);
     z-index: 1000;
     transform: rotate(2deg);
 }
@@ -240,13 +240,13 @@
 }
 
 .save-status-saved {
-    background-color: var(--cc-action-green);
+    background-color: var(--cc-success);
     color: white;
     border: 1px solid #1e7e34;
 }
 
 .save-status-error {
-    background-color: var(--cc-action-red);
+    background-color: var(--cc-danger);
     color: white;
     border: 1px solid #bd2130;
 }
@@ -349,12 +349,12 @@
 
 /* Accessibility improvements */
 .coaster-entry:focus-within {
-    outline: 2px solid var(--cc-action-blue);
+    outline: 2px solid var(--cc-primary);
     outline-offset: 2px;
 }
 
 .drag-handle:focus {
-    outline: 2px solid var(--cc-action-blue);
+    outline: 2px solid var(--cc-primary);
     outline-offset: 2px;
     border-radius: 2px;
 }

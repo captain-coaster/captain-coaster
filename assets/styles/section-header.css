@@ -40,10 +40,10 @@
         }
 
         &:focus {
-            border-color: var(--cc-focus-blue);
+            border-color: var(--cc-primary);
             background-color: var(--cc-white);
             outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
     }
 }

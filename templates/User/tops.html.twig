@@ -8,7 +8,7 @@
 {% block body %}
   <div class="panel panel-body stack-media-on-mobile">
     <div class="media-left">
-      <a href="#" class="btn btn-link btn-icon text-teal">
+      <a href="#" class="btn btn-link btn-icon text-cc-teal">
         {{ ux_icon('heroicons:clipboard', {'class': 'w-8 h-8 no-edge-top'}) }}
       </a>
     </div>
@@ -17,7 +17,7 @@
       {{ 'list.info'|trans({}, 'top') }}
     </div>
     <div class="media-right media-middle">
-      <a href="{{ path('top_new') }}" class="btn bg-teal-400 btn-lg">{{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 position-left'}) }}
+      <a href="{{ path('top_new') }}" class="btn bg-cc-teal-400 btn-lg">{{ ux_icon('heroicons:plus', {'class': 'w-6 h-6 position-left'}) }}
         {% if tops|length == 0 %}{{ 'list.create_first'|trans({}, 'top') }}{% else %}{{ 'list.create'|trans({}, 'top') }}{% endif %}
       </a>
     </div>

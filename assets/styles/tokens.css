@@ -1,10 +1,10 @@
 /*
  * Design tokens -- captain-coaster/captain-coaster#385, step 2. Wires the
  * values that are actually duplicated across this consolidated tree
- * (colors in 2+ files, every breakpoint) through a single source each,
- * *without* changing any of them -- visually inert on its own. A value
- * used in only one file is left as a literal; this isn't a full design
- * system, just the mechanism plus what's demonstrably repeated today.
+ * (colors in 2+ files, every breakpoint) through a single source each.
+ * A value used in only one file is left as a literal; this isn't a full
+ * design system, just the mechanism plus what's demonstrably repeated
+ * today.
  *
  * Breakpoints use Tailwind's own `--breakpoint-*` @theme namespace, so
  * `theme(--breakpoint-*)` can substitute the value inside `@media`
@@ -14,24 +14,32 @@
  *
  * Colors are deliberately plain `:root` custom properties, NOT Tailwind's
  * `--color-*` @theme namespace: that namespace auto-generates matching
- * `bg-*`/`text-*`/`border-*` utility classes, which would collide by name
- * with colors.css's own hand-authored classes of the same name
- * (`bg-primary`, `text-danger`, ...) -- the exact "two rules, one class
- * name" trap `.collapse` and `.sr-only` already hit earlier in this
- * migration (see app.css). Prefixed `cc-` throughout to stay clear of
- * Tailwind's own reserved token names.
+ * `bg-*`/`text-*`/`border-*` utility classes, which used to collide by
+ * name with colors.css's own hand-authored classes of the same name
+ * (`text-slate`, `bg-teal-400`, ...) -- fixed by renaming the colliding
+ * classes in colors.css instead (see its own header), so the risk this
+ * paragraph originally warned about (the `.collapse`/`.sr-only`
+ * "two rules, one class name" trap) is now moot for colors specifically,
+ * but the `cc-` prefix stays as the general convention for this file.
  *
  * Four parallel, never-reconciled color palettes turned up while
- * consolidating tailwind/*.css and components/*.css into one tree:
- * this file's own "brand" set (Material-derived, from the Bootstrap/
- * Limitless migration), an "action" set (Bootstrap 4/5's default blue/
- * red/green, used in rating.css/search.css/top-list.css), a "focus" blue
- * and "cool gray" scale (Tailwind's own default palette, used in
- * toast.css/section-header.css/top-list.css/map.css/score-card.css), and
- * one-off neutrals. Each is tokenized as its own group below -- merging
- * their hex values would be a real visual change (Phase 3 territory),
- * not a hardening one, so that reconciliation is left for Phase 3 to
- * decide on purpose, not attempted here.
+ * consolidating tailwind/*.css and components/*.css into one tree: this
+ * file's own "brand" set (Material-derived, from the Bootstrap/Limitless
+ * migration), an "action" set (Bootstrap 4/5's default blue/red/green,
+ * used in rating.css/search.css/top-list.css), a "focus" blue and "cool
+ * gray" scale (Tailwind's own default palette, used in toast.css/
+ * section-header.css/top-list.css/map.css/score-card.css), and one-off
+ * neutrals. Reconciled into the single brand set below (2026-09-11) --
+ * every `--cc-action-*`/`--cc-focus-*`/`--cc-cool-gray-*` reference across
+ * the tree now points at the nearest brand/neutral token instead:
+ * action-blue and focus-blue -> primary, action-red -> danger,
+ * action-green -> success, cool-gray-400/500/600 -> the nearest warm-gray
+ * token by lightness (gray-600/gray-650/gray-900). A real, visible color
+ * change on the components that used the old values (rating action
+ * icons, search focus ring, toast notifications, top-list sortable
+ * states, map popup text, score-card percent) -- verified live via
+ * Playwright, not just computed, since unlike the token mechanism itself
+ * this isn't inert by construction.
  */
 @theme {
     --breakpoint-tablet: 769px;
@@ -57,16 +65,10 @@
     --cc-gray-650: #666;
     --cc-gray-900: #333;
 
-    /* Cool grays -- Tailwind's own default gray scale, used verbatim by
-     * map.css/score-card.css/top-list.css. A separate scale from the
-     * warm grays above on purpose: different hue, not a rename of it. */
-    --cc-cool-gray-400: #9ca3af;
-    --cc-cool-gray-500: #6b7280;
-    --cc-cool-gray-600: #374151;
-
     /* Brand -- theme/core/colors/colors.less's Material-derived palette
-     * (colors.css), reused as-is in app.css, forms.css, labels-badges.css,
-     * navbar.css and typography.css. */
+     * (colors.css), reused throughout this tree. The single color system
+     * now -- the former "action"/"focus" Bootstrap-4/Tailwind-default
+     * blues, red and green all point here too (see file header). */
     --cc-primary: #2196f3;
     --cc-primary-600: #1e88e5;
     --cc-info: #00bcd4;
@@ -75,16 +77,4 @@
     --cc-warning-deep: #aa3510;
     --cc-danger: #f44336;
     --cc-teal-400: #26a69a;
-
-    /* Action -- Bootstrap 4/5's default blue/red/green, used by the
-     * rating/search/top-list components (never reconciled with the
-     * Material brand palette above -- see the file header). */
-    --cc-action-blue: #007bff;
-    --cc-action-red: #dc3545;
-    --cc-action-green: #28a745;
-
-    /* Focus -- Tailwind's own default blue, used for focus rings and
-     * sortable-state affordances in toast.css/section-header.css/
-     * top-list.css. */
-    --cc-focus-blue: #3b82f6;
 }
