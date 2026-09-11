@@ -105,10 +105,8 @@ a.thumbnail.active {
     margin-top: 0;
 }
 
-.thumbnail .caption .media-heading:after {
-    content: "";
-    display: table;
-    clear: both;
+.thumbnail .caption .media-heading {
+    display: flow-root;
 }
 
 .thumb {

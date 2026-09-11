@@ -32,30 +32,8 @@
     padding: 20px;
 }
 
-/*
- * Bootstrap's panels.less does `.panel-body { &:extend(.clearfix all); }` --
- * a LESS extend, not a normal nested declaration, easy to miss when reading
- * the file top to bottom. Without it, a `.panel-body` whose direct children
- * are floated (e.g. Bootstrap's `.col-xs-*` grid columns used without a
- * `.row` wrapper) collapses to ~0 height and its content overflows below the
- * panel's bottom edge. Kept for remaining floated media and utility content.
- */
-.panel-body:before,
-.panel-body:after {
-    content: " ";
-    display: table;
-}
-
-.panel-body:after {
-    clear: both;
-}
-
-/* A grid contains its children by design; clearfix pseudo-elements would
- * otherwise become anonymous grid items and shift the first real column. */
-.panel-body.grid:before,
-.panel-body.grid:after {
-    content: none;
-    display: none;
+.panel-body {
+    display: flow-root;
 }
 
 .panel-flat > .panel-heading + .panel-body {
@@ -138,16 +116,11 @@ h6.panel-title,
 }
 
 .panel-footer {
+    display: flow-root;
     position: relative;
     padding: 7px 0;
     background-color: var(--cc-gray-50);
     border-top: 1px solid var(--cc-gray-300);
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
-}
-
-.panel-footer:after {
-    content: "";
-    display: table;
-    clear: both;
 }

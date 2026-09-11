@@ -83,9 +83,8 @@
 
 @media (min-width: theme(--breakpoint-tablet)) {
     .sidebar {
-        display: table-cell;
-        vertical-align: top;
-        width: 260px;
+        display: block;
+        flex: 0 0 260px;
     }
 }
 
@@ -204,6 +203,7 @@
 
 @media (min-width: theme(--breakpoint-tablet)) {
     .sidebar-xs .sidebar-main {
+        flex-basis: 56px;
         width: 56px;
     }
 

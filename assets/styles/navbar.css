@@ -31,35 +31,13 @@
 /* The mobile panel uses a local state contract that cannot collide with
  * Tailwind's visibility utilities. */
 
-/* Shared clearfix targets: bootstrap's LESS uses &:extend(.clearfix all) on
- * .nav, .navbar, .navbar-header, .cc-navbar-panel, .modal-header and
- * .modal-footer -- invisible when reading each rule's own declaration block,
- * confirmed by compiling app.less and finding all six merged into one
- * clearfix selector group. See the .panel-body clearfix bug (Panels &
- * Typography cluster) for the same mechanism catching a real regression. */
-.nav:before,
-.nav:after,
-.navbar:before,
-.navbar:after,
-.navbar-header:before,
-.navbar-header:after,
-.cc-navbar-panel:before,
-.cc-navbar-panel:after,
-.modal-header:before,
-.modal-header:after,
-.modal-footer:before,
-.modal-footer:after {
-    content: " ";
-    display: table;
-}
-
-.nav:after,
-.navbar:after,
-.navbar-header:after,
-.cc-navbar-panel:after,
-.modal-header:after,
-.modal-footer:after {
-    clear: both;
+.nav,
+.navbar,
+.navbar-header,
+.cc-navbar-panel,
+.modal-header,
+.modal-footer {
+    display: flow-root;
 }
 
 /* Nav (base list, used via .nav.navbar-nav) */

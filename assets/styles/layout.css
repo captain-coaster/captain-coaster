@@ -9,8 +9,8 @@
  * base.html.twig's page shell -- rendered on every page, unconditional.
  * Also dropped here (cleanup pass, captain-coaster/captain-coaster#380):
  * a `@-moz-document url-prefix() { .page-container { height: 1px } }`
- * hack, ported verbatim at first for an old Gecko `min-height` +
- * `display:table` bug. `@-moz-document` without a URL argument has been
+ * hack, ported verbatim at first for an old Gecko `min-height` + table-layout
+ * bug. `@-moz-document` without a URL argument has been
  * disabled for regular web content since Firefox 59 (2018) -- long
  * before this project's supported-browser floor -- so the rule was
  * already inert in every browser this site ships to; not a behavior
@@ -39,19 +39,14 @@
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .page-container {
-        width: 100%;
-        display: table;
-        table-layout: fixed;
-    }
-
     .page-content {
-        display: table-row;
+        display: flex;
+        width: 100%;
     }
 
     .content-wrapper {
-        display: table-cell;
-        vertical-align: top;
+        flex: 1;
+        min-width: 0;
     }
 }
 
@@ -60,13 +55,8 @@
 }
 
 .content {
+    display: flow-root;
     padding: 0 20px 60px 20px;
-}
-
-.content:after {
-    content: "";
-    display: table;
-    clear: both;
 }
 
 .footer {
@@ -107,8 +97,8 @@
 }
 
 /*
- * Login page layout -- overrides the table-based shell above with
- * flexbox for the one page (connect/login.html.twig) that centers a
+ * Login page layout uses flexbox for the one page (connect/login.html.twig)
+ * that centers a
  * single form instead of running the sidebar/content-wrapper layout.
  */
 body.login-container {
