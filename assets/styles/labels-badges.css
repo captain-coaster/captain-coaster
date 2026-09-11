@@ -95,10 +95,12 @@
  * one "wins" is moot in practice — unlike badge's base transparency, which
  * doesn't coincide with anything.
  *
- * General lesson for the rest of this phase: moving a component's CSS out
- * of app.less into tailwind.css doesn't just risk the already-known
- * "@layer loses to unlayered" and "rem vs this site's 10px root" traps — it
- * also changes that component's position in the unlayered cascade relative
+ * General lesson from Phase 2 (captain-coaster/captain-coaster#380):
+ * moving a component's CSS out of app.less into tailwind.css didn't just
+ * risk the already-known "@layer loses to unlayered" and "rem vs this
+ * site's [then-]10px root" traps (the second one is gone now -- root is
+ * 16px as of captain-coaster/captain-coaster#385 step 3) — it also
+ * changed that component's position in the unlayered cascade relative
  * to *every other* unlayered file, not just the ones that reference its
  * classes. `theme/core/colors/colors.less` and `theme/components/ui/
  * helpers.less` both sit near the end of app.less and both generate

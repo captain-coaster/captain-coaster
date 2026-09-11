@@ -3,7 +3,7 @@
         <div class="panel-heading">
             <h6 class="panel-title">
                 <span class="text-semibold">
-                    {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6 position-left'}) }} {{ 'ai_summary.panel.title'|trans({}, 'ai_summary') }}
+                    {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4 position-left'}) }} {{ 'ai_summary.panel.title'|trans({}, 'ai_summary') }}
                 </span>
             </h6>
         </div>
@@ -14,7 +14,7 @@
                 <div class="row">
                     {% if coasterSummary.dynamicPros|length > 0 %}
                         <div class="col-md-6">
-                            <h6 style="color: #065f46;">{{ ux_icon('heroicons:check', {'class': 'w-5 h-5'}) }} {{ 'ai_summary.panel.highlights'|trans({}, 'ai_summary') }}</h6>
+                            <h6 style="color: #065f46;">{{ ux_icon('heroicons:check', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.highlights'|trans({}, 'ai_summary') }}</h6>
                             {% for pro in coasterSummary.dynamicPros %}
                                 <span class="label label-success label-rounded">{{ pro }}</span>
                             {% endfor %}
@@ -22,7 +22,7 @@
                     {% endif %}
                     {% if coasterSummary.dynamicCons|length > 0 %}
                         <div class="col-md-6">
-                            <h6 style="color: #9f1239;">{{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-5 h-5'}) }} {{ 'ai_summary.panel.concerns'|trans({}, 'ai_summary') }}</h6>
+                            <h6 style="color: #9f1239;">{{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.concerns'|trans({}, 'ai_summary') }}</h6>
                             {% for con in coasterSummary.dynamicCons %}
                                 <span class="label label-danger label-rounded">{{ con }}</span>
                             {% endfor %}
@@ -35,7 +35,7 @@
             <div class="summary-feedback-section">
                 <div class="summary-feedback-footer">
                     <small class="text-muted" title="{{ 'ai_summary.info.based_on'|trans({'count': coasterSummary.reviewsAnalyzed}, 'ai_summary') }}">
-                        {{ ux_icon('heroicons:information-circle', {'class': 'w-6 h-6'}) }} {{ 'ai_summary.info.short'|trans({}, 'ai_summary') }}
+                        {{ ux_icon('heroicons:information-circle', {'class': 'w-4 h-4'}) }} {{ 'ai_summary.info.short'|trans({}, 'ai_summary') }}
                     </small>
                     <div
                         class="summary-feedback-buttons"
@@ -65,8 +65,8 @@
                                 data-action="click->summary-feedback#thumbsUp"
                                 title="{{ 'ai_summary.feedback.button.helpful'|trans({}, 'ai_summary') }}"
                             >
-                                <span class="summary-feedback-icon-outline">{{ ux_icon('tabler:thumb-up', {'class': 'w-6 h-6'}) }}</span>
-                                <span class="summary-feedback-icon-filled">{{ ux_icon('tabler:thumb-up-filled', {'class': 'w-6 h-6'}) }}</span>
+                                <span class="summary-feedback-icon-outline">{{ ux_icon('tabler:thumb-up', {'class': 'w-4 h-4'}) }}</span>
+                                <span class="summary-feedback-icon-filled">{{ ux_icon('tabler:thumb-up-filled', {'class': 'w-4 h-4'}) }}</span>
                             </button>
                             <button
                                 type="button"
@@ -75,8 +75,8 @@
                                 data-action="click->summary-feedback#thumbsDown"
                                 title="{{ 'ai_summary.feedback.button.not_helpful'|trans({}, 'ai_summary') }}"
                             >
-                                <span class="summary-feedback-icon-outline">{{ ux_icon('tabler:thumb-down', {'class': 'w-6 h-6'}) }}</span>
-                                <span class="summary-feedback-icon-filled">{{ ux_icon('tabler:thumb-down-filled', {'class': 'w-6 h-6'}) }}</span>
+                                <span class="summary-feedback-icon-outline">{{ ux_icon('tabler:thumb-down', {'class': 'w-4 h-4'}) }}</span>
+                                <span class="summary-feedback-icon-filled">{{ ux_icon('tabler:thumb-down-filled', {'class': 'w-4 h-4'}) }}</span>
                             </button>
                         </div>
                         <span class="summary-feedback-counts">
@@ -84,7 +84,7 @@
                             <span data-summary-feedback-target="negativeCount">{{ coasterSummary.negativeVotes }}</span>
                         </span>
                         <span data-summary-feedback-target="loadingIndicator" class="summary-feedback-loading-indicator">
-                            <span class="summary-feedback-spinner">{{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner'}) }}</span>
+                            <span class="summary-feedback-spinner">{{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner'}) }}</span>
                         </span>
                     </div>
                 </div>

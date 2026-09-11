@@ -7,7 +7,7 @@
           <a href="{{ path('notification_read', {'id': recipient.id}) }}"
              class="btn {{ notification.type.iconColorClass }} btn-rounded btn-icon btn-xs"
              {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
-            {{ ux_icon(notification.type.icon, {'class': 'w-5 h-5'}) }}
+            {{ ux_icon(notification.type.icon, {'class': 'w-3.5 h-3.5'}) }}
           </a>
         </div>
 

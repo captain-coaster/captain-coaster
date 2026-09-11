@@ -7,7 +7,7 @@
         <!-- Form with validation -->
         <div class="panel panel-body login-form">
         <div class="text-center mb-3">
-            <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }}</div>
+            <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-4 h-4'}) }}</div>
             <h5 class="content-group-lg">{{ 'login.title'|trans }}
                 <small
                     class="display-block">{{ 'login.subtitle'|trans }}</small>
@@ -31,7 +31,7 @@
                 {% if rateLimitExceeded %}{% set emailAttr = emailAttr|merge({'disabled': 'disabled'}) %}{% endif %}
                 {{ form_widget(loginForm.email, {'attr': emailAttr}) }}
                 <div class="form-control-feedback">
-                    {{ ux_icon('heroicons:envelope', {'class': 'w-6 h-6 text-muted'}) }}
+                    {{ ux_icon('heroicons:envelope', {'class': 'w-4 h-4 text-muted'}) }}
                 </div>
             </div>
             {% if not loginForm.email.vars.valid %}
@@ -62,7 +62,7 @@
             <li>
                 <a href="{{ path('connect_google_start') }}"
                    class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
-                    {{ ux_icon('fe:google', {'class': 'w-6 h-6'}) }}
+                    {{ ux_icon('fe:google', {'class': 'w-4 h-4'}) }}
                     {{ 'login.connect_with_google'|trans }}
                 </a>
             </li>

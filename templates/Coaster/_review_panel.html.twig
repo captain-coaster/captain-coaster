@@ -6,7 +6,7 @@
                 <div class="section-header__container">
                     <div class="section-header__title">
                         <span class="text-semibold">
-                            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
+                            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.title'|trans }}
                         </span>
                         {%- if reviewCount > 0 -%}
                             <span class="badge badge-primary">{{ reviewCount }}</span>
@@ -45,7 +45,7 @@
                     <div>
                         <a href="{{ path('review_form', {'id': coaster.id}) }}"
                            class="btn btn-primary btn-rounded btn-xs">
-                            {{ ux_icon('heroicons:plus-circle', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.send'|trans() }}
+                            {{ ux_icon('heroicons:plus-circle', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.send'|trans() }}
                         </a>
                     </div>
                 {%- endif -%}
@@ -65,7 +65,7 @@
             </div>
         {%- elseif coaster.isRateable -%}
             <div class="panel-body text-center text-muted">
-                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
+                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
                 <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
             </div>
         {%- endif -%}

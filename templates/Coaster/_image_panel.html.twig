@@ -3,7 +3,7 @@
     <div class="panel-heading">
         <h6 class="panel-title">
             <span class="text-semibold">
-                {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
+                {{ ux_icon('heroicons:photo', {'class': 'w-4 h-4 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                 {% if image_count > 0 %}
                     <span class="badge badge-primary">{{ image_count }}</span>
                 {% endif %}
@@ -53,7 +53,7 @@
         {% endif %}
     {% else %}
         <div class="panel-body text-center text-muted">
-            {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
+            {{ ux_icon('heroicons:photo', {'class': 'w-5 h-5'}) }}
             <p class="mt-10">{{ 'coaster.photos.empty'|trans }}</p>
             <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn btn-primary btn-sm">
                 {{ 'coaster.photos.button'|trans }}

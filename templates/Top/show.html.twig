@@ -10,13 +10,13 @@
       <div class="row">
         <div class="col-sm-8">
           <ul class="list-inline no-margin">
-            <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-6 h-6 position-left'}) }} {{ top.topCoasters|length }}</li>
+            <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-4 h-4 position-left'}) }} {{ top.topCoasters|length }}</li>
             <li>
-              {{ ux_icon('heroicons:user', {'class': 'w-6 h-6 position-left'}) }}
+              {{ ux_icon('heroicons:user', {'class': 'w-4 h-4 position-left'}) }}
               <a href="{{ path('user_show', {'slug': top.user.slug}) }}">{{ top.user.displayName }}</a>
             </li>
             <li>
-              {{ ux_icon('heroicons:clock', {'class': 'w-6 h-6 position-left'}) }}
+              {{ ux_icon('heroicons:clock', {'class': 'w-4 h-4 position-left'}) }}
               {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}
             </li>
           </ul>
@@ -25,12 +25,12 @@
           <div class="col-sm-4 text-right">
             {% if is_granted('edit', top) %}
               <a href="{{ path('top_edit', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm" aria-label="{{ 'update'|trans({}, 'top') }}">
-                {{ ux_icon('heroicons:pencil', {'class': 'w-5 h-5'}) }}
+                {{ ux_icon('heroicons:pencil', {'class': 'w-3.5 h-3.5'}) }}
               </a>
             {% endif %}
             {% if is_granted('edit-details', top) %}
               <a href="{{ path('top_edit_details', {'id': top.id}) }}" class="btn bg-primary-400 btn-sm" aria-label="{{ 'update_details'|trans({}, 'top') }}">
-                {{ ux_icon('heroicons:cog-8-tooth', {'class': 'w-5 h-5'}) }}
+                {{ ux_icon('heroicons:cog-8-tooth', {'class': 'w-3.5 h-3.5'}) }}
               </a>
             {% endif %}
             {% if is_granted('delete', top) %}
@@ -38,7 +38,7 @@
                  onclick="return confirm('{{ 'delete_confirmation'|trans({}, 'top') }}');"
                  class="btn bg-danger-400 btn-sm"
                  aria-label="{{ 'delete'|trans({}, 'top') }}">
-                {{ ux_icon('heroicons:trash', {'class': 'w-5 h-5'}) }}
+                {{ ux_icon('heroicons:trash', {'class': 'w-3.5 h-3.5'}) }}
               </a>
             {% endif %}
           </div>
