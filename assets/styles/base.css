@@ -102,9 +102,20 @@ th {
  * the bare input/button/select/textarea font-inherit reset;
  * `img{vertical-align:middle}`.
  *
- * `html{font-size:10px}` is kept as-is -- this is iso-visual, not the
- * rem-scaling fix (captain-coaster/captain-coaster#385's font-size step
- * owns that).
+ * `html{font-size:16px}` -- captain-coaster/captain-coaster#385, step 3.
+ * Was `10px`, a leftover of the original Limitless theme's own rem-
+ * scaling convention; every Bootstrap/Limitless-derived rule in this
+ * tree was ported as the LESS's already-compiled, literal px output
+ * (not `rem`), so none of it depended on the root value -- iso-visual
+ * throughout Phase 2 and the consolidation/token passes since. What
+ * *did* depend on it, silently: every bare Tailwind utility class used
+ * directly in templates (`w-6 h-6` icon sizing via `ux_icon()`, ~443
+ * usages) and a handful of hand-written "modern" components that use
+ * `rem` directly (gallery.css, search.css, top-list.css,
+ * rating-distribution.css) -- both were rendering at 10/16 = 62.5% of
+ * their intended size. This is the fix, not a workaround for it; the
+ * resulting ~60% size-up on those elements is expected, verified live
+ * rather than assumed harmless.
  */
 * {
     box-sizing: border-box;
@@ -117,7 +128,7 @@ th {
 
 html {
     height: 100%;
-    font-size: 10px;
+    font-size: 16px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 

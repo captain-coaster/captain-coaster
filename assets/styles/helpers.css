@@ -5,12 +5,14 @@
  * is real), and scaffolding's own image/row utility classes.
  *
  * These classes are NOT delegated to Tailwind's own same-named utilities
- * the way `.sr-only`/`.text-center` are elsewhere: Tailwind's spacing scale
- * (`m-5`, `mt-10`, ...) is `rem`-relative, and this site's root font-size
- * is still 10px -- Tailwind's `mt-10` would render at 25px here, not this
- * file's literal 10px. Ported as plain px values instead, exactly matching
- * the LESS source. (captain-coaster/captain-coaster#385's font-size step
- * unwinds the 10px root; revisit delegating these to Tailwind once it does.)
+ * the way `.sr-only`/`.text-center` are elsewhere: it's not just a root-
+ * font-size mismatch (fixed, base.css is `16px` now, captain-coaster/
+ * captain-coaster#385 step 3) but a naming-convention mismatch that
+ * survives it -- this file's numbers count literal pixels (`.mt-10` is
+ * `10px`), Tailwind's count spacing-scale steps (`mt-10` is 10 * 0.25rem
+ * = `40px` at a 16px root). Same class name, different meaning either
+ * way; ported as plain px values instead, exactly matching the LESS
+ * source, and staying that way regardless of root font-size.
  */
 .no-margin {
     margin: 0 !important;
