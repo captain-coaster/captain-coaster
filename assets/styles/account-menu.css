@@ -186,12 +186,13 @@
      * same as the burger icon beside it.
      */
 
-    /* Bootstrap's own .navbar-collapse.collapse caps this at 340px with an
-     * inner scrollbar (fine for a short nav list, not for a full account
+    /* The navbar panel caps its height on narrow landscape screens; let the
+     * account menu grow to its content height instead of adding an inner
+     * scrollbar (fine for a short nav list, not for a full account
      * panel). Let it grow to its content height and let the page scroll
      * instead of an inner scroll box.
      */
-    #navbar-mobile.collapse {
+    #navbar-mobile.cc-navbar-panel {
         max-height: none;
         overflow-y: visible;
     }

@@ -28,22 +28,11 @@
  * actually matches anything real in this app and is skipped entirely below.
  */
 
-/*
- * Tailwind ships its own `.collapse` utility (`visibility: collapse`, one of
- * visible/invisible/collapse) which collides by name with Bootstrap's
- * `.collapse` component class on #navbar-mobile. They set different
- * properties (visibility vs display), so there's no cascade tie for the
- * unlayered-always-wins-over-layered rule to resolve -- both apply
- * simultaneously. `visibility` inherits, so every descendant of the open
- * mobile nav silently went invisible while the panel itself still opened
- * and took up space. Caught live via Playwright, not by any CSS-text diff.
- */
-.navbar-collapse {
-    visibility: visible;
-}
+/* The mobile panel uses a local state contract that cannot collide with
+ * Tailwind's visibility utilities. */
 
 /* Shared clearfix targets: bootstrap's LESS uses &:extend(.clearfix all) on
- * .nav, .navbar, .navbar-header, .navbar-collapse, .modal-header and
+ * .nav, .navbar, .navbar-header, .cc-navbar-panel, .modal-header and
  * .modal-footer -- invisible when reading each rule's own declaration block,
  * confirmed by compiling app.less and finding all six merged into one
  * clearfix selector group. See the .panel-body clearfix bug (Panels &
@@ -54,8 +43,8 @@
 .navbar:after,
 .navbar-header:before,
 .navbar-header:after,
-.navbar-collapse:before,
-.navbar-collapse:after,
+.cc-navbar-panel:before,
+.cc-navbar-panel:after,
 .modal-header:before,
 .modal-header:after,
 .modal-footer:before,
@@ -67,7 +56,7 @@
 .nav:after,
 .navbar:after,
 .navbar-header:after,
-.navbar-collapse:after,
+.cc-navbar-panel:after,
 .modal-header:after,
 .modal-footer:after {
     clear: both;
@@ -394,7 +383,7 @@
     }
 }
 
-.navbar-collapse > .navbar-header {
+.cc-navbar-panel > .navbar-header {
     margin-left: 0;
 }
 
@@ -418,7 +407,8 @@
     }
 }
 
-.navbar-collapse {
+.cc-navbar-panel {
+    display: none;
     padding-right: 20px;
     padding-left: 20px;
     overflow-x: visible;
@@ -427,24 +417,18 @@
     text-align: center;
 }
 
-.navbar-collapse.in {
+.cc-navbar-panel[data-open] {
+    display: block;
     overflow-y: auto;
 }
 
-/*
- * `.navbar-collapse.collapsing{transition-duration:.00000001s}` (a
- * Limitless override disabling collapse.js's height animation) removed
- * here: confirmed dead when migrating component-animations.less --
- * `navbar_collapse_controller.js` toggles `.in` directly and no JS
- * anywhere ever adds a `.collapsing` class, so nothing ever needed
- * defeating.
- */
-.navbar + .navbar-collapse {
+.navbar + .cc-navbar-panel {
     border-top: 0;
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar-collapse {
+    .cc-navbar-panel {
+        display: block;
         width: auto;
         border-top: 0;
         box-shadow: none;
@@ -452,18 +436,17 @@
         margin-left: -20px;
     }
 
-    .navbar-collapse.collapse {
-        display: block !important;
+    .cc-navbar-panel {
         height: auto !important;
         padding-bottom: 0;
         overflow: visible !important;
     }
 
-    .navbar-collapse.in {
+    .cc-navbar-panel[data-open] {
         overflow-y: visible;
     }
 
-    .navbar-fixed-top .navbar-collapse {
+    .navbar-fixed-top .cc-navbar-panel {
         padding-right: 0;
         padding-left: 0;
     }
@@ -478,12 +461,12 @@
     border-width: 0 0 1px;
 }
 
-.navbar-fixed-top .navbar-collapse {
+.navbar-fixed-top .cc-navbar-panel {
     max-height: 340px;
 }
 
 @media (max-device-width: 480px) and (orientation: landscape) {
-    .navbar-fixed-top .navbar-collapse {
+    .navbar-fixed-top .cc-navbar-panel {
         max-height: 200px;
     }
 }
@@ -694,7 +677,7 @@
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-.navbar-inverse .navbar-collapse {
+.navbar-inverse .cc-navbar-panel {
     border-color: rgba(0, 0, 0, 0.2);
 }
 

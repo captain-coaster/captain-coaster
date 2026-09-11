@@ -43,24 +43,30 @@ export default class extends Controller {
     }
 
     toggleMobileMain() {
-        document.getElementById('navbar-mobile')?.classList.remove('in');
+        document.getElementById('navbar-mobile')?.removeAttribute('data-open');
         document.body.classList.toggle('sidebar-mobile-main');
         document.body.classList.remove('sidebar-mobile-secondary');
     }
 
     toggleMobileSecondary() {
-        document.getElementById('navbar-mobile')?.classList.remove('in');
+        document.getElementById('navbar-mobile')?.removeAttribute('data-open');
         document.body.classList.toggle('sidebar-mobile-secondary');
         document.body.classList.remove('sidebar-mobile-main');
     }
 
     closeMobile() {
-        document.body.classList.remove('sidebar-mobile-main', 'sidebar-mobile-secondary');
+        document.body.classList.remove(
+            'sidebar-mobile-main',
+            'sidebar-mobile-secondary'
+        );
     }
 
     _onResize() {
         if (window.innerWidth > 768) {
-            document.body.classList.remove('sidebar-mobile-main', 'sidebar-mobile-secondary');
+            document.body.classList.remove(
+                'sidebar-mobile-main',
+                'sidebar-mobile-secondary'
+            );
         }
     }
 }

@@ -36,25 +36,12 @@
 
 /*
  * Component animations -- migrated: bootstrap/less/component-animations.less.
- * `.collapse`/`.collapse.in` below is exactly what the `.collapse{
- * visibility:visible}` fix at the top of the entry stylesheet counters
- * (Tailwind's own `.collapse` utility's `visibility:collapse`), while
- * `display:none`/`.in{display:block}` (a different property, no
- * conflict) always needed to come from *somewhere* unlayered; this file
- * is that source.
- *
  * `.fade`/`.fade.in` is real and needed by the review-report modal
  * (`class="modal fade"` in _review_item.html.twig, toggled by
  * modal_controller.js) -- its own backdrop is now the browser's native
  * `<dialog>` `::backdrop`, styled directly in navbar.css, no longer a
  * `.fade`-toggled element of its own.
  *
- * `.collapse`/`.in` is real too (`#navbar-mobile`'s `class="navbar-collapse
- * collapse"`, toggled via `.in` by navbar_collapse_controller.js).
- * `.collapsing` and the `tr&.in`/`tbody&.in` table variants are NOT
- * ported: no JS anywhere ever adds a `.collapsing` class
- * (`navbar_collapse_controller.js` toggles `.in` directly), and no
- * template collapses a `<tr>`/`<tbody>`.
  */
 .fade {
     opacity: 0;
@@ -63,12 +50,4 @@
 
 .fade.in {
     opacity: 1;
-}
-
-.collapse {
-    display: none;
-}
-
-.collapse.in {
-    display: block;
 }

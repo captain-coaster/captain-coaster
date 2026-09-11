@@ -12,8 +12,7 @@
  *  two) instead of one. Everything below is grouped by feature instead.
  *
  *  The reset and Captain Coaster's element defaults sit in `@layer base`;
- *  components sit in `@layer components`. `.collapse` stays unlayered on
- *  purpose -- see its own comment just above. colors.css used to need
+ *  components sit in `@layer components`. colors.css used to need
  *  the same treatment: several of its class names (`text-slate`,
  *  `*-blue-400`, `*-teal-400`, `*-indigo-400`, `*-orange-400`,
  *  `*-pink-400`) collided with Tailwind's own default color-scale
@@ -54,22 +53,6 @@
  */
 
 @source "../../templates";
-
-/*
- * Tailwind's built-in `.collapse` utility (visibility: collapse, meant for
- * table rows) collides with Bootstrap 3's unrelated `.collapse` JS-toggle
- * class (responsive-visibility.css). @source above picks up the literal
- * token from templates/navbar.html.twig's `navbar-collapse collapse` div.
- * `visibility` is a property Bootstrap never sets there, so it applied
- * unopposed and silently hid the whole #navbar-mobile block (both the
- * left-side toggle and the right-side user/notifications dropdown) on
- * every viewport -- visibility:collapse on a non-table element is
- * equivalent to hidden per spec. Unlayered here so it wins regardless of
- * source order.
- */
-.collapse {
-    visibility: visible;
-}
 
 @import "./colors.css" layer(components);
 
