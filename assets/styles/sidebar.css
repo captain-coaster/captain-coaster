@@ -258,6 +258,32 @@
         width: 260px;
     }
 
+    /*
+     * The container above widening to 260px doesn't, on its own, undo
+     * the mini-mode item styles a few rules up (icon-centered, no label)
+     * -- Bootstrap Limitless never needed to, since its own hover-expand
+     * only ever revealed one item's label at a time via a per-item
+     * `:hover` flyout (dead in this app already, per this file's own
+     * header: sidebar_controller.js's mouseenter fires before it can
+     * apply). Restoring the icon+label row layout here instead, for
+     * every item at once, is what actually makes the widened panel show
+     * something -- otherwise hovering the collapsed sidebar just opens
+     * 260px of empty space.
+     */
+    .sidebar-xs.sidebar-fixed-expanded .sidebar-fixed.sidebar-main .sidebar-content {
+        width: 260px;
+    }
+
+    .sidebar-xs.sidebar-fixed-expanded .sidebar-main .navigation > li > a {
+        text-align: left;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .sidebar-xs.sidebar-fixed-expanded .sidebar-main .navigation > li > a > span {
+        display: inline;
+    }
+
     .sidebar-fixed-expanded .content-wrapper {
         padding-left: 56px;
     }
