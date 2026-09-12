@@ -63,3 +63,9 @@ a:focus {
 a:focus {
     outline: 0;
 }
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}

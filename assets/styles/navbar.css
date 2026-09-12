@@ -120,6 +120,12 @@
     outline: 0;
 }
 
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-menu__toggle:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
 .cc-menu__list {
     position: absolute;
     top: 100%;
@@ -177,6 +183,12 @@
     background-color: var(--cc-gray-100);
 }
 
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-menu__list > li > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+}
+
 .cc-menu__list > .active > a,
 .cc-menu__list > .active > a:hover,
 .cc-menu__list > .active > a:focus {
@@ -184,6 +196,16 @@
     text-decoration: none;
     background-color: var(--cc-primary);
     outline: 0;
+}
+
+/*
+ * Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged.
+ * Needs its own rule: `.cc-menu__list > .active > a:focus`'s outline:0
+ * above outranks the generic `> li > a:focus-visible` one on specificity.
+ */
+.cc-menu__list > .active > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
 }
 
 .cc-menu__list > .disabled > a,
@@ -229,6 +251,12 @@
 
 .is-open > a {
     outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.is-open > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
 }
 
 .cc-menu__list--right {
