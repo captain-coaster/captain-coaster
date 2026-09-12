@@ -1,24 +1,24 @@
 /*
  * Forms -- migrated: theme/bootstrap-limitless/forms.less +
- * bootstrap/less/forms.less. `.control-label` needs *zero* CSS -- its
+ * bootstrap/less/forms.less. `.cc-field__label` needs *zero* CSS -- its
  * only styling anywhere is nested under `.form-horizontal`, and the one
  * template using `.form-horizontal` (Coaster/_review_panel.html.twig)
- * never puts `.control-label` inside it. `.form-horizontal` itself turns
+ * never puts `.cc-field__label` inside it. `.form-horizontal` itself turns
  * out fully inert for the same reason: every one of its rules targets a
- * descendant `.control-label` or an exact `.form-group` class, and the
- * one real `.form-horizontal` form uses `.form-group-xs` alone (a
- * different class, not `.form-group` + a size modifier) with no
- * `.control-label` at all -- so `.form-horizontal` is dropped too.
+ * descendant `.cc-field__label` or an exact `.cc-field` class, and the
+ * one real `.form-horizontal` form uses `.cc-field--xs` alone (a
+ * different class, not `.cc-field` + a size modifier) with no
+ * `.cc-field__label` at all -- so `.form-horizontal` is dropped too.
  * `.radio` and everything radio-only is dropped (zero `<input
  * type="radio">`/`.radio` usage anywhere). `.checkbox` itself *is* needed
  * for 3 real cases (Coaster/image-upload.html.twig, Profile/settings.html.twig)
  * -- most `.checkbox` usage in templates is inside
- * `.toggle-switch-form-group`, which already fully re-skins it via
+ * `.toggle-switch-cc-field`, which already fully re-skins it via
  * toggle-switch.css (untouched, unrelated to this migration).
  */
 
 /*
- * Generic `label` reset -- every real `.checkbox label`/`.control-label`
+ * Generic `label` reset -- every real `.checkbox label`/`.cc-field__label`
  * on the page depends on this (bootstrap/less/forms.less's un-classed
  * `label{}` base rule, easy to miss since it targets the bare element,
  * not a class). Confirmed via getComputedStyle before/after: dropping
@@ -36,18 +36,18 @@ label {
  * Bootstrap's forms.less ("Remove inputs shadow in mobile browsers") reset
  * `-webkit-appearance` on every text-like input type + textarea.
  */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="number"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="url"],
-input[type="tel"],
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='number'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='date'],
+input[type='month'],
+input[type='time'],
+input[type='week'],
+input[type='url'],
+input[type='tel'],
 textarea {
     -webkit-appearance: none;
     appearance: none;
@@ -60,19 +60,19 @@ textarea {
  * overrides that back to border-box specifically for search inputs --
  * "Override content-box in Normalize (* isn't specific enough)", per its
  * own comment -- plus removes the iOS rounded-corner search styling so
- * `.form-control` can style it instead. Missing this rule made the
+ * `.cc-field__control` can style it instead. Missing this rule made the
  * search bar in the page header render ~40px wider than its container
  * (padding/border added on top of the declared width instead of being
- * included in it). `.form-control`'s own `width:100%` only prevents this
+ * included in it). `.cc-field__control`'s own `width:100%` only prevents this
  * class of bug when box-sizing is already border-box.
  */
-input[type="search"] {
+input[type='search'] {
     box-sizing: border-box;
     -webkit-appearance: none;
     appearance: none;
 }
 
-.form-control {
+.cc-field__control {
     color: var(--cc-gray-900);
     background-color: var(--cc-white);
     background-image: none;
@@ -90,38 +90,38 @@ input[type="search"] {
     box-shadow: none;
 }
 
-.form-control:focus {
+.cc-field__control:focus {
     border-color: var(--cc-gray-300);
     outline: 0;
     box-shadow: none;
 }
 
-.form-control[class*="bg-"]:focus {
+.cc-field__control[class*='bg-']:focus {
     border-color: transparent;
 }
 
-.form-control[disabled],
-.form-control[readonly],
-fieldset[disabled] .form-control {
+.cc-field__control[disabled],
+.cc-field__control[readonly],
+fieldset[disabled] .cc-field__control {
     opacity: 1;
     background-color: var(--cc-gray-40);
 }
 
-.form-control[disabled],
-fieldset[disabled] .form-control {
+.cc-field__control[disabled],
+fieldset[disabled] .cc-field__control {
     cursor: not-allowed;
 }
 
-.form-group {
+.cc-field {
     margin-bottom: 20px;
     position: relative;
 }
 
-.form-group .form-group:last-child {
+.cc-field .cc-field:last-child {
     margin-bottom: 0;
 }
 
-.form-group-xs .form-control {
+.cc-field--xs .cc-field__control {
     border-radius: 2px;
     height: 32px;
     padding: 5px 10px;
@@ -144,7 +144,7 @@ fieldset[disabled] .form-control {
     font-weight: 400;
 }
 
-.checkbox input[type="checkbox"] {
+.checkbox input[type='checkbox'] {
     position: absolute;
     margin-left: -20px;
 }
@@ -170,21 +170,21 @@ fieldset[disabled] .checkbox label {
     position: relative;
 }
 
-.has-feedback .form-control {
+.has-feedback .cc-field__control {
     padding-right: 36px;
 }
 
-.has-feedback-left .form-control {
+.has-feedback-left .cc-field__control {
     padding-left: 36px;
     padding-right: 12px;
 }
 
-.has-feedback-left .form-control-feedback {
+.has-feedback-left .cc-field__feedback {
     left: 0;
     right: auto;
 }
 
-.form-control-feedback {
+.cc-field__feedback {
     z-index: 3;
     color: var(--cc-gray-900);
     text-align: center;
@@ -203,19 +203,19 @@ fieldset[disabled] .checkbox label {
     color: #d84315;
 }
 
-.has-error .form-control {
+.has-error .cc-field__control {
     border-color: #d84315;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
-.has-error .form-control:focus {
+.has-error .cc-field__control:focus {
     border-color: var(--cc-warning-deep);
     box-shadow:
         inset 0 1px 1px rgba(0, 0, 0, 0.075),
         0 0 6px #f08463;
 }
 
-.has-error .form-control-feedback {
+.has-error .cc-field__feedback {
     color: #d84315;
 }
 
@@ -260,18 +260,18 @@ fieldset:first-child legend:first-child {
  * 16px floor regardless of the size classes above; desktop narrows it
  * back down via the media query at the bottom.
  */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="search"],
-input[type="tel"],
-input[type="url"],
-input[type="number"],
-input[type="date"],
-input[type="datetime-local"],
-input[type="month"],
-input[type="week"],
-input[type="time"],
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+input[type='number'],
+input[type='date'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='week'],
+input[type='time'],
 select,
 textarea {
     font-size: 16px !important; /* Minimum 16px prevents iOS zoom */
@@ -279,14 +279,14 @@ textarea {
 }
 
 /* Date input specific fixes */
-input[type="date"] {
+input[type='date'] {
     /* Fix vertical alignment on mobile - center the text */
     line-height: normal;
     cursor: pointer;
 }
 
 /* Fix for webkit browsers (Safari, Chrome) date input alignment */
-input[type="date"]::-webkit-date-and-time-value {
+input[type='date']::-webkit-date-and-time-value {
     text-align: left;
 }
 
@@ -296,14 +296,14 @@ input[type="date"]::-webkit-date-and-time-value {
  * otherwise inflate this icon noticeably larger than the rest of the
  * field's chrome.
  */
-input[type="date"]::-webkit-calendar-picker-indicator {
+input[type='date']::-webkit-calendar-picker-indicator {
     cursor: pointer;
     opacity: 0.6;
     width: 16px;
     height: 16px;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+input[type='date']::-webkit-calendar-picker-indicator:hover {
     opacity: 1;
 }
 
@@ -312,7 +312,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
  * form's ridden-date field) still gets font-size:16px!important from the
  * base rule above -- can't go lower, iOS zooms the page on focus below
  * that. Trims the surrounding box instead so it doesn't look oversized
- * next to this page's other .form-control fields, mirroring the same
+ * next to this page's other .cc-field__control fields, mirroring the same
  * "shrink everything but the font" fix applied to rating.css's own
  * `.small-date-input`.
  */
@@ -328,18 +328,18 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
  * (captain-coaster/captain-coaster#385 consolidation pass).
  */
 @media (min-width: theme(--breakpoint-tablet)) {
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="search"],
-    input[type="tel"],
-    input[type="url"],
-    input[type="number"],
-    input[type="date"],
-    input[type="datetime-local"],
-    input[type="month"],
-    input[type="week"],
-    input[type="time"],
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='search'],
+    input[type='tel'],
+    input[type='url'],
+    input[type='number'],
+    input[type='date'],
+    input[type='datetime-local'],
+    input[type='month'],
+    input[type='week'],
+    input[type='time'],
     select,
     textarea {
         font-size: 13px !important;
@@ -353,18 +353,18 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
  */
 /*
  * Tom Select copies the original <select>'s classes (including
- * `form-control`) onto `.ts-wrapper`. `.form-control`'s fixed `height: 36px`
+ * `cc-field__control`) onto `.ts-wrapper`. `.cc-field__control`'s fixed `height: 36px`
  * above then clips the wrapper when selected tags wrap to a second line --
  * the overflow stays visible and bleeds into the next form field instead
  * of growing the box. Override it back to auto-height here.
  */
 /*
- * `.form-control` also draws its own border/padding/background -- since
+ * `.cc-field__control` also draws its own border/padding/background -- since
  * `.ts-wrapper` carries that class too, without this it nests a second box
  * around `.ts-control` below (visible as a double border). Neutralize the
  * outer box entirely; `.ts-control` is the only one meant to be visible.
  */
-.ts-wrapper.form-control {
+.ts-wrapper.cc-field__control {
     height: auto;
     min-height: 44px;
     padding: 0;

@@ -141,7 +141,7 @@
                 <div class="cc-list-group no-border">
                     {% if coaster.status %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}
                                 :</label>
                             <div class="pull-right">
               <span class="label label-{{ coaster.status.type }} bg-{{ coaster.status.type }}">
@@ -152,7 +152,7 @@
                     {% endif %}
                     {% if coaster.park %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">{{ coaster.park.name }}</a>
@@ -161,7 +161,7 @@
                     {% endif %}
                     {% if coaster.park.country %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[country]': coaster.park.country.id}) }}">
@@ -170,7 +170,7 @@
                         </div>
                     {% endif %}
                     <div class="cc-list-group__item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
+                        <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
                             :</label>
                         <div class="pull-right">
                             {% if coaster.manufacturer %}
@@ -184,7 +184,7 @@
                     {% if coaster.materialType %}
                         <div class="cc-list-group__item">
                             <label
-                                class="control-label no-margin text-semibold">{{ 'coaster.infos.materialType'|trans }}
+                                class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.materialType'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[materialType]': coaster.materialType.id}) }}">
@@ -194,7 +194,7 @@
                     {% endif %}
                     {% if coaster.seatingType %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.seatingType'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.seatingType'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[seatingType]': coaster.seatingType.id}) }}">
@@ -204,7 +204,7 @@
                     {% endif %}
                     {% if coaster.model %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.model'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.model'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id}) }}">
@@ -214,14 +214,14 @@
                     {% endif %}
                     {% if coaster.kiddie %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}
                                 :</label>
                             <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.launchs|length > 0 %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 {% for launch in coaster.launchs %}
@@ -232,14 +232,14 @@
                         </div>
                     {% endif %}
                     <div class="cc-list-group__item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
+                        <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
                             :</label>
                         <div
                             class="pull-right">{{ coaster.restraint.name|default('data.unknown')|trans([], 'database') }}</div>
                     </div>
                     {% if coaster.openingDate %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y') }) }}">
@@ -249,7 +249,7 @@
                     {% endif %}
                     {% if coaster.closingDate %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 {{ helper.displayDate(coaster.closingDate) }}
@@ -258,20 +258,20 @@
                     {% endif %}
                     {% if coaster.indoor %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}
                                 :</label>
                             <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.vr %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
                             <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.price and coaster.currency %}
                         <div class="cc-list-group__item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
+                            <label class="cc-field__label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 {{ coaster.price|format_currency(coaster.currency, {fraction_digit: 0}) }}

@@ -5,7 +5,7 @@
  * controller, zero hits (not even the enhanced-select controller
  * generates one). Every rule in button-groups.less/input-groups.less
  * requires one of those classes as an ancestor (checked line by line --
- * no bare `.btn`/`.form-control` rule hides in either file), so both
+ * no bare `.btn`/`.cc-field__control` rule hides in either file), so both
  * files are deleted outright with no Tailwind replacement, the same way
  * `pager.less` was for media.
  *
@@ -94,9 +94,9 @@ fieldset[disabled] .btn {
 }
 
 /* Buttons already colored via a bg-* helper still need white text on hover/focus. */
-.btn[class*="bg-"]:hover,
-.btn[class*="bg-"]:focus,
-.btn[class*="bg-"].focus {
+.btn[class*='bg-']:hover,
+.btn[class*='bg-']:focus,
+.btn[class*='bg-'].focus {
     color: var(--cc-white);
 }
 

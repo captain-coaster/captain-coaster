@@ -58,12 +58,12 @@
     text-align: center;
 }
 
-.heading-form .form-group {
+.heading-form .cc-field {
     margin-bottom: 0;
 }
 
 /*
- * `.heading-form .form-group` (the global search bar's wrapper) belongs
+ * `.heading-form .cc-field` (the global search bar's wrapper) belongs
  * in this same unconditional vertical-spacing group in the source LESS --
  * dropped during the port along with the rest of that selector list's
  * dead siblings, but this one is real (search.css only re-zeroes it back
@@ -72,7 +72,7 @@
  * mobile to 0.
  */
 .heading-elements.visible-elements .heading-text,
-.heading-elements.visible-elements .heading-form .form-group {
+.heading-elements.visible-elements .heading-form .cc-field {
     margin-top: 20px;
 }
 

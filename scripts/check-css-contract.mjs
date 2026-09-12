@@ -38,6 +38,14 @@ const deprecatedPanelClasses = new Set([
     'panel-flat',
     'panel-white',
 ]);
+const deprecatedFieldClasses = new Set([
+    'form-group',
+    'form-group-xs',
+    'form-control',
+    'form-control-lg',
+    'form-control-feedback',
+    'control-label',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -91,6 +99,11 @@ function addViolations(path, source) {
             pattern:
                 /(?:^|[^\w-])\.(?:panel|panel-body|panel-heading|panel-footer|panel-title|panel-flat|panel-white)(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap field selector',
+            pattern:
+                /(?:^|[^\w-])\.(?:form-group|form-group-xs|form-control|form-control-lg|form-control-feedback|control-label)(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -110,7 +123,8 @@ function addTemplateClassViolations(path, source) {
                 token === 'collapse' ||
                 deprecatedMediaClasses.has(token) ||
                 deprecatedCollectionClasses.has(token) ||
-                deprecatedPanelClasses.has(token)
+                deprecatedPanelClasses.has(token) ||
+                deprecatedFieldClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -122,7 +136,9 @@ function addTemplateClassViolations(path, source) {
                       ? 'Bootstrap media class'
                       : deprecatedCollectionClasses.has(deprecatedClass)
                         ? 'Bootstrap collection class'
-                        : 'Bootstrap panel class';
+                        : deprecatedPanelClasses.has(deprecatedClass)
+                          ? 'Bootstrap panel class'
+                          : 'Bootstrap field class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

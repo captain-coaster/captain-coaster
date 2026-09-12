@@ -8,7 +8,7 @@
     .page-header-content
         .heading-elements.visible-elements
         .heading-form
-        .form-group {
+        .cc-field {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
     }
@@ -42,7 +42,7 @@
     position: relative;
 }
 
-.search-input-container .form-control-feedback {
+.search-input-container .cc-field__feedback {
     position: absolute;
     right: 12px;
     top: 50%;
@@ -101,7 +101,7 @@
     outline: none;
 }
 
-.search-container .form-control-feedback {
+.search-container .cc-field__feedback {
     pointer-events: none;
 }
 

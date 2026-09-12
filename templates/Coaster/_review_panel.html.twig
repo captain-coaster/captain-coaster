@@ -16,8 +16,8 @@
                         <form class="section-header__form form-horizontal">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
-                            <div class="form-group-xs no-margin-bottom">
-                                <select name="filters[sort]" class="form-control">
+                            <div class="cc-field--xs no-margin-bottom">
+                                <select name="filters[sort]" class="cc-field__control">
                                     <option value=""
                                             {% if filters is not null or filters.sort == '' %}selected{% endif %}>
                                         {{ 'filters.sorts.default'|trans() }}

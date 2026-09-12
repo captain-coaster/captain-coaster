@@ -26,11 +26,11 @@
             {% endfor %}
         {% endfor %}
         {{ form_start(loginForm, {'attr': {'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'login.sending'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
-            <div class="form-group has-feedback has-feedback-left">
-                {% set emailAttr = {'class': 'form-control', 'placeholder': 'Email'} %}
+            <div class="cc-field has-feedback has-feedback-left">
+                {% set emailAttr = {'class': 'cc-field__control', 'placeholder': 'Email'} %}
                 {% if rateLimitExceeded %}{% set emailAttr = emailAttr|merge({'disabled': 'disabled'}) %}{% endif %}
                 {{ form_widget(loginForm.email, {'attr': emailAttr}) }}
-                <div class="form-control-feedback">
+                <div class="cc-field__feedback">
                     {{ ux_icon('heroicons:envelope', {'class': 'w-4 h-4 text-muted'}) }}
                 </div>
             </div>
@@ -40,7 +40,7 @@
                 </div>
             {% endif %}
             {{ form_errors(loginForm) }}
-            <div class="form-group">
+            <div class="cc-field">
                 {{ form_widget(loginForm.recaptcha) }}
                 {% if not loginForm.recaptcha.vars.valid %}
                     <div class="alert alert-danger alert-bordered">
@@ -48,17 +48,17 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="form-group">
+            <div class="cc-field">
                 <button type="submit"
                         class="btn bg-cc-blue btn-block"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
             </div>
             <div
-                class="form-group text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
+                class="cc-field text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
         {{ form_end(loginForm) }}
-        <div class="content-divider text-muted form-group">
+        <div class="content-divider text-muted cc-field">
             <span>{{ 'login.or_sign_in_with'|trans }}</span>
         </div>
-        <ul class="list-inline form-group list-inline-condensed text-center">
+        <ul class="list-inline cc-field list-inline-condensed text-center">
             <li>
                 <a href="{{ path('connect_google_start') }}"
                    class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">

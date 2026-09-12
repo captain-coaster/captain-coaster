@@ -10,7 +10,7 @@ export default class extends Controller {
             !this.requiredCheckboxTarget.checked
         ) {
             event.preventDefault();
-            const group = this.requiredCheckboxTarget.closest('.form-group');
+            const group = this.requiredCheckboxTarget.closest('.cc-field');
             if (group) {
                 group.classList.add('has-error');
                 if (!group.querySelector('.help-block-error')) {
