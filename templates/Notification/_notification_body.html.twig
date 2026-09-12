@@ -5,7 +5,7 @@
       <li class="cc-media notif-item{% if not recipient.isRead %} unread{% endif %}">
         <div class="cc-media__start">
           <a href="{{ path('notification_read', {'id': recipient.id}) }}"
-             class="btn {{ notification.type.iconColorClass }} btn-rounded btn-icon btn-xs"
+             class="cc-button {{ notification.type.iconColorClass }} cc-button--rounded cc-button--icon cc-button--xs"
              {% if not recipient.isRead %}data-action="click->notification-list#markRead" data-mark-read-url="{{ path('notification_mark_read', {'id': recipient.id}) }}"{% endif %}>
             {{ ux_icon(notification.type.icon, {'class': 'w-3.5 h-3.5'}) }}
           </a>
@@ -31,7 +31,7 @@
 {% if hasMore %}
   <div class="cc-panel__footer text-center">
     <a href="{{ path('notification_index', {'count': nextCount}) }}"
-       class="btn btn-link"
+       class="cc-button cc-button--link"
        data-action="click->notification-list#loadMore">
       {{ 'notif.loadOlder'|trans({}, 'notification') }}
     </a>

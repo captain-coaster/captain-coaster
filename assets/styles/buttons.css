@@ -1,39 +1,39 @@
 /*
- * .btn -- migrated: theme/bootstrap-limitless/buttons.less +
+ * .cc-button -- migrated: theme/bootstrap-limitless/buttons.less +
  * bootstrap/less/buttons.less. `.btn-group`/`.btn-toolbar`/`.input-group`
  * are entirely unused -- grepped templates/, src/ and every Stimulus
  * controller, zero hits (not even the enhanced-select controller
  * generates one). Every rule in button-groups.less/input-groups.less
  * requires one of those classes as an ancestor (checked line by line --
- * no bare `.btn`/`.cc-field__control` rule hides in either file), so both
+ * no bare `.cc-button`/`.cc-field__control` rule hides in either file), so both
  * files are deleted outright with no Tailwind replacement, the same way
  * `pager.less` was for media.
  *
- * Only base + btn-default/-primary/-info/-danger/-link/-lg/-sm/-xs/
+ * Only base + cc-button--default/-primary/-info/-danger/-link/-lg/-sm/-xs/
  * -block/-rounded/-flat/-icon/-float(-lg)/-labeled(-right)/-block-group
- * are used. Not used and dropped: btn-success/-warning/-xlg, the whole
- * `.btn-group-*` size-override branch (dead, no btn-group), `.icon-2x`
- * (never combined with btn-icon), and every `.input-group-* >
+ * are used. Not used and dropped: cc-button-success/-warning/-xlg, the whole
+ * `.cc-button-group-*` size-override branch (dead, no cc-button-group), `.icon-2x`
+ * (never combined with cc-button--icon), and every `.input-group-* >
  * .input-group-btn > .btn` sub-rule (dead, no input-group).
- * `.btn-labeled`'s per-size (xlg/lg/sm/xs) padding variants are also
+ * `.cc-button--labeled`'s per-size (xlg/lg/sm/xs) padding variants are also
  * dropped -- the only two real usages (Profile/settings.html.twig)
- * combine btn-labeled with no size class at all.
+ * combine cc-button--labeled with no size class at all.
  *
  * Cross-file/cascade-position coupling, same check as `.badge`/`.label`:
- * real usage combines `.btn` with non-`!important` `bg-*`/`border-*`/
- * `text-*` helpers in several places (`btn bg-cc-teal-400`, `btn
- * bg-danger-400`, notification list's `btn {{ iconColorClass }}` --
+ * real usage combines `.cc-button` with non-`!important` `bg-*`/`border-*`/
+ * `text-*` helpers in several places (`cc-button bg-cc-teal-400`, `cc-button
+ * bg-danger-400`, notification list's `cc-button {{ iconColorClass }}` --
  * enumerated via the `NotificationType` enum: bg-primary/bg-success-400/
- * bg-warning-400 -- and `btn border-danger-800 text-danger-800 btn-flat`).
- * The base `.btn` rule doesn't set `background-color` at all, and its
+ * bg-warning-400 -- and `cc-button border-danger-800 text-danger-800 cc-button--flat`).
+ * The base `.cc-button` rule doesn't set `background-color` at all, and its
  * `border` shorthand is split into `border-width`/`border-style` so
- * `border-color` is left free for a helper to set. `.btn-default/-primary/
+ * `border-color` is left free for a helper to set. `.cc-button--default/-primary/
  * -info/-danger`'s own background-color/border-color are untouched (never
  * combined with a bg-* or border-* helper in real usage, and Limitless's
- * own `.btn[class*=bg-]:hover{color:#fff}` rule shows this coexistence was
+ * own `.cc-button[class*=bg-]:hover{color:#fff}` rule shows this coexistence was
  * already an intentional pattern in the theme).
  */
-.btn {
+.cc-button {
     display: inline-block;
     position: relative;
     margin-bottom: 0;
@@ -54,133 +54,133 @@
     line-height: 1.53846;
 }
 
-.btn::-moz-focus-inner {
+.cc-button::-moz-focus-inner {
     border: 0;
 }
 
 /*
- * `color: #333` here is accurate to vanilla bootstrap's base `.btn:hover`
- * (it's `.btn-default`'s own hover color, applied unconditionally at this
+ * `color: #333` here is accurate to vanilla bootstrap's base `.cc-button:hover`
+ * (it's `.cc-button--default`'s own hover color, applied unconditionally at this
  * level). In real Bootstrap it's harmless on colored variants because
  * `.button-variant()`'s own `:hover/:focus/:active` block re-asserts
  * `color: @color` at the point each variant is defined -- missed during
  * the port here (only background-color/border-color were carried over),
- * so every `.btn-primary/-info/-danger`'s white text silently fell back
+ * so every `.cc-button--primary/-info/-danger`'s white text silently fell back
  * to this dark base color on hover/focus/active. Fixed by re-adding an
  * explicit `color` to each variant's hover/focus/active group below.
  */
-.btn:hover,
-.btn:focus,
-.btn.focus {
+.cc-button:hover,
+.cc-button:focus,
+.cc-button.focus {
     color: var(--cc-gray-900);
     text-decoration: none;
     outline: 0;
     box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.05);
 }
 
-.btn:active,
-.btn.active {
+.cc-button:active,
+.cc-button.active {
     background-image: none;
     outline: 0;
     box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.1);
 }
 
-.btn.disabled,
-.btn[disabled],
-fieldset[disabled] .btn {
+.cc-button.disabled,
+.cc-button[disabled],
+fieldset[disabled] .cc-button {
     cursor: not-allowed;
     opacity: 0.65;
     box-shadow: none;
 }
 
 /* Buttons already colored via a bg-* helper still need white text on hover/focus. */
-.btn[class*='bg-']:hover,
-.btn[class*='bg-']:focus,
-.btn[class*='bg-'].focus {
+.cc-button[class*='bg-']:hover,
+.cc-button[class*='bg-']:focus,
+.cc-button[class*='bg-'].focus {
     color: var(--cc-white);
 }
 
-.btn-default {
+.cc-button--default {
     color: var(--cc-gray-900);
     background-color: var(--cc-gray-50);
     border-color: var(--cc-gray-300);
 }
 
-.btn-default:hover,
-.btn-default:focus,
-.btn-default.focus,
-.btn-default:active,
-.btn-default.active {
+.cc-button--default:hover,
+.cc-button--default:focus,
+.cc-button--default.focus,
+.cc-button--default:active,
+.cc-button--default.active {
     color: var(--cc-gray-900);
     background-color: #e3e3e3;
     border-color: #bebebe;
 }
 
-.btn-default.disabled {
+.cc-button--default.disabled {
     box-shadow: none;
 }
 
-.btn-primary {
+.cc-button--primary {
     color: var(--cc-white);
     background-color: var(--cc-primary);
     border-color: var(--cc-primary);
 }
 
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary.focus,
-.btn-primary:active,
-.btn-primary.active {
+.cc-button--primary:hover,
+.cc-button--primary:focus,
+.cc-button--primary.focus,
+.cc-button--primary:active,
+.cc-button--primary.active {
     color: var(--cc-white);
     background-color: #0c7cd5;
     border-color: #0b76cc;
 }
 
-.btn-primary.disabled {
+.cc-button--primary.disabled {
     box-shadow: none;
 }
 
-.btn-info {
+.cc-button--info {
     color: var(--cc-white);
     background-color: var(--cc-info);
     border-color: var(--cc-info);
 }
 
-.btn-info:hover,
-.btn-info:focus,
-.btn-info.focus,
-.btn-info:active,
-.btn-info.active {
+.cc-button--info:hover,
+.cc-button--info:focus,
+.cc-button--info.focus,
+.cc-button--info:active,
+.cc-button--info.active {
     color: var(--cc-white);
     background-color: #008fa1;
     border-color: #008697;
 }
 
-.btn-info.disabled {
+.cc-button--info.disabled {
     box-shadow: none;
 }
 
-.btn-danger {
+.cc-button--danger {
     color: var(--cc-white);
     background-color: var(--cc-danger);
     border-color: var(--cc-danger);
 }
 
-.btn-danger:hover,
-.btn-danger:focus,
-.btn-danger.focus,
-.btn-danger:active,
-.btn-danger.active {
+.cc-button--danger:hover,
+.cc-button--danger:focus,
+.cc-button--danger.focus,
+.cc-button--danger:active,
+.cc-button--danger.active {
     color: var(--cc-white);
     background-color: #ea1c0d;
     border-color: #e11b0c;
 }
 
-.btn-danger.disabled {
+.cc-button--danger.disabled {
     box-shadow: none;
 }
 
-.btn-link {
+.cc-button--link {
     color: var(--cc-gray-900);
     font-weight: 400;
     border-radius: 0;
@@ -188,107 +188,107 @@ fieldset[disabled] .btn {
     box-shadow: none;
 }
 
-.btn-link,
-.btn-link:hover,
-.btn-link:focus,
-.btn-link:active {
+.cc-button--link,
+.cc-button--link:hover,
+.cc-button--link:focus,
+.cc-button--link:active {
     border-color: transparent;
 }
 
-.btn-link:hover,
-.btn-link:focus {
+.cc-button--link:hover,
+.cc-button--link:focus {
     text-decoration: none;
     background-color: transparent;
 }
 
-.btn-lg {
+.cc-button--lg {
     border-radius: 5px;
     padding: 9px 15px;
     font-size: 14px;
     line-height: 1.42857;
 }
 
-.btn-lg.btn-rounded {
+.cc-button--lg.cc-button--rounded {
     border-radius: 100px;
 }
 
-.btn-sm:not(.btn-rounded),
-.btn-xs:not(.btn-rounded) {
+.cc-button--sm:not(.cc-button--rounded),
+.cc-button--xs:not(.cc-button--rounded) {
     border-radius: 3px;
 }
 
-.btn-sm {
+.cc-button--sm {
     padding: 6px 11px;
     font-size: 12px;
     line-height: 1.66667;
 }
 
-.btn-xs {
+.cc-button--xs {
     padding: 5px 10px;
     font-size: 12px;
     line-height: 1.66667;
 }
 
-.btn-block {
+.cc-button--block {
     display: block;
     width: 100%;
 }
 
-.btn-block + .btn-block {
+.cc-button--block + .cc-button--block {
     margin-top: 10px;
 }
 
-.btn-rounded,
-.btn-rounded.btn-labeled > b,
-.btn-rounded img {
+.cc-button--rounded,
+.cc-button--rounded.cc-button--labeled > b,
+.cc-button--rounded img {
     border-radius: 100px;
 }
 
-.btn-flat {
+.cc-button--flat {
     background-color: transparent;
     border-width: 2px;
 }
 
-.btn-flat:hover,
-.btn-flat:focus {
+.cc-button--flat:hover,
+.cc-button--flat:focus {
     opacity: 0.8;
     box-shadow: none;
 }
 
-.btn-flat:active {
+.cc-button--flat:active {
     opacity: 0.95;
 }
 
-.btn-icon {
+.cc-button--icon {
     padding-left: 9px;
     padding-right: 9px;
 }
 
-.btn-icon.btn-xs {
+.cc-button--icon.cc-button--xs {
     padding-left: 7px;
     padding-right: 7px;
 }
 
-.btn-float {
+.cc-button--float {
     border-radius: 3px;
     padding: 16px;
 }
 
-.btn-float.btn-link {
+.cc-button--float.cc-button--link {
     padding: 11px;
 }
 
-.btn-float i {
+.cc-button--float i {
     display: block;
     margin: 0;
     top: 0;
 }
 
-.btn-float img {
+.cc-button--float img {
     border-radius: 3px;
 }
 
-.btn-float > span {
+.cc-button--float > span {
     display: block;
     padding-top: 10px;
     margin-bottom: -6px;
@@ -296,15 +296,15 @@ fieldset[disabled] .btn {
     text-overflow: ellipsis;
 }
 
-.btn-float.btn-float-lg i {
+.cc-button--float.cc-button--float-lg i {
     font-size: 32px;
 }
 
-.btn-labeled {
+.cc-button--labeled {
     padding-left: 48px;
 }
 
-.btn-labeled > b {
+.cc-button--labeled > b {
     position: absolute;
     top: -1px;
     left: -1px;
@@ -316,52 +316,52 @@ fieldset[disabled] .btn {
     line-height: 1;
 }
 
-.btn-labeled > b > i {
+.cc-button--labeled > b > i {
     top: 0;
 }
 
-.btn-labeled.btn-labeled-right {
+.cc-button--labeled.cc-button--labeled-right {
     padding-left: 12px;
     padding-right: 48px;
 }
 
-.btn-labeled.btn-labeled-right > b {
+.cc-button--labeled.cc-button--labeled-right > b {
     left: auto;
     right: -1px;
     border-radius: 0 3px 3px 0;
 }
 
-.btn-block-group .btn {
+.cc-button-group--block .cc-button {
     border-radius: 0;
     border-width: 1px 0 0 1px;
 }
 
-.btn-block-group .btn:last-child {
+.cc-button-group--block .cc-button:last-child {
     border-bottom-width: 1px;
 }
 
-.btn-block-group .btn-block + .btn-block {
+.cc-button-group--block .cc-button--block + .cc-button--block {
     margin-top: 0;
 }
 
 /* Direct grid children replace Bootstrap's former `col-*` wrappers. */
-.btn-block-group > :first-child .btn:first-child {
+.cc-button-group--block > :first-child .cc-button:first-child {
     border-radius: 3px 0 0;
 }
 
-.btn-block-group > :first-child .btn:last-child {
+.cc-button-group--block > :first-child .cc-button:last-child {
     border-radius: 0 0 0 3px;
 }
 
-.btn-block-group > :last-child .btn {
+.cc-button-group--block > :last-child .cc-button {
     border-right-width: 1px;
 }
 
-.btn-block-group > :last-child .btn:first-child {
+.cc-button-group--block > :last-child .cc-button:first-child {
     border-radius: 0 3px 0 0;
 }
 
-.btn-block-group > :last-child .btn:last-child {
+.cc-button-group--block > :last-child .cc-button:last-child {
     border-radius: 0 0 3px;
 }
 

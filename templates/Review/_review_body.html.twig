@@ -22,7 +22,7 @@
   {% if hasMore %}
     <div class="cc-panel__footer text-center" data-review-list-target="trigger">
       <a href="{{ path('review_list', {'count': nextCount}) }}"
-         class="btn btn-link"
+         class="cc-button cc-button--link"
          data-action="click->review-list#loadMore">
         {{ 'review_list.load_more'|trans }}
       </a>

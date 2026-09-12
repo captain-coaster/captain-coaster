@@ -50,7 +50,7 @@
             </div>
             <div class="cc-field">
                 <button type="submit"
-                        class="btn bg-cc-blue btn-block"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
+                        class="cc-button bg-cc-blue cc-button--block"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
             </div>
             <div
                 class="cc-field text-muted">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</div>
@@ -61,7 +61,7 @@
         <ul class="list-inline cc-field list-inline-condensed text-center">
             <li>
                 <a href="{{ path('connect_google_start') }}"
-                   class="btn border-danger-800 text-danger-800 btn-flat btn-icon btn-rounded">
+                   class="cc-button border-danger-800 text-danger-800 cc-button--flat cc-button--icon cc-button--rounded">
                     {{ ux_icon('fe:google', {'class': 'w-4 h-4'}) }}
                     {{ 'login.connect_with_google'|trans }}
                 </a>

@@ -44,7 +44,7 @@
                 {%- if coaster.isRateable -%}
                     <div>
                         <a href="{{ path('review_form', {'id': coaster.id}) }}"
-                           class="btn btn-primary btn-rounded btn-xs">
+                           class="cc-button cc-button--primary cc-button--rounded cc-button--xs">
                             {{ ux_icon('heroicons:plus-circle', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.send'|trans() }}
                         </a>
                     </div>

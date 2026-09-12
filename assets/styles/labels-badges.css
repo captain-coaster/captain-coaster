@@ -17,9 +17,9 @@
  * uses (Twig *and* the two Stimulus controllers that render a `.badge`
  * client-side: `top_search_controller.js`'s search results, which is how
  * this got checked beyond grepping templates/) and are dropped, along with
- * every `[href]:hover/:focus`, `.btn &`, `.dropdown-toggle` and `> .caret`
+ * every `[href]:hover/:focus`, `.cc-button &`, `.dropdown-toggle` and `> .caret`
  * sub-rule — neither `.label` nor `.badge` is ever an anchor, inside a
- * `.btn`, or a dropdown toggle anywhere in this app.
+ * `.cc-button`, or a dropdown toggle anywhere in this app.
  *
  * Cross-file coupling is heavy (navbar, dropdowns, sidebar, cc-list-group,
  * nav-pills/nav-tabs, panels, type.less's h1-h6 rule, heading-elements,
@@ -54,7 +54,7 @@
  *     those six contextual cc-panel types.
  *   - dropdown-menu, nav-pills/nav-tabs, sidebar `.navigation`,
  *     `.breadcrumb`, `.menu-list`, `.dd-wrapper`, `.heading-thumbnails` and
- *     `.btn` combinations are all dead — no template/controller combines
+ *     `.cc-button` combinations are all dead — no template/controller combines
  *     `.label`/`.badge` with any of them.
  *   - `assets/styles/review.css` already overrides
  *     `.label-success`/`.label-danger`/`.label-rounded` with `!important`

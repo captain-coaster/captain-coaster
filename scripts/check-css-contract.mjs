@@ -46,6 +46,26 @@ const deprecatedFieldClasses = new Set([
     'form-control-feedback',
     'control-label',
 ]);
+const deprecatedButtonClasses = new Set([
+    'btn',
+    'btn-default',
+    'btn-primary',
+    'btn-info',
+    'btn-danger',
+    'btn-link',
+    'btn-lg',
+    'btn-sm',
+    'btn-xs',
+    'btn-block',
+    'btn-rounded',
+    'btn-flat',
+    'btn-icon',
+    'btn-float',
+    'btn-float-lg',
+    'btn-labeled',
+    'btn-labeled-right',
+    'btn-block-group',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -104,6 +124,10 @@ function addViolations(path, source) {
             pattern:
                 /(?:^|[^\w-])\.(?:form-group|form-group-xs|form-control|form-control-lg|form-control-feedback|control-label)(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap button selector',
+            pattern: /(?:^|[^\w-])\.btn(?:-[\w-]+)?(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -124,7 +148,8 @@ function addTemplateClassViolations(path, source) {
                 deprecatedMediaClasses.has(token) ||
                 deprecatedCollectionClasses.has(token) ||
                 deprecatedPanelClasses.has(token) ||
-                deprecatedFieldClasses.has(token)
+                deprecatedFieldClasses.has(token) ||
+                deprecatedButtonClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -138,7 +163,9 @@ function addTemplateClassViolations(path, source) {
                         ? 'Bootstrap collection class'
                         : deprecatedPanelClasses.has(deprecatedClass)
                           ? 'Bootstrap panel class'
-                          : 'Bootstrap field class';
+                          : deprecatedFieldClasses.has(deprecatedClass)
+                            ? 'Bootstrap field class'
+                            : 'Bootstrap button class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

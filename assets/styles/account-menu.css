@@ -246,7 +246,7 @@
     background-color: var(--cc-primary);
 }
 
-.notif-item:not(.unread) .cc-media__start .btn {
+.notif-item:not(.unread) .cc-media__start .cc-button {
     opacity: 0.5;
 }
 

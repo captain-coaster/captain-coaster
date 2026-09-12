@@ -10,7 +10,7 @@
  * (1154 lines) is dead weight from Limitless's admin-theme feature set this
  * app never uses -- mega menus, dropdown-content panels, navbar sizing
  * variants (navbar-lg/-sm/-xs), stacked/multiple navbars, nav-tabs/-pills/
- * -justified, .navbar-form/-btn/-text, .language-switch (referenced only as
+ * -justified, .navbar-form/-cc-button/-text, .language-switch (referenced only as
  * a negative selector in theme.js, never actually applied to any element).
  * breadcrumbs.less-style "confirmed zero usage, drop the whole file" doesn't
  * apply cleanly here since navbar/dropdowns/navs/modals are all genuinely
@@ -782,16 +782,12 @@
     border-top: 1px solid transparent;
 }
 
-.modal-footer .btn + .btn {
+.modal-footer .cc-button + .cc-button {
     margin-bottom: 0;
     margin-left: 5px;
 }
 
-.modal-footer .btn-group .btn + .btn {
-    margin-left: -1px;
-}
-
-.modal-footer .btn-block + .btn-block {
+.modal-footer .cc-button--block + .cc-button--block {
     margin-left: 0;
 }
 

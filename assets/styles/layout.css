@@ -28,7 +28,7 @@
  * and `.footer-boxed`/`navbar-fixed-bottom` have zero real uses.
  *
  * component-animation.less scope trimmed to selectors real markup
- * actually has: `.btn`, `.navbar-nav > li > a`, `.dropdown-menu > li >
+ * actually has: `.cc-button`, `.navbar-nav > li > a`, `.dropdown-menu > li >
  * a`, `.cc-list-group__item`, `.pagination > li > a/span`, `.close`, `.table
  * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
  * during resize).
@@ -77,7 +77,7 @@
  * nav links use the narrow form below already, and don't show this).
  * Scoped to the properties that actually change.
  */
-.btn,
+.cc-button,
 .navbar-nav > li > a,
 .dropdown-menu > li > a,
 .cc-list-group__item,

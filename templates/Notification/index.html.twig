@@ -16,7 +16,7 @@
             <div class="heading-elements visible-elements">
               <form action="{{ path('notification_mark_all_read') }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-                <button type="submit" class="btn btn-primary btn-rounded btn-xs">{{ 'notif.markAllRead'|trans({}, 'notification') }}</button>
+                <button type="submit" class="cc-button cc-button--primary cc-button--rounded cc-button--xs">{{ 'notif.markAllRead'|trans({}, 'notification') }}</button>
               </form>
             </div>
           {% endif %}

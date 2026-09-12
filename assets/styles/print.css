@@ -6,10 +6,10 @@
  * ported as-is rather than audited against screenshots.
  *
  * `pre`/`blockquote` and `abbr[title]` dropped: zero uses of any of the
- * three anywhere in templates/src. `.dropup > .btn > .caret` and
+ * three anywhere in templates/src. `.dropup > .cc-button > .caret` and
  * `.table-bordered` also dropped: `.dropup` has zero uses, and the
  * app's one real `.caret` (navbar.html.twig's account-menu dropdown
- * toggle) is inside an `<a class="dropdown-toggle">`, never a `.btn`;
+ * toggle) is inside an `<a class="dropdown-toggle">`, never a `.cc-button`;
  * `.table-bordered` is confirmed unused (Panels & Typography cluster --
  * the one real `<table>` uses no modifier classes).
  */

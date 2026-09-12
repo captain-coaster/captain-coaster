@@ -23,10 +23,10 @@ export default class extends Controller {
             return;
         }
 
-        const btn = this.element.querySelector('button[type=submit]');
-        if (btn) {
-            btn.disabled = true;
-            btn.textContent = this.loadingTextValue;
+        const submitButton = this.element.querySelector('button[type=submit]');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = this.loadingTextValue;
         }
     }
 }

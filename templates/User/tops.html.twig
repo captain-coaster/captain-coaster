@@ -8,7 +8,7 @@
 {% block body %}
   <div class="cc-panel cc-panel__body cc-media cc-media--stack-mobile">
     <div class="cc-media__start">
-      <a href="#" class="btn btn-link btn-icon text-cc-teal">
+      <a href="#" class="cc-button cc-button--link cc-button--icon text-cc-teal">
         {{ ux_icon('heroicons:clipboard', {'class': 'w-5 h-5 no-edge-top'}) }}
       </a>
     </div>
@@ -17,7 +17,7 @@
       {{ 'list.info'|trans({}, 'top') }}
     </div>
     <div class="cc-media__end cc-media__middle">
-      <a href="{{ path('top_new') }}" class="btn bg-cc-teal-400 btn-lg">{{ ux_icon('heroicons:plus', {'class': 'w-4 h-4 position-left'}) }}
+      <a href="{{ path('top_new') }}" class="cc-button bg-cc-teal-400 cc-button--lg">{{ ux_icon('heroicons:plus', {'class': 'w-4 h-4 position-left'}) }}
         {% if tops|length == 0 %}{{ 'list.create_first'|trans({}, 'top') }}{% else %}{{ 'list.create'|trans({}, 'top') }}{% endif %}
       </a>
     </div>
