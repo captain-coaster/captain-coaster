@@ -8,7 +8,7 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-success-400">{{ stats.nb_coasters }}</h3>
+                        <h3 class="m-0 text-semibold text-success-400">{{ stats.nb_coasters }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.ridden_coasters'|trans({'count': stats.nb_coasters}) }}</div>
                     </div>
                     <div class="cc-media__end cc-media__middle">
@@ -22,7 +22,7 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-cc-blue-400">{{ stats.nb_park }}</h3>
+                        <h3 class="m-0 text-semibold text-cc-blue-400">{{ stats.nb_park }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.explored_parks'|trans({'count': stats.nb_park}) }}</div>
                     </div>
                     <div class="cc-media__end cc-media__middle">
@@ -36,7 +36,7 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-cc-indigo-400">{{ stats.nb_country }}</h3>
+                        <h3 class="m-0 text-semibold text-cc-indigo-400">{{ stats.nb_country }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">{{ 'profile.stats.visited_countries'|trans({'count': stats.nb_country}) }}</div>
                     </div>
                     <div class="cc-media__end cc-media__middle">
@@ -50,10 +50,10 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-cc-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
+                        <h3 class="m-0 text-semibold text-cc-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.world_top_100'|trans }}
-                            <span class="tooltip ml-5">
+                            <span class="tooltip ml-[5px]">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-4 h-4 text-muted'}) }}
                                 <div class="tooltip-content">
                                     <div class="tooltip-arrow"></div>
@@ -75,10 +75,10 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
+                        <h3 class="m-0 text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_country'|trans }}
-                            <span class="tooltip ml-5">
+                            <span class="tooltip ml-[5px]">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-4 h-4 text-muted'}) }}
                                 <div class="tooltip-content">
                                     <div class="tooltip-arrow"></div>
@@ -98,10 +98,10 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-cc-pink-400">{{ stats.manufacturer.name }}</h3>
+                        <h3 class="m-0 text-semibold text-cc-pink-400">{{ stats.manufacturer.name }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.top_manufacturer'|trans }}
-                            <span class="tooltip ml-5">
+                            <span class="tooltip ml-[5px]">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-4 h-4 text-muted'}) }}
                                 <div class="tooltip-content">
                                     <div class="tooltip-arrow"></div>
@@ -121,10 +121,10 @@
             <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
-                        <h3 class="no-margin text-semibold text-cc-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>
+                        <h3 class="m-0 text-semibold text-cc-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>
                         <div class="text-uppercase text-size-mini text-muted">
                             {{ 'profile.stats.favorite_manufacturer'|trans }}
-                            <span class="tooltip ml-5">
+                            <span class="tooltip ml-[5px]">
                                 {{ ux_icon('heroicons:information-circle', {'class': 'w-4 h-4 text-muted'}) }}
                                 <div class="tooltip-content">
                                     <div class="tooltip-arrow"></div>

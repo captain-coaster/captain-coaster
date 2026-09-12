@@ -4,88 +4,15 @@
  * find the 30 real ones), bootstrap/less/utilities.less (only `.pull-right`
  * is real), and scaffolding's own image/row utility classes.
  *
- * These classes are NOT delegated to Tailwind's own same-named utilities
- * the way `.sr-only`/`.text-center` are elsewhere: it's not just a root-
- * font-size mismatch (fixed, base.css is `16px` now, captain-coaster/
- * captain-coaster#385 step 3) but a naming-convention mismatch that
- * survives it -- this file's numbers count literal pixels (`.mt-10` is
- * `10px`), Tailwind's count spacing-scale steps (`mt-10` is 10 * 0.25rem
- * = `40px` at a 16px root). Same class name, different meaning either
- * way; ported as plain px values instead, exactly matching the LESS
- * source, and staying that way regardless of root font-size.
+ * The margin/padding/opacity helpers this grab-bag used to also carry
+ * (`.mt-10`, `.mb-5`, `.opacity-75`, ...) collided by name with Tailwind's
+ * own spacing/opacity utilities -- same class name, different scale
+ * (literal px here vs. Tailwind's spacing-step multiplier), only kept
+ * rendering correctly via `!important`. Removed instead of patched:
+ * every template now uses the real Tailwind utility directly (`m-2.5`,
+ * `mb-[5px]` where no exact step exists, plain `opacity-75` where the
+ * value already matched), so there's nothing left here to collide.
  */
-.no-margin {
-    margin: 0 !important;
-}
-
-.no-margin-bottom {
-    margin-bottom: 0 !important;
-}
-
-.m-10 {
-    margin: 10px !important;
-}
-
-.mt-5 {
-    margin-top: 5px !important;
-}
-
-.mt-10 {
-    margin-top: 10px !important;
-}
-
-.mb-5 {
-    margin-bottom: 5px !important;
-}
-
-.mb-10 {
-    margin-bottom: 10px !important;
-}
-
-.mb-15 {
-    margin-bottom: 15px !important;
-}
-
-.mb-20 {
-    margin-bottom: 20px !important;
-}
-
-.ml-5 {
-    margin-left: 5px !important;
-}
-
-.no-padding {
-    padding: 0 !important;
-}
-
-.no-padding-top {
-    padding-top: 0 !important;
-}
-
-.pt-10 {
-    padding-top: 10px !important;
-}
-
-.pt-15 {
-    padding-top: 15px !important;
-}
-
-.pt-20 {
-    padding-top: 20px !important;
-}
-
-.pb-10 {
-    padding-bottom: 10px !important;
-}
-
-.pl-15 {
-    padding-left: 15px !important;
-}
-
-.pr-15 {
-    padding-right: 15px !important;
-}
-
 .no-border {
     border: 0 !important;
 }
@@ -108,10 +35,6 @@
 
 .display-inline-block {
     display: inline-block;
-}
-
-.opacity-75 {
-    opacity: 0.75;
 }
 
 .content-group-sm {

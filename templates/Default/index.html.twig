@@ -34,7 +34,7 @@
     <div class="grid grid-cols-12 gap-5 text-center">
       <div class="col-span-3">
         <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
-        <h5 class="text-semibold no-margin">
+        <h5 class="text-semibold m-0">
           {{ stats.nb_ratings|format_number }}
           {% if stats.nb_new_ratings > 0 %}
             <span class="cc-badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
@@ -44,21 +44,21 @@
       </div>
       <div class="col-span-3">
         <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
-        <h5 class="text-semibold no-margin">
+        <h5 class="text-semibold m-0">
           <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
         </h5>
         <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
       </div>
       <div class="col-span-3">
         <p>{{ ux_icon('heroicons:user-group', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
-        <h5 class="text-semibold no-margin">
+        <h5 class="text-semibold m-0">
           <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
         </h5>
         <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
       </div>
       <div class="col-span-3">
         <p>{{ ux_icon('heroicons:camera', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
-        <h5 class="text-semibold no-margin">{{ stats.nb_images|format_number }}</h5>
+        <h5 class="text-semibold m-0">{{ stats.nb_images|format_number }}</h5>
         <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
       </div>
     </div>
@@ -76,13 +76,13 @@
         </a>
 
         <div class="cc-card__caption text-center">
-          <h5 class="text-semibold no-margin">
+          <h5 class="text-semibold m-0">
               <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
                  class="cc-button cc-button--info">
               {{ image.coaster.name }}
             </a>
           </h5>
-          <p class="text-muted mb-15 mt-5">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
+          <p class="text-muted mb-[15px] mt-[5px]">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
         </div>
       </div>
       <!-- /thumbnail with image and button -->

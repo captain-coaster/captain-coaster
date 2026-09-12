@@ -26,7 +26,7 @@
                         </a>
                     </h6>
                     
-                    <ul class="list-inline list-inline-separate text-muted mb-5">
+                    <ul class="list-inline list-inline-separate text-muted mb-[5px]">
                         <li>
                             <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
                                 {{ coaster.park.name }}
@@ -35,7 +35,7 @@
                         <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
                     </ul>
                     
-                    <ul class="list-inline list-inline-separate text-muted mb-5">
+                    <ul class="list-inline list-inline-separate text-muted mb-[5px]">
                         {% if coaster.manufacturer %}
                             <li>{{ coaster.manufacturer.name }}</li>
                         {% endif %}

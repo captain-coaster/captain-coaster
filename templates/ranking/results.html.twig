@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="cc-media__body">
-                <h2 class="cc-media__heading mb-10">
+                <h2 class="cc-media__heading mb-2.5">
                     <a style="color:#333;" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if not filtered %}
                             {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
@@ -24,7 +24,7 @@
                     </a>
                     {{ helper.variation(coaster) }}
                 </h2>
-                <ul class="list-inline list-inline-separate text-muted mb-5">
+                <ul class="list-inline list-inline-separate text-muted mb-[5px]">
                     <li>
                         <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
                             {{ coaster.park.name }}
@@ -32,16 +32,16 @@
                     </li>
                     <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
                 </ul>
-                <ul class="list-inline list-inline-separate text-muted mb-5">
+                <ul class="list-inline list-inline-separate text-muted mb-[5px]">
                     {% if coaster.manufacturer %}
                         <li>{{ coaster.manufacturer.name }}</li>{% endif %}
                 </ul>
             </div>
             <div class="cc-media__end text-center">
-                <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
+                <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="m-0 text-semibold text-nowrap">
                     {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
                 </h3>
-                <span class="text-muted mb-10 mt-10 text-nowrap">
+                <span class="text-muted mb-2.5 mt-2.5 text-nowrap">
             {{ 'coaster_ranking.duel_number'|trans({'count': coaster.validDuels}) }}
           </span>
             </div>

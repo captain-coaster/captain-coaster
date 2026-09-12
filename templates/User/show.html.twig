@@ -15,12 +15,12 @@
               {{ helper.profilePicture(user, 'img-circle img-lg') }}
             </div>
 
-            <h6 class="text-semibold no-margin-bottom">
+            <h6 class="text-semibold mb-0">
               {{ user.displayName }}
             </h6>
           </div>
 
-          <div class="cc-list-group no-border no-padding-top">
+          <div class="cc-list-group no-border pt-0">
             <a href="{{ path('user_ratings', {'id': user.id}) }}" class="cc-list-group__item">
               {{ ux_icon('heroicons:star', {'class': 'w-4 h-4'}) }}
               {{ 'user_profile.ratings'|trans }}

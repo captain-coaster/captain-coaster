@@ -7,14 +7,14 @@
      data-rating-actions-locale-value="{{ app.request.locale }}"
      data-rating-actions-rate-text-value="{{ 'coaster.rating.action'|trans }}"
      data-rating-actions-my-rating-text-value="{{ 'coaster.rating.my_rating'|trans }}">
-    <h6 class="no-margin text-semibold" data-rating-actions-target="title">{{ rating ? 'coaster.rating.my_rating'|trans : 'coaster.rating.action'|trans }}</h6>
+    <h6 class="m-0 text-semibold" data-rating-actions-target="title">{{ rating ? 'coaster.rating.my_rating'|trans : 'coaster.rating.action'|trans }}</h6>
     
     {% if is_granted('ROLE_USER') %}
         <!-- Star Rating Widget -->
         {% include 'Coaster/_rating_widget.html.twig' with {'coaster': coaster, 'rating': rating} only %}
         
         <!-- Action Buttons -->
-        <div class="rating-actions mt-10">
+        <div class="rating-actions mt-2.5">
             
             <a class="action-icon review-icon" 
                href="{{ path('review_form', {'id': coaster.id}) }}"

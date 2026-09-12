@@ -18,7 +18,7 @@
                             {{ 'user_list.member_from'|trans }} {{ helper.displayDate(user.0.createdAt) }}
                         </p>
 
-                        <h5 class="text-semibold no-margin">
+                        <h5 class="text-semibold m-0">
                             <a href="{{ path('user_ratings', {'id': user.0.id}) }}">
                                 {{ 'user_list.rating'|trans({'count': user.total_ratings}) }}
                             </a>

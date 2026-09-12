@@ -16,7 +16,7 @@
                 <div class="grid grid-cols-2 gap-5 text-center">
                     <div>
                         <p>{{ ux_icon('heroicons:map-pin', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
-                        <h5 class="text-semibold no-margin">
+                        <h5 class="text-semibold m-0">
                             {{ park.openedCoasters|length }}
                         </h5>
                         <div class="text-muted text-size-small">
@@ -25,7 +25,7 @@
                     </div>
                     <div>
                         <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
-                        <h5 class="text-semibold no-margin">
+                        <h5 class="text-semibold m-0">
                             {{ park.operatingKiddies|length }}
                         </h5>
                         <div class="text-muted text-size-small">
@@ -52,7 +52,7 @@
                     </div>
                     <div class="content-group-sm">
                         {% if closestParks %}
-                            <ul class="list-feed pl-15 pr-15">
+                            <ul class="list-feed pl-[15px] pr-[15px]">
                                 {% for infoPark in closestParks %}
                                     <li>
                                         <a href="{{ path('park_show', {'id': infoPark.id, 'slug': infoPark.slug}) }}">
@@ -64,12 +64,12 @@
                                 {% endfor %}
                             </ul>
                         {% else %}
-                            <div class="pl-15 pr-15">
+                            <div class="pl-[15px] pr-[15px]">
                                 <p>{{ 'coaster.infos.closeParksNone'|trans({'%parkName%': park.name}) }}</p>
                             </div>
                         {% endif %}
                     </div>
-                    <div class="border-top-grey text-center pt-10 pb-10">
+                    <div class="border-top-grey text-center pt-2.5 pb-2.5">
                         <a href="{{ path('map_index', {'parkslug': park.slug}) }}">{{ 'coaster.infos.closeParksLink'|trans({'%parkName%': park.name}) }}</a>
                     </div>
                 </div>
@@ -100,7 +100,7 @@
                                     {{ coaster.name }}
                                 </a>
                             </h2>
-                            <h4 class="cc-media__heading score-responsive mb-20 center"
+                            <h4 class="cc-media__heading score-responsive mb-5 center"
                                 style="color: {{ helper.ratingColor(coaster.score) }};">
                                 {% if coaster.score %}
                                     {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
@@ -108,7 +108,7 @@
                                     &nbsp;
                                 {% endif %}
                             </h4>
-                            <ul class="list-inline list-inline-separate text-muted mb-10 pt-15">
+                            <ul class="list-inline list-inline-separate text-muted mb-2.5 pt-[15px]">
                                 {% if coaster.manufacturer %}
                                     <li>
                                         <a class="text-muted"
@@ -134,7 +134,7 @@
                                     </li>
                                 {% endif %}
                             </ul>
-                            <ul class="list-inline list-inline-separate text-muted mb-5">
+                            <ul class="list-inline list-inline-separate text-muted mb-[5px]">
                                 <li>
                                     {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4 text-warning-600'}) }}
                                     {% if coaster.height is null %}

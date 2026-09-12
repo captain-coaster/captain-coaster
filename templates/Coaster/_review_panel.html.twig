@@ -16,7 +16,7 @@
                         <form class="section-header__form form-horizontal">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
-                            <div class="cc-field--xs no-margin-bottom">
+                            <div class="cc-field--xs mb-0">
                                 <select name="filters[sort]" class="cc-field__control">
                                     <option value=""
                                             {% if filters is not null or filters.sort == '' %}selected{% endif %}>
@@ -66,7 +66,7 @@
         {%- elseif coaster.isRateable -%}
             <div class="cc-panel__body text-center text-muted">
                 {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
-                <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
+                <p class="mt-2.5">{{ 'review_list.no_review'|trans }}</p>
             </div>
         {%- endif -%}
     </div>

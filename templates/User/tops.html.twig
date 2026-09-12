@@ -33,7 +33,7 @@
                 {{ helper.profilePicture(top.user) }}
               </div>
               <div class="cc-media__body">
-                <h6 class="text-semibold no-margin">
+                <h6 class="text-semibold m-0">
                   {% if top.main %}{{ ux_icon('heroicons:check', {'class': 'w-4 h-4 text-size-mini position-left'}) }}{% endif %}
                   <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
                     {{ top.name }}
@@ -56,12 +56,12 @@
                 {% endif %}
               {% endfor %}
             </ul>
-            <div class="mt-5">
+            <div class="mt-[5px]">
               <a href="{{ path('top_show', {'id': top.id}) }}">
                 {{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-4 h-4'}) }} {{ 'list.more'|trans({}, 'top') }}
               </a>
             </div>
-            <ul class="list-inline mt-5">
+            <ul class="list-inline mt-[5px]">
               <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-4 h-4 position-left'}) }} {{ top.topCoasters|length }}</li>
               <li>
                 {{ ux_icon('heroicons:clock', {'class': 'w-4 h-4 position-left'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}

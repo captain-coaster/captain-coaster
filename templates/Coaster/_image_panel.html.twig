@@ -23,7 +23,7 @@
              data-gallery="coaster-images">
             {% for image in images %}
                 <div class="col-span-12 tablet:col-span-3">
-                    <a class="m-10" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
+                    <a class="m-2.5" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
                         <div class="cc-card__media">
                             <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
                                  alt="{{ coaster.name }}">
@@ -54,7 +54,7 @@
     {% else %}
         <div class="cc-panel__body text-center text-muted">
             {{ ux_icon('heroicons:photo', {'class': 'w-5 h-5'}) }}
-            <p class="mt-10">{{ 'coaster.photos.empty'|trans }}</p>
+            <p class="mt-2.5">{{ 'coaster.photos.empty'|trans }}</p>
             <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="cc-button cc-button--primary cc-button--sm">
                 {{ 'coaster.photos.button'|trans }}
             </a>

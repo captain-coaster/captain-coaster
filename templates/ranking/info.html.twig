@@ -18,7 +18,7 @@
   <div class="cc-panel__body grid grid-cols-12 gap-5 text-center">
     <div class="col-span-3">
       <div class="content-group">
-        <h6 class="text-semibold no-margin">
+        <h6 class="text-semibold m-0">
           {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.rankedCoasterNumber }}&nbsp;
           {% if ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber > 0 %}
             <span class="cc-badge bg-cc-blue-400">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</span>
@@ -30,7 +30,7 @@
     </div>
     <div class="col-span-3">
       <div class="content-group">
-        <h6 class="text-semibold no-margin">
+        <h6 class="text-semibold m-0">
           {{ ux_icon('heroicons:star', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.ratingNumber|shortNum }}&nbsp;
           {% if ranking.ratingNumber - previousRanking.ratingNumber > 1000 %}
             <span class="cc-badge bg-cc-blue-400">+{{ (ranking.ratingNumber - previousRanking.ratingNumber)|shortNum }}</span>
@@ -41,7 +41,7 @@
     </div>
     <div class="col-span-3">
       <div class="content-group">
-        <h6 class="text-semibold no-margin">
+        <h6 class="text-semibold m-0">
           {{ ux_icon('heroicons:user-group', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.userNumber }}&nbsp;
           {% if ranking.userNumber - previousRanking.userNumber > 0 %}
             <span class="cc-badge bg-cc-blue-400">+{{ ranking.userNumber - previousRanking.userNumber }}</span>
@@ -52,7 +52,7 @@
     </div>
     <div class="col-span-3">
       <div class="content-group">
-        <h6 class="text-semibold no-margin">
+        <h6 class="text-semibold m-0">
           {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-4 h-4 position-left text-cc-slate'}) }}<br/>{{ ranking.comparisonNumber|shortNum }}&nbsp;
           {% if ranking.comparisonNumber - previousRanking.comparisonNumber > 1000 %}
             <span class="cc-badge bg-cc-blue-400">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</span>
