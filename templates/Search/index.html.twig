@@ -73,19 +73,19 @@
             </div>
         </div>
 
-        {% if pagination and pagination.total > 1 %}
+        {% if cc-pagination and cc-pagination.total > 1 %}
             <div class="text-center">
-                <ul class="pagination pagination-sm">
-                    {% if pagination.has_previous %}
+                <ul class="cc-pagination cc-cc-pagination--sm">
+                    {% if cc-pagination.has_previous %}
                         <li>
-                            <a href="{{ path('search_index', {'query': query, 'page': pagination.previous}) }}" aria-label="Previous">
+                            <a href="{{ path('search_index', {'query': query, 'page': cc-pagination.previous}) }}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
                     {% endif %}
 
-                    {% set start_page = max(1, pagination.current - 2) %}
-                    {% set end_page = min(pagination.total, pagination.current + 2) %}
+                    {% set start_page = max(1, cc-pagination.current - 2) %}
+                    {% set end_page = min(cc-pagination.total, cc-pagination.current + 2) %}
 
                     {% if start_page > 1 %}
                         <li><a href="{{ path('search_index', {'query': query, 'page': 1}) }}">1</a></li>
@@ -95,21 +95,21 @@
                     {% endif %}
 
                     {% for page in start_page..end_page %}
-                        <li{% if page == pagination.current %} class="active"{% endif %}>
+                        <li{% if page == cc-pagination.current %} class="active"{% endif %}>
                             <a href="{{ path('search_index', {'query': query, 'page': page}) }}">{{ page }}</a>
                         </li>
                     {% endfor %}
 
-                    {% if end_page < pagination.total %}
-                        {% if end_page < pagination.total - 1 %}
+                    {% if end_page < cc-pagination.total %}
+                        {% if end_page < cc-pagination.total - 1 %}
                             <li class="disabled"><span>...</span></li>
                         {% endif %}
-                        <li><a href="{{ path('search_index', {'query': query, 'page': pagination.total}) }}">{{ pagination.total }}</a></li>
+                        <li><a href="{{ path('search_index', {'query': query, 'page': cc-pagination.total}) }}">{{ cc-pagination.total }}</a></li>
                     {% endif %}
 
-                    {% if pagination.has_next %}
+                    {% if cc-pagination.has_next %}
                         <li>
-                            <a href="{{ path('search_index', {'query': query, 'page': pagination.next}) }}" aria-label="Next">
+                            <a href="{{ path('search_index', {'query': query, 'page': cc-pagination.next}) }}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

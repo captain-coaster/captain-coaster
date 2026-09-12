@@ -96,6 +96,7 @@ const deprecatedAlertClasses = new Set([
     'alert-bordered',
     'close',
 ]);
+const deprecatedPaginationClasses = new Set(['pagination', 'pagination-sm']);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -166,6 +167,10 @@ function addViolations(path, source) {
             contract: 'Bootstrap alert or close selector',
             pattern: /(?:^|[^\w-])\.alert(?:-[\w-]+)?(?![\w-])|(?:^|[^\w-])\.close(?![\w-]|\s*\()/g,
         },
+        {
+            contract: 'Bootstrap pagination selector',
+            pattern: /(?:^|[^\w-])\.pagination(?:-[\w-]+)?(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -189,7 +194,8 @@ function addTemplateClassViolations(path, source) {
                 deprecatedFieldClasses.has(token) ||
                 deprecatedButtonClasses.has(token) ||
                 deprecatedLabelClasses.has(token) ||
-                deprecatedAlertClasses.has(token)
+                deprecatedAlertClasses.has(token) ||
+                deprecatedPaginationClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -209,7 +215,9 @@ function addTemplateClassViolations(path, source) {
                               ? 'Bootstrap button class'
                               : deprecatedLabelClasses.has(deprecatedClass)
                                 ? 'Bootstrap label or badge class'
-                                : 'Bootstrap alert or close class';
+                                : deprecatedAlertClasses.has(deprecatedClass)
+                                  ? 'Bootstrap alert or close class'
+                                  : 'Bootstrap pagination class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }
