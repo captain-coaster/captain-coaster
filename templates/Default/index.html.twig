@@ -66,16 +66,16 @@
   <div class="grid grid-cols-12 gap-5 items-start">
     <div class="col-span-12 tablet:col-span-6">
       <!-- Thumbnail with image and button -->
-      <div class="thumbnail">
+      <div class="cc-card">
           <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
-          <div class="thumb">
+          <div class="cc-card__media">
             <img src="{{ pictures_cdn }}/600x336/{{ image.filename }}"
                  alt="{{ image.coaster.name }}">
-            <div class="caption-overflow"></div>
+            <div class="cc-card__overlay"></div>
           </div>
         </a>
 
-        <div class="caption text-center">
+        <div class="cc-card__caption text-center">
           <h5 class="text-semibold no-margin">
               <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
                  class="btn btn-info">

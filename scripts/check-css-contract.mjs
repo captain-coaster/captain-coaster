@@ -21,6 +21,12 @@ const deprecatedMediaClasses = new Set([
     'media-annotation',
     'stack-media-on-mobile',
 ]);
+const deprecatedCollectionClasses = new Set([
+    'thumbnail',
+    'caption',
+    'thumb',
+    'caption-overflow',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -64,6 +70,11 @@ function addViolations(path, source) {
             pattern:
                 /(?:^|[^\w-])\.(?:media|media-left|media-right|media-body|media-middle|media-heading|media-list|media-list-bordered|media-list-container|media-annotation|stack-media-on-mobile)(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap collection selector',
+            pattern:
+                /(?:^|[^\w-])\.(?:thumbnail|caption|thumb|caption-overflow)(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -79,7 +90,10 @@ function addTemplateClassViolations(path, source) {
         const tokens = attribute[1].split(/\s+/);
 
         const deprecatedClass = tokens.find(
-            (token) => token === 'collapse' || deprecatedMediaClasses.has(token)
+            (token) =>
+                token === 'collapse' ||
+                deprecatedMediaClasses.has(token) ||
+                deprecatedCollectionClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -87,7 +101,9 @@ function addTemplateClassViolations(path, source) {
             const contract =
                 deprecatedClass === 'collapse'
                     ? 'Bootstrap collapse class'
-                    : 'Bootstrap media class';
+                    : deprecatedMediaClasses.has(deprecatedClass)
+                      ? 'Bootstrap media class'
+                      : 'Bootstrap collection class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }
