@@ -1,157 +1,99 @@
-/*
- * .media — migrated from theme/bootstrap-limitless/media.less +
- * bootstrap/less/media.less. Only variants actually referenced in
- * templates/ are kept: media, media-body, media-list, media-list-bordered,
- * media-heading, media-left, media-right, media-middle,
- * media-annotation(.dotted) and stack-media-on-mobile. media-badge,
- * media-header, media-list-linked, media-link, media-object, media-bottom
- * and media-preview have zero uses anywhere and are dropped.
- *
- * navbar.css, sidebar.css, buttons.css (component-animations) and
- * account-menu.css all carry extra selectors referencing .media-* classes
- * and .media-link for context (navbar dropdown, dark sidebar, profile
- * cover, etc.) -- checked each: every one is either a dead combination
- * never actually rendered in this app (.profile-cover, .sidebar-user,
- * .contact-details, .media-list-linked contexts don't appear in any
- * template) or a real context override in a file this migration doesn't
- * touch (account-menu.css's `.notif-item` rules on top of
- * _notification_body.html.twig's markup), which keeps applying unchanged
- * via the cascade regardless of where the base .media rules come from.
- *
- * Two legacy-but-load-bearing quirks kept as-is rather than "cleaned up":
- * `.media-body`'s `width:10000px` and the `table-cell` layout it's part of
- * are Bootstrap 3's pre-flexbox trick for a two/three-column row with an
- * auto-sized side column and a greedy center column. A flexbox rewrite
- * would be the modern equivalent, but several templates (e.g.
- * User/tops.html.twig) put `.media-left`/`.media-body`/`.media-right`
- * directly under a `.panel-body`, with no `.media` element as the actual
- * row container — table-cell layout works there because a browser
- * auto-generates the anonymous table/row wrapper regardless of the
- * parent's own `display`; `display:flex` has no equivalent auto-wrapping,
- * so a flex rewrite would need a wrapper element added in those templates,
- * which is template-markup work outside this CSS-only phase. The other
- * quirk, `zoom:1` (an IE6/7 hasLayout trigger), had no such caveat and is
- * dropped outright — dead weight in any browser this app still supports.
- */
-.media {
-    @apply relative mt-[20px];
+/* Reusable image/content/action row. Its explicit flex roles replace the
+ * Bootstrap table-cell layout and preserve intrinsic thumbnail dimensions. */
+.cc-media {
+    @apply relative mt-5 flex items-start gap-5 overflow-visible;
 }
 
-.media:first-child {
-    margin-top: 0;
+.cc-media:first-child {
+    @apply mt-0;
 }
 
-.media.panel-body {
-    margin-top: 0;
+.cc-media.panel-body {
+    @apply mt-0 flex;
 }
 
-.media,
-.media-body {
-    @apply overflow-visible;
+.cc-media__start,
+.cc-media__end {
+    @apply relative shrink-0;
 }
 
-.media-body {
-    @apply w-[10000px];
+.cc-media__body {
+    @apply relative min-w-0 flex-1;
 }
 
-.media-left,
-.media-right,
-.media-body {
-    @apply relative table-cell align-top;
+.cc-media__middle {
+    @apply self-center;
 }
 
-.media-middle {
-    @apply align-middle;
+.cc-media__heading {
+    @apply mt-0 mb-0.5 block;
 }
 
-.media-heading {
-    @apply mt-0 mb-[2px] block;
-}
-
-.media-list {
+.cc-media-list {
     @apply mb-0 list-none pl-0;
 }
 
-.media-right {
-    @apply pl-[20px];
-}
-
-.media-left {
-    @apply pr-[20px];
-}
-
-/* Preflight constrains media images to their containing block. Their table
- * cell starts at zero width, so retain each image's intrinsic or explicit
- * width instead. Links must also cease to be inline. */
-.media-left > a {
-    display: inline-block;
-}
-
-.media-left > img,
-.media-left > a > img {
-    max-width: none;
-}
-
-.media-annotation {
+.cc-media__annotation {
     @apply text-[var(--cc-gray-600)] text-[12px] font-normal;
     line-height: 1.66667;
 }
 
-.media-heading .media-annotation {
+.cc-media__heading .cc-media__annotation {
     @apply ml-[7px];
 }
 
-.media-annotation i {
+.cc-media__annotation i {
     @apply text-[13px];
 }
 
 /* Bullet before a "dotted" annotation (e.g. star rating · timestamp in a review row). */
-.media-annotation.dotted:not(.pull-right):before {
-    content: "\2022";
+.cc-media__annotation--dotted:not(.pull-right)::before {
+    content: '\2022';
     margin-right: 10px;
 }
 
-.media-list-bordered > li {
+.cc-media-list--bordered > li {
     @apply border-t border-[var(--cc-gray-150)] mt-[15px] pt-[15px];
 }
 
-.media-list-bordered > li:first-child {
+.cc-media-list--bordered > li:first-child {
     @apply border-t-0 pt-0;
 }
 
-/* Collapse a .media row to a stacked, centered layout below the tablet breakpoint. */
+/* Collapse an image/content/action row below the tablet breakpoint. */
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .stack-media-on-mobile:not(.text-left):not(.text-right) {
+    .cc-media--stack-mobile,
+    .cc-media-list--stack-mobile > .cc-media {
+        @apply flex-col gap-[15px];
+    }
+
+    .cc-media--stack-mobile:not(.text-left):not(.text-right),
+    .cc-media-list--stack-mobile:not(.text-left):not(.text-right) > .cc-media {
         text-align: center;
     }
 
-    .stack-media-on-mobile .media-annotation {
+    .cc-media--stack-mobile .cc-media__annotation,
+    .cc-media-list--stack-mobile .cc-media__annotation {
         display: block;
     }
 
-    .stack-media-on-mobile .media-annotation.dotted:not(.pull-right):before {
+    .cc-media--stack-mobile
+        .cc-media__annotation--dotted:not(.pull-right)::before,
+    .cc-media-list--stack-mobile
+        .cc-media__annotation--dotted:not(.pull-right)::before {
         content: none;
         margin: 0;
     }
 
-    .stack-media-on-mobile .media-heading .media-annotation {
+    .cc-media--stack-mobile .cc-media__heading .cc-media__annotation,
+    .cc-media-list--stack-mobile .cc-media__heading .cc-media__annotation {
         margin-left: 0;
         margin-right: 0;
         padding-bottom: 5px;
     }
 
-    .stack-media-on-mobile .media-left,
-    .stack-media-on-mobile .media-right,
-    .stack-media-on-mobile .media-body {
-        @apply block w-auto px-0;
-    }
-
-    .stack-media-on-mobile .media-body,
-    .stack-media-on-mobile .media-right {
-        @apply mt-[15px];
-    }
-
-    .stack-media-on-mobile .media-heading {
+    .cc-media--stack-mobile .cc-media__heading,
+    .cc-media-list--stack-mobile .cc-media__heading {
         @apply mb-[5px];
     }
 }

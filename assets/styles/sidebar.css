@@ -21,8 +21,8 @@
  * separate` -- all 0 uses), `.sidebar-user`, `.sidebar-opposite`, the
  * `.sidebar-*-hidden` toggle-by-class-name family, `.nav-tabs` (Tabs
  * section -- neither sidebar has tabs), `.sp-container`/`.panel-group`/
- * `.media-list-bordered`/`.thumbnail` component overrides (`.sidebar
- * .row`, colorpicker, panels, media-list, thumbnails -- none of those
+ * list/`.thumbnail` component overrides (`.sidebar .row`, colorpicker,
+ * panels, lists, thumbnails -- none of those
  * components exist inside either sidebar), every `<i>`-icon rule (both
  * templates render icons via `ux_icon()` SVGs now, not `<i>` tags --
  * `text-align: center` on the link alone already centers an inline SVG

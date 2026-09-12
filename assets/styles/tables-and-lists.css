@@ -101,11 +101,11 @@ a.thumbnail.active {
     padding: 20px 17px 17px;
 }
 
-.thumbnail .caption .media-heading {
+.thumbnail .caption .cc-media__heading {
     margin-top: 0;
 }
 
-.thumbnail .caption .media-heading {
+.thumbnail .caption .cc-media__heading {
     display: flow-root;
 }
 
@@ -115,7 +115,7 @@ a.thumbnail.active {
     text-align: center;
 }
 
-.thumb img:not(.media-preview) {
+.thumb img {
     width: 100%;
     max-width: 100%;
     height: auto;

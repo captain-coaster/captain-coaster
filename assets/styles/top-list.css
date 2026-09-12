@@ -12,7 +12,7 @@
  */
 
 /* Container styles */
-.media-list-container[data-controller='top-list'] {
+.cc-media-list-container[data-controller='top-list'] {
     position: relative;
     min-height: 100px;
 }

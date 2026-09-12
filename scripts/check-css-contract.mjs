@@ -8,6 +8,19 @@ const excludedFiles = new Set([
     'templates/connect/login_email.html.twig',
 ]);
 const violations = [];
+const deprecatedMediaClasses = new Set([
+    'media',
+    'media-left',
+    'media-right',
+    'media-body',
+    'media-middle',
+    'media-heading',
+    'media-list',
+    'media-list-bordered',
+    'media-list-container',
+    'media-annotation',
+    'stack-media-on-mobile',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -15,7 +28,7 @@ function sourceFiles(directory) {
             const path = join(directory, entry.name);
 
             return entry.isDirectory() ? sourceFiles(path) : [path];
-        },
+        }
     );
 }
 
@@ -38,12 +51,18 @@ function addViolations(path, source) {
         },
         {
             contract: 'navbar .in state',
-            pattern: /(?:getElementById\('navbar-mobile'\)[\s\S]{0,120}?classList\.(?:add|remove|toggle)\('in'\)|panelTarget\.classList\.(?:add|remove|toggle)\('in'\))/g,
+            pattern:
+                /(?:getElementById\('navbar-mobile'\)[\s\S]{0,120}?classList\.(?:add|remove|toggle)\('in'\)|panelTarget\.classList\.(?:add|remove|toggle)\('in'\))/g,
         },
         {
             contract: 'table layout',
             pattern:
                 /display:\s*table(?:-row|-cell)?\b|width:\s*10000px\b|@apply[^;]*\btable-cell\b|@apply[^;]*w-\[10000px\]/g,
+        },
+        {
+            contract: 'Bootstrap media selector',
+            pattern:
+                /(?:^|[^\w-])\.(?:media|media-left|media-right|media-body|media-middle|media-heading|media-list|media-list-bordered|media-list-container|media-annotation|stack-media-on-mobile)(?![\w-])/g,
         },
     ];
 
@@ -59,9 +78,17 @@ function addTemplateClassViolations(path, source) {
     for (const attribute of source.matchAll(/class="([^"]*)"/g)) {
         const tokens = attribute[1].split(/\s+/);
 
-        if (tokens.includes('collapse')) {
+        const deprecatedClass = tokens.find(
+            (token) => token === 'collapse' || deprecatedMediaClasses.has(token)
+        );
+
+        if (deprecatedClass) {
             const line = source.slice(0, attribute.index).split('\n').length;
-            violations.push(`${path}:${line} Bootstrap collapse class`);
+            const contract =
+                deprecatedClass === 'collapse'
+                    ? 'Bootstrap collapse class'
+                    : 'Bootstrap media class';
+            violations.push(`${path}:${line} ${contract}`);
         }
     }
 }

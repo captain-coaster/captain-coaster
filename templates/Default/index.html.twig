@@ -129,11 +129,11 @@
         </div>
 
         <div class="panel-body">
-          <ul class="media-list media-list-bordered stack-media-on-mobile reviews-list">
+          <ul class="cc-media-list cc-media-list--bordered cc-media-list--stack-mobile reviews-list">
             {% for review in reviews %}
-              <li class="media review-list-item">
+              <li class="cc-media review-list-item">
                 <div class="review-coaster-info">
-                  <h6 class="media-heading text-semibold">
+                  <h6 class="cc-media__heading text-semibold">
                     <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
                       {{ review.coaster.name }}
                     </a>

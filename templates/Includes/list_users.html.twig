@@ -1,15 +1,15 @@
 {% import "helper.html.twig" as helper %}
 
-<ul class="media-list grid grid-cols-12 gap-5">
+<ul class="cc-media-list grid grid-cols-12 gap-5">
     {% for user in users %}
         <li class="col-span-12 tablet:col-span-6 wide:col-span-4">
             <div class="panel-body{% if border %} panel{% endif %}">
-                <div class="media">
-                    <div class="media-left">
+                <div class="cc-media">
+                    <div class="cc-media__start">
                         {{ helper.profilePicture(user.0) }}
                     </div>
-                    <div class="media-body">
-                        <h6 class="media-heading">
+                    <div class="cc-media__body">
+                        <h6 class="cc-media__heading">
                             <a href="{{ path('user_show', {'slug': user.0.slug}) }}">
                                 {{ user.0.displayName }}
                             </a>

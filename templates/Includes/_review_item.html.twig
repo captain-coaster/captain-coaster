@@ -1,10 +1,10 @@
 {% import "helper.html.twig" as helper %}
 {% set locale = app.request.locale %}
 
-<div class="media"
+<div class="cc-media"
      data-controller="csrf-protection review-actions"
      data-csrf-protection-token-value="{{ csrf_token('rating') }}"
-     data-review-actions-csrf-protection-outlet=".media"
+     data-review-actions-csrf-protection-outlet=".cc-media"
      data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
      data-review-actions-id-value="{{ review.id }}"
      data-review-actions-upvoted-value="false"
@@ -13,19 +13,19 @@
      data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}"
      data-review-actions-mobile-length-value="150"
      data-review-actions-desktop-length-value="600">
-  <div class="media-left">
+  <div class="cc-media__start">
     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
       {{ helper.profilePicture(review.user, 'img-circle img-sm') }}
     </a>
   </div>
 
-  <div class="media-body">
-    <div class="media-heading">
+  <div class="cc-media__body">
+    <div class="cc-media__heading">
       <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="text-semibold">
         {{ review.user.displayName }}
       </a>
-      <span class="media-annotation dotted">{{ helper.starRating(review.value) }}</span>
-      <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
+      <span class="cc-media__annotation cc-media__annotation--dotted">{{ helper.starRating(review.value) }}</span>
+      <span class="cc-media__annotation cc-media__annotation--dotted">{{ review.updatedAt|ago }}</span>
     </div>
 
     {% if review.pros|length > 0 or review.cons|length > 0 %}

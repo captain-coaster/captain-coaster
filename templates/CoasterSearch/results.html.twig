@@ -5,10 +5,10 @@
         <h6 class="panel-title text-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
     </div>
 
-    <ul class="media-list">
+    <ul class="cc-media-list">
         {% for coaster in coasters %}
-            <li class="media panel-body stack-media-on-mobile">
-                <div class="media-left">
+            <li class="cc-media panel-body cc-media--stack-mobile">
+                <div class="cc-media__start">
                     <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if coaster.mainImage is not null %}
                             <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
@@ -19,8 +19,8 @@
                     </a>
                 </div>
 
-                <div class="media-body">
-                    <h6 class="media-heading text-semibold">
+                <div class="cc-media__body">
+                    <h6 class="cc-media__heading text-semibold">
                         <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                             {{ coaster.name }}
                         </a>
@@ -51,7 +51,7 @@
 
             </li>
         {% else %}
-            <li class="media panel-body">
+            <li class="cc-media panel-body">
                 <h5>{{ 'coaster_search.no_results'|trans }}</h5>
             </li>
         {% endfor %}

@@ -11,11 +11,11 @@
       <div class="col-span-12 tablet:col-span-6 wide:col-span-4">
         <div class="thumbnail">
           <div class="caption">
-            <div class="content-group-sm media">
-              <div class="media-left">
+            <div class="content-group-sm cc-media">
+              <div class="cc-media__start">
                 {{ helper.profilePicture(top.user) }}
               </div>
-              <div class="media-body">
+              <div class="cc-media__body">
                 <h6 class="text-semibold no-margin">
                   {% if top.main %}{{ ux_icon('heroicons:check', {'class': 'w-4 h-4 text-size-mini position-left'}) }}{% endif %}
                   <a href="{{ path('top_show', {'id': top.id}) }}" class="text-default">
@@ -41,12 +41,12 @@
                 </li>
               {% endfor %}
             </ul>
-            <div class="media">
+            <div class="mt-5">
               <a href="{{ path('top_show', {'id': top.id}) }}">
                 {{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-4 h-4'}) }} {{ 'list.more'|trans({}, 'top') }}
               </a>
             </div>
-            <ul class="list-inline media">
+            <ul class="list-inline mt-5">
               <li>{{ ux_icon('heroicons:square-3-stack-3d', {'class': 'w-4 h-4 position-left'}) }} {{ top.topCoasters|length }}</li>
               <li>
                 {{ ux_icon('heroicons:clock', {'class': 'w-4 h-4 position-left'}) }} {{ 'list.updated'|trans({}, 'top') }} {{ top.updatedAt|ago }}

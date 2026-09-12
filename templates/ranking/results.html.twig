@@ -1,9 +1,9 @@
 {% import "helper.html.twig" as helper %}
 
-<ul class="media-list content-group">
+<ul class="cc-media-list content-group">
     {% for coaster in coasters %}
-        <li class="media panel panel-body stack-media-on-mobile">
-            <div class="media-left">
+        <li class="cc-media panel panel-body cc-media--stack-mobile">
+            <div class="cc-media__start">
                 <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                     {% if coaster.mainImage is not null %}
                         <img src="{{ pictures_cdn }}/96x96/{{ coaster.mainImage.filename }}"
@@ -13,8 +13,8 @@
                     {% endif %}
                 </a>
             </div>
-            <div class="media-body">
-                <h2 class="media-heading mb-10">
+            <div class="cc-media__body">
+                <h2 class="cc-media__heading mb-10">
                     <a style="color:#333;" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if not filtered %}
                             {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
@@ -37,7 +37,7 @@
                         <li>{{ coaster.manufacturer.name }}</li>{% endif %}
                 </ul>
             </div>
-            <div class="media-right text-center">
+            <div class="cc-media__end text-center">
                 <h3 style="color: {{ helper.ratingColor(coaster.score) }};" class="no-margin text-semibold text-nowrap">
                     {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
                 </h3>
@@ -47,7 +47,7 @@
             </div>
         </li>
     {% else %}
-        <li class="media panel panel-body stack-media-on-mobile">
+        <li class="cc-media panel panel-body cc-media--stack-mobile">
             <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
         </li>
     {% endfor %}

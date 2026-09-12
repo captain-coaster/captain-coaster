@@ -54,7 +54,7 @@
 
         {%- if reviewCount > 0 -%}
             <div class="panel-body">
-                <ul class="media-list media-list-bordered">
+                <ul class="cc-media-list cc-media-list--bordered">
                     {%- for review in reviews -%}
                         <li>
                             {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}

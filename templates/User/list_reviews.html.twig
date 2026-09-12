@@ -15,10 +15,10 @@
 
       {% if reviews.getTotalItemCount() > 0 %}
         <div class="panel-body">
-          <ul class="media-list media-list-bordered">
+          <ul class="cc-media-list cc-media-list--bordered">
             {% for review in reviews %}
               <li>
-                <div class="media-heading">
+                <div class="cc-media__heading">
                   <h6 class="text-semibold">
                     <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
                       {{ review.coaster.name }}

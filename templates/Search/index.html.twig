@@ -6,14 +6,14 @@
 
 {% block body %}
     {% if query|length < 2 %}
-        <ul class="media-list content-group">
-            <li class="media panel panel-body">
+        <ul class="cc-media-list content-group">
+            <li class="cc-media panel panel-body">
                 {{ 'search_index.short'|trans() }}
             </li>
         </ul>
     {% elseif error is defined %}
-        <ul class="media-list content-group">
-            <li class="media panel panel-body">
+        <ul class="cc-media-list content-group">
+            <li class="cc-media panel panel-body">
                 <div class="text-center text-muted">
                     {{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-5 h-5'}) }}
                     <p class="mt-10">{{ error }}</p>
@@ -21,8 +21,8 @@
             </li>
         </ul>
     {% elseif results is empty %}
-        <ul class="media-list content-group">
-            <li class="media panel panel-body">
+        <ul class="cc-media-list content-group">
+            <li class="cc-media panel panel-body">
                 <div class="text-center text-muted">
                     {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-5 h-5'}) }}
                     <p class="mt-10">{{ 'search_index.noResult'|trans() }}</p>

@@ -115,7 +115,10 @@
         color: var(--cc-white);
     }
 
-    .navbar-nav > li > .dropdown-menu.account-menu a:not(.label-flat):not(.badge-flat) {
+    .navbar-nav
+        > li
+        > .dropdown-menu.account-menu
+        a:not(.label-flat):not(.badge-flat) {
         color: var(--cc-white);
     }
 
@@ -209,7 +212,7 @@
  * de-emphasizes read rows (muted text, faded icon) and marks unread with
  * weight plus a small dot, the same shape Gmail/GitHub/Linear converge on.
  */
-.notif-item .media-body a {
+.notif-item .cc-media__body a {
     /* Overrides the theme's default link-blue: the message is content,
      * not a "this is a link" affordance - only the hover/focus state
      * below needs to signal that.
@@ -217,22 +220,22 @@
     color: var(--cc-gray-900);
 }
 
-.notif-item .media-body a:hover,
-.notif-item .media-body a:focus {
+.notif-item .cc-media__body a:hover,
+.notif-item .cc-media__body a:focus {
     color: var(--cc-primary-600);
 }
 
-.notif-item.unread .media-body a {
+.notif-item.unread .cc-media__body a {
     font-weight: 600;
 }
 
-.notif-item.unread .media-annotation {
+.notif-item.unread .cc-media__annotation {
     position: relative;
     padding-left: 11px;
 }
 
-.notif-item.unread .media-annotation::before {
-    content: "";
+.notif-item.unread .cc-media__annotation::before {
+    content: '';
     position: absolute;
     left: 0;
     top: 50%;
@@ -243,10 +246,10 @@
     background-color: var(--cc-primary);
 }
 
-.notif-item:not(.unread) .media-left .btn {
+.notif-item:not(.unread) .cc-media__start .btn {
     opacity: 0.5;
 }
 
-.notif-item:not(.unread) .media-annotation {
+.notif-item:not(.unread) .cc-media__annotation {
     color: rgba(51, 51, 51, 0.45);
 }
