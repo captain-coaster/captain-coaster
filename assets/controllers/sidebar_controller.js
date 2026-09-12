@@ -62,7 +62,8 @@ export default class extends Controller {
     }
 
     _onResize() {
-        if (window.innerWidth > 768) {
+        // Keep in sync with --breakpoint-tablet in assets/styles/tokens.css.
+        if (window.innerWidth >= 769) {
             document.body.classList.remove(
                 'sidebar-mobile-main',
                 'sidebar-mobile-secondary'

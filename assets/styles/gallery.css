@@ -104,7 +104,7 @@
 }
 
 /* Hide arrow buttons on mobile - swipe gestures only */
-@media (max-width: 767px) {
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
     .captain-gallery-prev,
     .captain-gallery-next {
         display: none;
