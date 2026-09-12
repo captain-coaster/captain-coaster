@@ -29,7 +29,7 @@
  *
  * component-animation.less scope trimmed to selectors real markup
  * actually has: `.cc-button`, `.navbar-nav > li > a`, `.dropdown-menu > li >
- * a`, `.cc-list-group__item`, `.pagination > li > a/span`, `.close`, `.table
+ * a`, `.cc-list-group__item`, `.pagination > li > a/span`, `.cc-close`, `.table
  * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
  * during resize).
  */
@@ -88,7 +88,7 @@
         color ease-in-out 0.15s;
 }
 
-.close {
+.cc-close {
     transition: opacity ease-in-out 0.15s;
 }
 

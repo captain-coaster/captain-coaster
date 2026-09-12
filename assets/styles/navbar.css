@@ -754,14 +754,14 @@
     position: relative;
 }
 
-.modal-header .close {
+.modal-header .cc-close {
     position: absolute;
     right: 20px;
     top: 50%;
     margin-top: 0;
 }
 
-.modal-body .close {
+.modal-body .cc-close {
     margin-top: 0 !important;
 }
 

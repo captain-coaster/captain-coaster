@@ -366,26 +366,26 @@ fieldset[disabled] .cc-button {
 }
 
 /*
- * .close — migrated from theme/bootstrap-limitless/close.less +
+ * .cc-close — migrated from theme/bootstrap-limitless/close.less +
  * bootstrap/less/close.less. Used standalone (dismiss a review-report
- * modal) and inside .alert (that context -- .alert .close,
- * .alert-dismissible .close -- already lives in alerts.css, owned by
+ * modal) and inside .cc-alert (that context -- .cc-alert .cc-close,
+ * .cc-cc-alert---dismissible .cc-close -- already lives in alerts.css, owned by
  * the alert migration). Two upstream rules in modals.less
- * (`.modal-header[class*="bg-"] .close` and the .modal-content
+ * (`.modal-header[class*="bg-"] .cc-close` and the .modal-content
  * variant) target this class for bg-tinted modal headers; no template
  * uses one, so they're dead in practice and intentionally left
  * untouched in navbar.css until that file's own migration.
  *
- * @apply used here (unlike .alert) since every value maps to a plain
+ * @apply used here (unlike .cc-alert) since every value maps to a plain
  * Tailwind utility or a simple arbitrary one -- nothing pseudo-element
  * or icon-shaped that would fight the utility syntax.
  */
-.close {
+.cc-close {
     @apply float-right text-[19.5px] font-light leading-none text-black opacity-60;
 }
 
-.close:hover,
-.close:focus {
+.cc-close:hover,
+.cc-close:focus {
     @apply cursor-pointer text-black no-underline opacity-100;
     outline: 0;
 }
@@ -394,10 +394,10 @@ button.close {
     @apply cursor-pointer border-0 bg-transparent p-0 appearance-none;
 }
 
-.modal-header .close {
+.modal-header .cc-close {
     @apply absolute top-1/2 right-[20px] mt-0;
 }
 
-.modal-body .close {
+.modal-body .cc-close {
     margin-top: 0 !important;
 }

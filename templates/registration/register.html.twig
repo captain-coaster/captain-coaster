@@ -13,7 +13,7 @@
         </div>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-bordered">
+                <div class="cc-alert alert-{{ label }} cc-alert--bordered">
                     {{ message | raw }}
                 </div>
             {% endfor %}

@@ -81,6 +81,21 @@ const deprecatedLabelClasses = new Set([
     'badge-primary',
     'badge-flat',
 ]);
+const deprecatedAlertClasses = new Set([
+    'alert',
+    'alert-success',
+    'alert-info',
+    'alert-warning',
+    'alert-danger',
+    'alert-heading',
+    'alert-dismissible',
+    'alert-dismissable',
+    'alert-component',
+    'alert-styled-left',
+    'alert-arrow-left',
+    'alert-bordered',
+    'close',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -147,6 +162,10 @@ function addViolations(path, source) {
             contract: 'Bootstrap label or badge selector',
             pattern: /(?:^|[^\w-])\.(?:label|badge)(?:-[\w-]+)?(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap alert or close selector',
+            pattern: /(?:^|[^\w-])\.alert(?:-[\w-]+)?(?![\w-])|(?:^|[^\w-])\.close(?![\w-]|\s*\()/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -169,7 +188,8 @@ function addTemplateClassViolations(path, source) {
                 deprecatedPanelClasses.has(token) ||
                 deprecatedFieldClasses.has(token) ||
                 deprecatedButtonClasses.has(token) ||
-                deprecatedLabelClasses.has(token)
+                deprecatedLabelClasses.has(token) ||
+                deprecatedAlertClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -187,7 +207,9 @@ function addTemplateClassViolations(path, source) {
                             ? 'Bootstrap field class'
                             : deprecatedButtonClasses.has(deprecatedClass)
                               ? 'Bootstrap button class'
-                              : 'Bootstrap label or badge class';
+                              : deprecatedLabelClasses.has(deprecatedClass)
+                                ? 'Bootstrap label or badge class'
+                                : 'Bootstrap alert or close class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

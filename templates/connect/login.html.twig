@@ -14,13 +14,13 @@
             </h5>
         </div>
         {% if error %}
-            <div class="alert alert-danger alert-bordered">
+            <div class="cc-alert cc-alert--danger cc-alert--bordered">
                 {{ error.messageKey|trans(error.messageData, 'security') }}
             </div>
         {% endif %}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-bordered">
+                <div class="cc-alert alert-{{ label }} cc-alert--bordered">
                     {{ message | raw }}
                 </div>
             {% endfor %}
@@ -35,7 +35,7 @@
                 </div>
             </div>
             {% if not loginForm.email.vars.valid %}
-                <div class="alert alert-danger alert-bordered">
+                <div class="cc-alert cc-alert--danger cc-alert--bordered">
                     {{ form_errors(loginForm.email) }}
                 </div>
             {% endif %}
@@ -43,7 +43,7 @@
             <div class="cc-field">
                 {{ form_widget(loginForm.recaptcha) }}
                 {% if not loginForm.recaptcha.vars.valid %}
-                    <div class="alert alert-danger alert-bordered">
+                    <div class="cc-alert cc-alert--danger cc-alert--bordered">
                         {{ form_errors(loginForm.recaptcha) }}
                     </div>
                 {% endif %}
