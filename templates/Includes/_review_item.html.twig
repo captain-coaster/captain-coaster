@@ -1,7 +1,7 @@
 {% import "helper.html.twig" as helper %}
 {% set locale = app.request.locale %}
 
-<div class="cc-media"
+<div class="cc-media{% if stackOnMobile|default(false) %} cc-media--stack-mobile{% endif %}"
      data-controller="csrf-protection review-actions"
      data-csrf-protection-token-value="{{ csrf_token('rating') }}"
      data-review-actions-csrf-protection-outlet=".cc-media"

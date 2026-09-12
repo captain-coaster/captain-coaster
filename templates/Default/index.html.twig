@@ -131,7 +131,7 @@
         <div class="panel-body">
           <ul class="cc-media-list cc-media-list--bordered cc-media-list--stack-mobile reviews-list">
             {% for review in reviews %}
-              <li class="cc-media review-list-item">
+              <li class="review-list-item">
                 <div class="review-coaster-info">
                   <h6 class="cc-media__heading text-semibold">
                     <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
@@ -143,7 +143,7 @@
                     </a>
                   </h6>
                 </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}
+                {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages, 'stackOnMobile': true} %}
               </li>
             {% endfor %}
           </ul>
