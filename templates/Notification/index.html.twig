@@ -4,7 +4,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-      <div class="cc-panel cc-cc-panel--flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
+      <div class="cc-panel cc-panel--flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
         <div class="cc-panel__heading">
           <h6 class="cc-panel__title">
             {{ 'notif.title'|trans({}, 'notification') }}

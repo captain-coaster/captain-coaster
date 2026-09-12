@@ -145,7 +145,7 @@
   </template>
 
   {# Help Section - Collapsible #}
-  <details class="cc-panel cc-cc-panel--flat mb-3 help-section">
+  <details class="cc-panel cc-panel--flat mb-3 help-section">
     <summary class="cc-panel__body">
       <span style="display: flex; align-items: center; gap: 8px;">
         {{ ux_icon('heroicons:information-circle', {'class': 'w-3.5 h-3.5 text-primary'}) }}
@@ -167,7 +167,7 @@
   </details>
 
   {# Search Component for Adding Coasters - Mobile-optimized #}
-  <div class="cc-panel cc-cc-panel--flat mb-3">
+  <div class="cc-panel cc-panel--flat mb-3">
     <div class="cc-panel__body p-3">
       <div data-controller="top-search" 
            data-top-search-url-value="{{ path('top_ajax_search') }}"
@@ -189,7 +189,7 @@
   </div>
 
   {{ form_start(form) }}
-  <div class="cc-panel cc-cc-panel--flat mb-3">
+  <div class="cc-panel cc-panel--flat mb-3">
     {% if form.vars.errors is not empty %}
       <div class="cc-panel__heading">
         <div class="cc-alert cc-alert--danger cc-alert--styled-left cc-alert--dismissible mt-2">

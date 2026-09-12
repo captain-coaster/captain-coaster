@@ -1,7 +1,7 @@
 /*
  * Panels -- migrated: theme/bootstrap-limitless/panels.less +
  * bootstrap/less/panels.less. Scope: `.cc-panel`(+`[class*=border-top-/
- * -bottom-]`), `.cc-panel__body`, `.cc-panel__heading`(+`.cc-cc-panel--flat`/`.cc-cc-panel--white`
+ * -bottom-]`), `.cc-panel__body`, `.cc-panel__heading`(+`.cc-panel--flat`/`.cc-panel--white`
  * nesting), `.cc-panel__title`(+h1-h6/.h1-.h6 sizing), `.cc-panel__footer`. No
  * contextual `.cc-panel-primary/-success/-info/-warning/-danger`,
  * `.cc-panel-collapse`/`-group` (no Bootstrap-JS accordion anywhere in this
@@ -36,7 +36,7 @@
     display: flow-root;
 }
 
-.cc-cc-panel--flat > .cc-panel__heading + .cc-panel__body {
+.cc-panel--flat > .cc-panel__heading + .cc-panel__body {
     padding-top: 0;
 }
 
@@ -52,13 +52,13 @@
     border-bottom: 1px solid transparent;
 }
 
-.cc-cc-panel--flat > .cc-panel__heading {
+.cc-panel--flat > .cc-panel__heading {
     padding-top: 20px;
     padding-bottom: 20px;
     background-color: var(--cc-white);
 }
 
-.cc-cc-panel--flat > .cc-panel__heading > .cc-panel__title {
+.cc-panel--flat > .cc-panel__heading > .cc-panel__title {
     margin-top: 2px;
     margin-bottom: 2px;
 }
@@ -72,7 +72,7 @@
  * Fixed by porting the base rule as bootstrap's real `1px solid
  * transparent` instead -- invisible everywhere else, visible here.
  */
-.cc-cc-panel--white > .cc-panel__heading {
+.cc-panel--white > .cc-panel__heading {
     background-color: var(--cc-white);
     border-bottom-color: var(--cc-gray-300);
 }

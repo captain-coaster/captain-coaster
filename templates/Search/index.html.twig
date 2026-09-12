@@ -30,7 +30,7 @@
             </li>
         </ul>
     {% else %}
-        <div class="cc-panel cc-cc-panel--white" data-controller="search-results">
+        <div class="cc-panel cc-panel--white" data-controller="search-results">
             <div class="cc-panel__heading">
                 <h6 class="cc-panel__title text-semibold">
                     {{ 'search_index.unified_results_found'|trans({'%num%': totalResults, '%query%': query}) }}
@@ -75,7 +75,7 @@
 
         {% if cc-pagination and cc-pagination.total > 1 %}
             <div class="text-center">
-                <ul class="cc-pagination cc-cc-pagination--sm">
+                <ul class="cc-pagination cc-pagination--sm">
                     {% if cc-pagination.has_previous %}
                         <li>
                             <a href="{{ path('search_index', {'query': query, 'page': cc-pagination.previous}) }}" aria-label="Previous">

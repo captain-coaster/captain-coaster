@@ -27,9 +27,9 @@
  * paths, which top-list.css's rule never touches.
  *
  * The two cc-panel__heading mobile overrides (originally a base `.cc-panel-
- * heading &` rule then a `.cc-cc-panel--flat &` rule refining it) collapse to
+ * heading &` rule then a `.cc-panel--flat &` rule refining it) collapse to
  * one: both real instances (ranking/info, Notification/index) are
- * inside `.cc-cc-panel--flat`, so only the flat-cc-panel-resolved values ever
+ * inside `.cc-panel--flat`, so only the flat-cc-panel-resolved values ever
  * render. Background colors for both mobile "inside X" contexts
  * (`darken(@page-header-default-bg,1%)` and `darken(@cc-panel-bg,1%)`)
  * resolve to the same off-white in this theme's palette, hardcoded

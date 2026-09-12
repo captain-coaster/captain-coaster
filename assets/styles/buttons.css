@@ -369,7 +369,7 @@ fieldset[disabled] .cc-button {
  * .cc-close — migrated from theme/bootstrap-limitless/close.less +
  * bootstrap/less/close.less. Used standalone (dismiss a review-report
  * modal) and inside .cc-alert (that context -- .cc-alert .cc-close,
- * .cc-cc-alert---dismissible .cc-close -- already lives in alerts.css, owned by
+ * .cc-alert--dismissible .cc-close -- already lives in alerts.css, owned by
  * the alert migration). Two upstream rules in modals.less
  * (`.modal-header[class*="bg-"] .cc-close` and the .modal-content
  * variant) target this class for bg-tinted modal headers; no template
