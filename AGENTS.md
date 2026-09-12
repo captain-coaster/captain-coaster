@@ -97,7 +97,7 @@ PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP82Migration:risky` + `@PHP8
 
 ## Git workflow
 
-- Create worktrees with the built-in `EnterWorktree` tool, not `git worktree add`. Never edit `.env.local` — it holds live secrets and is shared by symlink across worktrees.
+- Create worktrees with the built-in `EnterWorktree` tool, not `git worktree add`. `.worktreeinclude` makes it copy `.env.local` into each new worktree automatically. Never edit `.env.local` — it holds live secrets, and per-worktree copies are point-in-time snapshots, not kept in sync with each other.
 - There is no pre-commit hook — run `vendor/bin/php-cs-fixer fix` and `vendor/bin/phpunit` yourself before committing.
 - Redis, MariaDB and Adminer run in shared containers. Never `docker compose down`.
 - One PR per feature — keep it small where the change allows.
@@ -130,3 +130,17 @@ vendor/bin/php-cs-fixer fix
 ### Verifying UI changes
 
 A dev server runs locally — use the Playwright MCP tools against it to verify front-end work. The port varies per worktree (see `.claude/skills/dev-environment/SKILL.md`), so read the actual URL rather than assuming `localhost:8000`. Resize to a mobile viewport (e.g. 390×844) first, since ~80% of usage is mobile.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (`captain-coaster/captain-coaster`), via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default canonical roles, except `wontfix` reuses the existing `status/wontfix` label. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
