@@ -1,5 +1,5 @@
 {% if reviews|length > 0 %}
-  <div class="panel-body">
+  <div class="cc-panel__body">
     <ul class="cc-media-list cc-media-list--bordered">
       {% for review in reviews %}
         <li>
@@ -20,7 +20,7 @@
     </ul>
   </div>
   {% if hasMore %}
-    <div class="panel-footer text-center" data-review-list-target="trigger">
+    <div class="cc-panel__footer text-center" data-review-list-target="trigger">
       <a href="{{ path('review_list', {'count': nextCount}) }}"
          class="btn btn-link"
          data-action="click->review-list#loadMore">
@@ -29,7 +29,7 @@
     </div>
   {% endif %}
 {% else %}
-  <div class="panel-body text-center text-muted">
+  <div class="cc-panel__body text-center text-muted">
     {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
     <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
   </div>

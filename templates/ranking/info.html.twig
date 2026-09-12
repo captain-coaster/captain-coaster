@@ -1,6 +1,6 @@
-<div class="panel panel-flat">
-  <div class="panel-heading has-visible-elements">
-    <h6 class="panel-title">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|format_datetime('long', 'none')}) }}</h6>
+<div class="cc-panel cc-cc-panel--flat">
+  <div class="cc-panel__heading has-visible-elements">
+    <h6 class="cc-panel__title">{{ 'coaster_ranking.info.title'|trans({'%rankingMonth%': ranking.computedAt|format_datetime('long', 'none')}) }}</h6>
     <div class="heading-elements visible-elements" style="display: flex; gap: 1rem; flex-wrap: wrap;">
       {% set nextRankingDate = 'now'|date_modify('first day of next month midnight 1 minute') %}
       {% if nextRankingDate|date('U') - 'now'|date('U') > 7200 %}
@@ -15,7 +15,7 @@
       </span>
     </div>
   </div>
-  <div class="panel-body grid grid-cols-12 gap-5 text-center">
+  <div class="cc-panel__body grid grid-cols-12 gap-5 text-center">
     <div class="col-span-3">
       <div class="content-group">
         <h6 class="text-semibold no-margin">

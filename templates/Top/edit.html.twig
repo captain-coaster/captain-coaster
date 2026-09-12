@@ -145,8 +145,8 @@
   </template>
 
   {# Help Section - Collapsible #}
-  <details class="panel panel-flat mb-3 help-section">
-    <summary class="panel-body">
+  <details class="cc-panel cc-cc-panel--flat mb-3 help-section">
+    <summary class="cc-panel__body">
       <span style="display: flex; align-items: center; gap: 8px;">
         {{ ux_icon('heroicons:information-circle', {'class': 'w-3.5 h-3.5 text-primary'}) }}
         <strong>{{ 'help.title'|trans({}, 'top') }}</strong>
@@ -167,8 +167,8 @@
   </details>
 
   {# Search Component for Adding Coasters - Mobile-optimized #}
-  <div class="panel panel-flat mb-3">
-    <div class="panel-body p-3">
+  <div class="cc-panel cc-cc-panel--flat mb-3">
+    <div class="cc-panel__body p-3">
       <div data-controller="top-search" 
            data-top-search-url-value="{{ path('top_ajax_search') }}"
            data-top-search-list-controller-value="top-list"
@@ -189,15 +189,15 @@
   </div>
 
   {{ form_start(form) }}
-  <div class="panel panel-flat mb-3">
+  <div class="cc-panel cc-cc-panel--flat mb-3">
     {% if form.vars.errors is not empty %}
-      <div class="panel-heading">
+      <div class="cc-panel__heading">
         <div class="alert alert-danger alert-styled-left alert-dismissible mt-2">
           {{ form_errors(form) }}
         </div>
       </div>
     {% endif %}
-    <div class="panel-body p-0 p-md-2">
+    <div class="cc-panel__body p-0 p-md-2">
       <ul id="top-coaster"
           data-prototype="{{ form_widget(form.topCoasters.vars.prototype)|e('html_attr') }}"
           class="cc-media-list cc-media-list-container list-unstyled mb-0"

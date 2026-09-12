@@ -29,6 +29,15 @@ const deprecatedCollectionClasses = new Set([
     'list-group',
     'list-group-item',
 ]);
+const deprecatedPanelClasses = new Set([
+    'panel',
+    'panel-body',
+    'panel-heading',
+    'panel-footer',
+    'panel-title',
+    'panel-flat',
+    'panel-white',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -77,6 +86,11 @@ function addViolations(path, source) {
             pattern:
                 /(?:^|[^\w-])\.(?:thumbnail|caption|thumb|caption-overflow|list-group|list-group-item)(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap panel selector',
+            pattern:
+                /(?:^|[^\w-])\.(?:panel|panel-body|panel-heading|panel-footer|panel-title|panel-flat|panel-white)(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -95,7 +109,8 @@ function addTemplateClassViolations(path, source) {
             (token) =>
                 token === 'collapse' ||
                 deprecatedMediaClasses.has(token) ||
-                deprecatedCollectionClasses.has(token)
+                deprecatedCollectionClasses.has(token) ||
+                deprecatedPanelClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -105,7 +120,9 @@ function addTemplateClassViolations(path, source) {
                     ? 'Bootstrap collapse class'
                     : deprecatedMediaClasses.has(deprecatedClass)
                       ? 'Bootstrap media class'
-                      : 'Bootstrap collection class';
+                      : deprecatedCollectionClasses.has(deprecatedClass)
+                        ? 'Bootstrap collection class'
+                        : 'Bootstrap panel class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

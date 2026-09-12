@@ -9,8 +9,8 @@
   <div class="grid grid-cols-12 gap-5">
     <div class="col-span-12 tablet:col-span-3">
       <!-- infos user -->
-      <div class="panel">
-          <div class="panel-body text-center">
+      <div class="cc-panel">
+          <div class="cc-panel__body text-center">
             <div class="display-inline-block">
               {{ helper.profilePicture(user, 'img-circle img-lg') }}
             </div>
@@ -64,12 +64,12 @@
       {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
       <!-- stats -->
       <!-- badges -->
-      <div class="panel panel-flat">
-        <div class="panel-heading">
-          <h3 class="panel-title">{{ 'profile.badge'|trans }}</h3>
+      <div class="cc-panel cc-cc-panel--flat">
+        <div class="cc-panel__heading">
+          <h3 class="cc-panel__title">{{ 'profile.badge'|trans }}</h3>
         </div>
 
-        <div class="panel-body">
+        <div class="cc-panel__body">
           <div class="grid grid-cols-12 gap-5">
             <div class="col-span-12 tablet:col-span-3" style="margin-bottom: 40px;">
               <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>

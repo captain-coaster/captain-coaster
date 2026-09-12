@@ -6,9 +6,9 @@
  */
 
 /* Desktop navbar toggle avatar: smaller and ringed. Unlike the
- * account-menu-header avatar (which sits on the dropdown panel's light
+ * account-menu-header avatar (which sits on the dropdown cc-panel's light
  * background and so uses a dark rgba(0,0,0,.1) border), this one sits on
- * the dark top navbar in both mobile and desktop, so it needs the panel's
+ * the dark top navbar in both mobile and desktop, so it needs the cc-panel's
  * own dark-background variant (rgba(255,255,255,.2), see the mobile media
  * query below) to actually be visible.
  */
@@ -55,7 +55,7 @@
     font-size: 12px;
 }
 
-/* Every row in the panel -- plain links (Settings, My ratings, Logout...),
+/* Every row in the cc-panel -- plain links (Settings, My ratings, Logout...),
  * account-menu-row triggers (language, units, notifications), and their
  * nested submenu options (English, Metric units...) alike -- shares this
  * same icon/text + gap layout, so it lives on one shared selector instead
@@ -81,7 +81,7 @@
  * data URI on ::after, positioned absolutely at a fixed right offset. Two
  * problems for our rows specifically: it can't pick up currentColor (it's
  * a rasterized image, not a live SVG), so it stays dark and unreadable
- * against this dark panel; and being absolutely positioned, it overlaps
+ * against this dark cc-panel; and being absolutely positioned, it overlaps
  * long value text ("Unités métriques") instead of flowing after it. Our
  * own chevron-right icon inside account-menu-row-value replaces it.
  */
@@ -137,7 +137,7 @@
     /* Every link's hover/focus/active state (not just .account-menu-row)
      * -- otherwise plain rows (Settings, Logout, submenu option lists...)
      * keep Bootstrap's light default tap-highlight background, which
-     * flashes white against this dark panel.
+     * flashes white against this dark cc-panel.
      */
     .navbar-nav > li > .dropdown-menu.account-menu li > a:hover,
     .navbar-nav > li > .dropdown-menu.account-menu li > a:focus,
@@ -149,9 +149,9 @@
      * .dropdown-menu elements; the theme's own mobile stacking rules
      * reset their position and box-shadow but not their light default
      * background or their navbar-inverse border, which otherwise
-     * render as a boxed-in white panel with a visible double line
+     * render as a boxed-in white cc-panel with a visible double line
      * (its own border plus the next divider right below it) inside
-     * this dark, borderless account panel.
+     * this dark, borderless account cc-panel.
      */
     .navbar-nav > li > .dropdown-menu.account-menu .dropdown-menu {
         background-color: transparent;
@@ -189,13 +189,13 @@
      * same as the burger icon beside it.
      */
 
-    /* The navbar panel caps its height on narrow landscape screens; let the
+    /* The navbar cc-panel caps its height on narrow landscape screens; let the
      * account menu grow to its content height instead of adding an inner
      * scrollbar (fine for a short nav list, not for a full account
-     * panel). Let it grow to its content height and let the page scroll
+     * cc-panel). Let it grow to its content height and let the page scroll
      * instead of an inner scroll box.
      */
-    #navbar-mobile.cc-navbar-panel {
+    #navbar-mobile.cc-navbar-cc-panel {
         max-height: none;
         overflow-y: visible;
     }

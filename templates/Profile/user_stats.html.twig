@@ -5,7 +5,7 @@
 
     <div class="grid grid-cols-12 gap-5">
         <div class="col-span-12 tablet:col-span-6 desktop:col-span-3">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-success-400">{{ stats.nb_coasters }}</h3>
@@ -19,7 +19,7 @@
         </div>
 
         <div class="col-span-12 tablet:col-span-6 desktop:col-span-3">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-cc-blue-400">{{ stats.nb_park }}</h3>
@@ -33,7 +33,7 @@
         </div>
 
         <div class="col-span-12 tablet:col-span-6 desktop:col-span-3">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-cc-indigo-400">{{ stats.nb_country }}</h3>
@@ -47,7 +47,7 @@
         </div>
 
         <div class="col-span-12 tablet:col-span-6 desktop:col-span-3">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-cc-teal-400">{{ (stats.top_100 * 100 / 100)|round }}/100</h3>
@@ -72,7 +72,7 @@
 
     <div class="grid grid-cols-12 gap-5">
         <div class="col-span-12 tablet:col-span-4">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-warning-400">{{ stats.country.name|trans([], 'database') }}</h3>
@@ -95,7 +95,7 @@
         </div>
 
         <div class="col-span-12 tablet:col-span-4">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-cc-pink-400">{{ stats.manufacturer.name }}</h3>
@@ -118,7 +118,7 @@
         </div>
 
         <div class="col-span-12 tablet:col-span-4">
-            <div class="panel panel-body">
+            <div class="cc-panel cc-panel__body">
                 <div class="cc-media mt-0">
                     <div class="cc-media__body">
                         <h3 class="no-margin text-semibold text-cc-orange-400">{{ stats.top_rated_manufacturer.name }}</h3>

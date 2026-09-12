@@ -19,7 +19,7 @@
             {% if coaster.isRateable %}
                 <!-- score -->
                 {% if coaster.score %}
-                    <div class="panel panel-body">
+                    <div class="cc-panel cc-panel__body">
                         <div class="grid grid-cols-2 gap-5">
                             <div>
                                 <div class="text-muted text-size-small text-uppercase score-label">
@@ -132,8 +132,8 @@
             </div>
             <!-- /main carac -->
             <!-- coaster details -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
+            <div class="cc-panel cc-cc-panel--white">
+                <div class="cc-panel__heading">
                     <h6>
                         {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
                     </h6>
@@ -287,8 +287,8 @@
             {% endif %}
             <!-- /coaster details -->
             <!-- coasters in park -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
+            <div class="cc-panel cc-cc-panel--white">
+                <div class="cc-panel__heading">
                     <h6>
                         {{ 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}) }}
                         &nbsp;<span class="badge badge-primary">{{ coasters|length }}</span>
@@ -319,17 +319,17 @@
                 data-coaster-summary-csrf-token-value="{{ csrf_token('summary_feedback') }}"
             >
                 <div id="coaster-ai-summary" data-coaster-summary-target="container">
-                    <div class="panel panel-flat mb-15">
-                        <div class="panel-heading">
-                            <h6 class="panel-title">
+                    <div class="cc-panel cc-cc-panel--flat mb-15">
+                        <div class="cc-panel__heading">
+                            <h6 class="cc-panel__title">
                                 <span class="text-semibold">
                                     {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4 position-left'}) }} Captain's Review
                                 </span>
                             </h6>
                         </div>
-                        <div class="panel-body text-center">
+                        <div class="cc-panel__body text-center">
                             {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">{{ 'ai_summary.panel.loading'|trans({}, 'ai_summary') }}</span>
+                            <span class="text-muted ml-5">{{ 'ai_summary.cc-panel.loading'|trans({}, 'ai_summary') }}</span>
                         </div>
                     </div>
                 </div>
@@ -343,15 +343,15 @@
                 data-coaster-images-total-images-value="{{ coaster.images|length }}"
             >
                 <div id="coaster-photos" data-coaster-images-target="container">
-                    <div class="panel panel-flat mb-15">
-                        <div class="panel-heading">
-                            <h6 class="panel-title">
+                    <div class="cc-panel cc-cc-panel--flat mb-15">
+                        <div class="cc-panel__heading">
+                            <h6 class="cc-panel__title">
                                 <span class="text-semibold">
                                     {{ ux_icon('heroicons:photo', {'class': 'w-4 h-4 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                                 </span>
                             </h6>
                         </div>
-                        <div class="panel-body text-center">
+                        <div class="cc-panel__body text-center">
                             {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
                             <span class="text-muted ml-5">{{ 'coaster.photos.loading'|trans }}</span>
                         </div>
@@ -366,9 +366,9 @@
                 data-coaster-reviews-locale-value="{{ app.request.locale }}"
             >
                 <div id="coaster-reviews" data-coaster-reviews-target="container">
-                    <div class="panel panel-flat mb-15">
-                        <div class="panel-heading">
-                            <h6 class="panel-title">
+                    <div class="cc-panel cc-cc-panel--flat mb-15">
+                        <div class="cc-panel__heading">
+                            <h6 class="cc-panel__title">
                                 <span class="text-semibold">
                                     {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.title'|trans }}
                                 </span>
@@ -382,7 +382,7 @@
                                 </form>
                             </h6>
                         </div>
-                        <div class="panel-body text-center">
+                        <div class="cc-panel__body text-center">
                             {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
                             <span class="text-muted ml-5">{{ 'review.loading'|trans }}</span>
                         </div>

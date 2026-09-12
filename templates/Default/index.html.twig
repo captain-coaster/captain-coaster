@@ -30,7 +30,7 @@
     </div>
   {% endif %}
   <!-- /info alert -->
-  <div class="panel panel-body">
+  <div class="cc-panel cc-panel__body">
     <div class="grid grid-cols-12 gap-5 text-center">
       <div class="col-span-3">
         <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
@@ -87,11 +87,11 @@
       </div>
       <!-- /thumbnail with image and button -->
       <!-- latest ratings -->
-      <div class="panel panel-flat border-top-cc-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'rating.last'|trans }}</h6>
+      <div class="cc-panel cc-cc-panel--flat border-top-cc-teal">
+        <div class="cc-panel__heading">
+          <h6 class="cc-panel__title">{{ 'rating.last'|trans }}</h6>
         </div>
-        <div class="panel-body">
+        <div class="cc-panel__body">
           <ul class="list-feed">
             {% for ratingItem in ratingFeed %}
               <li>
@@ -114,9 +114,9 @@
     </div>
     <div class="col-span-12 tablet:col-span-6">
       <!-- latest reviews -->
-      <div class="panel panel-flat">
-        <div class="panel-heading">
-          <h6 class="panel-title text-semibold">
+      <div class="cc-panel cc-cc-panel--flat">
+        <div class="cc-panel__heading">
+          <h6 class="cc-panel__title text-semibold">
             {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-4 h-4 position-left'}) }}
             {{ 'review.last'|trans }}
           </h6>
@@ -128,7 +128,7 @@
           </div>
         </div>
 
-        <div class="panel-body">
+        <div class="cc-panel__body">
           <ul class="cc-media-list cc-media-list--bordered cc-media-list--stack-mobile reviews-list">
             {% for review in reviews %}
               <li class="review-list-item">

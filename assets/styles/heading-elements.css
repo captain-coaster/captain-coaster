@@ -1,14 +1,14 @@
 /*
  * Heading elements -- migrated: theme/components/ui/heading-elements.less
  * (767 lines, a deep Limitless mega-component for search bars/toolbars/
- * breadcrumbs inside panel headers and page headers). Real usage is just
+ * breadcrumbs inside cc-panel headers and page headers). Real usage is just
  * 4 elements: `page_header.html.twig`'s search bar, `ranking/info.html.twig`
- * and `Notification/index.html.twig`'s panel-heading action rows (all
+ * and `Notification/index.html.twig`'s cc-panel__heading action rows (all
  * three carry `.visible-elements`), and `Default/index.html.twig`'s bare
  * `.heading-elements` "See all reviews" link (no `.visible-elements`).
  * Every other class here (`.heading-elements-toggle`, `.breadcrumb-
  * elements(-toggle)`, `.heading-thumbnails`, `.heading-btn(-group)`,
- * `.not-collapsible`, `.panel-nav`, `.daterange-custom`, and the entire
+ * `.not-collapsible`, `.cc-panel-nav`, `.daterange-custom`, and the entire
  * `.visible-elements` sub-tree for sliders/progress-bars/select2/
  * jQuery-UI widgets none of which this app uses) is confirmed dead.
  *
@@ -26,22 +26,22 @@
  * `.heading-elements` case needed porting -- only the `.visible-elements`
  * paths, which top-list.css's rule never touches.
  *
- * The two panel-heading mobile overrides (originally a base `.panel-
- * heading &` rule then a `.panel-flat &` rule refining it) collapse to
+ * The two cc-panel__heading mobile overrides (originally a base `.cc-panel-
+ * heading &` rule then a `.cc-cc-panel--flat &` rule refining it) collapse to
  * one: both real instances (ranking/info, Notification/index) are
- * inside `.panel-flat`, so only the flat-panel-resolved values ever
+ * inside `.cc-cc-panel--flat`, so only the flat-cc-panel-resolved values ever
  * render. Background colors for both mobile "inside X" contexts
- * (`darken(@page-header-default-bg,1%)` and `darken(@panel-bg,1%)`)
+ * (`darken(@page-header-default-bg,1%)` and `darken(@cc-panel-bg,1%)`)
  * resolve to the same off-white in this theme's palette, hardcoded
  * once rather than distinguishing the two LESS color functions.
  *
  * Caught only by re-diffing computed styles against the pre-migration
  * build, not by re-reading the LESS a second time: a *sibling* rule,
- * `.visible-elements{.panel &{border-top:1px solid @panel-default-border;
+ * `.visible-elements{.cc-panel &{border-top:1px solid @cc-panel-default-border;
  * padding:@content-padding-large;padding-top:0}}`, also matches both
- * panel-heading instances (`.panel-heading` is itself inside `.panel`,
+ * cc-panel__heading instances (`.cc-panel__heading` is itself inside `.cc-panel`,
  * so the plain descendant combinator reaches it) -- easy to miss because
- * it's not nested under the more obviously-relevant `.panel-heading &`
+ * it's not nested under the more obviously-relevant `.cc-panel__heading &`
  * block a few lines below it. Without it, both instances were missing
  * their top border and left/right/bottom padding entirely.
  */
@@ -96,13 +96,13 @@
         margin-right: -20px;
     }
 
-    .panel .heading-elements.visible-elements {
+    .cc-panel .heading-elements.visible-elements {
         border-top: 1px solid var(--cc-gray-300);
         padding: 20px;
         padding-top: 0;
     }
 
-    .panel-heading > .heading-elements.visible-elements {
+    .cc-panel__heading > .heading-elements.visible-elements {
         margin: 20px -20px 0;
         background-color: var(--cc-gray-50);
         border-bottom: 1px solid var(--cc-gray-300);

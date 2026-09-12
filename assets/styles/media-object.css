@@ -8,7 +8,7 @@
     @apply mt-0;
 }
 
-.cc-media.panel-body {
+.cc-media.cc-panel__body {
     @apply mt-0 flex;
 }
 

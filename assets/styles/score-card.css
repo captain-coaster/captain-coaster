@@ -22,7 +22,7 @@
     color: var(--cc-gray-650);
 }
 
-/* Score panel styles */
+/* Score cc-panel styles */
 .score-label {
     letter-spacing: 0.5px;
     margin-bottom: 8px;
@@ -38,5 +38,3 @@
 .rank-link {
     text-decoration: none;
 }
-
-

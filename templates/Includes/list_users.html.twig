@@ -3,7 +3,7 @@
 <ul class="cc-media-list grid grid-cols-12 gap-5">
     {% for user in users %}
         <li class="col-span-12 tablet:col-span-6 wide:col-span-4">
-            <div class="panel-body{% if border %} panel{% endif %}">
+            <div class="cc-panel__body{% if border %} cc-panel{% endif %}">
                 <div class="cc-media">
                     <div class="cc-media__start">
                         {{ helper.profilePicture(user.0) }}

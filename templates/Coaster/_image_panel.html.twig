@@ -1,7 +1,7 @@
 {% set image_count = coaster.images|length %}
-<div class="panel panel-flat">
-    <div class="panel-heading">
-        <h6 class="panel-title">
+<div class="cc-panel cc-cc-panel--flat">
+    <div class="cc-panel__heading">
+        <h6 class="cc-panel__title">
             <span class="text-semibold">
                 {{ ux_icon('heroicons:photo', {'class': 'w-4 h-4 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                 {% if image_count > 0 %}
@@ -17,7 +17,7 @@
     </div>
     
     {% if image_count > 0 %}
-        <div class="panel-body grid grid-cols-12 gap-5"
+        <div class="cc-panel__body grid grid-cols-12 gap-5"
              data-controller="gallery"
              data-gallery-name-value="coaster-images"
              data-gallery="coaster-images">
@@ -47,12 +47,12 @@
             {% endfor %}
         </div>
         {% if number < image_count %}
-            <div class="panel-footer text-center">
+            <div class="cc-panel__footer text-center">
                 <a id="show-all" class="btn btn-link">{{ 'coaster.photos.all'|trans }}</a>
             </div>
         {% endif %}
     {% else %}
-        <div class="panel-body text-center text-muted">
+        <div class="cc-panel__body text-center text-muted">
             {{ ux_icon('heroicons:photo', {'class': 'w-5 h-5'}) }}
             <p class="mt-10">{{ 'coaster.photos.empty'|trans }}</p>
             <a href="{{ path('coaster_images_upload', {'slug': coaster.slug}) }}" class="btn btn-primary btn-sm">

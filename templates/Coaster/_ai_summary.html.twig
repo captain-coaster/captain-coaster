@@ -1,20 +1,20 @@
 {% if coasterSummary %}
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h6 class="panel-title">
+    <div class="cc-panel cc-cc-panel--flat">
+        <div class="cc-panel__heading">
+            <h6 class="cc-panel__title">
                 <span class="text-semibold">
-                    {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4 position-left'}) }} {{ 'ai_summary.panel.title'|trans({}, 'ai_summary') }}
+                    {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4 position-left'}) }} {{ 'ai_summary.cc-panel.title'|trans({}, 'ai_summary') }}
                 </span>
             </h6>
         </div>
-        <div class="panel-body">
+        <div class="cc-panel__body">
             <p class="text-muted mb-15">{{ coasterSummary.summary }}</p>
             {% if coasterSummary.dynamicPros|length > 0 or coasterSummary.dynamicCons|length > 0 %}
                 {% import "helper.html.twig" as helper %}
                 <div class="grid grid-cols-12 gap-5 items-start">
                     {% if coasterSummary.dynamicPros|length > 0 %}
                         <div class="col-span-12 desktop:col-span-6">
-                            <h6 style="color: #065f46;">{{ ux_icon('heroicons:check', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.highlights'|trans({}, 'ai_summary') }}</h6>
+                            <h6 style="color: #065f46;">{{ ux_icon('heroicons:check', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.cc-panel.highlights'|trans({}, 'ai_summary') }}</h6>
                             {% for pro in coasterSummary.dynamicPros %}
                                 <span class="label label-success label-rounded">{{ pro }}</span>
                             {% endfor %}
@@ -22,7 +22,7 @@
                     {% endif %}
                     {% if coasterSummary.dynamicCons|length > 0 %}
                         <div class="col-span-12 desktop:col-span-6">
-                            <h6 style="color: #9f1239;">{{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.panel.concerns'|trans({}, 'ai_summary') }}</h6>
+                            <h6 style="color: #9f1239;">{{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-3.5 h-3.5'}) }} {{ 'ai_summary.cc-panel.concerns'|trans({}, 'ai_summary') }}</h6>
                             {% for con in coasterSummary.dynamicCons %}
                                 <span class="label label-danger label-rounded">{{ con }}</span>
                             {% endfor %}

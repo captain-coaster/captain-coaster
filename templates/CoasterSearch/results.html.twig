@@ -1,13 +1,13 @@
 {% import "helper.html.twig" as helper %}
 
-<div class="panel panel-white">
-    <div class="panel-heading">
-        <h6 class="panel-title text-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
+<div class="cc-panel cc-cc-panel--white">
+    <div class="cc-panel__heading">
+        <h6 class="cc-panel__title text-semibold">{{ 'coaster_search.num_found'|trans({'%num%': coasters.getTotalItemCount}) }}</h6>
     </div>
 
     <ul class="cc-media-list">
         {% for coaster in coasters %}
-            <li class="cc-media panel-body cc-media--stack-mobile">
+            <li class="cc-media cc-panel__body cc-media--stack-mobile">
                 <div class="cc-media__start">
                     <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if coaster.mainImage is not null %}
@@ -51,7 +51,7 @@
 
             </li>
         {% else %}
-            <li class="cc-media panel-body">
+            <li class="cc-media cc-panel__body">
                 <h5>{{ 'coaster_search.no_results'|trans }}</h5>
             </li>
         {% endfor %}

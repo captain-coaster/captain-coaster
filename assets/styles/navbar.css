@@ -19,7 +19,7 @@
  * account-menu.css (assets/styles/, not part of this migration) already
  * owns all of the navbar account-menu's actual visual styling and
  * its own mobile dropdown override (bypasses .open entirely, renders the
- * account panel inline once #navbar-mobile is expanded) -- confirmed via its
+ * account cc-panel inline once #navbar-mobile is expanded) -- confirmed via its
  * own comments that it depends on @grid-float-breakpoint and
  * @navbar-inverse-link-color still resolving, which they do as long as
  * theme/core's LESS variable files stay untouched (they're migrated last).
@@ -28,13 +28,13 @@
  * actually matches anything real in this app and is skipped entirely below.
  */
 
-/* The mobile panel uses a local state contract that cannot collide with
+/* The mobile cc-panel uses a local state contract that cannot collide with
  * Tailwind's visibility utilities. */
 
 .nav,
 .navbar,
 .navbar-header,
-.cc-navbar-panel,
+.cc-navbar-cc-panel,
 .modal-header,
 .modal-footer {
     display: flow-root;
@@ -98,7 +98,7 @@
 }
 
 .caret:after {
-    content: "";
+    content: '';
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -248,8 +248,8 @@
 }
 
 .dropdown-menu > .dropdown-submenu > a:after {
-    content: "";
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=");
+    content: '';
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -321,12 +321,22 @@
     }
 
     .dropdown-menu > .dropdown-submenu .dropdown-menu > li > a,
-    .dropdown-menu > .dropdown-submenu.dropdown-submenu-left .dropdown-menu > li > a {
+    .dropdown-menu
+        > .dropdown-submenu.dropdown-submenu-left
+        .dropdown-menu
+        > li
+        > a {
         padding-left: 30px;
     }
 
     .dropdown-menu > .dropdown-submenu .dropdown-menu > li > ul > li > a,
-    .dropdown-menu > .dropdown-submenu.dropdown-submenu-left .dropdown-menu > li > ul > li > a {
+    .dropdown-menu
+        > .dropdown-submenu.dropdown-submenu-left
+        .dropdown-menu
+        > li
+        > ul
+        > li
+        > a {
         padding-left: 45px;
     }
 }
@@ -361,7 +371,7 @@
     }
 }
 
-.cc-navbar-panel > .navbar-header {
+.cc-navbar-cc-panel > .navbar-header {
     margin-left: 0;
 }
 
@@ -385,7 +395,7 @@
     }
 }
 
-.cc-navbar-panel {
+.cc-navbar-cc-panel {
     display: none;
     padding-right: 20px;
     padding-left: 20px;
@@ -395,17 +405,17 @@
     text-align: center;
 }
 
-.cc-navbar-panel[data-open] {
+.cc-navbar-cc-panel[data-open] {
     display: block;
     overflow-y: auto;
 }
 
-.navbar + .cc-navbar-panel {
+.navbar + .cc-navbar-cc-panel {
     border-top: 0;
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .cc-navbar-panel {
+    .cc-navbar-cc-panel {
         display: block;
         width: auto;
         border-top: 0;
@@ -414,17 +424,17 @@
         margin-left: -20px;
     }
 
-    .cc-navbar-panel {
+    .cc-navbar-cc-panel {
         height: auto !important;
         padding-bottom: 0;
         overflow: visible !important;
     }
 
-    .cc-navbar-panel[data-open] {
+    .cc-navbar-cc-panel[data-open] {
         overflow-y: visible;
     }
 
-    .navbar-fixed-top .cc-navbar-panel {
+    .navbar-fixed-top .cc-navbar-cc-panel {
         padding-right: 0;
         padding-left: 0;
     }
@@ -439,12 +449,12 @@
     border-width: 0 0 1px;
 }
 
-.navbar-fixed-top .cc-navbar-panel {
+.navbar-fixed-top .cc-navbar-cc-panel {
     max-height: 340px;
 }
 
 @media (max-device-width: 480px) and (orientation: landscape) {
-    .navbar-fixed-top .cc-navbar-panel {
+    .navbar-fixed-top .cc-navbar-cc-panel {
         max-height: 200px;
     }
 }
@@ -563,7 +573,15 @@
         padding-left: 40px;
     }
 
-    .navbar-nav .open .dropdown-menu > .dropdown-submenu > ul > li > ul > li > a {
+    .navbar-nav
+        .open
+        .dropdown-menu
+        > .dropdown-submenu
+        > ul
+        > li
+        > ul
+        > li
+        > a {
         padding-left: 60px;
     }
 
@@ -655,7 +673,7 @@
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-.navbar-inverse .cc-navbar-panel {
+.navbar-inverse .cc-navbar-cc-panel {
     border-color: rgba(0, 0, 0, 0.2);
 }
 

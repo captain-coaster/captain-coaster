@@ -2,7 +2,7 @@
 
 <ul class="cc-media-list content-group">
     {% for coaster in coasters %}
-        <li class="cc-media panel panel-body cc-media--stack-mobile">
+        <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile">
             <div class="cc-media__start">
                 <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                     {% if coaster.mainImage is not null %}
@@ -47,7 +47,7 @@
             </div>
         </li>
     {% else %}
-        <li class="cc-media panel panel-body cc-media--stack-mobile">
+        <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile">
             <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
         </li>
     {% endfor %}

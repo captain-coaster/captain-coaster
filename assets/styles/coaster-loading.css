@@ -11,14 +11,18 @@
 }
 
 @keyframes pulse {
-    0% { opacity: 1; }
-    100% { opacity: 0.7; }
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.7;
+    }
 }
 
-/* Placeholder panel styling */
-.ai-summary-loading .panel-body,
-.photos-loading .panel-body,
-.reviews-loading .panel-body {
+/* Placeholder cc-panel styling */
+.ai-summary-loading .cc-panel__body,
+.photos-loading .cc-panel__body,
+.reviews-loading .cc-panel__body {
     padding: 30px 20px;
     background: var(--cc-gray-40);
 }

@@ -7,13 +7,13 @@
 {% block body %}
     {% if query|length < 2 %}
         <ul class="cc-media-list content-group">
-            <li class="cc-media panel panel-body">
+            <li class="cc-media cc-panel cc-panel__body">
                 {{ 'search_index.short'|trans() }}
             </li>
         </ul>
     {% elseif error is defined %}
         <ul class="cc-media-list content-group">
-            <li class="cc-media panel panel-body">
+            <li class="cc-media cc-panel cc-panel__body">
                 <div class="text-center text-muted">
                     {{ ux_icon('heroicons:exclamation-triangle', {'class': 'w-5 h-5'}) }}
                     <p class="mt-10">{{ error }}</p>
@@ -22,7 +22,7 @@
         </ul>
     {% elseif results is empty %}
         <ul class="cc-media-list content-group">
-            <li class="cc-media panel panel-body">
+            <li class="cc-media cc-panel cc-panel__body">
                 <div class="text-center text-muted">
                     {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-5 h-5'}) }}
                     <p class="mt-10">{{ 'search_index.noResult'|trans() }}</p>
@@ -30,9 +30,9 @@
             </li>
         </ul>
     {% else %}
-        <div class="panel panel-white" data-controller="search-results">
-            <div class="panel-heading">
-                <h6 class="panel-title text-semibold">
+        <div class="cc-panel cc-cc-panel--white" data-controller="search-results">
+            <div class="cc-panel__heading">
+                <h6 class="cc-panel__title text-semibold">
                     {{ 'search_index.unified_results_found'|trans({'%num%': totalResults, '%query%': query}) }}
                 </h6>
             </div>

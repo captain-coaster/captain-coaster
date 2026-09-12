@@ -1,8 +1,8 @@
 {% set reviewCount = reviews.getTotalItemCount() %}
 {% if reviewCount > 0 or coaster.isRateable %}
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h6 class="panel-title section-header">
+    <div class="cc-panel cc-cc-panel--flat">
+        <div class="cc-panel__heading">
+            <h6 class="cc-panel__title section-header">
                 <div class="section-header__container">
                     <div class="section-header__title">
                         <span class="text-semibold">
@@ -53,7 +53,7 @@
         </div>
 
         {%- if reviewCount > 0 -%}
-            <div class="panel-body">
+            <div class="cc-panel__body">
                 <ul class="cc-media-list cc-media-list--bordered">
                     {%- for review in reviews -%}
                         <li>
@@ -64,7 +64,7 @@
                 {{ knp_pagination_render(reviews) }}
             </div>
         {%- elseif coaster.isRateable -%}
-            <div class="panel-body text-center text-muted">
+            <div class="cc-panel__body text-center text-muted">
                 {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
                 <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
             </div>

@@ -30,7 +30,7 @@
  *     navbar.html.twig's account dropdown is a `.navbar-nav` descendant on
  *     a `.navbar-inverse` navbar. Untouched file, keeps applying.
  *   - `theme/bootstrap-limitless/type.less`'s `h1–h6 > .label/.badge` rule
- *     is live: every panel-heading/count badge in this app
+ *     is live: every cc-panel__heading/count badge in this app
  *     (Notification/index, ranking/info, Default/index, Coaster/show,
  *     Coaster/_image_panel, Coaster/_review_panel) sits directly inside an
  *     `h1–h6`. Untouched file, keeps applying.
@@ -48,10 +48,10 @@
  *     judgment call about outside coupling). Their `.active`
  *     color-override sibling rule is dead — nothing here ever adds
  *     `.active` to those list items.
- *   - `.panel-{default,primary,success,info,warning,danger} > .panel-heading
- *     .badge` context rules are dead: every real `.panel` badge here sits
- *     in a `.panel-flat` or `.panel-white`, neither of which is one of
- *     those six contextual panel types.
+ *   - `.cc-panel-{default,primary,success,info,warning,danger} > .cc-panel__heading
+ *     .badge` context rules are dead: every real `.cc-panel` badge here sits
+ *     in a `.cc-cc-panel--flat` or `.cc-cc-panel--white`, neither of which is one of
+ *     those six contextual cc-panel types.
  *   - dropdown-menu, nav-pills/nav-tabs, sidebar `.navigation`,
  *     `.breadcrumb`, `.menu-list`, `.dd-wrapper`, `.heading-thumbnails` and
  *     `.btn` combinations are all dead — no template/controller combines

@@ -5,16 +5,16 @@
 
 {% block body %}
   <div class="grid grid-cols-12 gap-5">
-    <div class="panel panel-flat col-span-full">
-      <div class="panel-heading">
-        <h6 class="panel-title text-semibold">
+    <div class="cc-panel cc-cc-panel--flat col-span-full">
+      <div class="cc-panel__heading">
+        <h6 class="cc-panel__title text-semibold">
           {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-4 h-4 position-left'}) }}
           {{ 'review.title'|trans }}
         </h6>
       </div>
 
       {% if reviews.getTotalItemCount() > 0 %}
-        <div class="panel-body">
+        <div class="cc-panel__body">
           <ul class="cc-media-list cc-media-list--bordered">
             {% for review in reviews %}
               <li>
@@ -36,7 +36,7 @@
           {{ knp_pagination_render(reviews) }}
         </div>
       {% else %}
-        <div class="panel-body text-center text-muted">
+        <div class="cc-panel__body text-center text-muted">
           {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
           <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
         </div>

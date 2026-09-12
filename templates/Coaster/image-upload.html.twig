@@ -12,8 +12,8 @@
             </div>
         {% endfor %}
     {% endfor %}
-    <div class="panel panel-flat">
-        <div class="panel-body">
+    <div class="cc-panel cc-cc-panel--flat">
+        <div class="cc-panel__body">
             {{ form_start(form, {'attr': {'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'image_upload.form.uploading'|trans, 'data-form-submit-required-error-value': 'image_upload.form.copyright_agreement.required'|trans({}, 'validators'), 'data-action': 'submit->form-submit#submit'}}) }}
             <div class="form-group">
                 {{ form_label(form.file, "", {'label_attr': {'class': 'control-label text-bold'}}) }}
