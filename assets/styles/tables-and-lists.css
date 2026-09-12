@@ -1,16 +1,16 @@
 /*
- * Tables, thumbnails, list-group -- migrated: theme/bootstrap-limitless/
- * {tables,thumbnails,list-group}.less + bootstrap/less/{tables,thumbnails,
- * list-group}.less. `.table`(+`-responsive`) with no modifiers
+ * Tables, thumbnails, cc-list-group -- migrated: theme/bootstrap-limitless/
+ * {tables,thumbnails,cc-list-group}.less + bootstrap/less/{tables,thumbnails,
+ * cc-list-group}.less. `.table`(+`-responsive`) with no modifiers
  * (`.table-striped/-bordered/-hover/-condensed`, contextual row states) --
  * the one real `<table>` (Includes/rating_table.html.twig) uses none of
  * them. `.thumbnail`(+`.caption`) and `.thumb`(+`.caption-overflow`) --
  * `.thumb-rounded`/`.thumb-slide`/`.caption-zoom`/`-offset`/`-collapse`
- * are dead. `.list-group`/`.list-group-item` base + hover only -- `.active`/
- * `.disabled` states, `.list-group-item-heading/-text`, and the four
- * contextual `.list-group-item-*` colors are all dead (the `> .badge`/
+ * are dead. `.cc-list-group`/`.cc-list-group__item` base + hover only -- `.active`/
+ * `.disabled` states, `.cc-list-group__item-heading/-text`, and the four
+ * contextual `.cc-list-group__item-*` colors are all dead (the `> .badge`/
  * `.label` float rules for this pair live in labels-badges.css, nested
- * inside badges.less/labels.less originally, not list-group.less).
+ * inside badges.less/labels.less originally, not cc-list-group.less).
  */
 
 /* Tables */
@@ -155,7 +155,7 @@ a.cc-card.active {
 }
 
 /* List group */
-.list-group {
+.cc-list-group {
     list-style: none;
     margin-bottom: 0;
     border: 1px solid var(--cc-gray-300);
@@ -163,7 +163,7 @@ a.cc-card.active {
     border-radius: 3px;
 }
 
-.list-group-item {
+.cc-list-group__item {
     position: relative;
     display: block;
     background-color: transparent;
@@ -172,15 +172,15 @@ a.cc-card.active {
     margin-bottom: -1px;
 }
 
-a.list-group-item,
-button.list-group-item {
+a.cc-list-group__item,
+button.cc-list-group__item {
     color: var(--cc-gray-900);
 }
 
-a.list-group-item:hover,
-button.list-group-item:hover,
-a.list-group-item:focus,
-button.list-group-item:focus {
+a.cc-list-group__item:hover,
+button.cc-list-group__item:hover,
+a.cc-list-group__item:focus,
+button.cc-list-group__item:focus {
     color: var(--cc-gray-900);
     background-color: var(--cc-gray-100);
     text-decoration: none;

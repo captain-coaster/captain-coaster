@@ -21,7 +21,7 @@
  * sub-rule — neither `.label` nor `.badge` is ever an anchor, inside a
  * `.btn`, or a dropdown toggle anywhere in this app.
  *
- * Cross-file coupling is heavy (navbar, dropdowns, sidebar, list-group,
+ * Cross-file coupling is heavy (navbar, dropdowns, sidebar, cc-list-group,
  * nav-pills/nav-tabs, panels, type.less's h1-h6 rule, heading-elements,
  * component-animation) — checked every real combination against actual
  * markup instead of the files in the abstract:
@@ -34,16 +34,16 @@
  *     (Notification/index, ranking/info, Default/index, Coaster/show,
  *     Coaster/_image_panel, Coaster/_review_panel) sits directly inside an
  *     `h1–h6`. Untouched file, keeps applying.
- *   - `.list-group-item > .badge{float:right}` (`bootstrap/less/badges.less`)
- *     and `.list-group-item > .label{float:right}` at `@media (min-width:
+ *   - `.cc-list-group__item > .badge{float:right}` (`bootstrap/less/badges.less`)
+ *     and `.cc-list-group__item > .label{float:right}` at `@media (min-width:
  *     769px)` (`theme/bootstrap-limitless/labels.less`) turned out to be
  *     nested rules *inside* the files being migrated, not external coupling
- *     — an initial pass mis-attributed them to `list-group.less` by
- *     assuming anything about `.list-group-item` must live there. Ported
+ *     — an initial pass mis-attributed them to `cc-list-group.less` by
+ *     assuming anything about `.cc-list-group__item` must live there. Ported
  *     below (badge case is live: User/show.html.twig, Profile/_menu.html.twig,
  *     already redundant there with an inline `pull-right` class; label case
  *     is dead — no template ever puts `.label` as a *direct* child of
- *     `.list-group-item`, always through a wrapper `div.pull-right` — kept
+ *     `.cc-list-group__item`, always through a wrapper `div.pull-right` — kept
  *     anyway since it's now correctly part of this component, not a
  *     judgment call about outside coupling). Their `.active`
  *     color-override sibling rule is dead — nothing here ever adds
@@ -203,20 +203,20 @@
     padding: 1px 5px 0 5px;
 }
 
-.list-group-item > .badge {
+.cc-list-group__item > .badge {
     float: right;
 }
 
-.list-group-item > .badge + .badge {
+.cc-list-group__item > .badge + .badge {
     margin-right: 5px;
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .list-group-item > .label {
+    .cc-list-group__item > .label {
         float: right;
     }
 
-    .list-group-item > .label + .label {
+    .cc-list-group__item > .label + .label {
         margin-right: 7px;
     }
 }

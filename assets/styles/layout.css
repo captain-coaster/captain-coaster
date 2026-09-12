@@ -29,7 +29,7 @@
  *
  * component-animation.less scope trimmed to selectors real markup
  * actually has: `.btn`, `.navbar-nav > li > a`, `.dropdown-menu > li >
- * a`, `.list-group-item`, `.pagination > li > a/span`, `.close`, `.table
+ * a`, `.cc-list-group__item`, `.pagination > li > a/span`, `.close`, `.table
  * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
  * during resize).
  */
@@ -80,10 +80,12 @@
 .btn,
 .navbar-nav > li > a,
 .dropdown-menu > li > a,
-.list-group-item,
+.cc-list-group__item,
 .pagination > li > a,
 .pagination > li > span {
-    transition: background-color ease-in-out 0.15s, color ease-in-out 0.15s;
+    transition:
+        background-color ease-in-out 0.15s,
+        color ease-in-out 0.15s;
 }
 
 .close {

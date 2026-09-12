@@ -26,6 +26,8 @@ const deprecatedCollectionClasses = new Set([
     'caption',
     'thumb',
     'caption-overflow',
+    'list-group',
+    'list-group-item',
 ]);
 
 function sourceFiles(directory) {
@@ -73,7 +75,7 @@ function addViolations(path, source) {
         {
             contract: 'Bootstrap collection selector',
             pattern:
-                /(?:^|[^\w-])\.(?:thumbnail|caption|thumb|caption-overflow)(?![\w-])/g,
+                /(?:^|[^\w-])\.(?:thumbnail|caption|thumb|caption-overflow|list-group|list-group-item)(?![\w-])/g,
         },
     ];
 

@@ -138,9 +138,9 @@
                         {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
                     </h6>
                 </div>
-                <div class="list-group no-border">
+                <div class="cc-list-group no-border">
                     {% if coaster.status %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -151,7 +151,7 @@
                         </div>
                     {% endif %}
                     {% if coaster.park %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -160,7 +160,7 @@
                         </div>
                     {% endif %}
                     {% if coaster.park.country %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -169,7 +169,7 @@
                             </div>
                         </div>
                     {% endif %}
-                    <div class="list-group-item">
+                    <div class="cc-list-group__item">
                         <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
                             :</label>
                         <div class="pull-right">
@@ -182,7 +182,7 @@
                         </div>
                     </div>
                     {% if coaster.materialType %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label
                                 class="control-label no-margin text-semibold">{{ 'coaster.infos.materialType'|trans }}
                                 :</label>
@@ -193,7 +193,7 @@
                         </div>
                     {% endif %}
                     {% if coaster.seatingType %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.seatingType'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -203,7 +203,7 @@
                         </div>
                     {% endif %}
                     {% if coaster.model %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.model'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -213,14 +213,14 @@
                         </div>
                     {% endif %}
                     {% if coaster.kiddie %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}
                                 :</label>
                             <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.launchs|length > 0 %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -231,14 +231,14 @@
                             </div>
                         </div>
                     {% endif %}
-                    <div class="list-group-item">
+                    <div class="cc-list-group__item">
                         <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
                             :</label>
                         <div
                             class="pull-right">{{ coaster.restraint.name|default('data.unknown')|trans([], 'database') }}</div>
                     </div>
                     {% if coaster.openingDate %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -248,7 +248,7 @@
                         </div>
                     {% endif %}
                     {% if coaster.closingDate %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -257,20 +257,20 @@
                         </div>
                     {% endif %}
                     {% if coaster.indoor %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}
                                 :</label>
                             <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.vr %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
                             <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.price and coaster.currency %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
                                 :</label>
                             <div class="pull-right">
@@ -294,9 +294,9 @@
                         &nbsp;<span class="badge badge-primary">{{ coasters|length }}</span>
                     </h6>
                 </div>
-                <div class="list-group no-border">
+                <div class="cc-list-group no-border">
                     {% for otherCoaster in coasters %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
                             <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">
                                 {{ otherCoaster.name }}
