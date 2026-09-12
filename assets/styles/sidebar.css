@@ -243,7 +243,18 @@
         position: fixed;
     }
 
-    .sidebar-xs .sidebar-fixed-expanded .sidebar-fixed.sidebar-main {
+    /*
+     * Both classes land on <body> itself (sidebar_controller.js), not on
+     * two nested elements -- a compound selector, not the descendant
+     * one the original LESS's `.sidebar-xs &` nesting produced (which
+     * assumed separate ancestors and, built this way, silently lost its
+     * leading .sidebar-xs to the CSS minifier -- Lightning CSS folded it
+     * into the unrelated, lower-specificity `.sidebar-fixed-expanded
+     * .sidebar-fixed.sidebar-main` rule above, a real minifier bug
+     * reproduced with a 3-ancestor-level descendant chain, not just a
+     * style preference).
+     */
+    .sidebar-xs.sidebar-fixed-expanded .sidebar-fixed.sidebar-main {
         width: 260px;
     }
 

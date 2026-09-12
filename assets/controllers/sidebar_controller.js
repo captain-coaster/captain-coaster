@@ -28,18 +28,22 @@ export default class extends Controller {
         document.body.classList.toggle('sidebar-xs');
     }
 
+    // `.sidebar-xs` must stay on <body> while expanded -- the CSS rule
+    // that gives the hover-expanded sidebar its 260px width only matches
+    // `.sidebar-xs .sidebar-fixed-expanded ...` (both classes present at
+    // once, not one replacing the other). Removing it here used to leave
+    // the sidebar with no matching width rule at all, so its plain
+    // `.sidebar { width: 100% }` base rule took over -- 100% of a
+    // position:fixed element's containing block is the full viewport,
+    // not the sidebar's own column.
     expand() {
         if (document.body.classList.contains('sidebar-xs')) {
-            document.body.classList.remove('sidebar-xs');
             document.body.classList.add('sidebar-fixed-expanded');
         }
     }
 
     collapse() {
-        if (document.body.classList.contains('sidebar-fixed-expanded')) {
-            document.body.classList.remove('sidebar-fixed-expanded');
-            document.body.classList.add('sidebar-xs');
-        }
+        document.body.classList.remove('sidebar-fixed-expanded');
     }
 
     toggleMobileMain() {
