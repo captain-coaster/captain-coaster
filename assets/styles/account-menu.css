@@ -118,7 +118,7 @@
     .navbar-nav
         > li
         > .dropdown-menu.account-menu
-        a:not(.label-flat):not(.badge-flat) {
+        a:not(.cc-label--flat):not(.cc-badge--flat) {
         color: var(--cc-white);
     }
 

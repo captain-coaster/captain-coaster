@@ -31,10 +31,10 @@
     {% if review.pros|length > 0 or review.cons|length > 0 %}
       <p class="mb-10">
         {% for pros in review.pros %}
-          <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
+          <span class="cc-label cc-label--success cc-label--rounded">{{ pros.name|trans([], 'database') }}</span>
         {% endfor %}
         {% for cons in review.cons %}
-          <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
+          <span class="cc-label cc-label--danger cc-label--rounded">{{ cons.name|trans([], 'database') }}</span>
         {% endfor %}
       </p>
     {% endif %}

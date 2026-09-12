@@ -66,6 +66,21 @@ const deprecatedButtonClasses = new Set([
     'btn-labeled-right',
     'btn-block-group',
 ]);
+const deprecatedLabelClasses = new Set([
+    'label',
+    'label-default',
+    'label-primary',
+    'label-success',
+    'label-info',
+    'label-warning',
+    'label-danger',
+    'label-rounded',
+    'label-flat',
+    'label-icon',
+    'badge',
+    'badge-primary',
+    'badge-flat',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -128,6 +143,10 @@ function addViolations(path, source) {
             contract: 'Bootstrap button selector',
             pattern: /(?:^|[^\w-])\.btn(?:-[\w-]+)?(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap label or badge selector',
+            pattern: /(?:^|[^\w-])\.(?:label|badge)(?:-[\w-]+)?(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -140,7 +159,7 @@ function addViolations(path, source) {
 
 function addTemplateClassViolations(path, source) {
     for (const attribute of source.matchAll(/class="([^"]*)"/g)) {
-        const tokens = attribute[1].split(/\s+/);
+        const tokens = attribute[1].replace(/{{[\s\S]*?}}/g, '').split(/\s+/);
 
         const deprecatedClass = tokens.find(
             (token) =>
@@ -149,7 +168,8 @@ function addTemplateClassViolations(path, source) {
                 deprecatedCollectionClasses.has(token) ||
                 deprecatedPanelClasses.has(token) ||
                 deprecatedFieldClasses.has(token) ||
-                deprecatedButtonClasses.has(token)
+                deprecatedButtonClasses.has(token) ||
+                deprecatedLabelClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -165,7 +185,9 @@ function addTemplateClassViolations(path, source) {
                           ? 'Bootstrap panel class'
                           : deprecatedFieldClasses.has(deprecatedClass)
                             ? 'Bootstrap field class'
-                            : 'Bootstrap button class';
+                            : deprecatedButtonClasses.has(deprecatedClass)
+                              ? 'Bootstrap button class'
+                              : 'Bootstrap label or badge class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

@@ -8,8 +8,8 @@
  * `.thumb-rounded`/`.thumb-slide`/`.caption-zoom`/`-offset`/`-collapse`
  * are dead. `.cc-list-group`/`.cc-list-group__item` base + hover only -- `.active`/
  * `.disabled` states, `.cc-list-group__item-heading/-text`, and the four
- * contextual `.cc-list-group__item-*` colors are all dead (the `> .badge`/
- * `.label` float rules for this pair live in labels-badges.css, nested
+ * contextual `.cc-list-group__item-*` colors are all dead (the `> .cc-badge`/
+ * `.cc-label` float rules for this pair live in labels-badges.css, nested
  * inside badges.less/labels.less originally, not cc-list-group.less).
  */
 

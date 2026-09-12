@@ -76,7 +76,7 @@
     margin-top: 20px;
 }
 
-.heading-elements.visible-elements .heading-text:not(.label):not(.badge) {
+.heading-elements.visible-elements .heading-text:not(.cc-label):not(.cc-badge) {
     display: block;
 }
 

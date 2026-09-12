@@ -215,10 +215,10 @@
     max-height: 16px;
 }
 
-.dropdown-menu > li > a > .label,
-.dropdown-menu > .dropdown-header > .label,
-.dropdown-menu > li > a > .badge,
-.dropdown-menu > .dropdown-header > .badge {
+.dropdown-menu > li > a > .cc-label,
+.dropdown-menu > .dropdown-header > .cc-label,
+.dropdown-menu > li > a > .cc-badge,
+.dropdown-menu > .dropdown-header > .cc-badge {
     float: left;
     margin-right: 12px;
 }
@@ -508,8 +508,8 @@
     padding-bottom: 13px;
 }
 
-.navbar-nav > li > a > .label,
-.navbar-nav > li > a > .badge {
+.navbar-nav > li > a > .cc-label,
+.navbar-nav > li > a > .cc-badge {
     position: absolute;
     top: 0;
     right: 0;
@@ -600,8 +600,8 @@
         margin-left: 5px;
     }
 
-    .navbar-nav > li > a .label,
-    .navbar-nav > li > a .badge {
+    .navbar-nav > li > a .cc-label,
+    .navbar-nav > li > a .cc-badge {
         position: static;
         float: right;
     }

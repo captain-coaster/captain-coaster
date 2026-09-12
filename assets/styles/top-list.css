@@ -433,7 +433,7 @@
     gap: 8px;
 }
 
-.top-search-container .search-result-item .badge {
+.top-search-container .search-result-item .cc-badge {
     margin-left: auto;
     flex-shrink: 0;
 }
@@ -449,7 +449,7 @@
     background-color: var(--cc-gray-25);
 }
 
-.search-result-duplicate .badge {
+.search-result-duplicate .cc-badge {
     margin-left: 8px;
 }
 

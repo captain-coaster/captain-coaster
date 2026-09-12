@@ -19,7 +19,7 @@
  * dropped -- the only two real usages (Profile/settings.html.twig)
  * combine cc-button--labeled with no size class at all.
  *
- * Cross-file/cascade-position coupling, same check as `.badge`/`.label`:
+ * Cross-file/cascade-position coupling, same check as `.cc-badge`/`.cc-label`:
  * real usage combines `.cc-button` with non-`!important` `bg-*`/`border-*`/
  * `text-*` helpers in several places (`cc-button bg-cc-teal-400`, `cc-button
  * bg-danger-400`, notification list's `cc-button {{ iconColorClass }}` --
