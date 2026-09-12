@@ -25,16 +25,16 @@
           {% endif %}
         </a>
       </li>
-      <li><a data-action="click->sidebar#toggleMobileMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a></li>
+      <li><a data-action="click->sidebar#toggleMobileMain" aria-label="{{ 'sidebar.toggle'|trans }}">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a></li>
       {% if pageHasFilters is defined %}
-        <li><a data-action="click->sidebar#toggleMobileSecondary">{{ ux_icon('heroicons:funnel', {'class': 'w-5 h-5'}) }}</a></li>
+        <li><a data-action="click->sidebar#toggleMobileSecondary" aria-label="{{ 'sidebar.toggle_filters'|trans }}">{{ ux_icon('heroicons:funnel', {'class': 'w-5 h-5'}) }}</a></li>
       {% endif %}
     </ul>
   </div>
   <div class="cc-navbar__panel" id="navbar-mobile" data-navbar-collapse-target="panel">
     <ul class="hidden tablet:block cc-nav cc-navbar__nav">
       <li>
-        <a data-action="click->sidebar#toggleMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a>
+        <a data-action="click->sidebar#toggleMain" aria-label="{{ 'sidebar.toggle'|trans }}">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a>
       </li>
     </ul>
     <ul class="cc-nav cc-navbar__nav cc-navbar__right">

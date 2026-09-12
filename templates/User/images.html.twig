@@ -32,7 +32,9 @@
                         data-action="click->image-like#toggle"
                         data-image-like-target="icon"
                         class="cc-button--link text-muted p-0 border-0 bg-transparent"
-                        style="cursor: pointer; display: inline-flex; align-items: center;">
+                        style="cursor: pointer; display: inline-flex; align-items: center;"
+                        aria-label="{{ 'coaster.photos.like'|trans }}"
+                        aria-pressed="{% if image.id in userLikes %}true{% else %}false{% endif %}">
                 </button><span data-image-like-target="counter">{{ image.likeCounter }}</span>
               </div>
             </div>
