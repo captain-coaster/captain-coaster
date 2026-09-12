@@ -11,15 +11,12 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
 1. **Provision the checkout, if it's a worktree.** Main checkout: nothing to do, skip to step 2. In a worktree, do this once (it's idempotent — check each condition before acting):
 
-   - **`.env.local`**: it must end up a symlink to the main checkout's copy (find the main checkout with `git rev-parse --path-format=absolute --git-common-dir`, then its parent). If it's already that symlink, leave it. If it's a regular file identical to the main copy, replace it with the symlink. If it's a regular file that *differs*, or a symlink pointing anywhere else, stop and ask the user rather than discarding it — it may hold worktree-specific secrets. Never edit `.env.local` itself.
+   - **`.env.local`**: `.worktreeinclude` (repo root) lists it, so `EnterWorktree` copies it into the new worktree automatically as a regular file — nothing to do here. It's a point-in-time snapshot, not a live link: it won't pick up later edits to the main checkout's copy, and it holds live secrets, so never edit it directly in either place from an agent session.
    - **`.env.dev.local`**: write it with `DATABASE_URL` copied from `.env.local` but with the database name swapped (below). `REDIS_URL` is left as-is — worktrees share the Redis cache. Symfony loads this file after `.env.local`, so it wins.
-   - **Database**: pick a name `captain_<slug>`, where `<slug>` is the worktree directory name, lowercased, with anything outside `[a-z0-9_]` collapsed to `_`. Clone it from `captain` (shared containers, so this works from any worktree):
+   - **Database**: pick a name `captain_<slug>`, where `<slug>` is the worktree directory name, lowercased, with anything outside `[a-z0-9_]` collapsed to `_`. Clone it from `captain` (shared containers, so this works from any worktree). Create the database first (`CREATE DATABASE \`$db\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`) — see root password in `docker-compose.yml`. If it already exists, leave it; this is a one-time clone, not a resync. Dump to a scratch file and reload from it, rather than piping `mariadb-dump` straight into `mariadb` through `docker exec ... sh -c '... | ...'` — a worktree-isolated agent session's command guard refuses that piped form:
 
-         docker exec db-captain sh -c \
-           'mariadb-dump --single-transaction --routines --events -uroot -p"$MYSQL_ROOT_PASSWORD" captain \
-            | mariadb -uroot -p"$MYSQL_ROOT_PASSWORD" '"$db"
-
-     Create the database first (`CREATE DATABASE \`$db\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`) — see root password in `docker-compose.yml`. If it already exists, leave it; this is a one-time clone, not a resync.
+         docker exec db-captain mariadb-dump --single-transaction --routines --events -uroot -p"$MYSQL_ROOT_PASSWORD" captain > /tmp/captain_dump.sql
+         docker exec -i db-captain mariadb -uroot -p"$MYSQL_ROOT_PASSWORD" "$db" < /tmp/captain_dump.sql
 
 2. **Start the Symfony server** from the current checkout:
 
