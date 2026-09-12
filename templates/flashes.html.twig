@@ -1,6 +1,6 @@
 {% for label, messages in app.flashes %}
     {% for message in messages %}
-        <div class="cc-alert alert-{{ label|default('info') }} cc-alert--styled-left cc-alert--arrow-left cc-alert--bordered" data-controller="alert">
+        <div class="cc-alert cc-alert--{{ label|default('info') }} cc-alert--styled-left cc-alert--arrow-left cc-alert--bordered" data-controller="alert">
             <button type="button" class="cc-close" data-action="click->alert#close"><span>×</span><span class="sr-only">Close</span></button>
             {{ message }}
         </div>

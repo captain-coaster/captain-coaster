@@ -10,7 +10,7 @@
  *
  * Only variants actually reachable in this app are included: cc-alert--success/
  * -danger/-warning/-info (all reachable via addFlash()), plus
- * cc-alert--styled-left/cc-alert--arrow-left/cc-alert--dismissible/cc-alert--component/
+ * cc-alert--styled-left/cc-alert--arrow-left/cc-alert--dismissible/
  * cc-alert--heading (the only *styled* modifiers referenced in templates).
  * "cc-alert--bordered" is also referenced in templates (flashes.html.twig,
  * connect/login.html.twig, registration/register.html.twig) but was never
@@ -20,6 +20,16 @@
  * dropped. "cc-alert--error" (also a real addFlash() value) intentionally gets
  * no color rule below, matching the current (accidental) unstyled look —
  * "cc-alert--error" was never a real Bootstrap/Limitless variant.
+ *
+ * cc-alert--component (the "Alert as a component" white-background
+ * override, paired with a --styled- modifier) is dropped too: production
+ * shows a tinted background for both real uses (Default/index.html.twig,
+ * User/list.html.twig, both cc-alert--info) -- confirmed against live prod,
+ * not just re-derived from the LESS source, which turned out to disagree
+ * with what's actually deployed. Both real uses always pair --component
+ * with a color variant, so there's no case left needing the white
+ * override; Top/edit.html.twig's own styled-left alert never had
+ * --component in the first place.
  */
 .cc-alert {
     position: relative;
@@ -81,11 +91,6 @@
     color: #9c1f1f;
     background-color: #fbe9e7;
     border-color: var(--cc-warning);
-}
-
-/* Only relevant paired with cc-alert--styled-left, per the templates that use it. */
-.cc-alert--component[class*="cc-alert--styled-"] {
-    background-color: var(--cc-white);
 }
 
 .cc-alert--styled-left {
