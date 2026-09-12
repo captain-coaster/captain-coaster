@@ -23,19 +23,16 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'register.form.email'],
                 'label' => false,
             ])
             ->add('firstName', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'register.form.first_name'],
                 'label' => false,
             ])
             ->add('lastName', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control',
                     'placeholder' => 'register.form.last_name'],
                 'label' => false,
             ])
@@ -44,7 +41,7 @@ class RegistrationFormType extends AbstractType
                 SubmitType::class,
                 [
                     'attr' => [
-                        'class' => 'bg-cc-blue btn btn-block',
+                        'class' => 'bg-cc-blue cc-button cc-button--block',
                     ],
                     'label' => 'register.form.submit',
                 ]

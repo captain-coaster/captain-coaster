@@ -90,6 +90,17 @@ input[type='search'] {
     box-shadow: none;
 }
 
+/*
+ * Bootstrap's own forms.less: the base rule's fixed height:36px (a
+ * single text-input line) needs undoing for a multi-row <textarea> --
+ * dropped from the original migration, invisible until a real <textarea>
+ * without its own inline height override (contact form) rendered as a
+ * single clipped line regardless of its `rows` attribute.
+ */
+textarea.cc-field__control {
+    height: auto;
+}
+
 .cc-field__control:focus {
     border-color: var(--cc-gray-300);
     outline: 0;
