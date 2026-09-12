@@ -96,6 +96,7 @@ coaster:
         button: Envoyer une photo
         all: Voir toutes les photos
         loading: Chargement des photos...
+        like: Aimer cette photo
     location: Localisation
 
 image_upload:
@@ -371,6 +372,8 @@ sidebar:
     contact: Nous contacter
     logout: Déconnexion
     login: Connexion
+    toggle: Afficher le menu
+    toggle_filters: Afficher les filtres
 
 footer:
     terms: Politique de confidentialité

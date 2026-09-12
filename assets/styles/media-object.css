@@ -1,0 +1,99 @@
+/* Reusable image/content/action row. Its explicit flex roles replace the
+ * Bootstrap table-cell layout and preserve intrinsic thumbnail dimensions. */
+.cc-media {
+    @apply relative mt-5 flex items-start gap-5 overflow-visible;
+}
+
+.cc-media:first-child {
+    @apply mt-0;
+}
+
+.cc-media.cc-panel__body {
+    @apply mt-0 flex;
+}
+
+.cc-media__start,
+.cc-media__end {
+    @apply relative shrink-0;
+}
+
+.cc-media__body {
+    @apply relative min-w-0 flex-1;
+}
+
+.cc-media__middle {
+    @apply self-center;
+}
+
+.cc-media__heading {
+    @apply mt-0 mb-0.5 block;
+}
+
+.cc-media-list {
+    @apply mb-0 list-none pl-0;
+}
+
+.cc-media__annotation {
+    @apply text-[var(--cc-gray-600)] text-[12px] font-normal;
+    line-height: 1.66667;
+}
+
+.cc-media__heading .cc-media__annotation {
+    @apply ml-[7px];
+}
+
+.cc-media__annotation i {
+    @apply text-[13px];
+}
+
+/* Bullet before a "dotted" annotation (e.g. star rating · timestamp in a review row). */
+.cc-media__annotation--dotted:not(.pull-right)::before {
+    content: '\2022';
+    margin-right: 10px;
+}
+
+.cc-media-list--bordered > li {
+    @apply border-t border-[var(--cc-gray-150)] mt-[15px] pt-[15px];
+}
+
+.cc-media-list--bordered > li:first-child {
+    @apply border-t-0 pt-0;
+}
+
+/* Collapse an image/content/action row below the tablet breakpoint. */
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .cc-media--stack-mobile,
+    .cc-media-list--stack-mobile > .cc-media {
+        @apply flex-col gap-[15px];
+    }
+
+    .cc-media--stack-mobile:not(.text-left):not(.text-right),
+    .cc-media-list--stack-mobile:not(.text-left):not(.text-right) > .cc-media {
+        text-align: center;
+    }
+
+    .cc-media--stack-mobile .cc-media__annotation,
+    .cc-media-list--stack-mobile .cc-media__annotation {
+        display: block;
+    }
+
+    .cc-media--stack-mobile
+        .cc-media__annotation--dotted:not(.pull-right)::before,
+    .cc-media-list--stack-mobile
+        .cc-media__annotation--dotted:not(.pull-right)::before {
+        content: none;
+        margin: 0;
+    }
+
+    .cc-media--stack-mobile .cc-media__heading .cc-media__annotation,
+    .cc-media-list--stack-mobile .cc-media__heading .cc-media__annotation {
+        margin-left: 0;
+        margin-right: 0;
+        padding-bottom: 5px;
+    }
+
+    .cc-media--stack-mobile .cc-media__heading,
+    .cc-media-list--stack-mobile .cc-media__heading {
+        @apply mb-[5px];
+    }
+}

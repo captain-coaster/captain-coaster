@@ -7,27 +7,23 @@
 {% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-3">
-      <div class="row">
+  <div class="grid grid-cols-12 gap-5 items-start">
+    <div class="col-span-12 tablet:col-span-3">
         {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
-      </div>
     </div>
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-sm-12">
+    <div class="col-span-12 tablet:col-span-9">
           <!-- settings form -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h6 class="panel-title">{{ 'profile.settings.title'|trans }}</h6>
+          <div class="cc-panel cc-panel--flat">
+            <div class="cc-panel__heading">
+              <h6 class="cc-panel__title">{{ 'profile.settings.title'|trans }}</h6>
             </div>
-            <div class="panel-body">
+            <div class="cc-panel__body">
               {{ form_start(form) }}
 
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.name'|trans }}</legend>
 
-                <div class="form-group{% if form.firstName.vars.errors|length > 0 %} has-error{% endif %}">
+                <div class="cc-field{% if form.firstName.vars.errors|length > 0 %} has-error{% endif %}">
                   {{ form_label(form.firstName) }}
                   {{ form_widget(form.firstName) }}
                   {% for error in form.firstName.vars.errors %}
@@ -38,7 +34,7 @@
                   </small>
                 </div>
 
-                <div class="form-group{% if form.lastName.vars.errors|length > 0 %} has-error{% endif %}">
+                <div class="cc-field{% if form.lastName.vars.errors|length > 0 %} has-error{% endif %}">
                   {{ form_label(form.lastName) }}
                   {{ form_widget(form.lastName) }}
                   {% for error in form.lastName.vars.errors %}
@@ -49,14 +45,14 @@
                   </small>
                 </div>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.displayNameFormat) }}
                   {{ form_widget(form.displayNameFormat) }}
                   {{ form_errors(form.displayNameFormat) }}
                   <small class="text-muted">{{ 'profile.settings.name.format.help'|trans }}</small>
                 </div>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.profilePicture) }}
                   {{ form_widget(form.profilePicture) }}
                   {{ form_errors(form.profilePicture) }}
@@ -66,8 +62,8 @@
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.preferences'|trans }}</legend>
 
-                <div class="form-group">
-                  <label class="control-label">{{ 'profile.settings.preferences.notifications.title'|trans }}</label>
+                <div class="cc-field">
+                  <label class="cc-field__label">{{ 'profile.settings.preferences.notifications.title'|trans }}</label>
                   <div class="checkbox">
                     <label>
                       <input type="checkbox" checked disabled>
@@ -78,32 +74,32 @@
                   {{ form_errors(form.emailNotification) }}
                 </div>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.preferredLocale) }}
                   {{ form_widget(form.preferredLocale) }}
                   {{ form_errors(form.preferredLocale) }}
                 </div>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.preferredUnits) }}
                   {{ form_widget(form.preferredUnits) }}
                   {{ form_errors(form.preferredUnits) }}
                 </div>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.homePark) }}
                   {{ form_widget(form.homePark) }}
                   {{ form_errors(form.homePark) }}
                 </div>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.preferredReviewLanguages) }}
                   {{ form_widget(form.preferredReviewLanguages) }}
                   <p class="help-block">{{ 'profile.settings.preferences.preferredReviewLanguages.help'|trans }}</p>
                   {{ form_errors(form.preferredReviewLanguages) }}
                 </div>
 
-                <div class="toggle-switch-form-group">
+                <div class="toggle-switch-cc-field">
                   {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input'}}) }}
                 </div>
               </fieldset>
@@ -112,7 +108,7 @@
               <fieldset class="content-group">
                 <legend>{{ 'profile.settings.sections.advanced'|trans }}</legend>
 
-                <div class="form-group">
+                <div class="cc-field">
                   {{ form_label(form.apiKey) }}
                   {{ form_widget(form.apiKey) }}
                   {{ form_errors(form.apiKey) }}
@@ -120,8 +116,8 @@
               </fieldset>
               {% endif %}
 
-              <button type="submit" class="btn bg-teal-400 btn-labeled btn-labeled-right pull-right">
-                <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-6 h-6'}) }}</b>
+              <button type="submit" class="cc-button bg-cc-teal-400 cc-button--labeled cc-button--labeled-right pull-right">
+                <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-4 h-4'}) }}</b>
                 {{ 'profile.settings.save'|trans }}
               </button>
 
@@ -132,11 +128,11 @@
           <!-- /settings form -->
 
           <!-- delete account section -->
-          <div class="panel panel-flat">
-            <div class="panel-heading">
-              <h6 class="panel-title">{{ 'profile.delete_account.title'|trans }}</h6>
+          <div class="cc-panel cc-panel--flat">
+            <div class="cc-panel__heading">
+              <h6 class="cc-panel__title">{{ 'profile.delete_account.title'|trans }}</h6>
             </div>
-            <div class="panel-body">
+            <div class="cc-panel__body">
               <p class="text-semibold">{{ 'profile.delete_account.warning'|trans }}</p>
               <ul class="list-unstyled">
                 <li>• {{ 'profile.delete_account.immediate_logout'|trans }}</li>
@@ -144,7 +140,7 @@
               </ul>
               <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
-                <button type="submit" class="btn btn-danger btn-labeled btn-labeled-right">
+                <button type="submit" class="cc-button cc-button--danger cc-button--labeled cc-button--labeled-right">
                   <b>{{ ux_icon('heroicons:trash', {'class': 'icon-size-16'}) }}</b>
                   {{ 'profile.delete_account.button'|trans }}
                 </button>
@@ -152,8 +148,6 @@
             </div>
           </div>
           <!-- /delete account section -->
-        </div>
-      </div>
     </div>
   </div>
 {% endblock %}

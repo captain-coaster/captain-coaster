@@ -4,21 +4,21 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="panel panel-flat">
-      <div class="panel-heading">
-        <h6 class="panel-title text-semibold">
-          {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
+  <div class="grid grid-cols-12 gap-5">
+    <div class="cc-panel cc-panel--flat col-span-full">
+      <div class="cc-panel__heading">
+        <h6 class="cc-panel__title text-semibold">
+          {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-4 h-4 position-left'}) }}
           {{ 'review.title'|trans }}
         </h6>
       </div>
 
       {% if reviews.getTotalItemCount() > 0 %}
-        <div class="panel-body">
-          <ul class="media-list media-list-bordered">
+        <div class="cc-panel__body">
+          <ul class="cc-media-list cc-media-list--bordered">
             {% for review in reviews %}
               <li>
-                <div class="media-heading">
+                <div class="cc-media__heading">
                   <h6 class="text-semibold">
                     <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
                       {{ review.coaster.name }}
@@ -36,9 +36,9 @@
           {{ knp_pagination_render(reviews) }}
         </div>
       {% else %}
-        <div class="panel-body text-center text-muted">
-          {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
-          <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
+        <div class="cc-panel__body text-center text-muted">
+          {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
+          <p class="mt-2.5">{{ 'review_list.no_review'|trans }}</p>
         </div>
       {% endif %}
     </div>

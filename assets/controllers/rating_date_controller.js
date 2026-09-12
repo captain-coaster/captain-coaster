@@ -99,7 +99,8 @@ export default class extends Controller {
 
     async dateChanged(event) {
         // On desktop, save immediately and close. On mobile, save and close when picker closes
-        const isMobile = window.innerWidth <= 768;
+        // Keep in sync with --breakpoint-tablet in assets/styles/tokens.css.
+        const isMobile = window.innerWidth < 769;
         if (!isMobile) {
             await this.saveDate(event.target.value);
             this.hideDatePicker();

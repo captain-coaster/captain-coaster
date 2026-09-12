@@ -1,0 +1,248 @@
+/*
+ * Typography -- migrated: theme/bootstrap-limitless/type.less +
+ * bootstrap/less/type.less. Scope: h1-h6/.h1-.h6, `small`/`.small`,
+ * `.text-uppercase`, `.list-unstyled`, `.list-inline`(+`-condensed`/
+ * `-separate`, not `-bordered`, unused), `.page-header`(+`-default`),
+ * `.page-title`/`.page-header-content`, `.status-mark`, `.position-left`,
+ * `.content-divider`, `.icon-object`, `.text-bold`/`-semibold`/
+ * `-size-small`/`-size-mini`, and `.text-muted` are kept. `.text-left/
+ * -lowercase/-capitalize`, `blockquote`, `.lead`, `address`,
+ * `dl-horizontal`, `abbr`, `mark`, `.heading-divided`, `.letter-icon`,
+ * `.img-preview`, `.video-container`, `.text-black/-regular/-light/-thin/
+ * -italic/-highlight`, `.text-size-large/-base`, `.list`, `.list-icons`,
+ * and the `.list-feed-*` variants are all confirmed dead and dropped.
+ * `.list-feed` itself lives in timeline.css, alongside the only real
+ * usage's `> li` decoration.
+ *
+ * `.text-center`/`-right`/`-justify`/`-nowrap` are ALSO dropped even
+ * though used -- Tailwind already generates identically-named utilities
+ * from `@source`-scanned templates (`text-center`, `text-right`,
+ * `text-justify` set the same `text-align` value; `text-nowrap` uses the
+ * modern `text-wrap: nowrap` instead of `white-space: nowrap`, equivalent
+ * for every real use here) -- writing our own would just be a second,
+ * redundant source for the same class name. `.bg-primary/-success/
+ * -warning/-danger` and `.text-primary/-success/-warning/-danger` were
+ * dropped for the same reason `labels-badges.css`'s color helpers exist:
+ * `colors.css` (this file's own tokens.css-adjacent color set) already
+ * defines a complete, later-in-cascade version of all four, `.text-*`
+ * ones carrying `!important` -- both fully inert here regardless of
+ * source order. `.text-muted` is the only one of the five actually
+ * defined here: the color helpers never touch it.
+ *
+ * `.status-mark` in particular caused a real regression during the
+ * original port (a coaster-status dot rendering as flat, unstyled inline
+ * text instead of a colored circle), caught only via screenshot, not
+ * `getComputedStyle()` diffing against assumptions -- every top-level
+ * selector in type.less was re-audited against real usage afterward
+ * rather than relying on "what vanilla bootstrap type.less usually has".
+ */
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    color: inherit;
+    font-family: inherit;
+    font-weight: 400;
+    line-height: 1.53846;
+    letter-spacing: -0.015em;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h1,
+.h1 {
+    font-size: 25px;
+}
+
+h2,
+.h2 {
+    font-size: 23px;
+}
+
+h3,
+.h3 {
+    font-size: 21px;
+}
+
+h4,
+.h4 {
+    font-size: 19px;
+}
+
+h5,
+.h5 {
+    font-size: 17px;
+}
+
+h6,
+.h6 {
+    font-size: 15px;
+}
+
+small,
+.small {
+    font-size: 92%;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+
+.list-inline {
+    margin-left: 0;
+    padding-left: 0;
+    list-style: none;
+    font-size: 0;
+}
+
+.list-inline > li {
+    padding-left: 0;
+    padding-right: 20px;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.list-inline > li:last-child {
+    padding-right: 0;
+}
+
+.list-inline-condensed > li {
+    padding-right: 10px;
+}
+
+.list-inline-separate > li {
+    position: relative;
+    padding-right: 20px;
+}
+
+.list-inline-separate > li:before {
+    content: "\2022";
+    color: #ccc;
+    position: absolute;
+    top: 1px;
+    right: 8px;
+}
+
+.list-inline-separate > li:last-child:before {
+    content: none;
+}
+
+.page-header {
+    margin: 0;
+    padding: 0;
+    border-bottom: 0;
+}
+
+.page-header-default {
+    background-color: var(--cc-white);
+    margin-bottom: 20px;
+    box-shadow: 0 1px 0 0 var(--cc-gray-300);
+}
+
+.text-muted {
+    color: var(--cc-gray-600);
+}
+
+.text-bold {
+    font-weight: 700;
+}
+
+.text-semibold {
+    font-weight: 500;
+}
+
+.text-size-small {
+    font-size: 12px;
+}
+
+.text-size-mini {
+    font-size: 11px;
+}
+
+.status-mark {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border: 2px solid;
+    border-radius: 50%;
+}
+
+.position-left {
+    margin-right: 7px;
+}
+
+.content-divider {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+}
+
+.icon-object {
+    display: inline-block;
+    margin: 10px;
+    padding: 20px;
+    text-align: center;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 50%;
+}
+
+.page-title {
+    display: block;
+    position: relative;
+    padding: 32px 36px 32px 0;
+}
+
+.page-title h1,
+.page-title h2,
+.page-title h3,
+.page-title h4,
+.page-title h5,
+.page-title h6 {
+    margin: 0;
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .page-title {
+        padding-right: 0;
+    }
+}
+
+.page-header-content {
+    position: relative;
+    background-color: inherit;
+    padding: 0 20px;
+}

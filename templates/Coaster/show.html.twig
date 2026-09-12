@@ -14,14 +14,14 @@
 {# {% endblock %} #}
 
 {% block body %}
-    <div class="row">
-        <div class="col-sm-3">
+    <div class="grid grid-cols-12 gap-5 items-start">
+        <div class="col-span-12 tablet:col-span-3">
             {% if coaster.isRateable %}
                 <!-- score -->
                 {% if coaster.score %}
-                    <div class="panel panel-body">
-                        <div class="row">
-                            <div class="col-xs-6">
+                    <div class="cc-panel cc-panel__body">
+                        <div class="grid grid-cols-2 gap-5">
+                            <div>
                                 <div class="text-muted text-size-small text-uppercase score-label">
                                     {{ 'coaster.score.title'|trans }}
                                 </div>
@@ -33,7 +33,7 @@
                             </div>
                             {% set perPage = constant('App\\Controller\\RankingController::COASTERS_PER_PAGE') %}
                             {% set page = (coaster.rank / perPage)|round(0, 'ceil') %}
-                            <div class="col-xs-6">
+                            <div>
                                 <a href="{{ path('ranking_index', {'page': page}) }}" class="text-default rank-link">
                                     <div class="text-muted text-size-small text-uppercase score-label">
                                         {{ 'coaster.score.rank'|trans }}
@@ -44,7 +44,7 @@
                         </div>
                         {% if countRatings %}
                             <div class="rating-distribution-compact">
-                                <div class="text-muted text-size-small text-uppercase score-label mb-10">
+                                <div class="text-muted text-size-small text-uppercase score-label mb-2.5">
                                     {{ 'coaster.rating.distribution'|trans }}
                                 </div>
                                 {% set totalRatings = 0 %}
@@ -79,12 +79,12 @@
             {% endif %}
             <!-- main carac -->
             <div class="content-group">
-                <div class="row row-seamless btn-block-group">
-                    <div class="col-xs-6">
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                <div class="grid grid-cols-2 gap-0 cc-button-group--block">
+                    <div>
+                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
                             <div class="text-center">
-                                {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-12 h-12 text-warning-600'}) }}
-                                <div class="text-bold mt-5">
+                                {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-7 h-7 text-warning-600'}) }}
+                                <div class="text-bold mt-[5px]">
                                     {% if coaster.height is not empty %}
                                         {{ units.metersOrFeet(coaster.height) }}
                                     {% else %}
@@ -93,10 +93,10 @@
                                 </div>
                             </div>
                         </button>
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
                             <div class="text-center">
-                                {{ ux_icon('heroicons:rocket-launch', {'class': 'w-12 h-12 text-success-400'}) }}
-                                <div class="text-bold mt-5">
+                                {{ ux_icon('heroicons:rocket-launch', {'class': 'w-7 h-7 text-success-400'}) }}
+                                <div class="text-bold mt-[5px]">
                                     {% if coaster.speed is not empty %}
                                         {{ units.kphOrMph(coaster.speed) }}
                                     {% else %}
@@ -106,11 +106,11 @@
                             </div>
                         </button>
                     </div>
-                    <div class="col-xs-6">
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                    <div>
+                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
                             <div class="text-center">
-                                {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-12 h-12 text-blue'}) }}
-                                <div class="text-bold mt-5">
+                                {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-7 h-7 text-cc-blue'}) }}
+                                <div class="text-bold mt-[5px]">
                                     {% if coaster.length is not empty %}
                                         {{ units.metersOrFeet(coaster.length) }}
                                     {% else %}
@@ -119,10 +119,10 @@
                                 </div>
                             </div>
                         </button>
-                        <button type="button" class="btn btn-default btn-block btn-float btn-float-lg">
+                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
                             <div class="text-center">
-                                {{ ux_icon('heroicons:arrow-path-rounded-square', {'class': 'w-12 h-12 text-danger-400'}) }}
-                                <div class="text-bold mt-5">
+                                {{ ux_icon('heroicons:arrow-path-rounded-square', {'class': 'w-7 h-7 text-danger-400'}) }}
+                                <div class="text-bold mt-[5px]">
                                     {{ coaster.inversionsNumber|default('0') }}
                                 </div>
                             </div>
@@ -132,27 +132,27 @@
             </div>
             <!-- /main carac -->
             <!-- coaster details -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
+            <div class="cc-panel cc-panel--white">
+                <div class="cc-panel__heading">
                     <h6>
                         {{ 'coaster.infos.title'|trans({'%name%': coaster.name}) }}
                     </h6>
                 </div>
-                <div class="list-group no-border">
+                <div class="cc-list-group no-border">
                     {% if coaster.status %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.status'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.status'|trans }}
                                 :</label>
                             <div class="pull-right">
-              <span class="label label-{{ coaster.status.type }} bg-{{ coaster.status.type }}">
+              <span class="cc-label cc-label--{{ coaster.status.type }} bg-{{ coaster.status.type }}">
                   {{ coaster.status.name|trans([], 'database') }}
               </span>
                             </div>
                         </div>
                     {% endif %}
                     {% if coaster.park %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.park'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.park'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">{{ coaster.park.name }}</a>
@@ -160,8 +160,8 @@
                         </div>
                     {% endif %}
                     {% if coaster.park.country %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.country'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.country'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[country]': coaster.park.country.id}) }}">
@@ -169,8 +169,8 @@
                             </div>
                         </div>
                     {% endif %}
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
+                    <div class="cc-list-group__item">
+                        <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.manufacturer'|trans }}
                             :</label>
                         <div class="pull-right">
                             {% if coaster.manufacturer %}
@@ -182,9 +182,9 @@
                         </div>
                     </div>
                     {% if coaster.materialType %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <label
-                                class="control-label no-margin text-semibold">{{ 'coaster.infos.materialType'|trans }}
+                                class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.materialType'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[materialType]': coaster.materialType.id}) }}">
@@ -193,8 +193,8 @@
                         </div>
                     {% endif %}
                     {% if coaster.seatingType %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.seatingType'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.seatingType'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[seatingType]': coaster.seatingType.id}) }}">
@@ -203,8 +203,8 @@
                         </div>
                     {% endif %}
                     {% if coaster.model %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.model'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.model'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[model]': coaster.model.id}) }}">
@@ -213,15 +213,15 @@
                         </div>
                     {% endif %}
                     {% if coaster.kiddie %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.kiddie'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.kiddie'|trans }}
                                 :</label>
-                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}</div>
+                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.launchs|length > 0 %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.launch'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.launch'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 {% for launch in coaster.launchs %}
@@ -231,15 +231,15 @@
                             </div>
                         </div>
                     {% endif %}
-                    <div class="list-group-item">
-                        <label class="control-label no-margin text-semibold">{{ 'coaster.infos.restraint'|trans }}
+                    <div class="cc-list-group__item">
+                        <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.restraint'|trans }}
                             :</label>
                         <div
                             class="pull-right">{{ coaster.restraint.name|default('data.unknown')|trans([], 'database') }}</div>
                     </div>
                     {% if coaster.openingDate %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.opening'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.opening'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y') }) }}">
@@ -248,8 +248,8 @@
                         </div>
                     {% endif %}
                     {% if coaster.closingDate %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.closing'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.closing'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 {{ helper.displayDate(coaster.closingDate) }}
@@ -257,21 +257,21 @@
                         </div>
                     {% endif %}
                     {% if coaster.indoor %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.indoor'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.indoor'|trans }}
                                 :</label>
-                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}</div>
+                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.vr %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
-                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}</div>
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
+                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.price and coaster.currency %}
-                        <div class="list-group-item">
-                            <label class="control-label no-margin text-semibold">{{ 'coaster.infos.cost'|trans }}
+                        <div class="cc-list-group__item">
+                            <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.cost'|trans }}
                                 :</label>
                             <div class="pull-right">
                                 {{ coaster.price|format_currency(coaster.currency, {fraction_digit: 0}) }}
@@ -287,16 +287,16 @@
             {% endif %}
             <!-- /coaster details -->
             <!-- coasters in park -->
-            <div class="panel panel-white">
-                <div class="panel-heading">
+            <div class="cc-panel cc-panel--white">
+                <div class="cc-panel__heading">
                     <h6>
                         {{ 'coaster.parkcoaster'|trans({'%name%': coaster.park.name}) }}
-                        &nbsp;<span class="badge badge-primary">{{ coasters|length }}</span>
+                        &nbsp;<span class="cc-badge cc-badge--primary">{{ coasters|length }}</span>
                     </h6>
                 </div>
-                <div class="list-group no-border">
+                <div class="cc-list-group no-border">
                     {% for otherCoaster in coasters %}
-                        <div class="list-group-item">
+                        <div class="cc-list-group__item">
                             <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
                             <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">
                                 {{ otherCoaster.name }}
@@ -310,7 +310,7 @@
             <!-- removed until open street maps -->
             <!-- /coaster location -->
         </div>
-        <div class="col-sm-9">
+        <div class="col-span-12 tablet:col-span-9">
             <!-- AI Summary Section (loaded via AJAX) -->
             <div
                 data-controller="coaster-summary"
@@ -319,17 +319,17 @@
                 data-coaster-summary-csrf-token-value="{{ csrf_token('summary_feedback') }}"
             >
                 <div id="coaster-ai-summary" data-coaster-summary-target="container">
-                    <div class="panel panel-flat mb-15">
-                        <div class="panel-heading">
-                            <h6 class="panel-title">
+                    <div class="cc-panel cc-panel--flat mb-[15px]">
+                        <div class="cc-panel__heading">
+                            <h6 class="cc-panel__title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6 position-left'}) }} Captain's Review
+                                    {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4 position-left'}) }} Captain's Review
                                 </span>
                             </h6>
                         </div>
-                        <div class="panel-body text-center">
-                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">{{ 'ai_summary.panel.loading'|trans({}, 'ai_summary') }}</span>
+                        <div class="cc-panel__body text-center">
+                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
+                            <span class="text-muted ml-[5px]">{{ 'ai_summary.cc-panel.loading'|trans({}, 'ai_summary') }}</span>
                         </div>
                     </div>
                 </div>
@@ -343,17 +343,17 @@
                 data-coaster-images-total-images-value="{{ coaster.images|length }}"
             >
                 <div id="coaster-photos" data-coaster-images-target="container">
-                    <div class="panel panel-flat mb-15">
-                        <div class="panel-heading">
-                            <h6 class="panel-title">
+                    <div class="cc-panel cc-panel--flat mb-[15px]">
+                        <div class="cc-panel__heading">
+                            <h6 class="cc-panel__title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons:photo', {'class': 'w-6 h-6 position-left'}) }} {{ 'coaster.photos.title'|trans }}
+                                    {{ ux_icon('heroicons:photo', {'class': 'w-4 h-4 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                                 </span>
                             </h6>
                         </div>
-                        <div class="panel-body text-center">
-                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">{{ 'coaster.photos.loading'|trans }}</span>
+                        <div class="cc-panel__body text-center">
+                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
+                            <span class="text-muted ml-[5px]">{{ 'coaster.photos.loading'|trans }}</span>
                         </div>
                     </div>
                 </div>
@@ -366,11 +366,11 @@
                 data-coaster-reviews-locale-value="{{ app.request.locale }}"
             >
                 <div id="coaster-reviews" data-coaster-reviews-target="container">
-                    <div class="panel panel-flat mb-15">
-                        <div class="panel-heading">
-                            <h6 class="panel-title">
+                    <div class="cc-panel cc-panel--flat mb-[15px]">
+                        <div class="cc-panel__heading">
+                            <h6 class="cc-panel__title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
+                                    {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.title'|trans }}
                                 </span>
                                 <form style="display: none">
                                     <input type="hidden" name="page" value="1">
@@ -382,9 +382,9 @@
                                 </form>
                             </h6>
                         </div>
-                        <div class="panel-body text-center">
-                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-6 h-6 spinner text-muted'}) }}
-                            <span class="text-muted ml-5">{{ 'review.loading'|trans }}</span>
+                        <div class="cc-panel__body text-center">
+                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
+                            <span class="text-muted ml-[5px]">{{ 'review.loading'|trans }}</span>
                         </div>
                     </div>
                 </div>

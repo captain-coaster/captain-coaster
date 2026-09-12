@@ -1,0 +1,405 @@
+/* SVG Star Rating Component */
+
+.rating-stars {
+    display: inline-flex;
+    gap: 4px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.rating-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease;
+}
+
+.star-svg {
+    width: 24px;
+    height: 24px;
+    transition: transform 0.15s ease;
+}
+
+.star-outline {
+    fill: none;
+    stroke-width: 1.5;
+}
+
+.star-fill {
+    opacity: 1;
+}
+
+/* Empty star - gray outline */
+.rating-star.star-empty .star-outline {
+    stroke: #ccc;
+}
+
+.rating-star.star-empty .star-fill-left,
+.rating-star.star-empty .star-fill-right {
+    stop-color: transparent;
+}
+
+/* Half star - left filled, right empty */
+.rating-star.star-half .star-outline {
+    stroke: var(--cc-warning);
+}
+
+.rating-star.star-half .star-fill-left {
+    stop-color: var(--cc-warning);
+}
+
+.rating-star.star-half .star-fill-right {
+    stop-color: transparent;
+}
+
+/* Full star - completely filled */
+.rating-star.star-full .star-outline {
+    stroke: var(--cc-warning);
+}
+
+.rating-star.star-full .star-fill-left,
+.rating-star.star-full .star-fill-right {
+    stop-color: var(--cc-warning);
+}
+
+/* Hover effect on desktop */
+@media (hover: hover) {
+    .rating-stars:not([data-rating-readonly-value="true"])
+        .rating-star:hover
+        .star-svg {
+        transform: scale(1.15);
+    }
+}
+
+/* Active/touch state */
+.rating-stars:not([data-rating-readonly-value="true"])
+    .rating-star:active
+    .star-svg {
+    transform: scale(0.95);
+}
+
+/* Readonly state */
+.rating-stars[data-rating-readonly-value="true"] {
+    cursor: default;
+    pointer-events: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .star-svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .rating-stars {
+        gap: 8px;
+    }
+}
+
+/* Modern Icon Actions for Rating */
+.rating-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.action-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.05);
+    color: #666;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    position: relative;
+}
+
+.action-icon:hover {
+    background: rgba(33, 150, 243, 0.1);
+    color: var(--cc-primary);
+    transform: scale(1.1);
+    text-decoration: none;
+}
+
+.action-icon.delete-icon:hover {
+    background: rgba(244, 67, 54, 0.1);
+    color: var(--cc-danger);
+}
+
+.action-icon i {
+    font-size: 14px;
+}
+
+/* Loading States for Rating */
+.rating-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    position: relative;
+}
+
+.rating-loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid var(--cc-primary);
+    border-radius: 50%;
+    animation: rating-spin 1s linear infinite;
+}
+
+@keyframes rating-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disabled state for actions during loading */
+.rating-actions.disabled .action-icon {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+/* Success/Error feedback animations */
+.rating-success {
+    animation: rating-pulse-success 0.6s ease-in-out;
+}
+
+.rating-error {
+    animation: rating-pulse-error 0.6s ease-in-out;
+}
+
+@keyframes rating-pulse-success {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes rating-pulse-error {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(244, 67, 54, 0.3);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Enhanced delete confirmation styling */
+.delete-icon.confirming {
+    background: rgba(244, 67, 54, 0.2);
+    color: var(--cc-danger);
+    animation: rating-pulse-delete 1s ease-in-out infinite;
+}
+
+@keyframes rating-pulse-delete {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Date Picker Functionality */
+
+/* Indicator dots for date and review */
+.date-indicator,
+.review-indicator {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 6px;
+    height: 6px;
+    background: var(--cc-success);
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+/* Inline Date Picker */
+.inline-date-picker {
+    position: relative;
+}
+
+.date-picker-popup-inline {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.date-picker-popup-inline.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.date-picker-content-small {
+    background: white;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+}
+
+.date-picker-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--cc-gray-900);
+    margin-bottom: 8px;
+}
+
+.small-date-input {
+    width: 100%;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.small-date-input:focus {
+    outline: none;
+    border-color: var(--cc-primary);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+.small-date-input:disabled {
+    opacity: 0.6;
+    background: #f8f9fa;
+}
+
+.small-date-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.tiny-btn {
+    flex: 1;
+    background: #f8f9fa;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.today-btn:hover {
+    background: var(--cc-primary);
+    color: white;
+    border-color: var(--cc-primary);
+}
+
+.clear-btn:hover {
+    background: var(--cc-danger);
+    color: white;
+    border-color: var(--cc-danger);
+}
+
+/* Mobile adjustments */
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .rating-actions {
+        gap: 20px;
+    }
+
+    .action-icon {
+        width: 44px;
+        height: 44px;
+    }
+
+    .date-picker-content-small {
+        min-width: 220px;
+        padding: 12px;
+    }
+
+    .date-picker-label {
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    /*
+     * font-size stays untouched here -- forms.css's global
+     * `input[type="date"]{font-size:16px!important}` always wins (it's
+     * !important, on purpose: below 16px iOS auto-zooms the page on
+     * focus). Everything else around it is trimmed instead to keep the
+     * popup from looking oversized next to that fixed 16px text.
+     */
+    .small-date-input {
+        padding: 8px 10px;
+        margin-bottom: 8px;
+        min-height: 40px;
+    }
+
+    .tiny-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .small-date-actions {
+        gap: 8px;
+    }
+}
+
+/* Subtle sparkle effect for rating confirmation */
+@keyframes rating-sparkle {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.1);
+        filter: brightness(1.15) drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes rating-glow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+    50% {
+        box-shadow: 0 0 12px 4px rgba(255, 215, 0, 0.4);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+    }
+}
+
+.rating-confirmed {
+    animation: rating-sparkle 0.6s ease-out, rating-glow 0.6s ease-out;
+    position: relative;
+}

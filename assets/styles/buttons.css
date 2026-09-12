@@ -1,0 +1,415 @@
+/*
+ * .cc-button -- migrated: theme/bootstrap-limitless/buttons.less +
+ * bootstrap/less/buttons.less. `.btn-group`/`.btn-toolbar`/`.input-group`
+ * are entirely unused -- grepped templates/, src/ and every Stimulus
+ * controller, zero hits (not even the enhanced-select controller
+ * generates one). Every rule in button-groups.less/input-groups.less
+ * requires one of those classes as an ancestor (checked line by line --
+ * no bare `.cc-button`/`.cc-field__control` rule hides in either file), so both
+ * files are deleted outright with no Tailwind replacement, the same way
+ * `pager.less` was for media.
+ *
+ * Only base + cc-button--default/-primary/-info/-danger/-link/-lg/-sm/-xs/
+ * -block/-rounded/-flat/-icon/-float(-lg)/-labeled(-right)/-block-group
+ * are used. Not used and dropped: cc-button-success/-warning/-xlg, the whole
+ * `.cc-button-group-*` size-override branch (dead, no cc-button-group), `.icon-2x`
+ * (never combined with cc-button--icon), and every `.input-group-* >
+ * .input-group-btn > .btn` sub-rule (dead, no input-group).
+ * `.cc-button--labeled`'s per-size (xlg/lg/sm/xs) padding variants are also
+ * dropped -- the only two real usages (Profile/settings.html.twig)
+ * combine cc-button--labeled with no size class at all.
+ *
+ * Cross-file/cascade-position coupling, same check as `.cc-badge`/`.cc-label`:
+ * real usage combines `.cc-button` with non-`!important` `bg-*`/`border-*`/
+ * `text-*` helpers in several places (`cc-button bg-cc-teal-400`, `cc-button
+ * bg-danger-400`, notification list's `cc-button {{ iconColorClass }}` --
+ * enumerated via the `NotificationType` enum: bg-primary/bg-success-400/
+ * bg-warning-400 -- and `cc-button border-danger-800 text-danger-800 cc-button--flat`).
+ * The base `.cc-button` rule doesn't set `background-color` at all, and its
+ * `border` shorthand is split into `border-width`/`border-style` so
+ * `border-color` is left free for a helper to set. `.cc-button--default/-primary/
+ * -info/-danger`'s own background-color/border-color are untouched (never
+ * combined with a bg-* or border-* helper in real usage, and Limitless's
+ * own `.cc-button[class*=bg-]:hover{color:#fff}` rule shows this coexistence was
+ * already an intentional pattern in the theme).
+ */
+.cc-button {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 0;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    background-image: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.53846;
+}
+
+.cc-button::-moz-focus-inner {
+    border: 0;
+}
+
+/*
+ * `color: #333` here is accurate to vanilla bootstrap's base `.cc-button:hover`
+ * (it's `.cc-button--default`'s own hover color, applied unconditionally at this
+ * level). In real Bootstrap it's harmless on colored variants because
+ * `.button-variant()`'s own `:hover/:focus/:active` block re-asserts
+ * `color: @color` at the point each variant is defined -- missed during
+ * the port here (only background-color/border-color were carried over),
+ * so every `.cc-button--primary/-info/-danger`'s white text silently fell back
+ * to this dark base color on hover/focus/active. Fixed by re-adding an
+ * explicit `color` to each variant's hover/focus/active group below.
+ */
+.cc-button:hover,
+.cc-button:focus,
+.cc-button.focus {
+    color: var(--cc-gray-900);
+    text-decoration: none;
+    outline: 0;
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.05);
+}
+
+.cc-button:active,
+.cc-button.active {
+    background-image: none;
+    outline: 0;
+    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.1);
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-button:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+.cc-button.disabled,
+.cc-button[disabled],
+fieldset[disabled] .cc-button {
+    cursor: not-allowed;
+    opacity: 0.65;
+    box-shadow: none;
+}
+
+/* Buttons already colored via a bg-* helper still need white text on hover/focus. */
+.cc-button[class*='bg-']:hover,
+.cc-button[class*='bg-']:focus,
+.cc-button[class*='bg-'].focus {
+    color: var(--cc-white);
+}
+
+.cc-button--default {
+    color: var(--cc-gray-900);
+    background-color: var(--cc-gray-50);
+    border-color: var(--cc-gray-300);
+}
+
+.cc-button--default:hover,
+.cc-button--default:focus,
+.cc-button--default.focus,
+.cc-button--default:active,
+.cc-button--default.active {
+    color: var(--cc-gray-900);
+    background-color: #e3e3e3;
+    border-color: #bebebe;
+}
+
+.cc-button--default.disabled {
+    box-shadow: none;
+}
+
+.cc-button--primary {
+    color: var(--cc-white);
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
+}
+
+.cc-button--primary:hover,
+.cc-button--primary:focus,
+.cc-button--primary.focus,
+.cc-button--primary:active,
+.cc-button--primary.active {
+    color: var(--cc-white);
+    background-color: #0c7cd5;
+    border-color: #0b76cc;
+}
+
+.cc-button--primary.disabled {
+    box-shadow: none;
+}
+
+.cc-button--info {
+    color: var(--cc-white);
+    background-color: var(--cc-info);
+    border-color: var(--cc-info);
+}
+
+.cc-button--info:hover,
+.cc-button--info:focus,
+.cc-button--info.focus,
+.cc-button--info:active,
+.cc-button--info.active {
+    color: var(--cc-white);
+    background-color: #008fa1;
+    border-color: #008697;
+}
+
+.cc-button--info.disabled {
+    box-shadow: none;
+}
+
+.cc-button--danger {
+    color: var(--cc-white);
+    background-color: var(--cc-danger);
+    border-color: var(--cc-danger);
+}
+
+.cc-button--danger:hover,
+.cc-button--danger:focus,
+.cc-button--danger.focus,
+.cc-button--danger:active,
+.cc-button--danger.active {
+    color: var(--cc-white);
+    background-color: #ea1c0d;
+    border-color: #e11b0c;
+}
+
+.cc-button--danger.disabled {
+    box-shadow: none;
+}
+
+.cc-button--link {
+    color: var(--cc-gray-900);
+    font-weight: 400;
+    border-radius: 0;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.cc-button--link,
+.cc-button--link:hover,
+.cc-button--link:focus,
+.cc-button--link:active {
+    border-color: transparent;
+}
+
+.cc-button--link:hover,
+.cc-button--link:focus {
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.cc-button--lg {
+    border-radius: 5px;
+    padding: 9px 15px;
+    font-size: 14px;
+    line-height: 1.42857;
+}
+
+.cc-button--lg.cc-button--rounded {
+    border-radius: 100px;
+}
+
+.cc-button--sm:not(.cc-button--rounded),
+.cc-button--xs:not(.cc-button--rounded) {
+    border-radius: 3px;
+}
+
+.cc-button--sm {
+    padding: 6px 11px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.cc-button--xs {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.cc-button--block {
+    display: block;
+    width: 100%;
+}
+
+.cc-button--block + .cc-button--block {
+    margin-top: 10px;
+}
+
+.cc-button--rounded,
+.cc-button--rounded.cc-button--labeled > b,
+.cc-button--rounded img {
+    border-radius: 100px;
+}
+
+.cc-button--flat {
+    background-color: transparent;
+    border-width: 2px;
+}
+
+.cc-button--flat:hover,
+.cc-button--flat:focus {
+    opacity: 0.8;
+    box-shadow: none;
+}
+
+.cc-button--flat:active {
+    opacity: 0.95;
+}
+
+.cc-button--icon {
+    padding-left: 9px;
+    padding-right: 9px;
+}
+
+.cc-button--icon.cc-button--xs {
+    padding-left: 7px;
+    padding-right: 7px;
+}
+
+.cc-button--float {
+    border-radius: 3px;
+    padding: 16px;
+}
+
+.cc-button--float.cc-button--link {
+    padding: 11px;
+}
+
+.cc-button--float i {
+    display: block;
+    margin: 0;
+    top: 0;
+}
+
+.cc-button--float img {
+    border-radius: 3px;
+}
+
+.cc-button--float > span {
+    display: block;
+    padding-top: 10px;
+    margin-bottom: -6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cc-button--float.cc-button--float-lg i {
+    font-size: 32px;
+}
+
+.cc-button--labeled {
+    padding-left: 48px;
+}
+
+.cc-button--labeled > b {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    padding: 10px;
+    display: block;
+    line-height: 1;
+}
+
+.cc-button--labeled > b > i {
+    top: 0;
+}
+
+.cc-button--labeled.cc-button--labeled-right {
+    padding-left: 12px;
+    padding-right: 48px;
+}
+
+.cc-button--labeled.cc-button--labeled-right > b {
+    left: auto;
+    right: -1px;
+    border-radius: 0 3px 3px 0;
+}
+
+.cc-button-group--block .cc-button {
+    border-radius: 0;
+    border-width: 1px 0 0 1px;
+}
+
+.cc-button-group--block .cc-button:last-child {
+    border-bottom-width: 1px;
+}
+
+.cc-button-group--block .cc-button--block + .cc-button--block {
+    margin-top: 0;
+}
+
+/* Direct grid children replace Bootstrap's former `col-*` wrappers. */
+.cc-button-group--block > :first-child .cc-button:first-child {
+    border-radius: 3px 0 0;
+}
+
+.cc-button-group--block > :first-child .cc-button:last-child {
+    border-radius: 0 0 0 3px;
+}
+
+.cc-button-group--block > :last-child .cc-button {
+    border-right-width: 1px;
+}
+
+.cc-button-group--block > :last-child .cc-button:first-child {
+    border-radius: 0 3px 0 0;
+}
+
+.cc-button-group--block > :last-child .cc-button:last-child {
+    border-radius: 0 0 3px;
+}
+
+/*
+ * .cc-close — migrated from theme/bootstrap-limitless/close.less +
+ * bootstrap/less/close.less. Used standalone (dismiss a review-report
+ * modal) and inside .cc-alert (that context -- .cc-alert .cc-close,
+ * .cc-alert--dismissible .cc-close -- already lives in alerts.css, owned by
+ * the alert migration). Two upstream rules in modals.less
+ * (`.modal-header[class*="bg-"] .cc-close` and the .modal-content
+ * variant) target this class for bg-tinted modal headers; no template
+ * uses one, so they're dead in practice and intentionally left
+ * untouched in cc-navbar.css until that file's own migration.
+ *
+ * @apply used here (unlike .cc-alert) since every value maps to a plain
+ * Tailwind utility or a simple arbitrary one -- nothing pseudo-element
+ * or icon-shaped that would fight the utility syntax.
+ */
+.cc-close {
+    @apply float-right text-[19.5px] font-light leading-none text-black opacity-60;
+}
+
+.cc-close:hover,
+.cc-close:focus {
+    @apply cursor-pointer text-black no-underline opacity-100;
+    outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-close:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+button.close {
+    @apply cursor-pointer border-0 bg-transparent p-0 appearance-none;
+}
+
+.modal-header .cc-close {
+    @apply absolute top-1/2 right-[20px] mt-0;
+}
+
+.modal-body .cc-close {
+    margin-top: 0 !important;
+}

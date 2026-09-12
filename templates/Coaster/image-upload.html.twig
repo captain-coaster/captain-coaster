@@ -12,21 +12,21 @@
             </div>
         {% endfor %}
     {% endfor %}
-    <div class="panel panel-flat">
-        <div class="panel-body">
+    <div class="cc-panel cc-panel--flat">
+        <div class="cc-panel__body">
             {{ form_start(form, {'attr': {'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'image_upload.form.uploading'|trans, 'data-form-submit-required-error-value': 'image_upload.form.copyright_agreement.required'|trans({}, 'validators'), 'data-action': 'submit->form-submit#submit'}}) }}
-            <div class="form-group">
-                {{ form_label(form.file, "", {'label_attr': {'class': 'control-label text-bold'}}) }}
-                {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
+            <div class="cc-field">
+                {{ form_label(form.file, "", {'label_attr': {'class': 'cc-field__label text-bold'}}) }}
+                {{ form_widget(form.file, {'attr': {'class': 'cc-field__control'}}) }}
                 {{ form_errors(form.file) }}
                 <span class="help-block">{{ 'image_upload.form.file.helper'|trans }}</span>
             </div>
-            <div class="form-group">
-                {{ form_label(form.credit, "", {'label_attr': {'class': 'control-label text-bold'}}) }}
-                {{ form_widget(form.credit, {'attr': {'class': 'form-control'}}) }}
+            <div class="cc-field">
+                {{ form_label(form.credit, "", {'label_attr': {'class': 'cc-field__label text-bold'}}) }}
+                {{ form_widget(form.credit, {'attr': {'class': 'cc-field__control'}}) }}
                 {{ form_errors(form.credit) }}
             </div>
-            <div class="form-group">
+            <div class="cc-field">
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" name="{{ form.watermarked.vars.full_name }}" id="{{ form.watermarked.vars.id }}" value="1"{% if form.watermarked.vars.checked %} checked{% endif %}>
@@ -36,7 +36,7 @@
                 <span class="help-block">{{ 'image_upload.form.watermark.helper'|trans }}</span>
                 {% do form.watermarked.setRendered %}
             </div>
-            <div class="form-group {% if form.copyrightAgreement.vars.errors|length > 0 %}has-error{% endif %}">
+            <div class="cc-field {% if form.copyrightAgreement.vars.errors|length > 0 %}has-error{% endif %}">
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" name="{{ form.copyrightAgreement.vars.full_name }}" id="{{ form.copyrightAgreement.vars.id }}" value="1"{% if form.copyrightAgreement.vars.checked %} checked{% endif %} data-form-submit-target="requiredCheckbox">
@@ -46,8 +46,8 @@
                 {{ form_errors(form.copyrightAgreement) }}
                 {% do form.copyrightAgreement.setRendered %}
             </div>
-            <div class="form-group">
-                {{ form_widget(form.upload, {'attr': {'class': 'btn btn-primary'}}) }}
+            <div class="cc-field">
+                {{ form_widget(form.upload, {'attr': {'class': 'cc-button cc-button--primary'}}) }}
             </div>
             {{ form_rest(form) }}
             {{ form_end(form) }}

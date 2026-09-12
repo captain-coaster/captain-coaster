@@ -1,0 +1,428 @@
+/*
+ * Forms -- migrated: theme/bootstrap-limitless/forms.less +
+ * bootstrap/less/forms.less. `.cc-field__label` needs *zero* CSS -- its
+ * only styling anywhere is nested under `.form-horizontal`, and the one
+ * template using `.form-horizontal` (Coaster/_review_panel.html.twig)
+ * never puts `.cc-field__label` inside it. `.form-horizontal` itself turns
+ * out fully inert for the same reason: every one of its rules targets a
+ * descendant `.cc-field__label` or an exact `.cc-field` class, and the
+ * one real `.form-horizontal` form uses `.cc-field--xs` alone (a
+ * different class, not `.cc-field` + a size modifier) with no
+ * `.cc-field__label` at all -- so `.form-horizontal` is dropped too.
+ * `.radio` and everything radio-only is dropped (zero `<input
+ * type="radio">`/`.radio` usage anywhere). `.checkbox` itself *is* needed
+ * for 3 real cases (Coaster/image-upload.html.twig, Profile/settings.html.twig)
+ * -- most `.checkbox` usage in templates is inside
+ * `.toggle-switch-cc-field`, which already fully re-skins it via
+ * toggle-switch.css (untouched, unrelated to this migration).
+ */
+
+/*
+ * Generic `label` reset -- every real `.checkbox label`/`.cc-field__label`
+ * on the page depends on this (bootstrap/less/forms.less's un-classed
+ * `label{}` base rule, easy to miss since it targets the bare element,
+ * not a class). Confirmed via getComputedStyle before/after: dropping
+ * it silently turned every label's `display` from `inline-block` to the
+ * browser default `inline`.
+ */
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 7px;
+    font-weight: 400;
+}
+
+/*
+ * Bootstrap's forms.less ("Remove inputs shadow in mobile browsers") reset
+ * `-webkit-appearance` on every text-like input type + textarea.
+ */
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='number'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='date'],
+input[type='month'],
+input[type='time'],
+input[type='week'],
+input[type='url'],
+input[type='tel'],
+textarea {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/*
+ * Bootstrap's normalize.less (base.css) unconditionally forces
+ * `input[type=search] { box-sizing: content-box }` (a cross-browser fix,
+ * untouched, still active). Bootstrap's own forms.less immediately
+ * overrides that back to border-box specifically for search inputs --
+ * "Override content-box in Normalize (* isn't specific enough)", per its
+ * own comment -- plus removes the iOS rounded-corner search styling so
+ * `.cc-field__control` can style it instead. Missing this rule made the
+ * search bar in the page header render ~40px wider than its container
+ * (padding/border added on top of the declared width instead of being
+ * included in it). `.cc-field__control`'s own `width:100%` only prevents this
+ * class of bug when box-sizing is already border-box.
+ */
+input[type='search'] {
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.cc-field__control {
+    color: var(--cc-gray-900);
+    background-color: var(--cc-white);
+    background-image: none;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 3px;
+    width: 100%;
+    height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+    line-height: 1.53846;
+    transition:
+        border-color 0.15s ease-in-out,
+        box-shadow 0.15s ease-in-out;
+    display: block;
+    box-shadow: none;
+}
+
+/*
+ * Bootstrap's own forms.less: the base rule's fixed height:36px (a
+ * single text-input line) needs undoing for a multi-row <textarea> --
+ * dropped from the original migration, invisible until a real <textarea>
+ * without its own inline height override (contact form) rendered as a
+ * single clipped line regardless of its `rows` attribute.
+ */
+textarea.cc-field__control {
+    height: auto;
+}
+
+.cc-field__control:focus {
+    border-color: var(--cc-gray-300);
+    outline: 0;
+    box-shadow: none;
+}
+
+.cc-field__control[class*='bg-']:focus {
+    border-color: transparent;
+}
+
+.cc-field__control[disabled],
+.cc-field__control[readonly],
+fieldset[disabled] .cc-field__control {
+    opacity: 1;
+    background-color: var(--cc-gray-40);
+}
+
+.cc-field__control[disabled],
+fieldset[disabled] .cc-field__control {
+    cursor: not-allowed;
+}
+
+.cc-field {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.cc-field .cc-field:last-child {
+    margin-bottom: 0;
+}
+
+.cc-field--xs .cc-field__control {
+    border-radius: 2px;
+    height: 32px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.66667;
+}
+
+.checkbox {
+    position: relative;
+    display: block;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.checkbox label {
+    cursor: pointer;
+    min-height: 20px;
+    margin-bottom: 0;
+    padding-left: 28px;
+    font-weight: 400;
+}
+
+.checkbox input[type='checkbox'] {
+    position: absolute;
+    margin-left: -20px;
+}
+
+.checkbox + .checkbox {
+    margin-top: 0;
+}
+
+.checkbox.disabled label,
+fieldset[disabled] .checkbox label {
+    cursor: not-allowed;
+}
+
+.help-block {
+    color: var(--cc-gray-600);
+    margin-top: 7px;
+    margin-bottom: 7px;
+    font-size: 12px;
+    display: block;
+}
+
+.has-feedback {
+    position: relative;
+}
+
+.has-feedback .cc-field__control {
+    padding-right: 36px;
+}
+
+.has-feedback-left .cc-field__control {
+    padding-left: 36px;
+    padding-right: 12px;
+}
+
+.has-feedback-left .cc-field__feedback {
+    left: 0;
+    right: auto;
+}
+
+.cc-field__feedback {
+    z-index: 3;
+    color: var(--cc-gray-900);
+    text-align: center;
+    pointer-events: none;
+    width: 38px;
+    height: 36px;
+    line-height: 36px;
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.has-error .help-block,
+.has-error .checkbox {
+    color: #d84315;
+}
+
+.has-error .cc-field__control {
+    border-color: #d84315;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.has-error .cc-field__control:focus {
+    border-color: var(--cc-warning-deep);
+    box-shadow:
+        inset 0 1px 1px rgba(0, 0, 0, 0.075),
+        0 0 6px #f08463;
+}
+
+.has-error .cc-field__feedback {
+    color: #d84315;
+}
+
+/*
+ * fieldset/legend ("Normalize non-controls" in bootstrap/less/forms.less)
+ * -- base.css's normalize.less-derived fieldset (visible `border:1px
+ * solid #c0c0c0`) is for real, measured elements this migration doesn't
+ * touch; forms.less loads after it in the original app.less and resets
+ * it back to `border:0` for every real `<fieldset>` (3x,
+ * Profile/settings.html.twig) -- ported here so it keeps winning the
+ * same way.
+ */
+fieldset {
+    min-width: 0;
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 20px;
+    font-size: 12px;
+    line-height: inherit;
+    color: var(--cc-gray-900);
+    border: 0;
+    border-bottom: 1px solid var(--cc-gray-200);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+}
+
+fieldset:first-child legend:first-child {
+    padding-top: 0;
+}
+
+/*
+ * Global mobile-zoom prevention: mobile devices zoom when input
+ * font-size is < 16px, so every text-like input/select/textarea gets a
+ * 16px floor regardless of the size classes above; desktop narrows it
+ * back down via the media query at the bottom.
+ */
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
+input[type='number'],
+input[type='date'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='week'],
+input[type='time'],
+select,
+textarea {
+    font-size: 16px !important; /* Minimum 16px prevents iOS zoom */
+    min-height: 44px; /* Better touch targets for mobile users */
+}
+
+/* Date input specific fixes */
+input[type='date'] {
+    /* Fix vertical alignment on mobile - center the text */
+    line-height: normal;
+    cursor: pointer;
+}
+
+/* Fix for webkit browsers (Safari, Chrome) date input alignment */
+input[type='date']::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+/*
+ * Make calendar icon more visible. Sized explicitly rather than left to
+ * scale with font-size: the 16px font forced above (anti-zoom) would
+ * otherwise inflate this icon noticeably larger than the rest of the
+ * field's chrome.
+ */
+input[type='date']::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.6;
+    width: 16px;
+    height: 16px;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/*
+ * `.datepicker-input` (added by datepicker_controller.js to the review
+ * form's ridden-date field) still gets font-size:16px!important from the
+ * base rule above -- can't go lower, iOS zooms the page on focus below
+ * that. Trims the surrounding box instead so it doesn't look oversized
+ * next to this page's other .cc-field__control fields, mirroring the same
+ * "shrink everything but the font" fix applied to rating.css's own
+ * `.small-date-input`.
+ */
+.datepicker-input {
+    min-height: 40px;
+    padding: 6px 10px;
+}
+
+/*
+ * Desktop: reduce font size for better proportions. Was `min-width: 768px`
+ * -- the only place in this app that breakpoint drifted from the 769px
+ * used everywhere else; aligned here rather than left as a stray one-off
+ * (captain-coaster/captain-coaster#385 consolidation pass).
+ */
+@media (min-width: theme(--breakpoint-tablet)) {
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='search'],
+    input[type='tel'],
+    input[type='url'],
+    input[type='number'],
+    input[type='date'],
+    input[type='datetime-local'],
+    input[type='month'],
+    input[type='week'],
+    input[type='time'],
+    select,
+    textarea {
+        font-size: 13px !important;
+    }
+}
+
+/*
+ * Tom Select overrides -- restyles its own `.ts-*` classes (library CSS
+ * imported by enhanced_select_controller.js) to match this app's form
+ * controls instead of Tom Select's default look.
+ */
+/*
+ * Tom Select copies the original <select>'s classes (including
+ * `cc-field__control`) onto `.ts-wrapper`. `.cc-field__control`'s fixed `height: 36px`
+ * above then clips the wrapper when selected tags wrap to a second line --
+ * the overflow stays visible and bleeds into the next form field instead
+ * of growing the box. Override it back to auto-height here.
+ */
+/*
+ * `.cc-field__control` also draws its own border/padding/background -- since
+ * `.ts-wrapper` carries that class too, without this it nests a second box
+ * around `.ts-control` below (visible as a double border). Neutralize the
+ * outer box entirely; `.ts-control` is the only one meant to be visible.
+ */
+.ts-wrapper.cc-field__control {
+    height: auto;
+    min-height: 44px;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.ts-wrapper .ts-control {
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 1px solid var(--cc-gray-350);
+    border-radius: 4px;
+    background-color: var(--cc-white);
+}
+
+.ts-wrapper.focus .ts-control {
+    border-color: var(--cc-primary);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+/*
+ * Tom Select's own equivalent rules (`.ts-wrapper.multi .ts-control > div`,
+ * `.ts-dropdown .active`) tie or beat these on specificity and load after
+ * this file (their CSS is bundled with the lazy-loaded controller chunk,
+ * injected later at runtime) -- the extra `.ts-control`/`.ts-dropdown-
+ * content` qualifiers below aren't decorative, they're what makes these
+ * actually win instead of losing the cascade to load order.
+ */
+.ts-wrapper.plugin-remove_button .ts-control .item {
+    background: var(--cc-primary);
+    color: var(--cc-white);
+    border: none;
+    border-radius: 3px;
+    font-size: 12px;
+}
+
+.ts-wrapper.plugin-remove_button .ts-control .item .remove {
+    border-left-color: rgba(255, 255, 255, 0.3);
+}
+
+.ts-dropdown {
+    border: 1px solid var(--cc-gray-350);
+    border-radius: 0 0 4px 4px;
+    font-size: 13px;
+}
+
+.ts-dropdown .ts-dropdown-content .active {
+    background-color: var(--cc-primary);
+    color: var(--cc-white);
+}

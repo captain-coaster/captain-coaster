@@ -14,15 +14,12 @@
 // plugins' own transition-detection -- nothing left needs it.
 import './dropdown';
 
-// Bootstrap 3/Limitless are fully gone (Phase 2, captain-coaster/
-// captain-coaster#380) -- this is plain CSS now, `.css` since there's no
-// LESS left in the project to justify the `less` npm package or Vite's
-// LESS preprocessor config.
+// Single global stylesheet -- Bootstrap/Limitless migration (Phase 2,
+// captain-coaster/captain-coaster#380) and this app's own hand-written CSS
+// used to be two separate entry files; consolidated into one
+// (captain-coaster/captain-coaster#385) since that split was an accident
+// of migration history, not a real architecture boundary.
 import '../styles/app.css';
-
-// Tailwind v4 — every component migrated off Bootstrap/Limitless lives
-// here. See the Phase 2 tracking issue: captain-coaster/captain-coaster#380.
-import '../styles/tailwind.css';
 
 // Import theme JavaScript files (migrated from public/js/core/) - Critical for layout
 // Sidebar toggling/hover-expand (formerly theme.js + layout_fixed_custom.js)

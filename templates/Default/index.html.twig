@@ -19,83 +19,79 @@
 {% block body %}
   <!-- info alert -->
   {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-    <div class="alert alert-info alert-styled-left alert-arrow-left alert-component" data-controller="alert">
-      <button type="button" class="close" data-action="click->alert#close"><span>&times;</span><span
+    <div class="cc-alert cc-alert--info cc-alert--styled-left cc-alert--arrow-left cc-alert--component" data-controller="alert">
+      <button type="button" class="cc-close" data-action="click->alert#close"><span>&times;</span><span
             class="sr-only">Close</span>
       </button>
-      <h6 class="alert-heading text-semibold">
+      <h6 class="cc-alert--heading text-semibold">
         {{ 'index.header.title'|trans }}
       </h6>
       {{ 'index.header.info'|trans({'%link_path%': path('login')})|raw }}
     </div>
   {% endif %}
   <!-- /info alert -->
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-body">
-        <div class="row text-center">
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:star', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              {{ stats.nb_ratings|format_number }}
-              {% if stats.nb_new_ratings > 0 %}
-                <span class="badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
-              {% endif %}
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-8 h-8 display-inline-block text-success'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:user-group', {'class': 'w-8 h-8 display-inline-block text-warning'}) }}</p>
-            <h5 class="text-semibold no-margin">
-              <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
-            </h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
-          </div>
-          <div class="col-xs-3">
-            <p>{{ ux_icon('heroicons:camera', {'class': 'w-8 h-8 display-inline-block text-info'}) }}</p>
-            <h5 class="text-semibold no-margin">{{ stats.nb_images|format_number }}</h5>
-            <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
-          </div>
-        </div>
+  <div class="cc-panel cc-panel__body">
+    <div class="grid grid-cols-12 gap-5 text-center">
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
+        <h5 class="text-semibold m-0">
+          {{ stats.nb_ratings|format_number }}
+          {% if stats.nb_new_ratings > 0 %}
+            <span class="cc-badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
+          {% endif %}
+        </h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
+      </div>
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
+        <h5 class="text-semibold m-0">
+          <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
+        </h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
+      </div>
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:user-group', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
+        <h5 class="text-semibold m-0">
+          <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
+        </h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.users'|trans }}</span>
+      </div>
+      <div class="col-span-3">
+        <p>{{ ux_icon('heroicons:camera', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
+        <h5 class="text-semibold m-0">{{ stats.nb_images|format_number }}</h5>
+        <span class="text-muted text-size-small">{{ 'index.stats.images'|trans }}</span>
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-sm-6">
+  <div class="grid grid-cols-12 gap-5 items-start">
+    <div class="col-span-12 tablet:col-span-6">
       <!-- Thumbnail with image and button -->
-      <div class="thumbnail">
+      <div class="cc-card">
           <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
-          <div class="thumb">
+          <div class="cc-card__media">
             <img src="{{ pictures_cdn }}/600x336/{{ image.filename }}"
                  alt="{{ image.coaster.name }}">
-            <div class="caption-overflow"></div>
+            <div class="cc-card__overlay"></div>
           </div>
         </a>
 
-        <div class="caption text-center">
-          <h5 class="text-semibold no-margin">
+        <div class="cc-card__caption text-center">
+          <h5 class="text-semibold m-0">
               <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
-                 class="btn btn-info">
+                 class="cc-button cc-button--info">
               {{ image.coaster.name }}
             </a>
           </h5>
-          <p class="text-muted mb-15 mt-5">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
+          <p class="text-muted mb-[15px] mt-[5px]">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
         </div>
       </div>
       <!-- /thumbnail with image and button -->
       <!-- latest ratings -->
-      <div class="panel panel-flat border-top-teal">
-        <div class="panel-heading">
-          <h6 class="panel-title">{{ 'rating.last'|trans }}</h6>
+      <div class="cc-panel cc-panel--flat border-top-cc-teal">
+        <div class="cc-panel__heading">
+          <h6 class="cc-panel__title">{{ 'rating.last'|trans }}</h6>
         </div>
-        <div class="panel-body">
+        <div class="cc-panel__body">
           <ul class="list-feed">
             {% for ratingItem in ratingFeed %}
               <li>
@@ -116,28 +112,28 @@
       </div>
       <!-- /latests ratings -->
     </div>
-    <div class="col-sm-6">
+    <div class="col-span-12 tablet:col-span-6">
       <!-- latest reviews -->
-      <div class="panel panel-flat">
-        <div class="panel-heading">
-          <h6 class="panel-title text-semibold">
-            {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-6 h-6 position-left'}) }}
+      <div class="cc-panel cc-panel--flat">
+        <div class="cc-panel__heading">
+          <h6 class="cc-panel__title text-semibold">
+            {{ ux_icon('heroicons:chat-bubble-left', {'class': 'w-4 h-4 position-left'}) }}
             {{ 'review.last'|trans }}
           </h6>
           <div class="heading-elements">
             <a href="{{ path('review_list') }}" class="heading-text">
-              {{ ux_icon('heroicons:arrow-right', {'class': 'w-6 h-6 position-right'}) }}
+              {{ ux_icon('heroicons:arrow-right', {'class': 'w-4 h-4 position-right'}) }}
               {{ 'review.all'|trans }}
             </a>
           </div>
         </div>
 
-        <div class="panel-body">
-          <ul class="media-list media-list-bordered stack-media-on-mobile reviews-list">
+        <div class="cc-panel__body">
+          <ul class="cc-media-list cc-media-list--bordered cc-media-list--stack-mobile reviews-list">
             {% for review in reviews %}
-              <li class="media review-list-item">
+              <li class="review-list-item">
                 <div class="review-coaster-info">
-                  <h6 class="media-heading text-semibold">
+                  <h6 class="cc-media__heading text-semibold">
                     <a href="{{ path('show_coaster', {'id': review.coaster.id, 'slug': review.coaster.slug}) }}">
                       {{ review.coaster.name }}
                     </a>
@@ -147,7 +143,7 @@
                     </a>
                   </h6>
                 </div>
-                {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}
+                {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages, 'stackOnMobile': true} %}
               </li>
             {% endfor %}
           </ul>

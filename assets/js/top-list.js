@@ -8,5 +8,8 @@
  * - Top list specific styles
  */
 
-// Import top list specific styles
-import '../styles/components/top-list.css';
+// Import top list specific styles. Used to also be imported globally via
+// app.css, redundantly -- its classes (coaster-entry, drag-area,
+// top-search-container, ...) only ever render on this page (Top/edit.html.twig)
+// (captain-coaster/captain-coaster#385 consolidation).
+import '../styles/top-list.css';

@@ -36,7 +36,8 @@ export default class extends Controller {
     }
 
     getImageCount() {
-        const isMobile = window.innerWidth < 768;
+        // Keep in sync with --breakpoint-tablet in assets/styles/tokens.css.
+        const isMobile = window.innerWidth < 769;
         return isMobile ? 2 : 8;
     }
 

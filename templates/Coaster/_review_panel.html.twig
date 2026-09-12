@@ -1,23 +1,23 @@
 {% set reviewCount = reviews.getTotalItemCount() %}
 {% if reviewCount > 0 or coaster.isRateable %}
-    <div class="panel panel-flat">
-        <div class="panel-heading">
-            <h6 class="panel-title section-header">
+    <div class="cc-panel cc-panel--flat">
+        <div class="cc-panel__heading">
+            <h6 class="cc-panel__title section-header">
                 <div class="section-header__container">
                     <div class="section-header__title">
                         <span class="text-semibold">
-                            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.title'|trans }}
+                            {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.title'|trans }}
                         </span>
                         {%- if reviewCount > 0 -%}
-                            <span class="badge badge-primary">{{ reviewCount }}</span>
+                            <span class="cc-badge cc-badge--primary">{{ reviewCount }}</span>
                         {%- endif -%}
                     </div>
                     {% if reviewCount > 1 %}
                         <form class="section-header__form form-horizontal">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
-                            <div class="form-group-xs no-margin-bottom">
-                                <select name="filters[sort]" class="form-control">
+                            <div class="cc-field--xs mb-0">
+                                <select name="filters[sort]" class="cc-field__control">
                                     <option value=""
                                             {% if filters is not null or filters.sort == '' %}selected{% endif %}>
                                         {{ 'filters.sorts.default'|trans() }}
@@ -44,8 +44,8 @@
                 {%- if coaster.isRateable -%}
                     <div>
                         <a href="{{ path('review_form', {'id': coaster.id}) }}"
-                           class="btn btn-primary btn-rounded btn-xs">
-                            {{ ux_icon('heroicons:plus-circle', {'class': 'w-6 h-6 position-left'}) }} {{ 'review.send'|trans() }}
+                           class="cc-button cc-button--primary cc-button--rounded cc-button--xs">
+                            {{ ux_icon('heroicons:plus-circle', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.send'|trans() }}
                         </a>
                     </div>
                 {%- endif -%}
@@ -53,8 +53,8 @@
         </div>
 
         {%- if reviewCount > 0 -%}
-            <div class="panel-body">
-                <ul class="media-list media-list-bordered">
+            <div class="cc-panel__body">
+                <ul class="cc-media-list cc-media-list--bordered">
                     {%- for review in reviews -%}
                         <li>
                             {% include 'Includes/_review_item.html.twig' with {'review': review, 'preferredReviewLanguages': preferredReviewLanguages} %}
@@ -64,9 +64,9 @@
                 {{ knp_pagination_render(reviews) }}
             </div>
         {%- elseif coaster.isRateable -%}
-            <div class="panel-body text-center text-muted">
-                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-8 h-8'}) }}
-                <p class="mt-10">{{ 'review_list.no_review'|trans }}</p>
+            <div class="cc-panel__body text-center text-muted">
+                {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-5 h-5'}) }}
+                <p class="mt-2.5">{{ 'review_list.no_review'|trans }}</p>
             </div>
         {%- endif -%}
     </div>

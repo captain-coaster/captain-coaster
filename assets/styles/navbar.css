@@ -1,0 +1,849 @@
+/*
+ * Navigation cluster: cc-navbar, dropdowns, navs, modals.
+ *
+ * Values below are taken from the compiled ground-truth CSS (lessc app.less),
+ * not hand-resolved from LESS variables -- avoids reconstruction error across
+ * the many bootstrap+Limitless variable indirections in this cluster.
+ *
+ * Scoped hard against real usage (grep across templates/, assets/js/,
+ * assets/controllers/, src/): most of cc-navbar.less (1877 lines) and navs.less
+ * (1154 lines) is dead weight from Limitless's admin-theme feature set this
+ * app never uses -- mega menus, dropdown-content panels, cc-navbar sizing
+ * variants (navbar-lg/-sm/-xs), stacked/multiple navbars, nav-tabs/-pills/
+ * -justified, .navbar-form/-cc-button/-text, .language-switch (referenced only as
+ * a negative selector in theme.js, never actually applied to any element).
+ * breadcrumbs.less-style "confirmed zero usage, drop the whole file" doesn't
+ * apply cleanly here since cc-navbar/dropdowns/navs/modals are all genuinely
+ * used -- just far narrower than their raw line counts suggest.
+ *
+ * account-menu.css (assets/styles/, not part of this migration) already
+ * owns all of the cc-navbar account-menu's actual visual styling and
+ * its own mobile cc-menu override (bypasses .is-open entirely, renders the
+ * account cc-panel inline once #navbar-mobile is expanded) -- confirmed via its
+ * own comments that it depends on @grid-float-breakpoint and
+ * @navbar-inverse-link-color still resolving, which they do as long as
+ * theme/core's LESS variable files stay untouched (they're migrated last).
+ * Because of that override, Limitless's elaborate mobile "adapt colors of
+ * tables/checkboxes/tabs inside an open cc-navbar cc-menu" block never
+ * actually matches anything real in this app and is skipped entirely below.
+ */
+
+/* The mobile cc-panel uses a local state contract that cannot collide with
+ * Tailwind's visibility utilities. */
+
+.cc-nav,
+.cc-navbar,
+.cc-navbar__header,
+.cc-navbar__panel,
+.modal-header,
+.modal-footer {
+    display: flow-root;
+}
+
+/* Nav (base list, used via .cc-nav.cc-navbar__nav) */
+.cc-nav {
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+
+.cc-nav > li {
+    position: relative;
+    display: block;
+}
+
+.cc-nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+
+.cc-nav > li > a:hover,
+.cc-nav > li > a:focus {
+    text-decoration: none;
+}
+
+/* Limitless override: transparent/muted instead of bootstrap's colored
+ * .cc-nav .is-open > a (bootstrap's own version is skipped -- Limitless replaces
+ * every property it sets, nothing of the bootstrap rule survives). */
+.cc-nav .is-open > a,
+.cc-nav .is-open > a:hover,
+.cc-nav .is-open > a:focus {
+    background-color: transparent;
+    border-color: transparent;
+    color: var(--cc-gray-900);
+}
+
+/* Caret: bootstrap's border-triangle base is fully neutralized by
+ * Limitless's reset (border:0, width/height:auto) and replaced by an SVG
+ * chevron on ::after -- both ported since Limitless doesn't re-set
+ * display/vertical-align on the base .caret element itself. */
+.caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+}
+
+.caret {
+    font-style: normal;
+    font-weight: normal;
+    border: 0;
+    margin: 0;
+    width: auto;
+    height: auto;
+    text-align: center;
+    margin-top: -1px;
+}
+
+.caret:after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    vertical-align: middle;
+    opacity: 0.9;
+}
+
+/* Dropdown */
+.cc-menu,
+.dropup {
+    position: relative;
+}
+
+.cc-menu__toggle:focus {
+    outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-menu__toggle:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+.cc-menu__list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 180px;
+    padding: 7px 0;
+    margin: 2px 0 0;
+    font-size: 13px;
+    text-align: left;
+    list-style: none;
+    background-color: var(--cc-white);
+    background-clip: padding-box;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: var(--cc-gray-900);
+}
+
+.cc-menu__list .divider {
+    height: 1px;
+    margin: 7px 0;
+    overflow: hidden;
+    background-color: var(--cc-gray-200);
+}
+
+.cc-menu__list > li {
+    position: relative;
+    margin-bottom: 1px;
+}
+
+.cc-menu__list > li:last-child {
+    margin-bottom: 0;
+}
+
+.cc-menu__list > li > a {
+    display: block;
+    padding: 8px 15px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.5384616;
+    color: var(--cc-gray-900);
+    white-space: nowrap;
+    outline: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cc-menu__list > li > a:hover,
+.cc-menu__list > li > a:focus {
+    color: var(--cc-gray-900);
+    text-decoration: none;
+    background-color: var(--cc-gray-100);
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-menu__list > li > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+}
+
+.cc-menu__list > .active > a,
+.cc-menu__list > .active > a:hover,
+.cc-menu__list > .active > a:focus {
+    color: var(--cc-white);
+    text-decoration: none;
+    background-color: var(--cc-primary);
+    outline: 0;
+}
+
+/*
+ * Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged.
+ * Needs its own rule: `.cc-menu__list > .active > a:focus`'s outline:0
+ * above outranks the generic `> li > a:focus-visible` one on specificity.
+ */
+.cc-menu__list > .active > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+}
+
+.cc-menu__list > .disabled > a,
+.cc-menu__list > .disabled > a:hover,
+.cc-menu__list > .disabled > a:focus {
+    color: var(--cc-gray-600);
+}
+
+.cc-menu__list > .disabled > a:hover,
+.cc-menu__list > .disabled > a:focus {
+    text-decoration: none;
+    cursor: not-allowed;
+    background-color: transparent;
+    background-image: none;
+}
+
+.cc-menu__list > li > a > i,
+.cc-menu__list > .cc-menu__header > i,
+.cc-menu__list > li > a > img,
+.cc-menu__list > .cc-menu__header > img {
+    margin-right: 12px;
+    float: left;
+    margin-top: 2px;
+    top: 0;
+}
+
+.cc-menu__list > li > a > img,
+.cc-menu__list > .cc-menu__header > img {
+    max-height: 16px;
+}
+
+.cc-menu__list > li > a > .cc-label,
+.cc-menu__list > .cc-menu__header > .cc-label,
+.cc-menu__list > li > a > .cc-badge,
+.cc-menu__list > .cc-menu__header > .cc-badge {
+    float: left;
+    margin-right: 12px;
+}
+
+.is-open > .cc-menu__list {
+    display: block;
+}
+
+.is-open > a {
+    outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.is-open > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+.cc-menu__list--right {
+    right: 0;
+    left: auto;
+}
+
+.cc-menu__list--left {
+    right: auto;
+    left: 0;
+}
+
+/* Nested cc-menu__submenu (language/units switchers in the account menu) */
+.cc-menu__list > .cc-menu__submenu > a {
+    padding-right: 38px;
+    position: relative;
+}
+
+.cc-menu__list > .cc-menu__submenu > a:after {
+    content: '';
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    margin-top: -8px;
+    right: 15px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.cc-menu__list > .cc-menu__submenu a.cc-menu__toggle {
+    box-shadow: none;
+}
+
+.cc-menu__list > .cc-menu__submenu:hover > a,
+.cc-menu__list > .cc-menu__submenu:focus > a,
+.cc-menu__list > .cc-menu__submenu.open > a {
+    background-color: var(--cc-gray-100);
+}
+
+.cc-menu__list > .cc-menu__submenu:hover > a:after,
+.cc-menu__list > .cc-menu__submenu:focus > a:after,
+.cc-menu__list > .cc-menu__submenu.open > a:after {
+    opacity: 1;
+}
+
+.cc-menu__list > .cc-menu__submenu > .cc-menu__list {
+    top: 0;
+    left: 100%;
+    margin-top: -8px;
+}
+
+.cc-menu__list > .cc-menu__submenu.cc-menu__submenu--left > .cc-menu__list {
+    left: auto;
+    right: 100%;
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-menu__list > .cc-menu__submenu--hover:hover > .cc-menu__list,
+    .cc-menu__list > .cc-menu__submenu--hover:focus > .cc-menu__list {
+        display: block;
+    }
+}
+
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .cc-menu__list > .cc-menu__submenu {
+        position: static;
+    }
+
+    .cc-menu__list > .cc-menu__submenu > a:after {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xOS41IDguMjUtNy41IDcuNS03LjUtNy41Ii8+PC9zdmc+');
+    }
+
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list,
+    .cc-menu__list > .cc-menu__submenu.cc-menu__submenu--left .cc-menu__list {
+        position: relative;
+        left: 0;
+        right: 0;
+        float: none;
+        border-width: 0;
+        border-color: rgba(0, 0, 0, 0.1);
+        box-shadow: none;
+        min-width: 100%;
+        margin: 0;
+    }
+
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list > li > a,
+    .cc-menu__list
+        > .cc-menu__submenu.cc-menu__submenu--left
+        .cc-menu__list
+        > li
+        > a {
+        padding-left: 30px;
+    }
+
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list > li > ul > li > a,
+    .cc-menu__list
+        > .cc-menu__submenu.cc-menu__submenu--left
+        .cc-menu__list
+        > li
+        > ul
+        > li
+        > a {
+        padding-left: 45px;
+    }
+}
+
+/* Navbar */
+.cc-navbar {
+    position: relative;
+    min-height: 46px;
+    margin-bottom: 0;
+    border: 1px solid transparent;
+    border-width: 1px 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar {
+        border-radius: 3px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.cc-navbar__header {
+    min-width: 260px;
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar__header {
+        float: left;
+        margin-left: -20px;
+    }
+}
+
+.cc-navbar__panel > .cc-navbar__header {
+    margin-left: 0;
+}
+
+.cc-navbar__header .cc-navbar__nav {
+    float: right;
+    margin-right: 5px;
+}
+
+.cc-navbar__header .cc-navbar__nav > li {
+    float: left;
+}
+
+.cc-navbar__header .cc-navbar__nav > li > a {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .cc-navbar__header .cc-navbar__nav > li + li {
+        margin-top: 0;
+    }
+}
+
+.cc-navbar__panel {
+    display: none;
+    padding-right: 20px;
+    padding-left: 20px;
+    overflow-x: visible;
+    border-top: 1px solid transparent;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.cc-navbar__panel[data-open] {
+    display: block;
+    overflow-y: auto;
+}
+
+.cc-navbar + .cc-navbar__panel {
+    border-top: 0;
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar__panel {
+        display: block;
+        width: auto;
+        border-top: 0;
+        box-shadow: none;
+        text-align: left;
+        margin-left: -20px;
+    }
+
+    .cc-navbar__panel {
+        height: auto !important;
+        padding-bottom: 0;
+        overflow: visible !important;
+    }
+
+    .cc-navbar__panel[data-open] {
+        overflow-y: visible;
+    }
+
+    .cc-navbar--fixed-top .cc-navbar__panel {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+
+.cc-navbar--fixed-top {
+    position: fixed;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+    top: 0;
+    border-width: 0 0 1px;
+}
+
+.cc-navbar--fixed-top .cc-navbar__panel {
+    max-height: 340px;
+}
+
+@media (max-device-width: 480px) and (orientation: landscape) {
+    .cc-navbar--fixed-top .cc-navbar__panel {
+        max-height: 200px;
+    }
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar--fixed-top {
+        border-radius: 0;
+    }
+}
+
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .cc-navbar--fixed-top {
+        position: static;
+    }
+}
+
+/* Body top padding to clear the fixed desktop cc-navbar -- cc-navbar is static
+ * (in-flow) on mobile instead, so no compensation is needed there. */
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar--top {
+        padding-top: 48px;
+    }
+}
+
+.cc-navbar__brand {
+    float: left;
+    height: 46px;
+    padding: 13px 20px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.cc-navbar__brand:hover,
+.cc-navbar__brand:focus {
+    text-decoration: none;
+}
+
+.cc-navbar__brand > img {
+    display: block;
+    margin-top: 2px;
+    height: 16px;
+}
+
+.cc-navbar__nav {
+    margin: 0;
+    text-align: left;
+}
+
+.cc-navbar__nav > li > a {
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
+.cc-navbar__nav > li > a > .cc-label,
+.cc-navbar__nav > li > a > .cc-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.cc-navbar__nav > .cc-menu--user > a,
+.cc-navbar__nav > .cc-menu--user > a > span {
+    padding-top: 6.5px;
+    padding-bottom: 6.5px;
+}
+
+.cc-navbar__nav > .cc-menu--user > a > span {
+    display: inline-block;
+    padding-left: 7px;
+}
+
+.cc-navbar__nav > .cc-menu--user > a > img {
+    display: inline-block;
+    max-height: 30px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+}
+
+.cc-navbar__nav > li > .cc-menu__list {
+    margin-top: 1px;
+    border-top-width: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .cc-navbar__nav {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .cc-navbar__nav .is-open .cc-menu__list {
+        position: static;
+        float: none;
+        width: auto;
+        margin-top: 0;
+        background-color: transparent;
+        border: 0;
+        box-shadow: none;
+    }
+
+    .cc-navbar__nav .is-open .cc-menu__list > li > a,
+    .cc-navbar__nav .is-open .cc-menu__list .cc-menu__header {
+        padding: 8px 20px;
+    }
+
+    .cc-navbar__nav .is-open .cc-menu__list > li > a {
+        line-height: 1.5384616;
+    }
+
+    .cc-navbar__nav .is-open .cc-menu__list > li > a:hover,
+    .cc-navbar__nav .is-open .cc-menu__list > li > a:focus {
+        background-image: none;
+    }
+
+    .cc-navbar__nav .is-open .cc-menu__list > .cc-menu__submenu > ul > li > a {
+        padding-left: 40px;
+    }
+
+    .cc-navbar__nav
+        .is-open
+        .cc-menu__list
+        > .cc-menu__submenu
+        > ul
+        > li
+        > ul
+        > li
+        > a {
+        padding-left: 60px;
+    }
+
+    .cc-navbar__nav > li + li {
+        margin-top: 1px;
+    }
+
+    .cc-navbar__nav > li > a {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .cc-navbar__nav > li > a .caret {
+        float: right;
+        margin-top: 2px;
+        margin-left: 5px;
+    }
+
+    .cc-navbar__nav > li > a .cc-label,
+    .cc-navbar__nav > li > a .cc-badge {
+        position: static;
+        float: right;
+    }
+
+    .cc-navbar__nav > .cc-menu--user .caret {
+        margin-top: 8px;
+    }
+
+    .cc-navbar__nav:last-child {
+        border-bottom: 0;
+    }
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar__nav {
+        float: left;
+        margin: 0;
+        margin-left: 20px;
+    }
+
+    .cc-navbar__nav > li {
+        float: left;
+    }
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .cc-navbar__right {
+        float: right !important;
+        margin-right: -20px;
+    }
+
+    .cc-navbar__right ~ .cc-navbar__right {
+        margin-right: 0;
+    }
+
+    .cc-navbar__right .cc-menu__list {
+        right: 0;
+        left: auto;
+    }
+
+    .cc-navbar__right .cc-menu__list--left {
+        right: auto;
+        left: 0;
+    }
+}
+
+/* Inverse (dark) cc-navbar -- the only variant this app uses */
+.cc-navbar--inverse {
+    background-color: #37474f;
+    border-color: #37474f;
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+    color: var(--cc-white);
+}
+
+.cc-navbar--inverse .cc-navbar__nav > li > a {
+    color: var(--cc-white);
+}
+
+.cc-navbar--inverse .cc-navbar__nav > li > a:hover,
+.cc-navbar--inverse .cc-navbar__nav > li > a:focus {
+    color: var(--cc-white);
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.cc-navbar--inverse .cc-navbar__nav > .is-open > a,
+.cc-navbar--inverse .cc-navbar__nav > .is-open > a:hover,
+.cc-navbar--inverse .cc-navbar__nav > .is-open > a:focus {
+    color: var(--cc-white);
+    background-color: rgba(0, 0, 0, 0.15);
+}
+
+.cc-navbar--inverse .cc-navbar__panel {
+    border-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Modal */
+.modal-open {
+    overflow: hidden;
+}
+
+/*
+ * `<dialog>`'s UA stylesheet gives it its own border/padding/background/
+ * width/height/margin (auto-sized, auto-centered) *and* a `max-width`/
+ * `max-height` of `calc(100% - <browser-specific inset>)` -- easy to miss
+ * since overriding width/height alone still leaves the dialog clamped
+ * ~16-32px short of the viewport on each axis. All overridden below back
+ * to plain-div behavior (edge-to-edge, `.modal-dialog`/`.modal-content`
+ * doing the actual visible styling, same as before). No `display` rule
+ * here: `dialog:not([open]) { display: none }` is a UA default already,
+ * and an unconditional override here would fight showModal()'s own
+ * visibility toggling instead of respecting `[open]`.
+ */
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    overflow: hidden;
+    outline: 0;
+}
+
+.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal.fade .modal-dialog {
+    transform: translate(0, -25%);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.in .modal-dialog {
+    transform: translate(0, 0);
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--cc-white);
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    outline: 0;
+}
+
+.modal-header {
+    padding: 20px;
+    padding-bottom: 0;
+    border-bottom: 1px solid transparent;
+    position: relative;
+}
+
+.modal-header .cc-close {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    margin-top: 0;
+}
+
+.modal-body .cc-close {
+    margin-top: 0 !important;
+}
+
+.modal-title {
+    margin: 0;
+    line-height: 1.5384616;
+}
+
+.modal-body {
+    position: relative;
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    padding-top: 0;
+    text-align: right;
+    border-top: 1px solid transparent;
+}
+
+.modal-footer .cc-button + .cc-button {
+    margin-bottom: 0;
+    margin-left: 5px;
+}
+
+.modal-footer .cc-button--block + .cc-button--block {
+    margin-left: 0;
+}
+
+@media (min-width: theme(--breakpoint-tablet)) {
+    .modal-dialog {
+        width: 600px;
+        margin: 30px auto;
+    }
+
+    .modal-content {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/*
+ * account-menu.css relies on out-ranking two of the base rules above --
+ * `.account-menu li > a { display: flex }` (for the Language/Units rows'
+ * label-left, value-right layout) and `.cc-menu__submenu > a.account-
+ * menu-row:after { display: none }` (to hide the submenu chevron this
+ * file draws via ::after, replaced by its own chevron-right icon inside
+ * .account-menu-row-value). Both used to be re-asserted here too, as a
+ * duplicate, because a Phase 2-era cascade-order flip (app.less's LESS
+ * bundle vs. tailwind.css loading after it) made this file's version
+ * win when the two disagreed. Since account-menu.css and this file now
+ * load from the same consolidated app.css, in the same relative order as
+ * before (account-menu.css first), and both copies agreed on the value
+ * regardless of which won, the duplicate was dead weight -- removed
+ * (captain-coaster/captain-coaster#385 consolidation pass). If this file
+ * ever needs its own `.account-menu`-context override again, put it in
+ * account-menu.css, not here.
+ */

@@ -1,0 +1,28 @@
+/**
+ * Coaster Loading Component Styles
+ * Styles for loading states in coaster-images and coaster-reviews controllers
+ */
+
+/* Loading animations for AJAX sections */
+.ai-summary-loading,
+.photos-loading,
+.reviews-loading {
+    animation: pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.7;
+    }
+}
+
+/* Placeholder cc-panel styling */
+.ai-summary-loading .cc-panel__body,
+.photos-loading .cc-panel__body,
+.reviews-loading .cc-panel__body {
+    padding: 30px 20px;
+    background: var(--cc-gray-40);
+}

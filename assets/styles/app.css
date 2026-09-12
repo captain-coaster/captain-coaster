@@ -2,34 +2,85 @@
  *
  *  # Main stylesheet
  *
- *  Every Bootstrap 3/Limitless component, their LESS mixins/resets, and
- *  the theme's own variables are migrated to Tailwind v4 or dropped as
- *  fully dead as of Phase 2 (captain-coaster/captain-coaster#380). What's
- *  left is this app's own modern CSS components -- plain CSS from the
- *  start, just re-homed here once nothing forced this file to stay LESS.
+ *  Single global entry (captain-coaster/captain-coaster#385 consolidation
+ *  pass) -- previously split across app.css (this app's own hand-written
+ *  "modern CSS components") and tailwind.css (the Phase 2 Bootstrap/
+ *  Limitless migration, captain-coaster/captain-coaster#380). That split
+ *  was an accident of migration history, not a real architecture
+ *  boundary -- it caused real, unaudited duplication (the same colors and
+ *  breakpoints defined once per side, `.list-feed` diverging between the
+ *  two) instead of one. Everything below is grouped by feature instead.
  *
- * ---------------------------------------------------------------------------- */
+ *  The reset and Captain Coaster's element defaults sit in `@layer base`;
+ *  components sit in `@layer components`. colors.css used to need
+ *  the same treatment: several of its class names (`text-slate`,
+ *  `*-blue-400`, `*-teal-400`, `*-indigo-400`, `*-orange-400`,
+ *  `*-pink-400`) collided with Tailwind's own default color-scale
+ *  utilities, and only kept rendering this theme's values by staying
+ *  unlayered. Fixed properly instead of left as a permanent workaround:
+ *  every colliding class was renamed to a `cc-`-prefixed color name
+ *  (`text-cc-slate`, `bg-cc-blue-400`, ...) in colors.css and in every
+ *  template/PHP class list that referenced it (grepped, not guessed --
+ *  see colors.css's own header for the full list), so colors.css now
+ *  layers cleanly like everything else. Being layered means a bare
+ *  Tailwind utility class added later in a template (e.g. `mt-[20px]` on
+ *  a `.cc-panel`) now correctly overrides these components' own rules,
+ *  which it couldn't before; import order below still approximates the
+ *  original app.css-then-tailwind.css load order, but only matters now
+ *  for ties *within* this layer, against each other -- not against
+ *  Tailwind's own utilities, which always win regardless of source order
+ *  once both sides are layered.
+ *
+ *  score-card.css, rating-distribution.css, summary-feedback.css,
+ *  coaster-loading.css, youtube-thumbnail.css and top-list.css are
+ *  deliberately NOT imported here -- they're entry-scoped (coaster.js /
+ *  top-list.js), loaded only on the one page each actually needs, kept
+ *  out of every other page's bundle.
+ */
 
-/* Modern CSS components */
-@import 'components/forms.css';
-@import 'components/enhanced-select.css';
-@import 'components/toggle-switch.css';
-@import 'components/map.css';
-@import 'components/search.css';
-@import 'components/top-list.css';
-@import 'components/image-gallery.css';
-@import 'components/rating.css';
-@import 'components/rating-actions.css';
-@import 'components/timeline.css';
-@import 'components/section-header.css';
-@import 'components/tooltip.css';
-@import 'components/toast.css';
-@import 'components/account-menu.css';
-@import 'components/notification-center.css';
+@layer theme, base, components, utilities;
 
-/* Utilities */
-@import 'icons/icons.css';
-@import 'utilities/review.css';
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import './tokens.css';
+@import './base.css' layer(base);
 
-/* Login page styles */
-@import 'components/login.css';
+/*
+ * Preflight establishes Tailwind's element-level baseline. base.css below
+ * restores the few Captain Coaster defaults that are intentional rather
+ * than browser accidents; components then define the legacy UI explicitly.
+ */
+
+@source "../../templates";
+
+@import './colors.css' layer(components);
+
+@import './forms.css' layer(components);
+@import './toggle-switch.css' layer(components);
+@import './map.css' layer(components);
+@import './search.css' layer(components);
+@import './gallery.css' layer(components);
+@import './rating.css' layer(components);
+@import './timeline.css' layer(components);
+@import './section-header.css' layer(components);
+@import './tooltip.css' layer(components);
+@import './toast.css' layer(components);
+@import './account-menu.css' layer(components);
+@import './icons.css' layer(components);
+@import './review.css' layer(components);
+@import './layout.css' layer(components);
+@import './alerts.css' layer(components);
+@import './buttons.css' layer(components);
+@import './pagination.css' layer(components);
+@import './media-object.css' layer(components);
+@import './print.css' layer(components);
+@import './helpers.css' layer(components);
+@import './responsive-visibility.css' layer(components);
+@import './heading-elements.css' layer(components);
+@import './labels-badges.css' layer(components);
+@import './typography.css' layer(components);
+@import './panels.css' layer(components);
+@import './tables-and-lists.css' layer(components);
+@import './navbar.css' layer(components);
+@import './sidebar.css' layer(components);

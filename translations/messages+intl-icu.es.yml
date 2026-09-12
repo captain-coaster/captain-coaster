@@ -96,6 +96,7 @@ coaster:
         button: Subir una foto
         all: Ver todas las fotos
         loading: Carga de fotos
+        like: Me gusta esta foto
     location: Localización
 
 image_upload:
@@ -371,6 +372,8 @@ sidebar:
     contact: Estar en contacto
     logout: Cerrar sesión
     login: Iniciar sesión
+    toggle: Mostrar menú
+    toggle_filters: Mostrar filtros
 
 footer:
     terms: Términos de Uso

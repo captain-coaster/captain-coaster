@@ -91,6 +91,7 @@ coaster:
         button: 'Upload a picture'
         all: 'See all pictures'
         loading: 'Loading photos...'
+        like: 'Like this picture'
     location: 'Location'
 
 image_upload:
@@ -366,6 +367,8 @@ sidebar:
     contact: 'Get in touch'
     logout: 'Logout'
     login: 'Sign in'
+    toggle: 'Toggle menu'
+    toggle_filters: 'Toggle filters'
 
 footer:
     terms: 'Privacy Policy'

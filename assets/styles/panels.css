@@ -1,0 +1,126 @@
+/*
+ * Panels -- migrated: theme/bootstrap-limitless/panels.less +
+ * bootstrap/less/panels.less. Scope: `.cc-panel`(+`[class*=border-top-/
+ * -bottom-]`), `.cc-panel__body`, `.cc-panel__heading`(+`.cc-panel--flat`/`.cc-panel--white`
+ * nesting), `.cc-panel__title`(+h1-h6/.h1-.h6 sizing), `.cc-panel__footer`. No
+ * contextual `.cc-panel-primary/-success/-info/-warning/-danger`,
+ * `.cc-panel-collapse`/`-group` (no Bootstrap-JS accordion anywhere in this
+ * app), `.cc-panel-bordered`, `.has-scroll`/`.has-bg-image`, or `.icons-list`
+ * (cc-panel__heading control buttons) -- zero uses of any of them.
+ */
+.cc-panel {
+    margin-bottom: 20px;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 3px;
+    background-color: var(--cc-white);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    color: var(--cc-gray-900);
+}
+
+.cc-panel[class*='border-top-'] {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.cc-panel[class*='border-bottom-'] {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.cc-panel__body {
+    position: relative;
+    padding: 20px;
+}
+
+.cc-panel__body {
+    display: flow-root;
+}
+
+.cc-panel--flat > .cc-panel__heading + .cc-panel__body {
+    padding-top: 0;
+}
+
+.cc-panel__body + .cc-panel__body {
+    border-top: 1px solid var(--cc-gray-300);
+}
+
+.cc-panel__heading {
+    position: relative;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    padding: 15px 20px;
+    border-bottom: 1px solid transparent;
+}
+
+.cc-panel--flat > .cc-panel__heading {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: var(--cc-white);
+}
+
+.cc-panel--flat > .cc-panel__heading > .cc-panel__title {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+/*
+ * Only overrides border-bottom-*color* -- relies on `.cc-panel__heading`'s own
+ * base rule for width/style. That base rule was ported as `border-bottom:
+ * 0` (a shorthand that also zeroes width/style, not just color), which
+ * silently defeated this override regardless of its higher specificity:
+ * a 0-width border renders nothing no matter what color wins the cascade.
+ * Fixed by porting the base rule as bootstrap's real `1px solid
+ * transparent` instead -- invisible everywhere else, visible here.
+ */
+.cc-panel--white > .cc-panel__heading {
+    background-color: var(--cc-white);
+    border-bottom-color: var(--cc-gray-300);
+}
+
+.cc-panel__title {
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 13px;
+    color: inherit;
+}
+
+h1.cc-panel__title,
+.h1.cc-panel__title {
+    font-size: 25px;
+}
+
+h2.cc-panel__title,
+.h2.cc-panel__title {
+    font-size: 23px;
+}
+
+h3.cc-panel__title,
+.h3.cc-panel__title {
+    font-size: 21px;
+}
+
+h4.cc-panel__title,
+.h4.cc-panel__title {
+    font-size: 19px;
+}
+
+h5.cc-panel__title,
+.h5.cc-panel__title {
+    font-size: 17px;
+}
+
+h6.cc-panel__title,
+.h6.cc-panel__title {
+    font-size: 15px;
+}
+
+.cc-panel__footer {
+    display: flow-root;
+    position: relative;
+    padding: 7px 0;
+    background-color: var(--cc-gray-50);
+    border-top: 1px solid var(--cc-gray-300);
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}

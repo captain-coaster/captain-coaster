@@ -1,0 +1,332 @@
+/*
+ * Colors -- migrated: theme/core/colors/colors.less (+ its own
+ * theme/core/colors/palette.less variable import). Generates a
+ * combinatorial `.bg-/.border-(-top/-right/-bottom/-left)/.text-/.alpha-
+ * {16 color names}(-{6 shades})` matrix -- 697 selectors compiled
+ * standalone. Grepped every real use across templates/, src/ and
+ * assets/ (literal class names, EasyAdmin's own `addCssClass()` calls
+ * excluded -- that's a separate Bootstrap-5 CSS scope, not this app.less
+ * bundle) plus the two DB-driven cases (`status-mark bg-{{
+ * coaster.status.type }}` / `border-{{ otherCoaster.status.type }}` in
+ * templates -- same status-type strings as the Labels & Badges cluster's
+ * `label-{type}`, so all six default/primary/success/info/warning/danger
+ * are ported defensively there too, no `bg-default` since colors.less
+ * never defines one). Real usage: 51 of the 697 selectors. `alpha-*`
+ * (0 uses anywhere) and every other color name/shade combination is
+ * dropped.
+ *
+ * A few of these class names used to coincide with Tailwind's own
+ * generated utilities: `text-slate`, `*-blue`, `*-blue-400`, `*-teal`,
+ * `*-teal-400`, `*-indigo-400`, `*-orange-400`, `*-pink-400` are all
+ * real Tailwind color-scale tokens, and this theme's Material-derived
+ * hex values differ from Tailwind's defaults for those names -- this
+ * file used to only keep rendering its own values by staying unlayered
+ * entirely (captain-coaster/captain-coaster#385, step 2), the same
+ * mechanism as the `.collapse`/`.sr-only` name collisions elsewhere in
+ * this migration. Fixed properly instead (step 2 follow-up): every
+ * colliding class renamed to a `cc-`-prefixed color name below
+ * (`blue`->`cc-blue`, `teal`->`cc-teal`, `indigo`->`cc-indigo`,
+ * `orange`->`cc-orange`, `pink`->`cc-pink`, `slate`->`cc-slate`), and
+ * every template/PHP class list referencing the old name updated to
+ * match (grepped across templates/, src/ and assets/, same as the
+ * original real-usage audit): connect/login.html.twig,
+ * src/Form/Type/RegistrationFormType.php (`bg-blue`->`bg-cc-blue`),
+ * Default/index.html.twig (`border-top-teal`->`border-top-cc-teal`),
+ * Coaster/show.html.twig, Park/show.html.twig (`text-blue`->
+ * `text-cc-blue`), page_header.html.twig (`border-blue-600`->
+ * `border-cc-blue-600`), User/images.html.twig (`border-top-blue`->
+ * `border-top-cc-blue`), Profile/_menu.html.twig, Profile/settings.html.twig,
+ * User/show.html.twig, User/tops.html.twig, ranking/info.html.twig
+ * (`bg-teal-400`->`bg-cc-teal-400`, `text-teal`->`text-cc-teal`,
+ * `text-slate`->`text-cc-slate`), Profile/user_stats.html.twig
+ * (`text-blue-400`/`text-indigo-400`/`text-teal-400`/`text-pink-400`/
+ * `text-orange-400`, each ->`text-cc-*` equivalent). No class below now
+ * matches Tailwind's own `{color}-{shade}` naming, so this file layers
+ * cleanly like every other file in this tree -- no more unlayered
+ * special case.
+ *
+ * `.bg-*` sets `background-color` + `border-color` + `color:#fff`
+ * together (ported as one block, not split) since real usage never
+ * relies on overriding just one of the three. `.text-*` carries
+ * `!important` and `:hover`/`:focus` variants in the ground truth --
+ * kept exactly, since `.text-primary/-danger/-success/-warning` collide
+ * with class names the Panels & Typography cluster's type.less port
+ * also defined (bootstrap's own `.text-danger` etc., no `!important`).
+ * `colors.less` already sat later in app.less's cascade than type.less
+ * before this migration, so its `!important` value is what has always
+ * actually rendered -- panels-typography.css's four same-named rules
+ * were already fully inert before this commit, and are removed here as
+ * dead code (`.text-muted`, the fifth "bare contextual text color" kept
+ * by that cluster, is untouched: colors.less never defines it).
+ */
+.bg-cc-blue {
+    background-color: #03a9f4;
+    border-color: #03a9f4;
+    color: var(--cc-white);
+}
+
+.bg-cc-blue-400 {
+    background-color: #29b6f6;
+    border-color: #29b6f6;
+    color: var(--cc-white);
+}
+
+.bg-primary {
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
+    color: var(--cc-white);
+}
+
+.bg-primary-400 {
+    background-color: #42a5f5;
+    border-color: #42a5f5;
+    color: var(--cc-white);
+}
+
+.bg-success {
+    background-color: var(--cc-success);
+    border-color: var(--cc-success);
+    color: var(--cc-white);
+}
+
+.bg-success-400 {
+    background-color: #66bb6a;
+    border-color: #66bb6a;
+    color: var(--cc-white);
+}
+
+.bg-info {
+    background-color: var(--cc-info);
+    border-color: var(--cc-info);
+    color: var(--cc-white);
+}
+
+.bg-warning {
+    background-color: var(--cc-warning);
+    border-color: var(--cc-warning);
+    color: var(--cc-white);
+}
+
+.bg-warning-400 {
+    background-color: #ff7043;
+    border-color: #ff7043;
+    color: var(--cc-white);
+}
+
+.bg-danger {
+    background-color: var(--cc-danger);
+    border-color: var(--cc-danger);
+    color: var(--cc-white);
+}
+
+.bg-danger-400 {
+    background-color: #ef5350;
+    border-color: #ef5350;
+    color: var(--cc-white);
+}
+
+.bg-cc-teal-400 {
+    background-color: var(--cc-teal-400);
+    border-color: var(--cc-teal-400);
+    color: var(--cc-white);
+}
+
+.border-default {
+    border-color: var(--cc-gray-300);
+}
+
+.border-primary {
+    border-color: var(--cc-primary);
+}
+
+.border-primary-600 {
+    border-color: var(--cc-primary-600);
+}
+
+.border-success {
+    border-color: var(--cc-success);
+}
+
+.border-success-600 {
+    border-color: #43a047;
+}
+
+.border-info {
+    border-color: var(--cc-info);
+}
+
+.border-warning {
+    border-color: var(--cc-warning);
+}
+
+.border-warning-400 {
+    border-color: #ff7043;
+}
+
+.border-warning-600 {
+    border-color: #f4511e;
+}
+
+.border-danger {
+    border-color: var(--cc-danger);
+}
+
+.border-danger-600 {
+    border-color: #e53935;
+}
+
+.border-danger-800 {
+    border-color: #c62828;
+}
+
+.border-cc-blue-600 {
+    border-color: #039be5;
+}
+
+.border-top-cc-blue {
+    border-top-color: #03a9f4;
+}
+
+.border-top-primary {
+    border-top-color: var(--cc-primary);
+}
+
+.border-top-cc-teal {
+    border-top-color: #009688;
+}
+
+.border-top-grey {
+    border-top-color: #777;
+}
+
+.text-cc-blue,
+.text-cc-blue:hover,
+.text-cc-blue:focus {
+    color: #03a9f4 !important;
+}
+
+.text-cc-blue-400,
+.text-cc-blue-400:hover,
+.text-cc-blue-400:focus {
+    color: #29b6f6 !important;
+}
+
+.text-primary,
+.text-primary:hover,
+.text-primary:focus {
+    color: var(--cc-primary) !important;
+}
+
+.text-primary-600,
+.text-primary-600:hover,
+.text-primary-600:focus {
+    color: var(--cc-primary-600) !important;
+}
+
+.text-success,
+.text-success:hover,
+.text-success:focus {
+    color: var(--cc-success) !important;
+}
+
+.text-success-400,
+.text-success-400:hover,
+.text-success-400:focus {
+    color: #66bb6a !important;
+}
+
+.text-success-600,
+.text-success-600:hover,
+.text-success-600:focus {
+    color: #43a047 !important;
+}
+
+.text-info,
+.text-info:hover,
+.text-info:focus {
+    color: var(--cc-info) !important;
+}
+
+.text-warning,
+.text-warning:hover,
+.text-warning:focus {
+    color: var(--cc-warning) !important;
+}
+
+.text-warning-400,
+.text-warning-400:hover,
+.text-warning-400:focus {
+    color: #ff7043 !important;
+}
+
+.text-warning-600,
+.text-warning-600:hover,
+.text-warning-600:focus {
+    color: #f4511e !important;
+}
+
+.text-danger,
+.text-danger:hover,
+.text-danger:focus {
+    color: var(--cc-danger) !important;
+}
+
+.text-danger-400,
+.text-danger-400:hover,
+.text-danger-400:focus {
+    color: #ef5350 !important;
+}
+
+.text-danger-600,
+.text-danger-600:hover,
+.text-danger-600:focus {
+    color: #e53935 !important;
+}
+
+.text-danger-800,
+.text-danger-800:hover,
+.text-danger-800:focus {
+    color: #c62828 !important;
+}
+
+.text-cc-teal,
+.text-cc-teal:hover,
+.text-cc-teal:focus {
+    color: #009688 !important;
+}
+
+.text-cc-teal-400,
+.text-cc-teal-400:hover,
+.text-cc-teal-400:focus {
+    color: var(--cc-teal-400) !important;
+}
+
+.text-cc-indigo-400,
+.text-cc-indigo-400:hover,
+.text-cc-indigo-400:focus {
+    color: #5c6bc0 !important;
+}
+
+.text-cc-orange-400,
+.text-cc-orange-400:hover,
+.text-cc-orange-400:focus {
+    color: #ffa726 !important;
+}
+
+.text-cc-pink-400,
+.text-cc-pink-400:hover,
+.text-cc-pink-400:focus {
+    color: #ec407a !important;
+}
+
+.text-cc-slate,
+.text-cc-slate:hover,
+.text-cc-slate:focus {
+    color: #607d8b !important;
+}
+
+.text-default,
+.text-default:hover,
+.text-default:focus {
+    color: var(--cc-gray-900) !important;
+}

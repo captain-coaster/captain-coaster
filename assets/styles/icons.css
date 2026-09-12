@@ -1,0 +1,44 @@
+/*
+ * Icon sizing/spacing for Heroicons (ux_icon() SVGs). The `.w-4`/`.h-4`
+ * etc. size classes used to be redefined here too -- `width: 1rem`,
+ * `width: 1.25rem`, ... -- byte-identical to Tailwind's own default
+ * `w-4`/`h-4`/... utilities (both derive from the same 0.25rem spacing
+ * step). Since this file loaded unlayered, it always won over Tailwind's
+ * real (layered) utilities regardless, for no actual value -- pure dead
+ * weight, removed (captain-coaster/captain-coaster#385 consolidation
+ * pass). What's real and kept: the SVG-specific display fix and the
+ * icon/text spacing rules below, neither of which Tailwind generates.
+ */
+svg.w-4,
+svg.w-5,
+svg.w-6,
+svg.w-8,
+svg.w-10,
+svg.w-12,
+svg.w-16 {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Icon spacing for cc-navbar and sidebar */
+.cc-navbar a svg {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/* Add spacing only for cc-menu menu items with text */
+.cc-navbar .cc-menu__list a svg {
+    margin-right: 8px;
+}
+
+.sidebar .navigation a svg {
+    margin-right: 8px;
+}
+
+.sidebar-xs .sidebar .navigation a svg {
+    margin-right: 0;
+}
+
+.cc-list-group__item svg {
+    margin-right: 8px;
+}

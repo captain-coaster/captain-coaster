@@ -1,0 +1,97 @@
+/*
+ * Small utility classes -- migrated together: theme/components/ui/helpers.less
+ * (a 121-class grab-bag; grepped exact class tokens across templates/src to
+ * find the 30 real ones), bootstrap/less/utilities.less (only `.pull-right`
+ * is real), and scaffolding's own image/row utility classes.
+ *
+ * The margin/padding/opacity helpers this grab-bag used to also carry
+ * (`.mt-10`, `.mb-5`, `.opacity-75`, ...) collided by name with Tailwind's
+ * own spacing/opacity utilities -- same class name, different scale
+ * (literal px here vs. Tailwind's spacing-step multiplier), only kept
+ * rendering correctly via `!important`. Removed instead of patched:
+ * every template now uses the real Tailwind utility directly (`m-2.5`,
+ * `mb-[5px]` where no exact step exists, plain `opacity-75` where the
+ * value already matched), so there's nothing left here to collide.
+ */
+.no-border {
+    border: 0 !important;
+}
+
+.border-lg {
+    border-width: 2px;
+}
+
+.border-bottom-xlg {
+    border-bottom: 3px solid;
+}
+
+.no-edge-top {
+    top: 0;
+}
+
+.display-block {
+    display: block;
+}
+
+.display-inline-block {
+    display: inline-block;
+}
+
+.content-group-sm {
+    margin-bottom: 15px !important;
+}
+
+.content-group {
+    margin-bottom: 20px !important;
+}
+
+.content-group-lg {
+    margin-bottom: 30px !important;
+}
+
+.img-lg {
+    width: 44px !important;
+    height: 44px !important;
+}
+
+.img-sm {
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.img-xs {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+/*
+ * bootstrap/less/utilities.less -- only `.pull-right` (23 uses) is real;
+ * `.clearfix`, `.center-block`, `.pull-left`, `.hide`, `.show`, `.invisible`,
+ * `.text-hide`, `.hidden`, `.affix` are all confirmed dead (0 uses anywhere
+ * in templates/src/).
+ */
+.pull-right {
+    float: right !important;
+}
+
+/*
+ * scaffolding's own image/row utility classes. `.img-rounded` and
+ * `.img-circle` had two competing declarations (bootstrap's own + a
+ * Limitless override) that tied on specificity and resolved by import
+ * order -- Limitless always came second, so its value
+ * (`.img-rounded{border-radius:3px}` over bootstrap's 5px) is the one
+ * actually rendering today and the only one ported.
+ */
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.img-rounded {
+    border-radius: 3px;
+}
+
+.img-circle {
+    border-radius: 50%;
+}

@@ -96,6 +96,7 @@ coaster:
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
         loading: Laden von Fotos
+        like: Dieses Bild mögen
     location: Standort
 
 image_upload:
@@ -372,6 +373,8 @@ sidebar:
     contact: Kontaktiere uns
     logout: Abmelden
     login: Anmelden
+    toggle: Menü umschalten
+    toggle_filters: Filter umschalten
 
 footer:
     terms: Datenschutzrichtlinie

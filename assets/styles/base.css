@@ -1,0 +1,71 @@
+/* Captain Coaster's intentional element defaults, layered after Preflight. */
+
+fieldset {
+    border: 1px solid var(--cc-gray-400);
+    margin: 0 2px;
+    padding: 0.35em 0.625em 0.75em;
+}
+
+legend {
+    border: 0;
+    padding: 0;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
+/*
+ * `html{font-size:16px}` -- captain-coaster/captain-coaster#385, step 3.
+ * Was `10px`, a leftover of the original Limitless theme's own rem-
+ * scaling convention; every Bootstrap/Limitless-derived rule in this
+ * tree was ported as the LESS's already-compiled, literal px output
+ * (not `rem`), so none of it depended on the root value -- iso-visual
+ * throughout Phase 2 and the consolidation/token passes since. What
+ * *did* depend on it, silently: every bare Tailwind utility class used
+ * directly in templates (`w-6 h-6` icon sizing via `ux_icon()`, ~443
+ * usages) and a handful of hand-written "modern" components that use
+ * `rem` directly (gallery.css, search.css, top-list.css,
+ * rating-distribution.css) -- both were rendering at 10/16 = 62.5% of
+ * their intended size. This is the fix, not a workaround for it; the
+ * resulting ~60% size-up on those elements is expected, verified live
+ * rather than assumed harmless.
+ */
+html {
+    height: 100%;
+    font-size: 16px;
+}
+
+body {
+    position: relative;
+    min-height: 100%;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.5384616;
+    color: var(--cc-gray-900);
+    background-color: var(--cc-gray-100);
+}
+
+a {
+    color: var(--cc-primary-600);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover,
+a:focus {
+    color: #166dba;
+    text-decoration: none;
+}
+
+a:focus {
+    outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}

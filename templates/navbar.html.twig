@@ -8,46 +8,46 @@
    in every subsequent link generated from this same request. #}
 {% set nav_params = (route_params|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
 
-<div class="navbar navbar-inverse navbar-fixed-top" data-controller="navbar-collapse">
-  <div class="navbar-header">
-    <a class="navbar-brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
+<div class="cc-navbar cc-navbar--inverse cc-navbar--fixed-top" data-controller="navbar-collapse">
+  <div class="cc-navbar__header">
+    <a class="cc-navbar__brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
-    <ul class="nav navbar-nav visible-xs-block">
-      <li class="navbar-toggle-icon">
+    <ul class="cc-nav cc-navbar__nav tablet:hidden">
+      <li class="cc-navbar__toggle-icon">
         <a data-action="click->navbar-collapse#toggle click->sidebar#closeMobile" aria-expanded="false">
           {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-            {# Not img-xs: its fixed 32px fights the w-8 h-8 icons beside
+            {# Not img-xs: its fixed 32px fights the w-5 h-5 icons beside
                it, which render at 2rem like everything else here. #}
             {{ helper.profilePicture(app.user, 'img-circle') }}
           {% else %}
-            {{ ux_icon('heroicons:user-circle', {'class': 'w-8 h-8'}) }}
+            {{ ux_icon('heroicons:user-circle', {'class': 'w-5 h-5'}) }}
           {% endif %}
         </a>
       </li>
-      <li><a data-action="click->sidebar#toggleMobileMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a></li>
+      <li><a data-action="click->sidebar#toggleMobileMain" aria-label="{{ 'sidebar.toggle'|trans }}">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a></li>
       {% if pageHasFilters is defined %}
-        <li><a data-action="click->sidebar#toggleMobileSecondary">{{ ux_icon('heroicons:funnel', {'class': 'w-8 h-8'}) }}</a></li>
+        <li><a data-action="click->sidebar#toggleMobileSecondary" aria-label="{{ 'sidebar.toggle_filters'|trans }}">{{ ux_icon('heroicons:funnel', {'class': 'w-5 h-5'}) }}</a></li>
       {% endif %}
     </ul>
   </div>
-  <div class="navbar-collapse collapse" id="navbar-mobile" data-navbar-collapse-target="panel">
-    <ul class="nav navbar-nav hidden-xs">
+  <div class="cc-navbar__panel" id="navbar-mobile" data-navbar-collapse-target="panel">
+    <ul class="hidden tablet:block cc-nav cc-navbar__nav">
       <li>
-        <a data-action="click->sidebar#toggleMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-8 h-8'}) }}</a>
+        <a data-action="click->sidebar#toggleMain" aria-label="{{ 'sidebar.toggle'|trans }}">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="cc-nav cc-navbar__nav cc-navbar__right">
       <!-- user profile -->
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        <li class="dropdown dropdown-user">
-          <a class="dropdown-toggle" data-toggle="dropdown">
+        <li class="cc-menu cc-menu--user">
+          <a class="cc-menu__toggle" data-cc-menu-toggle>
             {{ helper.profilePicture(app.user, 'img-circle img-xs') }}
             <span>{{ app.user.firstname }}</span>
             <i class="caret"></i>
           </a>
 
-          <ul class="dropdown-menu dropdown-menu-right account-menu">
+          <ul class="cc-menu__list cc-menu__list--right account-menu">
             <li class="account-menu-header">
               {{ helper.profilePicture(app.user, 'img-circle img-lg') }}
               <div>
@@ -61,10 +61,10 @@
             <li>
               <a href="{{ path('notification_index') }}" class="account-menu-row">
                 <span class="account-menu-row-label">
-                  {{ ux_icon('heroicons:bell', {'class': 'w-5 h-5'}) }}
+                  {{ ux_icon('heroicons:bell', {'class': 'w-3.5 h-3.5'}) }}
                   {{ 'notif.title'|trans({}, 'notification') }}
                   {% if unread_count > 0 %}
-                    <span class="badge bg-warning-400">{{ unread_count }}</span>
+                    <span class="cc-badge bg-warning-400">{{ unread_count }}</span>
                   {% endif %}
                 </span>
               </a>
@@ -74,34 +74,34 @@
             {{ _self.languageSubmenu(current_route, nav_params) }}
             {{ _self.unitsSubmenu(current_route, nav_params) }}
             <li>
-              <a href="{{ path('profile_settings') }}">{{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-5 h-5'}) }} {{ 'navbar.settings'|trans }}</a>
+              <a href="{{ path('profile_settings') }}">{{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-3.5 h-3.5'}) }} {{ 'navbar.settings'|trans }}</a>
             </li>
             <li class="divider"></li>
             <li>
-              <a href="{{ path('profile_ratings') }}">{{ ux_icon('heroicons:star', {'class': 'w-5 h-5'}) }} {{ 'navbar.rating'|trans }}</a>
+              <a href="{{ path('profile_ratings') }}">{{ ux_icon('heroicons:star', {'class': 'w-3.5 h-3.5'}) }} {{ 'navbar.rating'|trans }}</a>
             </li>
             <li>
-              <a href="{{ path('user_tops', {'id': app.user.id}) }}">{{ ux_icon('heroicons:clipboard', {'class': 'w-5 h-5'}) }} {{ 'navbar.tops'|trans }}</a>
+              <a href="{{ path('user_tops', {'id': app.user.id}) }}">{{ ux_icon('heroicons:clipboard', {'class': 'w-3.5 h-3.5'}) }} {{ 'navbar.tops'|trans }}</a>
             </li>
             <li>
-              <a href="{{ path('map_user', {'id': app.user.id}) }}">{{ ux_icon('heroicons:map-pin', {'class': 'w-5 h-5'}) }} {{ 'navbar.my_map'|trans }}</a>
+              <a href="{{ path('map_user', {'id': app.user.id}) }}">{{ ux_icon('heroicons:map-pin', {'class': 'w-3.5 h-3.5'}) }} {{ 'navbar.my_map'|trans }}</a>
             </li>
             <li class="divider"></li>
             <li>
-              <a href="{{ path('logout') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-5 h-5'}) }} {{ 'navbar.logout'|trans }}</a>
+              <a href="{{ path('logout') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-3.5 h-3.5'}) }} {{ 'navbar.logout'|trans }}</a>
             </li>
           </ul>
         </li>
       {% else %}
-        <li class="dropdown account-menu-anon">
-          <a class="dropdown-toggle" data-toggle="dropdown">
-            {{ ux_icon('heroicons:user-circle', {'class': 'w-8 h-8'}) }}
+        <li class="cc-menu account-menu-anon">
+          <a class="cc-menu__toggle" data-cc-menu-toggle>
+            {{ ux_icon('heroicons:user-circle', {'class': 'w-5 h-5'}) }}
           </a>
-          <ul class="dropdown-menu dropdown-menu-right account-menu">
+          <ul class="cc-menu__list cc-menu__list--right account-menu">
             {{ _self.languageSubmenu(current_route, nav_params) }}
             {{ _self.unitsSubmenu(current_route, nav_params) }}
             <li class="divider"></li>
-            <li><a href="{{ path('login') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-5 h-5'}) }} {{ 'navbar.login'|trans }}</a></li>
+            <li><a href="{{ path('login') }}">{{ ux_icon('heroicons:arrow-right-on-rectangle', {'class': 'w-3.5 h-3.5'}) }} {{ 'navbar.login'|trans }}</a></li>
           </ul>
         </li>
       {% endif %}
@@ -111,23 +111,23 @@
 </div>
 
 {% macro languageSubmenu(current_route, nav_params) %}
-  <li class="dropdown-submenu dropdown-submenu-hover dropdown-submenu-left">
-    <a href="#" class="dropdown-toggle account-menu-row" data-toggle="dropdown">
+  <li class="cc-menu__submenu cc-menu__submenu--hover cc-menu__submenu--left">
+    <a href="#" class="cc-menu__toggle account-menu-row" data-cc-menu-toggle>
       <span class="account-menu-row-label">
-        {{ ux_icon('heroicons:language', {'class': 'w-5 h-5'}) }}
+        {{ ux_icon('heroicons:language', {'class': 'w-3.5 h-3.5'}) }}
         {{ 'navbar.language'|trans }}
       </span>
       <span class="account-menu-row-value">
         {{ app.request.locale|trans }}
-        {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('heroicons:chevron-right', {'class': 'w-3 h-3'}) }}
       </span>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="cc-menu__list">
       {% for locale in locales %}
         <li>
           <a href="{{ path(current_route, nav_params|merge({_locale: locale, setLocale: 1})) }}">
             {{ locale|trans }}
-            {% if locale == app.request.locale %}{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}{% endif %}
+            {% if locale == app.request.locale %}{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}{% endif %}
           </a>
         </li>
       {% endfor %}
@@ -136,28 +136,28 @@
 {% endmacro %}
 
 {% macro unitsSubmenu(current_route, nav_params) %}
-  <li class="dropdown-submenu dropdown-submenu-hover dropdown-submenu-left">
-    <a href="#" class="dropdown-toggle account-menu-row" data-toggle="dropdown">
+  <li class="cc-menu__submenu cc-menu__submenu--hover cc-menu__submenu--left">
+    <a href="#" class="cc-menu__toggle account-menu-row" data-cc-menu-toggle>
       <span class="account-menu-row-label">
-        {{ ux_icon('heroicons:scale', {'class': 'w-5 h-5'}) }}
+        {{ ux_icon('heroicons:scale', {'class': 'w-3.5 h-3.5'}) }}
         {{ 'navbar.units'|trans }}
       </span>
       <span class="account-menu-row-value">
         {{ units.isImperial() ? 'profile.settings.preferences.units.imperial'|trans : 'profile.settings.preferences.units.metric'|trans }}
-        {{ ux_icon('heroicons:chevron-right', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('heroicons:chevron-right', {'class': 'w-3 h-3'}) }}
       </span>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="cc-menu__list">
       <li>
         <a href="{{ path(current_route, nav_params|merge({setUnits: 'metric'})) }}">
           {{ 'profile.settings.preferences.units.metric'|trans }}
-          {% if not units.isImperial() %}{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}{% endif %}
+          {% if not units.isImperial() %}{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}{% endif %}
         </a>
       </li>
       <li>
         <a href="{{ path(current_route, nav_params|merge({setUnits: 'imperial'})) }}">
           {{ 'profile.settings.preferences.units.imperial'|trans }}
-          {% if units.isImperial() %}{{ ux_icon('heroicons:check', {'class': 'w-4 h-4'}) }}{% endif %}
+          {% if units.isImperial() %}{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}{% endif %}
         </a>
       </li>
     </ul>

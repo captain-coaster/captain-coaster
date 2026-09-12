@@ -4,16 +4,16 @@
 
 {% block body %}
     <!-- Form with validation -->
-    <div class="panel panel-body login-form">
+    <div class="cc-panel cc-panel__body login-form">
         <div class="text-center mb-3">
-            <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-6 h-6'}) }}</div>
+            <div class="icon-object border-warning-400 text-warning-400">{{ ux_icon('heroicons:key', {'class': 'w-4 h-4'}) }}</div>
             <h5 class="content-group-lg">{{ 'register.title'|trans }}
                 <small class="display-block">{{ 'register.subtitle'|trans }}</small>
             </h5>
         </div>
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="alert alert-{{ label }} alert-bordered">
+                <div class="cc-alert alert-{{ label }} cc-alert--bordered">
                     {{ message | raw }}
                 </div>
             {% endfor %}
@@ -27,7 +27,7 @@
 
         {{ form_end(registrationForm) }}
 
-        <span class="help-block text-center no-margin">
+        <span class="help-block text-center m-0">
             {{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}
         </span>
     </div>

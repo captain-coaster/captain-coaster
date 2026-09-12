@@ -1,0 +1,187 @@
+/*
+ * Tables, thumbnails, cc-list-group -- migrated: theme/bootstrap-limitless/
+ * {tables,thumbnails,cc-list-group}.less + bootstrap/less/{tables,thumbnails,
+ * cc-list-group}.less. `.table`(+`-responsive`) with no modifiers
+ * (`.table-striped/-bordered/-hover/-condensed`, contextual row states) --
+ * the one real `<table>` (Includes/rating_table.html.twig) uses none of
+ * them. `.thumbnail`(+`.caption`) and `.thumb`(+`.caption-overflow`) --
+ * `.thumb-rounded`/`.thumb-slide`/`.caption-zoom`/`-offset`/`-collapse`
+ * are dead. `.cc-list-group`/`.cc-list-group__item` base + hover only -- `.active`/
+ * `.disabled` states, `.cc-list-group__item-heading/-text`, and the four
+ * contextual `.cc-list-group__item-*` colors are all dead (the `> .cc-badge`/
+ * `.cc-label` float rules for this pair live in labels-badges.css, nested
+ * inside badges.less/labels.less originally, not cc-list-group.less).
+ */
+
+/* Tables */
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+    border-collapse: collapse;
+}
+
+.table > thead > tr > th,
+.table > tbody > tr > th,
+.table > tfoot > tr > th,
+.table > thead > tr > td,
+.table > tbody > tr > td,
+.table > tfoot > tr > td {
+    vertical-align: middle;
+    border-top: 1px solid var(--cc-gray-300);
+    padding: 12px 20px;
+    line-height: 1.53846;
+}
+
+.table > thead > tr > th {
+    border-bottom: 1px solid var(--cc-gray-500);
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Only applies <768px in the original -- Limitless customizes this breakpoint to 769px. */
+@media screen and (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+    .table-responsive {
+        width: 100%;
+        margin-bottom: 15px;
+        overflow-y: hidden;
+        border: 1px solid var(--cc-gray-300);
+    }
+
+    .table-responsive > .table {
+        margin-bottom: 0;
+    }
+
+    .table-responsive > .table > thead > tr > th,
+    .table-responsive > .table > tbody > tr > th,
+    .table-responsive > .table > tfoot > tr > th,
+    .table-responsive > .table > thead > tr > td,
+    .table-responsive > .table > tbody > tr > td,
+    .table-responsive > .table > tfoot > tr > td {
+        white-space: nowrap;
+    }
+}
+
+/* Cards */
+.cc-card {
+    display: block;
+    background-color: var(--cc-white);
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 3px;
+    margin-bottom: 20px;
+    padding: 3px;
+    line-height: 1.53846;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.cc-card > img,
+.cc-card a > img {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cc-card > a {
+    display: block;
+}
+
+a.cc-card:hover,
+a.cc-card:focus,
+a.cc-card.active {
+    border-color: var(--cc-gray-300);
+}
+
+.cc-card .cc-card__caption {
+    color: var(--cc-gray-900);
+    padding: 20px 17px 17px;
+}
+
+.cc-card .cc-card__caption .cc-media__heading {
+    margin-top: 0;
+}
+
+.cc-card .cc-card__caption .cc-media__heading {
+    display: flow-root;
+}
+
+.cc-card__media {
+    display: block;
+    position: relative;
+    text-align: center;
+}
+
+.cc-card__media img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+}
+
+.cc-card__media:not(.cc-card__media--rounded) img {
+    border-radius: 3px;
+}
+
+.cc-card__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--cc-white);
+    visibility: hidden;
+    opacity: 0;
+    border-radius: 3px;
+    transition: all 0.15s ease-in-out;
+}
+
+.cc-card__overlay span {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    margin-top: -17px;
+    text-align: center;
+}
+
+.cc-card__media:hover > .cc-card__overlay {
+    visibility: visible;
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* List group */
+.cc-list-group {
+    list-style: none;
+    margin-bottom: 0;
+    border: 1px solid var(--cc-gray-300);
+    padding: 7px 0;
+    border-radius: 3px;
+}
+
+.cc-list-group__item {
+    position: relative;
+    display: block;
+    background-color: transparent;
+    padding: 10px 20px;
+    border: 0;
+    margin-bottom: -1px;
+}
+
+a.cc-list-group__item,
+button.cc-list-group__item {
+    color: var(--cc-gray-900);
+}
+
+a.cc-list-group__item:hover,
+button.cc-list-group__item:hover,
+a.cc-list-group__item:focus,
+button.cc-list-group__item:focus {
+    color: var(--cc-gray-900);
+    background-color: var(--cc-gray-100);
+    text-decoration: none;
+}
