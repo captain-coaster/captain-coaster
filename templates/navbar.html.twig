@@ -13,7 +13,7 @@
     <a class="cc-navbar__brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
-    <ul class="cc-nav cc-navbar__nav visible-xs-block">
+    <ul class="cc-nav cc-navbar__nav tablet:hidden">
       <li class="cc-navbar__toggle-icon">
         <a data-action="click->navbar-collapse#toggle click->sidebar#closeMobile" aria-expanded="false">
           {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
@@ -32,7 +32,7 @@
     </ul>
   </div>
   <div class="cc-navbar__panel" id="navbar-mobile" data-navbar-collapse-target="cc-panel">
-    <ul class="cc-nav cc-navbar__nav hidden-xs">
+    <ul class="hidden tablet:block cc-nav cc-navbar__nav">
       <li>
         <a data-action="click->sidebar#toggleMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a>
       </li>

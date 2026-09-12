@@ -104,6 +104,7 @@ const deprecatedNavigationClasses = new Set([
     'dropdown-menu-right', 'dropdown-menu-left', 'dropdown-submenu',
     'dropdown-submenu-hover', 'dropdown-submenu-left', 'dropdown-divider', 'dropdown-header',
 ]);
+const deprecatedVisibilityClasses = new Set(['hidden-xs', 'visible-xs', 'visible-xs-block']);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -211,7 +212,8 @@ function addTemplateClassViolations(path, source) {
                 deprecatedLabelClasses.has(token) ||
                 deprecatedAlertClasses.has(token) ||
                 deprecatedPaginationClasses.has(token) ||
-                deprecatedNavigationClasses.has(token)
+                deprecatedNavigationClasses.has(token) ||
+                deprecatedVisibilityClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -235,7 +237,9 @@ function addTemplateClassViolations(path, source) {
                                   ? 'Bootstrap alert or close class'
                                   : deprecatedPaginationClasses.has(deprecatedClass)
                                     ? 'Bootstrap pagination class'
-                                    : 'Bootstrap navigation class';
+                                    : deprecatedNavigationClasses.has(deprecatedClass)
+                                      ? 'Bootstrap navigation class'
+                                      : 'Bootstrap visibility class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

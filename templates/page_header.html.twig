@@ -1,6 +1,6 @@
 <div class="page-header page-header-default">
   <div class="page-header-content">
-    <div class="page-title grid grid-cols-12 gap-0{% if hideTitle|default(false) == true %} hidden-xs{% endif %}">
+    <div class="page-title grid grid-cols-12 gap-0{% if hideTitle|default(false) == true %} hidden tablet:block{% endif %}">
       <h1 class="col-span-12 tablet:col-span-8 wide:col-span-9">{{ title }}{% if subTitle %} • {{ subTitle }}{% endif %}</h1>
       {% if secondaryTitle %}
          <h2 class="h6 col-span-12 tablet:col-span-8 wide:col-span-9">{{ secondaryTitle }}</h2>

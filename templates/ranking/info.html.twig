@@ -24,8 +24,8 @@
             <span class="cc-badge bg-cc-blue-400">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</span>
           {% endif %}
         </h6>
-        <span class="visible-xs text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.short'|trans }}</span>
-        <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
+        <span class="tablet:hidden text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.short'|trans }}</span>
+        <span class="hidden tablet:inline text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
       </div>
     </div>
     <div class="col-span-3">
@@ -58,8 +58,8 @@
             <span class="cc-badge bg-cc-blue-400">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</span>
           {% endif %}
         </h6>
-        <span class="visible-xs text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.short'|trans }}</span>
-        <span class="hidden-xs text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.long'|trans }}</span>
+        <span class="tablet:hidden text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.short'|trans }}</span>
+        <span class="hidden tablet:inline text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.long'|trans }}</span>
       </div>
     </div>
   </div>

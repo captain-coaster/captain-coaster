@@ -1,40 +1,4 @@
 /*
- * Responsive utilities -- migrated: bootstrap/less/responsive-utilities.less.
- * Only the `xs` breakpoint (max-width:768px, matching every other
- * breakpoint used throughout this migration) has real uses: `.hidden-xs`
- * (rating_table.html.twig, ranking/info.html.twig, page_header.html.twig,
- * cc-navbar.html.twig), `.visible-xs` and `.visible-xs-block` (ranking/info,
- * cc-navbar). `.{visible,hidden}-{sm,md,lg}`, every `-inline`/`-inline-block`
- * variant, and the print-only `.visible-print*`/`.hidden-print` are all
- * confirmed dead (0 uses). `.responsive-visibility()`'s `table&`/`tr&`/
- * `th&`/`td&` sub-selectors are also dropped -- every real use here is a
- * plain `<span>`/`<ul>`, never a table element.
- */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .hidden-xs {
-        display: none !important;
-    }
-}
-
-.visible-xs {
-    display: none !important;
-}
-
-.visible-xs-block {
-    display: none !important;
-}
-
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .visible-xs {
-        display: block !important;
-    }
-
-    .visible-xs-block {
-        display: block !important;
-    }
-}
-
-/*
  * Component animations -- migrated: bootstrap/less/component-animations.less.
  * `.fade`/`.fade.in` is real and needed by the review-report modal
  * (`class="modal fade"` in _review_item.html.twig, toggled by
