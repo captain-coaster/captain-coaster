@@ -38,10 +38,33 @@
     min-height: 100vh;
 }
 
+/*
+ * The original theme built this shell on real CSS tables
+ * (.page-container: display:table, min-height:100vh; .page-content:
+ * display:table-row; .sidebar/.content-wrapper: display:table-cell) --
+ * a table's min-height always fills through to its row and every cell,
+ * regardless of how short their own content is. Replacing that with
+ * plain flex on .page-content alone (below) loses that: a flex
+ * container's own height still comes from its content unless something
+ * stretches *it*, so on a page shorter than one viewport, .page-content
+ * (and the sidebar/content-wrapper cells inside it) stopped at the
+ * content's real height instead of the page's 100vh floor -- the
+ * sidebar's dark background looked like it "stopped early" even though
+ * nothing about the sidebar itself had changed. Making .page-container
+ * itself a column flex container and stretching .page-content to fill
+ * it (flex:1) restores the same effect the table's height propagation
+ * had.
+ */
 @media (min-width: theme(--breakpoint-tablet)) {
+    .page-container {
+        display: flex;
+        flex-direction: column;
+    }
+
     .page-content {
         display: flex;
         width: 100%;
+        flex: 1;
     }
 
     .content-wrapper {
