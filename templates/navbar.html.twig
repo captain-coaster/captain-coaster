@@ -41,7 +41,7 @@
       <!-- user profile -->
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
         <li class="cc-menu cc-menu--user">
-          <a class="cc-menu__toggle" data-toggle="dropdown">
+          <a class="cc-menu__toggle" data-cc-menu-toggle>
             {{ helper.profilePicture(app.user, 'img-circle img-xs') }}
             <span>{{ app.user.firstname }}</span>
             <i class="caret"></i>
@@ -94,7 +94,7 @@
         </li>
       {% else %}
         <li class="cc-menu account-menu-anon">
-          <a class="cc-menu__toggle" data-toggle="dropdown">
+          <a class="cc-menu__toggle" data-cc-menu-toggle>
             {{ ux_icon('heroicons:user-circle', {'class': 'w-5 h-5'}) }}
           </a>
           <ul class="cc-menu__list cc-menu__list--right account-menu">
@@ -112,7 +112,7 @@
 
 {% macro languageSubmenu(current_route, nav_params) %}
   <li class="cc-menu__submenu cc-menu__submenu--hover cc-menu__submenu--left">
-    <a href="#" class="cc-menu__toggle account-menu-row" data-toggle="dropdown">
+    <a href="#" class="cc-menu__toggle account-menu-row" data-cc-menu-toggle>
       <span class="account-menu-row-label">
         {{ ux_icon('heroicons:language', {'class': 'w-3.5 h-3.5'}) }}
         {{ 'navbar.language'|trans }}
@@ -137,7 +137,7 @@
 
 {% macro unitsSubmenu(current_route, nav_params) %}
   <li class="cc-menu__submenu cc-menu__submenu--hover cc-menu__submenu--left">
-    <a href="#" class="cc-menu__toggle account-menu-row" data-toggle="dropdown">
+    <a href="#" class="cc-menu__toggle account-menu-row" data-cc-menu-toggle>
       <span class="account-menu-row-label">
         {{ ux_icon('heroicons:scale', {'class': 'w-3.5 h-3.5'}) }}
         {{ 'navbar.units'|trans }}

@@ -18,7 +18,7 @@
  *
  * account-menu.css (assets/styles/, not part of this migration) already
  * owns all of the cc-navbar account-menu's actual visual styling and
- * its own mobile cc-menu override (bypasses .open entirely, renders the
+ * its own mobile cc-menu override (bypasses .is-open entirely, renders the
  * account cc-panel inline once #navbar-mobile is expanded) -- confirmed via its
  * own comments that it depends on @grid-float-breakpoint and
  * @navbar-inverse-link-color still resolving, which they do as long as
@@ -64,11 +64,11 @@
 }
 
 /* Limitless override: transparent/muted instead of bootstrap's colored
- * .cc-nav .open > a (bootstrap's own version is skipped -- Limitless replaces
+ * .cc-nav .is-open > a (bootstrap's own version is skipped -- Limitless replaces
  * every property it sets, nothing of the bootstrap rule survives). */
-.cc-nav .open > a,
-.cc-nav .open > a:hover,
-.cc-nav .open > a:focus {
+.cc-nav .is-open > a,
+.cc-nav .is-open > a:hover,
+.cc-nav .is-open > a:focus {
     background-color: transparent;
     border-color: transparent;
     color: var(--cc-gray-900);
@@ -223,11 +223,11 @@
     margin-right: 12px;
 }
 
-.open > .cc-menu__list {
+.is-open > .cc-menu__list {
     display: block;
 }
 
-.open > a {
+.is-open > a {
     outline: 0;
 }
 
@@ -545,7 +545,7 @@
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .cc-navbar__nav .open .cc-menu__list {
+    .cc-navbar__nav .is-open .cc-menu__list {
         position: static;
         float: none;
         width: auto;
@@ -555,26 +555,26 @@
         box-shadow: none;
     }
 
-    .cc-navbar__nav .open .cc-menu__list > li > a,
-    .cc-navbar__nav .open .cc-menu__list .cc-menu__header {
+    .cc-navbar__nav .is-open .cc-menu__list > li > a,
+    .cc-navbar__nav .is-open .cc-menu__list .cc-menu__header {
         padding: 8px 20px;
     }
 
-    .cc-navbar__nav .open .cc-menu__list > li > a {
+    .cc-navbar__nav .is-open .cc-menu__list > li > a {
         line-height: 1.5384616;
     }
 
-    .cc-navbar__nav .open .cc-menu__list > li > a:hover,
-    .cc-navbar__nav .open .cc-menu__list > li > a:focus {
+    .cc-navbar__nav .is-open .cc-menu__list > li > a:hover,
+    .cc-navbar__nav .is-open .cc-menu__list > li > a:focus {
         background-image: none;
     }
 
-    .cc-navbar__nav .open .cc-menu__list > .cc-menu__submenu > ul > li > a {
+    .cc-navbar__nav .is-open .cc-menu__list > .cc-menu__submenu > ul > li > a {
         padding-left: 40px;
     }
 
     .cc-navbar__nav
-        .open
+        .is-open
         .cc-menu__list
         > .cc-menu__submenu
         > ul
@@ -666,9 +666,9 @@
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.cc-navbar--inverse .cc-navbar__nav > .open > a,
-.cc-navbar--inverse .cc-navbar__nav > .open > a:hover,
-.cc-navbar--inverse .cc-navbar__nav > .open > a:focus {
+.cc-navbar--inverse .cc-navbar__nav > .is-open > a,
+.cc-navbar--inverse .cc-navbar__nav > .is-open > a:hover,
+.cc-navbar--inverse .cc-navbar__nav > .is-open > a:focus {
     color: var(--cc-white);
     background-color: rgba(0, 0, 0, 0.15);
 }

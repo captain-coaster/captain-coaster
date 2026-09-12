@@ -94,7 +94,7 @@
  * reveal the account menu duplicates that icon and shows an empty row
  * while the menu stays hidden. Render it inline instead, unconditionally,
  * reusing the theme's own inverse-navbar mobile cc-menu colors (normally
- * gated behind `.open`, which this bypasses) so text stays legible against
+ * gated behind `.is-open`, which this bypasses) so text stays legible against
  * the dark collapsed cc-navbar background.
  */
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {

@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const root = process.cwd();
-const sourceRoots = ['assets/styles', 'assets/controllers', 'templates'];
+const sourceRoots = ['assets/js', 'assets/styles', 'assets/controllers', 'templates'];
 const excludedFiles = new Set([
     'assets/styles/print.css',
     'templates/connect/login_email.html.twig',
@@ -181,6 +181,10 @@ function addViolations(path, source) {
         {
             contract: 'Bootstrap navigation selector',
             pattern: /(?:^|[^\w-])\.(?:nav|navbar|dropdown)(?:-[\w-]+)?(?![\w-])/g,
+        },
+        {
+            contract: 'Bootstrap dropdown data attribute',
+            pattern: /data-toggle="dropdown"/g,
         },
     ];
 
