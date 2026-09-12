@@ -1,74 +1,74 @@
 /*
- * Navigation cluster: navbar, dropdowns, navs, modals.
+ * Navigation cluster: cc-navbar, dropdowns, navs, modals.
  *
  * Values below are taken from the compiled ground-truth CSS (lessc app.less),
  * not hand-resolved from LESS variables -- avoids reconstruction error across
  * the many bootstrap+Limitless variable indirections in this cluster.
  *
  * Scoped hard against real usage (grep across templates/, assets/js/,
- * assets/controllers/, src/): most of navbar.less (1877 lines) and navs.less
+ * assets/controllers/, src/): most of cc-navbar.less (1877 lines) and navs.less
  * (1154 lines) is dead weight from Limitless's admin-theme feature set this
- * app never uses -- mega menus, dropdown-content panels, navbar sizing
+ * app never uses -- mega menus, dropdown-content panels, cc-navbar sizing
  * variants (navbar-lg/-sm/-xs), stacked/multiple navbars, nav-tabs/-pills/
  * -justified, .navbar-form/-cc-button/-text, .language-switch (referenced only as
  * a negative selector in theme.js, never actually applied to any element).
  * breadcrumbs.less-style "confirmed zero usage, drop the whole file" doesn't
- * apply cleanly here since navbar/dropdowns/navs/modals are all genuinely
+ * apply cleanly here since cc-navbar/dropdowns/navs/modals are all genuinely
  * used -- just far narrower than their raw line counts suggest.
  *
  * account-menu.css (assets/styles/, not part of this migration) already
- * owns all of the navbar account-menu's actual visual styling and
- * its own mobile dropdown override (bypasses .open entirely, renders the
+ * owns all of the cc-navbar account-menu's actual visual styling and
+ * its own mobile cc-menu override (bypasses .open entirely, renders the
  * account cc-panel inline once #navbar-mobile is expanded) -- confirmed via its
  * own comments that it depends on @grid-float-breakpoint and
  * @navbar-inverse-link-color still resolving, which they do as long as
  * theme/core's LESS variable files stay untouched (they're migrated last).
  * Because of that override, Limitless's elaborate mobile "adapt colors of
- * tables/checkboxes/tabs inside an open navbar dropdown" block never
+ * tables/checkboxes/tabs inside an open cc-navbar cc-menu" block never
  * actually matches anything real in this app and is skipped entirely below.
  */
 
 /* The mobile cc-panel uses a local state contract that cannot collide with
  * Tailwind's visibility utilities. */
 
-.nav,
-.navbar,
-.navbar-header,
-.cc-navbar-cc-panel,
+.cc-nav,
+.cc-navbar,
+.cc-navbar__header,
+.cc-navbar__panel,
 .modal-header,
 .modal-footer {
     display: flow-root;
 }
 
-/* Nav (base list, used via .nav.navbar-nav) */
-.nav {
+/* Nav (base list, used via .cc-nav.cc-navbar__nav) */
+.cc-nav {
     padding-left: 0;
     margin-bottom: 0;
     list-style: none;
 }
 
-.nav > li {
+.cc-nav > li {
     position: relative;
     display: block;
 }
 
-.nav > li > a {
+.cc-nav > li > a {
     position: relative;
     display: block;
     padding: 10px 15px;
 }
 
-.nav > li > a:hover,
-.nav > li > a:focus {
+.cc-nav > li > a:hover,
+.cc-nav > li > a:focus {
     text-decoration: none;
 }
 
 /* Limitless override: transparent/muted instead of bootstrap's colored
- * .nav .open > a (bootstrap's own version is skipped -- Limitless replaces
+ * .cc-nav .open > a (bootstrap's own version is skipped -- Limitless replaces
  * every property it sets, nothing of the bootstrap rule survives). */
-.nav .open > a,
-.nav .open > a:hover,
-.nav .open > a:focus {
+.cc-nav .open > a,
+.cc-nav .open > a:hover,
+.cc-nav .open > a:focus {
     background-color: transparent;
     border-color: transparent;
     color: var(--cc-gray-900);
@@ -111,16 +111,16 @@
 }
 
 /* Dropdown */
-.dropdown,
+.cc-menu,
 .dropup {
     position: relative;
 }
 
-.dropdown-toggle:focus {
+.cc-menu__toggle:focus {
     outline: 0;
 }
 
-.dropdown-menu {
+.cc-menu__list {
     position: absolute;
     top: 100%;
     left: 0;
@@ -141,23 +141,23 @@
     color: var(--cc-gray-900);
 }
 
-.dropdown-menu .divider {
+.cc-menu__list .divider {
     height: 1px;
     margin: 7px 0;
     overflow: hidden;
     background-color: var(--cc-gray-200);
 }
 
-.dropdown-menu > li {
+.cc-menu__list > li {
     position: relative;
     margin-bottom: 1px;
 }
 
-.dropdown-menu > li:last-child {
+.cc-menu__list > li:last-child {
     margin-bottom: 0;
 }
 
-.dropdown-menu > li > a {
+.cc-menu__list > li > a {
     display: block;
     padding: 8px 15px;
     clear: both;
@@ -170,60 +170,60 @@
     text-overflow: ellipsis;
 }
 
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
+.cc-menu__list > li > a:hover,
+.cc-menu__list > li > a:focus {
     color: var(--cc-gray-900);
     text-decoration: none;
     background-color: var(--cc-gray-100);
 }
 
-.dropdown-menu > .active > a,
-.dropdown-menu > .active > a:hover,
-.dropdown-menu > .active > a:focus {
+.cc-menu__list > .active > a,
+.cc-menu__list > .active > a:hover,
+.cc-menu__list > .active > a:focus {
     color: var(--cc-white);
     text-decoration: none;
     background-color: var(--cc-primary);
     outline: 0;
 }
 
-.dropdown-menu > .disabled > a,
-.dropdown-menu > .disabled > a:hover,
-.dropdown-menu > .disabled > a:focus {
+.cc-menu__list > .disabled > a,
+.cc-menu__list > .disabled > a:hover,
+.cc-menu__list > .disabled > a:focus {
     color: var(--cc-gray-600);
 }
 
-.dropdown-menu > .disabled > a:hover,
-.dropdown-menu > .disabled > a:focus {
+.cc-menu__list > .disabled > a:hover,
+.cc-menu__list > .disabled > a:focus {
     text-decoration: none;
     cursor: not-allowed;
     background-color: transparent;
     background-image: none;
 }
 
-.dropdown-menu > li > a > i,
-.dropdown-menu > .dropdown-header > i,
-.dropdown-menu > li > a > img,
-.dropdown-menu > .dropdown-header > img {
+.cc-menu__list > li > a > i,
+.cc-menu__list > .cc-menu__header > i,
+.cc-menu__list > li > a > img,
+.cc-menu__list > .cc-menu__header > img {
     margin-right: 12px;
     float: left;
     margin-top: 2px;
     top: 0;
 }
 
-.dropdown-menu > li > a > img,
-.dropdown-menu > .dropdown-header > img {
+.cc-menu__list > li > a > img,
+.cc-menu__list > .cc-menu__header > img {
     max-height: 16px;
 }
 
-.dropdown-menu > li > a > .cc-label,
-.dropdown-menu > .dropdown-header > .cc-label,
-.dropdown-menu > li > a > .cc-badge,
-.dropdown-menu > .dropdown-header > .cc-badge {
+.cc-menu__list > li > a > .cc-label,
+.cc-menu__list > .cc-menu__header > .cc-label,
+.cc-menu__list > li > a > .cc-badge,
+.cc-menu__list > .cc-menu__header > .cc-badge {
     float: left;
     margin-right: 12px;
 }
 
-.open > .dropdown-menu {
+.open > .cc-menu__list {
     display: block;
 }
 
@@ -231,23 +231,23 @@
     outline: 0;
 }
 
-.dropdown-menu-right {
+.cc-menu__list--right {
     right: 0;
     left: auto;
 }
 
-.dropdown-menu-left {
+.cc-menu__list--left {
     right: auto;
     left: 0;
 }
 
-/* Nested dropdown-submenu (language/units switchers in the account menu) */
-.dropdown-menu > .dropdown-submenu > a {
+/* Nested cc-menu__submenu (language/units switchers in the account menu) */
+.cc-menu__list > .cc-menu__submenu > a {
     padding-right: 38px;
     position: relative;
 }
 
-.dropdown-menu > .dropdown-submenu > a:after {
+.cc-menu__list > .cc-menu__submenu > a:after {
     content: '';
     background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
     background-size: contain;
@@ -264,51 +264,51 @@
     opacity: 0.8;
 }
 
-.dropdown-menu > .dropdown-submenu a.dropdown-toggle {
+.cc-menu__list > .cc-menu__submenu a.cc-menu__toggle {
     box-shadow: none;
 }
 
-.dropdown-menu > .dropdown-submenu:hover > a,
-.dropdown-menu > .dropdown-submenu:focus > a,
-.dropdown-menu > .dropdown-submenu.open > a {
+.cc-menu__list > .cc-menu__submenu:hover > a,
+.cc-menu__list > .cc-menu__submenu:focus > a,
+.cc-menu__list > .cc-menu__submenu.open > a {
     background-color: var(--cc-gray-100);
 }
 
-.dropdown-menu > .dropdown-submenu:hover > a:after,
-.dropdown-menu > .dropdown-submenu:focus > a:after,
-.dropdown-menu > .dropdown-submenu.open > a:after {
+.cc-menu__list > .cc-menu__submenu:hover > a:after,
+.cc-menu__list > .cc-menu__submenu:focus > a:after,
+.cc-menu__list > .cc-menu__submenu.open > a:after {
     opacity: 1;
 }
 
-.dropdown-menu > .dropdown-submenu > .dropdown-menu {
+.cc-menu__list > .cc-menu__submenu > .cc-menu__list {
     top: 0;
     left: 100%;
     margin-top: -8px;
 }
 
-.dropdown-menu > .dropdown-submenu.dropdown-submenu-left > .dropdown-menu {
+.cc-menu__list > .cc-menu__submenu.cc-menu__submenu--left > .cc-menu__list {
     left: auto;
     right: 100%;
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .dropdown-menu > .dropdown-submenu-hover:hover > .dropdown-menu,
-    .dropdown-menu > .dropdown-submenu-hover:focus > .dropdown-menu {
+    .cc-menu__list > .cc-menu__submenu--hover:hover > .cc-menu__list,
+    .cc-menu__list > .cc-menu__submenu--hover:focus > .cc-menu__list {
         display: block;
     }
 }
 
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .dropdown-menu > .dropdown-submenu {
+    .cc-menu__list > .cc-menu__submenu {
         position: static;
     }
 
-    .dropdown-menu > .dropdown-submenu > a:after {
+    .cc-menu__list > .cc-menu__submenu > a:after {
         background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xOS41IDguMjUtNy41IDcuNS03LjUtNy41Ii8+PC9zdmc+');
     }
 
-    .dropdown-menu > .dropdown-submenu .dropdown-menu,
-    .dropdown-menu > .dropdown-submenu.dropdown-submenu-left .dropdown-menu {
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list,
+    .cc-menu__list > .cc-menu__submenu.cc-menu__submenu--left .cc-menu__list {
         position: relative;
         left: 0;
         right: 0;
@@ -320,19 +320,19 @@
         margin: 0;
     }
 
-    .dropdown-menu > .dropdown-submenu .dropdown-menu > li > a,
-    .dropdown-menu
-        > .dropdown-submenu.dropdown-submenu-left
-        .dropdown-menu
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list > li > a,
+    .cc-menu__list
+        > .cc-menu__submenu.cc-menu__submenu--left
+        .cc-menu__list
         > li
         > a {
         padding-left: 30px;
     }
 
-    .dropdown-menu > .dropdown-submenu .dropdown-menu > li > ul > li > a,
-    .dropdown-menu
-        > .dropdown-submenu.dropdown-submenu-left
-        .dropdown-menu
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list > li > ul > li > a,
+    .cc-menu__list
+        > .cc-menu__submenu.cc-menu__submenu--left
+        .cc-menu__list
         > li
         > ul
         > li
@@ -342,7 +342,7 @@
 }
 
 /* Navbar */
-.navbar {
+.cc-navbar {
     position: relative;
     min-height: 46px;
     margin-bottom: 0;
@@ -353,49 +353,49 @@
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar {
+    .cc-navbar {
         border-radius: 3px;
         padding-left: 20px;
         padding-right: 20px;
     }
 }
 
-.navbar-header {
+.cc-navbar__header {
     min-width: 260px;
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar-header {
+    .cc-navbar__header {
         float: left;
         margin-left: -20px;
     }
 }
 
-.cc-navbar-cc-panel > .navbar-header {
+.cc-navbar__panel > .cc-navbar__header {
     margin-left: 0;
 }
 
-.navbar-header .navbar-nav {
+.cc-navbar__header .cc-navbar__nav {
     float: right;
     margin-right: 5px;
 }
 
-.navbar-header .navbar-nav > li {
+.cc-navbar__header .cc-navbar__nav > li {
     float: left;
 }
 
-.navbar-header .navbar-nav > li > a {
+.cc-navbar__header .cc-navbar__nav > li > a {
     padding-left: 15px;
     padding-right: 15px;
 }
 
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .navbar-header .navbar-nav > li + li {
+    .cc-navbar__header .cc-navbar__nav > li + li {
         margin-top: 0;
     }
 }
 
-.cc-navbar-cc-panel {
+.cc-navbar__panel {
     display: none;
     padding-right: 20px;
     padding-left: 20px;
@@ -405,17 +405,17 @@
     text-align: center;
 }
 
-.cc-navbar-cc-panel[data-open] {
+.cc-navbar__panel[data-open] {
     display: block;
     overflow-y: auto;
 }
 
-.navbar + .cc-navbar-cc-panel {
+.cc-navbar + .cc-navbar__panel {
     border-top: 0;
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .cc-navbar-cc-panel {
+    .cc-navbar__panel {
         display: block;
         width: auto;
         border-top: 0;
@@ -424,23 +424,23 @@
         margin-left: -20px;
     }
 
-    .cc-navbar-cc-panel {
+    .cc-navbar__panel {
         height: auto !important;
         padding-bottom: 0;
         overflow: visible !important;
     }
 
-    .cc-navbar-cc-panel[data-open] {
+    .cc-navbar__panel[data-open] {
         overflow-y: visible;
     }
 
-    .navbar-fixed-top .cc-navbar-cc-panel {
+    .cc-navbar--fixed-top .cc-navbar__panel {
         padding-right: 0;
         padding-left: 0;
     }
 }
 
-.navbar-fixed-top {
+.cc-navbar--fixed-top {
     position: fixed;
     right: 0;
     left: 0;
@@ -449,37 +449,37 @@
     border-width: 0 0 1px;
 }
 
-.navbar-fixed-top .cc-navbar-cc-panel {
+.cc-navbar--fixed-top .cc-navbar__panel {
     max-height: 340px;
 }
 
 @media (max-device-width: 480px) and (orientation: landscape) {
-    .navbar-fixed-top .cc-navbar-cc-panel {
+    .cc-navbar--fixed-top .cc-navbar__panel {
         max-height: 200px;
     }
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar-fixed-top {
+    .cc-navbar--fixed-top {
         border-radius: 0;
     }
 }
 
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .navbar-fixed-top {
+    .cc-navbar--fixed-top {
         position: static;
     }
 }
 
-/* Body top padding to clear the fixed desktop navbar -- navbar is static
+/* Body top padding to clear the fixed desktop cc-navbar -- cc-navbar is static
  * (in-flow) on mobile instead, so no compensation is needed there. */
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar-top {
+    .cc-navbar--top {
         padding-top: 48px;
     }
 }
 
-.navbar-brand {
+.cc-navbar__brand {
     float: left;
     height: 46px;
     padding: 13px 20px;
@@ -487,53 +487,53 @@
     line-height: 20px;
 }
 
-.navbar-brand:hover,
-.navbar-brand:focus {
+.cc-navbar__brand:hover,
+.cc-navbar__brand:focus {
     text-decoration: none;
 }
 
-.navbar-brand > img {
+.cc-navbar__brand > img {
     display: block;
     margin-top: 2px;
     height: 16px;
 }
 
-.navbar-nav {
+.cc-navbar__nav {
     margin: 0;
     text-align: left;
 }
 
-.navbar-nav > li > a {
+.cc-navbar__nav > li > a {
     padding-top: 13px;
     padding-bottom: 13px;
 }
 
-.navbar-nav > li > a > .cc-label,
-.navbar-nav > li > a > .cc-badge {
+.cc-navbar__nav > li > a > .cc-label,
+.cc-navbar__nav > li > a > .cc-badge {
     position: absolute;
     top: 0;
     right: 0;
 }
 
-.navbar-nav > .dropdown-user > a,
-.navbar-nav > .dropdown-user > a > span {
+.cc-navbar__nav > .cc-menu--user > a,
+.cc-navbar__nav > .cc-menu--user > a > span {
     padding-top: 6.5px;
     padding-bottom: 6.5px;
 }
 
-.navbar-nav > .dropdown-user > a > span {
+.cc-navbar__nav > .cc-menu--user > a > span {
     display: inline-block;
     padding-left: 7px;
 }
 
-.navbar-nav > .dropdown-user > a > img {
+.cc-navbar__nav > .cc-menu--user > a > img {
     display: inline-block;
     max-height: 30px;
     margin-top: -2.5px;
     border-radius: 50%;
 }
 
-.navbar-nav > li > .dropdown-menu {
+.cc-navbar__nav > li > .cc-menu__list {
     margin-top: 1px;
     border-top-width: 0;
     border-top-left-radius: 0;
@@ -541,11 +541,11 @@
 }
 
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .navbar-nav {
+    .cc-navbar__nav {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .navbar-nav .open .dropdown-menu {
+    .cc-navbar__nav .open .cc-menu__list {
         position: static;
         float: none;
         width: auto;
@@ -555,28 +555,28 @@
         box-shadow: none;
     }
 
-    .navbar-nav .open .dropdown-menu > li > a,
-    .navbar-nav .open .dropdown-menu .dropdown-header {
+    .cc-navbar__nav .open .cc-menu__list > li > a,
+    .cc-navbar__nav .open .cc-menu__list .cc-menu__header {
         padding: 8px 20px;
     }
 
-    .navbar-nav .open .dropdown-menu > li > a {
+    .cc-navbar__nav .open .cc-menu__list > li > a {
         line-height: 1.5384616;
     }
 
-    .navbar-nav .open .dropdown-menu > li > a:hover,
-    .navbar-nav .open .dropdown-menu > li > a:focus {
+    .cc-navbar__nav .open .cc-menu__list > li > a:hover,
+    .cc-navbar__nav .open .cc-menu__list > li > a:focus {
         background-image: none;
     }
 
-    .navbar-nav .open .dropdown-menu > .dropdown-submenu > ul > li > a {
+    .cc-navbar__nav .open .cc-menu__list > .cc-menu__submenu > ul > li > a {
         padding-left: 40px;
     }
 
-    .navbar-nav
+    .cc-navbar__nav
         .open
-        .dropdown-menu
-        > .dropdown-submenu
+        .cc-menu__list
+        > .cc-menu__submenu
         > ul
         > li
         > ul
@@ -585,95 +585,95 @@
         padding-left: 60px;
     }
 
-    .navbar-nav > li + li {
+    .cc-navbar__nav > li + li {
         margin-top: 1px;
     }
 
-    .navbar-nav > li > a {
+    .cc-navbar__nav > li > a {
         padding-left: 20px;
         padding-right: 20px;
     }
 
-    .navbar-nav > li > a .caret {
+    .cc-navbar__nav > li > a .caret {
         float: right;
         margin-top: 2px;
         margin-left: 5px;
     }
 
-    .navbar-nav > li > a .cc-label,
-    .navbar-nav > li > a .cc-badge {
+    .cc-navbar__nav > li > a .cc-label,
+    .cc-navbar__nav > li > a .cc-badge {
         position: static;
         float: right;
     }
 
-    .navbar-nav > .dropdown-user .caret {
+    .cc-navbar__nav > .cc-menu--user .caret {
         margin-top: 8px;
     }
 
-    .navbar-nav:last-child {
+    .cc-navbar__nav:last-child {
         border-bottom: 0;
     }
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar-nav {
+    .cc-navbar__nav {
         float: left;
         margin: 0;
         margin-left: 20px;
     }
 
-    .navbar-nav > li {
+    .cc-navbar__nav > li {
         float: left;
     }
 }
 
 @media (min-width: theme(--breakpoint-tablet)) {
-    .navbar-right {
+    .cc-navbar__right {
         float: right !important;
         margin-right: -20px;
     }
 
-    .navbar-right ~ .navbar-right {
+    .cc-navbar__right ~ .cc-navbar__right {
         margin-right: 0;
     }
 
-    .navbar-right .dropdown-menu {
+    .cc-navbar__right .cc-menu__list {
         right: 0;
         left: auto;
     }
 
-    .navbar-right .dropdown-menu-left {
+    .cc-navbar__right .cc-menu__list--left {
         right: auto;
         left: 0;
     }
 }
 
-/* Inverse (dark) navbar -- the only variant this app uses */
-.navbar-inverse {
+/* Inverse (dark) cc-navbar -- the only variant this app uses */
+.cc-navbar--inverse {
     background-color: #37474f;
     border-color: #37474f;
     border-bottom-color: rgba(255, 255, 255, 0.1);
     color: var(--cc-white);
 }
 
-.navbar-inverse .navbar-nav > li > a {
+.cc-navbar--inverse .cc-navbar__nav > li > a {
     color: var(--cc-white);
 }
 
-.navbar-inverse .navbar-nav > li > a:hover,
-.navbar-inverse .navbar-nav > li > a:focus {
+.cc-navbar--inverse .cc-navbar__nav > li > a:hover,
+.cc-navbar--inverse .cc-navbar__nav > li > a:focus {
     color: var(--cc-white);
     background-color: rgba(0, 0, 0, 0.1);
 }
 
-.navbar-inverse .navbar-nav > .open > a,
-.navbar-inverse .navbar-nav > .open > a:hover,
-.navbar-inverse .navbar-nav > .open > a:focus {
+.cc-navbar--inverse .cc-navbar__nav > .open > a,
+.cc-navbar--inverse .cc-navbar__nav > .open > a:hover,
+.cc-navbar--inverse .cc-navbar__nav > .open > a:focus {
     color: var(--cc-white);
     background-color: rgba(0, 0, 0, 0.15);
 }
 
-.navbar-inverse .cc-navbar-cc-panel {
+.cc-navbar--inverse .cc-navbar__panel {
     border-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -805,7 +805,7 @@
 /*
  * account-menu.css relies on out-ranking two of the base rules above --
  * `.account-menu li > a { display: flex }` (for the Language/Units rows'
- * label-left, value-right layout) and `.dropdown-submenu > a.account-
+ * label-left, value-right layout) and `.cc-menu__submenu > a.account-
  * menu-row:after { display: none }` (to hide the submenu chevron this
  * file draws via ::after, replaced by its own chevron-right icon inside
  * .account-menu-row-value). Both used to be re-asserted here too, as a

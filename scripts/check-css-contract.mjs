@@ -97,6 +97,13 @@ const deprecatedAlertClasses = new Set([
     'close',
 ]);
 const deprecatedPaginationClasses = new Set(['pagination', 'pagination-sm']);
+const deprecatedNavigationClasses = new Set([
+    'nav', 'navbar', 'navbar-inverse', 'navbar-fixed-top', 'navbar-top',
+    'navbar-header', 'navbar-brand', 'navbar-nav', 'navbar-right', 'navbar-toggle-icon',
+    'dropdown', 'dropdown-user', 'dropdown-toggle', 'dropdown-menu',
+    'dropdown-menu-right', 'dropdown-menu-left', 'dropdown-submenu',
+    'dropdown-submenu-hover', 'dropdown-submenu-left', 'dropdown-divider', 'dropdown-header',
+]);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -171,6 +178,10 @@ function addViolations(path, source) {
             contract: 'Bootstrap pagination selector',
             pattern: /(?:^|[^\w-])\.pagination(?:-[\w-]+)?(?![\w-])/g,
         },
+        {
+            contract: 'Bootstrap navigation selector',
+            pattern: /(?:^|[^\w-])\.(?:nav|navbar|dropdown)(?:-[\w-]+)?(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {
@@ -195,7 +206,8 @@ function addTemplateClassViolations(path, source) {
                 deprecatedButtonClasses.has(token) ||
                 deprecatedLabelClasses.has(token) ||
                 deprecatedAlertClasses.has(token) ||
-                deprecatedPaginationClasses.has(token)
+                deprecatedPaginationClasses.has(token) ||
+                deprecatedNavigationClasses.has(token)
         );
 
         if (deprecatedClass) {
@@ -217,7 +229,9 @@ function addTemplateClassViolations(path, source) {
                                 ? 'Bootstrap label or badge class'
                                 : deprecatedAlertClasses.has(deprecatedClass)
                                   ? 'Bootstrap alert or close class'
-                                  : 'Bootstrap pagination class';
+                                  : deprecatedPaginationClasses.has(deprecatedClass)
+                                    ? 'Bootstrap pagination class'
+                                    : 'Bootstrap navigation class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

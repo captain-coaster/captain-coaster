@@ -374,7 +374,7 @@ fieldset[disabled] .cc-button {
  * (`.modal-header[class*="bg-"] .cc-close` and the .modal-content
  * variant) target this class for bg-tinted modal headers; no template
  * uses one, so they're dead in practice and intentionally left
- * untouched in navbar.css until that file's own migration.
+ * untouched in cc-navbar.css until that file's own migration.
  *
  * @apply used here (unlike .cc-alert) since every value maps to a plain
  * Tailwind utility or a simple arbitrary one -- nothing pseudo-element

@@ -420,7 +420,7 @@
     padding-right: 2.5rem;
 }
 
-/* Search dropdown for top list */
+/* Search cc-menu for top list */
 .top-search-container .search-dropdown {
     max-height: 400px;
     overflow-y: auto;

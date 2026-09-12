@@ -8,13 +8,13 @@
    in every subsequent link generated from this same request. #}
 {% set nav_params = (route_params|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
 
-<div class="navbar navbar-inverse navbar-fixed-top" data-controller="navbar-collapse">
-  <div class="navbar-header">
-    <a class="navbar-brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
+<div class="cc-navbar cc-navbar--inverse cc-navbar--fixed-top" data-controller="navbar-collapse">
+  <div class="cc-navbar__header">
+    <a class="cc-navbar__brand" href="{{ path('default_index') }}" style="padding:11px 20px;">
       <img src="{{ asset('images/logo_light.svg') }}" style="height:24px;margin:0;" alt="Captain Coaster">
     </a>
-    <ul class="nav navbar-nav visible-xs-block">
-      <li class="navbar-toggle-icon">
+    <ul class="cc-nav cc-navbar__nav visible-xs-block">
+      <li class="cc-navbar__toggle-icon">
         <a data-action="click->navbar-collapse#toggle click->sidebar#closeMobile" aria-expanded="false">
           {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
             {# Not img-xs: its fixed 32px fights the w-5 h-5 icons beside
@@ -31,23 +31,23 @@
       {% endif %}
     </ul>
   </div>
-  <div class="cc-navbar-cc-panel" id="navbar-mobile" data-navbar-collapse-target="cc-panel">
-    <ul class="nav navbar-nav hidden-xs">
+  <div class="cc-navbar__panel" id="navbar-mobile" data-navbar-collapse-target="cc-panel">
+    <ul class="cc-nav cc-navbar__nav hidden-xs">
       <li>
         <a data-action="click->sidebar#toggleMain">{{ ux_icon('heroicons:bars-3', {'class': 'w-5 h-5'}) }}</a>
       </li>
     </ul>
-    <ul class="nav navbar-nav navbar-right">
+    <ul class="cc-nav cc-navbar__nav cc-navbar__right">
       <!-- user profile -->
       {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-        <li class="dropdown dropdown-user">
-          <a class="dropdown-toggle" data-toggle="dropdown">
+        <li class="cc-menu cc-menu--user">
+          <a class="cc-menu__toggle" data-toggle="dropdown">
             {{ helper.profilePicture(app.user, 'img-circle img-xs') }}
             <span>{{ app.user.firstname }}</span>
             <i class="caret"></i>
           </a>
 
-          <ul class="dropdown-menu dropdown-menu-right account-menu">
+          <ul class="cc-menu__list cc-menu__list--right account-menu">
             <li class="account-menu-header">
               {{ helper.profilePicture(app.user, 'img-circle img-lg') }}
               <div>
@@ -93,11 +93,11 @@
           </ul>
         </li>
       {% else %}
-        <li class="dropdown account-menu-anon">
-          <a class="dropdown-toggle" data-toggle="dropdown">
+        <li class="cc-menu account-menu-anon">
+          <a class="cc-menu__toggle" data-toggle="dropdown">
             {{ ux_icon('heroicons:user-circle', {'class': 'w-5 h-5'}) }}
           </a>
-          <ul class="dropdown-menu dropdown-menu-right account-menu">
+          <ul class="cc-menu__list cc-menu__list--right account-menu">
             {{ _self.languageSubmenu(current_route, nav_params) }}
             {{ _self.unitsSubmenu(current_route, nav_params) }}
             <li class="divider"></li>
@@ -111,8 +111,8 @@
 </div>
 
 {% macro languageSubmenu(current_route, nav_params) %}
-  <li class="dropdown-submenu dropdown-submenu-hover dropdown-submenu-left">
-    <a href="#" class="dropdown-toggle account-menu-row" data-toggle="dropdown">
+  <li class="cc-menu__submenu cc-menu__submenu--hover cc-menu__submenu--left">
+    <a href="#" class="cc-menu__toggle account-menu-row" data-toggle="dropdown">
       <span class="account-menu-row-label">
         {{ ux_icon('heroicons:language', {'class': 'w-3.5 h-3.5'}) }}
         {{ 'navbar.language'|trans }}
@@ -122,7 +122,7 @@
         {{ ux_icon('heroicons:chevron-right', {'class': 'w-3 h-3'}) }}
       </span>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="cc-menu__list">
       {% for locale in locales %}
         <li>
           <a href="{{ path(current_route, nav_params|merge({_locale: locale, setLocale: 1})) }}">
@@ -136,8 +136,8 @@
 {% endmacro %}
 
 {% macro unitsSubmenu(current_route, nav_params) %}
-  <li class="dropdown-submenu dropdown-submenu-hover dropdown-submenu-left">
-    <a href="#" class="dropdown-toggle account-menu-row" data-toggle="dropdown">
+  <li class="cc-menu__submenu cc-menu__submenu--hover cc-menu__submenu--left">
+    <a href="#" class="cc-menu__toggle account-menu-row" data-toggle="dropdown">
       <span class="account-menu-row-label">
         {{ ux_icon('heroicons:scale', {'class': 'w-3.5 h-3.5'}) }}
         {{ 'navbar.units'|trans }}
@@ -147,7 +147,7 @@
         {{ ux_icon('heroicons:chevron-right', {'class': 'w-3 h-3'}) }}
       </span>
     </a>
-    <ul class="dropdown-menu">
+    <ul class="cc-menu__list">
       <li>
         <a href="{{ path(current_route, nav_params|merge({setUnits: 'metric'})) }}">
           {{ 'profile.settings.preferences.units.metric'|trans }}

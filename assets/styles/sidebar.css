@@ -46,13 +46,13 @@
  * The mini/icon-only sidebar ("Mini sidebar" section, ~320 lines)
  * reduces to 3 real declarations. Its per-item hover flyout
  * (`.navigation > li:hover > a > span{display:block;position:absolute;
- * ...}`, meant to preview a nav item's label without leaving mini mode)
+ * ...}`, meant to preview a cc-nav item's label without leaving mini mode)
  * and its `:hover:not(.active)` highlight both require the `.sidebar-xs`
  * ancestor class -- but sidebar_controller.js's `mouseenter` handler
  * removes `.sidebar-xs` from `<body>` the instant the pointer enters
  * `.sidebar-content` (same element the flyout would need hovered),
  * before that per-item `:hover` rule can ever apply. Verified live:
- * hovering a nav item immediately shows `sidebar-fixed-expanded` in
+ * hovering a cc-nav item immediately shows `sidebar-fixed-expanded` in
  * `document.body.className` with `sidebar-xs` already gone -- the
  * flyout CSS is unreachable in practice, fully superseded by the
  * JS-driven full-width expand. Same reasoning kills `.sidebar-xs-

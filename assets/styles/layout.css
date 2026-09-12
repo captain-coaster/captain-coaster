@@ -23,12 +23,12 @@
  * every page that reaches this markup at all (Maps/index.html.twig
  * overrides the whole `wide_body` block and never renders `.content`).
  *
- * `.footer`'s `&.navbar`/`-fixed-bottom` branch and `.footer-boxed` are
- * dropped: `footer.html.twig` never combines `.footer` with `.navbar`,
+ * `.footer`'s `&.cc-navbar`/`-fixed-bottom` branch and `.footer-boxed` are
+ * dropped: `footer.html.twig` never combines `.footer` with `.cc-navbar`,
  * and `.footer-boxed`/`navbar-fixed-bottom` have zero real uses.
  *
  * component-animation.less scope trimmed to selectors real markup
- * actually has: `.cc-button`, `.navbar-nav > li > a`, `.dropdown-menu > li >
+ * actually has: `.cc-button`, `.cc-navbar__nav > li > a`, `.cc-menu__list > li >
  * a`, `.cc-list-group__item`, `.cc-pagination > li > a/span`, `.cc-close`, `.table
  * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
  * during resize).
@@ -74,12 +74,12 @@
  * selector group -- but "all" also lets a mobile WebKit tap promote the
  * element to its own compositing layer for the transition, which can
  * read as a sub-pixel text shift at the moment of tap (sidebar.css's own
- * nav links use the narrow form below already, and don't show this).
+ * cc-nav links use the narrow form below already, and don't show this).
  * Scoped to the properties that actually change.
  */
 .cc-button,
-.navbar-nav > li > a,
-.dropdown-menu > li > a,
+.cc-navbar__nav > li > a,
+.cc-menu__list > li > a,
 .cc-list-group__item,
 .cc-pagination > li > a,
 .cc-pagination > li > span {

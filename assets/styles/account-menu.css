@@ -5,14 +5,14 @@
  * fade(#fff,10%) -> rgba(255,255,255,.1), fade(#fff,70%) -> rgba(255,255,255,.7).
  */
 
-/* Desktop navbar toggle avatar: smaller and ringed. Unlike the
- * account-menu-header avatar (which sits on the dropdown cc-panel's light
+/* Desktop cc-navbar toggle avatar: smaller and ringed. Unlike the
+ * account-menu-header avatar (which sits on the cc-menu cc-panel's light
  * background and so uses a dark rgba(0,0,0,.1) border), this one sits on
- * the dark top navbar in both mobile and desktop, so it needs the cc-panel's
+ * the dark top cc-navbar in both mobile and desktop, so it needs the cc-panel's
  * own dark-background variant (rgba(255,255,255,.2), see the mobile media
  * query below) to actually be visible.
  */
-.dropdown-user > .dropdown-toggle img {
+.cc-menu--user > .cc-menu__toggle img {
     width: 28px !important;
     height: 28px !important;
     border: 2px solid rgba(255, 255, 255, 0.2);
@@ -25,7 +25,7 @@
     padding: 12px 15px 10px;
 }
 
-/* The theme caps any avatar under .dropdown-user at max-height: 30px
+/* The theme caps any avatar under .cc-menu--user at max-height: 30px
  * (sized for the compact toggle-button avatar) with no !important --
  * since max-height is a different property than img-lg's own
  * `height: 44px !important`, that cap still wins and squashes this
@@ -73,7 +73,7 @@
  * (current value, unread count, the selected-option checkmark) to the right.
  */
 .account-menu-row,
-.dropdown-submenu .dropdown-menu > li > a {
+.cc-menu__submenu .cc-menu__list > li > a {
     justify-content: space-between;
 }
 
@@ -85,25 +85,25 @@
  * long value text ("Unités métriques") instead of flowing after it. Our
  * own chevron-right icon inside account-menu-row-value replaces it.
  */
-.dropdown-submenu > a.account-menu-row:after {
+.cc-menu__submenu > a.account-menu-row:after {
     display: none;
 }
 
-/* On mobile the collapsed navbar already required one tap to reveal
- * #navbar-mobile; requiring a second tap on a nested dropdown-toggle to
+/* On mobile the collapsed cc-navbar already required one tap to reveal
+ * #navbar-mobile; requiring a second tap on a nested cc-menu__toggle to
  * reveal the account menu duplicates that icon and shows an empty row
  * while the menu stays hidden. Render it inline instead, unconditionally,
- * reusing the theme's own inverse-navbar mobile dropdown colors (normally
+ * reusing the theme's own inverse-navbar mobile cc-menu colors (normally
  * gated behind `.open`, which this bypasses) so text stays legible against
- * the dark collapsed navbar background.
+ * the dark collapsed cc-navbar background.
  */
 @media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
-    .dropdown-user > .dropdown-toggle,
-    .account-menu-anon > .dropdown-toggle {
+    .cc-menu--user > .cc-menu__toggle,
+    .account-menu-anon > .cc-menu__toggle {
         display: none;
     }
 
-    .navbar-nav > li > .dropdown-menu.account-menu {
+    .cc-navbar__nav > li > .cc-menu__list.account-menu {
         display: block;
         position: static;
         float: none;
@@ -115,22 +115,22 @@
         color: var(--cc-white);
     }
 
-    .navbar-nav
+    .cc-navbar__nav
         > li
-        > .dropdown-menu.account-menu
+        > .cc-menu__list.account-menu
         a:not(.cc-label--flat):not(.cc-badge--flat) {
         color: var(--cc-white);
     }
 
-    .navbar-nav > li > .dropdown-menu.account-menu .divider {
+    .cc-navbar__nav > li > .cc-menu__list.account-menu .divider {
         background-color: rgba(255, 255, 255, 0.1);
     }
 
-    .navbar-nav > li > .dropdown-menu.account-menu .account-menu-row-value {
+    .cc-navbar__nav > li > .cc-menu__list.account-menu .account-menu-row-value {
         color: rgba(255, 255, 255, 0.7);
     }
 
-    .navbar-nav > li > .dropdown-menu.account-menu .account-menu-header img {
+    .cc-navbar__nav > li > .cc-menu__list.account-menu .account-menu-header img {
         border-color: rgba(255, 255, 255, 0.2);
     }
 
@@ -139,38 +139,38 @@
      * keep Bootstrap's light default tap-highlight background, which
      * flashes white against this dark cc-panel.
      */
-    .navbar-nav > li > .dropdown-menu.account-menu li > a:hover,
-    .navbar-nav > li > .dropdown-menu.account-menu li > a:focus,
-    .navbar-nav > li > .dropdown-menu.account-menu li > a:active {
+    .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:hover,
+    .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:focus,
+    .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:active {
         background-color: rgba(0, 0, 0, 0.1);
     }
 
     /* Nested submenus (language, units, notifications) are themselves
-     * .dropdown-menu elements; the theme's own mobile stacking rules
+     * .cc-menu__list elements; the theme's own mobile stacking rules
      * reset their position and box-shadow but not their light default
-     * background or their navbar-inverse border, which otherwise
+     * background or their cc-navbar--inverse border, which otherwise
      * render as a boxed-in white cc-panel with a visible double line
      * (its own border plus the next divider right below it) inside
      * this dark, borderless account cc-panel.
      */
-    .navbar-nav > li > .dropdown-menu.account-menu .dropdown-menu {
+    .cc-navbar__nav > li > .cc-menu__list.account-menu .cc-menu__list {
         background-color: transparent;
         border: none;
         box-shadow: none;
     }
 
-    /* Pin this one <li> to .navbar-header's own fixed height (46px) and
+    /* Pin this one <li> to .cc-navbar__header's own fixed height (46px) and
      * center its content within that full height -- not a hand-tuned
      * padding value, so it stays correct regardless of whether the icon
      * inside is the 28px ringed avatar or the smaller plain svg.
-     * Specificity note: ".navbar-toggle-icon > a" needs to beat Bootstrap
-     * core's ".nav > li > a" (0,1,2), hence "li." rather than the class alone.
+     * Specificity note: ".cc-navbar__toggle-icon > a" needs to beat Bootstrap
+     * core's ".cc-nav > li > a" (0,1,2), hence "li." rather than the class alone.
      */
-    li.navbar-toggle-icon {
+    li.cc-navbar__toggle-icon {
         height: 46px;
     }
 
-    li.navbar-toggle-icon > a {
+    li.cc-navbar__toggle-icon > a {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -179,7 +179,7 @@
         line-height: 0;
     }
 
-    .navbar-toggle-icon img {
+    .cc-navbar__toggle-icon img {
         width: 28px !important;
         height: 28px !important;
         border: 2px solid rgba(255, 255, 255, 0.2);
@@ -189,13 +189,13 @@
      * same as the burger icon beside it.
      */
 
-    /* The navbar cc-panel caps its height on narrow landscape screens; let the
+    /* The cc-navbar cc-panel caps its height on narrow landscape screens; let the
      * account menu grow to its content height instead of adding an inner
-     * scrollbar (fine for a short nav list, not for a full account
+     * scrollbar (fine for a short cc-nav list, not for a full account
      * cc-panel). Let it grow to its content height and let the page scroll
      * instead of an inner scroll box.
      */
-    #navbar-mobile.cc-navbar-cc-panel {
+    #navbar-mobile.cc-navbar__panel {
         max-height: none;
         overflow-y: visible;
     }

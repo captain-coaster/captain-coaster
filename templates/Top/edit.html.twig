@@ -43,11 +43,11 @@
 
     {# Single Actions Menu #}
     <div class="coaster-menu">
-      <div class="dropdown">
+      <div class="cc-menu">
         <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
           {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-3.5 h-3.5'}) }}
         </button>
-        <ul class="dropdown-menu dropdown-menu-right">
+        <ul class="cc-menu__list cc-menu__list--right">
           <li>
             <a href="#" data-action="click->top-list#moveToTop">
               {{ ux_icon('heroicons:arrow-up', {'class': 'w-3 h-3'}) }}
@@ -66,7 +66,7 @@
               {{ 'actions.move_to_position'|trans({}, 'top') }}
             </a>
           </li>
-          <li class="dropdown-divider"></li>
+          <li class="cc-menu__divider"></li>
           <li>
             <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
               {{ ux_icon('heroicons:trash', {'class': 'w-3 h-3'}) }}
@@ -108,11 +108,11 @@
 
       {# Single Actions Menu #}
       <div class="coaster-menu">
-        <div class="dropdown">
+        <div class="cc-menu">
           <button type="button" class="menu-btn" data-toggle="dropdown" aria-expanded="false" aria-label="{{ 'actions.move_to_top'|trans({}, 'top') }}">
             {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-3.5 h-3.5'}) }}
           </button>
-          <ul class="dropdown-menu dropdown-menu-right">
+          <ul class="cc-menu__list cc-menu__list--right">
             <li>
               <a href="#" data-action="click->top-list#moveToTop">
                 {{ ux_icon('heroicons:arrow-up', {'class': 'w-3 h-3'}) }}
@@ -131,7 +131,7 @@
                 {{ 'actions.move_to_position'|trans({}, 'top') }}
               </a>
             </li>
-            <li class="dropdown-divider"></li>
+            <li class="cc-menu__divider"></li>
             <li>
               <a href="#" class="text-danger" data-action="click->top-list#removeCoaster">
                 {{ ux_icon('heroicons:trash', {'class': 'w-3 h-3'}) }}

@@ -20,14 +20,14 @@ svg.w-16 {
     vertical-align: middle;
 }
 
-/* Icon spacing for navbar and sidebar */
-.navbar a svg {
+/* Icon spacing for cc-navbar and sidebar */
+.cc-navbar a svg {
     margin-right: 0;
     margin-left: 0;
 }
 
-/* Add spacing only for dropdown menu items with text */
-.navbar .dropdown-menu a svg {
+/* Add spacing only for cc-menu menu items with text */
+.cc-navbar .cc-menu__list a svg {
     margin-right: 8px;
 }
 

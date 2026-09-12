@@ -1,7 +1,7 @@
 /*
  * .cc-label / .cc-badge — migrated together: theme/bootstrap-limitless/labels.less
  * + badges.less, bootstrap/less/labels.less + badges.less. They're entangled
- * with each other (shared `> .caret`/`.dropdown-toggle`/`[href]` rules,
+ * with each other (shared `> .caret`/`.cc-menu__toggle`/`[href]` rules,
  * shared color-variable naming) so splitting them into separate PRs would
  * just duplicate the same coupling check twice.
  *
@@ -17,18 +17,18 @@
  * uses (Twig *and* the two Stimulus controllers that render a `.cc-badge`
  * client-side: `top_search_controller.js`'s search results, which is how
  * this got checked beyond grepping templates/) and are dropped, along with
- * every `[href]:hover/:focus`, `.cc-button &`, `.dropdown-toggle` and `> .caret`
+ * every `[href]:hover/:focus`, `.cc-button &`, `.cc-menu__toggle` and `> .caret`
  * sub-rule — neither `.cc-label` nor `.cc-badge` is ever an anchor, inside a
- * `.cc-button`, or a dropdown toggle anywhere in this app.
+ * `.cc-button`, or a cc-menu toggle anywhere in this app.
  *
- * Cross-file coupling is heavy (navbar, dropdowns, sidebar, cc-list-group,
+ * Cross-file coupling is heavy (cc-navbar, dropdowns, sidebar, cc-list-group,
  * nav-pills/nav-tabs, panels, type.less's h1-h6 rule, heading-elements,
  * component-animation) — checked every real combination against actual
  * markup instead of the files in the abstract:
- *   - `theme/bootstrap-limitless/navbar.less`'s `.navbar-inverse .navbar-nav
+ *   - `theme/bootstrap-limitless/cc-navbar.less`'s `.cc-navbar--inverse .cc-navbar__nav
  *     .cc-badge` (mobile) is live: the notification-count badge in
- *     navbar.html.twig's account dropdown is a `.navbar-nav` descendant on
- *     a `.navbar-inverse` navbar. Untouched file, keeps applying.
+ *     cc-navbar.html.twig's account cc-menu is a `.cc-navbar__nav` descendant on
+ *     a `.cc-navbar--inverse` cc-navbar. Untouched file, keeps applying.
  *   - `theme/bootstrap-limitless/type.less`'s `h1–h6 > .cc-label/.cc-badge` rule
  *     is live: every cc-panel__heading/count badge in this app
  *     (Notification/index, ranking/info, Default/index, Coaster/show,
@@ -52,7 +52,7 @@
  *     .cc-badge` context rules are dead: every real `.cc-panel` badge here sits
  *     in a `.cc-panel--flat` or `.cc-panel--white`, neither of which is one of
  *     those six contextual cc-panel types.
- *   - dropdown-menu, nav-pills/nav-tabs, sidebar `.navigation`,
+ *   - cc-menu__list, nav-pills/nav-tabs, sidebar `.navigation`,
  *     `.breadcrumb`, `.menu-list`, `.dd-wrapper`, `.heading-thumbnails` and
  *     `.cc-button` combinations are all dead — no template/controller combines
  *     `.cc-label`/`.cc-badge` with any of them.

@@ -6,9 +6,9 @@
 
 /* .content-wrapper is a table-cell sized by its content, so height:100%
    on the map is circular (resolves to 0). .content-wrapper itself is
-   sized to a flat 100vh by the theme despite starting below the navbar,
-   so it already overflows the viewport by the navbar's height — match
-   that exact sizing (not vh minus navbar) so #map fills it completely
+   sized to a flat 100vh by the theme despite starting below the cc-navbar,
+   so it already overflows the viewport by the cc-navbar's height — match
+   that exact sizing (not vh minus cc-navbar) so #map fills it completely
    instead of stopping short and leaving a scrollable blank strip. */
 #map {
     height: 100vh;
