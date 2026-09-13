@@ -197,49 +197,68 @@ function addViolations(path, source) {
     }
 }
 
+const deprecatedClassFamilies = [
+    { set: deprecatedMediaClasses, contract: 'Bootstrap media class' },
+    { set: deprecatedCollectionClasses, contract: 'Bootstrap collection class' },
+    { set: deprecatedPanelClasses, contract: 'Bootstrap panel class' },
+    { set: deprecatedFieldClasses, contract: 'Bootstrap field class' },
+    { set: deprecatedButtonClasses, contract: 'Bootstrap button class' },
+    { set: deprecatedLabelClasses, contract: 'Bootstrap label or badge class' },
+    { set: deprecatedAlertClasses, contract: 'Bootstrap alert or close class' },
+    { set: deprecatedPaginationClasses, contract: 'Bootstrap pagination class' },
+    { set: deprecatedNavigationClasses, contract: 'Bootstrap navigation class' },
+    { set: deprecatedVisibilityClasses, contract: 'Bootstrap visibility class' },
+];
+
+// A dynamic class built as `stem-{{ expression }}` (e.g. the pre-migration
+// `alert-{{ label }}`) would otherwise slip past every check above: naively
+// stripping `{{ ... }}` collapses it to the token `stem-`, which isn't a
+// literal entry in any deprecated-class set. Replaced with a marker instead
+// of deleted, so `stem-EXPR` can be recognized as a dynamic build of a
+// deprecated family (any set already containing a `stem-something` entry).
+const EXPR_MARKER = 'EXPR';
+
+function dynamicStemFamily(stem) {
+    return deprecatedClassFamilies.find(({ set }) =>
+        [...set].some((cls) => cls.startsWith(`${stem}-`))
+    );
+}
+
 function addTemplateClassViolations(path, source) {
     for (const attribute of source.matchAll(/class="([^"]*)"/g)) {
-        const tokens = attribute[1].replace(/{{[\s\S]*?}}/g, '').split(/\s+/);
+        const tokens = attribute[1].replace(/{{[\s\S]*?}}/g, EXPR_MARKER).split(/\s+/);
 
-        const deprecatedClass = tokens.find(
-            (token) =>
-                token === 'collapse' ||
-                deprecatedMediaClasses.has(token) ||
-                deprecatedCollectionClasses.has(token) ||
-                deprecatedPanelClasses.has(token) ||
-                deprecatedFieldClasses.has(token) ||
-                deprecatedButtonClasses.has(token) ||
-                deprecatedLabelClasses.has(token) ||
-                deprecatedAlertClasses.has(token) ||
-                deprecatedPaginationClasses.has(token) ||
-                deprecatedNavigationClasses.has(token) ||
-                deprecatedVisibilityClasses.has(token)
-        );
+        let contract;
+        const deprecatedClass = tokens.find((token) => {
+            if (token === 'collapse') {
+                contract = 'Bootstrap collapse class';
+
+                return true;
+            }
+
+            const family = deprecatedClassFamilies.find(({ set }) => set.has(token));
+
+            if (family) {
+                contract = family.contract;
+
+                return true;
+            }
+
+            if (token.endsWith(`-${EXPR_MARKER}`)) {
+                const dynamicFamily = dynamicStemFamily(token.slice(0, -1 - EXPR_MARKER.length));
+
+                if (dynamicFamily) {
+                    contract = dynamicFamily.contract;
+
+                    return true;
+                }
+            }
+
+            return false;
+        });
 
         if (deprecatedClass) {
             const line = source.slice(0, attribute.index).split('\n').length;
-            const contract =
-                deprecatedClass === 'collapse'
-                    ? 'Bootstrap collapse class'
-                    : deprecatedMediaClasses.has(deprecatedClass)
-                      ? 'Bootstrap media class'
-                      : deprecatedCollectionClasses.has(deprecatedClass)
-                        ? 'Bootstrap collection class'
-                        : deprecatedPanelClasses.has(deprecatedClass)
-                          ? 'Bootstrap panel class'
-                          : deprecatedFieldClasses.has(deprecatedClass)
-                            ? 'Bootstrap field class'
-                            : deprecatedButtonClasses.has(deprecatedClass)
-                              ? 'Bootstrap button class'
-                              : deprecatedLabelClasses.has(deprecatedClass)
-                                ? 'Bootstrap label or badge class'
-                                : deprecatedAlertClasses.has(deprecatedClass)
-                                  ? 'Bootstrap alert or close class'
-                                  : deprecatedPaginationClasses.has(deprecatedClass)
-                                    ? 'Bootstrap pagination class'
-                                    : deprecatedNavigationClasses.has(deprecatedClass)
-                                      ? 'Bootstrap navigation class'
-                                      : 'Bootstrap visibility class';
             violations.push(`${path}:${line} ${contract}`);
         }
     }

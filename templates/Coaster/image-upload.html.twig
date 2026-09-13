@@ -7,7 +7,7 @@
 {% block body %}
     {% for label, messages in app.flashes %}
         {% for message in messages %}
-            <div class="flash-{{ label }}">
+            <div class="cc-alert cc-alert--{{ label|default('info') }}">
                 {{ message }}
             </div>
         {% endfor %}
