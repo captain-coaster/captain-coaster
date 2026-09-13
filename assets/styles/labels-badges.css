@@ -162,6 +162,12 @@
     border-color: var(--cc-danger);
 }
 
+/* "purple" status.type (construction/soft-opening) -- see colors.css's bg-purple/border-purple. */
+.cc-label--purple {
+    background-color: var(--cc-purple);
+    border-color: var(--cc-purple);
+}
+
 .cc-label--rounded {
     border-radius: 100px;
 }

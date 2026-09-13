@@ -192,11 +192,21 @@ small,
     font-size: 11px;
 }
 
+/*
+ * Recurring cascade-position bug (see colors.css's own header): `border:
+ * 2px solid` is a shorthand, so it resets border-color to its initial
+ * value (currentcolor) even though only width/style are written out --
+ * tied specificity with a same-page `.border-success`/`.border-danger`/
+ * etc. helper (colors.css, imported before this file), so which one
+ * actually painted the color depended on import order alone. Split so
+ * border-color is left for the helper to set.
+ */
 .status-mark {
     display: inline-block;
     width: 8px;
     height: 8px;
-    border: 2px solid;
+    border-width: 2px;
+    border-style: solid;
     border-radius: 50%;
 }
 

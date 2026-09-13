@@ -27,6 +27,44 @@
     border-bottom-right-radius: 0;
 }
 
+/*
+ * `.border-bottom-xlg` (helpers.css) and `.border-bottom-{status}`
+ * (colors.less's original combinatorial matrix -- never ported, since the
+ * DB-driven-class audit that produced colors.css only caught `status-mark
+ * bg-*`/`border-*`, not this one) share specificity with `.cc-panel`'s own
+ * `border: 1px solid var(--cc-gray-300)` shorthand, which sets the same
+ * border-bottom-width/style/color longhands; since this file loads after
+ * both, `.cc-panel` always won, silently flattening "other coasters in
+ * this park" (Park/show.html.twig) down to a plain 1px gray line with no
+ * status color at all. Only real usage combines all three classes, so
+ * override that specific compound rather than turning the generic helpers
+ * into a second combinatorial matrix.
+ */
+.cc-panel.border-bottom-xlg {
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+}
+
+.cc-panel.border-bottom-success {
+    border-bottom-color: var(--cc-success);
+}
+
+.cc-panel.border-bottom-danger {
+    border-bottom-color: var(--cc-danger);
+}
+
+.cc-panel.border-bottom-warning {
+    border-bottom-color: var(--cc-warning);
+}
+
+.cc-panel.border-bottom-info {
+    border-bottom-color: var(--cc-info);
+}
+
+.cc-panel.border-bottom-purple {
+    border-bottom-color: var(--cc-purple);
+}
+
 .cc-panel__body {
     position: relative;
     padding: 20px;
