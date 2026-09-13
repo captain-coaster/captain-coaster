@@ -87,6 +87,11 @@ coaster:
         kiddie: Kinder
         indoor: Indoor
         formerNames: Ehemalige Namen
+    stats:
+        height: Höhe
+        length: Länge
+        speed: Höchstgeschwindigkeit
+        inversions: Inversionen
     parkcoaster: 'Auch in {name}'
     video:
         title: Onride Video

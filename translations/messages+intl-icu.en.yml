@@ -82,6 +82,11 @@ coaster:
         kiddie: 'Kiddie'
         indoor: 'Indoor'
         formerNames: 'Former names'
+    stats:
+        height: 'Height'
+        length: 'Length'
+        speed: 'Top speed'
+        inversions: 'Inversions'
     parkcoaster: 'Also in {name}'
     video:
         title: 'Onride Video'

@@ -78,56 +78,32 @@
                 {% include 'Coaster/_rating_panel.html.twig' with {'coaster': coaster, 'rating': rating, 'user': user} only %}
             {% endif %}
             <!-- main carac -->
-            <div class="content-group">
-                <div class="grid grid-cols-2 gap-0 cc-button-group--block">
-                    <div>
-                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
-                            <div class="text-center">
-                                {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-7 h-7 text-warning-600'}) }}
-                                <div class="text-bold mt-[5px]">
-                                    {% if coaster.height is not empty %}
-                                        {{ units.metersOrFeet(coaster.height) }}
-                                    {% else %}
-                                        &nbsp;
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </button>
-                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
-                            <div class="text-center">
-                                {{ ux_icon('heroicons:rocket-launch', {'class': 'w-7 h-7 text-success-400'}) }}
-                                <div class="text-bold mt-[5px]">
-                                    {% if coaster.speed is not empty %}
-                                        {{ units.kphOrMph(coaster.speed) }}
-                                    {% else %}
-                                        &nbsp;
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </button>
-                    </div>
-                    <div>
-                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
-                            <div class="text-center">
-                                {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-7 h-7 text-cc-blue'}) }}
-                                <div class="text-bold mt-[5px]">
-                                    {% if coaster.length is not empty %}
-                                        {{ units.metersOrFeet(coaster.length) }}
-                                    {% else %}
-                                        &nbsp;
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </button>
-                        <button type="button" class="cc-button cc-button--default cc-button--block cc-button--float cc-button--float-lg">
-                            <div class="text-center">
-                                {{ ux_icon('heroicons:arrow-path-rounded-square', {'class': 'w-7 h-7 text-danger-400'}) }}
-                                <div class="text-bold mt-[5px]">
-                                    {{ coaster.inversionsNumber|default('0') }}
-                                </div>
-                            </div>
-                        </button>
-                    </div>
+            <div class="cc-panel cc-panel__body coaster-stats content-group">
+                <div class="coaster-stats__row">
+                    {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-4.5 h-4.5 text-warning-600'}) }}
+                    <span class="coaster-stats__label">{{ 'coaster.stats.height'|trans }}</span>
+                    <span class="coaster-stats__value{% if coaster.height is empty %} coaster-stats__value--empty{% endif %}">
+                        {{ coaster.height is not empty ? units.metersOrFeet(coaster.height) : '—' }}
+                    </span>
+                </div>
+                <div class="coaster-stats__row">
+                    {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-4.5 h-4.5 text-cc-blue'}) }}
+                    <span class="coaster-stats__label">{{ 'coaster.stats.length'|trans }}</span>
+                    <span class="coaster-stats__value{% if coaster.length is empty %} coaster-stats__value--empty{% endif %}">
+                        {{ coaster.length is not empty ? units.metersOrFeet(coaster.length) : '—' }}
+                    </span>
+                </div>
+                <div class="coaster-stats__row">
+                    {{ ux_icon('heroicons:bolt', {'class': 'w-4.5 h-4.5 text-success-400'}) }}
+                    <span class="coaster-stats__label">{{ 'coaster.stats.speed'|trans }}</span>
+                    <span class="coaster-stats__value{% if coaster.speed is empty %} coaster-stats__value--empty{% endif %}">
+                        {{ coaster.speed is not empty ? units.kphOrMph(coaster.speed) : '—' }}
+                    </span>
+                </div>
+                <div class="coaster-stats__row">
+                    {{ ux_icon('heroicons:arrow-path-rounded-square', {'class': 'w-4.5 h-4.5 text-danger-400'}) }}
+                    <span class="coaster-stats__label">{{ 'coaster.stats.inversions'|trans }}</span>
+                    <span class="coaster-stats__value">{{ coaster.inversionsNumber|default('0') }}</span>
                 </div>
             </div>
             <!-- /main carac -->
