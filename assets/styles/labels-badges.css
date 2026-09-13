@@ -192,6 +192,11 @@
     display: none;
 }
 
+.cc-badge--default {
+    background-color: var(--cc-gray-600);
+    border-color: var(--cc-gray-600);
+}
+
 .cc-badge--primary {
     background-color: var(--cc-primary);
     border-color: var(--cc-primary);
