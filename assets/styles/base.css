@@ -18,6 +18,18 @@ input::-moz-focus-inner {
 }
 
 /*
+ * Preflight zeroes every element's margin, including <p>'s. Bootstrap's
+ * own base type styles gave every paragraph a 10px bottom margin
+ * (`margin: 0 0 (@line-height-computed/2)`); nothing restored it during
+ * the Preflight pass, so any plain <p> immediately followed by another
+ * block -- a review's text butting up against its upvote/report row,
+ * for one -- lost its spacing site-wide.
+ */
+p {
+    margin: 0 0 10px;
+}
+
+/*
  * `html{font-size:16px}` -- captain-coaster/captain-coaster#385, step 3.
  * Was `10px`, a leftover of the original Limitless theme's own rem-
  * scaling convention; every Bootstrap/Limitless-derived rule in this
