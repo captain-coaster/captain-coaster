@@ -18,11 +18,31 @@
     border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.account-menu-header {
+/*
+ * The whole header row is one link to the profile -- easier to hit,
+ * especially on mobile, than a small "My profile" line under the name.
+ * `.account-menu-header` (the <li>) carries no box model of its own
+ * anymore; `.account-menu-header-link` owns the flex layout and padding
+ * so the entire padded area is clickable, not just the child content.
+ *
+ * Specificity note: this link also matches the generic `.cc-menu__list
+ * .account-menu li > a` row rule further down (same file), which sets a
+ * different gap/padding for every other row -- `.account-menu
+ * li.account-menu-header > a.account-menu-header-link` outranks it
+ * (3 classes + 2 elements vs. 2 classes + 2 elements) so the header
+ * keeps its own roomier spacing regardless of source order.
+ */
+.account-menu li.account-menu-header > a.account-menu-header-link {
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 12px 15px 10px;
+    color: inherit;
+}
+
+.account-menu li.account-menu-header > a.account-menu-header-link:hover,
+.account-menu li.account-menu-header > a.account-menu-header-link:focus {
+    color: inherit;
 }
 
 /* The theme caps any avatar under .cc-menu--user at max-height: 30px
@@ -61,8 +81,18 @@
  * same icon/text + gap layout, so it lives on one shared selector instead
  * of being duplicated per row type. Descendant (not child) combinator: it
  * also needs to reach submenu option links two levels deeper.
+ *
+ * `.cc-menu__list.account-menu` (both classes required, compound not
+ * descendant -- they're on the very same <ul>) rather than plain
+ * `.account-menu`: navbar.css's own `.cc-menu__list > li > a` sets
+ * `display: block` at identical specificity to a plain `.account-menu
+ * li > a`, so which one wins came down to import order in app.css --
+ * fragile, and it flipped silently during the file consolidation,
+ * stacking every row's icon+label onto two lines instead of one.
+ * The extra class makes this rule unconditionally more specific, so it
+ * keeps winning regardless of how the two files get reordered later.
  */
-.account-menu li > a {
+.cc-menu__list.account-menu li > a {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -77,15 +107,23 @@
     justify-content: space-between;
 }
 
-/* The theme draws its own submenu-opens-here arrow via a background-image
+/*
+ * The theme draws its own submenu-opens-here arrow via a background-image
  * data URI on ::after, positioned absolutely at a fixed right offset. Two
  * problems for our rows specifically: it can't pick up currentColor (it's
  * a rasterized image, not a live SVG), so it stays dark and unreadable
  * against this dark cc-panel; and being absolutely positioned, it overlaps
  * long value text ("Unités métriques") instead of flowing after it. Our
  * own chevron-right icon inside account-menu-row-value replaces it.
+ *
+ * `.account-menu` prefix again for specificity (see the note above on
+ * `.account-menu-header-link`): navbar.css's own `.cc-menu__list >
+ * .cc-menu__submenu > a:after` ties with a bare `.cc-menu__submenu >
+ * a.account-menu-row:after` here, so without it the theme's own arrow
+ * came back whenever navbar.css happened to load after this file --
+ * a second, dark, misaligned chevron next to our own.
  */
-.cc-menu__submenu > a.account-menu-row:after {
+.account-menu .cc-menu__submenu > a.account-menu-row:after {
     display: none;
 }
 

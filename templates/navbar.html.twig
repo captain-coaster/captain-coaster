@@ -49,11 +49,10 @@
 
           <ul class="cc-menu__list cc-menu__list--right account-menu">
             <li class="account-menu-header">
-              {{ helper.profilePicture(app.user, 'img-circle img-lg') }}
-              <div>
+              <a href="{{ path('profile') }}" class="account-menu-header-link">
+                {{ helper.profilePicture(app.user, 'img-circle img-lg') }}
                 <div class="account-menu-name">{{ app.user.firstname }}</div>
-                <a href="{{ path('profile') }}">{{ 'navbar.profile'|trans }}</a>
-              </div>
+              </a>
             </li>
             <li class="divider"></li>
             <!-- notifications -->

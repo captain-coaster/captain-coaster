@@ -351,7 +351,6 @@ rating:
     save_error: Bewertung konnte nicht gespeichert werden. Bitte versuche es erneut.
 
 navbar:
-    profile: Mein Profil
     settings: Einstellungen
     rating: Meine Bewertungen
     login: Anmelden

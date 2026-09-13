@@ -350,7 +350,6 @@ rating:
     save_error: "Impossible d'enregistrer la note. Veuillez réessayer."
 
 navbar:
-    profile: Mon Profil
     settings: Paramètres
     rating: Mes Notes
     login: Connexion

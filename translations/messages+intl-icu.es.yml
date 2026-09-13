@@ -350,7 +350,6 @@ rating:
     save_error: No se pudo guardar la calificación. Inténtalo de nuevo.
 
 navbar:
-    profile: Mi perfil
     settings: Ajustes
     rating: Mis notas
     login: Iniciar sesión
