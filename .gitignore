@@ -1,6 +1,7 @@
 .DS_Store
 .idea
 /screenshots/
+/.playwright-mcp/
 
 # runtime maintenance-mode toggle, copied in/out by deploy.sh — not source
 /public/maintenance.html
@@ -35,7 +36,10 @@ phpstan.neon
 
 # Local scratch: session working documents (specs, plans), runbooks, incident
 # notes. Never committed — this is a public repo.
-/docs/
+/docs/*
+# ...except agent-operating conventions (label/tool mappings, domain-doc
+# pointers) — no sensitive content, same category as CLAUDE.md itself.
+!/docs/agents
 
 ###> symfony/reprise ###
 /node_modules/
