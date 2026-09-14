@@ -76,13 +76,15 @@
         {# One badge line carries the category *and* its most useful fact (date, or the plain
            status when there's none yet) instead of a separate, half-redundant line below --
            "Under construction / Opening xxx" duplicated the same idea twice. #}
-        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11.5px] font-bold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]' %}
+        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]' %}
         <a href="{{ path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug}) }}" class="group block relative mb-5 overflow-hidden rounded-xl">
           <div class="relative aspect-[16/10] overflow-hidden">
-            <img src="{{ pictures_cdn }}/1440x1440/{{ heroImage.filename }}" alt="{{ heroCoaster.name }}"
-                 class="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]">
-            {# Concentrated on the bottom third so the photo itself stays visible. #}
-            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.85)_0%,rgba(0,0,0,0)_45%)]"></div>
+            <img src="{{ pictures_cdn }}/960x960/{{ heroImage.filename }}" alt="{{ heroCoaster.name }}"
+                 class="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none">
+            {# Concentrated on the bottom third so the photo itself stays visible. Darker at the very
+               bottom (0.9, up from 0.85) than the fade reach alone needs -- text contrast against an
+               arbitrary user photo (e.g. snow, bright sky) isn't otherwise guaranteed. #}
+            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0)_45%)]"></div>
           </div>
           {% if hero.type == 'upcoming' %}
             {# Real status (construction or announced) drives both label and color -- see colors.css's [data-status] rules. #}
@@ -113,9 +115,12 @@
           <div class="absolute inset-x-0 bottom-0 p-4 pt-3.5 text-white">
             <p class="line-clamp-2 text-xl leading-tight font-bold [text-shadow:0_1px_3px_rgba(0,0,0,0.35)]">{{ heroCoaster.name }}</p>
             <div class="mt-0.5 flex items-baseline gap-2">
-              <span class="min-w-0 flex-1 truncate text-[12.5px] text-white/80">{{ heroCoaster.park.name }}</span>
+              <span class="min-w-0 flex-1 truncate text-xs text-white/80">{{ heroCoaster.park.name }}</span>
               {% if heroImage.credit %}
-                <span class="max-w-[45%] flex-none truncate text-[10px] text-white/60">{{ 'image.credit'|trans({'name': heroImage.credit}) }}</span>
+                <span class="inline-flex min-w-0 max-w-[45%] flex-none items-center gap-1 text-[10px] text-white/60">
+                  {{ ux_icon('heroicons:camera', {'class': 'w-2.5 h-2.5 shrink-0'}) }}
+                  <span class="truncate">{{ heroImage.credit }}</span>
+                </span>
               {% endif %}
             </div>
           </div>

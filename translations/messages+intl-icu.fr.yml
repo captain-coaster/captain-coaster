@@ -444,9 +444,6 @@ nearby:
     geo_off: Localisation désactivée
     km_away: 'à {distance}'
 
-image:
-    credit: 'Crédit: {name}'
-
 badge:
     rating1: 1ère note
     rating100: 100ème note

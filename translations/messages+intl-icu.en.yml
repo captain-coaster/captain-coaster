@@ -438,9 +438,6 @@ coaster_search:
     num_found: '{num} coasters found'
     no_results: 'No coasters found matching your criteria'
 
-image:
-    credit: 'Credit: {name}'
-
 badge:
     rating1: '1st rating'
     rating100: '100th rating'
