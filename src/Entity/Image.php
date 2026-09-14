@@ -72,7 +72,11 @@ class Image
     private ?string $hash = null;
 
     #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '15M')]
-    #[Assert\Image(minPixels: 786432)]
+    // minRatio/maxRatio: no aspect-ratio constraint existed before -- an upload could be any
+    // shape, including one the resize pipeline's `cover` fit would crop almost entirely away
+    // against a landscape UI slot. Bounds are deliberately generous (a tall lift-hill shot down
+    // to a wide panoramic track shot both fit) -- this only rejects genuinely degenerate slivers.
+    #[Assert\Image(minPixels: 786432, minRatio: 1 / 3, maxRatio: 3)]
     private ?UploadedFile $file;
 
     public function __construct()

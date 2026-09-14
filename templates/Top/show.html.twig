@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% import "helper.html.twig" as helper %}
+
 {% set title = top.name %}
 {% set subTitle = top.user.displayName %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
@@ -53,10 +55,8 @@
           <div class="cc-media__start">
             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
               {% if coaster.mainImage is not null %}
-                <img src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
-                     class="img-rounded"
-                     style="width:96px;"
-                     alt="{{ coaster.name }}">
+                {# 4:3 shape at this width, unlike the square thumbnails elsewhere. #}
+                {{ helper.picture(coaster.mainImage.filename, 96, 72, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
               {% endif %}
             </a>
           </div>

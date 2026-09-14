@@ -62,9 +62,16 @@
 
 /* Collapse an image/content/action row below the tablet breakpoint. */
 @media (width < theme(--breakpoint-tablet)) {
+    /* flex-col flips the main axis to vertical -- align-items still defaults to
+       stretch, so .cc-media__start (shrink-0, sized to its image in the row
+       layout) stretches to the full card width instead of staying image-sized,
+       and the image/placeholder inside it renders left-aligned rather than
+       centered. text-align: center below only centers inline content, not a
+       block-level image -- align-items: center is what the stacked layout
+       actually needs. */
     .cc-media--stack-mobile,
     .cc-media-list--stack-mobile > .cc-media {
-        @apply flex-col gap-[15px];
+        @apply flex-col items-center gap-[15px];
     }
 
     .cc-media--stack-mobile:not(.text-left):not(.text-right),

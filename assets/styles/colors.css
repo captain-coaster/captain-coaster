@@ -90,8 +90,8 @@
 }
 
 .bg-success-400 {
-    background-color: #66bb6a;
-    border-color: #66bb6a;
+    background-color: var(--cc-success-400);
+    border-color: var(--cc-success-400);
     color: var(--cc-white);
 }
 
@@ -128,21 +128,6 @@
 .bg-cc-teal-400 {
     background-color: var(--cc-teal-400);
     border-color: var(--cc-teal-400);
-    color: var(--cc-white);
-}
-
-/*
- * "purple" is a real `status.type` value (construction/soft-opening,
- * ~80 coasters) -- never had a migrated class at all, unlike the other
- * five (success/danger/warning/info/default), so every construction/
- * soft-opening coaster's status dot and badge silently fell back to
- * unstyled black instead of erroring. `#673ab7` is the theme's own
- * Material purple-500, same value bg-/border-{status} already use for
- * the others.
- */
-.bg-purple {
-    background-color: var(--cc-purple);
-    border-color: var(--cc-purple);
     color: var(--cc-white);
 }
 
@@ -192,10 +177,6 @@
 
 .border-danger-800 {
     border-color: #c62828;
-}
-
-.border-purple {
-    border-color: var(--cc-purple);
 }
 
 .border-cc-blue-600 {
@@ -348,4 +329,91 @@
 .text-default:hover,
 .text-default:focus {
     color: var(--cc-gray-900) !important;
+}
+
+/*
+ * Status colors -- keyed by the vocabulary's stable `name` (a translation
+ * key, e.g. `status.construction`), not by its free-text `type` column.
+ * That column doubled as a CSS class suffix at every call site
+ * (`bg-{{ coaster.status.type }}`, `cc-label--{{ coaster.status.type }}`,
+ * `border-bottom-{{ coaster.status.type }}`...) but nothing ever
+ * validated it against real class names -- two of the ten statuses in
+ * production ('purple', 'default') don't match any class in this file,
+ * silently rendering an uncoloured badge, and border-bottom-* was never
+ * ported as a color family at all, so that call site never worked for
+ * any status.
+ *
+ * A custom property is the single source of truth instead: a template
+ * sets `data-status="{{ x.status.name }}"`, every consuming rule below
+ * reads `var(--status-color)`, and a status with no rule here just
+ * inherits the neutral default from the base `[data-status]` rule --
+ * never invisible, and never needs a class name to exist to match it.
+ */
+[data-status] {
+    --status-color: var(--cc-gray-600);
+    --status-color-text: var(--cc-white);
+}
+
+[data-status="status.operating"] {
+    --status-color: var(--cc-success);
+}
+
+/* Rateable, but not yet the coaster's confirmed final state -- a lighter
+ * shade of the same "you can ride this" green rather than construction's
+ * orange, which would wrongly imply it isn't rideable yet. */
+[data-status="status.soft.opening"] {
+    --status-color: var(--cc-success-400);
+}
+
+[data-status="status.announced"] {
+    --status-color: var(--cc-info);
+}
+
+[data-status="status.construction"],
+[data-status="status.closed.temporarily"] {
+    --status-color: var(--cc-warning);
+}
+
+[data-status="status.closed.definitely"] {
+    --status-color: var(--cc-danger);
+}
+
+/* Moved/rebuilt elsewhere, not bad news -- danger red would overstate it. */
+[data-status="status.retracked"],
+[data-status="status.relocated"] {
+    --status-color: var(--cc-teal-400);
+}
+
+.cc-label[data-status] {
+    background-color: var(--status-color);
+    border-color: var(--status-color);
+    color: var(--status-color-text);
+}
+
+/* Filled dot -- Maps/_map_popup.html.twig, Includes/rating_table.html.twig. */
+.status-mark[data-status] {
+    background-color: var(--status-color);
+    border-color: var(--status-color);
+}
+
+/* Outline-only ring -- Coaster/show.html.twig's "similar coasters" list,
+ * which never set a background here, only a border color. Kept as its
+ * own modifier instead of folding into the rule above so that existing
+ * look doesn't silently change to a filled dot. */
+.status-mark--outline[data-status] {
+    background-color: transparent;
+    border-color: var(--status-color);
+}
+
+/* Park/show.html.twig's coaster list rows -- the attribute selector is
+ * the scope here (no other `.cc-media` in the app sets `data-status`),
+ * so this doesn't reach for a template-specific class. Sets width+style
+ * too, not just color: `.cc-panel`'s own `border: 1px solid` (panels.css)
+ * already won the cascade over the old `.border-bottom-xlg` (3px) --
+ * invisible before since both were the same neutral gray, exposed now
+ * that this row is meant to actually carry a status color. */
+.cc-media[data-status] {
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    border-bottom-color: var(--status-color);
 }
