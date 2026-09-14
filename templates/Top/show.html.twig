@@ -55,10 +55,9 @@
           <div class="cc-media__start">
             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
               {% if coaster.mainImage is not null %}
-                {# Displayed at width:96px (4:3, so ~96x72 CSS px) -- 192x144 is a 2x-retina
-                   request matching that shape, not the 280x210 this copied from a different
-                   context. #}
-                {{ helper.picture(coaster.mainImage.filename, 192, 144, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
+                {# Displayed at width:96px, 4:3 shape -- helper.picture() requests both 1x
+                   (96x72) and 2x (192x144) and lets the browser pick via srcset. #}
+                {{ helper.picture(coaster.mainImage.filename, 96, 72, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
               {% endif %}
             </a>
           </div>

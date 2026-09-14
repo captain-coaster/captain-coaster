@@ -66,11 +66,11 @@
                         {% if result.entity_type == 'coaster' and result.image %}
                             <div class="search-result-image">
                                 {# .search-result-item-page .search-result-image displays this at
-                                   60x45 CSS px -- 120x90 is a 2x-retina request, not the display
-                                   size itself, so it doesn't look soft on a real (mostly mobile,
-                                   high-DPI) phone screen. Was 280x210: ~5x more pixels than any
-                                   screen here can even show. #}
-                                {{ helper.picture(result.image, 120, 90, result.name) }}
+                                   60x45 CSS px -- helper.picture() requests both 1x (60x45) and 2x
+                                   (120x90) via srcset. Was a flat 280x210: ~5x more pixels than
+                                   any screen here can even show, sent to every visitor regardless
+                                   of screen density. #}
+                                {{ helper.picture(result.image, 60, 45, result.name) }}
                             </div>
                         {% endif %}
                     </div>
