@@ -68,6 +68,12 @@
       {% if hero %}
         {% set heroCoaster = hero.coaster ?? hero.image.coaster %}
         {% set heroImage = hero.image ?? heroCoaster.mainImage %}
+        {# Same year-only convention as helper.html.twig's displayDate(): a day/month of Jan 1st
+           means only the year is actually known, not a real date -- showing "January 1" would
+           claim a precision the data doesn't have. #}
+        {% set heroOpeningDisplay = heroCoaster.openingDate and heroCoaster.openingDate|date('dm') == '0101'
+          ? heroCoaster.openingDate|date('Y')
+          : heroCoaster.openingDate|format_datetime('long', 'none') %}
         {# 'upcoming' has no entry -- its badge is built from the coaster's real status below, not a fixed one here. #}
         {% set heroBadge = {
           new: {icon: 'heroicons:sparkles', class: 'bg-success', label: 'index.hero.badge.new'},
@@ -97,12 +103,12 @@
             {% if hero.type == 'upcoming' and heroCoaster.openingDate %}
               <div class="cc-hero__meta">
                 {{ ux_icon('heroicons:calendar', {'class': 'w-3 h-3'}) }}
-                {{ 'index.hero.opens_on'|trans({'date': heroCoaster.openingDate|format_datetime('long', 'none')}) }}
+                {{ 'index.hero.opens_on'|trans({'date': heroOpeningDisplay}) }}
               </div>
             {% elseif hero.type == 'new' and heroCoaster.openingDate %}
               <div class="cc-hero__meta">
                 {{ ux_icon('heroicons:calendar', {'class': 'w-3 h-3'}) }}
-                {{ 'index.hero.opened_on'|trans({'date': heroCoaster.openingDate|format_datetime('long', 'none')}) }}
+                {{ 'index.hero.opened_on'|trans({'date': heroOpeningDisplay}) }}
               </div>
             {% elseif hero.type == 'trending' %}
               <div class="cc-hero__meta">
