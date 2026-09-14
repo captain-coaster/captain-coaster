@@ -80,14 +80,10 @@
         <a href="{{ path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug}) }}" class="block relative mb-5 overflow-hidden rounded-xl">
           <div class="relative aspect-[16/10] overflow-hidden">
             {# The card the browser sees first above the fold -- eager/high-priority, not the
-               loading="lazy" default a below-the-fold image would get. #}
-            <picture>
-              <source srcset="{{ signed_picture_url(heroImage.filename, 960, 600, 'avif') }}" type="image/avif">
-              <source srcset="{{ signed_picture_url(heroImage.filename, 960, 600, 'webp') }}" type="image/webp">
-              <img src="{{ signed_picture_url(heroImage.filename, 960, 600, 'jpg') }}" alt="{{ heroCoaster.name }}"
-                   loading="eager" fetchpriority="high"
-                   class="block h-full w-full object-cover">
-            </picture>
+               loading="lazy" default a below-the-fold image would get. 480x300 is the real
+               display size at this card's largest (desktop) breakpoint; helper.picture()
+               requests the 2x (960x600) variant too and lets the browser pick via srcset. #}
+            {{ helper.picture(heroImage.filename, 480, 300, heroCoaster.name, 'block h-full w-full object-cover', 'eager', '', 'high') }}
             {# Concentrated on the bottom third so the photo itself stays visible. Darker at the very
                bottom (0.9, up from 0.85) than the fade reach alone needs -- text contrast against an
                arbitrary user photo (e.g. snow, bright sky) isn't otherwise guaranteed. #}
