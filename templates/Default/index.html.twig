@@ -69,8 +69,7 @@
       <div class="cc-card">
           <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
           <div class="cc-card__media">
-            <img src="{{ pictures_cdn }}/600x336/{{ image.filename }}"
-                 alt="{{ image.coaster.name }}">
+            {{ helper.picture(image.filename, 600, 336, image.coaster.name) }}
             <div class="cc-card__overlay"></div>
           </div>
         </a>
