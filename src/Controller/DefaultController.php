@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Form\Type\ContactType;
-use App\Repository\ImageRepository;
 use App\Repository\RiddenCoasterRepository;
+use App\Service\HeroService;
 use App\Service\LocalePreferenceService;
 use App\Service\ReviewLanguagePreferenceService;
 use App\Service\StatService;
@@ -51,7 +51,7 @@ class DefaultController extends BaseController
      * @throws \Exception
      */
     #[Route(path: '/', name: 'default_index', methods: ['GET'])]
-    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, ImageRepository $imageRepository, ReviewLanguagePreferenceService $reviewLanguagePreferenceService): Response
+    public function index(Request $request, StatService $statService, RiddenCoasterRepository $riddenCoasterRepository, HeroService $heroService, ReviewLanguagePreferenceService $reviewLanguagePreferenceService): Response
     {
         $preferredReviewLanguages = $reviewLanguagePreferenceService->resolve($request);
 
@@ -60,7 +60,7 @@ class DefaultController extends BaseController
 
         return $this->render('Default/index.html.twig', [
             'ratingFeed' => $riddenCoasterRepository->getLatestRatings(6),
-            'image' => $imageRepository->findLatestLikedImage(),
+            'hero' => $heroService->pick(),
             'stats' => $statService->getIndexStats(),
             'reviews' => $reviews,
             'preferredReviewLanguages' => $preferredReviewLanguages,

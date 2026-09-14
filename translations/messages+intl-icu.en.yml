@@ -29,6 +29,14 @@ index:
         reviews: 'reviews'
         users: 'users'
         images: 'pictures'
+    hero:
+        badge:
+            new: 'Recently opened'
+            trending: 'Trending'
+            photo: 'Community pick'
+        opens_on: 'Opening {date}'
+        opened_on: 'Opened {date}'
+        trending_subtitle: 'Popular right now'
 
 coaster:
     score:

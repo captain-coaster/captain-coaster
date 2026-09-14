@@ -29,6 +29,14 @@ index:
         reviews: Rezensionen
         users: Benutzer
         images: Bilder
+    hero:
+        badge:
+            new: 'Kürzlich eröffnet'
+            trending: 'Beliebt'
+            photo: 'Community-Favorit'
+        opens_on: 'Eröffnung {date}'
+        opened_on: 'Eröffnet am {date}'
+        trending_subtitle: 'Gerade beliebt'
 
 coaster:
     score:
