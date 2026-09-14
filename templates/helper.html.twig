@@ -5,13 +5,30 @@
          alt="{{ user.displayName }}">
 {% endmacro %}
 
-{# Display a coaster related date #}
-{% macro displayDate(date) %}
-    {% if date|date("dm") == "0101" %}
+{# Display a date, year-only when only the year is actually known (Coaster::hasApproximateOpeningDate()/
+   hasApproximateClosingDate()) -- isApproximate must be passed explicitly, not guessed from the date's
+   own day/month, so a real date that happens to fall on Jan 1st (e.g. a user's join date) isn't
+   misread as "year only". #}
+{% macro displayDate(date, isApproximate = false) %}
+    {% if isApproximate %}
         {{ date|date("Y") }}
     {% else %}
         {{ date|format_datetime('short', 'none') }}
     {% endif %}
+{% endmacro %}
+
+{# A full <picture> element: avif -> webp -> jpg fallback, one signed URL per format off
+   the same source filename (signed_picture_url(), backed by PictureUrlSigner) -- the
+   browser picks whichever <source> it supports, nothing server-side to negotiate. Only
+   for a plain drop-in image; a component needing its own classes/attributes on <img>
+   (hover states, object-fit, a fixed aspect box) calls signed_picture_url() directly
+   instead of going through this macro. #}
+{% macro picture(filename, width, height, alt, imgClass = '', loading = 'lazy', imgStyle = '', fetchpriority = '') %}
+    <picture>
+        <source srcset="{{ signed_picture_url(filename, width, height, 'avif') }}" type="image/avif">
+        <source srcset="{{ signed_picture_url(filename, width, height, 'webp') }}" type="image/webp">
+        <img src="{{ signed_picture_url(filename, width, height, 'jpg') }}" alt="{{ alt }}" class="{{ imgClass }}" loading="{{ loading }}"{% if imgStyle %} style="{{ imgStyle }}"{% endif %}{% if fetchpriority %} fetchpriority="{{ fetchpriority }}"{% endif %}>
+    </picture>
 {% endmacro %}
 
 {# Color magic for ratings - Legacy support #}
