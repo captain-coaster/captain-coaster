@@ -23,11 +23,11 @@
    for a plain drop-in image; a component needing its own classes/attributes on <img>
    (hover states, object-fit, a fixed aspect box) calls signed_picture_url() directly
    instead of going through this macro. #}
-{% macro picture(filename, width, height, alt, imgClass = '', loading = 'lazy', imgStyle = '') %}
+{% macro picture(filename, width, height, alt, imgClass = '', loading = 'lazy', imgStyle = '', fetchpriority = '') %}
     <picture>
         <source srcset="{{ signed_picture_url(filename, width, height, 'avif') }}" type="image/avif">
         <source srcset="{{ signed_picture_url(filename, width, height, 'webp') }}" type="image/webp">
-        <img src="{{ signed_picture_url(filename, width, height, 'jpg') }}" alt="{{ alt }}" class="{{ imgClass }}" loading="{{ loading }}"{% if imgStyle %} style="{{ imgStyle }}"{% endif %}>
+        <img src="{{ signed_picture_url(filename, width, height, 'jpg') }}" alt="{{ alt }}" class="{{ imgClass }}" loading="{{ loading }}"{% if imgStyle %} style="{{ imgStyle }}"{% endif %}{% if fetchpriority %} fetchpriority="{{ fetchpriority }}"{% endif %}>
     </picture>
 {% endmacro %}
 

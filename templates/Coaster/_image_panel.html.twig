@@ -26,7 +26,9 @@
                 <div class="col-span-12 tablet:col-span-3">
                     <a class="m-2.5" href="{{ signed_picture_url(image.filename, 1440, 1440, 'jpg') }}" data-gallery-target="link">
                         <div class="cc-card__media">
-                            {{ helper.picture(image.filename, 280, 210, coaster.name) }}
+                            {# First tile is above the fold and the page's actual LCP candidate --
+                               eager/high-priority. The rest stay lazy, same as any other grid. #}
+                            {{ helper.picture(image.filename, 280, 210, coaster.name, '', loop.first ? 'eager' : 'lazy', '', loop.first ? 'high' : '') }}
                         </div>
                     </a>
                     <div class="text-size-small text-muted"

@@ -88,7 +88,9 @@
                                 {% if coaster.mainImage %}
                                     {{ helper.picture(coaster.mainImage.filename, 280, 210, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
-                                    <img src="{{ asset('images/nophoto.png') }}" class="img-rounded" style="width:200px;" alt="{{ coaster.name }}">
+                                    <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-gray-100 text-gray-400" style="width:200px;">
+                                        {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
+                                    </div>
                                 {% endif %}
                             </a>
                         </div>
