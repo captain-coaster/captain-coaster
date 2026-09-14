@@ -41,6 +41,10 @@
     padding-right: 24px;
     font-size: 15px;
     font-weight: 600;
+    /* MapLibre's own vendor CSS ships unlayered, so it beats this file's
+       `layer(components)` rules regardless of source order or specificity
+       -- !important is the only way to actually override its default
+       popup link/text colors below. */
     color: #1f2937 !important;
     text-transform: capitalize;
 }
