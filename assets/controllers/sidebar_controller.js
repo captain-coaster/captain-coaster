@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { isTabletUp } from '../js/utils/breakpoints';
 
 /**
  * Replaces layout_fixed_custom.js (deleted) and theme.js's sidebar-only
@@ -66,8 +67,7 @@ export default class extends Controller {
     }
 
     _onResize() {
-        // Keep in sync with --breakpoint-tablet in assets/styles/tokens.css.
-        if (window.innerWidth >= 769) {
+        if (isTabletUp()) {
             document.body.classList.remove(
                 'sidebar-mobile-main',
                 'sidebar-mobile-secondary'

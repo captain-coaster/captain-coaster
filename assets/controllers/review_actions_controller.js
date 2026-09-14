@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
+import { isTabletUp } from '../js/utils/breakpoints';
 
 // Not stimulusFetch: 'lazy' -- review items render on the homepage and
 // every coaster page, so a lazy chunk here never actually avoids loading
@@ -344,11 +345,9 @@ export default class extends Controller {
     _updateTruncation() {
         if (!this.hasReviewContentTarget) return;
 
-        // Keep in sync with --breakpoint-tablet in assets/styles/tokens.css.
-        const isMobile = window.innerWidth < 769;
-        const maxLength = isMobile
-            ? this.mobileLengthValue
-            : this.desktopLengthValue;
+        const maxLength = isTabletUp()
+            ? this.desktopLengthValue
+            : this.mobileLengthValue;
         const fullText = this.reviewContentTarget.dataset.fullText;
 
         if (!fullText) return;

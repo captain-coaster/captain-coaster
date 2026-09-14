@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { isTabletUp } from '../js/utils/breakpoints';
 
 export default class extends Controller {
     static targets = ['container'];
@@ -36,9 +37,7 @@ export default class extends Controller {
     }
 
     getImageCount() {
-        // Keep in sync with --breakpoint-tablet in assets/styles/tokens.css.
-        const isMobile = window.innerWidth < 769;
-        return isMobile ? 2 : 8;
+        return isTabletUp() ? 8 : 2;
     }
 
     buildUrl(imageNumber) {
