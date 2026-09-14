@@ -82,7 +82,7 @@
         <div class="col-span-12 tablet:col-span-9">
             <ul class="cc-media-list content-group">
                 {% for coaster in coasters %}
-                    <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile border-bottom-xlg border-bottom-{{ coaster.status.type }}">
+                    <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile" data-status="{{ coaster.status.name }}">
                         <div class="cc-media__start">
                             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                                 <img {% if coaster.mainImage %}
