@@ -1,12 +1,17 @@
 /*
  * Panels -- migrated: theme/bootstrap-limitless/panels.less +
- * bootstrap/less/panels.less. Scope: `.cc-panel`(+`[class*=border-top-/
- * -bottom-]`), `.cc-panel__body`, `.cc-panel__heading`(+`.cc-panel--flat`/`.cc-panel--white`
- * nesting), `.cc-panel__title`(+h1-h6/.h1-.h6 sizing), `.cc-panel__footer`. No
+ * bootstrap/less/panels.less. Scope: `.cc-panel`(+`[class*=border-top-]`,
+ * e.g. Default/index.html.twig's `border-top-cc-teal`), `.cc-panel__body`,
+ * `.cc-panel__heading`(+`.cc-panel--flat`/`.cc-panel--white` nesting),
+ * `.cc-panel__title`(+h1-h6/.h1-.h6 sizing), `.cc-panel__footer`. No
  * contextual `.cc-panel-primary/-success/-info/-warning/-danger`,
  * `.cc-panel-collapse`/`-group` (no Bootstrap-JS accordion anywhere in this
  * app), `.cc-panel-bordered`, `.has-scroll`/`.has-bg-image`, or `.icons-list`
- * (cc-panel__heading control buttons) -- zero uses of any of them.
+ * (cc-panel__heading control buttons) -- zero uses of any of them. The
+ * `[class*=border-bottom-]` radius reset + `.cc-panel.border-bottom-{status}`
+ * compound overrides this used to also carry (for Park/show.html.twig's
+ * coaster rows) are gone too: that row now sets data-status and gets its
+ * border-bottom entirely from colors.css's `.cc-media[data-status]`.
  */
 .cc-panel {
     margin-bottom: 20px;
@@ -20,49 +25,6 @@
 .cc-panel[class*='border-top-'] {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-}
-
-.cc-panel[class*='border-bottom-'] {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-/*
- * `.border-bottom-xlg` (helpers.css) and `.border-bottom-{status}`
- * (colors.less's original combinatorial matrix -- never ported, since the
- * DB-driven-class audit that produced colors.css only caught `status-mark
- * bg-*`/`border-*`, not this one) share specificity with `.cc-panel`'s own
- * `border: 1px solid var(--cc-gray-300)` shorthand, which sets the same
- * border-bottom-width/style/color longhands; since this file loads after
- * both, `.cc-panel` always won, silently flattening "other coasters in
- * this park" (Park/show.html.twig) down to a plain 1px gray line with no
- * status color at all. Only real usage combines all three classes, so
- * override that specific compound rather than turning the generic helpers
- * into a second combinatorial matrix.
- */
-.cc-panel.border-bottom-xlg {
-    border-bottom-width: 3px;
-    border-bottom-style: solid;
-}
-
-.cc-panel.border-bottom-success {
-    border-bottom-color: var(--cc-success);
-}
-
-.cc-panel.border-bottom-danger {
-    border-bottom-color: var(--cc-danger);
-}
-
-.cc-panel.border-bottom-warning {
-    border-bottom-color: var(--cc-warning);
-}
-
-.cc-panel.border-bottom-info {
-    border-bottom-color: var(--cc-info);
-}
-
-.cc-panel.border-bottom-purple {
-    border-bottom-color: var(--cc-purple);
 }
 
 .cc-panel__body {

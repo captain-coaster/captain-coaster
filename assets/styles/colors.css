@@ -131,21 +131,6 @@
     color: var(--cc-white);
 }
 
-/*
- * "purple" is a real `status.type` value (construction/soft-opening,
- * ~80 coasters) -- never had a migrated class at all, unlike the other
- * five (success/danger/warning/info/default), so every construction/
- * soft-opening coaster's status dot and badge silently fell back to
- * unstyled black instead of erroring. `#673ab7` is the theme's own
- * Material purple-500, same value bg-/border-{status} already use for
- * the others.
- */
-.bg-purple {
-    background-color: var(--cc-purple);
-    border-color: var(--cc-purple);
-    color: var(--cc-white);
-}
-
 .border-default {
     border-color: var(--cc-gray-300);
 }
@@ -192,10 +177,6 @@
 
 .border-danger-800 {
     border-color: #c62828;
-}
-
-.border-purple {
-    border-color: var(--cc-purple);
 }
 
 .border-cc-blue-600 {
