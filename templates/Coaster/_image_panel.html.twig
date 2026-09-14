@@ -1,3 +1,4 @@
+{% import "helper.html.twig" as helper %}
 {% set image_count = coaster.images|length %}
 <div class="cc-panel cc-panel--flat">
     <div class="cc-panel__heading">
@@ -23,10 +24,9 @@
              data-gallery="coaster-images">
             {% for image in images %}
                 <div class="col-span-12 tablet:col-span-3">
-                    <a class="m-2.5" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}" data-gallery-target="link">
+                    <a class="m-2.5" href="{{ signed_picture_url(image.filename, 1440, 1440, 'jpg') }}" data-gallery-target="link">
                         <div class="cc-card__media">
-                            <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}"
-                                 alt="{{ coaster.name }}">
+                            {{ helper.picture(image.filename, 280, 210, coaster.name) }}
                         </div>
                     </a>
                     <div class="text-size-small text-muted"

@@ -85,12 +85,11 @@
                     <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile" data-status="{{ coaster.status.name }}">
                         <div class="cc-media__start">
                             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                                <img {% if coaster.mainImage %}
-                                    src="{{ pictures_cdn }}/280x210/{{ coaster.mainImage.filename }}"
+                                {% if coaster.mainImage %}
+                                    {{ helper.picture(coaster.mainImage.filename, 280, 210, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
-                                    src="{{ asset('images/nophoto.png') }}"
+                                    <img src="{{ asset('images/nophoto.png') }}" class="img-rounded" style="width:200px;" alt="{{ coaster.name }}">
                                 {% endif %}
-                                    class="img-rounded" style="width:200px;" alt="{{ coaster.name }}">
                             </a>
                         </div>
                         <div class="cc-media__body cc-media__middle">

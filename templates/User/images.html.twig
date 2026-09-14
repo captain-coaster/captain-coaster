@@ -15,11 +15,11 @@
              data-gallery="user-images">
           {% for image in images %}
             <div class="col-span-12 tablet:col-span-3">
-              <a class="m-2.5" href="{{ pictures_cdn }}/1440x1440/{{ image.filename }}"
-                 data-cropped-thumbnail="{{ pictures_cdn }}/280x210/{{ image.filename }}"
+              <a class="m-2.5" href="{{ signed_picture_url(image.filename, 1440, 1440, 'jpg') }}"
+                 data-cropped-thumbnail="{{ signed_picture_url(image.filename, 280, 210, 'jpg') }}"
                  data-gallery-target="link">
                 <div class="cc-card__media">
-                  <img src="{{ pictures_cdn }}/280x210/{{ image.filename }}" alt="{{ image.coaster.name }}">
+                  {{ helper.picture(image.filename, 280, 210, image.coaster.name) }}
                 </div>
               </a>
               <div class="text-size-small text-muted"

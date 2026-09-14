@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% import "helper.html.twig" as helper %}
+
 {% set title = '"' ~ query ~ '"'|default('search_index.noTerm'|trans()) %}
 {% set subTitle = 'search_index.title'|trans %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
@@ -63,9 +65,7 @@
                         
                         {% if result.entity_type == 'coaster' and result.image %}
                             <div class="search-result-image">
-                                <img src="{{ pictures_cdn }}/280x210/{{ result.image }}" 
-                                     alt="{{ result.name }}"
-                                     loading="lazy">
+                                {{ helper.picture(result.image, 280, 210, result.name) }}
                             </div>
                         {% endif %}
                     </div>
