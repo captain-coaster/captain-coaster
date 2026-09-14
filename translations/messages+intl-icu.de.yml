@@ -34,7 +34,6 @@ index:
             new: 'Kürzlich eröffnet'
             trending: 'Beliebt'
             photo: 'Community-Favorit'
-        opens_on: 'Eröffnung {date}'
 
 coaster:
     score:

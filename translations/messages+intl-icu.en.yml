@@ -34,7 +34,6 @@ index:
             new: 'Recently opened'
             trending: 'Trending'
             photo: 'Community pick'
-        opens_on: 'Opening {date}'
 
 coaster:
     score:

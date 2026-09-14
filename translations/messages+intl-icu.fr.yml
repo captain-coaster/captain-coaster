@@ -34,7 +34,6 @@ index:
             new: 'Récemment ouvert'
             trending: 'Tendance'
             photo: 'Coup de cœur'
-        opens_on: 'Ouverture {date}'
 
 coaster:
     score:

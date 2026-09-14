@@ -68,14 +68,9 @@
       {% if hero %}
         {% set heroCoaster = hero.coaster ?? hero.image.coaster %}
         {% set heroImage = hero.image ?? heroCoaster.mainImage %}
-        {# Month + year is enough for a badge (day precision rarely known or needed here); year-only
-           when Coaster::hasApproximateOpeningDate() says even the month isn't real -- see its docblock. #}
-        {% set heroOpeningDisplay = heroCoaster.openingDate
-          ? (heroCoaster.hasApproximateOpeningDate() ? heroCoaster.openingDate|date('Y') : heroCoaster.openingDate|format_datetime(pattern='MMMM yyyy'))
-          : null %}
-        {# One badge line carries the category *and* its most useful fact (date, or the plain
-           status when there's none yet) instead of a separate, half-redundant line below --
-           "Under construction / Opening xxx" duplicated the same idea twice. #}
+        {# One badge line, just the plain status -- no opening date shown here (#392 tracks a
+           proper partial-date precision fix; showing one from a possibly-fake Jan-1
+           placeholder isn't worth patching around with another heuristic in the meantime). #}
         {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]' %}
         <a href="{{ path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug}) }}" class="block relative mb-5 overflow-hidden rounded-xl">
           <div class="relative aspect-[16/10] overflow-hidden">
@@ -93,11 +88,7 @@
             {# Real status (construction or announced) drives both label and color -- see colors.css's [data-status] rules. #}
             <span class="{{ heroBadgeClass }} bg-[var(--status-color)]" data-status="{{ heroCoaster.status.name }}">
               {{ ux_icon(heroCoaster.status.name == 'status.announced' ? 'heroicons:megaphone' : 'heroicons:wrench-screwdriver', {'class': 'w-3.5 h-3.5'}) }}
-              {% if heroOpeningDisplay %}
-                {{ 'index.hero.opens_on'|trans({'date': heroOpeningDisplay}) }}
-              {% else %}
-                {{ heroCoaster.status.name|trans([], 'database') }}
-              {% endif %}
+              {{ heroCoaster.status.name|trans([], 'database') }}
             </span>
           {% elseif hero.type == 'new' %}
             <span class="{{ heroBadgeClass }} bg-success">
