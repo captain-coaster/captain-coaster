@@ -71,20 +71,42 @@ class ImageManager
     }
 
     /**
-     * Sizes actually requested across the app (grep signed_picture_url()/helper.picture()
-     * call sites to keep this in sync) and the formats the resizer can encode to -- the
-     * destination bucket key is {size}/{format}/{name}.{format}, one object per combination.
+     * The resizer can encode to any of these -- stable, unlike the sizes below, which are
+     * whatever width x height each template happens to request. Not worth a config lookup.
      */
-    private const CACHED_SIZES = ['1440x1440', '960x600', '280x210', '96x96'];
     private const CACHED_FORMATS = ['jpg', 'webp', 'avif'];
 
-    /** Remove every resized/re-encoded variant of an image from the S3 Cache Bucket. */
+    /**
+     * Remove every resized/re-encoded variant of an image from the S3 Cache Bucket.
+     *
+     * The destination key is {size}/{format}/{name}.{format} -- and the CloudFront origin
+     * group requires that key to match the signed request path exactly (cache miss on the S3
+     * origin fails over to the Lambda, which writes its output back to that same key), so it
+     * can't be reordered to put the filename first just to make this easier. Sizes aren't
+     * hardcoded here as a result: a previous version guessed at the current set of sizes and
+     * silently went stale the first time a template's image size changed. Listing the
+     * destination bucket's top-level "folders" (S3's Delimiter option on ListObjectsV2)
+     * discovers whatever sizes actually exist right now instead.
+     */
     public function removeCache(Image $image): void
     {
         $name = pathinfo($image->getFilename(), \PATHINFO_FILENAME);
 
+        $sizes = [];
+        $paginator = $this->s3Client->getPaginator('ListObjectsV2', [
+            'Bucket' => $this->s3CacheBucket,
+            'Delimiter' => '/',
+        ]);
+        foreach ($paginator->search('CommonPrefixes[].Prefix') as $prefix) {
+            $sizes[] = rtrim((string) $prefix, '/');
+        }
+
+        if ([] === $sizes) {
+            return;
+        }
+
         $objects = [];
-        foreach (self::CACHED_SIZES as $size) {
+        foreach ($sizes as $size) {
             foreach (self::CACHED_FORMATS as $format) {
                 $objects[] = ['Key' => "{$size}/{$format}/{$name}.{$format}"];
             }
