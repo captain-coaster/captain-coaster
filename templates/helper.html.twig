@@ -5,9 +5,12 @@
          alt="{{ user.displayName }}">
 {% endmacro %}
 
-{# Display a coaster related date #}
-{% macro displayDate(date) %}
-    {% if date|date("dm") == "0101" %}
+{# Display a date, year-only when only the year is actually known (Coaster::hasApproximateOpeningDate()/
+   hasApproximateClosingDate()) -- isApproximate must be passed explicitly, not guessed from the date's
+   own day/month, so a real date that happens to fall on Jan 1st (e.g. a user's join date) isn't
+   misread as "year only". #}
+{% macro displayDate(date, isApproximate = false) %}
+    {% if isApproximate %}
         {{ date|date("Y") }}
     {% else %}
         {{ date|format_datetime('short', 'none') }}

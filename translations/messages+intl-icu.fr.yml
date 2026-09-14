@@ -34,7 +34,7 @@ index:
             trending: 'Tendance'
             photo: 'Coup de cœur'
         opens_on: 'Ouverture {date}'
-        opened_on: 'Ouvert le {date}'
+        opened_on: 'Ouvert : {date}'
 
 coaster:
     score:

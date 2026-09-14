@@ -68,11 +68,10 @@
       {% if hero %}
         {% set heroCoaster = hero.coaster ?? hero.image.coaster %}
         {% set heroImage = hero.image ?? heroCoaster.mainImage %}
-        {# Same year-only convention as helper.html.twig's displayDate(): a day/month of Jan 1st
-           means only the year is actually known, not a real date -- showing "January 1" would
-           claim a precision the data doesn't have. #}
+        {# Month + year is enough for a badge (day precision rarely known or needed here); year-only
+           when Coaster::hasApproximateOpeningDate() says even the month isn't real -- see its docblock. #}
         {% set heroOpeningDisplay = heroCoaster.openingDate
-          ? (heroCoaster.openingDate|date('dm') == '0101' ? heroCoaster.openingDate|date('Y') : heroCoaster.openingDate|format_datetime('long', 'none'))
+          ? (heroCoaster.hasApproximateOpeningDate() ? heroCoaster.openingDate|date('Y') : heroCoaster.openingDate|format_datetime(pattern='MMMM yyyy'))
           : null %}
         {# One badge line carries the category *and* its most useful fact (date, or the plain
            status when there's none yet) instead of a separate, half-redundant line below --

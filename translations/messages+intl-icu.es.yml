@@ -34,7 +34,7 @@ index:
             trending: 'Tendencia'
             photo: 'Favorito de la comunidad'
         opens_on: 'Apertura {date}'
-        opened_on: 'Inaugurado el {date}'
+        opened_on: 'Inaugurado: {date}'
 
 coaster:
     score:
