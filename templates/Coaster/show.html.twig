@@ -219,7 +219,7 @@
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y') }) }}">
-                                    {{ helper.displayDate(coaster.openingDate, coaster.hasApproximateOpeningDate()) }}</a>
+                                    {{ helper.displayDate(coaster.openingDate) }}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -228,7 +228,7 @@
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.closing'|trans }}
                                 :</label>
                             <div class="pull-right">
-                                {{ helper.displayDate(coaster.closingDate, coaster.hasApproximateClosingDate()) }}
+                                {{ helper.displayDate(coaster.closingDate) }}
                             </div>
                         </div>
                     {% endif %}

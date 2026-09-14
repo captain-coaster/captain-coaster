@@ -492,23 +492,6 @@ class Coaster implements \Stringable
         return $this;
     }
 
-    /**
-     * `openingDate`/`closingDate` have no partial-date precision at the
-     * DB/ORM level (a plain DATE column) -- a coaster whose only confirmed
-     * opening/closing info is the year is stored with a Jan-1 placeholder.
-     * Centralized here rather than left as a magic-string comparison
-     * duplicated across every template that displays one of these dates.
-     */
-    public function hasApproximateOpeningDate(): bool
-    {
-        return null !== $this->openingDate && '01-01' === $this->openingDate->format('m-d');
-    }
-
-    public function hasApproximateClosingDate(): bool
-    {
-        return null !== $this->closingDate && '01-01' === $this->closingDate->format('m-d');
-    }
-
     public function getVideo(): ?string
     {
         return $this->video;
