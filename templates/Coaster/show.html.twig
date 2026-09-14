@@ -120,7 +120,7 @@
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.status'|trans }}
                                 :</label>
                             <div class="pull-right">
-              <span class="cc-label cc-label--{{ coaster.status.type }} bg-{{ coaster.status.type }}">
+              <span class="cc-label" data-status="{{ coaster.status.name }}">
                   {{ coaster.status.name|trans([], 'database') }}
               </span>
                             </div>
@@ -219,7 +219,7 @@
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[openingDate]': coaster.openingDate|date('Y') }) }}">
-                                    {{ helper.displayDate(coaster.openingDate) }}</a>
+                                    {{ helper.displayDate(coaster.openingDate, coaster.hasApproximateOpeningDate()) }}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -228,7 +228,7 @@
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.closing'|trans }}
                                 :</label>
                             <div class="pull-right">
-                                {{ helper.displayDate(coaster.closingDate) }}
+                                {{ helper.displayDate(coaster.closingDate, coaster.hasApproximateClosingDate()) }}
                             </div>
                         </div>
                     {% endif %}
@@ -273,7 +273,7 @@
                 <div class="cc-list-group no-border">
                     {% for otherCoaster in coasters %}
                         <div class="cc-list-group__item">
-                            <span class="status-mark border-{{ otherCoaster.status.type }} position-left"></span>
+                            <span class="status-mark status-mark--outline position-left" data-status="{{ otherCoaster.status.name }}"></span>
                             <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">
                                 {{ otherCoaster.name }}
                             </a>

@@ -6,12 +6,17 @@
  * just duplicate the same coupling check twice.
  *
  * Only variants actually used are kept: base `.cc-label`/`.cc-badge`,
- * `.cc-label--rounded`, `.cc-badge--primary`, `.cc-badge--flat`. `.cc-label--default/
- * -primary/-info/-warning` are also kept even though no static template
- * uses them, because `Coaster/show.html.twig` renders
- * `cc-label cc-label--{{ coaster.status.type }}` — a DB-driven string this
- * migration can't fully enumerate without editing the database, so all six
- * contextual colors are ported rather than guessing which ones are live.
+ * `.cc-label--rounded`, `.cc-badge--primary`, `.cc-badge--flat`, and the
+ * two color variants pros/cons tags use (`.cc-label--success/-danger`:
+ * Includes/_review_item, Coaster/_ai_summary). `.cc-label--default/
+ * -primary/-info/-warning/-purple` used to also be kept despite no
+ * static template using them, because `Coaster/show.html.twig` rendered
+ * `cc-label cc-label--{{ coaster.status.type }}` — a DB-driven string
+ * that migration pass couldn't enumerate without editing the database.
+ * That call site now sets `data-status="{{ coaster.status.name }}"`
+ * instead (colors.css owns the status→color mapping off that stable
+ * name), so none of those four are reachable from anywhere and are
+ * dropped along with the rest.
  * `label-icon(-lg/-sm/-xs)`, `label-striped(-right)`, `label-roundless`,
  * `label-block`, `badge-default/-success/-info/-warning/-danger` have zero
  * uses (Twig *and* the two Stimulus controllers that render a `.cc-badge`
@@ -132,40 +137,14 @@
     display: none;
 }
 
-.cc-label--default {
-    background-color: var(--cc-gray-600);
-    border-color: var(--cc-gray-600);
-}
-
-.cc-label--primary {
-    background-color: var(--cc-primary);
-    border-color: var(--cc-primary);
-}
-
 .cc-label--success {
     background-color: var(--cc-success);
     border-color: var(--cc-success);
 }
 
-.cc-label--info {
-    background-color: var(--cc-info);
-    border-color: var(--cc-info);
-}
-
-.cc-label--warning {
-    background-color: var(--cc-warning);
-    border-color: var(--cc-warning);
-}
-
 .cc-label--danger {
     background-color: var(--cc-danger);
     border-color: var(--cc-danger);
-}
-
-/* "purple" status.type (construction/soft-opening) -- see colors.css's bg-purple/border-purple. */
-.cc-label--purple {
-    background-color: var(--cc-purple);
-    border-color: var(--cc-purple);
 }
 
 .cc-label--rounded {
