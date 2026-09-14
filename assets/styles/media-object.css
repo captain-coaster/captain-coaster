@@ -61,7 +61,7 @@
 }
 
 /* Collapse an image/content/action row below the tablet breakpoint. */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .cc-media--stack-mobile,
     .cc-media-list--stack-mobile > .cc-media {
         @apply flex-col gap-[15px];

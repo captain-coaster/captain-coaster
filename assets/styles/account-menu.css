@@ -135,7 +135,7 @@
  * gated behind `.is-open`, which this bypasses) so text stays legible against
  * the dark collapsed cc-navbar background.
  */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .cc-menu--user > .cc-menu__toggle,
     .account-menu-anon > .cc-menu__toggle {
         display: none;

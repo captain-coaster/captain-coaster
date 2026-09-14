@@ -114,7 +114,7 @@
     padding-bottom: 8px;
 }
 
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .sidebar-mobile-main .sidebar-main,
     .sidebar-mobile-secondary .sidebar-secondary {
         display: block;

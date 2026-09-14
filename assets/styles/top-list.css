@@ -2,14 +2,15 @@
  * Top List Drag & Drop Styles
  * SortableJS integration for modern drag-and-drop functionality
  *
- * Entry-scoped (top-list.js), not imported into app.css -- its `768px`
- * breakpoints below stay literals rather than `theme(--breakpoint-tablet)`
- * because `theme()` is a Tailwind build-time function that only resolves
- * within the same compilation graph as tokens.css's `@theme` block, which
- * this file isn't part of (unlike `var(--cc-*)` color references, which
- * are a runtime browser feature and resolve fine from the global bundle
- * loaded on the same page).
+ * Entry-scoped (top-list.js), not imported into app.css -- imports
+ * tokens.css directly so `theme(--breakpoint-tablet)` still resolves in
+ * this entry's own Tailwind build graph (each Vite CSS entry point runs
+ * its own Tailwind pass; `theme()` only sees `@theme` blocks reachable
+ * from that entry). A harmless duplicate of tokens.css's tiny `:root`
+ * block ends up in this bundle too, same as it would from any other
+ * shared partial imported by two entries.
  */
+@import './tokens.css';
 
 /* Container styles */
 .cc-media-list-container[data-controller='top-list'] {
@@ -266,7 +267,7 @@
 }
 
 /* Mobile optimizations */
-@media (max-width: 768px) {
+@media (width < theme(--breakpoint-tablet)) {
     .coaster-entry {
         gap: 8px;
         padding: 10px 8px;
@@ -476,7 +477,7 @@
 }
 
 /* Mobile optimizations for search */
-@media (max-width: 768px) {
+@media (width < theme(--breakpoint-tablet)) {
     .top-search-container {
         margin-bottom: 16px;
     }

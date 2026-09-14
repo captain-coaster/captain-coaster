@@ -80,7 +80,7 @@
     display: block;
 }
 
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .heading-elements.visible-elements {
         position: static;
         margin-top: 0;

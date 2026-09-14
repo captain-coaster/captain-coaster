@@ -21,7 +21,7 @@
 }
 
 /* Make search bar wider on desktop */
-@media (min-width: 992px) {
+@media (min-width: theme(--breakpoint-desktop)) {
     .heading-form .search-container {
         min-width: 400px;
     }
@@ -315,7 +315,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .search-result-item {
         padding: 6px 10px;
         min-height: 32px;
@@ -454,7 +454,7 @@
 }
 
 /* Responsive Design for Search Results Page */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .search-result-item-page {
         padding: 10px 12px;
         min-height: 44px;

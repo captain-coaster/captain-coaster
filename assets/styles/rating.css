@@ -86,7 +86,7 @@
 }
 
 /* Mobile optimizations */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .star-svg {
         width: 28px;
         height: 28px;
@@ -328,7 +328,7 @@
 }
 
 /* Mobile adjustments */
-@media (max-width: calc(theme(--breakpoint-tablet) - 1px)) {
+@media (width < theme(--breakpoint-tablet)) {
     .rating-actions {
         gap: 20px;
     }
