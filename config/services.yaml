@@ -30,11 +30,6 @@ services:
         arguments:
             $locales: '%app_locales_array%'
 
-    App\Service\PictureUrlSigner:
-        arguments:
-            $picturesCdn: '%env(PICTURES_CDN)%'
-            $signingSecret: '%env(PICTURES_SIGNING_SECRET)%'
-
     Gedmo\Sluggable\SluggableListener:
         alias: stof_doctrine_extensions.listener.sluggable
 

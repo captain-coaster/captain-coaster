@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+
 /**
  * Signs resize URLs for pictures.captaincoaster.com's image Lambda. A valid HMAC
  * signature is what authorizes a request there -- not a fixed size allowlist -- so
@@ -16,7 +18,9 @@ namespace App\Service;
 class PictureUrlSigner
 {
     public function __construct(
+        #[Autowire('%env(string:PICTURES_CDN)%')]
         private readonly string $picturesCdn,
+        #[Autowire('%env(string:PICTURES_SIGNING_SECRET)%')]
         private readonly string $signingSecret,
     ) {
     }
