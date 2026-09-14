@@ -68,11 +68,12 @@
       {% if hero %}
         {% set heroCoaster = hero.coaster ?? hero.image.coaster %}
         {% set heroImage = hero.image ?? heroCoaster.mainImage %}
+        {# 'upcoming' has no entry -- its badge is built from the coaster's real status below, not a fixed one here. #}
         {% set heroBadge = {
           new: {icon: 'heroicons:sparkles', class: 'bg-success', label: 'index.hero.badge.new'},
           trending: {icon: 'heroicons:fire', class: 'bg-info', label: 'index.hero.badge.trending'},
           photo: {icon: 'heroicons:heart', class: 'bg-cc-teal-400', label: 'index.hero.badge.photo'},
-        }[hero.type] %}
+        }[hero.type] ?? null %}
         <a href="{{ path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug}) }}" class="cc-hero mb-[20px]">
           <div class="cc-hero__media">
             <img src="{{ pictures_cdn }}/1440x1440/{{ heroImage.filename }}" alt="{{ heroCoaster.name }}">
