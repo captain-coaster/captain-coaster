@@ -86,7 +86,8 @@
                         <div class="cc-media__start">
                             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                                 {% if coaster.mainImage %}
-                                    {{ helper.picture(coaster.mainImage.filename, 280, 210, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
+                                    {# Displayed at width:200px -- 400x300 is a 2x-retina request, not the display size itself. #}
+                                    {{ helper.picture(coaster.mainImage.filename, 400, 300, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
                                     <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-gray-100 text-gray-400" style="width:200px;">
                                         {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}

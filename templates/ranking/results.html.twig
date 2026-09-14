@@ -6,7 +6,8 @@
             <div class="cc-media__start">
                 <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                     {% if coaster.mainImage is not null %}
-                        {{ helper.picture(coaster.mainImage.filename, 96, 96, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
+                        {# Displayed at width:96px -- 192x192 is a 2x-retina request, not the display size itself. #}
+                        {{ helper.picture(coaster.mainImage.filename, 192, 192, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
                     {% endif %}
                 </a>
             </div>
