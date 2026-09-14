@@ -6,6 +6,7 @@ namespace App\EventListener;
 
 use App\Entity\Image;
 use App\Service\ImageManager;
+use App\Service\PictureUrlSigner;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
@@ -13,7 +14,6 @@ use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
 use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
@@ -32,8 +32,7 @@ class ImageListener
     public function __construct(
         private readonly ImageManager $imageManager,
         private readonly ChatterInterface $chatter,
-        #[Autowire('%env(string:PICTURES_CDN)%')]
-        private string $imagesEndpoint
+        private readonly PictureUrlSigner $pictureUrlSigner,
     ) {
     }
 
@@ -51,7 +50,7 @@ class ImageListener
     /** After persist: send Discord notification */
     public function postPersist(Image $image, PostPersistEventArgs $event): void
     {
-        $imageUrl = $this->imagesEndpoint.'/1440x1440/'.$image->getFilename();
+        $imageUrl = $this->pictureUrlSigner->sign($image->getFilename(), 1440, 1440, 'jpg');
 
         $discordOptions = new DiscordOptions()
             ->addEmbed(
