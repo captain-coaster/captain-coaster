@@ -22,6 +22,8 @@ class Status implements \Stringable
 {
     final public const string OPERATING = 'status.operating';
     final public const string CLOSED_DEFINITELY = 'status.closed.definitely';
+    final public const string CONSTRUCTION = 'status.construction';
+    final public const string ANNOUNCED = 'status.announced';
 
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]

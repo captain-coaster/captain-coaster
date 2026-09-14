@@ -567,6 +567,80 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * A coaster under construction or officially announced, preferring
+     * one with a known (soonest) opening date; among those still
+     * unannounced, the one with the most-liked main photo -- a proxy for
+     * "people still care about this", since construction/announced alone
+     * says nothing about whether the project is still generating buzz or
+     * has been stalled for years. Used for the homepage hero.
+     */
+    public function findUpcomingCoaster(): ?Coaster
+    {
+        $query = $this->createQueryBuilder('c')
+            ->addSelect('CASE WHEN c.openingDate IS NULL THEN 1 ELSE 0 END AS HIDDEN noDate')
+            ->innerJoin('c.status', 's')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('s.name IN (:statuses)')
+            ->andWhere('c.mainImage IS NOT NULL')
+            ->setParameter('statuses', [Status::CONSTRUCTION, Status::ANNOUNCED])
+            ->orderBy('noDate', 'ASC')
+            ->addOrderBy('c.openingDate', 'ASC')
+            ->addOrderBy('mi.likeCounter', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery();
+        $query->enableResultCache(3600);
+
+        return $query->getOneOrNullResult();
+    }
+
+    /**
+     * A coaster opened in the last 90 days, most-rated first. Used for
+     * the homepage hero.
+     */
+    public function findRecentlyOpenedCoaster(): ?Coaster
+    {
+        $now = new \DateTimeImmutable();
+        $today = $now->format('Y-m-d');
+        $minDate = $now->modify('-90 days')->format('Y-m-d');
+
+        $query = $this->createQueryBuilder('c')
+            ->where('c.openingDate BETWEEN :minDate AND :today')
+            ->andWhere('c.mainImage IS NOT NULL')
+            ->setParameter('minDate', $minDate)
+            ->setParameter('today', $today)
+            ->orderBy('c.totalRatings', 'DESC')
+            ->addOrderBy('c.openingDate', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery();
+        $query->enableResultCache(86400); // 24h -- new openings don't change by the hour
+
+        return $query->getOneOrNullResult();
+    }
+
+    /**
+     * The coaster with the most new rides logged in the last 12 hours
+     * (minimum 3, to avoid surfacing noise). Used for the homepage hero.
+     */
+    public function findTrendingCoaster(): ?Coaster
+    {
+        $sinceDate = new \DateTimeImmutable('-12 hours');
+
+        $query = $this->createQueryBuilder('c')
+            ->addSelect('COUNT(r.id) AS HIDDEN recentRideCount')
+            ->innerJoin(RiddenCoaster::class, 'r', Expr\Join::WITH, 'r.coaster = c.id AND r.createdAt >= :sinceDate')
+            ->andWhere('c.mainImage IS NOT NULL')
+            ->setParameter('sinceDate', $sinceDate)
+            ->groupBy('c.id')
+            ->having('COUNT(r.id) >= 3')
+            ->orderBy('recentRideCount', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery();
+        $query->enableResultCache(43200); // 12h
+
+        return $query->getOneOrNullResult();
+    }
+
+    /**
      * Check if filters contain valid coordinates for distance sorting.
      *
      * @param array<string, mixed> $filters Validated filter array
