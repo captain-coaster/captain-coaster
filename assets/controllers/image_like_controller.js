@@ -65,6 +65,7 @@ export default class extends Controller {
         if (!this.hasIconTarget) return;
 
         const icon = this.iconTarget;
+        icon.setAttribute('aria-pressed', String(this.likedValue));
 
         if (this.likedValue) {
             // Liked state - solid heart

@@ -1,10 +1,10 @@
 {% import "helper.html.twig" as helper %}
 {% set locale = app.request.locale %}
 
-<div class="media"
+<div class="cc-media{% if stackOnMobile|default(false) %} cc-media--stack-mobile{% endif %}"
      data-controller="csrf-protection review-actions"
      data-csrf-protection-token-value="{{ csrf_token('rating') }}"
-     data-review-actions-csrf-protection-outlet=".media"
+     data-review-actions-csrf-protection-outlet=".cc-media"
      data-review-actions-modal-outlet="#reportModal-{{ review.id }}"
      data-review-actions-id-value="{{ review.id }}"
      data-review-actions-upvoted-value="false"
@@ -13,28 +13,28 @@
      data-review-actions-delete-url-value="{{ path('rating_delete', {'id': review.id}) }}"
      data-review-actions-mobile-length-value="150"
      data-review-actions-desktop-length-value="600">
-  <div class="media-left">
+  <div class="cc-media__start">
     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
       {{ helper.profilePicture(review.user, 'img-circle img-sm') }}
     </a>
   </div>
 
-  <div class="media-body">
-    <div class="media-heading">
+  <div class="cc-media__body">
+    <div class="cc-media__heading">
       <a href="{{ path('user_show', {'slug': review.user.slug}) }}" class="text-semibold">
         {{ review.user.displayName }}
       </a>
-      <span class="media-annotation dotted">{{ helper.starRating(review.value) }}</span>
-      <span class="media-annotation dotted">{{ review.updatedAt|ago }}</span>
+      <span class="cc-media__annotation cc-media__annotation--dotted">{{ helper.starRating(review.value) }}</span>
+      <span class="cc-media__annotation cc-media__annotation--dotted">{{ review.updatedAt|ago }}</span>
     </div>
 
     {% if review.pros|length > 0 or review.cons|length > 0 %}
-      <p class="mb-10">
+      <p class="mb-2.5">
         {% for pros in review.pros %}
-          <span class="label label-success label-rounded">{{ pros.name|trans([], 'database') }}</span>
+          <span class="cc-label cc-label--success cc-label--rounded">{{ pros.name|trans([], 'database') }}</span>
         {% endfor %}
         {% for cons in review.cons %}
-          <span class="label label-danger label-rounded">{{ cons.name|trans([], 'database') }}</span>
+          <span class="cc-label cc-label--danger cc-label--rounded">{{ cons.name|trans([], 'database') }}</span>
         {% endfor %}
       </p>
     {% endif %}
@@ -44,12 +44,12 @@
         <div class="review-content" data-review-actions-target="reviewContent" data-full-text="{{ review.review }}">
           <p class="review-short">{{ review.review|slice(0, 150) }}...
             <a href="#" class="expand-review" data-action="review-actions#toggleReview" data-review-actions-target="expandButton">
-              {{ ux_icon('heroicons:chevron-down', {'class': 'w-6 h-6'}) }}
+              {{ ux_icon('heroicons:chevron-down', {'class': 'w-4 h-4'}) }}
             </a>
           </p>
           <p class="review-full" style="display: none;">{{ review.review }}
             <a href="#" class="collapse-review" data-action="review-actions#toggleReview" data-review-actions-target="collapseButton">
-              {{ ux_icon('heroicons:chevron-up', {'class': 'w-6 h-6'}) }}
+              {{ ux_icon('heroicons:chevron-up', {'class': 'w-4 h-4'}) }}
             </a>
           </p>
         </div>
@@ -62,27 +62,27 @@
       <li>
         <span data-review-actions-target="upvoteCount">{{ review.upvoteCount }}</span>
         <a href="#" data-action="review-actions#upvote" data-review-actions-target="upvoteButton">
-          {{ ux_icon('heroicons:chevron-up', {'class': 'w-6 h-6 text-success'}) }}
+          {{ ux_icon('heroicons:chevron-up', {'class': 'w-4 h-4 text-success'}) }}
         </a>
       </li>
       {% if is_granted('ROLE_USER') %}
         <li>
           <a href="#" data-action="review-actions#openReportModal" data-review-actions-target="reportButton" title="{{ 'review.report'|trans }}">
-            {{ ux_icon('heroicons:flag', {'class': 'w-6 h-6 text-size-small text-default'}) }}
+            {{ ux_icon('heroicons:flag', {'class': 'w-4 h-4 text-size-small text-default'}) }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('update', review) %}
         <li>
           <a href="{{ path('review_form', {'id': review.coaster.id}) }}" title="{{ 'review.update'|trans }}">
-            {{ ux_icon('heroicons:pencil', {'class': 'w-6 h-6 text-default'}) }}
+            {{ ux_icon('heroicons:pencil', {'class': 'w-4 h-4 text-default'}) }}
           </a>
         </li>
       {% endif %}
       {% if is_granted('delete', review) %}
         <li>
           <a href="#" data-action="review-actions#deleteReview" title="{{ 'review.delete'|trans }}">
-            {{ ux_icon('heroicons:trash', {'class': 'w-6 h-6 text-default'}) }}
+            {{ ux_icon('heroicons:trash', {'class': 'w-4 h-4 text-default'}) }}
           </a>
         </li>
       {% endif %}
@@ -98,15 +98,15 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <button type="button" class="cc-close" data-dismiss="modal">&times;</button>
               <h5 class="modal-title">{{ 'review.report_title'|trans }}</h5>
             </div>
 
             <form data-action="review-actions#submitReport">
               <div class="modal-body">
-                <div class="form-group">
+                <div class="cc-field">
                   <label>{{ 'review.report_reason'|trans }}</label>
-                  <select name="reason" class="form-control">
+                  <select name="reason" class="cc-field__control">
                     <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
                     <option value="spam">{{ 'review.reason.spam'|trans }}</option>
                   </select>
@@ -114,8 +114,8 @@
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="btn btn-link" data-dismiss="modal">{{ 'review.cancel'|trans }}</button>
-                <button type="submit" class="btn btn-primary">{{ 'review.submit_report'|trans }}</button>
+                <button type="button" class="cc-button cc-button--link" data-dismiss="modal">{{ 'review.cancel'|trans }}</button>
+                <button type="submit" class="cc-button cc-button--primary">{{ 'review.submit_report'|trans }}</button>
               </div>
             </form>
           </div>

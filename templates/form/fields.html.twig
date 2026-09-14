@@ -1,0 +1,138 @@
+{% use 'form_div_layout.html.twig' %}
+
+{#
+ This app's own form theme -- no longer built on Symfony's bundled
+ bootstrap_3_layout.html.twig (captain-coaster/captain-coaster#385:
+ that theme kept emitting Bootstrap 3's class names -- form-control,
+ control-label, form-group, btn/btn-default -- long after this app's
+ own Bootstrap removal, which is what broke the contact/registration/
+ profile forms). Builds directly on form_div_layout.html.twig (the
+ framework-agnostic base, no CSS-framework opinions of its own) and
+ applies this app's current classes (cc-field__control, cc-field__label,
+ cc-field, cc-button, checkbox, help-block, has-error -- see forms.css/
+ buttons.css) instead.
+
+ Checkbox/radio rendering (checkbox_widget/radio_widget/checkbox_label/
+ radio_label/checkbox_radio_label) replicates bootstrap_3_layout's own
+ approach -- input and text both inside one clickable <label> -- since
+ without it, an expanded ChoiceType's individual options (checkboxes or
+ radios) render with no visible label text at all: form_div_layout's
+ own generic form_label renders fine standalone, but a bare choice
+ option's label is only ever supplied via this widget-embedding
+ mechanism, not as a plain sibling label. Radio gets no `.checkbox`-style
+ wrapper div, since forms.css never defined a `.radio` equivalent
+ (zero radio usage in this app prior to this rewrite, per forms.css's
+ own header) -- if that changes, add one then. Simplified from the
+ original: no checkbox-inline/radio-inline handling (never used).
+#}
+
+{% block form_widget_simple -%}
+    {% if type is not defined or type not in ['file', 'hidden'] %}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' cc-field__control')|trim}) -%}
+    {% endif %}
+    {{- parent() -}}
+{%- endblock form_widget_simple %}
+
+{% block textarea_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' cc-field__control')|trim}) -%}
+    {{- parent() -}}
+{%- endblock textarea_widget %}
+
+{% block choice_widget_collapsed -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' cc-field__control')|trim}) -%}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed %}
+
+{% block checkbox_widget -%}
+    <div class="checkbox">
+        {{- form_label(form, null, {widget: parent()}) -}}
+    </div>
+{%- endblock checkbox_widget %}
+
+{% block radio_widget -%}
+    {{- form_label(form, null, {widget: parent()}) -}}
+{%- endblock radio_widget %}
+
+{% block checkbox_label -%}
+    {%- set label_attr = label_attr|merge({for: id}) -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock checkbox_label %}
+
+{% block radio_label -%}
+    {%- set label_attr = label_attr|merge({for: id}) -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock radio_label %}
+
+{% block checkbox_radio_label -%}
+    {# Do not display the label if widget is not defined, to avoid the choice_widget_expanded sibling call double-rendering it. #}
+    {%- if widget is defined -%}
+        {%- if required -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
+        {%- endif -%}
+        {%- if label is null or label is same as('') -%}
+            {%- if label_format is not empty -%}
+                {%- set label = label_format|replace({'%name%': name, '%id%': id}) -%}
+            {%- elseif label is not same as(false) -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
+            {#- if statement must be kept on the same line, to force the space between widget and label -#}
+            {{- widget|raw }} {% if label is not same as(false) -%}
+                {%- if translation_domain is same as(false) -%}
+                    {%- if label_html is same as(false) -%}
+                        {{ label -}}
+                    {%- else -%}
+                        {{ label|raw -}}
+                    {%- endif -%}
+                {%- else -%}
+                    {%- if label_html is same as(false) -%}
+                        {{ label|trans(label_translation_parameters, translation_domain) -}}
+                    {%- else -%}
+                        {{ label|trans(label_translation_parameters, translation_domain)|raw -}}
+                    {%- endif -%}
+                {%- endif -%}
+            {%- endif %}
+        </label>
+    {%- endif -%}
+{%- endblock checkbox_radio_label %}
+
+{% block form_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' cc-field__label')|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_label %}
+
+{% block form_help -%}
+    {%- if help -%}
+        {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' help-block')|trim}) -%}
+        <span id="{{ id }}_help"{% with {attr: help_attr} %}{{ block('attributes') }}{% endwith %}>
+            {{- block('form_help_content') -}}
+        </span>
+    {%- endif -%}
+{%- endblock form_help %}
+
+{% block form_errors -%}
+    {%- if errors|length > 0 -%}
+    {% if form is not rootform %}<span class="help-block">{% else %}<div class="cc-alert cc-alert--danger">{% endif %}
+    <ul class="list-unstyled">
+        {%- for error in errors -%}
+            <li id="{{ id ~ '_error' ~ loop.index }}">{{ error.message }}</li>
+        {%- endfor -%}
+    </ul>
+    {% if form is not rootform %}</span>{% else %}</div>{% endif %}
+    {%- endif %}
+{%- endblock form_errors %}
+
+{% block form_row_render -%}
+    <div{% with {attr: row_attr|merge({class: (row_attr.class|default('') ~ ' cc-field' ~ ((not compound or force_error|default(false)) and not valid ? ' has-error'))|trim})} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_label(form) }} {# -#}
+        {{ form_widget(form, widget_attr) }} {# -#}
+        {{- form_help(form) -}}
+        {{ form_errors(form) }} {# -#}
+    </div> {# -#}
+{%- endblock form_row_render %}
+
+{% block button_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('cc-button--default') ~ ' cc-button')|trim}) -%}
+    {{- parent() -}}
+{%- endblock button_widget %}

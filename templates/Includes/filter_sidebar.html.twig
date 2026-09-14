@@ -26,7 +26,7 @@
 
                     {# Status Filter #}
                     {% if filterConfig.excluded_filters is not defined or 'status' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="cc-field toggle-switch-cc-field">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'filters.status'|trans }}
@@ -39,7 +39,7 @@
 
                     {# Sort by Distance #}
                     {% if filterConfig.excluded_filters is not defined or 'sortByDistance' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="cc-field toggle-switch-cc-field">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'filters.sortByDistance'|trans }}
@@ -55,7 +55,7 @@
 
                     {# Special Filters #}
                     {% if filterConfig.excluded_filters is not defined or 'new' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="cc-field toggle-switch-cc-field">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'filters.new'|trans }}
@@ -67,7 +67,7 @@
                     {% endif %}
 
                     {% if filterConfig.excluded_filters is not defined or 'kiddie' not in filterConfig.excluded_filters %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="cc-field toggle-switch-cc-field">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'filters.kiddie'|trans }}
@@ -80,7 +80,7 @@
 
                     {# User-specific Filter #}
                     {% if (filterConfig.excluded_filters is not defined or 'notridden' not in filterConfig.excluded_filters) and filters.ridden is not defined %}
-                    <div class="form-group toggle-switch-form-group">
+                    <div class="cc-field toggle-switch-cc-field">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'filters.notridden'|trans }}
@@ -94,8 +94,8 @@
 
                     {# Name Filter - Search first #}
                     {% if filterConfig.excluded_filters is not defined or 'name' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="filters[name]"
+                    <div class="cc-field">
+                        <input type="text" class="cc-field__control" name="filters[name]"
                                value="{{ filters.name|default('') }}"
                                placeholder="{{ 'filters.name'|trans }}">
                     </div>
@@ -103,8 +103,8 @@
 
                     {# Score Filter - Important metric #}
                     {% if filterConfig.excluded_filters is not defined or 'score' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[score]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[score]">
                             <option value="">{{ 'filters.score'|trans }}</option>
                             {% for i in range(10, 90, 10) %}
                                 <option value="{{ i }}" {% if filters.score is defined and filters.score == i %}selected{% endif %}>{{ 'filters.atleast'|trans({'count': i}) }}</option>
@@ -115,8 +115,8 @@
 
                     {# Location Filters #}
                     {% if filterConfig.excluded_filters is not defined or 'continent' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[continent]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[continent]">
                             <option value="">{{ 'filters.continent'|trans }}</option>
                             {% if filtersForm.continent is defined %}
                                 {% for continent in filtersForm.continent %}
@@ -128,8 +128,8 @@
                     {% endif %}
 
                     {% if filterConfig.excluded_filters is not defined or 'country' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[country]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[country]">
                             <option value="">{{ 'filters.country'|trans }}</option>
                             {% if filtersForm.country is defined %}
                                 {% for country in filtersForm.country %}
@@ -142,8 +142,8 @@
 
                     {# Manufacturer & Model - Related to coaster type #}
                     {% if filterConfig.excluded_filters is not defined or 'manufacturer' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[manufacturer]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[manufacturer]">
                             <option value="">{{ 'filters.manufacturer'|trans }}</option>
                             {% for manufacturer in filtersForm.manufacturer %}
                                 <option value="{{ manufacturer.id }}" {% if filters.manufacturer is defined and filters.manufacturer == manufacturer.id %}selected{% endif %}>{{ manufacturer.name }}</option>
@@ -153,8 +153,8 @@
                     {% endif %}
 
                     {% if filterConfig.excluded_filters is not defined or 'model' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[model]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[model]">
                             <option value="">{{ 'filters.model'|trans }}</option>
                             {% if filtersForm.model is defined %}
                                 {% for model in filtersForm.model %}
@@ -167,8 +167,8 @@
 
                     {# Coaster Characteristics #}
                     {% if filterConfig.excluded_filters is not defined or 'materialType' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[materialType]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[materialType]">
                             <option value="">{{ 'filters.materialType'|trans }}</option>
                             {% if filtersForm.materialType is defined %}
                                 {% for type in filtersForm.materialType %}
@@ -180,8 +180,8 @@
                     {% endif %}
 
                     {% if filterConfig.excluded_filters is not defined or 'seatingType' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[seatingType]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[seatingType]">
                             <option value="">{{ 'filters.seatingType'|trans }}</option>
                             {% if filtersForm.seatingType is defined %}
                                 {% for type in filtersForm.seatingType %}
@@ -193,8 +193,8 @@
                     {% endif %}
 
                     {% if filterConfig.excluded_filters is not defined or 'openingDate' not in filterConfig.excluded_filters %}
-                    <div class="form-group">
-                        <select class="form-control" name="filters[openingDate]">
+                    <div class="cc-field">
+                        <select class="cc-field__control" name="filters[openingDate]">
                             <option value="">{{ 'filters.openingDate'|trans }}</option>
                             {% for openingDate in filtersForm.openingDate %}
                                 <option value="{{ openingDate.year }}" {% if filters.openingDate is defined and filters.openingDate == openingDate.year %}selected{% endif %}>{{ openingDate.year }}</option>
@@ -204,8 +204,8 @@
                     {% endif %}
 
                     {# Clear Filters Button #}
-                    <div class="form-group">
-                        <button type="button" class="btn btn-default btn-block" onclick="window.location.href = window.location.pathname;">
+                    <div class="cc-field">
+                        <button type="button" class="cc-button cc-button--default cc-button--block" onclick="window.location.href = window.location.pathname;">
                             {{ 'filters.clear'|trans }}
                         </button>
                     </div>

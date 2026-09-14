@@ -22,17 +22,17 @@
 {# Display coaster rank variation #}
 {% macro variation(coaster) %}
     {% if coaster.previousRank is empty %}
-        <span class="badge badge-flat border-warning-600 text-warning-600">new</span>
+        <span class="cc-badge cc-badge--flat border-warning-600 text-warning-600">new</span>
     {% elseif coaster.previousRank < coaster.rank %}
-        <span class="badge badge-flat border-danger-600 text-danger-600">
-      {{ ux_icon('bxs:down-arrow', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+        <span class="cc-badge cc-badge--flat border-danger-600 text-danger-600">
+      {{ ux_icon('bxs:down-arrow', {'class': 'w-4 h-4'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
     </span>
     {% elseif coaster.previousRank > coaster.rank %}
-        <span class="badge badge-flat border-success-600 text-success-600">
-      {{ ux_icon('bxs:up-arrow', {'class': 'w-6 h-6'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
+        <span class="cc-badge cc-badge--flat border-success-600 text-success-600">
+      {{ ux_icon('bxs:up-arrow', {'class': 'w-4 h-4'}) }} {{ (coaster.rank - coaster.previousRank)|abs }}
     </span>
     {% elseif coaster.previousRank == coaster.rank %}
-        <span class="badge badge-flat border-primary-600 text-primary-600">{{ ux_icon('bxs:right-arrow', {'class': 'w-6 h-6'}) }}</span>
+        <span class="cc-badge cc-badge--flat border-primary-600 text-primary-600">{{ ux_icon('bxs:right-arrow', {'class': 'w-4 h-4'}) }}</span>
     {% endif %}
 {% endmacro %}
 
@@ -40,25 +40,25 @@
 {% macro starRating(rating) %}
     <span class="star-rating text-warning">
         {%- if rating == 5.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 4.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('half-star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 4.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 3.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('half-star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 3.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 2.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('half-star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 2.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 1.5 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}{{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}{{ ux_icon('half-star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 1.0 -%}
-            {{ ux_icon('heroicons-solid:star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4'}) }}
         {%- elseif rating == 0.5 -%}
-            {{ ux_icon('half-star', {'class': 'w-6 h-6'}) }}
+            {{ ux_icon('half-star', {'class': 'w-4 h-4'}) }}
         {%- endif -%}
     </span>
 {% endmacro %}

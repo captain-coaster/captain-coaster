@@ -14,19 +14,18 @@ window.addEventListener('load', () => {
 function init() {
     document.body.classList.add('no-transitions');
 
-    document.querySelectorAll('.navbar-nav .disabled a').forEach((link) => {
+    document.querySelectorAll('.cc-navbar__nav .disabled a').forEach((link) => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
         });
     });
 
-    const ANCESTOR_SELECTOR =
-        '.navbar-nav .dropdown:not(.language-switch), .navbar-nav .dropup:not(.language-switch)';
+    const ANCESTOR_SELECTOR = '.cc-navbar__nav .cc-menu:not(.language-switch)';
 
     document
         .querySelectorAll(
-            '.dropdown-menu:not(.dropdown-content), .dropdown-menu:not(.dropdown-content) .dropdown-submenu'
+            '.cc-menu__list:not(.cc-menu__content), .cc-menu__list:not(.cc-menu__content) .cc-menu__submenu'
         )
         .forEach((menu) => {
             if (!menu.querySelector('li.active')) return;

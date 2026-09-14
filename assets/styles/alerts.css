@@ -1,0 +1,155 @@
+/*
+ * .cc-alert — migrated from theme/bootstrap-limitless/alerts.less +
+ * bootstrap/less/alerts.less. Values below are copied from the compiled
+ * output of those two files (cascade already resolved), not re-derived
+ * from LESS variables, to guarantee an iso-visual result. Written as plain
+ * CSS rather than @apply: several rules here are pseudo-element icons
+ * (base64 SVG backgrounds) and precise absolute positioning that gain
+ * nothing from utility composition and are safer to keep as a verbatim
+ * copy of known-correct values.
+ *
+ * Only variants actually reachable in this app are included: cc-alert--success/
+ * -danger/-warning/-info (all reachable via addFlash()), plus
+ * cc-alert--styled-left/cc-alert--arrow-left/cc-alert--dismissible/
+ * cc-alert--heading (the only *styled* modifiers referenced in templates).
+ * "cc-alert--bordered" is also referenced in templates (flashes.html.twig,
+ * connect/login.html.twig, registration/register.html.twig) but was never
+ * defined in the original LESS either -- pre-existing dead weight, not
+ * something this migration should invent styling for.
+ * cc-alert--primary and the .ui-pnotify integration were never used and are
+ * dropped. "cc-alert--error" (also a real addFlash() value) intentionally gets
+ * no color rule below, matching the current (accidental) unstyled look —
+ * "cc-alert--error" was never a real Bootstrap/Limitless variant.
+ *
+ * cc-alert--component (the "Alert as a component" white-background
+ * override, paired with a --styled- modifier) is dropped too: production
+ * shows a tinted background for both real uses (Default/index.html.twig,
+ * User/list.html.twig, both cc-alert--info) -- confirmed against live prod,
+ * not just re-derived from the LESS source, which turned out to disagree
+ * with what's actually deployed. Both real uses always pair --component
+ * with a color variant, so there's no case left needing the white
+ * override; Top/edit.html.twig's own styled-left alert never had
+ * --component in the first place.
+ */
+.cc-alert {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+}
+
+.cc-alert > p,
+.cc-alert > ul {
+    margin-bottom: 0;
+}
+
+.cc-alert > p + p {
+    margin-top: 5px;
+}
+
+.cc-alert--heading {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.cc-alert .cc-close {
+    color: inherit;
+}
+
+.cc-alert--dismissible,
+.cc-alert--dismissable {
+    padding-right: 35px;
+}
+
+.cc-alert--dismissible .cc-close,
+.cc-alert--dismissable .cc-close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+}
+
+.cc-alert--success {
+    color: #205823;
+    background-color: #e8f5e9;
+    border-color: var(--cc-success);
+}
+
+.cc-alert--info {
+    color: #00545c;
+    background-color: #e0f7fa;
+    border-color: var(--cc-info);
+}
+
+.cc-alert--warning {
+    color: var(--cc-warning-deep);
+    background-color: #fff3e0;
+    border-color: #ff9800;
+}
+
+.cc-alert--danger {
+    color: #9c1f1f;
+    background-color: #fbe9e7;
+    border-color: var(--cc-warning);
+}
+
+.cc-alert--styled-left {
+    border-left-width: 44px;
+}
+
+/*
+ * Decorative icon in the colored left border of a styled alert -- an
+ * `::after` background-image, since it's purely decorative (no DOM
+ * element, so `ux_icon()`'s real <svg> markup doesn't apply here). These
+ * used to be base64-embedded SVGs hand-copied from heroicons.com; two of
+ * the four (info/warning) were byte-different duplicates of icons this
+ * project already vendors at assets/icons/, and the other two
+ * (success/danger) weren't vendored anywhere. Pointing at the real files
+ * instead dedupes them and keeps every icon in this app sourced through
+ * the same `ux:icons:lock` pipeline.
+ */
+.cc-alert[class*="cc-alert--styled-"]:after {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: -44px;
+    width: 44px;
+    height: 16px;
+    margin-top: -8px;
+    line-height: 1;
+    background-image: url(../icons/heroicons/information-circle.svg);
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.cc-alert[class*="cc-alert--styled-"].cc-alert--danger:after {
+    background-image: url(../icons/heroicons-solid/x-circle.svg);
+}
+
+.cc-alert[class*="cc-alert--styled-"].cc-alert--success:after {
+    background-image: url(../icons/heroicons-solid/check-circle.svg);
+}
+
+.cc-alert[class*="cc-alert--styled-"].cc-alert--warning:after {
+    background-image: url(../icons/heroicons/exclamation-triangle.svg);
+}
+
+.cc-alert[class*="cc-alert--styled-"].cc-alert--info:after {
+    background-image: url(../icons/heroicons/information-circle.svg);
+}
+
+/* Small triangle notch at the edge of the colored left border. */
+.cc-alert[class*="cc-alert--arrow-"]:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -5px;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid;
+    border-left-color: inherit;
+}

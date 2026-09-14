@@ -4,21 +4,19 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
-        <div class="panel-heading">
-          <h6 class="panel-title">
+      <div class="cc-panel cc-panel--flat" data-controller="notification-list" data-notification-list-mark-read-token-value="{{ csrf_token('notification_mark_read') }}">
+        <div class="cc-panel__heading">
+          <h6 class="cc-panel__title">
             {{ 'notif.title'|trans({}, 'notification') }}
             {% if unreadCount > 0 %}
-              <span class="badge badge-primary">{{ unreadCount }}</span>
+              <span class="cc-badge cc-badge--primary">{{ unreadCount }}</span>
             {% endif %}
           </h6>
           {% if unreadCount > 0 %}
             <div class="heading-elements visible-elements">
               <form action="{{ path('notification_mark_all_read') }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-                <button type="submit" class="btn btn-primary btn-rounded btn-xs">{{ 'notif.markAllRead'|trans({}, 'notification') }}</button>
+                <button type="submit" class="cc-button cc-button--primary cc-button--rounded cc-button--xs">{{ 'notif.markAllRead'|trans({}, 'notification') }}</button>
               </form>
             </div>
           {% endif %}
@@ -27,6 +25,4 @@
           {% include 'Notification/_notification_body.html.twig' %}
         </div>
       </div>
-    </div>
-  </div>
 {% endblock %}

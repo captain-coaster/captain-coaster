@@ -87,6 +87,11 @@ coaster:
         kiddie: Kinder
         indoor: Indoor
         formerNames: Ehemalige Namen
+    stats:
+        height: Höhe
+        length: Länge
+        speed: Höchstgeschwindigkeit
+        inversions: Inversionen
     parkcoaster: 'Auch in {name}'
     video:
         title: Onride Video
@@ -96,6 +101,7 @@ coaster:
         button: Lade ien Bild hoch
         all: Alle Bilder ansehen
         loading: Laden von Fotos
+        like: Dieses Bild mögen
     location: Standort
 
 image_upload:
@@ -350,7 +356,6 @@ rating:
     save_error: Bewertung konnte nicht gespeichert werden. Bitte versuche es erneut.
 
 navbar:
-    profile: Mein Profil
     settings: Einstellungen
     rating: Meine Bewertungen
     login: Anmelden
@@ -372,6 +377,8 @@ sidebar:
     contact: Kontaktiere uns
     logout: Abmelden
     login: Anmelden
+    toggle: Menü umschalten
+    toggle_filters: Filter umschalten
 
 footer:
     terms: Datenschutzrichtlinie

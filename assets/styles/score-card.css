@@ -1,0 +1,86 @@
+/* ------------------------------------------------------------------------------
+ * Score Card Component
+ * ---------------------------------------------------------------------------- */
+
+/* Compact score display */
+.score-compact {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.score-compact .score-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+}
+
+.score-compact .score-percent {
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--cc-gray-650);
+}
+
+/* Score cc-panel styles */
+.score-label {
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.rank-number {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1;
+    color: #111827;
+}
+
+.rank-link {
+    text-decoration: none;
+}
+
+/*
+ * Coaster key stats (height/length/speed/inversions) -- one line per
+ * stat instead of a 2x2 grid of unlabeled, non-interactive <button>s:
+ * a plain label makes each figure identifiable without relying on the
+ * icon alone, and a single line per row keeps the total height close
+ * to the old grid's rather than doubling it. `theme(--breakpoint-*)`
+ * isn't usable here (entry-scoped to coaster.js, outside app.css's own
+ * compilation graph -- same reasoning as this file's score-* rules).
+ */
+.coaster-stats__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--cc-gray-150);
+}
+
+.coaster-stats__row:last-child {
+    border-bottom: none;
+}
+
+.coaster-stats__row svg {
+    flex-shrink: 0;
+}
+
+.coaster-stats__label {
+    flex: 1;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--cc-gray-600);
+}
+
+.coaster-stats__value {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--cc-gray-900);
+}
+
+.coaster-stats__value--empty {
+    color: var(--cc-gray-500);
+    font-weight: 500;
+}

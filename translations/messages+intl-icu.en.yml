@@ -82,6 +82,11 @@ coaster:
         kiddie: 'Kiddie'
         indoor: 'Indoor'
         formerNames: 'Former names'
+    stats:
+        height: 'Height'
+        length: 'Length'
+        speed: 'Top speed'
+        inversions: 'Inversions'
     parkcoaster: 'Also in {name}'
     video:
         title: 'Onride Video'
@@ -91,6 +96,7 @@ coaster:
         button: 'Upload a picture'
         all: 'See all pictures'
         loading: 'Loading photos...'
+        like: 'Like this picture'
     location: 'Location'
 
 image_upload:
@@ -344,7 +350,6 @@ rating:
     save_error: 'Unable to save rating. Please try again.'
 
 navbar:
-    profile: 'My profile'
     settings: 'Settings'
     rating: 'My ratings'
     login: 'Sign in'
@@ -366,6 +371,8 @@ sidebar:
     contact: 'Get in touch'
     logout: 'Logout'
     login: 'Sign in'
+    toggle: 'Toggle menu'
+    toggle_filters: 'Toggle filters'
 
 footer:
     terms: 'Privacy Policy'

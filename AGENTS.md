@@ -9,7 +9,7 @@ Captain Coaster is a participative guide for roller coaster enthusiasts — user
 - **Backend**: Symfony 7.x, PHP 8.5, Doctrine ORM
 - **Database**: MariaDB 11.8
 - **Cache/Queue**: Redis
-- **Frontend**: Vite (via `symfony/reprise`), LESS, Bootstrap 3 (Limitless theme), Stimulus (Hotwire) — jQuery is still present for legacy pieces, being phased out in favor of Stimulus
+- **Frontend**: Vite (via `symfony/reprise`), Tailwind CSS v4, Stimulus (Hotwire) — no jQuery, no Bootstrap/LESS (fully removed, #383/#391)
 - **API**: API Platform v4
 - **Admin**: EasyAdmin v4
 - **Storage**: AWS S3 via Flysystem
@@ -46,21 +46,23 @@ Not an exhaustive entity list (see `src/Entity/`) — just the ones with behavio
 
 Current state:
 
-- **Stimulus-first** for new client-side behavior; avoid adding new jQuery.
+- **Stimulus-first** for client-side behavior. No jQuery (removed, #389).
 - **No CSS in JavaScript or Twig** — styles belong in `assets/styles/`.
-- Styling is LESS, organized by component under `assets/styles/components/`. There's no design-token or utility-class system yet.
+- **Tailwind CSS v4.** Bootstrap 3/Limitless/LESS are fully removed (#383, #391) — cascade layers (`theme`/`base`/`components`/`utilities`), one token source (`assets/styles/tokens.css`: colors, breakpoints), `theme()` and the modern range-syntax (`width < ...`) for breakpoint media queries.
+- **New components: compose Tailwind utility classes directly in Twig markup by default.** Existing `.cc-*` files (`cc-panel`, `cc-media`, `cc-alert`, ...) are hand-written, BEM-named CSS (`.block__element--modifier`) that intentionally mirrors the old Bootstrap-Limitless component shape — kept as-is to avoid visual churn during the hardening pass (#385), not a pattern to extend. Add a new hand-written CSS class only when the same result genuinely can't be expressed as utilities in markup (a pseudo-element icon, a complex multi-selector interaction) — and say why in a comment when you do, the way `alerts.css`'s file header does. The redesign is the right moment to replace a `.cc-*` file outright rather than add to it.
+- `scripts/check-css-contract.mjs` (`npm run check:css-contract`, enforced in CI) fails the build if a deprecated Bootstrap class name reappears in source — extend its `deprecatedClassFamilies` list when retiring another one.
 
 Assets live in `assets/`:
 
 - `js/` — vanilla JS entry points and utilities
 - `controllers/` — Stimulus controllers (one file per controller, named `*_controller.js`), auto-registered via `vite.config.js`'s `stimulus` option and started from `assets/bootstrap.js`. `controllers.json` is Symfony UX's registry for bundle-provided controllers (currently empty — no such bundles in use), not how local ones get registered
-- `styles/app.less` — entry point, imports `components/`, `icons/`, `theme/` (Bootstrap 3 Limitless theme), `utilities/`
+- `styles/app.css` — entry point; imports `tokens.css` first, then every component file under `layer(components)`. A few pages have their own separate Vite CSS entry (`score-card.css`, `top-list.css`, `rating-distribution.css`) instead of importing into `app.css` — those import `tokens.css` directly too, since each Vite CSS entry runs its own independent Tailwind build and `theme()` only resolves within that entry's own graph
+- `icons/` — locked Iconify SVGs (`heroicons:`/`heroicons-solid:` prefixes), committed via `php bin/console ux:icons:lock` — CI fails if a template references an icon that isn't locked
 
 Mid term aim:
 
-- Tailwind to replace Bootstrap and the legacy theme (LESS along with it)
-- Symfony UX Twig/Live Components and Stimulus as a default
-- No jQuery, vanilla JS
+- Symfony UX Twig/Live Components as a default for new interactive UI
+- A visual redesign, now that Bootstrap/LESS removal and CSS hardening (#385) are done
 
 ### Naming conventions
 
@@ -106,7 +108,7 @@ PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP82Migration:risky` + `@PHP8
 
 ## Continuous Integration
 
-`.github/workflows/ci.yml` runs: composer validate, PHPUnit, PHPStan, php-cs-fixer, Twig lint, container lint, Doctrine schema validate, and a compromised-dependency audit.
+`.github/workflows/ci.yml` runs: composer validate, the CSS contract check (no deprecated Bootstrap classes), PHPUnit, PHPStan, php-cs-fixer, Twig lint, locked-icon check, container lint, Doctrine schema validate, and a compromised-dependency audit.
 
 ## Security
 

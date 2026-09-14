@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { isTabletUp } from '../js/utils/breakpoints';
 
 // Not stimulusFetch: 'lazy' -- the rating panel renders on every coaster
 // page, so a lazy chunk here never actually avoids loading it, just adds
@@ -99,8 +100,7 @@ export default class extends Controller {
 
     async dateChanged(event) {
         // On desktop, save immediately and close. On mobile, save and close when picker closes
-        const isMobile = window.innerWidth <= 768;
-        if (!isMobile) {
+        if (isTabletUp()) {
             await this.saveDate(event.target.value);
             this.hideDatePicker();
         }

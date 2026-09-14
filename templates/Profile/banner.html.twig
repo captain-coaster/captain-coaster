@@ -14,27 +14,27 @@
 <div id="banner-fallback" style="display:none;">
   <p class="text-muted">{{ 'profile.banner.unavailable'|trans }}</p>
 </div>
-<div class="col-sm-12 text-right">
-  <ul class="list-inline no-margin-bottom">
+<div class="text-right">
+  <ul class="list-inline mb-0">
     <li>
-      <button type="button" class="btn btn-link"
+      <button type="button" class="cc-button cc-button--link"
               data-controller="clipboard"
               data-clipboard-content-value="{{ bbcode|e('html_attr') }}"
               data-clipboard-success-message-value="{{ 'profile.banner.copied'|trans }}"
               data-clipboard-error-message-value="{{ 'profile.banner.copy_failed'|trans }}"
               data-action="clipboard#copy">
-        {{ ux_icon('heroicons:clipboard-document', {'class': 'w-6 h-6 position-left'}) }}
+        {{ ux_icon('heroicons:clipboard-document', {'class': 'w-4 h-4 position-left'}) }}
         {{ 'profile.banner.getbbcode'|trans }}
       </button>
     </li>
     <li>
-      <button type="button" class="btn btn-link"
+      <button type="button" class="cc-button cc-button--link"
               data-controller="clipboard"
               data-clipboard-content-value="{{ htmlcode|e('html_attr') }}"
               data-clipboard-success-message-value="{{ 'profile.banner.copied'|trans }}"
               data-clipboard-error-message-value="{{ 'profile.banner.copy_failed'|trans }}"
               data-action="clipboard#copy">
-        {{ ux_icon('heroicons:document-duplicate', {'class': 'w-6 h-6 position-left'}) }}
+        {{ ux_icon('heroicons:document-duplicate', {'class': 'w-4 h-4 position-left'}) }}
         {{ 'profile.banner.gethtml'|trans }}
       </button>
     </li>

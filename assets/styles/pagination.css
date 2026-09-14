@@ -1,0 +1,85 @@
+/*
+ * .cc-pagination — migrated from theme/bootstrap-limitless/pagination.less +
+ * bootstrap/less/pagination.less. Only the base + .cc-pagination--sm variant
+ * are included (the only ones referenced in templates); pagination-lg/
+ * -xs/-flat/-rounded/-separated were never used and are dropped.
+ * Renders through two near-identical KNP pagination templates
+ * (custom + the bootstrap_v4 override) whose `.page-item`/`.page-link`
+ * classes carry no CSS at all in this app (Bootstrap 3 styles this
+ * structurally via `.cc-pagination > li > a`, not by those class names) —
+ * verified against the compiled output before relying on it.
+ */
+.cc-pagination {
+    @apply m-0 -mb-[6px] inline-block rounded-[3px] pl-0;
+}
+
+.cc-pagination > li {
+    display: inline;
+}
+
+.cc-pagination > li > a,
+.cc-pagination > li > span {
+    @apply relative float-left border border-[var(--cc-gray-300)] bg-white text-center text-[var(--cc-gray-900)];
+    min-width: 36px;
+    padding: 7px 12px;
+    line-height: 1.53846;
+    text-decoration: none;
+    margin-left: -1px;
+}
+
+.cc-pagination > li > a:hover,
+.cc-pagination > li > span:hover,
+.cc-pagination > li > a:focus,
+.cc-pagination > li > span:focus {
+    @apply z-2 bg-[var(--cc-gray-100)] text-[var(--cc-gray-900)];
+    border-color: var(--cc-gray-300);
+}
+
+.cc-pagination > li:first-child > a,
+.cc-pagination > li:first-child > span {
+    @apply ml-0 rounded-l-[3px];
+}
+
+.cc-pagination > li:last-child > a,
+.cc-pagination > li:last-child > span {
+    @apply rounded-r-[3px];
+}
+
+.cc-pagination > .active > a,
+.cc-pagination > .active > span,
+.cc-pagination > .active > a:hover,
+.cc-pagination > .active > span:hover,
+.cc-pagination > .active > a:focus,
+.cc-pagination > .active > span:focus {
+    @apply z-3 cursor-default text-white;
+    background-color: var(--cc-primary);
+    border-color: var(--cc-primary);
+}
+
+.cc-pagination > .disabled > span,
+.cc-pagination > .disabled > span:hover,
+.cc-pagination > .disabled > span:focus,
+.cc-pagination > .disabled > a,
+.cc-pagination > .disabled > a:hover,
+.cc-pagination > .disabled > a:focus {
+    @apply cursor-not-allowed bg-transparent text-[var(--cc-gray-500)];
+    border-color: var(--cc-gray-300);
+}
+
+.cc-pagination--sm > li > a,
+.cc-pagination--sm > li > span {
+    @apply text-[12px];
+    padding: 6px 11px;
+    line-height: 1.66667;
+    min-width: 34px;
+}
+
+.cc-pagination--sm > li:first-child > a,
+.cc-pagination--sm > li:first-child > span {
+    @apply rounded-l-[2px];
+}
+
+.cc-pagination--sm > li:last-child > a,
+.cc-pagination--sm > li:last-child > span {
+    @apply rounded-r-[2px];
+}

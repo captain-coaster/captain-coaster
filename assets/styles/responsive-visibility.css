@@ -1,0 +1,17 @@
+/*
+ * Component animations -- migrated: bootstrap/less/component-animations.less.
+ * `.fade`/`.fade.in` is real and needed by the review-report modal
+ * (`class="modal fade"` in _review_item.html.twig, toggled by
+ * modal_controller.js) -- its own backdrop is now the browser's native
+ * `<dialog>` `::backdrop`, styled directly in cc-navbar.css, no longer a
+ * `.fade`-toggled element of its own.
+ *
+ */
+.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+}
+
+.fade.in {
+    opacity: 1;
+}

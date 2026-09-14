@@ -25,6 +25,7 @@
     "dev": "vite build --mode development",
     "watch": "vite build --watch",
     "build": "vite build",
+    "check:css-contract": "node scripts/check-css-contract.mjs",
     "clean": "rm -rf public/build/*",
     "format": "prettier --write \"assets/**/*.js\"",
     "format:check": "prettier --check \"assets/**/*.js\""

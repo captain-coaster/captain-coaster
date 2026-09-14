@@ -87,6 +87,11 @@ coaster:
         kiddie: Kiddie
         indoor: Indoor
         formerNames: Nombres anteriores
+    stats:
+        height: Altura
+        length: Longitud
+        speed: Velocidad máxima
+        inversions: Inversiones
     parkcoaster: 'También en {name}'
     video:
         title: POV Onride
@@ -96,6 +101,7 @@ coaster:
         button: Subir una foto
         all: Ver todas las fotos
         loading: Carga de fotos
+        like: Me gusta esta foto
     location: Localización
 
 image_upload:
@@ -349,7 +355,6 @@ rating:
     save_error: No se pudo guardar la calificación. Inténtalo de nuevo.
 
 navbar:
-    profile: Mi perfil
     settings: Ajustes
     rating: Mis notas
     login: Iniciar sesión
@@ -371,6 +376,8 @@ sidebar:
     contact: Estar en contacto
     logout: Cerrar sesión
     login: Iniciar sesión
+    toggle: Mostrar menú
+    toggle_filters: Mostrar filtros
 
 footer:
     terms: Términos de Uso

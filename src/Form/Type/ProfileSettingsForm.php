@@ -53,9 +53,6 @@ class ProfileSettingsForm extends AbstractType
                 new Length(min: 2, max: 50),
                 $nameRegex,
             ],
-            'attr' => [
-                'class' => 'form-control',
-            ],
         ]);
 
         // Last name field (optional, disabled if can't change name)
@@ -66,9 +63,6 @@ class ProfileSettingsForm extends AbstractType
             'constraints' => [
                 new Length(min: 2, max: 50),
                 $nameRegex,
-            ],
-            'attr' => [
-                'class' => 'form-control',
             ],
         ]);
 
@@ -84,9 +78,6 @@ class ProfileSettingsForm extends AbstractType
             ],
             'expanded' => false,
             'help' => 'profile.settings.name.format.help',
-            'attr' => [
-                'class' => 'form-control',
-            ],
         ]);
 
         // Profile picture
@@ -103,7 +94,6 @@ class ProfileSettingsForm extends AbstractType
                     ],
                 ),
             ],
-            'attr' => ['class' => 'form-control'],
         ]);
 
         // Preferences section
@@ -116,7 +106,6 @@ class ProfileSettingsForm extends AbstractType
             'choices' => $locales,
             'choice_label' => static fn ($value) => $value,
             'label' => 'profile.settings.preferences.preferredLocale',
-            'attr' => ['class' => 'form-control'],
         ]);
 
         $builder->add('homePark', EntityType::class, [
@@ -124,7 +113,6 @@ class ProfileSettingsForm extends AbstractType
             'label' => 'profile.settings.preferences.homePark.label',
             'class' => Park::class,
             'placeholder' => 'profile.settings.preferences.homePark.placeholder',
-            'attr' => ['class' => 'form-control'],
             'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
                 ->orderBy('p.name', 'ASC'),
         ]);
@@ -135,7 +123,6 @@ class ProfileSettingsForm extends AbstractType
                 'profile.settings.preferences.units.imperial' => 'imperial',
             ],
             'label' => 'profile.settings.preferences.units.label',
-            'attr' => ['class' => 'form-control'],
         ]);
 
         $builder->add('preferredReviewLanguages', ChoiceType::class, [
@@ -158,7 +145,6 @@ class ProfileSettingsForm extends AbstractType
                 'required' => false,
                 'disabled' => true,
                 'label' => 'profile.settings.advanced.apiKey.label',
-                'attr' => ['class' => 'form-control'],
             ]);
         }
     }
