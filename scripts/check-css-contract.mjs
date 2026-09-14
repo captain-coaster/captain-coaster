@@ -4,7 +4,6 @@ import { join, relative } from 'node:path';
 const root = process.cwd();
 const sourceRoots = ['assets/js', 'assets/styles', 'assets/controllers', 'templates'];
 const excludedFiles = new Set([
-    'assets/styles/print.css',
     'templates/connect/login_email.html.twig',
 ]);
 const violations = [];
