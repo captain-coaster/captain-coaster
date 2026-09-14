@@ -29,6 +29,12 @@ index:
         reviews: avis
         users: utilisateurs
         images: photos
+    hero:
+        badge:
+            new: 'Récemment ouvert'
+            trending: 'Tendance'
+            photo: 'Coup de cœur'
+        opens_on: 'Ouverture {date}'
 
 coaster:
     score:
@@ -437,9 +443,6 @@ nearby:
     geo_on: Localisation activée
     geo_off: Localisation désactivée
     km_away: 'à {distance}'
-
-image:
-    credit: 'Crédit: {name}'
 
 badge:
     rating1: 1ère note

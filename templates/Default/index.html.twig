@@ -65,26 +65,74 @@
   </div>
   <div class="grid grid-cols-12 gap-5 items-start">
     <div class="col-span-12 tablet:col-span-6">
-      <!-- Thumbnail with image and button -->
-      <div class="cc-card">
-          <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}">
-          <div class="cc-card__media">
-            {{ helper.picture(image.filename, 600, 336, image.coaster.name) }}
-            <div class="cc-card__overlay"></div>
+      {% if hero %}
+        {% set heroCoaster = hero.coaster ?? hero.image.coaster %}
+        {% set heroImage = hero.image ?? heroCoaster.mainImage %}
+        {# Month + year is enough for a badge (day precision rarely known or needed here); year-only
+           when Coaster::hasApproximateOpeningDate() says even the month isn't real -- see its docblock. #}
+        {% set heroOpeningDisplay = heroCoaster.openingDate
+          ? (heroCoaster.hasApproximateOpeningDate() ? heroCoaster.openingDate|date('Y') : heroCoaster.openingDate|format_datetime(pattern='MMMM yyyy'))
+          : null %}
+        {# One badge line carries the category *and* its most useful fact (date, or the plain
+           status when there's none yet) instead of a separate, half-redundant line below --
+           "Under construction / Opening xxx" duplicated the same idea twice. #}
+        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]' %}
+        <a href="{{ path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug}) }}" class="block relative mb-5 overflow-hidden rounded-xl">
+          <div class="relative aspect-[16/10] overflow-hidden">
+            {# The card the browser sees first above the fold -- eager/high-priority, not the
+               loading="lazy" default a below-the-fold image would get. #}
+            <picture>
+              <source srcset="{{ signed_picture_url(heroImage.filename, 960, 600, 'avif') }}" type="image/avif">
+              <source srcset="{{ signed_picture_url(heroImage.filename, 960, 600, 'webp') }}" type="image/webp">
+              <img src="{{ signed_picture_url(heroImage.filename, 960, 600, 'jpg') }}" alt="{{ heroCoaster.name }}"
+                   loading="eager" fetchpriority="high"
+                   class="block h-full w-full object-cover">
+            </picture>
+            {# Concentrated on the bottom third so the photo itself stays visible. Darker at the very
+               bottom (0.9, up from 0.85) than the fade reach alone needs -- text contrast against an
+               arbitrary user photo (e.g. snow, bright sky) isn't otherwise guaranteed. #}
+            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0)_45%)]"></div>
+          </div>
+          {% if hero.type == 'upcoming' %}
+            {# Real status (construction or announced) drives both label and color -- see colors.css's [data-status] rules. #}
+            <span class="{{ heroBadgeClass }} bg-[var(--status-color)]" data-status="{{ heroCoaster.status.name }}">
+              {{ ux_icon(heroCoaster.status.name == 'status.announced' ? 'heroicons:megaphone' : 'heroicons:wrench-screwdriver', {'class': 'w-3.5 h-3.5'}) }}
+              {% if heroOpeningDisplay %}
+                {{ 'index.hero.opens_on'|trans({'date': heroOpeningDisplay}) }}
+              {% else %}
+                {{ heroCoaster.status.name|trans([], 'database') }}
+              {% endif %}
+            </span>
+          {% elseif hero.type == 'new' %}
+            <span class="{{ heroBadgeClass }} bg-success">
+              {{ ux_icon('heroicons:sparkles', {'class': 'w-3.5 h-3.5'}) }}
+              {{ 'index.hero.badge.new'|trans }}
+            </span>
+          {% elseif hero.type == 'trending' %}
+            <span class="{{ heroBadgeClass }} bg-info">
+              {{ ux_icon('heroicons:fire', {'class': 'w-3.5 h-3.5'}) }}
+              {{ 'index.hero.badge.trending'|trans }}
+            </span>
+          {% elseif hero.type == 'photo' %}
+            <span class="{{ heroBadgeClass }} bg-cc-teal-400">
+              {{ ux_icon('heroicons:heart', {'class': 'w-3.5 h-3.5'}) }}
+              {{ 'index.hero.badge.photo'|trans }}
+            </span>
+          {% endif %}
+          <div class="absolute inset-x-0 bottom-0 p-4 pt-3.5 text-white">
+            <p class="line-clamp-2 text-xl leading-tight font-bold [text-shadow:0_1px_3px_rgba(0,0,0,0.35)]">{{ heroCoaster.name }}</p>
+            <div class="mt-0.5 flex items-baseline gap-2">
+              <span class="min-w-0 flex-1 truncate text-xs text-white/80">{{ heroCoaster.park.name }}</span>
+              {% if heroImage.credit %}
+                <span class="inline-flex min-w-0 max-w-[45%] flex-none items-center gap-1 text-[10px] text-white/60">
+                  {{ ux_icon('heroicons:camera', {'class': 'w-2.5 h-2.5 shrink-0'}) }}
+                  <span class="truncate">{{ heroImage.credit }}</span>
+                </span>
+              {% endif %}
+            </div>
           </div>
         </a>
-
-        <div class="cc-card__caption text-center">
-          <h5 class="text-semibold m-0">
-              <a href="{{ path('show_coaster', {'id': image.coaster.id, 'slug': image.coaster.slug}) }}"
-                 class="cc-button cc-button--info">
-              {{ image.coaster.name }}
-            </a>
-          </h5>
-          <p class="text-muted mb-[15px] mt-[5px]">{{ 'image.credit'|trans({'%name%': image.credit}) }}</p>
-        </div>
-      </div>
-      <!-- /thumbnail with image and button -->
+      {% endif %}
       <!-- latest ratings -->
       <div class="cc-panel cc-panel--flat border-top-cc-teal">
         <div class="cc-panel__heading">
