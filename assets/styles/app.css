@@ -61,7 +61,6 @@
 @import './map.css' layer(components);
 @import './search.css' layer(components);
 @import './gallery.css' layer(components);
-@import './hero.css' layer(components);
 @import './rating.css' layer(components);
 @import './timeline.css' layer(components);
 @import './section-header.css' layer(components);
