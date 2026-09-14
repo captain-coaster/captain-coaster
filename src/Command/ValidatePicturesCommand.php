@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\ImageRepository;
+use App\Service\PictureUrlSigner;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 #[AsCommand(
@@ -23,8 +23,7 @@ class ValidatePicturesCommand extends Command
     public function __construct(
         private readonly ImageRepository $imageRepository,
         private readonly EntityManagerInterface $em,
-        #[Autowire('%env(string:PICTURES_CDN)%')]
-        private string $imagesEndpoint
+        private readonly PictureUrlSigner $pictureUrlSigner,
     ) {
         parent::__construct();
     }
@@ -39,7 +38,7 @@ class ValidatePicturesCommand extends Command
         $pictures = $this->imageRepository->findImageToBeValidated();
 
         foreach ($pictures as $picture) {
-            $io->note('Enabling: '.$this->imagesEndpoint.'/1440x1440/'.$picture->getFilename());
+            $io->note('Enabling: '.$this->pictureUrlSigner->sign($picture->getFilename(), 1440, 1440, 'jpg'));
             $picture->setEnabled(true);
             $this->em->persist($picture);
         }

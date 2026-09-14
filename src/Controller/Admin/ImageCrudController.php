@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Image;
+use App\Service\PictureUrlSigner;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -18,7 +19,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * @extends AbstractCrudController<Image>
@@ -26,8 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class ImageCrudController extends AbstractCrudController
 {
     public function __construct(
-        #[Autowire('%env(string:PICTURES_CDN)%')]
-        private string $imagesEndpoint
+        private readonly PictureUrlSigner $pictureUrlSigner,
     ) {
     }
 
@@ -72,7 +71,12 @@ class ImageCrudController extends AbstractCrudController
             AssociationField::new('uploader')->autocomplete(),
             AssociationField::new('coaster')->autocomplete(),
             TextField::new('credit'),
-            ImageField::new('filename', 'Image')->setBasePath($this->imagesEndpoint.'/1440x1440/')->onlyOnIndex(),
+            // Value returned by formatValue() is already an absolute (signed) URL, so
+            // EasyAdmin's ImageConfigurator passes it through untouched instead of
+            // prepending a basePath (it special-cases http(s)://-prefixed values).
+            ImageField::new('filename', 'Image')
+                ->formatValue(fn (mixed $value, Image $entity): string => $this->pictureUrlSigner->sign($entity->getFilename(), 1440, 1440, 'jpg'))
+                ->onlyOnIndex(),
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),
             BooleanField::new('watermarked')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),

@@ -70,19 +70,29 @@ class ImageManager
         $this->picturesFilesystem->delete($filename);
     }
 
-    /** Remove file from S3 Cache Bucket. */
+    /**
+     * Sizes actually requested across the app (grep signed_picture_url()/helper.picture()
+     * call sites to keep this in sync) and the formats the resizer can encode to -- the
+     * destination bucket key is {size}/{format}/{name}.{format}, one object per combination.
+     */
+    private const CACHED_SIZES = ['1440x1440', '960x600', '280x210', '96x96'];
+    private const CACHED_FORMATS = ['jpg', 'webp', 'avif'];
+
+    /** Remove every resized/re-encoded variant of an image from the S3 Cache Bucket. */
     public function removeCache(Image $image): void
     {
+        $name = pathinfo($image->getFilename(), \PATHINFO_FILENAME);
+
+        $objects = [];
+        foreach (self::CACHED_SIZES as $size) {
+            foreach (self::CACHED_FORMATS as $format) {
+                $objects[] = ['Key' => "{$size}/{$format}/{$name}.{$format}"];
+            }
+        }
+
         $this->s3Client->deleteObjects([
             'Bucket' => $this->s3CacheBucket,
-            'Delete' => [
-                'Objects' => [
-                    ['Key' => '1440x1440/'.$image->getFilename()],
-                    ['Key' => '600x336/'.$image->getFilename()],
-                    ['Key' => '280x210/'.$image->getFilename()],
-                    ['Key' => '96x96/'.$image->getFilename()],
-                ],
-            ],
+            'Delete' => ['Objects' => $objects],
         ]);
     }
 
