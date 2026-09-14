@@ -594,14 +594,14 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * A coaster opened in the last 60 days, most-rated first. Used for
+     * A coaster opened in the last 90 days, most-rated first. Used for
      * the homepage hero.
      */
     public function findRecentlyOpenedCoaster(): ?Coaster
     {
         $now = new \DateTimeImmutable();
         $today = $now->format('Y-m-d');
-        $minDate = $now->modify('-60 days')->format('Y-m-d');
+        $minDate = $now->modify('-90 days')->format('Y-m-d');
 
         $query = $this->createQueryBuilder('c')
             ->where('c.openingDate BETWEEN :minDate AND :today')

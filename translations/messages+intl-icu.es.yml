@@ -31,10 +31,10 @@ index:
         images: fotos
     hero:
         badge:
+            new: 'Recién inaugurado'
             trending: 'Tendencia'
             photo: 'Favorito de la comunidad'
         opens_on: 'Apertura {date}'
-        opened_on: 'Inaugurado: {date}'
 
 coaster:
     score:

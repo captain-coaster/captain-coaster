@@ -97,7 +97,7 @@
           {% elseif hero.type == 'new' %}
             <span class="{{ heroBadgeClass }} bg-success">
               {{ ux_icon('heroicons:sparkles', {'class': 'w-3.5 h-3.5'}) }}
-              {{ 'index.hero.opened_on'|trans({'date': heroOpeningDisplay}) }}
+              {{ 'index.hero.badge.new'|trans }}
             </span>
           {% elseif hero.type == 'trending' %}
             <span class="{{ heroBadgeClass }} bg-info">

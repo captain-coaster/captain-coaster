@@ -31,10 +31,10 @@ index:
         images: Bilder
     hero:
         badge:
+            new: 'Kürzlich eröffnet'
             trending: 'Beliebt'
             photo: 'Community-Favorit'
         opens_on: 'Eröffnung {date}'
-        opened_on: 'Eröffnet: {date}'
 
 coaster:
     score:
