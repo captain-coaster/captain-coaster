@@ -79,8 +79,15 @@
         {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]' %}
         <a href="{{ path('show_coaster', {'id': heroCoaster.id, 'slug': heroCoaster.slug}) }}" class="group block relative mb-5 overflow-hidden rounded-xl">
           <div class="relative aspect-[16/10] overflow-hidden">
-            <img src="{{ pictures_cdn }}/960x600/{{ heroImage.filename }}" alt="{{ heroCoaster.name }}"
-                 class="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none">
+            {# The card the browser sees first above the fold -- eager/high-priority, not the
+               loading="lazy" default a below-the-fold image would get. #}
+            <picture>
+              <source srcset="{{ signed_picture_url(heroImage.filename, 960, 600, 'avif') }}" type="image/avif">
+              <source srcset="{{ signed_picture_url(heroImage.filename, 960, 600, 'webp') }}" type="image/webp">
+              <img src="{{ signed_picture_url(heroImage.filename, 960, 600, 'jpg') }}" alt="{{ heroCoaster.name }}"
+                   loading="eager" fetchpriority="high"
+                   class="block h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03] motion-reduce:transition-none">
+            </picture>
             {# Concentrated on the bottom third so the photo itself stays visible. Darker at the very
                bottom (0.9, up from 0.85) than the fade reach alone needs -- text contrast against an
                arbitrary user photo (e.g. snow, bright sky) isn't otherwise guaranteed. #}

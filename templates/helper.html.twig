@@ -17,6 +17,20 @@
     {% endif %}
 {% endmacro %}
 
+{# A full <picture> element: avif -> webp -> jpg fallback, one signed URL per format off
+   the same source filename (signed_picture_url(), backed by PictureUrlSigner) -- the
+   browser picks whichever <source> it supports, nothing server-side to negotiate. Only
+   for a plain drop-in image; a component needing its own classes/attributes on <img>
+   (hover states, object-fit, a fixed aspect box) calls signed_picture_url() directly
+   instead of going through this macro. #}
+{% macro picture(filename, width, height, alt, imgClass = '', loading = 'lazy') %}
+    <picture>
+        <source srcset="{{ signed_picture_url(filename, width, height, 'avif') }}" type="image/avif">
+        <source srcset="{{ signed_picture_url(filename, width, height, 'webp') }}" type="image/webp">
+        <img src="{{ signed_picture_url(filename, width, height, 'jpg') }}" alt="{{ alt }}" class="{{ imgClass }}" loading="{{ loading }}">
+    </picture>
+{% endmacro %}
+
 {# Color magic for ratings - Legacy support #}
 {% macro ratingColor(score) %}
     hsl({{ score * 1.2 }}, 50%, 50%)
