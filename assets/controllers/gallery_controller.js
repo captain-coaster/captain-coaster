@@ -6,8 +6,12 @@ export default class extends Controller {
 
     connect() {
         this.currentIndex = 0;
+        // href stays the plain jpg URL (works with JS disabled, right-click/open-in-new-tab,
+        // middle-click) -- avif/webp are extra candidates the <picture> below picks from.
         this.images = this.linkTargets.map((link) => ({
-            src: link.href,
+            jpg: link.href,
+            avif: link.dataset.avif,
+            webp: link.dataset.webp,
         }));
         this.touchStartX = 0;
         this.touchEndX = 0;
@@ -36,7 +40,11 @@ export default class extends Controller {
         overlay.innerHTML = `
             <div class="captain-gallery-container">
                 <div class="captain-gallery-loader"></div>
-                <img class="captain-gallery-image" src="" alt="" style="display: none;">
+                <picture>
+                    <source class="captain-gallery-source-avif" type="image/avif">
+                    <source class="captain-gallery-source-webp" type="image/webp">
+                    <img class="captain-gallery-image" src="" alt="" style="display: none;">
+                </picture>
                 <button class="captain-gallery-close" aria-label="${trans('gallery.close')}">&times;</button>
                 <button class="captain-gallery-prev" aria-label="${trans('gallery.previous')}">&larr;</button>
                 <button class="captain-gallery-next" aria-label="${trans('gallery.next')}">&rarr;</button>
@@ -45,6 +53,8 @@ export default class extends Controller {
 
         this.overlay = overlay;
         this.image = overlay.querySelector('.captain-gallery-image');
+        this.sourceAvif = overlay.querySelector('.captain-gallery-source-avif');
+        this.sourceWebp = overlay.querySelector('.captain-gallery-source-webp');
         this.loader = overlay.querySelector('.captain-gallery-loader');
 
         this.bindEvents();
@@ -117,23 +127,25 @@ export default class extends Controller {
     }
 
     loadImage() {
-        const { src } = this.images[this.currentIndex];
+        const { jpg, avif, webp } = this.images[this.currentIndex];
 
         // Show loader
         this.loader.style.display = 'block';
         this.image.style.display = 'none';
 
-        // Load image
-        const img = new Image();
-        img.onload = () => {
-            this.image.src = src;
+        // Set the <source> candidates before the <img> fallback src -- the browser
+        // re-negotiates the <picture> off that final assignment, so this fetches
+        // whichever format it actually supports instead of always the jpg fallback.
+        this.sourceAvif.srcset = avif;
+        this.sourceWebp.srcset = webp;
+        this.image.onload = () => {
             this.loader.style.display = 'none';
             this.image.style.display = 'block';
         };
-        img.onerror = () => {
+        this.image.onerror = () => {
             this.loader.style.display = 'none';
         };
-        img.src = src;
+        this.image.src = jpg;
     }
 
     prev() {

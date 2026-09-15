@@ -16,6 +16,8 @@
           {% for image in images %}
             <div class="col-span-12 tablet:col-span-3">
               <a class="m-2.5" href="{{ signed_picture_url(image.filename, 1440, 1440, 'jpg') }}"
+                 data-avif="{{ signed_picture_url(image.filename, 1440, 1440, 'avif') }}"
+                 data-webp="{{ signed_picture_url(image.filename, 1440, 1440, 'webp') }}"
                  data-cropped-thumbnail="{{ signed_picture_url(image.filename, 280, 210, 'jpg') }}"
                  data-gallery-target="link">
                 <div class="cc-card__media">
