@@ -25,7 +25,7 @@ class PictureUrlSigner
     ) {
     }
 
-    /** @param 'jpg'|'webp'|'avif' $format */
+    /** @param 'jpg'|'avif' $format */
     public function sign(string $filename, int $width, int $height, string $format): string
     {
         $canonical = \sprintf('%dx%d/%s/%s', $width, $height, $format, $filename);
