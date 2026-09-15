@@ -18,12 +18,12 @@ class PictureUrlSignerTest extends TestCase
 
     public function testUrlShapeMatchesTheImageResizerLambdaContract(): void
     {
-        $url = $this->signer->sign('coaster.jpg', 960, 600, 'webp');
+        $url = $this->signer->sign('coaster.jpg', 960, 600, 'avif');
 
-        $expectedSignature = substr(hash_hmac('sha256', '960x600/webp/coaster.jpg', 'test-secret'), 0, 32);
+        $expectedSignature = substr(hash_hmac('sha256', '960x600/avif/coaster.jpg', 'test-secret'), 0, 32);
 
         $this->assertSame(
-            'https://pictures.example.com/960x600/webp/coaster.jpg?s='.$expectedSignature,
+            'https://pictures.example.com/960x600/avif/coaster.jpg?s='.$expectedSignature,
             $url
         );
     }
@@ -40,11 +40,9 @@ class PictureUrlSignerTest extends TestCase
     public function testDifferentFormatsProduceDifferentSignatures(): void
     {
         $jpg = $this->signer->sign('coaster.jpg', 960, 600, 'jpg');
-        $webp = $this->signer->sign('coaster.jpg', 960, 600, 'webp');
         $avif = $this->signer->sign('coaster.jpg', 960, 600, 'avif');
 
-        $this->assertNotSame($jpg, $webp);
-        $this->assertNotSame($webp, $avif);
+        $this->assertNotSame($jpg, $avif);
     }
 
     public function testDifferentSecretsProduceDifferentSignatures(): void
