@@ -61,7 +61,7 @@
                         </li>
                     {%- endfor -%}
                 </ul>
-                {{ knp_pagination_render(reviews) }}
+                {{ knp_pagination_render(reviews, null, {'id': coaster.id, '_fragment': 'coaster-reviews'}, {'publicRoute': 'show_coaster'}) }}
             </div>
         {%- elseif coaster.isRateable -%}
             <div class="cc-panel__body text-center text-muted">
