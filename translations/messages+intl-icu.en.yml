@@ -29,6 +29,11 @@ index:
         reviews: 'reviews'
         users: 'users'
         images: 'pictures'
+    hero:
+        badge:
+            new: 'Recently opened'
+            trending: 'Trending'
+            photo: 'Community pick'
 
 coaster:
     score:
@@ -431,9 +436,6 @@ coaster_search:
     title: 'Search Coasters'
     num_found: '{num} coasters found'
     no_results: 'No coasters found matching your criteria'
-
-image:
-    credit: 'Credit: {name}'
 
 badge:
     rating1: '1st rating'
