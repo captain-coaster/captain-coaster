@@ -190,7 +190,7 @@ export default class extends Controller {
         const container = document.getElementById(this.containerIdValue);
         if (!container) return;
 
-        container.querySelectorAll('ul.pagination a').forEach((link) => {
+        container.querySelectorAll('ul.cc-pagination a').forEach((link) => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const url = new URL(link.href);
