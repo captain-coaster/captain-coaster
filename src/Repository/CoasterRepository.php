@@ -573,10 +573,14 @@ class CoasterRepository extends ServiceEntityRepository
      * "people still care about this", since construction/announced alone
      * says nothing about whether the project is still generating buzz or
      * has been stalled for years. Used for the homepage hero.
+     *
+     * Uncached: HeroService caches the whole resolved pick for an hour and
+     * invalidates it on any image write, so a query-level cache here would
+     * just be a second, harder-to-invalidate copy of the same staleness.
      */
     public function findUpcomingCoaster(): ?Coaster
     {
-        $query = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->addSelect('CASE WHEN c.openingDate IS NULL THEN 1 ELSE 0 END AS HIDDEN noDate')
             ->innerJoin('c.status', 's')
             ->leftJoin('c.mainImage', 'mi')
@@ -587,15 +591,13 @@ class CoasterRepository extends ServiceEntityRepository
             ->addOrderBy('c.openingDate', 'ASC')
             ->addOrderBy('mi.likeCounter', 'DESC')
             ->setMaxResults(1)
-            ->getQuery();
-        $query->enableResultCache(3600);
-
-        return $query->getOneOrNullResult();
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
      * A coaster opened in the last 90 days, most-rated first. Used for
-     * the homepage hero.
+     * the homepage hero (see findUpcomingCoaster() on why this is uncached).
      */
     public function findRecentlyOpenedCoaster(): ?Coaster
     {
@@ -603,7 +605,7 @@ class CoasterRepository extends ServiceEntityRepository
         $today = $now->format('Y-m-d');
         $minDate = $now->modify('-90 days')->format('Y-m-d');
 
-        $query = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->where('c.openingDate BETWEEN :minDate AND :today')
             ->andWhere('c.mainImage IS NOT NULL')
             ->setParameter('minDate', $minDate)
@@ -611,21 +613,20 @@ class CoasterRepository extends ServiceEntityRepository
             ->orderBy('c.totalRatings', 'DESC')
             ->addOrderBy('c.openingDate', 'DESC')
             ->setMaxResults(1)
-            ->getQuery();
-        $query->enableResultCache(86400); // 24h -- new openings don't change by the hour
-
-        return $query->getOneOrNullResult();
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**
      * The coaster with the most new rides logged in the last 12 hours
-     * (minimum 3, to avoid surfacing noise). Used for the homepage hero.
+     * (minimum 3, to avoid surfacing noise). Used for the homepage hero
+     * (see findUpcomingCoaster() on why this is uncached).
      */
     public function findTrendingCoaster(): ?Coaster
     {
         $sinceDate = new \DateTimeImmutable('-12 hours');
 
-        $query = $this->createQueryBuilder('c')
+        return $this->createQueryBuilder('c')
             ->addSelect('COUNT(r.id) AS HIDDEN recentRideCount')
             ->innerJoin(RiddenCoaster::class, 'r', Expr\Join::WITH, 'r.coaster = c.id AND r.createdAt >= :sinceDate')
             ->andWhere('c.mainImage IS NOT NULL')
@@ -634,10 +635,8 @@ class CoasterRepository extends ServiceEntityRepository
             ->having('COUNT(r.id) >= 3')
             ->orderBy('recentRideCount', 'DESC')
             ->setMaxResults(1)
-            ->getQuery();
-        $query->enableResultCache(43200); // 12h
-
-        return $query->getOneOrNullResult();
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     /**

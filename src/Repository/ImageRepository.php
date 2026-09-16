@@ -30,12 +30,12 @@ class ImageRepository extends ServiceEntityRepository
     /**
      * A heavily-liked, reasonably recent photo for the homepage hero --
      * not just the latest liked one, which said nothing about quality.
-     * likeCounter is denormalized directly onto Image, so unlike the
-     * queries below this needs no join and no result-cache-then-refilter
-     * dance: filter and order all happen on the driving table.
      *
      * Picked randomly among the top matches so it isn't always the same
-     * single photo.
+     * single photo. Uncached: HeroService caches the whole resolved pick
+     * for an hour and invalidates it on any image write, so a query-level
+     * cache here would just be a second, harder-to-invalidate copy of the
+     * same staleness.
      *
      * @throws NoResultException
      */
@@ -54,7 +54,6 @@ class ImageRepository extends ServiceEntityRepository
             ->orderBy('i.likeCounter', 'DESC')
             ->setMaxResults(20)
             ->getQuery()
-            ->enableResultCache(3600)
             ->getSingleColumnResult();
 
         if ([] === $candidateIds) {
