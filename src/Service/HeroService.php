@@ -13,7 +13,7 @@ use Doctrine\ORM\NoResultException;
 /**
  * Picks the homepage hero content from 4 rotating candidates:
  *   - upcoming     : a coaster under construction or officially announced
- *   - new          : a coaster opened in the last 60 days
+ *   - new          : a coaster opened in the last 90 days
  *   - trending     : a coaster with a lot of recent ride activity
  *   - photo        : a heavily-liked user photo
  *

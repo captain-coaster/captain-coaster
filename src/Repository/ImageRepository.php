@@ -61,8 +61,13 @@ class ImageRepository extends ServiceEntityRepository
             throw new NoResultException();
         }
 
-        /** @var Image $image */
         $image = $this->find($candidateIds[array_rand($candidateIds)]);
+
+        // The candidate id list is cached for an hour; re-check enabled/credit here
+        // so an image disabled by a moderator within that window can't surface.
+        if (!$image instanceof Image || !$image->isEnabled() || null === $image->getCredit()) {
+            throw new NoResultException();
+        }
 
         return $image;
     }
