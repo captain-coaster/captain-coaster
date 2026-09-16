@@ -1,10 +1,13 @@
 {% if pageCount > 1 %}
+    {# The paginated route is XHR-only on AJAX pages, so hrefs must point at
+       the public page instead -- see publicRoute in the *_search results templates. #}
+    {% set linkRoute = publicRoute|default(route) %}
     <div class="text-center content-group pt-5">
         <ul class="cc-pagination">
             {% if previous is defined %}
                 <li class="page-item">
                     <a class="page-link" rel="prev" data-page="{{ previous }}"
-                       href="{{ path(route, query|merge({(pageParameterName): previous})) }}">&laquo;</a>
+                       href="{{ path(linkRoute, query|merge({(pageParameterName): previous})) }}">&laquo;</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
@@ -14,12 +17,12 @@
             {% if startPage > 1 %}
                 <li class="page-item">
                     <a class="page-link" data-page="1"
-                       href="{{ path(route, query|merge({(pageParameterName): 1})) }}">1</a>
+                       href="{{ path(linkRoute, query|merge({(pageParameterName): 1})) }}">1</a>
                 </li>
                 {% if startPage == 3 %}
                     <li class="page-item">
                         <a class="page-link" data-page="2"
-                           href="{{ path(route, query|merge({(pageParameterName): 2})) }}">2</a>
+                           href="{{ path(linkRoute, query|merge({(pageParameterName): 2})) }}">2</a>
                     </li>
                 {% elseif startPage != 2 %}
                     <li class="page-item disabled">
@@ -31,7 +34,7 @@
                 {% if page != current %}
                     <li class="page-item">
                         <a class="page-link" data-page="{{ page }}"
-                           href="{{ path(route, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
+                           href="{{ path(linkRoute, query|merge({(pageParameterName): page})) }}">{{ page }}</a>
                     </li>
                 {% else %}
                     <li class="page-item active">
@@ -48,19 +51,19 @@
                     {% else %}
                         <li class="page-item">
                             <a class="page-link" data-page="{{ pageCount -1 }}"
-                               href="{{ path(route, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
+                               href="{{ path(linkRoute, query|merge({(pageParameterName): (pageCount - 1)})) }}">{{ pageCount -1 }}</a>
                         </li>
                     {% endif %}
                 {% endif %}
                 <li class="page-item">
                     <a class="page-link" data-page="{{ pageCount }}"
-                       href="{{ path(route, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
+                       href="{{ path(linkRoute, query|merge({(pageParameterName): pageCount})) }}">{{ pageCount }}</a>
                 </li>
             {% endif %}
             {% if next is defined %}
                 <li class="page-item">
                     <a class="page-link" rel="next" data-page="{{ next }}"
-                       href="{{ path(route, query|merge({(pageParameterName): next})) }}">&raquo;</a>
+                       href="{{ path(linkRoute, query|merge({(pageParameterName): next})) }}">&raquo;</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">

@@ -68,7 +68,7 @@ export default class extends Controller {
 
     attachPaginationHandlers() {
         const paginationLinks =
-            this.containerTarget.querySelectorAll('ul.pagination a');
+            this.containerTarget.querySelectorAll('ul.cc-pagination a');
         paginationLinks.forEach((link) => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
