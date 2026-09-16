@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\Image;
+use App\Service\HeroService;
 use App\Service\ImageManager;
 use App\Service\PictureUrlSigner;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
@@ -33,6 +34,7 @@ class ImageListener
         private readonly ImageManager $imageManager,
         private readonly ChatterInterface $chatter,
         private readonly PictureUrlSigner $pictureUrlSigner,
+        private readonly HeroService $heroService,
     ) {
     }
 
@@ -88,11 +90,13 @@ class ImageListener
     {
         $this->imageManager->setMainImages();
         $this->imageManager->removeCache($image);
+        $this->heroService->invalidate();
     }
 
     /** After update (enabled set to 1 is an update): update main images */
     public function postUpdate(Image $image, PostUpdateEventArgs $event): void
     {
         $this->imageManager->setMainImages();
+        $this->heroService->invalidate();
     }
 }
