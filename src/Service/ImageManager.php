@@ -74,7 +74,7 @@ class ImageManager
      * The resizer can encode to any of these -- stable, unlike the sizes below, which are
      * whatever width x height each template happens to request. Not worth a config lookup.
      */
-    private const CACHED_FORMATS = ['jpg', 'webp', 'avif'];
+    private const CACHED_FORMATS = ['jpg', 'avif'];
 
     /**
      * Remove every resized/re-encoded variant of an image from the S3 Cache Bucket.
