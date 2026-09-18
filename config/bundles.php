@@ -25,4 +25,5 @@ return [
     Symfony\UX\Icons\UXIconsBundle::class => ['all' => true],
     PixelOpen\CloudflareTurnstileBundle\PixelOpenCloudflareTurnstileBundle::class => ['all' => true],
     Symfony\Reprise\RepriseBundle::class => ['all' => true],
+    Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
 ];
