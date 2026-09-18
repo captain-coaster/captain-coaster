@@ -130,7 +130,9 @@ class ImageModerationService
 
             1. Off-topic: the photo is not of a coaster or amusement park at all.
             2. Watermark: the photo has a visible watermark, logo overlay, or added text (not something
-               physically present in the scene, like a sign).
+               physically present in the scene, like a sign) -- EXCEPT a "CAPTAIN COASTER" text/logo
+               watermark in a corner, which this site adds itself when the uploader opts in and must
+               never be flagged.
             3. Retouched: the photo is heavily filtered/retouched in a way that misrepresents the subject
                (not normal phone-camera processing).
             4. People subject: a person or group of people is the main subject of the photo, rather than
