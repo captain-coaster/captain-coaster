@@ -83,6 +83,10 @@ class BedrockService
 
         $model = self::MODELS[$resolvedModelKey];
 
+        // Assigned before the try so the catch blocks below can always log it, even if
+        // buildConverseRequest() itself is what throws.
+        $requestBody = [];
+
         try {
             $requestBody = $this->buildConverseRequest($prompt, $imageBytes, $imageFormat, $maxTokens, $temperature, $model['reasoning_effort'] ?? null, $model['supports_temperature'] ?? true);
 

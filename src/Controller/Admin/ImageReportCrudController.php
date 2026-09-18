@@ -213,8 +213,11 @@ class ImageReportCrudController extends AbstractCrudController
 
     private function findPendingReport(AdminContext $context): ?ImageReport
     {
-        $id = $context->getRequest()->query->get('entityId');
-        $report = null !== $id ? $this->entityManager->find(ImageReport::class, $id) : null;
+        /** @var ImageReport $contextReport */
+        $contextReport = $context->getEntity()->getInstance();
+
+        // Re-fetch by id to ensure it's managed, matching ReviewReportCrudController's pattern.
+        $report = $this->entityManager->find(ImageReport::class, $contextReport->getId());
 
         if (!$report instanceof ImageReport || ImageReport::STATUS_PENDING !== $report->getStatus()) {
             $this->addFlash('error', 'This report has already been processed.');
