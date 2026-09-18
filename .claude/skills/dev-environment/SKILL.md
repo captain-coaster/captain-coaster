@@ -1,6 +1,6 @@
 ---
 name: dev-environment
-description: Use when starting, restarting, or stopping this project's local development environment - the Docker services, the Symfony server, and the Vite dev server.
+description: Use when starting, restarting, or stopping this project's local development environment - the Docker services, the Symfony server, and the Vite dev server. Also covers worktree DB isolation and cleaning up worktrees.
 ---
 
 # Local development environment
@@ -9,41 +9,40 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
 ## Start
 
-1. **Provision the checkout, if it's a worktree.** Main checkout: nothing to do, skip to step 2. In a worktree, do this once (it's idempotent — check each condition before acting):
+1. **Nothing to provision by default, even in a worktree.** `.worktreeinclude` already copied `.env.local` in via `EnterWorktree`, and its `DATABASE_URL` points at the shared `captain` database — that's the right default, no isolation needed for routine feature work.
 
-   - **`.env.local`**: `.worktreeinclude` (repo root) lists it, so `EnterWorktree` copies it into the new worktree automatically as a regular file — nothing to do here. It's a point-in-time snapshot, not a live link: it won't pick up later edits to the main checkout's copy, and it holds live secrets, so never edit it directly in either place from an agent session.
-   - **`.env.dev.local`**: write it with `DATABASE_URL` copied from `.env.local` but with the database name swapped (below). `REDIS_URL` is left as-is — worktrees share the Redis cache. Symfony loads this file after `.env.local`, so it wins.
-   - **Database**: pick a name `captain_<slug>`, where `<slug>` is the worktree directory name, lowercased, with anything outside `[a-z0-9_]` collapsed to `_`. Clone it from `captain` (shared containers, so this works from any worktree). Create the database first (`CREATE DATABASE \`$db\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`) — see root password in `docker-compose.yml`. If it already exists, leave it; this is a one-time clone, not a resync. Dump to a scratch file and reload from it, rather than piping `mariadb-dump` straight into `mariadb` through `docker exec ... sh -c '... | ...'` — a worktree-isolated agent session's command guard refuses that piped form:
+   Only isolate the DB if this task will run `doctrine:migrations:migrate`, load fixtures, or do a bulk/destructive mutation — `captain` is a clean mirror of prod and should stay that way. To isolate:
 
-         docker exec db-captain mariadb-dump --single-transaction --routines --events -uroot -p"$MYSQL_ROOT_PASSWORD" captain > /tmp/captain_dump.sql
-         docker exec -i db-captain mariadb -uroot -p"$MYSQL_ROOT_PASSWORD" "$db" < /tmp/captain_dump.sql
+   - Pick `captain_<slug>`: the worktree directory name, lowercased, anything outside `[a-z0-9_]` collapsed to `_`.
+   - Create and clone it (root creds are fixed for local dev, see `docker-compose.yml`). Dump to a scratch file and reload from it rather than piping `mariadb-dump` straight into `mariadb` through `docker exec ... sh -c '... | ...'` — a worktree-isolated agent session's command guard refuses that piped form:
 
-2. **Start the Symfony server** from the current checkout:
+         docker exec db-captain mariadb -uroot -proot123 -e "CREATE DATABASE \`$db\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
+         docker exec db-captain mariadb-dump --single-transaction --routines --events -uroot -proot123 captain > /tmp/captain_dump.sql
+         docker exec -i db-captain mariadb -uroot -proot123 "$db" < /tmp/captain_dump.sql
 
-       symfony server:start -d
+   - Write `.env.dev.local` (Symfony loads it after `.env.local`, so it wins) — the DSN is always the same shape, no need to read `.env.local` to build it:
 
-   The CLI picks a free port and prints the URL. Two worktrees get two ports; read the URL rather than assuming 8000.
+         DATABASE_URL="mysql://root:root123@127.0.0.1:3306/$db?serverVersion=11.8.0-MariaDB&charset=utf8mb4"
 
-3. **Start Vite:** `npm run dev-server`.
+   - **Guardrail:** before any `doctrine:migrations:migrate`, run `php bin/console debug:dotenv DATABASE_URL` and confirm the database name in it isn't `captain`. Refuse to run the migration otherwise — a migration against the shared DB breaks every other worktree using it concurrently.
 
-4. **Health check:** request the printed URL and confirm 200.
+2. Start the Symfony server: `symfony server:start -d`. Read the printed port — two worktrees get two ports.
+3. Start Vite: `npm run dev-server`.
+4. Health check: request the printed URL, confirm 200.
 
 ## Stop
 
-`symfony server:stop` for this checkout only.
+For the current checkout: `symfony server:stop`, and kill its Vite process too (`pkill -f "$(pwd)/node_modules/.bin/vite"` — Vite isn't tied to the Symfony CLI, it leaks otherwise).
 
-**Never run `docker compose down`.** The database, Redis and Adminer containers are shared by every worktree. Stop them only when the user asks.
+**Never run `docker compose down`.** Redis, MariaDB and Adminer are shared by every worktree.
 
-## Removing a worktree
+## Cleanup sweep (on demand — e.g. "clean up my worktrees")
 
-When a worktree's branch is merged or abandoned and it's being cleaned up (via `ExitWorktree` or manually):
-
-1. Check the branch's PR state (`gh pr view <branch> --json state -q .state`).
-2. Delete the branch: `-D` (force) only if the PR is `MERGED`; otherwise `-d` (safe delete, refuses if there's unpushed content) — never force-delete a branch whose PR isn't merged.
-3. Drop its database: `DROP DATABASE IF EXISTS \`captain_<slug>\`` — never drop `captain` itself.
+1. For each worktree under `.claude/worktrees/`, check its branch's PR: `gh pr view <branch> --json state -q .state`. Eligible for removal if `MERGED`/`CLOSED`, or if there's no PR at all and the worktree is >7 days old (flag that one as "probably abandoned" rather than assuming). List everything eligible and confirm once with the user for the whole batch — never delete without asking, never one at a time.
+2. For each one confirmed: stop its server (`symfony server:stop --dir=<path>`) and Vite (`pkill -f <path>/node_modules/.bin/vite`), drop its DB if it has one (`DROP DATABASE IF EXISTS \`captain_<slug>\`` — never `captain` itself), delete the branch (`-D` only if the PR is `MERGED`, `-d` otherwise), remove the worktree directory. Treat these as one unit — never drop the DB without removing the worktree, or vice versa.
+3. Orphaned servers need no confirmation — they can't lose data. `symfony server:list` shows every running server by directory, including ones whose directory no longer exists on disk (e.g. removed outside the tool). Stop those directly (`symfony server:stop --dir=<path>`) whenever noticed.
 
 ## Notes
 
 - `composer install` and `npm install` are per-worktree; `vendor/` and `node_modules/` are not shared.
-- Each worktree has its own database, so `doctrine:migrations:migrate` there cannot affect another worktree.
 - Adminer is on http://localhost:8081.
