@@ -71,13 +71,31 @@ class Image
     #[ORM\Column(type: Types::STRING, length: 8, nullable: true)]
     private ?string $hash = null;
 
+    // Normalized (0-1) coordinates of the photo's actual subject, from GenAI moderation
+    // analysis -- DB is the golden source (supports recomputing/resyncing the crop without
+    // re-running the LLM); also propagated to S3 object metadata for the captain-infra crop
+    // Lambda, which has no DB access (see ImageManager::writeFocalPointMetadata()).
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $focalX = null;
+
+    #[ORM\Column(type: Types::FLOAT, nullable: true)]
+    private ?float $focalY = null;
+
+    // Null means "never analyzed" -- the reprocess/backfill command's default target.
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTime $analyzedAt = null;
+
     #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '15M')]
     // minRatio/maxRatio: no aspect-ratio constraint existed before -- an upload could be any
     // shape, including one the resize pipeline's `cover` fit would crop almost entirely away
     // against a landscape UI slot. Bounds are deliberately generous (a tall lift-hill shot down
     // to a wide panoramic track shot both fit) -- this only rejects genuinely degenerate slivers.
     #[Assert\Image(minPixels: 786432, minRatio: 1 / 3, maxRatio: 3)]
-    private ?UploadedFile $file;
+    // Default matters: ImageListener::prePersist()/postPersist() call getFile() on every new
+    // Image, including any future creation path that doesn't go through the upload form (a
+    // fixture, a script) -- without a default, an unset typed property throws "must not be
+    // accessed before initialization" instead of behaving like the nullable type it is.
+    private ?UploadedFile $file = null;
 
     public function __construct()
     {
@@ -217,6 +235,42 @@ class Image
     public function setHash(?string $hash): static
     {
         $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function getFocalX(): ?float
+    {
+        return $this->focalX;
+    }
+
+    public function setFocalX(?float $focalX): static
+    {
+        $this->focalX = $focalX;
+
+        return $this;
+    }
+
+    public function getFocalY(): ?float
+    {
+        return $this->focalY;
+    }
+
+    public function setFocalY(?float $focalY): static
+    {
+        $this->focalY = $focalY;
+
+        return $this;
+    }
+
+    public function getAnalyzedAt(): ?\DateTime
+    {
+        return $this->analyzedAt;
+    }
+
+    public function setAnalyzedAt(?\DateTime $analyzedAt): static
+    {
+        $this->analyzedAt = $analyzedAt;
 
         return $this;
     }

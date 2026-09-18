@@ -10,6 +10,7 @@ use App\Entity\Continent;
 use App\Entity\Country;
 use App\Entity\Currency;
 use App\Entity\Image;
+use App\Entity\ImageReport;
 use App\Entity\Launch;
 use App\Entity\Manufacturer;
 use App\Entity\MaterialType;
@@ -78,6 +79,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('User', 'fas fa-users', User::class),
             MenuItem::linkToCrud('Review', 'fa fa-comment-dots', RiddenCoaster::class),
             MenuItem::linkToCrud('Reports', 'fa fa-flag', ReviewReport::class),
+            MenuItem::linkToCrud('Image Reports', 'fa fa-flag', ImageReport::class),
             MenuItem::linkToCrud('Tag', 'fa fa-tag', Tag::class),
             MenuItem::linkToCrud('AI Summaries', 'fas fa-robot', CoasterSummary::class),
         ]);

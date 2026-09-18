@@ -138,16 +138,17 @@ class ImageRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /** @return array<Image> */
-    public function findImageToBeValidated(): array
+    /**
+     * Images never analyzed by GenAI moderation -- the backfill/reprocess command's default target.
+     *
+     * @return array<Image>
+     */
+    public function findUnanalyzed(int $limit): array
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('i')
-            ->from(Image::class, 'i')
-            ->where('i.enabled = 0')
-            ->andWhere('i.createdAt < :date')
-            ->setParameter('date', new \DateTime('-23 hours'))
+        return $this->createQueryBuilder('i')
+            ->where('i.analyzedAt IS NULL')
+            ->orderBy('i.id', 'ASC')
+            ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
     }

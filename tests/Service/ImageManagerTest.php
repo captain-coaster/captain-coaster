@@ -103,7 +103,42 @@ class ImageManagerTest extends TestCase
             $this->createMock(FilesystemOperator::class),
             $s3Client,
             $this->createMock(ImageRepository::class),
-            'captain-pictures-resized'
+            'captain-pictures-resized',
+            'captain-pictures-original'
         );
+    }
+
+    public function testWriteFocalPointMetadataCopiesObjectInPlaceWithReplacedMetadata(): void
+    {
+        $mockHandler = new MockHandler();
+
+        $copyObjectCommand = null;
+        $mockHandler->append(function (CommandInterface $command) use (&$copyObjectCommand) {
+            $copyObjectCommand = $command;
+
+            return new Result([]);
+        });
+
+        $imageManager = $this->makeImageManager($mockHandler);
+
+        $image = $this->createMock(Image::class);
+        $image->method('getFilename')->willReturn('holiday-world-cannonball-6a752ddaebc05.jpg');
+        $image->method('isWatermarked')->willReturn(true);
+        $image->method('getFocalX')->willReturn(0.42);
+        $image->method('getFocalY')->willReturn(0.73);
+
+        $imageManager->writeFocalPointMetadata($image);
+
+        self::assertNotNull($copyObjectCommand, 'CopyObject was never called.');
+        self::assertSame('captain-pictures-original', $copyObjectCommand['Bucket']);
+        self::assertSame('holiday-world-cannonball-6a752ddaebc05.jpg', $copyObjectCommand['Key']);
+        self::assertSame('REPLACE', $copyObjectCommand['MetadataDirective']);
+        // The watermark flag must be re-supplied here too -- REPLACE overwrites all metadata,
+        // it doesn't merge, so omitting it would silently drop the existing value.
+        self::assertSame([
+            'watermark' => '1',
+            'focal-x' => '0.42',
+            'focal-y' => '0.73',
+        ], $copyObjectCommand['Metadata']);
     }
 }

@@ -22,7 +22,9 @@ class ImageManager
         private readonly S3Client $s3Client,
         private readonly ImageRepository $imageRepository,
         #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
-        private readonly string $s3CacheBucket
+        private readonly string $s3CacheBucket,
+        #[Autowire('%env(string:AWS_S3_BUCKET_NAME)%')]
+        private readonly string $s3OriginalBucket
     ) {
     }
 
@@ -116,6 +118,35 @@ class ImageManager
             'Bucket' => $this->s3CacheBucket,
             'Delete' => ['Objects' => $objects],
         ]);
+    }
+
+    /**
+     * Patch the original S3 object's metadata with the GenAI-detected focal point, for the
+     * captain-infra crop Lambda to read (it has no DB access -- see AGENTS.md). Flysystem's
+     * write() only sets metadata at upload time; S3 object metadata is otherwise immutable in
+     * place, so this needs a direct CopyObject call (same key, MetadataDirective=REPLACE) via
+     * the AWS SDK. REPLACE overwrites *all* metadata, not merges it -- the existing watermark
+     * value must be re-supplied here too, or it would be silently dropped.
+     */
+    public function writeFocalPointMetadata(Image $image): void
+    {
+        $key = $image->getFilename();
+
+        try {
+            $this->s3Client->copyObject([
+                'Bucket' => $this->s3OriginalBucket,
+                'Key' => $key,
+                'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
+                'MetadataDirective' => 'REPLACE',
+                'Metadata' => [
+                    'watermark' => $image->isWatermarked() ? '1' : '0',
+                    'focal-x' => (string) $image->getFocalX(),
+                    'focal-y' => (string) $image->getFocalY(),
+                ],
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+        }
     }
 
     /** Update main image property of all coasters. */

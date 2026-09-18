@@ -49,6 +49,23 @@ class BedrockService
     /** @return array{success: bool, content?: string, error?: string, error_code?: string|null, metadata: array<string, mixed>} */
     public function invokeModel(string $prompt, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6): array
     {
+        return $this->doInvoke($prompt, null, null, $modelKey, $maxTokens, $temperature);
+    }
+
+    /**
+     * Same as invokeModel(), but with an image content block ahead of the text prompt, for
+     * multimodal (vision) calls -- e.g. GenAI photo moderation/focal-point detection.
+     *
+     * @return array{success: bool, content?: string, error?: string, error_code?: string|null, metadata: array<string, mixed>}
+     */
+    public function invokeVisionModel(string $prompt, string $imageBytes, string $imageFormat, ?string $modelKey = null, int $maxTokens = 1000, float $temperature = 0.6): array
+    {
+        return $this->doInvoke($prompt, $imageBytes, $imageFormat, $modelKey, $maxTokens, $temperature);
+    }
+
+    /** @return array{success: bool, content?: string, error?: string, error_code?: string|null, metadata: array<string, mixed>} */
+    private function doInvoke(string $prompt, ?string $imageBytes, ?string $imageFormat, ?string $modelKey, int $maxTokens, float $temperature): array
+    {
         $resolvedModelKey = $modelKey ?? $this->modelKey;
 
         if (!isset(self::MODELS[$resolvedModelKey])) {
@@ -67,7 +84,7 @@ class BedrockService
         $model = self::MODELS[$resolvedModelKey];
 
         try {
-            $requestBody = $this->buildConverseRequest($prompt, $maxTokens, $temperature, $model['reasoning_effort'] ?? null, $model['supports_temperature'] ?? true);
+            $requestBody = $this->buildConverseRequest($prompt, $imageBytes, $imageFormat, $maxTokens, $temperature, $model['reasoning_effort'] ?? null, $model['supports_temperature'] ?? true);
 
             $response = $this->bedrockClient->converse($requestBody + ['modelId' => $model['id']]);
 
@@ -256,7 +273,7 @@ class BedrockService
      *
      * @return array<string, mixed>
      */
-    private function buildConverseRequest(string $prompt, int $maxTokens, float $temperature, ?string $reasoningEffort = null, bool $supportsTemperature = true): array
+    private function buildConverseRequest(string $prompt, ?string $imageBytes, ?string $imageFormat, int $maxTokens, float $temperature, ?string $reasoningEffort = null, bool $supportsTemperature = true): array
     {
         $inferenceConfig = [
             'maxTokens' => $maxTokens,
@@ -266,13 +283,18 @@ class BedrockService
             $inferenceConfig['temperature'] = $temperature;
         }
 
+        // Image block goes first, ahead of the text prompt, per the Converse API convention.
+        $content = [];
+        if (null !== $imageBytes && null !== $imageFormat) {
+            $content[] = ['image' => ['format' => $imageFormat, 'source' => ['bytes' => $imageBytes]]];
+        }
+        $content[] = ['text' => $prompt];
+
         $request = [
             'messages' => [
                 [
                     'role' => 'user',
-                    'content' => [
-                        ['text' => $prompt],
-                    ],
+                    'content' => $content,
                 ],
             ],
             'inferenceConfig' => $inferenceConfig,

@@ -262,6 +262,35 @@ class BedrockServiceTest extends TestCase
         $this->assertNull($bedrockClient->lastConverseArgs);
     }
 
+    public function testInvokeVisionModelPutsAnImageBlockAheadOfTheTextPrompt(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-5.6-luna');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-5.6-luna'));
+
+        $service->invokeVisionModel('describe this photo', 'raw-jpeg-bytes', 'jpeg', 'gpt-5.6-luna', 500, 0.3);
+
+        $content = $bedrockClient->lastConverseArgs['messages'][0]['content'];
+        $this->assertCount(2, $content);
+        $this->assertSame(['format' => 'jpeg', 'source' => ['bytes' => 'raw-jpeg-bytes']], $content[0]['image']);
+        $this->assertSame('describe this photo', $content[1]['text']);
+    }
+
+    public function testInvokeModelHasNoImageBlockWhenCalledWithoutOne(): void
+    {
+        $bedrockClient = $this->createConverseSpyClient();
+        $logger = $this->createMock(LoggerInterface::class);
+        $service = new BedrockService($bedrockClient, $logger, 'gpt-oss-120b');
+        $bedrockClient->setMockResult($this->createMockBedrockResponse('gpt-oss-120b'));
+
+        $service->invokeModel('prompt', 'gpt-oss-120b', 500, 0.5);
+
+        $content = $bedrockClient->lastConverseArgs['messages'][0]['content'];
+        $this->assertCount(1, $content);
+        $this->assertArrayHasKey('text', $content[0]);
+    }
+
     public function testInvokeModelHasNoEnableReasoningParameter(): void
     {
         $reflection = new \ReflectionMethod(BedrockService::class, 'invokeModel');
