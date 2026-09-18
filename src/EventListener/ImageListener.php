@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\EventListener;
 
 use App\Entity\Image;
+use App\Message\AnalyzeImageMessage;
 use App\Service\HeroService;
 use App\Service\ImageManager;
-use App\Service\PictureUrlSigner;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostPersistEventArgs;
 use Doctrine\ORM\Event\PostRemoveEventArgs;
@@ -16,12 +16,7 @@ use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Events;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Notifier\Bridge\Discord\DiscordOptions;
-use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordEmbed;
-use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordFieldEmbedObject;
-use Symfony\Component\Notifier\Bridge\Discord\Embeds\DiscordMediaEmbedObject;
-use Symfony\Component\Notifier\ChatterInterface;
-use Symfony\Component\Notifier\Message\ChatMessage;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: Image::class)]
 #[AsEntityListener(event: Events::postPersist, method: 'postPersist', entity: Image::class)]
@@ -32,9 +27,8 @@ class ImageListener
 {
     public function __construct(
         private readonly ImageManager $imageManager,
-        private readonly ChatterInterface $chatter,
-        private readonly PictureUrlSigner $pictureUrlSigner,
         private readonly HeroService $heroService,
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
@@ -49,34 +43,18 @@ class ImageListener
         }
     }
 
-    /** After persist: send Discord notification */
+    /**
+     * After persist: dispatch the GenAI moderation/focal-point analysis, async so the upload
+     * request doesn't wait on a Bedrock round-trip. Discord no longer fires here on every
+     * upload -- ImageReportListener now posts only for images the analysis actually flags,
+     * turning the channel back into a worklist instead of a 24h-hoping-to-catch-something feed.
+     */
     public function postPersist(Image $image, PostPersistEventArgs $event): void
     {
-        $imageUrl = $this->pictureUrlSigner->sign($image->getFilename(), 1440, 1440, 'jpg');
-
-        $discordOptions = new DiscordOptions()
-            ->addEmbed(
-                new DiscordEmbed()
-                    ->title($image->getCoaster()->getName().' - '.$image->getCoaster()->getPark()->getName())
-                    ->url($imageUrl)
-                    ->thumbnail(new DiscordMediaEmbedObject()->url($imageUrl))
-                    ->addField(
-                        new DiscordFieldEmbedObject()
-                            ->name('Uploader')
-                            ->value($image->getUploader()->getDisplayName())
-                            ->inline(true)
-                    )
-                    ->addField(
-                        new DiscordFieldEmbedObject()
-                            ->name('Credit')
-                            ->value($image->getCredit())
-                            ->inline(true)
-                    )
-            );
-
-        $this->chatter->send(
-            new ChatMessage('')->transport('discord_picture')->options($discordOptions)
-        );
+        // Same guard as prePersist() -- only genuinely new uploads, not every persist event.
+        if ($image->getFile() instanceof UploadedFile) {
+            $this->messageBus->dispatch(new AnalyzeImageMessage($image->getId()));
+        }
     }
 
     /** Before remove: remove image file on storage (S3) */

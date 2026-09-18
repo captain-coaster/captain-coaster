@@ -13,6 +13,7 @@ framework:
 
         routing:
             App\Message\SendNotificationEmailMessage: async
+            App\Message\AnalyzeImageMessage: async
 
 when@test:
     framework:
