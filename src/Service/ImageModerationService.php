@@ -59,6 +59,7 @@ class ImageModerationService
             // and is letterboxed (INSIDE_FIT_SIZES in captain-infra), not cropped -- the whole
             // photo, just downscaled, which is what moderation/focal-point detection needs. This
             // avoids adding any PHP-side image manipulation just to bound the Bedrock payload size.
+            // jpg, not avif: Bedrock's Converse API ImageFormat only accepts png/jpeg/gif/webp.
             $url = $this->pictureUrlSigner->sign($image->getFilename(), 1440, 1440, 'jpg');
             $imageBytes = $this->httpClient->request('GET', $url)->getContent();
         } catch (\Throwable $e) {
