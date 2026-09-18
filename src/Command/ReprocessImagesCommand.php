@@ -45,7 +45,7 @@ class ReprocessImagesCommand extends Command
             ->addOption('hero', null, InputOption::VALUE_NONE, 'Force-reanalyze the whole homepage hero candidate pool (upcoming/new/trending coasters\' main images + the top-liked photo candidate), not just today\'s pick, since rotation can surface any of them at any time')
             ->addOption('all-main-images', null, InputOption::VALUE_NONE, 'Force-reanalyze every coaster\'s main image')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of images to process', 200)
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Print what would happen without writing to the database')
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'List which images would be targeted, without calling the model or writing to the database')
             ->setHelp(
                 'Examples:'.\PHP_EOL.
                 '  php bin/console app:reprocess-images'.\PHP_EOL.
@@ -70,7 +70,16 @@ class ReprocessImagesCommand extends Command
             return Command::SUCCESS;
         }
 
-        $io->note(\sprintf('Processing %d image(s)%s.', \count($images), $dryRun ? ' (dry run)' : ''));
+        if ($dryRun) {
+            $io->note(\sprintf('Would process %d image(s) -- no model call, no database write:', \count($images)));
+            foreach ($images as $image) {
+                $io->writeln(\sprintf('Image #%d (coaster: %s)', $image->getId(), $image->getCoaster()->getName()));
+            }
+
+            return Command::SUCCESS;
+        }
+
+        $io->note(\sprintf('Processing %d image(s).', \count($images)));
 
         $processed = 0;
         $flagged = 0;
@@ -87,11 +96,6 @@ class ReprocessImagesCommand extends Command
                 }
 
                 ++$processed;
-
-                if ($dryRun) {
-                    $io->writeln(\sprintf('Image #%d: categories=[%s] focal=(%.2f, %.2f)', $image->getId(), implode(',', $result['categories']), $result['focalX'], $result['focalY']));
-                    continue;
-                }
 
                 $this->imageModerationService->applyResult($image, $result);
                 $this->entityManager->flush();

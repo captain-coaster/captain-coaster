@@ -146,16 +146,18 @@ class ReprocessImagesCommandTest extends TestCase
         $this->commandTester->execute(['--all-main-images' => true]);
     }
 
-    public function testDryRunDoesNotPersistOrFlush(): void
+    public function testDryRunNeverCallsTheModelOrPersists(): void
     {
         $image = $this->createImage(1);
         $this->imageRepository->method('findUnanalyzed')->willReturn([$image]);
-        $this->imageModerationService->method('analyze')->willReturn($this->cleanResult());
 
+        $this->imageModerationService->expects($this->never())->method('analyze');
         $this->imageModerationService->expects($this->never())->method('applyResult');
         $this->entityManager->expects($this->never())->method('flush');
 
         $this->commandTester->execute(['--dry-run' => true]);
+
+        $this->assertStringContainsString('Image #1 (coaster: Test Coaster)', $this->commandTester->getDisplay());
     }
 
     public function testOneFailingImageDoesNotAbortTheRest(): void
