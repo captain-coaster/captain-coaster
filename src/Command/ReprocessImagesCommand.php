@@ -9,7 +9,6 @@ use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Service\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NoResultException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,7 +41,7 @@ class ReprocessImagesCommand extends Command
         $this
             ->addOption('ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Image IDs to force-reanalyze')
             ->addOption('coaster-ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Coaster IDs -- force-reanalyze each one\'s main image')
-            ->addOption('hero', null, InputOption::VALUE_NONE, 'Force-reanalyze the whole homepage hero candidate pool (upcoming/new/trending coasters\' main images + the top-liked photo candidate), not just today\'s pick, since rotation can surface any of them at any time')
+            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new/trending coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit) so they become eligible for the hero')
             ->addOption('all-main-images', null, InputOption::VALUE_NONE, 'Force-reanalyze every coaster\'s main image')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of images to process', 200)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'List which images would be targeted, without calling the model or writing to the database')
@@ -147,7 +146,7 @@ class ReprocessImagesCommand extends Command
         }
 
         if ($hero) {
-            return $this->resolveHeroCandidatePool();
+            return $this->resolveHeroCandidatePool($limit);
         }
 
         if ($allMainImages) {
@@ -165,31 +164,37 @@ class ReprocessImagesCommand extends Command
     }
 
     /**
-     * Replicates HeroService::resolve()'s candidate assembly -- the whole pool, not just
-     * whatever it would randomly pick right now, since rotation can surface any of the four.
+     * HeroService only serves analyzed photos, so the photos targeted here are the unanalyzed
+     * ones (--limit caps them); coasters' main images are always forced.
      *
      * @return array<Image>
      */
-    private function resolveHeroCandidatePool(): array
+    private function resolveHeroCandidatePool(int $limit): array
     {
+        $coasterIds = [
+            ...$this->coasterRepository->findUpcomingCoasterIds(),
+            ...$this->coasterRepository->findRecentlyOpenedCoasterIds(),
+            ...$this->coasterRepository->findTrendingCoasterIds(),
+        ];
+
         $images = [];
 
-        foreach ([
-            $this->coasterRepository->findUpcomingCoaster(),
-            $this->coasterRepository->findRecentlyOpenedCoaster(),
-            $this->coasterRepository->findTrendingCoaster(),
-        ] as $coaster) {
-            if (null !== $coaster?->getMainImage()) {
-                $images[] = $coaster->getMainImage();
+        foreach ($this->coasterRepository->findBy(['id' => $coasterIds]) as $coaster) {
+            if (null !== $coaster->getMainImage()) {
+                $images[$coaster->getMainImage()->getId()] = $coaster->getMainImage();
             }
         }
 
-        try {
-            $images[] = $this->imageRepository->findFeaturedImage();
-        } catch (NoResultException) {
-            // no photo clears the like threshold yet -- skip, same as HeroService
+        $photos = $this->imageRepository->findBy(
+            ['id' => $this->imageRepository->findFeaturedImageIds(analyzedOnly: false), 'analyzedAt' => null],
+            ['id' => 'ASC'],
+            $limit,
+        );
+
+        foreach ($photos as $photo) {
+            $images[$photo->getId()] = $photo;
         }
 
-        return $images;
+        return array_values($images);
     }
 }

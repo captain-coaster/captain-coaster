@@ -11,7 +11,6 @@ use App\Entity\Status;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Service\HeroService;
-use Doctrine\ORM\NoResultException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
@@ -29,7 +28,7 @@ class HeroServiceTest extends TestCase
         $this->service = new HeroService($this->coasterRepository, $this->imageRepository, new ArrayAdapter());
     }
 
-    private function makeCoaster(): Coaster&MockObject
+    private function makeCoaster(int $id = 1, string $slug = 'some-coaster'): Coaster&MockObject
     {
         $park = $this->createMock(Park::class);
         $park->method('getName')->willReturn('Some Park');
@@ -37,8 +36,8 @@ class HeroServiceTest extends TestCase
         $status->method('getName')->willReturn('status.operating');
 
         $coaster = $this->createMock(Coaster::class);
-        $coaster->method('getId')->willReturn(1);
-        $coaster->method('getSlug')->willReturn('some-coaster');
+        $coaster->method('getId')->willReturn($id);
+        $coaster->method('getSlug')->willReturn($slug);
         $coaster->method('getName')->willReturn('Some Coaster');
         $coaster->method('getPark')->willReturn($park);
         $coaster->method('getStatus')->willReturn($status);
@@ -56,23 +55,26 @@ class HeroServiceTest extends TestCase
         return $image;
     }
 
-    public function testReturnsNullWhenNoCandidateExists(): void
+    /** @param array<string, list<int>> $ids category => candidate ids; omitted categories are empty */
+    private function stubIds(array $ids): void
     {
-        $this->coasterRepository->method('findUpcomingCoaster')->willReturn(null);
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn(null);
-        $this->imageRepository->method('findFeaturedImage')->willThrowException(new NoResultException());
+        $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn($ids['upcoming'] ?? []);
+        $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn($ids['new'] ?? []);
+        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn($ids['trending'] ?? []);
+        $this->imageRepository->method('findFeaturedImageIds')->willReturn($ids['photo'] ?? []);
+    }
+
+    public function testReturnsNullWhenNoCategoryHasACandidate(): void
+    {
+        $this->stubIds([]);
 
         $this->assertNull($this->service->pick());
     }
 
     public function testReturnsTheOnlyCandidateWhenJustOneExists(): void
     {
-        $coaster = $this->makeCoaster();
-        $this->coasterRepository->method('findUpcomingCoaster')->willReturn($coaster);
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn(null);
-        $this->imageRepository->method('findFeaturedImage')->willThrowException(new NoResultException());
+        $this->stubIds(['upcoming' => [1]]);
+        $this->coasterRepository->method('find')->with(1)->willReturn($this->makeCoaster());
 
         $pick = $this->service->pick();
 
@@ -86,16 +88,25 @@ class HeroServiceTest extends TestCase
         $this->assertSame('status.operating', $pick['statusName']);
     }
 
-    public function testFeaturedImageCandidateResolvesItsCoaster(): void
+    public function testSkipsEmptyCategories(): void
     {
-        $coaster = $this->makeCoaster();
-        $image = $this->makeImage();
-        $image->method('getCoaster')->willReturn($coaster);
+        $this->stubIds(['trending' => [4]]);
+        $this->coasterRepository->method('find')->with(4)->willReturn($this->makeCoaster(4));
 
-        $this->coasterRepository->method('findUpcomingCoaster')->willReturn(null);
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn(null);
-        $this->imageRepository->method('findFeaturedImage')->willReturn($image);
+        // Whatever the shuffled order, the only category with candidates must win.
+        for ($i = 0; $i < 20; ++$i) {
+            $this->service->invalidate();
+            $this->assertSame('trending', $this->service->pick()['type']);
+        }
+    }
+
+    public function testPhotoCandidateResolvesItsCoaster(): void
+    {
+        $image = $this->makeImage();
+        $image->method('getCoaster')->willReturn($this->makeCoaster());
+
+        $this->stubIds(['photo' => [7]]);
+        $this->imageRepository->method('find')->with(7)->willReturn($image);
 
         $pick = $this->service->pick();
 
@@ -104,25 +115,34 @@ class HeroServiceTest extends TestCase
         $this->assertSame('some-image.jpg', $pick['imageFilename']);
     }
 
-    public function testSkipsCoasterCandidateWithoutAMainImage(): void
+    public function testCoasterCandidateWithoutAMainImageYieldsNothing(): void
     {
         $coasterWithoutImage = $this->createMock(Coaster::class);
         $coasterWithoutImage->method('getMainImage')->willReturn(null);
 
-        $this->coasterRepository->method('findUpcomingCoaster')->willReturn($coasterWithoutImage);
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn(null);
-        $this->imageRepository->method('findFeaturedImage')->willThrowException(new NoResultException());
+        $this->stubIds(['upcoming' => [1]]);
+        $this->coasterRepository->method('find')->willReturn($coasterWithoutImage);
 
         $this->assertNull($this->service->pick());
     }
 
+    public function testFallsBackToAnotherCategoryWhenACandidateNoLongerLoads(): void
+    {
+        $this->stubIds(['upcoming' => [1], 'new' => [2]]);
+        $this->coasterRepository->method('find')->willReturnCallback(
+            fn (int $id) => 2 === $id ? $this->makeCoaster(2) : null
+        );
+
+        for ($i = 0; $i < 20; ++$i) {
+            $this->service->invalidate();
+            $this->assertSame('new', $this->service->pick()['type']);
+        }
+    }
+
     public function testPickIsCachedAcrossCalls(): void
     {
-        $this->coasterRepository->expects($this->once())->method('findUpcomingCoaster')->willReturn($this->makeCoaster());
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn(null);
-        $this->imageRepository->method('findFeaturedImage')->willThrowException(new NoResultException());
+        $this->stubIds(['upcoming' => [1]]);
+        $this->coasterRepository->expects($this->once())->method('find')->willReturn($this->makeCoaster());
 
         $first = $this->service->pick();
         $second = $this->service->pick();
@@ -132,22 +152,22 @@ class HeroServiceTest extends TestCase
 
     public function testInvalidateForcesRecomputeOnNextPick(): void
     {
-        $this->coasterRepository->expects($this->exactly(2))->method('findUpcomingCoaster')->willReturn($this->makeCoaster());
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn(null);
-        $this->imageRepository->method('findFeaturedImage')->willThrowException(new NoResultException());
+        $this->stubIds(['upcoming' => [1]]);
+        $this->coasterRepository->expects($this->exactly(2))->method('find')->willReturn($this->makeCoaster());
 
         $this->service->pick();
         $this->service->invalidate();
         $this->service->pick();
     }
 
-    public function testPicksAmongAllAvailableCandidates(): void
+    public function testEveryCategoryIsReachable(): void
     {
-        $this->coasterRepository->method('findUpcomingCoaster')->willReturn($this->makeCoaster());
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn($this->makeCoaster());
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn($this->makeCoaster());
-        $this->imageRepository->method('findFeaturedImage')->willReturn($this->makeImage());
+        $image = $this->makeImage();
+        $image->method('getCoaster')->willReturn($this->makeCoaster());
+
+        $this->stubIds(['upcoming' => [1], 'new' => [1], 'trending' => [1], 'photo' => [1]]);
+        $this->coasterRepository->method('find')->willReturn($this->makeCoaster());
+        $this->imageRepository->method('find')->willReturn($image);
 
         // (3/4)^50 chance of missing a type by fluke is ~1e-6 -- negligible flake risk.
         // Each iteration invalidates first since pick() is otherwise cached for an hour.
@@ -158,5 +178,22 @@ class HeroServiceTest extends TestCase
         }
 
         $this->assertEqualsCanonicalizing(['upcoming', 'new', 'trending', 'photo'], array_keys($seenTypes));
+    }
+
+    public function testEveryCandidateOfACategoryIsReachable(): void
+    {
+        $this->stubIds(['upcoming' => [1, 2]]);
+        $this->coasterRepository->method('find')->willReturnCallback(
+            fn (int $id) => $this->makeCoaster($id, "coaster-{$id}")
+        );
+
+        // (1/2)^50 chance of missing one of the two by fluke is negligible.
+        $seenSlugs = [];
+        for ($i = 0; $i < 50; ++$i) {
+            $this->service->invalidate();
+            $seenSlugs[$this->service->pick()['coasterSlug']] = true;
+        }
+
+        $this->assertEqualsCanonicalizing(['coaster-1', 'coaster-2'], array_keys($seenSlugs));
     }
 }

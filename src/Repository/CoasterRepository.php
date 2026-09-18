@@ -567,76 +567,68 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * A coaster under construction or officially announced, preferring
-     * one with a known (soonest) opening date; among those still
-     * unannounced, the one with the most-liked main photo -- a proxy for
-     * "people still care about this", since construction/announced alone
-     * says nothing about whether the project is still generating buzz or
-     * has been stalled for years. Used for the homepage hero.
+     * Homepage hero pools (see HeroService). Ids only: the service draws one and loads just
+     * that coaster. Uncached -- HeroService caches the resolved pick.
      *
-     * Uncached: HeroService caches the whole resolved pick for an hour and
-     * invalidates it on any image write, so a query-level cache here would
-     * just be a second, harder-to-invalidate copy of the same staleness.
+     * Every coaster under construction or announced, with an enabled main image.
+     *
+     * @return array<int>
      */
-    public function findUpcomingCoaster(): ?Coaster
+    public function findUpcomingCoasterIds(): array
     {
         return $this->createQueryBuilder('c')
-            ->addSelect('CASE WHEN c.openingDate IS NULL THEN 1 ELSE 0 END AS HIDDEN noDate')
+            ->select('c.id')
             ->innerJoin('c.status', 's')
-            ->leftJoin('c.mainImage', 'mi')
+            ->innerJoin('c.mainImage', 'mi')
             ->where('s.name IN (:statuses)')
-            ->andWhere('c.mainImage IS NOT NULL')
+            ->andWhere('mi.enabled = 1')
             ->setParameter('statuses', [Status::CONSTRUCTION, Status::ANNOUNCED])
-            ->orderBy('noDate', 'ASC')
-            ->addOrderBy('c.openingDate', 'ASC')
-            ->addOrderBy('mi.likeCounter', 'DESC')
-            ->setMaxResults(1)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getSingleColumnResult();
     }
 
     /**
-     * A coaster opened in the last 90 days, most-rated first. Used for
-     * the homepage hero (see findUpcomingCoaster() on why this is uncached).
+     * Every coaster opened in the last 90 days, with an enabled main image.
+     *
+     * @return array<int>
      */
-    public function findRecentlyOpenedCoaster(): ?Coaster
+    public function findRecentlyOpenedCoasterIds(): array
     {
         $now = new \DateTimeImmutable();
-        $today = $now->format('Y-m-d');
-        $minDate = $now->modify('-90 days')->format('Y-m-d');
 
         return $this->createQueryBuilder('c')
+            ->select('c.id')
+            ->innerJoin('c.mainImage', 'mi')
             ->where('c.openingDate BETWEEN :minDate AND :today')
-            ->andWhere('c.mainImage IS NOT NULL')
-            ->setParameter('minDate', $minDate)
-            ->setParameter('today', $today)
-            ->orderBy('c.totalRatings', 'DESC')
-            ->addOrderBy('c.openingDate', 'DESC')
-            ->setMaxResults(1)
+            ->andWhere('mi.enabled = 1')
+            ->setParameter('minDate', $now->modify('-90 days')->format('Y-m-d'))
+            ->setParameter('today', $now->format('Y-m-d'))
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getSingleColumnResult();
     }
 
     /**
-     * The coaster with the most new rides logged in the last 12 hours
-     * (minimum 3, to avoid surfacing noise). Used for the homepage hero
-     * (see findUpcomingCoaster() on why this is uncached).
+     * Coasters with at least 3 rides logged in the last 24 hours and an enabled main image,
+     * busiest first (ties: most rated), capped at $limit.
+     *
+     * @return array<int>
      */
-    public function findTrendingCoaster(): ?Coaster
+    public function findTrendingCoasterIds(int $limit = 20): array
     {
-        $sinceDate = new \DateTimeImmutable('-12 hours');
-
         return $this->createQueryBuilder('c')
+            ->select('c.id')
             ->addSelect('COUNT(r.id) AS HIDDEN recentRideCount')
+            ->innerJoin('c.mainImage', 'mi')
             ->innerJoin(RiddenCoaster::class, 'r', Expr\Join::WITH, 'r.coaster = c.id AND r.createdAt >= :sinceDate')
-            ->andWhere('c.mainImage IS NOT NULL')
-            ->setParameter('sinceDate', $sinceDate)
+            ->where('mi.enabled = 1')
+            ->setParameter('sinceDate', new \DateTimeImmutable('-24 hours'))
             ->groupBy('c.id')
             ->having('COUNT(r.id) >= 3')
             ->orderBy('recentRideCount', 'DESC')
-            ->setMaxResults(1)
+            ->addOrderBy('c.totalRatings', 'DESC')
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getOneOrNullResult();
+            ->getSingleColumnResult();
     }
 
     /**

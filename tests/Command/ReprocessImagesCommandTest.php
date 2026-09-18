@@ -118,18 +118,55 @@ class ReprocessImagesCommandTest extends TestCase
         $this->commandTester->execute(['--coaster-ids' => '10']);
     }
 
-    public function testHeroOptionAssemblesTheWholeCandidatePool(): void
+    public function testHeroOptionAssemblesCoasterMainImagesAndUnanalyzedPhotos(): void
     {
         $upcomingImage = $this->createImage(1);
         $trendingImage = $this->createImage(2);
-        $featuredImage = $this->createImage(3);
+        $unanalyzedPhoto = $this->createImage(3);
 
-        $this->coasterRepository->method('findUpcomingCoaster')->willReturn($this->createCoaster(1, $upcomingImage));
-        $this->coasterRepository->method('findRecentlyOpenedCoaster')->willReturn(null);
-        $this->coasterRepository->method('findTrendingCoaster')->willReturn($this->createCoaster(2, $trendingImage));
-        $this->imageRepository->method('findFeaturedImage')->willReturn($featuredImage);
+        $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn([1]);
+        $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([]);
+        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn([2]);
+        $this->coasterRepository->expects($this->once())->method('findBy')->with(['id' => [1, 2]])
+            ->willReturn([$this->createCoaster(1, $upcomingImage), $this->createCoaster(2, $trendingImage)]);
+
+        $this->imageRepository->expects($this->once())->method('findFeaturedImageIds')->with(false)->willReturn([3, 4]);
+        $this->imageRepository->expects($this->once())->method('findBy')
+            ->with(['id' => [3, 4], 'analyzedAt' => null], ['id' => 'ASC'], 200)
+            ->willReturn([$unanalyzedPhoto]);
 
         $this->imageModerationService->expects($this->exactly(3))->method('analyze')->willReturn($this->cleanResult());
+
+        $this->commandTester->execute(['--hero' => true]);
+    }
+
+    public function testHeroOptionLimitCapsThePhotosOnly(): void
+    {
+        $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn([]);
+        $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([]);
+        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn([]);
+        $this->coasterRepository->method('findBy')->willReturn([]);
+
+        $this->imageRepository->method('findFeaturedImageIds')->willReturn([3]);
+        $this->imageRepository->expects($this->once())->method('findBy')
+            ->with($this->anything(), ['id' => 'ASC'], 5)
+            ->willReturn([]);
+
+        $this->commandTester->execute(['--hero' => true, '--limit' => '5']);
+    }
+
+    public function testHeroOptionDedupesAnImageReachableTwice(): void
+    {
+        $sharedImage = $this->createImage(9);
+
+        $this->coasterRepository->method('findUpcomingCoasterIds')->willReturn([1]);
+        $this->coasterRepository->method('findRecentlyOpenedCoasterIds')->willReturn([]);
+        $this->coasterRepository->method('findTrendingCoasterIds')->willReturn([]);
+        $this->coasterRepository->method('findBy')->willReturn([$this->createCoaster(1, $sharedImage)]);
+        $this->imageRepository->method('findFeaturedImageIds')->willReturn([9]);
+        $this->imageRepository->method('findBy')->willReturn([$sharedImage]);
+
+        $this->imageModerationService->expects($this->once())->method('analyze')->with($sharedImage)->willReturn($this->cleanResult());
 
         $this->commandTester->execute(['--hero' => true]);
     }

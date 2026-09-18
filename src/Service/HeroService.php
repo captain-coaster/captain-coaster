@@ -4,29 +4,30 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\Coaster;
+use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
-use Doctrine\ORM\NoResultException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 
 /**
- * Picks the homepage hero content from 4 rotating candidates:
- *   - upcoming     : a coaster under construction or officially announced
- *   - new          : a coaster opened in the last 90 days
- *   - trending     : a coaster with a lot of recent ride activity
- *   - photo        : a heavily-liked user photo
+ * Picks the homepage hero: a random category among
+ *   - upcoming : coasters under construction or announced
+ *   - new      : coasters opened in the last 90 days
+ *   - trending : coasters with a lot of recent ride activity
+ *   - photo    : heavily-liked, moderated user photos
+ * then a random candidate in it, skipping categories with no candidate.
  *
- * The pick (including which coaster/image it resolves to) is cached as a
- * whole for an hour, under CACHE_KEY -- not just the 4 candidate queries --
- * so a warm homepage load touches neither the DB nor a Doctrine lazy-load
- * for coaster.mainImage. Showing the same hero for up to an hour is fine;
- * ImageListener calls invalidate() on any image enable/disable/delete so a
- * moderation action takes effect immediately rather than waiting out the TTL.
+ * Only the resolved pick is cached (an hour, under CACHE_KEY), so a warm homepage load
+ * touches neither the DB nor a Doctrine lazy-load. ImageListener calls invalidate() on any
+ * image enable/disable/delete so a moderation action takes effect immediately.
  */
 class HeroService
 {
     private const string CACHE_KEY = 'hero_pick';
+
+    private const array CATEGORIES = ['upcoming', 'new', 'trending', 'photo'];
 
     public function __construct(
         private readonly CoasterRepository $coasterRepository,
@@ -53,42 +54,59 @@ class HeroService
     /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, imageFilename: string, imageCredit: ?string, statusName: ?string}|null */
     private function resolve(): ?array
     {
-        $candidates = [];
+        $categories = self::CATEGORIES;
+        shuffle($categories);
 
-        if (($coaster = $this->coasterRepository->findUpcomingCoaster()) && $coaster->getMainImage()) {
-            $candidates[] = ['type' => 'upcoming', 'coaster' => $coaster, 'image' => $coaster->getMainImage()];
+        foreach ($categories as $type) {
+            $ids = $this->candidateIds($type);
+            if ([] === $ids) {
+                continue;
+            }
+
+            $pick = $this->load($type, $ids[array_rand($ids)]);
+            if (null !== $pick) {
+                return $pick;
+            }
         }
 
-        if (($coaster = $this->coasterRepository->findRecentlyOpenedCoaster()) && $coaster->getMainImage()) {
-            $candidates[] = ['type' => 'new', 'coaster' => $coaster, 'image' => $coaster->getMainImage()];
+        return null;
+    }
+
+    /** @return array<int> */
+    private function candidateIds(string $type): array
+    {
+        return match ($type) {
+            'upcoming' => $this->coasterRepository->findUpcomingCoasterIds(),
+            'new' => $this->coasterRepository->findRecentlyOpenedCoasterIds(),
+            'trending' => $this->coasterRepository->findTrendingCoasterIds(),
+            default => $this->imageRepository->findFeaturedImageIds(),
+        };
+    }
+
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, imageFilename: string, imageCredit: ?string, statusName: ?string}|null */
+    private function load(string $type, int $id): ?array
+    {
+        if ('photo' === $type) {
+            $image = $this->imageRepository->find($id);
+            $coaster = $image?->getCoaster();
+        } else {
+            $coaster = $this->coasterRepository->find($id);
+            $image = $coaster?->getMainImage();
         }
 
-        if (($coaster = $this->coasterRepository->findTrendingCoaster()) && $coaster->getMainImage()) {
-            $candidates[] = ['type' => 'trending', 'coaster' => $coaster, 'image' => $coaster->getMainImage()];
-        }
-
-        try {
-            $image = $this->imageRepository->findFeaturedImage();
-            $candidates[] = ['type' => 'photo', 'coaster' => $image->getCoaster(), 'image' => $image];
-        } catch (NoResultException) {
-            // no photo clears the like threshold yet -- skip
-        }
-
-        if ([] === $candidates) {
+        if (!$coaster instanceof Coaster || !$image instanceof Image) {
             return null;
         }
 
-        $picked = $candidates[array_rand($candidates)];
-
         return [
-            'type' => $picked['type'],
-            'coasterId' => $picked['coaster']->getId(),
-            'coasterSlug' => $picked['coaster']->getSlug(),
-            'coasterName' => $picked['coaster']->getName(),
-            'parkName' => $picked['coaster']->getPark()?->getName(),
-            'imageFilename' => $picked['image']->getFilename(),
-            'imageCredit' => $picked['image']->getCredit(),
-            'statusName' => $picked['coaster']->getStatus()?->getName(),
+            'type' => $type,
+            'coasterId' => $coaster->getId(),
+            'coasterSlug' => $coaster->getSlug(),
+            'coasterName' => $coaster->getName(),
+            'parkName' => $coaster->getPark()?->getName(),
+            'imageFilename' => $image->getFilename(),
+            'imageCredit' => $image->getCredit(),
+            'statusName' => $coaster->getStatus()?->getName(),
         ];
     }
 }
