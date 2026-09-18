@@ -87,6 +87,16 @@ class ImageModerationService
                 'image_id' => $this->imageIdForLogging($image),
                 'content' => $response['content'] ?? '',
             ]);
+        } else {
+            // Logged unconditionally (not just on flag) -- a clean verdict never gets an
+            // ImageReport, so this is the only record of why the model let a borderline photo
+            // through.
+            $this->moderationLogger->info('Image moderation result', [
+                'image_id' => $this->imageIdForLogging($image),
+                'categories' => $parsed['categories'],
+                'confidence' => $parsed['confidence'],
+                'explanation' => $parsed['explanation'],
+            ]);
         }
 
         return $parsed;
@@ -133,15 +143,22 @@ class ImageModerationService
             You are moderating a user-submitted photo for a roller coaster enthusiast website. The photo
             should show a roller coaster or amusement park. Analyze it for the following:
 
-            1. Off-topic: the photo is not of a coaster or amusement park at all.
+            1. Off-topic: the photo is not of a coaster or amusement park at all. An atmospheric shot with
+               no track/train visible (theming, queue decor, a distant view) is still on-topic as long as
+               it's clearly part of a coaster/park setting -- don't require the ride itself to be visible.
             2. Watermark: the photo has a visible watermark, logo overlay, or added text (not something
                physically present in the scene, like a sign) -- EXCEPT a "CAPTAIN COASTER" text/logo
                watermark in a corner, which this site adds itself when the uploader opts in and must
                never be flagged.
             3. Retouched: the photo is heavily filtered/retouched in a way that misrepresents the subject
                (not normal phone-camera processing).
-            4. People subject: a person or group of people is the main subject of the photo, rather than
-               the coaster/park (people incidentally present in a coaster/park photo are normal and fine).
+            4. People subject: judge by how much of the frame people take up, not by what they're doing.
+               Flag when one or more people are large/prominent enough (close-up, foreground, filling a
+               significant portion of the image) that they read as the photo's subject rather than the
+               coaster/park -- whether posed, mid-stride, or otherwise doesn't matter. This is a thin
+               line, since park photos naturally have people in them: small or distant figures elsewhere
+               in the frame are normal and must NOT be flagged. This is not a personal holiday photo
+               book -- when in doubt about whether people are prominent enough, flag it.
             5. On-ride photo: this is one of the commercial on-ride photos a park sells at the exit of the
                ride (rider(s) mid-ride, usually close-up on their faces/reactions, often with a park logo,
                timestamp, or price/purchase overlay burned in) rather than a photo someone took of the
