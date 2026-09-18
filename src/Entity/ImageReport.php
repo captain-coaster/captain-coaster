@@ -26,6 +26,7 @@ class ImageReport
     public const CATEGORY_WATERMARK = 'watermark';
     public const CATEGORY_RETOUCHED = 'retouched';
     public const CATEGORY_PEOPLE_SUBJECT = 'people_subject';
+    public const CATEGORY_ONRIDE_PHOTO = 'onride_photo';
     public const CATEGORY_ANALYSIS_FAILED = 'analysis_failed';
 
     public const CATEGORIES = [
@@ -33,6 +34,7 @@ class ImageReport
         self::CATEGORY_WATERMARK,
         self::CATEGORY_RETOUCHED,
         self::CATEGORY_PEOPLE_SUBJECT,
+        self::CATEGORY_ONRIDE_PHOTO,
         self::CATEGORY_ANALYSIS_FAILED,
     ];
 

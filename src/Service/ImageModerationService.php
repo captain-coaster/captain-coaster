@@ -30,6 +30,7 @@ class ImageModerationService
         ImageReport::CATEGORY_WATERMARK,
         ImageReport::CATEGORY_RETOUCHED,
         ImageReport::CATEGORY_PEOPLE_SUBJECT,
+        ImageReport::CATEGORY_ONRIDE_PHOTO,
     ];
 
     private const VALID_CONFIDENCE_LEVELS = ['low', 'medium', 'high'];
@@ -137,6 +138,10 @@ class ImageModerationService
                (not normal phone-camera processing).
             4. People subject: a person or group of people is the main subject of the photo, rather than
                the coaster/park (people incidentally present in a coaster/park photo are normal and fine).
+            5. On-ride photo: this is one of the commercial on-ride photos a park sells at the exit of the
+               ride (rider(s) mid-ride, usually close-up on their faces/reactions, often with a park logo,
+               timestamp, or price/purchase overlay burned in) rather than a photo someone took of the
+               coaster itself.
 
             Also locate the photo's main subject of interest (the coaster/ride/track/station -- whatever a
             human would consider "the point" of the photo) as normalized (x, y) coordinates, where (0, 0)
@@ -145,9 +150,10 @@ class ImageModerationService
 
             <output_format>
             Respond with strict JSON only, no other text:
-            {"categories": string[] (any of "offtopic", "watermark", "retouched", "people_subject"; empty
-            array if none apply), "focal_x": number, "focal_y": number, "confidence": "low"|"medium"|"high",
-            "explanation": string (one sentence, only if categories is non-empty, else null)}
+            {"categories": string[] (any of "offtopic", "watermark", "retouched", "people_subject",
+            "onride_photo"; empty array if none apply), "focal_x": number, "focal_y": number,
+            "confidence": "low"|"medium"|"high", "explanation": string (one sentence, only if categories is
+            non-empty, else null)}
             </output_format>
             PROMPT;
     }

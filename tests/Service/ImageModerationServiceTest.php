@@ -136,6 +136,19 @@ class ImageModerationServiceTest extends TestCase
         $this->assertNull($service->analyze($this->createImage()));
     }
 
+    public function testAnalyzeRecognizesOnridePhotoCategory(): void
+    {
+        $service = $this->createService([
+            'success' => true,
+            'content' => '{"categories":["onride_photo"],"focal_x":0.5,"focal_y":0.4,"confidence":"high","explanation":"Commercial on-ride photo with a price overlay."}',
+            'metadata' => [],
+        ]);
+
+        $result = $service->analyze($this->createImage());
+
+        $this->assertSame(['onride_photo'], $result['categories']);
+    }
+
     public function testAnalyzeDiscardsUnknownCategoriesButKeepsValidOnes(): void
     {
         $service = $this->createService([
