@@ -198,6 +198,17 @@ class ImageModerationServiceTest extends TestCase
         $this->assertFalse($image->isEnabled());
     }
 
+    public function testApplyResultTakesDownAnAlreadyPublishedImageWhenReflagged(): void
+    {
+        $service = $this->createService(['success' => true, 'metadata' => []]);
+        $image = $this->createImage();
+        $image->setEnabled(true);
+
+        $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_PEOPLE_SUBJECT], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => 'x']);
+
+        $this->assertFalse($image->isEnabled());
+    }
+
     public function testApplyResultSkipsCreatingADuplicateReport(): void
     {
         $imageReportRepository = $this->createMock(ImageReportRepository::class);

@@ -117,6 +117,10 @@ class ImageModerationService
             return;
         }
 
+        // Reanalysis (ReprocessImagesCommand) can newly flag an already-published photo -- take it
+        // back down immediately rather than leaving it live while the report is pending review.
+        $image->setEnabled(false);
+
         if ($this->imageReportRepository->hasUnresolvedReport($image)) {
             $this->moderationLogger->info('Image already has a pending report -- skipping duplicate', [
                 'image_id' => $this->imageIdForLogging($image),
