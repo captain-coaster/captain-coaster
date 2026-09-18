@@ -30,13 +30,11 @@ Join us in shaping the world's best roller coaster rankings!
     - MariaDB 11.8
     - Redis
     - Adminer on localhost:8081
-8. Load the database
-    - With a production dump (maintainers only): `gunzip -c path/to/dump.sql.gz | docker exec -i db-captain mariadb -uroot -proot123 captain`
-    - Without a dump: build the schema and load a small set of sample data instead
-        ```shell
-        composer db-setup
-        php bin/console doctrine:fixtures:load
-        ```
+8. Build the schema and load a small set of sample data
+    ```shell
+    composer db-setup
+    php bin/console doctrine:fixtures:load
+    ```
 9. Start the Symfony development server
     ```shell
     symfony server:start
@@ -64,8 +62,7 @@ Join us in shaping the world's best roller coaster rankings!
     ```shell
     docker exec -ti php-captain composer install
     ```
-4. Create a `captain` database on adminer, then either import a dump file (maintainers only) or, for
-   sample data, run inside the `php-captain` container:
+4. Create a `captain` database on adminer, then build the schema and load a small set of sample data:
     ```shell
     docker exec -ti php-captain composer db-setup
     docker exec -ti php-captain php bin/console doctrine:fixtures:load

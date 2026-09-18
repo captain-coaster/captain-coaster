@@ -26,7 +26,7 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
    - **Guardrail:** before any `doctrine:migrations:migrate`, run `php bin/console debug:dotenv DATABASE_URL` and confirm the database name in it isn't `captain`. Refuse to run the migration otherwise — a migration against the shared DB breaks every other worktree using it concurrently.
 
-   **No access to the shared `captain` DB** (e.g. simulating an external contributor's setup, or an actually fresh clone): create the isolated `captain_<slug>` DB empty instead of cloning it, then `composer db-setup` (builds the schema from the current entities and marks all migrations as already applied — running the oldest migrations directly fails on an empty DB, see #318) followed by `php bin/console doctrine:fixtures:load` for a small set of sample data.
+   **No access to the shared `captain` DB** (e.g. simulating an external contributor's setup, or an actually fresh clone): create the isolated `captain_<slug>` DB empty instead of cloning it, then `composer db-setup` (builds the schema from the current entities and marks all migrations as already applied — running the oldest migrations directly fails on an empty DB) followed by `php bin/console doctrine:fixtures:load` for a small set of sample data.
 
 2. Start the Symfony server: `symfony server:start -d`. Read the printed port — two worktrees get two ports.
 3. Start Vite: `npm run dev-server`.
