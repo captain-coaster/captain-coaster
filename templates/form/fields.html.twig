@@ -113,7 +113,7 @@
 
 {% block form_errors -%}
     {%- if errors|length > 0 -%}
-    {% if form is not rootform %}<span class="help-block">{% else %}<div class="cc-alert cc-alert--danger">{% endif %}
+    {% if form is not rootform %}<span class="help-block text-danger">{% else %}<div class="cc-alert cc-alert--danger">{% endif %}
     <ul class="list-unstyled">
         {%- for error in errors -%}
             <li id="{{ id ~ '_error' ~ loop.index }}">{{ error.message }}</li>

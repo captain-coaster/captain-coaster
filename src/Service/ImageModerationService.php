@@ -23,7 +23,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ImageModerationService
 {
     private const MODEL_KEY = 'gpt-5.6-luna';
-    private const MAX_TOKENS = 500;
+
+    // The model sometimes emits a <reasoning> block (stripped in parseResponse()) ahead of the
+    // JSON -- 500 was observed hitting stop_reason=max_tokens mid-JSON on a real image, which
+    // silently fails analysis (and burns a paid call) since the truncated response can't parse.
+    private const MAX_TOKENS = 800;
 
     private const VALID_CATEGORIES = [
         ImageReport::CATEGORY_OFFTOPIC,
