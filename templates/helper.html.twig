@@ -1,13 +1,14 @@
-{# Display profile picture or fallback picture #}
+{# Display profile picture, or an initials avatar for users without one #}
 {% macro profilePicture(user, className) %}
     {% if user.profilePicture %}
         <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
              class="{{ className|default('img-circle img-lg') }}"
              alt="{{ user.displayName }}">
     {% else %}
-        <img src="{{ asset('images/default_user.svg') }}"
-             class="{{ className|default('img-circle img-lg') }}"
-             alt="{{ user.displayName }}">
+        <span class="{{ className|default('img-circle img-lg') }} inline-flex items-center justify-center text-xs font-semibold text-white"
+              style="background-color: {{ avatar_color(user.id) }}"
+              role="img"
+              aria-label="{{ user.displayName }}">{{ avatar_initials(user.displayName) }}</span>
     {% endif %}
 {% endmacro %}
 
