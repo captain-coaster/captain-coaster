@@ -62,4 +62,31 @@ class AvatarPlaceholderTest extends TestCase
             $this->avatarPlaceholder->color(1 + $paletteSize),
         );
     }
+
+    public function testDataUriIsAnInlineSvgImage(): void
+    {
+        $this->assertStringStartsWith('data:image/svg+xml;base64,', $this->avatarPlaceholder->dataUri('John Doe', 1));
+    }
+
+    public function testDataUriEmbedsTheInitialsAndColor(): void
+    {
+        $svg = $this->decodeSvg($this->avatarPlaceholder->dataUri('John Doe', 1));
+
+        $this->assertStringContainsString('>JD<', $svg);
+        $this->assertStringContainsString('fill="'.$this->avatarPlaceholder->color(1).'"', $svg);
+    }
+
+    public function testDataUriUsesALargerFontForASingleInitial(): void
+    {
+        $twoLetters = $this->decodeSvg($this->avatarPlaceholder->dataUri('John Doe', 1));
+        $oneLetter = $this->decodeSvg($this->avatarPlaceholder->dataUri('WanExtraLife', 1));
+
+        $this->assertStringContainsString('font-size="14"', $twoLetters);
+        $this->assertStringContainsString('font-size="17"', $oneLetter);
+    }
+
+    private function decodeSvg(string $dataUri): string
+    {
+        return base64_decode(substr($dataUri, \strlen('data:image/svg+xml;base64,')));
+    }
 }

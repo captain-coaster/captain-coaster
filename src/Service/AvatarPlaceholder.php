@@ -5,7 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 /**
- * Deterministic initials + color for users without a profile picture.
+ * Deterministic initials-on-color placeholder avatar for users without a
+ * profile picture, rendered as an inline SVG data URI so the markup stays a
+ * plain <img> -- it then inherits every existing img-specific CSS rule
+ * (navbar sizing, ring borders, max-height caps) exactly like a real photo,
+ * instead of a hand-built element needing its own layout rules.
  */
 final class AvatarPlaceholder
 {
@@ -21,6 +25,21 @@ final class AvatarPlaceholder
         '#f44336', // danger
         '#26a69a', // teal-400
     ];
+
+    public function dataUri(string $displayName, int $seed): string
+    {
+        $initials = $this->initials($displayName);
+        $color = $this->color($seed);
+        // A single letter reads small at this scale next to two -- bump it up so both feel the same visual weight.
+        $fontSize = 1 === mb_strlen($initials) ? 17 : 14;
+
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
+            .'<circle cx="20" cy="20" r="20" fill="'.$color.'"/>'
+            .'<text x="20" y="20" dy=".35em" text-anchor="middle" font-family="system-ui, sans-serif" font-weight="600" font-size="'.$fontSize.'" fill="#fff">'.htmlspecialchars($initials).'</text>'
+            .'</svg>';
+
+        return 'data:image/svg+xml;base64,'.base64_encode($svg);
+    }
 
     public function initials(string $displayName): string
     {

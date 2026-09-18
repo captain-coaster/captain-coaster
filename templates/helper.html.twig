@@ -5,10 +5,9 @@
              class="{{ className|default('img-circle img-lg') }}"
              alt="{{ user.displayName }}">
     {% else %}
-        <span class="{{ className|default('img-circle img-lg') }} inline-flex items-center justify-center text-xs font-semibold text-white"
-              style="background-color: {{ avatar_color(user.id) }}"
-              role="img"
-              aria-label="{{ user.displayName }}">{{ avatar_initials(user.displayName) }}</span>
+        <img src="{{ avatar_placeholder(user.displayName, user.id) }}"
+             class="{{ className|default('img-circle img-lg') }}"
+             alt="{{ user.displayName }}">
     {% endif %}
 {% endmacro %}
 
