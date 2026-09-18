@@ -39,7 +39,7 @@ All user-facing routes are locale-prefixed: `/{_locale<en|fr|es|de>}/`. The root
 Not an exhaustive entity list (see `src/Entity/`) — just the ones with behavior that isn't obvious from the class name alone.
 
 - **`User`** — `enabled` and `deletedAt` are baked into the login-link and remember-me cookie signatures, so disabling or soft-deleting an account invalidates existing magic links/cookies without deleting the row.
-- **`Coaster`** — the main entity, belongs to a `Park`, has `Image`, vocabulary taxonomy (`MaterialType`, `Model`, `Manufacturer`, `Launch`, `Restraint`, `SeatingType`, `MainTag`, `Status`).
+- **`Coaster`** — the main entity, belongs to a `Park`, has `Image`, vocabulary taxonomy (`MaterialType`, `Model`, `Manufacturer`, `Launch`, `Restraint`, `SeatingType`, `Status`).
 - **`RiddenCoaster`** — the central join entity linking `User` ↔ `Coaster` (unique per pair). Its existence means the user has ridden the coaster. Holds a **nullable** `rating`, review text, language, pros/cons `Tag` collections, a computed `score`, and ride tracking: `firstRiddenAt`, `lastRiddenAt`, `rideCount`. `rating IS NULL` entries are **excluded from the ranking** (`RankingService`). Mutations happen directly in `RatingCoasterController` — there's no service layer here, the one exception to the layer-separation rule above.
 
 ### Frontend
@@ -76,7 +76,7 @@ Mid term aim:
 
 ### Internationalisation
 
-Translations use `intl-icu` format. Files are in `translations/` as `{domain}+intl-icu.{locale}.yml`. Supported locales: `en`, `fr`, `es`, `de`. Translation domains in use: `messages`, `security`, `validators`, `database`, `top`, `learnMoreRanking`, `ai_summary`, `policy`.
+Translations use `intl-icu` format. Files are in `translations/` as `{domain}+intl-icu.{locale}.yml`. Supported locales: `en`, `fr`, `es`, `de`. Translation domains in use: `messages`, `security`, `validators`, `database`, `top`, `learnMoreRanking`, `ai_summary`, `policy`, `notification`.
 
 Mid-term aim: one domain per major feature area, rather than today's mix of technical (`security`, `validators`) and per-feature (`top`, `ai_summary`) domains. Align a new domain to that when adding one; no rush to migrate existing ones.
 
@@ -87,6 +87,8 @@ API Platform exposes read-only endpoints for `Coaster` and other entities. Not p
 ### Images
 
 Images are uploaded to AWS S3 via `ImageManager` / Flysystem (`oneup/flysystem-bundle`). The `ImageListener` handles post-persist/update/delete lifecycle hooks.
+
+Cropping/resizing does **not** happen in this repo — it's handled by a Lambda (`sharp`/libvips) in the sibling `captain-infra` project. This app only signs request URLs via `PictureUrlSigner` (canonical string + HMAC scheme must stay identical to captain-infra's `handler.mjs`); any per-image data the crop step needs (e.g. the `watermarked` flag) rides along as S3 object metadata set in `ImageManager::upload()`, since the Lambda has no DB access.
 
 ### Code style
 
