@@ -29,6 +29,11 @@ index:
         reviews: Rezensionen
         users: Benutzer
         images: Bilder
+    hero:
+        badge:
+            new: 'Kürzlich eröffnet'
+            trending: 'Beliebt'
+            photo: 'Community-Favorit'
 
 coaster:
     score:
@@ -438,9 +443,6 @@ nearby:
     geo_on: Lokalisierung aktiviert
     geo_off: Lokalisierung deaktiviert
     km_away: '{num} km entfernt'
-
-image:
-    credit: 'Urheber: {name}'
 
 badge:
     rating1: 1. Bewertung

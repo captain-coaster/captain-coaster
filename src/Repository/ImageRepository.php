@@ -6,7 +6,6 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Image;
-use App\Entity\LikedImage;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NoResultException;
@@ -18,61 +17,53 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ImageRepository extends ServiceEntityRepository
 {
+    // Placeholders pending real like-count distribution data -- tune both
+    // once there's production numbers to look at.
+    private const int FEATURED_MIN_LIKES = 15;
+    private const int FEATURED_WINDOW_DAYS = 120;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Image::class);
     }
 
-    /** @throws NoResultException */
-    public function findLatestLikedImage(): Image
+    /**
+     * A heavily-liked, reasonably recent photo for the homepage hero --
+     * not just the latest liked one, which said nothing about quality.
+     *
+     * Picked randomly among the top matches so it isn't always the same
+     * single photo. Uncached: HeroService caches the whole resolved pick
+     * for an hour and invalidates it on any image write, so a query-level
+     * cache here would just be a second, harder-to-invalidate copy of the
+     * same staleness.
+     *
+     * @throws NoResultException
+     */
+    public function findFeaturedImage(): Image
     {
-        // Two-step, same reasoning as RiddenCoasterRepository::getLatestRatings():
-        // ORDER BY + LIMIT on the joined `li` table combined with a WHERE on
-        // the driving `image` table is the same MariaDB optimizer pathology
-        // in mirror image -- get the most-recently-liked candidate ids off
-        // liked_image alone first (cheap, no join), then filter/hydrate that
-        // small set. Ranking is redone in PHP instead of an SQL `ORDER BY
-        // FIELD(...)` -- DQL has no equivalent function registered here.
-        $candidateIds = $this->getEntityManager()
-            ->createQueryBuilder()
-            ->select('IDENTITY(li.image)')
-            ->from(LikedImage::class, 'li')
-            ->orderBy('li.id', 'DESC')
-            ->setMaxResults(10)
+        $since = new \DateTimeImmutable('-'.self::FEATURED_WINDOW_DAYS.' days');
+
+        $candidateIds = $this->createQueryBuilder('i')
+            ->select('i.id')
+            ->where('i.enabled = 1')
+            ->andWhere('i.credit IS NOT NULL')
+            ->andWhere('i.likeCounter >= :minLikes')
+            ->andWhere('i.createdAt >= :since')
+            ->setParameter('minLikes', self::FEATURED_MIN_LIKES)
+            ->setParameter('since', $since)
+            ->orderBy('i.likeCounter', 'DESC')
+            ->setMaxResults(20)
             ->getQuery()
-            ->enableResultCache(600)
             ->getSingleColumnResult();
 
         if ([] === $candidateIds) {
             throw new NoResultException();
         }
 
-        $query = $this->createQueryBuilder('i')
-            ->addSelect('c', 'st', 'mi')
-            ->innerJoin('i.coaster', 'c')
-            ->leftJoin('c.seatingType', 'st')
-            ->leftJoin('c.mainImage', 'mi')
-            ->where('i.id IN (:ids)')
-            ->andWhere('i.enabled = 1')
-            ->andWhere('i.credit IS NOT NULL')
-            ->setParameter('ids', $candidateIds)
-            ->getQuery();
+        /** @var Image $image */
+        $image = $this->find($candidateIds[array_rand($candidateIds)]);
 
-        $query->enableResultCache(600);
-
-        /** @var array<int, Image> $matchesById */
-        $matchesById = [];
-        foreach ($query->getResult() as $match) {
-            $matchesById[$match->getId()] = $match;
-        }
-
-        foreach ($candidateIds as $id) {
-            if (isset($matchesById[$id])) {
-                return $matchesById[$id];
-            }
-        }
-
-        throw new NoResultException();
+        return $image;
     }
 
     /**
