@@ -117,7 +117,7 @@ export function SearchDropdown(Base) {
                 const data = await response.json();
 
                 if (data.error) {
-                    throw new Error(data.message || trans('search_index.error'));
+                    throw new Error(data.message);
                 }
 
                 this.updateResults(data, query);
@@ -128,7 +128,7 @@ export function SearchDropdown(Base) {
                 }
 
                 console.error('Search error:', error);
-                this.showErrorState(error.message);
+                this.showErrorState(trans('search_index.error'));
             } finally {
                 this.currentRequest = null;
             }

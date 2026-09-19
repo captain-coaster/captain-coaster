@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Service\SearchService;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route(path: '/search')]
 class SearchController extends AbstractController
@@ -18,7 +20,9 @@ class SearchController extends AbstractController
     #[Route(path: '/api', name: 'api_search', methods: ['GET'])]
     public function apiSearch(
         Request $request,
-        SearchService $searchService
+        SearchService $searchService,
+        LoggerInterface $logger,
+        TranslatorInterface $translator,
     ): JsonResponse {
         $query = trim($request->query->get('q', ''));
 
@@ -60,16 +64,18 @@ class SearchController extends AbstractController
 
             return $response;
         } catch (\Exception $e) {
+            $logger->error('API search failed', ['query' => $query, 'exception' => $e]);
+
             return new JsonResponse([
                 'error' => true,
-                'message' => 'Search temporarily unavailable',
+                'message' => $translator->trans('search_index.error'),
                 'code' => 'SEARCH_ERROR',
             ], 500);
         }
     }
 
     #[Route(path: '/', name: 'search_index', options: ['expose' => true], methods: ['GET'])]
-    public function search(Request $request, SearchService $searchService): Response
+    public function search(Request $request, SearchService $searchService, LoggerInterface $logger): Response
     {
         $query = $request->query->get('query');
         $page = max(1, (int) $request->query->get('page', '1'));
@@ -84,29 +90,29 @@ class SearchController extends AbstractController
             ]);
         }
 
+        // Only the search is guarded: a failed render must not be retried here, the
+        // asset tags of the aborted render are already marked as emitted (page loses its CSS).
         try {
-            // Get unified search results with pagination
             $searchResults = $searchService->searchAllWithPagination($query, $page, 20);
-
-            return $this->render('Search/index.html.twig', [
-                'query' => $query,
-                'results' => $searchResults['results'],
-                'pagination' => $searchResults['pagination'],
-                'totalResults' => $searchResults['totalResults'],
-                'currentPage' => $page,
-                'hasMore' => $searchResults['hasMore'],
-            ]);
         } catch (\Exception $e) {
-            // Log error and show empty results
-            error_log('Search error: '.$e->getMessage());
+            $logger->error('Search failed', ['query' => $query, 'exception' => $e]);
 
             return $this->render('Search/index.html.twig', [
                 'query' => $query,
                 'results' => [],
                 'pagination' => null,
                 'totalResults' => 0,
-                'error' => 'Search temporarily unavailable',
+                'error' => true,
             ]);
         }
+
+        return $this->render('Search/index.html.twig', [
+            'query' => $query,
+            'results' => $searchResults['results'],
+            'pagination' => $searchResults['pagination'],
+            'totalResults' => $searchResults['totalResults'],
+            'currentPage' => $page,
+            'hasMore' => $searchResults['hasMore'],
+        ]);
     }
 }
