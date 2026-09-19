@@ -8,7 +8,6 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,10 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ImageRepository extends ServiceEntityRepository
 {
-    // Placeholders pending real like-count distribution data -- tune both
-    // once there's production numbers to look at.
     private const int FEATURED_MIN_LIKES = 15;
-    private const int FEATURED_WINDOW_DAYS = 120;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -28,42 +24,29 @@ class ImageRepository extends ServiceEntityRepository
     }
 
     /**
-     * A heavily-liked, reasonably recent photo for the homepage hero --
-     * not just the latest liked one, which said nothing about quality.
+     * Ids of the most-liked photos, for the homepage hero (see HeroService) -- no age limit,
+     * the point is the best photos. Uncached -- HeroService caches the resolved pick.
      *
-     * Picked randomly among the top matches so it isn't always the same
-     * single photo. Uncached: HeroService caches the whole resolved pick
-     * for an hour and invalidates it on any image write, so a query-level
-     * cache here would just be a second, harder-to-invalidate copy of the
-     * same staleness.
+     * $analyzedOnly restricts to photos that went through GenAI moderation (and have a focal
+     * point), which is all the hero serves; app:reprocess-images --hero passes false to find
+     * the ones still to analyze.
      *
-     * @throws NoResultException
+     * @return array<int>
      */
-    public function findFeaturedImage(): Image
+    public function findFeaturedImageIds(bool $analyzedOnly = true): array
     {
-        $since = new \DateTimeImmutable('-'.self::FEATURED_WINDOW_DAYS.' days');
-
-        $candidateIds = $this->createQueryBuilder('i')
+        $qb = $this->createQueryBuilder('i')
             ->select('i.id')
             ->where('i.enabled = 1')
             ->andWhere('i.credit IS NOT NULL')
             ->andWhere('i.likeCounter >= :minLikes')
-            ->andWhere('i.createdAt >= :since')
-            ->setParameter('minLikes', self::FEATURED_MIN_LIKES)
-            ->setParameter('since', $since)
-            ->orderBy('i.likeCounter', 'DESC')
-            ->setMaxResults(20)
-            ->getQuery()
-            ->getSingleColumnResult();
+            ->setParameter('minLikes', self::FEATURED_MIN_LIKES);
 
-        if ([] === $candidateIds) {
-            throw new NoResultException();
+        if ($analyzedOnly) {
+            $qb->andWhere('i.analyzedAt IS NOT NULL');
         }
 
-        /** @var Image $image */
-        $image = $this->find($candidateIds[array_rand($candidateIds)]);
-
-        return $image;
+        return $qb->getQuery()->getSingleColumnResult();
     }
 
     /**
