@@ -89,6 +89,8 @@ class ImageModerationService
                 'content' => $response['content'] ?? '',
             ]);
         } else {
+            $parsed = $this->flagUncertainVerdict($parsed);
+
             // Logged unconditionally (not just on flag) -- a clean verdict never gets an
             // ImageReport, so this is the only record of why the model let a borderline photo
             // through.
@@ -182,6 +184,27 @@ class ImageModerationService
             non-empty, else null)}
             </output_format>
             PROMPT;
+    }
+
+    /**
+     * A "nothing wrong" verdict is only trusted when the model is highly confident; otherwise a
+     * human decides. Done here rather than in applyResult() so every caller sees the same
+     * categories (ReprocessImagesCommand counts flags from them).
+     *
+     * @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result
+     *
+     * @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}
+     */
+    private function flagUncertainVerdict(array $result): array
+    {
+        if ([] !== $result['categories'] || 'high' === $result['confidence']) {
+            return $result;
+        }
+
+        $result['categories'] = [ImageReport::CATEGORY_UNCERTAIN];
+        $result['explanation'] = \sprintf('No issue flagged, but the model was not highly confident (%s).', $result['confidence'] ?? 'unknown');
+
+        return $result;
     }
 
     /** @return array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string}|null */
