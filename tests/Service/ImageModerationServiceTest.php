@@ -13,6 +13,7 @@ use App\Service\ImageManager;
 use App\Service\ImageModerationService;
 use App\Service\PictureUrlSigner;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -104,6 +105,44 @@ class ImageModerationServiceTest extends TestCase
 
         $this->assertSame([], $result['categories']);
         $this->assertNull($result['explanation']);
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function nonHighConfidenceProvider(): iterable
+    {
+        yield 'medium' => ['"confidence":"medium",', 'medium'];
+        yield 'low' => ['"confidence":"low",', 'low'];
+        yield 'missing' => ['', 'unknown'];
+        yield 'invalid' => ['"confidence":"certain",', 'unknown'];
+    }
+
+    #[DataProvider('nonHighConfidenceProvider')]
+    public function testAnalyzeFlagsANoIssueVerdictThatIsNotHighlyConfident(string $confidenceJson, string $expectedLabel): void
+    {
+        $service = $this->createService([
+            'success' => true,
+            'content' => '{"categories":[],"focal_x":0.5,"focal_y":0.5,'.$confidenceJson.'"explanation":null}',
+            'metadata' => [],
+        ]);
+
+        $result = $service->analyze($this->createImage());
+
+        $this->assertSame([ImageReport::CATEGORY_UNCERTAIN], $result['categories']);
+        $this->assertSame(\sprintf('No issue flagged, but the model was not highly confident (%s).', $expectedLabel), $result['explanation']);
+    }
+
+    public function testAnalyzeKeepsTheModelsOwnFlagWhenConfidenceIsNotHigh(): void
+    {
+        $service = $this->createService([
+            'success' => true,
+            'content' => '{"categories":["offtopic"],"focal_x":0.5,"focal_y":0.5,"confidence":"medium","explanation":"Not a coaster."}',
+            'metadata' => [],
+        ]);
+
+        $result = $service->analyze($this->createImage());
+
+        $this->assertSame([ImageReport::CATEGORY_OFFTOPIC], $result['categories']);
+        $this->assertSame('Not a coaster.', $result['explanation']);
     }
 
     public function testAnalyzeReturnsNullAndLogsWhenLightboxFetchFails(): void
@@ -205,6 +244,23 @@ class ImageModerationServiceTest extends TestCase
         $image->setEnabled(true);
 
         $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_PEOPLE_SUBJECT], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => 'x']);
+
+        $this->assertFalse($image->isEnabled());
+    }
+
+    public function testApplyResultReportsAnUncertainVerdictAndTakesTheImageDown(): void
+    {
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+        $entityManager->expects($this->once())->method('persist')->with($this->callback(
+            static fn (ImageReport $report): bool => [ImageReport::CATEGORY_UNCERTAIN] === $report->getCategories()
+                && 'medium' === $report->getAiConfidence()
+        ));
+
+        $service = $this->createService(['success' => true, 'metadata' => []], entityManager: $entityManager);
+        $image = $this->createImage();
+        $image->setEnabled(true);
+
+        $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_UNCERTAIN], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'medium', 'explanation' => 'x']);
 
         $this->assertFalse($image->isEnabled());
     }

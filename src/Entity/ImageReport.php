@@ -28,6 +28,7 @@ class ImageReport
     public const CATEGORY_PEOPLE_SUBJECT = 'people_subject';
     public const CATEGORY_ONRIDE_PHOTO = 'onride_photo';
     public const CATEGORY_ANALYSIS_FAILED = 'analysis_failed';
+    public const CATEGORY_UNCERTAIN = 'uncertain';
 
     public const CATEGORIES = [
         self::CATEGORY_OFFTOPIC,
@@ -36,6 +37,7 @@ class ImageReport
         self::CATEGORY_PEOPLE_SUBJECT,
         self::CATEGORY_ONRIDE_PHOTO,
         self::CATEGORY_ANALYSIS_FAILED,
+        self::CATEGORY_UNCERTAIN,
     ];
 
     public const STATUS_PENDING = 'pending';
