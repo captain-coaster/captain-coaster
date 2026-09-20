@@ -155,7 +155,7 @@ class ReprocessImagesCommandTest extends TestCase
         $this->coasterRepository->expects($this->once())->method('findBy')->with(['id' => [1, 2]])
             ->willReturn([$this->createCoaster(1, $upcomingImage), $this->createCoaster(2, $trendingImage)]);
 
-        $this->imageRepository->expects($this->once())->method('findFeaturedImageIds')->with(false)->willReturn([3, 4]);
+        $this->imageRepository->expects($this->once())->method('findFeaturedImageIds')->willReturn([3, 4]);
         $this->imageRepository->expects($this->once())->method('findBy')
             ->with(['id' => [3, 4], 'analyzedAt' => null], ['id' => 'ASC'], 200)
             ->willReturn([$unanalyzedPhoto]);

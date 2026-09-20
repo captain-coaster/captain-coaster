@@ -46,7 +46,7 @@ class ReprocessImagesCommand extends Command
         $this
             ->addOption('ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Image IDs to force-reanalyze')
             ->addOption('coaster-ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Coaster IDs -- force-reanalyze each one\'s main image')
-            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new/trending coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit) so they become eligible for the hero')
+            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new/trending coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit)')
             ->addOption('all-main-images', null, InputOption::VALUE_NONE, 'Force-reanalyze every coaster\'s main image')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of images to process', 200)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'List which images would be targeted, without calling the model or writing to the database')
@@ -170,8 +170,9 @@ class ReprocessImagesCommand extends Command
     }
 
     /**
-     * HeroService only serves analyzed photos, so the photos targeted here are the unanalyzed
-     * ones (--limit caps them); coasters' main images are always forced.
+     * The hero serves featured photos whether analyzed or not, so the ones targeted here are the
+     * still-unanalyzed ones (--limit caps them), to give them a focal point and a moderation
+     * pass; coasters' main images are always forced.
      *
      * @return array<Image>
      */
@@ -192,7 +193,7 @@ class ReprocessImagesCommand extends Command
         }
 
         $photos = $this->imageRepository->findBy(
-            ['id' => $this->imageRepository->findFeaturedImageIds(analyzedOnly: false), 'analyzedAt' => null],
+            ['id' => $this->imageRepository->findFeaturedImageIds(), 'analyzedAt' => null],
             ['id' => 'ASC'],
             $limit,
         );
