@@ -154,13 +154,18 @@ class ImageModerationService
                it's clearly part of a coaster/park setting -- don't require the ride itself to be visible.
             2. Retouched: the photo is heavily filtered/retouched in a way that misrepresents the subject
                (not normal phone-camera processing).
-            3. People subject: judge by how much of the frame people take up, not by what they're doing.
-               Flag when one or more people are large/prominent enough (close-up, foreground, filling a
-               significant portion of the image) that they read as the photo's subject rather than the
-               coaster/park -- whether posed, mid-stride, or otherwise doesn't matter. This is a thin
-               line, since park photos naturally have people in them: small or distant figures elsewhere
-               in the frame are normal and must NOT be flagged. This is not a personal holiday photo
-               book -- when in doubt about whether people are prominent enough, flag it.
+            3. People subject: flag only when a person, rather than the coaster or park, is what the photo
+               is about:
+               - a face in close-up, large enough that the person is easily identifiable;
+               - a selfie (person holding the camera, or looking into it at arm's length), even with a
+                 ride visible behind them;
+               - a personal or holiday-style photo: one or more people posing or facing the camera, e.g.
+                 in front of a ride or somewhere in the park.
+               Do NOT flag riders on a train, even in a tight zoom and even when their faces are visible,
+               as long as the train/track is what the photo is about; nor crowds, queues, or people who
+               are small, distant or incidental in the frame. Zoom level and the number of people visible
+               are not the test -- what the photo is about is. If it is borderline, do not flag: answer
+               with no category and "medium" confidence instead.
             4. On-ride photo: this is one of the commercial on-ride photos a park sells at the exit of the
                ride (rider(s) mid-ride, usually close-up on their faces/reactions, often with a park logo,
                timestamp, or price/purchase overlay burned in) rather than a photo someone took of the
