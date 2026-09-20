@@ -108,6 +108,19 @@ class ReprocessImagesCommandTest extends TestCase
         $this->commandTester->execute([]);
     }
 
+    public function testFailedCachePurgeStillCountsTheImageAsProcessed(): void
+    {
+        $this->imageRepository->method('findUnanalyzed')->willReturn([$this->createImage(1)]);
+        $this->imageModerationService->method('analyze')->willReturn($this->cleanResult());
+        $this->imageManager->method('removeCache')->willThrowException(new \RuntimeException('S3 down'));
+
+        $this->commandTester->execute([]);
+
+        $display = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('cache purge failed (S3 down)', $display);
+        $this->assertStringContainsString('Processed 1 image(s), 0 flagged, 0 failed.', $display);
+    }
+
     public function testFailedAnalysisLeavesTheResizedVariantsAlone(): void
     {
         $this->imageRepository->method('findUnanalyzed')->willReturn([$this->createImage(1)]);

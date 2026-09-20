@@ -101,7 +101,14 @@ class ReprocessImagesCommand extends Command
 
                 $this->imageModerationService->applyResult($image, $result);
                 $this->entityManager->flush();
-                $this->imageManager->removeCache($image);
+
+                // The image is already moderated and persisted; a purge failure must not
+                // count it as failed (a plain re-run wouldn't pick it up again).
+                try {
+                    $this->imageManager->removeCache($image);
+                } catch (\Throwable $e) {
+                    $io->warning(\sprintf('Image #%d: cache purge failed (%s), re-run with --ids=%1$d to retry.', $image->getId(), $e->getMessage()));
+                }
 
                 ++$processed;
 

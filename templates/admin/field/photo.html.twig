@@ -1,4 +1,4 @@
 {# Full-photo thumbnail for admin index pages. Deliberately not `.ea-lightbox-thumbnail`: EasyAdmin caps that class at 50x100px, and a click opens the full image in a new tab instead. #}
 <a href="{{ field.formattedValue }}" target="_blank" rel="noopener">
-    <img src="{{ field.formattedValue }}" class="img-fluid" width="300" loading="lazy" alt="">
+    <img src="{{ field.formattedValue }}" class="img-fluid" width="300" loading="lazy" alt="{{ field.value }}">
 </a>
