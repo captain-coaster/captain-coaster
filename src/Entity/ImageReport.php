@@ -15,7 +15,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * Unlike ReviewReport, there is no human-submitted path for images (no "report this photo"
  * feature exists) -- every row here is AI-generated, so this entity skips the user/AI
  * distinction ReviewReport needs. categories is a JSON array rather than a single reason
- * column because a photo can trigger multiple checks at once (e.g. watermark and
+ * column because a photo can trigger multiple checks at once (e.g. retouched and
  * people-as-subject together).
  */
 #[ORM\Table(name: 'image_report')]
@@ -23,19 +23,19 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class ImageReport
 {
     public const CATEGORY_OFFTOPIC = 'offtopic';
-    public const CATEGORY_WATERMARK = 'watermark';
     public const CATEGORY_RETOUCHED = 'retouched';
     public const CATEGORY_PEOPLE_SUBJECT = 'people_subject';
     public const CATEGORY_ONRIDE_PHOTO = 'onride_photo';
     public const CATEGORY_ANALYSIS_FAILED = 'analysis_failed';
+    public const CATEGORY_UNCERTAIN = 'uncertain';
 
     public const CATEGORIES = [
         self::CATEGORY_OFFTOPIC,
-        self::CATEGORY_WATERMARK,
         self::CATEGORY_RETOUCHED,
         self::CATEGORY_PEOPLE_SUBJECT,
         self::CATEGORY_ONRIDE_PHOTO,
         self::CATEGORY_ANALYSIS_FAILED,
+        self::CATEGORY_UNCERTAIN,
     ];
 
     public const STATUS_PENDING = 'pending';

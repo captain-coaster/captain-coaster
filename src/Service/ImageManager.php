@@ -126,7 +126,8 @@ class ImageManager
      * write() only sets metadata at upload time; S3 object metadata is otherwise immutable in
      * place, so this needs a direct CopyObject call (same key, MetadataDirective=REPLACE) via
      * the AWS SDK. REPLACE overwrites *all* metadata, not merges it -- the existing watermark
-     * value must be re-supplied here too, or it would be silently dropped.
+     * value must be re-supplied here too, or it would be silently dropped. Same for Content-Type,
+     * which would otherwise fall back to binary/octet-stream.
      */
     public function writeFocalPointMetadata(Image $image): void
     {
@@ -138,6 +139,7 @@ class ImageManager
                 'Key' => $key,
                 'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
                 'MetadataDirective' => 'REPLACE',
+                'ContentType' => Image::MIME_TYPE,
                 'Metadata' => [
                     'watermark' => $image->isWatermarked() ? '1' : '0',
                     'focal-x' => (string) $image->getFocalX(),

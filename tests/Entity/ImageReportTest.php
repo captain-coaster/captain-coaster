@@ -12,9 +12,9 @@ class ImageReportTest extends TestCase
     public function testValidCategoriesAreAccepted(): void
     {
         $report = new ImageReport();
-        $report->setCategories([ImageReport::CATEGORY_WATERMARK, ImageReport::CATEGORY_PEOPLE_SUBJECT]);
+        $report->setCategories([ImageReport::CATEGORY_RETOUCHED, ImageReport::CATEGORY_PEOPLE_SUBJECT]);
 
-        $this->assertSame([ImageReport::CATEGORY_WATERMARK, ImageReport::CATEGORY_PEOPLE_SUBJECT], $report->getCategories());
+        $this->assertSame([ImageReport::CATEGORY_RETOUCHED, ImageReport::CATEGORY_PEOPLE_SUBJECT], $report->getCategories());
     }
 
     public function testSettingAnUnknownCategoryThrows(): void

@@ -133,6 +133,8 @@ class ImageManagerTest extends TestCase
         self::assertSame('captain-pictures-original', $copyObjectCommand['Bucket']);
         self::assertSame('holiday-world-cannonball-6a752ddaebc05.jpg', $copyObjectCommand['Key']);
         self::assertSame('REPLACE', $copyObjectCommand['MetadataDirective']);
+        // REPLACE also resets Content-Type to binary/octet-stream unless re-supplied.
+        self::assertSame(Image::MIME_TYPE, $copyObjectCommand['ContentType']);
         // The watermark flag must be re-supplied here too -- REPLACE overwrites all metadata,
         // it doesn't merge, so omitting it would silently drop the existing value.
         self::assertSame([

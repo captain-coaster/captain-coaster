@@ -9,6 +9,7 @@ use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
+use App\Service\ImageManager;
 use App\Service\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -20,6 +21,7 @@ class ReprocessImagesCommandTest extends TestCase
     private ImageRepository&MockObject $imageRepository;
     private CoasterRepository&MockObject $coasterRepository;
     private ImageModerationService&MockObject $imageModerationService;
+    private ImageManager&MockObject $imageManager;
     private EntityManagerInterface&MockObject $entityManager;
     private CommandTester $commandTester;
 
@@ -28,12 +30,14 @@ class ReprocessImagesCommandTest extends TestCase
         $this->imageRepository = $this->createMock(ImageRepository::class);
         $this->coasterRepository = $this->createMock(CoasterRepository::class);
         $this->imageModerationService = $this->createMock(ImageModerationService::class);
+        $this->imageManager = $this->createMock(ImageManager::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
 
         $command = new ReprocessImagesCommand(
             $this->imageRepository,
             $this->coasterRepository,
             $this->imageModerationService,
+            $this->imageManager,
             $this->entityManager
         );
 
@@ -93,6 +97,40 @@ class ReprocessImagesCommandTest extends TestCase
         $this->assertStringContainsString('Processed 1 image(s), 0 flagged, 0 failed.', $this->commandTester->getDisplay());
     }
 
+    public function testProcessedImageHasItsResizedVariantsPurged(): void
+    {
+        $image = $this->createImage(1);
+        $this->imageRepository->method('findUnanalyzed')->willReturn([$image]);
+        $this->imageModerationService->method('analyze')->willReturn($this->cleanResult());
+
+        $this->imageManager->expects($this->once())->method('removeCache')->with($image);
+
+        $this->commandTester->execute([]);
+    }
+
+    public function testFailedCachePurgeStillCountsTheImageAsProcessed(): void
+    {
+        $this->imageRepository->method('findUnanalyzed')->willReturn([$this->createImage(1)]);
+        $this->imageModerationService->method('analyze')->willReturn($this->cleanResult());
+        $this->imageManager->method('removeCache')->willThrowException(new \RuntimeException('S3 down'));
+
+        $this->commandTester->execute([]);
+
+        $display = $this->commandTester->getDisplay();
+        $this->assertStringContainsString('cache purge failed (S3 down)', $display);
+        $this->assertStringContainsString('Processed 1 image(s), 0 flagged, 0 failed.', $display);
+    }
+
+    public function testFailedAnalysisLeavesTheResizedVariantsAlone(): void
+    {
+        $this->imageRepository->method('findUnanalyzed')->willReturn([$this->createImage(1)]);
+        $this->imageModerationService->method('analyze')->willReturn(null);
+
+        $this->imageManager->expects($this->never())->method('removeCache');
+
+        $this->commandTester->execute([]);
+    }
+
     public function testIdsOptionForcesReanalysisOfSpecificImages(): void
     {
         $image = $this->createImage(123);
@@ -130,7 +168,7 @@ class ReprocessImagesCommandTest extends TestCase
         $this->coasterRepository->expects($this->once())->method('findBy')->with(['id' => [1, 2]])
             ->willReturn([$this->createCoaster(1, $upcomingImage), $this->createCoaster(2, $trendingImage)]);
 
-        $this->imageRepository->expects($this->once())->method('findFeaturedImageIds')->with(false)->willReturn([3, 4]);
+        $this->imageRepository->expects($this->once())->method('findFeaturedImageIds')->willReturn([3, 4]);
         $this->imageRepository->expects($this->once())->method('findBy')
             ->with(['id' => [3, 4], 'analyzedAt' => null], ['id' => 'ASC'], 200)
             ->willReturn([$unanalyzedPhoto]);
@@ -190,6 +228,7 @@ class ReprocessImagesCommandTest extends TestCase
 
         $this->imageModerationService->expects($this->never())->method('analyze');
         $this->imageModerationService->expects($this->never())->method('applyResult');
+        $this->imageManager->expects($this->never())->method('removeCache');
         $this->entityManager->expects($this->never())->method('flush');
 
         $this->commandTester->execute(['--dry-run' => true]);

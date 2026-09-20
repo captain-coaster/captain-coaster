@@ -27,26 +27,18 @@ class ImageRepository extends ServiceEntityRepository
      * Ids of the most-liked photos, for the homepage hero (see HeroService) -- no age limit,
      * the point is the best photos. Uncached -- HeroService caches the resolved pick.
      *
-     * $analyzedOnly restricts to photos that went through GenAI moderation (and have a focal
-     * point), which is all the hero serves; app:reprocess-images --hero passes false to find
-     * the ones still to analyze.
-     *
      * @return array<int>
      */
-    public function findFeaturedImageIds(bool $analyzedOnly = true): array
+    public function findFeaturedImageIds(): array
     {
-        $qb = $this->createQueryBuilder('i')
+        return $this->createQueryBuilder('i')
             ->select('i.id')
             ->where('i.enabled = 1')
             ->andWhere('i.credit IS NOT NULL')
             ->andWhere('i.likeCounter >= :minLikes')
-            ->setParameter('minLikes', self::FEATURED_MIN_LIKES);
-
-        if ($analyzedOnly) {
-            $qb->andWhere('i.analyzedAt IS NOT NULL');
-        }
-
-        return $qb->getQuery()->getSingleColumnResult();
+            ->setParameter('minLikes', self::FEATURED_MIN_LIKES)
+            ->getQuery()
+            ->getSingleColumnResult();
     }
 
     /**

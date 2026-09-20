@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
+use App\Service\ImageManager;
 use App\Service\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -23,6 +24,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Default (no targeting option): backfill mode, images that were never analyzed
  * (analyzedAt IS NULL) -- covers the full pre-existing stock. Any targeting option forces
  * re-analysis regardless of analyzedAt.
+ *
+ * Each processed image's resized variants are purged from the S3 cache bucket, so they get
+ * regenerated with the new focal point once the CDN copies expire.
  */
 #[AsCommand(name: 'app:reprocess-images', description: 'Backfill or force GenAI moderation/focal-point analysis for images')]
 class ReprocessImagesCommand extends Command
@@ -31,6 +35,7 @@ class ReprocessImagesCommand extends Command
         private readonly ImageRepository $imageRepository,
         private readonly CoasterRepository $coasterRepository,
         private readonly ImageModerationService $imageModerationService,
+        private readonly ImageManager $imageManager,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -41,7 +46,7 @@ class ReprocessImagesCommand extends Command
         $this
             ->addOption('ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Image IDs to force-reanalyze')
             ->addOption('coaster-ids', null, InputOption::VALUE_REQUIRED, 'Comma-separated Coaster IDs -- force-reanalyze each one\'s main image')
-            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new/trending coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit) so they become eligible for the hero')
+            ->addOption('hero', null, InputOption::VALUE_NONE, 'Analyze the homepage hero pool: force-reanalyze the upcoming/new/trending coasters\' main images, and analyze the not-yet-analyzed top-liked photos (capped by --limit)')
             ->addOption('all-main-images', null, InputOption::VALUE_NONE, 'Force-reanalyze every coaster\'s main image')
             ->addOption('limit', 'l', InputOption::VALUE_REQUIRED, 'Max number of images to process', 200)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'List which images would be targeted, without calling the model or writing to the database')
@@ -94,10 +99,18 @@ class ReprocessImagesCommand extends Command
                     continue;
                 }
 
-                ++$processed;
-
                 $this->imageModerationService->applyResult($image, $result);
                 $this->entityManager->flush();
+
+                // The image is already moderated and persisted; a purge failure must not
+                // count it as failed (a plain re-run wouldn't pick it up again).
+                try {
+                    $this->imageManager->removeCache($image);
+                } catch (\Throwable $e) {
+                    $io->warning(\sprintf('Image #%d: cache purge failed (%s), re-run with --ids=%1$d to retry.', $image->getId(), $e->getMessage()));
+                }
+
+                ++$processed;
 
                 if ([] !== $result['categories']) {
                     ++$flagged;
@@ -164,8 +177,9 @@ class ReprocessImagesCommand extends Command
     }
 
     /**
-     * HeroService only serves analyzed photos, so the photos targeted here are the unanalyzed
-     * ones (--limit caps them); coasters' main images are always forced.
+     * The hero serves featured photos whether analyzed or not, so the ones targeted here are the
+     * still-unanalyzed ones (--limit caps them), to give them a focal point and a moderation
+     * pass; coasters' main images are always forced.
      *
      * @return array<Image>
      */
@@ -186,7 +200,7 @@ class ReprocessImagesCommand extends Command
         }
 
         $photos = $this->imageRepository->findBy(
-            ['id' => $this->imageRepository->findFeaturedImageIds(analyzedOnly: false), 'analyzedAt' => null],
+            ['id' => $this->imageRepository->findFeaturedImageIds(), 'analyzedAt' => null],
             ['id' => 'ASC'],
             $limit,
         );
