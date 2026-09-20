@@ -78,18 +78,18 @@ class ImageModerationServiceTest extends TestCase
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":["watermark"],"focal_x":0.5,"focal_y":0.3,"confidence":"high","explanation":"Logo overlay in corner."}',
+            'content' => '{"categories":["retouched"],"focal_x":0.5,"focal_y":0.3,"confidence":"high","explanation":"Heavy filter applied."}',
             'metadata' => [],
         ]);
 
         $result = $service->analyze($this->createImage());
 
         $this->assertSame([
-            'categories' => ['watermark'],
+            'categories' => ['retouched'],
             'focalX' => 0.5,
             'focalY' => 0.3,
             'confidence' => 'high',
-            'explanation' => 'Logo overlay in corner.',
+            'explanation' => 'Heavy filter applied.',
         ], $result);
     }
 
@@ -192,13 +192,13 @@ class ImageModerationServiceTest extends TestCase
     {
         $service = $this->createService([
             'success' => true,
-            'content' => '{"categories":["watermark","not-a-real-category"],"focal_x":0.5,"focal_y":0.5,"confidence":"low","explanation":"x"}',
+            'content' => '{"categories":["retouched","watermark","not-a-real-category"],"focal_x":0.5,"focal_y":0.5,"confidence":"low","explanation":"x"}',
             'metadata' => [],
         ]);
 
         $result = $service->analyze($this->createImage());
 
-        $this->assertSame(['watermark'], $result['categories']);
+        $this->assertSame(['retouched'], $result['categories']);
     }
 
     public function testAnalyzeClampsOutOfRangeFocalCoordinates(): void
@@ -232,7 +232,7 @@ class ImageModerationServiceTest extends TestCase
         $service = $this->createService(['success' => true, 'metadata' => []]);
         $image = $this->createImage();
 
-        $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_WATERMARK], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => 'x']);
+        $service->applyResult($image, ['categories' => [ImageReport::CATEGORY_RETOUCHED], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => 'high', 'explanation' => 'x']);
 
         $this->assertFalse($image->isEnabled());
     }

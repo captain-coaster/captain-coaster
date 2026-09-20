@@ -32,8 +32,8 @@ class ImageReportListenerTest extends TestCase
         $imageReport = new ImageReport();
         $imageReport->setCoasterName('Test Coaster');
         $imageReport->setImageFilename('test-coaster-abc123.jpg');
-        $imageReport->setCategories([ImageReport::CATEGORY_WATERMARK]);
-        $imageReport->setAiExplanation('Logo overlay in corner.');
+        $imageReport->setCategories([ImageReport::CATEGORY_RETOUCHED]);
+        $imageReport->setAiExplanation('Heavy filter applied.');
 
         $eventArgs = new PostPersistEventArgs($imageReport, $this->createMock(EntityManagerInterface::class));
 
