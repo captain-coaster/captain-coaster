@@ -75,6 +75,7 @@ class ImageCrudController extends AbstractCrudController
             // EasyAdmin's ImageConfigurator passes it through untouched instead of
             // prepending a basePath (it special-cases http(s)://-prefixed values).
             ImageField::new('filename', 'Image')
+                ->setTemplatePath('admin/field/photo.html.twig')
                 ->formatValue(fn (mixed $value, Image $entity): string => $this->pictureUrlSigner->sign($entity->getFilename(), 1440, 1440, 'jpg'))
                 ->onlyOnIndex(),
             BooleanField::new('enabled'),

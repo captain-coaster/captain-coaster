@@ -127,8 +127,10 @@ class ImageReportCrudController extends AbstractCrudController
         ];
 
         if (Crud::PAGE_INDEX === $pageName) {
+            // 1440x1440 is an inside-fit size (whole photo, letterboxed); 480x300 is a cover crop.
             $fields[] = ImageField::new('imageFilename', 'Photo')
-                ->formatValue(fn (mixed $value, ImageReport $entity): string => $this->pictureUrlSigner->sign($entity->getImageFilename() ?? '', 480, 300, 'jpg'));
+                ->setTemplatePath('admin/field/photo.html.twig')
+                ->formatValue(fn (mixed $value, ImageReport $entity): string => $this->pictureUrlSigner->sign($entity->getImageFilename() ?? '', 1440, 1440, 'jpg'));
         }
 
         $fields[] = TextField::new('coasterName', 'Coaster');
