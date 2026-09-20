@@ -27,6 +27,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiFilter(filterClass: SearchFilter::class, properties: ['coaster' => 'exact'])]
 class Image
 {
+    // The only format accepted on upload; ImageManager re-applies it as the S3 Content-Type when
+    // rewriting the original's metadata (CopyObject REPLACE drops it).
+    public const MIME_TYPE = 'image/jpeg';
+
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -85,7 +89,7 @@ class Image
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $analyzedAt = null;
 
-    #[Assert\File(mimeTypes: ['image/jpeg'], maxSize: '15M')]
+    #[Assert\File(mimeTypes: [self::MIME_TYPE], maxSize: '15M')]
     // minRatio/maxRatio: no aspect-ratio constraint existed before -- an upload could be any
     // shape, including one the resize pipeline's `cover` fit would crop almost entirely away
     // against a landscape UI slot. Bounds are deliberately generous (a tall lift-hill shot down

@@ -7,6 +7,7 @@ namespace App\Command;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
+use App\Service\ImageManager;
 use App\Service\ImageModerationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -23,6 +24,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Default (no targeting option): backfill mode, images that were never analyzed
  * (analyzedAt IS NULL) -- covers the full pre-existing stock. Any targeting option forces
  * re-analysis regardless of analyzedAt.
+ *
+ * Each processed image's resized variants are purged from the S3 cache bucket, so they get
+ * regenerated with the new focal point once the CDN copies expire.
  */
 #[AsCommand(name: 'app:reprocess-images', description: 'Backfill or force GenAI moderation/focal-point analysis for images')]
 class ReprocessImagesCommand extends Command
@@ -31,6 +35,7 @@ class ReprocessImagesCommand extends Command
         private readonly ImageRepository $imageRepository,
         private readonly CoasterRepository $coasterRepository,
         private readonly ImageModerationService $imageModerationService,
+        private readonly ImageManager $imageManager,
         private readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct();
@@ -94,10 +99,11 @@ class ReprocessImagesCommand extends Command
                     continue;
                 }
 
-                ++$processed;
-
                 $this->imageModerationService->applyResult($image, $result);
                 $this->entityManager->flush();
+                $this->imageManager->removeCache($image);
+
+                ++$processed;
 
                 if ([] !== $result['categories']) {
                     ++$flagged;
