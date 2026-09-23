@@ -28,6 +28,7 @@
   {% block stylesheets %}{% endblock %}
 </head>
 <body class="cc-navbar--top {% if openedSidebar is not defined %}sidebar-xs{% endif %}" data-controller="sidebar">
+<a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
 <!-- main cc-navbar -->
 {{ include('navbar.html.twig') }}
 <!-- /main cc-navbar -->
@@ -47,11 +48,11 @@
         <!-- page header -->
         {{ include(
           'page_header.html.twig',
-          {'title': title|default('Bienvenue !'), 'subTitle': subTitle|default(null), 'secondaryTitle': secondaryTitle|default(null)}
+          {'title': title|default('app.title.default'|trans), 'subTitle': subTitle|default(null), 'secondaryTitle': secondaryTitle|default(null)}
         ) }}
         <!-- /page header -->
         <!-- Content area -->
-        <main class="content mx-auto flow-root w-full max-w-content px-gutter">
+        <main id="content" tabindex="-1" class="content mx-auto outline-none flow-root w-full max-w-content px-gutter">
           {{ include('flashes.html.twig') }}
           <div id="toasts" data-controller="toast" data-toast-target="container"></div>
 

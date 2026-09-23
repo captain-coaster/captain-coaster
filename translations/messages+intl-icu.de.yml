@@ -10,12 +10,15 @@ Clear: 'Löschen'
 
 app:
     name: Captain Coaster
+    skip_to_content: 'Zum Inhalt springen'
     title:
         default: 'Willkommen!'
     header:
         search: '100% Wolf, Freizeitpark Plohn...'
     search:
         suggestions: 'Suchvorschläge'
+        label: 'Achterbahnen und Parks suchen'
+        clear: 'Suche löschen'
         searching: 'Suche läuft...'
 
 index:

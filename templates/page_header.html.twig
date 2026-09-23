@@ -1,6 +1,6 @@
 <header class="mb-6 border-b border-line bg-surface">
   <div class="mx-auto flex max-w-content flex-col gap-4 px-gutter py-6 md:flex-row md:items-center md:justify-between md:gap-8 md:py-8">
-    <div class="min-w-0{% if hideTitle|default(false) == true %} hidden md:block{% endif %}">
+    <div class="min-w-0{% if hideTitle|default(false) == true %} max-md:sr-only{% endif %}">
       <h1 class="m-0">{{ title }}{% if subTitle %} • {{ subTitle }}{% endif %}</h1>
       {% if secondaryTitle %}
         <h2 class="m-0 mt-1 font-sans text-body font-normal text-muted">{{ secondaryTitle }}</h2>
@@ -20,6 +20,7 @@
                   type="search"
                   class="cc-field__control border-cc-blue-600 border-lg"
                   placeholder="{{ 'app.header.search'|trans }}"
+                  aria-label="{{ 'app.search.label'|trans }}"
                   data-search-target="input"
                   data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
                   autocomplete="off"
@@ -32,7 +33,7 @@
               <button type="button"
                       class="search-clear-button"
                       data-action="click->search#clearSearch"
-                      aria-label="Clear search">
+                      aria-label="{{ 'app.search.clear'|trans }}">
                 {{ ux_icon('heroicons:x-mark', {'class': 'w-4 h-4 text-size-small text-muted'}) }}
               </button>
             </div>

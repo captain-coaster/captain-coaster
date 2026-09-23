@@ -10,12 +10,15 @@ Clear: 'Borrar'
 
 app:
     name: Captain Coaster
+    skip_to_content: 'Ir al contenido'
     title:
         default: Bienvenido
     header:
         search: 'Tecuani Beast, Six Flags Mexico...'
     search:
         suggestions: 'Sugerencias de búsqueda'
+        label: 'Buscar montañas rusas y parques'
+        clear: 'Borrar la búsqueda'
         searching: 'Buscando...'
 
 index:

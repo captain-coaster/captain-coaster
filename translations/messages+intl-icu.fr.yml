@@ -10,12 +10,15 @@ Clear: 'Effacer'
 
 app:
     name: Captain Coaster
+    skip_to_content: 'Aller au contenu'
     title:
         default: 'Bienvenue !'
     header:
         search: 'Kyûbi Unchained, Walygator...'
     search:
         suggestions: 'Suggestions de recherche'
+        label: 'Rechercher un coaster ou un parc'
+        clear: 'Effacer la recherche'
         searching: 'Recherche en cours...'
 
 index:
