@@ -42,6 +42,13 @@ export default defineConfig(({ command }) => ({
                 enabled: command === 'build',
             },
             copy: [
+                // Images referenced from Twig (badge filenames come from the
+                // database), resolved via asset('build/images/...').
+                {
+                    from: './assets/images',
+                    to: 'images',
+                    pattern: /\.(png|svg)$/,
+                },
                 // MapLibre GL parses vector tiles in a Web Worker whose URL it
                 // resolves dynamically at runtime — that resolution doesn't
                 // survive bundling, so the worker silently fails to start.

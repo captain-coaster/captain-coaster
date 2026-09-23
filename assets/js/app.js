@@ -33,3 +33,9 @@ import './theme/theme';
 import '../bootstrap';
 
 // Components are now handled by Stimulus controllers
+
+// The home page used to register a no-op /sw.js (removed, #421): drop it from
+// browsers that still have it installed.
+navigator.serviceWorker?.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
+});

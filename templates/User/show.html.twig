@@ -72,11 +72,11 @@
         <div class="cc-panel__body">
           <div class="grid grid-cols-12 gap-5">
             <div class="col-span-12 md:col-span-3" style="margin-bottom: 40px;">
-              <img src="{{ asset('images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
+              <img src="{{ asset('build/images/badges/bienvenue-'~app.request.locale~'.png') }}"/>
             </div>
             {% for badge in user.badges %}
               <div class="col-span-12 md:col-span-3" style="margin-bottom: 40px;">
-                <img src="{{ asset('images/badges/'~badge.filename(app.request.locale)) }}"/>
+                <img src="{{ asset('build/images/badges/'~badge.filename(app.request.locale)) }}"/>
               </div>
             {% endfor %}
           </div>
