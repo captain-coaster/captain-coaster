@@ -73,7 +73,7 @@
     margin-bottom: 20px;
     padding: 3px;
     line-height: 1.53846;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px color-mix(in oklch, var(--fg) 5%, transparent);
 }
 
 .cc-card > img,
@@ -151,7 +151,7 @@ a.cc-card.active {
 .cc-card__media:hover > .cc-card__overlay {
     visibility: visible;
     opacity: 1;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: color-mix(in oklch, var(--fg) 70%, transparent);
 }
 
 /* List group */

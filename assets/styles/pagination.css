@@ -19,7 +19,7 @@
 
 .cc-pagination > li > a,
 .cc-pagination > li > span {
-    @apply relative float-left border border-[var(--cc-gray-300)] bg-white text-center text-[var(--cc-gray-900)];
+    @apply relative float-left border border-[var(--cc-gray-300)] bg-surface text-center text-[var(--cc-gray-900)];
     min-width: 36px;
     padding: 7px 12px;
     line-height: 1.53846;
@@ -51,7 +51,7 @@
 .cc-pagination > .active > span:hover,
 .cc-pagination > .active > a:focus,
 .cc-pagination > .active > span:focus {
-    @apply z-3 cursor-default text-white;
+    @apply z-3 cursor-default text-on-action;
     background-color: var(--cc-primary);
     border-color: var(--cc-primary);
 }

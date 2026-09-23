@@ -61,8 +61,17 @@
                                                     <div class="rating-segment rating-{{ countRating.value|replace({'.': '-'}) }}"
                                                          style="width: {{ percentage }}%"
                                                          title="{{ countRating.value }}★: {{ percentage }}% ({{ countRating.count }} {{ 'coaster.rating.ratings'|trans }})">
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <div class="rating-labels">
+                                            {% for countRating in countRatings %}
+                                                {% set percentage = (countRating.count / totalRatings * 100)|round(2) %}
+                                                {% if percentage > 0 %}
+                                                    <div class="rating-label" style="width: {{ percentage }}%">
                                                         {% if percentage > 7 %}
-                                                            <span class="rating-segment-label">{{ countRating.value }}★</span>
+                                                            {{ countRating.value }}★
                                                         {% endif %}
                                                     </div>
                                                 {% endif %}
@@ -276,8 +285,7 @@
                             <span class="status-mark status-mark--outline position-left" data-status="{{ otherCoaster.status.name }}"></span>
                             <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">
                                 {{ otherCoaster.name }}
-                            </a>
-                        </div>
+                            </a>                        </div>
                     {% endfor %}
                 </div>
             </div>

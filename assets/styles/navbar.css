@@ -143,7 +143,7 @@
     background-clip: padding-box;
     border: 1px solid var(--cc-gray-300);
     border-radius: 3px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px color-mix(in oklch, var(--fg) 10%, transparent);
     color: var(--cc-gray-900);
 }
 
@@ -342,7 +342,7 @@
         right: 0;
         float: none;
         border-width: 0;
-        border-color: rgba(0, 0, 0, 0.1);
+        border-color: color-mix(in oklch, var(--fg) 10%, transparent);
         box-shadow: none;
         min-width: 100%;
         margin: 0;
@@ -429,7 +429,7 @@
     padding-left: 20px;
     overflow-x: visible;
     border-top: 1px solid transparent;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--white) 10%, transparent);
     text-align: center;
 }
 
@@ -570,7 +570,7 @@
 
 @media (width < theme(--breakpoint-tablet)) {
     .cc-navbar__nav {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid color-mix(in oklch, var(--white) 10%, transparent);
     }
 
     .cc-navbar__nav .is-open .cc-menu__list {
@@ -678,9 +678,9 @@
 
 /* Inverse (dark) cc-navbar -- the only variant this app uses */
 .cc-navbar--inverse {
-    background-color: #37474f;
-    border-color: #37474f;
-    border-bottom-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--logo-ink);
+    border-color: var(--logo-ink);
+    border-bottom-color: color-mix(in oklch, var(--white) 10%, transparent);
     color: var(--cc-white);
 }
 
@@ -691,18 +691,18 @@
 .cc-navbar--inverse .cc-navbar__nav > li > a:hover,
 .cc-navbar--inverse .cc-navbar__nav > li > a:focus {
     color: var(--cc-white);
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: color-mix(in oklch, var(--fg) 10%, transparent);
 }
 
 .cc-navbar--inverse .cc-navbar__nav > .is-open > a,
 .cc-navbar--inverse .cc-navbar__nav > .is-open > a:hover,
 .cc-navbar--inverse .cc-navbar__nav > .is-open > a:focus {
     color: var(--cc-white);
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: color-mix(in oklch, var(--fg) 15%, transparent);
 }
 
 .cc-navbar--inverse .cc-navbar__panel {
-    border-color: rgba(0, 0, 0, 0.2);
+    border-color: color-mix(in oklch, var(--fg) 20%, transparent);
 }
 
 /* Modal */
@@ -742,7 +742,7 @@
 }
 
 .modal::backdrop {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: color-mix(in oklch, var(--fg) 50%, transparent);
 }
 
 .modal.fade .modal-dialog {
@@ -771,7 +771,7 @@
     background-clip: padding-box;
     border: 1px solid transparent;
     border-radius: 3px;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 4px color-mix(in oklch, var(--fg) 20%, transparent);
     outline: 0;
 }
 
@@ -826,7 +826,7 @@
     }
 
     .modal-content {
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        box-shadow: var(--shadow-overlay);
     }
 }
 

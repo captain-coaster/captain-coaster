@@ -4,15 +4,15 @@
 
 /* Tag styles */
 .cc-label--success {
-    background-color: #dcfce7 !important;  /* Very soft mint green */
-    border: 1px solid #bbf7d0 !important;  /* Soft mint border */
-    color: #14532d !important;             /* Deep forest green text */
+    background-color: var(--success-bg) !important;  /* Very soft mint green */
+    border: 1px solid color-mix(in oklch, var(--success) 30%, var(--success-bg)) !important;  /* Soft mint border */
+    color: var(--success) !important;             /* Deep forest green text */
 }
 
 .cc-label--danger {
-    background-color: #ffe4e6 !important;  /* Very soft pink */
-    border: 1px solid #fecdd3 !important;  /* Soft pink border */
-    color: #881337 !important;             /* Deep rose text */
+    background-color: var(--danger-bg) !important;  /* Very soft pink */
+    border: 1px solid color-mix(in oklch, var(--danger) 30%, var(--danger-bg)) !important;  /* Soft pink border */
+    color: var(--danger) !important;             /* Deep rose text */
 }
 
 .cc-label--rounded {
@@ -20,19 +20,42 @@
     margin-bottom: 5px !important;
 }
 
-/* Star rating styles */
+/* Read-only star rating -- same two-path star as the rating widget
+ * (rating.css): the outline stroke sits under the solid fill, and the half
+ * state clips the fill. SVG parts can't take utility classes from the
+ * macro/JS markup cleanly, hence hand-written rules. */
 .star-rating {
-    display: inline-flex;
-    align-items: center;
-}
-
-.star-rating-stars {
     display: inline-flex;
     align-items: center;
     gap: 2px;
 }
 
-.star-rating .half-star {
-    display: inline-block;
-    vertical-align: middle;
+.star-icon {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+}
+
+.star-icon__outline {
+    fill: none;
+    stroke: var(--rating-edge);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.star-icon__fill {
+    fill: var(--rating-fill);
+}
+
+.star-icon--half .star-icon__fill {
+    clip-path: inset(0 50% 0 0);
+}
+
+.star-icon--empty .star-icon__outline {
+    stroke: var(--rating-empty);
+}
+
+.star-icon--empty .star-icon__fill {
+    display: none;
 }

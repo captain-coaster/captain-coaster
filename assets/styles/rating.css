@@ -30,9 +30,9 @@
     opacity: 1;
 }
 
-/* Empty star - gray outline */
+/* Empty star - outline in the control boundary color (>= 3:1) */
 .rating-star.star-empty .star-outline {
-    stroke: #ccc;
+    stroke: var(--rating-empty);
 }
 
 .rating-star.star-empty .star-fill-left,
@@ -42,11 +42,11 @@
 
 /* Half star - left filled, right empty */
 .rating-star.star-half .star-outline {
-    stroke: var(--cc-warning);
+    stroke: var(--rating-edge);
 }
 
 .rating-star.star-half .star-fill-left {
-    stop-color: var(--cc-warning);
+    stop-color: var(--rating-fill);
 }
 
 .rating-star.star-half .star-fill-right {
@@ -55,12 +55,12 @@
 
 /* Full star - completely filled */
 .rating-star.star-full .star-outline {
-    stroke: var(--cc-warning);
+    stroke: var(--rating-edge);
 }
 
 .rating-star.star-full .star-fill-left,
 .rating-star.star-full .star-fill-right {
-    stop-color: var(--cc-warning);
+    stop-color: var(--rating-fill);
 }
 
 /* Hover effect on desktop */
@@ -112,8 +112,8 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.05);
-    color: #666;
+    background: color-mix(in oklch, var(--fg) 5%, transparent);
+    color: var(--slate-600);
     text-decoration: none;
     transition: all 0.2s ease;
     border: none;
@@ -122,14 +122,14 @@
 }
 
 .action-icon:hover {
-    background: rgba(33, 150, 243, 0.1);
+    background: color-mix(in oklch, var(--action) 10%, transparent);
     color: var(--cc-primary);
     transform: scale(1.1);
     text-decoration: none;
 }
 
 .action-icon.delete-icon:hover {
-    background: rgba(244, 67, 54, 0.1);
+    background: color-mix(in oklch, var(--danger) 10%, transparent);
     color: var(--cc-danger);
 }
 
@@ -152,7 +152,7 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid #f3f3f3;
+    border: 2px solid var(--mist-100);
     border-top: 2px solid var(--cc-primary);
     border-radius: 50%;
     animation: rating-spin 1s linear infinite;
@@ -189,7 +189,7 @@
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+        box-shadow: 0 0 10px color-mix(in oklch, var(--success) 30%, transparent);
     }
     100% {
         transform: scale(1);
@@ -202,7 +202,7 @@
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(244, 67, 54, 0.3);
+        box-shadow: 0 0 10px color-mix(in oklch, var(--danger) 30%, transparent);
     }
     100% {
         transform: scale(1);
@@ -211,7 +211,7 @@
 
 /* Enhanced delete confirmation styling */
 .delete-icon.confirming {
-    background: rgba(244, 67, 54, 0.2);
+    background: color-mix(in oklch, var(--danger) 20%, transparent);
     color: var(--cc-danger);
     animation: rating-pulse-delete 1s ease-in-out infinite;
 }
@@ -267,7 +267,7 @@
     border: 1px solid var(--cc-gray-300);
     border-radius: 8px;
     padding: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-overlay);
     min-width: 200px;
 }
 
@@ -291,12 +291,12 @@
 .small-date-input:focus {
     outline: none;
     border-color: var(--cc-primary);
-    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--action) 10%, transparent);
 }
 
 .small-date-input:disabled {
     opacity: 0.6;
-    background: #f8f9fa;
+    background: var(--bg);
 }
 
 .small-date-actions {
@@ -306,7 +306,7 @@
 
 .tiny-btn {
     flex: 1;
-    background: #f8f9fa;
+    background: var(--bg);
     border: 1px solid var(--cc-gray-300);
     border-radius: 4px;
     padding: 6px 10px;
@@ -379,7 +379,7 @@
     }
     50% {
         transform: scale(1.1);
-        filter: brightness(1.15) drop-shadow(0 0 4px rgba(255, 215, 0, 0.4));
+        filter: brightness(1.15) drop-shadow(0 0 4px color-mix(in oklch, var(--rating-fill) 60%, transparent));
     }
     100% {
         transform: scale(1);
@@ -389,13 +389,13 @@
 
 @keyframes rating-glow {
     0% {
-        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+        box-shadow: 0 0 0 0 transparent;
     }
     50% {
-        box-shadow: 0 0 12px 4px rgba(255, 215, 0, 0.4);
+        box-shadow: 0 0 12px 4px color-mix(in oklch, var(--rating-fill) 60%, transparent);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+        box-shadow: 0 0 0 0 transparent;
     }
 }
 

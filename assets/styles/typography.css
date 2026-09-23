@@ -5,7 +5,8 @@
  * `-separate`, not `-bordered`, unused), `.page-header`(+`-default`),
  * `.page-title`/`.page-header-content`, `.status-mark`, `.position-left`,
  * `.content-divider`, `.icon-object`, `.text-bold`/`-semibold`/
- * `-size-small`/`-size-mini`, and `.text-muted` are kept. `.text-left/
+ * `-size-small`/`-size-mini` are kept. `.text-muted` was retired by the
+ * reskin (#413): the target token utility of the same name replaces it. `.text-left/
  * -lowercase/-capitalize`, `blockquote`, `.lead`, `address`,
  * `dl-horizontal`, `abbr`, `mark`, `.heading-divided`, `.letter-icon`,
  * `.img-preview`, `.video-container`, `.text-black/-regular/-light/-thin/
@@ -26,8 +27,7 @@
  * `colors.css` (this file's own tokens.css-adjacent color set) already
  * defines a complete, later-in-cascade version of all four, `.text-*`
  * ones carrying `!important` -- both fully inert here regardless of
- * source order. `.text-muted` is the only one of the five actually
- * defined here: the color helpers never touch it.
+ * source order.
  *
  * `.status-mark` in particular caused a real regression during the
  * original port (a coaster-status dot rendering as flat, unstyled inline
@@ -63,6 +63,9 @@ h2,
 .h2,
 h3,
 .h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0;
     margin-top: 20px;
     margin-bottom: 10px;
 }
@@ -150,7 +153,7 @@ small,
 
 .list-inline-separate > li:before {
     content: "\2022";
-    color: #ccc;
+    color: var(--border);
     position: absolute;
     top: 1px;
     right: 8px;
@@ -172,9 +175,6 @@ small,
     box-shadow: 0 1px 0 0 var(--cc-gray-300);
 }
 
-.text-muted {
-    color: var(--cc-gray-600);
-}
 
 .text-bold {
     font-weight: 700;

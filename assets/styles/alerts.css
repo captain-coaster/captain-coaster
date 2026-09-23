@@ -70,26 +70,26 @@
 }
 
 .cc-alert--success {
-    color: #205823;
-    background-color: #e8f5e9;
+    color: var(--success);
+    background-color: var(--success-bg);
     border-color: var(--cc-success);
 }
 
 .cc-alert--info {
-    color: #00545c;
-    background-color: #e0f7fa;
+    color: var(--action-hover);
+    background-color: var(--selected);
     border-color: var(--cc-info);
 }
 
 .cc-alert--warning {
     color: var(--cc-warning-deep);
-    background-color: #fff3e0;
-    border-color: #ff9800;
+    background-color: var(--warning-bg);
+    border-color: var(--warning);
 }
 
 .cc-alert--danger {
-    color: #9c1f1f;
-    background-color: #fbe9e7;
+    color: var(--danger);
+    background-color: var(--danger-bg);
     border-color: var(--cc-warning);
 }
 

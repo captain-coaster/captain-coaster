@@ -26,7 +26,7 @@
     padding: 12px;
     margin-bottom: 8px;
     background: var(--cc-white);
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border);
     border-radius: 8px;
     transition: all 0.2s ease;
     position: relative;
@@ -39,8 +39,8 @@
 }
 
 .coaster-entry:hover {
-    border-color: #d1d5db;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-color: var(--border);
+    box-shadow: var(--shadow-raised);
 }
 
 /* Drag Area - Combined handle and position */
@@ -62,12 +62,12 @@
 }
 
 .drag-area:hover {
-    background-color: #f3f4f6;
+    background-color: var(--bg);
 }
 
 .drag-area:active {
     cursor: grabbing;
-    background-color: #e5e7eb;
+    background-color: var(--mist-100);
 }
 
 .position-number {
@@ -114,11 +114,11 @@
 .coaster-name {
     font-weight: 600;
     font-size: 15px;
-    color: #111827;
+    color: var(--fg);
 }
 
 .coaster-separator {
-    color: #d1d5db;
+    color: var(--border);
     margin: 0 4px;
 }
 
@@ -133,15 +133,10 @@
 
 .coaster-rating .star-rating {
     margin: 0;
-}
-
-.coaster-rating .star-rating-stars {
-    display: flex;
-    align-items: center;
     gap: 1px;
 }
 
-.coaster-rating .star-rating-stars svg {
+.coaster-rating .star-icon {
     width: 16px;
     height: 16px;
 }
@@ -167,18 +162,18 @@
 }
 
 .menu-btn:hover {
-    background-color: #f3f4f6;
+    background-color: var(--bg);
     color: var(--cc-gray-900);
 }
 
 .menu-btn:active {
-    background-color: #e5e7eb;
+    background-color: var(--mist-100);
 }
 
 /* SortableJS: Ghost placeholder (shows where item will be dropped) */
 .sortable-ghost {
     opacity: 0.4;
-    background-color: #f9fafb;
+    background-color: var(--bg);
     border: 2px dashed var(--cc-primary);
     border-radius: 8px;
 }
@@ -190,34 +185,34 @@
 /* SortableJS: Chosen item (when item is selected/grabbed) */
 .sortable-chosen {
     border-color: var(--cc-primary);
-    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.2);
+    box-shadow: 0 4px 12px color-mix(in oklch, var(--action) 20%, transparent);
 }
 
 .sortable-chosen .drag-area {
     cursor: grabbing;
-    background-color: #dbeafe;
+    background-color: var(--selected);
 }
 
 .sortable-chosen .position-number {
-    color: #1e40af;
+    color: var(--action);
 }
 
 /* SortableJS: Dragged item (the actual item being dragged) */
 .sortable-drag {
     opacity: 1;
     border-color: var(--cc-primary);
-    box-shadow: 0 8px 24px rgba(33, 150, 243, 0.3);
+    box-shadow: 0 8px 24px color-mix(in oklch, var(--action) 30%, transparent);
     z-index: 1000;
     transform: rotate(2deg);
 }
 
 .sortable-drag .drag-area {
     cursor: grabbing;
-    background-color: #dbeafe;
+    background-color: var(--selected);
 }
 
 .sortable-drag .position-number {
-    color: #1e40af;
+    color: var(--action);
 }
 
 /* Save status indicator */
@@ -231,25 +226,25 @@
     font-weight: 500;
     z-index: 1050;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-raised);
 }
 
 .save-status-saving {
-    background-color: #ffc107;
-    color: #856404;
-    border: 1px solid #ffeaa7;
+    background-color: var(--highlight);
+    color: var(--warning);
+    border: 1px solid var(--highlight);
 }
 
 .save-status-saved {
     background-color: var(--cc-success);
     color: white;
-    border: 1px solid #1e7e34;
+    border: 1px solid var(--success);
 }
 
 .save-status-error {
     background-color: var(--cc-danger);
     color: white;
-    border: 1px solid #bd2130;
+    border: 1px solid var(--danger);
 }
 
 /* Spinner animation */
@@ -311,7 +306,7 @@
         gap: 2px;
     }
 
-    .coaster-rating .star-rating-stars svg {
+    .coaster-rating .star-icon {
         width: 14px;
         height: 14px;
     }
@@ -370,7 +365,7 @@
     .sortable-chosen,
     .sortable-drag {
         border-color: var(--cc-black);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        box-shadow: var(--shadow-overlay);
     }
 }
 
@@ -463,11 +458,11 @@
     0% {
         transform: scale(0.95);
         opacity: 0.5;
-        background-color: #d4edda;
+        background-color: var(--success-bg);
     }
     50% {
         transform: scale(1.02);
-        background-color: #d4edda;
+        background-color: var(--success-bg);
     }
     100% {
         transform: scale(1);
@@ -513,7 +508,7 @@
 @media (prefers-reduced-motion: reduce) {
     .coaster-entry-added {
         animation: none;
-        background-color: #d4edda;
+        background-color: var(--success-bg);
     }
 }
 

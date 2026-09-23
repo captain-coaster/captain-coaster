@@ -88,7 +88,7 @@
                                 {% if coaster.mainImage %}
                                     {{ helper.picture(coaster.mainImage.filename, 200, 150, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
-                                    <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-gray-100 text-gray-400" style="width:200px;">
+                                    <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-canvas text-muted" style="width:200px;">
                                         {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
                                     </div>
                                 {% endif %}
@@ -96,7 +96,7 @@
                         </div>
                         <div class="cc-media__body cc-media__middle">
                             <h2 class="cc-media__heading mb-2 center" style="margin-bottom: -4px;">
-                                <a style="color:#333;"
+                                <a class="text-ink"
                                    href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                                     {{ coaster.name }}
                                 </a>

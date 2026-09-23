@@ -1,81 +1,160 @@
 /*
- * Design tokens -- captain-coaster/captain-coaster#385, step 2. Wires the
- * values that are actually duplicated across this consolidated tree
- * (colors in 2+ files, every breakpoint) through a single source each.
- * A value used in only one file is left as a literal; this isn't a full
- * design system, just the mechanism plus what's demonstrably repeated
- * today.
+ * Design tokens -- the one token source. Target design system: DESIGN.md
+ * (#375); canonical values mirror .impeccable/captain-coaster-tokens.css.
  *
- * Breakpoints use Tailwind's own `--breakpoint-*` @theme namespace, so
- * `theme(--breakpoint-*)` can substitute the value inside `@media`
- * conditions (plain CSS custom properties don't work there). This also
- * generates a `tablet:`/`desktop:`/`wide:` Tailwind variant prefix as a
- * side effect -- harmless, nothing currently uses those names.
+ * - Primitives and semantic roles are plain `:root` custom properties.
+ * - `@theme inline` exposes the semantic roles as Tailwind utilities
+ *   (`bg-surface`, `text-ink`, `border-line`, `bg-action`, ...). New UI
+ *   uses those, never the primitives or the legacy aliases.
+ * - `@theme` also sets fonts, the type scale, radii, shadows and easing.
+ *   `--radius-sm`, `--ease-out` and `--font-mono` intentionally replace
+ *   Tailwind's defaults of the same name.
+ * - Legacy `--cc-*` tokens are compatibility aliases onto the target
+ *   roles (reskin, #413). They get removed as their users migrate.
  *
- * Colors are deliberately plain `:root` custom properties, NOT Tailwind's
- * `--color-*` @theme namespace: that namespace auto-generates matching
- * `bg-*`/`text-*`/`border-*` utility classes, which used to collide by
- * name with colors.css's own hand-authored classes of the same name
- * (`text-slate`, `bg-teal-400`, ...) -- fixed by renaming the colliding
- * classes in colors.css instead (see its own header), so the risk this
- * paragraph originally warned about (the `.collapse`/`.sr-only`
- * "two rules, one class name" trap) is now moot for colors specifically,
- * but the `cc-` prefix stays as the general convention for this file.
- *
- * Four parallel, never-reconciled color palettes turned up while
- * consolidating tailwind/*.css and components/*.css into one tree: this
- * file's own "brand" set (Material-derived, from the Bootstrap/Limitless
- * migration), an "action" set (Bootstrap 4/5's default blue/red/green,
- * used in rating.css/search.css/top-list.css), a "focus" blue and "cool
- * gray" scale (Tailwind's own default palette, used in toast.css/
- * section-header.css/top-list.css/map.css/score-card.css), and one-off
- * neutrals. Reconciled into the single brand set below (2026-09-11) --
- * every `--cc-action-*`/`--cc-focus-*`/`--cc-cool-gray-*` reference across
- * the tree now points at the nearest brand/neutral token instead:
- * action-blue and focus-blue -> primary, action-red -> danger,
- * action-green -> success, cool-gray-400/500/600 -> the nearest warm-gray
- * token by lightness (gray-600/gray-650/gray-900). A real, visible color
- * change on the components that used the old values (rating action
- * icons, search focus ring, toast notifications, top-list sortable
- * states, map popup text, score-card percent) -- verified live via
- * Playwright, not just computed, since unlike the token mechanism itself
- * this isn't inert by construction.
+ * Breakpoints use Tailwind's `--breakpoint-*` namespace so
+ * `theme(--breakpoint-*)` works inside `@media` conditions.
  */
 @theme {
+    /* Only design-token colors exist as utilities: Tailwind's default palette
+     * (`text-red-500`, `bg-gray-100`, ...) is switched off so off-palette
+     * colors can't creep back in. `white` is re-added in `@theme inline`. */
+    --color-*: initial;
+
     --breakpoint-tablet: 769px;
     --breakpoint-desktop: 1025px;
     --breakpoint-wide: 1200px;
+
+    --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+    --text-caption: .875rem;
+    --text-caption--line-height: 1.5;
+    --text-lead: 1.25rem;
+    --text-lead--line-height: 1.5;
+    --text-title: clamp(2rem, 1.6rem + 1.5vw, 2.5rem);
+    --text-title--line-height: 1.08;
+    --text-display: clamp(2.75rem, 2rem + 3vw, 4.75rem);
+    --text-display--line-height: 1.08;
+
+    --radius-sm: .375rem;
+    --radius-control: .5rem;
+    --radius-card: .75rem;
+    --radius-pill: 999px;
+
+    --shadow-raised: 0 4px 16px oklch(0.28 0.04 245 / .09);
+    --shadow-overlay: 0 12px 32px oklch(0.28 0.04 245 / .16);
+
+    --ease-out: cubic-bezier(.16, 1, .3, 1);
+}
+
+@theme inline {
+    --color-white: var(--white);
+    --color-canvas: var(--bg);
+    --color-surface: var(--surface);
+    --color-ink: var(--fg);
+    --color-muted: var(--muted);
+    --color-line: var(--border);
+    --color-control-line: var(--control-border);
+    --color-action: var(--action);
+    --color-action-hover: var(--action-hover);
+    --color-on-action: var(--on-action);
+    --color-selected: var(--selected);
+    --color-highlight: var(--highlight);
+    --color-on-highlight: var(--on-highlight);
+    --color-success: var(--success);
+    --color-success-bg: var(--success-bg);
+    --color-warning: var(--warning);
+    --color-warning-bg: var(--warning-bg);
+    --color-danger: var(--danger);
+    --color-danger-bg: var(--danger-bg);
+    --color-focus: var(--focus);
+    --color-logo-ink: var(--logo-ink);
 }
 
 :root {
-    /* Neutrals -- this app's own warm-gray scale (Material/Bootstrap-era). */
-    --cc-white: #fff;
-    --cc-black: #000;
-    --cc-gray-25: #f8f9fa;
-    --cc-gray-40: #fafafa;
-    --cc-gray-50: #fcfcfc;
-    --cc-gray-100: #f5f5f5;
-    --cc-gray-150: #eee;
-    --cc-gray-200: #e5e5e5;
-    --cc-gray-300: #ddd;
-    --cc-gray-350: #ccc;
-    --cc-gray-400: #c0c0c0;
-    --cc-gray-500: #bbb;
-    --cc-gray-600: #999;
-    --cc-gray-650: #666;
-    --cc-gray-900: #333;
+    /* Primitives -- only referenced from this file. */
+    --white: oklch(1.0000000 0.0000000 89.87556); /* #FFFFFF */
+    --mist-50: oklch(0.9722948 0.0074044 260.73153); /* #F3F6FB */
+    --mist-100: oklch(0.9434260 0.0142838 254.60684); /* #E6EDF6 */
+    --mist-300: oklch(0.8537608 0.0240674 256.11250); /* #C5D0DF */
+    --slate-500: oklch(0.4987397 0.0362213 248.55648); /* #536577 */
+    --slate-600: oklch(0.4370345 0.0400869 247.44779); /* #405467 */
+    --ink-900: oklch(0.2801795 0.0373303 243.47664); /* #182B3A */
+    --logo-ink: oklch(0.3165834 0.0193707 229.74411); /* #28343A */
+    --blue-50: oklch(0.9560695 0.0165843 259.41835); /* #EAF1FC */
+    --blue-500: oklch(0.5173960 0.1025990 262.10278); /* #4767A3 */
+    --blue-700: oklch(0.4762678 0.1461232 259.22022); /* #2359AD */
+    --blue-800: oklch(0.4031302 0.1277954 259.73286); /* #19458C */
+    --sun-400: oklch(0.8720509 0.1368842 84.26883); /* #FFCD61 */
+    --sun-50: oklch(0.9661014 0.0400057 88.19611); /* #FFF3D6 */
+    --amber-800: oklch(0.4643523 0.0941316 74.17692); /* #78500A */
+    --coral-600: oklch(0.5194091 0.1411480 27.82671); /* #AB4138 */
+    --coral-50: oklch(0.9658552 0.0171604 35.34490); /* #FFF0EC */
+    --green-700: oklch(0.4522793 0.0740924 168.10507); /* #23634E */
+    --green-50: oklch(0.9595166 0.0149495 164.72910); /* #E9F5EF */
+    /* Ramp extensions for data roles (rating scale). */
+    --green-500: oklch(0.645 0.15 150); /* #38A65A */
+    --coral-700: oklch(0.45 0.12 28); /* #8C352D */
 
-    /* Brand -- theme/core/colors/colors.less's Material-derived palette
-     * (colors.css), reused throughout this tree. The single color system
-     * now -- the former "action"/"focus" Bootstrap-4/Tailwind-default
-     * blues, red and green all point here too (see file header). */
-    --cc-primary: #2196f3;
-    --cc-primary-600: #1e88e5;
-    --cc-info: #00bcd4;
-    --cc-success: #4caf50;
-    --cc-success-400: #66bb6a;
-    --cc-warning: #ff5722;
-    --cc-warning-deep: #aa3510;
-    --cc-danger: #f44336;
-    --cc-teal-400: #26a69a;
+    /* Semantic roles. */
+    --bg: var(--mist-50);
+    --surface: var(--white);
+    --fg: var(--ink-900);
+    --muted: var(--slate-500);
+    --border: var(--mist-300);
+    --control-border: var(--slate-500);
+    --action: var(--blue-700);
+    --action-hover: var(--blue-800);
+    --on-action: var(--white);
+    --selected: var(--blue-50);
+    --highlight: var(--sun-400);
+    --on-highlight: var(--ink-900);
+    --success: var(--green-700);
+    --success-bg: var(--green-50);
+    --warning: var(--amber-800);
+    --warning-bg: var(--sun-50);
+    --danger: var(--coral-600);
+    --danger-bg: var(--coral-50);
+    --focus: var(--blue-700);
+
+    /* Rating stars: sunshine fill + amber edge (the edge carries >= 3:1 on
+     * white; sunshine alone is 1.5:1). Empty stars of the rating input use
+     * the control boundary color. */
+    --rating-fill: var(--sun-400);
+    --rating-edge: var(--amber-800);
+    --rating-empty: var(--control-border);
+
+    /* Rating scale endpoints (0.5★ -> 5★); steps are color-mix(in oklch)
+     * between them, passing through gold. Lightness rises toward "good",
+     * which keeps the order readable with color-vision deficiencies. */
+    --rating-scale-low: var(--coral-700);
+    --rating-scale-high: var(--green-500);
+
+    /* Legacy aliases (reskin, #413) -- don't use in new code. */
+    --cc-white: var(--white);
+    --cc-black: var(--ink-900);
+    --cc-gray-25: var(--bg);
+    --cc-gray-40: var(--bg);
+    --cc-gray-50: var(--bg);
+    --cc-gray-100: var(--bg);
+    --cc-gray-150: var(--mist-100);
+    --cc-gray-200: var(--mist-100);
+    --cc-gray-300: var(--border);
+    --cc-gray-350: var(--border);
+    --cc-gray-400: var(--border);
+    --cc-gray-500: var(--border);
+    --cc-gray-600: var(--muted);
+    --cc-gray-650: var(--slate-600);
+    --cc-gray-900: var(--fg);
+    --cc-primary: var(--action);
+    --cc-primary-600: var(--action-hover);
+    --cc-info: var(--blue-500);
+    --cc-success: var(--success);
+    --cc-success-400: var(--success);
+    --cc-warning: var(--warning);
+    --cc-warning-deep: var(--warning);
+    --cc-danger: var(--danger);
+    --cc-teal-400: var(--action);
 }

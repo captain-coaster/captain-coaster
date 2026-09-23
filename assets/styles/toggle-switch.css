@@ -46,7 +46,7 @@
     transform: translateY(-50%);
     width: 32px; /* @toggle-switch-width */
     height: 16px; /* @toggle-switch-height */
-    background-color: #dfdfdf;
+    background-color: var(--border);
     border-radius: 16px; /* @toggle-switch-height */
     transition: 0.3s;
     z-index: 1;
@@ -64,7 +64,7 @@
     background-color: white;
     border-radius: 50%;
     transition: 0.3s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 2px color-mix(in oklch, var(--fg) 20%, transparent);
     z-index: 2;
 }
 
@@ -72,7 +72,7 @@
 .toggle-switch-cc-field:has(input[type='checkbox']:checked)
     .checkbox
     label:after {
-    background-color: #26b99a;
+    background-color: var(--action);
 }
 
 .toggle-switch-cc-field:has(input[type='checkbox']:checked)
@@ -83,7 +83,7 @@
 
 /* Focus state */
 .toggle-switch-cc-field:focus-within .checkbox label:after {
-    box-shadow: 0 0 0 2px rgba(38, 185, 154, 0.2);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--action) 20%, transparent);
 }
 
 /* Active state */

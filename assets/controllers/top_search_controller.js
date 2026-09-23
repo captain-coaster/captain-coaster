@@ -131,7 +131,7 @@ export default class extends SearchDropdown(Controller) {
                     <div class="search-result-name">${name}</div>
                     <div class="search-result-subtitle">${park}</div>
                 </div>
-                ${formattedRating ? `<span class="cc-badge bg-success">${formattedRating}</span>` : '<span class="cc-badge cc-badge--default">N/A</span>'}
+                ${formattedRating ? `<span class="cc-badge bg-success text-white">${formattedRating}</span>` : '<span class="cc-badge cc-badge--default">N/A</span>'}
             </div>
         `;
     }

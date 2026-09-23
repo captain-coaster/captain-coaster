@@ -22,6 +22,11 @@ colors:
   danger-bg: "oklch(0.9658552 0.0171604 35.34490)"
   focus: "oklch(0.4762678 0.1461232 259.22022)"
   logo-ink: "oklch(0.3165834 0.0193707 229.74411)"
+  rating-fill: "oklch(0.8720509 0.1368842 84.26883)"
+  rating-edge: "oklch(0.4643523 0.0941316 74.17692)"
+  rating-empty: "oklch(0.4987397 0.0362213 248.55648)"
+  rating-scale-low: "oklch(0.45 0.12 28)"
+  rating-scale-high: "oklch(0.645 0.15 150)"
 typography:
   display:
     fontFamily: "Barlow Condensed, Arial Narrow, Helvetica Neue, sans-serif"
@@ -81,7 +86,7 @@ components:
 ---
 # Design System: Captain Coaster
 
-> **Status: target, not yet shipped.** This is the design system the app is migrating to (plan: #375). The live app still uses `assets/styles/tokens.css` and the `.cc-*` component files until the reskin lands; pages and components then migrate one at a time. Every new or reworked component follows this document. See "Redesign: target vs. current" in `AGENTS.md` and `docs/agents/design-workflow.md`.
+> **Status: partly shipped.** Colors, fonts and tokens are live since the reskin (#413); layout, navigation and components still use the legacy `.cc-*` files and migrate one surface at a time (plan: #375). Every new or reworked component follows this document. See "Redesign: target vs. current" in `AGENTS.md` and `docs/agents/design-workflow.md`.
 
 ## Overview
 
@@ -101,7 +106,13 @@ Fresh blue directs action; sunshine brings warmth to selected highlights. Ink ca
 
 **The Semantic Role Rule.** Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.
 
-The frontmatter reproduces the canonical OKLCH values in `.impeccable/captain-coaster-tokens.css`. `.impeccable/contrast-report.json` records WCAG sRGB luminance measurements: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. Status pairings exceed 5.3:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
+**Rating stars.** Stars fill with sunshine and carry an amber edge: sunshine alone is 1.5:1 on white, the edge (7.1:1) keeps the shape legible. Empty stars of the rating input use the control boundary color (6.0:1).
+
+**The Rating Scale.** Ordered rating data (the 0.5★–5★ distribution) runs from deep red through gold to a vivid green, interpolated with `color-mix(in oklch)` between `rating-scale-low` and `rating-scale-high`. Lightness rises toward "good", so the order stays readable with color-vision deficiencies; every step is ≥3:1 on white. Segments sit on a hairline surface gap with their labels outside the bar, never on it.
+
+**The Roles-Not-Palettes Rule.** Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`green-500`, `coral-700`); never add a standalone hue or a parallel palette. Status and map-marker colors are not settled yet and keep their provisional aliases.
+
+The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css` (the implementation since the reskin, #413; `.impeccable/captain-coaster-tokens.css` is the original proposal). `.impeccable/contrast-report.json` records WCAG sRGB luminance measurements: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. Status pairings exceed 5.3:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
 
 ## Typography
 
@@ -127,11 +138,11 @@ Small accents use the small radius; controls use the control radius and containe
 
 Buttons are clear and compact: primary action blue with white text, deeper blue on hover; secondary white with ink text and a visible boundary. The built samples use 48px minimum height, 10px 18px padding and semibold body type. Controls retain visible keyboard focus: a 3px blue outline with at least a 3px offset. On dark surfaces use a sunshine focus indicator; code panes use an inset outline to avoid clipping. Disabled controls are visibly muted and remain semantically disabled.
 
-Use native links, buttons, disclosure and radio controls. Selection needs a shape, check or label as well as color. Put validation beside its field and announce saved/copied outcomes through polite live regions. “Ridden, unrated” is a valid neutral state. The rating specimen is illustrative and saves no production data; richer ride tracking remains undecided in `PRODUCT.md`.
+Use native links, buttons, disclosure and radio controls. Selection needs a shape, check or label as well as color. Put validation beside its field and announce saved/copied outcomes through polite live regions. “Ridden, unrated” is a valid neutral state. Read-only star ratings use the same two-path star as the rating input (outline under a solid fill, half state clipped), always five stars, announced as “3.5/5”. The rating specimen is illustrative and saves no production data; richer ride tracking remains undecided in `PRODUCT.md`.
 
 Feedback motion uses 120ms, entrances 180ms and `cubic-bezier(.16, 1, .3, 1)`. Honor reduced motion by removing transitions, animations and smooth scrolling. Use a 24px icon grid, 1.75px rounded strokes, and 20px icons in dense rows. Label unfamiliar actions and hide decorative icons from assistive technology. Prefer 16:9 discovery images, 4:3 gallery thumbnails and original-ratio photo viewers. Keep photography recognizable and alt text meaningful. Show actual member attribution when available; the supplied site photograph has no recorded photographer credit, so the guide says so explicitly.
 
-For Symfony/Twig, Stimulus, Tailwind v4 and Vite, import Tailwind, then `.impeccable/captain-coaster-tokens.css`, then `.impeccable/tailwind-theme.css` (reference copies; fold into `assets/styles/tokens.css` when implementing). Preserve the font URLs or adapt them to Vite. The bridge exposes utilities such as `bg-surface text-ink rounded-card` and `bg-action text-on-action hover:bg-action-hover`. Bind behavior to native controls.
+For Symfony/Twig, Stimulus, Tailwind v4 and Vite, the tokens live in `assets/styles/tokens.css`: primitives and roles on `:root`, exposed as utilities through `@theme inline` (`bg-surface text-ink rounded-card`, `bg-action text-on-action hover:bg-action-hover`). Tailwind's default color palette is switched off, so only token colors (plus white) exist as utilities. Fonts are self-hosted woff2 subsets in `assets/fonts/`, bundled by Vite. Bind behavior to native controls.
 
 ## Do's and Don'ts
 

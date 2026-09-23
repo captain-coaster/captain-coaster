@@ -12,7 +12,7 @@
             </div>
             <div class="cc-media__body">
                 <h2 class="cc-media__heading mb-2.5">
-                    <a style="color:#333;" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
+                    <a class="text-ink" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if not filtered %}
                             {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
                         {% else %}
