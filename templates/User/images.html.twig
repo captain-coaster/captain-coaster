@@ -14,7 +14,7 @@
              data-gallery-name-value="user-images"
              data-gallery="user-images">
           {% for image in images %}
-            <div class="col-span-12 tablet:col-span-3">
+            <div class="col-span-12 md:col-span-3">
               <a class="m-2.5" href="{{ signed_picture_url(image.filename, 1440, 1440, 'jpg') }}"
                  data-avif="{{ signed_picture_url(image.filename, 1440, 1440, 'avif') }}"
                  data-cropped-thumbnail="{{ signed_picture_url(image.filename, 280, 210, 'jpg') }}"

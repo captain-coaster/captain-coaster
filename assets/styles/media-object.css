@@ -34,7 +34,7 @@
 }
 
 .cc-media__annotation {
-    @apply text-[var(--cc-gray-600)] text-[12px] font-normal;
+    @apply text-[var(--cc-gray-600)] text-caption font-normal;
     line-height: 1.66667;
 }
 
@@ -43,7 +43,7 @@
 }
 
 .cc-media__annotation i {
-    @apply text-[13px];
+    @apply text-caption;
 }
 
 /* Bullet before a "dotted" annotation (e.g. star rating · timestamp in a review row). */
@@ -61,7 +61,7 @@
 }
 
 /* Collapse an image/content/action row below the tablet breakpoint. */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     /* flex-col flips the main axis to vertical -- align-items still defaults to
        stretch, so .cc-media__start (shrink-0, sized to its image in the row
        layout) stretches to the full card width instead of staying image-sized,

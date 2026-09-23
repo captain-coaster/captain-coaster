@@ -122,15 +122,15 @@
     white-space: nowrap;
     vertical-align: baseline;
     display: inline-block;
-    text-transform: uppercase;
-    letter-spacing: 0.1px;
     border-width: 1px;
     border-style: solid;
-    border-radius: 2px;
-    padding: 2px 5px 1px 5px;
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 1.53846;
+    border-radius: var(--radius-sm);
+    padding: .125rem .375rem;
+    /* Tags and counters are the one place below the 14px text floor:
+     * 12px semibold on a solid fill, sentence case (DESIGN.md). */
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.25;
 }
 
 .cc-label:empty {
@@ -148,12 +148,12 @@
 }
 
 .cc-label--rounded {
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
 }
 
 .cc-label--rounded:not(.cc-label--icon) {
-    padding-left: 7px;
-    padding-right: 7px;
+    padding-left: .5rem;
+    padding-right: .5rem;
 }
 
 .cc-badge {
@@ -165,12 +165,12 @@
     vertical-align: baseline;
     border-width: 1px;
     border-style: solid;
-    border-radius: 100px;
-    padding: 2px 6px 1px 6px;
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 1.53846;
-    letter-spacing: 0.1px;
+    border-radius: var(--radius-pill);
+    padding: .125rem .375rem;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
 }
 
 .cc-badge:empty {
@@ -190,7 +190,7 @@
 .cc-badge--flat {
     background-color: transparent;
     border-width: 2px;
-    padding: 1px 5px 0 5px;
+    padding: 0 .3125rem;
 }
 
 .cc-list-group__item > .cc-badge {
@@ -201,7 +201,7 @@
     margin-right: 5px;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-list-group__item > .cc-label {
         float: right;
     }

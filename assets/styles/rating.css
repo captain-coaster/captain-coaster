@@ -86,7 +86,7 @@
 }
 
 /* Mobile optimizations */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .star-svg {
         width: 28px;
         height: 28px;
@@ -134,7 +134,7 @@
 }
 
 .action-icon i {
-    font-size: 14px;
+    font-size: var(--text-caption);
 }
 
 /* Loading States for Rating */
@@ -271,7 +271,7 @@
 
 .date-picker-label {
     display: block;
-    font-size: 13px;
+    font-size: var(--text-caption);
     font-weight: 500;
     color: var(--cc-gray-900);
     margin-bottom: 8px;
@@ -282,7 +282,7 @@
     border: 1px solid var(--cc-gray-300);
     border-radius: 4px;
     padding: 8px;
-    font-size: 14px;
+    font-size: var(--text-caption);
     margin-bottom: 8px;
 }
 
@@ -308,7 +308,7 @@
     border: 1px solid var(--cc-gray-300);
     border-radius: 4px;
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: var(--text-caption);
     cursor: pointer;
     transition: all 0.15s ease;
 }
@@ -326,7 +326,7 @@
 }
 
 /* Mobile adjustments */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .rating-actions {
         gap: 20px;
     }
@@ -342,7 +342,7 @@
     }
 
     .date-picker-label {
-        font-size: 13px;
+        font-size: var(--text-caption);
         margin-bottom: 8px;
     }
 
@@ -361,7 +361,7 @@
 
     .tiny-btn {
         padding: 8px 12px;
-        font-size: 13px;
+        font-size: var(--text-caption);
     }
 
     .small-date-actions {

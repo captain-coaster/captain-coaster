@@ -12,8 +12,9 @@
  * - Legacy `--cc-*` tokens are compatibility aliases onto the target
  *   roles (reskin, #413). They get removed as their users migrate.
  *
- * Breakpoints use Tailwind's `--breakpoint-*` namespace so
- * `theme(--breakpoint-*)` works inside `@media` conditions.
+ * Breakpoints are Tailwind's defaults (`md` 48rem, `lg` 64rem, `xl` 80rem,
+ * ...), rem-based so a larger browser font size or zoom reaches the
+ * narrower layout. `theme(--breakpoint-*)` works inside `@media`.
  */
 @theme {
     /* Only design-token colors exist as utilities: Tailwind's default palette
@@ -21,9 +22,9 @@
      * colors can't creep back in. `white` is re-added in `@theme inline`. */
     --color-*: initial;
 
-    --breakpoint-tablet: 769px;
-    --breakpoint-desktop: 1025px;
-    --breakpoint-wide: 1200px;
+    /* Page shell (DESIGN.md Layout): 75rem content max, fluid 20-48px gutters. */
+    --container-content: 75rem;
+    --spacing-gutter: clamp(1.25rem, 0.5rem + 3vw, 3rem);
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
@@ -31,6 +32,8 @@
 
     --text-caption: .875rem;
     --text-caption--line-height: 1.5;
+    --text-body: 1rem;
+    --text-body--line-height: 1.5;
     --text-lead: 1.25rem;
     --text-lead--line-height: 1.5;
     --text-title: clamp(2rem, 1.6rem + 1.5vw, 2.5rem);

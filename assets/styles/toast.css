@@ -11,7 +11,7 @@
     padding: 16px 20px;
     box-shadow: var(--shadow-overlay);
     font-family: var(--font-sans);
-    font-size: 14px;
+    font-size: var(--text-caption);
     font-weight: 500;
     line-height: 1.5;
     backdrop-filter: blur(10px);
@@ -46,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: var(--text-caption);
     font-weight: 600;
     flex-shrink: 0;
 }
@@ -60,7 +60,7 @@
     background: none;
     border: none;
     opacity: 0.5;
-    font-size: 18px;
+    font-size: var(--text-lg);
     line-height: 1;
     padding: 0;
     margin: 0;

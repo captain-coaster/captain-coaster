@@ -136,7 +136,7 @@
     min-width: 180px;
     padding: 7px 0;
     margin: 2px 0 0;
-    font-size: 13px;
+    font-size: var(--text-caption);
     text-align: left;
     list-style: none;
     background-color: var(--cc-white);
@@ -319,14 +319,14 @@
     right: 100%;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-menu__list > .cc-menu__submenu--hover:hover > .cc-menu__list,
     .cc-menu__list > .cc-menu__submenu--hover:focus > .cc-menu__list {
         display: block;
     }
 }
 
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .cc-menu__list > .cc-menu__submenu {
         position: static;
     }
@@ -380,7 +380,7 @@
     padding-right: 0;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar {
         border-radius: 3px;
         padding-left: 20px;
@@ -392,7 +392,7 @@
     min-width: 260px;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar__header {
         float: left;
         margin-left: -20px;
@@ -417,7 +417,7 @@
     padding-right: 15px;
 }
 
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .cc-navbar__header .cc-navbar__nav > li + li {
         margin-top: 0;
     }
@@ -442,7 +442,7 @@
     border-top: 0;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar__panel {
         display: block;
         width: auto;
@@ -487,13 +487,13 @@
     }
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar--fixed-top {
         border-radius: 0;
     }
 }
 
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .cc-navbar--fixed-top {
         position: static;
     }
@@ -501,7 +501,7 @@
 
 /* Body top padding to clear the fixed desktop cc-navbar -- cc-navbar is static
  * (in-flow) on mobile instead, so no compensation is needed there. */
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar--top {
         padding-top: 48px;
     }
@@ -511,7 +511,7 @@
     float: left;
     height: 46px;
     padding: 13px 20px;
-    font-size: 14px;
+    font-size: var(--text-caption);
     line-height: 20px;
 }
 
@@ -568,7 +568,7 @@
     border-top-right-radius: 0;
 }
 
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .cc-navbar__nav {
         border-bottom: 1px solid color-mix(in oklch, var(--on-chrome) 10%, transparent);
     }
@@ -643,7 +643,7 @@
     }
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar__nav {
         float: left;
         margin: 0;
@@ -655,7 +655,7 @@
     }
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-navbar__right {
         float: right !important;
         margin-right: -20px;
@@ -819,7 +819,7 @@
     margin-left: 0;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .modal-dialog {
         width: 600px;
         margin: 30px auto;

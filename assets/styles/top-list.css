@@ -3,13 +3,14 @@
  * SortableJS integration for modern drag-and-drop functionality
  *
  * Entry-scoped (top-list.js), not imported into app.css -- imports
- * tokens.css directly so `theme(--breakpoint-tablet)` still resolves in
+ * Tailwind's theme (default breakpoints) and tokens.css directly so `theme(--breakpoint-md)` still resolves in
  * this entry's own Tailwind build graph (each Vite CSS entry point runs
  * its own Tailwind pass; `theme()` only sees `@theme` blocks reachable
  * from that entry). A harmless duplicate of tokens.css's tiny `:root`
  * block ends up in this bundle too, same as it would from any other
  * shared partial imported by two entries.
  */
+@import 'tailwindcss/theme.css' layer(theme);
 @import './tokens.css';
 
 /* Container styles */
@@ -71,7 +72,7 @@
 }
 
 .position-number {
-    font-size: 18px;
+    font-size: var(--text-lg);
     font-weight: 700;
     color: var(--cc-gray-650);
     line-height: 1;
@@ -113,7 +114,7 @@
 
 .coaster-name {
     font-weight: 600;
-    font-size: 15px;
+    font-size: var(--text-body);
     color: var(--fg);
 }
 
@@ -124,7 +125,7 @@
 
 .coaster-park {
     color: var(--cc-gray-650);
-    font-size: 14px;
+    font-size: var(--text-caption);
 }
 
 .coaster-rating {
@@ -222,7 +223,7 @@
     right: 20px;
     padding: 8px 16px;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: var(--text-caption);
     font-weight: 500;
     z-index: 1050;
     transition: all 0.3s ease;
@@ -262,7 +263,7 @@
 }
 
 /* Mobile optimizations */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .coaster-entry {
         gap: 8px;
         padding: 10px 8px;
@@ -274,7 +275,7 @@
     }
 
     .position-number {
-        font-size: 16px;
+        font-size: var(--text-body);
     }
 
     .drag-indicator svg {
@@ -289,11 +290,11 @@
     }
 
     .coaster-name {
-        font-size: 14px;
+        font-size: var(--text-caption);
     }
 
     .coaster-park {
-        font-size: 13px;
+        font-size: var(--text-caption);
     }
 
     .coaster-separator {
@@ -472,7 +473,7 @@
 }
 
 /* Mobile optimizations for search */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .top-search-container {
         margin-bottom: 16px;
     }

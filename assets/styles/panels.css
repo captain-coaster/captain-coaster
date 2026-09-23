@@ -81,38 +81,38 @@
     position: relative;
     margin-top: 0;
     margin-bottom: 0;
-    font-size: 13px;
+    font-size: var(--text-caption);
     color: inherit;
 }
 
 h1.cc-panel__title,
 .h1.cc-panel__title {
-    font-size: 25px;
+    font-size: var(--text-2xl);
 }
 
 h2.cc-panel__title,
 .h2.cc-panel__title {
-    font-size: 23px;
+    font-size: var(--text-2xl);
 }
 
 h3.cc-panel__title,
 .h3.cc-panel__title {
-    font-size: 21px;
+    font-size: var(--text-lead);
 }
 
 h4.cc-panel__title,
 .h4.cc-panel__title {
-    font-size: 19px;
+    font-size: var(--text-lg);
 }
 
 h5.cc-panel__title,
 .h5.cc-panel__title {
-    font-size: 17px;
+    font-size: var(--text-lg);
 }
 
 h6.cc-panel__title,
 .h6.cc-panel__title {
-    font-size: 15px;
+    font-size: var(--text-body);
 }
 
 .cc-panel__footer {

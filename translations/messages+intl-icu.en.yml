@@ -10,16 +10,18 @@ Clear: 'Clear'
 
 app:
     name: 'Captain Coaster'
+    skip_to_content: 'Skip to content'
     title:
         default: 'Welcome!'
     header:
         search: 'Fast & Furious, Six Flags Over Texas...'
     search:
         suggestions: 'Search suggestions'
+        label: 'Search coasters and parks'
+        clear: 'Clear search'
         searching: 'Searching...'
 
 index:
-    title: 'Welcome!'
     description: 'Participative guide to discover, rate and review roller coasters. Our best coasters ranking is updated every month from all user ratings!'
     header:
         title: 'Review, rate and rank roller coasters'

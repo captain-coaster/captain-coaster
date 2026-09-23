@@ -10,16 +10,18 @@ Clear: 'Effacer'
 
 app:
     name: Captain Coaster
+    skip_to_content: 'Aller au contenu'
     title:
         default: 'Bienvenue !'
     header:
         search: 'Kyûbi Unchained, Walygator...'
     search:
         suggestions: 'Suggestions de recherche'
+        label: 'Rechercher un coaster ou un parc'
+        clear: 'Effacer la recherche'
         searching: 'Recherche en cours...'
 
 index:
-    title: 'Bienvenue !'
     description: 'Guide participatif pour découvrir, noter, et donner ton avis sur tous les coasters. Le classement des meilleurs coasters du monde est mis à jour chaque mois !'
     header:
         title: 'Notes, avis et classement des meilleurs coasters'

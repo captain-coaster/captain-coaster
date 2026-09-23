@@ -1,6 +1,6 @@
 .tooltip {
     position: relative;
-    font-size: 12px;
+    font-size: var(--text-caption);
     cursor: help;
 }
 

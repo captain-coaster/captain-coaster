@@ -1,49 +1,48 @@
-<div class="page-header page-header-default">
-  <div class="page-header-content">
-    <div class="page-title grid grid-cols-12 gap-0{% if hideTitle|default(false) == true %} hidden tablet:block{% endif %}">
-      <h1 class="col-span-12 tablet:col-span-8 wide:col-span-9">{{ title }}{% if subTitle %} • {{ subTitle }}{% endif %}</h1>
+<header class="mb-6 border-b border-line bg-surface">
+  <div class="mx-auto flex max-w-content flex-col gap-4 px-gutter py-6 md:flex-row md:items-center md:justify-between md:gap-8 md:py-8">
+    <div class="min-w-0{% if hideTitle|default(false) == true %} max-md:sr-only{% endif %}">
+      <h1 class="m-0">{{ title }}{% if subTitle %} • {{ subTitle }}{% endif %}</h1>
       {% if secondaryTitle %}
-         <h2 class="h6 col-span-12 tablet:col-span-8 wide:col-span-9">{{ secondaryTitle }}</h2>
+        <h2 class="m-0 mt-1 font-sans text-body font-normal text-muted">{{ secondaryTitle }}</h2>
       {% endif %}
     </div>
-    <div class="heading-elements {% if showSearchBar|default(true) == true %}visible-elements{% endif %}">
-      <form class="heading-form" action="{{ path('search_index') }}" method="get">
-        <div class="cc-field">
-          <div class="search-container" 
-                data-controller="search"
-                data-search-search-url-value="{{ path('api_search') }}"
-                data-search-results-url-value="{{ path('search_index') }}"
-                data-search-min-length-value="2"
-                data-search-debounce-delay-value="300">
-              <div class="has-feedback search-input-container">
-                <input id="search-coaster" 
-                      name="query"
-                      type="search" 
-                      class="cc-field__control border-cc-blue-600 border-lg"
-                      placeholder="{{ 'app.header.search'|trans }}"
-                      data-search-target="input"
-                      data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
-                      autocomplete="off"
-                      role="combobox"
-                      aria-expanded="false"
-                      aria-autocomplete="list"
-                      aria-haspopup="listbox">
-                <div class="cc-field__feedback">
-                  {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-4 h-4 text-size-small text-muted search-icon'}) }}
-                  <button type="button" 
-                          class="search-clear-button" 
-                          data-action="click->search#clearSearch"
-                          aria-label="Clear search">
-                    {{ ux_icon('heroicons:x-mark', {'class': 'w-4 h-4 text-size-small text-muted'}) }}
-                  </button>
-                </div>
-              </div>
-              <div class="search-dropdown" data-search-target="dropdown" role="listbox" aria-label="{{ 'app.search.suggestions'|trans }}">
-                <div data-search-target="results"></div>
-              </div>
+    {% if showSearchBar|default(true) == true %}
+      <form class="w-full md:w-sm md:shrink-0 lg:w-md xl:w-lg" action="{{ path('search_index') }}" method="get" role="search">
+        <div class="search-container"
+            data-controller="search"
+            data-search-search-url-value="{{ path('api_search') }}"
+            data-search-results-url-value="{{ path('search_index') }}"
+            data-search-min-length-value="2"
+            data-search-debounce-delay-value="300">
+          <div class="has-feedback search-input-container">
+            <input id="search-coaster"
+                  name="query"
+                  type="search"
+                  class="cc-field__control border-cc-blue-600 border-lg"
+                  placeholder="{{ 'app.header.search'|trans }}"
+                  aria-label="{{ 'app.search.label'|trans }}"
+                  data-search-target="input"
+                  data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
+                  autocomplete="off"
+                  role="combobox"
+                  aria-expanded="false"
+                  aria-autocomplete="list"
+                  aria-haspopup="listbox">
+            <div class="cc-field__feedback">
+              {{ ux_icon('heroicons:magnifying-glass', {'class': 'w-4 h-4 text-muted search-icon'}) }}
+              <button type="button"
+                      class="search-clear-button"
+                      data-action="click->search#clearSearch"
+                      aria-label="{{ 'app.search.clear'|trans }}">
+                {{ ux_icon('heroicons:x-mark', {'class': 'w-4 h-4 text-muted'}) }}
+              </button>
             </div>
           </div>
+          <div class="search-dropdown" data-search-target="dropdown" role="listbox" aria-label="{{ 'app.search.suggestions'|trans }}">
+            <div data-search-target="results"></div>
+          </div>
+        </div>
       </form>
-    </div>
+    {% endif %}
   </div>
-</div>
+</header>
