@@ -22,7 +22,6 @@ app:
         searching: 'Buscando...'
 
 index:
-    title: '¡Bienvenido!'
     description: 'Guía participativa para descubrir, calificar y revisar montañas rusas. Encuentra todas las mejores montañas rusas con nuestra clasificación y mapa interactivo.'
     header:
         title: 'Descubre, califica y comparte montañas rusas'

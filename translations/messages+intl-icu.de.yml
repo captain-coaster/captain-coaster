@@ -22,7 +22,6 @@ app:
         searching: 'Suche läuft...'
 
 index:
-    title: 'Willkommen!'
     description: 'Leitfaden zum Entdecken, Bewerten und Rezensieren von Achterbahnen. Unser Ranking der besten Achterbahnen wird jeden Monat anhand aller Benutzerbewertungen aktualisiert!'
     header:
         title: 'Rezensiere, bewerte und ranke Achterbahnen'
