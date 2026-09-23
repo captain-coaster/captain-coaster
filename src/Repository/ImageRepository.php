@@ -127,4 +127,60 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * A page of photos ordered by id, for RenameImagesCommand's batched, resumable pass over
+     * the whole table (pictures delivery plan, step 3) -- an id cursor rather than OFFSET, so a
+     * page's position is stable even if rows are enabled/disabled between calls. No coaster
+     * join: the command never needs it.
+     *
+     * @return array<Image>
+     */
+    public function findPhotosOrderedById(?int $afterId, int $limit): array
+    {
+        $qb = $this->createQueryBuilder('i')
+            ->orderBy('i.id', 'ASC')
+            ->setMaxResults($limit);
+
+        if (null !== $afterId) {
+            $qb->where('i.id > :afterId')->setParameter('afterId', $afterId);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /** Matches a backup file's bare UUID filename back to its DB row, regardless of extension. */
+    public function findOneByUuid(string $uuid): ?Image
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('i')
+            ->from(Image::class, 'i')
+            ->where('i.filename LIKE :pattern')
+            ->setParameter('pattern', $uuid.'.%')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Images whose stored original has the watermark baked into the pixels -- from the
+     * pre-2022-06-08 era when the site applied it at upload time, before the Lambda started
+     * stamping it dynamically on every resize. `watermarked` doesn't mean "currently double
+     * stamped", it means "the original file itself already contains it".
+     *
+     * @return array<Image>
+     */
+    public function findWatermarkBakedIn(): array
+    {
+        return $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('i')
+            ->from(Image::class, 'i')
+            ->where('i.watermarked = 1')
+            ->andWhere('i.createdAt < :cutoff')
+            ->setParameter('cutoff', new \DateTimeImmutable('2022-06-08 00:00:00'))
+            ->orderBy('i.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
