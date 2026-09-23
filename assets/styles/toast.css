@@ -89,12 +89,11 @@
 
 .notification--info {
     color: var(--action);
-    border: 1px solid var(--cc-primary);
-    border-left: 4px solid var(--cc-primary);
+    border: 1px solid var(--action);
 }
 
 .notification--info .notification__icon {
-    background: var(--cc-primary);
+    background: var(--action);
 }
 
 .notification--info .notification__close {
