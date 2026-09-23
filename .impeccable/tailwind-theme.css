@@ -1,0 +1,28 @@
+/* Import after tailwindcss and captain-coaster-tokens.css in your Vite entry. */
+@theme inline {
+  --color-canvas: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--border);
+  --color-control-line: var(--control-border);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-on-action: var(--on-action);
+  --color-selected: var(--selected);
+  --color-highlight: var(--highlight);
+  --color-on-highlight: var(--on-highlight);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-focus: var(--focus);
+  --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --font-sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --radius-control: .5rem;
+  --radius-card: .75rem;
+  --shadow-raised: 0 4px 16px oklch(0.28 0.04 245 / .09);
+  --shadow-overlay: 0 12px 32px oklch(0.28 0.04 245 / .16);
+}
