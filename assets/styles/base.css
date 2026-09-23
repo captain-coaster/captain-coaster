@@ -85,10 +85,12 @@ p {
 /*
  * No root font-size: rem follows the user's browser setting (16px by
  * default). Body text is 1rem/1.5 (DESIGN.md "body").
+ * `svh`, not `dvh`: dvh tracks the mobile toolbar, so the page shell
+ * re-laid out mid-scroll (content jumps, smooth scrolls cut short).
  */
 body {
     position: relative;
-    min-height: 100dvh;
+    min-height: 100svh;
     font-family: var(--font-sans);
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
