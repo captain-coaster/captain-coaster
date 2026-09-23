@@ -66,7 +66,7 @@ Mid term aim:
 
 ### Redesign: target vs. current
 
-`DESIGN.md` and `.impeccable/` describe the **target** design system. Until the reskin lands, the app ships the **current** one (`assets/styles/tokens.css` `--cc-*` tokens, `.cc-*` files, Roboto). Plan and progress: #375. How to run each step (Impeccable usage, 2026 baseline per step): `docs/agents/design-workflow.md`.
+`DESIGN.md` describes the **target** design system. Its colors, fonts and tokens are live in `assets/styles/tokens.css` since the reskin (#413); layout, navigation and components are still the **legacy** `.cc-*` files, migrated one surface at a time. Plan and progress: #375. How to run each step (Impeccable usage, 2026 baseline per step): `docs/agents/design-workflow.md`.
 
 - Order: reskin (old `--cc-*` tokens become aliases of the target colors, new fonts — whole site at once) → page shell → navigation → Home (reference page) → remaining pages.
 - It's a complete makeover: use the state-of-the-art approach for each step, not the minimal change.
@@ -77,7 +77,8 @@ Mid term aim:
   - replaces hardcoded px spacing (`mb-[15px]`, px literals in CSS) with Tailwind's spacing scale;
   - deletes the `.cc-*` rules it replaces once nothing else uses them.
 - `--cc-*` tokens are compatibility aliases, removed as their users migrate.
-- `.impeccable/*.css` are reference copies, not imported anywhere — don't import them directly.
+- `assets/styles/tokens.css` is the canonical token source; `.impeccable/*.css` are the original proposal files, not imported anywhere — don't import or edit them.
+- Tailwind's default color palette is switched off: only token colors (plus white) exist as utilities. Add a missing shade as a ramp step + semantic role in `tokens.css`, never a standalone color.
 
 ### Naming conventions
 

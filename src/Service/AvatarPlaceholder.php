@@ -13,17 +13,20 @@ namespace App\Service;
  */
 final class AvatarPlaceholder
 {
-    /** Same brand colors as assets/styles/tokens.css, all already paired with white text elsewhere (colors.css's bg-* classes). */
+    /**
+     * Palette primitives from assets/styles/tokens.css that carry white initials at >= 4.5:1.
+     * Hex because the SVG is rendered as an <img> and can't read CSS variables;
+     * AvatarPlaceholderTest checks each value still exists in tokens.css.
+     */
     private const array PALETTE = [
-        '#2196f3', // primary
-        '#1e88e5', // primary-600
-        '#00bcd4', // info
-        '#4caf50', // success
-        '#66bb6a', // success-400
-        '#ff5722', // warning
-        '#aa3510', // warning-deep
-        '#f44336', // danger
-        '#26a69a', // teal-400
+        '#2359AD', // blue-700
+        '#23634E', // green-700
+        '#AB4138', // coral-600
+        '#4767A3', // blue-500
+        '#78500A', // amber-800
+        '#405467', // slate-600
+        '#19458C', // blue-800
+        '#28343A', // logo-ink
     ];
 
     public function dataUri(string $displayName, int $seed): string

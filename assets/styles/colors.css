@@ -60,14 +60,14 @@
  * by that cluster, is untouched: colors.less never defines it).
  */
 .bg-cc-blue {
-    background-color: #03a9f4;
-    border-color: #03a9f4;
+    background-color: var(--action);
+    border-color: var(--action);
     color: var(--cc-white);
 }
 
 .bg-cc-blue-400 {
-    background-color: #29b6f6;
-    border-color: #29b6f6;
+    background-color: var(--action);
+    border-color: var(--action);
     color: var(--cc-white);
 }
 
@@ -78,16 +78,11 @@
 }
 
 .bg-primary-400 {
-    background-color: #42a5f5;
-    border-color: #42a5f5;
+    background-color: var(--action);
+    border-color: var(--action);
     color: var(--cc-white);
 }
 
-.bg-success {
-    background-color: var(--cc-success);
-    border-color: var(--cc-success);
-    color: var(--cc-white);
-}
 
 .bg-success-400 {
     background-color: var(--cc-success-400);
@@ -101,27 +96,17 @@
     color: var(--cc-white);
 }
 
-.bg-warning {
-    background-color: var(--cc-warning);
-    border-color: var(--cc-warning);
-    color: var(--cc-white);
-}
 
 .bg-warning-400 {
-    background-color: #ff7043;
-    border-color: #ff7043;
+    background-color: var(--warning);
+    border-color: var(--warning);
     color: var(--cc-white);
 }
 
-.bg-danger {
-    background-color: var(--cc-danger);
-    border-color: var(--cc-danger);
-    color: var(--cc-white);
-}
 
 .bg-danger-400 {
-    background-color: #ef5350;
-    border-color: #ef5350;
+    background-color: var(--danger);
+    border-color: var(--danger);
     color: var(--cc-white);
 }
 
@@ -143,48 +128,39 @@
     border-color: var(--cc-primary-600);
 }
 
-.border-success {
-    border-color: var(--cc-success);
-}
 
 .border-success-600 {
-    border-color: #43a047;
+    border-color: var(--success);
 }
 
 .border-info {
     border-color: var(--cc-info);
 }
 
-.border-warning {
-    border-color: var(--cc-warning);
-}
 
 .border-warning-400 {
-    border-color: #ff7043;
+    border-color: var(--warning);
 }
 
 .border-warning-600 {
-    border-color: #f4511e;
+    border-color: var(--warning);
 }
 
-.border-danger {
-    border-color: var(--cc-danger);
-}
 
 .border-danger-600 {
-    border-color: #e53935;
+    border-color: var(--danger);
 }
 
 .border-danger-800 {
-    border-color: #c62828;
+    border-color: var(--danger);
 }
 
 .border-cc-blue-600 {
-    border-color: #039be5;
+    border-color: var(--action);
 }
 
 .border-top-cc-blue {
-    border-top-color: #03a9f4;
+    border-top-color: var(--action);
 }
 
 .border-top-primary {
@@ -192,23 +168,23 @@
 }
 
 .border-top-cc-teal {
-    border-top-color: #009688;
+    border-top-color: var(--action);
 }
 
 .border-top-grey {
-    border-top-color: #777;
+    border-top-color: var(--muted);
 }
 
 .text-cc-blue,
 .text-cc-blue:hover,
 .text-cc-blue:focus {
-    color: #03a9f4 !important;
+    color: var(--action) !important;
 }
 
 .text-cc-blue-400,
 .text-cc-blue-400:hover,
 .text-cc-blue-400:focus {
-    color: #29b6f6 !important;
+    color: var(--action) !important;
 }
 
 .text-primary,
@@ -223,22 +199,17 @@
     color: var(--cc-primary-600) !important;
 }
 
-.text-success,
-.text-success:hover,
-.text-success:focus {
-    color: var(--cc-success) !important;
-}
 
 .text-success-400,
 .text-success-400:hover,
 .text-success-400:focus {
-    color: #66bb6a !important;
+    color: var(--success) !important;
 }
 
 .text-success-600,
 .text-success-600:hover,
 .text-success-600:focus {
-    color: #43a047 !important;
+    color: var(--success) !important;
 }
 
 .text-info,
@@ -247,52 +218,42 @@
     color: var(--cc-info) !important;
 }
 
-.text-warning,
-.text-warning:hover,
-.text-warning:focus {
-    color: var(--cc-warning) !important;
-}
 
 .text-warning-400,
 .text-warning-400:hover,
 .text-warning-400:focus {
-    color: #ff7043 !important;
+    color: var(--warning) !important;
 }
 
 .text-warning-600,
 .text-warning-600:hover,
 .text-warning-600:focus {
-    color: #f4511e !important;
+    color: var(--warning) !important;
 }
 
-.text-danger,
-.text-danger:hover,
-.text-danger:focus {
-    color: var(--cc-danger) !important;
-}
 
 .text-danger-400,
 .text-danger-400:hover,
 .text-danger-400:focus {
-    color: #ef5350 !important;
+    color: var(--danger) !important;
 }
 
 .text-danger-600,
 .text-danger-600:hover,
 .text-danger-600:focus {
-    color: #e53935 !important;
+    color: var(--danger) !important;
 }
 
 .text-danger-800,
 .text-danger-800:hover,
 .text-danger-800:focus {
-    color: #c62828 !important;
+    color: var(--danger) !important;
 }
 
 .text-cc-teal,
 .text-cc-teal:hover,
 .text-cc-teal:focus {
-    color: #009688 !important;
+    color: var(--action) !important;
 }
 
 .text-cc-teal-400,
@@ -304,25 +265,25 @@
 .text-cc-indigo-400,
 .text-cc-indigo-400:hover,
 .text-cc-indigo-400:focus {
-    color: #5c6bc0 !important;
+    color: var(--action) !important;
 }
 
 .text-cc-orange-400,
 .text-cc-orange-400:hover,
 .text-cc-orange-400:focus {
-    color: #ffa726 !important;
+    color: var(--muted-strong) !important;
 }
 
 .text-cc-pink-400,
 .text-cc-pink-400:hover,
 .text-cc-pink-400:focus {
-    color: #ec407a !important;
+    color: var(--muted) !important;
 }
 
 .text-cc-slate,
 .text-cc-slate:hover,
 .text-cc-slate:focus {
-    color: #607d8b !important;
+    color: var(--muted-strong) !important;
 }
 
 .text-default,
@@ -358,11 +319,9 @@
     --status-color: var(--cc-success);
 }
 
-/* Rateable, but not yet the coaster's confirmed final state -- a lighter
- * shade of the same "you can ride this" green rather than construction's
- * orange, which would wrongly imply it isn't rideable yet. */
+/* Rateable, but not yet final -- a lighter shade of the operating green. */
 [data-status="status.soft.opening"] {
-    --status-color: var(--cc-success-400);
+    --status-color: color-mix(in oklch, var(--success) 80%, var(--surface));
 }
 
 [data-status="status.announced"] {
@@ -381,7 +340,7 @@
 /* Moved/rebuilt elsewhere, not bad news -- danger red would overstate it. */
 [data-status="status.retracked"],
 [data-status="status.relocated"] {
-    --status-color: var(--cc-teal-400);
+    --status-color: var(--muted-strong);
 }
 
 .cc-label[data-status] {
@@ -416,4 +375,15 @@
     border-bottom-width: 3px;
     border-bottom-style: solid;
     border-bottom-color: var(--status-color);
+}
+
+/* Coaster score (0-100) as text: a point on the rating scale (tokens.css),
+ * darkened with 30% ink so every score reads >= 4.7:1 on white. Templates
+ * pass only the number: `style="--score: 87.3"`. */
+.score-color {
+    color: color-mix(
+        in oklch,
+        color-mix(in oklch, var(--rating-scale-high) calc(var(--score, 0) * 1%), var(--rating-scale-low)) 70%,
+        var(--fg)
+    );
 }

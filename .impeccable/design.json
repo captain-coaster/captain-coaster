@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-22T17:53:18.501140+00:00",
+  "generatedAt": "2026-09-23T11:28:23Z",
   "title": "Design System: Captain Coaster",
   "extensions": {
     "shadows": [
@@ -85,7 +85,10 @@
         "name": "The Semantic Role Rule",
         "body": "Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.",
         "section": "colors"
-      }
+      },
+      "Rating stars: sunshine fill, amber edge; empty input stars use the control boundary color.",
+      "Rating scale: color-mix(in oklch) from rating-scale-low (deep red) through gold to rating-scale-high (vivid green); lightness rises toward good; labels outside the bar.",
+      "Roles, not palettes: data colors are semantic roles over existing hues; extend a hue ramp for a missing step, never add a standalone hue."
     ],
     "dos": [
       "Do preserve the Captain Coaster name and original logo exactly, including colors, proportions and complete artwork.",

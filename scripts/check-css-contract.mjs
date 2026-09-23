@@ -186,6 +186,14 @@ function addViolations(path, source) {
             contract: 'Bootstrap dropdown data attribute',
             pattern: /data-toggle="dropdown"/g,
         },
+        {
+            // Hand-written rules must not shadow the utilities generated
+            // from the design tokens (tokens.css `@theme inline`), e.g. the
+            // legacy `.text-muted`/`.bg-success` retired by the reskin (#413).
+            contract: 'selector shadowing a design-token utility',
+            pattern:
+                /(?:^|[^\w-])\.(?:bg|text|border(?:-[trblxy])?|outline|ring|fill|stroke|decoration|divide|accent|caret)-(?:canvas|surface|ink|muted|line|control-line|action|action-hover|on-action|selected|highlight|on-highlight|success|success-bg|warning|warning-bg|danger|danger-bg|focus|logo-ink)(?![\w-])/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {

@@ -7,8 +7,11 @@
     <title>{% block title %}{% endblock %}</title>
 
     <!-- Global stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet"
-          type="text/css">
+    {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
+    {% if app.environment != 'dev' %}
+      <link rel="preload" href="{{ asset('build/assets/fonts/source-sans-3-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+      <link rel="preload" href="{{ asset('build/assets/fonts/barlow-condensed-600-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
+    {% endif %}
     {{ reprise_entry_link_tags('app') }}
     <!-- /global stylesheets -->
 </head>

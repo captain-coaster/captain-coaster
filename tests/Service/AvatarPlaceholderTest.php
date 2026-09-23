@@ -56,7 +56,7 @@ class AvatarPlaceholderTest extends TestCase
 
     public function testColorWrapsAroundThePalette(): void
     {
-        $paletteSize = 9;
+        $paletteSize = 8;
         $this->assertSame(
             $this->avatarPlaceholder->color(1),
             $this->avatarPlaceholder->color(1 + $paletteSize),
@@ -83,6 +83,16 @@ class AvatarPlaceholderTest extends TestCase
 
         $this->assertStringContainsString('font-size="14"', $twoLetters);
         $this->assertStringContainsString('font-size="17"', $oneLetter);
+    }
+
+    public function testEveryColorIsATokensCssPrimitive(): void
+    {
+        $tokens = (string) file_get_contents(\dirname(__DIR__, 2).'/assets/styles/tokens.css');
+        preg_match_all('/--[a-z0-9-]+: oklch\([^)]*\); \/\* (#[0-9A-F]{6}) \*\//', $tokens, $matches);
+
+        for ($seed = 0; $seed < 8; ++$seed) {
+            $this->assertContains($this->avatarPlaceholder->color($seed), $matches[1]);
+        }
     }
 
     private function decodeSvg(string $dataUri): string

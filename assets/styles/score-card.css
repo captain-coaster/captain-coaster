@@ -32,7 +32,7 @@
     font-size: 32px;
     font-weight: 700;
     line-height: 1;
-    color: #111827;
+    color: var(--fg);
 }
 
 .rank-link {
@@ -81,6 +81,6 @@
 }
 
 .coaster-stats__value--empty {
-    color: var(--cc-gray-500);
+    color: var(--muted);
     font-weight: 500;
 }

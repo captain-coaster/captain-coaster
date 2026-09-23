@@ -16,7 +16,7 @@
     z-index: 1;
     text-transform: initial;
     color: var(--cc-white);
-    background: rgba(0, 0, 0, 90%);
+    background: color-mix(in oklch, var(--fg) 90%, transparent);
 }
 
 .tooltip:hover .tooltip-content {
@@ -30,5 +30,5 @@
     width: 5px;
     height: 5px;
     transform: translateX(-50%) rotate(45deg);
-    background: rgba(0, 0, 0, 90%);
+    background: color-mix(in oklch, var(--fg) 90%, transparent);
 }

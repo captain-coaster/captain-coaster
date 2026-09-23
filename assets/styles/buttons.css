@@ -75,14 +75,14 @@
     color: var(--cc-gray-900);
     text-decoration: none;
     outline: 0;
-    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.05);
+    box-shadow: inset 0 0 0 100px color-mix(in oklch, var(--fg) 5%, transparent);
 }
 
 .cc-button:active,
 .cc-button.active {
     background-image: none;
     outline: 0;
-    box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 0 100px color-mix(in oklch, var(--fg) 10%, transparent);
 }
 
 /* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
@@ -118,8 +118,8 @@ fieldset[disabled] .cc-button {
 .cc-button--default:active,
 .cc-button--default.active {
     color: var(--cc-gray-900);
-    background-color: #e3e3e3;
-    border-color: #bebebe;
+    background-color: var(--subtle);
+    border-color: var(--border);
 }
 
 .cc-button--default.disabled {
@@ -138,8 +138,8 @@ fieldset[disabled] .cc-button {
 .cc-button--primary:active,
 .cc-button--primary.active {
     color: var(--cc-white);
-    background-color: #0c7cd5;
-    border-color: #0b76cc;
+    background-color: var(--action-hover);
+    border-color: var(--action-hover);
 }
 
 .cc-button--primary.disabled {
@@ -158,8 +158,8 @@ fieldset[disabled] .cc-button {
 .cc-button--info:active,
 .cc-button--info.active {
     color: var(--cc-white);
-    background-color: #008fa1;
-    border-color: #008697;
+    background-color: var(--action-hover);
+    border-color: var(--action-hover);
 }
 
 .cc-button--info.disabled {
@@ -178,8 +178,8 @@ fieldset[disabled] .cc-button {
 .cc-button--danger:active,
 .cc-button--danger.active {
     color: var(--cc-white);
-    background-color: #ea1c0d;
-    border-color: #e11b0c;
+    background-color: color-mix(in oklch, var(--danger) 85%, var(--fg));
+    border-color: color-mix(in oklch, var(--danger) 85%, var(--fg));
 }
 
 .cc-button--danger.disabled {
@@ -314,7 +314,7 @@ fieldset[disabled] .cc-button {
     position: absolute;
     top: -1px;
     left: -1px;
-    background-color: rgba(0, 0, 0, 0.15);
+    background-color: color-mix(in oklch, var(--fg) 15%, transparent);
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
     padding: 10px;
@@ -387,12 +387,12 @@ fieldset[disabled] .cc-button {
  * or icon-shaped that would fight the utility syntax.
  */
 .cc-close {
-    @apply float-right text-[19.5px] font-light leading-none text-black opacity-60;
+    @apply float-right text-[19.5px] font-light leading-none text-ink opacity-60;
 }
 
 .cc-close:hover,
 .cc-close:focus {
-    @apply cursor-pointer text-black no-underline opacity-100;
+    @apply cursor-pointer text-ink no-underline opacity-100;
     outline: 0;
 }
 

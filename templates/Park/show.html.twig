@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div>
-                        <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
+                        <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-action'}) }}</p>
                         <h5 class="text-semibold m-0">
                             {{ park.operatingKiddies|length }}
                         </h5>
@@ -88,7 +88,7 @@
                                 {% if coaster.mainImage %}
                                     {{ helper.picture(coaster.mainImage.filename, 200, 150, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
-                                    <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-gray-100 text-gray-400" style="width:200px;">
+                                    <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-canvas text-muted" style="width:200px;">
                                         {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
                                     </div>
                                 {% endif %}
@@ -96,13 +96,13 @@
                         </div>
                         <div class="cc-media__body cc-media__middle">
                             <h2 class="cc-media__heading mb-2 center" style="margin-bottom: -4px;">
-                                <a style="color:#333;"
+                                <a class="text-ink"
                                    href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                                     {{ coaster.name }}
                                 </a>
                             </h2>
-                            <h4 class="cc-media__heading score-responsive mb-5 center"
-                                style="color: {{ helper.ratingColor(coaster.score) }};">
+                            <h4 class="cc-media__heading score-responsive score-color mb-5 center"
+                                style="--score: {{ coaster.score|default(0) }}">
                                 {% if coaster.score %}
                                     {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
                                 {% else %}

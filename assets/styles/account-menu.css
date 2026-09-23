@@ -15,7 +15,7 @@
 .cc-menu--user > .cc-menu__toggle img {
     width: 28px !important;
     height: 28px !important;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid color-mix(in oklch, var(--on-chrome) 20%, transparent);
 }
 
 /*
@@ -54,7 +54,7 @@
  */
 .account-menu-header img {
     max-height: none !important;
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    border: 2px solid color-mix(in oklch, var(--fg) 10%, transparent);
 }
 
 .account-menu-name {
@@ -71,7 +71,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    color: #767676;
+    color: var(--muted);
     font-size: 12px;
 }
 
@@ -161,15 +161,15 @@
     }
 
     .cc-navbar__nav > li > .cc-menu__list.account-menu .divider {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: color-mix(in oklch, var(--on-chrome) 10%, transparent);
     }
 
     .cc-navbar__nav > li > .cc-menu__list.account-menu .account-menu-row-value {
-        color: rgba(255, 255, 255, 0.7);
+        color: color-mix(in oklch, var(--on-chrome) 70%, transparent);
     }
 
     .cc-navbar__nav > li > .cc-menu__list.account-menu .account-menu-header img {
-        border-color: rgba(255, 255, 255, 0.2);
+        border-color: color-mix(in oklch, var(--on-chrome) 20%, transparent);
     }
 
     /* Every link's hover/focus/active state (not just .account-menu-row)
@@ -180,7 +180,7 @@
     .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:hover,
     .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:focus,
     .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:active {
-        background-color: rgba(0, 0, 0, 0.1);
+        background-color: var(--chrome-hover);
     }
 
     /* Nested submenus (language, units, notifications) are themselves
@@ -220,7 +220,7 @@
     .cc-navbar__toggle-icon img {
         width: 28px !important;
         height: 28px !important;
-        border: 2px solid rgba(255, 255, 255, 0.2);
+        border: 2px solid color-mix(in oklch, var(--on-chrome) 20%, transparent);
     }
 
     /* No size override for svg: it falls back to its natural w-8/h-8 size,
@@ -289,5 +289,5 @@
 }
 
 .notif-item:not(.unread) .cc-media__annotation {
-    color: rgba(51, 51, 51, 0.45);
+    color: var(--muted);
 }

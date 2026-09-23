@@ -33,7 +33,7 @@
   <div class="cc-panel cc-panel__body">
     <div class="grid grid-cols-12 gap-5 text-center">
       <div class="col-span-3">
-        <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
+        <p>{{ ux_icon('heroicons:star', {'class': 'w-5 h-5 display-inline-block text-action'}) }}</p>
         <h5 class="text-semibold m-0">
           {{ stats.nb_ratings|format_number }}
           {% if stats.nb_new_ratings > 0 %}
@@ -43,14 +43,14 @@
         <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
       </div>
       <div class="col-span-3">
-        <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-5 h-5 display-inline-block text-success'}) }}</p>
+        <p>{{ ux_icon('heroicons:megaphone', {'class': 'w-5 h-5 display-inline-block text-action'}) }}</p>
         <h5 class="text-semibold m-0">
           <a href="{{ path('review_list') }}">{{ stats.nb_reviews|format_number }}</a>
         </h5>
         <span class="text-muted text-size-small">{{ 'index.stats.reviews'|trans }}</span>
       </div>
       <div class="col-span-3">
-        <p>{{ ux_icon('heroicons:user-group', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
+        <p>{{ ux_icon('heroicons:user-group', {'class': 'w-5 h-5 display-inline-block text-action'}) }}</p>
         <h5 class="text-semibold m-0">
           <a href="{{ path('user_list') }}">{{ stats.nb_users|format_number }}</a>
         </h5>
@@ -69,7 +69,7 @@
         {# One badge line, just the plain status -- no opening date shown here (#392 tracks a
            proper partial-date precision fix; showing one from a possibly-fake Jan-1
            placeholder isn't worth patching around with another heuristic in the meantime). #}
-        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-[0_2px_6px_rgba(0,0,0,0.25)]' %}
+        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-raised' %}
         <a href="{{ path('show_coaster', {'id': hero.coasterId, 'slug': hero.coasterSlug}) }}" class="block relative mb-5 overflow-hidden rounded-xl">
           <div class="relative aspect-[16/10] overflow-hidden">
             {# The card the browser sees first above the fold -- eager/high-priority, not the
@@ -80,7 +80,7 @@
             {# Concentrated on the bottom third so the photo itself stays visible. Darker at the very
                bottom (0.9, up from 0.85) than the fade reach alone needs -- text contrast against an
                arbitrary user photo (e.g. snow, bright sky) isn't otherwise guaranteed. #}
-            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.9)_0%,rgba(0,0,0,0)_45%)]"></div>
+            <div class="absolute inset-0 bg-linear-to-t from-ink/90 to-transparent to-45%"></div>
           </div>
           {% if hero.type == 'upcoming' %}
             {# Real status (construction or announced) drives both label and color -- see colors.css's [data-status] rules. #}
@@ -105,7 +105,7 @@
             </span>
           {% endif %}
           <div class="absolute inset-x-0 bottom-0 p-4 pt-3.5 text-white">
-            <p class="line-clamp-2 text-xl leading-tight font-bold [text-shadow:0_1px_3px_rgba(0,0,0,0.35)]">{{ hero.coasterName }}</p>
+            <p class="line-clamp-2 text-xl leading-tight font-bold text-shadow-sm text-shadow-ink/35">{{ hero.coasterName }}</p>
             <div class="mt-0.5 flex items-baseline gap-2">
               <span class="min-w-0 flex-1 truncate text-xs text-white/80">{{ hero.parkName }}</span>
               {% if hero.imageCredit %}

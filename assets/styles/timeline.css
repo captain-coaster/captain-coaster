@@ -29,8 +29,8 @@
     top: 6px;
     width: 8px;
     height: 8px;
-    background-color: #fff;
-    border: 2px solid #78909c;
+    background-color: var(--surface);
+    border: 2px solid var(--muted);
     border-radius: 50%;
     z-index: 3;
 }
@@ -42,7 +42,7 @@
     left: 3px;
     bottom: -6px;
     width: 2px;
-    background-color: #78909c;
+    background-color: var(--muted);
     z-index: 2;
 }
 

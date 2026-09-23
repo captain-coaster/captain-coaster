@@ -70,7 +70,7 @@
 }
 
 .search-clear-button:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: color-mix(in oklch, var(--fg) 10%, transparent);
 }
 
 /* Toggle between search icon and clear button */
@@ -88,7 +88,7 @@
 .search-container input[type='search'] {
     width: 100%;
     padding-right: 2.5rem;
-    border: 1px solid var(--cc-gray-300);
+    border: 1px solid var(--control-border);
     border-radius: 4px;
     transition:
         border-color 0.15s ease,
@@ -97,7 +97,7 @@
 
 .search-container input[type='search']:focus {
     border-color: var(--cc-primary);
-    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.25);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--action) 25%, transparent);
     outline: none;
 }
 
@@ -117,7 +117,7 @@
     border: 1px solid var(--cc-gray-300);
     border-top: none;
     border-radius: 0 0 4px 4px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-raised);
     overflow: hidden;
 }
 
@@ -161,7 +161,7 @@
 }
 
 .search-result-item.selected {
-    background-color: #e3f2fd;
+    background-color: var(--selected);
     border-left: 3px solid var(--cc-primary);
 }
 
@@ -173,7 +173,7 @@
     flex-shrink: 0;
     border-radius: 4px;
     overflow: hidden;
-    background-color: #f0f0f0;
+    background-color: var(--subtle);
 }
 
 .search-result-image img {
@@ -200,8 +200,8 @@
 
 .search-result-name strong,
 .search-result-subtitle strong {
-    background-color: #fff3cd;
-    color: #856404;
+    background-color: var(--warning-bg);
+    color: var(--warning);
     font-weight: 600;
     padding: 1px 2px;
     border-radius: 2px;
@@ -220,13 +220,13 @@
     padding: 8px 12px;
     cursor: pointer;
     background-color: var(--cc-gray-25);
-    border-top: 1px solid #e9ecef;
+    border-top: 1px solid var(--border);
     transition: background-color 0.15s ease;
 }
 
 .search-show-more:hover,
 .search-show-more.selected {
-    background-color: #e9ecef;
+    background-color: var(--subtle);
 }
 
 .search-show-more-content {
@@ -255,7 +255,7 @@
 .search-loading-spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid #f3f3f3;
+    border: 2px solid var(--subtle);
     border-top: 2px solid var(--cc-primary);
     border-radius: 50%;
     animation: search-spin 1s linear infinite;
@@ -344,11 +344,11 @@
 @media (prefers-contrast: high) {
     .search-dropdown {
         border-color: var(--cc-black);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        box-shadow: var(--shadow-overlay);
     }
 
     .search-result-item.selected {
-        background-color: #0066cc;
+        background-color: var(--action-hover);
         color: var(--cc-white);
         border-left-color: var(--cc-white);
     }
@@ -395,12 +395,12 @@
 }
 
 .search-result-item-page.search-result-item-keyboard-selected {
-    background-color: #e3f2fd;
+    background-color: var(--selected);
     border-left-color: var(--cc-primary);
 }
 
 .search-result-item-page.search-result-item-selected {
-    background-color: #e8f5e8;
+    background-color: var(--success-bg);
     border-left-color: var(--cc-success);
 }
 
@@ -444,7 +444,7 @@
     flex-shrink: 0;
     border-radius: 4px;
     overflow: hidden;
-    background-color: #f0f0f0;
+    background-color: var(--subtle);
 }
 
 .search-result-item-page .search-result-image img {

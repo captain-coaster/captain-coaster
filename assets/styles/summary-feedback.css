@@ -41,7 +41,7 @@
 
 .summary-feedback-icon-button:hover,
 .summary-feedback-icon-button.voted {
-    color: #4b5563;
+    color: var(--muted);
 }
 
 .summary-feedback-icon-button:disabled,

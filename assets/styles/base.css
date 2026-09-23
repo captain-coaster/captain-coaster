@@ -1,5 +1,58 @@
 /* Captain Coaster's intentional element defaults, layered after Preflight. */
 
+/*
+ * Self-hosted fonts (#413): latin subset covers en/fr/es/de, generated from
+ * the TTFs next to them with fontTools pyftsubset. Vite hashes and emits
+ * them; base.html.twig preloads the body face through the asset manifest.
+ */
+@font-face {
+    font-family: "Source Sans 3";
+    src: url("../fonts/source-sans-3-latin.woff2") format("woff2");
+    font-weight: 200 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Barlow Condensed";
+    src: url("../fonts/barlow-condensed-600-latin.woff2") format("woff2");
+    font-weight: 600;
+    font-display: swap;
+}
+
+/* Browser-drawn surfaces take the palette too. */
+:root {
+    accent-color: var(--action);
+    caret-color: var(--action);
+}
+
+::selection {
+    background-color: var(--selected);
+    color: var(--fg);
+}
+
+/*
+ * Metric-matched fallbacks for the swap period (Capsize metrics, the
+ * Fontaine/next-font formula): Arial on iOS/desktop, Roboto on Android --
+ * their overrides differ by < 0.3%, so one face per family lists both.
+ */
+@font-face {
+    font-family: "Source Sans 3 Fallback";
+    src: local("Arial"), local("ArialMT"), local("Roboto");
+    size-adjust: 93.76%;
+    ascent-override: 109.21%;
+    descent-override: 42.66%;
+    line-gap-override: 0%;
+}
+
+@font-face {
+    font-family: "Barlow Condensed Fallback";
+    src: local("Arial"), local("ArialMT"), local("Roboto");
+    size-adjust: 76.49%;
+    ascent-override: 130.73%;
+    descent-override: 26.15%;
+    line-gap-override: 0%;
+}
+
 fieldset {
     border: 1px solid var(--cc-gray-400);
     margin: 0 2px;
@@ -53,7 +106,7 @@ html {
 body {
     position: relative;
     min-height: 100%;
-    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.5384616;
     color: var(--cc-gray-900);
@@ -68,7 +121,7 @@ a {
 
 a:hover,
 a:focus {
-    color: #166dba;
+    color: var(--action);
     text-decoration: none;
 }
 
