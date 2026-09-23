@@ -81,6 +81,8 @@ components:
 ---
 # Design System: Captain Coaster
 
+> **Status: target, not yet shipped.** This is the design system the app is migrating to (plan: #375). The live app still uses `assets/styles/tokens.css` and the `.cc-*` component files until the reskin lands; pages and components then migrate one at a time. Every new or reworked component follows this document. See "Redesign: target vs. current" in `AGENTS.md` and `docs/agents/design-workflow.md`.
+
 ## Overview
 
 **Creative North Star: "An enthusiast’s field guide"**

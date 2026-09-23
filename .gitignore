@@ -46,6 +46,11 @@ phpstan.neon
 /public/build/
 ###< symfony/reprise ###
 
-# Impeccable product context: holds unannounced strategy (roadmap,
-# monetization). Kept local; .worktreeinclude copies it into worktrees.
 /PRODUCT.md
+
+# Impeccable local working files
+/.impeccable/config.local.json
+/.impeccable/live/
+/.impeccable/review/
+/.impeccable/build/
+/.impeccable/mocks/
