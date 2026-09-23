@@ -128,7 +128,7 @@
     border-style: solid;
     border-radius: 2px;
     padding: 2px 5px 1px 5px;
-    font-size: 10px;
+    font-size: var(--text-caption);
     font-weight: 500;
     line-height: 1.53846;
 }
@@ -167,7 +167,7 @@
     border-style: solid;
     border-radius: 100px;
     padding: 2px 6px 1px 6px;
-    font-size: 10px;
+    font-size: var(--text-caption);
     font-weight: 500;
     line-height: 1.53846;
     letter-spacing: 0.1px;
@@ -201,7 +201,7 @@
     margin-right: 5px;
 }
 
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .cc-list-group__item > .cc-label {
         float: right;
     }

@@ -64,12 +64,12 @@
     </div>
   </div>
   <div class="grid grid-cols-12 gap-5 items-start">
-    <div class="col-span-12 tablet:col-span-6">
+    <div class="col-span-12 md:col-span-6">
       {% if hero %}
         {# One badge line, just the plain status -- no opening date shown here (#392 tracks a
            proper partial-date precision fix; showing one from a possibly-fake Jan-1
            placeholder isn't worth patching around with another heuristic in the meantime). #}
-        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold text-white shadow-raised' %}
+        {% set heroBadgeClass = 'absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-caption font-bold text-white shadow-raised' %}
         <a href="{{ path('show_coaster', {'id': hero.coasterId, 'slug': hero.coasterSlug}) }}" class="block relative mb-5 overflow-hidden rounded-xl">
           <div class="relative aspect-[16/10] overflow-hidden">
             {# The card the browser sees first above the fold -- eager/high-priority, not the
@@ -105,11 +105,11 @@
             </span>
           {% endif %}
           <div class="absolute inset-x-0 bottom-0 p-4 pt-3.5 text-white">
-            <p class="line-clamp-2 text-xl leading-tight font-bold text-shadow-sm text-shadow-ink/35">{{ hero.coasterName }}</p>
+            <p class="line-clamp-2 text-lead leading-tight font-bold text-shadow-sm text-shadow-ink/35">{{ hero.coasterName }}</p>
             <div class="mt-0.5 flex items-baseline gap-2">
-              <span class="min-w-0 flex-1 truncate text-xs text-white/80">{{ hero.parkName }}</span>
+              <span class="min-w-0 flex-1 truncate text-caption text-white/80">{{ hero.parkName }}</span>
               {% if hero.imageCredit %}
-                <span class="inline-flex min-w-0 max-w-[45%] flex-none items-center gap-1 text-[10px] text-white/60">
+                <span class="inline-flex min-w-0 max-w-[45%] flex-none items-center gap-1 text-caption text-white/60">
                   {{ ux_icon('heroicons:camera', {'class': 'w-2.5 h-2.5 shrink-0'}) }}
                   <span class="truncate">{{ hero.imageCredit }}</span>
                 </span>
@@ -144,7 +144,7 @@
       </div>
       <!-- /latests ratings -->
     </div>
-    <div class="col-span-12 tablet:col-span-6">
+    <div class="col-span-12 md:col-span-6">
       <!-- latest reviews -->
       <div class="cc-panel cc-panel--flat">
         <div class="cc-panel__heading">

@@ -3,13 +3,14 @@
  * Pure CSS implementation for displaying rating distribution bars
  *
  * Entry-scoped (coaster.js), not imported into app.css -- imports
- * tokens.css directly so `theme(--breakpoint-tablet)` still resolves in
+ * Tailwind's theme (default breakpoints) and tokens.css directly so `theme(--breakpoint-md)` still resolves in
  * this entry's own Tailwind build graph (each Vite CSS entry point runs
  * its own Tailwind pass; `theme()` only sees `@theme` blocks reachable
  * from that entry). A harmless duplicate of tokens.css's tiny `:root`
  * block ends up in this bundle too, same as it would from any other
  * shared partial imported by two entries.
  */
+@import 'tailwindcss/theme.css' layer(theme);
 @import './tokens.css';
 
 .rating-distribution {
@@ -103,7 +104,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 0.875rem;
+    font-size: var(--text-caption);
     color: var(--muted);
     font-weight: 500;
     min-height: 1.5rem;
@@ -114,7 +115,7 @@
     text-align: center;
     color: var(--cc-gray-600);
     padding: 2rem;
-    font-size: 0.875rem;
+    font-size: var(--text-caption);
 }
 
 /* Compact version for score cc-panel */
@@ -132,7 +133,7 @@
 }
 
 /* Responsive adjustments */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .rating-distribution {
         padding: 0.75rem;
     }
@@ -143,7 +144,7 @@
     }
 
     .rating-label {
-        font-size: 0.8125rem;
+        font-size: var(--text-caption);
         min-height: 1.25rem;
     }
 

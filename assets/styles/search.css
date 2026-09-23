@@ -3,34 +3,10 @@
  * Replaces legacy typeahead.js styling with modern, accessible design
  */
 
-/* Page Header Search Alignment */
-@media (min-width: theme(--breakpoint-tablet)) {
-    .page-header-content
-        .heading-elements.visible-elements
-        .heading-form
-        .cc-field {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-    }
-}
-
 /* Search Container */
 .search-container {
     position: relative;
     width: 100%;
-}
-
-/* Make search bar wider on desktop */
-@media (min-width: theme(--breakpoint-desktop)) {
-    .heading-form .search-container {
-        min-width: 400px;
-    }
-}
-
-@media (min-width: theme(--breakpoint-wide)) {
-    .heading-form .search-container {
-        min-width: 500px;
-    }
 }
 
 .search-container.search-open .search-dropdown {
@@ -133,7 +109,7 @@
 
 /* Search Result Emoji */
 .search-result-emoji {
-    font-size: 14px;
+    font-size: var(--text-caption);
     margin-right: 8px;
     flex-shrink: 0;
     width: 16px;
@@ -195,7 +171,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: var(--text-caption);
 }
 
 .search-result-name strong,
@@ -208,7 +184,7 @@
 }
 
 .search-result-subtitle {
-    font-size: 11px;
+    font-size: var(--text-caption);
     color: var(--cc-gray-650);
     white-space: nowrap;
     overflow: hidden;
@@ -233,13 +209,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 14px;
+    font-size: var(--text-caption);
     color: var(--cc-primary);
     font-weight: 500;
 }
 
 .search-show-more-content i {
-    font-size: 12px;
+    font-size: var(--text-caption);
     margin-left: 8px;
 }
 
@@ -272,7 +248,7 @@
 }
 
 .search-loading-text {
-    font-size: 14px;
+    font-size: var(--text-caption);
 }
 
 /* Error State */
@@ -286,11 +262,11 @@
 
 .search-error-icon {
     margin-right: 8px;
-    font-size: 16px;
+    font-size: var(--text-body);
 }
 
 .search-error-text {
-    font-size: 14px;
+    font-size: var(--text-caption);
 }
 
 /* No Results State */
@@ -305,34 +281,34 @@
 }
 
 .search-no-results-icon {
-    font-size: 24px;
+    font-size: var(--text-2xl);
     margin-bottom: 8px;
     opacity: 0.5;
 }
 
 .search-no-results-text {
-    font-size: 14px;
+    font-size: var(--text-caption);
 }
 
 /* Responsive Design */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .search-result-item {
         padding: 6px 10px;
         min-height: 32px;
     }
 
     .search-result-emoji {
-        font-size: 12px;
+        font-size: var(--text-caption);
         margin-right: 6px;
         width: 14px;
     }
 
     .search-result-name {
-        font-size: 13px;
+        font-size: var(--text-caption);
     }
 
     .search-result-subtitle {
-        font-size: 10px;
+        font-size: var(--text-caption);
     }
 
     .search-show-more {
@@ -406,7 +382,7 @@
 
 /* Search Result Content for Page */
 .search-result-item-page .search-result-emoji {
-    font-size: 16px;
+    font-size: var(--text-body);
     margin-right: 12px;
     flex-shrink: 0;
     width: 20px;
@@ -425,11 +401,11 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 16px;
+    font-size: var(--text-body);
 }
 
 .search-result-item-page .search-result-subtitle {
-    font-size: 13px;
+    font-size: var(--text-caption);
     color: var(--cc-gray-650);
     white-space: nowrap;
     overflow: hidden;
@@ -454,24 +430,24 @@
 }
 
 /* Responsive Design for Search Results Page */
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .search-result-item-page {
         padding: 10px 12px;
         min-height: 44px;
     }
 
     .search-result-item-page .search-result-emoji {
-        font-size: 14px;
+        font-size: var(--text-caption);
         margin-right: 10px;
         width: 18px;
     }
 
     .search-result-item-page .search-result-name {
-        font-size: 15px;
+        font-size: var(--text-body);
     }
 
     .search-result-item-page .search-result-subtitle {
-        font-size: 12px;
+        font-size: var(--text-caption);
     }
 
     .search-result-item-page .search-result-image {

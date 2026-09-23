@@ -81,7 +81,7 @@ input[type='search'] {
     width: 100%;
     height: 36px;
     padding: 7px 12px;
-    font-size: 13px;
+    font-size: var(--text-caption);
     line-height: 1.53846;
     transition:
         border-color 0.15s ease-in-out,
@@ -137,7 +137,7 @@ fieldset[disabled] .cc-field__control {
     border-radius: 2px;
     height: 32px;
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: var(--text-caption);
     line-height: 1.66667;
 }
 
@@ -174,7 +174,7 @@ fieldset[disabled] .checkbox label {
     color: var(--cc-gray-600);
     margin-top: 7px;
     margin-bottom: 7px;
-    font-size: 12px;
+    font-size: var(--text-caption);
     display: block;
 }
 
@@ -250,7 +250,7 @@ legend {
     width: 100%;
     padding: 0;
     margin-bottom: 20px;
-    font-size: 12px;
+    font-size: var(--text-caption);
     line-height: inherit;
     color: var(--cc-gray-900);
     border: 0;
@@ -284,7 +284,7 @@ input[type='week'],
 input[type='time'],
 select,
 textarea {
-    font-size: 16px !important; /* Minimum 16px prevents iOS zoom */
+    font-size: var(--text-body) !important; /* Minimum 16px prevents iOS zoom */
     min-height: 44px; /* Better touch targets for mobile users */
 }
 
@@ -329,31 +329,6 @@ input[type='date']::-webkit-calendar-picker-indicator:hover {
 .datepicker-input {
     min-height: 40px;
     padding: 6px 10px;
-}
-
-/*
- * Desktop: reduce font size for better proportions. Was `min-width: 768px`
- * -- the only place in this app that breakpoint drifted from the 769px
- * used everywhere else; aligned here rather than left as a stray one-off
- * (captain-coaster/captain-coaster#385 consolidation pass).
- */
-@media (min-width: theme(--breakpoint-tablet)) {
-    input[type='text'],
-    input[type='email'],
-    input[type='password'],
-    input[type='search'],
-    input[type='tel'],
-    input[type='url'],
-    input[type='number'],
-    input[type='date'],
-    input[type='datetime-local'],
-    input[type='month'],
-    input[type='week'],
-    input[type='time'],
-    select,
-    textarea {
-        font-size: 13px !important;
-    }
 }
 
 /*
@@ -408,7 +383,7 @@ input[type='date']::-webkit-calendar-picker-indicator:hover {
     color: var(--cc-white);
     border: none;
     border-radius: 3px;
-    font-size: 12px;
+    font-size: var(--text-caption);
 }
 
 .ts-wrapper.plugin-remove_button .ts-control .item .remove {
@@ -418,7 +393,7 @@ input[type='date']::-webkit-calendar-picker-indicator:hover {
 .ts-dropdown {
     border: 1px solid var(--cc-gray-350);
     border-radius: 0 0 4px 4px;
-    font-size: 13px;
+    font-size: var(--text-caption);
 }
 
 .ts-dropdown .ts-dropdown-content .active {

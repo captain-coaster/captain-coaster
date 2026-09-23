@@ -2,8 +2,7 @@
  * Typography -- migrated: theme/bootstrap-limitless/type.less +
  * bootstrap/less/type.less. Scope: h1-h6/.h1-.h6, `small`/`.small`,
  * `.text-uppercase`, `.list-unstyled`, `.list-inline`(+`-condensed`/
- * `-separate`, not `-bordered`, unused), `.page-header`(+`-default`),
- * `.page-title`/`.page-header-content`, `.status-mark`, `.position-left`,
+ * `-separate`, not `-bordered`, unused), `.status-mark`, `.position-left`,
  * `.content-divider`, `.icon-object`, `.text-bold`/`-semibold`/
  * `-size-small`/`-size-mini` are kept. `.text-muted` was retired by the
  * reskin (#413): the target token utility of the same name replaces it. `.text-left/
@@ -53,8 +52,9 @@ h6,
     color: inherit;
     font-family: inherit;
     font-weight: 400;
-    line-height: 1.53846;
+    line-height: 1.25;
     letter-spacing: -0.015em;
+    text-wrap: balance;
 }
 
 h1,
@@ -65,9 +65,10 @@ h3,
 .h3 {
     font-family: var(--font-display);
     font-weight: 600;
+    line-height: 1.08;
     letter-spacing: 0;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: 1.25rem;
+    margin-bottom: .5rem;
 }
 
 h4,
@@ -76,38 +77,39 @@ h5,
 .h5,
 h6,
 .h6 {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: .5rem;
+    margin-bottom: .5rem;
 }
 
+/* h1 is the page title (fluid, DESIGN.md "title"); the rest step down. */
 h1,
 .h1 {
-    font-size: 25px;
+    font-size: var(--text-title);
 }
 
 h2,
 .h2 {
-    font-size: 23px;
+    font-size: var(--text-2xl);
 }
 
 h3,
 .h3 {
-    font-size: 21px;
+    font-size: var(--text-lead);
 }
 
 h4,
 .h4 {
-    font-size: 19px;
+    font-size: var(--text-lg);
 }
 
 h5,
 .h5 {
-    font-size: 17px;
+    font-size: var(--text-body);
 }
 
 h6,
 .h6 {
-    font-size: 15px;
+    font-size: var(--text-body);
 }
 
 small,
@@ -134,7 +136,7 @@ small,
 .list-inline > li {
     padding-left: 0;
     padding-right: 20px;
-    font-size: 13px;
+    font-size: var(--text-caption);
     display: inline-block;
 }
 
@@ -163,18 +165,6 @@ small,
     content: none;
 }
 
-.page-header {
-    margin: 0;
-    padding: 0;
-    border-bottom: 0;
-}
-
-.page-header-default {
-    background-color: var(--cc-white);
-    margin-bottom: 20px;
-    box-shadow: 0 1px 0 0 var(--cc-gray-300);
-}
-
 
 .text-bold {
     font-weight: 700;
@@ -185,11 +175,11 @@ small,
 }
 
 .text-size-small {
-    font-size: 12px;
+    font-size: var(--text-caption);
 }
 
 .text-size-mini {
-    font-size: 11px;
+    font-size: var(--text-caption);
 }
 
 /*
@@ -228,31 +218,4 @@ small,
     border-style: solid;
     border-width: 3px;
     border-radius: 50%;
-}
-
-.page-title {
-    display: block;
-    position: relative;
-    padding: 32px 36px 32px 0;
-}
-
-.page-title h1,
-.page-title h2,
-.page-title h3,
-.page-title h4,
-.page-title h5,
-.page-title h6 {
-    margin: 0;
-}
-
-@media (min-width: theme(--breakpoint-tablet)) {
-    .page-title {
-        padding-right: 0;
-    }
-}
-
-.page-header-content {
-    position: relative;
-    background-color: inherit;
-    padding: 0 20px;
 }

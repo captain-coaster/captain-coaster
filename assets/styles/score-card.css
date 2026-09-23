@@ -10,14 +10,14 @@
 }
 
 .score-compact .score-number {
-    font-size: 32px;
+    font-size: 2rem;
     font-weight: 700;
     line-height: 1;
     margin: 0;
 }
 
 .score-compact .score-percent {
-    font-size: 18px;
+    font-size: var(--text-lg);
     font-weight: 400;
     color: var(--cc-gray-650);
 }
@@ -29,7 +29,7 @@
 }
 
 .rank-number {
-    font-size: 32px;
+    font-size: 2rem;
     font-weight: 700;
     line-height: 1;
     color: var(--fg);
@@ -66,7 +66,7 @@
 
 .coaster-stats__label {
     flex: 1;
-    font-size: 11px;
+    font-size: var(--text-caption);
     font-weight: 500;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -74,7 +74,7 @@
 }
 
 .coaster-stats__value {
-    font-size: 15px;
+    font-size: var(--text-body);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--cc-gray-900);

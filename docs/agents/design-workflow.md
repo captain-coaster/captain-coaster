@@ -76,8 +76,9 @@ Before each command, state that DESIGN.md is the authority and that `.cc-*` is l
 
 **Recipe:**
 - Canvas: `bg-canvas`.
-- Container: `max-w-(--content-max)`, or a `--container-content: 75rem` theme key.
-- Gutters: `px-(--gutter)` (a 20–48px clamp).
+- Container: `max-w-content` (`--container-content: 75rem`).
+- Gutters: `px-gutter` (`--spacing-gutter`, a 20–48px clamp).
+- Breakpoints: Tailwind defaults (`md` 48rem, `lg` 64rem, `xl` 80rem), rem-based so zoom and larger browser text reach the narrower layout.
 - Base type: currently `html{font-size:16px}` and body 13px (`base.css:50-57`). Body goes to 1rem/1.5 per DESIGN.md.
 - Spacing: Tailwind's default `--spacing: .25rem` already matches DESIGN.md's 4px `space-N`, so `p-4` equals `space-4` [TW:theme]. Don't add spacing tokens.
 - Tension to resolve: Impeccable's Operate guidance prefers fixed rem type for app UI [I:operate], while DESIGN.md sets fluid display/title clamps. DESIGN.md wins [I:SKILL "brief wins"]. Keep clamps for page titles only.

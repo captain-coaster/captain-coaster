@@ -19,7 +19,7 @@
     max-width: 160px;
 
     select {
-        font-size: 13px !important;
+        font-size: var(--text-body) !important;
         font-weight: 500;
         min-height: 32px !important;
         padding: 6px 12px !important;

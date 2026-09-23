@@ -194,6 +194,12 @@ function addViolations(path, source) {
             pattern:
                 /(?:^|[^\w-])\.(?:bg|text|border(?:-[trblxy])?|outline|ring|fill|stroke|decoration|divide|accent|caret)-(?:canvas|surface|ink|muted|line|control-line|action|action-hover|on-action|selected|highlight|on-highlight|success|success-bg|warning|warning-bg|danger|danger-bg|focus|logo-ink)(?![\w-])/g,
         },
+        {
+            // Custom breakpoints replaced by Tailwind's defaults (#414):
+            // tablet -> md, desktop -> lg, wide -> xl. They'd generate nothing.
+            contract: 'retired breakpoint (use md:/lg:/xl:)',
+            pattern: /(?<=[\s"'`])(?:max-)?(?:tablet|desktop|wide):[\w[-]|--breakpoint-(?:tablet|desktop|wide)\b/g,
+        },
     ];
 
     for (const { contract, pattern } of checks) {

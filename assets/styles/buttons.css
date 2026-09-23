@@ -49,7 +49,7 @@
     border-style: solid;
     border-radius: 3px;
     padding: 7px 12px;
-    font-size: 13px;
+    font-size: var(--text-caption);
     font-weight: 400;
     line-height: 1.53846;
 }
@@ -210,7 +210,7 @@ fieldset[disabled] .cc-button {
 .cc-button--lg {
     border-radius: 5px;
     padding: 9px 15px;
-    font-size: 14px;
+    font-size: var(--text-caption);
     line-height: 1.42857;
 }
 
@@ -225,13 +225,13 @@ fieldset[disabled] .cc-button {
 
 .cc-button--sm {
     padding: 6px 11px;
-    font-size: 12px;
+    font-size: var(--text-caption);
     line-height: 1.66667;
 }
 
 .cc-button--xs {
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: var(--text-caption);
     line-height: 1.66667;
 }
 
@@ -303,7 +303,7 @@ fieldset[disabled] .cc-button {
 }
 
 .cc-button--float.cc-button--float-lg i {
-    font-size: 32px;
+    font-size: 2rem;
 }
 
 .cc-button--labeled {
@@ -387,7 +387,7 @@ fieldset[disabled] .cc-button {
  * or icon-shaped that would fight the utility syntax.
  */
 .cc-close {
-    @apply float-right text-[19.5px] font-light leading-none text-ink opacity-60;
+    @apply float-right text-lg font-light leading-none text-ink opacity-60;
 }
 
 .cc-close:hover,

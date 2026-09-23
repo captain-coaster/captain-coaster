@@ -5,18 +5,18 @@
     <div class="heading-elements visible-elements" style="display: flex; gap: 1rem; flex-wrap: wrap;">
       {% set nextRankingDate = 'now'|date_modify('first day of next month midnight 1 minute') %}
       {% if nextRankingDate|date('U') - 'now'|date('U') > 7200 %}
-        <span class="heading-text text-muted" style="white-space: nowrap;">
+        <span class="heading-text text-muted">
           {{ ux_icon('heroicons:clock', {'class': 'w-4 h-4 text-action position-left'}) }}
           {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
         </span>
       {% endif %}
-      <span class="heading-text text-muted" style="white-space: nowrap;">
+      <span class="heading-text text-muted">
         {{ ux_icon('heroicons:plus', {'class': 'w-4 h-4 text-action position-left'}) }}
         <a class="text-muted" href="{{ path('ranking_learn_more') }}">{{ 'coaster_ranking.info.learn_more'|trans() }}</a>
       </span>
     </div>
   </div>
-  <div class="cc-panel__body grid grid-cols-12 gap-5 text-center">
+  <div class="cc-panel__body grid grid-cols-12 gap-5 text-center hyphens-auto">
     <div class="col-span-3">
       <div class="content-group">
         <h6 class="text-semibold m-0">
@@ -25,8 +25,8 @@
             <span class="cc-badge bg-cc-blue-400">+{{ ranking.rankedCoasterNumber - previousRanking.rankedCoasterNumber }}</span>
           {% endif %}
         </h6>
-        <span class="tablet:hidden text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.short'|trans }}</span>
-        <span class="hidden tablet:inline text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
+        <span class="md:hidden text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.short'|trans }}</span>
+        <span class="hidden md:inline text-muted text-size-small">{{ 'coaster_ranking.info.coasters_ranked.long'|trans }}</span>
       </div>
     </div>
     <div class="col-span-3">
@@ -59,8 +59,8 @@
             <span class="cc-badge bg-cc-blue-400">+{{ (ranking.comparisonNumber - previousRanking.comparisonNumber)|shortNum }}</span>
           {% endif %}
         </h6>
-        <span class="tablet:hidden text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.short'|trans }}</span>
-        <span class="hidden tablet:inline text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.long'|trans }}</span>
+        <span class="md:hidden text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.short'|trans }}</span>
+        <span class="hidden md:inline text-muted text-size-small">{{ 'coaster_ranking.info.comparisons.long'|trans }}</span>
       </div>
     </div>
   </div>

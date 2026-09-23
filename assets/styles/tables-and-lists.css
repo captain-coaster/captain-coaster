@@ -42,7 +42,7 @@
 }
 
 /* Only applies <768px in the original -- Limitless customizes this breakpoint to 769px. */
-@media screen and (width < theme(--breakpoint-tablet)) {
+@media screen and (width < theme(--breakpoint-md)) {
     .table-responsive {
         width: 100%;
         margin-bottom: 15px;

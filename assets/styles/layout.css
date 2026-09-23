@@ -35,7 +35,7 @@
  */
 .page-container {
     position: relative;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 /*
@@ -55,7 +55,7 @@
  * it (flex:1) restores the same effect the table's height propagation
  * had.
  */
-@media (min-width: theme(--breakpoint-tablet)) {
+@media (min-width: theme(--breakpoint-md)) {
     .page-container {
         display: flex;
         flex-direction: column;
@@ -75,16 +75,6 @@
 
 .content-wrapper {
     width: 100%;
-}
-
-.content {
-    display: flow-root;
-    padding: 0 20px 60px 20px;
-}
-
-.footer {
-    position: absolute;
-    bottom: 30px;
 }
 
 .no-transitions * {
@@ -129,7 +119,7 @@
 body.login-container {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
 }
 
@@ -138,7 +128,7 @@ body.login-container .page-container {
     display: flex;
     flex-direction: column;
     width: 100%;
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 body.login-container .page-content {

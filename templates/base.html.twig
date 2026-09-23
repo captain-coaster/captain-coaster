@@ -51,16 +51,15 @@
         ) }}
         <!-- /page header -->
         <!-- Content area -->
-        <div class="content">
+        <main class="content mx-auto flow-root w-full max-w-content px-gutter">
           {{ include('flashes.html.twig') }}
           <div id="toasts" data-controller="toast" data-toast-target="container"></div>
 
           {% block body %}{% endblock %}
-
-          {{ include('footer.html.twig') }}
-        </div>
+        </main>
+        <!-- /content area -->
+        {{ include('footer.html.twig') }}
       {% endblock %}
-      <!-- /content area -->
     </div>
     <!-- /main content -->
   </div>

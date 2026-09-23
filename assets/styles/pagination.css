@@ -68,7 +68,7 @@
 
 .cc-pagination--sm > li > a,
 .cc-pagination--sm > li > span {
-    @apply text-[12px];
+    @apply text-caption;
     padding: 6px 11px;
     line-height: 1.66667;
     min-width: 34px;

@@ -2,9 +2,9 @@
  * Heading elements -- migrated: theme/components/ui/heading-elements.less
  * (767 lines, a deep Limitless mega-component for search bars/toolbars/
  * breadcrumbs inside cc-panel headers and page headers). Real usage is just
- * 4 elements: `page_header.html.twig`'s search bar, `ranking/info.html.twig`
- * and `Notification/index.html.twig`'s cc-panel__heading action rows (all
- * three carry `.visible-elements`), and `Default/index.html.twig`'s bare
+ * 3 elements (the page header's search bar moved to utilities, #414):
+ * `ranking/info.html.twig` and `Notification/index.html.twig`'s
+ * cc-panel__heading action rows (both carry `.visible-elements`), and `Default/index.html.twig`'s bare
  * `.heading-elements` "See all reviews" link (no `.visible-elements`).
  * Every other class here (`.heading-elements-toggle`, `.breadcrumb-
  * elements(-toggle)`, `.heading-thumbnails`, `.heading-btn(-group)`,
@@ -58,21 +58,7 @@
     text-align: center;
 }
 
-.heading-form .cc-field {
-    margin-bottom: 0;
-}
-
-/*
- * `.heading-form .cc-field` (the global search bar's wrapper) belongs
- * in this same unconditional vertical-spacing group in the source LESS --
- * dropped during the port along with the rest of that selector list's
- * dead siblings, but this one is real (search.css only re-zeroes it back
- * to 0 on desktop, via its own `@media(min-width:769px)` override).
- * Missing it collapsed the gap between the search bar and the cc-navbar on
- * mobile to 0.
- */
-.heading-elements.visible-elements .heading-text,
-.heading-elements.visible-elements .heading-form .cc-field {
+.heading-elements.visible-elements .heading-text {
     margin-top: 20px;
 }
 
@@ -80,20 +66,11 @@
     display: block;
 }
 
-@media (width < theme(--breakpoint-tablet)) {
+@media (width < theme(--breakpoint-md)) {
     .heading-elements.visible-elements {
         position: static;
         margin-top: 0;
         height: auto;
-    }
-
-    .page-header-content > .heading-elements.visible-elements {
-        background-color: var(--cc-gray-50);
-        border-top: 1px solid var(--cc-gray-300);
-        z-index: 1002;
-        padding: 0 20px 20px;
-        margin-left: -20px;
-        margin-right: -20px;
     }
 
     .cc-panel .heading-elements.visible-elements {

@@ -6,17 +6,17 @@
 
 /* .content-wrapper is a table-cell sized by its content, so height:100%
    on the map is circular (resolves to 0). .content-wrapper itself is
-   sized to a flat 100vh by the theme despite starting below the cc-navbar,
+   sized to a flat 100dvh by the theme despite starting below the cc-navbar,
    so it already overflows the viewport by the cc-navbar's height — match
    that exact sizing (not vh minus cc-navbar) so #map fills it completely
    instead of stopping short and leaving a scrollable blank strip. */
 #map {
-    height: 100vh;
+    height: 100dvh;
 }
 
 /* Popup styling */
 .maplibregl-popup-content {
-    font-size: 14px;
+    font-size: var(--text-caption);
     border-radius: 8px;
     box-shadow: var(--shadow-raised);
     border: none;
@@ -39,7 +39,7 @@
        instead of running underneath it (button is absolutely positioned
        top-right by MapLibre's default popup CSS). */
     padding-right: 24px;
-    font-size: 15px;
+    font-size: var(--text-body);
     font-weight: 600;
     /* MapLibre's own vendor CSS ships unlayered, so it beats this file's
        `layer(components)` rules regardless of source order or specificity
@@ -64,7 +64,7 @@
 
 .popup-coaster {
     margin: 2px 0;
-    font-size: 13px;
+    font-size: var(--text-caption);
 }
 
 .popup-coaster a {
@@ -89,7 +89,7 @@
 /* Close button */
 .maplibregl-popup-close-button {
     color: var(--cc-gray-650);
-    font-size: 18px;
+    font-size: var(--text-lg);
     font-weight: bold;
     padding: 8px;
     width: auto;
