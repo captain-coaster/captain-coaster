@@ -6,12 +6,12 @@
       {% set nextRankingDate = 'now'|date_modify('first day of next month midnight 1 minute') %}
       {% if nextRankingDate|date('U') - 'now'|date('U') > 7200 %}
         <span class="heading-text text-muted" style="white-space: nowrap;">
-          {{ ux_icon('heroicons:clock', {'class': 'w-4 h-4 text-warning position-left'}) }}
+          {{ ux_icon('heroicons:clock', {'class': 'w-4 h-4 text-action position-left'}) }}
           {{ 'coaster_ranking.info.next'|trans({'%date%': nextRankingDate|ago}) }}
         </span>
       {% endif %}
       <span class="heading-text text-muted" style="white-space: nowrap;">
-        {{ ux_icon('heroicons:plus', {'class': 'w-4 h-4 text-warning position-left'}) }}
+        {{ ux_icon('heroicons:plus', {'class': 'w-4 h-4 text-action position-left'}) }}
         <a class="text-muted" href="{{ path('ranking_learn_more') }}">{{ 'coaster_ranking.info.learn_more'|trans() }}</a>
       </span>
     </div>

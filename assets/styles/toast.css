@@ -42,7 +42,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    color: white;
+    color: var(--on-action);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -77,7 +77,6 @@
 .notification--success {
     color: var(--success);
     border: 1px solid var(--success);
-    border-left: 4px solid var(--success);
 }
 
 .notification--success .notification__icon {
@@ -105,7 +104,6 @@
 .notification--warning {
     color: var(--warning);
     border: 1px solid var(--warning);
-    border-left: 4px solid var(--warning);
 }
 
 .notification--warning .notification__icon {
@@ -119,7 +117,6 @@
 .notification--danger {
     color: var(--danger);
     border: 1px solid var(--danger);
-    border-left: 4px solid var(--danger);
 }
 
 .notification--danger .notification__icon {

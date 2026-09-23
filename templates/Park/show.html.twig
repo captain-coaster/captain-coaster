@@ -24,7 +24,7 @@
                         </div>
                     </div>
                     <div>
-                        <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-warning'}) }}</p>
+                        <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-action'}) }}</p>
                         <h5 class="text-semibold m-0">
                             {{ park.operatingKiddies|length }}
                         </h5>
@@ -101,8 +101,8 @@
                                     {{ coaster.name }}
                                 </a>
                             </h2>
-                            <h4 class="cc-media__heading score-responsive mb-5 center"
-                                style="color: {{ helper.ratingColor(coaster.score) }};">
+                            <h4 class="cc-media__heading score-responsive score-color mb-5 center"
+                                style="--score: {{ coaster.score|default(0) }}">
                                 {% if coaster.score %}
                                     {{ 'coaster.score.scoreof'|trans }} {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
                                 {% else %}

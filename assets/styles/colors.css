@@ -265,25 +265,25 @@
 .text-cc-indigo-400,
 .text-cc-indigo-400:hover,
 .text-cc-indigo-400:focus {
-    color: var(--blue-500) !important;
+    color: var(--action) !important;
 }
 
 .text-cc-orange-400,
 .text-cc-orange-400:hover,
 .text-cc-orange-400:focus {
-    color: var(--amber-800) !important;
+    color: var(--muted-strong) !important;
 }
 
 .text-cc-pink-400,
 .text-cc-pink-400:hover,
 .text-cc-pink-400:focus {
-    color: var(--coral-600) !important;
+    color: var(--muted) !important;
 }
 
 .text-cc-slate,
 .text-cc-slate:hover,
 .text-cc-slate:focus {
-    color: var(--slate-600) !important;
+    color: var(--muted-strong) !important;
 }
 
 .text-default,
@@ -321,7 +321,7 @@
 
 /* Rateable, but not yet final -- a lighter shade of the operating green. */
 [data-status="status.soft.opening"] {
-    --status-color: color-mix(in oklch, var(--success) 80%, white);
+    --status-color: color-mix(in oklch, var(--success) 80%, var(--surface));
 }
 
 [data-status="status.announced"] {
@@ -340,7 +340,7 @@
 /* Moved/rebuilt elsewhere, not bad news -- danger red would overstate it. */
 [data-status="status.retracked"],
 [data-status="status.relocated"] {
-    --status-color: var(--slate-600);
+    --status-color: var(--muted-strong);
 }
 
 .cc-label[data-status] {
@@ -375,4 +375,15 @@
     border-bottom-width: 3px;
     border-bottom-style: solid;
     border-bottom-color: var(--status-color);
+}
+
+/* Coaster score (0-100) as text: a point on the rating scale (tokens.css),
+ * darkened with 30% ink so every score reads >= 4.7:1 on white. Templates
+ * pass only the number: `style="--score: 87.3"`. */
+.score-color {
+    color: color-mix(
+        in oklch,
+        color-mix(in oklch, var(--rating-scale-high) calc(var(--score, 0) * 1%), var(--rating-scale-low)) 70%,
+        var(--fg)
+    );
 }

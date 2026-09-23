@@ -74,7 +74,7 @@
  * only the main sidebar is fixed, only the secondary one is `-default`.
  */
 .sidebar {
-    background-color: var(--logo-ink);
+    background-color: var(--chrome);
     color: var(--cc-white);
     position: relative;
     width: 100%;
@@ -126,7 +126,7 @@
     margin: 0;
     padding: 12px 20px;
     padding-right: 46px;
-    border-bottom: 1px solid color-mix(in oklch, var(--white) 10%, transparent);
+    border-bottom: 1px solid color-mix(in oklch, var(--on-chrome) 10%, transparent);
 }
 
 .category-title > span {
@@ -175,7 +175,7 @@
 }
 
 .navigation li a {
-    color: color-mix(in oklch, var(--white) 75%, transparent);
+    color: color-mix(in oklch, var(--on-chrome) 75%, transparent);
     display: block;
     transition:
         background 0.15s linear,
@@ -184,7 +184,7 @@
 
 .navigation li a:hover,
 .navigation li a:focus {
-    background-color: color-mix(in oklch, var(--fg) 10%, transparent);
+    background-color: var(--chrome-hover);
     color: var(--cc-white);
 }
 

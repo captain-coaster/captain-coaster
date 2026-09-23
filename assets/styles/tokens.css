@@ -26,7 +26,7 @@
     --breakpoint-wide: 1200px;
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
-    --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+    --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
     --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 
     --text-caption: .875rem;
@@ -71,6 +71,8 @@
     --color-danger-bg: var(--danger-bg);
     --color-focus: var(--focus);
     --color-logo-ink: var(--logo-ink);
+    --color-subtle: var(--subtle);
+    --color-muted-strong: var(--muted-strong);
 }
 
 :root {
@@ -118,6 +120,16 @@
     --danger: var(--coral-600);
     --danger-bg: var(--coral-50);
     --focus: var(--blue-700);
+    --info: var(--blue-500);
+    --subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
+    --muted-strong: var(--slate-600); /* secondary text that needs more weight */
+
+    /* Dark chrome (navbar, sidebar): the logo's dark stage. On it, states
+     * lighten -- ink overlays are invisible on a near-ink surface. */
+    --chrome: var(--logo-ink);
+    --on-chrome: var(--white);
+    --chrome-hover: color-mix(in oklch, var(--on-chrome) 10%, transparent);
+    --chrome-active: color-mix(in oklch, var(--on-chrome) 15%, transparent);
 
     /* Rating stars: sunshine fill + amber edge (the edge carries >= 3:1 on
      * white; sunshine alone is 1.5:1). Empty stars of the rating input use
@@ -139,18 +151,18 @@
     --cc-gray-40: var(--bg);
     --cc-gray-50: var(--bg);
     --cc-gray-100: var(--bg);
-    --cc-gray-150: var(--mist-100);
-    --cc-gray-200: var(--mist-100);
+    --cc-gray-150: var(--subtle);
+    --cc-gray-200: var(--subtle);
     --cc-gray-300: var(--border);
     --cc-gray-350: var(--border);
     --cc-gray-400: var(--border);
     --cc-gray-500: var(--border);
     --cc-gray-600: var(--muted);
-    --cc-gray-650: var(--slate-600);
+    --cc-gray-650: var(--muted-strong);
     --cc-gray-900: var(--fg);
     --cc-primary: var(--action);
     --cc-primary-600: var(--action-hover);
-    --cc-info: var(--blue-500);
+    --cc-info: var(--info);
     --cc-success: var(--success);
     --cc-success-400: var(--success);
     --cc-warning: var(--warning);

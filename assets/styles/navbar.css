@@ -429,7 +429,7 @@
     padding-left: 20px;
     overflow-x: visible;
     border-top: 1px solid transparent;
-    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--white) 10%, transparent);
+    box-shadow: inset 0 1px 0 color-mix(in oklch, var(--on-chrome) 10%, transparent);
     text-align: center;
 }
 
@@ -570,7 +570,7 @@
 
 @media (width < theme(--breakpoint-tablet)) {
     .cc-navbar__nav {
-        border-bottom: 1px solid color-mix(in oklch, var(--white) 10%, transparent);
+        border-bottom: 1px solid color-mix(in oklch, var(--on-chrome) 10%, transparent);
     }
 
     .cc-navbar__nav .is-open .cc-menu__list {
@@ -678,9 +678,9 @@
 
 /* Inverse (dark) cc-navbar -- the only variant this app uses */
 .cc-navbar--inverse {
-    background-color: var(--logo-ink);
-    border-color: var(--logo-ink);
-    border-bottom-color: color-mix(in oklch, var(--white) 10%, transparent);
+    background-color: var(--chrome);
+    border-color: var(--chrome);
+    border-bottom-color: color-mix(in oklch, var(--on-chrome) 10%, transparent);
     color: var(--cc-white);
 }
 
@@ -691,14 +691,14 @@
 .cc-navbar--inverse .cc-navbar__nav > li > a:hover,
 .cc-navbar--inverse .cc-navbar__nav > li > a:focus {
     color: var(--cc-white);
-    background-color: color-mix(in oklch, var(--fg) 10%, transparent);
+    background-color: var(--chrome-hover);
 }
 
 .cc-navbar--inverse .cc-navbar__nav > .is-open > a,
 .cc-navbar--inverse .cc-navbar__nav > .is-open > a:hover,
 .cc-navbar--inverse .cc-navbar__nav > .is-open > a:focus {
     color: var(--cc-white);
-    background-color: color-mix(in oklch, var(--fg) 15%, transparent);
+    background-color: var(--chrome-active);
 }
 
 .cc-navbar--inverse .cc-navbar__panel {

@@ -19,13 +19,37 @@
     font-display: swap;
 }
 
-/* Metric-matched Arial for the swap period, computed from Source Sans 3 at 400. */
+/* Browser-drawn surfaces take the palette too. */
+:root {
+    accent-color: var(--action);
+    caret-color: var(--action);
+}
+
+::selection {
+    background-color: var(--selected);
+    color: var(--fg);
+}
+
+/*
+ * Metric-matched fallbacks for the swap period (Capsize metrics, the
+ * Fontaine/next-font formula): Arial on iOS/desktop, Roboto on Android --
+ * their overrides differ by < 0.3%, so one face per family lists both.
+ */
 @font-face {
     font-family: "Source Sans 3 Fallback";
-    src: local("Arial");
-    size-adjust: 90.67%;
-    ascent-override: 112.94%;
-    descent-override: 44.12%;
+    src: local("Arial"), local("ArialMT"), local("Roboto");
+    size-adjust: 93.76%;
+    ascent-override: 109.21%;
+    descent-override: 42.66%;
+    line-gap-override: 0%;
+}
+
+@font-face {
+    font-family: "Barlow Condensed Fallback";
+    src: local("Arial"), local("ArialMT"), local("Roboto");
+    size-adjust: 76.49%;
+    ascent-override: 130.73%;
+    descent-override: 26.15%;
     line-gap-override: 0%;
 }
 

@@ -113,7 +113,7 @@
     height: 32px;
     border-radius: 50%;
     background: color-mix(in oklch, var(--fg) 5%, transparent);
-    color: var(--slate-600);
+    color: var(--muted-strong);
     text-decoration: none;
     transition: all 0.2s ease;
     border: none;
@@ -152,7 +152,7 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid var(--mist-100);
+    border: 2px solid var(--subtle);
     border-top: 2px solid var(--cc-primary);
     border-radius: 50%;
     animation: rating-spin 1s linear infinite;
@@ -189,7 +189,6 @@
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 10px color-mix(in oklch, var(--success) 30%, transparent);
     }
     100% {
         transform: scale(1);
@@ -202,7 +201,6 @@
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 10px color-mix(in oklch, var(--danger) 30%, transparent);
     }
     100% {
         transform: scale(1);
@@ -263,7 +261,7 @@
 }
 
 .date-picker-content-small {
-    background: white;
+    background: var(--surface);
     border: 1px solid var(--cc-gray-300);
     border-radius: 8px;
     padding: 12px;
@@ -317,13 +315,13 @@
 
 .today-btn:hover {
     background: var(--cc-primary);
-    color: white;
+    color: var(--on-action);
     border-color: var(--cc-primary);
 }
 
 .clear-btn:hover {
     background: var(--cc-danger);
-    color: white;
+    color: var(--on-action);
     border-color: var(--cc-danger);
 }
 
@@ -379,7 +377,7 @@
     }
     50% {
         transform: scale(1.1);
-        filter: brightness(1.15) drop-shadow(0 0 4px color-mix(in oklch, var(--rating-fill) 60%, transparent));
+        filter: brightness(1.15);
     }
     100% {
         transform: scale(1);
@@ -387,19 +385,7 @@
     }
 }
 
-@keyframes rating-glow {
-    0% {
-        box-shadow: 0 0 0 0 transparent;
-    }
-    50% {
-        box-shadow: 0 0 12px 4px color-mix(in oklch, var(--rating-fill) 60%, transparent);
-    }
-    100% {
-        box-shadow: 0 0 0 0 transparent;
-    }
-}
-
 .rating-confirmed {
-    animation: rating-sparkle 0.6s ease-out, rating-glow 0.6s ease-out;
+    animation: rating-sparkle 0.6s ease-out;
     position: relative;
 }

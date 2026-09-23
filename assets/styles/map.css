@@ -20,7 +20,7 @@
     border-radius: 8px;
     box-shadow: var(--shadow-raised);
     border: none;
-    background: white;
+    background: var(--surface);
     margin: 0;
     padding: 12px 16px;
     font-family: var(--font-sans);
@@ -28,8 +28,8 @@
 }
 
 .maplibregl-popup-tip {
-    border-top-color: white;
-    border-bottom-color: white;
+    border-top-color: var(--surface);
+    border-bottom-color: var(--surface);
 }
 
 /* Popup content */

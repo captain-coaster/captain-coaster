@@ -26,7 +26,7 @@
         border-radius: 6px;
         border: 1px solid var(--border);
         background-color: var(--cc-gray-25);
-        color: var(--slate-600);
+        color: var(--muted-strong);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;

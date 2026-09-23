@@ -118,7 +118,7 @@ fieldset[disabled] .cc-button {
 .cc-button--default:active,
 .cc-button--default.active {
     color: var(--cc-gray-900);
-    background-color: var(--mist-100);
+    background-color: var(--subtle);
     border-color: var(--border);
 }
 
@@ -178,8 +178,8 @@ fieldset[disabled] .cc-button {
 .cc-button--danger:active,
 .cc-button--danger.active {
     color: var(--cc-white);
-    background-color: color-mix(in oklch, var(--danger) 85%, black);
-    border-color: color-mix(in oklch, var(--danger) 85%, black);
+    background-color: color-mix(in oklch, var(--danger) 85%, var(--fg));
+    border-color: color-mix(in oklch, var(--danger) 85%, var(--fg));
 }
 
 .cc-button--danger.disabled {

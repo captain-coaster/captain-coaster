@@ -67,7 +67,7 @@
 
 .drag-area:active {
     cursor: grabbing;
-    background-color: var(--mist-100);
+    background-color: var(--subtle);
 }
 
 .position-number {
@@ -167,7 +167,7 @@
 }
 
 .menu-btn:active {
-    background-color: var(--mist-100);
+    background-color: var(--subtle);
 }
 
 /* SortableJS: Ghost placeholder (shows where item will be dropped) */
@@ -185,7 +185,7 @@
 /* SortableJS: Chosen item (when item is selected/grabbed) */
 .sortable-chosen {
     border-color: var(--cc-primary);
-    box-shadow: 0 4px 12px color-mix(in oklch, var(--action) 20%, transparent);
+    box-shadow: var(--shadow-raised);
 }
 
 .sortable-chosen .drag-area {
@@ -201,7 +201,7 @@
 .sortable-drag {
     opacity: 1;
     border-color: var(--cc-primary);
-    box-shadow: 0 8px 24px color-mix(in oklch, var(--action) 30%, transparent);
+    box-shadow: var(--shadow-overlay);
     z-index: 1000;
     transform: rotate(2deg);
 }
@@ -237,13 +237,13 @@
 
 .save-status-saved {
     background-color: var(--cc-success);
-    color: white;
+    color: var(--on-action);
     border: 1px solid var(--success);
 }
 
 .save-status-error {
     background-color: var(--cc-danger);
-    color: white;
+    color: var(--on-action);
     border: 1px solid var(--danger);
 }
 

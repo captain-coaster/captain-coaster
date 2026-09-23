@@ -90,7 +90,7 @@
 .cc-alert--danger {
     color: var(--danger);
     background-color: var(--danger-bg);
-    border-color: var(--cc-warning);
+    border-color: var(--danger);
 }
 
 .cc-alert--styled-left {

@@ -21,8 +21,9 @@
 }
 
 /* Read-only star rating -- same two-path star as the rating widget
- * (rating.css): the outline stroke sits under the solid fill, and the half
- * state clips the fill. SVG parts can't take utility classes from the
+ * (rating.css): the amber outline is painted over the solid fill so it
+ * stays visible (sunshine alone is 1.5:1 on white); the half state clips
+ * the fill. SVG parts can't take utility classes from the
  * macro/JS markup cleanly, hence hand-written rules. */
 .star-rating {
     display: inline-flex;

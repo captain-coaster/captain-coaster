@@ -46,7 +46,7 @@
     transform: translateY(-50%);
     width: 32px; /* @toggle-switch-width */
     height: 16px; /* @toggle-switch-height */
-    background-color: var(--border);
+    background-color: var(--control-border); /* off track: a control, >= 3:1 */
     border-radius: 16px; /* @toggle-switch-height */
     transition: 0.3s;
     z-index: 1;
@@ -61,7 +61,7 @@
     transform: translateY(-50%);
     width: 14px; /* @toggle-switch-handle-size */
     height: 14px; /* @toggle-switch-handle-size */
-    background-color: white;
+    background-color: var(--surface);
     border-radius: 50%;
     transition: 0.3s;
     box-shadow: 0 1px 2px color-mix(in oklch, var(--fg) 20%, transparent);

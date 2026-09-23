@@ -15,7 +15,7 @@
 .cc-menu--user > .cc-menu__toggle img {
     width: 28px !important;
     height: 28px !important;
-    border: 2px solid color-mix(in oklch, var(--white) 20%, transparent);
+    border: 2px solid color-mix(in oklch, var(--on-chrome) 20%, transparent);
 }
 
 /*
@@ -161,15 +161,15 @@
     }
 
     .cc-navbar__nav > li > .cc-menu__list.account-menu .divider {
-        background-color: color-mix(in oklch, var(--white) 10%, transparent);
+        background-color: color-mix(in oklch, var(--on-chrome) 10%, transparent);
     }
 
     .cc-navbar__nav > li > .cc-menu__list.account-menu .account-menu-row-value {
-        color: color-mix(in oklch, var(--white) 70%, transparent);
+        color: color-mix(in oklch, var(--on-chrome) 70%, transparent);
     }
 
     .cc-navbar__nav > li > .cc-menu__list.account-menu .account-menu-header img {
-        border-color: color-mix(in oklch, var(--white) 20%, transparent);
+        border-color: color-mix(in oklch, var(--on-chrome) 20%, transparent);
     }
 
     /* Every link's hover/focus/active state (not just .account-menu-row)
@@ -180,7 +180,7 @@
     .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:hover,
     .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:focus,
     .cc-navbar__nav > li > .cc-menu__list.account-menu li > a:active {
-        background-color: color-mix(in oklch, var(--fg) 10%, transparent);
+        background-color: var(--chrome-hover);
     }
 
     /* Nested submenus (language, units, notifications) are themselves
@@ -220,7 +220,7 @@
     .cc-navbar__toggle-icon img {
         width: 28px !important;
         height: 28px !important;
-        border: 2px solid color-mix(in oklch, var(--white) 20%, transparent);
+        border: 2px solid color-mix(in oklch, var(--on-chrome) 20%, transparent);
     }
 
     /* No size override for svg: it falls back to its natural w-8/h-8 size,
@@ -289,5 +289,5 @@
 }
 
 .notif-item:not(.unread) .cc-media__annotation {
-    color: color-mix(in oklch, var(--fg) 45%, transparent);
+    color: var(--muted);
 }
