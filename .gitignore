@@ -45,3 +45,12 @@ phpstan.neon
 /node_modules/
 /public/build/
 ###< symfony/reprise ###
+
+/PRODUCT.md
+
+# Impeccable local working files
+/.impeccable/config.local.json
+/.impeccable/live/
+/.impeccable/review/
+/.impeccable/build/
+/.impeccable/mocks/

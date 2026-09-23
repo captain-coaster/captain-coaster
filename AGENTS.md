@@ -64,6 +64,21 @@ Mid term aim:
 - Symfony UX Twig/Live Components as a default for new interactive UI
 - A visual redesign, now that Bootstrap/LESS removal and CSS hardening (#385) are done
 
+### Redesign: target vs. current
+
+`DESIGN.md` and `.impeccable/` describe the **target** design system. Until the reskin lands, the app ships the **current** one (`assets/styles/tokens.css` `--cc-*` tokens, `.cc-*` files, Roboto). Plan and progress: #375. How to run each step (Impeccable usage, 2026 baseline per step): `docs/agents/design-workflow.md`.
+
+- Order: reskin (old `--cc-*` tokens become aliases of the target colors, new fonts — whole site at once) → page shell → navigation → Home (reference page) → remaining pages.
+- It's a complete makeover: use the state-of-the-art approach for each step, not the minimal change.
+- Every new or reworked component:
+  - is a Twig Component (`templates/components/`, anonymous unless it needs logic), variants via `html_cva`;
+  - uses only Tailwind utilities, including those generated from the target tokens (`bg-action`, `text-ink`, `rounded-card`);
+  - never uses a legacy class (`.cc-*`, or helpers from the old CSS files like `text-semibold`, `text-size-small`) nor `var(--cc-*)`;
+  - replaces hardcoded px spacing (`mb-[15px]`, px literals in CSS) with Tailwind's spacing scale;
+  - deletes the `.cc-*` rules it replaces once nothing else uses them.
+- `--cc-*` tokens are compatibility aliases, removed as their users migrate.
+- `.impeccable/*.css` are reference copies, not imported anywhere — don't import them directly.
+
 ### Naming conventions
 
 - **Controllers**: `{Feature}Controller` (e.g. `CoasterController`)

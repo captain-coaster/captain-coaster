@@ -1,0 +1,96 @@
+{
+  "method": "WCAG 2.x relative sRGB luminance, (Llighter + 0.05) / (Ldarker + 0.05). CSS OKLCH values converted from the listed sRGB references; ratios rounded for display.",
+  "pairs": [
+    {
+      "foreground": "ink-900",
+      "background": "white",
+      "role": "Primary text",
+      "ratio": 14.528,
+      "AA_normal": true
+    },
+    {
+      "foreground": "slate-500",
+      "background": "white",
+      "role": "Secondary text",
+      "ratio": 6.007,
+      "AA_normal": true
+    },
+    {
+      "foreground": "slate-500",
+      "background": "mist-50",
+      "role": "Secondary on canvas",
+      "ratio": 5.546,
+      "AA_normal": true
+    },
+    {
+      "foreground": "white",
+      "background": "blue-700",
+      "role": "Action / default",
+      "ratio": 6.766,
+      "AA_normal": true
+    },
+    {
+      "foreground": "white",
+      "background": "blue-800",
+      "role": "Action / hover",
+      "ratio": 9.246,
+      "AA_normal": true
+    },
+    {
+      "foreground": "blue-700",
+      "background": "blue-50",
+      "role": "Selected / link",
+      "ratio": 5.956,
+      "AA_normal": true
+    },
+    {
+      "foreground": "ink-900",
+      "background": "sun-400",
+      "role": "Highlight",
+      "ratio": 9.794,
+      "AA_normal": true
+    },
+    {
+      "foreground": "green-700",
+      "background": "green-50",
+      "role": "Success",
+      "ratio": 6.329,
+      "AA_normal": true
+    },
+    {
+      "foreground": "amber-800",
+      "background": "sun-50",
+      "role": "Warning",
+      "ratio": 6.454,
+      "AA_normal": true
+    },
+    {
+      "foreground": "coral-600",
+      "background": "coral-50",
+      "role": "Error",
+      "ratio": 5.339,
+      "AA_normal": true
+    },
+    {
+      "foreground": "blue-700",
+      "background": "white",
+      "role": "Focus on surface",
+      "ratio": 6.766,
+      "AA_normal": true
+    },
+    {
+      "foreground": "blue-700",
+      "background": "mist-50",
+      "role": "Focus on canvas",
+      "ratio": 6.246,
+      "AA_normal": true
+    },
+    {
+      "foreground": "slate-500",
+      "background": "white",
+      "role": "Control boundary",
+      "ratio": 6.007,
+      "AA_normal": true
+    }
+  ]
+}
