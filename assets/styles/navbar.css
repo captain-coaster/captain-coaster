@@ -510,7 +510,7 @@
 .cc-navbar__brand {
     float: left;
     height: 46px;
-    padding: 13px 20px;
+    padding: 11px 20px;
     font-size: var(--text-caption);
     line-height: 20px;
 }
@@ -522,8 +522,7 @@
 
 .cc-navbar__brand > img {
     display: block;
-    margin-top: 2px;
-    height: 16px;
+    height: 24px;
 }
 
 .cc-navbar__nav {
