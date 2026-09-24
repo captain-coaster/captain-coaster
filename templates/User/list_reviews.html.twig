@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% set title = 'users.reviews.title'|trans({'%name%': user.displayName}) %}
+{% set parentUrl = path('user_show', {'slug': user.slug}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}

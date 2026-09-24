@@ -16,6 +16,7 @@ app:
     header:
         search: 'Fast & Furious, Six Flags Over Texas...'
     search:
+        placeholder_short: "Coaster, park or rider"
         suggestions: 'Search suggestions'
         label: 'Search coasters and parks'
         clear: 'Clear search'
@@ -185,10 +186,8 @@ filters:
 
 user_profile:
     title: 'Profile • {name}'
-    ratings: 'Show their ratings'
     reviews: 'Show their reviews'
     main_top: 'Show their Top Coasters'
-    tops: 'Show their other tops'
     map: 'Show their coaster map'
     pictures: 'Show their pictures'
 
@@ -358,6 +357,13 @@ rating:
     save_error: 'Unable to save rating. Please try again.'
 
 nav:
+    search_entries: "Shortcuts"
+    back: "Back"
+    community: "Community"
+    about: "About"
+    privacy: "Privacy"
+    guest:
+        title: "Keep track of every ride"
     label: "Main navigation"
     home: "Home"
     ranking: "Ranking"
@@ -369,13 +375,9 @@ nav:
     advanced_search: "Advanced search"
     recent: "Recent searches"
     clear_recent: "Clear"
-    account: "Account"
     sign_in: "Sign in"
     sign_out: "Log out"
     settings: "Settings"
-    ratings: "My ratings"
-    tops: "My Tops"
-    my_map: "My map"
     language: "Language"
     units: "Units"
     reviews: "Reviews"

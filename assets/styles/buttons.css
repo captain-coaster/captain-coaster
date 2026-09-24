@@ -87,8 +87,8 @@
 
 /* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
 .cc-button:focus-visible {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
 }
 
 .cc-button.disabled,

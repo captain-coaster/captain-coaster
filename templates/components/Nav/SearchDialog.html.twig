@@ -1,11 +1,11 @@
-{# Full-screen mobile search, opened by the raised Search tab (search_dialog_controller.js). #}
+{# Full-screen mobile search, opened by the Search tab (search_dialog_controller.js). Typing covers the empty state with full-width result rows. #}
 <dialog id="search-dialog"
         aria-label="{{ 'nav.search'|trans }}"
         data-search-dialog-target="dialog"
         data-action="close->search-dialog#closed"
         {{ attributes.defaults({class: 'm-0 h-dvh max-h-none w-full max-w-none bg-surface p-0 text-body text-ink opacity-0 transition-[opacity,display,overlay] transition-discrete duration-180 ease-out open:opacity-100 starting:open:opacity-0 motion-reduce:transition-none backdrop:bg-surface'}) }}>
   <div class="flex items-center gap-2 border-b border-line px-4 pt-[calc(var(--spacing)*2+env(safe-area-inset-top))] pb-2">
-    <twig:Nav:SearchField id="search-dialog-input" class="flex-1"/>
+    <twig:Nav:SearchField id="search-dialog-input" inline class="flex-1"/>
     <form method="dialog" class="shrink-0">
       <button class="h-11 rounded-control px-2 font-semibold text-action hover:bg-subtle">{{ 'nav.cancel'|trans }}</button>
     </form>
@@ -20,7 +20,7 @@
       <ul class="m-0 grid list-none gap-0.5 p-0" data-search-dialog-target="recentList"></ul>
       <template data-search-dialog-target="recentItem">
         <li>
-          <a class="flex h-11 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle">
+          <a class="flex min-h-14 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle">
             <span class="w-6 text-center" aria-hidden="true"></span>
             <span class="min-w-0 flex-1 truncate"></span>
           </a>
@@ -28,10 +28,13 @@
       </template>
     </section>
 
-    <a href="{{ path('coaster_search_index') }}" class="inline-flex h-11 items-center gap-2 justify-self-start font-semibold text-action">
-      {{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-5'}) }}
-      {{ 'nav.advanced_search'|trans }}
-      {{ ux_icon('heroicons:arrow-right', {class: 'size-4'}) }}
-    </a>
+    {% set entry = 'flex min-h-14 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle' %}
+    <nav aria-label="{{ 'nav.search_entries'|trans }}">
+      <ul class="m-0 grid list-none gap-0.5 p-0">
+        <li><a href="{{ path('coaster_search_index') }}" class="{{ entry }}">{{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-6 text-muted', 'aria-hidden': 'true'}) }}<span class="flex-1">{{ 'nav.advanced_search'|trans }}</span>{{ ux_icon('heroicons:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}</a></li>
+        <li><a href="{{ path('ranking_index') }}" class="{{ entry }}">{{ ux_icon('heroicons:trophy', {class: 'size-6 text-muted', 'aria-hidden': 'true'}) }}<span class="flex-1">{{ 'nav.ranking'|trans }}</span>{{ ux_icon('heroicons:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}</a></li>
+        <li><a href="{{ path('map_index') }}" class="{{ entry }}">{{ ux_icon('heroicons:map', {class: 'size-6 text-muted', 'aria-hidden': 'true'}) }}<span class="flex-1">{{ 'nav.map'|trans }}</span>{{ ux_icon('heroicons:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}</a></li>
+      </ul>
+    </nav>
   </div>
 </dialog>

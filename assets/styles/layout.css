@@ -18,7 +18,7 @@
  * `body[class*=navbar-bottom] .content { padding-bottom: ... }` and
  * `.content:first-child` are both dropped: `navbar-bottom` is never a
  * real body class anywhere, and `.content` is never actually a
- * `:first-child` in practice -- `page_header.html.twig`'s `.page-header`
+ * `:first-child` in practice -- `<twig:Page:Header>`
  * always renders immediately before it inside `.content-wrapper` on
  * every page that reaches this markup at all (Maps/index.html.twig
  * overrides the whole `wide_body` block and never renders `.content`).

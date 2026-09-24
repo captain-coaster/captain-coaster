@@ -16,6 +16,7 @@ app:
     header:
         search: 'Kyûbi Unchained, Walygator...'
     search:
+        placeholder_short: "Coaster, parc ou rider"
         suggestions: 'Suggestions de recherche'
         label: 'Rechercher un coaster ou un parc'
         clear: 'Effacer la recherche'
@@ -190,10 +191,8 @@ filters:
 
 user_profile:
     title: 'Profil • {name}'
-    ratings: Voir ses notes
     reviews: Voir ses avis
     main_top: Voir son Top Coasters
-    tops: Voir ses autres tops
     map: Voir sa carte
     pictures: Voir ses photos
 
@@ -363,6 +362,13 @@ rating:
     save_error: "Impossible d'enregistrer la note. Veuillez réessayer."
 
 nav:
+    search_entries: "Raccourcis"
+    back: "Retour"
+    community: "Communauté"
+    about: "À propos"
+    privacy: "Confidentialité"
+    guest:
+        title: "Gardez une trace de chaque ride"
     label: "Navigation principale"
     home: "Accueil"
     ranking: "Classement"
@@ -374,13 +380,9 @@ nav:
     advanced_search: "Recherche avancée"
     recent: "Recherches récentes"
     clear_recent: "Effacer"
-    account: "Compte"
     sign_in: "Connexion"
     sign_out: "Déconnexion"
     settings: "Paramètres"
-    ratings: "Mes notes"
-    tops: "Mes tops"
-    my_map: "Ma carte"
     language: "Langue"
     units: "Unités"
     reviews: "Avis"

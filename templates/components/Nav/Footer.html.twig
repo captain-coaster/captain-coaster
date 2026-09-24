@@ -1,13 +1,12 @@
-{# Site footer: secondary pages, language and units. #}
+{#
+  Site footer: community pages and site info; from lg also language and
+  units (below lg they live on the Profile page).
+#}
 <footer {{ attributes.defaults({class: 'mt-16 border-t border-line bg-surface text-ink'}) }}>
-  <div class="mx-auto grid max-w-content gap-10 px-gutter py-12 md:grid-cols-[1fr_auto] md:gap-16">
-    <div class="grid content-start gap-6">
-      <twig:Nav:Brand class="justify-self-start"/>
-      <twig:Nav:MoreLinks/>
-    </div>
-    <twig:Nav:Preferences class="content-start"/>
+  <div class="mx-auto grid max-w-content gap-8 px-gutter py-10 lg:grid-cols-[auto_1fr_auto] lg:gap-16 lg:py-12">
+    <twig:Nav:Brand class="self-start justify-self-start"/>
+    <twig:Nav:MoreLinks/>
+    <twig:Nav:Preferences class="hidden lg:grid"/>
   </div>
-  <div class="border-t border-line">
-    <p class="mx-auto m-0 max-w-content px-gutter py-5 text-caption text-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster. Crafted with {{ ux_icon('heroicons-solid:heart', {class: 'inline size-4 align-[-0.125em]', 'aria-label': 'love', role: 'img'}) }} by French coaster enthusiasts.</p>
-  </div>
+  <p class="mx-auto m-0 max-w-content px-gutter pb-8 text-caption text-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster. Crafted with {{ ux_icon('heroicons-solid:heart', {class: 'inline size-4 align-[-0.125em]', 'aria-label': 'love', role: 'img'}) }} by French coaster enthusiasts.</p>
 </footer>

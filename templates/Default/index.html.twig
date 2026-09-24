@@ -16,6 +16,8 @@
 {% endblock %}
 
 {% block body %}
+  {# Below lg Home is the one page carrying the logo (Nav:Header shows it from lg). #}
+  <twig:Nav:Brand class="mt-6 mb-6 lg:hidden"/>
   <!-- info alert -->
   {% if not is_granted('IS_AUTHENTICATED_REMEMBERED') %}
     <div class="cc-alert cc-alert--info cc-alert--styled-left cc-alert--arrow-left cc-alert--component" data-controller="alert">

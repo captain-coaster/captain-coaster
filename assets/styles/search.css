@@ -413,3 +413,11 @@
     outline: 2px solid var(--cc-primary);
     outline-offset: -2px;
 }
+
+/* Search dialog (Nav:SearchField inline): full-width, thumb-sized rows. */
+[data-search-target='dropdown'][data-inline] .search-result-item {
+    min-height: 3.5rem;
+    padding-inline: 0.75rem;
+    border-bottom: 0;
+    border-radius: var(--radius-control);
+}

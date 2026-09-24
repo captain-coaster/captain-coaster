@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% set title = 'image_upload.title'|trans({'%coaster%': coaster.name}) %}
+{% set parentUrl = path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}

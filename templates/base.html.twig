@@ -36,8 +36,8 @@
   (nav_route == 'map_index' ? 'map' :
   (nav_route starts with 'profile' or nav_route starts with 'notification' ? 'profile' : null))))
 %}
-{# Mobile leaves room for the fixed bottom bar. #}
-<body class="max-md:pb-[calc(var(--spacing)*16+env(safe-area-inset-bottom))]" data-controller="sidebar search-dialog">
+{# Below lg, room for the floating tab bar (h-16 + 3 spacing + safe area) plus air. #}
+<body class="max-lg:pb-[calc(var(--spacing)*24+env(safe-area-inset-bottom))]" data-controller="sidebar search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
 <twig:Nav:Header :section="nav_section"/>
 <!-- page container -->
@@ -48,12 +48,14 @@
     <!-- main content -->
     <div class="content-wrapper">
       {% block wide_body %}
-        <!-- page header -->
-        {{ include(
-          'page_header.html.twig',
-          {'title': title|default('app.title.default'|trans), 'subTitle': subTitle|default(null), 'secondaryTitle': secondaryTitle|default(null)}
-        ) }}
-        <!-- /page header -->
+        {# Pages set title/subTitle/secondaryTitle, parentUrl (back fallback) and pageActions (captured HTML). #}
+        <twig:Page:Header
+          title="{{ title|default('app.title.default'|trans) }}"
+          :subtitle="subTitle|default(null)"
+          :secondary="secondaryTitle|default(null)"
+          :parent="parentUrl|default(null)"
+          :actions="pageActions|default(null)"
+          :hideTitle="hideTitle|default(false)"/>
         <!-- Content area -->
         <main id="content" tabindex="-1" class="content mx-auto outline-none flow-root w-full max-w-content px-gutter">
           {{ include('flashes.html.twig') }}
@@ -72,11 +74,6 @@
 <!-- /page container -->
 <twig:Nav:TabBar :section="nav_section"/>
 <twig:Nav:SearchDialog/>
-{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
-  <twig:Nav:AccountMenu/>
-{% else %}
-  <twig:Nav:GuestMenu/>
-{% endif %}
 
 <!-- Core JS files -->
 {{ reprise_entry_script_tags('app') }}

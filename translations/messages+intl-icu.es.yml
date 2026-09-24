@@ -16,6 +16,7 @@ app:
     header:
         search: 'Tecuani Beast, Six Flags Mexico...'
     search:
+        placeholder_short: "Coaster, parque o rider"
         suggestions: 'Sugerencias de búsqueda'
         label: 'Buscar montañas rusas y parques'
         clear: 'Borrar la búsqueda'
@@ -190,10 +191,8 @@ filters:
 
 user_profile:
     title: 'Perfil • {name}'
-    ratings: Mostrar sus notas
     reviews: 'Mostrar sus reseñas'
     main_top: 'Mostrar sus Top Coasters'
-    tops: 'Mostrar sus otros tops'
     map: 'Mostrar su mapa de montañas rusas'
     pictures: 'Mostrar sus fotos'
 
@@ -363,6 +362,13 @@ rating:
     save_error: No se pudo guardar la calificación. Inténtalo de nuevo.
 
 nav:
+    search_entries: "Accesos directos"
+    back: "Volver"
+    community: "Comunidad"
+    about: "Acerca de"
+    privacy: "Privacidad"
+    guest:
+        title: "Guarda cada viaje"
     label: "Navegación principal"
     home: "Inicio"
     ranking: "Ranking"
@@ -374,13 +380,9 @@ nav:
     advanced_search: "Búsqueda avanzada"
     recent: "Búsquedas recientes"
     clear_recent: "Borrar"
-    account: "Cuenta"
     sign_in: "Iniciar sesión"
     sign_out: "Cerrar sesión"
     settings: "Ajustes"
-    ratings: "Mis notas"
-    tops: "Mis tops"
-    my_map: "Mi mapa"
     language: "Idioma"
     units: "Unidades"
     reviews: "Reseñas"

@@ -2,10 +2,14 @@
   Quick search over coasters, parks and riders (search_controller.js), used
   in the desktop header and in the mobile search dialog.
   Props:
-    id  unique input id
+    id        unique input id
+    shortcut  focus the field with / or Cmd/Ctrl+K (desktop header)
+    inline    results as full-width rows under the field (search dialog) instead of a floating panel
 #}
-{% props id %}
-<form action="{{ path('search_index') }}" method="get" role="search" {{ attributes.defaults({class: 'w-full'}) }}>
+{% props id, shortcut = false, inline = false %}
+<form action="{{ path('search_index') }}" method="get" role="search"
+      {% if shortcut %}data-controller="search-shortcut" data-action="keydown@document->search-shortcut#focus"{% endif %}
+      {{ attributes.defaults({class: 'w-full'}) }}>
   <div class="group relative"
        data-controller="search"
        data-search-search-url-value="{{ path('api_search') }}"
@@ -16,15 +20,19 @@
            name="query"
            type="search"
            enterkeyhint="search"
-           class="h-11 w-full appearance-none rounded-control border border-control-line bg-surface pr-11 pl-10 text-body text-ink placeholder:text-muted focus:border-action focus:outline-2 focus:outline-offset-0 focus:outline-action [&::-webkit-search-cancel-button]:hidden"
-           placeholder="{{ 'app.header.search'|trans }}"
+           class="h-11 w-full appearance-none rounded-pill border border-transparent bg-subtle pr-11 pl-10 text-body text-ink placeholder:text-muted focus:border-action focus:bg-surface focus:outline-2 focus:outline-offset-0 focus:outline-action lg:h-10 [&::-webkit-search-cancel-button]:hidden"
+           placeholder="{{ (inline ? 'app.search.placeholder_short' : 'app.header.search')|trans }}"
            data-search-target="input"
            data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
            autocomplete="off"
            role="combobox"
            aria-expanded="false"
            aria-autocomplete="list"
-           aria-haspopup="listbox">
+           aria-haspopup="listbox"
+           {% if shortcut %}data-search-shortcut-target="input" aria-keyshortcuts="/ Control+K Meta+K"{% endif %}>
+    {% if shortcut %}
+      <kbd class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rounded-sm border border-line bg-surface px-1.5 font-mono text-caption leading-tight text-muted group-focus-within:hidden group-data-has-content:hidden" aria-hidden="true">/</kbd>
+    {% endif %}
     <button type="button"
             class="absolute top-1/2 right-1 hidden size-9 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-subtle hover:text-ink group-data-has-content:grid"
             data-action="click->search#clearSearch"
@@ -32,7 +40,8 @@
       {{ ux_icon('heroicons:x-mark', {class: 'size-5'}) }}
     </button>
     {# Rows are rendered by search_controller.js and still styled by search.css. #}
-    <div class="absolute inset-x-0 top-full z-50 mt-1 hidden overflow-hidden rounded-card border border-line bg-surface shadow-overlay [&.show]:block"
+    <div class="{{ inline ? 'fixed inset-x-0 top-[calc(var(--spacing)*15+env(safe-area-inset-top))] bottom-0 z-10 hidden overflow-y-auto bg-surface px-2 pt-2' : 'absolute inset-x-0 top-full z-50 mt-1 hidden overflow-hidden rounded-card border border-line bg-surface shadow-overlay' }} [&.show]:block"
+         {% if inline %}data-inline{% endif %}
          data-search-target="dropdown"
          role="listbox"
          aria-label="{{ 'app.search.suggestions'|trans }}">

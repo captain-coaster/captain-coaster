@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 {% set title = 'review.form.title'|trans({'%name%': coaster.name}) %}
 {% set subTitle = '' %}
+{% set parentUrl = path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block javascripts %}

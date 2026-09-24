@@ -1,8 +1,8 @@
-{# Opens the filter panel below md (Includes/filter_sidebar.html.twig); from md up the panel is always shown. #}
+{# Opens the filter panel below md (Includes/filter_sidebar.html.twig); from md up the panel is always shown. A Page:Header action. #}
 <button type="button"
         data-action="sidebar#toggleMobileSecondary"
         aria-expanded="false"
-        {{ attributes.defaults({class: 'inline-flex h-11 items-center gap-2 rounded-control border border-control-line bg-surface px-4 font-semibold text-ink hover:bg-subtle md:hidden'}) }}>
+        aria-label="{{ 'nav.filters'|trans }}"
+        {{ attributes.defaults({class: 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface aria-expanded:bg-selected aria-expanded:text-action md:hidden'}) }}>
   {{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-5', 'aria-hidden': 'true'}) }}
-  {{ 'nav.filters'|trans }}
 </button>

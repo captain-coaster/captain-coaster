@@ -1,24 +1,29 @@
 {#
-  One bottom-bar destination: a link, or a button when it opens something
-  (pass popovertarget/data-action through attributes, and no href).
+  One tab of Nav:TabBar: a link, or a button when it opens something (pass
+  data-action/aria-* through attributes, and no href).
   Props:
     label, icon, href
+    user    shows this user's avatar instead of the icon
     active  current section
-    badge   unread count shown on the icon, 0 hides it
+    badge   unread count on the icon, 0 hides it
 #}
-{% props label, icon, href = null, active = false, badge = 0 %}
+{% props label, icon = null, href = null, user = null, active = false, badge = 0 %}
 {% set tag = href ? 'a' : 'button' %}
 <{{ tag }}
   {% if href %}href="{{ href }}"{% else %}type="button"{% endif %}
   {% if active %}aria-current="page"{% endif %}
-  {{ attributes.defaults({class: 'group flex h-full min-w-0 flex-col items-center justify-center gap-0.5 px-1 text-muted-strong outline-offset-[-3px] hover:text-ink aria-[current=page]:text-action'}) }}>
-  <span class="relative grid h-8 w-14 place-items-center rounded-pill transition-colors duration-120 group-aria-[current=page]:bg-selected motion-reduce:transition-none">
-    {{ ux_icon(icon, {class: 'size-6', 'aria-hidden': 'true'}) }}
+  {{ attributes.defaults({class: 'flex h-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-pill px-1 text-muted-strong outline-offset-[-3px] hover:text-ink aria-[current=page]:bg-selected aria-[current=page]:text-action'}) }}>
+  <span class="relative grid size-6 place-items-center">
+    {% if user %}
+      <twig:Avatar :user="user" size="xs" class="size-6 text-[0.625rem]" decorative/>
+    {% else %}
+      {{ ux_icon(icon, {class: 'size-6', 'aria-hidden': 'true'}) }}
+    {% endif %}
     {% if badge > 0 %}
-      <span class="absolute -top-1 right-1 grid h-5 min-w-5 place-items-center rounded-pill bg-highlight px-1 text-caption leading-none font-semibold text-on-highlight">
+      <span class="absolute -top-1.5 -right-2.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-surface bg-highlight px-1 text-[0.6875rem] leading-none font-semibold text-on-highlight">
         {{ badge > 99 ? '99+' : badge }}<span class="sr-only"> {{ 'notif.title'|trans({}, 'notification') }}</span>
       </span>
     {% endif %}
   </span>
-  <span class="max-w-full truncate text-caption leading-tight font-semibold">{{ label }}</span>
+  <span class="max-w-full truncate text-caption leading-tight font-semibold group-data-compact/bar:sr-only">{{ label }}</span>
 </{{ tag }}>

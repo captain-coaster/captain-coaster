@@ -114,8 +114,21 @@ a:focus {
     outline: 0;
 }
 
-/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
-a:focus-visible {
-    outline: 2px solid currentcolor;
-    outline-offset: 2px;
+/* Keyboard-only focus ring (DESIGN.md: 3px, 3px offset) -- mouse/touch clicks stay visually unchanged. */
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+}
+
+::selection {
+    background-color: var(--selected);
+    color: var(--fg);
+}
+
+:where(input, textarea) {
+    caret-color: var(--action);
 }

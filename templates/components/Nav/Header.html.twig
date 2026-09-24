@@ -1,50 +1,40 @@
 {#
-  Brand bar. Mobile: head mark and name, plus notifications or sign-in;
-  scrolls away (Nav:TabBar is the navigation). Desktop: sticky, with the
-  main links, quick search and account.
+  Desktop navigation (lg and up; Nav:TabBar below): logo, main links, quick
+  search, and the avatar leading to Profile.
   Props:
     section  active section, see Nav:TabBar
 #}
 {% props section = null %}
 {% set signed_in = is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 {% set unread = signed_in ? unread_notification_count() : 0 %}
-{% set link = 'inline-flex h-10 items-center rounded-pill px-4 font-semibold text-muted-strong hover:bg-subtle hover:text-ink aria-[current=page]:bg-selected aria-[current=page]:text-action' %}
-<header {{ attributes.defaults({class: 'border-b border-line bg-surface md:sticky md:top-0 md:z-40'}) }}>
-  <div class="mx-auto flex h-14 max-w-content items-center gap-3 px-gutter md:h-16 md:gap-6">
+{% set link = 'relative inline-flex h-16 items-center px-3 font-semibold text-muted-strong hover:text-ink aria-[current=page]:text-action aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-3 aria-[current=page]:after:bottom-0 aria-[current=page]:after:h-0.75 aria-[current=page]:after:rounded-t-sm aria-[current=page]:after:bg-action' %}
+<header {{ attributes.defaults({class: 'sticky top-0 z-40 hidden border-b border-line bg-surface/85 backdrop-blur-xl lg:block'}) }}>
+  <div class="mx-auto flex h-16 max-w-content items-center gap-6 px-gutter">
     <twig:Nav:Brand/>
 
-    <nav aria-label="{{ 'nav.label'|trans }}" class="hidden md:block">
-      <ul class="m-0 flex list-none gap-1 p-0">
+    <nav aria-label="{{ 'nav.label'|trans }}">
+      <ul class="m-0 flex list-none p-0">
         <li><a href="{{ path('default_index') }}" class="{{ link }}" {% if section == 'home' %}aria-current="page"{% endif %}>{{ 'nav.home'|trans }}</a></li>
         <li><a href="{{ path('ranking_index') }}" class="{{ link }}" {% if section == 'ranking' %}aria-current="page"{% endif %}>{{ 'nav.ranking'|trans }}</a></li>
         <li><a href="{{ path('map_index') }}" class="{{ link }}" {% if section == 'map' %}aria-current="page"{% endif %}>{{ 'nav.map'|trans }}</a></li>
       </ul>
     </nav>
 
-    <twig:Nav:SearchField id="search-header" class="hidden max-w-md flex-1 md:block"/>
+    <twig:Nav:SearchField id="search-header" shortcut class="max-w-md flex-1"/>
 
-    <div class="ml-auto flex shrink-0 items-center gap-1">
+    <div class="ml-auto shrink-0">
       {% if signed_in %}
-        {# Mobile: notifications (the account lives in the Profile tab). #}
-        <a href="{{ path('notification_index') }}"
-           class="relative -mr-2 grid size-11 place-items-center rounded-full text-muted-strong hover:bg-subtle hover:text-ink md:hidden"
-           aria-label="{{ 'notif.title'|trans({}, 'notification') }}{% if unread > 0 %} ({{ unread }}){% endif %}">
-          {{ ux_icon('heroicons:bell', {class: 'size-6', 'aria-hidden': 'true'}) }}
-          {% if unread > 0 %}
-            <span class="absolute top-1 right-0.5 grid h-5 min-w-5 place-items-center rounded-pill bg-highlight px-1 text-caption leading-none font-semibold text-on-highlight" aria-hidden="true">{{ unread > 99 ? '99+' : unread }}</span>
-          {% endif %}
-        </a>
-        <button type="button"
-                popovertarget="account-menu"
-                class="relative -m-1 hidden rounded-full p-1 hover:bg-subtle md:grid"
-                aria-label="{{ 'nav.account'|trans }}{% if unread > 0 %}, {{ 'notif.title'|trans({}, 'notification') }} ({{ unread }}){% endif %}">
+        <a href="{{ path('profile') }}"
+           class="relative -m-1 grid rounded-full p-1 hover:bg-subtle"
+           {% if section == 'profile' %}aria-current="page"{% endif %}
+           aria-label="{{ 'nav.profile'|trans }}{% if unread > 0 %}, {{ 'notif.title'|trans({}, 'notification') }} ({{ unread }}){% endif %}">
           <twig:Avatar :user="app.user" size="sm" decorative/>
           {% if unread > 0 %}
-            <span class="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-pill bg-highlight px-1 text-caption leading-none font-semibold text-on-highlight" aria-hidden="true">{{ unread > 99 ? '99+' : unread }}</span>
+            <span class="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-surface bg-highlight px-1 text-[0.6875rem] leading-none font-semibold text-on-highlight" aria-hidden="true">{{ unread > 99 ? '99+' : unread }}</span>
           {% endif %}
-        </button>
+        </a>
       {% else %}
-        <a href="{{ path('login') }}" class="-mr-2 inline-flex h-11 items-center rounded-control px-3 font-semibold text-action hover:bg-subtle md:mr-0 md:bg-action md:px-5 md:text-on-action md:hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
+        <a href="{{ path('login') }}" class="inline-flex h-10 items-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
       {% endif %}
     </div>
   </div>

@@ -54,5 +54,6 @@
         {{ 'nav.sign_out'|trans }}
     </a>
     </div>
-    <twig:Nav:MoreLinks class="border-t border-line px-4 py-3 md:hidden"/>
+    {# Below lg the footer carries no preferences. #}
+    <twig:Nav:Preferences variant="rows" class="rounded-none border-t border-line lg:hidden"/>
 </div>

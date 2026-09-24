@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% set title = 'nav.profile'|trans %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block header %}
+  <meta name="robots" content="noindex">
+{% endblock %}
+
+{% block body %}
+  <div class="mx-auto grid max-w-xl gap-10">
+    <section class="grid justify-items-center gap-4 rounded-card bg-surface px-6 py-8 text-center shadow-raised">
+      <h2 class="m-0 text-balance">{{ 'nav.guest.title'|trans }}</h2>
+      <p class="m-0 max-w-sm text-muted-strong text-balance">{{ 'nav.join_reason'|trans }}</p>
+      <a href="{{ path('login') }}" class="inline-flex h-12 w-full max-w-xs items-center justify-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
+    </section>
+
+    <section class="grid gap-3">
+      <h2 class="m-0 text-lead font-sans font-semibold">{{ 'nav.settings'|trans }}</h2>
+      <twig:Nav:Preferences variant="rows"/>
+    </section>
+  </div>
+{% endblock %}

@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% set title = 'coaster_ranking.title'|trans %}
+{% set pageActions %}<twig:FilterToggle/>{% endset %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
@@ -21,7 +22,6 @@
 {% endblock %}
 
 {% block body %}
-  <twig:FilterToggle class="mb-4"/>
   {% include 'ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
   <div id="ranking-result"></div>
 {% endblock %}

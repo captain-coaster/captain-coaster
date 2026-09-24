@@ -1,7 +1,7 @@
 /*
  * Filter panel (Includes/filter_sidebar.html.twig on Ranking, Search and
  * Map): a 260px light column from md up; below md it's hidden until the
- * header's filters button toggles `.sidebar-mobile-secondary` on <body>
+ * page's filters button toggles `.sidebar-mobile-secondary` on <body>
  * (sidebar_controller.js). The main navigation sidebar is gone (#416); this
  * file goes too when the filter panel gets its own redesign.
  *
@@ -22,8 +22,40 @@
     }
 }
 
-.sidebar-secondary {
-    z-index: 98;
+/* From md the panel stays in view while the results scroll, under the
+   sticky bars: Page:Header's compact bar (3.5rem) below lg, Nav:Header
+   (4rem + 1px border) from lg. */
+@media (min-width: theme(--breakpoint-md)) {
+    .sidebar-secondary {
+        position: sticky;
+        top: 3.5rem;
+        align-self: flex-start;
+        max-height: calc(100dvh - 3.5rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+@media (min-width: theme(--breakpoint-lg)) {
+    .sidebar-secondary {
+        top: calc(4rem + 1px);
+        max-height: calc(100dvh - 4rem - 1px);
+    }
+}
+
+/* The mobile map is fixed full screen: the open panel floats over it,
+   below the filters button. */
+@media (width < theme(--breakpoint-md)) {
+    .sidebar-mobile-secondary:has(.map-container) .sidebar-secondary {
+        position: fixed;
+        inset: calc(4.25rem + env(safe-area-inset-top)) 0.75rem auto;
+        z-index: 20;
+        max-height: 60dvh;
+        overflow-y: auto;
+        border: 0;
+        border-radius: var(--radius-card);
+        box-shadow: var(--shadow-overlay);
+    }
 }
 
 .sidebar-default {

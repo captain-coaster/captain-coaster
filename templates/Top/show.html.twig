@@ -4,6 +4,7 @@
 
 {% set title = top.name %}
 {% set subTitle = top.user.displayName %}
+{% set parentUrl = path('user_show', {'slug': top.user.slug}) %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 
 {% block body %}

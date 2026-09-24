@@ -1,22 +1,28 @@
 {#
-  Secondary destinations with no tab: community pages and site info. Shared
-  by Nav:Footer, Nav:GuestMenu and the Profile page.
+  Destinations without a tab: community pages and site info, in two groups.
+  Shared by Nav:Footer and the Profile pages.
 #}
+{% set heading = 'm-0 mb-1 font-sans text-caption font-semibold text-muted' %}
 {% set link = 'inline-flex min-h-11 items-center gap-1.5 text-ink underline-offset-4 hover:text-action hover:underline' %}
-<div {{ attributes.defaults({class: 'grid gap-x-10 gap-y-1 sm:grid-cols-2 sm:justify-start'}) }}>
-  <ul class="m-0 grid list-none content-start p-0">
-    <li><a href="{{ path('review_list') }}" class="{{ link }}">{{ 'nav.reviews'|trans }}</a></li>
-    <li><a href="{{ path('top_list') }}" class="{{ link }}">{{ 'nav.all_tops'|trans }}</a></li>
-    <li><a href="{{ path('user_list') }}" class="{{ link }}">{{ 'nav.riders'|trans }}</a></li>
-    <li><a href="{{ path('coaster_search_index') }}" class="{{ link }}">{{ 'nav.advanced_search'|trans }}</a></li>
-  </ul>
-  <ul class="m-0 grid list-none content-start p-0">
-    <li>
-      <a href="https://blog.captaincoaster.com" class="{{ link }}">
-        {{ 'nav.blog'|trans }}{{ ux_icon('heroicons:arrow-top-right-on-square', {class: 'size-4', 'aria-hidden': 'true'}) }}
-      </a>
-    </li>
-    <li><a href="{{ path('default_contact') }}" class="{{ link }}">{{ 'nav.contact'|trans }}</a></li>
-    <li><a href="{{ path('app_terms_conditions') }}" class="{{ link }}">{{ 'policy.title'|trans([], 'policy') }}</a></li>
-  </ul>
+<div {{ attributes.defaults({class: 'grid grid-cols-2 gap-x-10 gap-y-6 sm:flex sm:gap-16'}) }}>
+  <section>
+    <h2 class="{{ heading }}">{{ 'nav.community'|trans }}</h2>
+    <ul class="m-0 grid list-none p-0">
+      <li><a href="{{ path('review_list') }}" class="{{ link }}">{{ 'nav.reviews'|trans }}</a></li>
+      <li><a href="{{ path('top_list') }}" class="{{ link }}">{{ 'nav.all_tops'|trans }}</a></li>
+      <li><a href="{{ path('user_list') }}" class="{{ link }}">{{ 'nav.riders'|trans }}</a></li>
+    </ul>
+  </section>
+  <section>
+    <h2 class="{{ heading }}">{{ 'nav.about'|trans }}</h2>
+    <ul class="m-0 grid list-none p-0">
+      <li><a href="{{ path('default_contact') }}" class="{{ link }}">{{ 'nav.contact'|trans }}</a></li>
+      <li>
+        <a href="https://blog.captaincoaster.com" class="{{ link }}">
+          {{ 'nav.blog'|trans }}{{ ux_icon('heroicons:arrow-top-right-on-square', {class: 'size-4', 'aria-hidden': 'true'}) }}
+        </a>
+      </li>
+      <li><a href="{{ path('app_terms_conditions') }}" class="{{ link }}">{{ 'nav.privacy'|trans }}</a></li>
+    </ul>
+  </section>
 </div>

@@ -1,35 +1,28 @@
 {#
-  Mobile bottom bar: Home · Ranking · Search (raised) · Map · Profile.
+  Mobile and tablet navigation (below lg): a floating translucent pill,
+  Home · Ranking · Search · Map · Profile. Labels hide while scrolling down
+  (tab_bar_controller.js); the bar itself never hides.
   Props:
     section  active section: home | ranking | search | map | profile | null
 #}
 {% props section = null %}
 {% set signed_in = is_granted('IS_AUTHENTICATED_REMEMBERED') %}
 <nav aria-label="{{ 'nav.label'|trans }}"
-     {{ attributes.defaults({class: 'fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden'}) }}>
-  <ul class="m-0 grid h-16 list-none grid-cols-5 p-0">
+     data-controller="tab-bar"
+     {{ attributes.defaults({class: 'group/bar pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))] lg:hidden'}) }}>
+  <ul class="pointer-events-auto m-0 mx-auto grid h-16 max-w-md list-none grid-cols-5 rounded-pill border border-white/60 bg-surface/75 p-1 shadow-overlay backdrop-blur-xl backdrop-saturate-150 transition-[height] duration-200 ease-out group-data-compact/bar:h-12 motion-reduce:transition-none">
     <li><twig:Nav:Tab label="{{ 'nav.home'|trans }}" icon="heroicons:home" href="{{ path('default_index') }}" :active="section == 'home'"/></li>
     <li><twig:Nav:Tab label="{{ 'nav.ranking'|trans }}" icon="heroicons:trophy" href="{{ path('ranking_index') }}" :active="section == 'ranking'"/></li>
     <li>
-      {# The one raised action: opens the full-screen search dialog. #}
-      <button type="button"
-              class="group flex h-full w-full flex-col items-center justify-end gap-0.5 px-1 pb-1.5 text-muted-strong outline-offset-[-3px] data-active:text-action"
-              {% if section == 'search' %}data-active{% endif %}
-              aria-haspopup="dialog"
-              aria-controls="search-dialog"
-              data-action="search-dialog#open">
-        <span class="-mt-6 grid size-14 place-items-center rounded-full bg-action text-on-action shadow-raised ring-4 ring-surface transition-colors duration-120 group-hover:bg-action-hover motion-reduce:transition-none">
-          {{ ux_icon('heroicons:magnifying-glass', {class: 'size-7', 'aria-hidden': 'true'}) }}
-        </span>
-        <span class="max-w-full truncate text-caption leading-tight font-semibold">{{ 'nav.search'|trans }}</span>
-      </button>
+      <twig:Nav:Tab label="{{ 'nav.search'|trans }}" icon="heroicons:magnifying-glass" :active="section == 'search'"
+                    class="w-full" aria-haspopup="dialog" aria-controls="search-dialog" data-action="search-dialog#open"/>
     </li>
     <li><twig:Nav:Tab label="{{ 'nav.map'|trans }}" icon="heroicons:map" href="{{ path('map_index') }}" :active="section == 'map'"/></li>
     <li>
       {% if signed_in %}
-        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="heroicons:user-circle" href="{{ path('profile') }}" :active="section == 'profile'" :badge="unread_notification_count()"/>
+        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" :user="app.user" href="{{ path('profile') }}" :active="section == 'profile'" :badge="unread_notification_count()"/>
       {% else %}
-        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="heroicons:user-circle" popovertarget="guest-menu" class="w-full"/>
+        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="heroicons:user-circle" href="{{ path('profile') }}" :active="section == 'profile'"/>
       {% endif %}
     </li>
   </ul>
