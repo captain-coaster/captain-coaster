@@ -84,15 +84,20 @@ class PictureUrlSigner
      */
     public function signAvatar(string $profilePicture, int $size, string $format): ?string
     {
-        if (1 !== preg_match('/^pp_(([0-9]+)_[0-9a-f]{13})\.[a-z]+$/', $profilePicture, $m)
-            || !self::isV2($this->avatarScheme, (int) $m[2])) {
+        $ref = self::avatarRef($profilePicture);
+        if (null === $ref || !self::isV2($this->avatarScheme, (int) strstr($ref, '_', true))) {
             return null;
         }
 
-        $ref = $m[1];
         $v = self::sha6(self::GEN.'|'.$ref);
 
         return $this->signV2(\sprintf('a/%s/%s', $ref, $v), \sprintf('%dx%d/avatar.%s', $size, $size, $format));
+    }
+
+    /** `pp_{userId}_{uniqid}.{ext}` -> `{userId}_{uniqid}`, the v2 avatar identity (null for anything else). */
+    public static function avatarRef(string $profilePicture): ?string
+    {
+        return 1 === preg_match('/^pp_([0-9]+_[0-9a-f]{13})\.[a-z]+$/', $profilePicture, $m) ? $m[1] : null;
     }
 
     /** Mirrors captain-infra's canonicalFocalComponent (v2.mjs): the string written to S3 metadata, missing/empty -> '-'. */

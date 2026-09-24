@@ -9,6 +9,10 @@ oneup_flysystem:
                 client: Aws\S3\S3Client
                 bucket: '%env(AWS_S3_BUCKET_NAME)%'
                 prefix: 'profile-pictures'
+        pictures_variants_adapter:
+            awss3v3:
+                client: Aws\S3\S3Client
+                bucket: '%env(AWS_S3_VARIANTS_BUCKET_NAME)%'
         profile_pictures_cache_adapter:
             awss3v3:
                 client: Aws\S3\S3Client
@@ -21,6 +25,9 @@ oneup_flysystem:
         profile-pictures:
             adapter: profile_pictures_adapter
             alias: profile_pictures_filesystem
+        pictures-variants:
+            adapter: pictures_variants_adapter
+            alias: pictures_variants_filesystem
         profile-pictures-cache:
             adapter: profile_pictures_cache_adapter
             alias: profile_pictures_cache_filesystem

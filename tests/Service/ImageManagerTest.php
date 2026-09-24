@@ -88,7 +88,7 @@ class ImageManagerTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
-    private function makeImageManager(MockHandler $mockHandler): ImageManager
+    private function makeImageManager(MockHandler $mockHandler, ?FilesystemOperator $variants = null): ImageManager
     {
         $s3Client = new S3Client([
             'region' => 'eu-west-3',
@@ -104,8 +104,20 @@ class ImageManagerTest extends TestCase
             $s3Client,
             $this->createMock(ImageRepository::class),
             'captain-pictures-resized',
-            'captain-pictures-original'
+            'captain-pictures-original',
+            $variants ?? $this->createMock(FilesystemOperator::class),
         );
+    }
+
+    public function testRemoveVariantsDeletesTheImagePrefixInTheVariantsBucket(): void
+    {
+        $variants = $this->createMock(FilesystemOperator::class);
+        $variants->expects($this->once())->method('deleteDirectory')->with('i/42');
+
+        $image = new Image();
+        new \ReflectionProperty(Image::class, 'id')->setValue($image, 42);
+
+        $this->makeImageManager(new MockHandler(), $variants)->removeVariants($image);
     }
 
     public function testWriteFocalPointMetadataCopiesObjectInPlaceWithReplacedMetadata(): void

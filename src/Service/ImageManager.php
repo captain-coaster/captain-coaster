@@ -24,7 +24,8 @@ class ImageManager
         #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
         private readonly string $s3CacheBucket,
         #[Autowire('%env(string:AWS_S3_BUCKET_NAME)%')]
-        private readonly string $s3OriginalBucket
+        private readonly string $s3OriginalBucket,
+        private readonly FilesystemOperator $picturesVariantsFilesystem,
     ) {
     }
 
@@ -70,6 +71,19 @@ class ImageManager
     public function remove(string $filename): void
     {
         $this->picturesFilesystem->delete($filename);
+    }
+
+    /**
+     * Delete every v2 variant of a photo (`i/{id}/`, all versions, sizes and formats). Cloudflare
+     * may still serve a cached copy until its TTL; purging it is a separate, later step (D16).
+     */
+    public function removeVariants(Image $image): void
+    {
+        try {
+            $this->picturesVariantsFilesystem->deleteDirectory('i/'.$image->getId());
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to delete photo variants', ['id' => $image->getId(), 'error' => $e->getMessage()]);
+        }
     }
 
     /**

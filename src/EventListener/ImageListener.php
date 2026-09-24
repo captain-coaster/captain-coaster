@@ -57,10 +57,11 @@ class ImageListener
         }
     }
 
-    /** Before remove: remove image file on storage (S3) */
+    /** Before remove: remove image file and its v2 variants on storage (S3), while the id is still set */
     public function preRemove(Image $image, PreRemoveEventArgs $args): void
     {
         $this->imageManager->remove($image->getFilename());
+        $this->imageManager->removeVariants($image);
     }
 
     /** After remove: update main images, remove cache */
