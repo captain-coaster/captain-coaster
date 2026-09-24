@@ -1,4 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
+import { icon as iconMarkup } from '../js/icons';
+import { trans } from '../translator';
 
 /**
  * Notification controller for displaying toast-style notifications
@@ -15,15 +17,14 @@ export default class extends Controller {
      * @param {number} timeout - Time in milliseconds before the notification disappears
      */
     show(message, type = 'info', timeout = 3000) {
-        // Icon mapping for different notification types
         const icons = {
-            success: '✓',
-            info: 'ℹ',
-            warning: '⚠',
-            danger: '✕',
+            success: 'success',
+            info: 'info',
+            warning: 'warning',
+            danger: 'error',
         };
 
-        const icon = icons[type] || icons.info;
+        const icon = iconMarkup(icons[type] || icons.info);
 
         // Create notification with CSS classes
         const notification = document.createElement('div');
@@ -34,7 +35,7 @@ export default class extends Controller {
             <div class="notification__content">
                 <div class="notification__icon">${icon}</div>
                 <div class="notification__message">${message}</div>
-                <button type="button" class="notification__close">×</button>
+                <button type="button" class="notification__close" aria-label="${trans('gallery.close')}">${iconMarkup('close')}</button>
             </div>
         `;
 

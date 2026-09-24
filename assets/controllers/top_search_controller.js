@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { renderStarRating } from '../js/utils/star-rating';
 import { SearchDropdown } from '../js/search-dropdown';
 import { trans } from '../translator';
+import { icon } from '../js/icons';
 
 // stimulusFetch: 'lazy' — only used on the top-list edit page
 
@@ -138,7 +139,7 @@ export default class extends SearchDropdown(Controller) {
 
     renderNoResults() {
         return `<div class="search-no-results">
-            <div class="search-no-results-icon">🔍</div>
+            <div class="search-no-results-icon">${icon('search')}</div>
             <div class="search-no-results-text">${trans('search.no_results', {}, 'top')}</div>
         </div>`;
     }

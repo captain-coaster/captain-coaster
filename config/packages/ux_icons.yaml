@@ -8,6 +8,17 @@ ux_icons:
         height: '1em'
         width: '1em'
 
+    icon_sets:
+        # Lucide is the app's icon set (DESIGN.md, Iconography). Its shapes
+        # inherit stroke and fill from the <svg> (base.css), so these defaults
+        # and per-call overrides reach the drawing: `fill: 'currentColor'`
+        # draws the filled state (rated star, voted thumb).
+        lucide:
+            icon_attributes:
+                fill: none
+                stroke-width: '1.75'
+                data-icon-set: lucide
+
     # Throw an exception if an icon is not found
     ignore_not_found: false
 

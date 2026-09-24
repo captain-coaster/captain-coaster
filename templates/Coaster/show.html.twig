@@ -91,28 +91,28 @@
             <!-- main carac -->
             <div class="cc-panel cc-panel__body coaster-stats content-group">
                 <div class="coaster-stats__row">
-                    {{ ux_icon('heroicons:arrow-trending-up', {'class': 'w-4.5 h-4.5 text-warning-600'}) }}
+                    {{ ux_icon('lucide:trending-up', {'class': 'w-4.5 h-4.5 text-warning-600'}) }}
                     <span class="coaster-stats__label">{{ 'coaster.stats.height'|trans }}</span>
                     <span class="coaster-stats__value{% if coaster.height is empty %} coaster-stats__value--empty{% endif %}">
                         {{ coaster.height is not empty ? units.metersOrFeet(coaster.height) : '—' }}
                     </span>
                 </div>
                 <div class="coaster-stats__row">
-                    {{ ux_icon('heroicons:arrows-right-left', {'class': 'w-4.5 h-4.5 text-cc-blue'}) }}
+                    {{ ux_icon('lucide:arrow-left-right', {'class': 'w-4.5 h-4.5 text-cc-blue'}) }}
                     <span class="coaster-stats__label">{{ 'coaster.stats.length'|trans }}</span>
                     <span class="coaster-stats__value{% if coaster.length is empty %} coaster-stats__value--empty{% endif %}">
                         {{ coaster.length is not empty ? units.metersOrFeet(coaster.length) : '—' }}
                     </span>
                 </div>
                 <div class="coaster-stats__row">
-                    {{ ux_icon('heroicons:bolt', {'class': 'w-4.5 h-4.5 text-success-400'}) }}
+                    {{ ux_icon('lucide:zap', {'class': 'w-4.5 h-4.5 text-success-400'}) }}
                     <span class="coaster-stats__label">{{ 'coaster.stats.speed'|trans }}</span>
                     <span class="coaster-stats__value{% if coaster.speed is empty %} coaster-stats__value--empty{% endif %}">
                         {{ coaster.speed is not empty ? units.kphOrMph(coaster.speed) : '—' }}
                     </span>
                 </div>
                 <div class="coaster-stats__row">
-                    {{ ux_icon('heroicons:arrow-path-rounded-square', {'class': 'w-4.5 h-4.5 text-danger-400'}) }}
+                    {{ ux_icon('lucide:repeat', {'class': 'w-4.5 h-4.5 text-danger-400'}) }}
                     <span class="coaster-stats__label">{{ 'coaster.stats.inversions'|trans }}</span>
                     <span class="coaster-stats__value">{{ coaster.inversionsNumber|default('0') }}</span>
                 </div>
@@ -203,7 +203,7 @@
                         <div class="cc-list-group__item">
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.kiddie'|trans }}
                                 :</label>
-                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
+                            <div class="pull-right">{{ ux_icon('lucide:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.launchs|length > 0 %}
@@ -247,13 +247,13 @@
                         <div class="cc-list-group__item">
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.indoor'|trans }}
                                 :</label>
-                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
+                            <div class="pull-right">{{ ux_icon('lucide:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.vr %}
                         <div class="cc-list-group__item">
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.vr'|trans }}:</label>
-                            <div class="pull-right">{{ ux_icon('heroicons:check', {'class': 'w-3 h-3'}) }}</div>
+                            <div class="pull-right">{{ ux_icon('lucide:check', {'class': 'w-3 h-3'}) }}</div>
                         </div>
                     {% endif %}
                     {% if coaster.price and coaster.currency %}
@@ -310,12 +310,12 @@
                         <div class="cc-panel__heading">
                             <h6 class="cc-panel__title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons-solid:star', {'class': 'w-4 h-4 position-left'}) }} Captain's Review
+                                    {{ ux_icon('lucide:star', {'class': 'w-4 h-4 position-left', fill: 'currentColor'}) }} Captain's Review
                                 </span>
                             </h6>
                         </div>
                         <div class="cc-panel__body text-center">
-                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
+                            {{ ux_icon('lucide:loader-circle', {'class': 'size-4 text-muted motion-safe:animate-spin'}) }}
                             <span class="text-muted ml-[5px]">{{ 'ai_summary.panel.loading'|trans({}, 'ai_summary') }}</span>
                         </div>
                     </div>
@@ -334,12 +334,12 @@
                         <div class="cc-panel__heading">
                             <h6 class="cc-panel__title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons:photo', {'class': 'w-4 h-4 position-left'}) }} {{ 'coaster.photos.title'|trans }}
+                                    {{ ux_icon('lucide:image', {'class': 'w-4 h-4 position-left'}) }} {{ 'coaster.photos.title'|trans }}
                                 </span>
                             </h6>
                         </div>
                         <div class="cc-panel__body text-center">
-                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
+                            {{ ux_icon('lucide:loader-circle', {'class': 'size-4 text-muted motion-safe:animate-spin'}) }}
                             <span class="text-muted ml-[5px]">{{ 'coaster.photos.loading'|trans }}</span>
                         </div>
                     </div>
@@ -357,7 +357,7 @@
                         <div class="cc-panel__heading">
                             <h6 class="cc-panel__title">
                                 <span class="text-semibold">
-                                    {{ ux_icon('heroicons:chat-bubble-left-right', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.title'|trans }}
+                                    {{ ux_icon('lucide:message-square-text', {'class': 'w-4 h-4 position-left'}) }} {{ 'review.title'|trans }}
                                 </span>
                                 <form style="display: none">
                                     <input type="hidden" name="page" value="1">
@@ -370,7 +370,7 @@
                             </h6>
                         </div>
                         <div class="cc-panel__body text-center">
-                            {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 spinner text-muted'}) }}
+                            {{ ux_icon('lucide:loader-circle', {'class': 'size-4 text-muted motion-safe:animate-spin'}) }}
                             <span class="text-muted ml-[5px]">{{ 'review.loading'|trans }}</span>
                         </div>
                     </div>

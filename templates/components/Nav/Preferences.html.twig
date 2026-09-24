@@ -30,16 +30,16 @@
     <div class="relative flex min-h-14 items-center gap-4 px-4 hover:bg-subtle has-[select:focus-visible]:outline-3 has-[select:focus-visible]:-outline-offset-3 has-[select:focus-visible]:outline-focus">
       <label for="pref-language-{{ uid }}" class="flex-1 text-ink">{{ 'nav.language'|trans }}</label>
       <span class="text-muted-strong">{{ app.request.locale|trans }}</span>
-      {{ ux_icon('heroicons:chevron-up-down', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
+      {{ ux_icon('lucide:chevrons-up-down', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
       {{ select }}
     </div>
   {% else %}
     <div class="grid gap-1.5">
       <label for="pref-language-{{ uid }}" class="{{ label }}">{{ 'nav.language'|trans }}</label>
       <div class="relative inline-flex h-11 items-center gap-2 justify-self-start rounded-pill bg-subtle pr-3 pl-3.5 font-semibold text-ink hover:bg-selected has-[select:focus-visible]:outline-3 has-[select:focus-visible]:outline-offset-3 has-[select:focus-visible]:outline-focus">
-        {{ ux_icon('heroicons:language', {class: 'size-5 text-muted-strong', 'aria-hidden': 'true'}) }}
+        {{ ux_icon('lucide:languages', {class: 'size-5 text-muted-strong', 'aria-hidden': 'true'}) }}
         <span>{{ app.request.locale|trans }}</span>
-        {{ ux_icon('heroicons:chevron-down', {class: 'size-4 text-muted', 'aria-hidden': 'true'}) }}
+        {{ ux_icon('lucide:chevron-down', {class: 'size-4 text-muted', 'aria-hidden': 'true'}) }}
         {{ select }}
       </div>
     </div>

@@ -1,10 +1,8 @@
 {#
-  Drawn marker for a search result's type (coaster, park, rider). Lucide has
-  the coaster and ferris wheel Heroicons lacks; its 2px stroke is brought to
-  Heroicons' 1.5.
+  Drawn marker for a search result's type (coaster, park, rider).
   Props:
     type  coaster | park | user
 #}
 {% props type %}
-{% set icons = {coaster: 'lucide:roller-coaster', park: 'lucide:ferris-wheel', user: 'heroicons:user'} %}
-{{ ux_icon(icons[type] ?? 'heroicons:magnifying-glass', {class: attributes.render('class')|default('size-6 shrink-0 text-muted [stroke-width:1.5]'), 'aria-hidden': 'true'}) }}
+{% set icons = {coaster: 'lucide:roller-coaster', park: 'lucide:ferris-wheel', user: 'lucide:user'} %}
+{{ ux_icon(icons[type] ?? 'lucide:search', {class: attributes.render('class')|default('size-6 shrink-0 text-muted'), 'aria-hidden': 'true'}) }}

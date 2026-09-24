@@ -163,11 +163,6 @@
     font-weight: 500;
 }
 
-.search-show-more-content i {
-    font-size: var(--text-caption);
-    margin-left: 8px;
-}
-
 /* Loading State */
 .search-loading {
     display: flex;

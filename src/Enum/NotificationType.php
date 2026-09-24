@@ -36,9 +36,9 @@ enum NotificationType: string
     public function icon(): string
     {
         return match ($this) {
-            self::Ranking => 'heroicons:chart-bar',
-            self::Badge => 'heroicons-solid:star',
-            self::Announcement => 'heroicons:information-circle',
+            self::Ranking => 'lucide:chart-column',
+            self::Badge => 'lucide:award',
+            self::Announcement => 'lucide:info',
         };
     }
 

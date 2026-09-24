@@ -17,7 +17,7 @@
     {% set entry = 'flex min-h-14 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle' %}
     <nav aria-label="{{ 'nav.search_entries'|trans }}">
       <ul class="m-0 grid list-none gap-0.5 p-0">
-        <li><a href="{{ path('coaster_search_index') }}" class="{{ entry }}">{{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-6 text-muted', 'aria-hidden': 'true'}) }}<span class="flex-1">{{ 'nav.advanced_search'|trans }}</span>{{ ux_icon('heroicons:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}</a></li>
+        <li><a href="{{ path('coaster_search_index') }}" class="{{ entry }}">{{ ux_icon('lucide:sliders-horizontal', {class: 'size-6 text-muted', 'aria-hidden': 'true'}) }}<span class="flex-1">{{ 'nav.advanced_search'|trans }}</span>{{ ux_icon('lucide:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}</a></li>
       </ul>
     </nav>
   </div>
