@@ -1,6 +1,7 @@
 {
     "name": "Captain Coaster",
     "short_name": "Capt Coaster",
+    "id": "/?utm_source=pwa",
     "start_url": "/?utm_source=pwa",
     "display": "standalone",
     "lang": "en",

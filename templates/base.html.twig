@@ -8,9 +8,9 @@
   <link rel="icon" href="/favicon.ico" sizes="32x32">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
-  {# The canvas token (--bg), so the browser chrome runs into the page. #}
+  {# The canvas token (--bg), so the browser chrome runs into the page. With dark mode, split into two tags with media="(prefers-color-scheme: light|dark)". #}
   <meta name="theme-color" content="#F3F6FB">
   {% block header %}{% endblock %}
   {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
