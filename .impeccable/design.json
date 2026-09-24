@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-23T11:28:23Z",
+  "generatedAt": "2026-09-24T12:00:00Z",
   "title": "Design System: Captain Coaster",
   "extensions": {
     "shadows": [
@@ -30,6 +30,72 @@
         "name": "ease-out",
         "value": "cubic-bezier(.16, 1, .3, 1)",
         "purpose": "Responsive deceleration."
+      },
+      {
+        "name": "nav-compact",
+        "value": "200ms cubic-bezier(.16, 1, .3, 1)",
+        "purpose": "Tab bar tightening from 64px to 48px while scrolling down."
+      }
+    ],
+    "colorMeta": {
+      "subtle": {
+        "role": "neutral",
+        "displayName": "Pale Mist",
+        "canonical": "oklch(0.9434260 0.0142838 254.60684)"
+      },
+      "muted-strong": {
+        "role": "neutral",
+        "displayName": "Deep Slate",
+        "canonical": "oklch(0.4370345 0.0400869 247.44779)"
+      }
+    },
+    "typographyMeta": {
+      "label": {
+        "displayName": "Label",
+        "purpose": "Tab bar labels only; largest size keeping the longest translation on one line at 360px."
+      }
+    },
+    "materials": [
+      {
+        "name": "tab-bar-glass",
+        "value": "background: oklch(1 0 0 / .75); backdrop-filter: blur(24px) saturate(1.5); border: 1px solid oklch(1 0 0 / .6); box-shadow: var(--shadow-overlay)",
+        "purpose": "Floating bottom navigation pill."
+      },
+      {
+        "name": "round-button-glass",
+        "value": "background: oklch(1 0 0 / .75); backdrop-filter: blur(24px); box-shadow: var(--shadow-raised)",
+        "purpose": "44px back and page-action buttons."
+      },
+      {
+        "name": "page-bar-scrolled",
+        "value": "background: oklch(1 0 0 / .8); backdrop-filter: blur(24px); box-shadow: 0 1px 0 var(--border)",
+        "purpose": "Compact 56px page bar once the title scrolls away."
+      },
+      {
+        "name": "desktop-header",
+        "value": "background: oklch(1 0 0 / .85); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border)",
+        "purpose": "64px desktop top bar."
+      }
+    ],
+    "focus": {
+      "value": "outline: 3px solid var(--focus); outline-offset: 3px",
+      "inset": "outline-offset: -3px on pill tabs and full-width settings rows",
+      "selection": "background: var(--selected); color: var(--fg)",
+      "caret": "var(--action)"
+    },
+    "breakpoints": [
+      {
+        "name": "md",
+        "value": "48rem"
+      },
+      {
+        "name": "lg",
+        "value": "64rem",
+        "purpose": "Tab bar and page bar below; desktop header from here."
+      },
+      {
+        "name": "xl",
+        "value": "80rem"
       }
     ]
   },
@@ -51,13 +117,6 @@
       "refersTo": "button-secondary"
     },
     {
-      "name": "Section navigation",
-      "kind": "nav",
-      "description": "Foundation specimen; adapt labels and data to the application.",
-      "html": "<nav aria-label=\"Foundation sections\"><a class=\"ds-nav\" href=\"#colors\" aria-current=\"location\">Colors</a></nav>",
-      "css": ".ds-nav{display:block;padding:10px 12px;min-height:24px;border-radius:var(--radius-sm);font:600 15px/1.5 var(--font-body);background:var(--selected);color:var(--action);text-decoration:none;}.ds-nav:hover{text-decoration:underline}.ds-nav:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
-    },
-    {
       "name": "Surface panel",
       "kind": "card",
       "description": "Foundation specimen; adapt labels and data to the application.",
@@ -70,15 +129,56 @@
       "description": "Foundation specimen; adapt labels and data to the application.",
       "html": "<label class=\"ds-rating\"><input type=\"radio\" name=\"sample-rating\" value=\"4\" checked> 4 out of 5 · illustrative</label>",
       "css": ".ds-rating{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 12px;border:1px solid var(--action);border-radius:var(--radius-control);background:var(--selected);color:var(--action);font:600 16px/1.5 var(--font-body);}.ds-rating input{accent-color:var(--action)}.ds-rating input:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.ds-rating:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Tab bar",
+      "kind": "nav",
+      "refersTo": "tab-bar",
+      "description": "Floating bottom navigation below lg: five equal tabs, active = action on a selected pill.",
+      "html": "<nav class=\"ds-tabbar\" aria-label=\"Main\"><a class=\"ds-tab\" href=\"#\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75\"/></svg><span>Home</span></a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z\"/></svg><span>Search</span></a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z\"/></svg><span>Profile</span></a></nav>",
+      "css": ".ds-tabbar{display:grid;grid-template-columns:repeat(3,1fr);height:64px;max-width:28rem;padding:4px;border-radius:var(--radius-pill);border:1px solid oklch(1 0 0 / .6);background:oklch(1 0 0 / .75);backdrop-filter:blur(24px) saturate(1.5);box-shadow:var(--shadow-overlay);font-family:var(--font-sans)}.ds-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:var(--radius-pill);color:var(--muted-strong);text-decoration:none;font-size:var(--text-label);line-height:1.25;font-weight:600}.ds-tab svg{width:24px;height:24px}.ds-tab:hover{color:var(--fg)}.ds-tab[aria-current=page]{background:var(--selected);color:var(--action)}.ds-tab:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}"
+    },
+    {
+      "name": "Desktop header link",
+      "kind": "nav",
+      "refersTo": "header-link",
+      "description": "Main links in the 64px desktop bar; active = action with a 3px underline.",
+      "html": "<nav class=\"ds-hnav\"><a class=\"ds-hlink\" href=\"#\">Home</a><a class=\"ds-hlink\" href=\"#\" aria-current=\"page\">Ranking</a><a class=\"ds-hlink\" href=\"#\">Map</a></nav>",
+      "css": ".ds-hnav{display:flex;background:oklch(1 0 0 / .85);border-bottom:1px solid var(--border)}.ds-hlink{position:relative;display:inline-flex;align-items:center;height:64px;padding:0 12px;font:600 1rem/1.5 var(--font-sans);color:var(--muted-strong);text-decoration:none}.ds-hlink:hover{color:var(--fg)}.ds-hlink[aria-current=page]{color:var(--action)}.ds-hlink[aria-current=page]::after{content:\"\";position:absolute;left:12px;right:12px;bottom:0;height:3px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;background:var(--action)}.ds-hlink:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Round page button",
+      "kind": "button",
+      "refersTo": "round-button",
+      "description": "44px glass circle for back and page actions below lg.",
+      "html": "<button class=\"ds-round\" aria-label=\"Back\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18\"/></svg></button>",
+      "css": ".ds-round{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:999px;background:oklch(1 0 0 / .75);backdrop-filter:blur(24px);box-shadow:var(--shadow-raised);color:var(--fg);cursor:pointer}.ds-round svg{width:20px;height:20px}.ds-round:hover{background:var(--surface)}.ds-round[aria-expanded=true]{background:var(--selected);color:var(--action)}.ds-round:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Search field",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "Filled pill quick search; white with an action outline on focus.",
+      "html": "<label class=\"ds-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z\"/></svg><input type=\"search\" placeholder=\"Coaster, park or rider\" aria-label=\"Search\"><kbd>/</kbd></label>",
+      "css": ".ds-search{position:relative;display:block;max-width:28rem}.ds-search svg{position:absolute;left:12px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--muted);pointer-events:none}.ds-search input{width:100%;height:44px;padding:0 44px 0 40px;border:1px solid transparent;border-radius:var(--radius-pill);background:var(--subtle);color:var(--fg);font:400 1rem/1.5 var(--font-sans)}.ds-search input::placeholder{color:var(--muted)}.ds-search input:focus{background:var(--surface);border-color:var(--action);outline:2px solid var(--action);outline-offset:0}.ds-search kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);padding:0 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font:.875rem/1.25 var(--font-mono);color:var(--muted)}.ds-search:focus-within kbd{display:none}"
+    },
+    {
+      "name": "Units toggle",
+      "kind": "chip",
+      "refersTo": "units-toggle",
+      "description": "Two-option preference toggle; current option white with the raised shadow.",
+      "html": "<ul class=\"ds-units\" aria-label=\"Units\"><li><a href=\"#\" aria-current=\"true\">km/h · m</a></li><li><a href=\"#\" aria-current=\"false\">mph · ft</a></li></ul>",
+      "css": ".ds-units{display:inline-flex;gap:4px;margin:0;padding:4px;list-style:none;border-radius:var(--radius-pill);background:var(--subtle)}.ds-units a{display:inline-flex;align-items:center;height:44px;padding:0 12px;border-radius:var(--radius-pill);font:600 .875rem/1.5 var(--font-sans);color:var(--muted-strong);text-decoration:none}.ds-units a:hover{color:var(--fg)}.ds-units a[aria-current=true]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-raised)}.ds-units a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
     }
   ],
   "narrative": {
     "northStar": "An enthusiast’s field guide",
-    "overview": "Compact, useful and colorful enough to carry the excitement of a ride; serious enough to explain ranking integrity. Member photography and rider contributions lead. This records the built foundations proposal, not a production component library or finished app screens.",
+    "overview": "Compact, useful and colorful enough to carry the excitement of a ride; serious enough to explain ranking integrity. Member photography and rider contributions lead. The foundations began as a built proposal; the page shell and navigation recorded below are shipped and binding, page content components are not designed yet.\n\nNavigation lives in the thumb: below the desktop breakpoint one floating translucent pill carries the five destinations, and the top of the screen belongs to the page, its large title and its own actions. Everything sits on the light canvas; there are no dark bands.",
     "keyCharacteristics": [
       "Condensed display typography with readable multilingual body text.",
       "Fresh blue actions, sunshine highlights and crisp ink on cool light surfaces.",
-      "Mobile-first layouts and visible, native interaction states."
+      "Mobile-first layouts and visible, native interaction states.",
+      "One floating pill for navigation on phones and tablets, a classic light top bar on desktop."
     ],
     "rules": [
       {
@@ -86,21 +186,52 @@
         "body": "Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.",
         "section": "colors"
       },
-      "Rating stars: sunshine fill, amber edge; empty input stars use the control boundary color.",
-      "Rating scale: color-mix(in oklch) from rating-scale-low (deep red) through gold to rating-scale-high (vivid green); lightness rises toward good; labels outside the bar.",
-      "Roles, not palettes: data colors are semantic roles over existing hues; extend a hue ramp for a missing step, never add a standalone hue."
+      {
+        "name": "The Rating Scale",
+        "body": "Ordered rating data (the 0.5★–5★ distribution) runs from deep red through gold to a vivid green, interpolated with `color-mix(in oklch)` between `rating-scale-low` and `rating-scale-high`. Lightness rises toward \"good\", so the order stays readable with color-vision deficiencies; every step is ≥3:1 on white. Segments sit on a hairline surface gap with their labels outside the bar, never on it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Roles-Not-Palettes Rule",
+        "body": "Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`green-500`, `coral-700`); never add a standalone hue or a parallel palette. Status and map-marker colors are not settled yet and keep their provisional aliases.",
+        "section": "colors"
+      },
+      {
+        "name": "The Label Step Rule",
+        "body": "The label step (12px, 1.25) exists for compact navigation labels only, the tab bar: it is the largest size that keeps the longest translation on one line at 360px. Tab labels are never truncated; anything else uses caption or larger.",
+        "section": "typography"
+      },
+      {
+        "name": "The Thumb Rule",
+        "body": "Below `lg` (64rem), navigation is the floating bottom pill: five equal destinations, Home · Ranking · Search · Map · Profile, with Search a plain tab in the middle. The pill floats 12px above the bottom edge plus the safe area, at most 28rem wide, and never hides; the page reserves room for it at its foot. From `lg`, a classic 64px top bar replaces it. Destinations without a tab (reviews, Tops, riders, contact, blog, privacy) live in the footer and on the Profile page, never in a hamburger.",
+        "section": "layout"
+      },
+      {
+        "name": "The Page-Owns-Its-Top Rule",
+        "body": "Pages open with a large title on the canvas, no header band. Below `lg` a sticky 56px bar sits over it, empty and transparent until the title scrolls away, then translucent with the title centred. The bar holds a back button on the left (detail pages only) and the page's actions on the right; from `lg` those actions sit beside the title and the bar is gone. On Home the title is kept for assistive technology only and the full logo stands on the canvas instead.",
+        "section": "layout"
+      },
+      {
+        "name": "The Floating Glass Rule",
+        "body": "Translucency is reserved for navigation that floats over scrolling content: white at 75–85% with a strong backdrop blur. The tab bar (75%, 1px white 60% edge, overlay shadow), the round page buttons (75%, raised shadow), the scrolled page bar (80%, a 1px line shadow at its foot) and the desktop header (85%, 1px line border). Content cards, panels and dialogs stay opaque.",
+        "section": "elevation"
+      }
     ],
     "dos": [
       "Do preserve the Captain Coaster name and original logo exactly, including colors, proportions and complete artwork; the head mark alone is the only permitted reduction, for compact UI.",
       "Do test English, French, Spanish and German, longer labels, keyboard use and 200% zoom.",
       "Do use semantic CSS roles and real application data when implementing screens.",
-      "Do credit existing photography and retain its provenance."
+      "Do credit existing photography and retain its provenance.",
+      "Do put a new top-level destination in the footer and on Profile, not in a sixth tab or a menu; the tab bar holds exactly five.",
+      "Do put a page's context (park, author, country) on its own line under the title."
     ],
     "donts": [
-      "Don’t recolor, redraw or crop the logo other than to the head mark or the approved dark-lettering variant (logo_dark.svg) for light backgrounds.",
+      "Don’t recolor, redraw or crop the logo other than to the head mark or the approved dark-lettering variant (`logo_dark.svg`) for light backgrounds.",
       "Don’t use sunshine or pale decorative borders as unverified text or essential control boundaries.",
       "Don’t present illustrative names, ranks, scores or the sample 1–5 rating scale as shipped product facts.",
-      "Don’t infer new ride-entry fields, milestone ordering, monetization, dark mode or app navigation from this proposal."
+      "Don’t put the header, navigation or page titles on dark bands; the light canvas carries the page.",
+      "Don’t hide the tab bar on scroll or raise its Search tab into a create-style button.",
+      "Don’t infer new ride-entry fields, milestone ordering, monetization or dark mode from this document."
     ]
   }
 }

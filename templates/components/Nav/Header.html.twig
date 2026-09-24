@@ -30,11 +30,11 @@
            aria-label="{{ 'nav.profile'|trans }}{% if unread > 0 %}, {{ 'notif.title'|trans({}, 'notification') }} ({{ unread }}){% endif %}">
           <twig:Avatar :user="app.user" size="sm" decorative/>
           {% if unread > 0 %}
-            <span class="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-surface bg-highlight px-1 text-[0.6875rem] leading-none font-semibold text-on-highlight" aria-hidden="true">{{ unread > 99 ? '99+' : unread }}</span>
+            <span class="absolute -top-0.5 -right-0.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-surface bg-highlight px-1 text-label leading-none font-semibold text-on-highlight" aria-hidden="true">{{ unread > 99 ? '99+' : unread }}</span>
           {% endif %}
         </a>
       {% else %}
-        <a href="{{ path('login') }}" class="inline-flex h-10 items-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
+        <a href="{{ path('login') }}" class="inline-flex h-11 items-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
       {% endif %}
     </div>
   </div>

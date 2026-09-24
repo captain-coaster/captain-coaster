@@ -10,7 +10,7 @@
 <nav aria-label="{{ 'nav.label'|trans }}"
      data-controller="tab-bar"
      {{ attributes.defaults({class: 'group/bar pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))] lg:hidden'}) }}>
-  <ul class="pointer-events-auto m-0 mx-auto grid h-16 max-w-md list-none grid-cols-5 rounded-pill border border-white/60 bg-surface/75 p-1 shadow-overlay backdrop-blur-xl backdrop-saturate-150 transition-[height] duration-200 ease-out group-data-compact/bar:h-12 motion-reduce:transition-none">
+  <ul class="pointer-events-auto m-0 mx-auto grid h-16 max-w-md list-none grid-cols-5 rounded-pill border border-white/60 bg-surface/75 p-1 shadow-overlay backdrop-blur-xl backdrop-saturate-150 transition-[height] duration-180 ease-out group-data-compact/bar:h-12 motion-reduce:transition-none">
     <li><twig:Nav:Tab label="{{ 'nav.home'|trans }}" icon="heroicons:home" href="{{ path('default_index') }}" :active="section == 'home'"/></li>
     <li><twig:Nav:Tab label="{{ 'nav.ranking'|trans }}" icon="heroicons:trophy" href="{{ path('ranking_index') }}" :active="section == 'ranking'"/></li>
     <li>

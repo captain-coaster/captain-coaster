@@ -20,7 +20,7 @@
            name="query"
            type="search"
            enterkeyhint="search"
-           class="h-11 w-full appearance-none rounded-pill border border-transparent bg-subtle pr-11 pl-10 text-body text-ink placeholder:text-muted focus:border-action focus:bg-surface focus:outline-2 focus:outline-offset-0 focus:outline-action lg:h-10 [&::-webkit-search-cancel-button]:hidden"
+           class="h-11 w-full appearance-none rounded-pill border border-transparent bg-subtle pr-11 pl-10 text-body text-ink placeholder:text-muted focus:border-action focus:bg-surface focus:outline-2 focus:outline-offset-0 focus:outline-action [&::-webkit-search-cancel-button]:hidden"
            placeholder="{{ 'app.search.placeholder'|trans }}"
            data-search-target="input"
            data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
@@ -34,7 +34,7 @@
       <kbd class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rounded-sm border border-line bg-surface px-1.5 font-mono text-caption leading-tight text-muted group-focus-within:hidden group-data-has-content:hidden" aria-hidden="true">/</kbd>
     {% endif %}
     <button type="button"
-            class="absolute top-1/2 right-1 hidden size-9 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-subtle hover:text-ink group-data-has-content:grid"
+            class="absolute top-1/2 right-0 hidden size-11 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-subtle hover:text-ink group-data-has-content:grid"
             data-action="click->search#clearSearch"
             aria-label="{{ 'app.search.clear'|trans }}">
       {{ ux_icon('heroicons:x-mark', {class: 'size-5'}) }}

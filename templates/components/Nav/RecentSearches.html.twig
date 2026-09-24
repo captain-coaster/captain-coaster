@@ -5,7 +5,7 @@
          {{ attributes.defaults({class: 'grid gap-1'}) }}>
   <div class="flex items-center justify-between gap-4 px-2">
     <h2 class="m-0 font-sans text-caption font-semibold text-muted">{{ 'nav.recent'|trans }}</h2>
-    <button type="button" class="h-9 rounded-control px-2 text-caption font-semibold text-action hover:bg-subtle" data-action="recent-searches#clear">{{ 'nav.clear_recent'|trans }}</button>
+    <button type="button" class="h-11 rounded-control px-2 text-caption font-semibold text-action hover:bg-subtle" data-action="recent-searches#clear">{{ 'nav.clear_recent'|trans }}</button>
   </div>
   <ul class="m-0 grid list-none gap-0.5 p-0" data-recent-searches-target="list"></ul>
   <template data-recent-searches-target="item">

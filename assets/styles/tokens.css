@@ -130,7 +130,7 @@
     --subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
     --muted-strong: var(--slate-600); /* secondary text that needs more weight */
 
-    /* Dark chrome (navbar, sidebar): the logo's dark stage. On it, states
+    /* Dark chrome (photo gallery viewer): the logo's dark stage. On it, states
      * lighten -- ink overlays are invisible on a near-ink surface. */
     --chrome: var(--logo-ink);
     --on-chrome: var(--white);

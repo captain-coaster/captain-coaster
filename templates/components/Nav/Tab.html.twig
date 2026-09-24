@@ -20,7 +20,7 @@
       {{ ux_icon(icon, {class: 'size-6', 'aria-hidden': 'true'}) }}
     {% endif %}
     {% if badge > 0 %}
-      <span class="absolute -top-1.5 -right-2.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-surface bg-highlight px-1 text-[0.6875rem] leading-none font-semibold text-on-highlight">
+      <span class="absolute -top-1.5 -right-2.5 grid h-5 min-w-5 place-items-center rounded-pill border-2 border-surface bg-highlight px-1 text-label leading-none font-semibold text-on-highlight">
         {{ badge > 99 ? '99+' : badge }}<span class="sr-only"> {{ 'notif.title'|trans({}, 'notification') }}</span>
       </span>
     {% endif %}
