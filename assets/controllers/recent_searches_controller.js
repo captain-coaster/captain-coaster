@@ -1,8 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
-import {
-    clearRecentSearches,
-    getRecentSearches,
-} from '../js/recent-searches';
+import { clearRecentSearches, getRecentSearches } from '../js/recent-searches';
+import { recentSearchType, searchTypeIcon } from '../js/search-type-icons';
 
 /**
  * Nav:RecentSearches: the last picked search results, kept on this device.
@@ -34,9 +32,9 @@ export default class extends Controller {
             ...items.map((item) => {
                 const row = this.itemTarget.content.cloneNode(true);
                 const link = row.querySelector('a');
-                const [emoji, name] = link.querySelectorAll('span');
+                const [icon, name] = link.querySelectorAll('span');
                 link.href = item.url;
-                emoji.textContent = item.emoji ?? '';
+                icon.innerHTML = searchTypeIcon(recentSearchType(item));
                 name.textContent = item.name;
                 return row;
             })

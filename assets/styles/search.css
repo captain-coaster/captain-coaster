@@ -437,10 +437,12 @@
     border: 0;
 }
 
-[data-controller~='search'] [data-search-target='dropdown'] .search-result-emoji {
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
     width: 1.5rem;
-    margin: 0;
-    font-size: var(--text-body);
+    color: var(--muted);
 }
 
 [data-controller~='search'] [data-search-target='dropdown'] .search-result-name {
