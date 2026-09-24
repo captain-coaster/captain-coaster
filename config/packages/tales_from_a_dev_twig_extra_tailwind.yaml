@@ -4,7 +4,7 @@ tales_from_a_dev_twig_extra_tailwind:
     tailwind_merge:
         additional_configuration:
             theme:
-                text: [caption, body, lead, title, display]
+                text: [label, caption, body, lead, title, display]
                 radius: [control, card, pill]
                 shadow: [raised, overlay]
                 container: [content]

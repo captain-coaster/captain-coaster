@@ -25,6 +25,6 @@
       </span>
     {% endif %}
   </span>
-  {# 11px with tight tracking so the longest label ("Classement") fits a 360px screen; never truncated. #}
-  <span class="max-w-full text-center text-[0.6875rem] leading-tight font-semibold tracking-tight break-words group-data-compact/bar:sr-only">{{ label }}</span>
+  {# Never truncated: text-label keeps the longest one ("Classement") on one line at 360px. #}
+  <span class="max-w-full text-center text-label font-semibold break-words group-data-compact/bar:sr-only">{{ label }}</span>
 </{{ tag }}>

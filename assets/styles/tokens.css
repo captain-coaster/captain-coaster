@@ -32,6 +32,9 @@
 
     --text-caption: .875rem;
     --text-caption--line-height: 1.5;
+    /* Compact UI labels (tab bar): the largest size that keeps the longest translation on one line at 360px. */
+    --text-label: .75rem;
+    --text-label--line-height: 1.25;
     --text-body: 1rem;
     --text-body--line-height: 1.5;
     --text-lead: 1.25rem;
