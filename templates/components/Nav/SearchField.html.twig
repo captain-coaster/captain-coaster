@@ -51,9 +51,8 @@
       </div>
     {% endif %}
     {# Rows are rendered by search_controller.js and still styled by search.css. #}
-    <div class="{{ inline ? 'fixed inset-x-0 top-[calc(var(--spacing)*15+env(safe-area-inset-top))] bottom-0 z-10 hidden overflow-y-auto bg-surface px-2 pt-2' : 'absolute inset-x-0 top-full z-50 mt-1 hidden overflow-hidden rounded-card border border-line bg-surface shadow-overlay' }} [&.show]:block"
-         {% if inline %}data-inline{% endif %}
-         data-search-target="dropdown"
+    <div class="{{ inline ? 'fixed inset-x-0 top-[calc(var(--spacing)*15+env(safe-area-inset-top))] bottom-0 z-10 hidden overflow-y-auto bg-surface px-4 pt-5' : 'absolute inset-x-0 top-full z-50 mt-1 hidden overflow-hidden rounded-card border border-line bg-surface p-2 shadow-overlay' }} [&.show]:block"
+                  data-search-target="dropdown"
          role="listbox"
          aria-label="{{ 'app.search.suggestions'|trans }}">
       <div data-search-target="results"></div>

@@ -14,7 +14,7 @@ app:
     title:
         default: 'Willkommen!'
     search:
-        placeholder: "Achterbahn, Park oder Fahrer"
+        placeholder: "Achterbahn, Park, Fahrer"
         suggestions: 'Suchvorschläge'
         label: 'Achterbahnen und Parks suchen'
         clear: 'Suche löschen'

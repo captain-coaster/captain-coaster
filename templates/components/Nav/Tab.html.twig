@@ -12,7 +12,7 @@
 <{{ tag }}
   {% if href %}href="{{ href }}"{% else %}type="button"{% endif %}
   {% if active %}aria-current="page"{% endif %}
-  {{ attributes.defaults({class: 'flex h-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-pill px-1 text-muted-strong outline-offset-[-3px] hover:text-ink aria-[current=page]:bg-selected aria-[current=page]:text-action'}) }}>
+  {{ attributes.defaults({class: 'flex h-full min-w-0 flex-col items-center justify-center gap-0.5 rounded-pill px-0.5 text-muted-strong outline-offset-[-3px] hover:text-ink aria-[current=page]:bg-selected aria-[current=page]:text-action'}) }}>
   <span class="relative grid size-6 place-items-center">
     {% if user %}
       <twig:Avatar :user="user" size="xs" class="size-6 text-[0.625rem]" decorative/>
@@ -25,5 +25,6 @@
       </span>
     {% endif %}
   </span>
-  <span class="max-w-full truncate text-caption leading-tight font-semibold group-data-compact/bar:sr-only">{{ label }}</span>
+  {# 11px with tight tracking so the longest label ("Classement") fits a 360px screen; never truncated. #}
+  <span class="max-w-full text-center text-[0.6875rem] leading-tight font-semibold tracking-tight break-words group-data-compact/bar:sr-only">{{ label }}</span>
 </{{ tag }}>
