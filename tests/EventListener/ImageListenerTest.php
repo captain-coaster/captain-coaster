@@ -10,8 +10,10 @@ use App\EventListener\ImageListener;
 use App\Message\AnalyzeImageMessage;
 use App\Service\HeroService;
 use App\Service\ImageManager;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostPersistEventArgs;
+use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -55,15 +57,40 @@ class ImageListenerTest extends TestCase
         return $image;
     }
 
-    public function testPostPersistDispatchesAnalysisForANewUpload(): void
+    public function testPostPersistWritesTheOriginalUnderItsIdThenDispatchesAnalysis(): void
     {
         $image = $this->createImage(1, withUploadedFile: true);
+
+        $this->imageManager->expects($this->once())->method('upload')->with($image)->willReturn('1.jpg');
+
+        $connection = $this->createMock(Connection::class);
+        $connection->expects($this->once())->method('update')->with('image', ['filename' => '1.jpg'], ['id' => 1]);
+        $unitOfWork = $this->createMock(UnitOfWork::class);
+        $unitOfWork->expects($this->once())->method('setOriginalEntityProperty')->with(spl_object_id($image), 'filename', '1.jpg');
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('getConnection')->willReturn($connection);
+        $em->method('getUnitOfWork')->willReturn($unitOfWork);
 
         $this->messageBus->expects($this->once())
             ->method('dispatch')
             ->with($this->callback(static fn (AnalyzeImageMessage $message) => 1 === $message->imageId))
             ->willReturn(new Envelope(new AnalyzeImageMessage(1)));
 
+        $this->listener->postPersist($image, new PostPersistEventArgs($image, $em));
+
+        $this->assertSame('1.jpg', $image->getFilename());
+    }
+
+    // The S3 write runs inside the flush's transaction: an exception must propagate (Doctrine
+    // rolls the row back) and nothing must be dispatched for an image that won't exist.
+    public function testPostPersistPropagatesAFailedWriteWithoutDispatching(): void
+    {
+        $image = $this->createImage(1, withUploadedFile: true);
+
+        $this->imageManager->method('upload')->willThrowException(new \RuntimeException('S3 down'));
+        $this->messageBus->expects($this->never())->method('dispatch');
+
+        $this->expectException(\RuntimeException::class);
         $this->listener->postPersist($image, new PostPersistEventArgs($image, $this->createMock(EntityManagerInterface::class)));
     }
 

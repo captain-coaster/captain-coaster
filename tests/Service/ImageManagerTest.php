@@ -13,8 +13,9 @@ use Aws\Result;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
-use Psr\Log\LoggerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Exercises removeCache() against a real S3Client wired to Aws\MockHandler -- S3Client's
@@ -107,6 +108,36 @@ class ImageManagerTest extends TestCase
             'captain-pictures-original',
             $variants ?? $this->createMock(FilesystemOperator::class),
         );
+    }
+
+    public function testUploadWritesTheOriginalUnderItsId(): void
+    {
+        $file = $this->createMock(UploadedFile::class);
+        $file->method('getContent')->willReturn('jpeg-bytes');
+        $image = new Image();
+        $image->setFile($file);
+        $image->setWatermarked(true);
+        new \ReflectionProperty(Image::class, 'id')->setValue($image, 48500);
+
+        $originals = $this->createMock(FilesystemOperator::class);
+        $originals->expects($this->once())->method('write')->with(
+            '48500.jpg',
+            'jpeg-bytes',
+            ['Metadata' => ['watermark' => '1'], 'ContentType' => 'image/jpeg'],
+        );
+
+        $manager = new ImageManager(
+            $this->createMock(EntityManagerInterface::class),
+            $this->createMock(LoggerInterface::class),
+            $originals,
+            new S3Client(['region' => 'eu-west-3', 'version' => '2006-03-01', 'credentials' => false, 'handler' => new MockHandler()]),
+            $this->createMock(ImageRepository::class),
+            'captain-pictures-resized',
+            'captain-pictures-original',
+            $this->createMock(FilesystemOperator::class),
+        );
+
+        $this->assertSame('48500.jpg', $manager->upload($image));
     }
 
     public function testRemoveVariantsDeletesTheImagePrefixInTheVariantsBucket(): void

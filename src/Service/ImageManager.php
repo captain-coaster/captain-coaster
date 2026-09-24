@@ -29,15 +29,18 @@ class ImageManager
     ) {
     }
 
-    /** Create file on abstracted filesystem (currently S3). */
+    /**
+     * Write the uploaded original as `{id}.jpg`, the key the v2 image Lambda reads (uploads are
+     * JPEG only, see Image::$file), so the image needs its id first.
+     */
     public function upload(Image $image): string
     {
-        $filename = $this->generateFilename($image->getFile(), $image->getCoaster()->getSlug());
+        $filename = $image->getId().'.jpg';
 
         $this->picturesFilesystem->write(
             $filename,
             $image->getFile()->getContent(),
-            ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0']]
+            ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0'], 'ContentType' => Image::MIME_TYPE]
         );
 
         return $filename;
@@ -206,11 +209,5 @@ class ImageManager
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
-    }
-
-    /** Generates a filename like fury-325-carowinds-64429c62b6b23.jpg. */
-    private function generateFilename(UploadedFile $file, string $coasterSlug): string
-    {
-        return \sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
     }
 }

@@ -32,14 +32,14 @@ class ImageListener
     ) {
     }
 
-    /** Before persist: set hash and upload file to storage (S3) */
+    /** Before persist: set hash; the file itself is written in postPersist(), once the id exists. */
     public function prePersist(Image $image, PrePersistEventArgs $event): void
     {
         // only upload new files
         if ($image->getFile() instanceof UploadedFile) {
             $this->imageManager->setImageHash($image);
-            $fileName = $this->imageManager->upload($image);
-            $image->setFilename($fileName);
+            // Placeholder for the NOT NULL column, replaced by `{id}.jpg` in postPersist().
+            $image->setFilename('');
         }
     }
 
@@ -52,9 +52,20 @@ class ImageListener
     public function postPersist(Image $image, PostPersistEventArgs $event): void
     {
         // Same guard as prePersist() -- only genuinely new uploads, not every persist event.
-        if ($image->getFile() instanceof UploadedFile) {
-            $this->messageBus->dispatch(new AnalyzeImageMessage($image->getId()));
+        if (!$image->getFile() instanceof UploadedFile) {
+            return;
         }
+
+        // Still inside the flush's transaction: if the S3 write throws, the row is rolled back
+        // instead of pointing at a missing original.
+        $filename = $this->imageManager->upload($image);
+        $image->setFilename($filename);
+        $em = $event->getObjectManager();
+        $em->getConnection()->update('image', ['filename' => $filename], ['id' => $image->getId()]);
+        // The row now holds the real name: keep the next flush from issuing the same UPDATE.
+        $em->getUnitOfWork()->setOriginalEntityProperty(spl_object_id($image), 'filename', $filename);
+
+        $this->messageBus->dispatch(new AnalyzeImageMessage($image->getId()));
     }
 
     /** Before remove: remove image file and its v2 variants on storage (S3), while the id is still set */
