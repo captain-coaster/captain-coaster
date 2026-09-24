@@ -18,7 +18,8 @@ class AvatarExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('avatar_placeholder', $this->avatarPlaceholder->dataUri(...)),
+            new TwigFunction('avatar_initials', $this->avatarPlaceholder->initials(...)),
+            new TwigFunction('avatar_slot', $this->avatarPlaceholder->slot(...)),
         ];
     }
 }

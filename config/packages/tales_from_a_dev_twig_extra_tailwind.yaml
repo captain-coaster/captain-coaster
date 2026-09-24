@@ -1,0 +1,11 @@
+# Custom @theme names from assets/styles/tokens.css, so tailwind_merge treats
+# e.g. `text-caption` as a font size (not a color) and `rounded-card` as a radius.
+tales_from_a_dev_twig_extra_tailwind:
+    tailwind_merge:
+        additional_configuration:
+            theme:
+                text: [caption, body, lead, title, display]
+                radius: [control, card, pill]
+                shadow: [raised, overlay]
+                container: [content]
+                spacing: [gutter]

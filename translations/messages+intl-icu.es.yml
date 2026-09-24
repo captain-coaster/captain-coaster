@@ -362,33 +362,33 @@ rating:
     save_network_error: Error de red. La calificación no se guardó.
     save_error: No se pudo guardar la calificación. Inténtalo de nuevo.
 
-navbar:
-    settings: Ajustes
-    rating: Mis notas
-    login: Iniciar sesión
-    logout: Cerrar sesión
-    tops: 'Mis tops'
-    my_map: Mi mapa
-    language: Idioma
-    units: Unidades
-
-sidebar:
-    index: Pagina de inicio
-    search: Buscar montañas rusas
-    ranking: Las mejores montañas rusas
-    users: Nuestros usuarios
-    map: Mapa de las montañas rusas
-    top: 'Tops'
-    review: Últimas reseñas
-    blog: Blog
-    contact: Estar en contacto
-    logout: Cerrar sesión
-    login: Iniciar sesión
-    toggle: Mostrar menú
-    toggle_filters: Mostrar filtros
-
-footer:
-    terms: Términos de Uso
+nav:
+    label: "Navegación principal"
+    home: "Inicio"
+    ranking: "Ranking"
+    search: "Buscar"
+    map: "Mapa"
+    profile: "Perfil"
+    filters: "Filtros"
+    cancel: "Cancelar"
+    advanced_search: "Búsqueda avanzada"
+    recent: "Búsquedas recientes"
+    clear_recent: "Borrar"
+    account: "Cuenta"
+    sign_in: "Iniciar sesión"
+    sign_out: "Cerrar sesión"
+    settings: "Ajustes"
+    ratings: "Mis notas"
+    tops: "Mis tops"
+    my_map: "Mi mapa"
+    language: "Idioma"
+    units: "Unidades"
+    reviews: "Reseñas"
+    riders: "Usuarios"
+    all_tops: "Tops"
+    blog: "Blog"
+    contact: "Contacto"
+    join_reason: "Inicia sesión para puntuar las montañas rusas en las que has montado, crear tus tops y pesar en el ranking mundial."
 
 login:
     title: Iniciar sesión en Captain Coaster

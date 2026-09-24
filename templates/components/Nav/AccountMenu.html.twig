@@ -1,0 +1,34 @@
+{# Desktop account popover, opened from the avatar in Nav:Header (signed in only). #}
+{% set user = app.user %}
+{% set unread = unread_notification_count() %}
+{% set item = 'flex h-11 items-center gap-3 rounded-control px-3 text-ink hover:bg-subtle' %}
+{% set icon = 'size-5 shrink-0 text-muted' %}
+{# Top-right of the 75rem header container; the popover lives in the top layer. #}
+<div id="account-menu" popover
+     {{ attributes.defaults({class: 'fixed inset-auto top-17 right-[calc(max(0%,(100%-var(--container-content))/2)+var(--spacing-gutter))] m-0 w-72 rounded-card border border-line bg-surface p-2 text-body text-ink shadow-overlay opacity-0 transition-[opacity,translate,display,overlay] transition-discrete duration-180 ease-out -translate-y-1 open:translate-y-0 open:opacity-100 starting:open:-translate-y-1 starting:open:opacity-0 motion-reduce:transition-none'}) }}>
+  <a href="{{ path('profile') }}" class="flex items-center gap-3 rounded-control p-3 hover:bg-subtle">
+    <twig:Avatar :user="user" size="md" decorative/>
+    <span class="min-w-0">
+      <span class="block truncate font-semibold">{{ user.displayName }}</span>
+      <span class="block text-caption text-muted">{{ 'nav.profile'|trans }}</span>
+    </span>
+  </a>
+  <hr class="my-2 border-line">
+  <ul class="m-0 grid list-none gap-0.5 p-0">
+    <li>
+      <a href="{{ path('notification_index') }}" class="{{ item }}">
+        {{ ux_icon('heroicons:bell', {class: icon}) }}
+        <span class="flex-1">{{ 'notif.title'|trans({}, 'notification') }}</span>
+        {% if unread > 0 %}
+          <span class="grid h-6 min-w-6 place-items-center rounded-pill bg-highlight px-1.5 text-caption leading-none font-semibold text-on-highlight">{{ unread > 99 ? '99+' : unread }}</span>
+        {% endif %}
+      </a>
+    </li>
+    <li><a href="{{ path('profile_ratings') }}" class="{{ item }}">{{ ux_icon('heroicons:star', {class: icon}) }}{{ 'nav.ratings'|trans }}</a></li>
+    <li><a href="{{ path('user_tops', {id: user.id}) }}" class="{{ item }}">{{ ux_icon('heroicons:queue-list', {class: icon}) }}{{ 'nav.tops'|trans }}</a></li>
+    <li><a href="{{ path('map_user', {id: user.id}) }}" class="{{ item }}">{{ ux_icon('heroicons:map-pin', {class: icon}) }}{{ 'nav.my_map'|trans }}</a></li>
+    <li><a href="{{ path('profile_settings') }}" class="{{ item }}">{{ ux_icon('heroicons:cog-6-tooth', {class: icon}) }}{{ 'nav.settings'|trans }}</a></li>
+  </ul>
+  <hr class="my-2 border-line">
+  <a href="{{ path('logout') }}" class="{{ item }}">{{ ux_icon('heroicons:arrow-right-start-on-rectangle', {class: icon}) }}{{ 'nav.sign_out'|trans }}</a>
+</div>

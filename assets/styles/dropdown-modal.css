@@ -1,0 +1,394 @@
+/*
+ * Dropdown menus (`.cc-menu`, Top/edit, driven by assets/js/dropdown.js) and
+ * modals (`<dialog class="modal">`). Values come from the compiled
+ * Bootstrap/Limitless CSS. The navbar that used to live here was replaced by
+ * the Nav:* Twig Components (#416).
+ */
+
+.modal-header,
+.modal-footer {
+    display: flow-root;
+}
+
+/* Dropdown */
+.cc-menu {
+    position: relative;
+}
+
+.cc-menu__toggle:focus {
+    outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-menu__toggle:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+.cc-menu__list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 180px;
+    padding: 7px 0;
+    margin: 2px 0 0;
+    font-size: var(--text-caption);
+    text-align: left;
+    list-style: none;
+    background-color: var(--cc-white);
+    background-clip: padding-box;
+    border: 1px solid var(--cc-gray-300);
+    border-radius: 3px;
+    box-shadow: 0 1px 3px color-mix(in oklch, var(--fg) 10%, transparent);
+    color: var(--cc-gray-900);
+}
+
+.cc-menu__list .divider {
+    height: 1px;
+    margin: 7px 0;
+    overflow: hidden;
+    background-color: var(--cc-gray-200);
+}
+
+.cc-menu__list > li {
+    position: relative;
+    margin-bottom: 1px;
+}
+
+.cc-menu__list > li:last-child {
+    margin-bottom: 0;
+}
+
+.cc-menu__list > li > a {
+    display: block;
+    padding: 8px 15px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.5384616;
+    color: var(--cc-gray-900);
+    white-space: nowrap;
+    outline: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cc-menu__list > li > a:hover,
+.cc-menu__list > li > a:focus {
+    color: var(--cc-gray-900);
+    text-decoration: none;
+    background-color: var(--cc-gray-100);
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.cc-menu__list > li > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+}
+
+.cc-menu__list > .active > a,
+.cc-menu__list > .active > a:hover,
+.cc-menu__list > .active > a:focus {
+    color: var(--cc-white);
+    text-decoration: none;
+    background-color: var(--cc-primary);
+    outline: 0;
+}
+
+/*
+ * Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged.
+ * Needs its own rule: `.cc-menu__list > .active > a:focus`'s outline:0
+ * above outranks the generic `> li > a:focus-visible` one on specificity.
+ */
+.cc-menu__list > .active > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: -2px;
+}
+
+.cc-menu__list > .disabled > a,
+.cc-menu__list > .disabled > a:hover,
+.cc-menu__list > .disabled > a:focus {
+    color: var(--cc-gray-600);
+}
+
+.cc-menu__list > .disabled > a:hover,
+.cc-menu__list > .disabled > a:focus {
+    text-decoration: none;
+    cursor: not-allowed;
+    background-color: transparent;
+    background-image: none;
+}
+
+.cc-menu__list > li > a > i,
+.cc-menu__list > .cc-menu__header > i,
+.cc-menu__list > li > a > img,
+.cc-menu__list > .cc-menu__header > img {
+    margin-right: 12px;
+    float: left;
+    margin-top: 2px;
+    top: 0;
+}
+
+.cc-menu__list > li > a > img,
+.cc-menu__list > .cc-menu__header > img {
+    max-height: 16px;
+}
+
+.cc-menu__list > li > a > .cc-label,
+.cc-menu__list > .cc-menu__header > .cc-label,
+.cc-menu__list > li > a > .cc-badge,
+.cc-menu__list > .cc-menu__header > .cc-badge {
+    float: left;
+    margin-right: 12px;
+}
+
+.is-open > .cc-menu__list {
+    display: block;
+}
+
+.is-open > a {
+    outline: 0;
+}
+
+/* Keyboard-only focus ring -- mouse/touch clicks stay visually unchanged. */
+.is-open > a:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+}
+
+.cc-menu__list--right {
+    right: 0;
+    left: auto;
+}
+
+.cc-menu__list--left {
+    right: auto;
+    left: 0;
+}
+
+/* Nested cc-menu__submenu (language/units switchers in the account menu) */
+.cc-menu__list > .cc-menu__submenu > a {
+    padding-right: 38px;
+    position: relative;
+}
+
+.cc-menu__list > .cc-menu__submenu > a:after {
+    content: '';
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im04LjI1IDQuNSA3LjUgNy41LTcuNSA3LjUiLz48L3N2Zz4=');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    margin-top: -8px;
+    right: 15px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.cc-menu__list > .cc-menu__submenu a.cc-menu__toggle {
+    box-shadow: none;
+}
+
+.cc-menu__list > .cc-menu__submenu:hover > a,
+.cc-menu__list > .cc-menu__submenu:focus > a,
+.cc-menu__list > .cc-menu__submenu.open > a {
+    background-color: var(--cc-gray-100);
+}
+
+.cc-menu__list > .cc-menu__submenu:hover > a:after,
+.cc-menu__list > .cc-menu__submenu:focus > a:after,
+.cc-menu__list > .cc-menu__submenu.open > a:after {
+    opacity: 1;
+}
+
+.cc-menu__list > .cc-menu__submenu > .cc-menu__list {
+    top: 0;
+    left: 100%;
+    margin-top: -8px;
+}
+
+.cc-menu__list > .cc-menu__submenu.cc-menu__submenu--left > .cc-menu__list {
+    left: auto;
+    right: 100%;
+}
+
+@media (min-width: theme(--breakpoint-md)) {
+    .cc-menu__list > .cc-menu__submenu--hover:hover > .cc-menu__list,
+    .cc-menu__list > .cc-menu__submenu--hover:focus > .cc-menu__list {
+        display: block;
+    }
+}
+
+@media (width < theme(--breakpoint-md)) {
+    .cc-menu__list > .cc-menu__submenu {
+        position: static;
+    }
+
+    .cc-menu__list > .cc-menu__submenu > a:after {
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZT0iY3VycmVudENvbG9yIiBhcmlhLWhpZGRlbj0idHJ1ZSIgZGF0YS1zbG90PSJpY29uIj48cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Im0xOS41IDguMjUtNy41IDcuNS03LjUtNy41Ii8+PC9zdmc+');
+    }
+
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list,
+    .cc-menu__list > .cc-menu__submenu.cc-menu__submenu--left .cc-menu__list {
+        position: relative;
+        left: 0;
+        right: 0;
+        float: none;
+        border-width: 0;
+        border-color: color-mix(in oklch, var(--fg) 10%, transparent);
+        box-shadow: none;
+        min-width: 100%;
+        margin: 0;
+    }
+
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list > li > a,
+    .cc-menu__list
+        > .cc-menu__submenu.cc-menu__submenu--left
+        .cc-menu__list
+        > li
+        > a {
+        padding-left: 30px;
+    }
+
+    .cc-menu__list > .cc-menu__submenu .cc-menu__list > li > ul > li > a,
+    .cc-menu__list
+        > .cc-menu__submenu.cc-menu__submenu--left
+        .cc-menu__list
+        > li
+        > ul
+        > li
+        > a {
+        padding-left: 45px;
+    }
+}
+
+/* Modal */
+.modal-open {
+    overflow: hidden;
+}
+
+/*
+ * `<dialog>`'s UA stylesheet gives it its own border/padding/background/
+ * width/height/margin (auto-sized, auto-centered) *and* a `max-width`/
+ * `max-height` of `calc(100% - <browser-specific inset>)` -- easy to miss
+ * since overriding width/height alone still leaves the dialog clamped
+ * ~16-32px short of the viewport on each axis. All overridden below back
+ * to plain-div behavior (edge-to-edge, `.modal-dialog`/`.modal-content`
+ * doing the actual visible styling, same as before). No `display` rule
+ * here: `dialog:not([open]) { display: none }` is a UA default already,
+ * and an unconditional override here would fight showModal()'s own
+ * visibility toggling instead of respecting `[open]`.
+ */
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: auto;
+    height: auto;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    overflow: hidden;
+    outline: 0;
+}
+
+.modal::backdrop {
+    background-color: color-mix(in oklch, var(--fg) 50%, transparent);
+}
+
+.modal.fade .modal-dialog {
+    transform: translate(0, -25%);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.in .modal-dialog {
+    transform: translate(0, 0);
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px;
+}
+
+.modal-content {
+    position: relative;
+    background-color: var(--cc-white);
+    background-clip: padding-box;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px color-mix(in oklch, var(--fg) 20%, transparent);
+    outline: 0;
+}
+
+.modal-header {
+    padding: 20px;
+    padding-bottom: 0;
+    border-bottom: 1px solid transparent;
+    position: relative;
+}
+
+.modal-header .cc-close {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    margin-top: 0;
+}
+
+.modal-body .cc-close {
+    margin-top: 0 !important;
+}
+
+.modal-title {
+    margin: 0;
+    line-height: 1.5384616;
+}
+
+.modal-body {
+    position: relative;
+    padding: 20px;
+}
+
+.modal-footer {
+    padding: 20px;
+    padding-top: 0;
+    text-align: right;
+    border-top: 1px solid transparent;
+}
+
+.modal-footer .cc-button + .cc-button {
+    margin-bottom: 0;
+    margin-left: 5px;
+}
+
+.modal-footer .cc-button--block + .cc-button--block {
+    margin-left: 0;
+}
+
+@media (min-width: theme(--breakpoint-md)) {
+    .modal-dialog {
+        width: 600px;
+        margin: 30px auto;
+    }
+
+    .modal-content {
+        box-shadow: var(--shadow-overlay);
+    }
+}

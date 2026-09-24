@@ -363,33 +363,33 @@ rating:
     save_network_error: Netzwerkfehler. Bewertung wurde nicht gespeichert.
     save_error: Bewertung konnte nicht gespeichert werden. Bitte versuche es erneut.
 
-navbar:
-    settings: Einstellungen
-    rating: Meine Bewertungen
-    login: Anmelden
-    logout: Abmelden
-    tops: Meine Tops
-    my_map: Meine Karte
-    language: Sprache
-    units: Einheiten
-
-sidebar:
-    index: Home
-    search: Achterbahnen suchen
-    ranking: Weltrangliste der Achterbahnen
-    users: Unsere Fahrer
-    map: Achterbahn Landkarte
-    top: Tops
-    review: Neueste Rezensionen
-    blog: Blog
-    contact: Kontaktiere uns
-    logout: Abmelden
-    login: Anmelden
-    toggle: Menü umschalten
-    toggle_filters: Filter umschalten
-
-footer:
-    terms: Datenschutzrichtlinie
+nav:
+    label: "Hauptnavigation"
+    home: "Start"
+    ranking: "Rangliste"
+    search: "Suche"
+    map: "Karte"
+    profile: "Profil"
+    filters: "Filter"
+    cancel: "Abbrechen"
+    advanced_search: "Erweiterte Suche"
+    recent: "Letzte Suchen"
+    clear_recent: "Löschen"
+    account: "Konto"
+    sign_in: "Anmelden"
+    sign_out: "Abmelden"
+    settings: "Einstellungen"
+    ratings: "Meine Bewertungen"
+    tops: "Meine Tops"
+    my_map: "Meine Karte"
+    language: "Sprache"
+    units: "Einheiten"
+    reviews: "Rezensionen"
+    riders: "Fahrer"
+    all_tops: "Tops"
+    blog: "Blog"
+    contact: "Kontakt"
+    join_reason: "Melde dich an, um deine gefahrenen Achterbahnen zu bewerten, deine Tops zu erstellen und die Weltrangliste mitzubestimmen."
 
 login:
     title: Anmelden bei Captain Coaster

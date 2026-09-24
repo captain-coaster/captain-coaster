@@ -357,33 +357,33 @@ rating:
     save_network_error: 'Network error. Rating not saved.'
     save_error: 'Unable to save rating. Please try again.'
 
-navbar:
-    settings: 'Settings'
-    rating: 'My ratings'
-    login: 'Sign in'
-    logout: 'Logout'
-    tops: 'My tops'
-    my_map: 'My map'
-    language: 'Language'
-    units: 'Units'
-
-sidebar:
-    index: 'Home'
-    search: 'Search Coasters'
-    ranking: 'World Roller Coaster Rankings'
-    users: 'Our riders'
-    map: 'Coasters map'
-    top: 'Tops'
-    review: 'Latest Reviews'
-    blog: 'Blog'
-    contact: 'Get in touch'
-    logout: 'Logout'
-    login: 'Sign in'
-    toggle: 'Toggle menu'
-    toggle_filters: 'Toggle filters'
-
-footer:
-    terms: 'Privacy Policy'
+nav:
+    label: "Main navigation"
+    home: "Home"
+    ranking: "Ranking"
+    search: "Search"
+    map: "Map"
+    profile: "Profile"
+    filters: "Filters"
+    cancel: "Cancel"
+    advanced_search: "Advanced search"
+    recent: "Recent searches"
+    clear_recent: "Clear"
+    account: "Account"
+    sign_in: "Sign in"
+    sign_out: "Log out"
+    settings: "Settings"
+    ratings: "My ratings"
+    tops: "My Tops"
+    my_map: "My map"
+    language: "Language"
+    units: "Units"
+    reviews: "Reviews"
+    riders: "Riders"
+    all_tops: "Tops"
+    blog: "Blog"
+    contact: "Contact"
+    join_reason: "Sign in to rate the coasters you've ridden, build your Tops and weigh in on the world ranking."
 
 login:
     title: 'Sign in to Captain Coaster'

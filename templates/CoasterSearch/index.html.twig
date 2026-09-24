@@ -3,8 +3,6 @@
 {% set title = 'coaster_search.title'|trans %}
 {% block title %}{{ title }}{% endblock %}
 
-{% set pageHasFilters = true %}
-
 {% block secondary_sidebar %}
   {% include 'Includes/filter_sidebar.html.twig' with {
     'filters': filters, 
@@ -19,6 +17,7 @@
 {% endblock %}
 
 {% block body %}
+  <twig:FilterToggle class="mb-4"/>
   <div id="search-result"></div>
 {% endblock %}
 

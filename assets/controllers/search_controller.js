@@ -1,6 +1,7 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
 import { SearchDropdown } from '../js/search-dropdown';
+import { rememberRecentSearch } from '../js/recent-searches';
 
 /**
  * Site-wide search bar -- shared debounce/fetch/keyboard-nav/dropdown
@@ -199,6 +200,11 @@ export default class extends SearchDropdown(Controller) {
 
         const url = this.generateRoute(routeName, routeParams);
         if (url) {
+            rememberRecentSearch({
+                name: item.querySelector('.search-result-name')?.textContent.trim() ?? '',
+                emoji: item.querySelector('.search-result-emoji')?.textContent.trim() ?? '',
+                url,
+            });
             window.location.href = url;
         }
     }
@@ -259,12 +265,9 @@ export default class extends SearchDropdown(Controller) {
      * Update clear button visibility based on input content
      */
     updateClearButtonVisibility() {
-        const inputContainer = this.element.querySelector(
-            '.search-input-container'
-        );
-        if (inputContainer && this.hasInputTarget) {
-            inputContainer.classList.toggle(
-                'has-content',
+        if (this.hasInputTarget) {
+            this.element.toggleAttribute(
+                'data-has-content',
                 this.inputTarget.value.trim().length > 0
             );
         }

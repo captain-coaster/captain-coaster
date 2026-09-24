@@ -1,0 +1,13 @@
+{# Site footer: secondary pages, language and units. #}
+<footer {{ attributes.defaults({class: 'mt-16 border-t border-line bg-surface text-ink'}) }}>
+  <div class="mx-auto grid max-w-content gap-10 px-gutter py-12 md:grid-cols-[1fr_auto] md:gap-16">
+    <div class="grid content-start gap-6">
+      <twig:Nav:Brand class="justify-self-start"/>
+      <twig:Nav:MoreLinks/>
+    </div>
+    <twig:Nav:Preferences class="content-start"/>
+  </div>
+  <div class="border-t border-line">
+    <p class="mx-auto m-0 max-w-content px-gutter py-5 text-caption text-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster. Crafted with {{ ux_icon('heroicons-solid:heart', {class: 'inline size-4 align-[-0.125em]', 'aria-label': 'love', role: 'img'}) }} by French coaster enthusiasts.</p>
+  </div>
+</footer>

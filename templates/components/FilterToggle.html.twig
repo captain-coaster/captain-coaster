@@ -1,0 +1,8 @@
+{# Opens the filter panel below md (Includes/filter_sidebar.html.twig); from md up the panel is always shown. #}
+<button type="button"
+        data-action="sidebar#toggleMobileSecondary"
+        aria-expanded="false"
+        {{ attributes.defaults({class: 'inline-flex h-11 items-center gap-2 rounded-control border border-control-line bg-surface px-4 font-semibold text-ink hover:bg-subtle md:hidden'}) }}>
+  {{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-5', 'aria-hidden': 'true'}) }}
+  {{ 'nav.filters'|trans }}
+</button>

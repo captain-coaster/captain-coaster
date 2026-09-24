@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
   <meta name="application-name" content="{{ 'app.name'|trans }}">
   <meta name="msapplication-TileColor" content="#28343a">
-  <meta name="theme-color" content="#28343a">
+  <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="{{ asset('manifest.json') }}">
   {% block header %}{% endblock %}
   {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
@@ -27,21 +27,24 @@
   {% endif %}
   {% block stylesheets %}{% endblock %}
 </head>
-<body class="cc-navbar--top {% if openedSidebar is not defined %}sidebar-xs{% endif %}" data-controller="sidebar">
+{# Active nav section, shared by Nav:Header and Nav:TabBar. #}
+{% set nav_route = app.request.attributes.get('_route')|default('') %}
+{% set nav_section =
+  nav_route == 'default_index' ? 'home' :
+  (nav_route starts with 'ranking' ? 'ranking' :
+  (nav_route in ['search_index', 'coaster_search_index'] ? 'search' :
+  (nav_route == 'map_index' ? 'map' :
+  (nav_route starts with 'profile' or nav_route starts with 'notification' ? 'profile' : null))))
+%}
+{# Mobile leaves room for the fixed bottom bar. #}
+<body class="max-md:pb-[calc(var(--spacing)*16+env(safe-area-inset-bottom))]" data-controller="sidebar search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
-<!-- main cc-navbar -->
-{{ include('navbar.html.twig') }}
-<!-- /main cc-navbar -->
+<twig:Nav:Header :section="nav_section"/>
 <!-- page container -->
 <div class="page-container">
   <!-- page content -->
   <div class="page-content">
-    <!-- main sidebar -->
-    {{ include('sidebar.html.twig') }}
-    <!-- /main sidebar -->
-    <!-- main sidebar -->
     {% block secondary_sidebar %}{% endblock %}
-    <!-- /main sidebar -->
     <!-- main content -->
     <div class="content-wrapper">
       {% block wide_body %}
@@ -59,7 +62,7 @@
           {% block body %}{% endblock %}
         </main>
         <!-- /content area -->
-        {{ include('footer.html.twig') }}
+        <twig:Nav:Footer/>
       {% endblock %}
     </div>
     <!-- /main content -->
@@ -67,6 +70,13 @@
   <!-- /page content -->
 </div>
 <!-- /page container -->
+<twig:Nav:TabBar :section="nav_section"/>
+<twig:Nav:SearchDialog/>
+{% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+  <twig:Nav:AccountMenu/>
+{% else %}
+  <twig:Nav:GuestMenu/>
+{% endif %}
 
 <!-- Core JS files -->
 {{ reprise_entry_script_tags('app') }}

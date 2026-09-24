@@ -1,0 +1,36 @@
+{#
+  Mobile bottom bar: Home · Ranking · Search (raised) · Map · Profile.
+  Props:
+    section  active section: home | ranking | search | map | profile | null
+#}
+{% props section = null %}
+{% set signed_in = is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+<nav aria-label="{{ 'nav.label'|trans }}"
+     {{ attributes.defaults({class: 'fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden'}) }}>
+  <ul class="m-0 grid h-16 list-none grid-cols-5 p-0">
+    <li><twig:Nav:Tab label="{{ 'nav.home'|trans }}" icon="heroicons:home" href="{{ path('default_index') }}" :active="section == 'home'"/></li>
+    <li><twig:Nav:Tab label="{{ 'nav.ranking'|trans }}" icon="heroicons:trophy" href="{{ path('ranking_index') }}" :active="section == 'ranking'"/></li>
+    <li>
+      {# The one raised action: opens the full-screen search dialog. #}
+      <button type="button"
+              class="group flex h-full w-full flex-col items-center justify-end gap-0.5 px-1 pb-1.5 text-muted-strong outline-offset-[-3px] data-active:text-action"
+              {% if section == 'search' %}data-active{% endif %}
+              aria-haspopup="dialog"
+              aria-controls="search-dialog"
+              data-action="search-dialog#open">
+        <span class="-mt-6 grid size-14 place-items-center rounded-full bg-action text-on-action shadow-raised ring-4 ring-surface transition-colors duration-120 group-hover:bg-action-hover motion-reduce:transition-none">
+          {{ ux_icon('heroicons:magnifying-glass', {class: 'size-7', 'aria-hidden': 'true'}) }}
+        </span>
+        <span class="max-w-full truncate text-caption leading-tight font-semibold">{{ 'nav.search'|trans }}</span>
+      </button>
+    </li>
+    <li><twig:Nav:Tab label="{{ 'nav.map'|trans }}" icon="heroicons:map" href="{{ path('map_index') }}" :active="section == 'map'"/></li>
+    <li>
+      {% if signed_in %}
+        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="heroicons:user-circle" href="{{ path('profile') }}" :active="section == 'profile'" :badge="unread_notification_count()"/>
+      {% else %}
+        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="heroicons:user-circle" popovertarget="guest-menu" class="w-full"/>
+      {% endif %}
+    </li>
+  </ul>
+</nav>

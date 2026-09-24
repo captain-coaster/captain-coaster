@@ -43,5 +43,16 @@
         {{ ux_icon('heroicons:map-pin', {'class': 'w-4 h-4'}) }}
         {{ 'profile.menu.map'|trans }}
     </a>
+    {% set unread = unread_notification_count() %}
+    <a href="{{ path('notification_index') }}" class="cc-list-group__item">
+        {{ ux_icon('heroicons:bell', {'class': 'w-4 h-4'}) }}
+        {{ 'notif.title'|trans({}, 'notification') }}
+        {% if unread > 0 %}<span class="cc-badge bg-cc-teal-400 pull-right">{{ unread }}</span>{% endif %}
+    </a>
+    <a href="{{ path('logout') }}" class="cc-list-group__item">
+        {{ ux_icon('heroicons:arrow-right-start-on-rectangle', {'class': 'w-4 h-4'}) }}
+        {{ 'nav.sign_out'|trans }}
+    </a>
     </div>
+    <twig:Nav:MoreLinks class="border-t border-line px-4 py-3 md:hidden"/>
 </div>

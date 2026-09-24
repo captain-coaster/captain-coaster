@@ -23,15 +23,10 @@
  * every page that reaches this markup at all (Maps/index.html.twig
  * overrides the whole `wide_body` block and never renders `.content`).
  *
- * `.footer`'s `&.cc-navbar`/`-fixed-bottom` branch and `.footer-boxed` are
- * dropped: `footer.html.twig` never combines `.footer` with `.cc-navbar`,
- * and `.footer-boxed`/`navbar-fixed-bottom` have zero real uses.
- *
  * component-animation.less scope trimmed to selectors real markup
- * actually has: `.cc-button`, `.cc-navbar__nav > li > a`, `.cc-menu__list > li >
- * a`, `.cc-list-group__item`, `.cc-pagination > li > a/span`, `.cc-close`, `.table
- * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
- * during resize).
+ * actually has: `.cc-button`, `.cc-menu__list > li > a`,
+ * `.cc-list-group__item`, `.cc-pagination > li > a/span`, `.cc-close` and
+ * `.table tr/th/td`.
  */
 .page-container {
     position: relative;
@@ -77,10 +72,6 @@
     width: 100%;
 }
 
-.no-transitions * {
-    transition: none !important;
-}
-
 /*
  * `transition: all` here (a faithful port of component-animation.less)
  * only ever animates `background-color`/`color` in practice for this
@@ -91,7 +82,6 @@
  * Scoped to the properties that actually change.
  */
 .cc-button,
-.cc-navbar__nav > li > a,
 .cc-menu__list > li > a,
 .cc-list-group__item,
 .cc-pagination > li > a,

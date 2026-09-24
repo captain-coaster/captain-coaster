@@ -2,18 +2,10 @@ import { Controller } from '@hotwired/stimulus';
 import { isTabletUp } from '../js/utils/breakpoints';
 
 /**
- * Replaces layout_fixed_custom.js (deleted) and theme.js's sidebar-only
- * jQuery bindings. Attached to <body> since every effect here is a
- * body/page-wide class toggle, not one element's own state.
- *
- * `setMinHeight()` from the old theme.js is intentionally not ported:
- * it read `$('.navbar-fixed-bottom').outerHeight()`, which is always
- * `undefined` (that class matches nothing in this app), making the
- * computed value `NaN` and the resulting `style="min-height:NaNpx"`
- * invalid CSS the browser silently drops -- confirmed live via
- * getComputedStyle() that `.page-container`'s real min-height always
- * came from the plain `100vh` CSS rule, never this inline style. It
- * was already dead code before this migration.
+ * Filter panel toggle below md (Includes/filter_sidebar.html.twig), opened
+ * by <twig:FilterToggle>. Attached to <body>: the state is a body class read
+ * by sidebar.css. The panel renders above the page content, so opening it
+ * scrolls it into view.
  */
 export default class extends Controller {
     connect() {
@@ -25,53 +17,19 @@ export default class extends Controller {
         window.removeEventListener('resize', this._onResize);
     }
 
-    toggleMain() {
-        document.body.classList.toggle('sidebar-xs');
-    }
-
-    // `.sidebar-xs` must stay on <body> while expanded -- the CSS rule
-    // that gives the hover-expanded sidebar its 260px width only matches
-    // `.sidebar-xs .sidebar-fixed-expanded ...` (both classes present at
-    // once, not one replacing the other). Removing it here used to leave
-    // the sidebar with no matching width rule at all, so its plain
-    // `.sidebar { width: 100% }` base rule took over -- 100% of a
-    // position:fixed element's containing block is the full viewport,
-    // not the sidebar's own column.
-    expand() {
-        if (document.body.classList.contains('sidebar-xs')) {
-            document.body.classList.add('sidebar-fixed-expanded');
+    toggleMobileSecondary(event) {
+        const open = document.body.classList.toggle('sidebar-mobile-secondary');
+        event?.currentTarget.setAttribute('aria-expanded', String(open));
+        if (open) {
+            document
+                .querySelector('.sidebar-secondary')
+                ?.scrollIntoView({ block: 'start' });
         }
-    }
-
-    collapse() {
-        document.body.classList.remove('sidebar-fixed-expanded');
-    }
-
-    toggleMobileMain() {
-        document.getElementById('navbar-mobile')?.removeAttribute('data-open');
-        document.body.classList.toggle('sidebar-mobile-main');
-        document.body.classList.remove('sidebar-mobile-secondary');
-    }
-
-    toggleMobileSecondary() {
-        document.getElementById('navbar-mobile')?.removeAttribute('data-open');
-        document.body.classList.toggle('sidebar-mobile-secondary');
-        document.body.classList.remove('sidebar-mobile-main');
-    }
-
-    closeMobile() {
-        document.body.classList.remove(
-            'sidebar-mobile-main',
-            'sidebar-mobile-secondary'
-        );
     }
 
     _onResize() {
         if (isTabletUp()) {
-            document.body.classList.remove(
-                'sidebar-mobile-main',
-                'sidebar-mobile-secondary'
-            );
+            document.body.classList.remove('sidebar-mobile-secondary');
         }
     }
 }

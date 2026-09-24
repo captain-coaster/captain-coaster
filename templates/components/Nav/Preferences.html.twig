@@ -1,0 +1,35 @@
+{# Language and unit switchers: links back to the current page with setLocale / setUnits. #}
+{# Error pages are rendered from a sub-request with _route/_route_params
+   stripped, so both need a fallback. #}
+{% set route = app.request.attributes.get('_route')|default('default_index') %}
+{% set params = (app.request.attributes.get('_route_params')|default({})|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
+{% set imperial = units.isImperial() %}
+{% set group = 'm-0 flex list-none flex-wrap gap-1 rounded-control bg-subtle p-1' %}
+{% set option = 'inline-flex h-9 min-w-11 items-center justify-center rounded-sm px-3 text-caption font-semibold text-muted-strong hover:text-ink aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-raised' %}
+{% set uid = random() %}
+<div {{ attributes.defaults({class: 'grid gap-4'}) }}>
+  <div class="grid gap-1.5">
+    <p class="m-0 text-caption text-muted" id="pref-language-{{ uid }}">{{ 'nav.language'|trans }}</p>
+    <ul class="{{ group }}" aria-labelledby="pref-language-{{ uid }}">
+      {% for locale in locales %}
+        <li>
+          <a href="{{ path(route, params|merge({_locale: locale, setLocale: 1})) }}"
+             hreflang="{{ locale }}" lang="{{ locale }}"
+             class="{{ option }}"
+             aria-current="{{ locale == app.request.locale ? 'true' : 'false' }}">{{ locale|trans }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="grid gap-1.5">
+    <p class="m-0 text-caption text-muted" id="pref-units-{{ uid }}">{{ 'nav.units'|trans }}</p>
+    <ul class="{{ group }}" aria-labelledby="pref-units-{{ uid }}">
+      <li>
+        <a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}">{{ 'profile.settings.preferences.units.metric'|trans }}</a>
+      </li>
+      <li>
+        <a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}">{{ 'profile.settings.preferences.units.imperial'|trans }}</a>
+      </li>
+    </ul>
+  </div>
+</div>

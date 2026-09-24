@@ -91,13 +91,13 @@
       "Roles, not palettes: data colors are semantic roles over existing hues; extend a hue ramp for a missing step, never add a standalone hue."
     ],
     "dos": [
-      "Do preserve the Captain Coaster name and original logo exactly, including colors, proportions and complete artwork.",
+      "Do preserve the Captain Coaster name and original logo exactly, including colors, proportions and complete artwork; the head mark alone is the only permitted reduction, for compact UI.",
       "Do test English, French, Spanish and German, longer labels, keyboard use and 200% zoom.",
       "Do use semantic CSS roles and real application data when implementing screens.",
       "Do credit existing photography and retain its provenance."
     ],
     "donts": [
-      "Don’t recolor, redraw or crop the logo; its white lettering needs a dark backing.",
+      "Don’t recolor, redraw or crop the logo other than to the head mark or the approved dark-lettering variant (logo_dark.svg) for light backgrounds.",
       "Don’t use sunshine or pale decorative borders as unverified text or essential control boundaries.",
       "Don’t present illustrative names, ranks, scores or the sample 1–5 rating scale as shipped product facts.",
       "Don’t infer new ride-entry fields, milestone ordering, monetization, dark mode or app navigation from this proposal."

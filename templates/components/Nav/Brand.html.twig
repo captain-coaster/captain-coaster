@@ -1,0 +1,9 @@
+{#
+  Home link on light surfaces: the head mark (original artwork) and the name
+  set in the display face. The full logo's white lettering needs a dark
+  backing, so it isn't used here.
+#}
+<a href="{{ path('default_index') }}" {{ attributes.defaults({class: 'inline-flex shrink-0 items-center gap-2 rounded-control text-ink'}) }}>
+  <img src="{{ asset('build/images/logo_head.svg') }}" alt="" class="size-8" width="34" height="32">
+  <span class="font-display text-lead leading-none font-semibold whitespace-nowrap">{{ 'app.name'|trans }}</span>
+</a>

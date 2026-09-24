@@ -1,0 +1,12 @@
+{# Signed-out Profile tab: why to join, sign in, language and units. A bottom sheet on mobile. #}
+<div id="guest-menu" popover
+     {{ attributes.defaults({class: 'fixed inset-x-0 top-auto bottom-0 m-0 max-h-[85dvh] w-full max-w-none overflow-y-auto overscroll-contain rounded-t-card border-0 border-t border-line bg-surface px-gutter pt-6 pb-[calc(var(--spacing)*6+env(safe-area-inset-bottom))] text-body text-ink shadow-overlay translate-y-full transition-[translate,display,overlay] transition-discrete duration-180 ease-out open:translate-y-0 starting:open:translate-y-full motion-reduce:transition-none backdrop:bg-ink/40'}) }}>
+  <div class="mx-auto grid max-w-md gap-6">
+    <div class="grid gap-4">
+      <p class="m-0 text-lead text-balance">{{ 'nav.join_reason'|trans }}</p>
+      <a href="{{ path('login') }}" class="inline-flex h-12 items-center justify-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover">{{ 'nav.sign_in'|trans }}</a>
+    </div>
+    <twig:Nav:Preferences/>
+    <twig:Nav:MoreLinks class="border-t border-line pt-4"/>
+  </div>
+</div>

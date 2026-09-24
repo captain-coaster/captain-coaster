@@ -1,14 +1,8 @@
 {# Display profile picture, or an initials avatar for users without one #}
+{# Legacy entry point: new templates use <twig:Avatar> directly. #}
 {% macro profilePicture(user, className) %}
-    {% if user.profilePicture %}
-        <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
-             class="{{ className|default('img-circle img-lg') }}"
-             alt="{{ user.displayName }}">
-    {% else %}
-        <img src="{{ avatar_placeholder(user.displayName, user.id) }}"
-             class="{{ className|default('img-circle img-lg') }}"
-             alt="{{ user.displayName }}">
-    {% endif %}
+    {% set className = className|default('') %}
+    {{ component('Avatar', {user: user, size: 'img-xs' in className ? 'xs' : ('img-sm' in className ? 'sm' : 'md')}) }}
 {% endmacro %}
 
 {# Display a coaster related date #}

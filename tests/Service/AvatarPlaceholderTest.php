@@ -46,57 +46,28 @@ class AvatarPlaceholderTest extends TestCase
         $this->assertSame('W', $this->avatarPlaceholder->initials('- WanExtraLife -'));
     }
 
-    public function testColorIsDeterministicForSameSeed(): void
+    public function testSlotIsDeterministicForSameSeed(): void
     {
-        $this->assertSame(
-            $this->avatarPlaceholder->color(42),
-            $this->avatarPlaceholder->color(42),
-        );
+        $this->assertSame($this->avatarPlaceholder->slot(42), $this->avatarPlaceholder->slot(42));
     }
 
-    public function testColorWrapsAroundThePalette(): void
+    public function testSlotWrapsAroundWithinOneToSlotCount(): void
     {
-        $paletteSize = 8;
-        $this->assertSame(
-            $this->avatarPlaceholder->color(1),
-            $this->avatarPlaceholder->color(1 + $paletteSize),
-        );
+        $this->assertSame(1, $this->avatarPlaceholder->slot(0));
+        $this->assertSame(AvatarPlaceholder::SLOT_COUNT, $this->avatarPlaceholder->slot(AvatarPlaceholder::SLOT_COUNT - 1));
+        $this->assertSame($this->avatarPlaceholder->slot(1), $this->avatarPlaceholder->slot(1 + AvatarPlaceholder::SLOT_COUNT));
     }
 
-    public function testDataUriIsAnInlineSvgImage(): void
+    /** Each slot needs its token, and a literal class in the component so Tailwind generates it. */
+    public function testEverySlotHasATokenAndAComponentClass(): void
     {
-        $this->assertStringStartsWith('data:image/svg+xml;base64,', $this->avatarPlaceholder->dataUri('John Doe', 1));
-    }
+        $root = \dirname(__DIR__, 2);
+        $tokens = (string) file_get_contents($root.'/assets/styles/tokens.css');
+        $component = (string) file_get_contents($root.'/templates/components/Avatar.html.twig');
 
-    public function testDataUriEmbedsTheInitialsAndColor(): void
-    {
-        $svg = $this->decodeSvg($this->avatarPlaceholder->dataUri('John Doe', 1));
-
-        $this->assertStringContainsString('>JD<', $svg);
-        $this->assertStringContainsString('fill="'.$this->avatarPlaceholder->color(1).'"', $svg);
-    }
-
-    public function testDataUriUsesALargerFontForASingleInitial(): void
-    {
-        $twoLetters = $this->decodeSvg($this->avatarPlaceholder->dataUri('John Doe', 1));
-        $oneLetter = $this->decodeSvg($this->avatarPlaceholder->dataUri('WanExtraLife', 1));
-
-        $this->assertStringContainsString('font-size="14"', $twoLetters);
-        $this->assertStringContainsString('font-size="17"', $oneLetter);
-    }
-
-    public function testEveryColorIsATokensCssPrimitive(): void
-    {
-        $tokens = (string) file_get_contents(\dirname(__DIR__, 2).'/assets/styles/tokens.css');
-        preg_match_all('/--[a-z0-9-]+: oklch\([^)]*\); \/\* (#[0-9A-F]{6}) \*\//', $tokens, $matches);
-
-        for ($seed = 0; $seed < 8; ++$seed) {
-            $this->assertContains($this->avatarPlaceholder->color($seed), $matches[1]);
+        for ($slot = 1; $slot <= AvatarPlaceholder::SLOT_COUNT; ++$slot) {
+            $this->assertStringContainsString('--avatar-'.$slot.':', $tokens);
+            $this->assertStringContainsString('bg-[var(--avatar-'.$slot.')]', $component);
         }
-    }
-
-    private function decodeSvg(string $dataUri): string
-    {
-        return base64_decode(substr($dataUri, \strlen('data:image/svg+xml;base64,')));
     }
 }

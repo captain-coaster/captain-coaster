@@ -134,6 +134,17 @@
     --chrome-hover: color-mix(in oklch, var(--on-chrome) 10%, transparent);
     --chrome-active: color-mix(in oklch, var(--on-chrome) 15%, transparent);
 
+    /* Avatar placeholders: white initials at >= 4.5:1 on each. Slot picked
+     * by AvatarPlaceholder::slot(), rendered by <twig:Avatar>. */
+    --avatar-1: var(--blue-700);
+    --avatar-2: var(--green-700);
+    --avatar-3: var(--coral-600);
+    --avatar-4: var(--blue-500);
+    --avatar-5: var(--amber-800);
+    --avatar-6: var(--slate-600);
+    --avatar-7: var(--blue-800);
+    --avatar-8: var(--logo-ink);
+
     /* Rating stars: sunshine fill + amber edge (the edge carries >= 3:1 on
      * white; sunshine alone is 1.5:1). Empty stars of the rating input use
      * the control boundary color. */

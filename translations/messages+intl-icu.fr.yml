@@ -362,33 +362,33 @@ rating:
     save_network_error: "Erreur réseau. La note n'a pas été enregistrée."
     save_error: "Impossible d'enregistrer la note. Veuillez réessayer."
 
-navbar:
-    settings: Paramètres
-    rating: Mes Notes
-    login: Connexion
-    logout: Déconnexion
-    tops: Mes tops
-    my_map: Ma carte
-    language: Langue
-    units: Unités
-
-sidebar:
-    index: Accueil
-    search: Coasters
-    ranking: Classement Mondial des Coasters
-    users: Nos riders
-    map: Carte des coasters
-    top: Les tops
-    review: Derniers avis
-    blog: Blog
-    contact: Nous contacter
-    logout: Déconnexion
-    login: Connexion
-    toggle: Afficher le menu
-    toggle_filters: Afficher les filtres
-
-footer:
-    terms: Politique de confidentialité
+nav:
+    label: "Navigation principale"
+    home: "Accueil"
+    ranking: "Classement"
+    search: "Recherche"
+    map: "Carte"
+    profile: "Profil"
+    filters: "Filtres"
+    cancel: "Annuler"
+    advanced_search: "Recherche avancée"
+    recent: "Recherches récentes"
+    clear_recent: "Effacer"
+    account: "Compte"
+    sign_in: "Connexion"
+    sign_out: "Déconnexion"
+    settings: "Paramètres"
+    ratings: "Mes notes"
+    tops: "Mes tops"
+    my_map: "Ma carte"
+    language: "Langue"
+    units: "Unités"
+    reviews: "Avis"
+    riders: "Riders"
+    all_tops: "Tops"
+    blog: "Blog"
+    contact: "Contact"
+    join_reason: "Connectez-vous pour noter les coasters que vous avez faits, créer vos tops et peser sur le classement mondial."
 
 login:
     title: Se connecter

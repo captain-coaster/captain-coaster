@@ -7,8 +7,6 @@
   <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
 {% endblock %}
 
-{% set pageHasFilters = true %}
-
 {% block secondary_sidebar %}
   {% include 'Includes/filter_sidebar.html.twig' with {
     'filters': filters|default({}), 
@@ -23,6 +21,7 @@
 {% endblock %}
 
 {% block body %}
+  <twig:FilterToggle class="mb-4"/>
   {% include 'ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
   <div id="ranking-result"></div>
 {% endblock %}
