@@ -130,7 +130,10 @@ class ImageReportCrudController extends AbstractCrudController
             // 1440x1440 is an inside-fit size (whole photo, letterboxed); 480x300 is a cover crop.
             $fields[] = ImageField::new('imageFilename', 'Photo')
                 ->setTemplatePath('admin/field/photo.html.twig')
-                ->formatValue(fn (mixed $value, ImageReport $entity): string => $this->pictureUrlSigner->sign($entity->getImageFilename() ?? '', 1440, 1440, 'jpg'));
+                // A deleted image only leaves its filename snapshot: legacy layout, which 404s once the original is gone anyway.
+                ->formatValue(fn (mixed $value, ImageReport $entity): string => null !== $entity->getImage()
+                    ? $this->pictureUrlSigner->signImage($entity->getImage(), 1440, 1440, 'jpg')
+                    : $this->pictureUrlSigner->sign($entity->getImageFilename() ?? '', 1440, 1440, 'jpg'));
         }
 
         $fields[] = TextField::new('coasterName', 'Coaster');

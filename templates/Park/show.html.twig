@@ -87,7 +87,7 @@
                         <div class="cc-media__start">
                             <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                                 {% if coaster.mainImage %}
-                                    {{ helper.picture(coaster.mainImage.filename, 200, 150, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
+                                    {{ helper.picture(coaster.mainImage, 200, 150, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
                                     <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-canvas text-muted" style="width:200px;">
                                         {{ ux_icon('lucide:image', {'class': 'w-8 h-8'}) }}

@@ -9,6 +9,7 @@ use App\Entity\ImageReport;
 use App\Repository\ImageRepository;
 use App\Service\HeroService;
 use App\Service\ImageManager;
+use App\Service\PictureUrlSigner;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -272,14 +273,14 @@ class RenameImagesCommand extends Command
 
         $diffs = [];
 
-        $dbFocalX = self::canonicalFocal($image->getFocalX());
-        $s3FocalX = self::canonicalFocal($metadata['focal-x'] ?? null);
+        $dbFocalX = PictureUrlSigner::canonicalFocal($image->getFocalX());
+        $s3FocalX = PictureUrlSigner::canonicalFocal($metadata['focal-x'] ?? null);
         if ($dbFocalX !== $s3FocalX) {
             $diffs['focal-x'] = [$dbFocalX, $s3FocalX];
         }
 
-        $dbFocalY = self::canonicalFocal($image->getFocalY());
-        $s3FocalY = self::canonicalFocal($metadata['focal-y'] ?? null);
+        $dbFocalY = PictureUrlSigner::canonicalFocal($image->getFocalY());
+        $s3FocalY = PictureUrlSigner::canonicalFocal($metadata['focal-y'] ?? null);
         if ($dbFocalY !== $s3FocalY) {
             $diffs['focal-y'] = [$dbFocalY, $s3FocalY];
         }
@@ -291,16 +292,6 @@ class RenameImagesCommand extends Command
         }
 
         return $diffs;
-    }
-
-    /** Mirrors captain-infra's canonicalFocalComponent (handler.mjs/v2.mjs): missing/empty -> '-'. */
-    private static function canonicalFocal(float|string|null $value): string
-    {
-        if (null === $value || '' === $value) {
-            return '-';
-        }
-
-        return \is_float($value) ? (string) $value : $value;
     }
 
     private function logFilePath(): string

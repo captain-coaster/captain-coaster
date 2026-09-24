@@ -57,7 +57,7 @@ class ImageReportListener
             );
 
         if (null !== $image) {
-            $imageUrl = $this->pictureUrlSigner->sign($image->getFilename(), 1440, 1440, 'jpg');
+            $imageUrl = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
             $embed->url($imageUrl)->thumbnail(new DiscordMediaEmbedObject()->url($imageUrl));
         }
 

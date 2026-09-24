@@ -59,7 +59,7 @@ class ImageModerationService
             // photo, just downscaled, which is what moderation/focal-point detection needs. This
             // avoids adding any PHP-side image manipulation just to bound the Bedrock payload size.
             // jpg, not avif: Bedrock's Converse API ImageFormat only accepts png/jpeg/gif/webp.
-            $url = $this->pictureUrlSigner->sign($image->getFilename(), 1440, 1440, 'jpg');
+            $url = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
             $imageBytes = $this->httpClient->request('GET', $url)->getContent();
         } catch (\Throwable $e) {
             $this->moderationLogger->error('Image moderation could not fetch the lightbox derivative', [
