@@ -13,10 +13,8 @@ app:
     skip_to_content: 'Zum Inhalt springen'
     title:
         default: 'Willkommen!'
-    header:
-        search: '100% Wolf, Freizeitpark Plohn...'
     search:
-        placeholder_short: "Achterbahn, Park oder Fahrer"
+        placeholder: "Achterbahn, Park oder Fahrer"
         suggestions: 'Suchvorschläge'
         label: 'Achterbahnen und Parks suchen'
         clear: 'Suche löschen'

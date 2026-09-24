@@ -34,7 +34,7 @@
   (nav_route starts with 'ranking' ? 'ranking' :
   (nav_route in ['search_index', 'coaster_search_index'] ? 'search' :
   (nav_route == 'map_index' ? 'map' :
-  (nav_route starts with 'profile' or nav_route starts with 'notification' ? 'profile' : null))))
+  (nav_route starts with 'profile' or nav_route starts with 'notification' or nav_route in ['login', 'app_register'] ? 'profile' : null))))
 %}
 {# Below lg, room for the floating tab bar (h-16 + 3 spacing + safe area) plus air. #}
 <body class="max-lg:pb-[calc(var(--spacing)*24+env(safe-area-inset-bottom))]" data-controller="sidebar search-dialog">
@@ -48,14 +48,16 @@
     <!-- main content -->
     <div class="content-wrapper">
       {% block wide_body %}
-        {# Pages set title/subTitle/secondaryTitle, parentUrl (back fallback) and pageActions (captured HTML). #}
+        {# Pages set title/subTitle(+Url)/secondaryTitle, parentUrl (detail pages: back button) and pageActions (captured HTML). #}
         <twig:Page:Header
           title="{{ title|default('app.title.default'|trans) }}"
           :subtitle="subTitle|default(null)"
+          :subtitleUrl="subTitleUrl|default(null)"
           :secondary="secondaryTitle|default(null)"
           :parent="parentUrl|default(null)"
           :actions="pageActions|default(null)"
-          :hideTitle="hideTitle|default(false)"/>
+          :hideTitle="hideTitle|default(false)"
+          :narrow="narrowHeader|default(false)"/>
         <!-- Content area -->
         <main id="content" tabindex="-1" class="content mx-auto outline-none flow-root w-full max-w-content px-gutter">
           {{ include('flashes.html.twig') }}

@@ -13,10 +13,8 @@ app:
     skip_to_content: 'Skip to content'
     title:
         default: 'Welcome!'
-    header:
-        search: 'Fast & Furious, Six Flags Over Texas...'
     search:
-        placeholder_short: "Coaster, park or rider"
+        placeholder: "Coaster, park or rider"
         suggestions: 'Search suggestions'
         label: 'Search coasters and parks'
         clear: 'Clear search'

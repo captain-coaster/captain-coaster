@@ -3,12 +3,14 @@
   back button, the title once the large one scrolls away (page_bar_controller.js),
   and the page's actions as round floating buttons.
   Props:
-    title, subtitle, secondary  h1, appended " • subtitle", muted line below
+    title, subtitle, secondary  h1, a context line under it (park, author, country), a muted line (former names)
+    subtitleUrl  makes the context line a link (coaster → park, Top → author)
     parent       detail pages only: shows the back button, and is its target when not arriving from another site page (back_controller.js)
     actions      rendered HTML for the page's actions (Twig var `pageActions`)
     hideTitle    keeps the h1 for assistive tech only (Home)
+    narrow       aligns the title with a max-w-md body column (sign-in forms)
 #}
-{% props title, subtitle = null, secondary = null, parent = null, actions = null, hideTitle = false %}
+{% props title, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, hideTitle = false, narrow = false %}
 {% set round = 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface' %}
 <div data-controller="page-bar" {{ attributes.defaults({class: "contents"}) }}>
   <div data-page-bar-target="bar"
@@ -30,11 +32,20 @@
     {% endif %}
   </div>
 
-  <header class="mx-auto flex max-w-content items-end gap-4 px-gutter pt-1 pb-6 lg:pt-10 lg:pb-8 {{ hideTitle ? 'sr-only' }}">
+  <header class="mx-auto flex {{ narrow ? 'max-w-[calc(var(--container-md)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-end gap-4 px-gutter pt-1 pb-6 lg:pt-10 lg:pb-8 {{ hideTitle ? 'sr-only' }}">
     <div class="min-w-0 flex-1">
-      <h1 data-page-bar-target="title" class="m-0 text-balance">{{ title }}{% if subtitle %}<span class="text-muted"> • {{ subtitle }}</span>{% endif %}</h1>
+      <h1 data-page-bar-target="title" class="m-0 text-balance">{{ title }}</h1>
+      {% if subtitle %}
+        <p class="m-0 mt-1 text-lead font-semibold text-muted-strong">
+          {%- if subtitleUrl -%}
+            <a href="{{ subtitleUrl }}" class="text-inherit underline-offset-4 hover:text-action hover:underline">{{ subtitle }}</a>
+          {%- else -%}
+            {{ subtitle }}
+          {%- endif -%}
+        </p>
+      {% endif %}
       {% if secondary %}
-        <p class="m-0 mt-1 text-muted">{{ secondary }}</p>
+        <p class="m-0 mt-1 text-caption text-muted">{{ secondary }}</p>
       {% endif %}
     </div>
     {% if actions %}

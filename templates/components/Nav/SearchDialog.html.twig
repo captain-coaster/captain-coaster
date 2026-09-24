@@ -12,21 +12,7 @@
   </div>
 
   <div class="grid gap-6 px-4 py-5">
-    <section class="grid gap-2" data-search-dialog-target="recent" hidden>
-      <div class="flex items-center justify-between gap-4">
-        <h2 class="m-0 font-sans text-caption font-semibold text-muted">{{ 'nav.recent'|trans }}</h2>
-        <button type="button" class="h-9 rounded-control px-2 text-caption font-semibold text-action hover:bg-subtle" data-action="search-dialog#clearRecent">{{ 'nav.clear_recent'|trans }}</button>
-      </div>
-      <ul class="m-0 grid list-none gap-0.5 p-0" data-search-dialog-target="recentList"></ul>
-      <template data-search-dialog-target="recentItem">
-        <li>
-          <a class="flex min-h-14 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle">
-            <span class="w-6 text-center" aria-hidden="true"></span>
-            <span class="min-w-0 flex-1 truncate"></span>
-          </a>
-        </li>
-      </template>
-    </section>
+    <twig:Nav:RecentSearches/>
 
     {% set entry = 'flex min-h-14 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle' %}
     <nav aria-label="{{ 'nav.search_entries'|trans }}">
