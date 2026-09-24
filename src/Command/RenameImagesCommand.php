@@ -198,7 +198,13 @@ class RenameImagesCommand extends Command
                     continue;
                 }
 
-                $this->imageManager->writeFocalPointMetadata($image);
+                try {
+                    $this->imageManager->writeFocalPointMetadata($image);
+                } catch (\Throwable $e) {
+                    ++$skippedMismatch;
+                    $io->warning(\sprintf('Image #%d: metadata fix failed (%s), skipped', $image->getId(), $e->getMessage()));
+                    continue;
+                }
             }
 
             $oldFilename = $image->getFilename();
