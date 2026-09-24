@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\ImageRepository;
-use App\Service\ImageManager;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use League\Flysystem\FilesystemOperator;
@@ -24,14 +23,15 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * filename, and overwrites the S3 original only when the backup file is strictly larger than
  * what's currently stored (a cheap HEAD per candidate, not worth skipping).
  *
- * Deliberately does NOT touch `image.watermarked` (DB) or the S3 object's `watermark` metadata
- * key -- both reflect a choice made at upload time, not a technical fact this script is
- * qualified to overwrite. Whatever value is already on the object is carried through unchanged
+ * Deliberately does NOT touch `image.watermarked` (DB) or the S3 object's metadata -- the
+ * `watermark` choice and the `focal-x`/`focal-y` crop are the uploader's, not a technical fact
+ * this script is qualified to overwrite. All existing metadata is carried through unchanged
  * on rewrite. Any decision about images that turn out to be unrecoverable (still watermark-
  * baked-in, no backup ever found) is a separate, later step -- see watermark_no_backup.csv.
  *
- * CloudFront is deliberately NOT invalidated here -- do one broad invalidation by size/format
- * prefix at the very end, once, after every backup disk has been run (see the command's help).
+ * Nothing is invalidated here: run this before app:rename-images, which moves every photo to a
+ * new key (and so a new URL), so no cached variant of a pre-restore original is ever served
+ * again (see the command's help).
  *
  * Safe to run repeatedly / across multiple disks: the S3 HEAD size comparison is the
  * idempotency check itself -- once an original has been swapped for the backup's copy, a later
@@ -46,16 +46,11 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
     description: 'Restore true (uncompressed) originals from a local backup disk when larger than what is on S3',
     help: <<<'HELP'
         Dry run first, then --execute once the manifest looks right. Repeat across every backup
-        disk you have (each its own --backup-dir), then invalidate CloudFront ONCE at the end --
-        by size/format prefix is far cheaper than per-image and stays inside the free tier:
+        disk you have (each its own --backup-dir, in trust order).
 
-          aws cloudfront create-invalidation --distribution-id <id> --paths \
-            "/96x72/*" "/96x96/*" "/192x144/*" "/192x192/*" "/200x150/*" "/280x210/*" \
-            "/400x300/*" "/560x420/*" "/600x336/*" "/1200x672/*" "/1440x1440/*"
-
-        (that list is whatever `aws s3api list-objects-v2 --bucket <resized bucket> --delimiter /`
-        currently reports as top-level prefixes -- sizes aren't hardcoded anywhere else either,
-        re-check it if a template has added a new size since.)
+        Run it BEFORE app:rename-images: matching is by the UUID filename, which the rename
+        replaces with {id}.jpg. No CloudFront/Cloudflare invalidation is needed: the rename gives
+        every photo a new URL, so variants of the pre-restore originals are never served again.
         HELP,
 )]
 class RestoreCleanOriginalsCommand extends Command
@@ -67,7 +62,6 @@ class RestoreCleanOriginalsCommand extends Command
     public function __construct(
         private readonly ImageRepository $imageRepository,
         private readonly FilesystemOperator $picturesFilesystem,
-        private readonly ImageManager $imageManager,
         private readonly S3Client $s3Client,
         #[Autowire('%env(string:AWS_S3_BUCKET_NAME)%')]
         private readonly string $originalsBucket,
@@ -166,18 +160,18 @@ class RestoreCleanOriginalsCommand extends Command
                     'Bucket' => $this->originalsBucket,
                     'Key' => self::ARCHIVE_PREFIX.$filename,
                     'CopySource' => rawurlencode($this->originalsBucket.'/'.$filename),
+                    'StorageClass' => 'INTELLIGENT_TIERING',
                 ]);
 
-                // Carry the existing `watermark` metadata through unchanged -- it's not this
-                // script's call to make, and a plain PutObject would otherwise silently drop it.
-                $existingMetadata = $head->get('Metadata') ?? [];
-                $writeOptions = [];
-                if (isset($existingMetadata['watermark'])) {
-                    $writeOptions['Metadata'] = ['watermark' => $existingMetadata['watermark']];
-                }
-
-                $this->picturesFilesystem->write($filename, $content, $writeOptions);
-                $this->imageManager->removeCache($image);
+                // A plain PutObject drops every metadata key: carry them all (`watermark`,
+                // `focal-x`, `focal-y`) so neither the crop nor the v2 hash changes. Written
+                // straight to Intelligent-Tiering, like the rest of the bucket (a STANDARD write
+                // would be transitioned by the lifecycle rule, billed per object).
+                $this->picturesFilesystem->write($filename, $content, [
+                    'Metadata' => $head->get('Metadata') ?? [],
+                    'ContentType' => $head->get('ContentType') ?? 'image/jpeg',
+                    'StorageClass' => 'INTELLIGENT_TIERING',
+                ]);
             }
 
             $restored[] = [$uuid, $localPath, $image->getId(), $filename, $image->getCreatedAt()->format('Y-m-d'), $localSize, $s3Size, $execute ? 'restored' : 'would_restore'];
@@ -263,10 +257,10 @@ class RestoreCleanOriginalsCommand extends Command
             return;
         }
         if ($writeHeader) {
-            fputcsv($handle, $header);
+            fputcsv($handle, $header, escape: '');
         }
         foreach ($rows as $row) {
-            fputcsv($handle, $row);
+            fputcsv($handle, $row, escape: '');
         }
         fclose($handle);
     }
