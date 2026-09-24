@@ -35,8 +35,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * before the legacy URL scheme -- keyed by the old filename -- is retired, plan step 8).
  *
  * Before renaming an image, its S3 metadata is checked against the DB (the source of truth):
- * `ImageManager::writeFocalPointMetadata()` only logs a failed write (R11 in the plan), so the
- * two can silently drift, and a drifted image answers 409 under the v2 scheme instead of
+ * `ImageManager::writeFocalPointMetadata()` used to only log a failed write (R11 in the plan), so
+ * existing images can have drifted, and a drifted image answers 409 under the v2 scheme instead of
  * silently falling back to the automatic crop. --dry-run reports every mismatch found without
  * writing anything; a real run skips renaming a mismatched image unless --fix-metadata is also
  * given, in which case it rewrites the S3 metadata from the DB first (existing, tested path)
@@ -199,7 +199,13 @@ class RenameImagesCommand extends Command
                     continue;
                 }
 
-                $this->imageManager->writeFocalPointMetadata($image);
+                try {
+                    $this->imageManager->writeFocalPointMetadata($image);
+                } catch (\Throwable $e) {
+                    ++$skippedMismatch;
+                    $io->warning(\sprintf('Image #%d: metadata fix failed (%s), skipped', $image->getId(), $e->getMessage()));
+                    continue;
+                }
             }
 
             $oldFilename = $image->getFilename();

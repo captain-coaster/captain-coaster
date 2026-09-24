@@ -145,27 +145,26 @@ class ImageManager
      * the AWS SDK. REPLACE overwrites *all* metadata, not merges it -- the existing watermark
      * value must be re-supplied here too, or it would be silently dropped. Same for Content-Type,
      * which would otherwise fall back to binary/octet-stream.
+     *
+     * Throws on failure: the v2 URL hashes the DB values and the Lambda checks them against this
+     * metadata, so a DB committed without it would answer 409 -- callers must not flush then.
      */
     public function writeFocalPointMetadata(Image $image): void
     {
         $key = $image->getFilename();
 
-        try {
-            $this->s3Client->copyObject([
-                'Bucket' => $this->s3OriginalBucket,
-                'Key' => $key,
-                'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
-                'MetadataDirective' => 'REPLACE',
-                'ContentType' => Image::MIME_TYPE,
-                'Metadata' => [
-                    'watermark' => $image->isWatermarked() ? '1' : '0',
-                    'focal-x' => (string) $image->getFocalX(),
-                    'focal-y' => (string) $image->getFocalY(),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
+        $this->s3Client->copyObject([
+            'Bucket' => $this->s3OriginalBucket,
+            'Key' => $key,
+            'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
+            'MetadataDirective' => 'REPLACE',
+            'ContentType' => Image::MIME_TYPE,
+            'Metadata' => [
+                'watermark' => $image->isWatermarked() ? '1' : '0',
+                'focal-x' => (string) $image->getFocalX(),
+                'focal-y' => (string) $image->getFocalY(),
+            ],
+        ]);
     }
 
     /** Update main image property of all coasters. */

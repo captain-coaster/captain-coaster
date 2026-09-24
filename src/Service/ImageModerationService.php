@@ -107,11 +107,23 @@ class ImageModerationService
     /** @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result */
     public function applyResult(Image $image, array $result): void
     {
+        $previousFocal = [$image->getFocalX(), $image->getFocalY()];
         $image->setFocalX($result['focalX']);
         $image->setFocalY($result['focalY']);
-        $image->setAnalyzedAt(new \DateTime());
 
-        $this->imageManager->writeFocalPointMetadata($image);
+        try {
+            $this->imageManager->writeFocalPointMetadata($image);
+        } catch (\Throwable $e) {
+            // Leave the entity as it was: a later flush in the same unit of work (e.g. the next
+            // image of a ReprocessImagesCommand batch) must not commit values S3 never got.
+            [$focalX, $focalY] = $previousFocal;
+            $image->setFocalX($focalX);
+            $image->setFocalY($focalY);
+
+            throw $e;
+        }
+
+        $image->setAnalyzedAt(new \DateTime());
 
         if ([] === $result['categories']) {
             $image->setEnabled(true);
