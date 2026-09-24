@@ -206,7 +206,7 @@ Use tonal surfaces and restrained borders first. Raised elements use `--shadow-r
 
 Small accents use the small radius; controls use the control radius and containers the card radius. Pill shapes belong to compact tags and to navigation-scale controls: the tab bar and its active tab, the search field, the language chip, the units toggle and badges. Floating page buttons are 44px circles. Borders are 1px: pale `border` for decorative separation, stronger `control-border` where a boundary identifies an input.
 
-Keep original logo artwork intact: `logo_light.svg` (white lettering) on dark surfaces, `logo_dark.svg` (lettering in the logo's own #28343A) on light ones. The full logo appears at 28px high (193px wide): in the desktop header, on Home below `lg`, and in the footer; other pages carry no logo on phones. In compact UI the head mark (the star mask) may stand alone; it keeps its original colors and reads on light surfaces too. The favicon and app icons are the head mark: bare on a transparent ground in the browser tab (it reads on light and dark tabs), centered on ink-900 where the platform needs an opaque tile (iOS home screen, Android maskable), since one tile has to suit light and dark home screens. Proposed minimum logo widths: 180px horizontal, 238px stacked, with at least 12px clear space in compact UI and 24px in standalone placements.
+Keep original logo artwork intact. It has one source, `<twig:Logo>` (inline SVG): the lettering is logo ink (#28343A) on light surfaces and white on dark ones (`class="text-white"`), the mark never changes. The full logo appears at 28px high (193px wide): in the desktop header, on Home below `lg`, and in the footer; other pages carry no logo on phones. In compact UI the head mark (the star mask) may stand alone; it keeps its original colors and reads on light surfaces too. The favicon and app icons are the head mark: bare on a transparent ground in the browser tab (it reads on light and dark tabs), centered on ink-900 where the platform needs an opaque tile (iOS home screen, Android maskable), since one tile has to suit light and dark home screens. Proposed minimum logo widths: 180px horizontal, 238px stacked, with at least 12px clear space in compact UI and 24px in standalone placements.
 
 ## Components
 
@@ -255,7 +255,7 @@ For Symfony/Twig, Stimulus, Tailwind v4 and Vite, the tokens live in `assets/sty
 - Do credit existing photography and retain its provenance.
 - Do put a new top-level destination in the footer and on Profile, not in a sixth tab or a menu; the tab bar holds exactly five.
 - Do put a page's context (park, author, country) on its own line under the title.
-- Don’t recolor, redraw or crop the logo other than to the head mark or the approved dark-lettering variant (`logo_dark.svg`) for light backgrounds.
+- Don’t recolor, redraw or crop the logo other than to the head mark or switching the lettering between logo ink and white.
 - Don’t use sunshine or pale decorative borders as unverified text or essential control boundaries.
 - Don’t present illustrative names, ranks, scores or the sample 1–5 rating scale as shipped product facts.
 - Don’t put the header, navigation or page titles on dark bands; the light canvas carries the page.
