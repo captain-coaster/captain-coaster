@@ -19,8 +19,7 @@
     "check:icon-sets": "node scripts/check-icon-sets.mjs",
     "clean": "rm -rf public/build/*",
     "format": "prettier --write \"assets/**/*.js\"",
-    "format:check": "prettier --check \"assets/**/*.js\"",
-    "build:maintenance": "node scripts/build-maintenance.mjs"
+    "format:check": "prettier --check \"assets/**/*.js\""
   },
   "dependencies": {
     "maplibre-gl": "^6.6.0",

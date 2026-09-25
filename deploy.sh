@@ -67,7 +67,7 @@ reload_nginx() {
 # Function to enable maintenance mode
 enable_maintenance() {
     log "Enabling maintenance mode..."
-    cp "$PROJECT_DIR/maintenance.html" "$PROJECT_DIR/public/maintenance.html"
+    cp "$PROJECT_DIR/assets/maintenance/maintenance.html" "$PROJECT_DIR/public/maintenance.html"
     reload_nginx
     success "Maintenance mode enabled"
 }
