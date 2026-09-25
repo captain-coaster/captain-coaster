@@ -2,19 +2,16 @@
 <html lang="{{ app.request.get('_locale') }}" class="has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ 'app.title.default'|trans }}{% endblock %} • {{ 'app.name'|trans }}</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-  <link rel="mask-icon" href="{{ asset('safari-pinned-tab.svg') }}" color="#28343a">
-  <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+  {# Fixed URLs in public/, drawn from the head mark in components/Logo.html.twig. sizes="32x32" keeps Chrome from preferring the .ico over the SVG. #}
+  <link rel="icon" href="/favicon.ico" sizes="32x32">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
-  <meta name="application-name" content="{{ 'app.name'|trans }}">
-  <meta name="msapplication-TileColor" content="#28343a">
-  <meta name="theme-color" content="#ffffff">
-  <link rel="manifest" href="{{ asset('manifest.json') }}">
+  {# The canvas token (--bg), so the browser chrome runs into the page. With dark mode, split into two tags with media="(prefers-color-scheme: light|dark)". #}
+  <meta name="theme-color" content="#F3F6FB">
   {% block header %}{% endblock %}
   {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
   {% if app.environment != 'dev' %}
