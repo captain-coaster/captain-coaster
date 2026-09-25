@@ -57,7 +57,7 @@ Assets live in `assets/`:
 
 - `js/` — vanilla JS entry points and utilities
 - `controllers/` — Stimulus controllers (one file per controller, named `*_controller.js`), auto-registered via `vite.config.js`'s `stimulus` option and started from `assets/bootstrap.js`. `controllers.json` is Symfony UX's registry for bundle-provided controllers (currently empty — no such bundles in use), not how local ones get registered
-- `styles/app.css` — entry point; imports `tokens.css` first, then every component file under `layer(components)`. A few pages have their own separate Vite CSS entry (`score-card.css`, `top-list.css`, `rating-distribution.css`) instead of importing into `app.css` — those import `tokens.css` directly too, since each Vite CSS entry runs its own independent Tailwind build and `theme()` only resolves within that entry's own graph
+- `styles/app.css` — entry point; imports `tokens.css` first, then every component file under `layer(components)`. Two page-specific CSS entries (`styles/coaster.css`, `styles/top-list.css`, declared in `vite.config.js`) stay out of `app.css` — files there that use `theme()` import `tokens.css` directly too, since each Vite CSS entry runs its own independent Tailwind build and `theme()` only resolves within that entry's own graph
 - `icons/` — locked Iconify SVGs, committed via `php bin/console ux:icons:lock` — CI fails if a template references an icon that isn't locked, or if a locked icon is outside Lucide (`lucide:`) and the exceptions in `scripts/check-icon-sets.mjs`. Icons referenced only from PHP (`NotificationType`) aren't found by the lock command: add them with `ux:icons:import`. Rules: DESIGN.md, Iconography
 
 Mid term aim:

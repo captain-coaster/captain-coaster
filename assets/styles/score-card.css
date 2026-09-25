@@ -45,7 +45,7 @@
  * a plain label makes each figure identifiable without relying on the
  * icon alone, and a single line per row keeps the total height close
  * to the old grid's rather than doubling it. `theme(--breakpoint-*)`
- * isn't usable here (entry-scoped to coaster.js, outside app.css's own
+ * isn't usable here (entry-scoped to coaster.css, outside app.css's own
  * compilation graph -- same reasoning as this file's score-* rules).
  */
 .coaster-stats__row {

@@ -7,10 +7,10 @@
 .ai-summary-loading,
 .photos-loading,
 .reviews-loading {
-    animation: pulse 1.5s ease-in-out infinite alternate;
+    animation: coaster-loading-pulse 1.5s ease-in-out infinite alternate;
 }
 
-@keyframes pulse {
+@keyframes coaster-loading-pulse {
     0% {
         opacity: 1;
     }

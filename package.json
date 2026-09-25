@@ -2,7 +2,7 @@
   "type": "module",
   "devDependencies": {
     "@hotwired/stimulus": "^3.0.0",
-    "@symfony/reprise": "^1.1.1",
+    "@symfony/reprise": "^1.2.0",
     "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
     "@tailwindcss/vite": "^4.3.3",
     "intl-messageformat": "^10.5.11",
