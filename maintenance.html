@@ -244,7 +244,10 @@
 
 <script>
 (() => {
+    // Seconds between checks: starts at 10, stretches to 60 while the stop lasts
+    // (fail2ban bans past 1,000 requests in 30 min, and tabs add up).
     const INTERVAL = 10;
+    const MAX_INTERVAL = 60;
 
     const messages = {
         en: {
@@ -308,7 +311,8 @@
     const text = status.querySelector('.status__text');
     const live = document.querySelector('[data-live]');
 
-    let remaining = INTERVAL;
+    let interval = INTERVAL;
+    let remaining = interval;
     let timer;
     let checking = false;
 
@@ -318,6 +322,8 @@
     };
 
     const tick = () => {
+        // Hidden tabs don't check; visibilitychange checks on return.
+        if (document.hidden) return;
         if (!navigator.onLine) {
             if (status.dataset.state !== 'offline') live.textContent = t.offline;
             show('offline', t.offline);
@@ -333,7 +339,7 @@
 
     const schedule = () => {
         clearInterval(timer);
-        remaining = INTERVAL;
+        remaining = interval;
         show('waiting', t.waiting.replace('{s}', remaining));
         timer = setInterval(tick, 1000);
     };
@@ -367,6 +373,7 @@
             setTimeout(() => location.replace(location.href), 400);
             return;
         }
+        interval = Math.min(Math.round(interval * 1.5), MAX_INTERVAL);
         schedule();
     }
 
