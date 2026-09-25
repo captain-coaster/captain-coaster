@@ -215,12 +215,6 @@
   {{ form_end(form) }}
 {% endblock %}
 
-{% block javascripts %}
-  {# Load top list specific JavaScript bundle #}
-  {{ reprise_entry_script_tags('top-list') }}
-{% endblock %}
-
 {% block stylesheets %}
-  {# Load top list specific CSS bundle #}
   {{ reprise_entry_link_tags('top-list') }}
 {% endblock %}

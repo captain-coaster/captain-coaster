@@ -1,0 +1,10 @@
+/*
+ * Coaster page entry (Coaster/show, Profile/ratings). rating.css isn't here:
+ * User/list_ratings.html.twig renders the same rating-actions markup without
+ * this entry, so it's global in app.css.
+ */
+@import './summary-feedback.css';
+@import './coaster-loading.css';
+@import './score-card.css';
+@import './rating-distribution.css';
+@import './youtube-thumbnail.css';

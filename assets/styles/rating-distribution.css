@@ -2,7 +2,7 @@
  * Rating Distribution Component
  * Pure CSS implementation for displaying rating distribution bars
  *
- * Entry-scoped (coaster.js), not imported into app.css -- imports
+ * Entry-scoped (coaster.css entry), not imported into app.css -- imports
  * Tailwind's theme (default breakpoints) and tokens.css directly so `theme(--breakpoint-md)` still resolves in
  * this entry's own Tailwind build graph (each Vite CSS entry point runs
  * its own Tailwind pass; `theme()` only sees `@theme` blocks reachable

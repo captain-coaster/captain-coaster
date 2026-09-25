@@ -14,8 +14,8 @@ const { version: maplibreGlVersion } = JSON.parse(
 export default defineConfig(({ command }) => ({
     input: {
         app: './assets/js/app.js',
-        coaster: './assets/js/coaster.js',
-        'top-list': './assets/js/top-list.js',
+        coaster: './assets/styles/coaster.css',
+        'top-list': './assets/styles/top-list.css',
     },
 
     resolve: {

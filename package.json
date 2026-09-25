@@ -2,28 +2,18 @@
   "type": "module",
   "devDependencies": {
     "@hotwired/stimulus": "^3.0.0",
-    "@symfony/reprise": "^1.1.1",
+    "@symfony/reprise": "^1.2.0",
     "@symfony/ux-translator": "file:vendor/symfony/ux-translator/assets",
     "@tailwindcss/vite": "^4.3.3",
-    "autoprefixer": "^10.4.21",
     "intl-messageformat": "^10.5.11",
-    "postcss": "^8.5.6",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.3.3",
     "vite": "^8.2.2"
   },
   "license": "UNLICENSED",
   "private": true,
-  "browserslist": [
-    "last 2 versions",
-    "> 1%",
-    "not dead",
-    "not IE 11"
-  ],
   "scripts": {
     "dev-server": "vite",
-    "dev": "vite build --mode development",
-    "watch": "vite build --watch",
     "build": "vite build",
     "check:css-contract": "node scripts/check-css-contract.mjs",
     "check:icon-sets": "node scripts/check-icon-sets.mjs",
@@ -35,8 +25,5 @@
     "maplibre-gl": "^6.6.0",
     "sortablejs": "^1.15.6",
     "tom-select": "^2.6.2"
-  },
-  "overrides": {
-    "uuid": "^11.1.1"
   }
 }

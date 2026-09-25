@@ -8500,16 +8500,16 @@
         },
         {
             "name": "symfony/reprise",
-            "version": "v1.1.1",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/reprise.git",
-                "reference": "d4fc4a1dde68762b648cb92f798589caa776a6f1"
+                "reference": "3eedb47af8cb4f686d67e778b63b0987743ced3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/reprise/zipball/d4fc4a1dde68762b648cb92f798589caa776a6f1",
-                "reference": "d4fc4a1dde68762b648cb92f798589caa776a6f1",
+                "url": "https://api.github.com/repos/symfony/reprise/zipball/3eedb47af8cb4f686d67e778b63b0987743ced3d",
+                "reference": "3eedb47af8cb4f686d67e778b63b0987743ced3d",
                 "shasum": ""
             },
             "require": {
@@ -8563,7 +8563,7 @@
             ],
             "support": {
                 "issues": "https://github.com/symfony/reprise/issues",
-                "source": "https://github.com/symfony/reprise/tree/v1.1.1"
+                "source": "https://github.com/symfony/reprise/tree/v1.2.0"
             },
             "funding": [
                 {
@@ -8583,7 +8583,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-01T22:02:46+00:00"
+            "time": "2026-09-23T19:41:33+00:00"
         },
         {
             "name": "symfony/routing",

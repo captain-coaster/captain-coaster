@@ -33,8 +33,8 @@
  *
  *  score-card.css, rating-distribution.css, summary-feedback.css,
  *  coaster-loading.css, youtube-thumbnail.css and top-list.css are
- *  deliberately NOT imported here -- they're entry-scoped (coaster.js /
- *  top-list.js), loaded only on the one page each actually needs, kept
+ *  deliberately NOT imported here -- they're entry-scoped (the coaster /
+ *  top-list Vite entries), loaded only on the one page each actually needs, kept
  *  out of every other page's bundle.
  */
 

@@ -231,7 +231,7 @@ apply_dependency_changes() {
     # package.json: a changed lockfile means node_modules content changed,
     # which can change compiled output (e.g. a bundled polyfill version)
     # even when no source file under assets/ was touched.
-    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|vite\.config\.js$|postcss\.config\.js$)'; then
+    if echo "$changed" | grep -qE '^(assets/|package\.json$|package-lock\.json$|vite\.config\.js$)'; then
         build_assets
     else
         log "no asset changes, skipping build"
