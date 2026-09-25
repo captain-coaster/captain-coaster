@@ -32,11 +32,6 @@ export default defineConfig(({ command }) => ({
         // so allowedHosts stays at its default (blocks hostname-based
         // requests, e.g. DNS rebinding), just host needs widening.
         host: true,
-        // The URL pages load dev assets from. Without it, reprise uses the
-        // listen address, `[::]` with host:true, which Firefox blocks as mixed
-        // content on the https Symfony server (unlike localhost). To test from
-        // a phone, set VITE_DEV_ORIGIN=http://<LAN IP>:5173.
-        origin: process.env.VITE_DEV_ORIGIN ?? 'http://localhost:5173',
     },
 
     plugins: [
