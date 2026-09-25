@@ -235,15 +235,7 @@ export default class extends Controller {
             _locale: document.documentElement.lang || 'en',
         });
 
-        const form = document.querySelector('form');
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
-
-        for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '') {
-                params.set(key, value);
-            }
-        }
+        const params = this.filterParams();
 
         fetch(`${url}?${params}`, {
             headers: {
@@ -288,20 +280,28 @@ export default class extends Controller {
         }
     }
 
+    // The filter sidebar's form, by id: the page has other forms before it
+    // (the desktop header search), so the first <form> is not the filters.
+    filterParams() {
+        const params = new URLSearchParams();
+        const form = document.getElementById('form-filter');
+        if (!form) return params;
+
+        for (const [key, value] of new FormData(form).entries()) {
+            if (value && value.trim() !== '') {
+                params.set(key, value);
+            }
+        }
+
+        return params;
+    }
+
     filterData() {
         const url = window.Routing.generate('map_markers_ajax', {
             _locale: document.documentElement.lang || 'en',
         });
 
-        const form = document.querySelector('form');
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
-
-        for (const [key, value] of formData.entries()) {
-            if (value && value.trim() !== '') {
-                params.set(key, value);
-            }
-        }
+        const params = this.filterParams();
 
         fetch(`${url}?${params}`, {
             headers: {
