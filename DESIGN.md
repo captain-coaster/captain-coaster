@@ -223,7 +223,7 @@ Use native links, buttons, disclosure and radio controls. Selection needs a shap
 ### Search
 
 - **Field:** a 44px filled pill (subtle fill, no visible border) with a 20px muted magnifier; on focus it turns white with a 2px action outline. The desktop field shows a `/` key hint and answers `/` and Cmd/Ctrl+K. A clear button appears once there is text.
-- **Dialog (below `lg`):** the Search tab opens a full-screen white dialog that fades in (180ms), field focused, with a Cancel text button. Its empty state lists recent searches (this device only, clearable) and shortcut rows (Advanced search, Ranking, Map): 56px rows, 24px muted icon, trailing chevron. The desktop field opens the same content as a floating panel on focus.
+- **Dialog (below `lg`):** the Search tab opens a full-screen white dialog that fades in (180ms), field focused, with a Cancel text button. Its empty state lists recent searches (this device only, clearable) and an Advanced search row (Ranking and Map are already tabs): 56px rows, 24px muted icon, trailing chevron. The desktop field opens the same content as a floating panel on focus.
 - **Result rows:** 56px, control radius, a 24px marker gutter so names align with the recent and shortcut rows. Name semibold ink, detail muted; matched text is bolder, never a highlighted chip. Hover is the subtle fill; the keyboard-selected row takes the selected fill, with no side stripe.
 
 ### Footer
