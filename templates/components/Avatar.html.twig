@@ -1,0 +1,43 @@
+{#
+  A user's profile picture, or their initials on a stable color slot.
+  Props:
+    user        User
+    size        xs (32px) | sm (36px) | md (44px) | lg (64px)
+    decorative  true when the name is already shown next to it
+#}
+{% props user, size = 'md', decorative = false %}
+{% set avatar = html_cva(
+  base: 'inline-grid shrink-0 place-items-center overflow-hidden rounded-full align-middle',
+  variants: {
+    size: {
+      xs: 'size-8 text-caption',
+      sm: 'size-9 text-caption',
+      md: 'size-11 text-body',
+      lg: 'size-16 text-lead',
+    },
+  },
+  default_variant: {size: 'md'},
+) %}
+{# Literal class names so Tailwind generates each one (AvatarPlaceholderTest checks the list). #}
+{% set slot_backgrounds = [
+  'bg-[var(--avatar-1)]',
+  'bg-[var(--avatar-2)]',
+  'bg-[var(--avatar-3)]',
+  'bg-[var(--avatar-4)]',
+  'bg-[var(--avatar-5)]',
+  'bg-[var(--avatar-6)]',
+  'bg-[var(--avatar-7)]',
+  'bg-[var(--avatar-8)]',
+] %}
+{% if user.profilePicture %}
+  <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
+       alt="{{ decorative ? '' : user.displayName }}"
+       class="{{ avatar.apply({size: size}, 'object-cover', attributes.render('class'))|tailwind_merge }}"
+       {{ attributes.without('class') }}>
+{% else %}
+  <span {% if decorative %}aria-hidden="true"{% else %}role="img" aria-label="{{ user.displayName }}"{% endif %}
+        class="{{ avatar.apply({size: size}, slot_backgrounds[avatar_slot(user.id) - 1] ~ ' font-semibold leading-none text-white', attributes.render('class'))|tailwind_merge }}"
+        {{ attributes.without('class') }}>
+    <span aria-hidden="true">{{ avatar_initials(user.displayName) }}</span>
+  </span>
+{% endif %}

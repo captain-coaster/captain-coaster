@@ -3,7 +3,7 @@
  * `.fade`/`.fade.in` is real and needed by the review-report modal
  * (`class="modal fade"` in _review_item.html.twig, toggled by
  * modal_controller.js) -- its own backdrop is now the browser's native
- * `<dialog>` `::backdrop`, styled directly in cc-navbar.css, no longer a
+ * `<dialog>` `::backdrop`, styled directly in dropdown-modal.css, no longer a
  * `.fade`-toggled element of its own.
  *
  */

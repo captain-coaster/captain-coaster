@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
 
 {% set title = 'notif.title'|trans({}, 'notification') %}
+{% set parentUrl = path('profile') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}

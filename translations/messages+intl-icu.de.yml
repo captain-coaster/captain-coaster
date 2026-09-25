@@ -13,9 +13,8 @@ app:
     skip_to_content: 'Zum Inhalt springen'
     title:
         default: 'Willkommen!'
-    header:
-        search: '100% Wolf, Freizeitpark Plohn...'
     search:
+        placeholder: "Achterbahn, Park, Fahrer"
         suggestions: 'Suchvorschläge'
         label: 'Achterbahnen und Parks suchen'
         clear: 'Suche löschen'
@@ -176,6 +175,7 @@ filters:
     openingDate: Eröffnungsdatum
     name: Name
     clear: Filter löschen
+    show_results: Ergebnisse anzeigen
     sortByDistance: Nach Entfernung sortieren
 
     sorts:
@@ -190,10 +190,8 @@ filters:
 
 user_profile:
     title: 'Profil • {name}'
-    ratings: Zeige dessen Bewertungen
     reviews: Zeige dessen Rezensionen
     main_top: Zeige dessen Top Achterbahnen
-    tops: Zeige dessen Tops
     map: Zeige dessen Achterbahn-Landkarte
     pictures: Zeige dessen Bilder
 
@@ -363,33 +361,36 @@ rating:
     save_network_error: Netzwerkfehler. Bewertung wurde nicht gespeichert.
     save_error: Bewertung konnte nicht gespeichert werden. Bitte versuche es erneut.
 
-navbar:
-    settings: Einstellungen
-    rating: Meine Bewertungen
-    login: Anmelden
-    logout: Abmelden
-    tops: Meine Tops
-    my_map: Meine Karte
-    language: Sprache
-    units: Einheiten
-
-sidebar:
-    index: Home
-    search: Achterbahnen suchen
-    ranking: Weltrangliste der Achterbahnen
-    users: Unsere Fahrer
-    map: Achterbahn Landkarte
-    top: Tops
-    review: Neueste Rezensionen
-    blog: Blog
-    contact: Kontaktiere uns
-    logout: Abmelden
-    login: Anmelden
-    toggle: Menü umschalten
-    toggle_filters: Filter umschalten
-
-footer:
-    terms: Datenschutzrichtlinie
+nav:
+    search_entries: "Verknüpfungen"
+    back: "Zurück"
+    community: "Community"
+    about: "Über uns"
+    privacy: "Datenschutz"
+    guest:
+        title: "Halte jede Fahrt fest"
+    label: "Hauptnavigation"
+    home: "Start"
+    ranking: "Rangliste"
+    search: "Suche"
+    map: "Karte"
+    profile: "Profil"
+    filters: "Filter"
+    cancel: "Abbrechen"
+    advanced_search: "Erweiterte Suche"
+    recent: "Letzte Suchen"
+    clear_recent: "Löschen"
+    sign_in: "Anmelden"
+    sign_out: "Abmelden"
+    settings: "Einstellungen"
+    language: "Sprache"
+    units: "Einheiten"
+    reviews: "Rezensionen"
+    riders: "Fahrer"
+    all_tops: "Tops"
+    blog: "Blog"
+    contact: "Kontakt"
+    join_reason: "Melde dich an, um deine gefahrenen Achterbahnen zu bewerten, deine Tops zu erstellen und die Weltrangliste mitzubestimmen."
 
 login:
     title: Anmelden bei Captain Coaster

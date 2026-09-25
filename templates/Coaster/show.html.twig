@@ -4,6 +4,8 @@
 
 {% set title = coaster.name %}
 {% set subTitle = coaster.park.name %}
+{% set parentUrl = path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) %}
+{% set subTitleUrl = parentUrl %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 {% if coaster.formerNames %}
     {% set secondaryTitle = coaster.formerNames|join(', ') %}

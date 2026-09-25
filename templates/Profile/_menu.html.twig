@@ -1,9 +1,8 @@
-{% import "helper.html.twig" as helper %}
 
 <div class="cc-panel">
     <div class="cc-panel__body text-center">
     <div class="display-inline-block">
-        {{ helper.profilePicture(user) }}
+        <twig:Avatar :user="user" decorative/>
     </div>
     <h6 class="text-semibold mb-0">
         {{ user.displayName }}
@@ -42,6 +41,16 @@
     <a href="{{ path('map_user', {'id': user.id}) }}" class="cc-list-group__item">
         {{ ux_icon('heroicons:map-pin', {'class': 'w-4 h-4'}) }}
         {{ 'profile.menu.map'|trans }}
+    </a>
+    {% set unread = unread_notification_count() %}
+    <a href="{{ path('notification_index') }}" class="cc-list-group__item">
+        {{ ux_icon('heroicons:bell', {'class': 'w-4 h-4'}) }}
+        {{ 'notif.title'|trans({}, 'notification') }}
+        {% if unread > 0 %}<span class="cc-badge bg-cc-teal-400 pull-right">{{ unread }}</span>{% endif %}
+    </a>
+    <a href="{{ path('logout') }}" class="cc-list-group__item">
+        {{ ux_icon('heroicons:arrow-right-start-on-rectangle', {'class': 'w-4 h-4'}) }}
+        {{ 'nav.sign_out'|trans }}
     </a>
     </div>
 </div>

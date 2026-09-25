@@ -48,7 +48,7 @@
                          data-id="{{ result.id }}" 
                          data-slug="{{ result.slug }}">
                         
-                        <div class="search-result-emoji">{{ result.emoji }}</div>
+                        <div class="search-result-emoji"><twig:SearchTypeIcon type="{{ result.entity_type }}"/></div>
                         
                         <div class="search-result-content">
                             <div class="search-result-name">{{ result.name }}</div>

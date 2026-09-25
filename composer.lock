@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3f3ff37a157f072c1e29229fae71086",
+    "content-hash": "484c4382189088fec9ab15bd8edaceb1",
     "packages": [
         {
             "name": "api-platform/core",
@@ -3969,6 +3969,57 @@
                 "source": "https://github.com/php-fig/log/tree/3.0.2"
             },
             "time": "2024-09-11T13:17:53+00:00"
+        },
+        {
+            "name": "psr/simple-cache",
+            "version": "3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/simple-cache.git",
+                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "reference": "764e0b3939f5ca87cb904f570ef9be2d78a07865",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\SimpleCache\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for simple caching",
+            "keywords": [
+                "cache",
+                "caching",
+                "psr",
+                "psr-16",
+                "simple-cache"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/simple-cache/tree/3.0.0"
+            },
+            "time": "2021-10-29T13:26:27+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -10711,6 +10762,120 @@
             "time": "2026-06-08T20:24:16+00:00"
         },
         {
+            "name": "tales-from-a-dev/tailwind-merge-php",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tales-from-a-dev/tailwind-merge-php.git",
+                "reference": "d20c0f87dd70207170903e4af5e8ee6a26cc8a7c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tales-from-a-dev/tailwind-merge-php/zipball/d20c0f87dd70207170903e4af5e8ee6a26cc8a7c",
+                "reference": "d20c0f87dd70207170903e4af5e8ee6a26cc8a7c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "psr/simple-cache": "^1.0 || ^2.0 || ^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.89",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^10.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "TalesFromADev\\TailwindMerge\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sandro Gehri",
+                    "email": "sandrogehri@gmail.com"
+                },
+                {
+                    "name": "Romain Monteil",
+                    "email": "monteil.romain@gmail.com"
+                }
+            ],
+            "description": "TailwindMerge for PHP merges multiple Tailwind CSS classes by automatically resolving conflicts between them",
+            "homepage": "https://github.com/tales-from-a-dev/tailwind-merge-php",
+            "keywords": [
+                "classes",
+                "merge",
+                "php",
+                "tailwindcss"
+            ],
+            "support": {
+                "issues": "https://github.com/tales-from-a-dev/tailwind-merge-php/issues",
+                "source": "https://github.com/tales-from-a-dev/tailwind-merge-php/tree/v0.4.0"
+            },
+            "time": "2026-08-14T11:26:04+00:00"
+        },
+        {
+            "name": "tales-from-a-dev/twig-tailwind-extra",
+            "version": "v1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tales-from-a-dev/twig-tailwind-extra.git",
+                "reference": "d58641a646aad46a899886d9b1fc4deac52efb32"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tales-from-a-dev/twig-tailwind-extra/zipball/d58641a646aad46a899886d9b1fc4deac52efb32",
+                "reference": "d58641a646aad46a899886d9b1fc4deac52efb32",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/cache": "^6.4 || ^7.0 || ^8.0",
+                "symfony/framework-bundle": "^6.4 || ^7.0 || ^8.0",
+                "tales-from-a-dev/tailwind-merge-php": "^0.4",
+                "twig/html-extra": "^3.24",
+                "twig/twig": "^3.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.38",
+                "symfony/phpunit-bridge": "^6.4 || ^7.0 || ^8.0",
+                "symfony/yaml": "^6.4 || ^7.0 || ^8.0"
+            },
+            "type": "twig",
+            "autoload": {
+                "psr-4": {
+                    "TalesFromADev\\Twig\\Extra\\Tailwind\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Monteil",
+                    "email": "monteil.romain@gmail.com"
+                }
+            ],
+            "description": "A Twig extension for Tailwind",
+            "homepage": "https://github.com/tales-from-a-dev/twig-tailwind-extra",
+            "keywords": [
+                "extension",
+                "symfony",
+                "tailwind",
+                "twig"
+            ],
+            "support": {
+                "issues": "https://github.com/tales-from-a-dev/twig-tailwind-extra/issues",
+                "source": "https://github.com/tales-from-a-dev/twig-tailwind-extra/tree/v1.4.0"
+            },
+            "time": "2026-08-14T11:51:37+00:00"
+        },
+        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "v2.4.0",
             "source": {
@@ -10910,16 +11075,16 @@
         },
         {
             "name": "twig/html-extra",
-            "version": "v3.28.0",
+            "version": "v3.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/html-extra.git",
-                "reference": "760893ed7bdd0a381e4e00004c6f6e26ad3881d7"
+                "reference": "7147611979df81edb78baf7d003860b72e335c3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/html-extra/zipball/760893ed7bdd0a381e4e00004c6f6e26ad3881d7",
-                "reference": "760893ed7bdd0a381e4e00004c6f6e26ad3881d7",
+                "url": "https://api.github.com/repos/twigphp/html-extra/zipball/7147611979df81edb78baf7d003860b72e335c3f",
+                "reference": "7147611979df81edb78baf7d003860b72e335c3f",
                 "shasum": ""
             },
             "require": {
@@ -10962,7 +11127,7 @@
                 "twig"
             ],
             "support": {
-                "source": "https://github.com/twigphp/html-extra/tree/v3.28.0"
+                "source": "https://github.com/twigphp/html-extra/tree/v3.29.0"
             },
             "funding": [
                 {
@@ -10974,7 +11139,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-25T06:50:01+00:00"
+            "time": "2026-09-06T20:35:36+00:00"
         },
         {
             "name": "twig/inky-extra",

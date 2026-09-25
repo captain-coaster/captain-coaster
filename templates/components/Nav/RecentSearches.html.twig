@@ -1,0 +1,19 @@
+{# Last picked search results, on this device only (recent_searches_controller.js). Hidden while empty. #}
+<section hidden
+         data-controller="recent-searches"
+         data-action="recent-searches:refresh@window->recent-searches#render"
+         {{ attributes.defaults({class: 'grid gap-1'}) }}>
+  <div class="flex items-center justify-between gap-4 px-2">
+    <h2 class="m-0 font-sans text-caption font-semibold text-muted">{{ 'nav.recent'|trans }}</h2>
+    <button type="button" class="h-11 rounded-control px-2 text-caption font-semibold text-action hover:bg-subtle" data-action="recent-searches#clear">{{ 'nav.clear_recent'|trans }}</button>
+  </div>
+  <ul class="m-0 grid list-none gap-0.5 p-0" data-recent-searches-target="list"></ul>
+  <template data-recent-searches-target="item">
+    <li>
+      <a class="flex min-h-12 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle">
+        <span class="grid size-6 shrink-0 place-items-center" aria-hidden="true"></span>
+        <span class="min-w-0 flex-1 truncate"></span>
+      </a>
+    </li>
+  </template>
+</section>

@@ -45,4 +45,9 @@
           <!-- /badges -->
     </div>
   </div>
+  {# Below lg the footer carries no preferences: same Settings section as the signed-out Profile page. #}
+  <section class="mt-10 grid gap-3 lg:hidden">
+    <h2 class="m-0 font-sans text-lead font-semibold">{{ 'nav.settings'|trans }}</h2>
+    <twig:Nav:Preferences variant="rows"/>
+  </section>
 {% endblock %}

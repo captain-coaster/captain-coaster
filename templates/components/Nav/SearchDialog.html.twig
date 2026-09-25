@@ -1,0 +1,24 @@
+{# Full-screen mobile search, opened by the Search tab (search_dialog_controller.js). Typing covers the empty state with full-width result rows. #}
+<dialog id="search-dialog"
+        aria-label="{{ 'nav.search'|trans }}"
+        data-search-dialog-target="dialog"
+        data-action="close->search-dialog#closed"
+        {{ attributes.defaults({class: 'm-0 h-dvh max-h-none w-full max-w-none bg-surface p-0 text-body text-ink opacity-0 transition-[opacity,display,overlay] transition-discrete duration-180 ease-out open:opacity-100 starting:open:opacity-0 motion-reduce:transition-none backdrop:bg-surface'}) }}>
+  <div class="flex items-center gap-2 border-b border-line px-4 pt-[calc(var(--spacing)*2+env(safe-area-inset-top))] pb-2">
+    <twig:Nav:SearchField id="search-dialog-input" inline class="flex-1"/>
+    <form method="dialog" class="shrink-0">
+      <button class="h-11 rounded-control px-2 font-semibold text-action hover:bg-subtle">{{ 'nav.cancel'|trans }}</button>
+    </form>
+  </div>
+
+  <div class="grid gap-6 px-4 py-5">
+    <twig:Nav:RecentSearches/>
+
+    {% set entry = 'flex min-h-14 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle' %}
+    <nav aria-label="{{ 'nav.search_entries'|trans }}">
+      <ul class="m-0 grid list-none gap-0.5 p-0">
+        <li><a href="{{ path('coaster_search_index') }}" class="{{ entry }}">{{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-6 text-muted', 'aria-hidden': 'true'}) }}<span class="flex-1">{{ 'nav.advanced_search'|trans }}</span>{{ ux_icon('heroicons:chevron-right', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}</a></li>
+      </ul>
+    </nav>
+  </div>
+</dialog>

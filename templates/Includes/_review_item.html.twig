@@ -15,7 +15,7 @@
      data-review-actions-desktop-length-value="600">
   <div class="cc-media__start">
     <a href="{{ path('user_show', {'slug': review.user.slug}) }}">
-      {{ helper.profilePicture(review.user, 'img-circle img-sm') }}
+      <twig:Avatar :user="review.user" size="sm"/>
     </a>
   </div>
 

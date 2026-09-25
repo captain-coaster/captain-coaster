@@ -13,53 +13,6 @@
     display: block;
 }
 
-/* Search Input Container */
-.search-input-container {
-    position: relative;
-}
-
-.search-input-container .cc-field__feedback {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-}
-
-/* Clear button */
-.search-clear-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    pointer-events: auto;
-    display: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    transition: background-color 0.2s ease;
-}
-
-.search-clear-button:hover {
-    background-color: color-mix(in oklch, var(--fg) 10%, transparent);
-}
-
-/* Toggle between search icon and clear button */
-.search-input-container.has-content .search-icon {
-    display: none;
-}
-
-.search-input-container.has-content .search-clear-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 /* Search Input */
 .search-container input[type='search'] {
     width: 100%;
@@ -75,10 +28,6 @@
     border-color: var(--cc-primary);
     box-shadow: 0 0 0 2px color-mix(in oklch, var(--action) 25%, transparent);
     outline: none;
-}
-
-.search-container .cc-field__feedback {
-    pointer-events: none;
 }
 
 /* Search Dropdown */
@@ -463,4 +412,64 @@
 .search-result-item-page:focus {
     outline: 2px solid var(--cc-primary);
     outline-offset: -2px;
+}
+
+/*
+ * Nav search (Nav:SearchField, desktop panel and mobile dialog): rows share
+ * the dialog's geometry (56px, 24px marker gutter, text aligned with the
+ * recent and shortcut rows) and token states. Scoped to the nav's `search`
+ * controller; the Top editor's search keeps the rules above.
+ */
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-item {
+    gap: 0.75rem;
+    min-height: 3.5rem;
+    padding: 0 0.5rem;
+    border: 0;
+    border-radius: var(--radius-control);
+}
+
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-item:hover {
+    background-color: var(--subtle);
+}
+
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-item.selected {
+    background-color: var(--selected);
+    border: 0;
+}
+
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-icon {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 1.5rem;
+    color: var(--muted);
+}
+
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-name {
+    font-size: var(--text-body);
+    font-weight: 600;
+    color: var(--fg);
+}
+
+[data-controller~='search'] [data-search-target='dropdown'] .search-result-subtitle {
+    color: var(--muted);
+}
+
+/* Matched text: weight, not a chip (a chip padding splits words). */
+[data-controller~='search'] [data-search-target='dropdown'] :is(.search-result-name, .search-result-subtitle) strong {
+    padding: 0;
+    background: none;
+    color: inherit;
+    font-weight: 700;
+}
+
+[data-controller~='search'] [data-search-target='dropdown'] .search-show-more {
+    min-height: 3rem;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    border-top: 1px solid var(--border);
+    background: none;
+    color: var(--action);
+    font-weight: 600;
 }

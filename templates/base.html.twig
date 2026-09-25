@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}" data-symfony-ux-translator-locale="{{ app.request.locale }}">
+<html lang="{{ app.request.get('_locale') }}" class="has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
   <meta name="application-name" content="{{ 'app.name'|trans }}">
   <meta name="msapplication-TileColor" content="#28343a">
-  <meta name="theme-color" content="#28343a">
+  <meta name="theme-color" content="#ffffff">
   <link rel="manifest" href="{{ asset('manifest.json') }}">
   {% block header %}{% endblock %}
   {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
@@ -27,30 +27,37 @@
   {% endif %}
   {% block stylesheets %}{% endblock %}
 </head>
-<body class="cc-navbar--top {% if openedSidebar is not defined %}sidebar-xs{% endif %}" data-controller="sidebar">
+{# Active nav section, shared by Nav:Header and Nav:TabBar. #}
+{% set nav_route = app.request.attributes.get('_route')|default('') %}
+{% set nav_section =
+  nav_route == 'default_index' ? 'home' :
+  (nav_route starts with 'ranking' ? 'ranking' :
+  (nav_route in ['search_index', 'coaster_search_index'] ? 'search' :
+  (nav_route == 'map_index' ? 'map' :
+  (nav_route starts with 'profile' or nav_route starts with 'notification' or nav_route in ['login', 'app_register'] ? 'profile' : null))))
+%}
+{# Below lg, room for the floating tab bar (h-16 + 3 spacing + safe area) plus air. #}
+<body class="max-lg:pb-[calc(var(--spacing)*24+env(safe-area-inset-bottom))]" data-controller="filter-sheet search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
-<!-- main cc-navbar -->
-{{ include('navbar.html.twig') }}
-<!-- /main cc-navbar -->
+<twig:Nav:Header :section="nav_section"/>
 <!-- page container -->
 <div class="page-container">
   <!-- page content -->
   <div class="page-content">
-    <!-- main sidebar -->
-    {{ include('sidebar.html.twig') }}
-    <!-- /main sidebar -->
-    <!-- main sidebar -->
     {% block secondary_sidebar %}{% endblock %}
-    <!-- /main sidebar -->
     <!-- main content -->
     <div class="content-wrapper">
       {% block wide_body %}
-        <!-- page header -->
-        {{ include(
-          'page_header.html.twig',
-          {'title': title|default('app.title.default'|trans), 'subTitle': subTitle|default(null), 'secondaryTitle': secondaryTitle|default(null)}
-        ) }}
-        <!-- /page header -->
+        {# Pages set title/subTitle(+Url)/secondaryTitle, parentUrl (detail pages: back button) and pageActions (captured HTML). #}
+        <twig:Page:Header
+          title="{{ title|default('app.title.default'|trans) }}"
+          :subtitle="subTitle|default(null)"
+          :subtitleUrl="subTitleUrl|default(null)"
+          :secondary="secondaryTitle|default(null)"
+          :parent="parentUrl|default(null)"
+          :actions="pageActions|default(null)"
+          :hideTitle="hideTitle|default(false)"
+          :narrow="narrowHeader|default(false)"/>
         <!-- Content area -->
         <main id="content" tabindex="-1" class="content mx-auto outline-none flow-root w-full max-w-content px-gutter">
           {{ include('flashes.html.twig') }}
@@ -59,7 +66,7 @@
           {% block body %}{% endblock %}
         </main>
         <!-- /content area -->
-        {{ include('footer.html.twig') }}
+        <twig:Nav:Footer/>
       {% endblock %}
     </div>
     <!-- /main content -->
@@ -67,6 +74,9 @@
   <!-- /page content -->
 </div>
 <!-- /page container -->
+<twig:Nav:TabBar :section="nav_section"/>
+<twig:Nav:SearchDialog/>
+<twig:Nav:SearchTypeIcons/>
 
 <!-- Core JS files -->
 {{ reprise_entry_script_tags('app') }}

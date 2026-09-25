@@ -13,9 +13,8 @@ app:
     skip_to_content: 'Skip to content'
     title:
         default: 'Welcome!'
-    header:
-        search: 'Fast & Furious, Six Flags Over Texas...'
     search:
+        placeholder: "Coaster, park or rider"
         suggestions: 'Search suggestions'
         label: 'Search coasters and parks'
         clear: 'Clear search'
@@ -171,6 +170,7 @@ filters:
     openingDate: 'Opening date'
     name: 'Name'
     clear: 'Clear filters'
+    show_results: 'Show results'
     sortByDistance: 'Sort by distance'
 
     sorts:
@@ -185,10 +185,8 @@ filters:
 
 user_profile:
     title: 'Profile • {name}'
-    ratings: 'Show their ratings'
     reviews: 'Show their reviews'
     main_top: 'Show their Top Coasters'
-    tops: 'Show their other tops'
     map: 'Show their coaster map'
     pictures: 'Show their pictures'
 
@@ -357,33 +355,36 @@ rating:
     save_network_error: 'Network error. Rating not saved.'
     save_error: 'Unable to save rating. Please try again.'
 
-navbar:
-    settings: 'Settings'
-    rating: 'My ratings'
-    login: 'Sign in'
-    logout: 'Logout'
-    tops: 'My tops'
-    my_map: 'My map'
-    language: 'Language'
-    units: 'Units'
-
-sidebar:
-    index: 'Home'
-    search: 'Search Coasters'
-    ranking: 'World Roller Coaster Rankings'
-    users: 'Our riders'
-    map: 'Coasters map'
-    top: 'Tops'
-    review: 'Latest Reviews'
-    blog: 'Blog'
-    contact: 'Get in touch'
-    logout: 'Logout'
-    login: 'Sign in'
-    toggle: 'Toggle menu'
-    toggle_filters: 'Toggle filters'
-
-footer:
-    terms: 'Privacy Policy'
+nav:
+    search_entries: "Shortcuts"
+    back: "Back"
+    community: "Community"
+    about: "About"
+    privacy: "Privacy"
+    guest:
+        title: "Keep track of every ride"
+    label: "Main navigation"
+    home: "Home"
+    ranking: "Ranking"
+    search: "Search"
+    map: "Map"
+    profile: "Profile"
+    filters: "Filters"
+    cancel: "Cancel"
+    advanced_search: "Advanced search"
+    recent: "Recent searches"
+    clear_recent: "Clear"
+    sign_in: "Sign in"
+    sign_out: "Log out"
+    settings: "Settings"
+    language: "Language"
+    units: "Units"
+    reviews: "Reviews"
+    riders: "Riders"
+    all_tops: "Tops"
+    blog: "Blog"
+    contact: "Contact"
+    join_reason: "Sign in to rate the coasters you've ridden, build your Tops and weigh in on the world ranking."
 
 login:
     title: 'Sign in to Captain Coaster'

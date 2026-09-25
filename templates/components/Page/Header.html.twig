@@ -1,0 +1,58 @@
+{#
+  Page title, on the canvas: back button, title and the page's actions on one row.
+  Below lg a compact bar with the same three fades in at the top once that row
+  scrolls away (page_header_controller.js); it takes no room until then.
+  Props:
+    title, subtitle, secondary  h1, a context line under it (park, author, country), a muted line (former names)
+    subtitleUrl  makes the context line a link (coaster → park, Top → author)
+    parent       detail pages only: shows the back button, and is its target when not arriving from another site page (back_controller.js)
+    actions      rendered HTML for the page's actions (Twig var `pageActions`)
+    hideTitle    keeps the h1 for assistive tech only (Home); from lg the header still spaces the content from the top bar
+    narrow       aligns the title with a max-w-md body column (sign-in forms)
+#}
+{% props title, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, hideTitle = false, narrow = false %}
+{% set round = 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface' %}
+{% set back %}
+  <a href="{{ parent }}" class="{{ round }}"
+     data-controller="back" data-action="back#go"
+     aria-label="{{ 'nav.back'|trans }}">
+    {{ ux_icon('heroicons:arrow-left', {class: 'size-5', 'aria-hidden': 'true'}) }}
+  </a>
+{% endset %}
+<div data-controller="page-header" {{ attributes.defaults({class: "contents"}) }}>
+  {% if not hideTitle %}
+    <div data-page-header-target="bar"
+         class="invisible fixed inset-x-0 top-0 z-30 box-content flex h-14 items-center gap-3 bg-surface/80 px-3 pt-[env(safe-area-inset-top)] opacity-0 shadow-[0_1px_0_var(--color-line)] backdrop-blur-xl transition-[opacity,visibility] duration-180 ease-out data-scrolled:visible data-scrolled:opacity-100 motion-reduce:transition-none lg:hidden">
+      {% if parent %}{{ back }}{% endif %}
+      <p class="m-0 min-w-0 flex-1 truncate font-semibold {{ parent ? '' : 'ps-2' }}" aria-hidden="true">{{ title }}</p>
+      {% if actions %}
+        <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <header data-page-header-target="row"
+          class="mx-auto flex {{ narrow ? 'max-w-[calc(var(--container-md)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] lg:items-end lg:gap-4 lg:pt-10 {{ hideTitle ? 'max-lg:sr-only' : 'pb-6 lg:pb-8' }}">
+    {% if parent %}
+      <div class="shrink-0 lg:hidden">{{ back }}</div>
+    {% endif %}
+    <div class="min-w-0 flex-1 max-lg:pt-1 {{ hideTitle ? 'lg:sr-only' }}">
+      <h1 class="m-0 text-balance">{{ title }}</h1>
+      {% if subtitle %}
+        <p class="m-0 mt-1 text-lead font-semibold text-muted-strong">
+          {%- if subtitleUrl -%}
+            <a href="{{ subtitleUrl }}" class="text-inherit underline-offset-4 hover:text-action hover:underline">{{ subtitle }}</a>
+          {%- else -%}
+            {{ subtitle }}
+          {%- endif -%}
+        </p>
+      {% endif %}
+      {% if secondary %}
+        <p class="m-0 mt-1 text-caption text-muted">{{ secondary }}</p>
+      {% endif %}
+    </div>
+    {% if actions %}
+      <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>
+    {% endif %}
+  </header>
+</div>

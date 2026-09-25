@@ -1,0 +1,54 @@
+{#
+  Language and units. Language is a native select (navigate_controller.js
+  follows the chosen URL); units a two-option toggle of links. Both reload
+  the current page with setLocale / setUnits.
+  Props:
+    variant  rows: settings rows on the Profile page | stack: labelled controls (footer)
+#}
+{% props variant = 'stack' %}
+{# Error pages are rendered from a sub-request with _route/_route_params stripped, so both need a fallback. #}
+{% set route = app.request.attributes.get('_route')|default('default_index') %}
+{% set params = (app.request.attributes.get('_route_params')|default({})|merge(app.request.query.all))|filter((value, key) => key not in ['setLocale', 'setUnits']) %}
+{% set imperial = units.isImperial() %}
+{% set uid = random() %}
+{% set rows = variant == 'rows' %}
+{% set field = rows ? 'flex min-h-14 items-center justify-between gap-4 px-4' : 'grid gap-1.5' %}
+{% set label = rows ? 'text-ink' : 'text-caption font-semibold text-muted' %}
+{% set option = 'inline-flex h-11 items-center rounded-pill px-3 text-caption font-semibold text-muted-strong hover:text-ink aria-[current=true]:bg-surface aria-[current=true]:text-ink aria-[current=true]:shadow-raised' %}
+<div {{ attributes.defaults({class: rows ? 'grid divide-y divide-subtle overflow-hidden rounded-card bg-surface' : 'grid content-start gap-5'}) }}>
+  {# The native select sits invisibly over its visible value, so the platform picker opens on tap. #}
+  {% set select %}
+    <select id="pref-language-{{ uid }}"
+            data-controller="navigate" data-action="navigate#go"
+            class="absolute inset-0 size-full cursor-pointer appearance-none opacity-0">
+      {% for locale in locales %}
+        <option value="{{ path(route, params|merge({_locale: locale, setLocale: 1})) }}" lang="{{ locale }}" {% if locale == app.request.locale %}selected{% endif %}>{{ locale|trans }}</option>
+      {% endfor %}
+    </select>
+  {% endset %}
+  {% if rows %}
+    <div class="relative flex min-h-14 items-center gap-4 px-4 hover:bg-subtle has-[select:focus-visible]:outline-3 has-[select:focus-visible]:-outline-offset-3 has-[select:focus-visible]:outline-focus">
+      <label for="pref-language-{{ uid }}" class="flex-1 text-ink">{{ 'nav.language'|trans }}</label>
+      <span class="text-muted-strong">{{ app.request.locale|trans }}</span>
+      {{ ux_icon('heroicons:chevron-up-down', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
+      {{ select }}
+    </div>
+  {% else %}
+    <div class="grid gap-1.5">
+      <label for="pref-language-{{ uid }}" class="{{ label }}">{{ 'nav.language'|trans }}</label>
+      <div class="relative inline-flex h-11 items-center gap-2 justify-self-start rounded-pill bg-subtle pr-3 pl-3.5 font-semibold text-ink hover:bg-selected has-[select:focus-visible]:outline-3 has-[select:focus-visible]:outline-offset-3 has-[select:focus-visible]:outline-focus">
+        {{ ux_icon('heroicons:language', {class: 'size-5 text-muted-strong', 'aria-hidden': 'true'}) }}
+        <span>{{ app.request.locale|trans }}</span>
+        {{ ux_icon('heroicons:chevron-down', {class: 'size-4 text-muted', 'aria-hidden': 'true'}) }}
+        {{ select }}
+      </div>
+    </div>
+  {% endif %}
+  <div class="{{ field }}">
+    <p class="m-0 {{ label }}" id="pref-units-{{ uid }}">{{ 'nav.units'|trans }}</p>
+    <ul class="m-0 flex list-none gap-1 justify-self-start rounded-pill bg-subtle p-1" aria-labelledby="pref-units-{{ uid }}">
+      <li><a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}" aria-label="{{ 'profile.settings.preferences.units.metric'|trans }}">km/h · m</a></li>
+      <li><a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}" aria-label="{{ 'profile.settings.preferences.units.imperial'|trans }}">mph · ft</a></li>
+    </ul>
+  </div>
+</div>

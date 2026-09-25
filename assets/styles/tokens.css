@@ -32,6 +32,9 @@
 
     --text-caption: .875rem;
     --text-caption--line-height: 1.5;
+    /* Compact UI labels (tab bar): the largest size that keeps the longest translation on one line at 360px. */
+    --text-label: .75rem;
+    --text-label--line-height: 1.25;
     --text-body: 1rem;
     --text-body--line-height: 1.5;
     --text-lead: 1.25rem;
@@ -127,12 +130,23 @@
     --subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
     --muted-strong: var(--slate-600); /* secondary text that needs more weight */
 
-    /* Dark chrome (navbar, sidebar): the logo's dark stage. On it, states
+    /* Dark chrome (photo gallery viewer): the logo's dark stage. On it, states
      * lighten -- ink overlays are invisible on a near-ink surface. */
     --chrome: var(--logo-ink);
     --on-chrome: var(--white);
     --chrome-hover: color-mix(in oklch, var(--on-chrome) 10%, transparent);
     --chrome-active: color-mix(in oklch, var(--on-chrome) 15%, transparent);
+
+    /* Avatar placeholders: white initials at >= 4.5:1 on each. Slot picked
+     * by AvatarPlaceholder::slot(), rendered by <twig:Avatar>. */
+    --avatar-1: var(--blue-700);
+    --avatar-2: var(--green-700);
+    --avatar-3: var(--coral-600);
+    --avatar-4: var(--blue-500);
+    --avatar-5: var(--amber-800);
+    --avatar-6: var(--slate-600);
+    --avatar-7: var(--blue-800);
+    --avatar-8: var(--logo-ink);
 
     /* Rating stars: sunshine fill + amber edge (the edge carries >= 3:1 on
      * white; sunshine alone is 1.5:1). Empty stars of the rating input use

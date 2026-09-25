@@ -23,15 +23,16 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ProfileController extends BaseController
 {
-    /** Show my profile. */
+    /** Show my profile; signed out, the Profile tab's account page (sign-in, language, units). */
     #[Route(path: '/profile', name: 'profile', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
     public function index(
         StatService $statService,
         ImageRepository $imageRepository,
     ): Response {
-        /** @var User $user */
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            return $this->render('Profile/guest.html.twig');
+        }
 
         return $this->render('Profile/index.html.twig', [
             'user' => $user,

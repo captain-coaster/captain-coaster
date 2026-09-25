@@ -6,7 +6,7 @@
             <div class="cc-panel__body{% if border %} cc-panel{% endif %}">
                 <div class="cc-media">
                     <div class="cc-media__start">
-                        {{ helper.profilePicture(user.0) }}
+                        <twig:Avatar :user="user.0" decorative/>
                     </div>
                     <div class="cc-media__body">
                         <h6 class="cc-media__heading">

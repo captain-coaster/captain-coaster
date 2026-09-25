@@ -1,6 +1,5 @@
 {% extends "base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
 
 {% set title = 'user_profile.title'|trans({'%name%': user.displayName}) %}
 {% block title %}{{ title }}{% endblock %}
@@ -12,7 +11,7 @@
       <div class="cc-panel">
           <div class="cc-panel__body text-center">
             <div class="display-inline-block">
-              {{ helper.profilePicture(user, 'img-circle img-lg') }}
+              <twig:Avatar :user="user" decorative/>
             </div>
 
             <h6 class="text-semibold mb-0">

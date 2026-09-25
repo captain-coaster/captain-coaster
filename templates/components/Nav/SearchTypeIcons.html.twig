@@ -1,0 +1,6 @@
+{# Type markers for rows built in JS (search_controller.js, recent_searches_controller.js via js/search-type-icons.js). #}
+<template id="search-type-icons">
+  {% for type in ['coaster', 'park', 'user'] %}
+    <span data-type="{{ type }}"><twig:SearchTypeIcon type="{{ type }}"/></span>
+  {% endfor %}
+</template>

@@ -26,14 +26,10 @@
  * sub-rule — neither `.cc-label` nor `.cc-badge` is ever an anchor, inside a
  * `.cc-button`, or a cc-menu toggle anywhere in this app.
  *
- * Cross-file coupling is heavy (cc-navbar, dropdowns, sidebar, cc-list-group,
+ * Cross-file coupling is heavy (dropdowns, cc-list-group,
  * nav-pills/nav-tabs, panels, type.less's h1-h6 rule, heading-elements,
  * component-animation) — checked every real combination against actual
  * markup instead of the files in the abstract:
- *   - `theme/bootstrap-limitless/cc-navbar.less`'s `.cc-navbar--inverse .cc-navbar__nav
- *     .cc-badge` (mobile) is live: the notification-count badge in
- *     cc-navbar.html.twig's account cc-menu is a `.cc-navbar__nav` descendant on
- *     a `.cc-navbar--inverse` cc-navbar. Untouched file, keeps applying.
  *   - `theme/bootstrap-limitless/type.less`'s `h1–h6 > .cc-label/.cc-badge` rule
  *     is live: every cc-panel__heading/count badge in this app
  *     (Notification/index, ranking/info, Default/index, Coaster/show,
