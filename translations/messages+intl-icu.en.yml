@@ -170,6 +170,7 @@ filters:
     openingDate: 'Opening date'
     name: 'Name'
     clear: 'Clear filters'
+    show_results: 'Show results'
     sortByDistance: 'Sort by distance'
 
     sorts:

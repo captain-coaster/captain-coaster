@@ -1,3 +1,15 @@
+{# Below md a bottom sheet opened by <twig:FilterToggle> (filter_sheet_controller.js); from md the dialog box
+   is dropped (display: contents) and the panel is the sticky side column. Filters apply on change, so the sheet's
+   footer button only closes it. #}
+<dialog id="filter-sheet"
+        aria-labelledby="filter-sheet-title"
+        data-filter-sheet-target="dialog"
+        data-action="click->filter-sheet#backdropClose"
+        class="m-0 mt-auto max-h-[85dvh] w-full max-w-none translate-y-full flex-col max-md:flex overflow-hidden rounded-t-card bg-surface p-0 text-ink shadow-overlay transition-[translate,display,overlay] transition-discrete duration-250 ease-out max-md:not-open:hidden open:translate-y-0 starting:open:translate-y-full motion-reduce:transition-none backdrop:bg-ink/40 md:contents">
+  <div class="flex shrink-0 items-center border-b border-line px-5 py-4 md:hidden">
+    <h2 id="filter-sheet-title" tabindex="-1" autofocus class="m-0 text-lead outline-none">{{ 'filters.title'|trans }}</h2>
+  </div>
+  <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain md:contents">
 <div class="sidebar sidebar-secondary sidebar-default"
      {% if filterConfig is defined %}
        data-controller="filter"
@@ -13,7 +25,7 @@
         <form id="form-filter" action="#">
             <div class="sidebar-category">
 
-                <div class="category-title">
+                <div class="category-title max-md:hidden">
                     <span>{{ 'filters.title'|trans }}</span>
                 </div>
 
@@ -214,3 +226,8 @@
         </form>
     </div>
 </div>
+  </div>
+  <form method="dialog" class="shrink-0 border-t border-line px-5 pt-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))] md:hidden">
+    <button class="h-12 w-full rounded-control bg-action font-semibold text-on-action hover:bg-action-hover">{{ 'filters.show_results'|trans }}</button>
+  </form>
+</dialog>

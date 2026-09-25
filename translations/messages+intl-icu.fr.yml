@@ -175,6 +175,7 @@ filters:
     openingDate: "Date d'ouverture"
     name: Nom
     clear: Effacer les filtres
+    show_results: Voir les résultats
     sortByDistance: Trier par distance
 
     sorts:

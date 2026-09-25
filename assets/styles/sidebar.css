@@ -1,9 +1,8 @@
 /*
  * Filter panel (Includes/filter_sidebar.html.twig on Ranking, Search and
- * Map): a 260px light column from md up; below md it's hidden until the
- * page's filters button toggles `.sidebar-mobile-secondary` on <body>
- * (sidebar_controller.js). The main navigation sidebar is gone (#416); this
- * file goes too when the filter panel gets its own redesign.
+ * Map): a 260px light column from md up; below md it sits in a bottom sheet
+ * (filter_sheet_controller.js). This file goes when the filter panel gets
+ * its own redesign (#435).
  *
  * `.sidebar-category .checkbox{margin-top:0}`: the filter toggle rows are
  * `.checkbox` divs (8px vertical margin from forms.css) sitting directly in
@@ -12,12 +11,10 @@
 .sidebar {
     position: relative;
     width: 100%;
-    display: none;
 }
 
 @media (min-width: theme(--breakpoint-md)) {
     .sidebar {
-        display: block;
         flex: 0 0 260px;
     }
 }
@@ -45,30 +42,13 @@
     }
 }
 
-/* The mobile map is fixed full screen: the open panel floats over it,
-   below the filters button. */
-@media (width < theme(--breakpoint-md)) {
-    .sidebar-mobile-secondary:has(.map-container) .sidebar-secondary {
-        position: fixed;
-        inset: calc(4.25rem + env(safe-area-inset-top)) 0.75rem auto;
-        z-index: 20;
-        max-height: 60dvh;
-        overflow-y: auto;
-        border: 0;
-        border-radius: var(--radius-card);
-        box-shadow: var(--shadow-overlay);
-    }
-}
-
 .sidebar-default {
     background-color: var(--surface);
     color: var(--fg);
-    border-bottom: 1px solid var(--border);
 }
 
 @media (min-width: theme(--breakpoint-md)) {
     .sidebar-default {
-        border-bottom: 0;
         border-right: 1px solid var(--border);
     }
 }
@@ -76,12 +56,6 @@
 .sidebar-content {
     position: relative;
     padding-bottom: 8px;
-}
-
-@media (width < theme(--breakpoint-md)) {
-    .sidebar-mobile-secondary .sidebar-secondary {
-        display: block;
-    }
 }
 
 .category-title {

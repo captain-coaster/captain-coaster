@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app.request.get('_locale') }}" data-symfony-ux-translator-locale="{{ app.request.locale }}">
+<html lang="{{ app.request.get('_locale') }}" class="has-[dialog:modal]:overflow-hidden" data-symfony-ux-translator-locale="{{ app.request.locale }}">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -37,7 +37,7 @@
   (nav_route starts with 'profile' or nav_route starts with 'notification' or nav_route in ['login', 'app_register'] ? 'profile' : null))))
 %}
 {# Below lg, room for the floating tab bar (h-16 + 3 spacing + safe area) plus air. #}
-<body class="max-lg:pb-[calc(var(--spacing)*24+env(safe-area-inset-bottom))]" data-controller="sidebar search-dialog">
+<body class="max-lg:pb-[calc(var(--spacing)*24+env(safe-area-inset-bottom))]" data-controller="filter-sheet search-dialog">
 <a href="#content" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[10000] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:text-action focus:shadow-overlay">{{ 'app.skip_to_content'|trans }}</a>
 <twig:Nav:Header :section="nav_section"/>
 <!-- page container -->

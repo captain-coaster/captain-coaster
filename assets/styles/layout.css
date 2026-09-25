@@ -2,7 +2,7 @@
  * Page shell -- migrated together: theme/core/layout/{content,footer,
  * component-animation}.less. `sidebar.less` (also theme/core/layout) is
  * deliberately its own file (sidebar.css) -- it drives real JS toggle
- * behavior (sidebar_controller.js) needing its own scope, unrelated to
+ * behavior (filter_sheet_controller.js) needing its own scope, unrelated to
  * this shell.
  *
  * `.page-container`/`.page-content`/`.content-wrapper`/`.content` are
