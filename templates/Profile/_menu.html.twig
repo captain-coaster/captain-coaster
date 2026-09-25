@@ -1,9 +1,8 @@
-{% import "helper.html.twig" as helper %}
 
 <div class="cc-panel">
     <div class="cc-panel__body text-center">
     <div class="display-inline-block">
-        {{ helper.profilePicture(user) }}
+        <twig:Avatar :user="user" decorative/>
     </div>
     <h6 class="text-semibold mb-0">
         {{ user.displayName }}

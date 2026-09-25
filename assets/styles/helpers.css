@@ -45,21 +45,6 @@
     margin-bottom: 30px !important;
 }
 
-.img-lg {
-    width: 44px !important;
-    height: 44px !important;
-}
-
-.img-sm {
-    width: 36px !important;
-    height: 36px !important;
-}
-
-.img-xs {
-    width: 32px !important;
-    height: 32px !important;
-}
-
 /*
  * bootstrap/less/utilities.less -- only `.pull-right` (23 uses) is real;
  * `.clearfix`, `.center-block`, `.pull-left`, `.hide`, `.show`, `.invisible`,
@@ -71,8 +56,8 @@
 }
 
 /*
- * scaffolding's own image/row utility classes. `.img-rounded` and
- * `.img-circle` had two competing declarations (bootstrap's own + a
+ * scaffolding's own image/row utility classes. `.img-rounded` had two
+ * competing declarations (bootstrap's own + a
  * Limitless override) that tied on specificity and resolved by import
  * order -- Limitless always came second, so its value
  * (`.img-rounded{border-radius:3px}` over bootstrap's 5px) is the one
@@ -86,8 +71,4 @@
 
 .img-rounded {
     border-radius: 3px;
-}
-
-.img-circle {
-    border-radius: 50%;
 }

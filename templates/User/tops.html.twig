@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% import "helper.html.twig" as helper %}
 
 {% set title = 'users.tops.title'|trans({'%name%': user.displayName}) %}
 {% set parentUrl = path('user_show', {'slug': user.slug}) %}
@@ -31,7 +30,7 @@
           <div class="cc-card__caption">
             <div class="content-group-sm cc-media">
               <div class="cc-media__start">
-                {{ helper.profilePicture(top.user) }}
+                <twig:Avatar :user="top.user" decorative/>
               </div>
               <div class="cc-media__body">
                 <h6 class="text-semibold m-0">

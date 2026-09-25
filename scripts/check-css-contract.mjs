@@ -104,6 +104,7 @@ const deprecatedNavigationClasses = new Set([
     'dropdown-submenu-hover', 'dropdown-submenu-left', 'dropdown-divider', 'dropdown-header',
 ]);
 const deprecatedVisibilityClasses = new Set(['hidden-xs', 'visible-xs', 'visible-xs-block']);
+const deprecatedAvatarClasses = new Set(['img-circle', 'img-xs', 'img-sm', 'img-lg']);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -221,6 +222,7 @@ const deprecatedClassFamilies = [
     { set: deprecatedPaginationClasses, contract: 'Bootstrap pagination class' },
     { set: deprecatedNavigationClasses, contract: 'Bootstrap navigation class' },
     { set: deprecatedVisibilityClasses, contract: 'Bootstrap visibility class' },
+    { set: deprecatedAvatarClasses, contract: 'Bootstrap avatar image class (use <twig:Avatar>)' },
 ];
 
 // A dynamic class built as `stem-{{ expression }}` (e.g. the pre-migration

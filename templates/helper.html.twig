@@ -1,10 +1,3 @@
-{# Display profile picture, or an initials avatar for users without one #}
-{# Legacy entry point: new templates use <twig:Avatar> directly. #}
-{% macro profilePicture(user, className) %}
-    {% set className = className|default('') %}
-    {{ component('Avatar', {user: user, size: 'img-xs' in className ? 'xs' : ('img-sm' in className ? 'sm' : 'md')}) }}
-{% endmacro %}
-
 {# Display a coaster related date #}
 {% macro displayDate(date) %}
     {% if date|date("dm") == "0101" %}
