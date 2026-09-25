@@ -9,7 +9,7 @@
   <div class="flex shrink-0 items-center border-b border-line px-5 py-4 md:hidden">
     <h2 id="filter-sheet-title" tabindex="-1" autofocus class="m-0 text-lead outline-none">{{ 'filters.title'|trans }}</h2>
   </div>
-  <div class="min-h-0 flex-1 overflow-y-auto overscroll-contain md:contents">
+  <div class="min-h-0 flex-auto overflow-y-auto overscroll-contain md:contents">
 <div class="sidebar sidebar-secondary sidebar-default"
      {% if filterConfig is defined %}
        data-controller="filter"
