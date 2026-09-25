@@ -35,15 +35,11 @@ Join us in shaping the world's best roller coaster rankings!
     composer db-setup
     php bin/console doctrine:fixtures:load
     ```
-9. Start the Symfony development server
+9. Start the Symfony and Vite dev servers
     ```shell
-    symfony server:start
+    bin/dev
     ```
-10. Start the Vite dev server (in a separate terminal)
-    ```shell
-    npm run dev-server
-    ```
-11. Browse the application at the URL provided by Symfony CLI (typically http://localhost:8000)
+10. Browse the application at http://localhost:8000 (the phone URL on your local network is printed too). Stop with `bin/dev stop`.
 
 ### Option 2: Full Docker Setup
 

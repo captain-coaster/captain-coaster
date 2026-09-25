@@ -149,7 +149,7 @@ vendor/bin/php-cs-fixer fix
 
 ### Verifying UI changes
 
-A dev server runs locally — use the Playwright MCP tools against it to verify front-end work. The port varies per worktree (see `.claude/skills/dev-environment/SKILL.md`), so read the actual URL rather than assuming `localhost:8000`. Resize to a mobile viewport (e.g. 390×844) first, since ~80% of usage is mobile.
+A dev server runs locally — use the Playwright MCP tools against it to verify front-end work. `bin/dev` starts it on a fixed port per checkout (main: http://localhost:8000; a worktree: see `var/dev-slot` and `.claude/skills/dev-environment/SKILL.md`). Resize to a mobile viewport (e.g. 390×844) first, since ~80% of usage is mobile.
 
 ## Agent skills
 

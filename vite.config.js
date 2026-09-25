@@ -11,6 +11,10 @@ const { version: maplibreGlVersion } = JSON.parse(
     readFileSync('./node_modules/maplibre-gl/package.json', 'utf-8'),
 );
 
+const devOrigin =
+    process.env.VITE_DEV_ORIGIN ??
+    `http://localhost:${process.env.VITE_PORT ?? 5173}`;
+
 export default defineConfig(({ command }) => ({
     input: {
         app: './assets/js/app.js',
@@ -32,6 +36,19 @@ export default defineConfig(({ command }) => ({
         // so allowedHosts stays at its default (blocks hostname-based
         // requests, e.g. DNS rebinding), just host needs widening.
         host: true,
+        // bin/dev gives each worktree its own port and the page's asset
+        // origin (the LAN IP, so a phone can load them too).
+        port: Number(process.env.VITE_PORT ?? 5173),
+        strictPort: true,
+        origin: devOrigin,
+        // Vite's default CORS only allows localhost pages; a phone loads the
+        // page from the LAN IP.
+        cors: {
+            origin: [
+                /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/,
+                `http://${new URL(devOrigin).hostname}:${process.env.SYMFONY_PORT ?? 8000}`,
+            ],
+        },
     },
 
     plugins: [

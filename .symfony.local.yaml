@@ -1,0 +1,10 @@
+# Local dev server. Start it with bin/dev, which picks this checkout's ports.
+http:
+    # Plain HTTP: a phone on the LAN can't trust the local CA, and an https
+    # page can't load Vite's http assets from a LAN IP.
+    no_tls: true
+
+workers:
+    # Started and stopped with the Symfony server.
+    vite:
+        cmd: ['npm', 'run', 'dev-server']

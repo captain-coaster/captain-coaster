@@ -28,23 +28,24 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
    **No access to the shared `captain` DB** (e.g. simulating an external contributor's setup, or an actually fresh clone): create the isolated `captain_<slug>` DB empty instead of cloning it, then `composer db-setup` (builds the schema from the current entities and marks all migrations as already applied — running the oldest migrations directly fails on an empty DB) followed by `php bin/console doctrine:fixtures:load` for a small set of sample data.
 
-2. Start the Symfony server: `symfony server:start -d`. Read the printed port — two worktrees get two ports.
-3. Start Vite: `npm run dev-server`.
-4. Health check: request the printed URL, confirm 200.
+2. Start Symfony and Vite: `bin/dev`. Ports are fixed per checkout: the main checkout is always http://localhost:8000 (Vite 5173); a worktree keeps the slot it was first given in `var/dev-slot` (8001/5174, 8002/5175, ...). It prints the desktop and phone (LAN IP) URLs; re-run it after changing Wi-Fi. Plain HTTP on purpose (`.symfony.local.yaml`): a phone can't trust the local CA.
+3. Health check: request the printed URL, confirm 200.
+4. CLI commands that print URLs (`app:dev:login-link`) use `DEFAULT_URI`, which defaults to port 8000 — in a worktree prefix them: `DEFAULT_URI=http://localhost:<port> php bin/console ...`.
 
 ## Stop
 
-For the current checkout: `symfony server:stop`, and kill its Vite process too (`pkill -f "$(pwd)/node_modules/.bin/vite"` — Vite isn't tied to the Symfony CLI, it leaks otherwise).
+For the current checkout: `bin/dev stop` (stops Vite too — it's a Symfony CLI worker).
 
 **Never run `docker compose down`.** Redis, MariaDB and Adminer are shared by every worktree.
 
 ## Cleanup sweep (on demand — e.g. "clean up my worktrees")
 
 1. For each worktree under `.claude/worktrees/`, check its branch's PR: `gh pr view <branch> --json state -q .state`. Eligible for removal if `MERGED`/`CLOSED`, or if there's no PR at all and the worktree is >7 days old (flag that one as "probably abandoned" rather than assuming). List everything eligible and confirm once with the user for the whole batch — never delete without asking, never one at a time.
-2. For each one confirmed: stop its server (`symfony server:stop --dir=<path>`) and Vite (`pkill -f <path>/node_modules/.bin/vite`), drop its DB if it has one (`DROP DATABASE IF EXISTS \`captain_<slug>\`` — never `captain` itself), delete the branch (`-D` only if the PR is `MERGED`, `-d` otherwise), remove the worktree directory. Treat these as one unit — never drop the DB without removing the worktree, or vice versa.
+2. For each one confirmed: stop its server and Vite (`symfony server:stop --dir=<path>`; for a server started before `bin/dev` existed, also `pkill -f <path>/node_modules/.bin/vite`), drop its DB if it has one (`DROP DATABASE IF EXISTS \`captain_<slug>\`` — never `captain` itself), delete the branch (`-D` only if the PR is `MERGED`, `-d` otherwise), remove the worktree directory. Treat these as one unit — never drop the DB without removing the worktree, or vice versa.
 3. Orphaned servers need no confirmation — they can't lose data. `symfony server:list` shows every running server by directory, including ones whose directory no longer exists on disk (e.g. removed outside the tool). Stop those directly (`symfony server:stop --dir=<path>`) whenever noticed.
 
 ## Notes
 
 - `composer install` and `npm install` are per-worktree; `vendor/` and `node_modules/` are not shared.
 - Adminer is on http://localhost:8081.
+- Over HTTP on a LAN IP (phone), the `Secure` remember-me cookie isn't stored and secure-context browser APIs (geolocation) are off; localhost is unaffected. Google sign-in only works where the redirect URI is registered — use `app:dev:login-link` otherwise.
