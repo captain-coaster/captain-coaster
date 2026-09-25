@@ -7,7 +7,7 @@
     subtitleUrl  makes the context line a link (coaster → park, Top → author)
     parent       detail pages only: shows the back button, and is its target when not arriving from another site page (back_controller.js)
     actions      rendered HTML for the page's actions (Twig var `pageActions`)
-    hideTitle    keeps the h1 for assistive tech only (Home)
+    hideTitle    keeps the h1 for assistive tech only (Home); from lg the header still spaces the content from the top bar
     narrow       aligns the title with a max-w-md body column (sign-in forms)
 #}
 {% props title, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, hideTitle = false, narrow = false %}
@@ -32,11 +32,11 @@
   {% endif %}
 
   <header data-page-header-target="row"
-          class="mx-auto flex {{ narrow ? 'max-w-[calc(var(--container-md)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] pb-6 lg:items-end lg:gap-4 lg:pt-10 lg:pb-8 {{ hideTitle ? 'sr-only' }}">
+          class="mx-auto flex {{ narrow ? 'max-w-[calc(var(--container-md)+2*var(--spacing-gutter))]' : 'max-w-content' }} items-start gap-3 px-gutter pt-[calc(var(--spacing)*3+env(safe-area-inset-top))] lg:items-end lg:gap-4 lg:pt-10 {{ hideTitle ? 'max-lg:sr-only' : 'pb-6 lg:pb-8' }}">
     {% if parent %}
       <div class="shrink-0 lg:hidden">{{ back }}</div>
     {% endif %}
-    <div class="min-w-0 flex-1 max-lg:pt-1">
+    <div class="min-w-0 flex-1 max-lg:pt-1 {{ hideTitle ? 'lg:sr-only' }}">
       <h1 class="m-0 text-balance">{{ title }}</h1>
       {% if subtitle %}
         <p class="m-0 mt-1 text-lead font-semibold text-muted-strong">
