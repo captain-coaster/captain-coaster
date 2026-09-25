@@ -1,16 +1,3 @@
-{# Display profile picture, or an initials avatar for users without one #}
-{% macro profilePicture(user, className) %}
-    {% if user.profilePicture %}
-        <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
-             class="{{ className|default('img-circle img-lg') }}"
-             alt="{{ user.displayName }}">
-    {% else %}
-        <img src="{{ avatar_placeholder(user.displayName, user.id) }}"
-             class="{{ className|default('img-circle img-lg') }}"
-             alt="{{ user.displayName }}">
-    {% endif %}
-{% endmacro %}
-
 {# Display a coaster related date #}
 {% macro displayDate(date) %}
     {% if date|date("dm") == "0101" %}

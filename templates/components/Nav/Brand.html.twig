@@ -1,0 +1,7 @@
+{#
+  The full logo, linking Home: logo_dark.svg (dark lettering) for light
+  surfaces, at 28px high (193px wide, above DESIGN.md's 180px minimum).
+#}
+<a href="{{ path('default_index') }}" {{ attributes.defaults({class: 'inline-flex shrink-0 rounded-control'}) }}>
+  <img src="{{ asset('build/images/logo_dark.svg') }}" alt="{{ 'app.name'|trans }}" class="h-7 w-auto" width="193" height="28">
+</a>

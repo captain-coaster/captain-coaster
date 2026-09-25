@@ -104,6 +104,7 @@ const deprecatedNavigationClasses = new Set([
     'dropdown-submenu-hover', 'dropdown-submenu-left', 'dropdown-divider', 'dropdown-header',
 ]);
 const deprecatedVisibilityClasses = new Set(['hidden-xs', 'visible-xs', 'visible-xs-block']);
+const deprecatedAvatarClasses = new Set(['img-circle', 'img-xs', 'img-sm', 'img-lg']);
 
 function sourceFiles(directory) {
     return readdirSync(join(root, directory), { withFileTypes: true }).flatMap(
@@ -221,6 +222,7 @@ const deprecatedClassFamilies = [
     { set: deprecatedPaginationClasses, contract: 'Bootstrap pagination class' },
     { set: deprecatedNavigationClasses, contract: 'Bootstrap navigation class' },
     { set: deprecatedVisibilityClasses, contract: 'Bootstrap visibility class' },
+    { set: deprecatedAvatarClasses, contract: 'Bootstrap avatar image class (use <twig:Avatar>)' },
 ];
 
 // A dynamic class built as `stem-{{ expression }}` (e.g. the pre-migration
@@ -275,6 +277,63 @@ function addTemplateClassViolations(path, source) {
             violations.push(`${path}:${line} ${contract}`);
         }
     }
+}
+
+// Redesigned Twig Components (templates/components/) use only Tailwind
+// utilities: no class defined by a hand-written stylesheet (AGENTS.md
+// "Redesign: target vs. current"), and no legacy `--cc-*` token.
+const componentsRoot = 'templates/components';
+const utilityStylesheets = new Set(['assets/styles/app.css', 'assets/styles/tokens.css']);
+
+function legacyClassNames() {
+    const names = new Set();
+
+    for (const path of sourceFiles('assets/styles')) {
+        if (!path.endsWith('.css') || utilityStylesheets.has(path)) continue;
+
+        const css = withoutComments(readFileSync(join(root, path), 'utf8'), '.css')
+            .replace(/url\([^)]*\)/g, '')
+            .replace(/\{[^{}]*\}/g, '{}');
+
+        // Skips `element.class` compounds such as icons.css's `svg.w-6`:
+        // refinements of a Tailwind utility, not a legacy class of their own.
+        for (const match of css.matchAll(/(?<![\w-])\.(-?[A-Za-z_][\w-]*)/g)) {
+            names.add(match[1]);
+        }
+    }
+
+    return names;
+}
+
+function addComponentViolations(path, rawSource, legacyClasses) {
+    // Blank out Twig comments, keeping line numbers.
+    const source = rawSource.replace(/{#[\s\S]*?#}/g, (comment) => comment.replace(/[^\n]/g, ' '));
+    const lineOf = (index) => source.slice(0, index).split('\n').length;
+
+    for (const match of source.matchAll(/var\(--cc-/g)) {
+        violations.push(`${path}:${lineOf(match.index)} legacy --cc-* token in a component`);
+    }
+
+    // Every string literal and class attribute: covers class="…" and the
+    // class strings passed to html_cva()/attributes.defaults().
+    for (const match of source.matchAll(/class="([^"]*)"|'([^']*)'/g)) {
+        const value = (match[1] ?? match[2]).replace(/{{[\s\S]*?}}/g, ' ');
+        const tokens = value.trim().split(/\s+/);
+        // A single bare word in a string literal is a translation domain,
+        // route or role, not a class list.
+        const isClassList = match[1] !== undefined || tokens.length > 1 || tokens[0].includes('-');
+        const legacy = isClassList && tokens.find((token) => legacyClasses.has(token));
+
+        if (legacy) {
+            violations.push(`${path}:${lineOf(match.index)} legacy class "${legacy}" in a component`);
+        }
+    }
+}
+
+const legacyClasses = legacyClassNames();
+
+for (const path of sourceFiles(componentsRoot)) {
+    addComponentViolations(path, readFileSync(join(root, path), 'utf8'), legacyClasses);
 }
 
 for (const directory of sourceRoots) {

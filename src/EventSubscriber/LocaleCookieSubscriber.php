@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * Persists the visitor's locale choice: any request carrying a ?setLocale
- * query param (set by the account-menu language row) applies it. Logged
+ * query param (set by the Nav:Preferences language select) applies it. Logged
  * in, the choice writes straight to the profile -- no cookie is ever
  * written or read for an authenticated visitor, in either direction.
  * Anonymous, it sets the locale cookie exactly as before. setLocale is a

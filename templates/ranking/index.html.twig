@@ -1,13 +1,12 @@
 {% extends "base.html.twig" %}
 
 {% set title = 'coaster_ranking.title'|trans %}
+{% set pageActions %}<twig:FilterToggle/>{% endset %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
   <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
 {% endblock %}
-
-{% set pageHasFilters = true %}
 
 {% block secondary_sidebar %}
   {% include 'Includes/filter_sidebar.html.twig' with {

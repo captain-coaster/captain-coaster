@@ -1,6 +1,8 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
 import { SearchDropdown } from '../js/search-dropdown';
+import { rememberRecentSearch } from '../js/recent-searches';
+import { searchTypeIcon } from '../js/search-type-icons';
 
 /**
  * Site-wide search bar -- shared debounce/fetch/keyboard-nav/dropdown
@@ -60,17 +62,17 @@ export default class extends SearchDropdown(Controller) {
         // Combine all results into a single array with type info
         if (results.coasters) {
             allResults = allResults.concat(
-                results.coasters.map((item) => ({ ...item, emoji: '🎢' }))
+                results.coasters.map((item) => ({ ...item, type: 'coaster' }))
             );
         }
         if (results.parks) {
             allResults = allResults.concat(
-                results.parks.map((item) => ({ ...item, emoji: '🎡' }))
+                results.parks.map((item) => ({ ...item, type: 'park' }))
             );
         }
         if (results.users) {
             allResults = allResults.concat(
-                results.users.map((item) => ({ ...item, emoji: '👤' }))
+                results.users.map((item) => ({ ...item, type: 'user' }))
             );
         }
 
@@ -122,7 +124,7 @@ export default class extends SearchDropdown(Controller) {
 
         return `
             <div class="search-result-item" data-index="${index}" data-type="${item.type}" data-id="${item.id}" data-slug="${this.escapeHtml(item.slug)}">
-                <div class="search-result-emoji">${item.emoji}</div>
+                <div class="search-result-icon" aria-hidden="true">${searchTypeIcon(item.type)}</div>
                 <div class="search-result-content">
                     <div class="search-result-name">${name}</div>
                     ${subtitle ? `<div class="search-result-subtitle">${subtitle}</div>` : ''}
@@ -199,6 +201,14 @@ export default class extends SearchDropdown(Controller) {
 
         const url = this.generateRoute(routeName, routeParams);
         if (url) {
+            rememberRecentSearch({
+                name:
+                    item
+                        .querySelector('.search-result-name')
+                        ?.textContent.trim() ?? '',
+                type,
+                url,
+            });
             window.location.href = url;
         }
     }
@@ -259,12 +269,9 @@ export default class extends SearchDropdown(Controller) {
      * Update clear button visibility based on input content
      */
     updateClearButtonVisibility() {
-        const inputContainer = this.element.querySelector(
-            '.search-input-container'
-        );
-        if (inputContainer && this.hasInputTarget) {
-            inputContainer.classList.toggle(
-                'has-content',
+        if (this.hasInputTarget) {
+            this.element.toggleAttribute(
+                'data-has-content',
                 this.inputTarget.value.trim().length > 0
             );
         }

@@ -1,0 +1,9 @@
+{# Opens the filter bottom sheet below md (Includes/filter_sidebar.html.twig); from md up the panel is always shown. A Page:Header action. #}
+<button type="button"
+        data-action="filter-sheet#open"
+        aria-haspopup="dialog"
+        aria-controls="filter-sheet"
+        aria-label="{{ 'nav.filters'|trans }}"
+        {{ attributes.defaults({class: 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface md:hidden'}) }}>
+  {{ ux_icon('heroicons:funnel', {class: 'size-5', 'aria-hidden': 'true'}) }}
+</button>

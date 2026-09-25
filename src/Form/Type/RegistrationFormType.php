@@ -40,9 +40,6 @@ class RegistrationFormType extends AbstractType
                 'register',
                 SubmitType::class,
                 [
-                    'attr' => [
-                        'class' => 'bg-cc-blue cc-button cc-button--block',
-                    ],
                     'label' => 'register.form.submit',
                 ]
             );

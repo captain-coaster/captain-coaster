@@ -20,25 +20,6 @@ svg.w-16 {
     vertical-align: middle;
 }
 
-/* Icon spacing for cc-navbar and sidebar */
-.cc-navbar a svg {
-    margin-right: 0;
-    margin-left: 0;
-}
-
-/* Add spacing only for cc-menu menu items with text */
-.cc-navbar .cc-menu__list a svg {
-    margin-right: 8px;
-}
-
-.sidebar .navigation a svg {
-    margin-right: 8px;
-}
-
-.sidebar-xs .sidebar .navigation a svg {
-    margin-right: 0;
-}
-
 .cc-list-group__item svg {
     margin-right: 8px;
 }

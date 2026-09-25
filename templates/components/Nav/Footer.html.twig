@@ -1,0 +1,13 @@
+{#
+  Site footer, on the canvas like the page it closes: community pages and
+  site info; from lg also language and units (below lg they live on the
+  Profile page).
+#}
+<footer {{ attributes.defaults({class: 'mx-auto mt-16 max-w-content px-gutter text-ink'}) }}>
+  <div class="grid gap-8 border-t border-line pt-10 pb-8 lg:grid-cols-[auto_1fr_auto] lg:gap-16 lg:pt-12">
+    <twig:Nav:Brand class="self-start justify-self-start"/>
+    <twig:Nav:MoreLinks/>
+    <twig:Nav:Preferences class="hidden lg:grid"/>
+  </div>
+  <p class="m-0 pb-8 text-caption text-muted">© 2017–{{ 'now'|date('Y') }} Captain Coaster</p>
+</footer>

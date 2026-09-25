@@ -3,6 +3,7 @@
 
 {% set title = park.name %}
 {% set subTitle = park.country.name|trans([], 'database') %}
+{% set parentUrl = path('map_index', {'parkslug': park.slug}) %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
 {% if park.formerNames %}
     {% set secondaryTitle = park.formerNames|join(', ') %}

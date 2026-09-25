@@ -66,7 +66,6 @@
 @import './section-header.css' layer(components);
 @import './tooltip.css' layer(components);
 @import './toast.css' layer(components);
-@import './account-menu.css' layer(components);
 @import './icons.css' layer(components);
 @import './review.css' layer(components);
 @import './layout.css' layer(components);
@@ -81,5 +80,4 @@
 @import './typography.css' layer(components);
 @import './panels.css' layer(components);
 @import './tables-and-lists.css' layer(components);
-@import './navbar.css' layer(components);
-@import './sidebar.css' layer(components);
+@import './dropdown-modal.css' layer(components);

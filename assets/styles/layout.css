@@ -1,9 +1,6 @@
 /*
  * Page shell -- migrated together: theme/core/layout/{content,footer,
- * component-animation}.less. `sidebar.less` (also theme/core/layout) is
- * deliberately its own file (sidebar.css) -- it drives real JS toggle
- * behavior (sidebar_controller.js) needing its own scope, unrelated to
- * this shell.
+ * component-animation}.less.
  *
  * `.page-container`/`.page-content`/`.content-wrapper`/`.content` are
  * base.html.twig's page shell -- rendered on every page, unconditional.
@@ -18,24 +15,27 @@
  * `body[class*=navbar-bottom] .content { padding-bottom: ... }` and
  * `.content:first-child` are both dropped: `navbar-bottom` is never a
  * real body class anywhere, and `.content` is never actually a
- * `:first-child` in practice -- `page_header.html.twig`'s `.page-header`
+ * `:first-child` in practice -- `<twig:Page:Header>`
  * always renders immediately before it inside `.content-wrapper` on
  * every page that reaches this markup at all (Maps/index.html.twig
  * overrides the whole `wide_body` block and never renders `.content`).
  *
- * `.footer`'s `&.cc-navbar`/`-fixed-bottom` branch and `.footer-boxed` are
- * dropped: `footer.html.twig` never combines `.footer` with `.cc-navbar`,
- * and `.footer-boxed`/`navbar-fixed-bottom` have zero real uses.
- *
  * component-animation.less scope trimmed to selectors real markup
- * actually has: `.cc-button`, `.cc-navbar__nav > li > a`, `.cc-menu__list > li >
- * a`, `.cc-list-group__item`, `.cc-pagination > li > a/span`, `.cc-close`, `.table
- * tr/th/td`, and `.no-transitions *` (toggled on `<body>` by theme.js
- * during resize).
+ * actually has: `.cc-button`, `.cc-menu__list > li > a`,
+ * `.cc-list-group__item`, `.cc-pagination > li > a/span`, `.cc-close` and
+ * `.table tr/th/td`.
  */
 .page-container {
     position: relative;
     min-height: 100svh;
+}
+
+/* From lg Nav:Header (4rem + 1px border) sits above the shell in the flow;
+   without this a page that just fills the viewport (Map) scrolls by it. */
+@media (min-width: theme(--breakpoint-lg)) {
+    .page-container {
+        min-height: calc(100svh - 4rem - 1px);
+    }
 }
 
 /*
@@ -77,21 +77,15 @@
     width: 100%;
 }
 
-.no-transitions * {
-    transition: none !important;
-}
-
 /*
  * `transition: all` here (a faithful port of component-animation.less)
  * only ever animates `background-color`/`color` in practice for this
  * selector group -- but "all" also lets a mobile WebKit tap promote the
  * element to its own compositing layer for the transition, which can
- * read as a sub-pixel text shift at the moment of tap (sidebar.css's own
- * cc-nav links use the narrow form below already, and don't show this).
+ * read as a sub-pixel text shift at the moment of tap.
  * Scoped to the properties that actually change.
  */
 .cc-button,
-.cc-navbar__nav > li > a,
 .cc-menu__list > li > a,
 .cc-list-group__item,
 .cc-pagination > li > a,
@@ -111,48 +105,3 @@
     transition: background-color ease-in-out 0.15s;
 }
 
-/*
- * Login page layout uses flexbox for the one page (connect/login.html.twig)
- * that centers a
- * single form instead of running the sidebar/content-wrapper layout.
- */
-body.login-container {
-    margin: 0;
-    padding: 0;
-    min-height: 100svh;
-    display: flex;
-    background: url("../images/login.webp") center / cover no-repeat;
-}
-
-body.login-container .page-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100svh;
-}
-
-body.login-container .page-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-body.login-container .content-wrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-body.login-container .content {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.login-form-container {
-    width: 100%;
-    max-width: 500px;
-}

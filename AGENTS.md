@@ -66,7 +66,7 @@ Mid term aim:
 
 ### Redesign: target vs. current
 
-`DESIGN.md` describes the **target** design system. Its colors, fonts and tokens are live in `assets/styles/tokens.css` since the reskin (#413); layout, navigation and components are still the **legacy** `.cc-*` files, migrated one surface at a time. Plan and progress: #375. How to run each step (Impeccable usage, 2026 baseline per step): `docs/agents/design-workflow.md`.
+`DESIGN.md` describes the **target** design system. Its colors, fonts and tokens are live in `assets/styles/tokens.css` since the reskin (#413), and the page shell and navigation are migrated (Twig Components under `templates/components/Nav/` and `Page/`); page content components are still the **legacy** `.cc-*` files, migrated one surface at a time. Plan and progress: #375. How to run each step (Impeccable usage, 2026 baseline per step): `docs/agents/design-workflow.md`.
 
 - Order: reskin (old `--cc-*` tokens become aliases of the target colors, new fonts — whole site at once) → page shell → navigation → Home (reference page) → remaining pages.
 - It's a complete makeover: use the state-of-the-art approach for each step, not the minimal change.

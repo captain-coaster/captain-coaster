@@ -1,0 +1,61 @@
+{#
+  Quick search over coasters, parks and riders (search_controller.js), used
+  in the desktop header and in the mobile search dialog.
+  Props:
+    id        unique input id
+    shortcut  focus the field with / or Cmd/Ctrl+K (desktop header)
+    inline    results as full-width rows under the field (search dialog) instead of a floating panel
+#}
+{% props id, shortcut = false, inline = false %}
+<form action="{{ path('search_index') }}" method="get" role="search"
+      {% if shortcut %}data-controller="search-shortcut" data-action="keydown@document->search-shortcut#focus"{% endif %}
+      {{ attributes.defaults({class: 'w-full'}) }}>
+  <div class="group relative"
+       data-controller="search"
+       data-search-search-url-value="{{ path('api_search') }}"
+       data-search-results-url-value="{{ path('search_index') }}">
+    <label for="{{ id }}" class="sr-only">{{ 'app.search.label'|trans }}</label>
+    {{ ux_icon('heroicons:magnifying-glass', {class: 'pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted', 'aria-hidden': 'true'}) }}
+    <input id="{{ id }}"
+           name="query"
+           type="search"
+           enterkeyhint="search"
+           class="h-11 w-full appearance-none rounded-pill border border-transparent bg-subtle pr-11 pl-10 text-body text-ink placeholder:text-muted focus:border-action focus:bg-surface focus:outline-2 focus:outline-offset-0 focus:outline-action [&::-webkit-search-cancel-button]:hidden"
+           placeholder="{{ 'app.search.placeholder'|trans }}"
+           data-search-target="input"
+           data-action="input->search#handleInput keydown->search#handleKeydown focus->search#handleFocus"
+           autocomplete="off"
+           role="combobox"
+           aria-expanded="false"
+           aria-autocomplete="list"
+           aria-haspopup="listbox"
+           {% if shortcut %}data-search-shortcut-target="input" aria-keyshortcuts="/ Control+K Meta+K"{% endif %}>
+    {% if shortcut %}
+      <kbd class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rounded-sm border border-line bg-surface px-1.5 font-mono text-caption leading-tight text-muted group-focus-within:hidden group-data-has-content:hidden" aria-hidden="true">/</kbd>
+    {% endif %}
+    <button type="button"
+            class="absolute top-1/2 right-0 hidden size-11 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-subtle hover:text-ink group-data-has-content:grid"
+            data-action="click->search#clearSearch"
+            aria-label="{{ 'app.search.clear'|trans }}">
+      {{ ux_icon('heroicons:x-mark', {class: 'size-5'}) }}
+    </button>
+    {% if shortcut %}
+      {# Desktop, focused and empty: recent searches and Advanced search, like the mobile dialog. #}
+      <div class="absolute inset-x-0 top-full z-40 mt-1 hidden rounded-card border border-line bg-surface p-2 shadow-overlay group-focus-within:block group-data-has-content:hidden">
+        <twig:Nav:RecentSearches class="mb-1 border-b border-line pb-2"/>
+        <a href="{{ path('coaster_search_index') }}" class="flex min-h-11 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle">
+          {{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
+          <span class="flex-1">{{ 'nav.advanced_search'|trans }}</span>
+          {{ ux_icon('heroicons:chevron-right', {class: 'size-4 text-muted', 'aria-hidden': 'true'}) }}
+        </a>
+      </div>
+    {% endif %}
+    {# Rows are rendered by search_controller.js and still styled by search.css. #}
+    <div class="{{ inline ? 'fixed inset-x-0 top-[calc(var(--spacing)*15+env(safe-area-inset-top))] bottom-0 z-10 hidden overflow-y-auto bg-surface px-4 pt-5' : 'absolute inset-x-0 top-full z-50 mt-1 hidden overflow-hidden rounded-card border border-line bg-surface p-2 shadow-overlay' }} [&.show]:block"
+                  data-search-target="dropdown"
+         role="listbox"
+         aria-label="{{ 'app.search.suggestions'|trans }}">
+      <div data-search-target="results"></div>
+    </div>
+  </div>
+</form>
