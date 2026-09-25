@@ -235,6 +235,15 @@ The footer sits on the canvas like the page it closes, inside the content width 
 - **Language:** a native select laid invisibly over its visible value, so the platform picker opens on tap. On Profile it is a 56px settings row (label, current value, up-down chevron) in a white card with subtle dividers; in the footer a 44px subtle pill chip with a language icon, selected fill on hover.
 - **Units:** a two-option toggle `km/h · m | mph · ft` on a subtle pill track; each option is a 44px caption-semibold pill, the current one white with ink text and the raised shadow.
 
+### Maintenance page
+
+The 503 page nginx serves for every URL during deploys. Source `assets/maintenance/maintenance.html`, built to root `maintenance.html` by `npm run build:maintenance`, which inlines the woff2 fonts and copies the logo paths from `<twig:Logo>`. Nothing else can load while it is up (only `/favicon.ico` passes), so it is one self-contained file with no links or buttons, and it mirrors the token values as hex literals in its own `:root` (commented back to `tokens.css`): update both together.
+
+- **The closure sign:** logo (28px, 32px from 40rem) over a white card-radius panel, at most 30rem, in a 3px ink frame with the raised shadow, the one surface where borders are heavier than 1px. Display-step title ("Please remain seated"), lead-size muted-strong announcement.
+- **Live status strip:** the sign's foot, sunshine with ink text behind a 3px ink rule, a pulsing ink dot and a tabular countdown to the next check (every 10s, on tab focus and on reconnect). It turns success green with white text when the site answers.
+- **Posts and chain:** two ink posts carry the sign; a dashed sunshine-and-ink queue chain hangs between rings at mid-height. When the site is back the chain unhooks from the right post and drops (900ms, the only reopening moment; instant under reduced motion), then the page returns to the requested URL.
+- **Languages:** en, fr, es, de, from the URL's locale prefix, then the browser, then English; ride-operator voice.
+
 ### Iconography
 
 - **One set: [Lucide](https://lucide.dev)** (`lucide:` in `ux_icon`), on its 24px grid with 1.75px rounded strokes, set once in `config/packages/ux_icons.yaml`. Icons are 24px in navigation and search rows and 20px in dense rows, drawn in the text color.
