@@ -14,8 +14,6 @@
   "private": true,
   "scripts": {
     "dev-server": "vite",
-    "dev": "vite build --mode development",
-    "watch": "vite build --watch",
     "build": "vite build",
     "check:css-contract": "node scripts/check-css-contract.mjs",
     "check:icon-sets": "node scripts/check-icon-sets.mjs",
@@ -27,8 +25,5 @@
     "maplibre-gl": "^6.6.0",
     "sortablejs": "^1.15.6",
     "tom-select": "^2.6.2"
-  },
-  "overrides": {
-    "uuid": "^11.1.1"
   }
 }
