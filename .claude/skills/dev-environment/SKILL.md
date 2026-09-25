@@ -28,13 +28,13 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
    **No access to the shared `captain` DB** (e.g. simulating an external contributor's setup, or an actually fresh clone): create the isolated `captain_<slug>` DB empty instead of cloning it, then `composer db-setup` (builds the schema from the current entities and marks all migrations as already applied — running the oldest migrations directly fails on an empty DB) followed by `php bin/console doctrine:fixtures:load` for a small set of sample data.
 
-2. Start the Symfony server: `symfony server:start -d`. Read the printed port — two worktrees get two ports.
-3. Start Vite: `npm run dev-server`.
-4. Health check: request the printed URL, confirm 200.
+2. Start the Symfony server: `symfony server:start -d`. It also starts the Vite dev server (a worker in `.symfony.local.yaml`). Read the printed port — two worktrees get two ports, and Vite takes the next free one on its own.
+3. Health check: request the printed URL, confirm 200.
+4. Testing on a phone: `symfony server:stop && npm run build && symfony server:start -d --allow-all-ip --no-workers`, then open `https://<LAN IP>:<port>` (accept the certificate warning). Built assets are served by Symfony itself; `--no-workers` keeps the Vite dev server from overwriting them. Restart plainly afterwards: `--allow-all-ip` exposes the debug toolbar to the network.
 
 ## Stop
 
-For the current checkout: `symfony server:stop`, and kill its Vite process too (`pkill -f "$(pwd)/node_modules/.bin/vite"` — Vite isn't tied to the Symfony CLI, it leaks otherwise).
+For the current checkout: `symfony server:stop` (stops Vite too).
 
 **Never run `docker compose down`.** Redis, MariaDB and Adminer are shared by every worktree.
 

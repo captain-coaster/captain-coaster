@@ -1,0 +1,5 @@
+# `symfony server:start -d` also starts the Vite dev server, and
+# `symfony server:stop` stops it.
+workers:
+    vite:
+        cmd: ['npm', 'run', 'dev-server']
