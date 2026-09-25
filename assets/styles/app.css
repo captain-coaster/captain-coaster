@@ -53,6 +53,8 @@
  */
 
 @source "../../templates";
+/* PHPUnit assertions build class names from PHP strings (`bg-[var(--avatar-'.$slot.')]`). */
+@source not "../../tests";
 
 @import './colors.css' layer(components);
 

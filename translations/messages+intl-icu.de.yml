@@ -190,8 +190,10 @@ filters:
 
 user_profile:
     title: 'Profil • {name}'
+    ratings: Zeige dessen Bewertungen
     reviews: Zeige dessen Rezensionen
     main_top: Zeige dessen Top Achterbahnen
+    tops: Zeige dessen Tops
     map: Zeige dessen Achterbahn-Landkarte
     pictures: Zeige dessen Bilder
 
@@ -440,6 +442,11 @@ contact:
         title: Kontaktformular - Captain Coaster
     flash:
         success: 'Danke {name}, deine Nachricht wurde an das Captain Coaster-Team gesendet.'
+
+coaster_search:
+    title: 'Achterbahnen suchen'
+    num_found: '{num} Achterbahnen gefunden'
+    no_results: 'Keine Achterbahnen entsprechen deinen Kriterien'
 
 nearby:
     title: Finde Achterbahnen in der Nähe
