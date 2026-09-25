@@ -11,18 +11,18 @@
      data-controller="tab-bar"
      {{ attributes.defaults({class: 'group/bar pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[calc(var(--spacing)*3+env(safe-area-inset-bottom))] lg:hidden'}) }}>
   <ul class="pointer-events-auto m-0 mx-auto grid h-16 max-w-md list-none grid-cols-5 rounded-pill border border-white/60 bg-surface/75 p-1 shadow-overlay backdrop-blur-xl backdrop-saturate-150 transition-[height] duration-180 ease-out group-data-compact/bar:h-12 motion-reduce:transition-none">
-    <li><twig:Nav:Tab label="{{ 'nav.home'|trans }}" icon="heroicons:home" href="{{ path('default_index') }}" :active="section == 'home'"/></li>
-    <li><twig:Nav:Tab label="{{ 'nav.ranking'|trans }}" icon="heroicons:trophy" href="{{ path('ranking_index') }}" :active="section == 'ranking'"/></li>
+    <li><twig:Nav:Tab label="{{ 'nav.home'|trans }}" icon="lucide:house" href="{{ path('default_index') }}" :active="section == 'home'"/></li>
+    <li><twig:Nav:Tab label="{{ 'nav.ranking'|trans }}" icon="lucide:trophy" href="{{ path('ranking_index') }}" :active="section == 'ranking'"/></li>
     <li>
-      <twig:Nav:Tab label="{{ 'nav.search'|trans }}" icon="heroicons:magnifying-glass" :active="section == 'search'"
+      <twig:Nav:Tab label="{{ 'nav.search'|trans }}" icon="lucide:search" :active="section == 'search'"
                     class="w-full" aria-haspopup="dialog" aria-controls="search-dialog" data-action="search-dialog#open"/>
     </li>
-    <li><twig:Nav:Tab label="{{ 'nav.map'|trans }}" icon="heroicons:map" href="{{ path('map_index') }}" :active="section == 'map'"/></li>
+    <li><twig:Nav:Tab label="{{ 'nav.map'|trans }}" icon="lucide:map" href="{{ path('map_index') }}" :active="section == 'map'"/></li>
     <li>
       {% if signed_in %}
         <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" :user="app.user" href="{{ path('profile') }}" :active="section == 'profile'" :badge="unread_notification_count()"/>
       {% else %}
-        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="heroicons:user-circle" href="{{ path('profile') }}" :active="section == 'profile'"/>
+        <twig:Nav:Tab label="{{ 'nav.profile'|trans }}" icon="lucide:circle-user" href="{{ path('profile') }}" :active="section == 'profile'"/>
       {% endif %}
     </li>
   </ul>

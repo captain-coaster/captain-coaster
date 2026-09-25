@@ -97,7 +97,15 @@
         "name": "xl",
         "value": "80rem"
       }
-    ]
+    ],
+    "iconography": {
+      "set": "Lucide (lucide: in ux_icon)",
+      "grid": "24px",
+      "stroke": "1.75px, round caps and joins",
+      "sizes": "24px in navigation and search rows, 20px in dense rows",
+      "filledState": "fill the outline icon with currentColor (voted thumb, liked heart); no separate filled set",
+      "exceptions": "brand logos (fe:google), drawn rating stars"
+    }
   },
   "components": [
     {
@@ -135,7 +143,7 @@
       "kind": "nav",
       "refersTo": "tab-bar",
       "description": "Floating bottom navigation below lg: five equal tabs, active = action on a selected pill.",
-      "html": "<nav class=\"ds-tabbar\" aria-label=\"Main\"><a class=\"ds-tab\" href=\"#\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"m2.25 12 8.954-8.955a1.126 1.126 0 0 1 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75\"/></svg><span>Home</span></a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z\"/></svg><span>Search</span></a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z\"/></svg><span>Profile</span></a></nav>",
+      "html": "<nav class=\"ds-tabbar\" aria-label=\"Main\"><a class=\"ds-tab\" href=\"#\" aria-current=\"page\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8\"/><path d=\"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></g></svg><span>Home</span></a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21 21l-4.34-4.34\"/><circle cx=\"11\" cy=\"11\" r=\"8\"/></g></svg><span>Search</span></a><a class=\"ds-tab\" href=\"#\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/><path d=\"M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662\"/></g></svg><span>Profile</span></a></nav>",
       "css": ".ds-tabbar{display:grid;grid-template-columns:repeat(3,1fr);height:64px;max-width:28rem;padding:4px;border-radius:var(--radius-pill);border:1px solid oklch(1 0 0 / .6);background:oklch(1 0 0 / .75);backdrop-filter:blur(24px) saturate(1.5);box-shadow:var(--shadow-overlay);font-family:var(--font-sans)}.ds-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:var(--radius-pill);color:var(--muted-strong);text-decoration:none;font-size:var(--text-label);line-height:1.25;font-weight:600}.ds-tab svg{width:24px;height:24px}.ds-tab:hover{color:var(--fg)}.ds-tab[aria-current=page]{background:var(--selected);color:var(--action)}.ds-tab:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}"
     },
     {
@@ -151,7 +159,7 @@
       "kind": "button",
       "refersTo": "round-button",
       "description": "44px glass circle for back and page actions below lg.",
-      "html": "<button class=\"ds-round\" aria-label=\"Back\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18\"/></svg></button>",
+      "html": "<button class=\"ds-round\" aria-label=\"Back\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"m12 19l-7-7l7-7m7 7H5\"/></svg></button>",
       "css": ".ds-round{display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:999px;background:oklch(1 0 0 / .75);backdrop-filter:blur(24px);box-shadow:var(--shadow-raised);color:var(--fg);cursor:pointer}.ds-round svg{width:20px;height:20px}.ds-round:hover{background:var(--surface)}.ds-round[aria-expanded=true]{background:var(--selected);color:var(--action)}.ds-round:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
     },
     {
@@ -159,7 +167,7 @@
       "kind": "input",
       "refersTo": "search-field",
       "description": "Filled pill quick search; white with an action outline on focus.",
-      "html": "<label class=\"ds-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z\"/></svg><input type=\"search\" placeholder=\"Coaster, park or rider\" aria-label=\"Search\"><kbd>/</kbd></label>",
+      "html": "<label class=\"ds-search\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m21 21l-4.34-4.34\"/><circle cx=\"11\" cy=\"11\" r=\"8\"/></g></svg><input type=\"search\" placeholder=\"Coaster, park or rider\" aria-label=\"Search\"><kbd>/</kbd></label>",
       "css": ".ds-search{position:relative;display:block;max-width:28rem}.ds-search svg{position:absolute;left:12px;top:50%;width:20px;height:20px;transform:translateY(-50%);color:var(--muted);pointer-events:none}.ds-search input{width:100%;height:44px;padding:0 44px 0 40px;border:1px solid transparent;border-radius:var(--radius-pill);background:var(--subtle);color:var(--fg);font:400 1rem/1.5 var(--font-sans)}.ds-search input::placeholder{color:var(--muted)}.ds-search input:focus{background:var(--surface);border-color:var(--action);outline:2px solid var(--action);outline-offset:0}.ds-search kbd{position:absolute;right:12px;top:50%;transform:translateY(-50%);padding:0 6px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);font:.875rem/1.25 var(--font-mono);color:var(--muted)}.ds-search:focus-within kbd{display:none}"
     },
     {
@@ -215,6 +223,11 @@
         "name": "The Floating Glass Rule",
         "body": "Translucency is reserved for navigation that floats over scrolling content: white at 75–85% with a strong backdrop blur. The tab bar (75%, 1px white 60% edge, overlay shadow), the round page buttons (75%, raised shadow), the compact page bar (80%, a 1px line shadow at its foot) and the desktop header (85%, 1px line border). Content cards, panels and dialogs stay opaque.",
         "section": "elevation"
+      },
+      {
+        "name": "The One Icon Set Rule",
+        "body": "Every icon is Lucide at a 1.75px stroke, one icon per meaning (coaster roller-coaster, park ferris-wheel, review message-square-text, photo image). Filled states fill the same outline. Only brand logos and the drawn rating stars sit outside the set; CI fails on any other locked set.",
+        "section": "components"
       }
     ],
     "dos": [

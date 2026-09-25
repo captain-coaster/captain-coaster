@@ -76,6 +76,9 @@ jobs:
                       exit 1
                   fi
 
+            - name: Check icon sets (Lucide only, plus listed exceptions)
+              run: npm run check:icon-sets
+
             - name: Lint Parameters and Services
               run: ./bin/console lint:container --no-debug
 

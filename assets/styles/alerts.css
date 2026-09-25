@@ -118,26 +118,26 @@
     height: 16px;
     margin-top: -8px;
     line-height: 1;
-    background-image: url(../icons/heroicons/information-circle.svg);
+    background-image: url(../icons/lucide/info.svg);
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: contain;
 }
 
 .cc-alert[class*="cc-alert--styled-"].cc-alert--danger:after {
-    background-image: url(../icons/heroicons-solid/x-circle.svg);
+    background-image: url(../icons/lucide/circle-x.svg);
 }
 
 .cc-alert[class*="cc-alert--styled-"].cc-alert--success:after {
-    background-image: url(../icons/heroicons-solid/check-circle.svg);
+    background-image: url(../icons/lucide/circle-check.svg);
 }
 
 .cc-alert[class*="cc-alert--styled-"].cc-alert--warning:after {
-    background-image: url(../icons/heroicons/exclamation-triangle.svg);
+    background-image: url(../icons/lucide/triangle-alert.svg);
 }
 
 .cc-alert[class*="cc-alert--styled-"].cc-alert--info:after {
-    background-image: url(../icons/heroicons/information-circle.svg);
+    background-image: url(../icons/lucide/info.svg);
 }
 
 /* Small triangle notch at the edge of the colored left border. */

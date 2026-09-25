@@ -1,4 +1,5 @@
 import { trans } from '../translator';
+import { icon } from './icons';
 
 /**
  * Shared behavior for the two AJAX search-dropdown controllers
@@ -146,7 +147,7 @@ export function SearchDropdown(Base) {
         showErrorState(message) {
             if (!this.hasResultsTarget) return;
             this.resultsTarget.innerHTML = `<div class="search-error">
-                <div class="search-error-icon">⚠️</div>
+                <div class="search-error-icon">${icon('warning')}</div>
                 <div class="search-error-text">${this.escapeHtml(message)}</div>
             </div>`;
             this.showDropdown();

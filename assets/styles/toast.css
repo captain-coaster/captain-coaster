@@ -39,15 +39,8 @@
 }
 
 .notification__icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    color: var(--on-action);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--text-caption);
-    font-weight: 600;
+    font-size: 20px;
     flex-shrink: 0;
 }
 
@@ -62,6 +55,7 @@
     opacity: 0.5;
     font-size: var(--text-lg);
     line-height: 1;
+    display: flex;
     padding: 0;
     margin: 0;
     cursor: pointer;
@@ -79,10 +73,6 @@
     border: 1px solid var(--success);
 }
 
-.notification--success .notification__icon {
-    background: var(--success);
-}
-
 .notification--success .notification__close {
     color: var(--success);
 }
@@ -90,10 +80,6 @@
 .notification--info {
     color: var(--action);
     border: 1px solid var(--action);
-}
-
-.notification--info .notification__icon {
-    background: var(--action);
 }
 
 .notification--info .notification__close {
@@ -105,10 +91,6 @@
     border: 1px solid var(--warning);
 }
 
-.notification--warning .notification__icon {
-    background: var(--warning);
-}
-
 .notification--warning .notification__close {
     color: var(--warning);
 }
@@ -116,10 +98,6 @@
 .notification--danger {
     color: var(--danger);
     border: 1px solid var(--danger);
-}
-
-.notification--danger .notification__icon {
-    background: var(--danger);
 }
 
 .notification--danger .notification__close {

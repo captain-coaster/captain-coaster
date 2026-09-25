@@ -15,7 +15,7 @@
        data-search-search-url-value="{{ path('api_search') }}"
        data-search-results-url-value="{{ path('search_index') }}">
     <label for="{{ id }}" class="sr-only">{{ 'app.search.label'|trans }}</label>
-    {{ ux_icon('heroicons:magnifying-glass', {class: 'pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted', 'aria-hidden': 'true'}) }}
+    {{ ux_icon('lucide:search', {class: 'pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted', 'aria-hidden': 'true'}) }}
     <input id="{{ id }}"
            name="query"
            type="search"
@@ -37,16 +37,16 @@
             class="absolute top-1/2 right-0 hidden size-11 -translate-y-1/2 place-items-center rounded-full text-muted hover:bg-subtle hover:text-ink group-data-has-content:grid"
             data-action="click->search#clearSearch"
             aria-label="{{ 'app.search.clear'|trans }}">
-      {{ ux_icon('heroicons:x-mark', {class: 'size-5'}) }}
+      {{ ux_icon('lucide:x', {class: 'size-5'}) }}
     </button>
     {% if shortcut %}
       {# Desktop, focused and empty: recent searches and Advanced search, like the mobile dialog. #}
       <div class="absolute inset-x-0 top-full z-40 mt-1 hidden rounded-card border border-line bg-surface p-2 shadow-overlay group-focus-within:block group-data-has-content:hidden">
         <twig:Nav:RecentSearches class="mb-1 border-b border-line pb-2"/>
         <a href="{{ path('coaster_search_index') }}" class="flex min-h-11 items-center gap-3 rounded-control px-2 text-ink hover:bg-subtle">
-          {{ ux_icon('heroicons:adjustments-horizontal', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
+          {{ ux_icon('lucide:sliders-horizontal', {class: 'size-5 text-muted', 'aria-hidden': 'true'}) }}
           <span class="flex-1">{{ 'nav.advanced_search'|trans }}</span>
-          {{ ux_icon('heroicons:chevron-right', {class: 'size-4 text-muted', 'aria-hidden': 'true'}) }}
+          {{ ux_icon('lucide:chevron-right', {class: 'size-4 text-muted', 'aria-hidden': 'true'}) }}
         </a>
       </div>
     {% endif %}

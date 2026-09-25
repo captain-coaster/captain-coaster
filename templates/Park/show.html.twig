@@ -16,7 +16,7 @@
             <div class="cc-panel cc-panel__body">
                 <div class="grid grid-cols-2 gap-5 text-center">
                     <div>
-                        <p>{{ ux_icon('heroicons:map-pin', {'class': 'w-5 h-5 display-inline-block text-info'}) }}</p>
+                        <p>{{ ux_icon('lucide:roller-coaster', {'class': 'size-5 text-info'}) }}</p>
                         <h5 class="text-semibold m-0">
                             {{ park.openedCoasters|length }}
                         </h5>
@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div>
-                        <p>{{ ux_icon('heroicons:puzzle-piece', {'class': 'w-5 h-5 display-inline-block text-action'}) }}</p>
+                        <p>{{ ux_icon('lucide:baby', {'class': 'size-5 text-action'}) }}</p>
                         <h5 class="text-semibold m-0">
                             {{ park.operatingKiddies|length }}
                         </h5>
@@ -90,7 +90,7 @@
                                     {{ helper.picture(coaster.mainImage.filename, 200, 150, coaster.name, 'img-rounded', 'lazy', 'width:200px;') }}
                                 {% else %}
                                     <div class="img-rounded flex aspect-[4/3] items-center justify-center bg-canvas text-muted" style="width:200px;">
-                                        {{ ux_icon('heroicons:photo', {'class': 'w-8 h-8'}) }}
+                                        {{ ux_icon('lucide:image', {'class': 'w-8 h-8'}) }}
                                     </div>
                                 {% endif %}
                             </a>
@@ -138,7 +138,7 @@
                             </ul>
                             <ul class="list-inline list-inline-separate text-muted mb-[5px]">
                                 <li>
-                                    {{ ux_icon('heroicons:arrow-up', {'class': 'w-4 h-4 text-warning-600'}) }}
+                                    {{ ux_icon('lucide:trending-up', {'class': 'w-4 h-4 text-warning-600'}) }}
                                     {% if coaster.height is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
@@ -146,7 +146,7 @@
                                     {% endif %}
                                 </li>
                                 <li>
-                                    {{ ux_icon('heroicons:rocket-launch', {'class': 'w-4 h-4 text-success-400'}) }}
+                                    {{ ux_icon('lucide:zap', {'class': 'w-4 h-4 text-success-400'}) }}
                                     {% if coaster.speed is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
@@ -154,7 +154,7 @@
                                     {% endif %}
                                 </li>
                                 <li>
-                                    {{ ux_icon('heroicons:arrows-pointing-out', {'class': 'w-4 h-4 text-cc-blue'}) }}
+                                    {{ ux_icon('lucide:arrow-left-right', {'class': 'w-4 h-4 text-cc-blue'}) }}
                                     {% if coaster.length is null %}
                                         {{ ('data.unknown'|trans([], 'database')) }}
                                     {% else %}
@@ -162,7 +162,7 @@
                                     {% endif %}
                                 </li>
                                 <li>
-                                    {{ ux_icon('heroicons:arrow-path', {'class': 'w-4 h-4 text-danger-400'}) }}
+                                    {{ ux_icon('lucide:repeat', {'class': 'w-4 h-4 text-danger-400'}) }}
                                     &nbsp;{{ coaster.inversionsNumber|default('0') }}
                                 </li>
                             </ul>

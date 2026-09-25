@@ -132,3 +132,19 @@ summary:focus-visible,
 :where(input, textarea) {
     caret-color: var(--action);
 }
+
+/*
+ * Lucide icons (config/packages/ux_icons.yaml) sit inline with text, unlike
+ * Preflight's block SVGs. Each shape carries its own stroke-width/fill
+ * attributes; inherit them from the <svg> instead, so the set's 1.75 stroke
+ * and a filled state (`fill: currentColor` on the icon) reach the drawing.
+ */
+svg[data-icon-set="lucide"] {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+svg[data-icon-set="lucide"] * {
+    stroke-width: inherit;
+    fill: inherit;
+}

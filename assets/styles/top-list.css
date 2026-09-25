@@ -219,6 +219,9 @@
 /* Save status indicator */
 .save-status {
     position: fixed;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     top: 20px;
     right: 20px;
     padding: 8px 16px;
@@ -246,20 +249,6 @@
     background-color: var(--cc-danger);
     color: var(--on-action);
     border: 1px solid var(--danger);
-}
-
-/* Spinner animation */
-.spinner {
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 /* Mobile optimizations */
@@ -385,10 +374,6 @@
 
     .sortable-chosen {
         transform: none;
-    }
-
-    .spinner {
-        animation: none;
     }
 }
 

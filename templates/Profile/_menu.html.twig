@@ -11,45 +11,45 @@
 
     <div class="cc-list-group no-border pt-0">
     <a href="{{ path('profile') }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:user', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:user', {'class': 'w-4 h-4'}) }}
         {{ 'profile.title'|trans }}
     </a>
     <a href="{{ path('profile_settings') }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:cog-6-tooth', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:settings', {'class': 'w-4 h-4'}) }}
         {{ 'profile.settings.title'|trans }}
     </a>
     <a href="{{ path('profile_ratings') }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:star', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:star', {'class': 'w-4 h-4'}) }}
         {{ 'profile.menu.ratings'|trans }}
         <span class="cc-badge bg-cc-teal-400 pull-right">{{ user.ratings|length }}</span>
     </a>
     <a href="{{ path('user_reviews', {'id': user.id}) }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:megaphone', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:message-square-text', {'class': 'w-4 h-4'}) }}
         {{ 'profile.menu.reviews'|trans }}
     </a>
     <a href="{{ path('user_tops', {'id': user.id}) }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:clipboard', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:clipboard-list', {'class': 'w-4 h-4'}) }}
         {{ 'profile.menu.tops'|trans }}
     </a>
     {% if images_counter > 0 %}
         <a href="{{ path('user_pictures', {'id': user.id}) }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:camera', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:image', {'class': 'w-4 h-4'}) }}
             {{ 'profile.menu.photos'|trans }}
             <span class="cc-badge bg-cc-teal-400 pull-right">{{ images_counter }}</span>
         </a>
     {% endif %}
     <a href="{{ path('map_user', {'id': user.id}) }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:map-pin', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:map-pin', {'class': 'w-4 h-4'}) }}
         {{ 'profile.menu.map'|trans }}
     </a>
     {% set unread = unread_notification_count() %}
     <a href="{{ path('notification_index') }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:bell', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:bell', {'class': 'w-4 h-4'}) }}
         {{ 'notif.title'|trans({}, 'notification') }}
         {% if unread > 0 %}<span class="cc-badge bg-cc-teal-400 pull-right">{{ unread }}</span>{% endif %}
     </a>
     <a href="{{ path('logout') }}" class="cc-list-group__item">
-        {{ ux_icon('heroicons:arrow-right-start-on-rectangle', {'class': 'w-4 h-4'}) }}
+        {{ ux_icon('lucide:log-out', {'class': 'w-4 h-4'}) }}
         {{ 'nav.sign_out'|trans }}
     </a>
     </div>

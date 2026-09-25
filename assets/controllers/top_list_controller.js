@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
+import { icon } from '../js/icons';
 
 // stimulusFetch: 'lazy' — only used on the top-list edit page
 
@@ -222,13 +223,13 @@ export default class extends Controller {
 
         switch (status) {
             case 'saving':
-                statusElement.innerHTML = `<i class="icon-spinner2 spinner"></i> ${trans('save_status.saving', {}, 'top')}`;
+                statusElement.innerHTML = `${icon('loading')} ${trans('save_status.saving', {}, 'top')}`;
                 break;
             case 'saved':
-                statusElement.innerHTML = `<i class="icon-checkmark3"></i> ${trans('save_status.saved', {}, 'top')}`;
+                statusElement.innerHTML = `${icon('check')} ${trans('save_status.saved', {}, 'top')}`;
                 break;
             case 'error':
-                statusElement.innerHTML = `<i class="icon-warning2"></i> ${trans('save_status.error', {}, 'top')}`;
+                statusElement.innerHTML = `${icon('warning')} ${trans('save_status.error', {}, 'top')}`;
                 break;
         }
 

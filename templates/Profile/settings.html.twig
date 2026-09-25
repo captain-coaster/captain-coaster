@@ -118,7 +118,7 @@
               {% endif %}
 
               <button type="submit" class="cc-button bg-cc-teal-400 cc-button--labeled cc-button--labeled-right pull-right">
-                <b>{{ ux_icon('heroicons:arrow-right-circle', {'class': 'w-4 h-4'}) }}</b>
+                <b>{{ ux_icon('lucide:circle-arrow-right', {'class': 'w-4 h-4'}) }}</b>
                 {{ 'profile.settings.save'|trans }}
               </button>
 
@@ -142,7 +142,7 @@
               <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
                 <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
                 <button type="submit" class="cc-button cc-button--danger cc-button--labeled cc-button--labeled-right">
-                  <b>{{ ux_icon('heroicons:trash', {'class': 'icon-size-16'}) }}</b>
+                  <b>{{ ux_icon('lucide:trash-2', {'class': 'size-4'}) }}</b>
                   {{ 'profile.delete_account.button'|trans }}
                 </button>
               </form>

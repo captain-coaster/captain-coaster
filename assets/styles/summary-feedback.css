@@ -25,7 +25,7 @@
 
 .summary-feedback-icons {
     display: inline-flex;
-    gap: 2px;
+    gap: 12px;
 }
 
 .summary-feedback-icon-button {
@@ -50,9 +50,8 @@
     cursor: not-allowed;
 }
 
-.summary-feedback-icon-button:not(.voted) .summary-feedback-icon-filled,
-.summary-feedback-icon-button.voted .summary-feedback-icon-outline {
-    display: none;
+.summary-feedback-icon-button.voted svg {
+    fill: currentColor;
 }
 
 .summary-feedback-counts {
@@ -65,12 +64,3 @@
     font-size: var(--text-caption);
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.summary-feedback-buttons .spinner {
-    animation: spin 1s linear infinite;
-}

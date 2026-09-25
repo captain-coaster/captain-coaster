@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import { trans } from '../translator';
 import { SearchDropdown } from '../js/search-dropdown';
 import { rememberRecentSearch } from '../js/recent-searches';
-import { searchTypeIcon } from '../js/search-type-icons';
+import { icon } from '../js/icons';
 
 /**
  * Site-wide search bar -- shared debounce/fetch/keyboard-nav/dropdown
@@ -124,7 +124,7 @@ export default class extends SearchDropdown(Controller) {
 
         return `
             <div class="search-result-item" data-index="${index}" data-type="${item.type}" data-id="${item.id}" data-slug="${this.escapeHtml(item.slug)}">
-                <div class="search-result-icon" aria-hidden="true">${searchTypeIcon(item.type)}</div>
+                <div class="search-result-icon" aria-hidden="true">${icon(item.type)}</div>
                 <div class="search-result-content">
                     <div class="search-result-name">${name}</div>
                     ${subtitle ? `<div class="search-result-subtitle">${subtitle}</div>` : ''}
@@ -152,7 +152,7 @@ export default class extends SearchDropdown(Controller) {
 
     renderNoResults(query) {
         return `<div class="search-no-results">
-            <div class="search-no-results-icon">🔍</div>
+            <div class="search-no-results-icon">${icon('search')}</div>
             <div class="search-no-results-text">${trans('search_index.noResult')}</div>
         </div>`;
     }
@@ -161,7 +161,7 @@ export default class extends SearchDropdown(Controller) {
         return `<div class="search-show-more" data-action="click->search#showMoreResults" data-query="${this.escapeHtml(query)}">
             <div class="search-show-more-content">
                 <span>${trans('search_index.more')}</span>
-                <i class="icon-arrow-right8"></i>
+                ${icon('arrow-right')}
             </div>
         </div>`;
     }
