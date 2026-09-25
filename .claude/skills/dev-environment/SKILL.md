@@ -30,7 +30,7 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
 2. Start Symfony and Vite: `bin/dev`. Ports are fixed per checkout: the main checkout is always http://localhost:8000 (Vite 5173); a worktree keeps the slot it was first given in `var/dev-slot` (8001/5174, 8002/5175, ...). It prints the desktop and phone (LAN IP) URLs; re-run it after changing Wi-Fi. Plain HTTP on purpose (`.symfony.local.yaml`): a phone can't trust the local CA.
 3. Health check: request the printed URL, confirm 200.
-4. CLI commands that print URLs (`app:dev:login-link`) use `DEFAULT_URI`, which defaults to port 8000 — in a worktree prefix them: `DEFAULT_URI=http://localhost:<port> php bin/console ...`.
+4. `app:dev:login-link <email>` prints a link to http://localhost:8000; in a worktree or for the phone, pass the URL `bin/dev` printed: `--base-url=http://<LAN IP>:<port>`.
 
 ## Stop
 
