@@ -185,8 +185,10 @@ filters:
 
 user_profile:
     title: 'Profile • {name}'
+    ratings: 'Show their ratings'
     reviews: 'Show their reviews'
     main_top: 'Show their Top Coasters'
+    tops: 'Show their other tops'
     map: 'Show their coaster map'
     pictures: 'Show their pictures'
 

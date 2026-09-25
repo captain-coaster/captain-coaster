@@ -190,8 +190,10 @@ filters:
 
 user_profile:
     title: 'Profil • {name}'
+    ratings: Voir ses notes
     reviews: Voir ses avis
     main_top: Voir son Top Coasters
+    tops: Voir ses autres tops
     map: Voir sa carte
     pictures: Voir ses photos
 
@@ -439,6 +441,11 @@ contact:
         title: Contact - Captain Coaster
     flash:
         success: "Merci {name}, ton email a été envoyé à l'équipe de Captain Coaster."
+
+coaster_search:
+    title: 'Rechercher des coasters'
+    num_found: '{num} coasters trouvés'
+    no_results: 'Aucun coaster ne correspond à vos critères'
 
 nearby:
     title: Coasters à proximité
