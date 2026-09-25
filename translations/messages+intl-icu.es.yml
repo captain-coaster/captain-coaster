@@ -190,8 +190,10 @@ filters:
 
 user_profile:
     title: 'Perfil • {name}'
+    ratings: Mostrar sus notas
     reviews: 'Mostrar sus reseñas'
     main_top: 'Mostrar sus Top Coasters'
+    tops: Mostrar sus otros tops
     map: 'Mostrar su mapa de montañas rusas'
     pictures: 'Mostrar sus fotos'
 
@@ -439,6 +441,11 @@ contact:
         title: Contacto de formulario Captain Coaster
     flash:
         success: 'Gracias {name}, vuestro mensaje fue enviado al personal de Captain Coaster..'
+
+coaster_search:
+    title: 'Buscar montañas rusas'
+    num_found: '{num} montañas rusas encontradas'
+    no_results: 'Ninguna montaña rusa coincide con tus criterios'
 
 nearby:
     title: Busca una montaña rusa
