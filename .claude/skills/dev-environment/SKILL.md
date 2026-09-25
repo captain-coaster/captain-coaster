@@ -28,9 +28,9 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
    **No access to the shared `captain` DB** (e.g. simulating an external contributor's setup, or an actually fresh clone): create the isolated `captain_<slug>` DB empty instead of cloning it, then `composer db-setup` (builds the schema from the current entities and marks all migrations as already applied — running the oldest migrations directly fails on an empty DB) followed by `php bin/console doctrine:fixtures:load` for a small set of sample data.
 
-2. Start Symfony and Vite: `bin/dev`. Ports are fixed per checkout: the main checkout is always http://localhost:8000 (Vite 5173); a worktree keeps the slot it was first given in `var/dev-slot` (8001/5174, 8002/5175, ...). It prints the desktop and phone (LAN IP) URLs; re-run it after changing Wi-Fi. Plain HTTP on purpose (`.symfony.local.yaml`): a phone can't trust the local CA.
+2. Start Symfony and Vite: `bin/dev`. Ports are fixed per checkout: the main checkout is always https://localhost:8000 (Vite 5173); a worktree keeps the slot it was first given in `var/dev-slot` (8001/5174, 8002/5175, ...). HTTPS uses Symfony CLI's own certificate (`symfony server:ca:install` once; without it everything falls back to HTTP), shared with Vite. It prints the desktop and phone (LAN IP) URLs; re-run it after changing Wi-Fi. The certificate only covers localhost: on a phone, accept the warning once on both printed URLs (site and Vite), or the page loads without CSS/JS.
 3. Health check: request the printed URL, confirm 200.
-4. `app:dev:login-link <email>` prints a link to http://localhost:8000; in a worktree or for the phone, pass the URL `bin/dev` printed: `--base-url=http://<LAN IP>:<port>`.
+4. `app:dev:login-link <email>` prints a link to https://127.0.0.1:8000; in a worktree or for the phone, pass the URL `bin/dev` printed: `--base-url=https://<LAN IP>:<port>`.
 
 ## Stop
 
@@ -48,4 +48,4 @@ For the current checkout: `bin/dev stop` (stops Vite too — it's a Symfony CLI 
 
 - `composer install` and `npm install` are per-worktree; `vendor/` and `node_modules/` are not shared.
 - Adminer is on http://localhost:8081.
-- Over HTTP on a LAN IP (phone), the `Secure` remember-me cookie isn't stored and secure-context browser APIs (geolocation) are off; localhost is unaffected. Google sign-in only works where the redirect URI is registered — use `app:dev:login-link` otherwise.
+- Google sign-in only works where its redirect URI is registered — use `app:dev:login-link` otherwise.

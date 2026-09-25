@@ -39,7 +39,7 @@ Join us in shaping the world's best roller coaster rankings!
     ```shell
     bin/dev
     ```
-10. Browse the application at http://localhost:8000 (the phone URL on your local network is printed too). Stop with `bin/dev stop`.
+10. Browse the application at https://localhost:8000 (run `symfony server:ca:install` once for HTTPS; the phone URL on your local network is printed too). Stop with `bin/dev stop`.
 
 ### Option 2: Full Docker Setup
 

@@ -11,9 +11,11 @@ const { version: maplibreGlVersion } = JSON.parse(
     readFileSync('./node_modules/maplibre-gl/package.json', 'utf-8'),
 );
 
+// bin/dev passes Symfony CLI's TLS certificate, so assets share the page's scheme.
+const tlsP12 = process.env.VITE_TLS_P12;
 const devOrigin =
     process.env.VITE_DEV_ORIGIN ??
-    `http://localhost:${process.env.VITE_PORT ?? 5173}`;
+    `${tlsP12 ? 'https' : 'http'}://localhost:${process.env.VITE_PORT ?? 5173}`;
 
 export default defineConfig(({ command }) => ({
     input: {
@@ -40,13 +42,14 @@ export default defineConfig(({ command }) => ({
         // origin (the LAN IP, so a phone can load them too).
         port: Number(process.env.VITE_PORT ?? 5173),
         strictPort: true,
+        https: tlsP12 ? { pfx: readFileSync(tlsP12), passphrase: '' } : undefined,
         origin: devOrigin,
         // Vite's default CORS only allows localhost pages; a phone loads the
         // page from the LAN IP.
         cors: {
             origin: [
                 /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/,
-                `http://${new URL(devOrigin).hostname}:${process.env.SYMFONY_PORT ?? 8000}`,
+                `${new URL(devOrigin).protocol}//${new URL(devOrigin).hostname}:${process.env.SYMFONY_PORT ?? 8000}`,
             ],
         },
     },

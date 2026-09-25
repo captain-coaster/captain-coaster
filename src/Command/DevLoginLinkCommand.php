@@ -45,7 +45,7 @@ class DevLoginLinkCommand extends Command
     {
         $this
             ->addArgument('user', InputArgument::OPTIONAL, 'User id or email', '1')
-            ->addOption('base-url', null, InputOption::VALUE_REQUIRED, 'Host the link should point at', 'http://localhost:8000');
+            ->addOption('base-url', null, InputOption::VALUE_REQUIRED, 'Host the link should point at', 'https://127.0.0.1:8000');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

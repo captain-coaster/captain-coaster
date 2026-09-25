@@ -33,6 +33,17 @@ lan_ip() {
     fi
 }
 
+# Symfony CLI's own TLS certificate (symfony server:ca:install); Vite serves
+# its assets with it too. Valid for localhost only: a phone accepts the
+# browser warning once per port.
+tls_cert() {
+    local f
+    for f in "$HOME/Library/Application Support/symfony-cli/certs/default.p12" "$HOME/.symfony5/certs/default.p12"; do
+        [[ -f $f ]] && echo "$f" && return
+    done
+    return 0
+}
+
 port_owner() {
     local pid
     pid=$(lsof -nP -iTCP:"$1" -sTCP:LISTEN -t 2>/dev/null | head -1)
@@ -50,12 +61,17 @@ start)
     done
 
     ip=$(lan_ip)
-    export SYMFONY_PORT=$symfony_port VITE_PORT=$vite_port
-    export VITE_DEV_ORIGIN="http://${ip:-localhost}:$vite_port"
+    cert=$(tls_cert)
+    scheme=$([[ -n $cert ]] && echo https || echo http)
+    export SYMFONY_PORT=$symfony_port VITE_PORT=$vite_port VITE_TLS_P12=$cert
+    export VITE_DEV_ORIGIN="$scheme://${ip:-localhost}:$vite_port"
     symfony server:start -d --port="$symfony_port" --allow-all-ip >/dev/null
 
-    echo "Desktop: http://localhost:$symfony_port"
-    [[ -n $ip ]] && echo "Phone:   http://$ip:$symfony_port (same Wi-Fi)"
+    echo "Desktop: $scheme://localhost:$symfony_port"
+    if [[ -n $ip ]]; then
+        echo "Phone:   $scheme://$ip:$symfony_port (same Wi-Fi)"
+        [[ $scheme == https ]] && echo "         first time: accept the certificate warning there and on $scheme://$ip:$vite_port"
+    fi
     echo "Logs:    symfony server:log"
     ;;
 stop)
