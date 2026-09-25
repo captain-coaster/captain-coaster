@@ -28,24 +28,23 @@ Canonical path is `symfony server:start`. `docker-compose.full.yml` (nginx + php
 
    **No access to the shared `captain` DB** (e.g. simulating an external contributor's setup, or an actually fresh clone): create the isolated `captain_<slug>` DB empty instead of cloning it, then `composer db-setup` (builds the schema from the current entities and marks all migrations as already applied — running the oldest migrations directly fails on an empty DB) followed by `php bin/console doctrine:fixtures:load` for a small set of sample data.
 
-2. Start Symfony and Vite: `bin/dev`. Ports are fixed per checkout: the main checkout is always https://localhost:8000 (Vite 5173); a worktree keeps the slot it was first given in `var/dev-slot` (8001/5174, 8002/5175, ...). HTTPS uses Symfony CLI's own certificate (`symfony server:ca:install` once; without it everything falls back to HTTP), shared with Vite. It prints the desktop and phone (LAN IP) URLs; re-run it after changing Wi-Fi. The certificate only covers localhost: on a phone, accept the warning once on both printed URLs (site and Vite), or the page loads without CSS/JS.
+2. Start the Symfony server: `symfony server:start -d`. It also starts the Vite dev server (a worker in `.symfony.local.yaml`). Read the printed port — two worktrees get two ports, and Vite takes the next free one on its own.
 3. Health check: request the printed URL, confirm 200.
-4. `app:dev:login-link <email>` prints a link to https://127.0.0.1:8000; in a worktree or for the phone, pass the URL `bin/dev` printed: `--base-url=https://<LAN IP>:<port>`.
+4. Testing on a phone: `symfony server:stop && npm run build && symfony server:start -d --allow-all-ip --no-workers`, then open `https://<LAN IP>:<port>` (accept the certificate warning). Built assets are served by Symfony itself; `--no-workers` keeps the Vite dev server from overwriting them. Restart plainly afterwards: `--allow-all-ip` exposes the debug toolbar to the network.
 
 ## Stop
 
-For the current checkout: `bin/dev stop` (stops Vite too — it's a Symfony CLI worker).
+For the current checkout: `symfony server:stop` (stops Vite too).
 
 **Never run `docker compose down`.** Redis, MariaDB and Adminer are shared by every worktree.
 
 ## Cleanup sweep (on demand — e.g. "clean up my worktrees")
 
 1. For each worktree under `.claude/worktrees/`, check its branch's PR: `gh pr view <branch> --json state -q .state`. Eligible for removal if `MERGED`/`CLOSED`, or if there's no PR at all and the worktree is >7 days old (flag that one as "probably abandoned" rather than assuming). List everything eligible and confirm once with the user for the whole batch — never delete without asking, never one at a time.
-2. For each one confirmed: stop its server and Vite (`symfony server:stop --dir=<path>`; for a server started before `bin/dev` existed, also `pkill -f <path>/node_modules/.bin/vite`), drop its DB if it has one (`DROP DATABASE IF EXISTS \`captain_<slug>\`` — never `captain` itself), delete the branch (`-D` only if the PR is `MERGED`, `-d` otherwise), remove the worktree directory. Treat these as one unit — never drop the DB without removing the worktree, or vice versa.
+2. For each one confirmed: stop its server (`symfony server:stop --dir=<path>`) and Vite (`pkill -f <path>/node_modules/.bin/vite`), drop its DB if it has one (`DROP DATABASE IF EXISTS \`captain_<slug>\`` — never `captain` itself), delete the branch (`-D` only if the PR is `MERGED`, `-d` otherwise), remove the worktree directory. Treat these as one unit — never drop the DB without removing the worktree, or vice versa.
 3. Orphaned servers need no confirmation — they can't lose data. `symfony server:list` shows every running server by directory, including ones whose directory no longer exists on disk (e.g. removed outside the tool). Stop those directly (`symfony server:stop --dir=<path>`) whenever noticed.
 
 ## Notes
 
 - `composer install` and `npm install` are per-worktree; `vendor/` and `node_modules/` are not shared.
 - Adminer is on http://localhost:8081.
-- Google sign-in only works where its redirect URI is registered — use `app:dev:login-link` otherwise.

@@ -35,11 +35,18 @@ Join us in shaping the world's best roller coaster rankings!
     composer db-setup
     php bin/console doctrine:fixtures:load
     ```
-9. Start the Symfony and Vite dev servers
+9. Start the Symfony server; it starts the Vite dev server too (`.symfony.local.yaml`)
     ```shell
-    bin/dev
+    symfony server:start -d
     ```
-10. Browse the application at https://localhost:8000 (run `symfony server:ca:install` once for HTTPS; the phone URL on your local network is printed too). Stop with `bin/dev stop`.
+10. Browse the application at the URL provided by Symfony CLI (typically https://127.0.0.1:8000). Stop both with `symfony server:stop`.
+
+To test on a phone on the same network, build the assets and let the server listen on the network:
+```shell
+symfony server:stop && npm run build
+symfony server:start -d --allow-all-ip --no-workers
+```
+Then open `https://<your computer's IP>:8000` on the phone and accept the certificate warning. Restart with a plain `symfony server:start -d` to get the dev server and hot reload back.
 
 ### Option 2: Full Docker Setup
 
