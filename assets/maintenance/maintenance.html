@@ -135,17 +135,27 @@
             font-variant-numeric: tabular-nums;
         }
 
-        .status__dot {
+        /* Lucide loader-circle while waiting, check once the site answers. */
+        .spinner {
             flex: none;
-            width: .625rem;
-            height: .625rem;
-            border-radius: 50%;
-            background: currentColor;
+            width: 1.25rem;
+            height: 1.25rem;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
-        .status[data-state="waiting"] .status__dot,
-        .status[data-state="checking"] .status__dot {
-            animation: pulse 1.6s var(--ease-out) infinite;
+        .spinner__arc { transform-origin: center; animation: spin 1s linear infinite; }
+        .spinner__check { display: none; }
+        [data-state="back"] .spinner__arc { display: none; }
+        [data-state="back"] .spinner__check { display: inline; }
+
+        @keyframes spin { to { transform: rotate(1turn); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            .spinner__arc { animation-duration: 3s; }
         }
 
         .status[data-state="back"] {
@@ -184,20 +194,12 @@
             white-space: nowrap;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgb(24 43 58 / .45); }
-            100% { box-shadow: 0 0 0 .6rem rgb(24 43 58 / 0); }
-        }
-
         @media (width >= 40rem) {
             .logo { height: 2rem; margin-bottom: 2.5rem; }
             .sign__body { padding: 2.25rem 2.25rem 2rem; }
             .status { padding-left: 2.25rem; }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .status__dot { animation: none !important; }
-        }
     </style>
 </head>
 <body>
@@ -213,7 +215,10 @@
         </div>
         <div class="status" data-state="waiting">
             <p class="status__state">
-                <span class="status__dot" aria-hidden="true"></span>
+                <svg class="spinner" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path class="spinner__arc" d="M21 12a9 9 0 1 1-6.219-8.56"/>
+                    <path class="spinner__check" d="M20 6 9 17l-5-5"/>
+                </svg>
                 <span class="status__text" aria-hidden="true" data-t="waiting">Next check in 10 s</span>
             </p>
         </div>
@@ -226,8 +231,8 @@
             <rect x="2" y="108" width="32" height="8" rx="4"/>
             <rect x="446" y="108" width="32" height="8" rx="4"/>
         </g>
-        <path class="barrier__chain barrier__chain--sun" d="M18 46 Q240 104 462 46"><animate attributeName="d" to="M18 46 Q18 112 400 110" dur=".9s" begin="indefinite" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".5 0 .2 1"/></path>
-        <path class="barrier__chain barrier__chain--ink" d="M18 46 Q240 104 462 46"><animate attributeName="d" to="M18 46 Q18 112 400 110" dur=".9s" begin="indefinite" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".5 0 .2 1"/></path>
+        <path class="barrier__chain barrier__chain--sun" d="M18 46 Q240 104 462 46"></path>
+        <path class="barrier__chain barrier__chain--ink" d="M18 46 Q240 104 462 46"></path>
         <g class="barrier__ring">
             <rect x="9" y="39" width="18" height="14" rx="4"/>
             <rect x="453" y="39" width="18" height="14" rx="4"/>
@@ -304,7 +309,6 @@
     const status = document.querySelector('.status');
     const text = status.querySelector('.status__text');
     const live = document.querySelector('[data-live]');
-    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     let remaining = INTERVAL;
     let timer;
@@ -360,14 +364,9 @@
 
         if (back) {
             show('back', t.back);
-            // The queue chain unhooks from the right post and drops to the floor.
-            document.querySelectorAll('.barrier animate').forEach((a) => {
-                if (reduceMotion) a.parentElement.setAttribute('d', a.getAttribute('to'));
-                else a.beginElement();
-            });
             live.textContent = t.back;
             // replace(), not reload(): a form POST that hit the 503 must not be re-sent.
-            setTimeout(() => location.replace(location.href), reduceMotion ? 300 : 1200);
+            setTimeout(() => location.replace(location.href), 400);
             return;
         }
         schedule();
