@@ -90,14 +90,13 @@
                     </div>
                     {% endif %}
 
-                    {# User-specific Filter #}
-                    {% if (filterConfig.excluded_filters is not defined or 'notridden' not in filterConfig.excluded_filters) and filters.ridden is not defined %}
+                    {# User-specific Filter: needs an account, so hidden when signed out #}
+                    {% if is_granted('ROLE_USER') and (filterConfig.excluded_filters is not defined or 'notridden' not in filterConfig.excluded_filters) and filters.ridden is not defined %}
                     <div class="cc-field toggle-switch-cc-field">
                         <div class="checkbox">
                             <label class="display-block">
                                 {{ 'filters.notridden'|trans }}
                                 <input name="filters[notridden]" type="checkbox"
-                                    {% if not is_granted('ROLE_USER') %} disabled="disabled"{% endif %}
                                     {% if filters.notridden is defined and filters.notridden == "on" %} checked{% endif %}>
                             </label>
                         </div>
