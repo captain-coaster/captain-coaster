@@ -1,9 +1,6 @@
 /*
  * Page shell -- migrated together: theme/core/layout/{content,footer,
- * component-animation}.less. `sidebar.less` (also theme/core/layout) is
- * deliberately its own file (sidebar.css) -- it drives real JS toggle
- * behavior (filter_sheet_controller.js) needing its own scope, unrelated to
- * this shell.
+ * component-animation}.less.
  *
  * `.page-container`/`.page-content`/`.content-wrapper`/`.content` are
  * base.html.twig's page shell -- rendered on every page, unconditional.
@@ -85,8 +82,7 @@
  * only ever animates `background-color`/`color` in practice for this
  * selector group -- but "all" also lets a mobile WebKit tap promote the
  * element to its own compositing layer for the transition, which can
- * read as a sub-pixel text shift at the moment of tap (sidebar.css's own
- * cc-nav links use the narrow form below already, and don't show this).
+ * read as a sub-pixel text shift at the moment of tap.
  * Scoped to the properties that actually change.
  */
 .cc-button,
