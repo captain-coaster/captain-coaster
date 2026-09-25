@@ -67,9 +67,9 @@
         "purpose": "44px back and page-action buttons."
       },
       {
-        "name": "page-bar-scrolled",
+        "name": "page-header-bar",
         "value": "background: oklch(1 0 0 / .8); backdrop-filter: blur(24px); box-shadow: 0 1px 0 var(--border)",
-        "purpose": "Compact 56px page bar once the title scrolls away."
+        "purpose": "Compact 56px bar that fades in once the page title row scrolls away."
       },
       {
         "name": "desktop-header",
@@ -91,7 +91,7 @@
       {
         "name": "lg",
         "value": "64rem",
-        "purpose": "Tab bar and page bar below; desktop header from here."
+        "purpose": "Tab bar and compact page bar below; desktop header from here."
       },
       {
         "name": "xl",
@@ -213,7 +213,7 @@
       },
       {
         "name": "The Floating Glass Rule",
-        "body": "Translucency is reserved for navigation that floats over scrolling content: white at 75–85% with a strong backdrop blur. The tab bar (75%, 1px white 60% edge, overlay shadow), the round page buttons (75%, raised shadow), the scrolled page bar (80%, a 1px line shadow at its foot) and the desktop header (85%, 1px line border). Content cards, panels and dialogs stay opaque.",
+        "body": "Translucency is reserved for navigation that floats over scrolling content: white at 75–85% with a strong backdrop blur. The tab bar (75%, 1px white 60% edge, overlay shadow), the round page buttons (75%, raised shadow), the compact page bar (80%, a 1px line shadow at its foot) and the desktop header (85%, 1px line border). Content cards, panels and dialogs stay opaque.",
         "section": "elevation"
       }
     ],

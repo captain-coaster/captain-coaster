@@ -1,13 +1,14 @@
 import { Controller } from '@hotwired/stimulus';
 
 /**
- * Page:Header: once the large title scrolls under the compact bar, the bar
- * gets its translucent background and shows the title.
+ * Page:Header: once the title row scrolls under the top edge, the compact
+ * bar fades in with the back button, title and actions.
  */
 export default class extends Controller {
-    static targets = ['bar', 'title'];
+    static targets = ['bar', 'row'];
 
     connect() {
+        if (!this.hasBarTarget) return;
         this.observer = new IntersectionObserver(
             ([entry]) => {
                 const under =
@@ -16,7 +17,7 @@ export default class extends Controller {
             },
             { rootMargin: `-${this.barTarget.offsetHeight}px 0px 0px 0px` }
         );
-        this.observer.observe(this.titleTarget);
+        this.observer.observe(this.rowTarget);
     }
 
     disconnect() {
