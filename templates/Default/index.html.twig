@@ -38,7 +38,7 @@
         <h5 class="text-semibold m-0">
           {{ stats.nb_ratings|format_number }}
           {% if stats.nb_new_ratings > 0 %}
-            <span class="cc-badge bg-warning-400">+{{ stats.nb_new_ratings }}</span>
+            <span class="cc-badge cc-badge--primary">+{{ stats.nb_new_ratings }}</span>
           {% endif %}
         </h5>
         <span class="text-muted text-size-small">{{ 'index.stats.ratings'|trans }}</span>
