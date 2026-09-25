@@ -24,13 +24,15 @@
 
 /* From md the panel stays in view while the results scroll, under the
    sticky bars: Page:Header's compact bar (3.5rem) below lg, Nav:Header
-   (4rem + 1px border) from lg. */
+   (4rem + 1px border) from lg. A fixed height, not max-height: the white
+   column runs the full viewport height instead of stopping at its last
+   field. */
 @media (min-width: theme(--breakpoint-md)) {
     .sidebar-secondary {
         position: sticky;
         top: 3.5rem;
         align-self: flex-start;
-        max-height: calc(100dvh - 3.5rem);
+        height: calc(100dvh - 3.5rem);
         overflow-y: auto;
         overscroll-behavior: contain;
     }
@@ -39,7 +41,7 @@
 @media (min-width: theme(--breakpoint-lg)) {
     .sidebar-secondary {
         top: calc(4rem + 1px);
-        max-height: calc(100dvh - 4rem - 1px);
+        height: calc(100dvh - 4rem - 1px);
     }
 }
 

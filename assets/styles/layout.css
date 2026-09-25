@@ -33,6 +33,14 @@
     min-height: 100svh;
 }
 
+/* From lg Nav:Header (4rem + 1px border) sits above the shell in the flow;
+   without this a page that just fills the viewport (Map) scrolls by it. */
+@media (min-width: theme(--breakpoint-lg)) {
+    .page-container {
+        min-height: calc(100svh - 4rem - 1px);
+    }
+}
+
 /*
  * The original theme built this shell on real CSS tables
  * (.page-container: display:table, min-height:100vh; .page-content:
