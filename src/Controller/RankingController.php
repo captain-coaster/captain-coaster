@@ -56,7 +56,7 @@ class RankingController extends AbstractController
             'previousRanking' => $this->rankingRepository->findPrevious(),
             'filtersForm' => $this->filterService->getFilterData(),
             'filters' => $filters,
-            'top100' => \is_array($top100) ? $top100 : null,
+            'top100' => $top100,
         ]);
     }
 

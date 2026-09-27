@@ -48,7 +48,7 @@ class RiddenCoasterRepositoryTest extends TestCase
 
     /**
      * @param array<int>                                      $operatingTop100Ids result of the first (ids) query
-     * @param array{nb_top100: int, nb_top100_operating: int} $aggregate          result of the second (counts) query
+     * @param array{nb_top100: ?int, nb_top100_operating: ?int, nb_legends: ?int} $aggregate          result of the second (counts) query
      */
     private function stubQueries(array $operatingTop100Ids, array $aggregate): void
     {
@@ -72,7 +72,7 @@ class RiddenCoasterRepositoryTest extends TestCase
 
     public function testCountTop100ForUserFiltersOperatingCoastersByStatusNameNotId(): void
     {
-        $this->stubQueries([11, 22, 33], ['nb_top100' => 5, 'nb_top100_operating' => 3]);
+        $this->stubQueries([11, 22, 33], ['nb_top100' => 5, 'nb_top100_operating' => 3, 'nb_legends' => 1]);
 
         $this->repository->countTop100ForUser(new User());
 
@@ -87,22 +87,32 @@ class RiddenCoasterRepositoryTest extends TestCase
 
     public function testCountTop100ForUserReturnsAggregateCounts(): void
     {
-        $this->stubQueries([11, 22, 33], ['nb_top100' => 5, 'nb_top100_operating' => 3]);
+        $this->stubQueries([11, 22, 33], ['nb_top100' => 5, 'nb_top100_operating' => 3, 'nb_legends' => 1]);
 
         $result = $this->repository->countTop100ForUser(new User());
 
-        $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 3], $result);
+        $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 3, 'nb_legends' => 1], $result);
     }
 
     public function testCountTop100ForUserDoesNotCrashWhenNoCoasterIsOperating(): void
     {
         // No operating coasters at all — must not build an empty IN(), which
         // Doctrine can't compile.
-        $this->stubQueries([], ['nb_top100' => 5, 'nb_top100_operating' => 0]);
+        $this->stubQueries([], ['nb_top100' => 5, 'nb_top100_operating' => 0, 'nb_legends' => 0]);
 
         $result = $this->repository->countTop100ForUser(new User());
 
-        $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 0], $result);
+        $this->assertSame(['nb_top100' => 5, 'nb_top100_operating' => 0, 'nb_legends' => 0], $result);
+    }
+
+    public function testCountTop100ForUserReturnsZerosWhenNoTop100CoasterIsRidden(): void
+    {
+        // SUM() over no matching row is NULL, not 0.
+        $this->stubQueries([11, 22, 33], ['nb_top100' => null, 'nb_top100_operating' => null, 'nb_legends' => null]);
+
+        $result = $this->repository->countTop100ForUser(new User());
+
+        $this->assertSame(['nb_top100' => 0, 'nb_top100_operating' => 0, 'nb_legends' => 0], $result);
     }
 
     public function testGetLatestReviewsFiltersOnHasReviewColumn(): void
