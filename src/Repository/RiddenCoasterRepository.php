@@ -635,7 +635,14 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->setParameter('gone', Status::GONE)
                 ->getQuery();
 
-            return $query->getSingleResult();
+            $result = $query->getSingleResult();
+
+            // SUM() over no matching row is NULL.
+            return [
+                'nb_top100' => (int) $result['nb_top100'],
+                'nb_top100_operating' => (int) $result['nb_top100_operating'],
+                'nb_legends' => (int) $result['nb_legends'],
+            ];
         } catch (NonUniqueResultException) {
             return 0;
         }
