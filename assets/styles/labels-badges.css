@@ -6,7 +6,7 @@
  * just duplicate the same coupling check twice.
  *
  * Only variants actually used are kept: base `.cc-label`/`.cc-badge`,
- * `.cc-label--rounded`, `.cc-badge--primary`, `.cc-badge--flat`, and the
+ * `.cc-label--rounded`, `.cc-badge--primary`, and the
  * two color variants pros/cons tags use (`.cc-label--success/-danger`:
  * Includes/_review_item, Coaster/_ai_summary). `.cc-label--default/
  * -primary/-info/-warning/-purple` used to also be kept despite no
@@ -181,12 +181,6 @@
 .cc-badge--primary {
     background-color: var(--cc-primary);
     border-color: var(--cc-primary);
-}
-
-.cc-badge--flat {
-    background-color: transparent;
-    border-width: 2px;
-    padding: 0 .3125rem;
 }
 
 .cc-list-group__item > .cc-badge {

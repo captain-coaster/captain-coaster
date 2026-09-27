@@ -107,7 +107,7 @@ class CoasterRepositoryTest extends TestCase
         $this->fail('No main entity query was captured.');
     }
 
-    public function testFetchJoinsCountrySeatingTypeAndMainImageToAvoidNPlusOne(): void
+    public function testFetchJoinsCountryStatusManufacturerAndMainImageToAvoidNPlusOne(): void
     {
         $this->stubQueries(0);
 
@@ -115,9 +115,9 @@ class CoasterRepositoryTest extends TestCase
 
         $dql = $this->mainEntityDql();
 
-        // Regression guard: these three were previously joined (for filtering)
-        // but not selected, so Twig's coaster.park.country / .seatingType /
-        // .mainImage access lazy-loaded them one row at a time. Anchored to
+        // Regression guard: the ranking rows read coaster.park.country,
+        // .status, .manufacturer and .mainImage; joined (for filtering) but not selected,
+        // they'd lazy-load one row at a time. Anchored to
         // the SELECT clause itself (not just "appears somewhere in the DQL"),
         // since the join aliases also appear in the FROM/JOIN clauses
         // regardless of whether they're selected.
@@ -126,7 +126,8 @@ class CoasterRepositoryTest extends TestCase
         $selectedAliases = array_map('trim', explode(',', $matches[1]));
 
         $this->assertContains('country', $selectedAliases);
-        $this->assertContains('st', $selectedAliases);
+        $this->assertContains('s', $selectedAliases);
+        $this->assertContains('m', $selectedAliases);
         $this->assertContains('mi', $selectedAliases);
     }
 

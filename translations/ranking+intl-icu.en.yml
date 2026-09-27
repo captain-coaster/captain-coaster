@@ -1,0 +1,88 @@
+title: 'World Roller Coaster Rankings'
+description: "Discover the world's best coasters, with our monthly World Roller Coaster Rankings. Based on thousands of ratings and reviews, from over 20,000 users worldwide."
+no_results: 'No coasters found!'
+edition:
+    new: 'New'
+    next: 'Next ranking {date}'
+    how: 'All about the ranking'
+top100:
+    title: 'Your world top 100'
+    caption: 'Operating coasters ridden'
+    legends: '{count, plural, one {+# legend ridden, now gone} other {+# legends ridden, now gone}}'
+move:
+    new: 'New'
+    best: 'Record'
+    up: '{count, plural, one {Up # place} other {Up # places}}'
+    down: '{count, plural, one {Down # place} other {Down # places}}'
+row:
+    ridden: 'Ridden'
+    legend: 'Ridden, no longer operating'
+    world_rank: 'World #{rank}'
+legend:
+    title: 'Reading the ranking'
+    up: 'Places gained since last month'
+    down: 'Places lost since last month'
+    best: 'Its best rank ever'
+    new: 'New entry this month'
+    ridden: 'You have ridden it'
+    legend: 'A top 100 coaster you rode, no longer operating'
+    world: 'World rank, in a filtered list'
+pager:
+    label: 'Ranking pages'
+    more: 'Load {count} more'
+    total: '{count, plural, one {# coaster ranked} other {# coasters ranked}}'
+    jump: 'Jump to rank'
+info:
+    delta: '+{count, number} this month'
+    totals: 'The {month} ranking'
+    not_computed: "The ranking hasn't been computed yet. Check back after the next monthly update."
+    coasters_ranked:
+        short: 'Coasters'
+        long: 'Ranked coasters'
+    ratings: 'Ratings'
+    comparisons:
+        short: 'Pairs'
+        long: 'Analyzed pairs'
+    users: 'Voters'
+trend:
+    title: 'Growth since {year}'
+    metric: 'Metric'
+
+columns:
+    manufacturer: 'Manufacturer'
+    country: 'Country'
+    score: 'Duels won'
+
+learn_more:
+    title: 'All about the ranking'
+    brief:
+        title: "Captain Coaster's ranking in brief"
+        text:
+            "<p>Captain Coaster's ranking is based on a <b>pairwise comparison system</b>. Comparisons are derived from your Tops and Ratings — the more detailed they are, the better!</p>
+            <p>Tops are more precise, while ratings are quicker to use. To maximize your influence on the ranking, we recommend you <b>rate all your ridden coasters</b>, then <b>order your highest-rated coasters</b> in your Top.</p>"
+    duel:
+        title: 'A real duel'
+        caption: '#{first} against #{second}, {month} ranking'
+        riders: '{count, plural, one {# rider has ridden both.} other {# riders have ridden both.}}'
+        winner: '{name} wins this duel.'
+        expected: 'One duel among thousands: it is all the duels won together that set a coaster’s place.'
+        ties: 'Comparisons come from Tops and ratings. Two equal ratings count half for each side.'
+    principles:
+        title: 'Ranking principles'
+        duels:
+            title: 'Every coaster faces every other one.'
+            text: 'For each coaster in the ranking, we compute a head-to-head duel against every other coaster in the database to determine which one is better. The results of all these duels are then combined: a coaster that wins all its duels takes the #1 spot, one that only loses to #1 but beats everyone else becomes #2, and so on. The score reflects this proportion of duels won.'
+        riders:
+            title: 'Only riders who rode both get a say.'
+            text: 'Only riders who have experienced both coasters can weigh in on a duel. The comparison comes from your Top when both coasters are in it, otherwise from your ratings. The duel is won by the coaster with the majority of favorable comparisons, so the ranking reflects the genuine preferences of all riders.'
+        mass:
+            title: 'No mass effect.'
+            text: 'The total number of ratings a coaster receives has no influence. This is not a popularity contest: rare coasters have the same chance of ranking well as the most popular ones.'
+        influence:
+            title: 'The more you rate, the more you count.'
+            text: 'Rating just 1 coaster generates no comparison. Rating 10 coasters generates 45, rating 20 generates 190, and so on. The more coasters you ride and rate, the greater your influence on the ranking: rate all your ridden coasters, and keep riding more!'
+        majority:
+            title: 'No one can upset the ranking alone.'
+            text: 'Everyone has influence, but one person with a contrarian opinion on a coaster won’t drastically change its score: the majority view always prevails.'
+        yours: 'Your {ratings, number} ratings make {comparisons, number} comparisons.'
+        yours_top: 'Your {ratings, number} ratings and the {top, number} coasters in your Top make {comparisons, number} comparisons.'

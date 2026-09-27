@@ -22,9 +22,9 @@
      * colors can't creep back in. `white` is re-added in `@theme inline`. */
     --color-*: initial;
 
-    /* Page shell (DESIGN.md Layout): 75rem content max, fluid 20-48px gutters. */
+    /* Page shell (DESIGN.md Layout): 75rem content max, fluid 16-48px gutters (16px on phones, as iOS and Material). */
     --container-content: 75rem;
-    --spacing-gutter: clamp(1.25rem, 0.5rem + 3vw, 3rem);
+    --spacing-gutter: clamp(1rem, 3.5vw, 3rem);
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;

@@ -22,6 +22,8 @@ class RankingService
     // For elite coaster, we need more comparisons
     final public const int ELITE_SCORE = 95;
     final public const int MIN_DUELS_ELITE_SCORE = 650;
+    // Riders who compared the pair, for the duel shown on the learn-more page
+    final public const int FEATURED_DUEL_MIN_RIDERS = 30;
 
     /** @var array<int, array<int, float>> */
     private array $duels = [];
@@ -54,6 +56,7 @@ class RankingService
 
         $rank = 1;
         $coasterList = [];
+        $now = new \DateTime();
 
         foreach ($this->ranking as $coasterId => $score) {
             $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
@@ -61,7 +64,8 @@ class RankingService
             $coaster->setScore((string) $score);
             $coaster->setPreviousRank($coaster->getRank());
             $coaster->setRank($rank);
-            $coaster->setUpdatedAt(new \DateTime());
+            $coaster->recordBestRank($rank, $now);
+            $coaster->setUpdatedAt($now);
 
             // used just for command output
             $coasterList[] = $coaster;
@@ -326,9 +330,57 @@ class RankingService
         $ranking->setCoasterInTopNumber($this->em->getRepository(TopCoaster::class)->countAllInTops());
         $ranking->setComparisonNumber($this->totalComparisonNumber);
         $ranking->setRankedCoasterNumber(\count($this->ranking));
+        $ranking->setFeaturedDuel(self::featuredDuel($this->ranking, $this->duels));
 
         $this->em->persist($ranking);
         $this->em->flush();
+    }
+
+    /**
+     * Comparisons a rider feeds the ranking: every pair within their Top, plus every pair of rated coasters not
+     * already settled by the Top (both in it), as computeRanking() does.
+     *
+     * @param int $both Top coasters the rider also rated
+     */
+    public static function riderComparisons(int $ratings, int $top, int $both): int
+    {
+        $pairs = static fn (int $n): int => intdiv($n * ($n - 1), 2);
+
+        return $pairs($top) + $pairs($ratings) - $pairs($both);
+    }
+
+    /**
+     * A head-to-head to show on the learn-more page, drawn at random each month: a coaster ranked 3–20 against one
+     * 10 to 40 places lower, with enough riders, that the better-ranked one wins. It skips #1 vs #2 (a rivalry of
+     * its own) and the upsets where the better-ranked coaster loses the duel itself, which need more explaining.
+     * Each rider who compared the pair adds 1 to the two sides' sum (1 to the winner, 0.5 each for a tie).
+     *
+     * @param array<int, float>             $ranking coaster id => score, best first
+     * @param array<int, array<int, float>> $duels
+     *
+     * @return array{first: int, second: int, comparisons: int, firstWins: float}|null
+     */
+    public static function featuredDuel(array $ranking, array $duels): ?array
+    {
+        $ids = array_keys($ranking);
+        $candidates = [];
+
+        foreach (\array_slice($ids, 2, 18) as $index => $first) {
+            // $first is ranked $index + 3; its opponents are ranked 10 to 40 places lower
+            foreach (\array_slice($ids, $index + 12, 31) as $second) {
+                if (!isset($duels[$first][$second], $duels[$second][$first])) {
+                    continue;
+                }
+
+                $wins = $duels[$first][$second];
+                $comparisons = $wins + $duels[$second][$first];
+                if ($comparisons >= self::FEATURED_DUEL_MIN_RIDERS && $wins > $comparisons / 2) {
+                    $candidates[] = ['first' => $first, 'second' => $second, 'comparisons' => (int) round($comparisons), 'firstWins' => $wins];
+                }
+            }
+        }
+
+        return $candidates ? $candidates[array_rand($candidates)] : null;
     }
 
     /** Update "validDuels" column for a coaster. */

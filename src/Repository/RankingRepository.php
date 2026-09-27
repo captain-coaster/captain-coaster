@@ -43,6 +43,25 @@ class RankingRepository extends ServiceEntityRepository
         $resultCache = $this->getEntityManager()->getConfiguration()->getResultCache();
         $resultCache?->deleteItem('ranking_current');
         $resultCache?->deleteItem('ranking_previous');
+        $resultCache?->deleteItem('ranking_history');
+    }
+
+    /**
+     * Monthly totals of every ranking, oldest first.
+     *
+     * @return list<array{computedAt: \DateTimeInterface, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}>
+     */
+    public function findTotalsHistory(): array
+    {
+        /** @var list<array{computedAt: \DateTimeInterface, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}> $rows */
+        $rows = $this->createQueryBuilder('r')
+            ->select('r.computedAt', 'r.ratingNumber', 'r.userNumber', 'r.rankedCoasterNumber', 'r.comparisonNumber')
+            ->orderBy('r.computedAt', 'ASC')
+            ->getQuery()
+            ->enableResultCache(604800, 'ranking_history')
+            ->getArrayResult();
+
+        return $rows;
     }
 
     /**

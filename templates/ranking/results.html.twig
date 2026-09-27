@@ -1,52 +1,58 @@
-{% import "helper.html.twig" as helper %}
-
-<ul class="cc-media-list content-group">
-    {% for coaster in coasters %}
-        <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile">
-            <div class="cc-media__start">
-                <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                    {% if coaster.mainImage is not null %}
-                        {{ helper.picture(coaster.mainImage.filename, 96, 96, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
-                    {% endif %}
-                </a>
-            </div>
-            <div class="cc-media__body">
-                <h2 class="cc-media__heading mb-2.5">
-                    <a class="text-ink" href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
-                        {% if not filtered %}
-                            {{ coaster.rank }}&nbsp;-&nbsp;{{ coaster.name }}
-                        {% else %}
-                            {{ firstRank + loop.index0 }}&nbsp;-&nbsp;{{ coaster.name }} (#{{ coaster.rank }})
-                        {% endif %}
-                    </a>
-                    {{ helper.variation(coaster) }}
-                </h2>
-                <ul class="list-inline list-inline-separate text-muted mb-[5px]">
-                    <li>
-                        <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                            {{ coaster.park.name }}
-                        </a>
-                    </li>
-                    <li>{{ coaster.park.country.name|trans([], 'database') }}</li>
-                </ul>
-                <ul class="list-inline list-inline-separate text-muted mb-[5px]">
-                    {% if coaster.manufacturer %}
-                        <li>{{ coaster.manufacturer.name }}</li>{% endif %}
-                </ul>
-            </div>
-            <div class="cc-media__end text-center">
-                <h3 style="--score: {{ coaster.score|default(0) }}" class="score-color m-0 text-semibold text-nowrap">
-                    {{ coaster.score|format_number({'min_fraction_digit': 1, 'max_fraction_digit': 1}) }}%
-                </h3>
-                <span class="text-muted mb-2.5 mt-2.5 text-nowrap">
-            {{ 'coaster_ranking.duel_number'|trans({'count': coaster.validDuels}) }}
-          </span>
-            </div>
-        </li>
-    {% else %}
-        <li class="cc-media cc-panel cc-panel__body cc-media--stack-mobile">
-            <h5>{{ 'coaster_ranking.no_results'|trans }}</h5>
-        </li>
-    {% endfor %}
-</ul>
-{{ knp_pagination_render(coasters, null, {}, {'publicRoute': 'ranking_index'}) }}
+{#
+  Ranking results: the podium (#1 to #3, first page only), the chart rows, the pager. Rendered with the page and alone for filters and "load more".
+  From 56rem (the @container/results on #ranking-result) the podium steps aside and #1 to #3 join the ledger as plain rows,
+  so every coaster gets the ledger's columns. Anything added to the top 3 goes in both: Ranking:Podium and Ranking:Row.
+#}
+{% trans_default_domain 'ranking' %}
+{% set month = rankingMonth ?? 'now' %}
+{% set items = coasters.items|default([]) %}
+{% set podium = coasters.currentPageNumber == 1 ? items|slice(0, 3) : [] %}
+{% set rows = items|slice(podium|length) %}
+{% set digits = (firstRank + items|length - 1)|length %}
+{% if items is empty %}
+  <div class="flex flex-col items-center gap-4 rounded-card border border-line bg-surface p-6 text-center">
+    <p class="m-0 text-muted">{{ 'no_results'|trans }}</p>
+    {% if filtered %}
+      <a href="{{ path('ranking_index') }}" class="flex min-h-12 items-center justify-center rounded-control border border-control-line bg-surface px-4.5 py-2.5 font-semibold text-ink hover:bg-subtle">{{ 'filters.clear'|trans({}, 'messages') }}</a>
+    {% endif %}
+  </div>
+{% else %}
+  {% if podium is not empty %}
+    {# The podium lays out on its own width (container queries), not the viewport's: the filter column takes room from md #}
+    <div class="@container/podium @4xl/results:hidden">
+      <ol class="m-0 mb-3 grid list-none grid-cols-2 gap-3 p-0 @xl/podium:grid-cols-3">
+        {% for coaster in podium %}
+          <twig:Ranking:Podium :coaster="coaster" :position="filtered ? loop.index : coaster.rank" :month="month"
+                               :ridden="riddenIds[coaster.id] is defined" :filtered="filtered"/>
+        {% endfor %}
+      </ol>
+    </div>
+  {% endif %}
+  {# The ledger lays out on its own width too: from 56rem the manufacturer, country and score become columns (Ranking:Row).
+     With only podium coasters (a short filtered list) it has nothing to show below 56rem. #}
+  <div class="@container/ledger {{ rows is empty ? 'hidden @4xl/results:block' }}">
+    {# Column headings, sticky under the compact bar (below lg) or the desktop header; decorative, each cell names itself where needed #}
+    <div class="sticky top-14 z-10 hidden gap-3 rounded-t-card border border-b-0 border-line bg-surface px-4 py-2 text-caption font-semibold text-muted lg:top-16.25 @4xl/ledger:flex" aria-hidden="true">
+      {# Same tracks as Ranking:Row: rank, thumbnail, then the 3 : 2 : 1.5 shares and the score #}
+      <span class="{{ digits > 3 ? 'w-16' : 'w-14' }} shrink-0"></span>
+      <span class="w-16 shrink-0"></span>
+      <span class="min-w-0 flex-[3]"></span>
+      <span class="min-w-0 flex-[2]">{{ 'columns.manufacturer'|trans }}</span>
+      <span class="min-w-0 flex-[1.5]">{{ 'columns.country'|trans }}</span>
+      <span class="w-24 shrink-0 text-end">{{ 'columns.score'|trans }}</span>
+    </div>
+    {# Below sm the ledger bleeds to the screen edges, like a native list #}
+    <ol data-ranking-rows class="m-0 -mx-gutter list-none divide-y divide-line overflow-hidden border-y border-line bg-surface p-0 sm:mx-0 sm:rounded-card sm:border-x @4xl/ledger:rounded-t-none">
+      {% for coaster in podium %}
+        <twig:Ranking:Row :coaster="coaster" :position="filtered ? loop.index : coaster.rank" :month="month"
+                          :ridden="riddenIds[coaster.id] is defined" :filtered="filtered" :digits="digits"
+                          class="hidden @4xl/results:block"/>
+      {% endfor %}
+      {% for coaster in rows %}
+        <twig:Ranking:Row :coaster="coaster" :position="filtered ? firstRank + podium|length + loop.index0 : coaster.rank" :month="month"
+                          :ridden="riddenIds[coaster.id] is defined" :filtered="filtered" :digits="digits"/>
+      {% endfor %}
+    </ol>
+  </div>
+{% endif %}
+<twig:Ranking:Pager :pagination="coasters" :filters="queryFilters"/>

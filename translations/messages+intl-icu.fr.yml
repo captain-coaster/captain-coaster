@@ -131,27 +131,9 @@ image_upload:
         duplicate: 'Cette photo a déjà été envoyée. Veuillez choisir une image différente.'
 
 park:
+    no_coasters: Pas de coaster
     opened_coasters: '{ count, plural, one { coaster ouvert } other { coasters ouverts }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
-
-coaster_ranking:
-    title: Classement Mondial des Roller Coasters
-    description: 'Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par plus de 20 000 utilisateurs du monde entier.'
-    duel_number: '{ count, plural, one { # duel } other { # duels }}'
-    no_results: Pas de coaster
-    info:
-        title: 'Mis à jour : {rankingMonth}'
-        next: 'Prochaine mise à jour {date}'
-        learn_more: En apprendre plus sur le classement
-        not_computed: "Le classement n'a pas encore été calculé. Revenez après la prochaine mise à jour mensuelle."
-        coasters_ranked:
-            short: coasters
-            long: coasters classés
-        ratings: notes
-        comparisons:
-            short: paires
-            long: paires analysées
-        users: votants
 
 map_index:
     title: Carte des coasters

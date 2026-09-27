@@ -1,0 +1,54 @@
+{#
+  A podium card (#1 to #3): member photo, large position, name with its ridden mark, park, movement (world rank when
+  filtered). On phones #1 spans both columns with a 16:9 photo
+  and #2/#3 share the next row; once the podium is 36rem wide (container query) #1 takes two of three columns and both rows, #2/#3 stack beside it, and #1's photo
+  fills the height left by its text (close to 4:3).
+  Props:
+    coaster   Coaster
+    position  number shown (world rank, or position in a filtered list)
+    month     current ranking date (Ranking:Movement)
+    ridden    signed-in rider has ridden it
+    filtered  filtered list: the world rank replaces the movement
+#}
+{% import 'helper.html.twig' as helper %}
+{% props coaster, position, month, ridden = false, filtered = false %}
+{% set first = position == 1 %}
+{% set imgClass = 'absolute inset-0 size-full object-cover' %}
+<li {{ attributes.defaults({class: first ? 'col-span-2 @xl/podium:row-span-2' : ''}) }}>
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}"
+     class="group @container/card flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface text-ink hover:border-control-line">
+    <span class="relative block {{ first ? 'aspect-video @xl/podium:aspect-auto @xl/podium:min-h-48 @xl/podium:flex-1' : 'aspect-4/3 @xl/podium:aspect-video' }} bg-subtle">
+      {% if coaster.mainImage %}
+        {% if first %}
+          {# 16:9 while #1 spans the podium's width; beside #2/#3 (podium ≥ 36rem, about a 56rem viewport with the filter column) its box is closer to 4:3, about 500px wide #}
+          {% set f = coaster.mainImage.filename %}
+          <picture>
+            <source media="(min-width: 56rem)" type="image/avif" srcset="{{ signed_picture_url(f, 640, 480, 'avif') }} 1x, {{ signed_picture_url(f, 1280, 960, 'avif') }} 2x">
+            <source media="(min-width: 56rem)" srcset="{{ signed_picture_url(f, 640, 480, 'jpg') }} 1x, {{ signed_picture_url(f, 1280, 960, 'jpg') }} 2x">
+            <source type="image/avif" srcset="{{ signed_picture_url(f, 400, 225, 'avif') }} 1x, {{ signed_picture_url(f, 800, 450, 'avif') }} 2x">
+            <img src="{{ signed_picture_url(f, 400, 225, 'jpg') }}" srcset="{{ signed_picture_url(f, 400, 225, 'jpg') }} 1x, {{ signed_picture_url(f, 800, 450, 'jpg') }} 2x"
+                 alt="" class="{{ imgClass }}" fetchpriority="high">
+          </picture>
+        {% else %}
+          {{ helper.picture(coaster.mainImage.filename, 360, 270, '', imgClass, 'eager') }}
+        {% endif %}
+      {% else %}
+        {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-10 text-muted', 'aria-hidden': 'true'}) }}
+      {% endif %}
+    </span>
+    {# #2/#3: the number sits above the name in a narrow card, beside it from 15rem #}
+    <span class="flex items-start p-3 {{ first ? 'gap-3 @xl/podium:p-4' : 'flex-1 flex-col gap-1.5 @[15rem]/card:flex-row @[15rem]/card:gap-3' }}">
+      {# Steps above the chart rows' text-title: #2/#3 halfway to display, #1 half again past it #}
+      <span class="font-display {{ first ? 'text-[calc(var(--text-display)*1.5)]' : 'text-[calc((var(--text-title)+var(--text-display))/2)]' }} leading-[0.8] tabular-nums">{{ position }}</span>
+      <span class="w-full min-w-0 flex-1 pt-0.5">
+        <twig:Ranking:Name :coaster="coaster" :ridden="ridden" class="{{ first ? 'text-lead leading-tight' : 'leading-tight' }} group-hover:text-action"/>
+        <twig:Ranking:Place :coaster="coaster" class="mt-0.5"/>
+        {% if filtered %}
+          <twig:Ranking:WorldRank :coaster="coaster" class="mt-1.5"/>
+        {% else %}
+          <twig:Ranking:Movement :coaster="coaster" :month="month" class="mt-1.5"/>
+        {% endif %}
+      </span>
+    </span>
+  </a>
+</li>

@@ -290,7 +290,7 @@ class CoasterRepository extends ServiceEntityRepository
     public function findForRanking(array $filters = []): Query
     {
         $qb = $this->createBaseQuery()
-            ->select('c', 'p', 'm', 'country', 'st')
+            ->select('c', 'p', 'm', 'country', 's')
             ->leftJoin('c.mainImage', 'mi')
             ->addSelect('mi')
             ->andWhere('c.rank IS NOT NULL');

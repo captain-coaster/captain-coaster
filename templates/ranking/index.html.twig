@@ -1,27 +1,63 @@
 {% extends "base.html.twig" %}
 
-{% set title = 'coaster_ranking.title'|trans %}
+{% trans_default_domain 'ranking' %}
+
+{% set title = 'title'|trans %}
 {% set pageActions %}<twig:FilterToggle/>{% endset %}
+{% if ranking %}
+  {% set nextRanking = 'now'|date_modify('first day of next month midnight 1 minute') %}
+  {% set pageMeta %}
+    {# Month line (+ New pill during the first week), then the countdown and the explainer link, spaced rather than separated. #}
+    <p class="m-0 mt-1 flex flex-wrap items-center gap-x-2 text-lead font-semibold text-muted-strong">
+      {{ ranking.computedAt|format_date(pattern: 'LLLL y')|capitalize }}
+      {% if date(ranking.computedAt) > date('-7 days') %}
+        <span class="rounded-pill bg-highlight px-2 text-caption font-semibold text-on-highlight">{{ 'edition.new'|trans }}</span>
+      {% endif %}
+    </p>
+    <p class="m-0 mt-1 flex flex-wrap gap-x-4 text-caption text-muted">
+      {% if nextRanking|date('U') - 'now'|date('U') > 7200 %}
+        <span>{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
+      {% endif %}
+      <a href="{{ path('ranking_learn_more') }}" class="text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
+    </p>
+  {% endset %}
+{% endif %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
-  <meta name="description" content="{{ 'coaster_ranking.description'|trans }}"/>
+  <meta name="description" content="{{ 'description'|trans }}"/>
+  {% if filtered %}
+    <meta name="robots" content="noindex, follow">
+  {% else %}
+    <link rel="canonical" href="{{ url('ranking_index', coasters.currentPageNumber > 1 ? {page: coasters.currentPageNumber} : {}) }}">
+  {% endif %}
 {% endblock %}
 
 {% block secondary_sidebar %}
   {% include 'Includes/filter_sidebar.html.twig' with {
-    'filters': filters|default({}), 
+    'filters': filters|default({}),
     'filtersForm': filtersForm,
     'filterConfig': {
       'endpoint': path('ranking_search_async'),
       'container_id': 'ranking-result',
       'update_url': true,
+      'initial_load': 'false',
       'excluded_filters': ['score', 'kiddie', 'sortByDistance']
     }
   } only %}
 {% endblock %}
 
 {% block body %}
-  {% include 'ranking/info.html.twig' with {'ranking': ranking, 'previousRanking': previousRanking} only %}
-  <div id="ranking-result"></div>
+  <div>
+    {% if not ranking %}
+      <p class="rounded-card border border-line bg-surface p-6 text-center text-muted">{{ 'info.not_computed'|trans }}</p>
+    {% endif %}
+    {% if top100 %}
+      <twig:Ranking:Top100Meter :operating="top100.nb_top100_operating" :legends="top100.nb_legends" class="mb-3"/>
+    {% endif %}
+    {# Container for results.html.twig: from 56rem the podium steps aside and the ledger holds everyone #}
+    <div id="ranking-result" class="@container/results">
+      {% include 'ranking/results.html.twig' %}
+    </div>
+  </div>
 {% endblock %}

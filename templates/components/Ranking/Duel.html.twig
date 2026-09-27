@@ -1,0 +1,56 @@
+{#
+  A real head-to-head drawn each month (RankingService::featuredDuel()): both coasters face to face, the split of the
+  comparisons as a bar, and the winner, always the better-ranked one.
+  Props:
+    duel   {first: Coaster, second: Coaster, comparisons: int, firstWins: float}
+    month  the ranking's date
+#}
+{% trans_default_domain 'ranking' %}
+{% import 'helper.html.twig' as helper %}
+{% props duel, month %}
+{% set share = duel.firstWins / duel.comparisons %}
+{% set sides = [
+  {coaster: duel.first, share: share, won: true},
+  {coaster: duel.second, share: 1 - share, won: false},
+] %}
+<figure {{ attributes.defaults({class: 'm-0 rounded-card border border-line bg-surface p-4'}) }}>
+  <figcaption class="text-caption text-muted">
+    {{ 'learn_more.duel.caption'|trans({first: duel.first.rank, second: duel.second.rank, month: month|format_date(pattern: 'LLLL y')}) }}
+  </figcaption>
+  <div class="mt-3 grid grid-cols-[1fr_auto_1fr] gap-3">
+    {% for side in sides %}
+      {% if loop.index == 2 %}
+        <span class="self-center font-display text-lead text-muted" aria-hidden="true">vs</span>
+      {% endif %}
+      <a href="{{ path('show_coaster', {id: side.coaster.id, slug: side.coaster.slug}) }}" class="group min-w-0 text-ink">
+        <span class="relative block aspect-4/3 overflow-hidden rounded-sm bg-subtle">
+          {% if side.coaster.mainImage %}
+            {{ helper.picture(side.coaster.mainImage.filename, 200, 150, '', 'absolute inset-0 size-full object-cover') }}
+          {% else %}
+            {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
+          {% endif %}
+        </span>
+        <span class="mt-2 flex items-start gap-2">
+          <span class="font-display text-title leading-[0.8] tabular-nums">{{ side.coaster.rank }}</span>
+          <span class="line-clamp-2 leading-tight font-semibold group-hover:text-action">{{ side.coaster.name }}</span>
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+  {# The split: the winner's side in action blue #}
+  <div class="mt-4 flex h-3 gap-0.5 overflow-hidden rounded-pill" aria-hidden="true">
+    <span class="bg-action" style="width: {{ (share * 100)|round(1) }}%"></span>
+    <span class="flex-1 bg-control-line"></span>
+  </div>
+  <p class="m-0 mt-1.5 flex justify-between text-caption tabular-nums">
+    {% for side in sides %}
+      <span class="{{ side.won ? 'font-semibold text-action' : 'text-muted' }}">{{ side.share|format_number(style: 'percent') }}</span>
+    {% endfor %}
+  </p>
+  <p class="m-0 mt-3">
+    {{ 'learn_more.duel.riders'|trans({count: duel.comparisons}) }}
+    <strong class="font-semibold">{{ 'learn_more.duel.winner'|trans({name: duel.first.name}) }}</strong>
+  </p>
+  <p class="m-0 mt-2 text-muted-strong">{{ 'learn_more.duel.expected'|trans }}</p>
+  <p class="m-0 mt-2 text-caption text-muted">{{ 'learn_more.duel.ties'|trans }}</p>
+</figure>

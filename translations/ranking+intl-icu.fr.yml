@@ -1,0 +1,88 @@
+title: Classement Mondial des Roller Coasters
+description: 'Découvrez quels sont les meilleurs roller coasters du monde, grâce à notre classement mondial ! Basé sur plusieurs milliers de notes et de reviews, par plus de 20 000 utilisateurs du monde entier.'
+no_results: Pas de coaster
+edition:
+    new: 'Nouveau'
+    next: 'Prochain classement {date}'
+    how: 'Tout sur le classement'
+top100:
+    title: 'Ton top 100 mondial'
+    caption: 'Coasters en activité déjà faits'
+    legends: '{count, plural, one {+# légende faite, disparue depuis} other {+# légendes faites, disparues depuis}}'
+move:
+    new: 'Nouveau'
+    best: 'Record'
+    up: '{count, plural, one {Gagne # place} other {Gagne # places}}'
+    down: '{count, plural, one {Perd # place} other {Perd # places}}'
+row:
+    ridden: 'Fait'
+    legend: 'Fait, plus en activité'
+    world_rank: 'N° {rank} mondial'
+legend:
+    title: 'Lire le classement'
+    up: 'Places gagnées depuis le mois dernier'
+    down: 'Places perdues depuis le mois dernier'
+    best: 'Son meilleur classement de tous les temps'
+    new: 'Nouvelle entrée ce mois-ci'
+    ridden: 'Vous l’avez fait'
+    legend: 'Un coaster du top 100 que vous avez fait, plus en activité'
+    world: 'Rang mondial, dans une liste filtrée'
+pager:
+    label: 'Pages du classement'
+    more: 'Afficher {count} de plus'
+    total: '{count, plural, one {# coaster classé} other {# coasters classés}}'
+    jump: 'Aller au rang'
+info:
+    delta: '+{count, number} ce mois-ci'
+    totals: 'Le classement de {month}'
+    not_computed: "Le classement n'a pas encore été calculé. Revenez après la prochaine mise à jour mensuelle."
+    coasters_ranked:
+        short: Coasters
+        long: Coasters classés
+    ratings: Notes
+    comparisons:
+        short: Paires
+        long: Paires analysées
+    users: Votants
+trend:
+    title: 'Évolution depuis {year}'
+    metric: 'Donnée'
+
+columns:
+    manufacturer: 'Constructeur'
+    country: 'Pays'
+    score: 'Duels gagnés'
+
+learn_more:
+    title: 'Tout sur le classement'
+    brief:
+        title: 'Le classement Captain Coaster en bref'
+        text:
+            '<p>Le classement de Captain Coaster repose sur un système de <b>comparaison par paires</b>. Ces comparaisons sont déduites de vos Tops et de vos Notes — plus ils sont détaillés, meilleur sera le classement !</p>
+            <p>Le Top est plus précis, tandis que les notes sont plus rapides à donner. Pour maximiser votre influence sur le classement, nous vous recommandons de <b>noter tous vos coasters ridés</b>, puis de <b>classer vos coasters les mieux notés</b> dans votre Top.</p>'
+    duel:
+        title: 'Un vrai duel'
+        caption: 'N° {first} contre n° {second}, classement de {month}'
+        riders: '{count, plural, one {# rider a fait les deux.} other {# riders ont fait les deux.}}'
+        winner: '{name} remporte ce duel.'
+        expected: 'Un duel parmi des milliers : c’est l’ensemble des duels gagnés qui fait la place au classement.'
+        ties: 'Comparaisons tirées des Tops et des notes. Deux notes égales comptent pour moitié de chaque côté.'
+    principles:
+        title: 'Les principes du classement'
+        duels:
+            title: 'Chaque coaster affronte tous les autres.'
+            text: 'Pour chaque coaster du classement, nous calculons un duel face à chaque autre coaster de la base afin de déterminer lequel est le meilleur. Les résultats de tous ces duels sont ensuite combinés : un coaster qui gagne tous ses duels est premier, un autre qui ne perd que contre le n° 1 mais bat tous les autres est n° 2, et ainsi de suite. Le score reflète cette proportion de duels gagnés.'
+        riders:
+            title: 'Seuls ceux qui ont fait les deux votent.'
+            text: 'Seuls les riders ayant testé les deux coasters peuvent contribuer à un duel. La comparaison provient du Top si les deux coasters y figurent, sinon des notes. Le duel est remporté par le coaster qui obtient la majorité des comparaisons favorables : le classement reflète les véritables préférences de tous les riders.'
+        mass:
+            title: 'Pas d’effet de masse.'
+            text: 'Le nombre total de notes d’un coaster n’a aucune influence. Ce n’est pas un concours de popularité : les coasters rares ont autant de chances d’être bien classés que les plus connus.'
+        influence:
+            title: 'Plus vous notez, plus vous comptez.'
+            text: 'Noter un seul coaster ne génère aucune comparaison. Noter 10 coasters en génère 45, noter 20 coasters en génère 190, et ainsi de suite. Plus vous ridez et notez de coasters, plus votre influence sur le classement grandit : notez tous vos coasters ridés, et continuez d’en rider !'
+        majority:
+            title: 'Personne ne peut tout bouleverser.'
+            text: 'Tout le monde a une influence, mais une personne seule avec un avis contraire sur un coaster ne changera pas radicalement son score : c’est toujours le point de vue majoritaire qui l’emporte.'
+        yours: 'Vos {ratings, number} notes créent {comparisons, number} comparaisons.'
+        yours_top: 'Vos {ratings, number} notes et les {top, number} coasters de votre Top créent {comparisons, number} comparaisons.'

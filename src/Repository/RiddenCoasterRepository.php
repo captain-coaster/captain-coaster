@@ -92,6 +92,22 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /** Ratings of a user that feed the ranking (same scope as findUserRatingsForRanking()). */
+    public function countRankedForUser(User $user): int
+    {
+        return (int) $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('count(1)')
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->where('r.user = :user')
+            ->andWhere('c.kiddie = 0')
+            ->andWhere('c.holdRanking = 0')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     public function countForCoaster(Coaster $coaster): ?int
     {
         try {
@@ -568,9 +584,10 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * counts ridden coasters within the top 100 *still-operating* coasters — a separate
      * ranking with closed ones excluded entirely, not just the operating subset of the
      * overall Top 100. Otherwise closed coasters occupying overall-Top-100 slots would
-     * make 100/100 operating permanently unreachable.
+     * make 100/100 operating permanently unreachable. nb_legends counts ridden coasters
+     * of the overall Top 100 that are gone (Status::GONE).
      *
-     * @return array{nb_top100: int, nb_top100_operating: int}|int
+     * @return array{nb_top100: int, nb_top100_operating: int, nb_legends: int}|int
      */
     public function countTop100ForUser(User $user): array|int
     {
@@ -606,19 +623,45 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->select([
                     'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
                     'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
+                    'SUM(CASE WHEN c.rank <= 100 AND s.name IN (:gone) THEN 1 ELSE 0 END) AS nb_legends',
                 ])
                 ->from(RiddenCoaster::class, 'r')
                 ->join('r.coaster', 'c')
+                ->join('c.status', 's')
                 ->where('r.user = :user')
                 ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
                 ->setParameter('user', $user)
                 ->setParameter('operatingTop100Ids', $operatingTop100Ids)
+                ->setParameter('gone', Status::GONE)
                 ->getQuery();
 
             return $query->getSingleResult();
         } catch (NonUniqueResultException) {
             return 0;
         }
+    }
+
+    /**
+     * Ids among $coasterIds the user has ridden.
+     *
+     * @param int[] $coasterIds
+     *
+     * @return int[]
+     */
+    public function findRiddenCoasterIds(User $user, array $coasterIds): array
+    {
+        if ([] === $coasterIds) {
+            return [];
+        }
+
+        return array_map('intval', $this->createQueryBuilder('r')
+            ->select('IDENTITY(r.coaster)')
+            ->where('r.user = :user')
+            ->andWhere('r.coaster IN (:ids)')
+            ->setParameter('user', $user)
+            ->setParameter('ids', $coasterIds)
+            ->getQuery()
+            ->getSingleColumnResult());
     }
 
     /** @return mixed|string */

@@ -93,7 +93,7 @@ Mid term aim:
 
 ### Internationalisation
 
-Translations use `intl-icu` format. Files are in `translations/` as `{domain}+intl-icu.{locale}.yml`. Supported locales: `en`, `fr`, `es`, `de`. Translation domains in use: `messages`, `security`, `validators`, `database`, `top`, `learnMoreRanking`, `ai_summary`, `policy`, `notification`.
+Translations use `intl-icu` format. Files are in `translations/` as `{domain}+intl-icu.{locale}.yml`. Supported locales: `en`, `fr`, `es`, `de`. Translation domains in use: `messages`, `security`, `validators`, `database`, `top`, `ranking`, `ai_summary`, `policy`, `notification`.
 
 Mid-term aim: one domain per major feature area, rather than today's mix of technical (`security`, `validators`) and per-feature (`top`, `ai_summary`) domains. Align a new domain to that when adding one; no rush to migrate existing ones.
 

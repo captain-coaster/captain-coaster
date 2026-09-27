@@ -140,6 +140,16 @@ components:
     typography: "{typography.caption}"
     rounded: "{rounded.pill}"
     height: "44px"
+  ranking-row:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.fg}"
+    height: "72px"
+    padding: "10px 12px"
+  edition-pill:
+    backgroundColor: "{colors.highlight}"
+    textColor: "{colors.on-highlight}"
+    typography: "{typography.caption}"
+    rounded: "{rounded.pill}"
 ---
 # Design System: Captain Coaster
 
@@ -149,7 +159,7 @@ components:
 
 **Creative North Star: "An enthusiast’s field guide"**
 
-Compact, useful and colorful enough to carry the excitement of a ride; serious enough to explain ranking integrity. Member photography and rider contributions lead. The foundations began as a built proposal; the page shell and navigation recorded below are shipped and binding, page content components are not designed yet.
+Compact, useful and colorful enough to carry the excitement of a ride; serious enough to explain ranking integrity. Member photography and rider contributions lead. The foundations began as a built proposal; the page shell and navigation recorded below are shipped and binding, and page content components are designed one surface at a time (the ranking is recorded below); the others still use the legacy `.cc-*` files.
 
 Navigation lives in the thumb: below the desktop breakpoint one floating translucent pill carries the five destinations, and the top of the screen belongs to the page, its large title and its own actions. Everything sits on the light canvas; there are no dark bands.
 
@@ -166,7 +176,7 @@ Fresh blue directs action; sunshine brings warmth to selected highlights. Ink ca
 
 **The Semantic Role Rule.** Consume semantic roles in components; keep primitive colors inside the system. Logo colors remain original; the stronger action blue is an interface extension.
 
-Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fills hover rows, the search field, preference tracks and placeholders. **Muted-strong** (deep slate) is secondary text that needs more weight: idle tabs and header links, the page context line, the current language value. The unread badge is the one place sunshine sits behind text, always with ink on it. Browser-drawn surfaces take the palette: text selection uses the selected fill with ink text, the caret and native accents use action blue.
+Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fills hover rows, the search field, preference tracks and placeholders. **Muted-strong** (deep slate) is secondary text that needs more weight: idle tabs and header links, the page context line, the current language value. Sunshine sits behind text in two places only, the unread badge and the ranking's New pill, always with ink on it. Browser-drawn surfaces take the palette: text selection uses the selected fill with ink text, the caret and native accents use action blue.
 
 **Rating stars** (look provisional, #423). Stars fill with sunshine and carry an amber edge: sunshine alone is 1.5:1 on white, the edge (7.1:1) keeps the shape legible. Empty stars of the rating input use the control boundary color (6.0:1).
 
@@ -188,7 +198,7 @@ The guide’s own editorial headings use larger presentation sizes; the exported
 
 ## Layout
 
-Start with a single column, flexible widths and wrapping labels. Use the 4px spacing rhythm, fluid 20–48px gutters and the 75rem content maximum as the reusable container default. Add columns when content fits. Sign-in forms narrow the body to a 28rem column and align the page title with it.
+Start with a single column, flexible widths and wrapping labels. Use the 4px spacing rhythm, fluid 16–48px gutters and the 75rem content maximum as the reusable container default. Add columns when content fits. Sign-in forms narrow the body to a 28rem column and align the page title with it.
 
 **The Thumb Rule.** Below `lg` (64rem), navigation is the floating bottom pill: five equal destinations, Home · Ranking · Search · Map · Profile, with Search a plain tab in the middle. The pill floats 12px above the bottom edge plus the safe area, at most 28rem wide, and never hides; the page reserves room for it at its foot. From `lg`, a classic 64px top bar replaces it. Destinations without a tab (reviews, Tops, riders, contact, blog, privacy) live in the footer and on the Profile page, never in a hamburger.
 
@@ -244,11 +254,33 @@ The 503 page nginx serves for every URL during deploys. One file, `assets/mainte
 - **Posts and chain:** two ink posts carry the sign; a dashed sunshine-and-ink queue chain hangs between rings at mid-height. Static: the page reloads too soon after reopening for a motion to pay off.
 - **Languages:** en, fr, es, de, from the URL's locale prefix, then the browser, then English; ride-operator voice.
 
+### Ranking
+
+The monthly ranking reads as a music chart: a three-coaster cover, then the chart ledger. Anything added to #1–#3 goes in both `Ranking:Podium` and `Ranking:Row`.
+
+- **Chart ledger:** one white card with hairline `line` dividers between rows. Below `sm` it runs edge to edge like a native list (no side border or radius) and each row takes the page gutter as its padding; from `sm` it is a card-radius card, rows padded 12px. Rows are at least 72px: a fixed rank column (Barlow Condensed title step, tabular, 56px wide, 64px once a page holds 4-digit ranks) with the movement mark under the number, a 64×56 (8:7) thumbnail at the small radius (subtle fill and a muted coaster icon when there is no photo), then the name over park and manufacturer caption lines in muted. Hover is the subtle fill; focus is drawn inset.
+- **Names:** semibold, never clamped in ledger rows; the ridden mark is glued to the last word so it never wraps alone. Park and manufacturer lines truncate with an ellipsis. Narrow podium cards alone cut the name at two lines.
+- **Movement marks:** up and down counts are a 14px arrow and a caption-semibold number, success green up, danger coral down; unchanged shows nothing. Best rank ever is the up count followed by a crown; a new entry is sparkles alone. Crown and sparkles are drawn like the rating stars (sunshine fill, amber edge, 16px). The meaning is in `sr-only` text and a `title`, never color alone. In a filtered list the big number is the position in that list and a muted-strong globe with the world rank replaces the movement.
+- **Ridden marks:** a 16px success-green circle-check after the name; a ridden top-100 coaster that is gone (a "legend") gets a ghost instead, same green.
+- **Cover (podium):** on phones #1 spans both columns with a 16:9 photo loaded with high priority, #2/#3 share the next row as 4:3 cards; once the podium is 36rem wide #1 takes two of three columns and both rows, its photo filling the height left by its text. Position numerals step above the ledger's: #2/#3 halfway between title and display, #1 at 1.5× display. It lays out on its own width (container query), not the viewport.
+- **Wide ledger:** from a 56rem results width (container query on the results, not the viewport, since the filter column takes room) the cover steps aside and #1–#3 are plain ledger rows. The manufacturer leaves the name stack for its own column; Manufacturer, Country and "Duels won" (the score, one-decimal percent, right-aligned, semibold tabular) follow, name / manufacturer / country sharing the free width 3 : 2 : 1.5 and the score a fixed 96px. Caption-semibold muted headings sit on the same tracks in a sticky strip under the compact bar or the desktop header.
+- **No medals:** no medal colors, no larger photos for the top 3 in the ledger (maintainer decision). The cover is the only place the top 3 are set apart.
+- **Month line:** the page context line is the month (lead, semibold, muted-strong), followed by the New pill (sunshine, ink caption text) during the ranking's first week. New entries are reached through the "new this month" filter, not a link here (maintainer decision). A caption muted line beneath holds the countdown to the next ranking and the explainer link.
+- **Top-100 meter:** a white card: body-semibold title and muted caption left, display `79 / 100` right, an 8px pill bar in action blue on subtle with surface notches at 25/50/75, and a ghost line counting legends.
+- **Pager:** "Load N more" is a full-width secondary button that is a real `?page=N` link, appended in place when enhanced; below it a caption total and a "Jump to rank" subtle pill chip over an invisible native select.
+
+**Read layout (learn more).** Explanatory pages narrow to 42rem: section titles sit on the canvas (lead, semibold, body face), every section's content on a white card-radius card with a 1px line border and 16px padding, sections 40px apart.
+
+- **Totals:** a two-by-two grid inside one card with hairline dividers, display-title numbers over caption labels and a muted-strong caption delta.
+- **Principles:** a divided card list; each item a 40px subtle disc holding a 20px muted-strong Lucide icon, a bold one-line title, then the explanation in muted-strong. A personal figure sits in a selected-fill control-radius note.
+- **Duel figure:** two coasters face to face (4:3 photos, display rank beside the name, a muted "vs" between), a 12px split pill bar with the winner's share in action blue and the other side in `control-line`, a 2px gap between; percentages sit outside the bar, the winner's semibold in action blue.
+- **Trend chart:** a server-rendered inline SVG line (2px action stroke, hairline gridlines at max, half and zero, non-scaling strokes), Y ticks and years in muted caption; a crosshair, a dot and a white overlay-shadow tooltip follow the pointer and the arrow keys. The metric switch is the units-toggle pattern: one row of caption-semibold pills on a subtle track, the checked one white with the raised shadow, scrolling sideways if a locale does not fit.
+
 ### Iconography
 
 - **One set: [Lucide](https://lucide.dev)** (`lucide:` in `ux_icon`), on its 24px grid with 1.75px rounded strokes, set once in `config/packages/ux_icons.yaml`. Icons are 24px in navigation and search rows and 20px in dense rows, drawn in the text color.
 - **Filled state:** a selected or rated state fills the same outline icon (`fill: 'currentColor'`, or `fill-current` / `fill: currentColor` in CSS), e.g. a voted thumb or a liked heart. There is no separate filled set.
-- **One icon per meaning:** coaster `roller-coaster`, park `ferris-wheel`, review `message-square-text`, photo `image` (upload: `camera`), rating `star`, Top list `clipboard-list`, loading `loader-circle` spinning. Reuse these before picking another.
+- **One icon per meaning:** coaster `roller-coaster`, park `ferris-wheel`, review `message-square-text`, photo `image` (upload: `camera`), rating `star`, Top list `clipboard-list`, loading `loader-circle` spinning, ridden `circle-check`, gone (a ridden legend) `ghost`, new `sparkles`, best rank ever `crown`, world rank `globe`, duel `swords`. Reuse these before picking another.
 - **Exceptions:** brand logos (`fe:google` on sign-in) and the drawn rating stars (half state, see Components). `npm run check:icon-sets` fails CI on any other locked set.
 - **Markup built in JS** takes its icons from the server-rendered `<template id="js-icons">` (`js/icons.js`), never emoji or glyphs.
 

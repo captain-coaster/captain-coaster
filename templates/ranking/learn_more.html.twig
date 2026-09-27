@@ -1,22 +1,86 @@
 {% extends "base.html.twig" %}
 
-{% import "helper.html.twig" as helper %}
+{% trans_default_domain 'ranking' %}
 
-{% set title = 'title'|trans([], 'learnMoreRanking') %}
+{% set title = 'learn_more.title'|trans %}
 {% set parentUrl = path('ranking_index') %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="cc-panel">
-    <div class="cc-panel__body">
-      <div class="content-group-lg text-justify">
-        <h3 class="text-semibold mb-[5px]">{{ 'brief.title'|trans([], 'learnMoreRanking') }}</h3>
-        {{ 'brief.text'|trans([], 'learnMoreRanking')|raw }}
-      </div>
-      <div class="content-group-lg text-justify">
-        <h3 class="text-semibold mb-[5px]">{{ 'principles.title'|trans([], 'learnMoreRanking') }}</h3>
-        {{ 'principles.text'|trans([], 'learnMoreRanking')|raw }}
-      </div>
-    </div>
+  {# Section titles on the canvas, their content on white surfaces #}
+  <div class="max-w-2xl">
+    <section aria-labelledby="brief">
+      <h2 id="brief" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.brief.title'|trans }}</h2>
+      <div class="flex flex-col gap-3 rounded-card border border-line bg-surface p-4 [&_p]:m-0">{{ 'learn_more.brief.text'|trans|raw }}</div>
+    </section>
+
+    {% if ranking %}
+      <section aria-labelledby="totals" class="mt-10">
+        <h2 id="totals" class="m-0 mb-4 font-sans text-lead font-semibold">
+          {{ 'info.totals'|trans({month: ranking.computedAt|format_date(pattern: 'LLLL y')}) }}
+        </h2>
+        <twig:Ranking:Totals :ranking="ranking" :previous="previousRanking"/>
+      </section>
+    {% endif %}
+
+    {% if duel %}
+      <section aria-labelledby="duel" class="mt-10">
+        <h2 id="duel" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.duel.title'|trans }}</h2>
+        <twig:Ranking:Duel :duel="duel" :month="ranking.computedAt"/>
+      </section>
+    {% endif %}
+
+    {% set principles = {duels: 'lucide:swords', riders: 'lucide:users', mass: 'lucide:scale', influence: 'lucide:trending-up', majority: 'lucide:shield'} %}
+    <section aria-labelledby="principles" class="mt-10">
+      <h2 id="principles" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.principles.title'|trans }}</h2>
+      <ul class="m-0 list-none divide-y divide-line rounded-card border border-line bg-surface p-0">
+        {% for key, icon in principles %}
+          <li class="flex gap-3 p-4">
+            <span class="flex size-10 shrink-0 items-center justify-center rounded-pill bg-subtle text-muted-strong">{{ ux_icon(icon, {class: 'size-5', 'aria-hidden': 'true'}) }}</span>
+            <div class="min-w-0">
+              <p class="m-0 font-semibold">{{ ('learn_more.principles.' ~ key ~ '.title')|trans }}</p>
+              <p class="m-0 mt-1 text-muted-strong">{{ ('learn_more.principles.' ~ key ~ '.text')|trans }}</p>
+              {% if key == 'influence' and contribution and contribution.comparisons > 0 %}
+                <p class="m-0 mt-3 rounded-control bg-selected px-3 py-2 font-semibold">
+                  {{ ('learn_more.principles.' ~ (contribution.top > 0 ? 'yours_top' : 'yours'))|trans(contribution) }}
+                </p>
+              {% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {# The marks of the chart rows, drawn as there (Ranking:Movement, RiddenMark, WorldRank); the sample is decorative, the text says it all #}
+    {% set mark = 'size-4 fill-highlight text-warning' %}
+    {% set legend = [
+      {key: 'up', sample: '<span class="inline-flex items-center gap-0.5 font-semibold text-success">' ~ ux_icon('lucide:arrow-up', {class: 'size-3.5'}) ~ '4</span>'},
+      {key: 'down', sample: '<span class="inline-flex items-center gap-0.5 font-semibold text-danger">' ~ ux_icon('lucide:arrow-down', {class: 'size-3.5'}) ~ '2</span>'},
+      {key: 'best', sample: ux_icon('lucide:crown', {class: mark})},
+      {key: 'new', sample: ux_icon('lucide:sparkles', {class: mark})},
+      {key: 'ridden', sample: ux_icon('lucide:circle-check', {class: 'size-4 text-success'})},
+      {key: 'legend', sample: ux_icon('lucide:ghost', {class: 'size-4 text-success'})},
+      {key: 'world', sample: '<span class="inline-flex items-center gap-0.5 font-semibold text-muted-strong">' ~ ux_icon('lucide:globe', {class: 'size-3.5'}) ~ '12</span>'},
+    ] %}
+    <section aria-labelledby="legend" class="mt-10">
+      <h2 id="legend" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'legend.title'|trans }}</h2>
+      <ul class="m-0 list-none divide-y divide-line rounded-card border border-line bg-surface p-0">
+        {% for item in legend %}
+          <li class="flex items-center gap-3 px-4 py-2.5">
+            <span class="flex w-10 shrink-0 justify-center text-caption leading-none" aria-hidden="true">{{ item.sample|raw }}</span>
+            <span>{{ ('legend.' ~ item.key)|trans }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% if history|length > 1 %}
+      <section aria-labelledby="trend" class="mt-10">
+        <h2 id="trend" class="m-0 mb-4 font-sans text-lead font-semibold">
+          {{ 'trend.title'|trans({year: (history|first).computedAt|date('Y')}) }}
+        </h2>
+        <twig:Ranking:TrendChart :history="history" class="rounded-card border border-line bg-surface p-4"/>
+      </section>
+    {% endif %}
   </div>
 {% endblock %}

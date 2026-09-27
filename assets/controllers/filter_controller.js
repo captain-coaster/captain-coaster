@@ -10,6 +10,7 @@ import { Controller } from '@hotwired/stimulus';
  * - data-filter-container-id-value: Target container for results
  * - data-filter-update-url-value: Enable browser URL updates
  * - data-filter-debounce-delay-value: Debounce delay for text inputs
+ * - data-filter-initial-load-value: Fetch results on connect (false when server-rendered)
  */
 export default class extends Controller {
     static outlets = ['map'];
@@ -19,6 +20,7 @@ export default class extends Controller {
         containerId: String,
         updateUrl: { type: Boolean, default: false },
         debounceDelay: { type: Number, default: 300 },
+        initialLoad: { type: Boolean, default: true },
         mapOutlet: String,
     };
 
@@ -37,7 +39,7 @@ export default class extends Controller {
         }
 
         // Auto-trigger initial load if endpoint is provided
-        if (this.hasEndpointValue) {
+        if (this.hasEndpointValue && this.initialLoadValue) {
             this.filterData();
         }
     }

@@ -43,6 +43,15 @@ class Ranking
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $computedAt = null;
 
+    /**
+     * Head-to-head shown on the learn-more page (RankingService::featuredDuel()): riders who compared the pair,
+     * and the comparisons the better-ranked coaster won (a tie counts half for each).
+     *
+     * @var array{first: int, second: int, comparisons: int, firstWins: float}|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $featuredDuel = null;
+
     public function getId(): int
     {
         return $this->id;
@@ -128,6 +137,20 @@ class Ranking
     public function setRankedCoasterNumber(int $rankedCoasterNumber): self
     {
         $this->rankedCoasterNumber = $rankedCoasterNumber;
+
+        return $this;
+    }
+
+    /** @return array{first: int, second: int, comparisons: int, firstWins: float}|null */
+    public function getFeaturedDuel(): ?array
+    {
+        return $this->featuredDuel;
+    }
+
+    /** @param array{first: int, second: int, comparisons: int, firstWins: float}|null $featuredDuel */
+    public function setFeaturedDuel(?array $featuredDuel): self
+    {
+        $this->featuredDuel = $featuredDuel;
 
         return $this;
     }
