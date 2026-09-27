@@ -587,9 +587,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
      * make 100/100 operating permanently unreachable. nb_legends counts ridden coasters
      * of the overall Top 100 that are gone (Status::GONE).
      *
-     * @return array{nb_top100: int, nb_top100_operating: int, nb_legends: int}|int
+     * @return array{nb_top100: int, nb_top100_operating: int, nb_legends: int}
      */
-    public function countTop100ForUser(User $user): array|int
+    public function countTop100ForUser(User $user): array
     {
         $idsQuery = $this->getEntityManager()
             ->createQueryBuilder()
@@ -617,35 +617,31 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             $operatingTop100Ids = [0];
         }
 
-        try {
-            $query = $this->getEntityManager()
-                ->createQueryBuilder()
-                ->select([
-                    'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
-                    'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
-                    'SUM(CASE WHEN c.rank <= 100 AND s.name IN (:gone) THEN 1 ELSE 0 END) AS nb_legends',
-                ])
-                ->from(RiddenCoaster::class, 'r')
-                ->join('r.coaster', 'c')
-                ->join('c.status', 's')
-                ->where('r.user = :user')
-                ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
-                ->setParameter('user', $user)
-                ->setParameter('operatingTop100Ids', $operatingTop100Ids)
-                ->setParameter('gone', Status::GONE)
-                ->getQuery();
+        $query = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select([
+                'SUM(CASE WHEN c.rank <= 100 THEN 1 ELSE 0 END) as nb_top100',
+                'SUM(CASE WHEN c.id IN (:operatingTop100Ids) THEN 1 ELSE 0 END) AS nb_top100_operating',
+                'SUM(CASE WHEN c.rank <= 100 AND s.name IN (:gone) THEN 1 ELSE 0 END) AS nb_legends',
+            ])
+            ->from(RiddenCoaster::class, 'r')
+            ->join('r.coaster', 'c')
+            ->join('c.status', 's')
+            ->where('r.user = :user')
+            ->andWhere('c.rank <= 100 OR c.id IN (:operatingTop100Ids)')
+            ->setParameter('user', $user)
+            ->setParameter('operatingTop100Ids', $operatingTop100Ids)
+            ->setParameter('gone', Status::GONE)
+            ->getQuery();
 
-            $result = $query->getSingleResult();
+        // One row even when nothing matches (aggregate, no GROUP BY), but SUM() is then NULL.
+        $result = $query->getSingleResult();
 
-            // SUM() over no matching row is NULL.
-            return [
-                'nb_top100' => (int) $result['nb_top100'],
-                'nb_top100_operating' => (int) $result['nb_top100_operating'],
-                'nb_legends' => (int) $result['nb_legends'],
-            ];
-        } catch (NonUniqueResultException) {
-            return 0;
-        }
+        return [
+            'nb_top100' => (int) $result['nb_top100'],
+            'nb_top100_operating' => (int) $result['nb_top100_operating'],
+            'nb_legends' => (int) $result['nb_legends'],
+        ];
     }
 
     /**

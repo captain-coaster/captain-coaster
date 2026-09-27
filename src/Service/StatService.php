@@ -82,13 +82,8 @@ class StatService
             ->getRepository(RiddenCoaster::class)
             ->countTop100ForUser($user);
 
-        if (\is_array($top100)) {
-            $stats['top_100'] = $top100['nb_top100'];
-            $stats['top_100_operating'] = $top100['nb_top100_operating'];
-        } else {
-            $stats['top_100'] = 0;
-            $stats['top_100_operating'] = 0;
-        }
+        $stats['top_100'] = $top100['nb_top100'];
+        $stats['top_100_operating'] = $top100['nb_top100_operating'];
 
         $stats['manufacturer'] = $this->em
             ->getRepository(RiddenCoaster::class)
