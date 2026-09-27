@@ -1,0 +1,6 @@
+{
+  "buildPath": "code",
+  "detector": {
+    "extensions": [{ "ext": ".html.twig", "engine": "html" }]
+  }
+}

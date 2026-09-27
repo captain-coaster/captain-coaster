@@ -1,0 +1,25 @@
+{#
+  The current ranking's totals, each with its change since the previous ranking.
+  Props:
+    ranking   current Ranking
+    previous  previous Ranking, or null
+#}
+{% trans_default_domain 'ranking' %}
+{% props ranking, previous = null %}
+{% set totals = [
+  {value: ranking.rankedCoasterNumber, before: previous.rankedCoasterNumber ?? null, label: 'info.coasters_ranked.long'},
+  {value: ranking.ratingNumber, before: previous.ratingNumber ?? null, label: 'info.ratings'},
+  {value: ranking.userNumber, before: previous.userNumber ?? null, label: 'info.users'},
+  {value: ranking.comparisonNumber, before: previous.comparisonNumber ?? null, label: 'info.comparisons.long'},
+] %}
+<dl {{ attributes.defaults({class: 'm-0 grid grid-cols-2 overflow-hidden rounded-card border border-line bg-surface'}) }}>
+  {% for total in totals %}
+    <div class="flex flex-col p-4 {{ loop.index is even ? 'border-s border-line' }} {{ loop.index > 2 ? 'border-t border-line' }}">
+      <dt class="order-2 text-caption text-muted">{{ total.label|trans }}</dt>
+      <dd class="order-1 m-0 font-display text-title leading-tight tabular-nums">{{ total.value >= 1000000 ? total.value|shortNum : total.value|format_number }}</dd>
+      {% if total.before is not null and total.value > total.before %}
+        <dd class="order-3 m-0 text-caption font-semibold text-muted-strong">{{ 'info.delta'|trans({count: total.value - total.before}) }}</dd>
+      {% endif %}
+    </div>
+  {% endfor %}
+</dl>

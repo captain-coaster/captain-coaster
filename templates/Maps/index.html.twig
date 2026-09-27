@@ -35,6 +35,6 @@
          class="map-container relative max-lg:fixed max-lg:inset-0">
         <twig:FilterToggle class="absolute top-[calc(var(--spacing)*3+env(safe-area-inset-top))] left-3 z-10"/>
         {# Below lg the map fills the screen under the floating tab bar; from lg, the viewport minus Nav:Header (h-16 + 1px border). #}
-        <div data-map-target="container" id="map" class="h-dvh lg:h-[calc(100dvh-var(--spacing)*16-1px)]"></div>
+        <div data-map-target="container" id="map" class="h-dvh lg:h-[calc(100dvh-var(--spacing-header))]"></div>
     </div>
 {% endblock %}

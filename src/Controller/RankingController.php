@@ -4,9 +4,15 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Ranking;
+use App\Entity\User;
 use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
+use App\Repository\RiddenCoasterRepository;
+use App\Repository\TopRepository;
 use App\Service\FilterService;
+use App\Service\RankingService;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,35 +25,46 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path: '/ranking')]
 class RankingController extends AbstractController
 {
-    final public const int COASTERS_PER_PAGE = 20;
+    final public const int COASTERS_PER_PAGE = 50;
 
     public function __construct(
         private readonly PaginatorInterface $paginator,
         private readonly RankingRepository $rankingRepository,
         private readonly FilterService $filterService,
-        private readonly CoasterRepository $coasterRepository
+        private readonly CoasterRepository $coasterRepository,
+        private readonly RiddenCoasterRepository $riddenCoasterRepository,
     ) {
     }
 
     /**
-     * Show ranking of best coasters.
+     * Show ranking of best coasters, first page server-rendered.
+     *
+     * @param array<string, mixed> $filters
      *
      * @throws InvalidArgumentException
      */
     #[Route(path: '/', name: 'ranking_index', methods: ['GET'])]
-    public function indexAction(): Response
+    public function indexAction(#[MapQueryParameter] array $filters = [], #[MapQueryParameter] int $page = 1): Response
     {
-        return $this->render(
-            'ranking/index.html.twig',
-            [
-                'ranking' => $this->rankingRepository->findCurrent(),
-                'previousRanking' => $this->rankingRepository->findPrevious(),
-                'filtersForm' => $this->filterService->getFilterData(),
-            ]
-        );
+        $results = $this->results($filters, $page);
+        $user = $this->getUser();
+        $top100 = $user instanceof User && !$results['filtered'] && 1 === $page
+            ? $this->riddenCoasterRepository->countTop100ForUser($user)
+            : null;
+
+        return $this->render('ranking/index.html.twig', $results + [
+            'previousRanking' => $this->rankingRepository->findPrevious(),
+            'filtersForm' => $this->filterService->getFilterData(),
+            'filters' => $filters,
+            'top100' => \is_array($top100) ? $top100 : null,
+        ]);
     }
 
-    /** @param array<string, mixed> $filters */
+    /**
+     * Results only: filter changes and "load more".
+     *
+     * @param array<string, mixed> $filters
+     */
     #[Route(
         path: '/coasters',
         name: 'ranking_search_async',
@@ -57,13 +74,51 @@ class RankingController extends AbstractController
     )]
     public function searchAsyncAction(#[MapQueryParameter] array $filters = [], #[MapQueryParameter] int $page = 1): Response
     {
+        return $this->render('ranking/results.html.twig', $this->results($filters, $page));
+    }
+
+    /** Learn more on the ranking. */
+    #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
+    public function learnMore(TopRepository $topRepository): Response
+    {
+        $ranking = $this->rankingRepository->findCurrent();
+        $duel = $ranking?->getFeaturedDuel();
+        $first = $duel ? $this->coasterRepository->find($duel['first']) : null;
+        $second = $duel ? $this->coasterRepository->find($duel['second']) : null;
+
+        $user = $this->getUser();
+        $contribution = null;
+        if ($user instanceof User) {
+            $ratings = $this->riddenCoasterRepository->countRankedForUser($user);
+            $top = $topRepository->countForRanking($user);
+            $contribution = [
+                'ratings' => $ratings,
+                'top' => $top['top'],
+                'comparisons' => RankingService::riderComparisons($ratings, $top['top'], $top['rated']),
+            ];
+        }
+
+        return $this->render('ranking/learn_more.html.twig', [
+            'ranking' => $ranking,
+            'duel' => $first && $second ? ['first' => $first, 'second' => $second] + $duel : null,
+            'contribution' => $contribution,
+            'previousRanking' => $this->rankingRepository->findPrevious(),
+            'history' => $this->rankingRepository->findTotalsHistory(),
+        ]);
+    }
+
+    /**
+     * @param array<string, mixed> $filters
+     *
+     * @return array{coasters: PaginationInterface<int, mixed>, filtered: bool, firstRank: int, riddenIds: array<int, true>, ranking: ?Ranking, queryFilters: array<string, mixed>}
+     */
+    private function results(array $filters, int $page): array
+    {
+        $page = max(1, $page);
+        $user = $this->getUser();
+
         try {
-            // Validate and authorize filters
-            $validatedFilters = $this->filterService->validateAndAuthorize(
-                $filters,
-                'ranking',
-                $this->getUser()
-            );
+            $validatedFilters = $this->filterService->validateAndAuthorize($filters, 'ranking', $user);
 
             $pagination = $this->paginator->paginate(
                 $this->coasterRepository->findForRanking($validatedFilters),
@@ -81,20 +136,22 @@ class RankingController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        return $this->render(
-            'ranking/results.html.twig',
-            [
-                'coasters' => $pagination,
-                'filtered' => [] !== array_diff_key($validatedFilters, ['user' => null]),
-                'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
-            ]
-        );
-    }
+        $riddenIds = [];
+        if ($user instanceof User) {
+            $ids = array_map(static fn ($coaster) => $coaster->getId(), iterator_to_array($pagination->getItems()));
+            $riddenIds = array_fill_keys($this->riddenCoasterRepository->findRiddenCoasterIds($user, $ids), true);
+        }
 
-    /** Learn more on the ranking. */
-    #[Route(path: '/learn-more', name: 'ranking_learn_more', methods: ['GET'])]
-    public function learnMore(): Response
-    {
-        return $this->render('ranking/learn_more.html.twig');
+        $queryFilters = array_diff_key($validatedFilters, ['user' => null]);
+
+        return [
+            'coasters' => $pagination,
+            'filtered' => [] !== $queryFilters,
+            'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
+            'riddenIds' => $riddenIds,
+            'ranking' => $this->rankingRepository->findCurrent(),
+            // Carried by the pager links so "load more" and "jump to" keep the filters
+            'queryFilters' => $queryFilters,
+        ];
     }
 }

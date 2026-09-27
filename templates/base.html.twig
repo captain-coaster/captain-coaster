@@ -45,7 +45,7 @@
     <!-- main content -->
     <div class="content-wrapper">
       {% block wide_body %}
-        {# Pages set title/subTitle(+Url)/secondaryTitle, parentUrl (detail pages: back button) and pageActions (captured HTML). #}
+        {# Pages set title/subTitle(+Url)/secondaryTitle, parentUrl (detail pages: back button), pageActions and pageMeta (captured HTML). #}
         <twig:Page:Header
           title="{{ title|default('app.title.default'|trans) }}"
           :subtitle="subTitle|default(null)"
@@ -53,6 +53,7 @@
           :secondary="secondaryTitle|default(null)"
           :parent="parentUrl|default(null)"
           :actions="pageActions|default(null)"
+          :meta="pageMeta|default(null)"
           :hideTitle="hideTitle|default(false)"
           :narrow="narrowHeader|default(false)"/>
         <!-- Content area -->

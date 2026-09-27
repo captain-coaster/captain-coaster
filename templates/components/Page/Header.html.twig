@@ -7,10 +7,11 @@
     subtitleUrl  makes the context line a link (coaster → park, Top → author)
     parent       detail pages only: shows the back button, and is its target when not arriving from another site page (back_controller.js)
     actions      rendered HTML for the page's actions (Twig var `pageActions`)
+    meta         rendered HTML under the title, in place of the context lines (Twig var `pageMeta`, e.g. the ranking month)
     hideTitle    keeps the h1 for assistive tech only (Home); from lg the header still spaces the content from the top bar
     narrow       aligns the title with a max-w-md body column (sign-in forms)
 #}
-{% props title, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, hideTitle = false, narrow = false %}
+{% props title, subtitle = null, subtitleUrl = null, secondary = null, parent = null, actions = null, meta = null, hideTitle = false, narrow = false %}
 {% set round = 'grid size-11 shrink-0 place-items-center rounded-full bg-surface/75 text-ink shadow-raised backdrop-blur-xl hover:bg-surface' %}
 {% set back %}
   <a href="{{ parent }}" class="{{ round }}"
@@ -50,6 +51,7 @@
       {% if secondary %}
         <p class="m-0 mt-1 text-caption text-muted">{{ secondary }}</p>
       {% endif %}
+      {{ meta|raw }}
     </div>
     {% if actions %}
       <div class="flex shrink-0 items-center gap-2">{{ actions|raw }}</div>

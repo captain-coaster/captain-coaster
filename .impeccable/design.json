@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-24T12:00:00Z",
+  "generatedAt": "2026-09-27T08:45:26+00:00",
   "title": "Design System: Captain Coaster",
   "extensions": {
     "shadows": [
@@ -104,7 +104,9 @@
       "stroke": "1.75px, round caps and joins",
       "sizes": "24px in navigation and search rows, 20px in dense rows",
       "filledState": "fill the outline icon with currentColor (voted thumb, liked heart); no separate filled set",
-      "exceptions": "brand logos (fe:google), drawn rating stars"
+      "exceptions": "brand logos (fe:google), drawn rating stars",
+      "meanings": "coaster roller-coaster, park ferris-wheel, review message-square-text, photo image (upload camera), rating star, Top list clipboard-list, loading loader-circle, ridden circle-check, gone legend ghost, new sparkles, best rank ever crown, world rank globe, duel swords",
+      "drawnMarks": "crown and sparkles in the ranking are drawn like the rating stars: sunshine fill (fill-highlight), amber edge (text-warning)"
     }
   },
   "components": [
@@ -121,7 +123,7 @@
       "kind": "button",
       "description": "Foundation specimen; adapt labels and data to the application.",
       "html": "<button class=\"ds-secondary\">Reset sample</button>",
-      "css": ".ds-secondary{font-family:var(--font-body);font-size:16px;font-weight:600;border-radius:var(--radius-control);min-height:48px;padding:10px 18px;cursor:pointer;border:1px solid var(--control-border);background:var(--surface);color:var(--fg);}.ds-secondary:hover{background:var(--mist-100)}.ds-secondary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}",
+      "css": ".ds-secondary{font-family:var(--font-body);font-size:16px;font-weight:600;border-radius:var(--radius-control);min-height:48px;padding:10px 18px;cursor:pointer;border:1px solid var(--control-border);background:var(--surface);color:var(--fg);}.ds-secondary:hover{background:var(--subtle)}.ds-secondary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}",
       "refersTo": "button-secondary"
     },
     {
@@ -177,6 +179,29 @@
       "description": "Two-option preference toggle; current option white with the raised shadow.",
       "html": "<ul class=\"ds-units\" aria-label=\"Units\"><li><a href=\"#\" aria-current=\"true\">km/h · m</a></li><li><a href=\"#\" aria-current=\"false\">mph · ft</a></li></ul>",
       "css": ".ds-units{display:inline-flex;gap:4px;margin:0;padding:4px;list-style:none;border-radius:var(--radius-pill);background:var(--subtle)}.ds-units a{display:inline-flex;align-items:center;height:44px;padding:0 12px;border-radius:var(--radius-pill);font:600 .875rem/1.5 var(--font-sans);color:var(--muted-strong);text-decoration:none}.ds-units a:hover{color:var(--fg)}.ds-units a[aria-current=true]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-raised)}.ds-units a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Chart ledger row",
+      "kind": "custom",
+      "refersTo": "ranking-row",
+      "description": "Ranking row: fixed tabular rank column with the movement under it, 8:7 thumbnail, unclamped name with the ridden mark glued to the last word, truncating park and manufacturer lines.",
+      "html": "<ol class=\"ds-ledger\"><li><a class=\"ds-row\" href=\"#\"><span class=\"ds-rank\">8<span class=\"ds-move\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"m5 12 7-7 7 7M12 19V5\"/></svg><span aria-hidden=\"true\">4</span><svg viewBox=\"0 0 24 24\" fill=\"var(--highlight)\" stroke=\"var(--warning)\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z\"/><path d=\"M5 21h14\"/></svg><span class=\"ds-sr\">Best rank ever, up 4</span></span></span><span class=\"ds-thumb\"></span><span class=\"ds-body\"><span class=\"ds-name\">Stardust Racers <span class=\"ds-last\">(Green)<span class=\"ds-ridden\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/></svg></span></span></span><span class=\"ds-place\">Universal Epic Universe</span><span class=\"ds-place\">Mack Rides</span></span></a></li><li><a class=\"ds-row\" href=\"#\"><span class=\"ds-rank\">9<span class=\"ds-move ds-down\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14M19 12l-7 7-7-7\"/></svg><span aria-hidden=\"true\">1</span><span class=\"ds-sr\">Down 1</span></span></span><span class=\"ds-thumb\"></span><span class=\"ds-body\"><span class=\"ds-name\">Eejanaika</span><span class=\"ds-place\">Fuji-Q Highland</span><span class=\"ds-place\">S&amp;S Sansei Technologies</span></span></a></li></ol>",
+      "css": ".ds-ledger{margin:0;padding:0;list-style:none;max-width:28rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);overflow:hidden;font:400 1rem/1.5 var(--font-sans)}.ds-ledger li+li{border-top:1px solid var(--border)}.ds-row{display:flex;align-items:center;gap:12px;min-height:72px;padding:10px 12px;color:var(--fg);text-decoration:none}.ds-row:hover{background:var(--subtle)}.ds-row:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}.ds-rank{display:flex;flex-direction:column;align-items:center;gap:4px;width:56px;flex-shrink:0;font:600 var(--text-title)/1 var(--font-display);font-variant-numeric:tabular-nums}.ds-move{display:inline-flex;align-items:center;gap:2px;font:600 .875rem/1 var(--font-sans);color:var(--success);white-space:nowrap}.ds-move.ds-down{color:var(--danger)}.ds-move svg{width:14px;height:14px}.ds-move svg[fill^=var]{width:16px;height:16px}.ds-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.ds-thumb{width:64px;aspect-ratio:8/7;flex-shrink:0;border-radius:var(--radius-sm);background:var(--subtle)}.ds-body{min-width:0;flex:1}.ds-name{display:block;font-weight:600;line-height:1.25}.ds-last{display:inline-flex;align-items:center;gap:4px}.ds-ridden{display:inline-flex;color:var(--success)}.ds-ridden svg{width:16px;height:16px}.ds-place{display:block;font-size:.875rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+    },
+    {
+      "name": "Duel split",
+      "kind": "custom",
+      "description": "Head-to-head share: winner in action blue, the other side in control-line, percentages outside the bar.",
+      "html": "<div class=\"ds-duel\"><div class=\"ds-split\" aria-hidden=\"true\"><span style=\"width:62%\"></span><span></span></div><p><span class=\"ds-won\">62%</span><span>38%</span></p></div>",
+      "css": ".ds-duel{max-width:24rem;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-card);font:400 .875rem/1.5 var(--font-sans)}.ds-split{display:flex;gap:2px;height:12px;border-radius:999px;overflow:hidden}.ds-split span:first-child{background:var(--action)}.ds-split span:last-child{flex:1;background:var(--control-border)}.ds-duel p{display:flex;justify-content:space-between;margin:6px 0 0;font-variant-numeric:tabular-nums;color:var(--muted)}.ds-duel .ds-won{font-weight:600;color:var(--action)}"
+    },
+    {
+      "name": "Edition pill",
+      "kind": "chip",
+      "refersTo": "edition-pill",
+      "description": "Month line: New pill in the ranking's first week.",
+      "html": "<p class=\"ds-month\">September 2026 <span class=\"ds-new\">New</span></p>",
+      "css": ".ds-month{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;margin:0;font:600 1.25rem/1.5 var(--font-sans);color:var(--muted-strong)}.ds-new{padding:0 8px;border-radius:999px;background:var(--highlight);color:var(--on-highlight);font-size:.875rem}"
     }
   ],
   "narrative": {
@@ -216,7 +241,7 @@
       },
       {
         "name": "The Page-Owns-Its-Top Rule",
-        "body": "Pages open with a large title on the canvas, no header band. Below `lg` a sticky 56px bar sits over it, empty and transparent until the title scrolls away, then translucent with the title centred. The bar holds a back button on the left (detail pages only) and the page's actions on the right; from `lg` those actions sit beside the title and the bar is gone. On Home the title is kept for assistive technology only and the full logo stands on the canvas instead.",
+        "body": "Pages open with a large title on the canvas, no header band, and no row spent on buttons alone: the back button (detail pages only, below `lg`) sits left of the title and the page's actions right of it, on the title's first line. Below `lg`, once that row scrolls away, a translucent 56px bar fades in at the top with the same back button, the title and the actions; it takes no room before that. On Home the title is kept for assistive technology only and the full logo stands on the canvas instead.",
         "section": "layout"
       },
       {
@@ -226,7 +251,7 @@
       },
       {
         "name": "The One Icon Set Rule",
-        "body": "Every icon is Lucide at a 1.75px stroke, one icon per meaning (coaster roller-coaster, park ferris-wheel, review message-square-text, photo image). Filled states fill the same outline. Only brand logos and the drawn rating stars sit outside the set; CI fails on any other locked set.",
+        "body": "One set, Lucide (`lucide:` in `ux_icon`), on its 24px grid with 1.75px rounded strokes, set once in `config/packages/ux_icons.yaml`. Icons are 24px in navigation and search rows and 20px in dense rows, drawn in the text color. One icon per meaning: coaster `roller-coaster`, park `ferris-wheel`, review `message-square-text`, photo `image` (upload: `camera`), rating `star`, Top list `clipboard-list`, loading `loader-circle` spinning, ridden `circle-check`, gone (a ridden legend) `ghost`, new `sparkles`, best rank ever `crown`, world rank `globe`, duel `swords`. Reuse these before picking another. brand logos (`fe:google` on sign-in) and the drawn rating stars (half state, see Components). `npm run check:icon-sets` fails CI on any other locked set.",
         "section": "components"
       }
     ],
@@ -239,7 +264,7 @@
       "Do put a page's context (park, author, country) on its own line under the title."
     ],
     "donts": [
-      "Don’t recolor, redraw or crop the logo other than to the head mark or the approved dark-lettering variant (`logo_dark.svg`) for light backgrounds.",
+      "Don’t recolor, redraw or crop the logo other than to the head mark or switching the lettering between logo ink and white.",
       "Don’t use sunshine or pale decorative borders as unverified text or essential control boundaries.",
       "Don’t present illustrative names, ranks, scores or the sample 1–5 rating scale as shipped product facts.",
       "Don’t put the header, navigation or page titles on dark bands; the light canvas carries the page.",

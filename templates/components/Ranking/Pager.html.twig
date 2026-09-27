@@ -1,0 +1,47 @@
+{#
+  Ranking pagination: "Load N more" is a real link to the next page, which ranking_pager_controller.js turns into an in-place append;
+  "Jump to rank" is a select of page ranges (navigate_controller.js).
+  Props:
+    pagination  KnpPaginator pagination
+    filters     active filters, kept in every link
+#}
+{% trans_default_domain 'ranking' %}
+{% props pagination, filters = {} %}
+{% set perPage = pagination.itemNumberPerPage %}
+{% set total = pagination.totalItemCount %}
+{% set page = pagination.currentPageNumber %}
+{% set pages = (total / perPage)|round(0, 'ceil') %}
+{% if total > 0 %}
+<nav aria-label="{{ 'pager.label'|trans }}"
+     data-controller="ranking-pager"
+     data-ranking-pager-endpoint-value="{{ path('ranking_search_async') }}"
+     {{ attributes.defaults({class: 'mt-4 flex flex-col items-center gap-3'}) }}>
+  {% if page < pages %}
+    <a href="{{ path('ranking_index', {filters: filters, page: page + 1}) }}" rel="next"
+       data-action="ranking-pager#more"
+       class="flex min-h-12 w-full items-center justify-center gap-2 rounded-control border border-control-line bg-surface px-4.5 py-2.5 font-semibold text-ink hover:bg-subtle aria-busy:pointer-events-none aria-busy:text-muted">
+      {{ 'pager.more'|trans({count: min(perPage, total - page * perPage)}) }}
+      {{ ux_icon('lucide:loader-circle', {class: 'hidden size-5 animate-spin in-aria-busy:block motion-reduce:animate-none', 'aria-hidden': 'true'}) }}
+    </a>
+  {% endif %}
+  <div class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-caption text-muted">
+    <span>{{ 'pager.total'|trans({count: total}) }}</span>
+    {% if pages > 1 %}
+      {# The native select lies invisibly over its visible label, so the platform picker opens on tap. #}
+      <span class="relative inline-flex min-h-11 items-center gap-1 rounded-pill bg-subtle px-4 font-semibold text-muted-strong has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus hover:bg-selected">
+        {{ 'pager.jump'|trans }}
+        {{ ux_icon('lucide:chevrons-up-down', {class: 'size-4', 'aria-hidden': 'true'}) }}
+        <select data-controller="navigate" data-action="navigate#go"
+                aria-label="{{ 'pager.jump'|trans }}"
+                class="absolute inset-0 size-full cursor-pointer appearance-none opacity-0">
+          {% for p in 1..pages %}
+            <option value="{{ path('ranking_index', {filters: filters}|merge(p > 1 ? {page: p} : {})) }}" {{ p == page ? 'selected' }}>
+              {{ (p - 1) * perPage + 1 }}–{{ min(p * perPage, total) }}
+            </option>
+          {% endfor %}
+        </select>
+      </span>
+    {% endif %}
+  </div>
+</nav>
+{% endif %}

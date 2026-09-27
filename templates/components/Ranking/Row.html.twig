@@ -1,0 +1,50 @@
+{#
+  One chart row (#4 and down): position with its movement (or, in a filtered list, the world rank) underneath, 8:7 thumbnail (a touch taller than 4:3, level with three lines of text),
+  name with its ridden mark, park, manufacturer. Once the ledger is 56rem wide (container query, results.html.twig), the manufacturer,
+  the country and the score become columns under the ledger's headings.
+  Props:
+    coaster   Coaster
+    position  number shown (the world rank, or the position in a filtered list)
+    month     current ranking date (Ranking:Movement)
+    ridden    signed-in rider has ridden it
+    filtered  filtered list: the world rank replaces the movement
+    digits    digits of the widest position on this page, so every row's column lines up
+#}
+{% trans_default_domain 'ranking' %}
+{% import 'helper.html.twig' as helper %}
+{% props coaster, position, month, ridden = false, filtered = false, digits = 2 %}
+{# Wide ledger: name, manufacturer and country share the free width 3 : 2 : 1.5 (the headings in results.html.twig use the same shares) #}
+{% set column = 'hidden min-w-0 truncate @4xl/ledger:block' %}
+<li {{ attributes }}>
+  {# Below sm the ledger runs edge to edge (results.html.twig), so the row takes the page gutter as its padding #}
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}" class="flex min-h-18 items-center gap-3 px-gutter py-2.5 text-ink -outline-offset-3 hover:bg-subtle sm:px-3 @4xl/ledger:px-4">
+    {# 56px holds three digits and the movement with its crown #}
+    <span class="flex shrink-0 flex-col items-center gap-1 font-display text-title leading-none tabular-nums {{ digits > 3 ? 'w-16' : 'w-14' }}">
+      {{ position }}
+      {% if filtered %}
+        <twig:Ranking:WorldRank :coaster="coaster"/>
+      {% else %}
+        <twig:Ranking:Movement :coaster="coaster" :month="month" class="font-sans"/>
+      {% endif %}
+    </span>
+    <span class="relative aspect-8/7 w-16 shrink-0 overflow-hidden rounded-sm bg-subtle">
+      {% if coaster.mainImage %}
+        {{ helper.picture(coaster.mainImage.filename, 64, 56, '', 'absolute inset-0 size-full object-cover') }}
+      {% else %}
+        {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-6 text-muted', 'aria-hidden': 'true'}) }}
+      {% endif %}
+    </span>
+    <span class="min-w-0 flex-1 @4xl/ledger:flex-[3]">
+      <twig:Ranking:Name :coaster="coaster" :ridden="ridden" :clamp="false" class="leading-tight"/>
+      <twig:Ranking:Place :coaster="coaster" class="mt-0.5"/>
+    </span>
+    <span class="{{ column }} flex-[2] text-muted-strong">{{ coaster.manufacturer.name ?? '' }}</span>
+    <span class="{{ column }} flex-[1.5] text-muted-strong">{{ coaster.park.country.name|trans({}, 'database') }}</span>
+    <span class="{{ column }} w-24 shrink-0 text-end font-semibold tabular-nums">
+      {% if coaster.score is not null %}
+        <span class="sr-only">{{ 'columns.score'|trans }}</span>
+        {{ (coaster.score / 100)|format_number({min_fraction_digit: 1, max_fraction_digit: 1}, style: 'percent') }}
+      {% endif %}
+    </span>
+  </a>
+</li>

@@ -10,14 +10,14 @@
     <h2 id="filter-sheet-title" tabindex="-1" autofocus class="m-0 text-lead outline-none">{{ 'filters.title'|trans }}</h2>
   </div>
   <div class="min-h-0 flex-auto overflow-y-auto overscroll-contain md:contents">
-{# From md: a 260px column, sticky under Page:Header's compact bar (h-14, below lg) or Nav:Header (h-16 + 1px border), running the full viewport height. #}
-<div class="relative w-full bg-surface text-ink md:sticky md:top-14 md:h-[calc(100dvh-var(--spacing)*14)] md:flex-[0_0_260px] md:self-start md:overflow-y-auto md:overscroll-contain md:border-r md:border-line lg:top-[calc(var(--spacing)*16+1px)] lg:h-[calc(100dvh-var(--spacing)*16-1px)]"
+{# From md: a 260px column, sticky under Page:Header's compact bar (below lg) or Nav:Header, running the full viewport height. #}
+<div class="relative w-full bg-surface text-ink md:sticky md:top-bar md:h-[calc(100dvh-var(--spacing-bar))] md:flex-[0_0_260px] md:self-start md:overflow-y-auto md:overscroll-contain md:border-r md:border-line lg:top-header lg:h-[calc(100dvh-var(--spacing-header))]"
      {% if filterConfig is defined %}
        data-controller="filter"
        {% for key, value in filterConfig %}
          {% if key == 'map_outlet' %}
            data-filter-map-outlet="{{ value }}"
-         {% elseif key in ['endpoint', 'container_id', 'update_url', 'debounce_delay'] %}
+         {% elseif key in ['endpoint', 'container_id', 'update_url', 'debounce_delay', 'initial_load'] %}
            data-filter-{{ key|replace({'_': '-'}) }}-value="{{ value }}"
          {% endif %}
        {% endfor %}

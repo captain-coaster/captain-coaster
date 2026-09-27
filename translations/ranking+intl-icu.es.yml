@@ -1,0 +1,88 @@
+title: Clasificación mundial de montañas rusas
+description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
+no_results: '¡no se han encontrado montañas rusas!'
+edition:
+    new: 'Nuevo'
+    next: 'Próxima clasificación {date}'
+    how: 'Todo sobre la clasificación'
+top100:
+    title: 'Tu top 100 mundial'
+    caption: 'Montañas rusas en funcionamiento montadas'
+    legends: '{count, plural, one {+# leyenda montada, ya desaparecida} other {+# leyendas montadas, ya desaparecidas}}'
+move:
+    new: 'Nueva'
+    best: 'Récord'
+    up: '{count, plural, one {Sube # puesto} other {Sube # puestos}}'
+    down: '{count, plural, one {Baja # puesto} other {Baja # puestos}}'
+row:
+    ridden: 'Montada'
+    legend: 'Montada, ya no funciona'
+    world_rank: 'N.º {rank} mundial'
+legend:
+    title: 'Cómo leer la clasificación'
+    up: 'Puestos ganados desde el mes pasado'
+    down: 'Puestos perdidos desde el mes pasado'
+    best: 'Su mejor puesto de la historia'
+    new: 'Nueva entrada este mes'
+    ridden: 'Ya la has montado'
+    legend: 'Una montaña rusa del top 100 que montaste y que ya no funciona'
+    world: 'Puesto mundial, en una lista filtrada'
+pager:
+    label: 'Páginas de la clasificación'
+    more: 'Cargar {count} más'
+    total: '{count, plural, one {# montaña rusa clasificada} other {# montañas rusas clasificadas}}'
+    jump: 'Ir al puesto'
+info:
+    delta: '+{count, number} este mes'
+    totals: 'La clasificación de {month}'
+    not_computed: 'La clasificación aún no se ha calculado. Vuelve después de la próxima actualización mensual.'
+    coasters_ranked:
+        short: Montañas rusas
+        long: Montañas rusas clasificados
+    ratings: Clasificaciones
+    comparisons:
+        short: Pares
+        long: Pares analizados
+    users: Votantes
+trend:
+    title: 'Evolución desde {year}'
+    metric: 'Dato'
+
+columns:
+    manufacturer: 'Fabricante'
+    country: 'País'
+    score: 'Duelos ganados'
+
+learn_more:
+    title: 'Todo sobre la clasificación'
+    brief:
+        title: 'La clasificación de Captain Coaster en resumen'
+        text:
+            '<p>La clasificación de Captain Coaster se basa en un sistema de <b>comparación por pares</b>. Las comparaciones se derivan de tus Tops y Puntuaciones — cuanto más detallados sean, ¡mejor!</p>
+            <p>Los Tops son más precisos, mientras que las puntuaciones son más rápidas de usar. Para maximizar tu influencia en la clasificación, te recomendamos <b>puntuar todas tus montañas rusas</b> y luego <b>ordenar las mejor puntuadas</b> en tu Top.</p>'
+    duel:
+        title: 'Un duelo real'
+        caption: 'N.º {first} contra n.º {second}, clasificación de {month}'
+        riders: '{count, plural, one {# usuario ha montado en las dos.} other {# usuarios han montado en las dos.}}'
+        winner: '{name} gana este duelo.'
+        expected: 'Un duelo entre miles: es el conjunto de duelos ganados lo que decide el puesto en la clasificación.'
+        ties: 'Comparaciones sacadas de los Tops y las puntuaciones. Dos puntuaciones iguales cuentan la mitad para cada lado.'
+    principles:
+        title: 'Principios de la clasificación'
+        duels:
+            title: 'Cada montaña rusa se enfrenta a todas las demás.'
+            text: 'Para cada montaña rusa de la clasificación, calculamos un duelo directo contra todas las demás de la base de datos para determinar cuál es mejor. Los resultados de todos estos duelos se combinan: una montaña rusa que gana todos sus duelos ocupa el puesto #1, una que solo pierde contra la #1 pero vence a todas las demás será la #2, y así sucesivamente. La puntuación refleja esta proporción de duelos ganados.'
+        riders:
+            title: 'Solo votan quienes han montado en las dos.'
+            text: 'Solo los usuarios que han probado ambas montañas rusas pueden participar en un duelo. La comparación proviene de tu Top si las dos están en él; si no, de tus puntuaciones. El duelo lo gana la montaña rusa con la mayoría de comparaciones favorables: la clasificación refleja las preferencias reales de todos los usuarios.'
+        mass:
+            title: 'Sin efecto de masas.'
+            text: 'El número total de puntuaciones que recibe una montaña rusa no influye. ¡Esto no es un concurso de popularidad! Las montañas rusas raras tienen las mismas posibilidades de estar bien clasificadas que las más populares.'
+        influence:
+            title: 'Cuanto más puntúas, más cuentas.'
+            text: 'Puntuar solo 1 montaña rusa no genera ninguna comparación. Puntuar 10 genera 45, puntuar 20 genera 190, y así sucesivamente. Cuantas más montañas rusas pruebes y puntúes, mayor será tu influencia en la clasificación: ¡puntúa todas tus montañas rusas y sigue probando más!'
+        majority:
+            title: 'Nadie puede alterarlo todo.'
+            text: 'Todos tienen influencia, pero una persona con una opinión contraria sobre una montaña rusa no cambiará drásticamente su puntuación: siempre prevalece la opinión mayoritaria.'
+        yours: 'Tus {ratings, number} puntuaciones crean {comparisons, number} comparaciones.'
+        yours_top: 'Tus {ratings, number} puntuaciones y las {top, number} montañas rusas de tu Top crean {comparisons, number} comparaciones.'

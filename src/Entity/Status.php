@@ -24,6 +24,11 @@ class Status implements \Stringable
     final public const string CLOSED_DEFINITELY = 'status.closed.definitely';
     final public const string CONSTRUCTION = 'status.construction';
     final public const string ANNOUNCED = 'status.announced';
+    final public const string RELOCATED = 'status.relocated';
+    final public const string RETRACKED = 'status.retracked';
+
+    /** Statuses of a coaster that can no longer be ridden as it was. */
+    final public const array GONE = [self::CLOSED_DEFINITELY, self::RELOCATED, self::RETRACKED];
 
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]

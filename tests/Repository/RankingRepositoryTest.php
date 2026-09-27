@@ -101,7 +101,7 @@ class RankingRepositoryTest extends TestCase
         $this->assertNull($this->repository->findCurrent());
     }
 
-    public function testClearCacheDeletesBothFixedIdsFromTheResultCachePool(): void
+    public function testClearCacheDeletesEveryFixedIdFromTheResultCachePool(): void
     {
         $deletedIds = [];
         $pool = $this->createMock(CacheItemPoolInterface::class);
@@ -117,6 +117,6 @@ class RankingRepositoryTest extends TestCase
 
         $this->repository->clearCache();
 
-        $this->assertSame(['ranking_current', 'ranking_previous'], $deletedIds);
+        $this->assertSame(['ranking_current', 'ranking_previous', 'ranking_history'], $deletedIds);
     }
 }

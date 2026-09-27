@@ -131,27 +131,9 @@ image_upload:
         duplicate: 'Esta foto ya ha sido subida. Por favor, elige una imagen diferente.'
 
 park:
+    no_coasters: '¡no se han encontrado montañas rusas!'
     opened_coasters: '{ count, plural, one { montaña rusa abierta } other { montañas rusas abierta }}'
     kiddies: '{ count, plural, one { montaña rusa infantil } other { montañas rusas infantiles }}'
-
-coaster_ranking:
-    title: Clasificación mundial de montañas rusas
-    description: Clasificación de las mejores montañas rusas del mundo por nuestros usuarios. Envíe un comentario y califique las montañas rusas que ha montado para participar.
-    duel_number: '{ count, plural, one { # duelo } other { # duelos }}'
-    no_results: '¡no se han encontrado montañas rusas!'
-    info:
-        title: 'Última actualización: {rankingMonth}'
-        next: 'Próxima actualización {date}'
-        learn_more: Más información sobre la clasificación
-        not_computed: 'La clasificación aún no se ha calculado. Vuelve después de la próxima actualización mensual.'
-        coasters_ranked:
-            short: montañas rusas
-            long: montañas rusas clasificados
-        ratings: clasificaciones
-        comparisons:
-            short: pares
-            long: pares analizados
-        users: votantes
 
 map_index:
     title: 'Mapa de montañas rusas'

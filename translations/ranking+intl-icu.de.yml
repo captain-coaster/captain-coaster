@@ -1,0 +1,88 @@
+title: Weltrangliste der Achterbahnen
+description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 20.000 Benutzern weltweit.'
+no_results: 'Keine Achterbahnen gefunden!'
+edition:
+    new: 'Neu'
+    next: 'Nächstes Ranking {date}'
+    how: 'Alles zum Ranking'
+top100:
+    title: 'Deine Welt-Top-100'
+    caption: 'Gefahrene Achterbahnen in Betrieb'
+    legends: '{count, plural, one {+# gefahrene Legende, heute verschwunden} other {+# gefahrene Legenden, heute verschwunden}}'
+move:
+    new: 'Neu'
+    best: 'Rekord'
+    up: '{count, plural, one {# Platz hoch} other {# Plätze hoch}}'
+    down: '{count, plural, one {# Platz runter} other {# Plätze runter}}'
+row:
+    ridden: 'Gefahren'
+    legend: 'Gefahren, nicht mehr in Betrieb'
+    world_rank: 'Welt #{rank}'
+legend:
+    title: 'So liest du das Ranking'
+    up: 'Plätze gewonnen seit letztem Monat'
+    down: 'Plätze verloren seit letztem Monat'
+    best: 'Beste Platzierung aller Zeiten'
+    new: 'Neu in diesem Monat'
+    ridden: 'Schon gefahren'
+    legend: 'Eine Top-100-Achterbahn, die du gefahren bist und die nicht mehr in Betrieb ist'
+    world: 'Weltrang, in einer gefilterten Liste'
+pager:
+    label: 'Ranking-Seiten'
+    more: '{count} weitere laden'
+    total: '{count, plural, one {# Achterbahn im Ranking} other {# Achterbahnen im Ranking}}'
+    jump: 'Zu Platz springen'
+info:
+    delta: '+{count, number} diesen Monat'
+    totals: 'Das Ranking für {month}'
+    not_computed: 'Das Ranking wurde noch nicht berechnet. Schau nach der nächsten monatlichen Aktualisierung wieder vorbei.'
+    coasters_ranked:
+        short: Achterbahnen
+        long: Eingestufte Achterbahnen
+    ratings: Bewertungen
+    comparisons:
+        short: Paare
+        long: Analysierte Paare
+    users: Wähler
+trend:
+    title: 'Entwicklung seit {year}'
+    metric: 'Kennzahl'
+
+columns:
+    manufacturer: 'Hersteller'
+    country: 'Land'
+    score: 'Gewonnene Duelle'
+
+learn_more:
+    title: 'Alles zum Ranking'
+    brief:
+        title: 'Das Captain Coaster Ranking in Kürze'
+        text:
+            '<p>Das Ranking von Captain Coaster basiert auf einem <b>paarweisen Vergleichssystem</b>. Die Vergleiche werden aus deinen Tops und Bewertungen abgeleitet — je detaillierter sie sind, desto besser!</p>
+            <p>Tops sind präziser, während Bewertungen schneller zu vergeben sind. Um deinen Einfluss auf das Ranking zu maximieren, empfehlen wir dir, <b>alle deine gefahrenen Achterbahnen zu bewerten</b> und dann <b>deine bestbewerteten Achterbahnen</b> in deinem Top zu ordnen.</p>'
+    duel:
+        title: 'Ein echtes Duell'
+        caption: 'Platz {first} gegen Platz {second}, Ranking {month}'
+        riders: '{count, plural, one {# Fahrer ist beide gefahren.} other {# Fahrer sind beide gefahren.}}'
+        winner: '{name} gewinnt dieses Duell.'
+        expected: 'Ein Duell unter Tausenden: Erst alle gewonnenen Duelle zusammen bestimmen den Platz im Ranking.'
+        ties: 'Die Vergleiche stammen aus Tops und Bewertungen. Zwei gleiche Bewertungen zählen je zur Hälfte.'
+    principles:
+        title: 'Ranking-Prinzipien'
+        duels:
+            title: 'Jede Achterbahn tritt gegen jede andere an.'
+            text: 'Für jede Achterbahn im Ranking berechnen wir ein direktes Duell gegen jede andere Achterbahn in der Datenbank, um zu ermitteln, welche besser ist. Die Ergebnisse aller Duelle werden dann kombiniert: Eine Achterbahn, die alle ihre Duelle gewinnt, belegt Platz 1, eine, die nur gegen die Nr. 1 verliert, aber alle anderen schlägt, wird Nr. 2, und so weiter. Der Score spiegelt dieses Verhältnis gewonnener Duelle wider.'
+        riders:
+            title: 'Nur wer beide gefahren ist, stimmt ab.'
+            text: 'Nur Fahrer, die beide Achterbahnen erlebt haben, können zu einem Duell beitragen. Der Vergleich stammt aus deinem Top, wenn beide darin stehen, sonst aus deinen Bewertungen. Das Duell gewinnt die Achterbahn mit der Mehrheit der positiven Vergleiche: So spiegelt das Ranking die echten Vorlieben aller Fahrer wider.'
+        mass:
+            title: 'Kein Masseneffekt.'
+            text: 'Die Gesamtzahl der Bewertungen einer Achterbahn hat keinen Einfluss. Das ist kein Beliebtheitswettbewerb: Seltene Achterbahnen haben die gleichen Chancen auf eine gute Platzierung wie die beliebtesten.'
+        influence:
+            title: 'Je mehr du bewertest, desto mehr zählst du.'
+            text: 'Die Bewertung von nur einer Achterbahn erzeugt keinen Vergleich. 10 Bewertungen erzeugen 45 Vergleiche, 20 erzeugen 190, und so weiter. Je mehr Achterbahnen du fährst und bewertest, desto größer ist dein Einfluss auf das Ranking: Bewerte alle deine gefahrenen Achterbahnen und fahr immer mehr!'
+        majority:
+            title: 'Niemand kann alles umwerfen.'
+            text: 'Jeder hat Einfluss, aber eine Person mit einer gegensätzlichen Meinung zu einer Achterbahn wird deren Score nicht drastisch verändern: Die Mehrheitsmeinung setzt sich immer durch.'
+        yours: 'Deine {ratings, number} Bewertungen ergeben {comparisons, number} Vergleiche.'
+        yours_top: 'Deine {ratings, number} Bewertungen und die {top, number} Achterbahnen in deinem Top ergeben {comparisons, number} Vergleiche.'

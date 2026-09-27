@@ -185,6 +185,14 @@ class Coaster implements \Stringable
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $previousRank = null;
 
+    /** Best rank ever reached, kept when the coaster leaves the ranking. */
+    #[ORM\Column(type: Types::INTEGER, nullable: true)]
+    private ?int $bestRank = null;
+
+    /** When bestRank was first reached. */
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $bestRankAt = null;
+
     /** @var Collection<int, RiddenCoaster> */
     #[ORM\OneToMany(targetEntity: RiddenCoaster::class, mappedBy: 'coaster', fetch: 'EXTRA_LAZY')]
     private Collection $ratings;
@@ -620,6 +628,27 @@ class Coaster implements \Stringable
     public function setPreviousRank(?int $previousRank): static
     {
         $this->previousRank = $previousRank;
+
+        return $this;
+    }
+
+    public function getBestRank(): ?int
+    {
+        return $this->bestRank;
+    }
+
+    public function getBestRankAt(): ?\DateTimeInterface
+    {
+        return $this->bestRankAt;
+    }
+
+    /** Records $rank as the best rank when it beats the previous best. */
+    public function recordBestRank(int $rank, \DateTimeInterface $at): static
+    {
+        if (null === $this->bestRank || $rank < $this->bestRank) {
+            $this->bestRank = $rank;
+            $this->bestRankAt = $at;
+        }
 
         return $this;
     }

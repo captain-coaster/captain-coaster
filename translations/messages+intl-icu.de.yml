@@ -131,27 +131,9 @@ image_upload:
         duplicate: 'Dieses Bild wurde bereits hochgeladen. Bitte wählen Sie ein anderes Bild.'
 
 park:
+    no_coasters: 'Keine Achterbahnen gefunden!'
     opened_coasters: '{ count, plural, one { opened coaster } other { opened coasters }}'
     kiddies: '{ count, plural, one { kiddie } other { kiddies }}'
-
-coaster_ranking:
-    title: Weltrangliste der Achterbahnen
-    description: 'Entdecke die weltweit besten Achterbahnen, mit unserer monatlichen Weltrangliste der Achterbahnen - basierend auf tausenden von Bewertungen von über 20.000 Benutzern weltweit.'
-    duel_number: '{ count, plural, one { # duel } other { # duels }}'
-    no_results: 'Keine Achterbahnen gefunden!'
-    info:
-        title: 'Letzte Aktualisierung: {rankingMonth}'
-        next: 'Nächste Aktualisierung {date}'
-        learn_more: Erfahre mehr über das Ranking
-        not_computed: 'Das Ranking wurde noch nicht berechnet. Schau nach der nächsten monatlichen Aktualisierung wieder vorbei.'
-        coasters_ranked:
-            short: Achterbahnen
-            long: Eingestufte Achterbahnen
-        ratings: Bewertungen
-        comparisons:
-            short: Paare
-            long: analysierte Paare
-        users: Wähler
 
 map_index:
     title: Achterbahn Landkarte

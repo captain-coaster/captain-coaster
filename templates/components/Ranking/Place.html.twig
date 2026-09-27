@@ -1,0 +1,13 @@
+{#
+  Park and manufacturer of a ranking entry, one line each, cut with an ellipsis when too long. In a wide ledger
+  the manufacturer has its own column (Ranking:Row), so it leaves this stack.
+  Props:
+    coaster  Coaster
+#}
+{% props coaster %}
+<span {{ attributes.defaults({class: 'block text-caption text-muted'}) }}>
+  <span class="block truncate">{{ coaster.park.name }}</span>
+  {% if coaster.manufacturer %}
+    <span class="block truncate @4xl/ledger:hidden">{{ coaster.manufacturer.name }}</span>
+  {% endif %}
+</span>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\RiddenCoaster;
 use App\Entity\Top;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -155,6 +156,32 @@ class TopRepository extends ServiceEntityRepository
             ->setParameter('top', $top)
             ->getQuery()
             ->getSingleResult();
+    }
+
+    /**
+     * Coasters of a user's main Top that feed the ranking (same scope as findUserTopForRanking()), and how many of them
+     * the user also rated.
+     *
+     * @return array{top: int, rated: int}
+     */
+    public function countForRanking(User $user): array
+    {
+        $row = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('COUNT(tc.id) AS top', 'COUNT(r.id) AS rated')
+            ->from(Top::class, 't')
+            ->innerJoin('t.topCoasters', 'tc')
+            ->innerJoin('tc.coaster', 'c')
+            ->leftJoin(RiddenCoaster::class, 'r', 'WITH', 'r.coaster = c AND r.user = t.user')
+            ->where('t.main = 1')
+            ->andWhere('t.user = :user')
+            ->andWhere('c.kiddie = 0')
+            ->andWhere('c.holdRanking = 0')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getSingleResult();
+
+        return ['top' => (int) $row['top'], 'rated' => (int) $row['rated']];
     }
 
     /**
