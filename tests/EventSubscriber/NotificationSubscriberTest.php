@@ -51,6 +51,13 @@ class NotificationSubscriberTest extends TestCase
         $this->subscriber->onRankingPublished(new RankingPublishedEvent());
     }
 
+    public function testRepublishedRankingNotifiesNobody(): void
+    {
+        $this->notificationService->expects($this->never())->method('sendToUsers');
+
+        $this->subscriber->onRankingPublished(new RankingPublishedEvent(republished: true));
+    }
+
     public function testRankingPublishedWithHighlightedCoasterUsesTheCoasterMessage(): void
     {
         $users = [new User()];

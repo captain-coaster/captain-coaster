@@ -51,4 +51,33 @@ class RankingServiceTest extends TestCase
         $this->assertSame('2026-09-01', RankingService::monthOf(new \DateTimeImmutable('2026-10-01 01:00', new \DateTimeZone('Europe/Paris')))->format('Y-m-d'));
         $this->assertSame('2026-10-01', RankingService::monthOf(new \DateTimeImmutable('2026-10-01 00:05', new \DateTimeZone('UTC')))->format('Y-m-d'));
     }
+
+    public function testTargetMonthFollowsTheLastPublishedRanking(): void
+    {
+        $utc = new \DateTimeZone('UTC');
+        $september = new \DateTimeImmutable('2026-09-01');
+
+        // Computed early, on the 1st before or after noon: October in every case
+        $this->assertSame('2026-10-01', RankingService::targetMonth($september, new \DateTimeImmutable('2026-09-30 10:00', $utc))->format('Y-m-d'));
+        $this->assertSame('2026-10-01', RankingService::targetMonth($september, new \DateTimeImmutable('2026-10-01 03:00', $utc))->format('Y-m-d'));
+        $this->assertSame('2026-10-01', RankingService::targetMonth($september, new \DateTimeImmutable('2026-10-01 14:00', $utc))->format('Y-m-d'));
+        $this->assertSame('2027-01-01', RankingService::targetMonth(new \DateTimeImmutable('2026-12-01'), new \DateTimeImmutable('2026-12-31 23:00', $utc))->format('Y-m-d'));
+    }
+
+    public function testTargetMonthIsNeverBeforeTheCurrentMonth(): void
+    {
+        $now = new \DateTimeImmutable('2026-09-30 10:00', new \DateTimeZone('UTC'));
+
+        // Months skipped since July: September, not August
+        $this->assertSame('2026-09-01', RankingService::targetMonth(new \DateTimeImmutable('2026-07-01'), $now)->format('Y-m-d'));
+        $this->assertSame('2026-09-01', RankingService::targetMonth(null, $now)->format('Y-m-d'));
+    }
+
+    public function testTargetMonthIgnoresTheLastMonthsTimeZone(): void
+    {
+        // Midnight on 1 September in Paris is still August in UTC
+        $september = new \DateTimeImmutable('2026-09-01', new \DateTimeZone('Europe/Paris'));
+
+        $this->assertSame('2026-10-01', RankingService::targetMonth($september, new \DateTimeImmutable('2026-09-30 10:00', new \DateTimeZone('UTC')))->format('Y-m-d'));
+    }
 }

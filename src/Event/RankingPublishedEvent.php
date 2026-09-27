@@ -11,6 +11,8 @@ final class RankingPublishedEvent
 {
     public function __construct(
         public readonly ?string $highlightedCoasterName = null,
+        // A regenerated ranking published again: riders were already notified
+        public readonly bool $republished = false,
     ) {
     }
 }

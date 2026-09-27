@@ -35,6 +35,17 @@ class RankingRepository extends ServiceEntityRepository
         return $this->fetchRanking(1, 'ranking_previous');
     }
 
+    /** The last published ranking, uncached. */
+    public function findLastPublished(): ?Ranking
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.publishedAt IS NOT NULL')
+            ->orderBy('r.month', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     /** The last published ranking before $month. */
     public function findPublishedBefore(\DateTimeImmutable $month): ?Ranking
     {

@@ -41,7 +41,7 @@ class RankingCommand extends Command
     protected function configure(): void
     {
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Compute and report only, write nothing')
-            ->addOption('force', null, InputOption::VALUE_NONE, 'Run on another day than the 1st, or replace this month\'s ranking')
+            ->addOption('regenerate', null, InputOption::VALUE_NONE, 'Recompute the published ranking and republish it now')
             ->addOption('send-discord', null, InputOption::VALUE_NONE, 'Post a dry run\'s full ranking to Discord (a real run always posts its report)');
     }
 
@@ -54,23 +54,17 @@ class RankingCommand extends Command
         }
 
         $dryRun = (bool) $input->getOption('dry-run');
-        $force = (bool) $input->getOption('force');
-        $now = new \DateTimeImmutable();
-        // A dry run previews the next ranking to be published
-        $month = RankingService::monthOf($dryRun ? RankingService::nextPublication($now) : $now);
+        $regenerate = (bool) $input->getOption('regenerate');
+        $last = $this->rankingRepository->findLastPublished();
 
-        if (!$dryRun && !$force) {
-            if ('1' !== $now->setTimezone(new \DateTimeZone('UTC'))->format('j')) {
-                $output->writeln('<error>Not the 1st of the month (UTC): run with --dry-run, or --force.</error>');
+        if ($regenerate && null === $last) {
+            $output->writeln('<error>No published ranking to regenerate.</error>');
 
-                return Command::FAILURE;
-            }
-            if (null !== $existing = $this->rankingRepository->findOneBy(['month' => $month])) {
-                $output->writeln(\sprintf('<error>%s already has a ranking (#%d): run with --force to replace it.</error>', $month->format('F Y'), $existing->getId()));
-
-                return Command::FAILURE;
-            }
+            return Command::FAILURE;
         }
+        // Otherwise the month after the last published: a ranking computed early waits for its publication time
+        $publishedAt = $last?->getPublishedAt();
+        $month = $regenerate ? $last->getMonth() : RankingService::targetMonth($last?->getMonth(), new \DateTimeImmutable());
 
         $output->writeln(\sprintf('%s of %s', $dryRun ? 'Dry run' : 'Ranking', $month->format('F Y')));
 
@@ -100,10 +94,16 @@ class RankingCommand extends Command
                 return Command::SUCCESS;
             }
 
-            $ranking = $this->rankingService->stage($result, $report, $month, $run, $force);
-            $status = $report->anomalies && $this->holdOnAnomalies
-                ? '⚠️ Held: ranking:publish --force to publish it anyway'
-                : \sprintf('Publication: %s UTC', RankingService::publicationTime($month)->format('Y-m-d H:i'));
+            // A pending ranking of $month is replaced
+            $ranking = $this->rankingService->stage($result, $report, $month, $run, $regenerate);
+            if ($regenerate) {
+                $this->rankingService->publish($ranking, $publishedAt);
+                $status = 'Republished';
+            } else {
+                $status = $report->anomalies && $this->holdOnAnomalies
+                    ? '⚠️ Held: ranking:publish --force to publish it anyway'
+                    : \sprintf('Publication: %s UTC', RankingService::publicationTime($month)->format('Y-m-d H:i'));
+            }
             $output->writeln(['', \sprintf('Staged ranking #%d. %s', $ranking->getId(), $status)]);
             $this->discord->send([\sprintf('**Ranking of %s computed**', $month->format('F Y')), ...$summary, $status]);
         } catch (\Throwable $e) {

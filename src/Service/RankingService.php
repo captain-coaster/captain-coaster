@@ -87,19 +87,20 @@ class RankingService
     }
 
     /**
-     * Saves a computed ranking as the pending Ranking of $month, in one transaction.
+     * Saves a computed ranking as the pending Ranking of $month, in one transaction. It replaces a pending ranking
+     * of $month, and a published one only when $replacePublished.
      *
      * @param array<string, mixed> $run duration, memory... stored with the report
      *
-     * @throws \RuntimeException when $month already has a ranking and $replace is false
+     * @throws \RuntimeException when $month is already published and $replacePublished is false
      */
-    public function stage(RankingResult $result, RankingReport $report, \DateTimeImmutable $month, array $run, bool $replace): Ranking
+    public function stage(RankingResult $result, RankingReport $report, \DateTimeImmutable $month, array $run, bool $replacePublished = false): Ranking
     {
-        return $this->em->wrapInTransaction(function () use ($result, $report, $month, $run, $replace): Ranking {
+        return $this->em->wrapInTransaction(function () use ($result, $report, $month, $run, $replacePublished): Ranking {
             $existing = $this->rankingRepository->findOneBy(['month' => $month]);
             if (null !== $existing) {
-                if (!$replace) {
-                    throw new \RuntimeException(\sprintf('%s already has a ranking (#%d, %s).', $month->format('F Y'), $existing->getId(), $existing->getPublishedAt() ? 'published' : 'pending'));
+                if (null !== $existing->getPublishedAt() && !$replacePublished) {
+                    throw new \RuntimeException(\sprintf('%s is already published (#%d).', $month->format('F Y'), $existing->getId()));
                 }
                 // Its RankingHistory rows go with it (ON DELETE CASCADE)
                 $this->em->remove($existing);
@@ -135,12 +136,15 @@ class RankingService
     /**
      * Copies a staged ranking into the coasters' rank columns, then clears the caches and notifies riders.
      * Previous ranks come from the ranking published before it, so publishing twice changes nothing.
+     *
+     * @param ?\DateTimeImmutable $publishedAt set when republishing a regenerated ranking: keeps its original date and
+     *                                         notifies nobody
      */
-    public function publish(Ranking $ranking): void
+    public function publish(Ranking $ranking, ?\DateTimeImmutable $publishedAt = null): void
     {
         $previous = $this->rankingRepository->findPublishedBefore($ranking->getMonth());
 
-        $this->em->wrapInTransaction(static function (EntityManagerInterface $em) use ($ranking, $previous): void {
+        $this->em->wrapInTransaction(static function (EntityManagerInterface $em) use ($ranking, $previous, $publishedAt): void {
             $connection = $em->getConnection();
             $params = ['ranking' => $ranking->getId(), 'previous' => $previous?->getId() ?? 0];
 
@@ -166,11 +170,13 @@ class RankingService
                 ['ranking' => $ranking->getId(), 'month' => $ranking->getMonth()->format('Y-m-d H:i:s')],
             );
 
-            $ranking->setPublishedAt(new \DateTimeImmutable());
+            $ranking->setPublishedAt($publishedAt ?? new \DateTimeImmutable());
             $em->flush();
         });
 
-        $this->eventDispatcher->dispatch(new RankingPublishedEvent($this->coasterRepository->getNewlyRankedHighlightedCoaster()?->getName()));
+        $this->eventDispatcher->dispatch(null === $publishedAt
+            ? new RankingPublishedEvent($this->coasterRepository->getNewlyRankedHighlightedCoaster()?->getName())
+            : new RankingPublishedEvent(republished: true));
     }
 
     /** When the ranking of $month is published. */
@@ -185,6 +191,17 @@ class RankingService
         $thisMonth = self::publicationTime($now);
 
         return $thisMonth > $now ? $thisMonth : self::publicationTime($thisMonth->modify('first day of next month'));
+    }
+
+    /** The month the next ranking belongs to: the one after the last published, never before $now's month. */
+    public static function targetMonth(?\DateTimeInterface $lastPublished, \DateTimeInterface $now): \DateTimeImmutable
+    {
+        $month = self::monthOf($now);
+        if (null === $lastPublished) {
+            return $month;
+        }
+
+        return max($month, new \DateTimeImmutable($lastPublished->format('Y-m-01'), new \DateTimeZone('UTC'))->modify('first day of next month'));
     }
 
     /** First day of $now's month, in UTC: the month a ranking computed at $now belongs to. */

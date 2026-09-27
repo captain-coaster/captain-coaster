@@ -35,6 +35,10 @@ class NotificationSubscriber implements EventSubscriberInterface
 
     public function onRankingPublished(RankingPublishedEvent $event): void
     {
+        if ($event->republished) {
+            return;
+        }
+
         $users = $this->userRepository->findAllIterable();
 
         if (null !== $event->highlightedCoasterName) {
