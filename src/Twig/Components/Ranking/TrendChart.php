@@ -18,7 +18,7 @@ final class TrendChart
     public const int WIDTH = 1000;
     public const int HEIGHT = 300;
 
-    /** @var list<array{computedAt: \DateTimeInterface, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}> */
+    /** @var list<array{month: \DateTimeImmutable, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}> */
     public array $history = [];
 
     public function __construct(private readonly ShortNumberExtension $shortNumber)
@@ -58,8 +58,8 @@ final class TrendChart
         $count = \count($this->history);
         $years = [];
         foreach ($this->history as $i => $row) {
-            if ('01' === $row['computedAt']->format('m') && $count > 1) {
-                $years[] = ['year' => $row['computedAt']->format('Y'), 'x' => round($i / ($count - 1) * 100, 2)];
+            if ('01' === $row['month']->format('m') && $count > 1) {
+                $years[] = ['year' => $row['month']->format('Y'), 'x' => round($i / ($count - 1) * 100, 2)];
             }
         }
 

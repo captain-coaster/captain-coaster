@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\EventSubscriber;
 
-use App\Event\RankingComputedEvent;
+use App\Event\RankingPublishedEvent;
 use App\EventSubscriber\RankingCacheSubscriber;
 use App\Repository\RankingRepository;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -21,18 +21,18 @@ class RankingCacheSubscriberTest extends TestCase
         $this->subscriber = new RankingCacheSubscriber($this->rankingRepository);
     }
 
-    public function testSubscribesToRankingComputedEvent(): void
+    public function testSubscribesToRankingPublishedEvent(): void
     {
         $this->assertSame(
-            [RankingComputedEvent::class => 'onRankingComputed'],
+            [RankingPublishedEvent::class => 'onRankingPublished'],
             RankingCacheSubscriber::getSubscribedEvents()
         );
     }
 
-    public function testOnRankingComputedClearsTheRankingCache(): void
+    public function testOnRankingPublishedClearsTheRankingCache(): void
     {
         $this->rankingRepository->expects($this->once())->method('clearCache');
 
-        $this->subscriber->onRankingComputed(new RankingComputedEvent());
+        $this->subscriber->onRankingPublished(new RankingPublishedEvent());
     }
 }

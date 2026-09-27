@@ -9,48 +9,6 @@ use PHPUnit\Framework\TestCase;
 
 class RankingServiceTest extends TestCase
 {
-    /**
-     * Coaster ids 1..60, ranked in that order.
-     *
-     * @return array<int, float>
-     */
-    private function ranking(): array
-    {
-        return array_fill_keys(range(1, 60), 50.0);
-    }
-
-    /**
-     * Duels between $a and $b: $aWins comparisons won by $a, $bWins by $b (ties already split in half).
-     *
-     * @return array<int, array<int, float>>
-     */
-    private function duel(int $a, int $b, float $aWins, float $bWins): array
-    {
-        return [$a => [$b => $aWins], $b => [$a => $bWins]];
-    }
-
-    public function testFeaturedDuelCountsRidersAndBetterRankedWinsWithTiesAsHalf(): void
-    {
-        // 40 riders compared #4 and #25: 25 preferred #4, 14 preferred #25, 1 tie
-        $this->assertSame(
-            ['first' => 4, 'second' => 25, 'comparisons' => 40, 'firstWins' => 25.5],
-            RankingService::featuredDuel($this->ranking(), $this->duel(4, 25, 25.5, 14.5)),
-        );
-    }
-
-    public function testFeaturedDuelSkipsTopTwoCloseRanksFewRidersAndUpsets(): void
-    {
-        $duels = array_replace(
-            $this->duel(1, 20, 30.0, 10.0),  // #1 is never featured
-            $this->duel(5, 10, 30.0, 10.0),  // only 5 places apart
-            $this->duel(6, 30, 20.0, 5.0),   // 25 riders
-            $this->duel(7, 30, 15.0, 25.0),  // #30 wins the duel
-            $this->duel(21, 40, 30.0, 10.0), // #21 is past the featured range
-        );
-
-        $this->assertNull(RankingService::featuredDuel($this->ranking(), $duels));
-    }
-
     public function testRiderComparisonsCountTopPairsOnceWhenAlsoRated(): void
     {
         $this->assertSame(45, RankingService::riderComparisons(10, 0, 0));
@@ -60,12 +18,37 @@ class RankingServiceTest extends TestCase
         $this->assertSame(55, RankingService::riderComparisons(10, 5, 0));
     }
 
-    public function testFeaturedDuelPicksAmongTheCandidates(): void
+    public function testPublicationIsTheFirstAtNoonUtc(): void
     {
-        $duels = $this->duel(3, 13, 30.0, 10.0) + $this->duel(20, 60, 30.0, 10.0);
+        $this->assertEquals(
+            new \DateTimeImmutable('2026-10-01 12:00', new \DateTimeZone('UTC')),
+            RankingService::publicationTime(new \DateTimeImmutable('2026-10-01')),
+        );
+    }
 
-        $pair = RankingService::featuredDuel($this->ranking(), $duels);
+    public function testNextPublicationIsLaterThisMonthUntilNoonOnTheFirst(): void
+    {
+        $utc = new \DateTimeZone('UTC');
 
-        $this->assertContains([$pair['first'], $pair['second']], [[3, 13], [20, 60]]);
+        $this->assertEquals(new \DateTimeImmutable('2026-10-01 12:00', $utc), RankingService::nextPublication(new \DateTimeImmutable('2026-10-01 11:59', $utc)));
+        $this->assertEquals(new \DateTimeImmutable('2026-11-01 12:00', $utc), RankingService::nextPublication(new \DateTimeImmutable('2026-10-01 12:00', $utc)));
+        $this->assertEquals(new \DateTimeImmutable('2027-01-01 12:00', $utc), RankingService::nextPublication(new \DateTimeImmutable('2026-12-31 23:00', $utc)));
+    }
+
+    public function testNextPublicationIsTheSameInstantInEveryTimeZone(): void
+    {
+        // 1 October 00:30 in Paris is still 30 September in UTC
+        $paris = RankingService::nextPublication(new \DateTimeImmutable('2026-10-01 00:30', new \DateTimeZone('Europe/Paris')));
+        $newYork = RankingService::nextPublication(new \DateTimeImmutable('2026-09-30 18:30', new \DateTimeZone('America/New_York')));
+
+        $this->assertEquals(new \DateTimeImmutable('2026-10-01 12:00', new \DateTimeZone('UTC')), $paris);
+        $this->assertEquals($paris, $newYork);
+    }
+
+    public function testMonthOfIsTheUtcMonth(): void
+    {
+        // Already 1 October in Paris, still September in UTC
+        $this->assertSame('2026-09-01', RankingService::monthOf(new \DateTimeImmutable('2026-10-01 01:00', new \DateTimeZone('Europe/Paris')))->format('Y-m-d'));
+        $this->assertSame('2026-10-01', RankingService::monthOf(new \DateTimeImmutable('2026-10-01 00:05', new \DateTimeZone('UTC')))->format('Y-m-d'));
     }
 }

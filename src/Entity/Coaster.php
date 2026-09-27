@@ -642,17 +642,6 @@ class Coaster implements \Stringable
         return $this->bestRankAt;
     }
 
-    /** Records $rank as the best rank when it beats the previous best. */
-    public function recordBestRank(int $rank, \DateTimeInterface $at): static
-    {
-        if (null === $this->bestRank || $rank < $this->bestRank) {
-            $this->bestRank = $rank;
-            $this->bestRankAt = $at;
-        }
-
-        return $this;
-    }
-
     public function addRating(RiddenCoaster $rating): static
     {
         $this->ratings[] = $rating;

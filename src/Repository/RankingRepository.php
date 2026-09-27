@@ -6,7 +6,9 @@ namespace App\Repository;
 
 use App\Entity\Coaster;
 use App\Entity\Ranking;
+use App\Entity\RankingHistory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
@@ -22,41 +24,78 @@ class RankingRepository extends ServiceEntityRepository
         parent::__construct($registry, Ranking::class);
     }
 
+    /** The published ranking on the site. */
     public function findCurrent(): ?Ranking
     {
         return $this->fetchRanking(0, 'ranking_current');
     }
 
-    /** @return mixed|null */
-    public function findPrevious()
+    public function findPrevious(): ?Ranking
     {
         return $this->fetchRanking(1, 'ranking_previous');
     }
 
+    /** The last published ranking before $month. */
+    public function findPublishedBefore(\DateTimeImmutable $month): ?Ranking
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.publishedAt IS NOT NULL')
+            ->andWhere('r.month < :month')
+            ->setParameter('month', $month, Types::DATE_IMMUTABLE)
+            ->orderBy('r.month', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /** The oldest ranking computed but not published yet. */
+    public function findPending(): ?Ranking
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.publishedAt IS NULL')
+            ->orderBy('r.month', 'ASC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /** @return array<int, int> coaster id => rank */
+    public function findRanks(Ranking $ranking): array
+    {
+        $rows = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->select('IDENTITY(h.coaster) AS coaster', 'h.rank')
+            ->from(RankingHistory::class, 'h')
+            ->where('h.ranking = :ranking')
+            ->setParameter('ranking', $ranking)
+            ->getQuery()
+            ->getScalarResult();
+
+        return array_combine(array_map(intval(...), array_column($rows, 'coaster')), array_map(intval(...), array_column($rows, 'rank')));
+    }
+
     /**
-     * Cleared explicitly by RankingCacheSubscriber when a new ranking is
-     * computed -- the long TTL below is only a backstop for whenever that
-     * doesn't happen (e.g. a manual DB edit).
+     * Cleared by RankingCacheSubscriber when a ranking is published -- the long TTLs are only a backstop for
+     * whenever that doesn't happen (e.g. a manual DB edit). The whole result cache goes: other cached queries hold
+     * ranks too (the ranking page, the top-100 meter), and it happens once a month.
      */
     public function clearCache(): void
     {
-        $resultCache = $this->getEntityManager()->getConfiguration()->getResultCache();
-        $resultCache?->deleteItem('ranking_current');
-        $resultCache?->deleteItem('ranking_previous');
-        $resultCache?->deleteItem('ranking_history');
+        $this->getEntityManager()->getConfiguration()->getResultCache()?->clear();
     }
 
     /**
      * Monthly totals of every ranking, oldest first.
      *
-     * @return list<array{computedAt: \DateTimeInterface, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}>
+     * @return list<array{month: \DateTimeImmutable, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}>
      */
     public function findTotalsHistory(): array
     {
-        /** @var list<array{computedAt: \DateTimeInterface, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}> $rows */
+        /** @var list<array{month: \DateTimeImmutable, ratingNumber: int, userNumber: int, rankedCoasterNumber: int, comparisonNumber: int}> $rows */
         $rows = $this->createQueryBuilder('r')
-            ->select('r.computedAt', 'r.ratingNumber', 'r.userNumber', 'r.rankedCoasterNumber', 'r.comparisonNumber')
-            ->orderBy('r.computedAt', 'ASC')
+            ->select('r.month', 'r.ratingNumber', 'r.userNumber', 'r.rankedCoasterNumber', 'r.comparisonNumber')
+            ->where('r.publishedAt IS NOT NULL')
+            ->orderBy('r.month', 'ASC')
             ->getQuery()
             ->enableResultCache(604800, 'ranking_history')
             ->getArrayResult();
@@ -65,12 +104,8 @@ class RankingRepository extends ServiceEntityRepository
     }
 
     /**
-     * Uses enableResultCache() with an explicit id (rather than a generic
-     * CacheInterface, as StatService does for its display-only counters)
-     * because the returned entity is used as a Doctrine association target
-     * by RankingHistoryManagerCommand ($rankingHistory->setRanking(...)) --
-     * it must stay a managed entity Doctrine recognizes on flush(), not a
-     * detached copy reconstructed from a generic cache's serialized value.
+     * Uses enableResultCache() with an explicit id so that clearCache() can target it, and so that a hit still
+     * returns a managed entity rather than a copy unserialized from a generic cache.
      */
     private function fetchRanking(int $offset, string $cacheId): ?Ranking
     {
@@ -79,7 +114,8 @@ class RankingRepository extends ServiceEntityRepository
                 ->createQueryBuilder()
                 ->select('r')
                 ->from(Ranking::class, 'r')
-                ->orderBy('r.computedAt', 'desc')
+                ->where('r.publishedAt IS NOT NULL')
+                ->orderBy('r.month', 'desc')
                 ->setMaxResults(1)
                 ->setFirstResult($offset)
                 ->getQuery();

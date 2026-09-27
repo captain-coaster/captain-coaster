@@ -109,6 +109,29 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /** Find a newly ranked coaster to add in neach month notification */
+    /**
+     * @param list<int> $ids
+     *
+     * @return array<int, string> coaster id => "Coaster - Park"
+     */
+    public function findDisplayNames(array $ids): array
+    {
+        $rows = $this->createQueryBuilder('c')
+            ->select('c.id', 'c.name', 'p.name AS park')
+            ->innerJoin('c.park', 'p')
+            ->where('c.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->getQuery()
+            ->getArrayResult();
+
+        $names = [];
+        foreach ($rows as $row) {
+            $names[$row['id']] = $row['name'].' - '.$row['park'];
+        }
+
+        return $names;
+    }
+
     public function getNewlyRankedHighlightedCoaster(int $maxRank = 300): ?Coaster
     {
         return $this->getEntityManager()->createQueryBuilder()

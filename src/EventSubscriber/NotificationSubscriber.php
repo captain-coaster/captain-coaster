@@ -6,7 +6,7 @@ namespace App\EventSubscriber;
 
 use App\Enum\NotificationType;
 use App\Event\BadgeAwardedEvent;
-use App\Event\RankingComputedEvent;
+use App\Event\RankingPublishedEvent;
 use App\Repository\UserRepository;
 use App\Service\NotificationService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -28,12 +28,12 @@ class NotificationSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            RankingComputedEvent::class => 'onRankingComputed',
+            RankingPublishedEvent::class => 'onRankingPublished',
             BadgeAwardedEvent::class => 'onBadgeAwarded',
         ];
     }
 
-    public function onRankingComputed(RankingComputedEvent $event): void
+    public function onRankingPublished(RankingPublishedEvent $event): void
     {
         $users = $this->userRepository->findAllIterable();
 

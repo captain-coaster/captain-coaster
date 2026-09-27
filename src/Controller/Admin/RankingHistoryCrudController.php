@@ -60,7 +60,7 @@ class RankingHistoryCrudController extends AbstractCrudController
             NumberField::new('averageTopRank'),
             NumberField::new('totalRatings'),
             NumberField::new('averageRating'),
-            DateField::new('ranking.computedAt', 'Ranking Date'),
+            DateField::new('ranking.month', 'Ranking month'),
         ];
     }
 

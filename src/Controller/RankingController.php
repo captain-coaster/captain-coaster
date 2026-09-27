@@ -18,8 +18,6 @@ use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(path: '/ranking')]
@@ -57,6 +55,7 @@ class RankingController extends AbstractController
             'filtersForm' => $this->filterService->getFilterData(),
             'filters' => $filters,
             'top100' => $top100,
+            'nextRanking' => RankingService::nextPublication(new \DateTimeImmutable()),
         ]);
     }
 
@@ -117,24 +116,19 @@ class RankingController extends AbstractController
         $page = max(1, $page);
         $user = $this->getUser();
 
-        try {
-            $validatedFilters = $this->filterService->validateAndAuthorize($filters, 'ranking', $user);
+        // Filters are sanitized, not rejected: past the permission check (403), any error is a server one
+        $validatedFilters = $this->filterService->validateAndAuthorize($filters, 'ranking', $user);
 
-            $pagination = $this->paginator->paginate(
-                $this->coasterRepository->findForRanking($validatedFilters),
-                $page,
-                self::COASTERS_PER_PAGE,
-                // Every join in findForRanking() is ManyToOne/OneToOne, so it can
-                // never duplicate a coaster row -- skip KnpPaginator's extra
-                // "distinct id" pre-query, which exists only to guard against
-                // *-to-many joins.
-                [PaginatorInterface::DISTINCT => false]
-            );
-        } catch (AccessDeniedHttpException $e) {
-            throw $e;
-        } catch (\Exception) {
-            throw new BadRequestHttpException();
-        }
+        $pagination = $this->paginator->paginate(
+            $this->coasterRepository->findForRanking($validatedFilters),
+            $page,
+            self::COASTERS_PER_PAGE,
+            // Every join in findForRanking() is ManyToOne/OneToOne, so it can
+            // never duplicate a coaster row -- skip KnpPaginator's extra
+            // "distinct id" pre-query, which exists only to guard against
+            // *-to-many joins.
+            [PaginatorInterface::DISTINCT => false]
+        );
 
         $riddenIds = [];
         if ($user instanceof User) {

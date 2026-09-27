@@ -10,6 +10,9 @@ parameters:
     locale: 'en'
     app_locales_array: ['en', 'fr', 'es', 'de']
     app_contact_mail_to: '%env(MAILER_REPLY_TO)%'
+    # Whether a new ranking's anomalies (RankingReport) hold its publication until ranking:publish --force;
+    # false: they are only reported on Discord
+    app.ranking.hold_on_anomalies: false
 
 services:
     # default configuration for services in *this* file

@@ -5,12 +5,11 @@
 {% set title = 'title'|trans %}
 {% set pageActions %}<twig:FilterToggle/>{% endset %}
 {% if ranking %}
-  {% set nextRanking = 'now'|date_modify('first day of next month midnight 1 minute') %}
   {% set pageMeta %}
     {# Month line (+ New pill during the first week), then the countdown and the explainer link, spaced rather than separated. #}
     <p class="m-0 mt-1 flex flex-wrap items-center gap-x-2 text-lead font-semibold text-muted-strong">
-      {{ ranking.computedAt|format_date(pattern: 'LLLL y')|capitalize }}
-      {% if date(ranking.computedAt) > date('-7 days') %}
+      {{ ranking.month|format_date(pattern: 'LLLL y')|capitalize }}
+      {% if date(ranking.publishedAt) > date('-7 days') %}
         <span class="rounded-pill bg-highlight px-2 text-caption font-semibold text-on-highlight">{{ 'edition.new'|trans }}</span>
       {% endif %}
     </p>
