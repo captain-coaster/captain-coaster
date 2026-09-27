@@ -32,7 +32,7 @@
      With only podium coasters (a short filtered list) it has nothing to show below 56rem. #}
   <div class="@container/ledger {{ rows is empty ? 'hidden @4xl/results:block' }}">
     {# Column headings, sticky under the compact bar (below lg) or the desktop header; decorative, each cell names itself where needed #}
-    <div class="sticky top-14 z-10 hidden gap-3 rounded-t-card border border-b-0 border-line bg-surface px-4 py-2 text-caption font-semibold text-muted lg:top-16.25 @4xl/ledger:flex" aria-hidden="true">
+    <div class="sticky top-bar z-10 hidden gap-3 rounded-t-card border border-b-0 border-line bg-surface px-4 py-2 text-caption font-semibold text-muted lg:top-header @4xl/ledger:flex" aria-hidden="true">
       {# Same tracks as Ranking:Row: rank, thumbnail, then the 3 : 2 : 1.5 shares and the score #}
       <span class="{{ digits > 3 ? 'w-16' : 'w-14' }} shrink-0"></span>
       <span class="w-16 shrink-0"></span>

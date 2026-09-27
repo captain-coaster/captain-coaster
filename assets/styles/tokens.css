@@ -25,6 +25,9 @@
     /* Page shell (DESIGN.md Layout): 75rem content max, fluid 16-48px gutters (16px on phones, as iOS and Material). */
     --container-content: 75rem;
     --spacing-gutter: clamp(1rem, 3.5vw, 3rem);
+    /* Sticky offsets under the page chrome: Page:Header's compact bar (h-14, below lg), Nav:Header (h-16 + its 1px border, from lg). */
+    --spacing-bar: 3.5rem;
+    --spacing-header: calc(4rem + 1px);
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
@@ -43,6 +46,11 @@
     --text-title--line-height: 1.08;
     --text-display: clamp(2.75rem, 2rem + 3vw, 4.75rem);
     --text-display--line-height: 1.08;
+    /* Ranking podium positions: #2/#3 halfway from title to display, #1 half again past display. */
+    --text-podium: calc((var(--text-title) + var(--text-display)) / 2);
+    --text-podium-first: calc(var(--text-display) * 1.5);
+    /* Big Barlow numerals set beside text: tight enough that the digits' cap height lines up with the first text line. */
+    --leading-numeral: .8;
 
     --radius-sm: .375rem;
     --radius-control: .5rem;

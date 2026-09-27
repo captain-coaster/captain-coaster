@@ -31,7 +31,7 @@
           {% endif %}
         </span>
         <span class="mt-2 flex items-start gap-2">
-          <span class="font-display text-title leading-[0.8] tabular-nums">{{ side.coaster.rank }}</span>
+          <span class="font-display text-title leading-numeral tabular-nums">{{ side.coaster.rank }}</span>
           <span class="line-clamp-2 leading-tight font-semibold group-hover:text-action">{{ side.coaster.name }}</span>
         </span>
       </a>
@@ -39,7 +39,7 @@
   </div>
   {# The split: the winner's side in action blue #}
   <div class="mt-4 flex h-3 gap-0.5 overflow-hidden rounded-pill" aria-hidden="true">
-    <span class="bg-action" style="width: {{ (share * 100)|round(1) }}%"></span>
+    <span class="w-(--share) bg-action" style="--share: {{ (share * 100)|round(1) }}%"></span>
     <span class="flex-1 bg-control-line"></span>
   </div>
   <p class="m-0 mt-1.5 flex justify-between text-caption tabular-nums">

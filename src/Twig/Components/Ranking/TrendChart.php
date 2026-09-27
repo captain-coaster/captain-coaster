@@ -25,7 +25,7 @@ final class TrendChart
     {
     }
 
-    /** @return array<string, array{max: int, ticks: list<string>, points: string, values: list<int>}> */
+    /** @return array<string, array{ticks: list<string>, points: string, values: list<int>}> */
     public function getSeries(): array
     {
         $count = \count($this->history);
@@ -42,7 +42,6 @@ final class TrendChart
             }
 
             $series[$metric] = [
-                'max' => $max,
                 // Top to bottom
                 'ticks' => array_map($this->tickLabel(...), [$max, $max / 2, 0]),
                 'points' => implode(' ', $points),

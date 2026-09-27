@@ -17,7 +17,7 @@
 {% set column = 'hidden min-w-0 truncate @4xl/ledger:block' %}
 <li {{ attributes }}>
   {# Below sm the ledger runs edge to edge (results.html.twig), so the row takes the page gutter as its padding #}
-  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}" class="flex min-h-18 items-center gap-3 px-gutter py-2.5 text-ink outline-offset-[-3px] hover:bg-subtle sm:px-3 @4xl/ledger:px-4">
+  <a href="{{ path('show_coaster', {id: coaster.id, slug: coaster.slug}) }}" class="flex min-h-18 items-center gap-3 px-gutter py-2.5 text-ink -outline-offset-3 hover:bg-subtle sm:px-3 @4xl/ledger:px-4">
     {# 56px holds three digits and the movement with its crown #}
     <span class="flex shrink-0 flex-col items-center gap-1 font-display text-title leading-none tabular-nums {{ digits > 3 ? 'w-16' : 'w-14' }}">
       {{ position }}

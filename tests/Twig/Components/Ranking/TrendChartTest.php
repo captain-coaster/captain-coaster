@@ -41,7 +41,6 @@ class TrendChartTest extends TestCase
 
         $ratings = $chart->getSeries()['ratingNumber'];
 
-        $this->assertSame(1_000_000, $ratings['max']);
         $this->assertSame(['1M', '500K', '0'], $ratings['ticks']);
         $this->assertSame('0,300 500,180 1000,60', $ratings['points']);
         $this->assertSame([['year' => '2026', 'x' => 50.0]], $chart->getYears());

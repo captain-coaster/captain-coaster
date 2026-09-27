@@ -1,6 +1,6 @@
 {#
-  Growth of the ranking's monthly totals (App\Twig\Components\Ranking\TrendChart): a metric switch, one line chart per metric
-  (the checked radio shows its chart) and a crosshair tooltip (trend_chart_controller.js, also reachable with arrow keys).
+  Growth of the ranking's monthly totals (App\Twig\Components\Ranking\TrendChart): a metric switch and one line chart per metric
+  (the checked radio shows its chart). A trend, not a data table: no per-month readout.
   Props:
     history  RankingRepository::findTotalsHistory()
 #}
@@ -17,31 +17,28 @@
 }) %}
 {# Literal class strings, so Tailwind generates them. #}
 {% set shown = {
-  ratingNumber: 'group-has-[#trend-ratingNumber:checked]/trend:block',
-  userNumber: 'group-has-[#trend-userNumber:checked]/trend:block',
-  rankedCoasterNumber: 'group-has-[#trend-rankedCoasterNumber:checked]/trend:block',
-  comparisonNumber: 'group-has-[#trend-comparisonNumber:checked]/trend:block',
+  ratingNumber: 'group-has-[[value=ratingNumber]:checked]/trend:block',
+  userNumber: 'group-has-[[value=userNumber]:checked]/trend:block',
+  rankedCoasterNumber: 'group-has-[[value=rankedCoasterNumber]:checked]/trend:block',
+  comparisonNumber: 'group-has-[[value=comparisonNumber]:checked]/trend:block',
 } %}
 {% set series = this.series %}
-{% set months = history|map(row => row.computedAt|format_date(pattern: 'LLLL y')|capitalize) %}
+{# Unique per instance, so two charts on a page keep separate radio groups #}
+{% set name = 'trend-metric-' ~ random() %}
 <div {{ attributes.defaults({class: 'group/trend'}) }}>
   {# One row, like the units toggle; scrolls sideways if a locale's labels don't fit. #}
   <fieldset class="m-0 flex gap-1 overflow-x-auto rounded-pill bg-subtle p-1 [scrollbar-width:none]">
     <legend class="sr-only">{{ 'trend.metric'|trans }}</legend>
     {% for metric in series|keys %}
       <label class="relative m-0 flex min-h-11 flex-1 shrink-0 cursor-pointer items-center justify-center rounded-pill px-3 text-caption font-semibold whitespace-nowrap text-muted-strong has-checked:bg-surface has-checked:text-ink has-checked:shadow-raised has-focus-visible:outline-3 has-focus-visible:-outline-offset-3 has-focus-visible:outline-focus">
-        <input type="radio" name="trend-metric" id="trend-{{ metric }}" value="{{ metric }}" class="sr-only" {{ loop.first ? 'checked' }}>
+        <input type="radio" name="{{ name }}" value="{{ metric }}" class="sr-only" {{ loop.first ? 'checked' }}>
         {{ short[metric]|trans }}
       </label>
     {% endfor %}
   </fieldset>
 
   {% for metric, data in series %}
-    <figure class="m-0 mt-4 hidden {{ shown[metric] }}"
-            data-controller="trend-chart"
-            data-trend-chart-labels-value="{{ months|json_encode }}"
-            data-trend-chart-values-value="{{ data.values|json_encode }}"
-            data-trend-chart-max-value="{{ data.max }}">
+    <figure class="m-0 mt-4 hidden {{ shown[metric] }}">
       <figcaption class="sr-only">{{ labels[metric]|trans }}</figcaption>
       <div class="flex gap-2">
         {# Y axis: max, half, 0 #}
@@ -50,28 +47,19 @@
             <span class="absolute right-0 -translate-y-1/2 {{ loop.first ? 'top-0' : (loop.last ? 'top-full' : 'top-1/2') }}">{{ tick }}</span>
           {% endfor %}
         </div>
-        <div class="relative h-48 min-w-0 flex-1 outline-offset-4 sm:h-64" tabindex="0"
-             role="img" aria-label="{{ labels[metric]|trans }}: {{ data.values|first|format_number }} → {{ data.values|last|format_number }}"
-             data-trend-chart-target="plot"
-             data-action="pointermove->trend-chart#point pointerdown->trend-chart#point pointerleave->trend-chart#hide blur->trend-chart#hide keydown->trend-chart#key">
+        <div class="relative h-48 min-w-0 flex-1 sm:h-64"
+             role="img" aria-label="{{ labels[metric]|trans }}: {{ data.values|first|format_number }} → {{ data.values|last|format_number }}">
           <svg viewBox="0 0 1000 300" preserveAspectRatio="none" class="absolute inset-0 size-full overflow-visible" aria-hidden="true">
             {% for y in [0, 150, 300] %}
               <line x1="0" x2="1000" y1="{{ y }}" y2="{{ y }}" class="stroke-line" stroke-width="1" vector-effect="non-scaling-stroke"/>
             {% endfor %}
             <polyline points="{{ data.points }}" fill="none" class="stroke-action" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
           </svg>
-          {# Crosshair, dot and tooltip, positioned by the controller #}
-          <div data-trend-chart-target="cursor" class="pointer-events-none absolute inset-y-0 hidden w-px bg-muted" aria-hidden="true">
-            <span data-trend-chart-target="dot" class="absolute left-1/2 size-3 -translate-1/2 rounded-full border-2 border-surface bg-action"></span>
-          </div>
-          <div data-trend-chart-target="tip" role="status"
-               class="pointer-events-none absolute -top-2 hidden -translate-y-full rounded-control bg-surface px-3 py-2 text-caption whitespace-nowrap shadow-overlay">
-          </div>
         </div>
       </div>
       <div class="relative ms-12 mt-2 h-5 text-caption text-muted" aria-hidden="true">
         {% for year in this.years %}
-          <span class="absolute -translate-x-1/2" style="left: {{ year.x }}%">{{ year.year }}</span>
+          <span class="absolute left-(--x) -translate-x-1/2" style="--x: {{ year.x }}%">{{ year.year }}</span>
         {% endfor %}
       </div>
     </figure>

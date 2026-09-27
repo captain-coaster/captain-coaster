@@ -38,8 +38,7 @@
     </span>
     {# #2/#3: the number sits above the name in a narrow card, beside it from 15rem #}
     <span class="flex items-start p-3 {{ first ? 'gap-3 @xl/podium:p-4' : 'flex-1 flex-col gap-1.5 @[15rem]/card:flex-row @[15rem]/card:gap-3' }}">
-      {# Steps above the chart rows' text-title: #2/#3 halfway to display, #1 half again past it #}
-      <span class="font-display {{ first ? 'text-[calc(var(--text-display)*1.5)]' : 'text-[calc((var(--text-title)+var(--text-display))/2)]' }} leading-[0.8] tabular-nums">{{ position }}</span>
+      <span class="font-display {{ first ? 'text-podium-first' : 'text-podium' }} leading-numeral tabular-nums">{{ position }}</span>
       <span class="w-full min-w-0 flex-1 pt-0.5">
         <twig:Ranking:Name :coaster="coaster" :ridden="ridden" class="{{ first ? 'text-lead leading-tight' : 'leading-tight' }} group-hover:text-action"/>
         <twig:Ranking:Place :coaster="coaster" class="mt-0.5"/>
