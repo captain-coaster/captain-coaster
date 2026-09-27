@@ -54,3 +54,4 @@ phpstan.neon
 /.impeccable/review/
 /.impeccable/build/
 /.impeccable/mocks/
+/.impeccable/questions/
