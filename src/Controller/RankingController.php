@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Ranking;
 use App\Entity\User;
 use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
@@ -52,7 +53,6 @@ class RankingController extends AbstractController
             : null;
 
         return $this->render('ranking/index.html.twig', $results + [
-            'ranking' => $this->rankingRepository->findCurrent(),
             'previousRanking' => $this->rankingRepository->findPrevious(),
             'filtersForm' => $this->filterService->getFilterData(),
             'filters' => $filters,
@@ -110,7 +110,7 @@ class RankingController extends AbstractController
     /**
      * @param array<string, mixed> $filters
      *
-     * @return array{coasters: PaginationInterface<int, mixed>, filtered: bool, firstRank: int, riddenIds: array<int, true>, rankingMonth: ?\DateTimeInterface, queryFilters: array<string, mixed>}
+     * @return array{coasters: PaginationInterface<int, mixed>, filtered: bool, firstRank: int, riddenIds: array<int, true>, ranking: ?Ranking, queryFilters: array<string, mixed>}
      */
     private function results(array $filters, int $page): array
     {
@@ -149,7 +149,7 @@ class RankingController extends AbstractController
             'filtered' => [] !== $queryFilters,
             'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             'riddenIds' => $riddenIds,
-            'rankingMonth' => $this->rankingRepository->findCurrent()?->getComputedAt(),
+            'ranking' => $this->rankingRepository->findCurrent(),
             // Carried by the pager links so "load more" and "jump to" keep the filters
             'queryFilters' => $queryFilters,
         ];

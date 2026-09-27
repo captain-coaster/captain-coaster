@@ -4,7 +4,7 @@
   so every coaster gets the ledger's columns. Anything added to the top 3 goes in both: Ranking:Podium and Ranking:Row.
 #}
 {% trans_default_domain 'ranking' %}
-{% set month = rankingMonth ?? 'now' %}
+{% set month = ranking.computedAt ?? 'now' %}
 {% set items = coasters.items|default([]) %}
 {% set podium = coasters.currentPageNumber == 1 ? items|slice(0, 3) : [] %}
 {% set rows = items|slice(podium|length) %}
