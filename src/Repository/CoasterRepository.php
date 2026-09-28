@@ -108,7 +108,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->getArrayResult();
     }
 
-    /** Find a newly ranked coaster to add in neach month notification */
     /**
      * @param list<int> $ids
      *
@@ -132,6 +131,7 @@ class CoasterRepository extends ServiceEntityRepository
         return $names;
     }
 
+    /** The best newly ranked coaster, highlighted in the monthly ranking notification */
     public function getNewlyRankedHighlightedCoaster(int $maxRank = 300): ?Coaster
     {
         return $this->getEntityManager()->createQueryBuilder()

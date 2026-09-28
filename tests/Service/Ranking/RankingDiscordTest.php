@@ -7,6 +7,10 @@ namespace App\Tests\Service\Ranking;
 use App\Service\Ranking\RankingDiscord;
 use App\Service\Ranking\RankingReport;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Notifier\ChatterInterface;
+use Symfony\Component\Notifier\Exception\TransportException;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class RankingDiscordTest extends TestCase
 {
@@ -34,5 +38,17 @@ class RankingDiscordTest extends TestCase
         $report = new RankingReport(10, 10, [], [], [], [[1, 1, 1], [2, 2, 2]], []);
 
         $this->assertSame('**Top 10** unchanged', RankingDiscord::summary($report, [])[0]);
+    }
+
+    public function testADiscordFailureIsLoggedNotThrown(): void
+    {
+        $chatter = $this->createMock(ChatterInterface::class);
+        $chatter->method('send')->willThrowException(new TransportException('Discord is down', $this->createStub(ResponseInterface::class)));
+        $logger = $this->createMock(LoggerInterface::class);
+        $logger->expects($this->exactly(2))->method('warning');
+
+        $discord = new RankingDiscord($chatter, $logger);
+        $discord->send(['**Ranking of October 2026 computed**']);
+        $discord->alert('🚨 **Ranking of October 2026 failed**');
     }
 }

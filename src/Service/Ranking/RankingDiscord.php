@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Service\Ranking;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Notifier\ChatterInterface;
 use Symfony\Component\Notifier\Message\ChatMessage;
 
 /**
- * Posts the ranking runs to the team's Discord log channel.
+ * Posts the ranking runs to the team's Discord log channel. Never throws: a Discord outage must not fail a run, nor
+ * hide the error being reported.
  */
 class RankingDiscord
 {
@@ -16,8 +18,10 @@ class RankingDiscord
     // Coasters listed by name in a summary line, the others counted
     private const int LISTED = 15;
 
-    public function __construct(private readonly ChatterInterface $chatter)
-    {
+    public function __construct(
+        private readonly ChatterInterface $chatter,
+        private readonly LoggerInterface $logger,
+    ) {
     }
 
     /** @param list<string> $lines split into as many messages as Discord's length limit needs */
@@ -86,17 +90,17 @@ class RankingDiscord
         return $lines;
     }
 
-    /** One message that never throws: a Discord outage must not fail a run, nor hide the error being reported. */
     public function alert(string $message): void
     {
-        try {
-            $this->post($message);
-        } catch (\Throwable) {
-        }
+        $this->post($message);
     }
 
     private function post(string $message): void
     {
-        $this->chatter->send(new ChatMessage($message)->transport('discord_log'));
+        try {
+            $this->chatter->send(new ChatMessage($message)->transport('discord_log'));
+        } catch (\Throwable $e) {
+            $this->logger->warning('Ranking Discord post failed: '.$e->getMessage(), ['exception' => $e]);
+        }
     }
 }
