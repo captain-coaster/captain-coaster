@@ -24,8 +24,6 @@ ux_translator:
         - 'rating.delete_error'
         - 'rating.save_network_error'
         - 'rating.save_error'
-        - 'review.pros_placeholder'
-        - 'review.cons_placeholder'
         - 'search_index.error'
         - 'clipboard.copied'
         - 'clipboard.copy_failed'

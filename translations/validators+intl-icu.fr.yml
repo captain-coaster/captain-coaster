@@ -13,4 +13,7 @@ ride_date:
 image_upload:
     form:
         copyright_agreement:
-            required: 'Vous devez confirmer que vous avez les droits pour envoyer cette photo.'
+            required: 'Tu dois confirmer que tu as les droits pour envoyer cette photo.'
+
+star_rating:
+    required: 'Choisis un nombre d''étoiles.'

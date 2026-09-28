@@ -81,13 +81,7 @@ class ReviewController extends BaseController
             $review->setLanguage($request->getLocale());
         }
 
-        $form = $this->createForm(
-            ReviewType::class,
-            $review,
-            [
-                'locales' => $this->getParameter('app_locales_array'),
-            ]
-        );
+        $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

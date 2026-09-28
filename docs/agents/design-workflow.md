@@ -10,9 +10,21 @@ The whole site is getting a new look, so each step replaces the old styling inst
 2. `PRODUCT.md`: local only and gitignored (`.gitignore:49`). Impeccable reads it on its own [I:SKILL Setup]. **Never quote it** in commits, PRs, issues, surface briefs, or anything under `.impeccable/` that gets committed. The repo is public.
 3. The current `--cc-*` tokens and `.cc-*` CSS are the thing being replaced. Treat them as evidence of what exists, never as the target.
 
+## Per-page pipeline (Steps 5–6)
+
+Three skills, one job each:
+
+1. **Features: `mattpocock-skills:grilling`.** Grill the human on what the page must do: which jobs, which data, what's primary vs. secondary, empty/logged-out/error states, what gets dropped from the current page. Output: a short feature list confirmed by the human. No visuals yet.
+2. **Mockup: `frontend-design:frontend-design`.** Turn the feature list into a 390px-first HTML prototype (published as an Artifact, like the nav prototype). Its skill asks for its own palette and typefaces: **skip that part**. The palette, type and radii are DESIGN.md's tokens; use frontend-design for composition, hierarchy, the one memorable element and copy. **Human gate:** the human approves the mockup (iterate on it, not on Twig).
+3. **Review and polish: Impeccable.** Build the approved mockup as Twig Components, then `critique` → `harden` → `polish` → `audit` → `detect`, and the fresh `impeccable-finish-reviewer`. New shared patterns → `extract` → `impeccable-documenter`.
+
+This replaces Impeccable's `shape` + `concept-seed` + decision page for page design.
+
+**DESIGN.md can evolve, but stays the single source.** When a page shows a token or rule working badly (contrast, a missing shade, a scale step, a component rule), fix it in the system, not locally: propose the change to the human, update `tokens.css` + DESIGN.md (merge via `impeccable-documenter`), and check the other migrated pages still hold. Never a one-off value in a page, never a second palette.
+
 ## Tool roles
 
-**Impeccable (adopt: the only design tool).** Impeccable is a skill plus a local CLI (`~/.claude/skills/impeccable/scripts/impeccable`, skill v4.3.1). It reads PRODUCT.md, DESIGN.md and per-surface briefs [I:SKILL Setup]. It offers:
+**Impeccable (review, polish and the design system).** Impeccable is a skill plus a local CLI (`~/.claude/skills/impeccable/scripts/impeccable`, skill v4.3.1). It reads PRODUCT.md, DESIGN.md and per-surface briefs [I:SKILL Setup]. It offers:
 - planning: `shape`
 - whole-surface design: new-work with `concept-seed` plus a browser decision page (`serve-question`) where the human locks one of several cards [I:new-work §3]
 - refinement commands: `layout`, `typeset`, `adapt`, `polish`, `harden`, `clarify`
@@ -21,7 +33,7 @@ The whole site is getting a new look, so each step replaces the old styling inst
 - in-browser variants: `live`
 - shipped subagents: `impeccable-finish-reviewer` (fresh-context review, no browser, reads the screenshots you pass it), `impeccable-documenter` (updates DESIGN.md + `design.json` from the build), `impeccable-asset-producer` (raster plates from an approved comp), and `impeccable-manual-edit-applier` (applies copy edits made in live mode) [agents:*].
 
-Impeccable already covers side-by-side direction comparison and mock approval, so no second design tool is needed.
+Its design commands (`shape`, `concept-seed`, `serve-question`) were used for navigation (Step 4); from Step 5 on, page features and mockups come from the per-page pipeline above.
 
 **OpenDesign (skip).** OpenDesign is a local-first desktop/daemon app (Electron, Node 24, pnpm) that generates standalone HTML prototypes, decks and media. It reads a `DESIGN.md` from a design-system package (`manifest.json` + `DESIGN.md` + `tokens.css`) and exposes an MCP server for Claude Code [OD:README, OD:design-systems]. Its "refresh an existing repo" plugin is still unchecked on its own roadmap, and its exports target React/Next/Vue [OD:README roadmap]. It adds nothing concrete here:
 - Direction comparison is already covered by Impeccable's decision page.
@@ -125,7 +137,7 @@ DESIGN.md explicitly does **not** define app navigation ("Don't infer … app na
 
 ## Step 5: Home (reference page, first shared components)
 
-**Design ticket:** same flow as Step 4: `shape home` → `concept-seed --scope surface --mode <persuade|operate>` → human locks a card → direction contract. Pick the mode from what a visitor to *this* surface is trying to do [I:SKILL Modes], and say which one in the ticket. Craft-floor bans apply here: no eyebrow/kicker labels, no identical icon cards, no hero-metric template [I:craft-floor].
+**Design ticket:** per-page pipeline steps 1–2 (grill → frontend-design mockup → human approves). Craft-floor bans apply here: no eyebrow/kicker labels, no identical icon cards, no hero-metric template [I:craft-floor].
 
 **Implementation ticket:**
 1. Build code-led. Screenshot rounds, then finish reviewer, same as Step 4.
@@ -144,7 +156,7 @@ DESIGN.md explicitly does **not** define app navigation ("Don't infer … app na
 Per page:
 1. `impeccable context --target <template>`.
 2. Optionally run `critique <template>`. It needs two isolated subagents and saves a snapshot to `.impeccable/critique/`, which `polish` picks up afterwards [I:critique, I:polish].
-3. Rebuild the page from existing components. Only run `concept-seed --scope surface` when the page's composition is genuinely open; a local extension skips it [I:new-work §3].
+3. Rebuild the page from existing components. When the page's composition is genuinely open, run per-page pipeline steps 1–2 (grill → frontend-design mockup) first; a local extension skips them.
 4. Run `harden` for German length, empty states and errors [I:harden], then `polish` [I:polish], then `audit`.
 5. Run `detect`, then a 390/1440 × 4-locale screenshot round.
 

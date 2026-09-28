@@ -21,47 +21,27 @@ class ContactType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $isLoggedIn = $options['is_logged_in'];
-
-        $builder
-            ->add(
-                'name',
-                TextType::class,
-                [
-                    'required' => true,
+        // Signed-in riders write as themselves: the controller takes their name and email.
+        if (!$options['is_logged_in']) {
+            $builder
+                ->add('name', TextType::class, [
                     'label' => 'contact.form.name',
-                    'translation_domain' => 'messages',
-                    'disabled' => $isLoggedIn,
-                    'constraints' => [
-                        new NotBlank(),
-                    ],
-                ]
-            )
-            ->add(
-                'email',
-                EmailType::class,
-                [
+                    'attr' => ['autocomplete' => 'name'],
+                    'constraints' => [new NotBlank()],
+                ])
+                ->add('email', EmailType::class, [
                     'required' => false,
                     'label' => 'contact.form.email',
-                    'translation_domain' => 'messages',
-                    'disabled' => $isLoggedIn,
-                    'constraints' => [
-                        new Email(),
-                    ],
-                ]
-            )
-            ->add(
-                'message',
-                TextareaType::class,
-                [
-                    'required' => true,
-                    'label' => 'contact.form.message',
-                    'translation_domain' => 'messages',
-                    'constraints' => [
-                        new NotBlank(),
-                    ],
-                ]
-            );
+                    'help' => 'contact.form.email_help',
+                    'attr' => ['autocomplete' => 'email'],
+                    'constraints' => [new Email()],
+                ]);
+        }
+
+        $builder->add('message', TextareaType::class, [
+            'label' => 'contact.form.message',
+            'constraints' => [new NotBlank()],
+        ]);
 
         $builder->add('recaptcha', TurnstileType::class, ['mapped' => false, 'label' => false, 'attr' => ['data-appearance' => 'interaction-only']]);
     }

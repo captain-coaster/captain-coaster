@@ -90,6 +90,45 @@ components:
     textColor: "{colors.fg}"
     rounded: "{rounded.control}"
     padding: "10px 18px"
+  button-text:
+    textColor: "{colors.action}"
+    height: "44px"
+    padding: "0 8px"
+  field:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.fg}"
+    typography: "{typography.body}"
+    rounded: "{rounded.control}"
+    height: "48px"
+    padding: "10px 14px"
+  field-disabled:
+    backgroundColor: "{colors.subtle}"
+    textColor: "{colors.muted}"
+  field-readonly:
+    backgroundColor: "{colors.bg}"
+  checkbox:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.sm}"
+    size: "24px"
+  checkbox-checked:
+    backgroundColor: "{colors.action}"
+    textColor: "{colors.on-action}"
+  tag-chip:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.fg}"
+    rounded: "{rounded.pill}"
+    height: "44px"
+    padding: "0 14px"
+  tag-chip-selected:
+    backgroundColor: "{colors.selected}"
+    textColor: "{colors.action}"
+  star-input-star:
+    size: "48px"
+  error-summary:
+    backgroundColor: "{colors.danger-bg}"
+    textColor: "{colors.fg}"
+    rounded: "{rounded.card}"
+    padding: "16px"
   tab-bar:
     backgroundColor: "{colors.surface}"
     rounded: "{rounded.pill}"
@@ -220,9 +259,29 @@ Keep original logo artwork intact. It has one source, `<twig:Logo>` (inline SVG)
 
 ## Components
 
-Buttons are clear and compact: primary action blue with white text, deeper blue on hover; secondary white with ink text and a visible boundary. The built samples use 48px minimum height, 10px 18px padding and semibold body type. Controls retain visible keyboard focus: a 3px focus-blue outline with a 3px offset on links, buttons, selects and summaries, keyboard only. Pill tabs and full-width settings rows draw the same outline inset (−3px) so it isn't clipped. On dark surfaces use a sunshine focus indicator; code panes use an inset outline to avoid clipping. Disabled controls are visibly muted and remain semantically disabled.
+Buttons are one Twig Component, `<twig:Button>` (a link styled as a button when it has `href`), clear and compact in three variants: primary action blue with white text, deeper blue on hover; secondary white with ink text, a control-line boundary and the subtle fill on hover; text, an action-blue label (44px high, underlined on hover) for a secondary action beside a submit. Primary and secondary are at least 48px high with 10px 18px padding and semibold body type; disabled buttons fade to 60% opacity. `block` makes a form's submit full width below `md` and sized to its label from `md`. Controls retain visible keyboard focus: a 3px focus-blue outline with a 3px offset on links, buttons, selects and summaries, keyboard only. Pill tabs and full-width settings rows draw the same outline inset (−3px) so it isn't clipped. On dark surfaces use a sunshine focus indicator; code panes use an inset outline to avoid clipping. Disabled controls are visibly muted and remain semantically disabled.
 
-Use native links, buttons, disclosure and radio controls. Selection needs a shape, check or label as well as color. Put validation beside its field and announce saved/copied outcomes through polite live regions. “Ridden, unrated” is a valid neutral state. Read-only star ratings use the same two-path star as the rating input (amber outline painted over the sunshine fill, half state clipped), always five stars, announced as “3.5/5”. The rating specimen is illustrative and saves no production data; richer ride tracking remains undecided in `PRODUCT.md`.
+Use native links, buttons, disclosure and radio controls. Selection needs a shape, check or label as well as color. Put validation under its field (see Forms) and announce saved/copied outcomes through polite live regions. “Ridden, unrated” is a valid neutral state. Read-only star ratings use the same two-path star as the rating input (amber outline painted over the sunshine fill, half state clipped), always five stars, announced as “3.5/5”. The rating input is shipped in the review form (see Forms); richer ride tracking remains undecided in `PRODUCT.md`.
+
+### Forms
+
+Every Symfony form renders through one global theme (`templates/form/fields.html.twig`): templates call `form_row` / `form_errors` and place their buttons as `<twig:Button>`; labels, help, autocomplete and constraints live in the FormType, never in the template.
+
+- **Field row:** label (body semibold ink) above, help (caption muted) between label and field so it is read before typing, error under the field (a 16px circle-alert icon and caption-semibold danger text). Only optional fields are marked, "(optional)" after the label in muted normal weight; no asterisks.
+- **Controls:** white surface, 1px control-line border, control radius, at least 48px high, 16px text, 10px 14px padding, muted placeholder. Hover turns the border ink; focus draws the standard 3px focus outline at 3px offset. Disabled takes the subtle fill, a pale line border and muted text; read-only the canvas fill with a pale line border. Textareas start at 9rem and resize vertically only. Selects stay native, with a 20px muted-strong chevrons-up-down icon at the right.
+- **Invalid:** danger border plus a 1px inset danger ring. It shows for server errors (`aria-invalid`) and for native constraints only once the user has interacted (`:user-invalid`), never on load.
+- **Checkbox and radio:** a 24px shape with a 1.5px control-line edge (checkbox small radius, radio round), filled action blue when checked with a white check or dot. The label wraps the input and the whole row is at least 44px. A single checkbox's help and errors align with its label text, not the box.
+- **Groups:** radio groups, the star rating and tag chips are fieldsets named by a legend (set like a label) and described by their help and errors.
+- **Error summary:** after a failed submit, a card-radius danger-bg card with a danger border opens the form: a bold danger "N fields need attention" line behind a 20px circle-alert icon, any form-level message, then links to each invalid field (a group links to its first option). It takes focus on load and draws no focus ring, since it isn't interactive. The sign-in error is the same danger card, announced as an alert.
+- **Star rating input:** ten native radios, 0.5 to 5, two half-star labels per 48px star so each half is a 24px target, each named "3.5 out of 5". Same two-path star and rating tokens as the read-only stars (empty edge `rating-empty`; filled sunshine with the amber edge). The fill is CSS-only, arrow keys move natively, and the focus outline wraps the whole row.
+- **Tag chips:** pill checkboxes, at least 44px, 1px line border (control-line on hover). Checked is the selected fill with action border and text, semibold, behind a leading check icon. Once `max` (3) are chosen the others disable: dashed border, muted text. The server enforces the same limit (a Count constraint) and the help states it ("Up to 3"). Most used tags come first; below `md` only the first 8 (plus any checked one) show, followed by a text "Show all (N)" that reveals the rest and moves focus to the first revealed chip.
+- **File:** the native picker in a control-bordered white box, its button drawn as a secondary button; a chosen image previews below it at 4:3.
+- **Toggles** are for settings that apply immediately (none in the new system yet); a form with a submit button uses checkboxes.
+- **Turnstile** (interaction-only) has no row and takes no space until a challenge appears.
+
+**The One-Column Rule.** Form rows sit 24px apart in one column of at most 40rem. On desktop the extra width goes to context, never to stretched inputs: the review form's coaster card (photo, name, park) stays sticky beside the fields from `lg`. The submit is full width on phones and sized to its label, left-aligned, from `md`, with a secondary action as a text button beside it. Exception: inside the 28rem sign-in and register card the primary action stays full width at every size, matching the full-width Google button.
+
+**The Known-Identity Rule.** Show what the server already knows instead of disabled inputs: the signed-in contact form shows the sender (avatar, name, "replies go to your account email") in place of the name and email fields.
 
 ### Navigation
 
