@@ -17,7 +17,7 @@
     {% if ranking %}
       <section aria-labelledby="totals" class="mt-10">
         <h2 id="totals" class="m-0 mb-4 font-sans text-lead font-semibold">
-          {{ 'info.totals'|trans({month: ranking.computedAt|format_date(pattern: 'LLLL y')}) }}
+          {{ 'info.totals'|trans({month: ranking.month|format_date(pattern: 'LLLL y')}) }}
         </h2>
         <twig:Ranking:Totals :ranking="ranking" :previous="previousRanking"/>
       </section>
@@ -26,7 +26,7 @@
     {% if duel %}
       <section aria-labelledby="duel" class="mt-10">
         <h2 id="duel" class="m-0 mb-4 font-sans text-lead font-semibold">{{ 'learn_more.duel.title'|trans }}</h2>
-        <twig:Ranking:Duel :duel="duel" :month="ranking.computedAt"/>
+        <twig:Ranking:Duel :duel="duel" :month="ranking.month"/>
       </section>
     {% endif %}
 
@@ -77,7 +77,7 @@
     {% if history|length > 1 %}
       <section aria-labelledby="trend" class="mt-10">
         <h2 id="trend" class="m-0 mb-4 font-sans text-lead font-semibold">
-          {{ 'trend.title'|trans({year: (history|first).computedAt|date('Y')}) }}
+          {{ 'trend.title'|trans({year: (history|first).month|date('Y')}) }}
         </h2>
         <twig:Ranking:TrendChart :history="history" class="rounded-card border border-line bg-surface p-4"/>
       </section>

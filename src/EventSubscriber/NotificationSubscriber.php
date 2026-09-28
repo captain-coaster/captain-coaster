@@ -6,7 +6,8 @@ namespace App\EventSubscriber;
 
 use App\Enum\NotificationType;
 use App\Event\BadgeAwardedEvent;
-use App\Event\RankingComputedEvent;
+use App\Event\RankingPublishedEvent;
+use App\Repository\CoasterRepository;
 use App\Repository\UserRepository;
 use App\Service\NotificationService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -22,23 +23,28 @@ class NotificationSubscriber implements EventSubscriberInterface
     public function __construct(
         private readonly NotificationService $notificationService,
         private readonly UserRepository $userRepository,
+        private readonly CoasterRepository $coasterRepository,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
         return [
-            RankingComputedEvent::class => 'onRankingComputed',
+            RankingPublishedEvent::class => 'onRankingPublished',
             BadgeAwardedEvent::class => 'onBadgeAwarded',
         ];
     }
 
-    public function onRankingComputed(RankingComputedEvent $event): void
+    public function onRankingPublished(RankingPublishedEvent $event): void
     {
+        if ($event->republished) {
+            return;
+        }
+
         $users = $this->userRepository->findAllIterable();
 
-        if (null !== $event->highlightedCoasterName) {
-            $this->notificationService->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', $event->highlightedCoasterName);
+        if (null !== $newcomer = $this->coasterRepository->getNewlyRankedHighlightedCoaster()) {
+            $this->notificationService->sendToUsers($users, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', $newcomer->getName());
 
             return;
         }

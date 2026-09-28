@@ -2,7 +2,7 @@
 
 ## About the project
 
-Captain Coaster is a participative guide for roller coaster enthusiasts — users rate, review, and build top lists for coasters they have ridden. The global ranking is computed from user ratings using an ELO-like algorithm.
+Captain Coaster is a participative guide for roller coaster enthusiasts — users rate, review, and build top lists for coasters they have ridden. The global ranking is computed monthly from pairwise comparisons of the riders' ratings and top lists.
 
 ## Tech stack
 
@@ -40,7 +40,8 @@ Not an exhaustive entity list (see `src/Entity/`) — just the ones with behavio
 
 - **`User`** — `enabled` and `deletedAt` are baked into the login-link and remember-me cookie signatures, so disabling or soft-deleting an account invalidates existing magic links/cookies without deleting the row.
 - **`Coaster`** — the main entity, belongs to a `Park`, has `Image`, vocabulary taxonomy (`MaterialType`, `Model`, `Manufacturer`, `Launch`, `Restraint`, `SeatingType`, `Status`).
-- **`RiddenCoaster`** — the central join entity linking `User` ↔ `Coaster` (unique per pair). Its existence means the user has ridden the coaster. Holds a **nullable** `rating`, review text, language, pros/cons `Tag` collections, a computed `score`, and ride tracking: `firstRiddenAt`, `lastRiddenAt`, `rideCount`. `rating IS NULL` entries are **excluded from the ranking** (`RankingService`). Mutations happen directly in `RatingCoasterController` — there's no service layer here, the one exception to the layer-separation rule above.
+- **`RiddenCoaster`** — the central join entity linking `User` ↔ `Coaster` (unique per pair). Its existence means the user has ridden the coaster. Holds a **required** rating (`value`, column `rating`, 0.5–5), review text, language, pros/cons `Tag` collections, a computed `score`, and `riddenAt`. The ranking already skips `rating IS NULL`, ready for ridden-without-rating entries (prototyped on the old `feature/tailwind` branch, not on `main`). Mutations happen directly in `RatingCoasterController` — there's no service layer here, the one exception to the layer-separation rule above.
+- **`Ranking`** / **`RankingHistory`** — one `Ranking` per month (`month`, unique) and one `RankingHistory` row per ranked coaster: the source of truth. `ranking:update` computes the ranking (`RankingCalculator`: pairwise duels from ratings and main Tops) and stages it, pending (`publishedAt` null, invisible on the site); `ranking:publish` publishes it on the 1st at noon UTC by copying its ranks into `Coaster::$rank`/`$previousRank`, a denormalized copy the pages sort on. `Ranking::$report` holds the run's report (top 10, newcomers, big moves, anomalies posted to Discord).
 
 ### Frontend
 

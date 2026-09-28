@@ -34,9 +34,9 @@ class TrendChartTest extends TestCase
         \Locale::setDefault('en');
         $chart = new TrendChart(new ShortNumberExtension());
         $chart->history = [
-            ['computedAt' => new \DateTime('2025-12-01'), 'ratingNumber' => 0, 'userNumber' => 10, 'rankedCoasterNumber' => 100, 'comparisonNumber' => 1000],
-            ['computedAt' => new \DateTime('2026-01-01'), 'ratingNumber' => 400_000, 'userNumber' => 20, 'rankedCoasterNumber' => 200, 'comparisonNumber' => 2000],
-            ['computedAt' => new \DateTime('2026-02-01'), 'ratingNumber' => 800_000, 'userNumber' => 30, 'rankedCoasterNumber' => 300, 'comparisonNumber' => 3000],
+            ['month' => new \DateTimeImmutable('2025-12-01'), 'ratingNumber' => 0, 'userNumber' => 10, 'rankedCoasterNumber' => 100, 'comparisonNumber' => 1000],
+            ['month' => new \DateTimeImmutable('2026-01-01'), 'ratingNumber' => 400_000, 'userNumber' => 20, 'rankedCoasterNumber' => 200, 'comparisonNumber' => 2000],
+            ['month' => new \DateTimeImmutable('2026-02-01'), 'ratingNumber' => 800_000, 'userNumber' => 30, 'rankedCoasterNumber' => 300, 'comparisonNumber' => 3000],
         ];
 
         $ratings = $chart->getSeries()['ratingNumber'];

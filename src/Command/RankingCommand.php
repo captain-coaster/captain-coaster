@@ -4,120 +4,112 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\Coaster;
-use App\Event\RankingComputedEvent;
 use App\Repository\CoasterRepository;
+use App\Repository\RankingRepository;
+use App\Service\Ranking\RankingDiscord;
 use App\Service\RankingService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Notifier\ChatterInterface;
-use Symfony\Component\Notifier\Message\ChatMessage;
-use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 #[AsCommand(
     name: 'ranking:update',
-    description: 'Monthly ranking update.',
-    hidden: false,
+    description: 'Computes the monthly ranking and stages it for ranking:publish.',
 )]
 class RankingCommand extends Command
 {
+    use LockableTrait;
+
     public function __construct(
         private readonly RankingService $rankingService,
-        private readonly ChatterInterface $chatter,
+        private readonly RankingRepository $rankingRepository,
         private readonly CoasterRepository $coasterRepository,
-        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly RankingDiscord $discord,
+        private readonly LoggerInterface $logger,
+        #[Autowire(param: 'app.ranking.hold_on_anomalies')]
+        private readonly bool $holdOnAnomalies,
     ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addOption('dry-run', null, InputOption::VALUE_NONE)
-            ->addOption('send-discord', null, InputOption::VALUE_NONE);
+        $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Compute and report only, write nothing')
+            ->addOption('regenerate', null, InputOption::VALUE_NONE, 'Recompute the published ranking and republish it now')
+            ->addOption('send-discord', null, InputOption::VALUE_NONE, 'Post a dry run\'s report to Discord (a real run always does)');
     }
 
-    /** @throws \Exception */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $stopwatch = new Stopwatch();
-        $stopwatch->start('ranking');
-        $output->writeln('Starting update ranking command.');
+        if (!$this->lock('ranking')) {
+            $output->writeln('<error>Another ranking command is running.</error>');
 
-        $dryRun = $input->getOption('dry-run');
-
-        // dry run safety
-        if ('1' !== new \DateTime()->format('j') && !$dryRun) {
-            $output->writeln('We are not first day of month. We do it dry-run anyway.');
-            $dryRun = true;
+            return Command::FAILURE;
         }
 
-        $output->writeln(($dryRun) ? 'Dry-run mode' : 'Production update');
+        $dryRun = (bool) $input->getOption('dry-run');
+        $regenerate = (bool) $input->getOption('regenerate');
+        $last = $this->rankingRepository->findLastPublished();
 
-        // compute ranking
-        $coasterList = $this->rankingService->updateRanking($dryRun);
+        if ($regenerate && null === $last) {
+            $output->writeln('<error>No published ranking to regenerate.</error>');
 
-        // output result to console
-        foreach ($coasterList as $coaster) {
-            $output->writeln($this->formatCoasterForConsole($coaster));
+            return Command::FAILURE;
         }
+        // Otherwise the month after the last published: a ranking computed early waits for its publication time
+        $publishedAt = $last?->getPublishedAt();
+        $month = $regenerate ? $last->getMonth() : RankingService::targetMonth($last?->getMonth(), new \DateTimeImmutable());
 
-        $output->writeln((string) $stopwatch->stop('ranking'));
+        $output->writeln(\sprintf('%s of %s', $dryRun ? 'Dry run' : 'Ranking', $month->format('F Y')));
 
-        if (!$dryRun) {
-            $highlightedCoaster = $this->coasterRepository->getNewlyRankedHighlightedCoaster();
-            $this->eventDispatcher->dispatch(new RankingComputedEvent($highlightedCoaster?->getName()));
-        }
+        try {
+            $start = hrtime(true);
+            $result = $this->rankingService->compute();
+            $run = [
+                'durationMs' => intdiv(hrtime(true) - $start, 1_000_000),
+                'peakMemoryMb' => intdiv(memory_get_peak_usage(true), 1024 * 1024),
+            ];
+            $report = $this->rankingService->report($result, $month);
+            $names = $this->coasterRepository->findDisplayNames(array_merge(array_keys($result->ranks()), array_keys($report->left)));
+            $summary = RankingDiscord::summary($report, $names);
+            $summary[] = \sprintf('Computed in %.1fs, %d MB', $run['durationMs'] / 1000, $run['peakMemoryMb']);
 
-        // send recap to discord only if dry run mode
-        if ($input->getOption('send-discord') && $dryRun) {
-            $stopwatch->start('discord');
-            $output->writeln('Notifying discord...');
+            $output->writeln(['', ...$summary]);
 
-            $this->notifyDiscord($coasterList);
+            if ($dryRun) {
+                if ($input->getOption('send-discord')) {
+                    $this->discord->send([\sprintf('**Ranking dry run, %s**', $month->format('F Y')), ...$summary]);
+                }
 
-            $output->writeln((string) $stopwatch->stop('discord'));
+                return Command::SUCCESS;
+            }
+
+            // A pending ranking of $month is replaced
+            $ranking = $this->rankingService->stage($result, $report, $month, $run, $regenerate);
+            if ($regenerate) {
+                $this->rankingService->publish($ranking, $publishedAt);
+                $status = 'Republished';
+            } else {
+                $status = $report->anomalies && $this->holdOnAnomalies
+                    ? '⚠️ Held: ranking:publish --force to publish it anyway'
+                    : \sprintf('Publication: %s UTC', RankingService::publicationTime($month)->format('Y-m-d H:i'));
+            }
+            $output->writeln(['', \sprintf('Staged ranking #%d. %s', $ranking->getId(), $status)]);
+            $this->discord->send([\sprintf('**Ranking of %s computed**', $month->format('F Y')), ...$summary, $status]);
+        } catch (\Throwable $e) {
+            $this->logger->critical('Ranking computation failed: '.$e->getMessage(), ['exception' => $e]);
+            if (!$dryRun || $input->getOption('send-discord')) {
+                $this->discord->alert(\sprintf('🚨 **Ranking of %s failed**: %s', $month->format('F Y'), $e->getMessage()));
+            }
+
+            throw $e;
         }
 
         return Command::SUCCESS;
-    }
-
-    private function formatCoasterForConsole(Coaster $coaster): string
-    {
-        $format = '[%d] %s - %s (score: %.2f) (%s)';
-        if (null === $coaster->getPreviousRank()) {
-            $format = '<error>'.$format.'</error>';
-        } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.25 * $coaster->getPreviousRank()) {
-            $format = '<comment>'.$format.'</comment>';
-        } elseif (abs($coaster->getRank() - $coaster->getPreviousRank()) > 0.1 * $coaster->getPreviousRank()) {
-            $format = '<info>'.$format.'</info>';
-        }
-
-        return \sprintf($format, $coaster->getRank(), $coaster->getName(), $coaster->getPark()->getName(), (float) $coaster->getScore(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
-    }
-
-    /** @param array<int, Coaster> $coasterList */
-    private function notifyDiscord(array $coasterList): void
-    {
-        $discordText = '';
-
-        foreach ($coasterList as $coaster) {
-            $text = \sprintf("[%d] %s - %s (%s)\n", $coaster->getRank(), (null === $coaster->getPreviousRank()) ? '**'.$coaster->getName().'**' : $coaster->getName(), $coaster->getPark()->getName(), null === $coaster->getPreviousRank() ? 'new' : \sprintf('%+d', $coaster->getPreviousRank() - $coaster->getRank()));
-
-            if (\strlen($discordText) + \strlen($text) > 2000) {
-                $this->chatter->send(new ChatMessage($discordText)->transport('discord_log'));
-                $discordText = '';
-
-                // avoid discord rate limit
-                sleep(2);
-            }
-
-            $discordText .= $text;
-        }
-
-        $this->chatter->send(new ChatMessage($discordText)->transport('discord_log'));
     }
 }

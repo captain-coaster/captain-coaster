@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Event\RankingComputedEvent;
+use App\Event\RankingPublishedEvent;
 use App\Repository\RankingRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Invalidates RankingRepository's cached findCurrent()/findPrevious() as
- * soon as a new ranking is persisted, instead of waiting out their TTL.
+ * Clears the cached ranking queries as soon as a ranking is published, instead of waiting out their TTL.
  */
 class RankingCacheSubscriber implements EventSubscriberInterface
 {
@@ -21,11 +20,11 @@ class RankingCacheSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            RankingComputedEvent::class => 'onRankingComputed',
+            RankingPublishedEvent::class => 'onRankingPublished',
         ];
     }
 
-    public function onRankingComputed(RankingComputedEvent $event): void
+    public function onRankingPublished(RankingPublishedEvent $event): void
     {
         $this->rankingRepository->clearCache();
     }

@@ -19,10 +19,8 @@ use Psr\Cache\CacheItemPoolInterface;
  * Unit tests for RankingRepository.
  *
  * findCurrent()/findPrevious() are cached via enableResultCache() with an
- * explicit id -- not a generic CacheInterface -- specifically so a cache hit
- * still returns a Doctrine-managed entity. RankingHistoryManagerCommand uses
- * the returned Ranking as an association target ($rankingHistory->setRanking(...))
- * and would throw on flush() if it received a detached copy instead.
+ * explicit id -- not a generic CacheInterface -- so a cache hit still returns
+ * a Doctrine-managed entity.
  */
 class RankingRepositoryTest extends TestCase
 {
@@ -74,7 +72,7 @@ class RankingRepositoryTest extends TestCase
 
     public function testFindCurrentCachesUnderAFixedIdWithALongTtl(): void
     {
-        $ranking = new Ranking();
+        $ranking = new Ranking(new \DateTimeImmutable('2026-09-01'));
         $this->stubQuery($ranking);
 
         $result = $this->repository->findCurrent();
@@ -85,7 +83,7 @@ class RankingRepositoryTest extends TestCase
 
     public function testFindPreviousCachesUnderItsOwnFixedId(): void
     {
-        $ranking = new Ranking();
+        $ranking = new Ranking(new \DateTimeImmutable('2026-09-01'));
         $this->stubQuery($ranking);
 
         $result = $this->repository->findPrevious();
@@ -101,22 +99,15 @@ class RankingRepositoryTest extends TestCase
         $this->assertNull($this->repository->findCurrent());
     }
 
-    public function testClearCacheDeletesEveryFixedIdFromTheResultCachePool(): void
+    public function testClearCacheClearsTheWholeResultCachePool(): void
     {
-        $deletedIds = [];
         $pool = $this->createMock(CacheItemPoolInterface::class);
-        $pool->method('deleteItem')->willReturnCallback(static function (string $id) use (&$deletedIds) {
-            $deletedIds[] = $id;
-
-            return true;
-        });
+        $pool->expects($this->once())->method('clear')->willReturn(true);
 
         $configuration = $this->createMock(Configuration::class);
         $configuration->method('getResultCache')->willReturn($pool);
         $this->em->method('getConfiguration')->willReturn($configuration);
 
         $this->repository->clearCache();
-
-        $this->assertSame(['ranking_current', 'ranking_previous', 'ranking_history'], $deletedIds);
     }
 }

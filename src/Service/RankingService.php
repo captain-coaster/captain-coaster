@@ -4,341 +4,211 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Coaster;
 use App\Entity\Ranking;
-use App\Entity\RiddenCoaster;
-use App\Entity\Top;
-use App\Entity\TopCoaster;
-use App\Entity\User;
+use App\Event\RankingPublishedEvent;
+use App\Repository\RankingRepository;
+use App\Repository\RiddenCoasterRepository;
+use App\Repository\TopCoasterRepository;
+use App\Repository\TopRepository;
 use App\Repository\UserRepository;
+use App\Service\Ranking\RankingCalculator;
+use App\Service\Ranking\RankingReport;
+use App\Service\Ranking\RankingResult;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * The monthly ranking, in three steps: compute() it from every rider's ratings and Top, stage() it as a pending
+ * Ranking with its RankingHistory rows, then publish() it at a fixed time, once for everyone.
+ */
 class RankingService
 {
-    // Minimum comparison number between coaster A and B
-    final public const int MIN_COMPARISONS = 4;
-    // Minimum duels for a coaster, i.e. minimum number of other coasters to be compared with
-    final public const int MIN_DUELS = 400;
-    // For elite coaster, we need more comparisons
-    final public const int ELITE_SCORE = 95;
-    final public const int MIN_DUELS_ELITE_SCORE = 650;
-    // Riders who compared the pair, for the duel shown on the learn-more page
-    final public const int FEATURED_DUEL_MIN_RIDERS = 30;
+    // Rankings are published on the 1st at noon UTC: the 1st of the month almost everywhere, daytime in Europe
+    final public const string PUBLICATION_TIME = '12:00';
+    private const int INSERT_BATCH = 500;
 
-    /** @var array<int, array<int, float>> */
-    private array $duels = [];
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly RankingRepository $rankingRepository,
+        private readonly RiddenCoasterRepository $riddenCoasterRepository,
+        private readonly TopRepository $topRepository,
+        private readonly TopCoasterRepository $topCoasterRepository,
+        private readonly UserRepository $userRepository,
+        private readonly EventDispatcherInterface $eventDispatcher,
+    ) {
+    }
 
-    /** @var array<int, float> */
-    private array $ranking = [];
-
-    private int $totalComparisonNumber = 0;
-
-    /** @var array<string, int> */
-    private array $userComparisons = [];
-
-    /** @var array<int> */
-    private array $rejectedCoasters = [];
-
-    public function __construct(private readonly EntityManagerInterface $em, private readonly UserRepository $userRepository)
+    /** Reads every rating and main Top, then runs RankingCalculator: nothing is written. */
+    public function compute(): RankingResult
     {
+        $calculator = new RankingCalculator();
+        $tops = $this->topRepository->findTopsForRanking();
+
+        // Ratings come sorted by user: a rider is complete when the next one starts
+        $user = null;
+        $ratings = [];
+        foreach ($this->riddenCoasterRepository->iterateRatingsForRanking() as [$rider, $coaster, $rating]) {
+            if ((int) $rider !== $user) {
+                if (null !== $user) {
+                    $calculator->addRider($ratings, $tops[$user] ?? []);
+                    unset($tops[$user]);
+                }
+                $user = (int) $rider;
+                $ratings = [];
+            }
+            $ratings[(int) $coaster] = (float) $rating;
+        }
+        if (null !== $user) {
+            $calculator->addRider($ratings, $tops[$user] ?? []);
+            unset($tops[$user]);
+        }
+
+        // Riders with a Top but no rating
+        foreach ($tops as $top) {
+            $calculator->addRider([], $top);
+        }
+
+        return $calculator->compute();
+    }
+
+    /** Compares a computed ranking with the one it would replace. */
+    public function report(RankingResult $result, \DateTimeImmutable $month): RankingReport
+    {
+        $previous = $this->rankingRepository->findPublishedBefore($month);
+
+        return RankingReport::compare(
+            $result->ranks(),
+            $previous ? $this->rankingRepository->findRanks($previous) : [],
+            $result->comparisons,
+            $previous?->getComparisonNumber() ?? 0,
+        );
     }
 
     /**
-     * Update ranking of coasters.
+     * Saves a computed ranking as the pending Ranking of $month, in one transaction. It replaces a pending ranking
+     * of $month, and a published one only when $replacePublished.
      *
-     * @return array<int, Coaster>
+     * @param array<string, mixed> $run duration, memory... stored with the report
      *
-     * @throws \Exception
+     * @throws \RuntimeException when $month is already published and $replacePublished is false
      */
-    public function updateRanking(bool $dryRun = false): array
+    public function stage(RankingResult $result, RankingReport $report, \DateTimeImmutable $month, array $run, bool $replacePublished = false): Ranking
     {
-        $this->computeRanking($dryRun);
-
-        $rank = 1;
-        $coasterList = [];
-        $now = new \DateTime();
-
-        foreach ($this->ranking as $coasterId => $score) {
-            $coaster = $this->em->getRepository(Coaster::class)->find($coasterId);
-
-            $coaster->setScore((string) $score);
-            $coaster->setPreviousRank($coaster->getRank());
-            $coaster->setRank($rank);
-            $coaster->recordBestRank($rank, $now);
-            $coaster->setUpdatedAt($now);
-
-            // used just for command output
-            $coasterList[] = $coaster;
-
-            ++$rank;
-
-            if ($dryRun) {
-                continue;
-            }
-
-            $this->em->persist($coaster);
-
-            if (0 !== $rank % 20) {
+        return $this->em->wrapInTransaction(function () use ($result, $report, $month, $run, $replacePublished): Ranking {
+            $existing = $this->rankingRepository->findOneBy(['month' => $month]);
+            if (null !== $existing) {
+                if (null !== $existing->getPublishedAt() && !$replacePublished) {
+                    throw new \RuntimeException(\sprintf('%s is already published (#%d).', $month->format('F Y'), $existing->getId()));
+                }
+                // Its RankingHistory rows go with it (ON DELETE CASCADE)
+                $this->em->remove($existing);
                 $this->em->flush();
-                $this->em->clear();
             }
-        }
 
-        if (!$dryRun) {
-            // create new ranking entry in database
-            $this->createRankingEntry();
-            // remove coasters not ranked anymore
-            $this->disableNonRankedCoasters();
-        }
+            $ranking = new Ranking($month);
+            $ranking->setRatingNumber($this->riddenCoasterRepository->countAll());
+            $ranking->setTopNumber((int) $this->topRepository->countTops());
+            $ranking->setUserNumber($this->userRepository->count(['enabled' => true]));
+            $ranking->setCoasterInTopNumber($this->topCoasterRepository->countAllInTops());
+            $ranking->setComparisonNumber($result->comparisons);
+            $ranking->setRankedCoasterNumber(\count($result->coasters));
+            $ranking->setFeaturedDuel($result->featuredDuel);
+            $ranking->setReport($report->toArray() + $run + [
+                'contributors' => $result->contributors,
+                'thresholds' => [
+                    'minComparisons' => RankingCalculator::MIN_COMPARISONS,
+                    'minDuels' => RankingCalculator::MIN_DUELS,
+                    'eliteScore' => RankingCalculator::ELITE_SCORE,
+                    'minDuelsElite' => RankingCalculator::MIN_DUELS_ELITE,
+                ],
+            ]);
+            $this->em->persist($ranking);
+            $this->em->flush();
 
-        return $coasterList;
-    }
+            $this->insertHistory($ranking->getId(), $result);
 
-    /** Compute ranking in ranking array. */
-    public function computeRanking(bool $dryRun): void
-    {
-        $users = $this->userRepository->findBy(['enabled' => true]);
-
-        /** @var User $user */
-        foreach ($users as $user) {
-            // reset before each user
-            $this->userComparisons = [];
-
-            $this->processComparisonsInTop($this->em->getRepository(Top::class)->findUserTopForRanking($user->getId()));
-            $this->processComparisonsInRatings($this->em->getRepository(RiddenCoaster::class)->findUserRatingsForRanking($user->getId()));
-        }
-
-        $this->computeScore($dryRun);
+            return $ranking;
+        });
     }
 
     /**
-     * Process all comparisons inside a top and set all results in duels array.
+     * Copies a staged ranking into the coasters' rank columns, then clears the caches and notifies riders.
+     * Previous ranks come from the ranking published before it, so publishing twice changes nothing.
      *
-     * @param array<int, array{position: int, coaster: int}> $top
+     * @param ?\DateTimeImmutable $publishedAt set when republishing a regenerated ranking: keeps its original date and
+     *                                         notifies nobody
      */
-    private function processComparisonsInTop(array $top): void
+    public function publish(Ranking $ranking, ?\DateTimeImmutable $publishedAt = null): void
     {
-        foreach ($top as $topCoaster) {
-            $coaster = $topCoaster['coaster'];
+        $previous = $this->rankingRepository->findPublishedBefore($ranking->getMonth());
 
-            foreach ($top as $comparedTopCoaster) {
-                $comparedCoaster = $comparedTopCoaster['coaster'];
+        $this->em->wrapInTransaction(static function (EntityManagerInterface $em) use ($ranking, $previous, $publishedAt): void {
+            $connection = $em->getConnection();
+            $params = ['ranking' => $ranking->getId(), 'previous' => $previous?->getId() ?? 0];
 
-                if ($coaster !== $comparedCoaster) {
-                    // add this comparison to user comparisons array
-                    $this->userComparisons[$coaster.'-'.$comparedCoaster] = 1;
+            // Every coaster ranked before or now; the others have no rank already
+            $connection->executeStatement(
+                'UPDATE coaster c
+                LEFT JOIN ranking_history h ON h.coaster_id = c.id AND h.ranking_id = :ranking
+                LEFT JOIN ranking_history p ON p.coaster_id = c.id AND p.ranking_id = :previous
+                SET c.`rank` = h.`rank`,
+                    c.previous_rank = IF(h.id IS NULL, NULL, p.`rank`),
+                    c.score = h.score,
+                    c.valid_duels = COALESCE(h.validDuels, 0)
+                WHERE c.`rank` IS NOT NULL OR h.id IS NOT NULL',
+                $params,
+            );
 
-                    if ($topCoaster['position'] < $comparedTopCoaster['position']) {
-                        $this->setWinner($coaster, $comparedCoaster);
-                    } else {
-                        $this->setLooser($coaster, $comparedCoaster);
-                    }
-                }
-            }
-        }
+            // Best rank ever, and the month it was first reached: an equal rank keeps the first month
+            $connection->executeStatement(
+                'UPDATE coaster c
+                JOIN ranking_history h ON h.coaster_id = c.id AND h.ranking_id = :ranking
+                SET c.best_rank = h.`rank`, c.best_rank_at = :month
+                WHERE c.best_rank IS NULL OR h.`rank` < c.best_rank',
+                ['ranking' => $ranking->getId(), 'month' => $ranking->getMonth()->format('Y-m-d H:i:s')],
+            );
+
+            $ranking->setPublishedAt($publishedAt ?? new \DateTimeImmutable());
+            $em->flush();
+        });
+
+        $this->eventDispatcher->dispatch(new RankingPublishedEvent(republished: null !== $publishedAt));
     }
 
-    /**
-     * Process all comparisons of all rated coaster for a user and set all results in duels array.
-     *
-     * @param array<int, array{rating: float, coaster: int}> $ratings
-     */
-    private function processComparisonsInRatings(array $ratings): void
+    /** When the ranking of $month is published. */
+    public static function publicationTime(\DateTimeInterface $month): \DateTimeImmutable
     {
-        foreach ($ratings as $rating) {
-            $coaster = $rating['coaster'];
-
-            foreach ($ratings as $comparedRating) {
-                $comparedCoaster = $comparedRating['coaster'];
-
-                if ($coaster !== $comparedCoaster) {
-                    // check if comparison already exists in Top for this user
-                    if (\array_key_exists($coaster.'-'.$comparedCoaster, $this->userComparisons)) {
-                        continue;
-                    }
-
-                    if ($rating['rating'] > $comparedRating['rating']) {
-                        $this->setWinner($coaster, $comparedCoaster);
-                    } elseif ($rating['rating'] < $comparedRating['rating']) {
-                        $this->setLooser($coaster, $comparedCoaster);
-                    } else {
-                        $this->setTie($coaster, $comparedCoaster);
-                    }
-                }
-            }
-        }
+        return new \DateTimeImmutable($month->format('Y-m-01 ').self::PUBLICATION_TIME, new \DateTimeZone('UTC'));
     }
 
-    /**
-     * Compute score based on duels array
-     * A duel is the result of all comparisons for coaster A and B.
-     */
-    private function computeScore(bool $dryRun): void
+    /** The next publication after $now. */
+    public static function nextPublication(\DateTimeInterface $now): \DateTimeImmutable
     {
-        $this->rejectedCoasters = [];
+        $thisMonth = self::publicationTime($now);
 
-        $this->computeRejectedCoasters();
+        return $thisMonth > $now ? $thisMonth : self::publicationTime($thisMonth->modify('first day of next month'));
+    }
 
-        $i = 1;
-        while (\count($this->rejectedCoasters) > 0 && $i < 5) {
-            $this->removeRejectedCoasters();
-            $this->computeRejectedCoasters();
-            ++$i;
+    /** The month the next ranking belongs to: the one after the last published, never before $now's month. */
+    public static function targetMonth(?\DateTimeInterface $lastPublished, \DateTimeInterface $now): \DateTimeImmutable
+    {
+        $month = self::monthOf($now);
+        if (null === $lastPublished) {
+            return $month;
         }
 
-        $this->ranking = [];
-        $this->totalComparisonNumber = 0;
-
-        foreach ($this->duels as $coasterId => $coasterDuels) {
-            $duelScoreSum = 0;
-            $duelCount = 0;
-            foreach ($coasterDuels as $duelCoasterId => $comparisonResult) {
-                // if $comparisonResult is result of A compared to B
-                // $reverseComparisonResult is result of B compared to A
-                $reverseComparisonResult = $this->duels[$duelCoasterId][$coasterId];
-
-                // don't take into account if too few comparisons
-                // $comparisonResult + $reverseComparisonResult always equals vote number
-                $totalComparisons = (is_numeric($comparisonResult) ? $comparisonResult : 0) + (is_numeric($reverseComparisonResult) ? $reverseComparisonResult : 0);
-                if ($totalComparisons >= self::MIN_COMPARISONS) {
-                    $this->totalComparisonNumber += (int) $totalComparisons;
-                    ++$duelCount;
-
-                    // same win & loose numbers
-                    if ($comparisonResult === $reverseComparisonResult) {
-                        $duelScoreSum += 50;
-                    // $coaster has more wins
-                    } elseif ($comparisonResult > $reverseComparisonResult) {
-                        $duelScoreSum += 100;
-                    // $coaster has less wins
-                    } else {
-                        $duelScoreSum += 0;
-                    }
-                }
-            }
-
-            if ($duelCount >= self::MIN_DUELS) {
-                // final score is between 0 and 100
-                $finalScore = $duelScoreSum / $duelCount;
-
-                // Elite coaster has specific minimum duels
-                if ($finalScore < self::ELITE_SCORE || $duelCount >= self::MIN_DUELS_ELITE_SCORE) {
-                    $this->ranking[$coasterId] = $finalScore;
-                }
-            }
-
-            if (!$dryRun) {
-                // update duel stat
-                $this->updateDuelStat($coasterId, $duelCount);
-            }
-        }
-
-        // sort in reverse order (higher score is first)
-        arsort($this->ranking);
+        return max($month, new \DateTimeImmutable($lastPublished->format('Y-m-01'), new \DateTimeZone('UTC'))->modify('first day of next month'));
     }
 
-    /** Compute a list of coaster that does not meet the comparison & duel requirements. */
-    private function computeRejectedCoasters(): void
+    /** First day of $now's month, in UTC: the month a ranking computed at $now belongs to. */
+    public static function monthOf(\DateTimeInterface $now): \DateTimeImmutable
     {
-        foreach ($this->duels as $coasterId => $coasterDuels) {
-            $duelCount = 0;
-            foreach ($coasterDuels as $duelCoasterId => $comparisonResult) {
-                // if $comparisonResult is result of A compared to B
-                // $reverseComparisonResult is result of B compared to A
-                $reverseComparisonResult = $this->duels[$duelCoasterId][$coasterId];
-
-                // don't take into account if too few comparisons
-                // $comparisonResult + $reverseComparisonResult always equals vote number
-                $totalComparisons = (is_numeric($comparisonResult) ? $comparisonResult : 0) + (is_numeric($reverseComparisonResult) ? $reverseComparisonResult : 0);
-                if ($totalComparisons >= self::MIN_COMPARISONS) {
-                    ++$duelCount;
-                }
-            }
-
-            if ($duelCount < self::MIN_DUELS) {
-                $this->rejectedCoasters[] = $coasterId;
-            }
-        }
-    }
-
-    /** Remove all duels from rejected coasters. */
-    private function removeRejectedCoasters(): void
-    {
-        foreach ($this->rejectedCoasters as $idRejected) {
-            unset($this->duels[$idRejected]);
-            foreach ($this->duels as $checkCurrentId => $checkDuels) {
-                if (\array_key_exists($idRejected, $checkDuels)) {
-                    unset($this->duels[$checkCurrentId][$idRejected]);
-                }
-            }
-        }
-
-        $this->rejectedCoasters = [];
-    }
-
-    /** Set result for winning comparison. */
-    private function setWinner(int $coasterId, int $comparedCoasterId): void
-    {
-        $this->setComparisonResult($coasterId, $comparedCoasterId, 1);
-    }
-
-    /** Set result for losing comparison. */
-    private function setLooser(int $coasterId, int $comparedCoasterId): void
-    {
-        $this->setComparisonResult($coasterId, $comparedCoasterId, 0);
-    }
-
-    /** Set result for tie comparison (same rating). */
-    private function setTie(int $coasterId, int $comparedCoasterId): void
-    {
-        $this->setComparisonResult($coasterId, $comparedCoasterId, 0.5);
-    }
-
-    /** Set comparison result. */
-    private function setComparisonResult(int $coasterId, int $comparedCoasterId, float $value): void
-    {
-        if (!isset($this->duels[$coasterId][$comparedCoasterId])) {
-            $this->duels[$coasterId][$comparedCoasterId] = $value;
-        } else {
-            $this->duels[$coasterId][$comparedCoasterId] += $value;
-        }
-    }
-
-    /** Remove rank and previous_rank fields for coaster not ranked anymore. */
-    private function disableNonRankedCoasters(): void
-    {
-        $sql = 'update coaster c
-                set c.rank = NULL, c.previous_rank = NULL, c.score = NULL, c.valid_duels = 0
-                where c.updated_at < DATE_SUB(NOW(), INTERVAL 4 HOUR)
-                and c.rank is not NULL;';
-
-        try {
-            $this->em->getConnection()->executeStatement($sql);
-        } catch (\Throwable $e) {
-            // todo log
-        }
-    }
-
-    /** Add a row for Ranking entity in database. */
-    private function createRankingEntry(): void
-    {
-        $ranking = new Ranking();
-
-        $ranking->setRatingNumber($this->em->getRepository(RiddenCoaster::class)->countAll());
-        $ranking->setTopNumber($this->em->getRepository(Top::class)->countTops());
-        $ranking->setUserNumber($this->userRepository->count(['enabled' => true]));
-        $ranking->setCoasterInTopNumber($this->em->getRepository(TopCoaster::class)->countAllInTops());
-        $ranking->setComparisonNumber($this->totalComparisonNumber);
-        $ranking->setRankedCoasterNumber(\count($this->ranking));
-        $ranking->setFeaturedDuel(self::featuredDuel($this->ranking, $this->duels));
-
-        $this->em->persist($ranking);
-        $this->em->flush();
+        return \DateTimeImmutable::createFromInterface($now)->setTimezone(new \DateTimeZone('UTC'))->modify('first day of this month midnight');
     }
 
     /**
      * Comparisons a rider feeds the ranking: every pair within their Top, plus every pair of rated coasters not
-     * already settled by the Top (both in it), as computeRanking() does.
+     * already settled by the Top (both in it), as RankingCalculator does.
      *
      * @param int $both Top coasters the rider also rated
      */
@@ -349,54 +219,31 @@ class RankingService
         return $pairs($top) + $pairs($ratings) - $pairs($both);
     }
 
-    /**
-     * A head-to-head to show on the learn-more page, drawn at random each month: a coaster ranked 3–20 against one
-     * 10 to 40 places lower, with enough riders, that the better-ranked one wins. It skips #1 vs #2 (a rivalry of
-     * its own) and the upsets where the better-ranked coaster loses the duel itself, which need more explaining.
-     * Each rider who compared the pair adds 1 to the two sides' sum (1 to the winner, 0.5 each for a tie).
-     *
-     * @param array<int, float>             $ranking coaster id => score, best first
-     * @param array<int, array<int, float>> $duels
-     *
-     * @return array{first: int, second: int, comparisons: int, firstWins: float}|null
-     */
-    public static function featuredDuel(array $ranking, array $duels): ?array
+    /** RankingHistory rows, with a snapshot of each coaster's rating and Top stats. */
+    private function insertHistory(int $rankingId, RankingResult $result): void
     {
-        $ids = array_keys($ranking);
-        $candidates = [];
+        $connection = $this->em->getConnection();
 
-        foreach (\array_slice($ids, 2, 18) as $index => $first) {
-            // $first is ranked $index + 3; its opponents are ranked 10 to 40 places lower
-            foreach (\array_slice($ids, $index + 12, 31) as $second) {
-                if (!isset($duels[$first][$second], $duels[$second][$first])) {
-                    continue;
-                }
-
-                $wins = $duels[$first][$second];
-                $comparisons = $wins + $duels[$second][$first];
-                if ($comparisons >= self::FEATURED_DUEL_MIN_RIDERS && $wins > $comparisons / 2) {
-                    $candidates[] = ['first' => $first, 'second' => $second, 'comparisons' => (int) round($comparisons), 'firstWins' => $wins];
-                }
+        foreach (array_chunk($result->coasters, self::INSERT_BATCH) as $offset => $chunk) {
+            $values = [];
+            $params = [];
+            foreach ($chunk as $index => $row) {
+                $values[] = '(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+                array_push($params, $rankingId, $row->coaster, $offset * self::INSERT_BATCH + $index + 1, (string) $row->score, $row->duels, $row->won, $row->lost, $row->tied, $row->riders);
             }
+
+            $connection->executeStatement(
+                'INSERT INTO ranking_history (ranking_id, coaster_id, `rank`, score, validDuels, won, lost, tied, riders) VALUES '.implode(', ', $values),
+                $params,
+            );
         }
 
-        return $candidates ? $candidates[array_rand($candidates)] : null;
-    }
-
-    /** Update "validDuels" column for a coaster. */
-    private function updateDuelStat(int $coasterId, int $duelCount): void
-    {
-        $sql = 'update coaster c
-                set c.valid_duels = :count
-                where c.id = :id;';
-
-        try {
-            $this->em->getConnection()->executeStatement($sql, [
-                'count' => $duelCount,
-                'id' => $coasterId,
-            ]);
-        } catch (\Throwable $e) {
-            // todo log
-        }
+        $connection->executeStatement(
+            'UPDATE ranking_history h JOIN coaster c ON c.id = h.coaster_id
+            SET h.totalTopsIn = c.total_tops_in, h.averageTopRank = c.average_top_rank,
+                h.totalRatings = c.total_ratings, h.averageRating = c.averageRating
+            WHERE h.ranking_id = :ranking',
+            ['ranking' => $rankingId],
+        );
     }
 }

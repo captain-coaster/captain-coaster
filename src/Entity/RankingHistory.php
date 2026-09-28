@@ -21,7 +21,7 @@ class RankingHistory
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Ranking::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?Ranking $ranking = null;
 
     #[ORM\ManyToOne(targetEntity: Coaster::class)]
@@ -36,6 +36,20 @@ class RankingHistory
 
     #[ORM\Column(name: 'validDuels', type: Types::INTEGER)]
     private int $validDuels = 0;
+
+    // Valid duels won, lost and tied (validDuels is their sum)
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $won = 0;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $lost = 0;
+
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $tied = 0;
+
+    // Riders who compared the coaster with another one
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private int $riders = 0;
 
     #[ORM\Column(name: 'totalTopsIn', type: Types::INTEGER, nullable: true)]
     private ?int $totalTopsIn = null;
@@ -249,5 +263,25 @@ class RankingHistory
     public function getCoaster(): Coaster
     {
         return $this->coaster;
+    }
+
+    public function getWon(): int
+    {
+        return $this->won;
+    }
+
+    public function getLost(): int
+    {
+        return $this->lost;
+    }
+
+    public function getTied(): int
+    {
+        return $this->tied;
+    }
+
+    public function getRiders(): int
+    {
+        return $this->riders;
     }
 }

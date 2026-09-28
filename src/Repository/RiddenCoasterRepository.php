@@ -92,7 +92,7 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    /** Ratings of a user that feed the ranking (same scope as findUserRatingsForRanking()). */
+    /** Ratings of a user that feed the ranking (same scope as iterateRatingsForRanking()). */
     public function countRankedForUser(User $user): int
     {
         return (int) $this->getEntityManager()
@@ -693,23 +693,20 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get user ratings for monthly ranking update.
+     * Ratings of enabled users that feed the ranking, sorted by user. Plain SQL, streamed: close to a million rows.
      *
-     * @return array<int, array{rating: float, coaster: int}>
+     * @return \Traversable<int, list<mixed>> user id, coaster id, rating
      */
-    public function findUserRatingsForRanking(int $userId): array
+    public function iterateRatingsForRanking(): \Traversable
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->addSelect('r.value AS rating', 'c.id AS coaster')
-            ->from(RiddenCoaster::class, 'r')
-            ->join('r.coaster', 'c')
-            ->where('r.user = :id')
-            ->andWhere('c.kiddie = 0')
-            ->andWhere('c.holdRanking = 0')
-            ->setParameter('id', $userId)
-            ->getQuery()
-            ->getResult();
+        return $this->getEntityManager()->getConnection()->iterateNumeric(
+            'SELECT r.user_id, r.coaster_id, r.rating
+            FROM ridden_coaster r
+            JOIN users u ON u.id = r.user_id
+            JOIN coaster c ON c.id = r.coaster_id
+            WHERE u.enabled = 1 AND c.kiddie = 0 AND c.hold_ranking = 0 AND r.rating IS NOT NULL
+            ORDER BY r.user_id'
+        );
     }
 
     /**

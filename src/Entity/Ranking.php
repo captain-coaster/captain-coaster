@@ -10,7 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Ranking.
+ * A monthly ranking. RankingService computes it into RankingHistory rows, pending, then publishes it by copying
+ * them into the coasters' rank columns: RankingHistory is the source of truth, Coaster::$rank a copy.
  */
 #[ORM\Table(name: 'ranking')]
 #[ORM\Entity(repositoryClass: RankingRepository::class)]
@@ -43,8 +44,24 @@ class Ranking
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeInterface $computedAt = null;
 
+    // First day of the ranking's month: one ranking per month
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, unique: true)]
+    private \DateTimeImmutable $month;
+
+    // Null while pending
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $publishedAt = null;
+
     /**
-     * Head-to-head shown on the learn-more page (RankingService::featuredDuel()): riders who compared the pair,
+     * The run: its RankingReport, duration, peak memory, riders who fed it and the thresholds it used.
+     *
+     * @var array<string, mixed>|null
+     */
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $report = null;
+
+    /**
+     * Head-to-head shown on the learn-more page (RankingCalculator::featuredDuel()): riders who compared the pair,
      * and the comparisons the better-ranked coaster won (a tie counts half for each).
      *
      * @var array{first: int, second: int, comparisons: int, firstWins: float}|null
@@ -52,9 +69,51 @@ class Ranking
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $featuredDuel = null;
 
+    public function __construct(\DateTimeImmutable $month)
+    {
+        $this->month = $month;
+    }
+
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function getMonth(): \DateTimeImmutable
+    {
+        return $this->month;
+    }
+
+    public function getPublishedAt(): ?\DateTimeImmutable
+    {
+        return $this->publishedAt;
+    }
+
+    public function setPublishedAt(?\DateTimeImmutable $publishedAt): self
+    {
+        $this->publishedAt = $publishedAt;
+
+        return $this;
+    }
+
+    /** @return array<string, mixed>|null */
+    public function getReport(): ?array
+    {
+        return $this->report;
+    }
+
+    /** @param array<string, mixed>|null $report */
+    public function setReport(?array $report): self
+    {
+        $this->report = $report;
+
+        return $this;
+    }
+
+    /** @return list<string> */
+    public function getAnomalies(): array
+    {
+        return $this->report['anomalies'] ?? [];
     }
 
     public function getRatingNumber(): int

@@ -159,7 +159,7 @@ class TopRepository extends ServiceEntityRepository
     }
 
     /**
-     * Coasters of a user's main Top that feed the ranking (same scope as findUserTopForRanking()), and how many of them
+     * Coasters of a user's main Top that feed the ranking (same scope as findTopsForRanking()), and how many of them
      * the user also rated.
      *
      * @return array{top: int, rated: int}
@@ -185,24 +185,27 @@ class TopRepository extends ServiceEntityRepository
     }
 
     /**
-     * Get user main top coasters for monthly ranking update.
+     * Main Tops of enabled users that feed the ranking, by user.
      *
-     * @return array<int, array{position: int, coaster: int}>
+     * @return array<int, array<int, int>> user id => [coaster id => position]
      */
-    public function findUserTopForRanking(int $userId): array
+    public function findTopsForRanking(): array
     {
-        return $this->getEntityManager()
-            ->createQueryBuilder()
-            ->addSelect('tc.position AS position', 'c.id as coaster')
-            ->from(Top::class, 't')
-            ->innerJoin('t.topCoasters', 'tc')
-            ->innerJoin('tc.coaster', 'c')
-            ->where('t.main = 1')
-            ->andWhere('t.user = :id')
-            ->andWhere('c.kiddie = 0')
-            ->andWhere('c.holdRanking = 0')
-            ->setParameter('id', $userId)
-            ->getQuery()
-            ->getResult();
+        // Plain SQL, streamed: a few hundred thousand rows
+        $rows = $this->getEntityManager()->getConnection()->iterateNumeric(
+            'SELECT t.user_id, tc.coaster_id, tc.position
+            FROM liste t
+            JOIN users u ON u.id = t.user_id
+            JOIN liste_coaster tc ON tc.top_id = t.id
+            JOIN coaster c ON c.id = tc.coaster_id
+            WHERE t.main = 1 AND u.enabled = 1 AND c.kiddie = 0 AND c.hold_ranking = 0'
+        );
+
+        $tops = [];
+        foreach ($rows as [$user, $coaster, $position]) {
+            $tops[(int) $user][(int) $coaster] = (int) $position;
+        }
+
+        return $tops;
     }
 }
