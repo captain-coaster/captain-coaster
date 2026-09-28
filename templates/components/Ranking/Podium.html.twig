@@ -21,16 +21,16 @@
       {% if coaster.mainImage %}
         {% if first %}
           {# 16:9 while #1 spans the podium's width; beside #2/#3 (podium ≥ 36rem, about a 56rem viewport with the filter column) its box is closer to 4:3, about 500px wide #}
-          {% set f = coaster.mainImage.filename %}
+          {% set f = coaster.mainImage %}
           <picture>
-            <source media="(min-width: 56rem)" type="image/avif" srcset="{{ signed_picture_url(f, 640, 480, 'avif') }} 1x, {{ signed_picture_url(f, 1280, 960, 'avif') }} 2x">
-            <source media="(min-width: 56rem)" srcset="{{ signed_picture_url(f, 640, 480, 'jpg') }} 1x, {{ signed_picture_url(f, 1280, 960, 'jpg') }} 2x">
-            <source type="image/avif" srcset="{{ signed_picture_url(f, 400, 225, 'avif') }} 1x, {{ signed_picture_url(f, 800, 450, 'avif') }} 2x">
-            <img src="{{ signed_picture_url(f, 400, 225, 'jpg') }}" srcset="{{ signed_picture_url(f, 400, 225, 'jpg') }} 1x, {{ signed_picture_url(f, 800, 450, 'jpg') }} 2x"
+            <source media="(min-width: 56rem)" type="image/avif" srcset="{{ picture_url(f, 640, 480, 'avif') }} 1x, {{ picture_url(f, 1280, 960, 'avif') }} 2x">
+            <source media="(min-width: 56rem)" srcset="{{ picture_url(f, 640, 480, 'jpg') }} 1x, {{ picture_url(f, 1280, 960, 'jpg') }} 2x">
+            <source type="image/avif" srcset="{{ picture_url(f, 400, 225, 'avif') }} 1x, {{ picture_url(f, 800, 450, 'avif') }} 2x">
+            <img src="{{ picture_url(f, 400, 225, 'jpg') }}" srcset="{{ picture_url(f, 400, 225, 'jpg') }} 1x, {{ picture_url(f, 800, 450, 'jpg') }} 2x"
                  alt="" class="{{ imgClass }}" fetchpriority="high">
           </picture>
         {% else %}
-          {{ helper.picture(coaster.mainImage.filename, 360, 270, '', imgClass, 'eager') }}
+          {{ helper.picture(coaster.mainImage, 360, 270, '', imgClass, 'eager') }}
         {% endif %}
       {% else %}
         {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-10 text-muted', 'aria-hidden': 'true'}) }}

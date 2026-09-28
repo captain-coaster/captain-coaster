@@ -29,7 +29,7 @@
     </span>
     <span class="relative aspect-8/7 w-16 shrink-0 overflow-hidden rounded-sm bg-subtle">
       {% if coaster.mainImage %}
-        {{ helper.picture(coaster.mainImage.filename, 64, 56, '', 'absolute inset-0 size-full object-cover') }}
+        {{ helper.picture(coaster.mainImage, 64, 56, '', 'absolute inset-0 size-full object-cover') }}
       {% else %}
         {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-6 text-muted', 'aria-hidden': 'true'}) }}
       {% endif %}
