@@ -16,10 +16,11 @@ final class Version20260927120000 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        // A month computed twice (February 2025): keep the run with history
+        // A month computed twice (February 2025): drop the run without history, whichever came first
         $this->addSql('DELETE r FROM ranking r
-            JOIN ranking o ON o.id > r.id AND DATE_FORMAT(o.computed_at, \'%Y-%m\') = DATE_FORMAT(r.computed_at, \'%Y-%m\')
-            WHERE NOT EXISTS (SELECT 1 FROM ranking_history h WHERE h.ranking_id = r.id)');
+            JOIN ranking o ON o.id <> r.id AND DATE_FORMAT(o.computed_at, \'%Y-%m\') = DATE_FORMAT(r.computed_at, \'%Y-%m\')
+            WHERE NOT EXISTS (SELECT 1 FROM ranking_history h WHERE h.ranking_id = r.id)
+            AND EXISTS (SELECT 1 FROM ranking_history h WHERE h.ranking_id = o.id)');
 
         $this->addSql('ALTER TABLE ranking ADD month DATE DEFAULT NULL, ADD published_at DATETIME DEFAULT NULL, ADD report JSON DEFAULT NULL');
         $this->addSql('UPDATE ranking SET month = DATE_FORMAT(computed_at, \'%Y-%m-01\'), published_at = computed_at');

@@ -82,7 +82,12 @@ class RankingRepository extends ServiceEntityRepository
             ->getQuery()
             ->getScalarResult();
 
-        return array_combine(array_map(intval(...), array_column($rows, 'coaster')), array_map(intval(...), array_column($rows, 'rank')));
+        $ranks = [];
+        foreach ($rows as $row) {
+            $ranks[(int) $row['coaster']] = (int) $row['rank'];
+        }
+
+        return $ranks;
     }
 
     /**

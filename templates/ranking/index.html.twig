@@ -14,9 +14,7 @@
       {% endif %}
     </p>
     <p class="m-0 mt-1 flex flex-wrap gap-x-4 text-caption text-muted">
-      {% if nextRanking|date('U') - 'now'|date('U') > 7200 %}
-        <span>{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
-      {% endif %}
+      <span>{{ 'edition.next'|trans({date: nextRanking|ago}) }}</span>
       <a href="{{ path('ranking_learn_more') }}" class="text-action underline-offset-4 hover:underline">{{ 'edition.how'|trans }}</a>
     </p>
   {% endset %}

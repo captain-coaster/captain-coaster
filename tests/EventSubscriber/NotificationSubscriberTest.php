@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\EventSubscriber;
 
+use App\Entity\Coaster;
 use App\Entity\User;
 use App\Enum\NotificationType;
 use App\Event\BadgeAwardedEvent;
 use App\Event\RankingPublishedEvent;
 use App\EventSubscriber\NotificationSubscriber;
+use App\Repository\CoasterRepository;
 use App\Repository\UserRepository;
 use App\Service\NotificationService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -18,13 +20,15 @@ class NotificationSubscriberTest extends TestCase
 {
     private NotificationService&MockObject $notificationService;
     private UserRepository&MockObject $userRepository;
+    private CoasterRepository&MockObject $coasterRepository;
     private NotificationSubscriber $subscriber;
 
     protected function setUp(): void
     {
         $this->notificationService = $this->createMock(NotificationService::class);
         $this->userRepository = $this->createMock(UserRepository::class);
-        $this->subscriber = new NotificationSubscriber($this->notificationService, $this->userRepository);
+        $this->coasterRepository = $this->createMock(CoasterRepository::class);
+        $this->subscriber = new NotificationSubscriber($this->notificationService, $this->userRepository, $this->coasterRepository);
     }
 
     public function testSubscribesToBothDomainEvents(): void
@@ -67,8 +71,11 @@ class NotificationSubscriberTest extends TestCase
             ->expects($this->once())
             ->method('sendToUsers')
             ->with($users, NotificationType::Ranking, 'notif.ranking.messageWithNewCoaster', 'Steel Vengeance');
+        $coaster = new Coaster();
+        $coaster->setName('Steel Vengeance');
+        $this->coasterRepository->method('getNewlyRankedHighlightedCoaster')->willReturn($coaster);
 
-        $this->subscriber->onRankingPublished(new RankingPublishedEvent('Steel Vengeance'));
+        $this->subscriber->onRankingPublished(new RankingPublishedEvent());
     }
 
     public function testBadgeAwardedSendsToTheAwardedUser(): void

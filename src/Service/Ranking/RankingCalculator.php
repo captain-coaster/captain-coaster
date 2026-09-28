@@ -23,15 +23,20 @@ final class RankingCalculator
     // Riders who compared the pair, for the duel shown on the learn-more page
     final public const int FEATURED_DUEL_MIN_RIDERS = 30;
 
-    // Pairs are stored once, as a single int each, to fit a few million of them in memory:
-    // key = low index << KEY_SHIFT | high index, value = comparisons << SHIFT | twice the low one's wins (a tie
-    // counts 1). PHP buckets int keys by their low bits: KEY_SHIFT must stay narrow, or keys sharing a high index
-    // share buckets and every lookup walks a long chain.
+    // Each pair of coasters is stored once, as an int key => int value, to fit a few million pairs in memory (an
+    // array per pair takes several times more). Coasters get dense indexes 0, 1, 2...; for a pair $low < $high:
+    // - key = $low << KEY_SHIFT | $high: $low in the upper bits, $high in the lower 14 (up to 16,384 coasters).
+    //   Indexes 3 and 7: 3 × 16,384 + 7 = 49,159. KEY_MASK reads $high back, >> KEY_SHIFT reads $low.
+    // - value = comparisons << COUNT_SHIFT | $low's points: riders who compared the pair in the upper bits, $low's
+    //   points in the lower 20. A win counts 2, a tie 1, a loss 0, so that half a win stays an int. Each rider adds
+    //   ONE_COMPARISON plus those points. 5 riders, $low won 3 and tied 1: 5 << 20 | 7. WINS_MASK reads the 7 back.
+    // PHP buckets int keys by their low bits: KEY_SHIFT must stay narrow, or keys sharing a high index share buckets
+    // and every lookup walks a long chain.
     private const int KEY_SHIFT = 14;
     private const int KEY_MASK = (1 << self::KEY_SHIFT) - 1;
-    private const int SHIFT = 20;
-    private const int MASK = (1 << self::SHIFT) - 1;
-    private const int ONE = 1 << self::SHIFT;
+    private const int COUNT_SHIFT = 20;
+    private const int WINS_MASK = (1 << self::COUNT_SHIFT) - 1;
+    private const int ONE_COMPARISON = 1 << self::COUNT_SHIFT;
 
     /** @var array<int, int> coaster id => dense index */
     private array $index = [];
@@ -107,11 +112,11 @@ final class RankingCalculator
                 // $a < $b: $a is the low one of the pair
                 $scoreB = $scores[$y];
                 if ($scoreA > $scoreB) {
-                    $add = self::ONE + 2;
+                    $add = self::ONE_COMPARISON + 2;
                 } elseif ($scoreA < $scoreB) {
-                    $add = self::ONE;
+                    $add = self::ONE_COMPARISON;
                 } elseif ($countTies) {
-                    $add = self::ONE + 1;
+                    $add = self::ONE_COMPARISON + 1;
                 } else {
                     continue;
                 }
@@ -131,12 +136,12 @@ final class RankingCalculator
         // Valid duels, as parallel lists: both coasters, the low one's points (0, 50 or 100), riders
         $low = $high = $points = $comparisons = [];
         foreach ($this->pairs as $key => $value) {
-            $count = $value >> self::SHIFT;
+            $count = $value >> self::COUNT_SHIFT;
             if ($count < self::MIN_COMPARISONS) {
                 continue;
             }
 
-            $wins = $value & self::MASK;
+            $wins = $value & self::WINS_MASK;
             $otherWins = 2 * $count - $wins;
             $low[] = $key >> self::KEY_SHIFT;
             $high[] = $key & self::KEY_MASK;
@@ -261,8 +266,8 @@ final class RankingCalculator
             return null;
         }
 
-        $count = $value >> self::SHIFT;
-        $lowWins = $value & self::MASK;
+        $count = $value >> self::COUNT_SHIFT;
+        $lowWins = $value & self::WINS_MASK;
 
         return [($a < $b ? $lowWins : 2 * $count - $lowWins) / 2, $count];
     }

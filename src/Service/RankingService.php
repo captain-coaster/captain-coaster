@@ -6,7 +6,6 @@ namespace App\Service;
 
 use App\Entity\Ranking;
 use App\Event\RankingPublishedEvent;
-use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
 use App\Repository\RiddenCoasterRepository;
 use App\Repository\TopCoasterRepository;
@@ -35,7 +34,6 @@ class RankingService
         private readonly TopRepository $topRepository,
         private readonly TopCoasterRepository $topCoasterRepository,
         private readonly UserRepository $userRepository,
-        private readonly CoasterRepository $coasterRepository,
         private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
@@ -174,9 +172,7 @@ class RankingService
             $em->flush();
         });
 
-        $this->eventDispatcher->dispatch(null === $publishedAt
-            ? new RankingPublishedEvent($this->coasterRepository->getNewlyRankedHighlightedCoaster()?->getName())
-            : new RankingPublishedEvent(republished: true));
+        $this->eventDispatcher->dispatch(new RankingPublishedEvent(republished: null !== $publishedAt));
     }
 
     /** When the ranking of $month is published. */

@@ -7,7 +7,6 @@ namespace App\Command;
 use App\Repository\CoasterRepository;
 use App\Repository\RankingRepository;
 use App\Service\Ranking\RankingDiscord;
-use App\Service\Ranking\RankingResult;
 use App\Service\RankingService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -42,7 +41,7 @@ class RankingCommand extends Command
     {
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Compute and report only, write nothing')
             ->addOption('regenerate', null, InputOption::VALUE_NONE, 'Recompute the published ranking and republish it now')
-            ->addOption('send-discord', null, InputOption::VALUE_NONE, 'Post a dry run\'s full ranking to Discord (a real run always posts its report)');
+            ->addOption('send-discord', null, InputOption::VALUE_NONE, 'Post a dry run\'s report to Discord (a real run always does)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -77,18 +76,14 @@ class RankingCommand extends Command
             ];
             $report = $this->rankingService->report($result, $month);
             $names = $this->coasterRepository->findDisplayNames(array_merge(array_keys($result->ranks()), array_keys($report->left)));
-            $previousRanks = ($previous = $this->rankingRepository->findPublishedBefore($month)) ? $this->rankingRepository->findRanks($previous) : [];
-
-            $list = $this->formatRanking($result, $previousRanks, $names);
             $summary = RankingDiscord::summary($report, $names);
             $summary[] = \sprintf('Computed in %.1fs, %d MB', $run['durationMs'] / 1000, $run['peakMemoryMb']);
 
-            $output->writeln($list);
             $output->writeln(['', ...$summary]);
 
             if ($dryRun) {
                 if ($input->getOption('send-discord')) {
-                    $this->discord->send([\sprintf('**Ranking dry run, %s**', $month->format('F Y')), ...$summary, '', ...$list]);
+                    $this->discord->send([\sprintf('**Ranking dry run, %s**', $month->format('F Y')), ...$summary]);
                 }
 
                 return Command::SUCCESS;
@@ -116,23 +111,5 @@ class RankingCommand extends Command
         }
 
         return Command::SUCCESS;
-    }
-
-    /**
-     * @param array<int, int>    $previousRanks
-     * @param array<int, string> $names
-     *
-     * @return list<string>
-     */
-    private function formatRanking(RankingResult $result, array $previousRanks, array $names): array
-    {
-        $lines = [];
-        foreach ($result->coasters as $index => $coaster) {
-            $rank = $index + 1;
-            $previous = $previousRanks[$coaster->coaster] ?? null;
-            $lines[] = \sprintf('[%d] %s (score: %.2f) (%s)', $rank, $names[$coaster->coaster] ?? '#'.$coaster->coaster, $coaster->score, null === $previous ? 'new' : \sprintf('%+d', $previous - $rank));
-        }
-
-        return $lines;
     }
 }
