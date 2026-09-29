@@ -108,6 +108,16 @@ Images are uploaded to AWS S3 via `ImageManager` / Flysystem (`oneup/flysystem-b
 
 Cropping/resizing does **not** happen in this repo — it's handled by a Lambda (`sharp`/libvips) in the sibling `captain-infra` project. This app only signs request URLs via `PictureUrlSigner` (canonical strings + HMAC scheme must stay identical to captain-infra's `handler.mjs` for the legacy layout and `v2.mjs` for `/i/*` and `/a/*`; `PictureUrlSignerTest` holds shared vectors). `PICTURES_URL_SCHEME` / `PICTURES_AVATAR_SCHEME` (`legacy`, `canary:P`, `v2`) pick the layout per image id / user id; any per-image data the crop step needs (e.g. the `watermarked` flag) rides along as S3 object metadata set in `ImageManager::upload()`, since the Lambda has no DB access.
 
+### Caching
+
+Pick a cache's policy from what changes its data:
+
+- **A known event** (ranking publication, a coaster/park/image/user edit): an explicit cache id, cleared by the event's listener or subscriber (`src/EventListener/`, `RankingCacheSubscriber`), with a long TTL as a backstop. Example: `CoasterSummaryRepository`.
+- **A continuous stream** (latest reviews, home stats): a short TTL, staleness accepted.
+- **The current member's own actions**: uncached when the query is per-member (they're cheap and indexed); when it's shared, a listener clears the entry, so a member sees their action right away (`RiddenCoasterListener`).
+
+Each piece of data lives in one cache layer: search results are cached in `search.cache_pool` only, so the listeners' clear takes effect immediately.
+
 ### Code style
 
 PHP follows the `@Symfony` + `@Symfony:risky` + `@PHP82Migration:risky` + `@PHP85Migration` ruleset (php-cs-fixer). All PHP files use `declare(strict_types=1)`. PHPDoc on single-line const/method/property uses the `phpdoc_line_span: single` rule.

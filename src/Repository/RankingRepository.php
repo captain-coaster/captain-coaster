@@ -19,6 +19,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class RankingRepository extends ServiceEntityRepository
 {
+    /**
+     * TTL of the cached queries that read coaster ranks. Ranks only change on publication, which clears them
+     * (clearCache()): the TTL bounds how long the coaster fields cached alongside (name, image, status) stay stale.
+     */
+    public const int RANK_CACHE_TTL = 86400;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Ranking::class);

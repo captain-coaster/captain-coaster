@@ -104,7 +104,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->addOrderBy('c.name', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->enableResultCache(300) // Cache for 5 minutes
             ->getArrayResult();
     }
 
@@ -302,6 +301,31 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * The two coasters of the featured duel, with their main image, in the given order.
+     *
+     * @return array{Coaster, Coaster}|null null if either is gone
+     */
+    public function findDuel(int $first, int $second): ?array
+    {
+        /** @var list<Coaster> $coasters */
+        $coasters = $this->createQueryBuilder('c')
+            ->select('c', 'mi')
+            ->leftJoin('c.mainImage', 'mi')
+            ->where('c.id IN (:ids)')
+            ->setParameter('ids', [$first, $second])
+            ->getQuery()
+            ->enableResultCache(RankingRepository::RANK_CACHE_TTL)
+            ->getResult();
+
+        $byId = [];
+        foreach ($coasters as $coaster) {
+            $byId[$coaster->getId()] = $coaster;
+        }
+
+        return isset($byId[$first], $byId[$second]) ? [$byId[$first], $byId[$second]] : null;
+    }
+
+    /**
      * Find coasters for ranking page.
      * Returns Query object for pagination.
      * Expects filters to already be validated and authorized.
@@ -333,7 +357,7 @@ class CoasterRepository extends ServiceEntityRepository
         // (uncached) COUNT(*) query on every request.
         $countQuery = (clone $qb)->select('count(c.id)')->getQuery();
         if (!$hasUserSpecificFilter) {
-            $countQuery->enableResultCache(300);
+            $countQuery->enableResultCache(RankingRepository::RANK_CACHE_TTL);
         }
         $count = (int) $countQuery->getSingleScalarResult();
 
@@ -343,7 +367,7 @@ class CoasterRepository extends ServiceEntityRepository
         $query->setHint('knp_paginator.count', $count);
 
         if (!$hasUserSpecificFilter) {
-            $query->enableResultCache(300); // Cache for 5 minutes - public data only
+            $query->enableResultCache(RankingRepository::RANK_CACHE_TTL);
         }
 
         return $query;

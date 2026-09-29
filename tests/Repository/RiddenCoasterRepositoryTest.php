@@ -7,11 +7,13 @@ namespace App\Tests\Repository;
 use App\Entity\Coaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Unit tests for RiddenCoasterRepository.
@@ -203,7 +205,7 @@ class RiddenCoasterRepositoryTest extends TestCase
         $this->repository->findAllReviews(['en'], 11);
     }
 
-    public function testGetRatingStatsForCoasterCachesForFiveMinutes(): void
+    public function testGetRatingStatsForCoasterCachesUnderAPerCoasterId(): void
     {
         $capturedResultCacheCalls = [];
         $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$capturedResultCacheCalls) {
@@ -211,8 +213,8 @@ class RiddenCoasterRepositoryTest extends TestCase
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
             $query->method('setParameters')->willReturnSelf();
-            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime) use ($query, &$capturedResultCacheCalls) {
-                $capturedResultCacheCalls[] = $lifetime;
+            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime, ?string $id) use ($query, &$capturedResultCacheCalls) {
+                $capturedResultCacheCalls[] = [$lifetime, $id];
 
                 return $query;
             });
@@ -226,6 +228,24 @@ class RiddenCoasterRepositoryTest extends TestCase
 
         $this->repository->getRatingStatsForCoaster($coaster);
 
-        $this->assertSame([300], $capturedResultCacheCalls);
+        $this->assertSame([[3600, 'coaster_rating_stats_1']], $capturedResultCacheCalls);
+    }
+
+    public function testClearRatingStatsCacheDeletesTheEntryTheQueryIsCachedUnder(): void
+    {
+        $pool = new ArrayAdapter();
+        $pool->save($pool->getItem('coaster_rating_stats_1')->set([]));
+        $pool->save($pool->getItem('coaster_rating_stats_2')->set([]));
+        $configuration = new Configuration();
+        $configuration->setResultCache($pool);
+        $this->em->method('getConfiguration')->willReturn($configuration);
+
+        $coaster = new Coaster();
+        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, 1);
+
+        $this->repository->clearRatingStatsCache($coaster);
+
+        $this->assertFalse($pool->hasItem('coaster_rating_stats_1'));
+        $this->assertTrue($pool->hasItem('coaster_rating_stats_2'));
     }
 }

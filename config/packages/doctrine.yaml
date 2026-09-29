@@ -70,7 +70,12 @@ when@prod:
     framework:
         cache:
             pools:
+                # Filesystem, not Redis: it holds hydrated entity graphs of any
+                # size, and Redis (single-threaded, shared with sessions and
+                # Messenger) stalls every client on a large key -- see
+                # sitemap.cache_pool. Expired files are reclaimed by the
+                # cache:clear of every deploy.
                 doctrine.result_cache_pool:
-                    adapter: cache.adapter.redis
+                    adapter: cache.adapter.filesystem
                 doctrine.system_cache_pool:
                     adapter: cache.system

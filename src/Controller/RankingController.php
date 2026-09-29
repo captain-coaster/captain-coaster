@@ -82,8 +82,7 @@ class RankingController extends AbstractController
     {
         $ranking = $this->rankingRepository->findCurrent();
         $duel = $ranking?->getFeaturedDuel();
-        $first = $duel ? $this->coasterRepository->find($duel['first']) : null;
-        $second = $duel ? $this->coasterRepository->find($duel['second']) : null;
+        $coasters = $duel ? $this->coasterRepository->findDuel($duel['first'], $duel['second']) : null;
 
         $user = $this->getUser();
         $contribution = null;
@@ -99,7 +98,7 @@ class RankingController extends AbstractController
 
         return $this->render('ranking/learn_more.html.twig', [
             'ranking' => $ranking,
-            'duel' => $first && $second ? ['first' => $first, 'second' => $second] + $duel : null,
+            'duel' => $coasters ? ['first' => $coasters[0], 'second' => $coasters[1]] + $duel : null,
             'contribution' => $contribution,
             'previousRanking' => $this->rankingRepository->findPrevious(),
             'history' => $this->rankingRepository->findTotalsHistory(),
