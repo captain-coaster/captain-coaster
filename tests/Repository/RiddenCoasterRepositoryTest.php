@@ -7,11 +7,13 @@ namespace App\Tests\Repository;
 use App\Entity\Coaster;
 use App\Entity\User;
 use App\Repository\RiddenCoasterRepository;
+use Doctrine\ORM\Configuration;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 /**
  * Unit tests for RiddenCoasterRepository.
@@ -227,5 +229,23 @@ class RiddenCoasterRepositoryTest extends TestCase
         $this->repository->getRatingStatsForCoaster($coaster);
 
         $this->assertSame([[3600, 'coaster_rating_stats_1']], $capturedResultCacheCalls);
+    }
+
+    public function testClearRatingStatsCacheDeletesTheEntryTheQueryIsCachedUnder(): void
+    {
+        $pool = new ArrayAdapter();
+        $pool->save($pool->getItem('coaster_rating_stats_1')->set([]));
+        $pool->save($pool->getItem('coaster_rating_stats_2')->set([]));
+        $configuration = new Configuration();
+        $configuration->setResultCache($pool);
+        $this->em->method('getConfiguration')->willReturn($configuration);
+
+        $coaster = new Coaster();
+        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, 1);
+
+        $this->repository->clearRatingStatsCache($coaster);
+
+        $this->assertFalse($pool->hasItem('coaster_rating_stats_1'));
+        $this->assertTrue($pool->hasItem('coaster_rating_stats_2'));
     }
 }
