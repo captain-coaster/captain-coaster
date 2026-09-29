@@ -7,6 +7,7 @@ namespace App\Tests\Repository;
 use App\Entity\Coaster;
 use App\Entity\Park;
 use App\Repository\CoasterRepository;
+use App\Repository\RankingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
@@ -174,7 +175,7 @@ class CoasterRepositoryTest extends TestCase
 
         $this->assertNotEmpty($this->capturedResultCacheCalls, 'Expected both the count and main queries to be cached');
         foreach ($this->capturedResultCacheCalls as $call) {
-            $this->assertSame(300, $call['lifetime']);
+            $this->assertSame(RankingRepository::RANK_CACHE_TTL, $call['lifetime']);
         }
     }
 

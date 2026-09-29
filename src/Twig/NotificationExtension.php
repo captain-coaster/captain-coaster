@@ -7,14 +7,18 @@ namespace App\Twig;
 use App\Entity\User;
 use App\Repository\NotificationRecipientRepository;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Contracts\Service\ResetInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 /**
- * Feeds the navbar's unread-count pill with a bounded query.
+ * Feeds the navbar's unread-count pills with a bounded query, run once per request: the tab bar and the header both
+ * show it.
  */
-class NotificationExtension extends AbstractExtension
+class NotificationExtension extends AbstractExtension implements ResetInterface
 {
+    private ?int $unreadCount = null;
+
     public function __construct(
         private readonly NotificationRecipientRepository $notificationRecipientRepository,
         private readonly Security $security
@@ -31,7 +35,15 @@ class NotificationExtension extends AbstractExtension
     public function unreadNotificationCount(): int
     {
         $user = $this->security->getUser();
+        if (!$user instanceof User) {
+            return 0;
+        }
 
-        return $user instanceof User ? $this->notificationRecipientRepository->countUnreadForUser($user) : 0;
+        return $this->unreadCount ??= $this->notificationRecipientRepository->countUnreadForUser($user);
+    }
+
+    public function reset(): void
+    {
+        $this->unreadCount = null;
     }
 }
