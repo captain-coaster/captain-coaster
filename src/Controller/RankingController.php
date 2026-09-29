@@ -98,7 +98,7 @@ class RankingController extends AbstractController
 
         return $this->render('ranking/learn_more.html.twig', [
             'ranking' => $ranking,
-            'duel' => $duel && $coasters ? ['first' => $coasters[0], 'second' => $coasters[1]] + $duel : null,
+            'duel' => $coasters ? ['first' => $coasters[0], 'second' => $coasters[1]] + $duel : null,
             'contribution' => $contribution,
             'previousRanking' => $this->rankingRepository->findPrevious(),
             'history' => $this->rankingRepository->findTotalsHistory(),
