@@ -154,11 +154,12 @@ DESIGN.md explicitly does **not** define app navigation ("Don't infer … app na
 ## Step 6: Remaining pages (design + build in one PR)
 
 Per page:
+0. Place the page on the clean ↔ fun budget (DESIGN.md, Overview): it says which livery motifs the page may use.
 1. `impeccable context --target <template>`.
 2. Optionally run `critique <template>`. It needs two isolated subagents and saves a snapshot to `.impeccable/critique/`, which `polish` picks up afterwards [I:critique, I:polish].
 3. Rebuild the page from existing components. When the page's composition is genuinely open, run per-page pipeline steps 1–2 (grill → frontend-design mockup) first; a local extension skips them.
 4. Run `harden` for German length, empty states and errors [I:harden], then `polish` [I:polish], then `audit`.
-5. Run `detect`, then a 390/1440 × 4-locale screenshot round.
+5. Run `detect`, then a 390/1440 × 4-locale screenshot round, plus one pass with Chrome DevTools' "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia): no state may be told apart by color alone (DESIGN.md, Accessibility).
 
 New patterns → `extract` → documenter.
 
