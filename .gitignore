@@ -40,6 +40,8 @@ phpstan.neon
 # ...except agent-operating conventions (label/tool mappings, domain-doc
 # pointers) — no sensitive content, same category as CLAUDE.md itself.
 !/docs/agents
+# ...and design reference boards linked from DESIGN.md (illustrative data only).
+!/docs/design
 
 ###> symfony/reprise ###
 /node_modules/

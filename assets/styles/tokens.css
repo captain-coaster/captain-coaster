@@ -28,6 +28,10 @@
     /* Sticky offsets under the page chrome: Page:Header's compact bar (h-14, below lg), Nav:Header (h-16 + its 1px border, from lg). */
     --spacing-bar: 3.5rem;
     --spacing-header: calc(4rem + 1px);
+    /* Brand band heights (DESIGN.md, The Livery): fixed, so the band never eats the screen. */
+    --spacing-band-home: 8.5rem;
+    --spacing-band-page: 7.5rem;
+    --spacing-band-profile: 9.25rem;
 
     --font-sans: "Source Sans 3", "Source Sans 3 Fallback", system-ui, -apple-system, "Segoe UI", sans-serif;
     --font-display: "Barlow Condensed", "Barlow Condensed Fallback", "Arial Narrow", sans-serif;
@@ -87,6 +91,9 @@
     --color-logo-ink: var(--logo-ink);
     --color-subtle: var(--subtle);
     --color-muted-strong: var(--muted-strong);
+    --color-brand: var(--brand);
+    --color-on-brand: var(--on-brand);
+    --color-on-brand-muted: var(--on-brand-muted);
 }
 
 :root {
@@ -103,6 +110,7 @@
     --blue-500: oklch(0.5173960 0.1025990 262.10278); /* #4767A3 */
     --blue-700: oklch(0.4762678 0.1461232 259.22022); /* #2359AD */
     --blue-800: oklch(0.4031302 0.1277954 259.73286); /* #19458C */
+    --navy-900: oklch(0.3033100 0.0810882 264.89308); /* #1A2C57 */
     --sun-400: oklch(0.8720509 0.1368842 84.26883); /* #FFCD61 */
     --sun-50: oklch(0.9661014 0.0400057 88.19611); /* #FFF3D6 */
     --amber-800: oklch(0.4643523 0.0941316 74.17692); /* #78500A */
@@ -137,6 +145,22 @@
     --info: var(--blue-500);
     --subtle: var(--mist-100); /* pale fills: hover rows, tracks, placeholders */
     --muted-strong: var(--slate-600); /* secondary text that needs more weight */
+
+    /* Brand surface (the livery, #469): the navy band, tab bar and desktop
+     * header. On it: white 13.6:1, sunshine 9.2:1, on-brand-muted 8.7:1;
+     * action blue fails (2.0:1), so links there are on-brand or sunshine. */
+    --brand: var(--navy-900);
+    --on-brand: var(--white);
+    --on-brand-muted: var(--mist-300);
+
+    /* Livery motifs as images (DESIGN.md, Brand motifs). Data URIs can't read
+     * custom properties, so the sunshine (#FFCD61, --sun-400) is inlined.
+     * Stripes are polygons stretched to the box (preserveAspectRatio none):
+     * a rotated hard-stop gradient aliases into steps. Use them with
+     * `bg-(image:--livery-stripes) bg-[length:100%_100%] bg-no-repeat` and
+     * `bg-(image:--star-field)` on the brand surface only. */
+    --livery-stripes: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath fill='%23FFCD61' d='M0 13 100 1v5L0 18zM0 21l100-12v3L0 24z'/%3E%3C/svg%3E");
+    --star-field: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='60'%3E%3Cg fill='%23FFCD61' fill-opacity='.15'%3E%3Cpath d='M12 6l1.8 3.9 4.2.4-3.2 2.9.9 4.1L12 15.2l-3.7 2.1.9-4.1L6 10.3l4.2-.4z'/%3E%3Cpath d='M50 34l1.3 2.8 3 .3-2.3 2.1.7 3-2.7-1.6-2.7 1.6.7-3-2.3-2.1 3-.3z'/%3E%3C/g%3E%3C/svg%3E");
 
     /* Dark chrome (photo gallery viewer): the logo's dark stage. On it, states
      * lighten -- ink overlays are invisible on a near-ink surface. */
@@ -194,4 +218,37 @@
     --cc-warning-deep: var(--warning);
     --cc-danger: var(--danger);
     --cc-teal-400: var(--action);
+}
+
+/*
+ * Dark theme roles (DESIGN.md, Dark theme): a role swap, not an inversion.
+ * Brand, sunshine, on-highlight (ink on sunshine) and photos keep their
+ * light values. Not active yet: nothing sets data-theme="dark" until the
+ * main pages are off the legacy .cc-* colors (activation ticket). Measured
+ * on surface: fg 14.5:1, muted 7.8:1, action 9.0:1, success 8.2:1, danger
+ * 7.5:1, control-border 4.6:1; ink on action 7.6:1; sunshine on brand 8.3:1.
+ */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(0.1869 0.0288 262.24); /* #0C1320 */
+    --surface: oklch(0.2219 0.0342 261.47); /* #121B2B */
+    --fg: oklch(0.9406 0.0114 252.09); /* #E6ECF3 */
+    --muted: oklch(0.7502 0.0333 251.20); /* #9FB0C3 */
+    --muted-strong: oklch(0.8208 0.0273 251.70); /* #B8C6D6 */
+    --border: oklch(0.3158 0.0456 260.06); /* #243249 */
+    --control-border: oklch(0.6151 0.0448 257.52); /* #7486A0 */
+    --action: oklch(0.7918 0.0844 261.35); /* #9DBCF2 */
+    --action-hover: oklch(0.8595 0.0569 260.82); /* #BCD2F7 */
+    --on-action: var(--ink-900);
+    --selected: oklch(0.2894 0.0521 260.89); /* #1C2B45 */
+    --subtle: oklch(0.2643 0.0430 261.14); /* #19253A */
+    --success: oklch(0.7534 0.1057 161.66); /* #6CC49A */
+    --success-bg: oklch(0.2541 0.0350 167.01); /* #10281F */
+    --warning: oklch(0.7918 0.1195 83.31); /* #E0B45A */
+    --warning-bg: oklch(0.2570 0.0355 85.62); /* #2B220E */
+    --danger: oklch(0.7532 0.1225 33.63); /* #F2917B */
+    --danger-bg: oklch(0.2311 0.0415 27.89); /* #2E1512 */
+    --focus: var(--action);
+    /* Lifted a step so the band still separates from the deeper canvas. */
+    --brand: oklch(0.3311 0.0892 263.72); /* #1D3363 */
 }
