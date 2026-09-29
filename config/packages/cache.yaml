@@ -13,11 +13,13 @@ framework:
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
 
-        # Namespaced pools use the above "app" backend by default
+        # Namespaced pools use the above "app" backend by default.
+        # Every cache pool is on the filesystem, Doctrine's result cache
+        # included: Redis is kept for sessions and the Messenger queue, small
+        # keys that a large cache entry would stall (Redis is single-threaded).
         pools:
-            # Search-related caching (Redis for fast access)
             search.cache_pool:
-                adapter: cache.adapter.redis
+                adapter: cache.adapter.filesystem
 
             # Sitemap cache. Filesystem, not Redis: the payload reached 14.5 MB
             # as a single key, and Redis is single-threaded — every GET of it
