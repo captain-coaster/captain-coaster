@@ -520,6 +520,9 @@ class RiddenCoasterRepository extends ServiceEntityRepository
     /**
      * Get rating statistics for a coaster.
      *
+     * Cached under a per-coaster id, cleared by RiddenCoasterListener on every rating change so that a rider sees
+     * their own rating right away. The TTL is a backstop (e.g. a disabled account's ratings leaving the counts).
+     *
      * @return array<int, array{value: float, count: int}>
      */
     public function getRatingStatsForCoaster(Coaster $coaster): array
@@ -538,12 +541,19 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('id', $id)
             ->getQuery();
 
-        // New ratings arrive live, unlike score/rank -- short TTL trades a
-        // few minutes of staleness for absorbing concurrent traffic to the
-        // same (often popular) coaster.
-        $query->enableResultCache(300);
+        $query->enableResultCache(3600, $this->ratingStatsCacheId($coaster));
 
         return $query->getResult();
+    }
+
+    public function clearRatingStatsCache(Coaster $coaster): void
+    {
+        $this->getEntityManager()->getConfiguration()->getResultCache()?->deleteItem($this->ratingStatsCacheId($coaster));
+    }
+
+    private function ratingStatsCacheId(Coaster $coaster): string
+    {
+        return \sprintf('coaster_rating_stats_%d', $coaster->getId());
     }
 
     /**
@@ -735,8 +745,6 @@ class RiddenCoasterRepository extends ServiceEntityRepository
                 ->orderBy('nb', 'desc')
                 ->setMaxResults(1)
                 ->getQuery();
-
-            $query->enableResultCache(300);
 
             return $query->getSingleResult();
         } catch (\Exception) {

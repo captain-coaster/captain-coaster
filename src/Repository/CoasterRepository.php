@@ -104,7 +104,6 @@ class CoasterRepository extends ServiceEntityRepository
             ->addOrderBy('c.name', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->enableResultCache(300) // Cache for 5 minutes
             ->getArrayResult();
     }
 
