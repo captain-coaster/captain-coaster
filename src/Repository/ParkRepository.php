@@ -91,7 +91,6 @@ class ParkRepository extends ServiceEntityRepository
             ->orderBy('p.name', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->enableResultCache(300) // Cache for 5 minutes
             ->getArrayResult();
     }
 }

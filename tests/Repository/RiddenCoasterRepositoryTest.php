@@ -203,7 +203,7 @@ class RiddenCoasterRepositoryTest extends TestCase
         $this->repository->findAllReviews(['en'], 11);
     }
 
-    public function testGetRatingStatsForCoasterCachesForFiveMinutes(): void
+    public function testGetRatingStatsForCoasterCachesUnderAPerCoasterId(): void
     {
         $capturedResultCacheCalls = [];
         $this->em->method('createQuery')->willReturnCallback(function (string $dql) use (&$capturedResultCacheCalls) {
@@ -211,8 +211,8 @@ class RiddenCoasterRepositoryTest extends TestCase
             $query->method('setFirstResult')->willReturnSelf();
             $query->method('setMaxResults')->willReturnSelf();
             $query->method('setParameters')->willReturnSelf();
-            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime) use ($query, &$capturedResultCacheCalls) {
-                $capturedResultCacheCalls[] = $lifetime;
+            $query->method('enableResultCache')->willReturnCallback(function (?int $lifetime, ?string $id) use ($query, &$capturedResultCacheCalls) {
+                $capturedResultCacheCalls[] = [$lifetime, $id];
 
                 return $query;
             });
@@ -226,6 +226,6 @@ class RiddenCoasterRepositoryTest extends TestCase
 
         $this->repository->getRatingStatsForCoaster($coaster);
 
-        $this->assertSame([300], $capturedResultCacheCalls);
+        $this->assertSame([[3600, 'coaster_rating_stats_1']], $capturedResultCacheCalls);
     }
 }

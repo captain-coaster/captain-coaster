@@ -179,7 +179,6 @@ class UserRepository extends ServiceEntityRepository
             ->addOrderBy('u.displayName', 'ASC')
             ->setMaxResults($limit)
             ->getQuery()
-            ->enableResultCache(300)
             ->getArrayResult();
 
         return $result;

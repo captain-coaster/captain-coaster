@@ -192,6 +192,52 @@ class SearchService
      */
     public function searchAllWithPagination(string $query, int $page = 1, int $perPage = 20): array
     {
+        $cacheKey = 'search_page_'.md5(strtolower(trim($query)));
+
+        try {
+            $allResults = $this->cache->get($cacheKey, function (ItemInterface $item) use ($query) {
+                $item->expiresAfter(self::CACHE_TTL);
+
+                return $this->rankedResults($query);
+            });
+        } catch (\Exception) {
+            $allResults = $this->rankedResults($query);
+        }
+
+        $totalResults = \count($allResults);
+        $totalPages = ceil($totalResults / $perPage);
+        $offset = ($page - 1) * $perPage;
+
+        // Get results for current page
+        $paginatedResults = \array_slice($allResults, $offset, $perPage);
+
+        return [
+            'results' => $paginatedResults,
+            'totalResults' => $totalResults,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'perPage' => $perPage,
+            'hasMore' => $page < $totalPages,
+            'pagination' => [
+                'current' => $page,
+                'total' => $totalPages,
+                'per_page' => $perPage,
+                'total_items' => $totalResults,
+                'has_previous' => $page > 1,
+                'has_next' => $page < $totalPages,
+                'previous' => $page > 1 ? $page - 1 : null,
+                'next' => $page < $totalPages ? $page + 1 : null,
+            ],
+        ];
+    }
+
+    /**
+     * Every match of every type, most relevant first.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function rankedResults(string $query): array
+    {
         // Get all results without limit first to calculate totals
         $coasterResults = $this->searchCoastersUnlimited($query);
         $parkResults = $this->searchParksUnlimited($query);
@@ -230,31 +276,7 @@ class SearchService
         // Sort by relevance score (higher is better)
         usort($allResults, static fn ($a, $b) => $b['relevance_score'] <=> $a['relevance_score']);
 
-        $totalResults = \count($allResults);
-        $totalPages = ceil($totalResults / $perPage);
-        $offset = ($page - 1) * $perPage;
-
-        // Get results for current page
-        $paginatedResults = \array_slice($allResults, $offset, $perPage);
-
-        return [
-            'results' => $paginatedResults,
-            'totalResults' => $totalResults,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'perPage' => $perPage,
-            'hasMore' => $page < $totalPages,
-            'pagination' => [
-                'current' => $page,
-                'total' => $totalPages,
-                'per_page' => $perPage,
-                'total_items' => $totalResults,
-                'has_previous' => $page > 1,
-                'has_next' => $page < $totalPages,
-                'previous' => $page > 1 ? $page - 1 : null,
-                'next' => $page < $totalPages ? $page + 1 : null,
-            ],
-        ];
+        return $allResults;
     }
 
     /**

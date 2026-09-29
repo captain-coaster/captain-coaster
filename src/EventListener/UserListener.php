@@ -6,18 +6,22 @@ namespace App\EventListener;
 
 use App\Entity\User;
 use App\Service\ProfilePictureManager;
+use App\Service\SearchCacheService;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
+use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 
 #[AsEntityListener(event: Events::prePersist, method: 'prePersist', entity: User::class)]
 #[AsEntityListener(event: Events::preUpdate, method: 'preUpdate', entity: User::class)]
+#[AsEntityListener(event: Events::postUpdate, method: 'postUpdate', entity: User::class)]
 #[AsEntityListener(event: Events::preRemove, method: 'preRemove', entity: User::class)]
 class UserListener
 {
     public function __construct(
-        private readonly ProfilePictureManager $profilePictureManager
+        private readonly ProfilePictureManager $profilePictureManager,
+        private readonly SearchCacheService $searchCacheService,
     ) {
     }
 
@@ -65,6 +69,15 @@ class UserListener
         if ($args->hasChangedField('enabled') && $user->isEnabled()) {
             $user->setBannedAt(null);
             $user->setDeletedAt(null);
+        }
+    }
+
+    /** A renamed, banned or deleted member must leave the search results right away. */
+    public function postUpdate(User $user, PostUpdateEventArgs $args): void
+    {
+        $changeSet = $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($user);
+        if ([] !== array_intersect_key($changeSet, array_flip(['firstName', 'lastName', 'displayName', 'slug', 'enabled']))) {
+            $this->searchCacheService->invalidateSearchCache();
         }
     }
 }
