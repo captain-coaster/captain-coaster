@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Image;
+use App\Message\AnalyzeImageMessage;
 use App\Repository\ImageRepository;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +13,7 @@ use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ImageManager
 {
@@ -26,7 +28,27 @@ class ImageManager
         #[Autowire('%env(string:AWS_S3_BUCKET_NAME)%')]
         private readonly string $s3OriginalBucket,
         private readonly FilesystemOperator $picturesVariantsFilesystem,
+        private readonly MessageBusInterface $messageBus,
     ) {
+    }
+
+    /**
+     * Store a new upload. The original is named after the id, so the row comes first; a failed
+     * S3 write rolls it back. The analysis is dispatched once both exist, never before the commit.
+     */
+    public function store(Image $image): void
+    {
+        $this->setImageHash($image);
+        $image->setFilename(''); // NOT NULL, set once the id exists
+
+        $this->em->wrapInTransaction(function () use ($image): void {
+            $this->em->persist($image);
+            $this->em->flush();
+            $image->setFilename($this->upload($image));
+            $this->em->flush();
+        });
+
+        $this->messageBus->dispatch(new AnalyzeImageMessage($image->getId()));
     }
 
     /**

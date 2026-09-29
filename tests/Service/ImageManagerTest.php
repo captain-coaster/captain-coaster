@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\Image;
+use App\Message\AnalyzeImageMessage;
 use App\Repository\ImageRepository;
 use App\Service\ImageManager;
 use Aws\CommandInterface;
@@ -16,6 +17,8 @@ use League\Flysystem\FilesystemOperator;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\Envelope;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * Exercises removeCache() against a real S3Client wired to Aws\MockHandler -- S3Client's
@@ -107,6 +110,7 @@ class ImageManagerTest extends TestCase
             'captain-pictures-resized',
             'captain-pictures-original',
             $variants ?? $this->createMock(FilesystemOperator::class),
+            $this->createMock(MessageBusInterface::class),
         );
     }
 
@@ -135,9 +139,84 @@ class ImageManagerTest extends TestCase
             'captain-pictures-resized',
             'captain-pictures-original',
             $this->createMock(FilesystemOperator::class),
+            $this->createMock(MessageBusInterface::class),
         );
 
         $this->assertSame('48500.jpg', $manager->upload($image));
+    }
+
+    public function testStoreWritesTheOriginalUnderItsIdThenDispatchesAnalysis(): void
+    {
+        [$image, $em] = $this->newUploadAndEntityManager();
+        $em->expects($this->exactly(2))->method('flush');
+
+        $originals = $this->createMock(FilesystemOperator::class);
+        $originals->expects($this->once())->method('write')->with('48500.jpg', $this->anything(), $this->anything());
+
+        $bus = $this->createMock(MessageBusInterface::class);
+        $bus->expects($this->once())
+            ->method('dispatch')
+            ->with($this->callback(static fn (AnalyzeImageMessage $message) => 48500 === $message->imageId))
+            ->willReturn(new Envelope(new AnalyzeImageMessage(48500)));
+
+        $this->makeStoringImageManager($em, $originals, $bus)->store($image);
+
+        $this->assertSame('48500.jpg', $image->getFilename());
+        $this->assertNotNull($image->getHash());
+    }
+
+    // Inside wrapInTransaction(): the exception rolls the row back, and nothing is dispatched
+    // for an image that won't exist.
+    public function testStorePropagatesAFailedWriteWithoutDispatching(): void
+    {
+        [$image, $em] = $this->newUploadAndEntityManager();
+
+        $originals = $this->createMock(FilesystemOperator::class);
+        $originals->method('write')->willThrowException(new \RuntimeException('S3 down'));
+
+        $bus = $this->createMock(MessageBusInterface::class);
+        $bus->expects($this->never())->method('dispatch');
+
+        $this->expectException(\RuntimeException::class);
+        $this->makeStoringImageManager($em, $originals, $bus)->store($image);
+    }
+
+    /** @return array{Image, EntityManagerInterface&\PHPUnit\Framework\MockObject\MockObject} */
+    private function newUploadAndEntityManager(): array
+    {
+        $path = tempnam(sys_get_temp_dir(), 'img');
+        file_put_contents($path, 'jpeg-bytes');
+        $file = $this->createMock(UploadedFile::class);
+        $file->method('getPathname')->willReturn($path);
+        $file->method('getContent')->willReturn('jpeg-bytes');
+
+        $image = new Image();
+        $image->setFile($file);
+        $image->setWatermarked(true);
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->method('wrapInTransaction')->willReturnCallback(static fn (callable $func) => $func($em));
+        // The INSERT gives the row its id.
+        $em->method('persist')->willReturnCallback(static function (Image $image): void {
+            new \ReflectionProperty(Image::class, 'id')->setValue($image, 48500);
+        });
+
+        return [$image, $em];
+    }
+
+    private function makeStoringImageManager(EntityManagerInterface $em, FilesystemOperator $originals, MessageBusInterface $bus): ImageManager
+    {
+        return new ImageManager(
+            $em,
+            $this->createMock(LoggerInterface::class),
+            $originals,
+            new S3Client(['region' => 'eu-west-3', 'version' => '2006-03-01', 'credentials' => false, 'handler' => new MockHandler()]),
+            $this->createMock(ImageRepository::class),
+            'captain-pictures-resized',
+            'captain-pictures-original',
+            $this->createMock(FilesystemOperator::class),
+            $bus,
+        );
     }
 
     public function testRemoveVariantsDeletesTheImagePrefixInTheVariantsBucket(): void

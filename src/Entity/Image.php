@@ -95,10 +95,8 @@ class Image
     // against a landscape UI slot. Bounds are deliberately generous (a tall lift-hill shot down
     // to a wide panoramic track shot both fit) -- this only rejects genuinely degenerate slivers.
     #[Assert\Image(minPixels: 786432, minRatio: 1 / 3, maxRatio: 3)]
-    // Default matters: ImageListener::prePersist()/postPersist() call getFile() on every new
-    // Image, including any future creation path that doesn't go through the upload form (a
-    // fixture, a script) -- without a default, an unset typed property throws "must not be
-    // accessed before initialization" instead of behaving like the nullable type it is.
+    // Default matters: without it, reading an unset typed property throws "must not be accessed
+    // before initialization" on an Image created outside the upload form (a fixture, a script).
     private ?UploadedFile $file = null;
 
     public function __construct()
