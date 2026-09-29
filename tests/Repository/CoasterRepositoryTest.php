@@ -7,6 +7,7 @@ namespace App\Tests\Repository;
 use App\Entity\Coaster;
 use App\Entity\Park;
 use App\Repository\CoasterRepository;
+use App\Repository\RankingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query;
@@ -17,7 +18,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Unit tests for CoasterRepository::findForRanking() and findForSearch().
+ * Unit tests for CoasterRepository::findForRanking(), findForSearch() and findDuel().
  *
  * Uses a real ManagerRegistry/ClassMetadata pair (rather than the simpler
  * onlyMethods(['getEntityManager']) partial mock used elsewhere) because
@@ -174,7 +175,7 @@ class CoasterRepositoryTest extends TestCase
 
         $this->assertNotEmpty($this->capturedResultCacheCalls, 'Expected both the count and main queries to be cached');
         foreach ($this->capturedResultCacheCalls as $call) {
-            $this->assertSame(300, $call['lifetime']);
+            $this->assertSame(RankingRepository::RANK_CACHE_TTL, $call['lifetime']);
         }
     }
 
@@ -322,5 +323,40 @@ class CoasterRepositoryTest extends TestCase
         $this->repository->findForSearch(['sortByDistance' => 'on', 'latitude' => 48.85, 'longitude' => 2.35]);
 
         $this->assertSame([['lifetime' => 300, 'isCount' => true]], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindDuelFetchesBothCoastersWithTheirMainImageInOneCachedQuery(): void
+    {
+        $this->stubQueries(0, [$this->coaster(1), $this->coaster(2)]);
+
+        $this->repository->findDuel(1, 2);
+
+        $this->assertCount(1, $this->capturedDql);
+        $this->assertStringContainsString('LEFT JOIN c.mainImage mi', $this->capturedDql[0]);
+        $this->assertSame([['lifetime' => RankingRepository::RANK_CACHE_TTL, 'isCount' => false]], $this->capturedResultCacheCalls);
+    }
+
+    public function testFindDuelReturnsTheCoastersInTheAskedOrder(): void
+    {
+        $first = $this->coaster(1);
+        $second = $this->coaster(2);
+        $this->stubQueries(0, [$second, $first]);
+
+        $this->assertSame([$first, $second], $this->repository->findDuel(1, 2));
+    }
+
+    public function testFindDuelReturnsNullWhenACoasterIsGone(): void
+    {
+        $this->stubQueries(0, [$this->coaster(1)]);
+
+        $this->assertNull($this->repository->findDuel(1, 2));
+    }
+
+    private function coaster(int $id): Coaster
+    {
+        $coaster = new Coaster();
+        (new \ReflectionProperty(Coaster::class, 'id'))->setValue($coaster, $id);
+
+        return $coaster;
     }
 }

@@ -613,13 +613,13 @@ class RiddenCoasterRepository extends ServiceEntityRepository
             ->setParameter('operating', Status::OPERATING)
             ->getQuery();
 
-        // Identical for every user -- only the monthly ranking recompute
-        // changes it -- so this is shared across every profile page view
-        // rather than recomputed per visit. The per-user aggregate below
+        // Identical for every user -- only the monthly ranking publication
+        // changes it, and clears it -- so this is shared across every profile
+        // page view rather than recomputed per visit. The per-user aggregate below
         // isn't cached: it's a single indexed, user-scoped query (a few ms
         // even for the platform's most active rider), so caching it would
         // only trade a negligible query for real staleness risk.
-        $idsQuery->enableResultCache(3600);
+        $idsQuery->enableResultCache(RankingRepository::RANK_CACHE_TTL);
         $operatingTop100Ids = $idsQuery->getSingleColumnResult();
 
         // Guard against an empty IN(), which Doctrine can't compile.
