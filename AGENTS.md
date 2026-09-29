@@ -88,7 +88,7 @@ Mid term aim:
   - replaces hardcoded px spacing (`mb-[15px]`, px literals in CSS) with Tailwind's spacing scale;
   - deletes the `.cc-*` rules it replaces once nothing else uses them.
 - `--cc-*` tokens are compatibility aliases, removed as their users migrate.
-- `assets/styles/tokens.css` is the canonical token source; `.impeccable/*.css` are the original proposal files, not imported anywhere — don't import or edit them.
+- `assets/styles/tokens.css` is the canonical token source.
 - Tailwind's default color palette is switched off: only token colors (plus white) exist as utilities. Add a missing shade as a ramp step + semantic role in `tokens.css`, never a standalone color.
 
 ### Naming conventions

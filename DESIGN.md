@@ -284,7 +284,7 @@ Two support roles carry the navigation's quiet states. **Subtle** (pale mist) fi
 
 **The Roles-Not-Palettes Rule.** Data needs (ratings, statuses, counts) are semantic roles over the existing hues. When a role needs a missing lightness step, extend that hue's ramp (`green-500`, `coral-700`); never add a standalone hue or a parallel palette. Status and map-marker colors are not settled yet and keep their provisional aliases.
 
-The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css` (the implementation since the reskin, #413; `.impeccable/captain-coaster-tokens.css` is the original proposal). `.impeccable/contrast-report.json` records WCAG sRGB luminance measurements: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. Status pairings exceed 5.3:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
+The frontmatter mirrors the canonical OKLCH values in `assets/styles/tokens.css`, the one token source since the reskin (#413). Measured WCAG sRGB contrasts: primary text 14.53:1, secondary text on white 6.01:1, default action 6.77:1, hover action 9.25:1, selected text 5.96:1 and ink on sunshine 9.79:1. Status pairings exceed 5.3:1. These are measured pairings, not a full accessibility certification. Keep normal text ≥4.5:1 and essential boundaries, focus indicators and large text ≥3:1.
 
 ## Typography
 

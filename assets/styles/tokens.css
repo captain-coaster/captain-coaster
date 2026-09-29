@@ -1,6 +1,6 @@
 /*
  * Design tokens -- the one token source. Target design system: DESIGN.md
- * (#375); canonical values mirror .impeccable/captain-coaster-tokens.css.
+ * (#375); DESIGN.md's frontmatter mirrors the values set here.
  *
  * - Primitives and semantic roles are plain `:root` custom properties.
  * - `@theme inline` exposes the semantic roles as Tailwind utilities
