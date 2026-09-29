@@ -30,7 +30,7 @@
   'bg-[var(--avatar-8)]',
 ] %}
 {% set px = {xs: 32, sm: 36, md: 44, lg: 64}[size] ?? 44 %}
-{# null while PICTURES_AVATAR_SCHEME keeps this user on the legacy path #}
+{# null while PICTURES_V2 is off (legacy path) #}
 {% set jpg = user.profilePicture ? avatar_url(user.profilePicture, px, 'jpg') : null %}
 {% if jpg %}
   <picture class="contents">

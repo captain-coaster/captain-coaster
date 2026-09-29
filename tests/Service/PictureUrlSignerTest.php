@@ -60,7 +60,7 @@ class PictureUrlSignerTest extends TestCase
     // (sha256/HMAC-SHA256 truncated to 6 hex). A mismatch here is a 400/409 in production.
     public function testV2PhotoMatchesTheLambdaVector(): void
     {
-        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', 'v2');
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
         $picture = new PictureRef(48213, '48213.jpg', 0.4213, 0.5871, true, 'voltron-europa-park');
 
         $this->assertSame(
@@ -71,7 +71,7 @@ class PictureUrlSignerTest extends TestCase
 
     public function testV2PhotoWithoutFocalPointMatchesTheLambdaVector(): void
     {
-        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', 'v2');
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
         $picture = new PictureRef(7, '7.jpg', null, null, false, 'blue-fire');
 
         $this->assertSame(
@@ -82,7 +82,7 @@ class PictureUrlSignerTest extends TestCase
 
     public function testV2AvatarMatchesTheLambdaVector(): void
     {
-        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', 'legacy', 'v2');
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
 
         $this->assertSame(
             'https://pictures.example.com/a/9_67cd55be84931/4d5c1c/7faa7d/88x88/avatar.avif',
@@ -90,7 +90,7 @@ class PictureUrlSignerTest extends TestCase
         );
     }
 
-    public function testLegacySchemeKeepsTheLegacyLayout(): void
+    public function testV2OffKeepsTheLegacyLayout(): void
     {
         $picture = new PictureRef(48213, 'voltron.jpg', 0.4213, 0.5871, true, 'voltron-europa-park');
 
@@ -98,27 +98,9 @@ class PictureUrlSignerTest extends TestCase
         $this->assertNull($this->signer->signAvatar('pp_9_67cd55be84931.png', 88, 'avif'));
     }
 
-    public function testCanaryPicksByIdModuloHundred(): void
-    {
-        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', 'canary:10', 'canary:10');
-
-        $this->assertStringContainsString('/i/1209/', $signer->signImage(new PictureRef(1209, 'a.jpg', null, null, false, 'a'), 96, 72, 'jpg'));
-        $this->assertStringContainsString('?s=', $signer->signImage(new PictureRef(1210, 'a.jpg', null, null, false, 'a'), 96, 72, 'jpg'));
-        $this->assertNotNull($signer->signAvatar('pp_309_67cd55be84931.jpg', 88, 'jpg'));
-        $this->assertNull($signer->signAvatar('pp_310_67cd55be84931.jpg', 88, 'jpg'));
-    }
-
-    public function testUnrecognisedSchemeFallsBackToLegacy(): void
-    {
-        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', 'V2', 'canary:abc');
-
-        $this->assertStringContainsString('?s=', $signer->signImage(new PictureRef(1, 'a.jpg', null, null, false, 'a'), 96, 72, 'jpg'));
-        $this->assertNull($signer->signAvatar('pp_1_67cd55be84931.jpg', 88, 'jpg'));
-    }
-
     public function testAvatarWithoutAUserIdStaysLegacy(): void
     {
-        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', 'v2', 'v2');
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
 
         $this->assertNull($signer->signAvatar('pp__67cd55be84931.jpg', 88, 'jpg'));
     }

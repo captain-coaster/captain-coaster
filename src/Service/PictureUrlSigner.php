@@ -14,8 +14,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * any width/height/format combination this app asks for is honored, and nothing else
  * can mint a URL for a size/format the app never actually uses.
  *
- * Two layouts, chosen per image/user by PICTURES_URL_SCHEME / PICTURES_AVATAR_SCHEME
- * (`legacy`, `canary:P` for id % 100 < P, or `v2`):
+ * Two layouts, photos and avatars switched together by PICTURES_V2 (false = legacy):
  *   legacy  /{W}x{H}/{format}/{filename}?s={32 hex}    handler.mjs (isValidSignature())
  *   v2      /i/{id}/{v}/{sig}/{W}x{H}/{seo}.{ext}      v2.mjs
  *           /a/{ref}/{v}/{sig}/{S}x{S}/avatar.{ext}    v2.mjs
@@ -32,10 +31,8 @@ class PictureUrlSigner
         private readonly string $picturesCdn,
         #[Autowire('%env(string:PICTURES_SIGNING_SECRET)%')]
         private readonly string $signingSecret,
-        #[Autowire('%env(string:PICTURES_URL_SCHEME)%')]
-        private readonly string $photoScheme = 'legacy',
-        #[Autowire('%env(string:PICTURES_AVATAR_SCHEME)%')]
-        private readonly string $avatarScheme = 'legacy',
+        #[Autowire('%env(bool:PICTURES_V2)%')]
+        private readonly bool $v2 = false,
     ) {
     }
 
@@ -53,7 +50,7 @@ class PictureUrlSigner
     }
 
     /**
-     * A photo URL in whichever layout the scheme picks for this image.
+     * A photo URL in the layout PICTURES_V2 selects.
      *
      * @param 'jpg'|'avif' $format
      */
@@ -61,7 +58,7 @@ class PictureUrlSigner
     {
         $picture = $image instanceof Image ? PictureRef::fromImage($image) : $image;
 
-        if (!self::isV2($this->photoScheme, $picture->id)) {
+        if (!$this->v2) {
             return $this->sign($picture->filename, $width, $height, $format);
         }
 
@@ -77,15 +74,15 @@ class PictureUrlSigner
     }
 
     /**
-     * A v2 avatar URL, or null when the legacy `/profile-pictures/{file}` path applies (scheme,
-     * or a filename that isn't `pp_{userId}_{uniqid}.{ext}`).
+     * A v2 avatar URL, or null when the legacy `/profile-pictures/{file}` path applies (PICTURES_V2
+     * off, or a filename that isn't `pp_{userId}_{uniqid}.{ext}`).
      *
      * @param 'jpg'|'avif' $format
      */
     public function signAvatar(string $profilePicture, int $size, string $format): ?string
     {
         $ref = self::avatarRef($profilePicture);
-        if (null === $ref || !self::isV2($this->avatarScheme, (int) strstr($ref, '_', true))) {
+        if (!$this->v2 || null === $ref) {
             return null;
         }
 
@@ -121,15 +118,5 @@ class PictureUrlSigner
     private static function sha6(string $input): string
     {
         return substr(hash('sha256', $input), 0, 6);
-    }
-
-    /** `v2` -> true, `canary:P` -> key % 100 < P (so each palier contains the previous one), anything else -> legacy. */
-    private static function isV2(string $scheme, int $key): bool
-    {
-        if ('v2' === $scheme) {
-            return true;
-        }
-
-        return 1 === preg_match('/^canary:([0-9]{1,3})$/', $scheme, $m) && $key % 100 < (int) $m[1];
     }
 }
