@@ -68,26 +68,27 @@ class ImageManager
         return $filename;
     }
 
-    /** Check if image already exists based on file hash. */
+    /**
+     * An image with the exact same bytes, or null. Images stored before the SHA-256 switch still
+     * hold an unpadded CRC32 hash: matched too until they are backfilled.
+     */
     public function isDuplicate(UploadedFile $file): ?Image
     {
         $content = file_get_contents($file->getPathname());
         if (false === $content) {
             return null;
         }
-        $hash = dechex(crc32($content));
 
-        return $this->imageRepository->findOneBy(['hash' => $hash]);
+        return $this->imageRepository->findOneBy(['hash' => [hash('sha256', $content), dechex(crc32($content))]]);
     }
 
-    /** Calculate and set hash for image. */
+    /** SHA-256 of the uploaded bytes, the key isDuplicate() looks up. */
     public function setImageHash(Image $image): void
     {
         if ($image->getFile()) {
             $content = file_get_contents($image->getFile()->getPathname());
             if (false !== $content) {
-                $hash = dechex(crc32($content));
-                $image->setHash($hash);
+                $image->setHash(hash('sha256', $content));
             }
         }
     }

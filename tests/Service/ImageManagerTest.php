@@ -162,7 +162,37 @@ class ImageManagerTest extends TestCase
         $this->makeStoringImageManager($em, $originals, $bus)->store($image);
 
         $this->assertSame('48500.jpg', $image->getFilename());
-        $this->assertNotNull($image->getHash());
+        $this->assertSame(hash('sha256', 'jpeg-bytes'), $image->getHash());
+    }
+
+    // Images hashed before the SHA-256 switch hold dechex(crc32()): still matched until backfilled.
+    public function testIsDuplicateLooksUpTheSha256AndTheLegacyCrc32(): void
+    {
+        $path = tempnam(sys_get_temp_dir(), 'img');
+        file_put_contents($path, 'jpeg-bytes');
+        $file = $this->createMock(UploadedFile::class);
+        $file->method('getPathname')->willReturn($path);
+
+        $existing = new Image();
+        $repository = $this->createMock(ImageRepository::class);
+        $repository->expects($this->once())
+            ->method('findOneBy')
+            ->with(['hash' => [hash('sha256', 'jpeg-bytes'), dechex(crc32('jpeg-bytes'))]])
+            ->willReturn($existing);
+
+        $manager = new ImageManager(
+            $this->createMock(EntityManagerInterface::class),
+            $this->createMock(LoggerInterface::class),
+            $this->createMock(FilesystemOperator::class),
+            new S3Client(['region' => 'eu-west-3', 'version' => '2006-03-01', 'credentials' => false, 'handler' => new MockHandler()]),
+            $repository,
+            'captain-pictures-resized',
+            'captain-pictures-original',
+            $this->createMock(FilesystemOperator::class),
+            $this->createMock(MessageBusInterface::class),
+        );
+
+        $this->assertSame($existing, $manager->isDuplicate($file));
     }
 
     // Inside wrapInTransaction(): the exception rolls the row back, and nothing is dispatched

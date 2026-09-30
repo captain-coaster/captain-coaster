@@ -54,7 +54,7 @@ class ImageReportListenerTest extends TestCase
 
         $eventArgs = new PostPersistEventArgs($imageReport, $this->createMock(EntityManagerInterface::class));
 
-        $this->pictureUrlSigner->expects($this->never())->method('sign');
+        $this->pictureUrlSigner->expects($this->never())->method('signImage');
         $this->chatter->expects($this->once())->method('send');
 
         $this->listener->postPersist($imageReport, $eventArgs);

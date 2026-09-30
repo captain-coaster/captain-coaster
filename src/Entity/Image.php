@@ -72,7 +72,7 @@ class Image
     #[Gedmo\Timestampable(on: 'change', field: ['filename', 'enabled', 'watermarked', 'credit', 'hash'])]
     private \DateTime $updatedAt;
 
-    #[ORM\Column(type: Types::STRING, length: 8, nullable: true)]
+    #[ORM\Column(type: Types::STRING, length: 64, nullable: true)]
     private ?string $hash = null;
 
     // Normalized (0-1) coordinates of the photo's actual subject, from GenAI moderation

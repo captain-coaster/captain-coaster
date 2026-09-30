@@ -17,9 +17,15 @@ class PictureUrlSignerTest extends TestCase
         $this->signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret');
     }
 
+    /** @param 'jpg'|'avif' $format */
+    private function legacy(PictureUrlSigner $signer, string $filename, int $width, int $height, string $format): string
+    {
+        return $signer->signImage(new PictureRef(1, $filename, null, null, false, 'photo'), $width, $height, $format);
+    }
+
     public function testUrlShapeMatchesTheImageResizerLambdaContract(): void
     {
-        $url = $this->signer->sign('coaster.jpg', 960, 600, 'avif');
+        $url = $this->legacy($this->signer, 'coaster.jpg', 960, 600, 'avif');
 
         $expectedSignature = substr(hash_hmac('sha256', '960x600/avif/coaster.jpg', 'test-secret'), 0, 32);
 
@@ -31,7 +37,7 @@ class PictureUrlSignerTest extends TestCase
 
     public function testSignatureIsTruncatedToThirtyTwoHexCharacters(): void
     {
-        $url = $this->signer->sign('coaster.jpg', 960, 600, 'jpg');
+        $url = $this->legacy($this->signer, 'coaster.jpg', 960, 600, 'jpg');
         $signature = substr($url, strpos($url, '?s=') + 3);
 
         $this->assertSame(32, \strlen($signature));
@@ -40,8 +46,8 @@ class PictureUrlSignerTest extends TestCase
 
     public function testDifferentFormatsProduceDifferentSignatures(): void
     {
-        $jpg = $this->signer->sign('coaster.jpg', 960, 600, 'jpg');
-        $avif = $this->signer->sign('coaster.jpg', 960, 600, 'avif');
+        $jpg = $this->legacy($this->signer, 'coaster.jpg', 960, 600, 'jpg');
+        $avif = $this->legacy($this->signer, 'coaster.jpg', 960, 600, 'avif');
 
         $this->assertNotSame($jpg, $avif);
     }
@@ -51,8 +57,8 @@ class PictureUrlSignerTest extends TestCase
         $otherSigner = new PictureUrlSigner('https://pictures.example.com', 'a-different-secret');
 
         $this->assertNotSame(
-            $this->signer->sign('coaster.jpg', 960, 600, 'jpg'),
-            $otherSigner->sign('coaster.jpg', 960, 600, 'jpg')
+            $this->legacy($this->signer, 'coaster.jpg', 960, 600, 'jpg'),
+            $this->legacy($otherSigner, 'coaster.jpg', 960, 600, 'jpg')
         );
     }
 
@@ -94,7 +100,10 @@ class PictureUrlSignerTest extends TestCase
     {
         $picture = new PictureRef(48213, 'voltron.jpg', 0.4213, 0.5871, true, 'voltron-europa-park');
 
-        $this->assertSame($this->signer->sign('voltron.jpg', 480, 300, 'avif'), $this->signer->signImage($picture, 480, 300, 'avif'));
+        $this->assertSame(
+            'https://pictures.example.com/480x300/avif/voltron.jpg?s='.substr(hash_hmac('sha256', '480x300/avif/voltron.jpg', 'test-secret'), 0, 32),
+            $this->signer->signImage($picture, 480, 300, 'avif')
+        );
         $this->assertNull($this->signer->signAvatar('pp_9_67cd55be84931.png', 88, 'avif'));
     }
 

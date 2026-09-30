@@ -41,7 +41,7 @@ class PictureUrlSigner
      *
      * @param 'jpg'|'avif' $format
      */
-    public function sign(string $filename, int $width, int $height, string $format): string
+    private function sign(string $filename, int $width, int $height, string $format): string
     {
         $canonical = \sprintf('%dx%d/%s/%s', $width, $height, $format, $filename);
         $signature = substr(hash_hmac('sha256', $canonical, $this->signingSecret), 0, 32);
