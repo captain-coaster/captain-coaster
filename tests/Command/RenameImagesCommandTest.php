@@ -271,11 +271,46 @@ class RenameImagesCommandTest extends TestCase
         self::assertSame('captain-pictures-original/voltron-europa-park-abc123.jpg', rawurldecode($copyCommand['CopySource']));
         self::assertSame('COPY', $copyCommand['MetadataDirective']);
         self::assertSame('INTELLIGENT_TIERING', $copyCommand['StorageClass']);
+        self::assertSame('SHA256', $copyCommand['ChecksumAlgorithm']);
         self::assertSame('48213.jpg', $image->getFilename());
 
         $logged = file_get_contents($this->projectDir.'/var/rename-images.log');
         self::assertStringContainsString("48213\tvoltron-europa-park-abc123.jpg\t48213.jpg\n", (string) $logged);
         self::assertStringContainsString('Renamed 1 image(s)', $this->display($tester));
+    }
+
+    public function testTheCopyChecksumBackfillsTheSha256Hash(): void
+    {
+        $image = $this->createImage(48213, 'voltron-europa-park-abc123.jpg');
+        $image->setHash('1a2b3c4d');
+        $this->imageRepository->method('findPhotosOrderedById')->willReturn([$image]);
+        $this->s3Handler->append($this->headObjectResult());
+        $this->s3Handler->append(new Result(['CopyObjectResult' => ['ChecksumSHA256' => base64_encode(hash('sha256', 'original bytes', true))]]));
+        $this->entityManager->method('createQuery')->willReturn($this->queryMock());
+
+        $tester = $this->makeCommandTester();
+        $tester->execute([]);
+
+        self::assertSame(hash('sha256', 'original bytes'), $image->getHash());
+        self::assertStringContainsString('1 hash(es) backfilled', $this->display($tester));
+    }
+
+    public function testAMissingChecksumStillRenamesAndKeepsTheOldHash(): void
+    {
+        $image = $this->createImage(48213, 'voltron-europa-park-abc123.jpg');
+        $image->setHash('1a2b3c4d');
+        $this->imageRepository->method('findPhotosOrderedById')->willReturn([$image]);
+        $this->s3Handler->append($this->headObjectResult());
+        $this->s3Handler->append(new Result([]));
+        $this->entityManager->method('createQuery')->willReturn($this->queryMock());
+
+        $tester = $this->makeCommandTester();
+        $tester->execute([]);
+
+        self::assertSame(Command::SUCCESS, $tester->getStatusCode());
+        self::assertSame('48213.jpg', $image->getFilename());
+        self::assertSame('1a2b3c4d', $image->getHash());
+        self::assertStringContainsString('hash not backfilled', $this->display($tester));
     }
 
     public function testAlreadyRenamedImageIsSkippedWithNoS3OrDbCalls(): void

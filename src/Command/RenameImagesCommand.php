@@ -9,6 +9,7 @@ use App\Entity\ImageReport;
 use App\Repository\ImageRepository;
 use App\Service\HeroService;
 use App\Service\ImageManager;
+use App\Service\PictureUrlSigner;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -28,14 +29,17 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * focal-x/focal-y/watermark metadata as-is; StorageClass INTELLIGENT_TIERING, since a default
  * COPY would land in STANDARD and a later lifecycle transition bills separately), then update
  * Image::filename and any ImageReport snapshot rows that still carry the old name, then flush.
+ * The copy also asks S3 for a SHA-256 of the object (ChecksumAlgorithm), which backfills
+ * Image::hash for duplicate detection without downloading the original (ImageManager::isDuplicate()
+ * only matches the legacy CRC32 until then).
  * The DB is only touched after a successful copy (idempotent, re-runnable: an image whose
  * filename already matches `{id}.jpg` is skipped). Every successful rename is appended to a log
  * file as `id<TAB>old<TAB>new`, which --purge-old later replays to delete the old keys (not
  * before the legacy URL scheme -- keyed by the old filename -- is retired, plan step 8).
  *
  * Before renaming an image, its S3 metadata is checked against the DB (the source of truth):
- * `ImageManager::writeFocalPointMetadata()` only logs a failed write (R11 in the plan), so the
- * two can silently drift, and a drifted image answers 409 under the v2 scheme instead of
+ * `ImageManager::writeFocalPointMetadata()` used to only log a failed write (R11 in the plan), so
+ * the two could drift, and a drifted image answers 409 under the v2 scheme instead of
  * silently falling back to the automatic crop. --dry-run reports every mismatch found without
  * writing anything; a real run skips renaming a mismatched image unless --fix-metadata is also
  * given, in which case it rewrites the S3 metadata from the DB first (existing, tested path)
@@ -173,6 +177,7 @@ class RenameImagesCommand extends Command
         $skippedAlready = 0;
         $skippedMismatch = 0;
         $failed = 0;
+        $hashed = 0;
         $lastId = null;
 
         foreach ($images as $image) {
@@ -211,12 +216,13 @@ class RenameImagesCommand extends Command
             $newFilename = $image->getId().'.jpg';
 
             try {
-                $this->s3Client->copyObject([
+                $copy = $this->s3Client->copyObject([
                     'Bucket' => $this->s3OriginalBucket,
                     'Key' => $newFilename,
                     'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$oldFilename}"),
                     'MetadataDirective' => 'COPY',
                     'StorageClass' => 'INTELLIGENT_TIERING',
+                    'ChecksumAlgorithm' => 'SHA256',
                 ]);
             } catch (\Throwable $e) {
                 ++$failed;
@@ -226,6 +232,13 @@ class RenameImagesCommand extends Command
 
             // DB only touched after a successful copy -- idempotent, re-runnable.
             $image->setFilename($newFilename);
+            $sha256 = self::hexChecksum($copy['CopyObjectResult']['ChecksumSHA256'] ?? null);
+            if (null !== $sha256) {
+                $image->setHash($sha256);
+                ++$hashed;
+            } else {
+                $io->warning(\sprintf('Image #%d: no SHA-256 checksum in the copy response, hash not backfilled', $image->getId()));
+            }
             $this->entityManager->createQuery(
                 'UPDATE '.ImageReport::class.' r SET r.imageFilename = :new WHERE r.imageFilename = :old'
             )->setParameter('new', $newFilename)->setParameter('old', $oldFilename)->execute();
@@ -243,8 +256,9 @@ class RenameImagesCommand extends Command
         }
 
         $io->success(\sprintf(
-            'Renamed %d image(s) (last id examined: %s), %d already done, %d skipped (metadata mismatch), %d failed.',
+            'Renamed %d image(s) (%d hash(es) backfilled, last id examined: %s), %d already done, %d skipped (metadata mismatch), %d failed.',
             $renamed,
+            $hashed,
             $lastId ?? 'n/a',
             $skippedAlready,
             $skippedMismatch,
@@ -252,6 +266,14 @@ class RenameImagesCommand extends Command
         ));
 
         return $failed > 0 || $skippedMismatch > 0 ? Command::FAILURE : Command::SUCCESS;
+    }
+
+    /** S3 returns the checksum base64-encoded; Image::hash holds it as hex, like hash('sha256', ...). */
+    private static function hexChecksum(mixed $base64): ?string
+    {
+        $raw = \is_string($base64) ? base64_decode($base64, true) : false;
+
+        return false !== $raw && 32 === \strlen($raw) ? bin2hex($raw) : null;
     }
 
     private function alreadyRenamed(Image $image): bool
@@ -278,14 +300,14 @@ class RenameImagesCommand extends Command
 
         $diffs = [];
 
-        $dbFocalX = self::canonicalFocal($image->getFocalX());
-        $s3FocalX = self::canonicalFocal($metadata['focal-x'] ?? null);
+        $dbFocalX = PictureUrlSigner::canonicalFocal($image->getFocalX());
+        $s3FocalX = PictureUrlSigner::canonicalFocal($metadata['focal-x'] ?? null);
         if ($dbFocalX !== $s3FocalX) {
             $diffs['focal-x'] = [$dbFocalX, $s3FocalX];
         }
 
-        $dbFocalY = self::canonicalFocal($image->getFocalY());
-        $s3FocalY = self::canonicalFocal($metadata['focal-y'] ?? null);
+        $dbFocalY = PictureUrlSigner::canonicalFocal($image->getFocalY());
+        $s3FocalY = PictureUrlSigner::canonicalFocal($metadata['focal-y'] ?? null);
         if ($dbFocalY !== $s3FocalY) {
             $diffs['focal-y'] = [$dbFocalY, $s3FocalY];
         }
@@ -297,16 +319,6 @@ class RenameImagesCommand extends Command
         }
 
         return $diffs;
-    }
-
-    /** Mirrors captain-infra's canonicalFocalComponent (handler.mjs/v2.mjs): missing/empty -> '-'. */
-    private static function canonicalFocal(float|string|null $value): string
-    {
-        if (null === $value || '' === $value) {
-            return '-';
-        }
-
-        return \is_float($value) ? (string) $value : $value;
     }
 
     private function logFilePath(): string
