@@ -26,6 +26,9 @@ class PictureUrlSigner
     /** Generator version, hashed into `v`. Bump together with the Lambda's GEN_VERSIONS when the encoder, crop or watermark changes. */
     public const int GEN = 1;
 
+    /** @var array<string, ?string> */
+    private array $avatarUrls = [];
+
     public function __construct(
         #[Autowire('%env(string:PICTURES_CDN)%')]
         private readonly string $picturesCdn,
@@ -81,14 +84,20 @@ class PictureUrlSigner
      */
     public function signAvatar(string $profilePicture, int $size, string $format): ?string
     {
+        // Avatar-heavy pages repeat the same users and sizes; the URL is a pure function of these three.
+        $key = $profilePicture.'|'.$size.'|'.$format;
+        if (\array_key_exists($key, $this->avatarUrls)) {
+            return $this->avatarUrls[$key];
+        }
+
         $ref = self::avatarRef($profilePicture);
         if (!$this->v2 || null === $ref) {
-            return null;
+            return $this->avatarUrls[$key] = null;
         }
 
         $v = self::sha6(self::GEN.'|'.$ref);
 
-        return $this->signV2(\sprintf('a/%s/%s', $ref, $v), \sprintf('%dx%d/avatar.%s', $size, $size, $format));
+        return $this->avatarUrls[$key] = $this->signV2(\sprintf('a/%s/%s', $ref, $v), \sprintf('%dx%d/avatar.%s', $size, $size, $format));
     }
 
     /** `pp_{userId}_{uniqid}.{ext}` -> `{userId}_{uniqid}`, the v2 avatar identity (null for anything else). */

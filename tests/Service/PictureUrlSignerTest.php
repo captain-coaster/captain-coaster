@@ -96,6 +96,16 @@ class PictureUrlSignerTest extends TestCase
         );
     }
 
+    public function testAvatarUrlIsStableAcrossRepeatedCalls(): void
+    {
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
+
+        $first = $signer->signAvatar('pp_9_67cd55be84931.png', 88, 'avif');
+
+        $this->assertSame($first, $signer->signAvatar('pp_9_67cd55be84931.png', 88, 'avif'));
+        $this->assertNotSame($first, $signer->signAvatar('pp_9_67cd55be84931.png', 88, 'jpg'));
+    }
+
     public function testV2OffKeepsTheLegacyLayout(): void
     {
         $picture = new PictureRef(48213, 'voltron.jpg', 0.4213, 0.5871, true, 'voltron-europa-park');
