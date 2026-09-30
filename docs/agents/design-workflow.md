@@ -6,7 +6,7 @@ The whole site is getting a new look, so each step replaces the old styling inst
 
 ## Authority order
 
-1. `DESIGN.md` (target tokens + rules) and `.impeccable/captain-coaster-tokens.css` / `tailwind-theme.css` (canonical values). `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b].
+1. `DESIGN.md` (rules, including the livery and the clean ↔ fun budget), `assets/styles/tokens.css` (canonical values) and the reference board `docs/design/livery.html`. `design.json` is Impeccable's sidecar (component snippets, motion, shadows) [I:document §4b].
 2. `PRODUCT.md`: local only and gitignored (`.gitignore:49`). Impeccable reads it on its own [I:SKILL Setup]. **Never quote it** in commits, PRs, issues, surface briefs, or anything under `.impeccable/` that gets committed. The repo is public.
 3. The current `--cc-*` tokens and `.cc-*` CSS are the thing being replaced. Treat them as evidence of what exists, never as the target.
 
@@ -43,20 +43,20 @@ Impeccable already covers side-by-side direction comparison and mock approval, s
 
 ## Step 2: Reskin (tokens + fonts, whole site)
 
-**Impeccable:** this step is mostly mechanical, and no Impeccable command does token aliasing. Before starting, run `audit` on the Home and coaster templates. It produces a scored report and doesn't edit anything [I:audit]. After the swap, run `impeccable detect --json` on the changed CSS/templates [I:routing]. Contrast pairings are already measured in `contrast-report.json`. Only pairs the mapping creates that aren't in that report need checking.
+**Impeccable:** this step is mostly mechanical, and no Impeccable command does token aliasing. Before starting, run `audit` on the Home and coaster templates. It produces a scored report and doesn't edit anything [I:audit]. After the swap, run `impeccable detect --json` on the changed CSS/templates [I:routing]. Contrast pairings are measured in DESIGN.md (Colors) and in `tokens.css` comments; only new pairs need checking.
 
 **Recipe:**
-1. Move the target tokens into `assets/styles/tokens.css`, which is the one token source (AGENTS.md). Put semantic colors in `@theme inline` so utilities exist (`bg-surface`, `text-ink`, `rounded-card`) [TW:theme]. Add the type scale to `@theme` as `--text-display` / `--text-title` / `--text-lead` / `--text-caption`, each with a `--text-*--line-height`, so `text-display` is a real utility (`tailwind-theme.css` doesn't expose these yet).
+1. Move the target tokens into `assets/styles/tokens.css`, which is the one token source (AGENTS.md). Put semantic colors in `@theme inline` so utilities exist (`bg-surface`, `text-ink`, `rounded-card`) [TW:theme]. Add the type scale to `@theme` as `--text-display` / `--text-title` / `--text-lead` / `--text-caption`, each with a `--text-*--line-height`, so `text-display` is a real utility (the original proposal didn't expose these).
 2. Alias every `--cc-*` color to a target semantic token. The PR needs a mapping table with columns: old token → new token → rationale.
 3. Delete the `fonts.googleapis.com` Roboto link at `templates/base.html.twig:19`. Swap `font-family` in `base.css`.
 4. Screenshots: before and after, at 390px and desktop, in en/fr/es/de. Cover Home, the coaster page, the ranking, a form, and the menu open.
 
 **Collisions to fix in this PR:**
 - **Class names.** The new token utilities collide with legacy hand-written classes: `text-muted` (`typography.css:175`), and `bg-success`/`bg-warning`/`bg-danger`/`border-danger*` (`colors.css:86-178`), used across about 31 templates. `app.css:41` declares the `utilities` layer last, so the Tailwind utility wins and the legacy rule is silently replaced. That's the same trap `tokens.css`'s header describes. Retire the legacy classes (decided): delete the legacy rules and let the target utility take over. Where a legacy class also set something else (e.g. white text on a colored background), fix the template. Add the retired names to `check-css-contract.mjs`.
-- **Tailwind defaults.** `captain-coaster-tokens.css` sets `--radius-sm`, `--ease-out` and `--font-mono` in plain `:root`. Those names are also Tailwind default theme variables, and an unlayered `:root` beats `@layer theme`, so `rounded-sm`, `ease-out` and `font-mono` would change everywhere. Declare them in `@theme` on purpose, or rename them.
+- **Tailwind defaults.** The original token proposal set `--radius-sm`, `--ease-out` and `--font-mono` in plain `:root`. Those names are also Tailwind default theme variables, and an unlayered `:root` beats `@layer theme`, so `rounded-sm`, `ease-out` and `font-mono` would change everywhere. Declare them in `@theme` on purpose, or rename them.
 
 **2026 baseline:**
-- **Fonts: WOFF2 only, subset, self-hosted** [web.dev:fonts]. `assets/fonts/` holds only TTF, and `.impeccable/captain-coaster-tokens.css` points at `.ttf`. Convert and subset them with fontTools `pyftsubset` [fonttools]. en/fr/es/de are all Latin script, so one "latin" subset covers them. Use the same `unicode-range` Google Fonts serves for Source Sans 3: `U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD` [GF:css2, MDN:unicode-range]. Keep Source Sans 3 as one variable file (weights 200–900); variable fonts suit multi-weight use [web.dev:fonts].
+- **Fonts: WOFF2 only, subset, self-hosted** [web.dev:fonts]. The original proposal pointed at `.ttf` files. Convert and subset them with fontTools `pyftsubset` [fonttools]. en/fr/es/de are all Latin script, so one "latin" subset covers them. Use the same `unicode-range` Google Fonts serves for Source Sans 3: `U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD` [GF:css2, MDN:unicode-range]. Keep Source Sans 3 as one variable file (weights 200–900); variable fonts suit multi-weight use [web.dev:fonts].
 - `font-display: swap`, as DESIGN.md specifies (Baseline widely available [WS:font-display]).
 - **Fallback metric overrides.** Add `size-adjust` / `ascent-override` / `descent-override` on a local fallback `@font-face` to cut layout shift on swap [web.dev:fonts, MDN:size-adjust]. Baseline: *limited* (no Safari) [WS:font-metric-overrides]. Harmless where unsupported, so ship it as progressive enhancement.
 - **Preload only the body face's latin subset**, with `crossorigin` [web.dev:fonts] (preload is widely available [WS:preload]). Vite rewrites and hashes CSS `url()` fonts, and inlines files under `assetsInlineLimit` [Vite:assets]. Done in #413: the woff2 files live in `assets/fonts/` and go through Vite (content-hashed). Reprise lists them in `public/build/manifest.json`, which is Symfony's `json_manifest_path`, so `asset('build/assets/fonts/<file>.woff2')` returns the hashed URL for the preload. The preload is production-only: the Vite dev server's manifest doesn't list fonts. Don't put CSS-referenced files in `public/`: reprise disables `copyPublicDir`, so Vite rewrites their URLs to `/build/…` without copying them, and they 404 in production.
@@ -142,11 +142,12 @@ DESIGN.md explicitly does **not** define app navigation ("Don't infer … app na
 ## Step 6: Remaining pages (design + build in one PR)
 
 Per page:
+0. Place the page on the clean ↔ fun budget (DESIGN.md, Overview): it says which livery motifs the page may use.
 1. `impeccable context --target <template>`.
 2. Optionally run `critique <template>`. It needs two isolated subagents and saves a snapshot to `.impeccable/critique/`, which `polish` picks up afterwards [I:critique, I:polish].
 3. Rebuild the page from existing components. Only run `concept-seed --scope surface` when the page's composition is genuinely open; a local extension skips it [I:new-work §3].
 4. Run `harden` for German length, empty states and errors [I:harden], then `polish` [I:polish], then `audit`.
-5. Run `detect`, then a 390/1440 × 4-locale screenshot round.
+5. Run `detect`, then a 390/1440 × 4-locale screenshot round, plus one pass with Chrome DevTools' "Emulate vision deficiencies" (deuteranopia, protanopia, achromatopsia): no state may be told apart by color alone (DESIGN.md, Accessibility).
 
 New patterns → `extract` → documenter.
 
@@ -163,7 +164,7 @@ New patterns → `extract` → documenter.
 
 ## Pitfalls
 
-- **DESIGN.md overwrite.** `document` must not silently overwrite an existing DESIGN.md. It stops and asks: refresh, overwrite or merge [I:document]. **Always pick merge.** Regenerating DESIGN.md also regenerates `design.json` [I:document §4b]. The documenter subagent treats an existing DESIGN.md as "update, not replace" [agents:documenter]. After any write, `git diff DESIGN.md .impeccable/` and restore the `> **Status: target, not yet shipped.**` blockquote if it was dropped (it isn't a canonical section [I:document]). Only the ticket that finishes the migration updates that line. Impeccable never writes `captain-coaster-tokens.css` or `tailwind-theme.css`; once folded into `tokens.css` those are frozen references.
+- **DESIGN.md overwrite.** `document` must not silently overwrite an existing DESIGN.md. It stops and asks: refresh, overwrite or merge [I:document]. **Always pick merge.** Regenerating DESIGN.md also regenerates `design.json` [I:document §4b]. The documenter subagent treats an existing DESIGN.md as "update, not replace" [agents:documenter]. After any write, `git diff DESIGN.md .impeccable/` and restore the `> **Status: target, not yet shipped.**` blockquote if it was dropped (it isn't a canonical section [I:document]). Only the ticket that finishes the migration updates that line.
 - **Redesign routing.** Impeccable's redesign path picks a replacement world and replaces DESIGN.md [I:SKILL "Redesign replaces"]. Always frame work as "whole surface / extension inside the established DESIGN.md world" so it stays at `--scope surface`.
 - **Leaking PRODUCT.md.** Impeccable loads PRODUCT.md into context and asset-producer agents receive it [agents:asset-producer]. Keep direction contracts, surface briefs, comp prompts and PR text free of its strategy before committing.
 - **Detector blind to Twig** until `detector.extensions` is set [I:hooks]. Also, `detect` flags design-system drift, so legacy `.cc-*` templates will be noisy. Scope `detect` to the files changed in the PR.

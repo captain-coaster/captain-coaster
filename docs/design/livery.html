@@ -1,0 +1,1074 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Livery reference board (#469): illustrative mockups and data, not shipped UI. The rules live in DESIGN.md. -->
+<title>Livrée Captain Coaster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: a design-language board. Livery hero, then idea, audience, motifs, principles, clean/fun dial,
+   foundations (color, type, shape, motion, voice), the three migrated components, example pages (mobile + desktop),
+   how the system grows. Single light look on purpose: the site has no dark mode and the board shows it as it ships. */
+:root {
+  color-scheme: light;
+  /* Direction tokens: change here, every mockup follows */
+  --navy: #1a2c57;          /* new role "brand": band, tab bar, desktop header */
+  --navy-2: #243a6e;        /* raised surface on navy */
+  --navy-soft: #c5d2ea;     /* secondary text on navy */
+  --sun: #ffcd61;           /* logo sunshine: surfaces, never text on white */
+  --sun-edge: #8a6414;
+  --ink: #1f2d3a;
+  --action: #2456b0;
+  --action-hover: #1b4592;
+  --muted: #5b6b7c;
+  --line: #dde3ec;
+  --canvas: #f3f6fa;
+  --surface: #ffffff;
+  --success: #2e6b55;
+  --danger: #b3432f;
+  --scale-low: #a3372b;
+  --scale-high: #2f8a4c;
+  --on-sun: #1f2d3a;        /* ink on sunshine: stays dark in both themes */
+  --numeral: #1a2c57;       /* rank numerals on the page */
+  --line-strong: #b9c4d2;
+  --skew: -10deg;           /* the livery angle: pills, underline, meter */
+
+  --font-display: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --livery-thin: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath fill='%23ffcd61' d='M0 9 100 1v4L0 13z'/%3E%3C/svg%3E");
+  --band-home: 136px;
+  --band-page: 120px;
+  --band-profile: 148px;
+  /* Livery stripes drawn as SVG polygons: rotated hard-stop gradients alias into steps */
+  --livery: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 24' preserveAspectRatio='none'%3E%3Cpath fill='%23ffcd61' d='M0 13 100 1v5L0 18zM0 21l100-12v3L0 24z'/%3E%3C/svg%3E");
+  --bar-compact: 56px;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--canvas); color: var(--ink); font: 400 1rem/1.55 var(--font-body); }
+:focus-visible { outline: 3px solid var(--action); outline-offset: 3px; }
+svg { display: block; }
+.num { font-variant-numeric: tabular-nums; }
+.wrap { max-width: 76rem; margin-inline: auto; padding-inline: 16px; display: grid; gap: 56px; padding-block: 48px 96px; }
+
+/* ================= Board chrome ================= */
+.hero { position: relative; background: var(--navy); color: #fff; overflow: hidden; padding: 40px 16px 64px; }
+.hero__in { position: relative; max-width: 76rem; margin-inline: auto; display: grid; gap: 16px; }
+.hero__stars { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--sun); opacity: .14; }
+.hero__logo { height: 30px; width: auto; color: #fff; }
+.hero h1 { font: 800 italic clamp(3rem, 2rem + 5vw, 6rem)/.9 var(--font-display); margin: 8px 0 0; }
+.hero p { margin: 0; max-width: 42rem; font-size: 1.15rem; color: var(--navy-soft); }
+.hero__meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.hero__stripes { position: absolute; left: 0; right: 0; bottom: 14px; height: 40px; background: var(--livery) 0 0 / 100% 100% no-repeat; }
+.tag { font: 700 .85rem/1 var(--font-body); padding: 6px 10px; border-radius: 999px; background: rgb(255 255 255 / .12); color: #fff; }
+.tag--sun { background: var(--sun); color: var(--ink); }
+
+.bsec { display: grid; gap: 24px; }
+.bsec > h2 { font: 800 italic clamp(2rem, 1.6rem + 1.5vw, 2.6rem)/1 var(--font-display); margin: 0; }
+.bsec + .bsec { border-top: 1px solid var(--line); padding-top: 56px; }
+.bsec > p, .lede { margin: 0; max-width: 46rem; font-size: 1.08rem; }
+.muted { color: var(--muted); }
+.grid2 { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); }
+.grid3 { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.panel h3 { font: 800 italic 1.6rem/1 var(--font-display); margin: 0; }
+.panel h4 { font: 700 1.02rem/1.3 var(--font-body); margin: 0; }
+.panel p { margin: 0; }
+.panel ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.panel--navy { background: var(--navy); color: #fff; border-color: var(--navy); }
+.panel--navy .muted { color: var(--navy-soft); }
+.panel--sun { background: var(--sun); border: 2px solid var(--ink); }
+
+/* Idea: guide + park */
+.idea { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); border-radius: 14px; overflow: hidden; border: 2px solid var(--ink); }
+.idea > div { padding: 24px; display: grid; gap: 10px; align-content: start; }
+.idea > div:first-child { background: var(--surface); }
+.idea > div:last-child { background: var(--navy); color: #fff; position: relative; overflow: hidden; }
+.idea h3 { font: 800 italic 2.2rem/1 var(--font-display); margin: 0; }
+.idea ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.idea__plus { font: 800 italic 1.1rem/1 var(--font-display); color: var(--muted); }
+.idea > div:last-child .idea__plus { color: var(--sun); }
+
+/* Audience table */
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+table { border-collapse: collapse; width: 100%; min-width: 40rem; font-size: .96rem; }
+th, td { text-align: left; padding: 12px 16px; vertical-align: top; }
+thead th { font: 800 italic 1.15rem/1 var(--font-display); background: var(--navy); color: #fff; }
+tbody tr + tr td { border-top: 1px solid var(--line); }
+td:first-child { font-weight: 700; white-space: nowrap; }
+
+/* Motifs */
+.motifs { grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.motif { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: grid; grid-template-rows: 120px auto; }
+.motif__vis { position: relative; overflow: hidden; display: grid; place-items: center; }
+.motif__txt { padding: 14px 16px 16px; display: grid; gap: 4px; }
+.motif__from { font-size: .85rem; font-weight: 700; color: var(--muted); }
+.motif__txt h4 { font: 800 italic 1.35rem/1 var(--font-display); margin: 0; }
+.motif__txt p { margin: 0; font-size: .95rem; }
+
+/* Principles */
+.principles { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.principle { padding: 18px 20px; }
+.principle + .principle { border-top: 1px solid var(--line); }
+.principle h3 { font: 800 italic 1.5rem/1.05 var(--font-display); margin: 0 0 4px; }
+.principle p { margin: 0; max-width: 52rem; }
+
+/* Dial */
+.dial { display: grid; gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.dial__row { display: grid; grid-template-columns: minmax(8rem, 12rem) 120px 1fr; gap: 16px; padding: 14px 20px; align-items: center; }
+.dial__row + .dial__row { border-top: 1px solid var(--line); }
+.dial__row b { font: 800 italic 1.3rem/1 var(--font-display); }
+.dots { display: flex; gap: 6px; }
+.dots i { width: 26px; height: 12px; border: 2px solid var(--ink); transform: skewX(var(--skew)); background: var(--surface); }
+.dots i.on { background: var(--sun); }
+@media (width < 40rem) { .dial__row { grid-template-columns: 1fr auto; } .dial__row p { grid-column: 1 / -1; } }
+
+/* Palette */
+.proportion { display: flex; height: 64px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.proportion span { display: grid; place-items: end start; padding: 6px 8px; font-size: .8rem; font-weight: 700; min-width: 0; overflow: hidden; white-space: nowrap; }
+.swatches { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr)); }
+.sw { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.sw i { display: block; height: 56px; border-bottom: 1px solid var(--line); }
+.sw div { padding: 10px 12px; font-size: .9rem; display: grid; gap: 2px; }
+.sw b { font-size: 1rem; }
+.sw code { font-size: .8rem; color: var(--muted); }
+
+/* Type */
+.typebox { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.trow { display: grid; grid-template-columns: 10rem 1fr; gap: 16px; padding: 14px 20px; align-items: baseline; }
+.trow + .trow { border-top: 1px solid var(--line); }
+.trow > span { font-size: .85rem; color: var(--muted); }
+.trow > span b { display: block; color: var(--ink); font-size: .95rem; }
+@media (width < 40rem) { .trow { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Voice */
+.voice { display: grid; gap: 12px; }
+.vpair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); gap: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.vpair > div { padding: 14px 18px; display: grid; gap: 4px; }
+.vpair > div + div { border-left: 1px solid var(--line); }
+.vpair small { font-weight: 700; font-size: .82rem; }
+.vpair .yes small { color: var(--success); }
+.vpair .no small { color: var(--danger); }
+.vpair .no { background: #fbf6f5; }
+.vpair q { font-size: 1.02rem; quotes: "“" "”"; }
+.vctx { grid-column: 1 / -1; padding: 8px 18px !important; background: var(--canvas); font-size: .85rem; font-weight: 700; color: var(--muted); border-bottom: 1px solid var(--line); }
+.vpair > .vctx + div { border-left: 0; }
+
+/* Frames: mockups drawn at native size, scaled to fit */
+.frames { display: grid; gap: 28px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); align-items: start; }
+.frames figure, .dframes figure { margin: 0; display: grid; gap: 10px; min-width: 0; }
+figcaption { font-weight: 700; text-align: center; }
+figcaption span { display: block; font-weight: 400; color: var(--muted); font-size: .9rem; }
+.frame { position: relative; overflow: hidden; aspect-ratio: var(--w) / var(--h); background: var(--surface); }
+.frame__in { position: absolute; top: 0; left: 0; width: calc(var(--w) * 1px); height: calc(var(--h) * 1px); transform-origin: 0 0; transform: scale(var(--s, 1)); overflow: hidden; }
+.frame--phone { border: 7px solid #0d141c; border-radius: 34px; box-shadow: 0 20px 40px rgb(10 20 35 / .16); }
+.frame--desk { border: 1px solid #c3ccd8; border-radius: 12px; box-shadow: 0 24px 48px rgb(10 20 35 / .14); }
+.frame--desk::before { content: ""; position: absolute; z-index: 2; top: 0; left: 0; right: 0; height: 26px; background: #e7ebf1; border-bottom: 1px solid #cfd6e0; }
+.frame--desk .frame__in { top: 26px; }
+.dframes { display: grid; gap: 36px; }
+.screen { position: absolute; inset: 0; overflow: hidden; background: var(--surface); }
+
+/* Photo placeholder (the real site shows member photos) */
+.photo { position: relative; overflow: hidden; aspect-ratio: 16 / 9; }
+.photo svg.coaster { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 72%; }
+.sky1 { background: linear-gradient(170deg, #8fc0ef, #d9ecfb 70%); color: #6b3d22; }
+.sky2 { background: linear-gradient(170deg, #f6b98a, #ffe3b8 70%); color: #3a2a2a; }
+.sky3 { background: linear-gradient(170deg, #7fa6e4, #cfe0f8 70%); color: #2b3d5e; }
+.sky4 { background: linear-gradient(170deg, #9dd3c2, #e4f5ec 70%); color: #2f3f35; }
+
+/* ================= Components (mockup scale, px on purpose: they live inside scaled frames) ================= */
+.band { position: relative; background: var(--navy); color: #fff; overflow: hidden; padding: 20px 16px 0; display: flex; flex-direction: column; }
+.band--home { height: var(--band-home); }
+.band--page { height: var(--band-page); }
+.band--profile { height: var(--band-profile); }
+.band__stars { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--sun); opacity: .15; pointer-events: none; }
+.band__stripes { position: absolute; left: 0; right: 0; bottom: 6px; height: 22px; background: var(--livery) 0 0 / 100% 100% no-repeat; }
+.band__row { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.band__logo { height: 24px; width: auto; color: #fff; }
+.band__tagline { position: relative; font: 800 italic 24px/1 var(--font-display); margin: 16px 0 0; }
+.band__title { position: relative; font: 800 italic 30px/1 var(--font-display); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.band__ctx { position: relative; margin: 8px 0 0; display: flex; gap: 8px; align-items: center; font-weight: 600; font-size: 15px; color: var(--navy-soft); }
+.cbar { height: var(--bar-compact); background: var(--navy); color: #fff; display: flex; align-items: center; gap: 10px; padding: 0 8px; position: relative; }
+.cbar { box-shadow: inset 0 -1px 0 rgb(255 255 255 / .14); }
+.cbar__title { font: 800 italic 22px/1 var(--font-display); flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rbtn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none; background: rgb(255 255 255 / .14); color: #fff; }
+.rbtn--photo { background: rgb(15 25 45 / .45); backdrop-filter: blur(8px); }
+.ico { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.ribbon { position: absolute; top: 14px; left: 0; background: var(--sun); color: var(--on-sun); font: 800 italic 15px/1 var(--font-display);
+  padding: 6px 12px 5px 14px; border: 2px solid var(--on-sun); border-left: 0; border-radius: 0 6px 6px 0; transform: rotate(-2deg); transform-origin: left; }
+.pill-new { background: var(--sun); color: var(--on-sun); font: 800 italic 13px/1 var(--font-display); padding: 4px 8px 3px; transform: skewX(var(--skew)); display: inline-block; }
+.cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 36px 16px 12px; background: linear-gradient(transparent, rgb(12 20 40 / .86)); color: #fff; }
+.cap h2, .cap h1 { font: 800 italic 26px/1 var(--font-display); margin: 0; }
+.cap p { margin: 3px 0 0; font-size: 13px; opacity: .92; }
+.statband { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--sun); border-block: 2.5px solid var(--on-sun); color: var(--on-sun); }
+.statband > div { padding: 8px 6px 7px; text-align: center; }
+.statband > div + div { border-left: 2px solid var(--on-sun); }
+.statband b { display: flex; justify-content: center; align-items: center; gap: 3px; font: 800 italic 23px/1 var(--font-display); }
+.statband b svg { width: 16px; height: 16px; }
+.statband span { font-size: 11.5px; font-weight: 600; }
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 18px 16px 6px; }
+.sec-h h3 { font: 800 italic 22px/1 var(--font-display); margin: 0; }
+.sec-h a { font-size: 14px; font-weight: 600; color: var(--action); text-decoration: none; }
+/* Track divider: a coaster's side profile (lift hill, drop, supports), then flat rail. */
+.track { display: block; width: 100%; height: 30px; color: var(--ink); }
+.track--brand { color: var(--numeral); }
+/* Top-view track: rails and ties. */
+.rails { height: 12px; border-block: 2px solid var(--ink); background: repeating-linear-gradient(90deg, var(--ink) 0 3px, transparent 3px 12px); }
+/* Ticket tear line. */
+.tear { height: 14px; background: radial-gradient(circle at 7px 7px, var(--canvas) 5px, transparent 5.5px) 0 0 / 14px 14px repeat-x; border-block: 0; position: relative; }
+.tear::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; border-top: 2px dashed var(--line-strong); }
+.chain { height: 10px; background: repeating-linear-gradient(90deg, var(--sun) 0 12px, var(--ink) 12px 18px); border-block: 2px solid var(--ink); }
+.list { list-style: none; margin: 0; padding: 0; }
+.list > li { display: grid; align-items: center; gap: 12px; padding: 10px 16px; }
+.list > li + li { border-top: 1px solid var(--line); }
+.list--activity > li { grid-template-columns: 34px 1fr auto; }
+.list--ledger > li { grid-template-columns: 40px 60px 1fr; gap: 10px; min-height: 72px; padding: 8px 16px 8px 6px; }
+.list--kv { display: grid; grid-template-columns: 1fr 1fr; }
+.list--kv > li { display: block; padding: 10px 16px; border-top: 1px solid var(--line); }
+.list--kv > li:nth-child(odd) { border-right: 1px solid var(--line); }
+.kv-k { font-size: 12px; color: var(--muted); font-weight: 600; }
+.kv-v { font: 700 italic 22px/1.1 var(--font-display); }
+.kv-v small { font: 600 13px/1 var(--font-body); color: var(--muted); }
+.av { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; font: 700 14px/1 var(--font-body); color: #fff; background: #4767a3; flex: none; }
+.name { font-weight: 700; font-size: 14px; line-height: 1.2; }
+.sub { font-size: 12px; color: var(--muted); }
+.thumb { width: 60px; height: 52px; border-radius: 4px; overflow: hidden; }
+.thumb .photo { aspect-ratio: auto; height: 100%; }
+.rank { display: grid; justify-items: center; }
+.rank b { font: 800 italic 30px/.9 var(--font-display); color: var(--numeral); }
+.mv { display: inline-flex; align-items: center; gap: 1px; font-size: 11px; font-weight: 700; }
+.mv svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.mv--up { color: var(--success); }
+.mv b { font-weight: 700; }
+.mv--down { color: var(--danger); }
+.ridden { display: inline-block; width: 15px; height: 15px; color: var(--success); vertical-align: -2px; margin-left: 3px; }
+.first { position: relative; }
+.first .photo { aspect-ratio: 16 / 10; }
+.first__num { position: absolute; left: 12px; bottom: 6px; font: 800 italic 108px/.8 var(--font-display); color: var(--sun); -webkit-text-stroke: 2.5px var(--on-sun); paint-order: stroke fill; }
+.first .cap { padding-left: 92px; }
+.stars { display: inline-flex; gap: 1px; }
+.stars svg { width: 14px; height: 14px; }
+.stars--input { gap: 6px; }
+.stars--input svg { width: 34px; height: 34px; }
+.meter { padding: 12px 16px 14px; display: grid; gap: 8px; }
+.meter__head { display: flex; justify-content: space-between; align-items: baseline; }
+.meter__head b { font: 800 italic 30px/1 var(--font-display); }
+.meter__head b small { font-size: 18px; color: var(--muted); }
+.meter__bar { height: 12px; background: var(--canvas); border: 2px solid var(--on-sun); border-radius: 3px; overflow: hidden; transform: skewX(var(--skew)); }
+.meter__bar i { display: block; height: 100%; background: repeating-linear-gradient(90deg, var(--sun) 0 10px, #f0b73a 10px 12px); border-right: 2px solid var(--on-sun); }
+.chips { display: flex; gap: 8px; overflow: hidden; padding: 10px 16px; }
+.chip { flex: none; height: 34px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); }
+.chip--on { background: var(--navy); color: #fff; border-color: var(--navy); }
+.chip--on::before { content: ""; width: 7px; height: 7px; background: var(--sun); transform: skewX(-15deg); }
+.dist { padding: 6px 16px 12px; display: grid; gap: 5px; }
+.dist__row { display: grid; grid-template-columns: 34px 1fr 40px; gap: 8px; align-items: center; font-size: 12px; font-weight: 600; }
+.dist__row span:last-child { text-align: right; color: var(--muted); }
+.dist__bar { height: 10px; background: var(--canvas); border-radius: 2px; overflow: hidden; }
+.dist__bar i { display: block; height: 100%; }
+.tabbar { position: absolute; left: 10px; right: 10px; bottom: 10px; height: 60px; display: grid; grid-template-columns: repeat(5, 1fr); padding: 4px; background: var(--navy); border-radius: 18px; color: #b9c7e2; box-shadow: 0 0 0 1px rgb(255 255 255 / .12), 0 10px 24px rgb(26 44 87 / .3); }
+.tabbar--static { position: relative; left: auto; right: auto; bottom: auto; width: 100%; max-width: 360px; }
+.tab { display: grid; justify-items: center; align-content: center; gap: 2px; font-size: 11px; font-weight: 600; position: relative; }
+.tab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+.tab--on { color: var(--sun); }
+.tab--on::after { content: ""; position: absolute; bottom: 3px; width: 22px; height: 3px; background: var(--sun); transform: skewX(-20deg); }
+.tab__badge { position: absolute; top: 4px; left: calc(50% + 4px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--sun); color: var(--ink); font-size: 11px; font-weight: 700; display: grid; place-items: center; box-shadow: 0 0 0 2px var(--navy); }
+.prof { position: relative; display: flex; gap: 12px; align-items: center; margin-top: 4px; }
+.prof__av { width: 56px; height: 56px; border-radius: 50%; background: #5d87d5; display: grid; place-items: center; font: 800 italic 26px/1 var(--font-display); box-shadow: 0 0 0 3px var(--sun); flex: none; }
+.prof h1 { font: 800 italic 28px/1 var(--font-display); margin: 0; }
+.prof p { margin: 3px 0 0; font-size: 13px; color: var(--navy-soft); }
+.chero { position: relative; }
+.chero .photo { aspect-ratio: 4 / 3.4; }
+.chero__top { position: absolute; top: 12px; left: 12px; right: 12px; display: flex; justify-content: space-between; }
+.chero__top div { display: flex; gap: 8px; }
+.chero .cap { padding-bottom: 26px; }
+.chero .cap h1 { font-size: 34px; }
+.chero__stripes { position: absolute; left: 0; right: 0; bottom: 6px; height: 20px; background: var(--livery) 0 0 / 100% 100% no-repeat; }
+.rate { padding: 14px 16px; display: grid; gap: 10px; justify-items: start; border-bottom: 1px solid var(--line); }
+.rate__label { font-size: 14px; font-weight: 600; color: var(--muted); }
+
+
+/* Dark theme (mockups only): a role swap, not an inversion. Brand, sunshine and photos stay; the page goes deep. */
+.theme-dark {
+  --canvas: #0c1320;
+  --surface: #121b2b;
+  --ink: #e6ecf3;
+  --muted: #9fb0c3;
+  --line: #243249;
+  --line-strong: #3a4a63;
+  --action: #9dbcf2;
+  --numeral: #cfdcf5;
+  --success: #6cc49a;
+  --danger: #f2917b;
+  --navy: #1d3363;
+  color: var(--ink);
+}
+.theme-dark .screen { color: var(--ink); }
+.theme-dark .tabbar { box-shadow: 0 0 0 1px rgb(255 255 255 / .08), 0 10px 24px rgb(0 0 0 / .5); }
+.theme-dark .band, .theme-dark .cbar, .theme-dark .dhead, .theme-dark .dband { box-shadow: inset 0 -1px 0 rgb(255 255 255 / .06); }
+.frame--phone.is-dark { border-color: #05080d; background: #121b2b; }
+
+
+/* ---------- Desktop pieces ---------- */
+.dhead { height: 64px; background: var(--navy); color: #fff; box-shadow: inset 0 -1px 0 rgb(255 255 255 / .14); display: flex; align-items: center; gap: 28px; padding: 0 max(48px, calc((100% - 1200px) / 2 + 48px)); position: relative; }
+.dhead .band__logo { height: 26px; }
+.dnav { display: flex; gap: 4px; }
+.dnav a { color: var(--navy-soft); text-decoration: none; font-weight: 600; font-size: 16px; padding: 0 12px; height: 64px; display: inline-flex; align-items: center; position: relative; }
+.dnav a.on { color: #fff; }
+.dnav a.on::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 7px; height: 4px; background: var(--sun); transform: skewX(-20deg); }
+.dsearch { flex: 1; max-width: 420px; height: 40px; border-radius: 999px; background: rgb(255 255 255 / .12); display: flex; align-items: center; gap: 10px; padding: 0 16px; color: var(--navy-soft); font-size: 15px; }
+.dsearch kbd { margin-left: auto; font: 600 12px/1 var(--font-body); border: 1px solid rgb(255 255 255 / .3); border-radius: 4px; padding: 3px 6px; }
+.dhead .av { margin-left: auto; width: 36px; height: 36px; box-shadow: 0 0 0 2px var(--sun); }
+.dband { position: relative; background: var(--navy); color: #fff; overflow: hidden; height: 156px; }
+.dband__in { position: relative; max-width: 1200px; margin: 0 auto; padding: 28px 48px 0; display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+.dband h1 { font: 800 italic 52px/1 var(--font-display); margin: 0; }
+.dband .band__ctx { font-size: 17px; margin-top: 10px; }
+.dband .band__stripes { bottom: 12px; height: 30px; }
+.dbody { max-width: 1200px; margin: 0 auto; padding: 28px 48px; }
+.dcols { display: grid; grid-template-columns: 250px 1fr; gap: 36px; }
+.dfilters { display: grid; gap: 18px; align-content: start; }
+.dfilters h4 { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.dfilters .chips { padding: 0; flex-wrap: wrap; }
+.dpodium { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; height: 340px; }
+.dpodium > div { position: relative; border-radius: 6px; overflow: hidden; }
+.dpodium > div:first-child { grid-row: span 2; }
+.dpodium .photo { position: absolute; inset: 0; aspect-ratio: auto; }
+.dpodium .first__num { font-size: 150px; left: 18px; bottom: 10px; }
+.dpodium > div:first-child .cap { padding-left: 120px; }
+.dpodium > div:first-child .cap h2 { font-size: 34px; }
+.dpodium .n2 { position: absolute; left: 12px; bottom: 8px; font: 800 italic 64px/.8 var(--font-display); color: #fff; }
+.dpodium > div:not(:first-child) .cap { padding-left: 64px; }
+.dpodium > div:not(:first-child) .cap h2 { font-size: 22px; }
+.dtable { width: 100%; min-width: 0; border-collapse: collapse; margin-top: 18px; font-size: 15px; }
+.dtable th { font: 600 13px/1 var(--font-body); color: var(--muted); background: none; text-align: left; padding: 10px 12px; border-bottom: 2px solid var(--ink); }
+.dtable td { padding: 10px 12px; border-top: 1px solid var(--line); vertical-align: middle; font-weight: 400; white-space: normal; }
+.dtable td:first-child { width: 64px; }
+.dtable .rank { justify-items: start; }
+.dtable .score { text-align: right; font: 700 italic 20px/1 var(--font-display); }
+.dtable .cell { display: flex; gap: 12px; align-items: center; }
+.dhome-hero { position: relative; }
+.dhome-hero .photo { aspect-ratio: 21 / 8; border-radius: 6px; }
+.dhome-hero .cap { border-radius: 0 0 6px 6px; padding: 60px 28px 22px; }
+.dhome-hero .cap h2 { font-size: 44px; }
+.dhome-hero .ribbon { top: 22px; font-size: 18px; }
+.dstat { margin-top: 18px; border: 2.5px solid var(--ink); border-radius: 6px; overflow: hidden; }
+.dstat .statband { border: 0; grid-template-columns: repeat(4, 1fr); }
+.dstat .statband b { font-size: 34px; }
+.dstat .statband span { font-size: 14px; }
+.dhome-cols { display: grid; grid-template-columns: 1.3fr 1fr; gap: 36px; margin-top: 12px; }
+.dhome-cols .sec-h { padding-inline: 0; }
+.dhome-cols .list > li { padding-inline: 0; }
+.dhome-cols .list--ledger > li { padding-left: 0; }
+
+/* ---------- Accessibility ---------- */
+.a11y-demo { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; }
+.a11y-demo table { min-width: 44rem; }
+.a11y-demo thead th { font: 700 .9rem/1.2 var(--font-body); background: var(--canvas); color: var(--ink); }
+.a11y-demo td { vertical-align: middle; white-space: normal; font-weight: 400; }
+.a11y-demo td:first-child { font-weight: 700; width: 7rem; }
+.sim { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sim--deutan { filter: url(#deutan); }
+.sim--protan { filter: url(#protan); }
+.t-old { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 4px; }
+.t-old--pro { background: #e3f1ea; color: var(--success); }
+.t-old--con { background: #f8e6e2; color: var(--danger); }
+.t-new { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; padding: 3px 10px 3px 6px; border-radius: 4px; border: 2px solid; }
+.t-new svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+.t-new--pro { background: var(--success); border-color: var(--success); color: #fff; }
+.t-new--con { background: var(--surface); border-color: var(--danger); color: var(--danger); border-style: dashed; }
+.mv-old { font-size: 13px; font-weight: 700; }
+.vpair small { display: inline-flex; align-items: center; gap: 4px; }
+.vpair small svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+
+/* Footer: brand navy with the star field, no livery */
+.foot { padding: 22px 16px 18px; display: grid; gap: 16px; position: relative; overflow: hidden; }
+.foot__logo { height: 24px; width: auto; }
+.foot__cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.foot h5 { margin: 0 0 4px; font: 600 13px/1.4 var(--font-body); color: var(--muted); }
+.foot ul { list-style: none; margin: 0; padding: 0; display: grid; }
+.foot li { font-size: 15px; font-weight: 600; min-height: 36px; display: flex; align-items: center; }
+.foot small { font-size: 12px; color: var(--muted); }
+.foot--navy { background: var(--navy); color: #fff; }
+.foot--navy h5, .foot--navy small { color: var(--navy-soft); }
+.foot--navy .foot__logo { color: #fff; }
+.foot--navy .band__stars { opacity: .12; }
+.foot > *:not(.band__stars) { position: relative; }
+.dfoot { padding: 32px 48px 24px; display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr; gap: 32px; align-items: start; }
+.dfoot .foot__cols { display: contents; }
+.dfoot .prefs { display: grid; gap: 10px; justify-items: start; }
+.chip-lang { height: 36px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; background: rgb(127 140 160 / .16); }
+.units { display: inline-flex; padding: 3px; border-radius: 999px; background: rgb(127 140 160 / .16); font-size: 13px; font-weight: 600; }
+.units span { padding: 7px 12px; border-radius: 999px; }
+.units span:first-child { background: var(--surface); color: var(--ink); box-shadow: 0 2px 6px rgb(0 0 0 / .12); }
+
+
+/* Rule groups: one sheet split by hairlines, not a pile of identical cards. */
+.rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.rules > .panel { border: 0; border-radius: 0; }
+
+/* ---------- Growth section ---------- */
+.layers { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.layer { display: grid; grid-template-columns: 11rem 1fr; gap: 16px; padding: 16px 20px; background: var(--surface); align-items: start; }
+.layer b { font: 800 italic 1.35rem/1 var(--font-display); }
+.layer p { margin: 0; }
+.layer code, .panel code { font-size: .85rem; background: var(--canvas); padding: 1px 5px; border-radius: 4px; }
+@media (width < 40rem) { .layer { grid-template-columns: 1fr; gap: 6px; } }
+.steps { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+.step { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 6px; align-content: start; }
+.step b { font: 800 italic 1.3rem/1 var(--font-display); }
+.step span { font: 800 italic 2.4rem/.8 var(--font-display); color: var(--navy); }
+.step p { margin: 0; font-size: .95rem; }
+.qs { display: grid; gap: 10px; max-width: 52rem; margin: 0; padding-left: 20px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="coaster" viewBox="0 0 200 90" preserveAspectRatio="xMidYMax slice">
+      <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <path d="M0 80 L30 80 L70 14 Q76 6 82 16 L104 72 Q110 82 120 74 Q136 60 150 52"/>
+        <circle cx="160" cy="44" r="18"/>
+        <path d="M170 60 Q185 78 200 70"/>
+        <path d="M50 47 V90 M60 31 V90 M70 14 V90 M80 12 V90 M92 44 V90 M104 72 V90 M140 58 V90 M160 62 V90 M178 64 V90" stroke-width="1.2" opacity=".7"/>
+      </g>
+    </symbol>
+    <symbol id="star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.2 6.8.7-5.1 4.6 1.5 6.7L12 17.3l-6.1 3.4 1.5-6.7-5.1-4.6 6.8-.7z" fill="#ffcd61" stroke="#8a6414" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="star-half" viewBox="0 0 24 24"><clipPath id="half"><rect x="0" y="0" width="12" height="24"/></clipPath><path d="M12 2.5l2.9 6.2 6.8.7-5.1 4.6 1.5 6.7L12 17.3l-6.1 3.4 1.5-6.7-5.1-4.6 6.8-.7z" fill="#ffcd61" clip-path="url(#half)"/><path d="M12 2.5l2.9 6.2 6.8.7-5.1 4.6 1.5 6.7L12 17.3l-6.1 3.4 1.5-6.7-5.1-4.6 6.8-.7z" fill="none" stroke="#8a6414" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="star-empty" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.2 6.8.7-5.1 4.6 1.5 6.7L12 17.3l-6.1 3.4 1.5-6.7-5.1-4.6 6.8-.7z" fill="none" stroke="#7b8a9a" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 21h8M12 16v5M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 3v12M7 8l5-5 5 5M5 14v5a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-5"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M3 5h18l-7 8v6l-4 2v-8z"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="m8 12 3 3 5-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 0 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 0 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="logo" viewBox="0 0 220.3 32">
+      <path fill="#5D87D5" d="M30.9 12v14.6L26.3 32l-9.6-5.4-9.5 5-4.4-5V12c0-6.6 6.2-12 14-12 7.7 0 14.1 5.4 14.1 12M31.5 13.3v8.2l2.1-4.3V7.9z"/>
+      <path fill="#4767A3" d="M16.7 0v26.6l-9.5 5-4.4-5V12C2.7 5.4 9 0 16.7 0M2.1 13.3v8.2L0 17.2V7.9z"/>
+      <path fill="#28343A" d="m13.8 24.3-4.3 2.2-2.2-2.3zm5.8 0 4.2 2.2 2.3-2.3z"/>
+      <path fill="#FFCD61" d="m19.3 11-2.6-1.4-2.6 1.5.5-3.2-2.2-2.2 3-.5 1.3-2.8L18 5.2l2.9.5-2.1 2.2zm7.1 8.4-2.6-1.5-2.6 1.5.5-3.1-2.1-2.2 2.9-.5 1.3-2.9 1.3 2.9 2.9.4-2.1 2.3zm-14.2.3-2.6-1.4L7 19.8l.5-3.2-2.2-2.2 3-.5 1.3-2.8 1.3 2.8 2.9.5-2.1 2.2z"/>
+      <path fill="currentColor" d="M46.6 27.7c-1.4 0-2.3-.3-2.9-.8-.5-.6-.9-1.5-.9-2.8v-17c.1-.9.3-1.6.9-2.1.5-.5 1.2-.7 2-.7H52l.9 4.4h-4.6c-.3 0-.4.1-.4.4v13.8c0 .3.2.4.4.4h4.6l-.9 4.4zm12.5-2.9-.4 2.9h-4.8l4.3-23.5h5.1l4.3 23.5h-4.8l-.4-2.9zm.5-3.7h2.2l-1.1-8.3zM78.3 4.2c.9 0 1.6.3 2.2.8.5.5.7 1.2.7 2.1v11.2c0 .4-.1.9-.2 1.2s-.3.7-.5 1c-.3.3-.6.5-1 .7-.4.1-.9.2-1.6.2h-4v6.3H69V4.2zm-4.7 4.1v9.2H76c.2 0 .3-.1.3-.1.1-.1.1-.2.1-.4V8.8c0-.3-.2-.4-.4-.4h-2.4zm18.9-4.1 1.2 4.4h-3.2v19.1h-4.9V8.6h-3.2l1.3-4.4zm5.2 20.6-.4 2.9h-4.8l4.3-23.5h5.1l4.3 23.5h-4.8l-.4-2.9zm.5-3.7h2.2l-1.1-8.3zm9.3-16.9h4.8v23.5h-4.8zm6.8 0h4.6l2.4 9.4V4.2h4.9v23.5h-4.9l-2.6-9.8v9.8h-4.4zM136 27.7c-1.4 0-2.3-.3-2.9-.8-.5-.6-.9-1.5-.9-2.8v-17c0-1 .3-1.6.8-2.1s1.2-.7 2-.7h6.3l.9 4.4h-4.5c-.3 0-.4.1-.4.4v13.8c0 .3.2.4.4.4h4.6l-.9 4.4zm20.1-3.3c0 .4-.1.9-.2 1.2s-.3.7-.6 1-.6.5-1 .7c-.4.1-.9.3-1.6.3h-5.5c-.7 0-1.2-.1-1.6-.3-.4-.1-.8-.4-1-.7s-.4-.7-.6-1c-.1-.4-.2-.8-.2-1.2V7.2c0-1 .3-1.7.8-2.2s1.4-.8 2.5-.8h5.9c1.1 0 2 .3 2.5.8.5.6.8 1.3.8 2.2zM149 8.3c-.3 0-.4.1-.4.4V23c0 .1 0 .3.1.4s.2.1.3.1h1.8c.2 0 .3-.1.3-.1.1-.1.1-.2.1-.4V8.8c0-.3-.2-.4-.4-.4H149zm13.5 16.5-.4 2.9h-4.8l4.3-23.5h5.1l4.3 23.5h-4.8l-.4-2.9zm.5-3.7h2.2l-1.1-8.3zm9.6 6.6-.9-4.4h5.2c.3 0 .6-.1.6-.5v-4.3c0-.3-.1-.5-.2-.6-.2-.1-.3-.1-.7-.1h-2.5c-.3 0-.7 0-1-.1s-.6-.1-.9-.4c-.3-.2-.4-.4-.6-.8s-.2-.8-.2-1.4v-8c0-1 .3-1.7.8-2.2s1.4-.8 2.5-.8h6.6l.9 4.4h-5.4c-.4 0-.6.1-.6.5v4.3c0 .2.1.4.2.5s.3.1.5.1h3c.8 0 1.4.1 1.7.5q.6.6.6 1.8v7.7c0 1.3-.3 2.2-.8 2.8-.5.5-1.5.8-2.8.8.1.2-6 .2-6 .2m20.7-23.5 1.2 4.4h-3.2v19.1h-4.9V8.6h-3.2l1.3-4.4zm2.5 0h9.3l.9 4.4h-5.3v5.6h4v4h-4v5.1h5l-.9 4.4h-9.1zm24.1 14c0 .5-.2 1-.5 1.4s-.9.7-1.6.7l2.5 7.5h-4.9l-2.3-7.5h-.6v7.5h-4.8V4.2h9c1.1 0 2 .3 2.5.8.5.6.8 1.3.8 2.2zm-7.6-9.9v8.1h2.3c.3 0 .4-.1.4-.5v-7c0-.3-.2-.5-.4-.5.1-.1-2.3-.1-2.3-.1"/>
+    </symbol>
+    <pattern id="starfield" width="70" height="60" patternUnits="userSpaceOnUse">
+      <path fill="currentColor" d="M12 6l1.8 3.9 4.2.4-3.2 2.9.9 4.1L12 15.2l-3.7 2.1.9-4.1L6 10.3l4.2-.4z"/>
+      <path fill="currentColor" d="M50 34l1.3 2.8 3 .3-2.3 2.1.7 3-2.7-1.6-2.7 1.6.7-3-2.3-2.1 3-.3z"/>
+    </pattern>
+  </defs>
+</svg>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-yes" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+    <symbol id="i-no" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <filter id="deutan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0  0.280085 0.672501 0.047413 0 0  -0.011820 0.042940 0.968881 0 0  0 0 0 1 0"/></filter>
+    <filter id="protan" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.152286 1.052583 -0.204868 0 0  0.114503 0.786281 0.099216 0 0  -0.003882 -0.048116 1.051998 0 0  0 0 0 1 0"/></filter>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z" fill="#ffcd61" stroke="#8a6414" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<template id="tabbar-tpl">
+  <span class="tab" data-tab="home"><svg><use href="#i-home"/></svg>Home</span>
+  <span class="tab" data-tab="ranking"><svg><use href="#i-trophy"/></svg>Ranking</span>
+  <span class="tab" data-tab="search"><svg><use href="#i-search"/></svg>Search</span>
+  <span class="tab" data-tab="map"><svg><use href="#i-map"/></svg>Map</span>
+  <span class="tab" data-tab="profile"><svg><use href="#i-user"/></svg>Profile<span class="tab__badge">3</span></span>
+</template>
+
+<header class="hero">
+  <svg class="hero__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+  <div class="hero__in">
+    <svg class="hero__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg>
+    <h1>La livrée</h1>
+    <p>Le langage visuel de Captain Coaster : un guide précis, habillé comme un parc. Principes, fondations, ton, les composants déjà migrés et des exemples de pages, en mobile et en desktop.</p>
+    <div class="hero__meta"><span class="tag tag--sun">v8</span><span class="tag">29 sept. 2026</span><span class="tag">Photos et chiffres illustratifs</span></div>
+  </div>
+  <div class="hero__stripes" aria-hidden="true"></div>
+</header>
+
+<div class="wrap">
+
+  <!-- ================= Idea ================= -->
+  <section class="bsec" aria-labelledby="idea-t">
+    <h2 id="idea-t">L'idée</h2>
+    <p class="lede">Captain Coaster a deux visages, et le design doit tenir les deux. Le guide est sérieux : le classement doit inspirer confiance et les fiches se lire vite. Le parc est une fête : c'est ce qui donne envie de revenir. On ne mélange pas les deux au hasard : le guide porte le contenu, le parc porte l'habillage.</p>
+    <div class="idea">
+      <div>
+        <span class="idea__plus">Le guide, côté clean</span>
+        <h3>Précis, lisible, rapide</h3>
+        <ul>
+          <li>Fond blanc, texte encre, Source Sans pour lire</li>
+          <li>Listes bord à bord et filets fins</li>
+          <li>Données exactes, sources et méthode expliquées</li>
+          <li>Formulaires et réglages sans décor</li>
+        </ul>
+      </div>
+      <div>
+        <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+        <span class="idea__plus" style="position:relative">Le parc, côté fun</span>
+        <h3 style="position:relative">Coloré, rapide, fier</h3>
+        <ul style="position:relative">
+          <li>Bandeau bleu nuit étoilé et bandes jaunes de livrée</li>
+          <li>Chiffres en grand, condensés, en italique</li>
+          <li>Le jaune du logo en surfaces franches</li>
+          <li>Un moment fort par écran : le n°1, la tendance, ton compteur</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Audience ================= -->
+  <section class="bsec" aria-labelledby="aud-t">
+    <h2 id="aud-t">Pour qui</h2>
+    <p class="lede">Des passionnés, qui connaissent les modèles, les constructeurs et les chiffres par cœur, et comptent leurs crédits. Ils viennent pour des données et pour la fierté de leur carnet. Chaque public a sa réponse de design.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Qui</th><th>Ce qu'ils viennent chercher</th><th>Ce que le design leur donne</th></tr></thead>
+        <tbody>
+          <tr><td>Chasseurs de crédits</td><td>Combien j'en ai fait, où aller ensuite</td><td>Compteurs en chiffres héros, marque « ridden », jauge Top 100, parcs à compléter</td></tr>
+          <tr><td>Fans du classement</td><td>Qui monte, qui descend, et pourquoi</td><td>Rangs en grand, mouvements, publication mensuelle traitée comme un événement, méthode expliquée</td></tr>
+          <tr><td>Critiques</td><td>Donner son avis, comparer le sien aux autres</td><td>Étoiles, distribution des notes, avis lisibles avec points forts et faibles</td></tr>
+          <tr><td>Voyageurs</td><td>Quel parc, quoi y faire</td><td>Pages parc, carte, filtres « pas encore fait »</td></tr>
+          <tr><td>Curieux venus de Google</td><td>Ce coaster vaut-il le détour ?</td><td>Photo, note et rang lisibles en trois secondes, sans compte</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= Motifs ================= -->
+  <section class="bsec" aria-labelledby="mot-t">
+    <h2 id="mot-t">Du parc à l'écran</h2>
+    <p class="lede">Chaque motif vient d'un objet réel du monde des parcs. C'est ce qui empêche le site de ressembler à n'importe quelle app : un site de recettes ou de finance n'aurait aucun de ces éléments.</p>
+    <div class="grid3 motifs">
+      <div class="motif">
+        <div class="motif__vis" style="background:var(--navy)"><div class="band__stripes" style="bottom:36px;height:40px"></div></div>
+        <div class="motif__txt"><span class="motif__from">La peinture des trains</span><h4>Bandes de livrée</h4><p>Deux bandes jaunes inclinées au pied des bandeaux. La signature de la marque.</p></div>
+      </div>
+      <div class="motif">
+        <div class="motif__vis" style="background:var(--navy)"><svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg><svg viewBox="0 0 33.6 32" style="position:relative;width:52px;height:52px;overflow:hidden"><use href="#logo" width="220.3" height="32"/></svg></div>
+        <div class="motif__txt"><span class="motif__from">Le masque du Captain</span><h4>Champ d'étoiles</h4><p>Les étoiles du logo, semées à 15 % sur le bleu nuit. Jamais sur le blanc.</p></div>
+      </div>
+      <div class="motif">
+        <div class="motif__vis" style="background:var(--surface)"><div class="num" style="display:flex;gap:18px;align-items:baseline"><b style="font:800 italic 58px/1 var(--font-display)">121</b><span style="font:700 italic 22px/1 var(--font-display);color:var(--muted)">km/h</span></div></div>
+        <div class="motif__txt"><span class="motif__from">Les panneaux de stats à l'entrée</span><h4>Chiffres héros</h4><p>Condensés, graisse 800, italique : ce que les passionnés lisent en premier.</p></div>
+      </div>
+      <div class="motif">
+        <div class="motif__vis" style="background:var(--surface);align-content:center;padding-inline:20px"><div class="statband num" style="width:100%;border:2.5px solid var(--ink)"><div><b>412</b><span>coasters</span></div><div><b>96</b><span>parks</span></div><div><b>23</b><span>top 100</span></div></div></div>
+        <div class="motif__txt"><span class="motif__from">La signalétique des manèges</span><h4>Bandeau jaune à filets</h4><p>Jaune franc, filets encre. Pour trois chiffres au plus.</p></div>
+      </div>
+      <div class="motif">
+        <div class="motif__vis sky2" style="place-items:stretch"><svg class="coaster" style="position:absolute;left:0;right:0;bottom:0;width:100%;height:75%"><use href="#coaster"/></svg><span class="ribbon">Trending this week</span></div>
+        <div class="motif__txt"><span class="motif__from">L'étiquette collée sur le wagon</span><h4>Ruban</h4><p>La seule étiquette posée sur une photo. Légèrement de travers, comme collée à la main.</p></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================= Principles ================= -->
+  <section class="bsec" aria-labelledby="pr-t">
+    <h2 id="pr-t">Principes</h2>
+    <div class="principles">
+      <div class="principle"><div><h3>Un guide précis, habillé comme un parc</h3><p>Le contenu reste propre et lisible. L'habillage (bandeau, livrée, chiffres, jaune) porte la fête. Si un élément décoratif gêne la lecture, c'est la lecture qui gagne.</p></div></div>
+      <div class="principle"><div><h3>Les chiffres sont les héros</h3><p>Rangs, notes, crédits, hauteurs et vitesses s'écrivent en Barlow Condensed 800 italique, en grand et en chiffres tabulaires. Un passionné lit les chiffres avant les mots.</p></div></div>
+      <div class="principle"><div><h3>Bord à bord, pas de boîtes</h3><p>Photos et listes vont d'un bord à l'autre de l'écran, séparées par des filets fins. Une carte seulement pour ce qui flotte au-dessus de la page : dialogue, feuille, panneau latéral sur desktop.</p></div></div>
+      <div class="principle"><div><h3>Un moment fort par écran</h3><p>Un seul élément bruyant par écran visible : le n°1, le ruban, le bandeau jaune, ou ton compteur. Tout le reste se tait.</p></div></div>
+      <div class="principle"><div><h3>Le jaune est une surface, jamais un texte</h3><p>Le jaune du logo remplit, avec de l'encre dessus ou autour. Du texte jaune n'existe que sur le bleu nuit.</p></div></div>
+      <div class="principle"><div><h3>Le fun est dans l'image, pas dans les mots</h3><p>Les textes restent sobres et précis, sans jeux de mots. La personnalité vient des formes, de la couleur et des chiffres.</p></div></div>
+      <div class="principle"><div><h3>Au pouce d'abord</h3><p>80 % des visites sont sur mobile : on dessine à 390 px, puis on élargit. Navigation en bas, actions à portée du pouce, rien de caché dans un menu.</p></div></div>
+    </div>
+  </section>
+
+  <!-- ================= Dial ================= -->
+  <section class="bsec" aria-labelledby="dial-t">
+    <h2 id="dial-t">Le curseur clean ↔ fun</h2>
+    <p class="lede">Chaque type de page a son budget de fun. Quand on migre une page, on commence par lui donner sa place sur ce curseur : c'est ce qui dit quels motifs elle a le droit d'utiliser.</p>
+    <div class="dial">
+      <div class="dial__row"><b>Home</b><span class="dots" aria-label="3 sur 3"><i class="on"></i><i class="on"></i><i class="on"></i></span><p>Bandeau étoilé, ruban sur la tendance, bandeau jaune de chiffres.</p></div>
+      <div class="dial__row"><b>Ranking</b><span class="dots" aria-label="3 sur 3"><i class="on"></i><i class="on"></i><i class="on"></i></span><p>Bandeau, grand n°1 jaune, bandeau de chiffres. La méthode, elle, reste en mode guide.</p></div>
+      <div class="dial__row"><b>Profil, jalons</b><span class="dots" aria-label="2 sur 3"><i class="on"></i><i class="on"></i><i></i></span><p>Bandeau avec avatar, compteurs, jauge Top 100.</p></div>
+      <div class="dial__row"><b>Coaster, parc</b><span class="dots" aria-label="2 sur 3"><i class="on"></i><i class="on"></i><i></i></span><p>La photo tient lieu de bandeau ; bandes de livrée et chiffres héros. Le reste est du guide.</p></div>
+      <div class="dial__row"><b>Recherche, listes, carte</b><span class="dots" aria-label="1 sur 3"><i class="on"></i><i></i><i></i></span><p>Barre compacte bleu nuit, chiffres condensés. Rien d'autre.</p></div>
+      <div class="dial__row"><b>Formulaires, réglages, légal</b><span class="dots" aria-label="0 sur 3"><i></i><i></i><i></i></span><p>Du guide pur : blanc, encre, bleu d'action. Seule la barre d'onglets reste aux couleurs de la marque.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= Color ================= -->
+  <section class="bsec" aria-labelledby="col-t">
+    <h2 id="col-t">Couleurs</h2>
+    <p class="lede">Les couleurs du logo, sans nouvelle teinte. Le bleu nuit est un rôle nouveau, tiré vers le foncé depuis le bleu du logo. Ce qui compte, c'est la proportion : beaucoup de blanc, du bleu nuit en haut et en bas, le jaune en petites doses fortes.</p>
+    <div class="proportion" role="img" aria-label="Proportions : blanc 58 %, fond 12 %, encre 10 %, bleu nuit 12 %, jaune 6 %, bleu d'action 2 %">
+      <span style="flex:58;background:var(--surface)">Blanc</span>
+      <span style="flex:12;background:var(--canvas)">Fond</span>
+      <span style="flex:10;background:var(--ink);color:#fff">Encre</span>
+      <span style="flex:12;background:var(--navy);color:#fff">Bleu nuit</span>
+      <span style="flex:6;background:var(--sun)">Jaune</span>
+      <span style="flex:2;background:var(--action)"></span>
+    </div>
+    <div class="swatches">
+      <div class="sw"><i style="background:var(--navy)"></i><div><b>Bleu nuit, nouveau rôle</b><code>brand</code>Bandeaux, barre d'onglets, en-tête desktop, filtre actif</div></div>
+      <div class="sw"><i style="background:var(--sun)"></i><div><b>Jaune</b><code>highlight</code>Surfaces : chiffres, ruban, onglet actif, n°1, badge</div></div>
+      <div class="sw"><i style="background:var(--ink)"></i><div><b>Encre</b><code>fg</code>Texte, filets des surfaces jaunes, contour du n°1</div></div>
+      <div class="sw"><i style="background:var(--action)"></i><div><b>Bleu d'action</b><code>action</code>Liens et bouton principal, sur fond clair</div></div>
+      <div class="sw"><i style="background:var(--surface)"></i><div><b>Blanc</b><code>surface</code>Le fond des pages bord à bord</div></div>
+      <div class="sw"><i style="background:linear-gradient(90deg,var(--scale-low),#c79400,var(--scale-high))"></i><div><b>Échelle de notes</b><code>rating-scale</code>Données ordonnées seulement</div></div>
+    </div>
+  </section>
+
+  <!-- ================= Type ================= -->
+  <section class="bsec" aria-labelledby="ty-t">
+    <h2 id="ty-t">Typographie</h2>
+    <p class="lede">On garde les deux familles et on pousse Barlow Condensed : graisse 800 et italique pour tout ce qui doit claquer, Source Sans pour tout ce qui se lit. Deux fichiers de police de plus (800 et 800 italique), environ 50 Ko.</p>
+    <div class="typebox">
+      <div class="trow"><span><b>Display</b>Barlow 800 italique, 44–76</span><b style="font:800 italic clamp(2.4rem,1.6rem + 3vw,4.2rem)/.95 var(--font-display)">World ranking</b></div>
+      <div class="trow"><span><b>Titre</b>Barlow 800 italique, 30–40</span><b style="font:800 italic 34px/1 var(--font-display)">Steel Vengeance</b></div>
+      <div class="trow"><span><b>Section</b>Barlow 800 italique, 22–26</span><b style="font:800 italic 24px/1 var(--font-display)">Latest ratings</b></div>
+      <div class="trow"><span><b>Chiffres</b>Barlow 800 italique, tabulaires</span><b class="num" style="font:800 italic 34px/1 var(--font-display);display:flex;gap:28px;flex-wrap:wrap"><span>#1</span><span>4.6</span><span>834,750</span><span>62.8 m</span></b></div>
+      <div class="trow"><span><b>Nom</b>Source Sans 700, 16</span><span style="font:700 16px/1.3 var(--font-body);color:var(--ink)">Zadra <span style="font-weight:400;color:var(--muted)">Energylandia, Poland</span></span></div>
+      <div class="trow"><span><b>Texte</b>Source Sans 400, 16/1.5</span><span style="font-size:16px;color:var(--ink);max-width:36rem">Relentless from the first drop to the brakes. The zero-g stall over the station is the best element in Europe.</span></div>
+    </div>
+    <div class="rules">
+      <div class="panel"><h4>L'italique est réservé à Barlow</h4><p class="muted">Titres, sections, chiffres. Jamais pour une phrase de plus d'une ligne.</p></div>
+      <div class="panel"><h4>Casse de phrase partout</h4><p class="muted">Pas de libellés en capitales : les traductions allemandes et françaises les rendent illisibles.</p></div>
+      <div class="panel"><h4>600 reste pour l'interface</h4><p class="muted">Onglets, boutons et libellés gardent Source Sans 600 : lisibles à 12 px.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= Shape, motion, imagery ================= -->
+  <section class="bsec" aria-labelledby="fo-t">
+    <h2 id="fo-t">Formes, mouvement, images</h2>
+    <div class="rules">
+      <div class="panel"><h3>L'angle</h3><p>Un seul angle, −10°, répété : pastille « New », soulignement de l'onglet actif, jauge. C'est la vitesse de la livrée, traduite en forme.</p><div style="display:flex;gap:14px;align-items:center;margin-top:6px"><span class="pill-new">New</span><span style="width:40px;height:4px;background:var(--sun);transform:skewX(-20deg);outline:1px solid var(--ink)"></span><div class="meter__bar" style="width:100px"><i style="width:40%"></i></div></div></div>
+      <div class="panel"><h3>Coins</h3><p>Petits rayons : 4 px pour les photos, 8 px pour les contrôles, pilule pour la navigation et les filtres. Plus de grandes cartes arrondies.</p></div>
+      <div class="panel"><h3>Traits</h3><p>Filets de 1 px pour séparer. Traits encre de 2 à 2,5 px seulement autour du jaune (bandeau, ruban, n°1, jauge), comme sur un panneau peint.</p></div>
+      <div class="panel"><h3>Profondeur</h3><p>Page plate. Une ombre seulement pour ce qui flotte : barre d'onglets, dialogues, menus.</p></div>
+      <div class="panel"><h3>Mouvement</h3><p>120 ms pour répondre, 180 ms pour entrer. Un seul moment orchestré : l'arrivée du podium le jour de la publication du classement. Pas d'apparitions au défilement. Réduit à zéro si l'utilisateur le demande.</p></div>
+      <div class="panel"><h3>Photos</h3><p>Les photos des membres mènent : bord à bord, légende sur un dégradé sombre, crédit toujours visible. Pas d'illustration de stock.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= Accessibility ================= -->
+  <section class="bsec" aria-labelledby="a11y-t">
+    <h2 id="a11y-t">Accessibilité</h2>
+    <p class="lede">Environ un homme sur douze voit mal la différence entre rouge et vert. Or le site en use pour les mouvements du classement, les points forts et faibles des avis, les statuts. Règle : la couleur ne porte jamais seule une information. Ci-dessous, la même chose vue normalement et en simulation de daltonisme.</p>
+    <div class="a11y-demo">
+      <table>
+        <thead><tr><th></th><th>Vision normale</th><th>Deutéranopie (simulée)</th><th>Protanopie (simulée)</th></tr></thead>
+        <tbody>
+          <tr><td>Avant</td>
+            <td><div class="sim"><span class="t-old t-old--pro">Airtime</span><span class="t-old t-old--con">Queue</span><span class="mv-old" style="color:var(--success)">▲ 2</span><span class="mv-old" style="color:var(--danger)">▼ 1</span></div></td>
+            <td><div class="sim sim--deutan"><span class="t-old t-old--pro">Airtime</span><span class="t-old t-old--con">Queue</span><span class="mv-old" style="color:var(--success)">▲ 2</span><span class="mv-old" style="color:var(--danger)">▼ 1</span></div></td>
+            <td><div class="sim sim--protan"><span class="t-old t-old--pro">Airtime</span><span class="t-old t-old--con">Queue</span><span class="mv-old" style="color:var(--success)">▲ 2</span><span class="mv-old" style="color:var(--danger)">▼ 1</span></div></td></tr>
+          <tr><td>Proposé</td>
+            <td><div class="sim"><span class="t-new t-new--pro"><svg><use href="#i-plus"/></svg>Airtime</span><span class="t-new t-new--con"><svg><use href="#i-minus"/></svg>Queue</span><span class="mv mv--up" style="font-size:13px"><svg><use href="#i-up"/></svg>+2</span><span class="mv mv--down" style="font-size:13px"><svg><use href="#i-down"/></svg>−1</span></div></td>
+            <td><div class="sim sim--deutan"><span class="t-new t-new--pro"><svg><use href="#i-plus"/></svg>Airtime</span><span class="t-new t-new--con"><svg><use href="#i-minus"/></svg>Queue</span><span class="mv mv--up" style="font-size:13px"><svg><use href="#i-up"/></svg>+2</span><span class="mv mv--down" style="font-size:13px"><svg><use href="#i-down"/></svg>−1</span></div></td>
+            <td><div class="sim sim--protan"><span class="t-new t-new--pro"><svg><use href="#i-plus"/></svg>Airtime</span><span class="t-new t-new--con"><svg><use href="#i-minus"/></svg>Queue</span><span class="mv mv--up" style="font-size:13px"><svg><use href="#i-up"/></svg>+2</span><span class="mv mv--down" style="font-size:13px"><svg><use href="#i-down"/></svg>−1</span></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="rules">
+      <div class="panel"><h4>Jamais la couleur seule</h4><p class="muted">Chaque paire d'états diffère aussi par une forme : plein ou contour, + ou −, flèche vers le haut ou le bas, icône. Le texte ou le libellé accessible dit le reste.</p></div>
+      <div class="panel"><h4>Des clartés différentes</h4><p class="muted">Quand deux couleurs d'état se côtoient, l'une est foncée et pleine, l'autre claire ou en contour. L'échelle des notes monte déjà en clarté du rouge au vert.</p></div>
+      <div class="panel"><h4>Contrastes mesurés</h4><p class="muted">Texte ≥ 4,5:1, éléments d'interface ≥ 3:1. Encre sur jaune et blanc sur bleu nuit passent largement ; le jaune n'est jamais du texte sur blanc.</p></div>
+      <div class="panel"><h4>Tester à chaque PR</h4><p class="muted">Chrome DevTools, Rendering, « Emulate vision deficiencies » : deutéranopie, protanopie, achromatopsie. Ajouté à la checklist de migration.</p></div>
+      <div class="panel"><h4>Italique avec mesure</h4><p class="muted">L'italique condensé est réservé aux titres courts et aux chiffres. Le texte courant reste droit, plus lisible, notamment pour les lecteurs dyslexiques.</p></div>
+      <div class="panel"><h4>Le reste ne bouge pas</h4><p class="muted">Focus visible (bleu sur clair, jaune sur bleu nuit), cibles de 44 px, zoom à 200 %, mouvement réduit respecté.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= Voice ================= -->
+  <section class="bsec" aria-labelledby="vo-t">
+    <h2 id="vo-t">Le ton</h2>
+    <p class="lede">Comme un passionné qui connaît son sujet et parle à un autre passionné : précis, direct, chaleureux sans en faire trop. Les termes du métier (crédits, airtime, launch, RMC) sont bienvenus : c'est la langue du public. Une seule exception assumée : la voix d'opérateur de manège sur la page de maintenance.</p>
+    <div class="voice">
+      <div class="vpair"><div class="vctx">Bouton</div><div class="yes"><small><svg><use href="#i-yes"/></svg>Oui</small><q>Rate this coaster</q></div><div class="no"><small><svg><use href="#i-no"/></svg>Non</small><q>Let's ride!</q></div></div>
+      <div class="vpair"><div class="vctx">État vide</div><div class="yes"><small><svg><use href="#i-yes"/></svg>Oui</small><q>No ratings yet. Rate the coasters you've ridden and your stats show up here.</q></div><div class="no"><small><svg><use href="#i-no"/></svg>Non</small><q>Your track is empty! Time to hop on board!</q></div></div>
+      <div class="vpair"><div class="vctx">Erreur</div><div class="yes"><small><svg><use href="#i-yes"/></svg>Oui</small><q>Your rating wasn't saved. Check your connection and try again.</q></div><div class="no"><small><svg><use href="#i-no"/></svg>Non</small><q>Oops, something went off the rails!</q></div></div>
+      <div class="vpair"><div class="vctx">Annonce</div><div class="yes"><small><svg><use href="#i-yes"/></svg>Oui</small><q>The September ranking is out. Steel Vengeance stays #1.</q></div><div class="no"><small><svg><use href="#i-no"/></svg>Non</small><q>Hold on tight, the new ranking just dropped!</q></div></div>
+    </div>
+  </section>
+
+  <!-- ================= Migrated components ================= -->
+  <section class="bsec" aria-labelledby="cmp-t">
+    <h2 id="cmp-t">Les composants déjà migrés</h2>
+    <p class="lede">Seuls la navigation (barre d'onglets, en-tête desktop, pied de page), l'en-tête de page et le classement sont déjà des Twig Components. Ce sont eux qui recevront la livrée en premier ; le reste suivra page par page.</p>
+
+    <div class="grid2">
+      <div class="panel">
+        <h3>Navigation</h3>
+        <p class="muted">Aujourd'hui : pilule en verre blanc, onglet actif bleu. Proposé : barre pleine bleu nuit avec un liseré clair, onglet actif jaune avec le trait incliné, badge jaune. Sur desktop, en-tête bleu nuit, séparé du bandeau par un filet clair d'1 px. Les barres (en-tête, barre compacte) n'ont jamais de ligne jaune : seules les bandes du bandeau en portent.</p>
+        <div style="background:var(--canvas);padding:14px;border-radius:8px"><nav class="tabbar tabbar--static" data-on="ranking" aria-hidden="true"></nav></div>
+        <div class="frame" style="--w:960;--h:64;border-radius:6px"><div class="frame__in">
+          <div class="dhead"><svg class="band__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg><nav class="dnav"><a href="#cmp-t">Home</a><a class="on" href="#cmp-t">Ranking</a><a href="#cmp-t">Map</a></nav><div class="dsearch"><svg class="ico"><use href="#i-search"/></svg>Search a coaster, a park, a rider<kbd>/</kbd></div><span class="av">L</span></div>
+        </div></div>
+      </div>
+      <div class="panel">
+        <h3>En-tête de page</h3>
+        <p class="muted">Aujourd'hui : grand titre sur le fond, sur deux lignes, environ 150 px. Proposé : bandeau à hauteur fixe (136 px pour la home, 120 px pour une page), titre sur une ligne, puis barre compacte de 56 px au défilement.</p>
+        <div style="display:grid;gap:10px;max-width:360px">
+          <div class="frame" style="--w:360;--h:120"><div class="frame__in"><header class="band band--page"><svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg><div class="band__row"><h1 class="band__title">World ranking</h1><span class="rbtn"><svg class="ico"><use href="#i-filter"/></svg></span></div><p class="band__ctx">September 2026 <span class="pill-new">New</span></p><div class="band__stripes" aria-hidden="true"></div></header></div></div>
+          <div class="frame" style="--w:360;--h:56"><div class="frame__in"><div class="cbar"><span class="rbtn"><svg class="ico"><use href="#i-back"/></svg></span><span class="cbar__title">World ranking</span><span class="rbtn"><svg class="ico"><use href="#i-filter"/></svg></span></div></div></div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="panel">
+      <h3>Pied de page</h3>
+      <p class="muted">Aujourd'hui : sur le fond clair, filet au-dessus. Proposé : bleu nuit étoilé, sans bandes de livrée. Il ferme la page comme le bandeau l'ouvre ; la barre d'onglets pleine garde un liseré clair pour s'en détacher. Sur desktop, la langue et les unités restent dans le pied de page.</p>
+      <div style="display:grid;gap:20px">
+        <div class="frame frame--phone" style="--w:360;--h:460;width:100%;max-width:300px"><div class="frame__in"><div class="screen" style="display:flex;flex-direction:column">
+          <ul class="list list--ledger num" style="flex:1">
+            <li><span class="rank"><b>99</b></span><div class="thumb"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Blue Fire</div><div class="sub">Europa-Park</div></div></li>
+          </ul>
+          <footer class="foot foot--navy" style="padding-bottom:96px"><svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <svg class="foot__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg>
+            <div class="foot__cols">
+              <div><h5>Community</h5><ul><li>Reviews</li><li>Top lists</li><li>Riders</li></ul></div>
+              <div><h5>About</h5><ul><li>Contact</li><li>Privacy</li><li>Blog ↗</li></ul></div>
+            </div>
+            <small>© 2026 Captain Coaster</small>
+          </footer>
+        </div><nav class="tabbar" data-on="ranking" aria-hidden="true"></nav></div></div>
+        <div class="frame" style="--w:1280;--h:220;border-radius:8px"><div class="frame__in"><footer class="foot dfoot foot--navy" style="height:220px"><svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+          <div style="display:grid;gap:10px"><svg class="foot__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg><small>© 2026 Captain Coaster</small></div>
+          <div><h5>Community</h5><ul><li>Reviews</li><li>Top lists</li><li>Riders</li></ul></div>
+          <div><h5>About</h5><ul><li>Contact</li><li>Privacy</li><li>Blog ↗</li></ul></div>
+          <div class="prefs"><span class="chip-lang">English</span><span class="units"><span>km/h · m</span><span>mph · ft</span></span></div>
+        </footer></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Classement</h3>
+      <p class="muted">Aujourd'hui : cartes blanches pour le podium, rangs en Barlow 600. Proposé : le n°1 en photo bord à bord avec le grand chiffre jaune, puis la liste avec les rangs en 800 italique bleu nuit. Mouvements, marque « ridden » et couronne restent ; la jauge Top 100 prend l'angle et le jaune.</p>
+      <div class="grid3" style="align-items:start">
+        <div class="frame" style="--w:360;--h:236"><div class="frame__in"><div class="first"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div><div class="cap"><h2>Steel Vengeance</h2><p>Cedar Point – RMC</p></div><span class="first__num" aria-hidden="true">1</span></div></div></div>
+        <div class="frame" style="--w:360;--h:216"><div class="frame__in"><ul class="list list--ledger num">
+          <li><span class="rank"><b>12</b><span class="mv mv--up"><svg><use href="#i-up"/></svg>+3</span></span><div class="thumb"><div class="photo sky3"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Taron<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub">Phantasialand</div></div></li>
+          <li><span class="rank"><b>13</b><span class="mv"><svg style="width:14px;height:14px"><use href="#i-crown"/></svg></span></span><div class="thumb"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Toutatis</div><div class="sub">Parc Astérix</div></div></li>
+          <li><span class="rank"><b>14</b><span class="mv mv--down"><svg><use href="#i-down"/></svg>−2</span></span><div class="thumb"><div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Hyperion<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub">Energylandia</div></div></li>
+        </ul></div></div>
+        <div class="frame" style="--w:360;--h:84;align-self:start"><div class="frame__in"><div class="meter num"><div class="meter__head"><span class="name">World top 100 ridden</span><b>23 <small>/ 100</small></b></div><div class="meter__bar"><i style="width:23%"></i></div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Mobile pages ================= -->
+  <section class="bsec" aria-labelledby="mob-t">
+    <h2 id="mob-t">Exemples de pages, mobile</h2>
+    <p class="lede">Des pistes pour voir le langage appliqué, pas des maquettes à livrer : seules la navigation et le classement sont au programme tout de suite.</p>
+    <div class="frames">
+
+      <figure>
+        <div class="frame frame--phone" style="--w:360;--h:780"><div class="frame__in"><div class="screen">
+          <header class="band band--home">
+            <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <div class="band__row"><svg class="band__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg></div>
+            <p class="band__tagline">Every coaster, rated by riders.</p>
+            <div class="band__stripes" aria-hidden="true"></div>
+          </header>
+          <div class="first"><div class="photo sky2" style="aspect-ratio:4/3"><svg class="coaster"><use href="#coaster"/></svg></div><span class="ribbon">Trending this week</span><div class="cap"><h2>Big Thunder Mountain Railroad</h2><p>Walt Disney World – Magic Kingdom</p></div></div>
+          <div class="statband num"><div><b>834,750</b><span>ratings</span></div><div><b>100,381</b><span>reviews</span></div><div><b>26,354</b><span>riders</span></div></div>
+          <div class="sec-h"><h3>Latest ratings</h3><a href="#mob-t">See all</a></div>
+          <ul class="list list--activity">
+            <li><span class="av">L</span><div><div class="name">Léa rated Zadra</div><div class="sub">Energylandia</div></div><span class="stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star-half"/></svg></span></li>
+            <li><span class="av" style="background:#2e6b55">T</span><div><div class="name">Tom rated Toutatis</div><div class="sub">Parc Astérix</div></div><span class="stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg></span></li>
+          </ul>
+        </div><nav class="tabbar" data-on="home" aria-hidden="true"></nav></div></div>
+        <figcaption>Home<span>Fun 3/3. Une phrase courte, native dans chaque langue (texte à choisir avec la home)</span></figcaption>
+      </figure>
+
+      <figure>
+        <div class="frame frame--phone" style="--w:360;--h:780"><div class="frame__in"><div class="screen">
+          <header class="band band--page">
+            <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <div class="band__row"><h1 class="band__title">World ranking</h1><span class="rbtn"><svg class="ico"><use href="#i-filter"/></svg></span></div>
+            <p class="band__ctx">September 2026 <span class="pill-new">New</span></p>
+            <div class="band__stripes" aria-hidden="true"></div>
+          </header>
+          <div class="first"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div><div class="cap"><h2>Steel Vengeance</h2><p>Cedar Point – RMC</p></div><span class="first__num" aria-hidden="true">1</span></div>
+          
+          <ul class="list list--ledger num">
+            <li><span class="rank"><b>2</b><span class="mv mv--down"><svg><use href="#i-down"/></svg>−1</span></span><div class="thumb"><div class="photo sky3"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Falcons Flight</div><div class="sub">Six Flags Qiddiya City</div></div></li>
+            <li><span class="rank"><b>3</b></span><div class="thumb"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">VelociCoaster<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub">Islands of Adventure</div></div></li>
+            <li><span class="rank"><b>4</b><span class="mv mv--up"><svg><use href="#i-up"/></svg>+2</span></span><div class="thumb"><div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Zadra<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub">Energylandia</div></div></li>
+            <li><span class="rank"><b>5</b></span><div class="thumb"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Iron Gwazi</div><div class="sub">Busch Gardens Tampa</div></div></li>
+          </ul>
+        </div><nav class="tabbar" data-on="ranking" aria-hidden="true"></nav></div></div>
+        <figcaption>Ranking<span>Fun 3/3, prochaine migration</span></figcaption>
+      </figure>
+
+      <figure>
+        <div class="frame frame--phone" style="--w:360;--h:780"><div class="frame__in"><div class="screen">
+          <div class="chero">
+            <div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div>
+            <div class="chero__top"><span class="rbtn rbtn--photo"><svg class="ico"><use href="#i-back"/></svg></span><div><span class="rbtn rbtn--photo"><svg class="ico"><use href="#i-heart"/></svg></span><span class="rbtn rbtn--photo"><svg class="ico"><use href="#i-share"/></svg></span></div></div>
+            <div class="cap"><h1>Zadra</h1><p>Energylandia, Poland</p></div>
+            <div class="chero__stripes" aria-hidden="true"></div>
+          </div>
+          <ul class="list list--kv num" style="border-bottom:1px solid var(--line)">
+            <li style="border-top:0"><div class="kv-k">World rank</div><div class="kv-v">#4</div></li>
+            <li style="border-top:0"><div class="kv-k">Average</div><div class="kv-v">4.6 <small>/ 5, 3,412 ratings</small></div></li>
+            <li><div class="kv-k">Height</div><div class="kv-v">62.8 <small>m</small></div></li>
+            <li><div class="kv-k">Speed</div><div class="kv-v">121 <small>km/h</small></div></li>
+          </ul>
+          <div class="rate"><span class="rate__label">You rode it in 2024. Your rating:</span><span class="stars stars--input"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star-half"/></svg></span></div>
+          <div class="sec-h"><h3>Ratings</h3><a href="#mob-t">3,412</a></div>
+          <div class="dist num">
+            <div class="dist__row"><span>5★</span><span class="dist__bar"><i style="width:68%;background:var(--scale-high)"></i></span><span>68%</span></div>
+            <div class="dist__row"><span>4★</span><span class="dist__bar"><i style="width:21%;background:color-mix(in oklch, var(--scale-high) 70%, #e0a400)"></i></span><span>21%</span></div>
+            <div class="dist__row"><span>3★</span><span class="dist__bar"><i style="width:7%;background:#c79400"></i></span><span>7%</span></div>
+          </div>
+        </div><nav class="tabbar" data-on="" aria-hidden="true"></nav></div></div>
+        <figcaption>Fiche coaster<span>Fun 2/3 : pas de bandeau jaune, la photo suffit</span></figcaption>
+      </figure>
+
+      <figure>
+        <div class="frame frame--phone" style="--w:360;--h:780"><div class="frame__in"><div class="screen">
+          <header class="band band--profile">
+            <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <div class="prof"><span class="prof__av">L</span><div style="flex:1;min-width:0"><h1>Léa M.</h1><p>France, member since 2019</p></div><span class="rbtn"><svg class="ico"><use href="#i-settings"/></svg></span></div>
+            <div class="band__stripes" aria-hidden="true"></div>
+          </header>
+          <div class="statband num"><div><b>412</b><span>coasters</span></div><div><b>96</b><span>parks</span></div><div><b>58</b><span>reviews</span></div></div>
+          <div class="meter num"><div class="meter__head"><span class="name">World top 100 ridden</span><b>23 <small>/ 100</small></b></div><div class="meter__bar"><i style="width:23%"></i></div></div>
+          <div class="sec-h" style="border-top:1px solid var(--line)"><h3>My top</h3><a href="#mob-t">Edit</a></div>
+          <ul class="list list--ledger num">
+            <li><span class="rank"><b>1</b></span><div class="thumb"><div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Zadra</div><div class="sub">Energylandia</div></div></li>
+            <li><span class="rank"><b>2</b></span><div class="thumb"><div class="photo sky3"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Taron</div><div class="sub">Phantasialand</div></div></li>
+            <li><span class="rank"><b>3</b></span><div class="thumb"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Toutatis</div><div class="sub">Parc Astérix</div></div></li>
+          </ul>
+        </div><nav class="tabbar" data-on="profile" aria-hidden="true"></nav></div></div>
+        <figcaption>Profil<span>Fun 2/3</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= Desktop pages ================= -->
+  <section class="bsec" aria-labelledby="desk-t">
+    <h2 id="desk-t">Exemples de pages, desktop</h2>
+    <p class="lede">Même langage, plus d'air : en-tête bleu nuit, bandeau plus haut mais toujours sous 160 px, contenu dans la largeur de 75 rem. Le podium reprend sa place à côté de la liste.</p>
+    <div class="dframes">
+      <figure>
+        <div class="frame frame--desk" style="--w:1280;--h:826"><div class="frame__in" style="height:800px">
+          <div class="dhead"><svg class="band__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg><nav class="dnav"><a href="#desk-t">Home</a><a class="on" href="#desk-t">Ranking</a><a href="#desk-t">Map</a></nav><div class="dsearch"><svg class="ico"><use href="#i-search"/></svg>Search a coaster, a park, a rider<kbd>/</kbd></div><span class="av">L</span></div>
+          <header class="dband"><svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg><div class="dband__in"><div><h1>World roller coaster ranking</h1><p class="band__ctx">September 2026 <span class="pill-new">New</span> <span style="font-weight:400">Next ranking in 2 days</span></p></div></div><div class="band__stripes" aria-hidden="true"></div></header>
+          <div class="dbody">
+            <div class="dcols">
+              <aside class="dfilters">
+                <div><h4>Show</h4><div class="chips"><span class="chip chip--on">All</span><span class="chip">Ridden</span><span class="chip">Not ridden</span><span class="chip">New this month</span></div></div>
+                <div><h4>Continent</h4><div class="chips"><span class="chip">Europe</span><span class="chip">North America</span><span class="chip">Asia</span></div></div>
+                <div><h4>Type</h4><div class="chips"><span class="chip">Steel</span><span class="chip">Wood</span><span class="chip">Hybrid</span></div></div>
+                <div style="border-top:1px solid var(--line);padding-top:6px"><div class="meter num" style="padding:6px 0"><div class="meter__head"><span class="name">Top 100 ridden</span><b>23 <small>/ 100</small></b></div><div class="meter__bar"><i style="width:23%"></i></div></div></div>
+              </aside>
+              <div>
+                <div class="dpodium">
+                  <div><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div><div class="cap"><h2>Steel Vengeance</h2><p>Cedar Point – Rocky Mountain Construction</p></div><span class="first__num" aria-hidden="true">1</span></div>
+                  <div><div class="photo sky3"><svg class="coaster"><use href="#coaster"/></svg></div><div class="cap"><h2>Falcons Flight</h2><p>Six Flags Qiddiya City</p></div><span class="n2">2</span></div>
+                  <div><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div><div class="cap"><h2>VelociCoaster</h2><p>Islands of Adventure</p></div><span class="n2">3</span></div>
+                </div>
+                <table class="dtable num">
+                  <thead><tr><th>Rank</th><th>Coaster</th><th>Manufacturer</th><th>Country</th><th style="text-align:right">Duels won</th></tr></thead>
+                  <tbody>
+                    <tr><td><span class="rank"><b>4</b><span class="mv mv--up"><svg><use href="#i-up"/></svg>+2</span></span></td><td><div class="cell"><div class="thumb"><div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name" style="font-size:15px">Zadra<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub" style="font-size:13px">Energylandia</div></div></div></td><td>RMC</td><td>Poland</td><td class="score">91.8%</td></tr>
+                    <tr><td><span class="rank"><b>5</b></span></td><td><div class="cell"><div class="thumb"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name" style="font-size:15px">Iron Gwazi</div><div class="sub" style="font-size:13px">Busch Gardens Tampa</div></div></div></td><td>RMC</td><td>United States</td><td class="score">91.2%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption>Ranking, desktop<span>Filtres en colonne, podium en grand, puis la liste en colonnes</span></figcaption>
+      </figure>
+
+      <figure>
+        <div class="frame frame--desk" style="--w:1280;--h:826"><div class="frame__in" style="height:800px">
+          <div class="dhead"><svg class="band__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg><nav class="dnav"><a class="on" href="#desk-t">Home</a><a href="#desk-t">Ranking</a><a href="#desk-t">Map</a></nav><div class="dsearch"><svg class="ico"><use href="#i-search"/></svg>Search a coaster, a park, a rider<kbd>/</kbd></div><span class="av">L</span></div>
+          <header class="dband" style="height:128px"><svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg><div class="dband__in"><div><h1 style="font-size:44px">Every coaster, rated by riders.</h1></div></div><div class="band__stripes" aria-hidden="true"></div></header>
+          <div class="dbody">
+            <div class="dhome-hero"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div><span class="ribbon">Trending this week</span><div class="cap"><h2>Big Thunder Mountain Railroad</h2><p>Walt Disney World – Magic Kingdom</p></div></div>
+            <div class="dstat"><div class="statband num"><div><b>834,750</b><span>ratings</span></div><div><b>100,381</b><span>reviews</span></div><div><b>26,354</b><span>riders</span></div><div><b>23,588</b><span>photos</span></div></div></div>
+            <div class="dhome-cols">
+              <div><div class="sec-h"><h3>Latest ratings</h3><a href="#desk-t">See all</a></div>
+                <ul class="list list--activity">
+                  <li><span class="av">L</span><div><div class="name">Léa rated Zadra</div><div class="sub">Energylandia</div></div><span class="stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star-half"/></svg></span></li>
+                  <li><span class="av" style="background:#2e6b55">T</span><div><div class="name">Tom rated Toutatis</div><div class="sub">Parc Astérix</div></div><span class="stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg></span></li>
+                </ul></div>
+              <div><div class="sec-h"><h3>Top of the ranking</h3><a href="#desk-t">Full ranking</a></div>
+                <ul class="list list--ledger num">
+                  <li><span class="rank"><b>1</b></span><div class="thumb"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Steel Vengeance</div><div class="sub">Cedar Point</div></div></li>
+                </ul></div>
+            </div>
+          </div>
+        </div></div>
+        <figcaption>Home, desktop<span>La tendance en panoramique, les chiffres en bandeau, deux colonnes</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ================= Dark theme ================= -->
+  <section class="bsec" aria-labelledby="dark-t">
+    <h2 id="dark-t">Thème sombre</h2>
+    <p class="lede">Possible, et le bandeau bleu nuit n'y fait pas obstacle : le thème sombre échange les rôles, il n'inverse pas les couleurs. La marque (bleu nuit, jaune, bandes, photos) ne bouge pas ; c'est la page qui passe dans le noir. Le bandeau reste distinct du fond grâce à sa saturation, ses étoiles et ses bandes.</p>
+    <div class="frames">
+<figure>
+        <div class="frame frame--phone is-dark" style="--w:360;--h:780"><div class="frame__in theme-dark"><div class="screen">
+          <header class="band band--home">
+            <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <div class="band__row"><svg class="band__logo" viewBox="0 0 220.3 32"><use href="#logo"/></svg></div>
+            <p class="band__tagline">Every coaster, rated by riders.</p>
+            <div class="band__stripes" aria-hidden="true"></div>
+          </header>
+          <div class="first"><div class="photo sky2" style="aspect-ratio:4/3"><svg class="coaster"><use href="#coaster"/></svg></div><span class="ribbon">Trending this week</span><div class="cap"><h2>Big Thunder Mountain Railroad</h2><p>Walt Disney World – Magic Kingdom</p></div></div>
+          <div class="statband num"><div><b>834,750</b><span>ratings</span></div><div><b>100,381</b><span>reviews</span></div><div><b>26,354</b><span>riders</span></div></div>
+          <div class="sec-h"><h3>Latest ratings</h3><a href="#mob-t">See all</a></div>
+          <ul class="list list--activity">
+            <li><span class="av">L</span><div><div class="name">Léa rated Zadra</div><div class="sub">Energylandia</div></div><span class="stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star-half"/></svg></span></li>
+            <li><span class="av" style="background:#2e6b55">T</span><div><div class="name">Tom rated Toutatis</div><div class="sub">Parc Astérix</div></div><span class="stars"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg></span></li>
+          </ul>
+        </div><nav class="tabbar" data-on="home" aria-hidden="true"></nav></div></div>
+        <figcaption>Home, sombre<span>Même bandeau, fond plus profond</span></figcaption>
+      </figure><figure>
+        <div class="frame frame--phone is-dark" style="--w:360;--h:780"><div class="frame__in theme-dark"><div class="screen">
+          <header class="band band--page">
+            <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <div class="band__row"><h1 class="band__title">World ranking</h1><span class="rbtn"><svg class="ico"><use href="#i-filter"/></svg></span></div>
+            <p class="band__ctx">September 2026 <span class="pill-new">New</span></p>
+            <div class="band__stripes" aria-hidden="true"></div>
+          </header>
+          <div class="first"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div><div class="cap"><h2>Steel Vengeance</h2><p>Cedar Point – RMC</p></div><span class="first__num" aria-hidden="true">1</span></div>
+          
+          <ul class="list list--ledger num">
+            <li><span class="rank"><b>2</b><span class="mv mv--down"><svg><use href="#i-down"/></svg>−1</span></span><div class="thumb"><div class="photo sky3"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Falcons Flight</div><div class="sub">Six Flags Qiddiya City</div></div></li>
+            <li><span class="rank"><b>3</b></span><div class="thumb"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">VelociCoaster<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub">Islands of Adventure</div></div></li>
+            <li><span class="rank"><b>4</b><span class="mv mv--up"><svg><use href="#i-up"/></svg>+2</span></span><div class="thumb"><div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Zadra<svg class="ridden"><use href="#i-check"/></svg></div><div class="sub">Energylandia</div></div></li>
+            <li><span class="rank"><b>5</b></span><div class="thumb"><div class="photo sky1"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Iron Gwazi</div><div class="sub">Busch Gardens Tampa</div></div></li>
+          </ul>
+        </div><nav class="tabbar" data-on="ranking" aria-hidden="true"></nav></div></div>
+        <figcaption>Ranking, sombre<span>Rangs éclaircis, jaune inchangé</span></figcaption>
+      </figure><figure>
+        <div class="frame frame--phone is-dark" style="--w:360;--h:780"><div class="frame__in theme-dark"><div class="screen">
+          <div class="chero">
+            <div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div>
+            <div class="chero__top"><span class="rbtn rbtn--photo"><svg class="ico"><use href="#i-back"/></svg></span><div><span class="rbtn rbtn--photo"><svg class="ico"><use href="#i-heart"/></svg></span><span class="rbtn rbtn--photo"><svg class="ico"><use href="#i-share"/></svg></span></div></div>
+            <div class="cap"><h1>Zadra</h1><p>Energylandia, Poland</p></div>
+            <div class="chero__stripes" aria-hidden="true"></div>
+          </div>
+          <ul class="list list--kv num" style="border-bottom:1px solid var(--line)">
+            <li style="border-top:0"><div class="kv-k">World rank</div><div class="kv-v">#4</div></li>
+            <li style="border-top:0"><div class="kv-k">Average</div><div class="kv-v">4.6 <small>/ 5, 3,412 ratings</small></div></li>
+            <li><div class="kv-k">Height</div><div class="kv-v">62.8 <small>m</small></div></li>
+            <li><div class="kv-k">Speed</div><div class="kv-v">121 <small>km/h</small></div></li>
+          </ul>
+          <div class="rate"><span class="rate__label">You rode it in 2024. Your rating:</span><span class="stars stars--input"><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star"/></svg><svg><use href="#star-half"/></svg></span></div>
+          <div class="sec-h"><h3>Ratings</h3><a href="#mob-t">3,412</a></div>
+          <div class="dist num">
+            <div class="dist__row"><span>5★</span><span class="dist__bar"><i style="width:68%;background:var(--scale-high)"></i></span><span>68%</span></div>
+            <div class="dist__row"><span>4★</span><span class="dist__bar"><i style="width:21%;background:color-mix(in oklch, var(--scale-high) 70%, #e0a400)"></i></span><span>21%</span></div>
+            <div class="dist__row"><span>3★</span><span class="dist__bar"><i style="width:7%;background:#c79400"></i></span><span>7%</span></div>
+          </div>
+        </div><nav class="tabbar" data-on="" aria-hidden="true"></nav></div></div>
+        <figcaption>Fiche coaster, sombre<span>La photo porte la page</span></figcaption>
+      </figure><figure>
+        <div class="frame frame--phone is-dark" style="--w:360;--h:780"><div class="frame__in theme-dark"><div class="screen">
+          <header class="band band--profile">
+            <svg class="band__stars" aria-hidden="true"><rect width="100%" height="100%" fill="url(#starfield)"/></svg>
+            <div class="prof"><span class="prof__av">L</span><div style="flex:1;min-width:0"><h1>Léa M.</h1><p>France, member since 2019</p></div><span class="rbtn"><svg class="ico"><use href="#i-settings"/></svg></span></div>
+            <div class="band__stripes" aria-hidden="true"></div>
+          </header>
+          <div class="statband num"><div><b>412</b><span>coasters</span></div><div><b>96</b><span>parks</span></div><div><b>58</b><span>reviews</span></div></div>
+          <div class="meter num"><div class="meter__head"><span class="name">World top 100 ridden</span><b>23 <small>/ 100</small></b></div><div class="meter__bar"><i style="width:23%"></i></div></div>
+          <div class="sec-h" style="border-top:1px solid var(--line)"><h3>My top</h3><a href="#mob-t">Edit</a></div>
+          <ul class="list list--ledger num">
+            <li><span class="rank"><b>1</b></span><div class="thumb"><div class="photo sky4"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Zadra</div><div class="sub">Energylandia</div></div></li>
+            <li><span class="rank"><b>2</b></span><div class="thumb"><div class="photo sky3"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Taron</div><div class="sub">Phantasialand</div></div></li>
+            <li><span class="rank"><b>3</b></span><div class="thumb"><div class="photo sky2"><svg class="coaster"><use href="#coaster"/></svg></div></div><div><div class="name">Toutatis</div><div class="sub">Parc Astérix</div></div></li>
+          </ul>
+        </div><nav class="tabbar" data-on="profile" aria-hidden="true"></nav></div></div>
+        <figcaption>Profil, sombre<span>Le jaune ressort encore plus</span></figcaption>
+      </figure>
+    </div>
+    <div class="rules">
+      <div class="panel"><h4>Ce qui change</h4><p class="muted">Fond, surfaces, texte, filets, bleu d'action (éclairci), vert et corail (éclaircis), chiffres des rangs. Chaque rôle a une valeur claire et une valeur sombre dans <code>tokens.css</code>.</p></div>
+      <div class="panel"><h4>Ce qui ne change pas</h4><p class="muted">Bleu nuit, jaune, encre sur jaune, étoiles, bandes, photos. Le texte posé sur le jaune reste de l'encre foncée dans les deux thèmes.</p></div>
+      <div class="panel"><h4>Quand le livrer</h4><p class="muted">Les pages encore en <code>.cc-*</code> ont des couleurs codées en dur : les rôles sombres sont prêts dès maintenant, l'activation vient quand les pages principales sont migrées. Choix système par défaut, bascule sur le profil. Décidé : rôles sombres dans les fondations, activation dans une issue dédiée.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= Growth ================= -->
+  <section class="bsec" aria-labelledby="gr-t">
+    <h2 id="gr-t">Comment le système grandit</h2>
+    <p class="lede">Un seul endroit de référence (DESIGN.md et tokens.css), en couches : chaque couche s'appuie sur celle du dessus, et une page migrée n'invente rien que la couche du dessus ne permette.</p>
+    <div class="layers">
+      <div class="layer"><b>Principes</b><p>Ce document, en version courte dans DESIGN.md : l'idée, les sept principes, le curseur clean ↔ fun, le ton. Ils changent rarement et tranchent les débats.</p></div>
+      <div class="layer"><b>Fondations</b><p>Tokens en trois niveaux dans <code>tokens.css</code> : primitives (rampes de couleur) → rôles (<code>brand</code>, <code>highlight</code>, <code>ink</code>) → utilitaires Tailwind. Les composants ne consomment que des rôles.</p></div>
+      <div class="layer"><b>Motifs</b><p>Les objets de marque (livrée, étoiles, ruban, chiffres héros, angle) : chacun un composant ou un utilitaire unique, avec sa règle d'usage et son budget de fun.</p></div>
+      <div class="layer"><b>Composants</b><p>Twig Components, une source chacun, variantes via <code>html_cva</code>. Documentés dans DESIGN.md au moment où ils sont migrés, dans la même PR.</p></div>
+      <div class="layer"><b>Recettes de page</b><p>Page de liste, fiche, formulaire, page d'explication : quel en-tête, quel budget de fun, quels composants. C'est ce qu'on suit pour migrer une page.</p></div>
+    </div>
+    <div class="steps">
+      <div class="step"><span>1</span><b>Design system</b><p>DESIGN.md réécrit autour de ces principes, nouveaux tokens (<code>brand</code>, angle, graisses 800 et italique), polices ajoutées. Une PR, sans changement visible.</p></div>
+      <div class="step"><span>2</span><b>Navigation</b><p>Barre d'onglets pleine, en-tête desktop bleu nuit, en-tête de page en bandeau et barre compacte.</p></div>
+      <div class="step"><span>3</span><b>Classement</b><p>Podium, rangs en 800 italique, jauge. Page de référence pour les suivantes.</p></div>
+      <div class="step"><span>4</span><b>Page par page</b><p>Chaque migration part de sa recette et de son budget de fun ; ce qui manque est ajouté au système dans la même PR.</p></div>
+    </div>
+  </section>
+
+  <!-- ================= Open questions ================= -->
+  <section class="bsec" aria-labelledby="q-t">
+    <h2 id="q-t">Questions ouvertes</h2>
+    <ol class="qs">
+      <li>Texte et traductions de la phrase d'accroche de la home, à choisir avec la refonte de la home.</li>
+      <li>Un peu de transparence sur la barre d'onglets, plus tard, toujours en bleu nuit.</li>
+    </ol>
+    <div class="panel"><h4>Historique</h4>
+      <ul>
+        <li>v8 : ne garde que les choix retenus (pied de page bleu nuit dans les composants migrés, barre pleine avec liseré), passe de finition : plus de chaîne dans les titres, principes sans numéros, règles en une seule feuille à filets au lieu de cartes identiques.</li>
+        <li>v7 : décisions : barre d'onglets pleine bleu nuit avec liseré clair, principe de la phrase d'accroche retenu (texte plus tard), pied de page bleu nuit étoilé sans livrée.</li>
+        <li>v6 : section « À trancher » : barre d'onglets pleine, verre bleu nuit ou verre blanc ; phrase d'accroche en quatre langues, deux propositions chacune ; pied de page clair, bleu nuit, ou bleu nuit avec livrée, en mobile et desktop.</li>
+        <li>v5 : pas de séparateur (la livrée suffit), filet clair d'1 px entre l'en-tête desktop et le bandeau, aucune ligne jaune sur les barres, thème sombre décidé.</li>
+        <li>v4 : chaîne remplacée par un séparateur de voie (trois options à choisir), une seule ligne jaune en desktop (l'en-tête se fond dans le bandeau, fine bande de livrée quand il est seul), thème sombre avec quatre maquettes.</li>
+        <li>v3 : bandes obliques redessinées en SVG (plus de crénelage), en-têtes plus hauts (136 / 120 / 148 px), section accessibilité avec simulation de daltonisme, mouvements et avis distingués autrement que par la couleur.</li>
+        <li>v2 : planche de langage visuel (idée, public, motifs, principes, curseur, fondations, ton, composants migrés, pages mobile et desktop, croissance du système).</li>
+        <li>v1 : pages mobiles, hauteurs d'en-tête, planche de composants.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // One tab bar template for every mockup.
+  const tpl = document.getElementById('tabbar-tpl');
+  document.querySelectorAll('.tabbar').forEach((bar) => {
+    bar.append(tpl.content.cloneNode(true));
+    const on = bar.dataset.on;
+    if (on) bar.querySelector(`[data-tab="${on}"]`)?.classList.add('tab--on');
+  });
+  // Mockups are drawn at native size (360 or 1280 px) and scaled to their frame.
+  const fit = (frame) => {
+    const w = parseFloat(getComputedStyle(frame).getPropertyValue('--w'));
+    if (w) frame.style.setProperty('--s', frame.clientWidth / w);
+  };
+  const frames = document.querySelectorAll('.frame');
+  frames.forEach(fit);
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver((entries) => entries.forEach((e) => fit(e.target)));
+    frames.forEach((f) => ro.observe(f));
+  }
+</script>
+</body>
+</html>
