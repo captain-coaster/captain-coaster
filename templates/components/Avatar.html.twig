@@ -29,7 +29,18 @@
   'bg-[var(--avatar-7)]',
   'bg-[var(--avatar-8)]',
 ] %}
-{% if user.profilePicture %}
+{% set px = {xs: 32, sm: 36, md: 44, lg: 64}[size] ?? 44 %}
+{# null while PICTURES_V2 is off (legacy path) #}
+{% set jpg = user.profilePicture ? avatar_url(user.profilePicture, px, 'jpg') : null %}
+{% if jpg %}
+  <picture class="contents">
+    <source srcset="{{ avatar_url(user.profilePicture, px, 'avif') }} 1x, {{ avatar_url(user.profilePicture, px * 2, 'avif') }} 2x" type="image/avif">
+    <img src="{{ jpg }}" srcset="{{ jpg }} 1x, {{ avatar_url(user.profilePicture, px * 2, 'jpg') }} 2x"
+         alt="{{ decorative ? '' : user.displayName }}"
+         class="{{ avatar.apply({size: size}, 'object-cover', attributes.render('class'))|tailwind_merge }}"
+         {{ attributes.without('class') }}>
+  </picture>
+{% elseif user.profilePicture %}
   <img src="{{ pictures_cdn ~ '/profile-pictures/' ~ user.profilePicture }}"
        alt="{{ decorative ? '' : user.displayName }}"
        class="{{ avatar.apply({size: size}, 'object-cover', attributes.render('class'))|tailwind_merge }}"

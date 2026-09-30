@@ -83,7 +83,7 @@ class HeroServiceTest extends TestCase
         $this->assertSame('some-coaster', $pick['coasterSlug']);
         $this->assertSame('Some Coaster', $pick['coasterName']);
         $this->assertSame('Some Park', $pick['parkName']);
-        $this->assertSame('some-image.jpg', $pick['imageFilename']);
+        $this->assertSame('some-image.jpg', $pick['image']->filename);
         $this->assertSame('Some Credit', $pick['imageCredit']);
         $this->assertSame('status.operating', $pick['statusName']);
     }
@@ -112,7 +112,7 @@ class HeroServiceTest extends TestCase
 
         $this->assertSame('photo', $pick['type']);
         $this->assertSame('Some Coaster', $pick['coasterName']);
-        $this->assertSame('some-image.jpg', $pick['imageFilename']);
+        $this->assertSame('some-image.jpg', $pick['image']->filename);
     }
 
     public function testCoasterCandidateWithoutAMainImageYieldsNothing(): void
@@ -147,7 +147,7 @@ class HeroServiceTest extends TestCase
         $first = $this->service->pick();
         $second = $this->service->pick();
 
-        $this->assertSame($first, $second);
+        $this->assertEquals($first, $second);
     }
 
     public function testInvalidateForcesRecomputeOnNextPick(): void

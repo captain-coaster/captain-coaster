@@ -25,7 +25,7 @@
       <a href="{{ path('show_coaster', {id: side.coaster.id, slug: side.coaster.slug}) }}" class="group min-w-0 text-ink">
         <span class="relative block aspect-4/3 overflow-hidden rounded-sm bg-subtle">
           {% if side.coaster.mainImage %}
-            {{ helper.picture(side.coaster.mainImage.filename, 200, 150, '', 'absolute inset-0 size-full object-cover') }}
+            {{ helper.picture(side.coaster.mainImage, 200, 150, '', 'absolute inset-0 size-full object-cover') }}
           {% else %}
             {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
           {% endif %}

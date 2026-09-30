@@ -46,6 +46,7 @@ class ImageModerationServiceTest extends TestCase
         ?ImageReportRepository $imageReportRepository = null,
         ?string $httpContent = 'fake-jpeg-bytes',
         ?EntityManagerInterface $entityManager = null,
+        ?ImageManager $imageManager = null,
     ): ImageModerationService {
         $bedrockService = $this->createMock(BedrockService::class);
         $bedrockService->method('invokeVisionModel')->willReturn($bedrockResponse);
@@ -61,13 +62,13 @@ class ImageModerationServiceTest extends TestCase
         }
 
         $pictureUrlSigner = $this->createMock(PictureUrlSigner::class);
-        $pictureUrlSigner->method('sign')->willReturn('https://pictures.captaincoaster.com/1440x1440/jpg/test-coaster-abc123.jpg?s=xyz');
+        $pictureUrlSigner->method('signImage')->willReturn('https://pictures.captaincoaster.com/1440x1440/jpg/test-coaster-abc123.jpg?s=xyz');
 
         return new ImageModerationService(
             $bedrockService,
             $httpClient,
             $pictureUrlSigner,
-            $this->createMock(ImageManager::class),
+            $imageManager ?? $this->createMock(ImageManager::class),
             $imageReportRepository ?? $this->createMock(ImageReportRepository::class),
             $entityManager ?? $this->createMock(EntityManagerInterface::class),
             $logger ?? $this->createMock(LoggerInterface::class),
@@ -213,6 +214,26 @@ class ImageModerationServiceTest extends TestCase
 
         $this->assertSame(1.0, $result['focalX']);
         $this->assertSame(0.0, $result['focalY']);
+    }
+
+    public function testApplyResultLeavesTheImageUntouchedWhenTheS3WriteFails(): void
+    {
+        $imageManager = $this->createMock(ImageManager::class);
+        $imageManager->method('writeFocalPointMetadata')->willThrowException(new \RuntimeException('S3 down'));
+        $service = $this->createService(['success' => true, 'metadata' => []], imageManager: $imageManager);
+        $image = $this->createImage();
+        $image->setFocalX(0.2);
+        $image->setFocalY(0.3);
+
+        try {
+            $service->applyResult($image, ['categories' => [], 'focalX' => 0.5, 'focalY' => 0.5, 'confidence' => null, 'explanation' => null]);
+            $this->fail('The S3 failure must propagate.');
+        } catch (\RuntimeException) {
+        }
+
+        $this->assertSame(0.2, $image->getFocalX());
+        $this->assertSame(0.3, $image->getFocalY());
+        $this->assertNull($image->getAnalyzedAt());
     }
 
     public function testApplyResultEnablesTheImageWhenNoCategoriesAreFlagged(): void

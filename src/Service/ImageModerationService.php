@@ -59,7 +59,7 @@ class ImageModerationService
             // photo, just downscaled, which is what moderation/focal-point detection needs. This
             // avoids adding any PHP-side image manipulation just to bound the Bedrock payload size.
             // jpg, not avif: Bedrock's Converse API ImageFormat only accepts png/jpeg/gif/webp.
-            $url = $this->pictureUrlSigner->sign($image->getFilename(), 1440, 1440, 'jpg');
+            $url = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
             $imageBytes = $this->httpClient->request('GET', $url)->getContent();
         } catch (\Throwable $e) {
             $this->moderationLogger->error('Image moderation could not fetch the lightbox derivative', [
@@ -107,11 +107,23 @@ class ImageModerationService
     /** @param array{categories: string[], focalX: float, focalY: float, confidence: ?string, explanation: ?string} $result */
     public function applyResult(Image $image, array $result): void
     {
+        $previousFocal = [$image->getFocalX(), $image->getFocalY()];
         $image->setFocalX($result['focalX']);
         $image->setFocalY($result['focalY']);
-        $image->setAnalyzedAt(new \DateTime());
 
-        $this->imageManager->writeFocalPointMetadata($image);
+        try {
+            $this->imageManager->writeFocalPointMetadata($image);
+        } catch (\Throwable $e) {
+            // Leave the entity as it was: a later flush in the same unit of work (e.g. the next
+            // image of a ReprocessImagesCommand batch) must not commit values S3 never got.
+            [$focalX, $focalY] = $previousFocal;
+            $image->setFocalX($focalX);
+            $image->setFocalY($focalY);
+
+            throw $e;
+        }
+
+        $image->setAnalyzedAt(new \DateTime());
 
         if ([] === $result['categories']) {
             $image->setEnabled(true);

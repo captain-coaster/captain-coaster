@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\Image;
+use App\Message\AnalyzeImageMessage;
 use App\Repository\ImageRepository;
 use Aws\S3\S3Client;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +13,7 @@ use League\Flysystem\FilesystemOperator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 class ImageManager
 {
@@ -24,44 +26,69 @@ class ImageManager
         #[Autowire('%env(string:AWS_S3_CACHE_BUCKET_NAME)%')]
         private readonly string $s3CacheBucket,
         #[Autowire('%env(string:AWS_S3_BUCKET_NAME)%')]
-        private readonly string $s3OriginalBucket
+        private readonly string $s3OriginalBucket,
+        private readonly FilesystemOperator $picturesVariantsFilesystem,
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
-    /** Create file on abstracted filesystem (currently S3). */
+    /**
+     * Store a new upload. The original is named after the id, so the row comes first; a failed
+     * S3 write rolls it back. The analysis is dispatched once both exist, never before the commit.
+     */
+    public function store(Image $image): void
+    {
+        $this->setImageHash($image);
+        $image->setFilename(''); // NOT NULL, set once the id exists
+
+        $this->em->wrapInTransaction(function () use ($image): void {
+            $this->em->persist($image);
+            $this->em->flush();
+            $image->setFilename($this->upload($image));
+            $this->em->flush();
+        });
+
+        $this->messageBus->dispatch(new AnalyzeImageMessage($image->getId()));
+    }
+
+    /**
+     * Write the uploaded original as `{id}.jpg`, the key the v2 image Lambda reads (uploads are
+     * JPEG only, see Image::$file), so the image needs its id first.
+     */
     public function upload(Image $image): string
     {
-        $filename = $this->generateFilename($image->getFile(), $image->getCoaster()->getSlug());
+        $filename = $image->getId().'.jpg';
 
         $this->picturesFilesystem->write(
             $filename,
             $image->getFile()->getContent(),
-            ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0']]
+            ['Metadata' => ['watermark' => $image->isWatermarked() ? '1' : '0'], 'ContentType' => Image::MIME_TYPE]
         );
 
         return $filename;
     }
 
-    /** Check if image already exists based on file hash. */
+    /**
+     * An image with the exact same bytes, or null. Images stored before the SHA-256 switch still
+     * hold an unpadded CRC32 hash: matched too until they are backfilled.
+     */
     public function isDuplicate(UploadedFile $file): ?Image
     {
         $content = file_get_contents($file->getPathname());
         if (false === $content) {
             return null;
         }
-        $hash = dechex(crc32($content));
 
-        return $this->imageRepository->findOneBy(['hash' => $hash]);
+        return $this->imageRepository->findOneBy(['hash' => [hash('sha256', $content), dechex(crc32($content))]]);
     }
 
-    /** Calculate and set hash for image. */
+    /** SHA-256 of the uploaded bytes, the key isDuplicate() looks up. */
     public function setImageHash(Image $image): void
     {
         if ($image->getFile()) {
             $content = file_get_contents($image->getFile()->getPathname());
             if (false !== $content) {
-                $hash = dechex(crc32($content));
-                $image->setHash($hash);
+                $image->setHash(hash('sha256', $content));
             }
         }
     }
@@ -70,6 +97,19 @@ class ImageManager
     public function remove(string $filename): void
     {
         $this->picturesFilesystem->delete($filename);
+    }
+
+    /**
+     * Delete every v2 variant of a photo (`i/{id}/`, all versions, sizes and formats). Cloudflare
+     * may still serve a cached copy until its TTL; purging it is a separate, later step (D16).
+     */
+    public function removeVariants(Image $image): void
+    {
+        try {
+            $this->picturesVariantsFilesystem->deleteDirectory('i/'.$image->getId());
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to delete photo variants', ['id' => $image->getId(), 'error' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -128,27 +168,26 @@ class ImageManager
      * the AWS SDK. REPLACE overwrites *all* metadata, not merges it -- the existing watermark
      * value must be re-supplied here too, or it would be silently dropped. Same for Content-Type,
      * which would otherwise fall back to binary/octet-stream.
+     *
+     * Throws on failure: the v2 URL hashes the DB values and the Lambda checks them against this
+     * metadata, so a DB committed without it would answer 409 -- callers must not flush then.
      */
     public function writeFocalPointMetadata(Image $image): void
     {
         $key = $image->getFilename();
 
-        try {
-            $this->s3Client->copyObject([
-                'Bucket' => $this->s3OriginalBucket,
-                'Key' => $key,
-                'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
-                'MetadataDirective' => 'REPLACE',
-                'ContentType' => Image::MIME_TYPE,
-                'Metadata' => [
-                    'watermark' => $image->isWatermarked() ? '1' : '0',
-                    'focal-x' => (string) $image->getFocalX(),
-                    'focal-y' => (string) $image->getFocalY(),
-                ],
-            ]);
-        } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
-        }
+        $this->s3Client->copyObject([
+            'Bucket' => $this->s3OriginalBucket,
+            'Key' => $key,
+            'CopySource' => rawurlencode("{$this->s3OriginalBucket}/{$key}"),
+            'MetadataDirective' => 'REPLACE',
+            'ContentType' => Image::MIME_TYPE,
+            'Metadata' => [
+                'watermark' => $image->isWatermarked() ? '1' : '0',
+                'focal-x' => (string) $image->getFocalX(),
+                'focal-y' => (string) $image->getFocalY(),
+            ],
+        ]);
     }
 
     /** Update main image property of all coasters. */
@@ -192,11 +231,5 @@ class ImageManager
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
         }
-    }
-
-    /** Generates a filename like fury-325-carowinds-64429c62b6b23.jpg. */
-    private function generateFilename(UploadedFile $file, string $coasterSlug): string
-    {
-        return \sprintf('%s-%s.%s', $coasterSlug, uniqid(), $file->guessExtension());
     }
 }

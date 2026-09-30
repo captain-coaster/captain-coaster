@@ -18,7 +18,8 @@ class PictureExtension extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('signed_picture_url', $this->pictureUrlSigner->sign(...)),
+            new TwigFunction('picture_url', $this->pictureUrlSigner->signImage(...)),
+            new TwigFunction('avatar_url', $this->pictureUrlSigner->signAvatar(...)),
         ];
     }
 }

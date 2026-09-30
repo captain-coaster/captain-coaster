@@ -76,7 +76,7 @@ class ImageCrudController extends AbstractCrudController
             // prepending a basePath (it special-cases http(s)://-prefixed values).
             ImageField::new('filename', 'Image')
                 ->setTemplatePath('admin/field/photo.html.twig')
-                ->formatValue(fn (mixed $value, Image $entity): string => $this->pictureUrlSigner->sign($entity->getFilename(), 1440, 1440, 'jpg'))
+                ->formatValue(fn (mixed $value, Image $entity): string => $this->pictureUrlSigner->signImage($entity, 1440, 1440, 'jpg'))
                 ->onlyOnIndex(),
             BooleanField::new('enabled'),
             TextField::new('filename')->hideOnIndex()->setFormTypeOption('disabled', 'disabled'),

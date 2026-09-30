@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\DTO\PictureRef;
 use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Repository\CoasterRepository;
@@ -25,7 +26,8 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 class HeroService
 {
-    private const string CACHE_KEY = 'hero_pick';
+    // Bumped with the pick's shape, so a deploy never reads an entry in the old one.
+    private const string CACHE_KEY = 'hero_pick_v2';
 
     private const array CATEGORIES = ['upcoming', 'new', 'trending', 'photo'];
 
@@ -36,7 +38,7 @@ class HeroService
     ) {
     }
 
-    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, imageFilename: string, imageCredit: ?string, statusName: ?string}|null */
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusName: ?string}|null */
     public function pick(): ?array
     {
         return $this->cache->get(self::CACHE_KEY, function (ItemInterface $item): ?array {
@@ -51,7 +53,7 @@ class HeroService
         $this->cache->delete(self::CACHE_KEY);
     }
 
-    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, imageFilename: string, imageCredit: ?string, statusName: ?string}|null */
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusName: ?string}|null */
     private function resolve(): ?array
     {
         $categories = self::CATEGORIES;
@@ -83,7 +85,7 @@ class HeroService
         };
     }
 
-    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, imageFilename: string, imageCredit: ?string, statusName: ?string}|null */
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusName: ?string}|null */
     private function load(string $type, int $id): ?array
     {
         if ('photo' === $type) {
@@ -104,7 +106,7 @@ class HeroService
             'coasterSlug' => $coaster->getSlug(),
             'coasterName' => $coaster->getName(),
             'parkName' => $coaster->getPark()?->getName(),
-            'imageFilename' => $image->getFilename(),
+            'image' => PictureRef::fromImage($image),
             'imageCredit' => $image->getCredit(),
             'statusName' => $coaster->getStatus()?->getName(),
         ];

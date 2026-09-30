@@ -11,7 +11,7 @@
                 <div class="cc-media__start">
                     <a href="{{ path('show_coaster', {'id': coaster.id, 'slug': coaster.slug}) }}">
                         {% if coaster.mainImage is not null %}
-                            {{ helper.picture(coaster.mainImage.filename, 96, 96, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
+                            {{ helper.picture(coaster.mainImage, 96, 96, coaster.name, 'img-rounded', 'lazy', 'width:96px;') }}
                         {% endif %}
                     </a>
                 </div>

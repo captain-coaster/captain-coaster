@@ -46,7 +46,6 @@ class CoasterController extends BaseController
         #[MapEntity(mapping: ['slug' => 'slug'])]
         Coaster $coaster,
         TranslatorInterface $translator,
-        EntityManagerInterface $em,
         ImageManager $imageManager
     ): Response {
         $image = new Image();
@@ -70,8 +69,7 @@ class CoasterController extends BaseController
                 );
             }
 
-            $em->persist($image);
-            $em->flush();
+            $imageManager->store($image);
 
             $this->addFlash('success', $translator->trans('image_upload.form.success'));
 
