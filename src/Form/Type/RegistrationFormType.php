@@ -20,16 +20,19 @@ class RegistrationFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // empty_data: an empty field must reach validation as '', not fail on User's string setters as null
         $builder
             ->add('email', EmailType::class, [
                 'attr' => [
                     'placeholder' => 'register.form.email'],
                 'label' => false,
+                'empty_data' => '',
             ])
             ->add('firstName', TextType::class, [
                 'attr' => [
                     'placeholder' => 'register.form.first_name'],
                 'label' => false,
+                'empty_data' => '',
             ])
             ->add('lastName', TextType::class, [
                 'attr' => [
