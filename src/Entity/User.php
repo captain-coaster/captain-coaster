@@ -696,7 +696,8 @@ class User implements UserInterface
     /** @param array<string> $preferredReviewLanguages */
     public function setPreferredReviewLanguages(array $preferredReviewLanguages): static
     {
-        $this->preferredReviewLanguages = $preferredReviewLanguages;
+        // A multiple ChoiceType keeps the choice indexes as keys; gaps would be stored as a JSON object
+        $this->preferredReviewLanguages = array_values($preferredReviewLanguages);
 
         return $this;
     }
