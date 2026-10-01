@@ -33,7 +33,7 @@
       </span>
       <span class="grid gap-0.5 p-4">
         <span class="font-display text-lead leading-tight font-semibold">{{ coaster.name }}</span>
-        <span class="text-caption text-muted-strong">{{ coaster.park.name }}, {{ coaster.park.country.name|trans({}, 'database') }}</span>
+        <span class="text-caption text-muted-strong">{{ coaster.park.name }}, {{ coaster.park.country|vocab_label }}</span>
       </span>
     </aside>
   </div>

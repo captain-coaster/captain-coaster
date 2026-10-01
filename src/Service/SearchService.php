@@ -40,14 +40,16 @@ class SearchService
     public function __construct(
         private readonly EntityManagerInterface $em,
         #[Autowire(service: 'search.cache_pool')]
-        private readonly CacheInterface $cache
+        private readonly CacheInterface $cache,
+        private readonly VocabularyLabeler $labeler,
     ) {
     }
 
     /** Search across all entity types with caching support. */
     public function searchAll(string $query, int $limit = 5): SearchResponseDTO
     {
-        $cacheKey = 'search_all_'.$limit.'_'.md5(strtolower(trim($query)));
+        // Per locale: results hold country labels.
+        $cacheKey = 'search_all_'.$limit.'_'.\Locale::getDefault().'_'.md5(strtolower(trim($query)));
 
         try {
             $data = $this->cache->get($cacheKey, function (ItemInterface $item) use ($query, $limit) {
@@ -142,7 +144,7 @@ class SearchService
      */
     private function formatSearchResults(array $results, string $type): array
     {
-        return array_map(static function ($result) use ($type) {
+        return array_map(function ($result) use ($type) {
             switch ($type) {
                 case 'coaster':
                     return new SearchResultDTO(
@@ -154,7 +156,7 @@ class SearchService
                         subtitle: $result['parkName'] ?? null,
                         metadata: [
                             'park' => $result['parkName'] ?? null,
-                            'country' => $result['countryName'] ?? null,
+                            'country' => $this->countryLabel($result),
                         ]
                     );
                 case 'park':
@@ -163,9 +165,9 @@ class SearchService
                         name: $result['name'],
                         slug: $result['slug'],
                         type: 'park',
-                        subtitle: $result['countryName'] ?? null,
+                        subtitle: $this->countryLabel($result),
                         metadata: [
-                            'country' => $result['countryName'] ?? null,
+                            'country' => $this->countryLabel($result),
                         ]
                     );
                 case 'user':
@@ -185,6 +187,12 @@ class SearchService
         }, $results);
     }
 
+    /** @param array<string, mixed> $result */
+    private function countryLabel(array $result): ?string
+    {
+        return isset($result['countryName']) ? $this->labeler->country($result['countryCode'], $result['countryName']) : null;
+    }
+
     /**
      * Search all entities with pagination for comprehensive results page.
      *
@@ -192,7 +200,7 @@ class SearchService
      */
     public function searchAllWithPagination(string $query, int $page = 1, int $perPage = 20): array
     {
-        $cacheKey = 'search_page_'.md5(strtolower(trim($query)));
+        $cacheKey = 'search_page_'.\Locale::getDefault().'_'.md5(strtolower(trim($query)));
 
         try {
             $allResults = $this->cache->get($cacheKey, function (ItemInterface $item) use ($query) {

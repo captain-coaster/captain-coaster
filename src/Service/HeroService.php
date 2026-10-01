@@ -27,7 +27,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 class HeroService
 {
     // Bumped with the pick's shape, so a deploy never reads an entry in the old one.
-    private const string CACHE_KEY = 'hero_pick_v2';
+    private const string CACHE_KEY = 'hero_pick_v3';
 
     private const array CATEGORIES = ['upcoming', 'new', 'trending', 'photo'];
 
@@ -38,7 +38,7 @@ class HeroService
     ) {
     }
 
-    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusName: ?string}|null */
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusCode: ?string, statusName: ?string}|null */
     public function pick(): ?array
     {
         return $this->cache->get(self::CACHE_KEY, function (ItemInterface $item): ?array {
@@ -53,7 +53,7 @@ class HeroService
         $this->cache->delete(self::CACHE_KEY);
     }
 
-    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusName: ?string}|null */
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusCode: ?string, statusName: ?string}|null */
     private function resolve(): ?array
     {
         $categories = self::CATEGORIES;
@@ -85,7 +85,7 @@ class HeroService
         };
     }
 
-    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusName: ?string}|null */
+    /** @return array{type: string, coasterId: ?int, coasterSlug: ?string, coasterName: string, parkName: ?string, image: PictureRef, imageCredit: ?string, statusCode: ?string, statusName: ?string}|null */
     private function load(string $type, int $id): ?array
     {
         if ('photo' === $type) {
@@ -108,6 +108,7 @@ class HeroService
             'parkName' => $coaster->getPark()?->getName(),
             'image' => PictureRef::fromImage($image),
             'imageCredit' => $image->getCredit(),
+            'statusCode' => $coaster->getStatus()?->getCode(),
             'statusName' => $coaster->getStatus()?->getName(),
         ];
     }

@@ -105,22 +105,9 @@ export default class extends SearchDropdown(Controller) {
      */
     renderResultItem(item, index, query) {
         const name = this.highlightSearchTerm(item.name, query);
-        let subtitle = item.subtitle
+        const subtitle = item.subtitle
             ? this.highlightSearchTerm(item.subtitle, query)
             : null;
-
-        // Translate country keys for parks (subtitle contains country key like "country.usa")
-        if (item.type === 'park' && subtitle && subtitle.includes('country.')) {
-            const translatedCountry = this.translateCountry(subtitle);
-            subtitle = subtitle.replace(
-                /<strong>.*?<\/strong>|country\.\w+/g,
-                (match) => {
-                    return match.startsWith('<strong>')
-                        ? match
-                        : translatedCountry;
-                }
-            );
-        }
 
         return `
             <div class="search-result-item" data-index="${index}" data-type="${item.type}" data-id="${item.id}" data-slug="${this.escapeHtml(item.slug)}">
@@ -131,23 +118,6 @@ export default class extends SearchDropdown(Controller) {
                 </div>
             </div>
         `;
-    }
-
-    /**
-     * Translate country keys using Symfony UX Translator
-     */
-    translateCountry(country) {
-        try {
-            const translated = trans(country, {}, 'database');
-            if (translated && translated !== country) {
-                return translated;
-            }
-        } catch (error) {
-            console.warn('Translation failed:', country, error);
-        }
-        return country
-            .replace('country.', '')
-            .replace(/^\w/, (c) => c.toUpperCase());
     }
 
     renderNoResults(query) {

@@ -7,6 +7,7 @@ namespace App\Form\Type;
 use App\Entity\RiddenCoaster;
 use App\Entity\Tag;
 use App\Repository\TagRepository;
+use App\Service\VocabularyLabeler;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -20,8 +21,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ReviewType extends AbstractType
 {
-    public function __construct(private readonly TagRepository $tagRepository)
-    {
+    public function __construct(
+        private readonly TagRepository $tagRepository,
+        private readonly VocabularyLabeler $labeler,
+    ) {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -32,15 +35,17 @@ class ReviewType extends AbstractType
             ])
             ->add('pros', TagChoiceType::class, [
                 'class' => Tag::class,
-                'choice_label' => 'name',
-                'choice_translation_domain' => 'database',
+                // A closure: the form passes the choice key as second argument, label() would read it as a locale.
+                'choice_label' => fn (Tag $tag): string => $this->labeler->label($tag),
+                'choice_translation_domain' => false,
                 'choices' => $this->tagRepository->findByTypeMostUsedFirst(Tag::PRO),
                 'label' => 'review.pros',
             ])
             ->add('cons', TagChoiceType::class, [
                 'class' => Tag::class,
-                'choice_label' => 'name',
-                'choice_translation_domain' => 'database',
+                // A closure: the form passes the choice key as second argument, label() would read it as a locale.
+                'choice_label' => fn (Tag $tag): string => $this->labeler->label($tag),
+                'choice_translation_domain' => false,
                 'choices' => $this->tagRepository->findByTypeMostUsedFirst(Tag::CON),
                 'label' => 'review.cons',
             ])

@@ -6,9 +6,11 @@ namespace App\Tests\Form\Type;
 
 use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
+use App\Service\VocabularyLabeler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Repository\TagRepository;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ReviewTypeTest extends TestCase
 {
@@ -23,7 +25,7 @@ class ReviewTypeTest extends TestCase
     public function testConfigureOptionsEnablesReviewTextValidationGroup(): void
     {
         $tagRepository = $this->createStub(TagRepository::class);
-        $reviewType = new ReviewType($tagRepository);
+        $reviewType = new ReviewType($tagRepository, new VocabularyLabeler($this->createStub(TranslatorInterface::class)));
 
         $resolver = new OptionsResolver();
         $reviewType->configureOptions($resolver);
@@ -36,7 +38,7 @@ class ReviewTypeTest extends TestCase
     public function testLanguageFieldIsNotBuiltIntoTheForm(): void
     {
         $tagRepository = $this->createStub(TagRepository::class);
-        $reviewType = new ReviewType($tagRepository);
+        $reviewType = new ReviewType($tagRepository, new VocabularyLabeler($this->createStub(TranslatorInterface::class)));
 
         $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
         $addedFieldNames = [];

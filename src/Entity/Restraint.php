@@ -21,12 +21,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_restraint']])]
 #[ORM\Table(name: 'restraint')]
 #[ORM\Entity(repositoryClass: RestraintRepository::class)]
-class Restraint implements \Stringable
+class Restraint implements \Stringable, Vocabulary
 {
     #[ORM\Column(name: 'id', type: Types::INTEGER)]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     private ?int $id = null;
+    /** Translation key in the `database` domain. */
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    #[Groups(['read_restraint', 'read_coaster'])]
+    private ?string $code = null;
+
+    /** English label, shown when the code has no translation. */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['read_restraint', 'read_coaster'])]
     private string $name = '';
@@ -41,6 +47,18 @@ class Restraint implements \Stringable
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
     }
 
     public function __toString(): string
@@ -66,8 +84,7 @@ class Restraint implements \Stringable
         return $this;
     }
 
-    /** @return string */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }

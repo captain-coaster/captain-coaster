@@ -94,7 +94,7 @@ class CoasterRepository extends ServiceEntityRepository
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('c')
-            ->select('c.id', 'c.name', 'c.slug', 'p.name as parkName', 'co.name as countryName')
+            ->select('c.id', 'c.name', 'c.slug', 'p.name as parkName', 'co.code as countryCode', 'co.name as countryName')
             ->leftJoin('c.park', 'p')
             ->leftJoin('p.country', 'co')
             ->where('c.name LIKE :query OR c.slug LIKE :slugQuery')
@@ -504,7 +504,7 @@ class CoasterRepository extends ServiceEntityRepository
     private function applyStatusFilters(QueryBuilder $qb, array $filters): void
     {
         if (isset($filters['status']) && 'on' === $filters['status']) {
-            $qb->andWhere('s.name = :operating')
+            $qb->andWhere('s.code = :operating')
                ->setParameter('operating', Status::OPERATING);
         }
 
@@ -627,7 +627,7 @@ class CoasterRepository extends ServiceEntityRepository
             ->select('c.id')
             ->innerJoin('c.status', 's')
             ->innerJoin('c.mainImage', 'mi')
-            ->where('s.name IN (:statuses)')
+            ->where('s.code IN (:statuses)')
             ->andWhere('mi.enabled = 1')
             ->setParameter('statuses', [Status::CONSTRUCTION, Status::ANNOUNCED])
             ->getQuery()

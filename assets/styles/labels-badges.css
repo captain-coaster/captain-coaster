@@ -13,7 +13,7 @@
  * static template using them, because `Coaster/show.html.twig` rendered
  * `cc-label cc-label--{{ coaster.status.type }}` — a DB-driven string
  * that migration pass couldn't enumerate without editing the database.
- * That call site now sets `data-status="{{ coaster.status.name }}"`
+ * That call site now sets `data-status="{{ coaster.status.code }}"`
  * instead (colors.css owns the status→color mapping off that stable
  * name), so none of those four are reachable from anywhere and are
  * dropped along with the rest.

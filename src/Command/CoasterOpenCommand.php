@@ -46,7 +46,7 @@ class CoasterOpenCommand extends Command
             'openingDate' => $today,
         ]);
 
-        $operatingStatus = $this->statusRepository->findOneBy(['name' => Status::OPERATING]);
+        $operatingStatus = $this->statusRepository->findOneBy(['code' => Status::OPERATING]);
 
         /** @var Coaster $coaster */
         foreach ($openingCoasters as $coaster) {
