@@ -20,7 +20,7 @@
   {% set select %}
     <select id="pref-language-{{ uid }}"
             data-controller="navigate" data-action="navigate#go"
-            class="absolute inset-0 size-full cursor-pointer appearance-none opacity-0">
+            class="absolute inset-0 size-full cursor-pointer appearance-none text-body opacity-0">
       {% for locale in locales %}
         <option value="{{ path(route, params|merge({_locale: locale, setLocale: 1})) }}" lang="{{ locale }}" {% if locale == app.request.locale %}selected{% endif %}>{{ locale|trans }}</option>
       {% endfor %}

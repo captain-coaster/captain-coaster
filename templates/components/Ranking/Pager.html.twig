@@ -33,7 +33,7 @@
         {{ ux_icon('lucide:chevrons-up-down', {class: 'size-4', 'aria-hidden': 'true'}) }}
         <select data-controller="navigate" data-action="navigate#go"
                 aria-label="{{ 'pager.jump'|trans }}"
-                class="absolute inset-0 size-full cursor-pointer appearance-none opacity-0">
+                class="absolute inset-0 size-full cursor-pointer appearance-none text-body opacity-0">
           {% for p in 1..pages %}
             <option value="{{ path('ranking_index', {filters: filters}|merge(p > 1 ? {page: p} : {})) }}" {{ p == page ? 'selected' }}>
               {{ (p - 1) * perPage + 1 }}–{{ min(p * perPage, total) }}

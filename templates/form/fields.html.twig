@@ -133,7 +133,9 @@
 
 {%- block form_widget_simple -%}
     {%- if type is not defined or type not in ['file', 'hidden'] -%}
-        {%- set attr = attr|merge({class: (block('control_class') ~ ' read-only:border-line read-only:bg-canvas ' ~ attr.class|default(''))|trim}) -%}
+        {#- Date: iOS centers the value unless told otherwise. -#}
+        {%- set date_class = type|default('') == 'date' ? 'cursor-pointer [&::-webkit-date-and-time-value]:text-left ' : '' -%}
+        {%- set attr = attr|merge({class: (block('control_class') ~ ' read-only:border-line read-only:bg-canvas ' ~ date_class ~ attr.class|default(''))|trim}) -%}
     {%- endif -%}
     {{- parent() -}}
 {%- endblock form_widget_simple -%}

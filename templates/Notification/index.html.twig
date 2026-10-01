@@ -17,7 +17,7 @@
             <div class="heading-elements visible-elements">
               <form action="{{ path('notification_mark_all_read') }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notification_mark_all_read') }}">
-                <button type="submit" class="cc-button cc-button--primary cc-button--rounded cc-button--xs">{{ 'notif.markAllRead'|trans({}, 'notification') }}</button>
+                <twig:Button variant="secondary" class="min-h-11 px-3 py-1.5 text-caption">{{ 'notif.markAllRead'|trans({}, 'notification') }}</twig:Button>
               </form>
             </div>
           {% endif %}
