@@ -326,14 +326,14 @@ peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-lin
 
 {# Turnstile (interaction-only): no row wrapper, and the box stays out of the
    layout until Cloudflare puts a challenge in it, so an invisible check
-   leaves no gap above the submit button. #}
+   leaves no gap above the submit button. Its error is only in the summary:
+   the field has no label, so the summary already shows the message itself. #}
 
 {%- block turnstile_row -%}
     {%- if enable -%}
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
         <div class="cf-turnstile empty:hidden" data-sitekey="{{ key }}"
             {%- for name, value in attr|filter((value, name) => name != 'class') %} {{ name }}="{{ value }}"{% endfor %}></div>
-        {{- form_errors(form) -}}
     {%- endif -%}
 {%- endblock turnstile_row -%}
 
