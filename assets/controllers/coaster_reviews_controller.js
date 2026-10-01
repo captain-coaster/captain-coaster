@@ -43,20 +43,14 @@ export default class extends Controller {
 
     buildUrl() {
         const form = this.element.querySelector('form');
-        const formData = new FormData(form);
-        const params = new URLSearchParams();
-
-        // Only include non-empty values
-        for (const [key, value] of formData.entries()) {
-            params.set(key, value);
-        }
+        const params = new URLSearchParams(new FormData(form));
 
         if (typeof Routing !== 'undefined' && Routing.generate) {
             try {
                 return Routing.generate('coaster_reviews_ajax_load', {
                     slug: this.slugValue,
                     _locale: this.localeValue,
-                    data: formData,
+                    ...Object.fromEntries(params),
                 });
             } catch (error) {
                 console.warn('Routing failed:', error);
