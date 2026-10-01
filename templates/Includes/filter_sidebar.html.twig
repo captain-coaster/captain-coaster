@@ -132,7 +132,7 @@
                             <option value="">{{ 'filters.continent'|trans }}</option>
                             {% if filtersForm.continent is defined %}
                                 {% for continent in filtersForm.continent %}
-                                    <option value="{{ continent.id }}" {% if filters.continent is defined and filters.continent == continent.id %}selected{% endif %}>{{ continent.name|trans({}, 'database') }}</option>
+                                    <option value="{{ continent.id }}" {% if filters.continent is defined and filters.continent == continent.id %}selected{% endif %}>{{ continent.name }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>
@@ -145,7 +145,7 @@
                             <option value="">{{ 'filters.country'|trans }}</option>
                             {% if filtersForm.country is defined %}
                                 {% for country in filtersForm.country %}
-                                    <option value="{{ country.id }}" {% if filters.country is defined and filters.country == country.id %}selected{% endif %}>{{ country.name|trans({}, 'database') }}</option>
+                                    <option value="{{ country.id }}" {% if filters.country is defined and filters.country == country.id %}selected{% endif %}>{{ country.name }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>
@@ -184,7 +184,7 @@
                             <option value="">{{ 'filters.materialType'|trans }}</option>
                             {% if filtersForm.materialType is defined %}
                                 {% for type in filtersForm.materialType %}
-                                    <option value="{{ type.id }}" {% if filters.materialType is defined and filters.materialType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
+                                    <option value="{{ type.id }}" {% if filters.materialType is defined and filters.materialType == type.id %}selected{% endif %}>{{ type.name }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>
@@ -197,7 +197,7 @@
                             <option value="">{{ 'filters.seatingType'|trans }}</option>
                             {% if filtersForm.seatingType is defined %}
                                 {% for type in filtersForm.seatingType %}
-                                    <option value="{{ type.id }}" {% if filters.seatingType is defined and filters.seatingType == type.id %}selected{% endif %}>{{ type.name|trans({}, 'database') }}</option>
+                                    <option value="{{ type.id }}" {% if filters.seatingType is defined and filters.seatingType == type.id %}selected{% endif %}>{{ type.name }}</option>
                                 {% endfor %}
                             {% endif %}
                         </select>

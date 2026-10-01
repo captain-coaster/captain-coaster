@@ -31,10 +31,10 @@
     {% if review.pros|length > 0 or review.cons|length > 0 %}
       <p class="mb-2.5">
         {% for pros in review.pros %}
-          <span class="cc-label cc-label--success cc-label--rounded">{{ pros.name|trans([], 'database') }}</span>
+          <span class="cc-label cc-label--success cc-label--rounded">{{ pros|vocab_label }}</span>
         {% endfor %}
         {% for cons in review.cons %}
-          <span class="cc-label cc-label--danger cc-label--rounded">{{ cons.name|trans([], 'database') }}</span>
+          <span class="cc-label cc-label--danger cc-label--rounded">{{ cons|vocab_label }}</span>
         {% endfor %}
       </p>
     {% endif %}

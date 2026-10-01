@@ -305,7 +305,7 @@
  * any status.
  *
  * A custom property is the single source of truth instead: a template
- * sets `data-status="{{ x.status.name }}"`, every consuming rule below
+ * sets `data-status="{{ x.status.code }}"`, every consuming rule below
  * reads `var(--status-color)`, and a status with no rule here just
  * inherits the neutral default from the base `[data-status]` rule --
  * never invisible, and never needs a class name to exist to match it.

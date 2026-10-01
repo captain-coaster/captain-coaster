@@ -1,10 +1,8 @@
 ux_translator:
-    # Only include messages/database/top domains (exclude validators, security, etc.)
-    domains: ['messages', 'database', 'top']
+    # Only include messages/top domains (exclude validators, security, etc.)
+    domains: ['messages', 'top']
     # Every JS trans() call site is grep-able (`grep -rn "trans(" assets/`)
-    # -- keep this list in sync with those, not broader. `country.*` covers
-    # search_controller.js's one dynamic-key call (trans(country, {}, 'database')),
-    # which can't be listed literally.
+    # -- keep this list in sync with those, not broader.
     keys_patterns:
         - 'app.search.searching'
         - 'app.search.suggestions'
@@ -41,4 +39,3 @@ ux_translator:
         - 'errors.invalid_position'
         - 'search.aria_label'
         - 'search.no_results'
-        - 'country.*'

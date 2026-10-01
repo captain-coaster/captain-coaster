@@ -23,28 +23,29 @@ use Doctrine\Persistence\ObjectManager;
  */
 final class TaxonomyFixtures extends Fixture
 {
-    /** name => [translation key, continent reference key] */
+    /** name => [ISO code, continent reference key] */
     private const array COUNTRIES = [
-        'usa' => ['country.usa', 'america'],
-        'germany' => ['country.germany', 'europe'],
-        'spain' => ['country.spain', 'europe'],
-        'france' => ['country.france', 'europe'],
+        'usa' => ['US', 'america'],
+        'germany' => ['DE', 'europe'],
+        'spain' => ['ES', 'europe'],
+        'france' => ['FR', 'europe'],
     ];
 
+    /** reference key => [code, English name] */
     private const array RESTRAINTS = [
-        'lap' => 'restraint.lap',
-        'shoulder' => 'restraint.shoulder',
-        'flying' => 'restraint.flying',
+        'lap' => ['restraint.lap', 'Lap bar'],
+        'shoulder' => ['restraint.shoulder', 'Shoulder harness'],
+        'flying' => ['restraint.flying', 'Flying restraint'],
     ];
 
     private const array LAUNCHES = [
-        'chain' => 'launch.lift.chain',
-        'lsm' => 'launch.lim',
+        'chain' => ['launch.lift.chain', 'Chain lift hill'],
+        'lsm' => ['launch.lim', 'Magnetic Launch (LIM/LSM)'],
     ];
 
     private const array MATERIAL_TYPES = [
-        'steel' => 'Steel',
-        'wood' => 'Wood',
+        'steel' => ['material.steel', 'Steel'],
+        'wood' => ['material.wood', 'Wood'],
     ];
 
     private const array SEATING_TYPES = [
@@ -77,20 +78,20 @@ final class TaxonomyFixtures extends Fixture
         $this->loadGeography($manager);
         $this->loadStatus($manager);
 
-        foreach (self::RESTRAINTS as $key => $name) {
-            $restraint = new Restraint()->setName($name);
+        foreach (self::RESTRAINTS as $key => [$code, $name]) {
+            $restraint = new Restraint()->setCode($code)->setName($name);
             $manager->persist($restraint);
             $this->addReference('restraint_'.$key, $restraint);
         }
 
-        foreach (self::LAUNCHES as $key => $name) {
-            $launch = new Launch()->setName($name);
+        foreach (self::LAUNCHES as $key => [$code, $name]) {
+            $launch = new Launch()->setCode($code)->setName($name);
             $manager->persist($launch);
             $this->addReference('launch_'.$key, $launch);
         }
 
-        foreach (self::MATERIAL_TYPES as $key => $name) {
-            $materialType = new MaterialType()->setName($name);
+        foreach (self::MATERIAL_TYPES as $key => [$code, $name]) {
+            $materialType = new MaterialType()->setCode($code)->setName($name);
             $manager->persist($materialType);
             $this->addReference('material_'.$key, $materialType);
         }
@@ -119,14 +120,14 @@ final class TaxonomyFixtures extends Fixture
     private function loadGeography(ObjectManager $manager): void
     {
         $continents = [];
-        foreach (['europe' => 'continent.europe', 'america' => 'continent.america'] as $key => $name) {
-            $continent = new Continent()->setName($name);
+        foreach (['europe' => 'Europe', 'america' => 'America'] as $key => $name) {
+            $continent = new Continent()->setCode('continent.'.$key)->setName($name);
             $manager->persist($continent);
             $continents[$key] = $continent;
         }
 
-        foreach (self::COUNTRIES as $key => [$name, $continentKey]) {
-            $country = new Country()->setName($name)->setContinent($continents[$continentKey]);
+        foreach (self::COUNTRIES as $key => [$code, $continentKey]) {
+            $country = new Country()->setCode($code)->setContinent($continents[$continentKey]);
             $manager->persist($country);
             $this->addReference('country_'.$key, $country);
         }
@@ -137,7 +138,8 @@ final class TaxonomyFixtures extends Fixture
         // Only the status actually used by the seeded coasters below -- all real,
         // currently operating rides.
         $status = new Status()
-            ->setName(Status::OPERATING)
+            ->setCode(Status::OPERATING)
+            ->setName('Operating')
             ->setType('operational')
             ->setIsRateable(true)
             ->setOrder(4);

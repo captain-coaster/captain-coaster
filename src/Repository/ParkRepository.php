@@ -56,7 +56,7 @@ class ParkRepository extends ServiceEntityRepository
             ->andwhere('p.longitude between :parkLongitudeMin and :parkLongitudeMax')
             ->andwhere('c.score > :minScore')
             ->innerJoin('c.status', 's', 'WITH', 'c.status = s.id')
-            ->andWhere('s.name = :operating')
+            ->andWhere('s.code = :operating')
             ->setParameter('operating', Status::OPERATING)
             ->andwhere('p.id != :parkId')
             ->having('distance < :maxDistance')
@@ -83,7 +83,7 @@ class ParkRepository extends ServiceEntityRepository
     public function findBySearchQuery(string $query, int $limit = 5): array
     {
         return $this->createQueryBuilder('p')
-            ->select('p.id', 'p.name', 'p.slug', 'co.name as countryName')
+            ->select('p.id', 'p.name', 'p.slug', 'co.code as countryCode', 'co.name as countryName')
             ->leftJoin('p.country', 'co')
             ->where('p.name LIKE :query OR p.slug LIKE :slugQuery')
             ->setParameter('query', '%'.$query.'%')

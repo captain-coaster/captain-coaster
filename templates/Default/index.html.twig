@@ -85,9 +85,9 @@
           </div>
           {% if hero.type == 'upcoming' %}
             {# Real status (construction or announced) drives both label and color -- see colors.css's [data-status] rules. #}
-            <span class="{{ heroBadgeClass }} bg-[var(--status-color)]" data-status="{{ hero.statusName }}">
-              {{ ux_icon(hero.statusName == 'status.announced' ? 'lucide:megaphone' : 'lucide:construction', {'class': 'w-3.5 h-3.5'}) }}
-              {{ hero.statusName|trans([], 'database') }}
+            <span class="{{ heroBadgeClass }} bg-[var(--status-color)]" data-status="{{ hero.statusCode }}">
+              {{ ux_icon(hero.statusCode == 'status.announced' ? 'lucide:megaphone' : 'lucide:construction', {'class': 'w-3.5 h-3.5'}) }}
+              {{ hero.statusCode|vocab_term(hero.statusName) }}
             </span>
           {% elseif hero.type == 'new' %}
             <span class="{{ heroBadgeClass }} bg-success">

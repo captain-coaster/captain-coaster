@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Tag.
  */
 #[ORM\Entity(repositoryClass: TagRepository::class)]
-class Tag implements \Stringable
+class Tag implements \Stringable, Vocabulary
 {
     final public const string PRO = 'pro';
     final public const string CON = 'con';
@@ -22,11 +22,28 @@ class Tag implements \Stringable
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
+    /** Translation key in the `database` domain. */
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    private ?string $code = null;
+
+    /** English label, shown when the code has no translation. */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255)]
     private string $name = '';
 
     #[ORM\Column(name: 'type', type: Types::STRING, length: 255)]
     private string $type = '';
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
+    }
 
     public function __toString(): string
     {

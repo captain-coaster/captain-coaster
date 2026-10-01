@@ -39,7 +39,7 @@
       <twig:Ranking:Place :coaster="coaster" class="mt-0.5"/>
     </span>
     <span class="{{ column }} flex-[2] text-muted-strong">{{ coaster.manufacturer.name ?? '' }}</span>
-    <span class="{{ column }} flex-[1.5] text-muted-strong">{{ coaster.park.country.name|trans({}, 'database') }}</span>
+    <span class="{{ column }} flex-[1.5] text-muted-strong">{{ coaster.park.country|vocab_label }}</span>
     <span class="{{ column }} w-24 shrink-0 text-end font-semibold tabular-nums">
       {% if coaster.score is not null %}
         <span class="sr-only">{{ 'columns.score'|trans }}</span>

@@ -53,13 +53,7 @@
                         <div class="search-result-content">
                             <div class="search-result-name">{{ result.name }}</div>
                             {% if result.subtitle %}
-                                <div class="search-result-subtitle">
-                                    {% if result.entity_type == 'park' and result.subtitle starts with 'country.' %}
-                                        {{ result.subtitle|trans({}, 'database') }}
-                                    {% else %}
-                                        {{ result.subtitle }}
-                                    {% endif %}
-                                </div>
+                                <div class="search-result-subtitle">{{ result.subtitle }}</div>
                             {% endif %}
                         </div>
                         

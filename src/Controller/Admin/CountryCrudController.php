@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
@@ -30,7 +31,7 @@ class CountryCrudController extends AbstractCrudController
         return $crud
             ->setEntityLabelInSingular('Country')
             ->setEntityLabelInPlural('Countries')
-            ->setSearchFields(['id', 'name', 'slug'])
+            ->setSearchFields(['id', 'code', 'name', 'slug'])
             ->setDefaultSort(['name' => 'ASC'])
             ->showEntityActionsInlined();
     }
@@ -50,7 +51,9 @@ class CountryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            TextField::new('name'),
+            // The name follows the code. Optional on edit only, for the countries without an ISO code.
+            CountryField::new('code')->setRequired(Crud::PAGE_NEW === $pageName)->setFormTypeOption('placeholder', ''),
+            TextField::new('name')->hideOnForm(),
             AssociationField::new('continent'),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
         ];

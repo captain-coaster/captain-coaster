@@ -9,7 +9,6 @@ use App\Entity\Image;
 use App\Entity\RiddenCoaster;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 class SitemapService
 {
@@ -17,7 +16,7 @@ class SitemapService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly UrlGeneratorInterface $router,
-        private readonly TranslatorInterface $translator,
+        private readonly VocabularyLabeler $labeler,
         private readonly array $locales,
     ) {
     }
@@ -97,7 +96,7 @@ class SitemapService
                 $imageXML['geo_location'] = \sprintf(
                     '%s, %s',
                     $image->getCoaster()->getPark()->getName(),
-                    $this->translator->trans($image->getCoaster()->getPark()->getCountry()->getName(), [], 'database', 'en')
+                    $this->labeler->label($image->getCoaster()->getPark()->getCountry(), 'en')
                 );
 
                 $url['images'][] = $imageXML;

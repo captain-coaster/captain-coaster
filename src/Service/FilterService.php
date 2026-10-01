@@ -19,32 +19,60 @@ use Symfony\Contracts\Cache\CacheInterface;
 
 class FilterService
 {
+    /** Renamed with the rows' shape: the app cache persists between deploys. */
+    private const string CACHE_KEY = 'filter_vocabulary';
+
+    private const array VOCABULARIES = ['continent', 'country', 'materialType', 'seatingType'];
+
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly CacheInterface $cache
+        private readonly CacheInterface $cache,
+        private readonly VocabularyLabeler $labeler,
     ) {
     }
 
     /** Clear the filter data cache. */
     public function clearFilterCache(): void
     {
-        $this->cache->delete('filter_dropdown_data');
+        $this->cache->delete(self::CACHE_KEY);
     }
 
     /**
-     * Get filter dropdown data for UI.
-     * Returns simple arrays with id/name for efficiency.
-     * Data is cached for 1 days (86400 seconds).
+     * Get filter dropdown data for UI: id/name rows, the vocabularies labelled and sorted in the current locale.
      *
      * @return array<string, array<int, array<string, mixed>>>
      */
     public function getFilterData(): array
     {
-        return $this->cache->get('filter_dropdown_data', fn () => [
-            'continent' => $this->em->getRepository(Continent::class)->findForFilter(),
-            'country' => $this->em->getRepository(Country::class)->findForFilter(),
-            'materialType' => $this->em->getRepository(MaterialType::class)->findForFilter(),
-            'seatingType' => $this->em->getRepository(SeatingType::class)->findForFilter(),
+        $data = $this->rawFilterData();
+
+        foreach (self::VOCABULARIES as $key) {
+            $data[$key] = $this->labeler->sortByLabel(
+                array_map(fn (array $row): array => [
+                    'id' => $row['id'],
+                    'name' => 'country' === $key
+                        ? $this->labeler->country($row['code'], $row['name'])
+                        : $this->labeler->term($row['code'], $row['name']),
+                ], $data[$key]),
+                static fn (array $row): string => $row['name'],
+            );
+        }
+
+        return $data;
+    }
+
+    /**
+     * Locale-independent rows, cached for 1 day.
+     *
+     * @return array<string, array<int, array<string, mixed>>>
+     */
+    private function rawFilterData(): array
+    {
+        return $this->cache->get(self::CACHE_KEY, fn () => [
+            'continent' => $this->em->getRepository(Continent::class)->findVocabularyForFilter(),
+            'country' => $this->em->getRepository(Country::class)->findVocabularyForFilter(),
+            'materialType' => $this->em->getRepository(MaterialType::class)->findVocabularyForFilter(),
+            'seatingType' => $this->em->getRepository(SeatingType::class)->findVocabularyForFilter(),
             'model' => $this->em->getRepository(Model::class)->findForFilter(),
             'manufacturer' => $this->em->getRepository(Manufacturer::class)->findForFilter(),
             'openingDate' => $this->em->getRepository(Coaster::class)->findDistinctOpeningYears(),
@@ -76,7 +104,7 @@ class FilterService
         }
 
         // Get filter data for validation
-        $filterData = $this->getFilterData();
+        $filterData = $this->rawFilterData();
 
         foreach ($filters as $key => $value) {
             // Silently ignore unsupported filter keys

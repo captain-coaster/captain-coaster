@@ -22,6 +22,7 @@ class StatService
     public function __construct(
         private readonly EntityManagerInterface $em,
         private readonly CacheInterface $cache,
+        private readonly VocabularyLabeler $labeler,
     ) {
     }
 
@@ -75,9 +76,10 @@ class StatService
         $stats['nb_country'] = $this->em
             ->getRepository(Country::class)
             ->countForUser($user);
-        $stats['country'] = $this->em
+        $country = $this->em
             ->getRepository(RiddenCoaster::class)
             ->findMostRiddenCountry($user);
+        $stats['country'] = ['name' => $this->labeler->country($country['code'], $country['name']), 'nb' => $country['nb']];
         $top100 = $this->em
             ->getRepository(RiddenCoaster::class)
             ->countTop100ForUser($user);
