@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(operations: [new Get(), new GetCollection()], normalizationContext: ['groups' => ['read_status']])]
 #[ORM\Table(name: 'status')]
 #[ORM\Entity(repositoryClass: StatusRepository::class)]
-class Status implements \Stringable
+class Status implements \Stringable, Vocabulary
 {
     final public const string OPERATING = 'status.operating';
     final public const string CLOSED_DEFINITELY = 'status.closed.definitely';
@@ -36,6 +36,12 @@ class Status implements \Stringable
     #[Groups(['read_status'])]
     private ?int $id = null;
 
+    /** Translation key in the `database` domain. */
+    #[ORM\Column(length: 64, unique: true, nullable: true)]
+    #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
+    private ?string $code = null;
+
+    /** English label, shown when the code has no translation. */
     #[ORM\Column(name: 'name', type: Types::STRING, length: 255, unique: true)]
     #[Groups(['list_coaster', 'read_coaster', 'read_status'])]
     private string $name = '';
@@ -61,6 +67,18 @@ class Status implements \Stringable
     public function __construct()
     {
         $this->coasters = new ArrayCollection();
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
     }
 
     public function __toString(): string

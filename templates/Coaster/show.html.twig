@@ -131,8 +131,8 @@
                             <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.status'|trans }}
                                 :</label>
                             <div class="pull-right">
-              <span class="cc-label" data-status="{{ coaster.status.name }}">
-                  {{ coaster.status.name|trans([], 'database') }}
+              <span class="cc-label" data-status="{{ coaster.status.code }}">
+                  {{ coaster.status|vocab_label }}
               </span>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[country]': coaster.park.country.id}) }}">
-                                    {{ coaster.park.country.name|trans([], 'database') }}</a>
+                                    {{ coaster.park.country|vocab_label }}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -175,7 +175,7 @@
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[materialType]': coaster.materialType.id}) }}">
-                                    {{ coaster.materialType.name }}</a>
+                                    {{ coaster.materialType|vocab_label }}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -185,7 +185,7 @@
                                 :</label>
                             <div class="pull-right">
                                 <a href="{{ path('ranking_index', {'filters[seatingType]': coaster.seatingType.id}) }}">
-                                    {{ coaster.seatingType.name }}</a>
+                                    {{ coaster.seatingType|vocab_label }}</a>
                             </div>
                         </div>
                     {% endif %}
@@ -212,7 +212,7 @@
                                 :</label>
                             <div class="pull-right">
                                 {% for launch in coaster.launchs %}
-                                    {{ launch|trans([], 'database') }}
+                                    {{ launch|vocab_label }}
                                     {% if not loop.last %}, {% endif %}
                                 {% endfor %}
                             </div>
@@ -222,7 +222,7 @@
                         <label class="cc-field__label m-0 text-semibold">{{ 'coaster.infos.restraint'|trans }}
                             :</label>
                         <div
-                            class="pull-right">{{ coaster.restraint.name|default('data.unknown')|trans([], 'database') }}</div>
+                            class="pull-right">{{ coaster.restraint ? coaster.restraint|vocab_label : 'data.unknown'|trans([], 'database') }}</div>
                     </div>
                     {% if coaster.openingDate %}
                         <div class="cc-list-group__item">
@@ -284,7 +284,7 @@
                 <div class="cc-list-group no-border">
                     {% for otherCoaster in coasters %}
                         <div class="cc-list-group__item">
-                            <span class="status-mark status-mark--outline position-left" data-status="{{ otherCoaster.status.name }}"></span>
+                            <span class="status-mark status-mark--outline position-left" data-status="{{ otherCoaster.status.code }}"></span>
                             <a href="{{ path('show_coaster', {'id': otherCoaster.id, 'slug': otherCoaster.slug}) }}">
                                 {{ otherCoaster.name }}
                             </a>

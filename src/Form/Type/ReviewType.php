@@ -6,6 +6,7 @@ namespace App\Form\Type;
 
 use App\Entity\RiddenCoaster;
 use App\Entity\Tag;
+use App\Service\VocabularyLabeler;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -17,14 +18,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends AbstractType<RiddenCoaster>
  */
 class ReviewType extends AbstractType
 {
-    public function __construct(protected TranslatorInterface $translator)
+    public function __construct(private readonly VocabularyLabeler $labeler)
     {
     }
 
@@ -40,8 +40,9 @@ class ReviewType extends AbstractType
                 EntityType::class,
                 [
                     'class' => Tag::class,
-                    'choice_label' => 'name',
-                    'choice_translation_domain' => 'database',
+                    // A closure: the form passes the choice key as second argument, label() would read it as a locale.
+                    'choice_label' => fn (Tag $tag): string => $this->labeler->label($tag),
+                    'choice_translation_domain' => false,
                     'multiple' => true,
                     'required' => false,
                     'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
@@ -55,8 +56,9 @@ class ReviewType extends AbstractType
                 EntityType::class,
                 [
                     'class' => Tag::class,
-                    'choice_label' => 'name',
-                    'choice_translation_domain' => 'database',
+                    // A closure: the form passes the choice key as second argument, label() would read it as a locale.
+                    'choice_label' => fn (Tag $tag): string => $this->labeler->label($tag),
+                    'choice_translation_domain' => false,
                     'multiple' => true,
                     'required' => false,
                     'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('c')
@@ -87,8 +89,12 @@ class ReviewType extends AbstractType
 
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
-        $this->sortTranslatedChoices($view->children['pros']->vars['choices']);
-        $this->sortTranslatedChoices($view->children['cons']->vars['choices']);
+        foreach (['pros', 'cons'] as $field) {
+            $view->children[$field]->vars['choices'] = $this->labeler->sortByLabel(
+                $view->children[$field]->vars['choices'],
+                static fn (ChoiceView $choice): string => \is_string($choice->label) ? $choice->label : '',
+            );
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -99,23 +105,6 @@ class ReviewType extends AbstractType
                 'locales' => [],
                 'validation_groups' => ['Default', 'review_text'],
             ]
-        );
-    }
-
-    /** @param array<ChoiceView> $choices */
-    private function sortTranslatedChoices(array &$choices): void
-    {
-        usort(
-            $choices,
-            function ($a, $b): int {
-                $labelA = $a->label;
-                $labelB = $b->label;
-
-                return strcmp(
-                    \is_string($labelA) ? $this->translator->trans($labelA, [], 'database') : '',
-                    \is_string($labelB) ? $this->translator->trans($labelB, [], 'database') : ''
-                );
-            }
         );
     }
 }

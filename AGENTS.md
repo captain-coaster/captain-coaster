@@ -98,6 +98,11 @@ Translations use `intl-icu` format. Files are in `translations/` as `{domain}+in
 
 Mid-term aim: one domain per major feature area, rather than today's mix of technical (`security`, `validators`) and per-feature (`top`, `ai_summary`) domains. Align a new domain to that when adding one; no rush to migrate existing ones.
 
+Database vocabularies (`App\Entity\Vocabulary`: country, continent, status, launch, restraint, tag, material and seating types) have a stable `code` and an English `name`. Display them through `VocabularyLabeler` (`|vocab_label` in Twig, `|vocab_term` for scalar rows), never `name|trans`: it translates the code and falls back to `name`, so a value added in the admin shows in English until its translation is added. It also sorts lists by translated label (SQL can't).
+
+- Country: `code` is the ISO 3166-1 alpha-2 code, labelled by Symfony Intl. No translation file.
+- The others: `code` is a key of the `database` domain (`status.operating`), and what PHP, CSS (`data-status`) and templates compare on. `DatabaseTranslationsTest` keeps the four locale files on the same keys.
+
 ### API
 
 API Platform exposes read-only endpoints for `Coaster` and other entities. Not publicly advertised — `/api` and `/api/docs` are restricted to `ROLE_ADMIN` to stop new external sign-ups, but existing API keys and `ApiKeyAuthenticator` still work, and the frontend calls it internally (e.g. `search_controller.js`). Serialization groups control what's exposed (`list_coaster`, `read_coaster`, etc.).

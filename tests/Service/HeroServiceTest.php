@@ -33,7 +33,8 @@ class HeroServiceTest extends TestCase
         $park = $this->createMock(Park::class);
         $park->method('getName')->willReturn('Some Park');
         $status = $this->createMock(Status::class);
-        $status->method('getName')->willReturn('status.operating');
+        $status->method('getCode')->willReturn('status.operating');
+        $status->method('getName')->willReturn('Operating');
 
         $coaster = $this->createMock(Coaster::class);
         $coaster->method('getId')->willReturn($id);
@@ -85,7 +86,8 @@ class HeroServiceTest extends TestCase
         $this->assertSame('Some Park', $pick['parkName']);
         $this->assertSame('some-image.jpg', $pick['image']->filename);
         $this->assertSame('Some Credit', $pick['imageCredit']);
-        $this->assertSame('status.operating', $pick['statusName']);
+        $this->assertSame('status.operating', $pick['statusCode']);
+        $this->assertSame('Operating', $pick['statusName']);
     }
 
     public function testSkipsEmptyCategories(): void

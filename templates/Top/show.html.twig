@@ -81,7 +81,7 @@
               {% endif %}
               <li>
                 <a class="text-muted" href="{{ path('park_show', {'id': coaster.park.id, 'slug': coaster.park.slug}) }}">
-                  {{ coaster.park.name }}, {{ coaster.park.country.name|trans([], 'database') }}
+                  {{ coaster.park.name }}, {{ coaster.park.country|vocab_label }}
                 </a>
               </li>
             </ul>
