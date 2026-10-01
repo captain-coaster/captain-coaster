@@ -8,7 +8,7 @@ use App\Entity\RiddenCoaster;
 use App\Form\Type\ReviewType;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use App\Repository\TagRepository;
 
 class ReviewTypeTest extends TestCase
 {
@@ -22,8 +22,8 @@ class ReviewTypeTest extends TestCase
      */
     public function testConfigureOptionsEnablesReviewTextValidationGroup(): void
     {
-        $translator = $this->createMock(TranslatorInterface::class);
-        $reviewType = new ReviewType($translator);
+        $tagRepository = $this->createStub(TagRepository::class);
+        $reviewType = new ReviewType($tagRepository);
 
         $resolver = new OptionsResolver();
         $reviewType->configureOptions($resolver);
@@ -35,8 +35,8 @@ class ReviewTypeTest extends TestCase
 
     public function testLanguageFieldIsNotBuiltIntoTheForm(): void
     {
-        $translator = $this->createMock(TranslatorInterface::class);
-        $reviewType = new ReviewType($translator);
+        $tagRepository = $this->createStub(TagRepository::class);
+        $reviewType = new ReviewType($tagRepository);
 
         $builder = $this->createMock(\Symfony\Component\Form\FormBuilderInterface::class);
         $addedFieldNames = [];
@@ -47,7 +47,7 @@ class ReviewTypeTest extends TestCase
                 return $builder;
             });
 
-        $reviewType->buildForm($builder, ['locales' => ['en', 'fr', 'es', 'de']]);
+        $reviewType->buildForm($builder, []);
 
         $this->assertNotContains('language', $addedFieldNames);
     }

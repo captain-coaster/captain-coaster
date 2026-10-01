@@ -111,24 +111,22 @@ coaster:
     location: Standort
 
 image_upload:
-    title: 'Lade ein Bild von {coaster} hoch'
+    title: 'Foto von {coaster} hochladen'
     form:
         file:
-            label: Wähle ein Bild aus
-            helper: Die Datei muss im JPEG-Format vorliegen und weniger als 15 MB groß sein. Zu kleine Bilder könnten abgelehnt werden.
+            label: 'Wähle ein Foto'
+            helper: 'JPEG, unter 15 MB. Sehr kleine Fotos können abgelehnt werden.'
         credit:
-            label: 'Wer hat dieses Bild gemacht?'
-            helper: 'Sie dürfen nur Bilder hochladen, wenn Sie der ursprüngliche Autor sind oder die Genehmigung des ursprünglichen Autors erhalten haben.'
+            label: 'Wer hat dieses Foto gemacht?'
         watermark:
-            label: 'Wasserzeichen "Captain Coaster"'
-            helper: 'Du kannst das Bild mit einem Captain Coaster-Logo als Wasserzeichen versehen, um eine Wiederverwendung auf anderen Websites zu vermeiden.'
+            label: 'Captain-Coaster-Wasserzeichen hinzufügen'
+            helper: 'Erschwert, dass dein Foto auf anderen Websites wiederverwendet wird.'
         copyright_agreement:
             label: 'Ich bestätige, dass ich das Urheberrecht an diesem Foto besitze oder die schriftliche Genehmigung des Rechteinhabers erhalten habe. Ich gewähre Captain Coaster eine Lizenz zur Anzeige dieses Fotos auf der Website. Ich verstehe, dass Dritte dieses Foto nicht ohne meine Erlaubnis wiederverwenden dürfen.'
-        upload: Mein Bild einreichen
-        uploading: 'Hochladen...'
-        back: Zurück zu Achterbahn
-        success: 'Das Bild wurde erfolgreich hochgeladen. Bevor es veröffentlicht wird, wird es von einem Administrator geprüft.'
-        duplicate: 'Dieses Bild wurde bereits hochgeladen. Bitte wählen Sie ein anderes Bild.'
+        upload: 'Foto einreichen'
+        uploading: 'Wird hochgeladen…'
+        success: 'Foto erhalten. Sie erscheint, sobald ein Moderator sie freigegeben hat.'
+        duplicate: 'Dieses Foto wurde bereits hochgeladen. Wähle ein anderes.'
 
 park:
     no_coasters: 'Keine Achterbahnen gefunden!'
@@ -278,15 +276,13 @@ profile:
 
 review:
     title: Rezensionen
-    share: 'Teile deine Meinung mit uns!'
-    value: 'Wie viele Sterne für diese Achterbahn?'
-    pros: 'Was sind ihre Pros?'
-    pros_placeholder: 'Wähle bis zu 3 Pros'
-    cons: 'Und was ihre Contras?'
-    cons_placeholder: 'Wähle bis zu 3 Contras'
-    comment: 'Willst du uns mehr über deine Fahrt erzählen?'
+    value: 'Deine Bewertung'
+    pros: 'Was dir gefallen hat'
+    cons: 'Was dir nicht gefallen hat'
+    comment: 'Deine Rezension'
+    comment_placeholder: "Der Launch, die Airtimes, die Wartezeit, die Thematisierung …"
     language: Sprache deiner Rezension
-    send: Sende meine Rezension
+    send: 'Rezension veröffentlichen'
     update: Bearbeiten
     delete: Löschen
     last: Neueste Rezensionen
@@ -378,52 +374,54 @@ nav:
 
 login:
     title: Anmelden bei Captain Coaster
-    subtitle: Sende einen Anmelde-Link an deine E-Mail-Adresse
+    subtitle: 'Wir schicken dir einen Anmelde-Link per E-Mail.'
     send_link: Anmelde-Link senden
-    sending: Wird gesendet...
+    sending: 'Wird gesendet…'
     redirect_to_register: 'Neu bei Captain Coaster? <a href="{link_path}">Konto erstellen</a>'
     or_sign_in_with: oder
-    connect_with_google: Mit Google anmelden
-    terms: 'Durch die Fortsetzung bestätigen Sie, dass Sie unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a> akzeptieren.'
+    connect_with_google: 'Weiter mit Google'
+    terms: 'Wenn du fortfährst, akzeptierst du unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a>.'
     email:
         title: Anmelden bei Captain Coaster
-        h1: 'Bereit zum Versand!'
-        paragraph1: 'Um sich bei Captain Coaster anzumelden, klicken Sie auf die Schaltfläche unten. Dieser Link verfällt in 15 Minuten.'
+        h1: 'Bereit zur Abfahrt!'
+        paragraph1: 'Klicke auf den Button unten, um dich bei Captain Coaster anzumelden. Dieser Link ist 15 Minuten gültig.'
         button: Anmelden
-        copy_link: 'Falls die Schaltfläche nicht funktioniert, kopieren Sie diesen Link in Ihren Browser:'
-        paragraph2: 'Sie erhalten diese E-Mail, weil für Ihr Captain-Coaster-Konto ein Anmelde-Link angefordert wurde. Falls Sie das nicht waren, können Sie diese E-Mail einfach ignorieren.'
-    link_sent: 'Wenn ein Konto mit {email} verknüpft ist, erhalten Sie einen Anmelde-Link. Klicken Sie auf den Link, um sich anzumelden.'
-    rate_limit_exceeded: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.'
+        copy_link: 'Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:'
+        paragraph2: 'Du erhältst diese E-Mail, weil für dein Captain-Coaster-Konto ein Anmelde-Link angefordert wurde. Falls du das nicht warst, kannst du diese E-Mail einfach ignorieren.'
+    link_sent: 'Wenn ein Konto mit {email} verknüpft ist, erhältst du einen Anmelde-Link. Öffne ihn, um dich anzumelden.'
+    rate_limit_exceeded: 'Zu viele Anmeldeversuche. Versuche es später erneut.'
 
 register:
-    title: Ein Konto erstellen
-    subtitle: Bitte füllen Sie alle untenstehenden Felder aus
-    link_sent: 'Konto erstellt! Bitte überprüfen Sie Ihre E-Mail ({email}) und klicken Sie auf den Link, um Ihr Konto zu aktivieren.'
-    rate_limit_exceeded: 'Zu viele Registrierungsversuche. Bitte versuchen Sie es später erneut.'
+    title: 'Konto erstellen'
+    subtitle: 'Bewerte deine gefahrenen Achterbahnen, erstelle deine Tops und bestimme die Weltrangliste mit.'
+    link_sent: 'Konto erstellt. Sieh in deinem Postfach ({email}) nach und öffne den Link, um dein Konto zu aktivieren.'
+    rate_limit_exceeded: 'Zu viele Registrierungsversuche. Versuche es später erneut.'
     form:
         email: E-Mail
         first_name: Vorname
         last_name: Nachname
-        submit: Ein Konto erstellen
+        submit: 'Konto erstellen'
     email:
-        title: Bestätigen Sie Ihre E-Mail
+        title: 'Bestätige deine E-Mail-Adresse'
         h1: 'Willkommen an Bord!'
-        paragraph1: 'Um Captain Coaster zu nutzen, klicken Sie auf den Bestätigungsbutton. Dieser Link ist gültig für'
+        paragraph1: 'Um Captain Coaster zu nutzen, klicke auf den Bestätigungsbutton. Dieser Link ist gültig für'
         button: Aktivieren
-        paragraph2: 'Sie haben diese E-Mail erhalten, weil Sie ein Konto bei Captain Coaster erstellt haben. Wenn Sie nicht sicher sind, warum Sie diese Nachricht erhalten, kontaktieren Sie uns bitte, indem Sie auf diese E-Mail antworten.'
-    email_verified: 'Ihre E-Mail {email} wurde verifiziert. Willkommen bei Captain Coaster!'
+        paragraph2: 'Du erhältst diese E-Mail, weil du ein Konto bei Captain Coaster erstellt hast. Falls du das nicht warst, antworte einfach auf diese E-Mail.'
+    email_verified: 'Deine E-Mail-Adresse {email} ist bestätigt. Willkommen bei Captain Coaster!'
 
 contact:
     title: Kontaktiere uns
-    send: Nachricht absenden
+    send: 'Nachricht senden'
     form:
         name: Dein Name
-        email: 'Gebe hier deine E-Mail-Adresse ein, falls du möchtest, dass wir antworten'
+        email: "Deine E-Mail-Adresse"
+        email_help: "Nur wenn du eine Antwort möchtest."
         message: Deine Nachricht
+        sender_help: "Wir antworten an die E-Mail-Adresse deines Kontos."
     email:
         title: Kontaktformular - Captain Coaster
     flash:
-        success: 'Danke {name}, deine Nachricht wurde an das Captain Coaster-Team gesendet.'
+        success: 'Danke {name}, deine Nachricht wurde an das Captain-Coaster-Team gesendet.'
 
 coaster_search:
     title: 'Achterbahnen suchen'
@@ -513,3 +511,12 @@ gallery:
 map:
     loading: Lädt...
     error_loading: Fehler beim Laden der Daten
+
+form:
+    optional: "(optional)"
+    error_summary: '{count, plural, one {# Feld muss korrigiert werden} other {# Felder müssen korrigiert werden}}'
+    star_rating:
+        choice: '{value, number} von 5'
+    tag_choice:
+        help: 'Bis zu {max}'
+        show_all: 'Alle anzeigen ({count})'

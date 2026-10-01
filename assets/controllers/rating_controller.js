@@ -9,7 +9,6 @@ export default class extends Controller {
         ratingId: Number,
         locale: String,
         readonly: Boolean,
-        formFieldId: String,
     };
     static outlets = ['csrf-protection'];
 
@@ -170,16 +169,6 @@ export default class extends Controller {
         this.currentValueValue = value;
         this.updateStarDisplay(value);
 
-        // Check if we're in form mode (has a form field to update)
-        if (this.hasFormFieldIdValue) {
-            const field = document.getElementById(this.formFieldIdValue);
-            if (field) {
-                field.value = value;
-            }
-            return;
-        }
-
-        // API mode: save to backend
         const wasNew = !this.ratingIdValue;
 
         try {

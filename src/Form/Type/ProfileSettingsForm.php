@@ -48,6 +48,8 @@ class ProfileSettingsForm extends AbstractType
         $builder->add('firstName', TextType::class, [
             'label' => 'profile.settings.name.firstName',
             'disabled' => !$canChangeName,
+            // An empty submission must reach NotBlank as '', not fail on User's string setter as null
+            'empty_data' => '',
             'constraints' => [
                 new NotBlank(),
                 new Length(min: 2, max: 50),

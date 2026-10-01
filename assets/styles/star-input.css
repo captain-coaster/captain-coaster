@@ -1,0 +1,83 @@
+/*
+ * Star rating input (StarRatingType, theme block star_rating_widget): ten
+ * visually hidden radios, two per star, each half covered by its label.
+ * Hand-written rather than utilities: a star's fill depends on which radio
+ * is checked in a *later* sibling (`:has(~ ... :checked)`), which markup
+ * utilities can't express. Colors: DESIGN.md, Rating stars.
+ */
+.star-input {
+    display: flex;
+    gap: 0;
+    width: fit-content;
+    border-radius: var(--radius-sm);
+}
+
+.star-input:has(:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 3px;
+}
+
+.star-input__star {
+    position: relative;
+    display: grid;
+    place-items: center;
+    /* 48px: each half-star label stays a 24px target. */
+    width: 48px;
+    height: 48px;
+}
+
+.star-input__star svg {
+    width: 38px;
+    height: 38px;
+    overflow: visible;
+}
+
+.star-input__fill {
+    fill: var(--rating-fill);
+    clip-path: inset(0 100% 0 0);
+}
+
+.star-input__edge {
+    fill: none;
+    stroke: var(--rating-empty);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Stars before the checked one are full; the checked star is full or half. */
+.star-input__star:has(~ .star-input__star :checked) .star-input__fill,
+.star-input__star:has(input:last-of-type:checked) .star-input__fill {
+    clip-path: none;
+}
+
+.star-input__star:has(input:first-of-type:checked) .star-input__fill {
+    clip-path: inset(0 50% 0 0);
+}
+
+.star-input__star:has(~ .star-input__star :checked) .star-input__edge,
+.star-input__star:has(:checked) .star-input__edge {
+    stroke: var(--rating-edge);
+}
+
+.star-input__half {
+    position: absolute;
+    inset-block: 0;
+    width: 50%;
+    margin: 0;
+    cursor: pointer;
+}
+
+.star-input__half:first-of-type {
+    left: 0;
+}
+
+.star-input__half:last-of-type {
+    right: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .star-input__fill {
+        transition: clip-path 120ms var(--ease-out);
+    }
+}

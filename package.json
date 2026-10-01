@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "maplibre-gl": "^6.6.0",
-    "sortablejs": "^1.15.6",
-    "tom-select": "^2.6.2"
+    "sortablejs": "^1.15.6"
   }
 }

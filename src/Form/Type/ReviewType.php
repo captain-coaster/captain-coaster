@@ -6,89 +6,66 @@ namespace App\Form\Type;
 
 use App\Entity\RiddenCoaster;
 use App\Entity\Tag;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Repository\TagRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @extends AbstractType<RiddenCoaster>
  */
 class ReviewType extends AbstractType
 {
-    public function __construct(protected TranslatorInterface $translator)
+    public function __construct(private readonly TagRepository $tagRepository)
     {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('value', NumberType::class, [
-                'required' => true,
-                'html5' => true,
+            ->add('value', StarRatingType::class, [
+                'label' => 'review.value',
             ])
-            ->add(
-                'pros',
-                EntityType::class,
-                [
-                    'class' => Tag::class,
-                    'choice_label' => 'name',
-                    'choice_translation_domain' => 'database',
-                    'multiple' => true,
-                    'required' => false,
-                    'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
-                        ->where('p.type = :pro')
-                        ->setParameter('pro', Tag::PRO),
-                    'label' => 'review.pros',
-                ]
-            )
-            ->add(
-                'cons',
-                EntityType::class,
-                [
-                    'class' => Tag::class,
-                    'choice_label' => 'name',
-                    'choice_translation_domain' => 'database',
-                    'multiple' => true,
-                    'required' => false,
-                    'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('c')
-                        ->where('c.type = :con')
-                        ->setParameter('con', Tag::CON),
-                    'label' => 'review.cons',
-                ]
-            )
-            ->add(
-                'review',
-                TextareaType::class,
-                [
-                    'required' => false,
-                    'label' => 'review.comment',
-                ]
-            )
-            ->add(
-                'riddenAt',
-                DateType::class,
-                [
-                    'required' => false,
-                    'label' => 'review.ridden_at',
-                    'widget' => 'single_text',
-                    'html5' => true,
-                ]
-            );
+            ->add('pros', TagChoiceType::class, [
+                'class' => Tag::class,
+                'choice_label' => 'name',
+                'choice_translation_domain' => 'database',
+                'choices' => $this->tagRepository->findByTypeMostUsedFirst(Tag::PRO),
+                'label' => 'review.pros',
+            ])
+            ->add('cons', TagChoiceType::class, [
+                'class' => Tag::class,
+                'choice_label' => 'name',
+                'choice_translation_domain' => 'database',
+                'choices' => $this->tagRepository->findByTypeMostUsedFirst(Tag::CON),
+                'label' => 'review.cons',
+            ])
+            ->add('review', TextareaType::class, [
+                'required' => false,
+                'label' => 'review.comment',
+                'attr' => ['placeholder' => 'review.comment_placeholder'],
+            ])
+            ->add('riddenAt', DateType::class, [
+                'required' => false,
+                'label' => 'review.ridden_at',
+                'widget' => 'single_text',
+                'row_attr' => ['class' => 'max-w-56'],
+            ]);
     }
 
+    /** Bounds the ride date picker to the coaster's operating period. */
     public function finishView(FormView $view, FormInterface $form, array $options): void
     {
-        $this->sortTranslatedChoices($view->children['pros']->vars['choices']);
-        $this->sortTranslatedChoices($view->children['cons']->vars['choices']);
+        $coaster = $form->getData()?->getCoaster();
+        $riddenAt = $view->children['riddenAt'];
+        if ($coaster?->getOpeningDate()) {
+            $riddenAt->vars['attr']['min'] = $coaster->getOpeningDate()->format('Y-m-d');
+        }
+        $riddenAt->vars['attr']['max'] = ($coaster?->getClosingDate() ?? new \DateTimeImmutable())->format('Y-m-d');
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -96,26 +73,8 @@ class ReviewType extends AbstractType
         $resolver->setDefaults(
             [
                 'data_class' => RiddenCoaster::class,
-                'locales' => [],
                 'validation_groups' => ['Default', 'review_text'],
             ]
-        );
-    }
-
-    /** @param array<ChoiceView> $choices */
-    private function sortTranslatedChoices(array &$choices): void
-    {
-        usort(
-            $choices,
-            function ($a, $b): int {
-                $labelA = $a->label;
-                $labelB = $b->label;
-
-                return strcmp(
-                    \is_string($labelA) ? $this->translator->trans($labelA, [], 'database') : '',
-                    \is_string($labelB) ? $this->translator->trans($labelB, [], 'database') : ''
-                );
-            }
         );
     }
 }

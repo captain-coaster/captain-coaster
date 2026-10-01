@@ -1,28 +1,12 @@
 import { Controller } from '@hotwired/stimulus';
 
+// Disables the submit button while the form posts, so a slow upload or
+// sign-in can't be sent twice. Required fields are native (`required`) and
+// validated server-side.
 export default class extends Controller {
-    static values = { loadingText: String, requiredError: String };
-    static targets = ['requiredCheckbox'];
+    static values = { loadingText: String };
 
-    submit(event) {
-        if (
-            this.hasRequiredCheckboxTarget &&
-            !this.requiredCheckboxTarget.checked
-        ) {
-            event.preventDefault();
-            const group = this.requiredCheckboxTarget.closest('.cc-field');
-            if (group) {
-                group.classList.add('has-error');
-                if (!group.querySelector('.help-block-error')) {
-                    const error = document.createElement('span');
-                    error.className = 'help-block help-block-error text-danger';
-                    error.textContent = this.requiredErrorValue;
-                    group.appendChild(error);
-                }
-            }
-            return;
-        }
-
+    submit() {
         const submitButton = this.element.querySelector('button[type=submit]');
         if (submitButton) {
             submitButton.disabled = true;

@@ -97,9 +97,7 @@
                   {{ form_errors(form.preferredReviewLanguages) }}
                 </div>
 
-                <div class="toggle-switch-cc-field">
-                  {{ form_row(form.addTodayDateWhenRating, {'attr': {'class': 'toggle-input'}}) }}
-                </div>
+                {{ form_row(form.addTodayDateWhenRating) }}
               </fieldset>
 
               {% if form.apiKey is defined %}

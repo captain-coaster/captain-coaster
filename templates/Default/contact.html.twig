@@ -4,18 +4,24 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  {{ form_errors(form) }}
-  {{ form_start(form) }}
-  {{ form_row(form.name) }}
-  {{ form_row(form.email) }}
-  {{ form_row(form.message, {'attr': {'rows': '5'}}) }}
-  {{ form_widget(form.recaptcha) }}
-  {{ form_rest(form) }}
-  <div class="text-right">
-    <button id="contact_btn" type="submit" class="cc-button cc-button--primary">
-      {{ 'contact.send'|trans }}
-      {{ ux_icon('lucide:arrow-right', {'class': 'size-4 ms-1'}) }}
-    </button>
-  </div>
+  {{ form_start(form, {attr: {class: 'grid max-w-160 gap-6'}}) }}
+    {{ form_errors(form) }}
+    {% if isLoggedIn %}
+      <div class="flex items-center gap-3 rounded-card border border-line bg-surface px-4 py-3">
+        <twig:Avatar :user="app.user" decorative/>
+        <span class="grid min-w-0">
+          <span class="font-semibold">{{ app.user.displayName }}</span>
+          <span class="text-caption text-muted">{{ 'contact.form.sender_help'|trans }}</span>
+        </span>
+      </div>
+    {% else %}
+      {{ form_row(form.name) }}
+      {{ form_row(form.email) }}
+    {% endif %}
+    {{ form_row(form.message) }}
+    {{ form_rest(form) }}
+    <div>
+      <twig:Button block>{{ 'contact.send'|trans }}</twig:Button>
+    </div>
   {{ form_end(form) }}
 {% endblock %}
