@@ -1,11 +1,15 @@
 # Define languages
 fr: Français
+
 en: English
+
 es: Español
+
 de: Deutsch
 
 # Common buttons
 Today: 'Hoy'
+
 Clear: 'Borrar'
 
 app:
@@ -41,16 +45,6 @@ coaster:
         title: 'PUNTUACIÓN'
         rank: 'RANGO'
         scoreof: Resultado de
-        ranked: Clasificado
-        intheworld: en el mundo
-        quality: 'Puntuación de Calidad'
-        worldrank: 'Clasificación Mundial'
-        overview: 'De un Vistazo'
-    quality:
-        excellent: 'Excelente'
-        good: 'Bueno'
-        fair: 'Regular'
-        poor: 'Pobre'
     rating:
         action: '¡Califica esta montaña rusa!'
         my_rating: 'Mi calificación'
@@ -60,8 +54,6 @@ coaster:
         sendreview: o haga clic aquí para escribir una reseña
         updatereview: cambiar mi reseña
         delete: borrar
-        text: 'Resultado basada en {count_rating} notas y {count_top} tops'
-        details: Valoraciones detalladas de los usuarios
         distribution: 'Distribución de calificaciones'
         ratings: clasificaciones
         date:
@@ -78,29 +70,24 @@ coaster:
         status: Estatus
         park: Parque de atracciones
         country: País
-        type: Tipo
         launch: Lanzamiento
         manufacturer: Fabricante
         materialType: Material
         seatingType: Tren
         model: Modelo
         restraint: Seguridad
-        forces: G-forces
         opening: Apertura
         closing: clausura
         vr: VR
         cost: Coste
         kiddie: Kiddie
         indoor: Indoor
-        formerNames: Nombres anteriores
     stats:
         height: Altura
         length: Longitud
         speed: Velocidad máxima
         inversions: Inversiones
     parkcoaster: 'También en {name}'
-    video:
-        title: POV Onride
     photos:
         title: Fotos
         empty: '¡Aún no tenemos fotos de este posavasos, pero puedes enviarnos las tuyas!'
@@ -108,23 +95,19 @@ coaster:
         all: Ver todas las fotos
         loading: Carga de fotos
         like: Me gusta esta foto
-    location: Localización
 
 image_upload:
     title: 'Sube una foto de {coaster}'
     form:
-        file:
-            label: 'Elige una foto'
-            helper: 'JPEG, menos de 15 MB. Las fotos muy pequeñas pueden ser rechazadas.'
-        credit:
-            label: '¿Quién hizo esta foto?'
-        watermark:
-            label: 'Añadir la marca de agua de Captain Coaster'
-            helper: 'Dificulta que tu foto se reutilice en otras webs.'
-        copyright_agreement:
-            label: 'Confirmo que poseo los derechos de autor de esta foto o que he obtenido el permiso por escrito del titular de los derechos. Concedo a Captain Coaster una licencia para mostrar esta foto en el sitio. Entiendo que terceros no pueden reutilizar esta foto sin mi permiso.'
-        upload: 'Enviar foto'
-        uploading: 'Subiendo…'
+        file: 'Elige una foto'
+        file_help: 'JPEG, menos de 15 MB. Las fotos muy pequeñas pueden ser rechazadas.'
+        credit: '¿Quién hizo esta foto?'
+        watermark: 'Añadir la marca de agua de Captain Coaster'
+        watermark_help: 'Dificulta que tu foto se reutilice en otras webs.'
+        copyright_agreement: 'Confirmo que poseo los derechos de autor de esta foto o que he obtenido el permiso por escrito del titular de los derechos. Concedo a Captain Coaster una licencia para mostrar esta foto en el sitio. Entiendo que terceros no pueden reutilizar esta foto sin mi permiso.'
+        submit: 'Enviar foto'
+        submitting: 'Subiendo…'
+    flash:
         success: 'Foto recibida. Aparecerá cuando un moderador la apruebe.'
         duplicate: 'Esta foto ya se ha subido. Elige otra.'
 
@@ -136,7 +119,6 @@ park:
 map_index:
     title: 'Mapa de montañas rusas'
     description: 'Descubre dónde están las montañas rusas más increíbles de los alrededores, los éxitos del próximo año o el B&M que aún no has montado con este mapa interactivo.'
-    results: Resultados
 
 filters:
     title: Filtros
@@ -163,17 +145,6 @@ filters:
         coaster: Coaster
         location: Lugar
 
-    sorts:
-        label: Ordenar las reseñas
-        default: Ordenar por defecto
-        reviews:
-            updatedAt:
-                asc: De la más antigua a la más reciente
-                desc: De la más reciente a la más antigua
-            value:
-                asc: De la más baja a la más alta
-                desc: De la más alta a la más baja
-
 user_profile:
     title: 'Perfil • {name}'
     ratings: Mostrar sus notas
@@ -199,11 +170,9 @@ profile:
         map: Mi mapa
         photos: Mis fotos
         reviews: Mis reseñas
-        settings: Configuración
     badge: Insignias
     banner:
         title: Banner personalizado
-        text: ~
         getbbcode: Copiar BBCode (foros)
         gethtml: Copiar html
         copied: '¡Copiado!'
@@ -211,9 +180,6 @@ profile:
         unavailable: '¡Califica y clasifica montañas rusas para generar tu banner personalizado! La actualización puede tardar unas horas.'
     stats:
         title: 'Visión general'
-        coasters: 'montañas rusas'
-        parks: 'parques'
-        countries: 'países'
         ridden_coasters: '{count, plural, =1 {montaña rusa} other {montañas rusas}}'
         explored_parks: '{count, plural, =1 {parque} other {parques}}'
         visited_countries: '{count, plural, =1 {país} other {países}}'
@@ -224,7 +190,6 @@ profile:
         favorite_manufacturer: 'Fabricante Favorito'
         represented_manufacturer: ' Fabricante más representado en tu top 10'
         coaster_count: '{count, plural, =0 {Ninguna montaña rusa} =1 {1 montaña rusa} other {# montañas rusas}}'
-        park_count: '{count, plural, =0 {Ningún parque} =1 {1 parque} other {# parques}}'
     ratings:
         title: Mis notas
     settings:
@@ -235,43 +200,30 @@ profile:
             advanced: Avanzado
             reviews: Reseñas y notas
             notifications: Notificaciones
-        name:
-            firstName: Nombre
-            lastName: Apellido
-            format: Formato de visualización del nombre
-            format.help: Elija cómo aparecerá su nombre para otros usuarios (vista previa mostrada a la derecha)
-            format.full: Nombre completo
-            format.partial: Nombre + Inicial del apellido
-            format.first_only: Solo nombre
-            invalid_characters: 'El nombre solo puede contener letras, espacios y signos de puntuación comunes (apóstrofes, guiones, puntos).'
-            change_limit: Solo puede cambiar su nombre una vez al mes.
-            changed_success: Su nombre ha sido actualizado con éxito.
-            format_changed_success: El formato de visualización de su nombre ha sido actualizado con éxito.
-        preferences:
-            profilePicture: Foto de perfil
-            notifications:
-                title: Notificaciones
-                inApp: 'Siempre recibes tus notificaciones en el sitio.'
-            emailNotification:
-                label: 'Avisarme también por correo electrónico'
-            preferredLocale: Lengua preferida
-            homePark:
-                label: Mi home park
-                placeholder: Elige uno
-            units:
-                metric: Sistema Internacional de unidades
-                imperial: Sistema anglosajón de unidades
-                label: Mostrar distancias y estadísticas en
-            preferredReviewLanguages:
-                label: 'Mostrar reseñas escritas en'
-                help: 'Déjelo vacío para ver solo reseñas en su idioma preferido.'
-            addTodayDateWhenRating:
-                label: Añadir la fecha de hoy en una nueva calificación
-        advanced:
-            apiKey:
-                label: Clave API
-        updated_success: Su configuración ha sido actualizada con éxito.
-        save: Guardar cambios
+        form:
+            first_name: Nombre
+            first_name_help: Solo puede cambiar su nombre una vez al mes.
+            last_name: Apellido
+            display_name: Formato de visualización del nombre
+            display_name_help: Elija cómo aparecerá su nombre para otros usuarios (vista previa mostrada a la derecha)
+            display_name_full: Nombre completo
+            display_name_partial: Nombre + Inicial del apellido
+            display_name_first_only: Solo nombre
+            name_invalid: 'El nombre solo puede contener letras, espacios y signos de puntuación comunes (apóstrofes, guiones, puntos).'
+            profile_picture: Foto de perfil
+            locale: Lengua preferida
+            units: Mostrar distancias y estadísticas en
+            home_park: Mi home park
+            home_park_placeholder: Elige uno
+            review_languages: 'Mostrar reseñas escritas en'
+            review_languages_help: 'Déjelo vacío para ver solo reseñas en su idioma preferido.'
+            add_today_date: Añadir la fecha de hoy en una nueva calificación
+            email_notification: 'Avisarme también por correo electrónico'
+            email_notification_help: 'Siempre recibes tus notificaciones en el sitio.'
+            api_key: Clave API
+            submit: Guardar cambios
+        flash:
+            success: Su configuración ha sido actualizada con éxito.
     delete_account:
         title: Eliminar cuenta
         warning: 'Esta acción eliminará permanentemente su cuenta y todos los datos asociados. Esto no se puede deshacer.'
@@ -286,16 +238,12 @@ review:
     value: 'Tu puntuación'
     pros: 'Lo que te gustó'
     cons: 'Lo que no te gustó'
-    comment: 'Tu reseña'
-    comment_placeholder: "El lanzamiento, los airtimes, la espera, la tematización…"
-    language: Lengua
     send: 'Publicar reseña'
     update: Editar
     delete: Borrar
     last: Últimas reseñas
     all: Ver todo
     loading: Carga de reseñas
-    ridden_at: Fecha del ride
     upvote: Votar por esta reseña
     report: Reportar esta reseña
     report_title: Reportar Reseña
@@ -303,7 +251,6 @@ review:
     reason:
         inappropriate: Lenguaje inapropiado
         spam: Spam
-    cancel: Cancelar
     submit_report: Enviar Reporte
     report_success: Gracias por tu reporte. Nuestro equipo lo revisará en breve.
     report_error: Se produjo un error al enviar tu reporte.
@@ -315,6 +262,17 @@ review:
     form:
         title: 'Reseña sobre {name}'
 
+        comment: 'Tu reseña'
+        comment_placeholder: "El lanzamiento, los airtimes, la espera, la tematización…"
+        ridden_at: Fecha del ride
+    sort:
+        label: Ordenar las reseñas
+        default: Ordenar por defecto
+        oldest: De la más antigua a la más reciente
+        newest: De la más reciente a la más antigua
+        lowest: De la más baja a la más alta
+        highest: De la más alta a la más baja
+
 users:
     tops:
         title: 'Tops • {name}'
@@ -325,8 +283,6 @@ users:
         opening_date: Abierto
         rating: Nota
         ridden_at: Ridden at
-    my_ratings:
-        title: Mis notas
     reviews:
         title: 'Reseñas • {name}'
     images:
@@ -382,12 +338,8 @@ nav:
 login:
     title: Iniciar sesión en Captain Coaster
     subtitle: 'Te enviaremos un enlace de acceso por correo.'
-    send_link: 'Enviar enlace de acceso'
-    sending: 'Enviando…'
     redirect_to_register: '¿Eres nuevo en Captain Coaster? <a href="{link_path}">Crea una cuenta</a>'
-    or_sign_in_with: o
     connect_with_google: 'Continuar con Google'
-    terms: 'Al continuar, aceptas nuestros <a href="{link_path}">Términos y condiciones</a>.'
     email:
         title: Iniciar sesión en Captain Coaster
         h1: '¡Listo para salir!'
@@ -398,33 +350,30 @@ login:
     link_sent: 'Si hay una cuenta asociada con {email}, recibirás un enlace de inicio de sesión. Haz clic en el enlace para iniciar sesión.'
     rate_limit_exceeded: 'Demasiados intentos de inicio de sesión. Inténtalo de nuevo más tarde.'
 
+    form:
+        submit: 'Enviar enlace de acceso'
+        submitting: 'Enviando…'
+    or: o
+
 register:
     title: Crear una cuenta
     subtitle: 'Puntúa las montañas rusas en las que has montado, crea tus tops y pesa en el ranking mundial.'
     link_sent: 'Cuenta creada. Revisa tu correo ({email}) y abre el enlace para activar tu cuenta.'
     rate_limit_exceeded: 'Demasiados intentos de registro. Por favor, inténtalo de nuevo más tarde.'
     form:
-        email: Correo electrónico
         first_name: Nombre
         last_name: Apellido
         submit: Crear una cuenta
-    email:
-        title: Confirma tu correo electrónico
-        h1: '¡Bienvenido a bordo!'
-        paragraph1: 'Para usar Captain Coaster, haz clic en el botón de verificación. Este enlace es válido durante'
-        button: Activar
-        paragraph2: 'Recibes este correo porque creaste una cuenta en Captain Coaster. Si no fuiste tú, responde a este correo.'
-    email_verified: 'Tu correo {email} está verificado. ¡Bienvenido a Captain Coaster!'
 
 contact:
     title: 'Contáctanos'
-    send: 'Enviar mensaje'
     form:
         name: Tu nombre
         email: "Tu correo electrónico"
         email_help: "Solo si quieres una respuesta."
         message: Tu mensaje
         sender_help: "Te responderemos al correo de tu cuenta."
+        submit: 'Enviar mensaje'
     email:
         title: 'Formulario de contacto - Captain Coaster'
     flash:
@@ -434,13 +383,6 @@ coaster_search:
     title: 'Buscar montañas rusas'
     num_found: '{num} montañas rusas encontradas'
     no_results: 'Ninguna montaña rusa coincide con tus criterios'
-
-nearby:
-    title: Busca una montaña rusa
-    num_found: '{num} montañas rusas encontradas'
-    geo_on: Geolocalización activada
-    geo_off: Geolocalización no activada
-    km_away: 'a {distance}'
 
 badge:
     rating1: Primera nota
@@ -467,12 +409,6 @@ error:
     generic:
         title: Se ha producido un error
         message: Se ha producido un error
-    maintenance:
-        title: '¡Parada Técnica Rápida! 🔧'
-        message: 'Por favor, permanezca en línea. ¡Reanudaremos las operaciones en unos minutos!'
-
-banner:
-    coasters: '{count, plural, one {1 montaña rusa} other {# montañas rusas}}'
 
 clipboard:
     copied: '¡Copiado!'
@@ -485,24 +421,6 @@ search_index:
     noTerm: No hay término de búsqueda
     short: Su búsqueda es demasiado corta y debe contener más de 2 caracteres.
     error: 'Se produjo un error de búsqueda'
-    coasters_found: >-
-        {num, plural,
-            =0 {No se han encontrado montañas rusas}
-            =1 {1 montaña rusa encontrada}
-            other {# montañas rusas encontradas}
-        }
-    parks_found: >-
-        {num, plural,
-            =0 {No se han encontrado parque o propietario}
-            =1 {1 parque o propietario encontrado}
-            other {# parques o propietarios encontrados}
-        }
-    users_found: >-
-        {num, plural,
-            =0 {No se han encontrado usuario}
-            =1 {1 usuario encontrado}
-            other {# usuarios encontrados}
-        }
     unified_results_found: >-
         {num, plural,
             =0 {No se han encontrado resultados para "{query}"}
@@ -529,3 +447,12 @@ form:
     tag_choice:
         help: 'Hasta {max}'
         show_all: 'Mostrar todas ({count})'
+    cancel: Cancelar
+    email: Correo electrónico
+
+account:
+    terms: 'Al continuar, aceptas nuestros <a href="{link_path}">Términos y condiciones</a>.'
+
+units:
+    metric: Sistema Internacional de unidades
+    imperial: Sistema anglosajón de unidades

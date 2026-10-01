@@ -9,11 +9,6 @@ new:
         top: 'Top (le plus haut est le meilleur)'
         submit: 'Créer un nouveau top'
 
-editDetails:
-    title: 'Modifier un top'
-    form:
-        submit: 'Mettre à jour le top'
-
 list:
     title: 'Les derniers tops'
     more: 'Voir plus'
@@ -25,16 +20,20 @@ list:
     create: 'Créer un top personnalisé'
 
 title: 'Mes Top Coasters'
+
 update: 'Modifier'
+
 update_details: 'Changer le nom'
+
 delete: 'Supprimer'
+
 delete_confirmation: 'Supprimer ?'
+
 find: 'Trouver un coaster...'
 
 search:
     placeholder: 'Rechercher un coaster à ajouter...'
     no_results: 'Aucun coaster trouvé'
-    already_in_list: 'Déjà dans votre liste'
     aria_label: 'Résultats de recherche de coasters'
 
 help:
@@ -57,7 +56,9 @@ save_status:
     error: "Erreur d'enregistrement. Nouvelle tentative..."
 
 errors:
-    save_failed: "Échec de l'enregistrement des modifications. Veuillez réessayer."
     invalid_position: 'Position invalide. Veuillez entrer un nombre entre 1 et {max}.'
-    add_failed: "Échec de l'ajout du coaster. Veuillez réessayer."
-    duplicate: 'Ce coaster est déjà dans votre liste.'
+
+edit_details:
+    title: 'Modifier un top'
+    form:
+        submit: 'Mettre à jour le top'

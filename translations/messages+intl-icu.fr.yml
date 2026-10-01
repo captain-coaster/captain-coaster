@@ -1,11 +1,15 @@
 # Define languages
 fr: Français
+
 en: English
+
 es: Español
+
 de: Deutsch
 
 # Common buttons
 Today: "Aujourd'hui"
+
 Clear: 'Effacer'
 
 app:
@@ -41,16 +45,6 @@ coaster:
         title: 'SCORE'
         rank: 'RANG'
         scoreof: Score de
-        ranked: Classé
-        intheworld: mondial
-        quality: 'Score de Qualité'
-        worldrank: 'Classement Mondial'
-        overview: "En un Coup d'Œil"
-    quality:
-        excellent: 'Excellent'
-        good: 'Bon'
-        fair: 'Moyen'
-        poor: 'Faible'
     rating:
         action: 'Note ce coaster !'
         my_rating: 'Ma note'
@@ -60,8 +54,6 @@ coaster:
         sendreview: ou clique ici pour donner ton avis
         updatereview: modifier mon avis
         delete: supprimer
-        text: 'Score basé sur {count_rating} notes et {count_top} tops'
-        details: Détail des notes utilisateurs
         distribution: 'Distribution des notes'
         ratings: notes
         date:
@@ -78,29 +70,24 @@ coaster:
         status: Statut
         park: Parc
         country: Pays
-        type: Type
         launch: Lancement
         manufacturer: Constructeur
         materialType: Type
         seatingType: Train
         model: Modèle
         restraint: Retenue
-        forces: Forces G
         opening: Ouverture
         closing: Fermeture
         vr: VR
         cost: Coût
         kiddie: Kiddie
         indoor: Indoor
-        formerNames: Anciens noms
     stats:
         height: Hauteur
         length: Longueur
         speed: Vitesse max
         inversions: Inversions
     parkcoaster: 'Coasters de {name}'
-    video:
-        title: Vidéo Onride
     photos:
         title: Photos
         empty: "Oups, nous n'avons pas encore de photo pour ce coaster, mais tu peux envoyer les tiennes !"
@@ -108,23 +95,19 @@ coaster:
         all: Voir toutes les photos
         loading: Chargement des photos...
         like: Aimer cette photo
-    location: Localisation
 
 image_upload:
     title: 'Envoyer une photo de {coaster}'
     form:
-        file:
-            label: 'Choisis une photo'
-            helper: 'JPEG, moins de 15 Mo. Les photos trop petites peuvent être refusées.'
-        credit:
-            label: 'Qui a pris cette photo ?'
-        watermark:
-            label: 'Ajouter le filigrane Captain Coaster'
-            helper: 'Limite la réutilisation de ta photo sur d''autres sites.'
-        copyright_agreement:
-            label: "Je confirme que je possède les droits d'auteur de cette photo ou que j'ai obtenu l'autorisation écrite du titulaire des droits. J'accorde à Captain Coaster une licence pour afficher cette photo sur le site. Je comprends que les tiers ne peuvent pas réutiliser cette photo sans mon autorisation."
-        upload: 'Envoyer la photo'
-        uploading: 'Envoi…'
+        file: 'Choisis une photo'
+        file_help: 'JPEG, moins de 15 Mo. Les photos trop petites peuvent être refusées.'
+        credit: 'Qui a pris cette photo ?'
+        watermark: 'Ajouter le filigrane Captain Coaster'
+        watermark_help: 'Limite la réutilisation de ta photo sur d''autres sites.'
+        copyright_agreement: "Je confirme que je possède les droits d'auteur de cette photo ou que j'ai obtenu l'autorisation écrite du titulaire des droits. J'accorde à Captain Coaster une licence pour afficher cette photo sur le site. Je comprends que les tiers ne peuvent pas réutiliser cette photo sans mon autorisation."
+        submit: 'Envoyer la photo'
+        submitting: 'Envoi…'
+    flash:
         success: 'Photo reçue. Elle apparaîtra une fois validée par un modérateur.'
         duplicate: 'Cette photo a déjà été envoyée. Choisis-en une autre.'
 
@@ -136,7 +119,6 @@ park:
 map_index:
     title: Carte des coasters
     description: "Découvre où sont les meilleurs coasters près de chez toi les nouveautés, où les B&M que tu n'as pas encore ridé sur cette carte interactive."
-    results: Résultats
 
 filters:
     title: Filtres
@@ -163,17 +145,6 @@ filters:
         coaster: Coaster
         location: Lieu
 
-    sorts:
-        label: Trier les avis
-        default: Tri par défaut
-        reviews:
-            updatedAt:
-                asc: Du plus ancien au plus récent
-                desc: Du plus récent au plus ancien
-            value:
-                asc: De la moins bonne à la meilleure
-                desc: De la meilleure à la moins bonne
-
 user_profile:
     title: 'Profil • {name}'
     ratings: Voir ses notes
@@ -199,11 +170,9 @@ profile:
         map: Ma carte
         photos: Mes photos
         reviews: Mes avis
-        settings: Paramètres
     badge: Badges
     banner:
         title: Bannière personnalisée
-        text: ~
         getbbcode: Copier le BBCode (forums)
         gethtml: Copier en html
         copied: 'Copié !'
@@ -211,9 +180,6 @@ profile:
         unavailable: 'Note et classe des coasters pour générer ta bannière personnalisée ! La mise à jour peut prendre quelques heures.'
     stats:
         title: 'Statistiques'
-        coasters: 'coasters'
-        parks: 'parcs'
-        countries: 'pays'
         ridden_coasters: '{count, plural, =1 {coaster} other {coasters}}'
         explored_parks: '{count, plural, =1 {parc} other {parcs}}'
         visited_countries: '{count, plural, =1 {pays} other {pays}}'
@@ -224,7 +190,6 @@ profile:
         favorite_manufacturer: 'Constructeur Favori'
         represented_manufacturer: 'Constructeur le plus représenté dans votre top 10'
         coaster_count: '{count, plural, =0 {Aucun coaster} =1 {1 coaster} other {# coasters}}'
-        park_count: '{count, plural, =0 {Aucun parc} =1 {1 parc} other {# parcs}}'
     ratings:
         title: Mes Notes
     settings:
@@ -235,40 +200,30 @@ profile:
             advanced: Avancé
             reviews: Avis et notes
             notifications: Notifications
-        name:
-            firstName: Prénom
-            lastName: Nom
-            format: "Format d'affichage du nom"
-            format.help: Choisis comment ton nom apparaît aux autres riders.
-            format.full: Nom complet
-            format.partial: Prénom + Initiale du nom
-            format.first_only: Prénom uniquement
-            invalid_characters: "Le nom ne peut contenir que des lettres, des espaces et des signes de ponctuation courants (apostrophes, traits d'union, points)."
-            change_limit: "Tu ne peux changer ton nom qu'une fois par mois."
-        preferences:
-            profilePicture: Photo de profil
-            notifications:
-                inApp: 'Tu reçois toujours tes notifications sur le site.'
-            emailNotification:
-                label: 'Me prévenir aussi par e-mail'
-            preferredLocale: Langue préférée
-            homePark:
-                label: Mon home park
-                placeholder: Choisis un parc
-            units:
-                metric: Unités métriques
-                imperial: Unités impériales
-                label: Afficher les distances et statistiques en
-            preferredReviewLanguages:
-                label: 'Afficher les avis écrits en'
-                help: 'Laisse vide pour ne voir que les avis dans ta langue préférée.'
-            addTodayDateWhenRating:
-                label: Ajouter la date du jour quand je note un nouveau coaster
-        advanced:
-            apiKey:
-                label: Clé API
-        updated_success: Tes paramètres sont enregistrés.
-        save: Enregistrer
+        form:
+            first_name: Prénom
+            first_name_help: "Tu ne peux changer ton nom qu'une fois par mois."
+            last_name: Nom
+            display_name: "Format d'affichage du nom"
+            display_name_help: Choisis comment ton nom apparaît aux autres riders.
+            display_name_full: Nom complet
+            display_name_partial: Prénom + Initiale du nom
+            display_name_first_only: Prénom uniquement
+            name_invalid: "Le nom ne peut contenir que des lettres, des espaces et des signes de ponctuation courants (apostrophes, traits d'union, points)."
+            profile_picture: Photo de profil
+            locale: Langue préférée
+            units: Afficher les distances et statistiques en
+            home_park: Mon home park
+            home_park_placeholder: Choisis un parc
+            review_languages: 'Afficher les avis écrits en'
+            review_languages_help: 'Laisse vide pour ne voir que les avis dans ta langue préférée.'
+            add_today_date: Ajouter la date du jour quand je note un nouveau coaster
+            email_notification: 'Me prévenir aussi par e-mail'
+            email_notification_help: 'Tu reçois toujours tes notifications sur le site.'
+            api_key: Clé API
+            submit: Enregistrer
+        flash:
+            success: Tes paramètres sont enregistrés.
     delete_account:
         title: Supprimer le compte
         warning: 'Cette action supprime définitivement ton compte et toutes ses données. Elle est irréversible.'
@@ -283,16 +238,12 @@ review:
     value: 'Ta note'
     pros: 'Ce que tu as aimé'
     cons: 'Ce que tu as moins aimé'
-    comment: 'Ton avis'
-    comment_placeholder: "Le lancement, les airtimes, l'attente, la thématisation…"
-    language: Langue de cet avis
     send: 'Publier l''avis'
     update: Modifier
     delete: Supprimer
     last: Derniers avis
     all: Voir plus
     loading: Chargement des avis...
-    ridden_at: Date du ride
     upvote: Voter pour cet avis
     report: Signaler cet avis
     report_title: Signaler un avis
@@ -300,7 +251,6 @@ review:
     reason:
         inappropriate: Langage inapproprié
         spam: Spam
-    cancel: Annuler
     submit_report: Envoyer le signalement
     report_success: "Merci pour votre signalement. Notre équipe va l'examiner prochainement."
     report_error: "Une erreur s'est produite lors de l'envoi de votre signalement."
@@ -312,6 +262,17 @@ review:
     form:
         title: 'Avis sur {name}'
 
+        comment: 'Ton avis'
+        comment_placeholder: "Le lancement, les airtimes, l'attente, la thématisation…"
+        ridden_at: Date du ride
+    sort:
+        label: Trier les avis
+        default: Tri par défaut
+        oldest: Du plus ancien au plus récent
+        newest: Du plus récent au plus ancien
+        lowest: De la moins bonne à la meilleure
+        highest: De la meilleure à la moins bonne
+
 users:
     tops:
         title: 'Tops • {name}'
@@ -322,8 +283,6 @@ users:
         opening_date: Ouverture
         rating: Note
         ridden_at: Ridé le
-    my_ratings:
-        title: Mes notes
     reviews:
         title: 'Avis • {name}'
     images:
@@ -379,12 +338,8 @@ nav:
 login:
     title: 'Connexion à Captain Coaster'
     subtitle: 'Nous t''envoyons un lien de connexion par email.'
-    send_link: 'Recevoir le lien de connexion'
-    sending: 'Envoi…'
     redirect_to_register: 'Nouveau sur Captain Coaster ? <a href="{link_path}">Créer un compte</a>'
-    or_sign_in_with: ou
     connect_with_google: 'Continuer avec Google'
-    terms: 'En continuant, tu acceptes nos <a href="{link_path}">conditions générales d''utilisation</a>.'
     email:
         title: Connexion à Captain Coaster
         h1: 'Prêt au dispatch !'
@@ -395,33 +350,30 @@ login:
     link_sent: 'Si un compte est associé à {email}, tu vas recevoir un lien de connexion. Ouvre-le pour te connecter.'
     rate_limit_exceeded: 'Trop de tentatives de connexion. Réessaie plus tard.'
 
+    form:
+        submit: 'Recevoir le lien de connexion'
+        submitting: 'Envoi…'
+    or: ou
+
 register:
     title: Créer un compte
     subtitle: 'Note les coasters que tu as faits, crée tes tops et pèse sur le classement mondial.'
     link_sent: 'Compte créé. Consulte ta boîte mail ({email}) et ouvre le lien pour activer ton compte.'
     rate_limit_exceeded: 'Trop de tentatives d''inscription. Réessaie plus tard.'
     form:
-        email: Email
         first_name: Prénom
         last_name: Nom
         submit: Créer un compte
-    email:
-        title: 'Confirme ton email'
-        h1: 'Bienvenue à bord !'
-        paragraph1: 'Pour utiliser Captain Coaster, clique sur le bouton de vérification. Ce lien est valable pendant'
-        button: Activer
-        paragraph2: 'Tu reçois cet email parce que tu as créé un compte sur Captain Coaster. Si ce n''est pas toi, réponds simplement à cet email.'
-    email_verified: 'Ton compte ({email}) est activé. Bienvenue sur Captain Coaster !'
 
 contact:
     title: Nous contacter
-    send: Envoyer le message
     form:
         name: 'Ton nom'
         email: 'Ton email'
         email_help: 'Seulement si tu veux une réponse.'
         message: 'Ton message'
         sender_help: 'Nous te répondrons à l''email de ton compte.'
+        submit: Envoyer le message
     email:
         title: Contact - Captain Coaster
     flash:
@@ -431,13 +383,6 @@ coaster_search:
     title: 'Rechercher des coasters'
     num_found: '{num} coasters trouvés'
     no_results: 'Aucun coaster ne correspond à vos critères'
-
-nearby:
-    title: Coasters à proximité
-    num_found: '{num} coasters trouvés'
-    geo_on: Localisation activée
-    geo_off: Localisation désactivée
-    km_away: 'à {distance}'
 
 badge:
     rating1: 1ère note
@@ -464,12 +409,6 @@ error:
     generic:
         title: "Une erreur s'est produite"
         message: "Une erreur s'est produite. Contactez-nous si le problème persiste"
-    maintenance:
-        title: 'Arrêt Technique Rapide ! 🔧'
-        message: 'Vous pouvez rester dans la file. Nous reprenons les opérations dans quelques minutes !'
-
-banner:
-    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
 clipboard:
     copied: 'Copié !'
@@ -482,24 +421,6 @@ search_index:
     noTerm: Pas de terme recherché
     short: Votre recherche est trop courte et doit contenir plus de 2 caractères.
     error: "Une erreur de recherche s'est produite"
-    coasters_found: >-
-        {num, plural,
-            =0 {Aucun coaster trouvé}
-            =1 {1 coaster trouvé}
-            other {# coasters trouvés}
-        }
-    parks_found: >-
-        {num, plural,
-            =0 {Aucun parc ou forain trouvé}
-            =1 {1 parc ou forain trouvé}
-            other {# parcs ou forains trouvés}
-        }
-    users_found: >-
-        {num, plural,
-            =0 {Aucun utilisateur trouvé}
-            =1 {1 utilisateur trouvé}
-            other {# utilisateurs trouvés}
-        }
     unified_results_found: >-
         {num, plural,
             =0 {Aucun résultat trouvé pour "{query}"}
@@ -526,3 +447,12 @@ form:
     tag_choice:
         help: '{max} maximum'
         show_all: 'Tout afficher ({count})'
+    cancel: Annuler
+    email: Email
+
+account:
+    terms: 'En continuant, tu acceptes nos <a href="{link_path}">conditions générales d''utilisation</a>.'
+
+units:
+    metric: Unités métriques
+    imperial: Unités impériales

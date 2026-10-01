@@ -9,11 +9,6 @@ new:
         top: 'Top (higher is better)'
         submit: 'Create new top'
 
-editDetails:
-    title: 'Update a top'
-    form:
-        submit: 'Update the top'
-
 list:
     title: 'The latest tops'
     more: 'See more'
@@ -25,16 +20,20 @@ list:
     create: 'Create a custom top'
 
 title: 'My Top Coasters'
+
 update: 'Update'
+
 update_details: 'Change name'
+
 delete: 'Delete'
+
 delete_confirmation: 'Delete?'
+
 find: 'Find a coaster...'
 
 search:
     placeholder: 'Search for a coaster to add...'
     no_results: 'No coasters found'
-    already_in_list: 'Already in your list'
     aria_label: 'Coaster search results'
 
 help:
@@ -57,7 +56,9 @@ save_status:
     error: 'Error saving. Retrying...'
 
 errors:
-    save_failed: 'Failed to save changes. Please try again.'
     invalid_position: 'Invalid position. Please enter a number between 1 and {max}.'
-    add_failed: 'Failed to add coaster. Please try again.'
-    duplicate: 'This coaster is already in your list.'
+
+edit_details:
+    title: 'Update a top'
+    form:
+        submit: 'Update the top'

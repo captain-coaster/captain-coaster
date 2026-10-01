@@ -1,11 +1,15 @@
 # Define languages
 fr: Français
+
 en: English
+
 es: Español
+
 de: Deutsch
 
 # Common buttons
 Today: 'Today'
+
 Clear: 'Clear'
 
 app:
@@ -41,11 +45,6 @@ coaster:
         title: 'SCORE'
         rank: 'RANK'
         scoreof: 'Score of'
-        ranked: 'Ranked'
-        intheworld: 'in the world'
-        quality: 'Quality Score'
-        worldrank: 'World Rank'
-        overview: 'At a Glance'
     rating:
         action: 'Rate this coaster!'
         my_rating: 'My rating'
@@ -55,8 +54,6 @@ coaster:
         sendreview: 'or click here to write a review'
         updatereview: 'update my review'
         delete: 'delete'
-        text: 'Score based on {count_rating} ratings and {count_top} tops'
-        details: 'Detailed user ratings'
         distribution: 'Rating distribution'
         ratings: 'ratings'
         date:
@@ -73,29 +70,24 @@ coaster:
         status: 'Status'
         park: 'Park'
         country: 'Country'
-        type: 'Type'
         launch: 'Launch'
         manufacturer: 'Manufacturer'
         materialType: 'Type'
         seatingType: 'Train'
         model: 'Model'
         restraint: 'Restraint'
-        forces: 'G-forces'
         opening: 'Opening date'
         closing: 'Closing date'
         vr: 'VR'
         cost: 'Cost'
         kiddie: 'Kiddie'
         indoor: 'Indoor'
-        formerNames: 'Former names'
     stats:
         height: 'Height'
         length: 'Length'
         speed: 'Top speed'
         inversions: 'Inversions'
     parkcoaster: 'Also in {name}'
-    video:
-        title: 'Onride Video'
     photos:
         title: 'Photos'
         empty: "Oops, we don't have any photos yet for this coaster, but you can send yours!"
@@ -103,23 +95,19 @@ coaster:
         all: 'See all pictures'
         loading: 'Loading photos...'
         like: 'Like this picture'
-    location: 'Location'
 
 image_upload:
     title: 'Upload a picture of {coaster}'
     form:
-        file:
-            label: 'Choose a photo'
-            helper: 'JPEG, under 15 MB. Very small photos may be rejected.'
-        credit:
-            label: 'Who took this photo?'
-        watermark:
-            label: 'Add the Captain Coaster watermark'
-            helper: 'Makes it harder to reuse your photo on other websites.'
-        copyright_agreement:
-            label: 'I confirm that I own the copyright to this photo or have written permission from the copyright holder. I grant Captain Coaster a license to display this photo on the site. I understand that third parties cannot reuse this photo without my permission.'
-        upload: 'Submit photo'
-        uploading: 'Uploading…'
+        file: 'Choose a photo'
+        file_help: 'JPEG, under 15 MB. Very small photos may be rejected.'
+        credit: 'Who took this photo?'
+        watermark: 'Add the Captain Coaster watermark'
+        watermark_help: 'Makes it harder to reuse your photo on other websites.'
+        copyright_agreement: 'I confirm that I own the copyright to this photo or have written permission from the copyright holder. I grant Captain Coaster a license to display this photo on the site. I understand that third parties cannot reuse this photo without my permission.'
+        submit: 'Submit photo'
+        submitting: 'Uploading…'
+    flash:
         success: 'Photo received. It will appear once a moderator has approved it.'
         duplicate: 'This photo has already been uploaded. Choose another one.'
 
@@ -131,7 +119,6 @@ park:
 map_index:
     title: 'Coasters Map'
     description: 'Discover where are the most amazing roller coasters nearby, the next year hits or the B&M you have not ridden yet with this interactive map.'
-    results: 'Results'
 
 filters:
     title: 'Filters'
@@ -158,17 +145,6 @@ filters:
         coaster: 'Coaster'
         location: 'Location'
 
-    sorts:
-        label: 'Sort reviews'
-        default: 'Default sort'
-        reviews:
-            updatedAt:
-                asc: 'Oldest to newest'
-                desc: 'Newest to oldest'
-            value:
-                asc: 'Lowest to highest'
-                desc: 'Highest to lowest'
-
 user_profile:
     title: 'Profile • {name}'
     ratings: 'Show their ratings'
@@ -194,11 +170,9 @@ profile:
         map: 'My map'
         photos: 'My photos'
         reviews: 'My reviews'
-        settings: 'Settings'
     badge: 'Badges'
     banner:
         title: 'Personal banner'
-        text: ~
         getbbcode: 'Copy BBCode (forums)'
         gethtml: 'Copy html'
         copied: 'Copied!'
@@ -206,9 +180,6 @@ profile:
         unavailable: 'Rate and rank coasters to generate your personal banner! Banner can take a few hours to update.'
     stats:
         title: 'Overview'
-        coasters: 'coasters'
-        parks: 'parks'
-        countries: 'countries'
         ridden_coasters: '{count, plural, =1 {coaster} other {coasters}}'
         explored_parks: '{count, plural, =1 {park} other {parks}}'
         visited_countries: '{count, plural, =1 {country} other {countries}}'
@@ -219,7 +190,6 @@ profile:
         favorite_manufacturer: 'Favorite Manufacturer'
         represented_manufacturer: 'Most represented manufacturer in your top 10'
         coaster_count: '{count, plural, =0 {No coasters} =1 {1 coaster} other {# coasters}}'
-        park_count: '{count, plural, =0 {No parks} =1 {1 park} other {# parks}}'
     ratings:
         title: 'My Ratings'
     settings:
@@ -230,40 +200,30 @@ profile:
             advanced: 'Advanced'
             reviews: 'Reviews and ratings'
             notifications: 'Notifications'
-        name:
-            firstName: 'First name'
-            lastName: 'Last name'
-            format: 'Display name format'
-            format.help: 'How your name appears to other riders.'
-            format.full: 'Full name'
-            format.partial: 'First name + last initial'
-            format.first_only: 'First name only'
-            invalid_characters: 'Name can only contain letters, spaces, and common punctuation (apostrophes, hyphens, periods).'
-            change_limit: 'You can only change your name once a month.'
-        preferences:
-            profilePicture: 'Profile picture'
-            notifications:
-                inApp: 'You always get your notifications on the site.'
-            emailNotification:
-                label: 'Also notify me by email'
-            preferredLocale: 'Preferred language'
-            homePark:
-                label: 'My home park'
-                placeholder: 'Choose one'
-            units:
-                metric: 'Metric units'
-                imperial: 'Imperial units'
-                label: 'Display distances and statistics in'
-            preferredReviewLanguages:
-                label: 'Show reviews written in'
-                help: 'Leave empty to only see reviews in your preferred language.'
-            addTodayDateWhenRating:
-                label: "Add today's date on a new rating"
-        advanced:
-            apiKey:
-                label: 'API key'
-        updated_success: 'Your settings are saved.'
-        save: 'Save changes'
+        form:
+            first_name: 'First name'
+            first_name_help: 'You can only change your name once a month.'
+            last_name: 'Last name'
+            display_name: 'Display name format'
+            display_name_help: 'How your name appears to other riders.'
+            display_name_full: 'Full name'
+            display_name_partial: 'First name + last initial'
+            display_name_first_only: 'First name only'
+            name_invalid: 'Name can only contain letters, spaces, and common punctuation (apostrophes, hyphens, periods).'
+            profile_picture: 'Profile picture'
+            locale: 'Preferred language'
+            units: 'Display distances and statistics in'
+            home_park: 'My home park'
+            home_park_placeholder: 'Choose one'
+            review_languages: 'Show reviews written in'
+            review_languages_help: 'Leave empty to only see reviews in your preferred language.'
+            add_today_date: "Add today's date on a new rating"
+            email_notification: 'Also notify me by email'
+            email_notification_help: 'You always get your notifications on the site.'
+            api_key: 'API key'
+            submit: 'Save changes'
+        flash:
+            success: 'Your settings are saved.'
     delete_account:
         title: 'Delete account'
         warning: 'This action will permanently delete your account and all associated data. This cannot be undone.'
@@ -278,16 +238,12 @@ review:
     value: 'Your rating'
     pros: 'What you liked'
     cons: 'What you didn''t like'
-    comment: 'Your review'
-    comment_placeholder: 'The launch, the airtime, the queue, the theming…'
-    language: 'Language of the review'
     send: 'Publish review'
     update: 'Edit'
     delete: 'Delete'
     last: 'Latest reviews'
     loading: 'Loading reviews...'
     all: 'See all'
-    ridden_at: 'Ride date'
     upvote: 'Upvote this review'
     report: 'Report this review'
     report_title: 'Report Review'
@@ -295,7 +251,6 @@ review:
     reason:
         inappropriate: 'Inappropriate language'
         spam: 'Spam'
-    cancel: 'Cancel'
     submit_report: 'Submit Report'
     report_success: 'Thank you for your report. Our team will review it shortly.'
     report_error: 'An error occurred while submitting your report.'
@@ -307,6 +262,17 @@ review:
     form:
         title: 'Review about {name}'
 
+        comment: 'Your review'
+        comment_placeholder: 'The launch, the airtime, the queue, the theming…'
+        ridden_at: 'Ride date'
+    sort:
+        label: 'Sort reviews'
+        default: 'Default sort'
+        oldest: 'Oldest to newest'
+        newest: 'Newest to oldest'
+        lowest: 'Lowest to highest'
+        highest: 'Highest to lowest'
+
 users:
     tops:
         title: 'Tops • {name}'
@@ -317,8 +283,6 @@ users:
         opening_date: 'Opened'
         rating: 'Rating'
         ridden_at: 'Ridden at'
-    my_ratings:
-        title: 'My ratings'
     reviews:
         title: 'Reviews • {name}'
     images:
@@ -374,13 +338,9 @@ nav:
 login:
     title: 'Sign in to Captain Coaster'
     subtitle: 'We''ll email you a sign-in link.'
-    send_link: 'Send sign-in link'
-    sending: 'Sending…'
     redirect_to_register: 'New to Captain Coaster? <a href="{link_path}">Create an account</a>'
-    or_sign_in_with: 'or'
     connect_with_google: 'Continue with Google'
 
-    terms: 'By continuing, you accept our <a href="{link_path}">Terms &amp; Conditions</a>.'
     email:
         title: 'Sign in to Captain Coaster'
         h1: 'Ready to dispatch!'
@@ -391,33 +351,30 @@ login:
     link_sent: 'If an account exists for {email}, you''ll receive a sign-in link. Open it to sign in.'
     rate_limit_exceeded: 'Too many sign-in attempts. Try again later.'
 
+    form:
+        submit: 'Send sign-in link'
+        submitting: 'Sending…'
+    or: 'or'
+
 register:
     title: 'Create an account'
     subtitle: 'Rate the coasters you''ve ridden, build your Tops and weigh in on the world ranking.'
     link_sent: 'Account created. Check your inbox ({email}) and open the link to activate your account.'
     rate_limit_exceeded: 'Too many sign-up attempts. Try again later.'
     form:
-        email: 'Email'
         first_name: 'First name'
         last_name: 'Last name'
         submit: 'Create an account'
-    email:
-        title: 'Confirm your email'
-        h1: 'Welcome aboard!'
-        paragraph1: 'To use Captain Coaster, click the verification button. This link is valid for'
-        button: 'Activate'
-        paragraph2: 'You''re receiving this email because you created an account on Captain Coaster. If that wasn''t you, just reply to this email.'
-    email_verified: 'Your email {email} has been verified. Welcome to Captain Coaster!'
 
 contact:
     title: 'Get in touch'
-    send: 'Send message'
     form:
         name: 'Your name'
         email: 'Your email'
         email_help: 'Only if you''d like a reply.'
         message: 'Your message'
         sender_help: 'We''ll reply to your account email.'
+        submit: 'Send message'
     email:
         title: 'Contact Form - Captain Coaster'
     flash:
@@ -453,12 +410,6 @@ error:
     generic:
         title: 'An error occurred'
         message: 'An error occurred. Contact us if the problem persists'
-    maintenance:
-        title: 'Quick Technical Stop! 🔧'
-        message: 'Please remain in line. We will resume operations in a few minutes!'
-
-banner:
-    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
 clipboard:
     copied: 'Copied!'
@@ -471,24 +422,6 @@ search_index:
     noTerm: No search term
     short: Your search is too short and must contain more than 2 characters.
     error: 'A search error occurred'
-    coasters_found: >-
-        {num, plural,
-            =0 {No coasters found}
-            =1 {1 coaster found}
-            other {# coasters found}
-        }
-    parks_found: >-
-        {num, plural,
-            =0 {No parks or showmen found}
-            =1 {1 park or showman found}
-            other {# parks or showmen found}
-        }
-    users_found: >-
-        {num, plural,
-            =0 {No users found}
-            =1 {1 user found}
-            other {# users found}
-        }
     unified_results_found: >-
         {num, plural,
             =0 {No results found for "{query}"}
@@ -515,3 +448,12 @@ form:
     tag_choice:
         help: 'Up to {max}'
         show_all: 'Show all ({count})'
+    cancel: 'Cancel'
+    email: 'Email'
+
+account:
+    terms: 'By continuing, you accept our <a href="{link_path}">Terms &amp; Conditions</a>.'
+
+units:
+    metric: 'Metric units'
+    imperial: 'Imperial units'

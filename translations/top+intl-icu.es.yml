@@ -9,11 +9,6 @@ new:
         top: 'Top (el más alto es mejor)'
         submit: 'Crear nuevo top'
 
-editDetails:
-    title: 'Actualizar un top'
-    form:
-        submit: 'Actualizar el top'
-
 list:
     title: 'Los últimos tops'
     more: 'Ver más'
@@ -25,16 +20,20 @@ list:
     create: 'Crear un top personalizado'
 
 title: 'Mis Top Coasters'
+
 update: 'Actualizar'
+
 update_details: 'Cambiar nombre'
+
 delete: 'Eliminar'
+
 delete_confirmation: '¿Eliminar?'
+
 find: 'Buscar una montaña rusa...'
 
 search:
     placeholder: 'Buscar una montaña rusa para añadir...'
     no_results: 'No se encontraron montañas rusas'
-    already_in_list: 'Ya está en tu lista'
     aria_label: 'Resultados de búsqueda de montañas rusas'
 
 help:
@@ -57,7 +56,9 @@ save_status:
     error: 'Error al guardar. Reintentando...'
 
 errors:
-    save_failed: 'Error al guardar los cambios. Por favor, inténtalo de nuevo.'
     invalid_position: 'Posición inválida. Por favor, introduce un número entre 1 y {max}.'
-    add_failed: 'Error al añadir la montaña rusa. Por favor, inténtalo de nuevo.'
-    duplicate: 'Esta montaña rusa ya está en tu lista.'
+
+edit_details:
+    title: 'Actualizar un top'
+    form:
+        submit: 'Actualizar el top'

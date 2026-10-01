@@ -61,7 +61,7 @@ class CoasterController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             // Check for duplicate
             if ($imageManager->isDuplicate($image->getFile())) {
-                $this->addFlash('warning', $translator->trans('image_upload.form.duplicate'));
+                $this->addFlash('warning', $translator->trans('image_upload.flash.duplicate'));
 
                 return $this->redirectToRoute(
                     'coaster_images_upload',
@@ -71,7 +71,7 @@ class CoasterController extends BaseController
 
             $imageManager->store($image);
 
-            $this->addFlash('success', $translator->trans('image_upload.form.success'));
+            $this->addFlash('success', $translator->trans('image_upload.flash.success'));
 
             return $this->redirectToRoute(
                 'coaster_images_upload',

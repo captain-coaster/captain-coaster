@@ -22,7 +22,7 @@ class RegistrationFormType extends AbstractType
         // empty_data: an empty field must reach validation as '', not fail on User's string setters as null
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'register.form.email',
+                'label' => 'form.email',
                 'attr' => ['autocomplete' => 'email'],
                 'empty_data' => '',
             ])

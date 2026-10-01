@@ -17,24 +17,24 @@
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
                             {# Styled by section-header.css until the coaster page is redesigned. #}
-                            <select name="filters[sort]" class="block w-full" aria-label="{{ 'filters.sorts.label'|trans }}">
+                            <select name="filters[sort]" class="block w-full" aria-label="{{ 'review.sort.label'|trans }}">
                                     <option value=""
                                             {% if filters is not null or filters.sort == '' %}selected{% endif %}>
-                                        {{ 'filters.sorts.default'|trans() }}
+                                        {{ 'review.sort.default'|trans() }}
                                     </option>
                                     <option value="updatedAt|asc"
                                             {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.updatedAt.asc'|trans() }}
+                                        {{ 'review.sort.oldest'|trans() }}
                                     </option>
                                     <option value="updatedAt|desc"
                                             {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.updatedAt.desc' |trans() }}
+                                        {{ 'review.sort.newest' |trans() }}
                                     </option>
                                     <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.value.desc' |trans() }}
+                                        {{ 'review.sort.highest' |trans() }}
                                     </option>
                                     <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.value.asc' |trans() }}
+                                        {{ 'review.sort.lowest' |trans() }}
                                     </option>
                             </select>
                         </form>
