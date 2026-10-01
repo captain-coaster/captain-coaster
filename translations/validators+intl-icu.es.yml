@@ -17,3 +17,6 @@ image_upload:
 
 star_rating:
     required: 'Elige cuántas estrellas.'
+
+# Cloudflare Turnstile (overrides the bundle's message)
+invalid_turnstile: "La verificación antibots no se ha completado. Espera unos segundos y vuelve a enviar el formulario."

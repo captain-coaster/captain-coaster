@@ -62,12 +62,7 @@
 
                 <div class="cc-field">
                   <label class="cc-field__label">{{ 'profile.settings.preferences.notifications.title'|trans }}</label>
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" checked disabled>
-                      {{ 'profile.settings.preferences.notifications.inApp'|trans }}
-                    </label>
-                  </div>
+                  <p class="m-0 text-caption text-muted-strong">{{ 'profile.settings.preferences.notifications.inApp'|trans }}</p>
                   {{ form_widget(form.emailNotification) }}
                   {{ form_errors(form.emailNotification) }}
                 </div>

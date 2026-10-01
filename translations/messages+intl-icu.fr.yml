@@ -243,9 +243,9 @@ profile:
             profilePicture: Photo de profil
             notifications:
                 title: Notifications
-                inApp: In-app
+                inApp: 'Tu reçois toujours tes notifications sur le site.'
             emailNotification:
-                label: E-mail
+                label: 'Me prévenir aussi par e-mail'
             preferredLocale: Langue préférée
             homePark:
                 label: Mon home park
@@ -514,6 +514,8 @@ map:
 form:
     optional: "(facultatif)"
     error_summary: '{count, plural, one {# champ à corriger} other {# champs à corriger}}'
+    file:
+        choose: 'Choisir un fichier'
     star_rating:
         choice: '{value, number} sur 5'
     tag_choice:

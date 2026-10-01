@@ -244,9 +244,9 @@ profile:
             profilePicture: Profilbild
             notifications:
                 title: Benachrichtigungen
-                inApp: In-app
+                inApp: 'Deine Benachrichtigungen erhältst du immer auf der Website.'
             emailNotification:
-                label: E-Mail
+                label: 'Mich auch per E-Mail benachrichtigen'
             preferredLocale: Bevorzugte Sprache
             homePark:
                 label: Mein Heimatpark
@@ -515,6 +515,8 @@ map:
 form:
     optional: "(optional)"
     error_summary: '{count, plural, one {# Feld muss korrigiert werden} other {# Felder müssen korrigiert werden}}'
+    file:
+        choose: 'Datei auswählen'
     star_rating:
         choice: '{value, number} von 5'
     tag_choice:

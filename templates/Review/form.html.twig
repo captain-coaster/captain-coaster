@@ -26,7 +26,7 @@
     <aside class="sticky top-24 hidden overflow-hidden rounded-card border border-line bg-surface lg:block">
       <span class="relative block aspect-4/3 bg-subtle">
         {% if coaster.mainImage %}
-          {{ helper.picture(coaster.mainImage.filename, 288, 216, '', 'absolute inset-0 size-full object-cover') }}
+          {{ helper.picture(coaster.mainImage, 288, 216, '', 'absolute inset-0 size-full object-cover') }}
         {% else %}
           {{ ux_icon('lucide:roller-coaster', {class: 'absolute inset-0 m-auto size-8 text-muted', 'aria-hidden': 'true'}) }}
         {% endif %}

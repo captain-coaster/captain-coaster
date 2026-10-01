@@ -17,3 +17,6 @@ image_upload:
 
 star_rating:
     required: 'Wähle eine Anzahl Sterne.'
+
+# Cloudflare Turnstile (overrides the bundle's message)
+invalid_turnstile: "Die Bot-Prüfung wurde nicht abgeschlossen. Warte ein paar Sekunden und sende das Formular erneut."

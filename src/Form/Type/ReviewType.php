@@ -53,7 +53,7 @@ class ReviewType extends AbstractType
                 'required' => false,
                 'label' => 'review.ridden_at',
                 'widget' => 'single_text',
-                'row_attr' => ['class' => 'max-w-56'],
+                'row_attr' => ['class' => 'md:max-w-56'],
             ]);
     }
 

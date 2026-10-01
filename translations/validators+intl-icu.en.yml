@@ -21,3 +21,6 @@ image_upload:
 
 star_rating:
     required: 'Choose how many stars.'
+
+# Cloudflare Turnstile (overrides the bundle's message)
+invalid_turnstile: "The anti-bot check didn't complete. Wait a few seconds, then send the form again."
