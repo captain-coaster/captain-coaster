@@ -217,7 +217,8 @@ profile:
             home_park_placeholder: Elige uno
             review_languages: 'Mostrar reseñas escritas en'
             review_languages_help: 'Déjelo vacío para ver solo reseñas en su idioma preferido.'
-            add_today_date: Añadir la fecha de hoy en una nueva calificación
+            add_today_date_title: Cuando puntúo un coaster
+            add_today_date: Añadir la fecha de hoy como fecha del ride
             email_notification: 'Avisarme también por correo electrónico'
             email_notification_help: 'Siempre recibes tus notificaciones en el sitio.'
             api_key: Clave API

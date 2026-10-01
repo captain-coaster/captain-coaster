@@ -217,7 +217,8 @@ profile:
             home_park_placeholder: Wähle einen aus
             review_languages: 'Bewertungen anzeigen in'
             review_languages_help: 'Leer lassen, um nur Bewertungen in Ihrer bevorzugten Sprache zu sehen.'
-            add_today_date: Heutiges Datum bei einer neuen Bewertung hinzufügen
+            add_today_date_title: Wenn ich eine Achterbahn bewerte
+            add_today_date: Heutiges Datum als Fahrdatum eintragen
             email_notification: 'Mich auch per E-Mail benachrichtigen'
             email_notification_help: 'Deine Benachrichtigungen erhältst du immer auf der Website.'
             api_key: API-Schlüssel

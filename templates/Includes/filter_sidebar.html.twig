@@ -27,7 +27,7 @@
              {% endif %}
            {% endfor %}
          {% endif %}>
-      {{ form_start(filterForm, {attr: {id: 'form-filter', class: 'grid gap-6 p-5'}}) }}
+      {{ form_start(filterForm, {attr: {id: 'form-filter', class: 'grid gap-8 p-5'}}) }}
         <p class="m-0 text-lead font-semibold max-md:hidden">{{ 'filters.title'|trans }}</p>
         <input type="hidden" name="page" value="1">
 
@@ -38,13 +38,12 @@
         {% for group, names in groups %}
           {% set fields = names|filter(name => filterForm[name] is defined) %}
           {% if fields|length > 0 %}
-            {# A titled group under a rule: role=group rather than a fieldset, whose legend would sit on the rule. #}
-            <div role="group" aria-labelledby="filter-group-{{ group }}" class="grid border-t border-line pt-5 {{ group == 'show' ? 'gap-0' : 'gap-3' }}">
-              <p id="filter-group-{{ group }}" class="m-0 font-semibold">{{ ('filters.groups.' ~ group)|trans }}</p>
+            <fieldset class="m-0 grid min-w-0 border-0 p-0 {{ group == 'show' ? 'gap-0' : 'gap-3' }}">
+              <legend class="p-0 font-semibold {{ group == 'show' ? 'mb-1' : 'mb-3' }}">{{ ('filters.groups.' ~ group)|trans }}</legend>
               {% for name in fields %}
                 {{ form_row(filterForm[name]) }}
               {% endfor %}
-            </div>
+            </fieldset>
           {% endif %}
         {% endfor %}
 

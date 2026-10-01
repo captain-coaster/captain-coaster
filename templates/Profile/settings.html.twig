@@ -33,7 +33,10 @@
         <fieldset class="{{ section_class }}">
           <legend class="{{ legend_class }}">{{ 'profile.settings.sections.reviews'|trans }}</legend>
           {{ form_row(form.preferredReviewLanguages) }}
-          {{ form_row(form.addTodayDateWhenRating) }}
+          <fieldset class="m-0 grid min-w-0 gap-1.5 border-0 p-0">
+            <legend class="p-0 font-semibold">{{ 'profile.settings.form.add_today_date_title'|trans }}</legend>
+            {{ form_row(form.addTodayDateWhenRating) }}
+          </fieldset>
         </fieldset>
 
         <fieldset class="{{ section_class }}">

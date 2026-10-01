@@ -217,7 +217,8 @@ profile:
             home_park_placeholder: Choisis un parc
             review_languages: 'Afficher les avis écrits en'
             review_languages_help: 'Laisse vide pour ne voir que les avis dans ta langue préférée.'
-            add_today_date: Ajouter la date du jour quand je note un nouveau coaster
+            add_today_date_title: Quand je note un coaster
+            add_today_date: Ajouter la date du jour comme date du ride
             email_notification: 'Me prévenir aussi par e-mail'
             email_notification_help: 'Tu reçois toujours tes notifications sur le site.'
             api_key: Clé API

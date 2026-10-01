@@ -217,7 +217,8 @@ profile:
             home_park_placeholder: 'Choose one'
             review_languages: 'Show reviews written in'
             review_languages_help: 'Leave empty to only see reviews in your preferred language.'
-            add_today_date: "Add today's date on a new rating"
+            add_today_date_title: 'When I rate a coaster'
+            add_today_date: "Add today's date as the ride date"
             email_notification: 'Also notify me by email'
             email_notification_help: 'You always get your notifications on the site.'
             api_key: 'API key'
