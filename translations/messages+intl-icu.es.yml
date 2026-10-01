@@ -233,6 +233,8 @@ profile:
             name: Configuración del nombre
             preferences: Preferencias
             advanced: Avanzado
+            reviews: Reseñas y notas
+            notifications: Notificaciones
         name:
             firstName: Nombre
             lastName: Apellido

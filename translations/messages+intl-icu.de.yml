@@ -234,6 +234,8 @@ profile:
             name: Namenseinstellungen
             preferences: Präferenzen
             advanced: Erweitert
+            reviews: Bewertungen
+            notifications: Benachrichtigungen
         name:
             firstName: Vorname
             lastName: Nachname

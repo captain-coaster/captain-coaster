@@ -38,12 +38,13 @@
         {% for group, names in groups %}
           {% set fields = names|filter(name => filterForm[name] is defined) %}
           {% if fields|length > 0 %}
-            <fieldset class="m-0 grid min-w-0 border-0 p-0 {{ group == 'show' ? 'gap-0' : 'gap-3' }}">
-              <legend class="mb-1 p-0 text-caption font-semibold text-muted">{{ ('filters.groups.' ~ group)|trans }}</legend>
+            {# A titled group under a rule: role=group rather than a fieldset, whose legend would sit on the rule. #}
+            <div role="group" aria-labelledby="filter-group-{{ group }}" class="grid border-t border-line pt-5 {{ group == 'show' ? 'gap-0' : 'gap-3' }}">
+              <p id="filter-group-{{ group }}" class="m-0 font-semibold">{{ ('filters.groups.' ~ group)|trans }}</p>
               {% for name in fields %}
                 {{ form_row(filterForm[name]) }}
               {% endfor %}
-            </fieldset>
+            </div>
           {% endif %}
         {% endfor %}
 

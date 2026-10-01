@@ -233,6 +233,8 @@ profile:
             name: Nom et photo
             preferences: Préférences
             advanced: Avancé
+            reviews: Avis et notes
+            notifications: Notifications
         name:
             firstName: Prénom
             lastName: Nom

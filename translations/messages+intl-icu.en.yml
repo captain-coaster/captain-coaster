@@ -228,6 +228,8 @@ profile:
             name: 'Name and photo'
             preferences: 'Preferences'
             advanced: 'Advanced'
+            reviews: 'Reviews and ratings'
+            notifications: 'Notifications'
         name:
             firstName: 'First name'
             lastName: 'Last name'

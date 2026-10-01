@@ -65,7 +65,8 @@
 {%- endblock form_rows -%}
 
 {%- block form_label -%}
-    {%- set label_attr = label_attr|merge({class: ('mb-0 block w-auto border-0 p-0 text-body font-semibold normal-case text-ink ' ~ label_attr.class|default(''))|trim}) -%}
+    {#- Compact forms (filter panel) set labels a step down, below their group titles. -#}
+    {%- set label_attr = label_attr|merge({class: ('mb-0 block w-auto border-0 p-0 font-semibold normal-case ' ~ (control_size|default('default') == 'compact' ? 'text-caption text-muted-strong ' : 'text-body text-ink ') ~ label_attr.class|default(''))|trim}) -%}
     {{- parent() -}}
 {%- endblock form_label -%}
 
