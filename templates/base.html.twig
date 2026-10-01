@@ -58,7 +58,8 @@
           :narrow="narrowHeader|default(false)"/>
         <!-- Content area -->
         <main id="content" tabindex="-1" class="content mx-auto outline-none flow-root w-full max-w-content px-gutter">
-          {{ include('flashes.html.twig') }}
+          {# Flashes keep to the form column: 40rem, or the centered max-w-md column of narrowHeader pages. #}
+          <div class="{{ narrowHeader|default(false) ? 'mx-auto max-w-md' : 'max-w-160' }}">{{ include('flashes.html.twig') }}</div>
           <div id="toasts" data-controller="toast" data-toast-target="container"></div>
 
           {% block body %}{% endblock %}

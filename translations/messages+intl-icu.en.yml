@@ -238,9 +238,9 @@ profile:
             profilePicture: 'Profile Picture'
             notifications:
                 title: 'Notifications'
-                inApp: 'In-app'
+                inApp: 'You always get your notifications on the site.'
             emailNotification:
-                label: 'Email'
+                label: 'Also notify me by email'
             preferredLocale: 'Preferred Language'
             homePark:
                 label: 'My Home Park'
@@ -503,6 +503,8 @@ map:
 form:
     optional: '(optional)'
     error_summary: '{count, plural, one {# field needs attention} other {# fields need attention}}'
+    file:
+        choose: 'Choose a file'
     star_rating:
         choice: '{value, number} out of 5'
     tag_choice:

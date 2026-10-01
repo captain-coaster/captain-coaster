@@ -161,17 +161,26 @@ block min-h-12 w-full rounded-control border border-control-line bg-surface px-3
     </div>
 {%- endblock choice_widget_expanded -%}
 
-{# File: the native picker, its button styled as a secondary button, in a
-   control-bordered box that previews a chosen image (file-preview). #}
+{# File: the native input is transparent and covers the whole control-bordered
+   box, so a click or a dropped file anywhere in it reaches the input. Its own
+   rendering stays out of sight (the button label follows the browser's
+   language, iOS draws a thumbnail in it); the box shows a secondary-button
+   shape, the chosen file's name and an image preview (file-preview). #}
 
 {%- block file_widget -%}
     {%- set attr = attr|merge({
-        class: ('w-full cursor-pointer text-caption text-muted-strong file:mr-3 file:min-h-11 file:cursor-pointer file:rounded-control file:border file:border-solid file:border-control-line file:bg-surface file:px-4 file:text-body file:font-semibold file:text-ink hover:file:bg-subtle focus-visible:rounded-sm focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus ' ~ attr.class|default(''))|trim,
+        class: ('absolute inset-0 z-10 size-full cursor-pointer opacity-0 ' ~ attr.class|default(''))|trim,
         'data-file-preview-target': 'input',
         'data-action': 'file-preview#show',
     }) -%}
-    <div class="grid gap-3 rounded-control border border-control-line bg-surface p-3 has-[[aria-invalid=true]]:border-danger has-[:user-invalid]:border-danger" data-controller="file-preview">
+    <div class="group relative grid gap-3 rounded-control border border-control-line bg-surface p-3 has-[[aria-invalid=true]]:border-danger has-[:user-invalid]:border-danger" data-controller="file-preview">
         {{- block('form_widget_simple') -}}
+        <div class="flex items-center gap-3" aria-hidden="true">
+            <span class="inline-flex min-h-11 shrink-0 items-center rounded-control border border-control-line bg-surface px-4 font-semibold text-ink group-hover:bg-subtle group-has-[:focus-visible]:outline-3 group-has-[:focus-visible]:outline-offset-3 group-has-[:focus-visible]:outline-focus">
+                {{- 'form.file.choose'|trans({}, 'messages') -}}
+            </span>
+            <span class="min-w-0 truncate text-caption text-muted-strong" data-file-preview-target="name"></span>
+        </div>
         <img src="data:," alt="" hidden class="aspect-4/3 w-full rounded-sm bg-subtle object-cover" data-file-preview-target="image">
     </div>
 {%- endblock file_widget -%}

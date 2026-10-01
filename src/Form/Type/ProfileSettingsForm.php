@@ -17,8 +17,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\When;
 
 /**
  * @extends AbstractType<User>
@@ -50,10 +50,12 @@ class ProfileSettingsForm extends AbstractType
             'disabled' => !$canChangeName,
             // An empty submission must reach NotBlank as '', not fail on User's string setter as null
             'empty_data' => '',
+            // Blank is reported once, by User's NotBlank; the format rules only apply to a value
             'constraints' => [
-                new NotBlank(),
-                new Length(min: 2, max: 50),
-                $nameRegex,
+                new When(expression: 'value != ""', constraints: [
+                    new Length(min: 2, max: 50),
+                    $nameRegex,
+                ]),
             ],
         ]);
 
