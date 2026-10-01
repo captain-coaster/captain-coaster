@@ -52,8 +52,7 @@ class RankingController extends AbstractController
 
         return $this->render('ranking/index.html.twig', $results + [
             'previousRanking' => $this->rankingRepository->findPrevious(),
-            'filtersForm' => $this->filterService->getFilterData(),
-            'filters' => $filters,
+            'filterForm' => $this->filterService->createFormView($filters, 'ranking', ['score', 'kiddie', 'sortByDistance'], $user),
             'top100' => $top100,
             'nextRanking' => RankingService::nextPublication(new \DateTimeImmutable()),
         ]);

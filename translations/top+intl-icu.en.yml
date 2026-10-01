@@ -3,7 +3,7 @@
 new:
     title: 'Create a new top'
     form:
-        name: 'Name of your top:'
+        name: 'Name of your top'
         type: 'Is it a Top or a Flop?'
         flop: 'Flop (lower is better)'
         top: 'Top (higher is better)'

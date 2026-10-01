@@ -140,7 +140,7 @@ map_index:
 
 filters:
     title: Filter
-    continent: Welt
+    continent: Kontinent
     country: Land
     materialType: Typ
     seatingType: Zug
@@ -153,12 +153,18 @@ filters:
     score: Punktzahl
     atleast: 'mindestens {count}'
     openingDate: Eröffnungsdatum
-    name: Name
+    name: Name der Achterbahn
     clear: Filter löschen
     show_results: Ergebnisse anzeigen
     sortByDistance: Nach Entfernung sortieren
+    any: Alle
+    groups:
+        show: Anzeigen
+        coaster: Achterbahn
+        location: Ort
 
     sorts:
+        label: Bewertungen sortieren
         default: Standardmäßige Sortierung
         reviews:
             updatedAt:

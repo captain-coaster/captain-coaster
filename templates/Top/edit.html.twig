@@ -175,11 +175,10 @@
         <input type="search" 
                data-top-search-target="input"
                data-action="input->top-search#search keydown->top-search#handleKeydown"
-               class="cc-field__control cc-field__control--lg"
+               class="{{ include('form/_control_class.html.twig') }}"
                placeholder="{{ 'search.placeholder'|trans({}, 'top') }}"
                autocomplete="off"
-               aria-label="{{ 'search.placeholder'|trans({}, 'top') }}"
-               style="font-size: 16px;">
+               aria-label="{{ 'search.placeholder'|trans({}, 'top') }}">
         <div data-top-search-target="dropdown" class="search-dropdown">
           <div data-top-search-target="results"></div>
         </div>

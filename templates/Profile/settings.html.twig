@@ -5,140 +5,59 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
+  {% set section_class = 'm-0 grid min-w-0 gap-6 border-0 p-0' %}
+  {% set legend_class = 'mb-4 p-0 text-lead font-semibold' %}
   <div class="grid grid-cols-12 gap-5 items-start">
     <div class="col-span-12 md:col-span-3">
         {% include 'Profile/_menu.html.twig' with {'user': user, 'images_counter': images_counter} only %}
     </div>
-    <div class="col-span-12 md:col-span-9">
-          <!-- settings form -->
-          <div class="cc-panel cc-panel--flat">
-            <div class="cc-panel__heading">
-              <h6 class="cc-panel__title">{{ 'profile.settings.title'|trans }}</h6>
-            </div>
-            <div class="cc-panel__body">
-              {{ form_start(form) }}
+    <div class="col-span-12 grid max-w-160 gap-10 md:col-span-9">
+      {{ form_start(form, {attr: {class: 'grid gap-10'}}) }}
+        {{ form_errors(form) }}
 
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.name'|trans }}</legend>
+        <fieldset class="{{ section_class }}">
+          <legend class="{{ legend_class }}">{{ 'profile.settings.sections.name'|trans }}</legend>
+          {{ form_row(form.firstName) }}
+          {{ form_row(form.lastName) }}
+          {{ form_row(form.displayNameFormat) }}
+          {{ form_row(form.profilePicture) }}
+        </fieldset>
 
-                <div class="cc-field{% if form.firstName.vars.errors|length > 0 %} has-error{% endif %}">
-                  {{ form_label(form.firstName) }}
-                  {{ form_widget(form.firstName) }}
-                  {% for error in form.firstName.vars.errors %}
-                    <span class="help-block text-danger">{{ error.message }}</span>
-                  {% endfor %}
-                  <small class="text-muted">
-                    {{ 'profile.settings.name.change_limit'|trans }}
-                  </small>
-                </div>
+        <fieldset class="{{ section_class }}">
+          <legend class="{{ legend_class }}">{{ 'profile.settings.sections.preferences'|trans }}</legend>
+          {{ form_row(form.preferredLocale) }}
+          {{ form_row(form.preferredUnits) }}
+          {{ form_row(form.homePark) }}
+          {{ form_row(form.preferredReviewLanguages) }}
+          {{ form_row(form.addTodayDateWhenRating) }}
+          {{ form_row(form.emailNotification) }}
+        </fieldset>
 
-                <div class="cc-field{% if form.lastName.vars.errors|length > 0 %} has-error{% endif %}">
-                  {{ form_label(form.lastName) }}
-                  {{ form_widget(form.lastName) }}
-                  {% for error in form.lastName.vars.errors %}
-                    <span class="help-block text-danger">{{ error.message }}</span>
-                  {% endfor %}
-                  <small class="text-muted">
-                    {{ 'profile.settings.name.change_limit'|trans }}
-                  </small>
-                </div>
+        {% if form.apiKey is defined %}
+          <fieldset class="{{ section_class }}">
+            <legend class="{{ legend_class }}">{{ 'profile.settings.sections.advanced'|trans }}</legend>
+            {{ form_row(form.apiKey) }}
+          </fieldset>
+        {% endif %}
 
-                <div class="cc-field">
-                  {{ form_label(form.displayNameFormat) }}
-                  {{ form_widget(form.displayNameFormat) }}
-                  {{ form_errors(form.displayNameFormat) }}
-                  <small class="text-muted">{{ 'profile.settings.name.format.help'|trans }}</small>
-                </div>
+        {{ form_rest(form) }}
+        <div>
+          <twig:Button block>{{ 'profile.settings.save'|trans }}</twig:Button>
+        </div>
+      {{ form_end(form) }}
 
-                <div class="cc-field">
-                  {{ form_label(form.profilePicture) }}
-                  {{ form_widget(form.profilePicture) }}
-                  {{ form_errors(form.profilePicture) }}
-                </div>
-              </fieldset>
-
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.preferences'|trans }}</legend>
-
-                <div class="cc-field">
-                  <label class="cc-field__label">{{ 'profile.settings.preferences.notifications.title'|trans }}</label>
-                  <p class="m-0 text-caption text-muted-strong">{{ 'profile.settings.preferences.notifications.inApp'|trans }}</p>
-                  {{ form_widget(form.emailNotification) }}
-                  {{ form_errors(form.emailNotification) }}
-                </div>
-
-                <div class="cc-field">
-                  {{ form_label(form.preferredLocale) }}
-                  {{ form_widget(form.preferredLocale) }}
-                  {{ form_errors(form.preferredLocale) }}
-                </div>
-
-                <div class="cc-field">
-                  {{ form_label(form.preferredUnits) }}
-                  {{ form_widget(form.preferredUnits) }}
-                  {{ form_errors(form.preferredUnits) }}
-                </div>
-
-                <div class="cc-field">
-                  {{ form_label(form.homePark) }}
-                  {{ form_widget(form.homePark) }}
-                  {{ form_errors(form.homePark) }}
-                </div>
-
-                <div class="cc-field">
-                  {{ form_label(form.preferredReviewLanguages) }}
-                  {{ form_widget(form.preferredReviewLanguages) }}
-                  <p class="help-block">{{ 'profile.settings.preferences.preferredReviewLanguages.help'|trans }}</p>
-                  {{ form_errors(form.preferredReviewLanguages) }}
-                </div>
-
-                {{ form_row(form.addTodayDateWhenRating) }}
-              </fieldset>
-
-              {% if form.apiKey is defined %}
-              <fieldset class="content-group">
-                <legend>{{ 'profile.settings.sections.advanced'|trans }}</legend>
-
-                <div class="cc-field">
-                  {{ form_label(form.apiKey) }}
-                  {{ form_widget(form.apiKey) }}
-                  {{ form_errors(form.apiKey) }}
-                </div>
-              </fieldset>
-              {% endif %}
-
-              <button type="submit" class="cc-button bg-cc-teal-400 cc-button--labeled cc-button--labeled-right pull-right">
-                <b>{{ ux_icon('lucide:circle-arrow-right', {'class': 'w-4 h-4'}) }}</b>
-                {{ 'profile.settings.save'|trans }}
-              </button>
-
-              {{ form_rest(form) }}
-              {{ form_end(form) }}
-            </div>
-          </div>
-          <!-- /settings form -->
-
-          <!-- delete account section -->
-          <div class="cc-panel cc-panel--flat">
-            <div class="cc-panel__heading">
-              <h6 class="cc-panel__title">{{ 'profile.delete_account.title'|trans }}</h6>
-            </div>
-            <div class="cc-panel__body">
-              <p class="text-semibold">{{ 'profile.delete_account.warning'|trans }}</p>
-              <ul class="list-unstyled">
-                <li>• {{ 'profile.delete_account.immediate_logout'|trans }}</li>
-                <li>• {{ 'profile.delete_account.permanent_after_month'|trans }}</li>
-              </ul>
-              <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans }}');">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
-                <button type="submit" class="cc-button cc-button--danger cc-button--labeled cc-button--labeled-right">
-                  <b>{{ ux_icon('lucide:trash-2', {'class': 'size-4'}) }}</b>
-                  {{ 'profile.delete_account.button'|trans }}
-                </button>
-              </form>
-            </div>
-          </div>
-          <!-- /delete account section -->
+      <section class="grid gap-3 rounded-card border border-line bg-surface p-4" aria-labelledby="delete-account-title">
+        <h2 id="delete-account-title" class="m-0 text-lead font-semibold">{{ 'profile.delete_account.title'|trans }}</h2>
+        <p class="m-0">{{ 'profile.delete_account.warning'|trans }}</p>
+        <ul class="m-0 list-disc pl-5 text-muted-strong">
+          <li>{{ 'profile.delete_account.immediate_logout'|trans }}</li>
+          <li>{{ 'profile.delete_account.permanent_after_month'|trans }}</li>
+        </ul>
+        <form method="post" action="{{ path('profile_delete_account') }}" onsubmit="return confirm('{{ 'profile.delete_account.confirm'|trans|e('js') }}');">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token('delete_account') }}">
+          <twig:Button variant="danger" block>{{ 'profile.delete_account.button'|trans }}</twig:Button>
+        </form>
+      </section>
     </div>
   </div>
 {% endblock %}

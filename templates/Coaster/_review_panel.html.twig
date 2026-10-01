@@ -16,8 +16,8 @@
                         <form class="section-header__form form-horizontal">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
-                            <div class="cc-field--xs mb-0">
-                                <select name="filters[sort]" class="cc-field__control">
+                            {# Styled by section-header.css until the coaster page is redesigned. #}
+                            <select name="filters[sort]" class="block w-full" aria-label="{{ 'filters.sorts.label'|trans }}">
                                     <option value=""
                                             {% if filters is not null or filters.sort == '' %}selected{% endif %}>
                                         {{ 'filters.sorts.default'|trans() }}
@@ -36,8 +36,7 @@
                                     <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
                                         {{ 'filters.sorts.reviews.value.asc' |trans() }}
                                     </option>
-                                </select>
-                            </div>
+                            </select>
                         </form>
                     {% endif %}
                 </div>

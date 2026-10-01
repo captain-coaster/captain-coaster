@@ -140,7 +140,7 @@ map_index:
 
 filters:
     title: Filtres
-    continent: Monde
+    continent: Continent
     country: Pays
     materialType: Type
     seatingType: Train
@@ -153,12 +153,18 @@ filters:
     score: Score
     atleast: 'au moins {count}'
     openingDate: "Date d'ouverture"
-    name: Nom
+    name: Nom du coaster
     clear: Effacer les filtres
     show_results: Voir les résultats
     sortByDistance: Trier par distance
+    any: Tous
+    groups:
+        show: Afficher
+        coaster: Coaster
+        location: Lieu
 
     sorts:
+        label: Trier les avis
         default: Tri par défaut
         reviews:
             updatedAt:
@@ -222,27 +228,24 @@ profile:
     ratings:
         title: Mes Notes
     settings:
-        title: Paramètres du Profil
+        title: Paramètres du profil
         sections:
-            name: Paramètres du Nom
+            name: Nom et photo
             preferences: Préférences
             advanced: Avancé
         name:
             firstName: Prénom
             lastName: Nom
             format: "Format d'affichage du nom"
-            format.help: Choisissez comment votre nom apparaîtra aux autres utilisateurs (aperçu affiché à droite)
+            format.help: Choisis comment ton nom apparaît aux autres riders.
             format.full: Nom complet
             format.partial: Prénom + Initiale du nom
             format.first_only: Prénom uniquement
             invalid_characters: "Le nom ne peut contenir que des lettres, des espaces et des signes de ponctuation courants (apostrophes, traits d'union, points)."
-            change_limit: "Vous ne pouvez changer votre nom qu'une fois par mois."
-            changed_success: Votre nom a été mis à jour avec succès.
-            format_changed_success: "Le format d'affichage de votre nom a été mis à jour avec succès."
+            change_limit: "Tu ne peux changer ton nom qu'une fois par mois."
         preferences:
             profilePicture: Photo de profil
             notifications:
-                title: Notifications
                 inApp: 'Tu reçois toujours tes notifications sur le site.'
             emailNotification:
                 label: 'Me prévenir aussi par e-mail'
@@ -256,22 +259,22 @@ profile:
                 label: Afficher les distances et statistiques en
             preferredReviewLanguages:
                 label: 'Afficher les avis écrits en'
-                help: 'Laissez vide pour ne voir que les avis dans votre langue préférée.'
+                help: 'Laisse vide pour ne voir que les avis dans ta langue préférée.'
             addTodayDateWhenRating:
                 label: Ajouter la date du jour quand je note un nouveau coaster
         advanced:
             apiKey:
                 label: Clé API
-        updated_success: Vos paramètres ont été mis à jour avec succès.
-        save: Enregistrer les modifications
+        updated_success: Tes paramètres sont enregistrés.
+        save: Enregistrer
     delete_account:
         title: Supprimer le compte
-        warning: 'Cette action supprimera définitivement votre compte et toutes les données associées. Cette action est irréversible.'
-        immediate_logout: Vous serez déconnecté immédiatement de tous les appareils
-        permanent_after_month: Toutes vos données seront définitivement supprimées après 1 mois
+        warning: 'Cette action supprime définitivement ton compte et toutes ses données. Elle est irréversible.'
+        immediate_logout: Tu es déconnecté immédiatement de tous tes appareils
+        permanent_after_month: Toutes tes données sont définitivement supprimées après 1 mois
         button: Supprimer mon compte
-        confirm: 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'
-        invalid_token: 'Jeton de sécurité invalide. Veuillez réessayer.'
+        confirm: 'Supprimer ton compte ? Cette action est irréversible.'
+        invalid_token: 'Jeton de sécurité invalide. Réessaie.'
 
 review:
     title: Avis

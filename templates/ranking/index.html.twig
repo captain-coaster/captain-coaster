@@ -32,14 +32,12 @@
 
 {% block secondary_sidebar %}
   {% include 'Includes/filter_sidebar.html.twig' with {
-    'filters': filters|default({}),
-    'filtersForm': filtersForm,
+    'filterForm': filterForm,
     'filterConfig': {
       'endpoint': path('ranking_search_async'),
       'container_id': 'ranking-result',
       'update_url': true,
-      'initial_load': 'false',
-      'excluded_filters': ['score', 'kiddie', 'sortByDistance']
+      'initial_load': 'false'
     }
   } only %}
 {% endblock %}

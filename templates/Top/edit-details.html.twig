@@ -11,14 +11,13 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-  <div class="cc-panel cc-panel--flat">
-    <div class="cc-panel__body">
-      {{ form_start(form) }}
-      {{ form_row(form.name) }}
-      {{ form_row(form.type) }}
-      {{ form_row(form.save, {'label': submitLabel}) }}
-      {{ form_rest(form) }}
-      {{ form_end(form) }}
+  {{ form_start(form, {attr: {class: 'grid max-w-160 gap-6'}}) }}
+    {{ form_errors(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.type) }}
+    {{ form_rest(form) }}
+    <div>
+      <twig:Button block>{{ submitLabel }}</twig:Button>
     </div>
-  </div>
+  {{ form_end(form) }}
 {% endblock %}

@@ -140,7 +140,7 @@ map_index:
 
 filters:
     title: Filtros
-    continent: Mundo
+    continent: Continente
     country: País
     materialType: Tipo
     seatingType: Tren
@@ -153,12 +153,18 @@ filters:
     score: Resultado
     atleast: 'al menos {count}'
     openingDate: Fecha de apertura
-    name: Nombre
+    name: Nombre del coaster
     clear: Borrar filtros
     show_results: Ver resultados
     sortByDistance: Ordenar por distancia
+    any: Todos
+    groups:
+        show: Mostrar
+        coaster: Coaster
+        location: Lugar
 
     sorts:
+        label: Ordenar las reseñas
         default: Ordenar por defecto
         reviews:
             updatedAt:

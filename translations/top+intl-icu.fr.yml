@@ -3,7 +3,7 @@
 new:
     title: 'Créer un nouveau top'
     form:
-        name: 'Nom de votre top :'
+        name: 'Nom de ton top'
         type: 'Est-ce un Top ou un Flop ?'
         flop: 'Flop (le plus bas est le meilleur)'
         top: 'Top (le plus haut est le meilleur)'

@@ -1,20 +1,7 @@
 /*
- * Forms -- migrated: theme/bootstrap-limitless/forms.less +
- * bootstrap/less/forms.less. `.cc-field__label` needs *zero* CSS -- its
- * only styling anywhere is nested under `.form-horizontal`, and the one
- * template using `.form-horizontal` (Coaster/_review_panel.html.twig)
- * never puts `.cc-field__label` inside it. `.form-horizontal` itself turns
- * out fully inert for the same reason: every one of its rules targets a
- * descendant `.cc-field__label` or an exact `.cc-field` class, and the
- * one real `.form-horizontal` form uses `.cc-field--xs` alone (a
- * different class, not `.cc-field` + a size modifier) with no
- * `.cc-field__label` at all -- so `.form-horizontal` is dropped too.
- * `.radio` and everything radio-only is dropped (zero `<input
- * type="radio">`/`.radio` usage anywhere). `.checkbox` itself *is* needed
- * for 3 real cases (Coaster/image-upload.html.twig, Profile/settings.html.twig)
- * -- most `.checkbox` usage in templates is inside
- * `.toggle-switch-cc-field`, which already fully re-skins it via
- * toggle-switch.css (untouched, unrelated to this migration).
+ * Forms -- element-level resets left from the Bootstrap migration. Fields are
+ * rendered by the form theme (templates/form/fields.html.twig) with utilities;
+ * the `.cc-field*`, `.checkbox`, `.help-block` and `.has-*` rules are gone (#441).
  */
 
 /*
@@ -53,191 +40,14 @@ textarea {
     appearance: none;
 }
 
-/*
- * Bootstrap's normalize.less (base.css) unconditionally forces
- * `input[type=search] { box-sizing: content-box }` (a cross-browser fix,
- * untouched, still active). Bootstrap's own forms.less immediately
- * overrides that back to border-box specifically for search inputs --
- * "Override content-box in Normalize (* isn't specific enough)", per its
- * own comment -- plus removes the iOS rounded-corner search styling so
- * `.cc-field__control` can style it instead. Missing this rule made the
- * search bar in the page header render ~40px wider than its container
- * (padding/border added on top of the declared width instead of being
- * included in it). `.cc-field__control`'s own `width:100%` only prevents this
- * class of bug when box-sizing is already border-box.
- */
+/* normalize (base.css) forces content-box on search inputs; back to border-box, and no iOS search styling. */
 input[type='search'] {
     box-sizing: border-box;
     -webkit-appearance: none;
     appearance: none;
 }
 
-.cc-field__control {
-    color: var(--cc-gray-900);
-    background-color: var(--cc-white);
-    background-image: none;
-    border: 1px solid var(--control-border);
-    border-radius: 3px;
-    width: 100%;
-    height: 36px;
-    padding: 7px 12px;
-    font-size: var(--text-caption);
-    line-height: 1.53846;
-    transition:
-        border-color 0.15s ease-in-out,
-        box-shadow 0.15s ease-in-out;
-    display: block;
-    box-shadow: none;
-}
-
-/*
- * Bootstrap's own forms.less: the base rule's fixed height:36px (a
- * single text-input line) needs undoing for a multi-row <textarea> --
- * dropped from the original migration, invisible until a real <textarea>
- * without its own inline height override (contact form) rendered as a
- * single clipped line regardless of its `rows` attribute.
- */
-textarea.cc-field__control {
-    height: auto;
-}
-
-.cc-field__control:focus {
-    border-color: var(--focus);
-    outline: 0;
-    box-shadow: 0 0 0 1px var(--focus);
-}
-
-.cc-field__control[class*='bg-']:focus {
-    border-color: transparent;
-}
-
-.cc-field__control[disabled],
-.cc-field__control[readonly],
-fieldset[disabled] .cc-field__control {
-    opacity: 1;
-    color: var(--muted);
-    background-color: var(--subtle);
-}
-
-.cc-field__control[disabled],
-fieldset[disabled] .cc-field__control {
-    cursor: not-allowed;
-}
-
-.cc-field {
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.cc-field .cc-field:last-child {
-    margin-bottom: 0;
-}
-
-.cc-field--xs .cc-field__control {
-    border-radius: 2px;
-    height: 32px;
-    padding: 5px 10px;
-    font-size: var(--text-caption);
-    line-height: 1.66667;
-}
-
-.checkbox {
-    position: relative;
-    display: block;
-    margin-top: 8px;
-    margin-bottom: 8px;
-}
-
-.checkbox label {
-    cursor: pointer;
-    min-height: 20px;
-    margin-bottom: 0;
-    padding-left: 28px;
-    font-weight: 400;
-}
-
-.checkbox input[type='checkbox'] {
-    position: absolute;
-    margin-left: -20px;
-}
-
-.checkbox + .checkbox {
-    margin-top: 0;
-}
-
-.checkbox.disabled label,
-fieldset[disabled] .checkbox label {
-    cursor: not-allowed;
-}
-
-.help-block {
-    color: var(--cc-gray-600);
-    margin-top: 7px;
-    margin-bottom: 7px;
-    font-size: var(--text-caption);
-    display: block;
-}
-
-.has-feedback {
-    position: relative;
-}
-
-.has-feedback .cc-field__control {
-    padding-right: 36px;
-}
-
-.has-feedback-left .cc-field__control {
-    padding-left: 36px;
-    padding-right: 12px;
-}
-
-.has-feedback-left .cc-field__feedback {
-    left: 0;
-    right: auto;
-}
-
-.cc-field__feedback {
-    z-index: 3;
-    color: var(--cc-gray-900);
-    text-align: center;
-    pointer-events: none;
-    width: 38px;
-    height: 36px;
-    line-height: 36px;
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.has-error .help-block,
-.has-error .checkbox {
-    color: var(--danger);
-}
-
-.has-error .cc-field__control {
-    border-color: var(--danger);
-    box-shadow: inset 0 1px 1px color-mix(in oklch, var(--fg) 7.5%, transparent);
-}
-
-.has-error .cc-field__control:focus {
-    border-color: var(--danger);
-    box-shadow: 0 0 0 1px var(--danger);
-}
-
-.has-error .cc-field__feedback {
-    color: var(--danger);
-}
-
-/*
- * fieldset/legend ("Normalize non-controls" in bootstrap/less/forms.less)
- * -- base.css's normalize.less-derived fieldset (visible `border:1px
- * solid #c0c0c0`) is for real, measured elements this migration doesn't
- * touch; forms.less loads after it in the original app.less and resets
- * it back to `border:0` for every real `<fieldset>` (3x,
- * Profile/settings.html.twig) -- ported here so it keeps winning the
- * same way.
- */
+/* base.css's normalize draws a border around fieldsets. */
 fieldset {
     min-width: 0;
     padding: 0;
@@ -246,22 +56,7 @@ fieldset {
 }
 
 legend {
-    display: block;
-    width: 100%;
     padding: 0;
-    margin-bottom: 20px;
-    font-size: var(--text-caption);
-    line-height: inherit;
-    color: var(--cc-gray-900);
-    border: 0;
-    border-bottom: 1px solid var(--cc-gray-200);
-    padding-top: 10px;
-    padding-bottom: 10px;
-    text-transform: uppercase;
-}
-
-fieldset:first-child legend:first-child {
-    padding-top: 0;
 }
 
 /*

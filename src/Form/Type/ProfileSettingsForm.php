@@ -47,6 +47,8 @@ class ProfileSettingsForm extends AbstractType
         // First name field (disabled if can't change name)
         $builder->add('firstName', TextType::class, [
             'label' => 'profile.settings.name.firstName',
+            'help' => 'profile.settings.name.change_limit',
+            'attr' => ['autocomplete' => 'given-name'],
             'disabled' => !$canChangeName,
             // An empty submission must reach NotBlank as '', not fail on User's string setter as null
             'empty_data' => '',
@@ -62,6 +64,7 @@ class ProfileSettingsForm extends AbstractType
         // Last name field (optional, disabled if can't change name)
         $builder->add('lastName', TextType::class, [
             'label' => 'profile.settings.name.lastName',
+            'attr' => ['autocomplete' => 'family-name'],
             'required' => false,
             'disabled' => !$canChangeName,
             'constraints' => [
@@ -104,6 +107,7 @@ class ProfileSettingsForm extends AbstractType
         $builder->add('emailNotification', CheckboxType::class, [
             'required' => false,
             'label' => 'profile.settings.preferences.emailNotification.label',
+            'help' => 'profile.settings.preferences.notifications.inApp',
         ]);
 
         $builder->add('preferredLocale', ChoiceType::class, [
@@ -136,6 +140,7 @@ class ProfileSettingsForm extends AbstractType
             'expanded' => true,
             'required' => false,
             'label' => 'profile.settings.preferences.preferredReviewLanguages.label',
+            'help' => 'profile.settings.preferences.preferredReviewLanguages.help',
         ]);
 
         $builder->add('addTodayDateWhenRating', CheckboxType::class, [
@@ -148,6 +153,7 @@ class ProfileSettingsForm extends AbstractType
             $builder->add('apiKey', TextType::class, [
                 'required' => false,
                 'disabled' => true,
+                'mark_optional' => false,
                 'label' => 'profile.settings.advanced.apiKey.label',
             ]);
         }

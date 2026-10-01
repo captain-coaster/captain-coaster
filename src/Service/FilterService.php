@@ -12,7 +12,10 @@ use App\Entity\MaterialType;
 use App\Entity\Model;
 use App\Entity\SeatingType;
 use App\Entity\User;
+use App\Form\Type\FilterType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Cache\CacheInterface;
@@ -21,8 +24,32 @@ class FilterService
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly CacheInterface $cache
+        private readonly CacheInterface $cache,
+        private readonly FormFactoryInterface $formFactory,
     ) {
+    }
+
+    /**
+     * The filter panel, pre-filled with the current filters.
+     *
+     * @param array<string, mixed> $filters  Raw or validated filters
+     * @param string               $context  ranking, search or map
+     * @param list<string>         $excluded Filters this page doesn't offer
+     */
+    public function createFormView(array $filters, string $context, array $excluded, ?UserInterface $user): FormView
+    {
+        $filters = $this->validateFilters($filters, $context);
+
+        // "Not ridden yet" needs an account, and makes no sense on a rider's own ridden list
+        if (!$user instanceof User || isset($filters['ridden'])) {
+            $excluded[] = 'notridden';
+        }
+        // The not-ridden filter is relative to a rider: the signed-in one by default
+        $filters['user'] ??= $user instanceof User ? $user->getId() : null;
+
+        return $this->formFactory
+            ->createNamed('filters', FilterType::class, $filters, ['excluded' => $excluded, 'filter_data' => $this->getFilterData()])
+            ->createView();
     }
 
     /** Clear the filter data cache. */
