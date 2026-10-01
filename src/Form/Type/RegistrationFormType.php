@@ -8,7 +8,6 @@ use App\Entity\User;
 use PixelOpen\CloudflareTurnstileBundle\Type\TurnstileType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -23,29 +22,19 @@ class RegistrationFormType extends AbstractType
         // empty_data: an empty field must reach validation as '', not fail on User's string setters as null
         $builder
             ->add('email', EmailType::class, [
-                'attr' => [
-                    'placeholder' => 'register.form.email'],
-                'label' => false,
+                'label' => 'register.form.email',
+                'attr' => ['autocomplete' => 'email'],
                 'empty_data' => '',
             ])
             ->add('firstName', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'register.form.first_name'],
-                'label' => false,
+                'label' => 'register.form.first_name',
+                'attr' => ['autocomplete' => 'given-name'],
                 'empty_data' => '',
             ])
             ->add('lastName', TextType::class, [
-                'attr' => [
-                    'placeholder' => 'register.form.last_name'],
-                'label' => false,
-            ])
-            ->add(
-                'register',
-                SubmitType::class,
-                [
-                    'label' => 'register.form.submit',
-                ]
-            );
+                'label' => 'register.form.last_name',
+                'attr' => ['autocomplete' => 'family-name'],
+            ]);
 
         $builder->add('recaptcha', TurnstileType::class, ['mapped' => false, 'label' => false, 'attr' => ['data-appearance' => 'interaction-only']]);
     }

@@ -1,138 +1,327 @@
 {% use 'form_div_layout.html.twig' %}
 
 {#
- This app's own form theme -- no longer built on Symfony's bundled
- bootstrap_3_layout.html.twig (captain-coaster/captain-coaster#385:
- that theme kept emitting Bootstrap 3's class names -- form-control,
- control-label, form-group, btn/btn-default -- long after this app's
- own Bootstrap removal, which is what broke the contact/registration/
- profile forms). Builds directly on form_div_layout.html.twig (the
- framework-agnostic base, no CSS-framework opinions of its own) and
- applies this app's current classes (cc-field__control, cc-field__label,
- cc-field, cc-button, checkbox, help-block, has-error -- see forms.css/
- buttons.css) instead.
+ The app's form theme (DESIGN.md, Forms; #441): every Symfony form renders its
+ fields through these blocks, so templates only call form_row()/form_errors()
+ and FormTypes carry labels, help, autocomplete and constraints.
 
- Checkbox/radio rendering (checkbox_widget/radio_widget/checkbox_label/
- radio_label/checkbox_radio_label) replicates bootstrap_3_layout's own
- approach -- input and text both inside one clickable <label> -- since
- without it, an expanded ChoiceType's individual options (checkboxes or
- radios) render with no visible label text at all: form_div_layout's
- own generic form_label renders fine standalone, but a bare choice
- option's label is only ever supplied via this widget-embedding
- mechanism, not as a plain sibling label. Radio gets no `.checkbox`-style
- wrapper div, since forms.css never defined a `.radio` equivalent
- (zero radio usage in this app prior to this rewrite, per forms.css's
- own header) -- if that changes, add one then. Simplified from the
- original: no checkbox-inline/radio-inline handling (never used).
+ - Row order: label, help, field, errors -- help is read before typing, the
+   error sits right under what it's about. Only optional fields are marked.
+ - Errors: server errors set aria-invalid (form_div_layout's form_row); native
+   constraints (required, type=email, min/max) only turn red after the user
+   has interacted (:user-invalid), never on load.
+ - The root form's errors render as a summary linking to each invalid field;
+   it takes focus on load so screen readers hear it first.
+ - Custom widgets: star_rating (StarRatingType), tag_choice (TagChoiceType).
 #}
 
-{% block form_widget_simple -%}
-    {% if type is not defined or type not in ['file', 'hidden'] %}
-        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' cc-field__control')|trim}) -%}
-    {% endif %}
-    {{- parent() -}}
-{%- endblock form_widget_simple %}
+{%- block control_class -%}
+block min-h-12 w-full rounded-control border border-control-line bg-surface px-3.5 py-2.5 text-body text-ink placeholder:text-muted hover:enabled:read-write:border-ink focus-visible:border-focus focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle disabled:text-muted aria-invalid:border-danger aria-invalid:ring-1 aria-invalid:ring-danger aria-invalid:ring-inset user-invalid:border-danger user-invalid:ring-1 user-invalid:ring-danger user-invalid:ring-inset
+{%- endblock control_class -%}
 
-{% block textarea_widget -%}
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' cc-field__control')|trim}) -%}
-    {{- parent() -}}
-{%- endblock textarea_widget %}
+{# Rows #}
 
-{% block choice_widget_collapsed -%}
-    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' cc-field__control')|trim}) -%}
-    {{- parent() -}}
-{%- endblock choice_widget_collapsed %}
-
-{% block checkbox_widget -%}
-    <div class="checkbox">
-        {{- form_label(form, null, {widget: parent()}) -}}
-    </div>
-{%- endblock checkbox_widget %}
-
-{% block radio_widget -%}
-    {{- form_label(form, null, {widget: parent()}) -}}
-{%- endblock radio_widget %}
-
-{% block checkbox_label -%}
-    {%- set label_attr = label_attr|merge({for: id}) -%}
-    {{- block('checkbox_radio_label') -}}
-{%- endblock checkbox_label %}
-
-{% block radio_label -%}
-    {%- set label_attr = label_attr|merge({for: id}) -%}
-    {{- block('checkbox_radio_label') -}}
-{%- endblock radio_label %}
-
-{% block checkbox_radio_label -%}
-    {# Do not display the label if widget is not defined, to avoid the choice_widget_expanded sibling call double-rendering it. #}
-    {%- if widget is defined -%}
-        {%- if required -%}
-            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
+{%- block form_row_render -%}
+    {%- if checked is defined -%}
+        {# Single checkbox or radio: the label wraps the input (see checkbox_radio_label). #}
+        <div{% with {attr: row_attr|merge({class: ('grid gap-1 ' ~ row_attr.class|default(''))|trim})} %}{{ block('attributes') }}{% endwith %}>
+            {{- form_widget(form, widget_attr) -}}
+            {#- Help and errors line up with the label text: 24px box + 12px gap. -#}
+            {%- if help is not empty or errors|length > 0 -%}
+                <div class="grid gap-1 pl-9">
+                    {{- form_help(form) -}}
+                    {{- form_errors(form) -}}
+                </div>
+            {%- endif -%}
+        </div>
+    {%- elseif expanded|default(false) -%}
+        {# Radio/checkbox group, star rating, tag chips: a fieldset named by its legend, described by its help and errors. #}
+        {%- set fieldset_attr = row_attr|merge({class: ('m-0 grid min-w-0 gap-1.5 border-0 p-0 ' ~ row_attr.class|default(''))|trim}) -%}
+        {%- if widget_attr.attr['aria-describedby'] is defined -%}
+            {%- set fieldset_attr = fieldset_attr|merge({'aria-describedby': widget_attr.attr['aria-describedby']}) -%}
         {%- endif -%}
+        <fieldset{% with {attr: fieldset_attr} %}{{ block('attributes') }}{% endwith %}>
+            {{- form_label(form, null, {element: 'legend'}) -}}
+            {{- form_help(form) -}}
+            {{- form_widget(form, widget_attr) -}}
+            {{- form_errors(form) -}}
+        </fieldset>
+    {%- else -%}
+        <div{% with {attr: row_attr|merge({class: ('grid gap-1.5 ' ~ row_attr.class|default(''))|trim})} %}{{ block('attributes') }}{% endwith %}>
+            {{- form_label(form) -}}
+            {{- form_help(form) -}}
+            {{- form_widget(form, widget_attr) -}}
+            {{- form_errors(form) -}}
+        </div>
+    {%- endif -%}
+{%- endblock form_row_render -%}
+
+{%- block form_rows -%}
+    <div class="grid gap-6">
+        {{- parent() -}}
+    </div>
+{%- endblock form_rows -%}
+
+{%- block form_label -%}
+    {%- set label_attr = label_attr|merge({class: ('mb-0 block w-auto border-0 p-0 text-body font-semibold normal-case text-ink ' ~ label_attr.class|default(''))|trim}) -%}
+    {{- parent() -}}
+{%- endblock form_label -%}
+
+{%- block form_label_content -%}
+    {{- parent() -}}
+    {%- if not required -%}
+        {{ ' ' }}<span class="font-normal text-muted">{{ 'form.optional'|trans({}, 'messages') }}</span>
+    {%- endif -%}
+{%- endblock form_label_content -%}
+
+{%- block form_help -%}
+    {%- if help is not empty -%}
+        {%- set help_attr = help_attr|merge({class: ('m-0 text-caption text-muted ' ~ help_attr.class|default(''))|trim}) -%}
+        <p id="{{ id }}_help"{% with {attr: help_attr} %}{{ block('attributes') }}{% endwith %}>
+            {{- block('form_help_content') -}}
+        </p>
+    {%- endif -%}
+{%- endblock form_help -%}
+
+{# Errors #}
+
+{%- block form_errors -%}
+    {%- if form is rootform -%}
+        {%- set invalid_children = form.children|filter(child => not child.vars.valid) -%}
+        {%- if errors|length > 0 or invalid_children|length > 0 -%}
+            <div class="grid gap-2 rounded-card border border-danger bg-danger-bg p-4 text-ink outline-hidden" tabindex="-1" autofocus>
+                <p class="m-0 flex items-center gap-2 font-bold text-danger">
+                    {{- ux_icon('lucide:circle-alert', {class: 'size-5 shrink-0', 'aria-hidden': 'true'}) -}}
+                    {{ 'form.error_summary'|trans({count: errors|length + invalid_children|length}, 'messages') }}
+                </p>
+                {%- for error in errors -%}
+                    <p id="{{ id ~ '_error' ~ loop.index }}" class="m-0">{{ error.message }}</p>
+                {%- endfor -%}
+                {%- if invalid_children|length > 0 -%}
+                    <ul class="m-0 list-disc pl-8">
+                        {%- for child in invalid_children -%}
+                            <li>
+                                {%- if child.vars.label is same as(false) -%}
+                                    {{ (child.vars.errors|first).message|default('') }}
+                                {%- else -%}
+                                    {#- A group links to its first option, so following the link moves focus into it. -#}
+                                    {%- set target = child.vars.expanded|default(false) and child.children|length > 0 ? (child.children|first).vars.id : child.vars.id -%}
+                                    <a href="#{{ target }}" class="font-semibold text-ink underline underline-offset-3">
+                                        {{- child.vars.label is null ? child.vars.name|humanize : (child.vars.translation_domain is same as(false) ? child.vars.label : child.vars.label|trans(child.vars.label_translation_parameters, child.vars.translation_domain)) -}}
+                                    </a>
+                                {%- endif -%}
+                            </li>
+                        {%- endfor -%}
+                    </ul>
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+    {%- elseif errors|length > 0 -%}
+        {%- for error in errors -%}
+            <p id="{{ id ~ '_error' ~ loop.index }}" class="m-0 flex items-start gap-1.5 text-caption font-semibold text-danger">
+                {{- ux_icon('lucide:circle-alert', {class: 'mt-0.5 size-4 shrink-0', 'aria-hidden': 'true'}) -}}
+                {{ error.message }}
+            </p>
+        {%- endfor -%}
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{# Text-like inputs, textarea, select #}
+
+{%- block form_widget_simple -%}
+    {%- if type is not defined or type not in ['file', 'hidden'] -%}
+        {%- set attr = attr|merge({class: (block('control_class') ~ ' read-only:border-line read-only:bg-canvas ' ~ attr.class|default(''))|trim}) -%}
+    {%- endif -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block textarea_widget -%}
+    {%- set attr = attr|merge({class: (block('control_class') ~ ' min-h-36 resize-y read-only:border-line read-only:bg-canvas ' ~ attr.class|default(''))|trim}) -%}
+    {{- parent() -}}
+{%- endblock textarea_widget -%}
+
+{%- block choice_widget_collapsed -%}
+    {%- if multiple -%}
+        {%- set attr = attr|merge({class: (block('control_class') ~ ' ' ~ attr.class|default(''))|trim}) -%}
+        {{- parent() -}}
+    {%- else -%}
+        {%- set attr = attr|merge({class: (block('control_class') ~ ' cursor-pointer appearance-none pr-11 hover:enabled:border-ink ' ~ attr.class|default(''))|trim}) -%}
+        <div class="relative">
+            {{- parent() -}}
+            {{- ux_icon('lucide:chevrons-up-down', {class: 'pointer-events-none absolute top-1/2 right-3.5 size-5 -translate-y-1/2 text-muted-strong', 'aria-hidden': 'true'}) -}}
+        </div>
+    {%- endif -%}
+{%- endblock choice_widget_collapsed -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form -%}
+            {{- form_widget(child, {translation_domain: choice_translation_domain}) -}}
+        {%- endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{# File: the native picker, its button styled as a secondary button, in a
+   control-bordered box that previews a chosen image (file-preview). #}
+
+{%- block file_widget -%}
+    {%- set attr = attr|merge({
+        class: ('w-full cursor-pointer text-caption text-muted-strong file:mr-3 file:min-h-11 file:cursor-pointer file:rounded-control file:border file:border-solid file:border-control-line file:bg-surface file:px-4 file:text-body file:font-semibold file:text-ink hover:file:bg-subtle focus-visible:rounded-sm focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus ' ~ attr.class|default(''))|trim,
+        'data-file-preview-target': 'input',
+        'data-action': 'file-preview#show',
+    }) -%}
+    <div class="grid gap-3 rounded-control border border-control-line bg-surface p-3 has-[[aria-invalid=true]]:border-danger has-[:user-invalid]:border-danger" data-controller="file-preview">
+        {{- block('form_widget_simple') -}}
+        <img src="data:," alt="" hidden class="aspect-4/3 w-full rounded-sm bg-subtle object-cover" data-file-preview-target="image">
+    </div>
+{%- endblock file_widget -%}
+
+{# Checkbox and radio:a 24px shape; the whole label row is the 44px target. #}
+
+{%- block checkbox_widget -%}
+    {%- set attr = attr|merge({class: (block('checkbox_radio_input_class') ~ ' rounded-sm ' ~ attr.class|default(''))|trim}) -%}
+    {{- form_label(form, null, {widget: parent()}) -}}
+{%- endblock checkbox_widget -%}
+
+{%- block radio_widget -%}
+    {%- set attr = attr|merge({class: (block('checkbox_radio_input_class') ~ ' rounded-full ' ~ attr.class|default(''))|trim}) -%}
+    {{- form_label(form, null, {widget: parent()}) -}}
+{%- endblock radio_widget -%}
+
+{%- block checkbox_label -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock checkbox_label -%}
+
+{%- block radio_label -%}
+    {{- block('checkbox_radio_label') -}}
+{%- endblock radio_label -%}
+
+{%- block checkbox_radio_label -%}
+    {#- Only the call from checkbox_widget/radio_widget renders, with the input inside. -#}
+    {%- if widget is defined -%}
+        {%- set is_radio = 'radio' in block_prefixes -%}
         {%- if label is null or label is same as('') -%}
             {%- if label_format is not empty -%}
                 {%- set label = label_format|replace({'%name%': name, '%id%': id}) -%}
             {%- elseif label is not same as(false) -%}
-                {% set label = name|humanize %}
+                {%- set label = name|humanize -%}
             {%- endif -%}
         {%- endif -%}
-        <label{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
-            {#- if statement must be kept on the same line, to force the space between widget and label -#}
-            {{- widget|raw }} {% if label is not same as(false) -%}
-                {%- if translation_domain is same as(false) -%}
-                    {%- if label_html is same as(false) -%}
-                        {{ label -}}
-                    {%- else -%}
-                        {{ label|raw -}}
-                    {%- endif -%}
+        <label for="{{ id }}" class="mb-0 flex min-h-11 cursor-pointer items-start gap-3 py-2.5 font-normal has-disabled:cursor-not-allowed has-disabled:text-muted">
+            <span class="relative grid shrink-0 place-items-center">
+                {{- widget|raw -}}
+                {%- if is_radio -%}
+                    <span class="pointer-events-none absolute size-2.5 rounded-full bg-white opacity-0 peer-checked:opacity-100" aria-hidden="true"></span>
                 {%- else -%}
-                    {%- if label_html is same as(false) -%}
-                        {{ label|trans(label_translation_parameters, translation_domain) -}}
-                    {%- else -%}
-                        {{ label|trans(label_translation_parameters, translation_domain)|raw -}}
-                    {%- endif -%}
+                    {{- ux_icon('lucide:check', {class: 'pointer-events-none absolute size-4 text-white opacity-0 peer-checked:opacity-100', 'stroke-width': 3, 'aria-hidden': 'true'}) -}}
                 {%- endif -%}
-            {%- endif %}
+            </span>
+            {%- if label is not same as(false) -%}
+                <span>
+                    {%- if translation_domain is same as(false) -%}
+                        {{- label_html is same as(false) ? label : label|raw -}}
+                    {%- else -%}
+                        {{- label_html is same as(false) ? label|trans(label_translation_parameters, translation_domain) : label|trans(label_translation_parameters, translation_domain)|raw -}}
+                    {%- endif -%}
+                </span>
+            {%- endif -%}
         </label>
     {%- endif -%}
-{%- endblock checkbox_radio_label %}
+{%- endblock checkbox_radio_label -%}
 
-{% block form_label -%}
-    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' cc-field__label')|trim}) -%}
-    {{- parent() -}}
-{%- endblock form_label %}
+{%- block checkbox_radio_input_class -%}
+peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-line bg-surface transition-colors duration-120 checked:border-action checked:bg-action focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle aria-invalid:border-danger
+{%- endblock checkbox_radio_input_class -%}
 
-{% block form_help -%}
-    {%- if help -%}
-        {%- set help_attr = help_attr|merge({class: (help_attr.class|default('') ~ ' help-block')|trim}) -%}
-        <span id="{{ id }}_help"{% with {attr: help_attr} %}{{ block('attributes') }}{% endwith %}>
-            {{- block('form_help_content') -}}
-        </span>
-    {%- endif -%}
-{%- endblock form_help %}
+{# Star rating (StarRatingType): ten radios, 0.5 to 5, two per star. The fill
+   state is CSS-only (star-input.css); arrow keys move between values natively. #}
 
-{% block form_errors -%}
-    {%- if errors|length > 0 -%}
-    {% if form is not rootform %}<span class="help-block text-danger">{% else %}<div class="cc-alert cc-alert--danger">{% endif %}
-    <ul class="list-unstyled">
-        {%- for error in errors -%}
-            <li id="{{ id ~ '_error' ~ loop.index }}">{{ error.message }}</li>
+{%- block star_rating_widget -%}
+    {%- set attr = attr|merge({class: ('star-input ' ~ attr.class|default(''))|trim}) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for pair in form.children|batch(2) -%}
+            <span class="star-input__star">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path class="star-input__fill" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.006 5.404.434c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.434 2.082-5.005Z"/>
+                    <path class="star-input__edge" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/>
+                </svg>
+                {%- for child in pair -%}
+                    <input type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" class="sr-only"
+                        {%- if valid and child.vars.checked %} checked{% endif -%}
+                        {%- if required %} required{% endif -%}
+                        {%- if disabled %} disabled{% endif -%}
+                        {%- if attr['aria-describedby'] is defined %} aria-describedby="{{ attr['aria-describedby'] }}"{% endif %}>
+                    <label for="{{ child.vars.id }}" class="star-input__half"><span class="sr-only">{{ child.vars.label|trans(child.vars.label_translation_parameters, choice_translation_domain) }}</span></label>
+                    {%- do child.setRendered() -%}
+                {%- endfor -%}
+            </span>
         {%- endfor -%}
-    </ul>
-    {% if form is not rootform %}</span>{% else %}</div>{% endif %}
-    {%- endif %}
-{%- endblock form_errors %}
+    </div>
+{%- endblock star_rating_widget -%}
 
-{% block form_row_render -%}
-    <div{% with {attr: row_attr|merge({class: (row_attr.class|default('') ~ ' cc-field' ~ ((not compound or force_error|default(false)) and not valid ? ' has-error'))|trim})} %}{{ block('attributes') }}{% endwith %}>
-        {{- form_label(form) }} {# -#}
-        {{ form_widget(form, widget_attr) }} {# -#}
-        {{- form_help(form) -}}
-        {{ form_errors(form) }} {# -#}
-    </div> {# -#}
-{%- endblock form_row_render %}
+{# Tag chips (TagChoiceType): pill checkboxes, most used first. tag-choice
+   disables the rest once `max` are checked (Count enforces it server-side), and
+   on phones hides the chips past `visible` (checked ones stay) until "Show all". #}
 
-{% block button_widget -%}
-    {%- set attr = attr|merge({class: (attr.class|default('cc-button--default') ~ ' cc-button')|trim}) -%}
-    {{- parent() -}}
-{%- endblock button_widget %}
+{%- block tag_choice_widget -%}
+    {%- set attr = attr|merge({
+        class: ('group flex flex-wrap gap-2 ' ~ attr.class|default(''))|trim,
+        'data-controller': 'tag-choice',
+        'data-tag-choice-max-value': max,
+        'data-action': 'change->tag-choice#update',
+    }) -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form -%}
+            {%- set extra = loop.index > visible -%}
+            <label for="{{ child.vars.id }}" class="relative mb-0 inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-pill border border-line bg-surface px-3.5 font-normal select-none hover:border-control-line has-checked:border-action has-checked:bg-selected has-checked:pl-2.5 has-checked:font-semibold has-checked:text-action has-focus-visible:outline-3 has-focus-visible:outline-offset-3 has-focus-visible:outline-focus has-disabled:cursor-not-allowed has-disabled:border-dashed has-disabled:text-muted{{ extra ? ' max-md:group-data-collapsed:not-has-checked:hidden' }}"
+                {%- if extra %} data-tag-choice-target="extra"{% endif %}>
+                <input type="checkbox" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" class="peer absolute inset-0 m-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
+                    {%- if child.vars.checked %} checked{% endif -%}
+                    {%- if disabled %} disabled{% endif %}>
+                {{- ux_icon('lucide:check', {class: 'hidden size-4 peer-checked:block', 'stroke-width': 3, 'aria-hidden': 'true'}) -}}
+                {{- child.vars.label|trans(child.vars.label_translation_parameters, choice_translation_domain) -}}
+            </label>
+            {%- do child.setRendered() -%}
+        {%- endfor -%}
+        {%- if form.children|length > visible -%}
+            <button type="button" class="hidden min-h-11 items-center rounded-pill px-3 font-semibold text-action hover:text-action-hover hover:underline max-md:group-data-collapsed:inline-flex" data-action="tag-choice#expand">
+                {{- 'form.tag_choice.show_all'|trans({count: form.children|length}, 'messages') -}}
+            </button>
+        {%- endif -%}
+    </div>
+{%- endblock tag_choice_widget -%}
+
+{# Turnstile (interaction-only): no row wrapper, and the box stays out of the
+   layout until Cloudflare puts a challenge in it, so an invisible check
+   leaves no gap above the submit button. #}
+
+{%- block turnstile_row -%}
+    {%- if enable -%}
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+        <div class="cf-turnstile empty:hidden" data-sitekey="{{ key }}"
+            {%- for name, value in attr|filter((value, name) => name != 'class') %} {{ name }}="{{ value }}"{% endfor %}></div>
+        {{- form_errors(form) -}}
+    {%- endif -%}
+{%- endblock turnstile_row -%}
+
+{# Buttons (SubmitType/ButtonType) render the Button component. New forms put
+   their buttons in the template instead (<twig:Button>). #}
+
+{%- block button_widget -%}
+    {%- if label is empty -%}
+        {%- if label_format is not empty -%}
+            {%- set label = label_format|replace({'%name%': name, '%id%': id}) -%}
+        {%- elseif label is not same as(false) -%}
+            {%- set label = name|humanize -%}
+        {%- endif -%}
+    {%- endif -%}
+    {%- set text = translation_domain is same as(false) or label is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) -%}
+    {{- component('Button', attr|merge({
+        variant: type|default('button') == 'submit' ? 'primary' : 'secondary',
+        type: type|default('button'),
+        label: text,
+        id: id,
+        name: full_name,
+        disabled: disabled,
+    })) -}}
+{%- endblock button_widget -%}

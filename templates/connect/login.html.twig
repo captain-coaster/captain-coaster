@@ -10,39 +10,26 @@
   <meta name="robots" content="noindex">
 {% endblock %}
 
-{% set field = 'h-12 w-full rounded-control border border-control-line bg-surface px-4 text-body text-ink shadow-none placeholder:text-muted focus:border-action focus:shadow-none focus:outline-3 focus:outline-offset-0 focus:outline-focus disabled:bg-subtle disabled:text-muted' %}
-
 {% block body %}
   <div class="mx-auto grid max-w-md gap-6">
     <section class="grid gap-5 rounded-card bg-surface p-6 shadow-raised">
       {% if error %}
-        <p class="m-0 rounded-control bg-danger-bg px-4 py-3 text-danger" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+        <p class="m-0 rounded-card border border-danger bg-danger-bg px-4 py-3 text-ink" role="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
       {% endif %}
 
-      {{ form_start(loginForm, {'attr': {'class': 'grid gap-4', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'login.sending'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
-        <div class="grid gap-1.5">
-          <label for="{{ loginForm.email.vars.id }}" class="font-semibold">{{ 'register.form.email'|trans }}</label>
-          {% set emailAttr = {'class': field, 'autocomplete': 'email', 'inputmode': 'email'} %}
-          {% if rateLimitExceeded %}{% set emailAttr = emailAttr|merge({'disabled': 'disabled'}) %}{% endif %}
-          {{ form_widget(loginForm.email, {'attr': emailAttr}) }}
-          {% if not loginForm.email.vars.valid %}
-            <div class="text-caption text-danger">{{ form_errors(loginForm.email) }}</div>
-          {% endif %}
-        </div>
+      {{ form_start(loginForm, {attr: {class: 'grid gap-6', 'data-controller': 'form-submit', 'data-form-submit-loading-text-value': 'login.sending'|trans, 'data-action': 'submit->form-submit#submit'}}) }}
         {{ form_errors(loginForm) }}
-        {{ form_widget(loginForm.recaptcha) }}
-        {% if not loginForm.recaptcha.vars.valid %}
-          <div class="text-caption text-danger">{{ form_errors(loginForm.recaptcha) }}</div>
-        {% endif %}
-        <button type="submit" class="inline-flex h-12 items-center justify-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover disabled:opacity-60"{% if rateLimitExceeded %} disabled{% endif %}>{{ 'login.send_link'|trans }}</button>
+        {{ form_row(loginForm.email, {disabled: rateLimitExceeded}) }}
+        {{ form_rest(loginForm) }}
+        <twig:Button class="w-full" :disabled="rateLimitExceeded">{{ 'login.send_link'|trans }}</twig:Button>
       {{ form_end(loginForm) }}
 
       <p class="m-0 flex items-center gap-3 text-caption text-muted before:h-px before:flex-1 before:bg-line after:h-px after:flex-1 after:bg-line">{{ 'login.or_sign_in_with'|trans }}</p>
 
-      <a href="{{ path('connect_google_start') }}" class="inline-flex h-12 items-center justify-center gap-3 rounded-control border border-control-line bg-surface px-5 font-semibold text-ink hover:bg-subtle">
+      <twig:Button variant="secondary" href="{{ path('connect_google_start') }}" class="gap-3">
         {{ ux_icon('fe:google', {class: 'size-5', 'aria-hidden': 'true'}) }}
         {{ 'login.connect_with_google'|trans }}
-      </a>
+      </twig:Button>
     </section>
 
     <p class="m-0 text-center [&_a]:font-semibold">{{ 'login.redirect_to_register'|trans({'%link_path%': path('app_register')})|raw }}</p>

@@ -111,24 +111,22 @@ coaster:
     location: Localisation
 
 image_upload:
-    title: 'Envoyer une photo de "{coaster}"'
+    title: 'Envoyer une photo de {coaster}'
     form:
         file:
-            label: Choisis une photo
-            helper: Le fichier doit être au format JPEG et faire moins de 15Mo. Une image trop petite pourra être rejetée.
+            label: 'Choisis une photo'
+            helper: 'JPEG, moins de 15 Mo. Les photos trop petites peuvent être refusées.'
         credit:
             label: 'Qui a pris cette photo ?'
-            helper: "Vous ne pouvez envoyer des photos que si vous êtes l'auteur ou si vous avez obtenu l'autorisation de l'auteur original."
         watermark:
-            label: 'Watermark "Captain Coaster"'
-            helper: "Appliquer un watermark Captain Coaster sur la photo, pour éviter la réutilisation sur d'autres sites."
+            label: 'Ajouter le filigrane Captain Coaster'
+            helper: 'Limite la réutilisation de ta photo sur d''autres sites.'
         copyright_agreement:
             label: "Je confirme que je possède les droits d'auteur de cette photo ou que j'ai obtenu l'autorisation écrite du titulaire des droits. J'accorde à Captain Coaster une licence pour afficher cette photo sur le site. Je comprends que les tiers ne peuvent pas réutiliser cette photo sans mon autorisation."
-        upload: Envoyer ma photo
-        uploading: 'Envoi en cours...'
-        back: Retour au coaster
-        success: La photo a été envoyée. Elle sera validée par un administrateur avant affichage.
-        duplicate: 'Cette photo a déjà été envoyée. Veuillez choisir une image différente.'
+        upload: 'Envoyer la photo'
+        uploading: 'Envoi…'
+        success: 'Photo reçue. Elle apparaîtra une fois validée par un modérateur.'
+        duplicate: 'Cette photo a déjà été envoyée. Choisis-en une autre.'
 
 park:
     no_coasters: Pas de coaster
@@ -277,15 +275,13 @@ profile:
 
 review:
     title: Avis
-    share: 'Partage ton expérience avec nous !'
-    value: 'Il vaut combien, ce crédit ?'
-    pros: 'Quels sont les principaux atouts de ce coaster ?'
-    pros_placeholder: "Choisis jusqu'à 3 atouts"
-    cons: 'Et ses principaux défauts ?'
-    cons_placeholder: "Choisis jusqu'à 3 défauts"
-    comment: "Envie d'être encore plus précis, raconte-nous ça !"
+    value: 'Ta note'
+    pros: 'Ce que tu as aimé'
+    cons: 'Ce que tu as moins aimé'
+    comment: 'Ton avis'
+    comment_placeholder: "Le lancement, les airtimes, l'attente, la thématisation…"
     language: Langue de cet avis
-    send: Ajouter mon avis
+    send: 'Publier l''avis'
     update: Modifier
     delete: Supprimer
     last: Derniers avis
@@ -376,53 +372,55 @@ nav:
     join_reason: "Connectez-vous pour noter les coasters que vous avez faits, créer vos tops et peser sur le classement mondial."
 
 login:
-    title: Se connecter
-    subtitle: Envoyer un lien de connexion par email
-    send_link: Envoyer un lien
-    sending: Envoi en cours...
-    redirect_to_register: 'Nouveau sur Captain Coaster? <a href="{link_path}">Créez un compte</a>'
+    title: 'Connexion à Captain Coaster'
+    subtitle: 'Nous t''envoyons un lien de connexion par email.'
+    send_link: 'Recevoir le lien de connexion'
+    sending: 'Envoi…'
+    redirect_to_register: 'Nouveau sur Captain Coaster ? <a href="{link_path}">Créer un compte</a>'
     or_sign_in_with: ou
-    connect_with_google: Connexion avec google
-    terms: 'En continuant, vous acceptez nos <a href="{link_path}">Termes et Conditions</a>'
+    connect_with_google: 'Continuer avec Google'
+    terms: 'En continuant, tu acceptes nos <a href="{link_path}">conditions générales d''utilisation</a>.'
     email:
         title: Connexion à Captain Coaster
         h1: 'Prêt au dispatch !'
-        paragraph1: 'Pour se connecter à Captain Coaster, cliquez sur le bouton ci-dessous. Ce lien expirera dans 15 minutes.'
+        paragraph1: 'Pour te connecter à Captain Coaster, clique sur le bouton ci-dessous. Ce lien expire dans 15 minutes.'
         button: Connexion
-        copy_link: 'Si le bouton ne fonctionne pas, copiez-collez ce lien dans votre navigateur :'
-        paragraph2: "Vous recevez cet email car un lien de connexion a été demandé pour votre compte Captain Coaster. Si ce n'est pas vous, vous pouvez ignorer cet email en toute sécurité."
-    link_sent: 'Si un compte est associé à {email}, vous allez recevoir un lien de connexion. Cliquez sur le lien pour vous connecter.'
-    rate_limit_exceeded: 'Trop de tentatives de connexion. Veuillez réessayer plus tard.'
+        copy_link: 'Si le bouton ne fonctionne pas, copie-colle ce lien dans ton navigateur :'
+        paragraph2: 'Tu reçois cet email car un lien de connexion a été demandé pour ton compte Captain Coaster. Si ce n''est pas toi, tu peux ignorer cet email.'
+    link_sent: 'Si un compte est associé à {email}, tu vas recevoir un lien de connexion. Ouvre-le pour te connecter.'
+    rate_limit_exceeded: 'Trop de tentatives de connexion. Réessaie plus tard.'
 
 register:
     title: Créer un compte
-    subtitle: Veuillez remplir tous les champs ci-dessous
-    link_sent: 'Compte créé ! Veuillez vérifier votre email ({email}) et cliquer sur le lien pour activer votre compte.'
-    rate_limit_exceeded: "Trop de tentatives d'inscription. Veuillez réessayer plus tard."
+    subtitle: 'Note les coasters que tu as faits, crée tes tops et pèse sur le classement mondial.'
+    link_sent: 'Compte créé. Consulte ta boîte mail ({email}) et ouvre le lien pour activer ton compte.'
+    rate_limit_exceeded: 'Trop de tentatives d''inscription. Réessaie plus tard.'
     form:
         email: Email
         first_name: Prénom
         last_name: Nom
         submit: Créer un compte
     email:
-        title: Confirmez votre email
+        title: 'Confirme ton email'
         h1: 'Bienvenue à bord !'
-        paragraph1: 'Pour utiliser Captain Coaster, cliquez sur le bouton de vérification. Ce lien est valable pendant'
+        paragraph1: 'Pour utiliser Captain Coaster, clique sur le bouton de vérification. Ce lien est valable pendant'
         button: Activer
-        paragraph2: 'Vous avez reçu cet email parce que vous avez créé un compte sur Captain Coaster. Si vous n’êtes pas sûr de la raison pour laquelle vous recevez ceci, veuillez nous contacter en répondant à cet email.'
-    email_verified: 'Votre compte ({email}) a été activé. Bienvenue sur Captain Coaster !'
+        paragraph2: 'Tu reçois cet email parce que tu as créé un compte sur Captain Coaster. Si ce n''est pas toi, réponds simplement à cet email.'
+    email_verified: 'Ton compte ({email}) est activé. Bienvenue sur Captain Coaster !'
 
 contact:
     title: Nous contacter
     send: Envoyer le message
     form:
-        name: Ton nom
-        email: Indique ici un email si tu souhaites recevoir une réponse
-        message: Ecris nous ton poème juste en dessous
+        name: 'Ton nom'
+        email: 'Ton email'
+        email_help: 'Seulement si tu veux une réponse.'
+        message: 'Ton message'
+        sender_help: 'Nous te répondrons à l''email de ton compte.'
     email:
         title: Contact - Captain Coaster
     flash:
-        success: "Merci {name}, ton email a été envoyé à l'équipe de Captain Coaster."
+        success: 'Merci {name}, ton message a bien été envoyé à l''équipe Captain Coaster.'
 
 coaster_search:
     title: 'Rechercher des coasters'
@@ -512,3 +510,12 @@ gallery:
 map:
     loading: Chargement...
     error_loading: Erreur de chargement des données
+
+form:
+    optional: "(facultatif)"
+    error_summary: '{count, plural, one {# champ à corriger} other {# champs à corriger}}'
+    star_rating:
+        choice: '{value, number} sur 5'
+    tag_choice:
+        help: '{max} maximum'
+        show_all: 'Tout afficher ({count})'

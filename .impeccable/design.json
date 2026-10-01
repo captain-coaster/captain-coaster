@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-27T08:45:26+00:00",
+  "generatedAt": "2026-09-28T12:00:00+00:00",
   "title": "Design System: Captain Coaster",
   "extensions": {
     "shadows": [
@@ -113,7 +113,7 @@
     {
       "name": "Primary button",
       "kind": "button",
-      "description": "Foundation specimen; adapt labels and data to the application.",
+      "description": "<twig:Button> primary: the one main action of a form or page.",
       "html": "<button class=\"ds-primary\">Save sample rating</button>",
       "css": ".ds-primary{font-family:var(--font-body);font-size:16px;font-weight:600;border-radius:var(--radius-control);min-height:48px;padding:10px 18px;cursor:pointer;border:1px solid var(--action);background:var(--action);color:var(--on-action);}.ds-primary:hover{background:var(--action-hover);border-color:var(--action-hover)}.ds-primary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}",
       "refersTo": "button-primary"
@@ -121,7 +121,7 @@
     {
       "name": "Secondary button",
       "kind": "button",
-      "description": "Foundation specimen; adapt labels and data to the application.",
+      "description": "<twig:Button variant=\"secondary\">: alternative actions (Google sign-in, Load more).",
       "html": "<button class=\"ds-secondary\">Reset sample</button>",
       "css": ".ds-secondary{font-family:var(--font-body);font-size:16px;font-weight:600;border-radius:var(--radius-control);min-height:48px;padding:10px 18px;cursor:pointer;border:1px solid var(--control-border);background:var(--surface);color:var(--fg);}.ds-secondary:hover{background:var(--subtle)}.ds-secondary:focus-visible{outline:3px solid var(--focus);outline-offset:3px}",
       "refersTo": "button-secondary"
@@ -136,7 +136,7 @@
     {
       "name": "Selected rating",
       "kind": "input",
-      "description": "Foundation specimen; adapt labels and data to the application.",
+      "description": "Foundation specimen, illustrative; the shipped rating input is the star rating input (DESIGN.md, Forms).",
       "html": "<label class=\"ds-rating\"><input type=\"radio\" name=\"sample-rating\" value=\"4\" checked> 4 out of 5 · illustrative</label>",
       "css": ".ds-rating{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 12px;border:1px solid var(--action);border-radius:var(--radius-control);background:var(--selected);color:var(--action);font:600 16px/1.5 var(--font-body);}.ds-rating input{accent-color:var(--action)}.ds-rating input:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.ds-rating:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
     },
@@ -202,6 +202,46 @@
       "description": "Month line: New pill in the ranking's first week.",
       "html": "<p class=\"ds-month\">September 2026 <span class=\"ds-new\">New</span></p>",
       "css": ".ds-month{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;margin:0;font:600 1.25rem/1.5 var(--font-sans);color:var(--muted-strong)}.ds-new{padding:0 8px;border-radius:999px;background:var(--highlight);color:var(--on-highlight);font-size:.875rem}"
+    },
+    {
+      "name": "Text button",
+      "kind": "button",
+      "refersTo": "button-text",
+      "description": "<twig:Button variant=\"text\">: the secondary action beside a form submit (Cancel).",
+      "html": "<button class=\"ds-textbtn\" type=\"button\">Cancel</button>",
+      "css": ".ds-textbtn{font-family:var(--font-body);font-size:16px;font-weight:600;min-height:44px;padding:0 8px;border:0;border-radius:var(--radius-control);background:none;color:var(--action);cursor:pointer}.ds-textbtn:hover{color:var(--action-hover);text-decoration:underline}.ds-textbtn:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
+    },
+    {
+      "name": "Text field row",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Form theme row: semibold label, optional marker, caption help, control, error under the field.",
+      "html": "<div class=\"ds-row\"><label for=\"ds-f\">Review <span class=\"ds-opt\">(optional)</span></label><p id=\"ds-fh\" class=\"ds-help\">Shown on the coaster page.</p><input id=\"ds-f\" class=\"ds-field\" aria-describedby=\"ds-fh\"></div><div class=\"ds-row\"><label for=\"ds-e\">Email</label><input id=\"ds-e\" class=\"ds-field\" aria-invalid=\"true\" aria-describedby=\"ds-ee\" value=\"rider@\"><p id=\"ds-ee\" class=\"ds-err\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 8v4m0 4h.01\"/></svg>Enter a valid email address.</p></div>",
+      "css": ".ds-row{display:grid;gap:6px;margin-bottom:24px;font-family:var(--font-body);font-size:16px;color:var(--fg)}.ds-row label{font-weight:600}.ds-opt{font-weight:400;color:var(--muted)}.ds-help{margin:0;font-size:.875rem;color:var(--muted)}.ds-field{box-sizing:border-box;width:100%;min-height:48px;padding:10px 14px;font-family:var(--font-body);font-size:16px;color:var(--fg);background:var(--surface);border:1px solid var(--control-border);border-radius:var(--radius-control)}.ds-field:hover{border-color:var(--fg)}.ds-field:focus-visible{border-color:var(--focus);outline:3px solid var(--focus);outline-offset:3px}.ds-field[aria-invalid=true]{border-color:var(--danger);box-shadow:inset 0 0 0 1px var(--danger)}.ds-err{display:flex;gap:6px;align-items:flex-start;margin:0;font-size:.875rem;font-weight:600;color:var(--danger)}.ds-err svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}"
+    },
+    {
+      "name": "Checkbox",
+      "kind": "input",
+      "refersTo": "checkbox",
+      "description": "24px box, action fill with white check; the whole 44px label row is the target.",
+      "html": "<label class=\"ds-cb\"><span class=\"ds-cbbox\"><input type=\"checkbox\" checked><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span><span>Add today's date when I rate</span></label>",
+      "css": ".ds-cb{display:flex;align-items:flex-start;gap:12px;min-height:44px;padding:10px 0;box-sizing:border-box;cursor:pointer;font-family:var(--font-body);font-size:16px;color:var(--fg)}.ds-cbbox{position:relative;display:grid;place-items:center;flex-shrink:0}.ds-cbbox input{appearance:none;margin:0;width:24px;height:24px;border:1.5px solid var(--control-border);border-radius:var(--radius-sm);background:var(--surface);cursor:pointer}.ds-cbbox input:checked{background:var(--action);border-color:var(--action)}.ds-cbbox input:focus-visible{outline:3px solid var(--focus);outline-offset:3px}.ds-cbbox svg{position:absolute;width:16px;height:16px;color:#fff;pointer-events:none;opacity:0}.ds-cbbox input:checked+svg{opacity:1}"
+    },
+    {
+      "name": "Tag chips",
+      "kind": "chip",
+      "refersTo": "tag-chip",
+      "description": "Pick up to 3: pill checkboxes; once the limit is reached the rest disable (dashed, muted).",
+      "html": "<div class=\"ds-chips\"><label class=\"ds-chip\"><input type=\"checkbox\" checked><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg>Airtime</label><label class=\"ds-chip\"><input type=\"checkbox\">Smooth</label><label class=\"ds-chip\"><input type=\"checkbox\" disabled>Rough</label></div>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--font-body);font-size:16px;}.ds-chip{position:relative;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;box-sizing:border-box;border:1px solid var(--border);border-radius:var(--radius-pill);background:var(--surface);color:var(--fg);cursor:pointer;user-select:none}.ds-chip:hover{border-color:var(--control-border)}.ds-chip input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}.ds-chip svg{display:none;width:16px;height:16px}.ds-chip:has(:checked){padding-left:10px;border-color:var(--action);background:var(--selected);color:var(--action);font-weight:600}.ds-chip:has(:checked) svg{display:block}.ds-chip:has(:focus-visible){outline:3px solid var(--focus);outline-offset:3px}.ds-chip:has(:disabled){border-style:dashed;color:var(--muted);cursor:not-allowed}"
+    },
+    {
+      "name": "Error summary",
+      "kind": "card",
+      "refersTo": "error-summary",
+      "description": "Opens a form after a failed submit; links to each invalid field and takes focus on load.",
+      "html": "<div class=\"ds-sum\" tabindex=\"-1\"><p><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 8v4m0 4h.01\"/></svg>2 fields need attention</p><ul><li><a href=\"#\">Rating</a></li><li><a href=\"#\">Email</a></li></ul></div>",
+      "css": ".ds-sum{display:grid;gap:8px;padding:16px;border:1px solid var(--danger);border-radius:var(--radius-card);background:var(--danger-bg);color:var(--fg);outline:none;font-family:var(--font-body);font-size:16px;}.ds-sum p{display:flex;align-items:center;gap:8px;margin:0;font-weight:700;color:var(--danger)}.ds-sum svg{width:20px;height:20px;flex-shrink:0}.ds-sum ul{margin:0;padding-left:32px}.ds-sum a{font-weight:600;color:var(--fg);text-decoration:underline;text-underline-offset:3px}.ds-sum a:focus-visible{outline:3px solid var(--focus);outline-offset:3px}"
     }
   ],
   "narrative": {
@@ -252,6 +292,16 @@
       {
         "name": "The One Icon Set Rule",
         "body": "One set, Lucide (`lucide:` in `ux_icon`), on its 24px grid with 1.75px rounded strokes, set once in `config/packages/ux_icons.yaml`. Icons are 24px in navigation and search rows and 20px in dense rows, drawn in the text color. One icon per meaning: coaster `roller-coaster`, park `ferris-wheel`, review `message-square-text`, photo `image` (upload: `camera`), rating `star`, Top list `clipboard-list`, loading `loader-circle` spinning, ridden `circle-check`, gone (a ridden legend) `ghost`, new `sparkles`, best rank ever `crown`, world rank `globe`, duel `swords`. Reuse these before picking another. brand logos (`fe:google` on sign-in) and the drawn rating stars (half state, see Components). `npm run check:icon-sets` fails CI on any other locked set.",
+        "section": "components"
+      },
+      {
+        "name": "The One-Column Rule",
+        "body": "Form rows sit 24px apart in one column of at most 40rem. On desktop the extra width goes to context, never to stretched inputs: the review form's coaster card stays sticky beside the fields from `lg`. The submit is full width on phones and sized to its label, left-aligned, from `md`, with a secondary action as a text button beside it. Exception: inside the 28rem sign-in and register card the primary action stays full width at every size, matching the full-width Google button.",
+        "section": "components"
+      },
+      {
+        "name": "The Known-Identity Rule",
+        "body": "Show what the server already knows instead of disabled inputs: the signed-in contact form shows the sender (avatar, name, \"replies go to your account email\") in place of the name and email fields.",
         "section": "components"
       }
     ],

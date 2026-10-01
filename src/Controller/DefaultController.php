@@ -75,24 +75,17 @@ class DefaultController extends BaseController
     #[Route(path: '/contact', name: 'default_contact', methods: ['GET', 'POST'])]
     public function contactAction(Request $request, MailerInterface $mailer, ChatterInterface $chatter, TranslatorInterface $translator): RedirectResponse|Response
     {
-        $initialData = [];
         $user = $this->getUser();
 
-        // Pre-populate form with user data if logged in
-        if ($user) {
-            $initialData = [
-                'name' => $user->getDisplayName(),
-                'email' => $user->getEmail(),
-            ];
-        }
-
         /** @var Form $form */
-        $form = $this->createForm(ContactType::class, $initialData, ['is_logged_in' => (bool) $user]);
+        $form = $this->createForm(ContactType::class, null, ['is_logged_in' => (bool) $user]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var array{name: string, message: string, email?: string|null} $formData */
-            $formData = $form->getData();
+            $formData = $user
+                ? ['name' => $user->getDisplayName(), 'email' => $user->getEmail()] + $form->getData()
+                : $form->getData();
 
             /** @var string $contactMailTo */
             $contactMailTo = $this->getParameter('app_contact_mail_to');

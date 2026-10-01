@@ -10,23 +10,15 @@
   <meta name="robots" content="noindex">
 {% endblock %}
 
-{% set field = 'h-12 w-full rounded-control border border-control-line bg-surface px-4 text-body text-ink shadow-none placeholder:text-muted focus:border-action focus:shadow-none focus:outline-3 focus:outline-offset-0 focus:outline-focus' %}
-
 {% block body %}
   <div class="mx-auto grid max-w-md gap-6">
-    {{ form_start(registrationForm, {'attr': {'class': 'grid gap-4 rounded-card bg-surface p-6 shadow-raised'}}) }}
-      {% for name, autocomplete in {email: 'email', firstName: 'given-name', lastName: 'family-name'} %}
-        {% set child = registrationForm[name] %}
-        <div class="grid gap-1.5">
-          <label for="{{ child.vars.id }}" class="font-semibold">{{ child.vars.attr.placeholder|trans }}</label>
-          {{ form_widget(child, {'attr': {'class': field, 'autocomplete': autocomplete, 'placeholder': ''}}) }}
-          {% if not child.vars.valid %}
-            <div class="text-caption text-danger">{{ form_errors(child) }}</div>
-          {% endif %}
-        </div>
-      {% endfor %}
-      {{ form_widget(registrationForm.recaptcha) }}
-      {{ form_widget(registrationForm.register, {'attr': {'class': 'inline-flex h-12 w-full items-center justify-center rounded-control bg-action px-5 font-semibold text-on-action hover:bg-action-hover'}}) }}
+    {{ form_start(registrationForm, {attr: {class: 'grid gap-6 rounded-card bg-surface p-6 shadow-raised'}}) }}
+      {{ form_errors(registrationForm) }}
+      {{ form_row(registrationForm.email) }}
+      {{ form_row(registrationForm.firstName) }}
+      {{ form_row(registrationForm.lastName) }}
+      {{ form_rest(registrationForm) }}
+      <twig:Button class="w-full">{{ 'register.form.submit'|trans }}</twig:Button>
     {{ form_end(registrationForm) }}
 
     <p class="m-0 text-center text-caption text-muted">{{ 'login.terms'|trans({'%link_path%': path('app_terms_conditions')})|raw }}</p>
