@@ -28,7 +28,8 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  * Per image: S3 CopyObject the current key to `{id}.jpg` (MetadataDirective COPY -- keeps the
  * focal-x/focal-y/watermark metadata as-is; StorageClass INTELLIGENT_TIERING, since a default
  * COPY would land in STANDARD and a later lifecycle transition bills separately), then update
- * Image::filename and any ImageReport snapshot rows that still carry the old name, then flush.
+ * Image::filename and any ImageReport snapshot rows that still carry the old name (plain SQL
+ * updates, no flush: Image::updatedAt and the coasters' main images must not move).
  * The copy also asks S3 for a SHA-256 of the object (ChecksumAlgorithm), which backfills
  * Image::hash for duplicate detection without downloading the original (ImageManager::isDuplicate()
  * only matches the legacy CRC32 until then).
@@ -231,18 +232,24 @@ class RenameImagesCommand extends Command
             }
 
             // DB only touched after a successful copy -- idempotent, re-runnable.
-            $image->setFilename($newFilename);
+            // Written with DBAL, the entity left untouched: an ORM flush would bump
+            // Image::updatedAt (Timestampable on filename/hash), which orders the galleries and
+            // picks each coaster's main image, and would fire ImageListener::postUpdate
+            // (setMainImages() over every coaster) once per renamed image.
+            $row = ['filename' => $newFilename];
             $sha256 = self::hexChecksum($copy['CopyObjectResult']['ChecksumSHA256'] ?? null);
             if (null !== $sha256) {
-                $image->setHash($sha256);
+                $row['hash'] = $sha256;
                 ++$hashed;
             } else {
                 $io->warning(\sprintf('Image #%d: no SHA-256 checksum in the copy response, hash not backfilled', $image->getId()));
             }
+            // Snapshot rows first: if this throws, the image is still under its old name and the
+            // next run redoes it.
             $this->entityManager->createQuery(
                 'UPDATE '.ImageReport::class.' r SET r.imageFilename = :new WHERE r.imageFilename = :old'
             )->setParameter('new', $newFilename)->setParameter('old', $oldFilename)->execute();
-            $this->entityManager->flush();
+            $this->entityManager->getConnection()->update('image', $row, ['id' => $image->getId()]);
 
             $this->appendToLog($image->getId(), $oldFilename, $newFilename);
             ++$renamed;

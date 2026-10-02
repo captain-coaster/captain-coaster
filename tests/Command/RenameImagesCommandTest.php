@@ -15,6 +15,7 @@ use Aws\MockHandler;
 use Aws\Result;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -33,6 +34,7 @@ class RenameImagesCommandTest extends TestCase
 {
     private ImageRepository&MockObject $imageRepository;
     private EntityManagerInterface&MockObject $entityManager;
+    private Connection&MockObject $connection;
     private ImageManager&MockObject $imageManager;
     private HeroService&MockObject $heroService;
     private MockHandler $s3Handler;
@@ -42,6 +44,10 @@ class RenameImagesCommandTest extends TestCase
     {
         $this->imageRepository = $this->createMock(ImageRepository::class);
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->connection = $this->createMock(Connection::class);
+        $this->entityManager->method('getConnection')->willReturn($this->connection);
+        // The rename writes plain SQL: a flush would bump Image::updatedAt and fire ImageListener.
+        $this->entityManager->expects($this->never())->method('flush');
         $this->imageManager = $this->createMock(ImageManager::class);
         $this->heroService = $this->createMock(HeroService::class);
         $this->s3Handler = new MockHandler();
@@ -259,7 +265,7 @@ class RenameImagesCommandTest extends TestCase
         $query = $this->queryMock();
         $query->expects($this->once())->method('execute');
         $this->entityManager->expects($this->once())->method('createQuery')->willReturn($query);
-        $this->entityManager->expects($this->once())->method('flush');
+        $this->connection->expects($this->once())->method('update')->with('image', ['filename' => '48213.jpg'], ['id' => 48213]);
         $this->heroService->expects($this->once())->method('invalidate');
 
         $tester = $this->makeCommandTester();
@@ -272,7 +278,7 @@ class RenameImagesCommandTest extends TestCase
         self::assertSame('COPY', $copyCommand['MetadataDirective']);
         self::assertSame('INTELLIGENT_TIERING', $copyCommand['StorageClass']);
         self::assertSame('SHA256', $copyCommand['ChecksumAlgorithm']);
-        self::assertSame('48213.jpg', $image->getFilename());
+        self::assertSame('voltron-europa-park-abc123.jpg', $image->getFilename(), 'the managed entity must stay untouched');
 
         $logged = file_get_contents($this->projectDir.'/var/rename-images.log');
         self::assertStringContainsString("48213\tvoltron-europa-park-abc123.jpg\t48213.jpg\n", (string) $logged);
@@ -287,11 +293,12 @@ class RenameImagesCommandTest extends TestCase
         $this->s3Handler->append($this->headObjectResult());
         $this->s3Handler->append(new Result(['CopyObjectResult' => ['ChecksumSHA256' => base64_encode(hash('sha256', 'original bytes', true))]]));
         $this->entityManager->method('createQuery')->willReturn($this->queryMock());
+        $this->connection->expects($this->once())->method('update')
+            ->with('image', ['filename' => '48213.jpg', 'hash' => hash('sha256', 'original bytes')], ['id' => 48213]);
 
         $tester = $this->makeCommandTester();
         $tester->execute([]);
 
-        self::assertSame(hash('sha256', 'original bytes'), $image->getHash());
         self::assertStringContainsString('1 hash(es) backfilled', $this->display($tester));
     }
 
@@ -303,13 +310,12 @@ class RenameImagesCommandTest extends TestCase
         $this->s3Handler->append($this->headObjectResult());
         $this->s3Handler->append(new Result([]));
         $this->entityManager->method('createQuery')->willReturn($this->queryMock());
+        $this->connection->expects($this->once())->method('update')->with('image', ['filename' => '48213.jpg'], ['id' => 48213]);
 
         $tester = $this->makeCommandTester();
         $tester->execute([]);
 
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
-        self::assertSame('48213.jpg', $image->getFilename());
-        self::assertSame('1a2b3c4d', $image->getHash());
         self::assertStringContainsString('hash not backfilled', $this->display($tester));
     }
 
@@ -319,7 +325,7 @@ class RenameImagesCommandTest extends TestCase
         $this->imageRepository->method('findPhotosOrderedById')->willReturn([$image]);
         // Nothing appended to the S3 mock handler -- a call would throw "queue is empty".
 
-        $this->entityManager->expects($this->never())->method('flush');
+        $this->connection->expects($this->never())->method('update');
         $this->heroService->expects($this->never())->method('invalidate');
 
         $tester = $this->makeCommandTester();
@@ -337,14 +343,13 @@ class RenameImagesCommandTest extends TestCase
         // No second S3 response queued -- copyObject must never be called.
 
         $this->imageManager->expects($this->never())->method('writeFocalPointMetadata');
-        $this->entityManager->expects($this->never())->method('flush');
+        $this->connection->expects($this->never())->method('update');
 
         $tester = $this->makeCommandTester();
         $tester->execute([]);
 
         self::assertSame(Command::FAILURE, $tester->getStatusCode());
         self::assertStringContainsString('1 skipped (metadata mismatch)', $this->display($tester));
-        self::assertSame('coaster-slug-abc123.jpg', $image->getFilename(), 'filename must be untouched');
     }
 
     public function testFixMetadataRewritesThenRenamesAMismatchedImage(): void
@@ -357,14 +362,13 @@ class RenameImagesCommandTest extends TestCase
         $this->imageManager->expects($this->once())->method('writeFocalPointMetadata')->with($image);
         $query = $this->queryMock();
         $this->entityManager->method('createQuery')->willReturn($query);
-        $this->entityManager->expects($this->once())->method('flush');
+        $this->connection->expects($this->once())->method('update')->with('image', ['filename' => '1.jpg'], ['id' => 1]);
 
         $tester = $this->makeCommandTester();
         $tester->execute(['--fix-metadata' => true]);
 
         self::assertSame(Command::SUCCESS, $tester->getStatusCode());
         self::assertStringContainsString('Renamed 1 image(s)', $this->display($tester));
-        self::assertSame('1.jpg', $image->getFilename());
     }
 
     public function testACopyFailureIsSkippedAndDoesNotAbortTheRun(): void
@@ -382,7 +386,8 @@ class RenameImagesCommandTest extends TestCase
 
         $query = $this->queryMock();
         $this->entityManager->method('createQuery')->willReturn($query);
-        $this->entityManager->expects($this->once())->method('flush'); // only image #2
+        // only image #2: a failed copy must not touch the DB
+        $this->connection->expects($this->once())->method('update')->with('image', ['filename' => '2.jpg'], ['id' => 2]);
 
         $tester = $this->makeCommandTester();
         $tester->execute([]);
@@ -391,8 +396,6 @@ class RenameImagesCommandTest extends TestCase
         $display = $this->display($tester);
         self::assertStringContainsString('Renamed 1 image(s)', $display);
         self::assertStringContainsString('1 failed', $display);
-        self::assertSame('coaster-slug-abc123.jpg', $bad->getFilename(), 'a failed copy must not touch the DB');
-        self::assertSame('2.jpg', $good->getFilename());
     }
 
     // -------------------------------------------------------------------
