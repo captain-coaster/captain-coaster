@@ -4,164 +4,123 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\Coaster;
-use App\Entity\Image;
-use App\Entity\RiddenCoaster;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CoasterRepository;
+use App\Repository\ImageRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * Builds the entries of sitemap.xml (pages) and sitemap_image.xml (photos).
+ *
+ * Follows Google's sitemap rules: every language version lists all versions including itself,
+ * <lastmod> is the only optional tag kept (<changefreq> and <priority> are ignored), and the
+ * image sitemap has one entry per page holding its photos (<image:loc> only: the title and
+ * geo_location tags were removed from the format).
+ *
+ * Errors are not caught here: an empty list would be cached and served as the sitemap.
+ */
 class SitemapService
 {
+    /** Google reads at most this many <image:image> per <url>. */
+    private const int MAX_IMAGES_PER_PAGE = 1000;
+
     /** @param array<string> $locales */
     public function __construct(
-        private readonly EntityManagerInterface $em,
+        private readonly CoasterRepository $coasterRepository,
+        private readonly ImageRepository $imageRepository,
         private readonly UrlGeneratorInterface $router,
-        private readonly TranslatorInterface $translator,
         private readonly PictureUrlSigner $pictureUrlSigner,
         private readonly array $locales,
     ) {
     }
 
-    /** @return array<int, array<string, mixed>> */
+    /** @return list<array{loc: string, alternates: array<string, string>, lastmod?: string}> */
     public function getUrlsForPages(): array
     {
-        $urls = [];
+        $coasters = $this->coasterRepository->findForSitemap();
 
-        try {
-            // Latest review
-            $latestRating = $this->em->getRepository(RiddenCoaster::class)->findOneBy([], ['updatedAt' => 'desc']);
-            $indexUpdateDate = $latestRating ? $latestRating->getUpdatedAt() : new \DateTime();
+        // Home: changes with every rating. 'Y-m-d H:i:s' strings sort chronologically.
+        $lastRatings = array_filter(array_column($coasters, 'lastmod'));
+        $urls = $this->localizedUrls('default_index', [], [] !== $lastRatings ? new \DateTimeImmutable(max($lastRatings)) : null);
 
-            // Index
-            $indexUrls = $this->getUrlAndAlternates('default_index', [], $indexUpdateDate, 'daily', '1');
-            $urls = array_merge($urls, $indexUrls);
+        // Ranking: recomputed once a month.
+        array_push($urls, ...$this->localizedUrls('ranking_index', [], new \DateTimeImmutable('first day of this month midnight')));
 
-            // Ranking
-            $rankingUpdateDate = new \DateTime('first day of this month midnight');
-            $rankingUrls = $this->getUrlAndAlternates('ranking_index', [], $rankingUpdateDate, 'monthly', '1');
-            $urls = array_merge($urls, $rankingUrls);
-
-            // Fiche Coasters
-            $coasters = $this->em->getRepository(Coaster::class)->findAll();
-
-            foreach ($coasters as $coaster) {
-                $params = ['id' => $coaster->getId(), 'slug' => $coaster->getSlug()];
-                $date = null;
-                // Latest review
-                $latestReview = $this->em->getRepository(RiddenCoaster::class)->findOneBy(['coaster' => $coaster], ['updatedAt' => 'desc']);
-                if ($latestReview instanceof RiddenCoaster) {
-                    $date = $latestReview->getUpdatedAt();
-                }
-                $coasterUrls = $this->getUrlAndAlternates('show_coaster', $params, $date, 'weekly', '0.8');
-                $urls = array_merge($urls, $coasterUrls);
+        foreach ($coasters as $coaster) {
+            if (null === $coaster['slug']) {
+                continue;
             }
 
-            return $urls;
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
-
-    /** @return array<int, array<string, mixed>> */
-    public function getUrlsForImages(): array
-    {
-        $urls = [];
-
-        try {
-            // Published photos only: the image URL below is a real, crawlable one.
-            $images = $this->em->getRepository(Image::class)->findBy(['watermarked' => true, 'enabled' => true]);
-
-            foreach ($images as $image) {
-                $url = [];
-                $url['loc'] = $this->router->generate(
-                    'show_coaster',
-                    [
-                        'id' => $image->getCoaster()->getId(),
-                        'slug' => $image->getCoaster()->getSlug(),
-                        '_locale' => 'en',
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                );
-
-                $imageXML = [];
-
-                // The lightbox derivative: whole photo, inside 1440x1440, real .jpg extension.
-                $imageXML['loc'] = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
-
-                $imageXML['title'] = $image->getCoaster()->getName();
-                $imageXML['geo_location'] = \sprintf(
-                    '%s, %s',
-                    $image->getCoaster()->getPark()->getName(),
-                    $this->translator->trans($image->getCoaster()->getPark()->getCountry()->getName(), [], 'database', 'en')
-                );
-
-                $url['images'][] = $imageXML;
-
-                $urls[] = $url;
-            }
-
-            return $urls;
-        } catch (\Exception $e) {
-            return [];
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $params
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    private function getUrlAndAlternates(
-        string $route,
-        array $params = [],
-        ?\DateTimeInterface $lastmod = null,
-        string $changefreq = 'weekly',
-        string $priority = '0.5'
-    ): array {
-        $urls = [];
-
-        foreach ($this->locales as $locale) {
-            $url = [];
-
-            $url['loc'] = $this->router->generate(
-                $route,
-                $this->buildRouteParams($params, $locale),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
-            $url['changefreq'] = $changefreq;
-            $url['priority'] = $priority;
-
-            if (null !== $lastmod) {
-                $url['lastmod'] = $lastmod->format(\DateTime::W3C);
-            }
-
-            foreach ($this->locales as $alternateLocale) {
-                if ($alternateLocale !== $locale) {
-                    $url['alternate'][$alternateLocale] = $this->router->generate(
-                        $route,
-                        $this->buildRouteParams($params, $alternateLocale),
-                        UrlGeneratorInterface::ABSOLUTE_URL
-                    );
-                }
-            }
-
-            $urls[] = $url;
+            array_push($urls, ...$this->localizedUrls(
+                'show_coaster',
+                ['id' => $coaster['id'], 'slug' => $coaster['slug']],
+                null !== $coaster['lastmod'] ? new \DateTimeImmutable($coaster['lastmod']) : null,
+            ));
         }
 
         return $urls;
     }
 
     /**
+     * One entry per coaster page (English URL) with its published, watermarked photos.
+     *
+     * @return list<array{loc: string, images: list<string>}>
+     */
+    public function getUrlsForImages(): array
+    {
+        $urls = [];
+
+        foreach ($this->imageRepository->findForSitemap() as $image) {
+            $coaster = $image->getCoaster();
+            $coasterId = $coaster->getId();
+            if (null === $coasterId || null === $coaster->getSlug()) {
+                continue;
+            }
+
+            $urls[$coasterId] ??= [
+                'loc' => $this->router->generate(
+                    'show_coaster',
+                    ['id' => $coasterId, 'slug' => $coaster->getSlug(), '_locale' => 'en'],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+                'images' => [],
+            ];
+
+            if (\count($urls[$coasterId]['images']) < self::MAX_IMAGES_PER_PAGE) {
+                // The lightbox derivative: whole photo, inside 1440x1440, real .jpg extension.
+                $urls[$coasterId]['images'][] = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
+            }
+        }
+
+        return array_values($urls);
+    }
+
+    /**
+     * One entry per locale, each listing every language version, itself included.
+     *
      * @param array<string, mixed> $params
      *
-     * @return array<string, mixed>
+     * @return list<array{loc: string, alternates: array<string, string>, lastmod?: string}>
      */
-    private function buildRouteParams(array $params, string $locale): array
+    private function localizedUrls(string $route, array $params, ?\DateTimeInterface $lastmod): array
     {
-        return array_merge(
-            ['_locale' => $locale],
-            $params
-        );
+        $alternates = [];
+        foreach ($this->locales as $locale) {
+            $alternates[$locale] = $this->router->generate(
+                $route,
+                ['_locale' => $locale] + $params,
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
+        }
+
+        $urls = [];
+        foreach ($alternates as $loc) {
+            $url = ['loc' => $loc, 'alternates' => $alternates];
+            if (null !== $lastmod) {
+                $url['lastmod'] = $lastmod->format(\DateTimeInterface::W3C);
+            }
+            $urls[] = $url;
+        }
+
+        return $urls;
     }
 }

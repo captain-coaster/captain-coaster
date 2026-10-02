@@ -49,20 +49,39 @@ class SitemapUpdateCommand extends Command
             $updateImages = true;
         }
 
+        // Built before the cached copy is replaced: a failed or empty build keeps the sitemap
+        // being served instead of caching an empty one.
         if ($updatePages) {
-            $this->sitemapCache->delete('sitemap_urls');
-            $this->sitemapCache->get('sitemap_urls', fn () => $this->sitemapService->getUrlsForPages());
-            $output->writeln('Pages sitemap updated.');
+            $urls = $this->sitemapService->getUrlsForPages();
+            if ([] === $urls) {
+                $output->writeln('<error>Pages sitemap is empty, the cached one is kept.</error>');
+
+                return Command::FAILURE;
+            }
+            $this->replace('sitemap_urls', $urls);
+            $output->writeln(\sprintf('Pages sitemap updated (%d URLs).', \count($urls)));
         }
 
         if ($updateImages) {
-            $this->sitemapCache->delete('sitemap_image');
-            $this->sitemapCache->get('sitemap_image', fn () => $this->sitemapService->getUrlsForImages());
-            $output->writeln('Images sitemap updated.');
+            $urls = $this->sitemapService->getUrlsForImages();
+            if ([] === $urls) {
+                $output->writeln('<error>Images sitemap is empty, the cached one is kept.</error>');
+
+                return Command::FAILURE;
+            }
+            $this->replace('sitemap_image', $urls);
+            $output->writeln(\sprintf('Images sitemap updated (%d pages, %d images).', \count($urls), array_sum(array_map(static fn (array $url): int => \count($url['images']), $urls))));
         }
 
         $output->writeln((string) $stopwatch->stop('command'));
 
         return Command::SUCCESS;
+    }
+
+    /** @param list<array<string, mixed>> $urls */
+    private function replace(string $key, array $urls): void
+    {
+        $this->sitemapCache->delete($key);
+        $this->sitemapCache->get($key, static fn (): array => $urls);
     }
 }

@@ -3,3 +3,6 @@
 
 User-agent: *
 Disallow:
+
+Sitemap: https://captaincoaster.com/sitemap.xml
+Sitemap: https://captaincoaster.com/sitemap_image.xml

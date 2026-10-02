@@ -679,6 +679,28 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
+     * Every coaster with the date of its latest rating, for the pages sitemap: one query instead
+     * of one per coaster. `lastmod` is the raw 'Y-m-d H:i:s' string of the aggregate, null
+     * without a rating.
+     *
+     * @return list<array{id: int, slug: ?string, lastmod: ?string}>
+     */
+    public function findForSitemap(): array
+    {
+        /** @var list<array{id: int, slug: ?string, lastmod: ?string}> $rows */
+        $rows = $this->createQueryBuilder('c')
+            ->select('c.id AS id', 'c.slug AS slug', 'MAX(r.updatedAt) AS lastmod')
+            ->leftJoin('c.ratings', 'r')
+            ->groupBy('c.id')
+            ->addGroupBy('c.slug')
+            ->orderBy('c.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $rows;
+    }
+
+    /**
      * Check if filters contain valid coordinates for distance sorting.
      *
      * @param array<string, mixed> $filters Validated filter array

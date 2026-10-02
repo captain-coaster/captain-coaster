@@ -127,4 +127,24 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Published, watermarked photos with their coaster (one query), grouped by coaster and in
+     * the coaster page's order -- the image sitemap lists them per page.
+     *
+     * @return array<Image>
+     */
+    public function findForSitemap(): array
+    {
+        return $this->createQueryBuilder('i')
+            ->addSelect('c')
+            ->innerJoin('i.coaster', 'c')
+            ->where('i.enabled = 1')
+            ->andWhere('i.watermarked = 1')
+            ->orderBy('c.id', 'ASC')
+            ->addOrderBy('i.likeCounter', 'DESC')
+            ->addOrderBy('i.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
