@@ -18,6 +18,7 @@ class SitemapService
         private readonly EntityManagerInterface $em,
         private readonly UrlGeneratorInterface $router,
         private readonly TranslatorInterface $translator,
+        private readonly PictureUrlSigner $pictureUrlSigner,
         private readonly array $locales,
     ) {
     }
@@ -68,8 +69,8 @@ class SitemapService
         $urls = [];
 
         try {
-            // Latest review
-            $images = $this->em->getRepository(Image::class)->findBy(['watermarked' => true]);
+            // Published photos only: the image URL below is a real, crawlable one.
+            $images = $this->em->getRepository(Image::class)->findBy(['watermarked' => true, 'enabled' => true]);
 
             foreach ($images as $image) {
                 $url = [];
@@ -85,13 +86,8 @@ class SitemapService
 
                 $imageXML = [];
 
-                $imageXML['loc'] = \sprintf(
-                    '%s://%s/%s/%s',
-                    $this->router->getContext()->getScheme(),
-                    $this->router->getContext()->getHost(),
-                    'images/coasters',
-                    $image->getFilename()
-                );
+                // The lightbox derivative: whole photo, inside 1440x1440, real .jpg extension.
+                $imageXML['loc'] = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
 
                 $imageXML['title'] = $image->getCoaster()->getName();
                 $imageXML['geo_location'] = \sprintf(
