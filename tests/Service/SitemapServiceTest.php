@@ -63,7 +63,7 @@ class SitemapServiceTest extends TestCase
     public function testEveryLanguageVersionListsAllVersionsItselfAndXDefault(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 42, 'slug' => 'voltron', 'parkId' => 7, 'lastmod' => '2026-10-01 18:30:00'],
+            ['id' => 42, 'slug' => 'voltron', 'parkId' => 7, 'updatedAt' => null, 'lastmod' => '2026-10-01 18:30:00'],
         ]);
 
         $urls = $this->pages();
@@ -85,9 +85,9 @@ class SitemapServiceTest extends TestCase
     public function testLastmodIsTheLatestRatingAndNoIgnoredTagIsEmitted(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 1, 'slug' => 'old', 'parkId' => 7, 'lastmod' => '2026-09-01 10:00:00'],
-            ['id' => 2, 'slug' => 'recent', 'parkId' => 7, 'lastmod' => '2026-10-01 18:30:00'],
-            ['id' => 3, 'slug' => 'unrated', 'parkId' => 7, 'lastmod' => null],
+            ['id' => 1, 'slug' => 'old', 'parkId' => 7, 'updatedAt' => null, 'lastmod' => '2026-09-01 10:00:00'],
+            ['id' => 2, 'slug' => 'recent', 'parkId' => 7, 'updatedAt' => null, 'lastmod' => '2026-10-01 18:30:00'],
+            ['id' => 3, 'slug' => 'unrated', 'parkId' => 7, 'updatedAt' => null, 'lastmod' => null],
         ]);
 
         $urls = $this->pages();
@@ -100,12 +100,27 @@ class SitemapServiceTest extends TestCase
         self::assertArrayNotHasKey('priority', $urls[0]);
     }
 
+    public function testCoasterLastmodIsTheLaterOfItsLastEditAndItsLatestRating(): void
+    {
+        $this->coasterRepository->method('findForSitemap')->willReturn([
+            ['id' => 1, 'slug' => 'edited-after', 'parkId' => 7, 'updatedAt' => new \DateTimeImmutable('2026-10-02 09:00:00'), 'lastmod' => '2026-09-01 10:00:00'],
+            ['id' => 2, 'slug' => 'rated-after', 'parkId' => 7, 'updatedAt' => new \DateTimeImmutable('2026-08-01 09:00:00'), 'lastmod' => '2026-09-01 10:00:00'],
+            ['id' => 3, 'slug' => 'never-rated', 'parkId' => 7, 'updatedAt' => new \DateTimeImmutable('2026-07-01 09:00:00'), 'lastmod' => null],
+        ]);
+
+        $urls = $this->pages();
+
+        self::assertStringStartsWith('2026-10-02T09:00:00', $urls[4]['lastmod'] ?? '');
+        self::assertStringStartsWith('2026-09-01T10:00:00', $urls[6]['lastmod'] ?? '');
+        self::assertStringStartsWith('2026-07-01T09:00:00', $urls[8]['lastmod'] ?? '');
+    }
+
     public function testParksWithACoasterAreListedWithTheirLatestRating(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 1, 'slug' => 'old', 'parkId' => 7, 'lastmod' => '2026-09-01 10:00:00'],
-            ['id' => 2, 'slug' => 'recent', 'parkId' => '7', 'lastmod' => '2026-10-01 18:30:00'],
-            ['id' => 3, 'slug' => 'unrated', 'parkId' => 8, 'lastmod' => null],
+            ['id' => 1, 'slug' => 'old', 'parkId' => 7, 'updatedAt' => null, 'lastmod' => '2026-09-01 10:00:00'],
+            ['id' => 2, 'slug' => 'recent', 'parkId' => '7', 'updatedAt' => null, 'lastmod' => '2026-10-01 18:30:00'],
+            ['id' => 3, 'slug' => 'unrated', 'parkId' => 8, 'updatedAt' => null, 'lastmod' => null],
         ]);
         $this->parkRepository->method('findForSitemap')->willReturn([
             ['id' => 7, 'slug' => 'europa-park'],
@@ -127,7 +142,7 @@ class SitemapServiceTest extends TestCase
     public function testACoasterWithoutSlugIsLeftOut(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 1, 'slug' => null, 'parkId' => 7, 'lastmod' => null],
+            ['id' => 1, 'slug' => null, 'parkId' => 7, 'updatedAt' => null, 'lastmod' => null],
         ]);
 
         // Home and ranking only.

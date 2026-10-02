@@ -72,10 +72,14 @@ class SitemapService
                 continue;
             }
 
+            // The later of the coaster's own last edit and its latest rating.
+            $lastRating = null !== $coaster['lastmod'] ? new \DateTimeImmutable($coaster['lastmod']) : null;
+            $lastEdit = $coaster['updatedAt'];
+
             yield from $this->localizedUrls(
                 'show_coaster',
                 ['id' => $coaster['id'], 'slug' => $coaster['slug']],
-                null !== $coaster['lastmod'] ? new \DateTimeImmutable($coaster['lastmod']) : null,
+                null !== $lastRating && null !== $lastEdit ? max($lastRating, $lastEdit) : ($lastRating ?? $lastEdit),
             );
         }
     }

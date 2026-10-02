@@ -679,21 +679,22 @@ class CoasterRepository extends ServiceEntityRepository
     }
 
     /**
-     * Every coaster with its park and the date of its latest rating, for the pages sitemap: one
-     * query instead of one per coaster. `lastmod` is the raw 'Y-m-d H:i:s' string of the
-     * aggregate, null without a rating.
+     * Every coaster with its park, the date of its last edit and of its latest rating, for the
+     * pages sitemap: one query instead of one per coaster. `lastmod` is the raw 'Y-m-d H:i:s'
+     * string of the aggregate, null without a rating.
      *
-     * @return list<array{id: int, slug: ?string, parkId: int|numeric-string, lastmod: ?string}>
+     * @return list<array{id: int, slug: ?string, parkId: int|numeric-string, updatedAt: ?\DateTimeInterface, lastmod: ?string}>
      */
     public function findForSitemap(): array
     {
-        /** @var list<array{id: int, slug: ?string, parkId: int|numeric-string, lastmod: ?string}> $rows */
+        /** @var list<array{id: int, slug: ?string, parkId: int|numeric-string, updatedAt: ?\DateTimeInterface, lastmod: ?string}> $rows */
         $rows = $this->createQueryBuilder('c')
-            ->select('c.id AS id', 'c.slug AS slug', 'IDENTITY(c.park) AS parkId', 'MAX(r.updatedAt) AS lastmod')
+            ->select('c.id AS id', 'c.slug AS slug', 'IDENTITY(c.park) AS parkId', 'c.updatedAt AS updatedAt', 'MAX(r.updatedAt) AS lastmod')
             ->leftJoin('c.ratings', 'r')
             ->groupBy('c.id')
             ->addGroupBy('c.slug')
             ->addGroupBy('c.park')
+            ->addGroupBy('c.updatedAt')
             ->orderBy('c.id', 'ASC')
             ->getQuery()
             ->getArrayResult();
