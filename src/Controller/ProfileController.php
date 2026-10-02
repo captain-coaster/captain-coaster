@@ -115,7 +115,7 @@ class ProfileController extends BaseController
                 }
             }
 
-            $this->addFlash('success', $translator->trans('profile.settings.updated_success'));
+            $this->addFlash('success', $translator->trans('profile.settings.flash.success'));
 
             $em->persist($user);
             $em->flush();

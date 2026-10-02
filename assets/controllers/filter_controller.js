@@ -125,7 +125,10 @@ export default class extends Controller {
     }
 
     handleInput(event) {
-        if (this.isFilterInput(event.target) && event.target.type === 'text') {
+        if (
+            this.isFilterInput(event.target) &&
+            event.target.type === 'search'
+        ) {
             this.debouncedFilterData();
         }
     }

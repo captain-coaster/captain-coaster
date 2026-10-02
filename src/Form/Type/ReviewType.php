@@ -46,12 +46,12 @@ class ReviewType extends AbstractType
             ])
             ->add('review', TextareaType::class, [
                 'required' => false,
-                'label' => 'review.comment',
-                'attr' => ['placeholder' => 'review.comment_placeholder'],
+                'label' => 'review.form.comment',
+                'attr' => ['placeholder' => 'review.form.comment_placeholder'],
             ])
             ->add('riddenAt', DateType::class, [
                 'required' => false,
-                'label' => 'review.ridden_at',
+                'label' => 'review.form.ridden_at',
                 'widget' => 'single_text',
                 'row_attr' => ['class' => 'md:max-w-56'],
             ]);

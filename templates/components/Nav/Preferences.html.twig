@@ -20,7 +20,7 @@
   {% set select %}
     <select id="pref-language-{{ uid }}"
             data-controller="navigate" data-action="navigate#go"
-            class="absolute inset-0 size-full cursor-pointer appearance-none opacity-0">
+            class="absolute inset-0 size-full cursor-pointer appearance-none text-body opacity-0">
       {% for locale in locales %}
         <option value="{{ path(route, params|merge({_locale: locale, setLocale: 1})) }}" lang="{{ locale }}" {% if locale == app.request.locale %}selected{% endif %}>{{ locale|trans }}</option>
       {% endfor %}
@@ -47,8 +47,8 @@
   <div class="{{ field }}">
     <p class="m-0 {{ label }}" id="pref-units-{{ uid }}">{{ 'nav.units'|trans }}</p>
     <ul class="m-0 flex list-none gap-1 justify-self-start rounded-pill bg-subtle p-1" aria-labelledby="pref-units-{{ uid }}">
-      <li><a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}" aria-label="{{ 'profile.settings.preferences.units.metric'|trans }}">km/h · m</a></li>
-      <li><a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}" aria-label="{{ 'profile.settings.preferences.units.imperial'|trans }}">mph · ft</a></li>
+      <li><a href="{{ path(route, params|merge({setUnits: 'metric'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'false' : 'true' }}" aria-label="{{ 'units.metric'|trans }}">km/h · m</a></li>
+      <li><a href="{{ path(route, params|merge({setUnits: 'imperial'})) }}" class="{{ option }}" aria-current="{{ imperial ? 'true' : 'false' }}" aria-label="{{ 'units.imperial'|trans }}">mph · ft</a></li>
     </ul>
   </div>
 </div>

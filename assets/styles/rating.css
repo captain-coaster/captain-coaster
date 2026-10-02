@@ -282,8 +282,18 @@
     border: 1px solid var(--cc-gray-300);
     border-radius: 4px;
     padding: 8px;
-    font-size: var(--text-caption);
+    /* 16px: below it iOS zooms the page on focus */
+    font-size: var(--text-body);
+    min-height: 44px;
+    line-height: normal;
     margin-bottom: 8px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.small-date-input::-webkit-date-and-time-value {
+    text-align: left;
 }
 
 .small-date-input:focus {
@@ -346,17 +356,9 @@
         margin-bottom: 8px;
     }
 
-    /*
-     * font-size stays untouched here -- forms.css's global
-     * `input[type="date"]{font-size:16px!important}` always wins (it's
-     * !important, on purpose: below 16px iOS auto-zooms the page on
-     * focus). Everything else around it is trimmed instead to keep the
-     * popup from looking oversized next to that fixed 16px text.
-     */
     .small-date-input {
         padding: 8px 10px;
         margin-bottom: 8px;
-        min-height: 40px;
     }
 
     .tiny-btn {

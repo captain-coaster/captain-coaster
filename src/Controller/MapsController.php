@@ -59,8 +59,7 @@ class MapsController extends AbstractController
             'Maps/index.html.twig',
             [
                 'markers' => $this->getMarkers($validatedFilters),
-                'filters' => $validatedFilters,
-                'filtersForm' => $this->filterService->getFilterData(),
+                'filterForm' => $this->filterService->createFormView($validatedFilters, 'map', ['new', 'continent', 'country', 'sortByDistance'], $this->getUser()),
                 'parkId' => $parkId,
                 'meta_description' => 'map_index.description',
             ]
@@ -91,8 +90,7 @@ class MapsController extends AbstractController
             'Maps/index.html.twig',
             [
                 'markers' => $this->getMarkers($validatedFilters),
-                'filters' => $validatedFilters,
-                'filtersForm' => $this->filterService->getFilterData(),
+                'filterForm' => $this->filterService->createFormView($validatedFilters, 'map', ['new', 'continent', 'country', 'sortByDistance'], $this->getUser()),
                 'parkId' => '',
                 'user' => $user,
             ]

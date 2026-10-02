@@ -19,7 +19,7 @@ class LoginFormType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'register.form.email',
+                'label' => 'form.email',
                 'attr' => ['autocomplete' => 'email'],
                 // rejects non-email input server-side; the raw value is later reflected
                 // (unescaped) into the "link sent" flash message

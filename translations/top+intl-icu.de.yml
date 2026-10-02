@@ -9,11 +9,6 @@ new:
         top: 'Top (höher ist besser)'
         submit: 'Neue Top erstellen'
 
-editDetails:
-    title: 'Top aktualisieren'
-    form:
-        submit: 'Top aktualisieren'
-
 list:
     title: 'Die neuesten Tops'
     more: 'Mehr anzeigen'
@@ -25,16 +20,20 @@ list:
     create: 'Benutzerdefinierte Top erstellen'
 
 title: 'Meine Top Coasters'
+
 update: 'Aktualisieren'
+
 update_details: 'Namen ändern'
+
 delete: 'Löschen'
+
 delete_confirmation: 'Löschen?'
+
 find: 'Achterbahn finden...'
 
 search:
     placeholder: 'Achterbahn zum Hinzufügen suchen...'
     no_results: 'Keine Achterbahnen gefunden'
-    already_in_list: 'Bereits in deiner Liste'
     aria_label: 'Achterbahn-Suchergebnisse'
 
 help:
@@ -57,7 +56,9 @@ save_status:
     error: 'Fehler beim Speichern. Erneuter Versuch...'
 
 errors:
-    save_failed: 'Fehler beim Speichern der Änderungen. Bitte versuche es erneut.'
     invalid_position: 'Ungültige Position. Bitte gib eine Zahl zwischen 1 und {max} ein.'
-    add_failed: 'Fehler beim Hinzufügen der Achterbahn. Bitte versuche es erneut.'
-    duplicate: 'Diese Achterbahn ist bereits in deiner Liste.'
+
+edit_details:
+    title: 'Top aktualisieren'
+    form:
+        submit: 'Top aktualisieren'

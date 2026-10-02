@@ -58,8 +58,6 @@
 
 @import './colors.css' layer(components);
 
-@import './forms.css' layer(components);
-@import './toggle-switch.css' layer(components);
 @import './map.css' layer(components);
 @import './search.css' layer(components);
 @import './gallery.css' layer(components);
