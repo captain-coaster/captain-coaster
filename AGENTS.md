@@ -106,6 +106,8 @@ Translations use `intl-icu` format. Files are in `translations/` as `{domain}+in
 
 Mid-term aim: one domain per major feature area, rather than today's mix of technical (`security`, `validators`) and per-feature (`top`, `ai_summary`) domains. Align a new domain to that when adding one; no rush to migrate existing ones.
 
+Key naming, `snake_case`: a form's strings are `{feature}.form.{field}` (label), `{field}_help`, `{field}_placeholder`, `submit` and `submitting`; its flash messages `{feature}.flash.*`; strings shared by several forms live under `form.*` (`form.cancel`, `form.email`). Don't borrow another feature's key. A key exists in all four locales or in none. Exception: `filters.{name}` follows the filter's query parameter name.
+
 ### API
 
 API Platform exposes read-only endpoints for `Coaster` and other entities. Not publicly advertised — `/api` and `/api/docs` are restricted to `ROLE_ADMIN` to stop new external sign-ups, but existing API keys and `ApiKeyAuthenticator` still work, and the frontend calls it internally (e.g. `search_controller.js`). Serialization groups control what's exposed (`list_coaster`, `read_coaster`, etc.).

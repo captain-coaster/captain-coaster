@@ -1,7 +1,7 @@
 {#
   A button, or a link styled as one when `href` is set.
   Props:
-    variant  primary | secondary | text
+    variant  primary | secondary | text | danger (destructive: delete account)
     block    true: full width below md, sized to its label from md (form submits)
     label    text, instead of the content block (the form theme passes it this way)
     href     renders an <a>
@@ -15,6 +15,7 @@
       primary: 'bg-action text-on-action hover:bg-action-hover hover:text-on-action',
       secondary: 'border border-control-line bg-surface text-ink hover:bg-subtle hover:text-ink',
       text: 'min-h-11 px-2 text-action hover:text-action-hover hover:underline',
+      danger: 'border border-danger bg-surface text-danger hover:bg-danger-bg hover:text-danger',
     },
     block: {
       true: 'w-full md:w-auto',

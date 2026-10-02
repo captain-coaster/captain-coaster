@@ -45,6 +45,20 @@ const deprecatedFieldClasses = new Set([
     'form-control-feedback',
     'control-label',
 ]);
+// The pre-#441 field classes: fields are rendered by the form theme.
+const retiredFieldClasses = new Set([
+    'cc-field',
+    'cc-field--xs',
+    'cc-field__control',
+    'cc-field__label',
+    'cc-field__feedback',
+    'toggle-switch-cc-field',
+    'checkbox',
+    'help-block',
+    'has-error',
+    'has-feedback',
+    'has-feedback-left',
+]);
 const deprecatedButtonClasses = new Set([
     'btn',
     'btn-default',
@@ -164,6 +178,11 @@ function addViolations(path, source) {
                 /(?:^|[^\w-])\.(?:form-group|form-group-xs|form-control|form-control-lg|form-control-feedback|control-label)(?![\w-])/g,
         },
         {
+            contract: 'retired field selector (use the form theme)',
+            pattern:
+                /(?:^|[^\w-])\.(?:cc-field(?:[\w-]*)|toggle-switch-cc-field|checkbox|help-block|has-error|has-feedback(?:-left)?)(?![\w-])/g,
+        },
+        {
             contract: 'Bootstrap button selector',
             pattern: /(?:^|[^\w-])\.btn(?:-[\w-]+)?(?![\w-])/g,
         },
@@ -216,6 +235,7 @@ const deprecatedClassFamilies = [
     { set: deprecatedCollectionClasses, contract: 'Bootstrap collection class' },
     { set: deprecatedPanelClasses, contract: 'Bootstrap panel class' },
     { set: deprecatedFieldClasses, contract: 'Bootstrap field class' },
+    { set: retiredFieldClasses, contract: 'retired field class (use the form theme)' },
     { set: deprecatedButtonClasses, contract: 'Bootstrap button class' },
     { set: deprecatedLabelClasses, contract: 'Bootstrap label or badge class' },
     { set: deprecatedAlertClasses, contract: 'Bootstrap alert or close class' },

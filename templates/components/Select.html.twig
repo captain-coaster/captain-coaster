@@ -1,0 +1,13 @@
+{#
+  A native select outside a Symfony form (a sort order, a dialog's reason), the
+  same control the form theme renders. Options go in the content block.
+  Props:
+    size  default (48px) | compact (44px)
+#}
+{% props size = 'default' %}
+<div class="relative">
+  <select class="{{ (include('form/_control_class.html.twig', {size: size}) ~ ' cursor-pointer appearance-none pr-11 hover:enabled:border-ink ' ~ attributes.render('class'))|tailwind_merge }}" {{ attributes.without('class') }}>
+    {%- block content %}{% endblock -%}
+  </select>
+  {{ ux_icon('lucide:chevrons-up-down', {class: 'pointer-events-none absolute top-1/2 right-3.5 size-5 -translate-y-1/2 text-muted-strong', 'aria-hidden': 'true'}) }}
+</div>

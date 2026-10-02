@@ -16,28 +16,27 @@
                         <form class="section-header__form form-horizontal">
                             <input type="hidden" name="page" id="filter-page" value="{{ reviews.page|default(1) }}">
 
-                            <div class="cc-field--xs mb-0">
-                                <select name="filters[sort]" class="cc-field__control">
-                                    <option value=""
-                                            {% if filters is not null or filters.sort == '' %}selected{% endif %}>
-                                        {{ 'filters.sorts.default'|trans() }}
-                                    </option>
-                                    <option value="updatedAt|asc"
-                                            {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.updatedAt.asc'|trans() }}
-                                    </option>
-                                    <option value="updatedAt|desc"
-                                            {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.updatedAt.desc' |trans() }}
-                                    </option>
-                                    <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.value.desc' |trans() }}
-                                    </option>
-                                    <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
-                                        {{ 'filters.sorts.reviews.value.asc' |trans() }}
-                                    </option>
-                                </select>
-                            </div>
+                            {# Styled by section-header.css until the coaster page is redesigned. #}
+                            <select name="filters[sort]" class="block w-full" aria-label="{{ 'review.sort.label'|trans }}">
+                                <option value=""
+                                        {% if filters is not null or filters.sort == '' %}selected{% endif %}>
+                                    {{ 'review.sort.default'|trans() }}
+                                </option>
+                                <option value="updatedAt|asc"
+                                        {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                                    {{ 'review.sort.oldest'|trans() }}
+                                </option>
+                                <option value="updatedAt|desc"
+                                        {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                                    {{ 'review.sort.newest' |trans() }}
+                                </option>
+                                <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
+                                    {{ 'review.sort.highest' |trans() }}
+                                </option>
+                                <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
+                                    {{ 'review.sort.lowest' |trans() }}
+                                </option>
+                            </select>
                         </form>
                     {% endif %}
                 </div>

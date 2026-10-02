@@ -104,17 +104,17 @@
 
             <form data-action="review-actions#submitReport">
               <div class="modal-body">
-                <div class="cc-field">
-                  <label>{{ 'review.report_reason'|trans }}</label>
-                  <select name="reason" class="cc-field__control">
+                <div class="grid gap-1.5">
+                  <label for="report-reason-{{ review.id }}" class="mb-0 font-semibold">{{ 'review.report_reason'|trans }}</label>
+                  <twig:Select name="reason" id="report-reason-{{ review.id }}">
                     <option value="inappropriate">{{ 'review.reason.inappropriate'|trans }}</option>
                     <option value="spam">{{ 'review.reason.spam'|trans }}</option>
-                  </select>
+                  </twig:Select>
                 </div>
               </div>
 
               <div class="modal-footer">
-                <button type="button" class="cc-button cc-button--link" data-dismiss="modal">{{ 'review.cancel'|trans }}</button>
+                <button type="button" class="cc-button cc-button--link" data-dismiss="modal">{{ 'form.cancel'|trans }}</button>
                 <button type="submit" class="cc-button cc-button--primary">{{ 'review.submit_report'|trans }}</button>
               </div>
             </form>

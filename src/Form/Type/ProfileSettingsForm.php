@@ -40,13 +40,15 @@ class ProfileSettingsForm extends AbstractType
         // This prevents: leading/trailing spaces, consecutive special chars, numbers, and most special characters
         $nameRegex = new Regex(
             pattern: '/^[\p{L}\p{M}]+(?:[\s\'\-][\p{L}\p{M}]+)*$/u',
-            message: $translator->trans('profile.settings.name.invalid_characters'),
+            message: $translator->trans('profile.settings.form.name_invalid'),
         );
 
         // Name section
         // First name field (disabled if can't change name)
         $builder->add('firstName', TextType::class, [
-            'label' => 'profile.settings.name.firstName',
+            'label' => 'profile.settings.form.first_name',
+            'help' => 'profile.settings.form.first_name_help',
+            'attr' => ['autocomplete' => 'given-name'],
             'disabled' => !$canChangeName,
             // An empty submission must reach NotBlank as '', not fail on User's string setter as null
             'empty_data' => '',
@@ -61,7 +63,8 @@ class ProfileSettingsForm extends AbstractType
 
         // Last name field (optional, disabled if can't change name)
         $builder->add('lastName', TextType::class, [
-            'label' => 'profile.settings.name.lastName',
+            'label' => 'profile.settings.form.last_name',
+            'attr' => ['autocomplete' => 'family-name'],
             'required' => false,
             'disabled' => !$canChangeName,
             'constraints' => [
@@ -74,24 +77,24 @@ class ProfileSettingsForm extends AbstractType
         $user = $options['data'];
 
         $builder->add('displayNameFormat', ChoiceType::class, [
-            'label' => 'profile.settings.name.format',
+            'label' => 'profile.settings.form.display_name',
             'choices' => [
-                $translator->trans('profile.settings.name.format.full').' ('.$user->getFullNameFormat().')' => 'full',
-                $translator->trans('profile.settings.name.format.partial').' ('.$user->getPartialNameFormat().')' => 'partial',
-                $translator->trans('profile.settings.name.format.first_only').' ('.$user->getFirstNameOnlyFormat().')' => 'first_only',
+                $translator->trans('profile.settings.form.display_name_full').' ('.$user->getFullNameFormat().')' => 'full',
+                $translator->trans('profile.settings.form.display_name_partial').' ('.$user->getPartialNameFormat().')' => 'partial',
+                $translator->trans('profile.settings.form.display_name_first_only').' ('.$user->getFirstNameOnlyFormat().')' => 'first_only',
             ],
             'expanded' => false,
-            'help' => 'profile.settings.name.format.help',
+            'help' => 'profile.settings.form.display_name_help',
         ]);
 
         // Profile picture
         $builder->add('profilePicture', FileType::class, [
-            'label' => 'profile.settings.preferences.profilePicture',
+            'label' => 'profile.settings.form.profile_picture',
             'required' => false,
             'mapped' => false,
             'constraints' => [
                 new File(
-                    maxSize: '2M',
+                    maxSize: '10M',
                     mimeTypes: [
                         'image/jpeg',
                         'image/png',
@@ -103,30 +106,31 @@ class ProfileSettingsForm extends AbstractType
         // Preferences section
         $builder->add('emailNotification', CheckboxType::class, [
             'required' => false,
-            'label' => 'profile.settings.preferences.emailNotification.label',
+            'label' => 'profile.settings.form.email_notification',
+            'help' => 'profile.settings.form.email_notification_help',
         ]);
 
         $builder->add('preferredLocale', ChoiceType::class, [
             'choices' => $locales,
             'choice_label' => static fn ($value) => $value,
-            'label' => 'profile.settings.preferences.preferredLocale',
+            'label' => 'profile.settings.form.locale',
         ]);
 
         $builder->add('homePark', EntityType::class, [
             'required' => false,
-            'label' => 'profile.settings.preferences.homePark.label',
+            'label' => 'profile.settings.form.home_park',
             'class' => Park::class,
-            'placeholder' => 'profile.settings.preferences.homePark.placeholder',
+            'placeholder' => 'profile.settings.form.home_park_placeholder',
             'query_builder' => static fn (EntityRepository $er) => $er->createQueryBuilder('p')
                 ->orderBy('p.name', 'ASC'),
         ]);
 
         $builder->add('preferredUnits', ChoiceType::class, [
             'choices' => [
-                'profile.settings.preferences.units.metric' => 'metric',
-                'profile.settings.preferences.units.imperial' => 'imperial',
+                'units.metric' => 'metric',
+                'units.imperial' => 'imperial',
             ],
-            'label' => 'profile.settings.preferences.units.label',
+            'label' => 'profile.settings.form.units',
         ]);
 
         $builder->add('preferredReviewLanguages', ChoiceType::class, [
@@ -135,12 +139,13 @@ class ProfileSettingsForm extends AbstractType
             'multiple' => true,
             'expanded' => true,
             'required' => false,
-            'label' => 'profile.settings.preferences.preferredReviewLanguages.label',
+            'label' => 'profile.settings.form.review_languages',
+            'help' => 'profile.settings.form.review_languages_help',
         ]);
 
         $builder->add('addTodayDateWhenRating', CheckboxType::class, [
             'required' => false,
-            'label' => 'profile.settings.preferences.addTodayDateWhenRating.label',
+            'label' => 'profile.settings.form.add_today_date',
         ]);
 
         // Advanced section - only show API key if user has one
@@ -148,7 +153,8 @@ class ProfileSettingsForm extends AbstractType
             $builder->add('apiKey', TextType::class, [
                 'required' => false,
                 'disabled' => true,
-                'label' => 'profile.settings.advanced.apiKey.label',
+                'mark_optional' => false,
+                'label' => 'profile.settings.form.api_key',
             ]);
         }
     }

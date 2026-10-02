@@ -30,8 +30,7 @@ class CoasterSearchController extends AbstractController
         return $this->render(
             'CoasterSearch/index.html.twig',
             [
-                'filters' => [],
-                'filtersForm' => $this->filterService->getFilterData(),
+                'filterForm' => $this->filterService->createFormView([], 'search', ['new'], $this->getUser()),
             ]
         );
     }

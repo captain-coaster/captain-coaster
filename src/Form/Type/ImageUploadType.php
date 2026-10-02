@@ -23,22 +23,22 @@ class ImageUploadType extends AbstractType
         $builder
             // constraint file NotBlank only for upload
             ->add('file', FileType::class, [
-                'label' => 'image_upload.form.file.label',
-                'help' => 'image_upload.form.file.helper',
+                'label' => 'image_upload.form.file',
+                'help' => 'image_upload.form.file_help',
                 'attr' => ['accept' => Image::MIME_TYPE],
                 'constraints' => [new NotBlank()],
             ])
             ->add('credit', TextType::class, [
-                'label' => 'image_upload.form.credit.label',
+                'label' => 'image_upload.form.credit',
                 'attr' => ['autocomplete' => 'name'],
             ])
             ->add('watermarked', CheckboxType::class, [
-                'label' => 'image_upload.form.watermark.label',
-                'help' => 'image_upload.form.watermark.helper',
+                'label' => 'image_upload.form.watermark',
+                'help' => 'image_upload.form.watermark_help',
                 'required' => false,
             ])
             ->add('copyrightAgreement', CheckboxType::class, [
-                'label' => 'image_upload.form.copyright_agreement.label',
+                'label' => 'image_upload.form.copyright_agreement',
                 'mapped' => false,
                 'constraints' => [new NotBlank(message: 'image_upload.form.copyright_agreement.required')],
             ]);

@@ -1,11 +1,15 @@
 # Define languages
 fr: Français
+
 en: English
+
 es: Español
+
 de: Deutsch
 
 # Common buttons
 Today: 'Heute'
+
 Clear: 'Löschen'
 
 app:
@@ -41,16 +45,6 @@ coaster:
         title: 'PUNKTZAHL'
         rank: 'RANG'
         scoreof: Punktzahl von
-        ranked: Rang
-        intheworld: Auf der Welt
-        quality: 'Qualitätsbewertung'
-        worldrank: 'Weltrangliste'
-        overview: 'Auf einen Blick'
-    quality:
-        excellent: 'Ausgezeichnet'
-        good: 'Gut'
-        fair: 'Durchschnittlich'
-        poor: 'Schwach'
     rating:
         action: 'Bewerte diese Achterbahn!'
         my_rating: 'Meine Bewertung'
@@ -60,8 +54,6 @@ coaster:
         sendreview: 'Oder klicke hier, um eine Rezension zu schreiben'
         updatereview: Aktualisiere meine Rezension
         delete: Löschen
-        text: 'Punktzahl basiert auf {count_rating} Bewertungen und {count_top} Tops'
-        details: 'Detaillierte Benutzerbewertungen'
         distribution: 'Bewertungsverteilung'
         ratings: 'Bewertungen'
         date:
@@ -78,29 +70,24 @@ coaster:
         status: Status
         park: Park
         country: Land
-        type: Typ
         launch: Abschuss
         manufacturer: Hersteller
         materialType: Typ
         seatingType: Zug
         model: Modell
         restraint: Rückhaltesystem
-        forces: G-Kräfte
         opening: Eröffnungsdatum
         closing: Schließungsdatum
         vr: VR
         cost: Kosten
         kiddie: Kinder
         indoor: Indoor
-        formerNames: Ehemalige Namen
     stats:
         height: Höhe
         length: Länge
         speed: Höchstgeschwindigkeit
         inversions: Inversionen
     parkcoaster: 'Auch in {name}'
-    video:
-        title: Onride Video
     photos:
         title: Fotos
         empty: 'Hoppla, wir haben noch keine Fotos von dieser Achterbahn, aber du kannst uns deine zusenden!'
@@ -108,23 +95,19 @@ coaster:
         all: Alle Bilder ansehen
         loading: Laden von Fotos
         like: Dieses Bild mögen
-    location: Standort
 
 image_upload:
     title: 'Foto von {coaster} hochladen'
     form:
-        file:
-            label: 'Wähle ein Foto'
-            helper: 'JPEG, unter 15 MB. Sehr kleine Fotos können abgelehnt werden.'
-        credit:
-            label: 'Wer hat dieses Foto gemacht?'
-        watermark:
-            label: 'Captain-Coaster-Wasserzeichen hinzufügen'
-            helper: 'Erschwert, dass dein Foto auf anderen Websites wiederverwendet wird.'
-        copyright_agreement:
-            label: 'Ich bestätige, dass ich das Urheberrecht an diesem Foto besitze oder die schriftliche Genehmigung des Rechteinhabers erhalten habe. Ich gewähre Captain Coaster eine Lizenz zur Anzeige dieses Fotos auf der Website. Ich verstehe, dass Dritte dieses Foto nicht ohne meine Erlaubnis wiederverwenden dürfen.'
-        upload: 'Foto einreichen'
-        uploading: 'Wird hochgeladen…'
+        file: 'Wähle ein Foto'
+        file_help: 'JPEG, unter 15 MB. Sehr kleine Fotos können abgelehnt werden.'
+        credit: 'Wer hat dieses Foto gemacht?'
+        watermark: 'Captain-Coaster-Wasserzeichen hinzufügen'
+        watermark_help: 'Erschwert, dass dein Foto auf anderen Websites wiederverwendet wird.'
+        copyright_agreement: 'Ich bestätige, dass ich das Urheberrecht an diesem Foto besitze oder die schriftliche Genehmigung des Rechteinhabers erhalten habe. Ich gewähre Captain Coaster eine Lizenz zur Anzeige dieses Fotos auf der Website. Ich verstehe, dass Dritte dieses Foto nicht ohne meine Erlaubnis wiederverwenden dürfen.'
+        submit: 'Foto einreichen'
+        submitting: 'Wird hochgeladen…'
+    flash:
         success: 'Foto erhalten. Sie erscheint, sobald ein Moderator sie freigegeben hat.'
         duplicate: 'Dieses Foto wurde bereits hochgeladen. Wähle ein anderes.'
 
@@ -136,11 +119,10 @@ park:
 map_index:
     title: Achterbahn Landkarte
     description: 'Entdecke mit dieser interaktiven Karte, wo sich die coolsten Achterbahnen in der Nähe befinden, die besten des nächsten Jahres oder die B&M-Bahnen, die du bisher noch nicht gefahren bist.'
-    results: Ergebnisse
 
 filters:
     title: Filter
-    continent: Welt
+    continent: Kontinent
     country: Land
     materialType: Typ
     seatingType: Zug
@@ -153,20 +135,15 @@ filters:
     score: Punktzahl
     atleast: 'mindestens {count}'
     openingDate: Eröffnungsdatum
-    name: Name
+    name: Name der Achterbahn
     clear: Filter löschen
     show_results: Ergebnisse anzeigen
     sortByDistance: Nach Entfernung sortieren
-
-    sorts:
-        default: Standardmäßige Sortierung
-        reviews:
-            updatedAt:
-                asc: Von der ältesten zur neuesten
-                desc: Von der neuesten zur ältesten
-            value:
-                asc: Von der schlechtesten zur besten
-                desc: Von der besten zur schlechtesten
+    any: Alle
+    groups:
+        show: Anzeigen
+        coaster: Achterbahn
+        location: Ort
 
 user_profile:
     title: 'Profil • {name}'
@@ -193,11 +170,9 @@ profile:
         map: Meine Karte
         photos: Meine Fotos
         reviews: Meine Rezensionen
-        settings: Einstellungen
     badge: Abzeichen
     banner:
         title: Persönliches Banner
-        text: ~
         getbbcode: Kopiere BBCode (Foren)
         gethtml: Kopiere HTML
         copied: 'Kopiert!'
@@ -205,9 +180,6 @@ profile:
         unavailable: 'Bewerte und ranke Achterbahnen, um dein persönliches Banner zu erstellen! Die Aktualisierung kann einige Stunden dauern.'
     stats:
         title: 'Überblick'
-        coasters: 'Achterbahnen'
-        parks: 'Parks'
-        countries: 'Länder'
         ridden_coasters: '{count, plural, =1 {Achterbahn} other {Achterbahnen}}'
         explored_parks: '{count, plural, =1 {Park} other {Parks}}'
         visited_countries: '{count, plural, =1 {Land} other {Länder}}'
@@ -218,8 +190,6 @@ profile:
         favorite_manufacturer: 'Lieblingshersteller'
         represented_manufacturer: 'Am häufigsten vertretene Hersteller in Ihren Top 10'
         coaster_count: '{count, plural, =0 {Keine Achterbahnen} =1 {1 Achterbahn} other {# Achterbahnen}}'
-        park_count: '{count, plural, =0 {Keine Parks} =1 {1 Park} other {# Parks}}'
-        country_count: '{count, plural, =0 {keine Länder} =1 {1 Land} other {# Länder}}'
     ratings:
         title: Meine Bewertungen
     settings:
@@ -228,43 +198,33 @@ profile:
             name: Namenseinstellungen
             preferences: Präferenzen
             advanced: Erweitert
-        name:
-            firstName: Vorname
-            lastName: Nachname
-            format: Anzeigeformat des Namens
-            format.help: 'Wählen Sie, wie Ihr Name für andere Benutzer angezeigt wird (Vorschau wird rechts angezeigt)'
-            format.full: Vollständiger Name
-            format.partial: Vorname + Nachnameninitial
-            format.first_only: Nur Vorname
-            invalid_characters: 'Der Name darf nur Buchstaben, Leerzeichen und gängige Satzzeichen (Apostrophe, Bindestriche, Punkte) enthalten.'
-            change_limit: Sie können Ihren Namen nur einmal pro Monat ändern.
-            changed_success: Ihr Name wurde erfolgreich aktualisiert.
-            format_changed_success: Das Anzeigeformat Ihres Namens wurde erfolgreich aktualisiert.
-        preferences:
-            profilePicture: Profilbild
-            notifications:
-                title: Benachrichtigungen
-                inApp: 'Deine Benachrichtigungen erhältst du immer auf der Website.'
-            emailNotification:
-                label: 'Mich auch per E-Mail benachrichtigen'
-            preferredLocale: Bevorzugte Sprache
-            homePark:
-                label: Mein Heimatpark
-                placeholder: Wähle einen aus
-            units:
-                metric: Internationale Einheitensystem
-                imperial: Britische Einheitensystem
-                label: Anzeigen von Entfernungen und Statistiken in
-            preferredReviewLanguages:
-                label: 'Bewertungen anzeigen in'
-                help: 'Leer lassen, um nur Bewertungen in Ihrer bevorzugten Sprache zu sehen.'
-            addTodayDateWhenRating:
-                label: Heutiges Datum bei einer neuen Bewertung hinzufügen
-        advanced:
-            apiKey:
-                label: API-Schlüssel
-        updated_success: Ihre Einstellungen wurden erfolgreich aktualisiert.
-        save: Änderungen speichern
+            reviews: Bewertungen
+            notifications: Benachrichtigungen
+        form:
+            first_name: Vorname
+            first_name_help: Sie können Ihren Namen nur einmal pro Monat ändern.
+            last_name: Nachname
+            display_name: Anzeigeformat des Namens
+            display_name_help: 'Wählen Sie, wie Ihr Name für andere Benutzer angezeigt wird (Vorschau wird rechts angezeigt)'
+            display_name_full: Vollständiger Name
+            display_name_partial: Vorname + Nachnameninitial
+            display_name_first_only: Nur Vorname
+            name_invalid: 'Der Name darf nur Buchstaben, Leerzeichen und gängige Satzzeichen (Apostrophe, Bindestriche, Punkte) enthalten.'
+            profile_picture: Profilbild
+            locale: Bevorzugte Sprache
+            units: Anzeigen von Entfernungen und Statistiken in
+            home_park: Mein Heimatpark
+            home_park_placeholder: Wähle einen aus
+            review_languages: 'Bewertungen anzeigen in'
+            review_languages_help: 'Leer lassen, um nur Bewertungen in Ihrer bevorzugten Sprache zu sehen.'
+            add_today_date_title: Wenn ich eine Achterbahn bewerte
+            add_today_date: Heutiges Datum als Fahrdatum eintragen
+            email_notification: 'Mich auch per E-Mail benachrichtigen'
+            email_notification_help: 'Deine Benachrichtigungen erhältst du immer auf der Website.'
+            api_key: API-Schlüssel
+            submit: Änderungen speichern
+        flash:
+            success: Ihre Einstellungen wurden erfolgreich aktualisiert.
     delete_account:
         title: Konto löschen
         warning: 'Diese Aktion löscht Ihr Konto und alle zugehörigen Daten dauerhaft. Dies kann nicht rückgängig gemacht werden.'
@@ -279,16 +239,12 @@ review:
     value: 'Deine Bewertung'
     pros: 'Was dir gefallen hat'
     cons: 'Was dir nicht gefallen hat'
-    comment: 'Deine Rezension'
-    comment_placeholder: "Der Launch, die Airtimes, die Wartezeit, die Thematisierung …"
-    language: Sprache deiner Rezension
     send: 'Rezension veröffentlichen'
     update: Bearbeiten
     delete: Löschen
     last: Neueste Rezensionen
     all: Zeige alle
     loading: Laden von Rezensionen
-    ridden_at: Datum der Fahrt
     upvote: Diese Rezension positiv bewerten
     report: Diese Rezension melden
     report_title: Rezension melden
@@ -296,7 +252,6 @@ review:
     reason:
         inappropriate: Unangemessene Sprache
         spam: Spam
-    cancel: Abbrechen
     submit_report: Meldung absenden
     report_success: Vielen Dank für deine Meldung. Unser Team wird sie in Kürze prüfen.
     report_error: Beim Absenden deiner Meldung ist ein Fehler aufgetreten.
@@ -308,6 +263,17 @@ review:
     form:
         title: 'Rezension über {name}'
 
+        comment: 'Deine Rezension'
+        comment_placeholder: "Der Launch, die Airtimes, die Wartezeit, die Thematisierung …"
+        ridden_at: Datum der Fahrt
+    sort:
+        label: Bewertungen sortieren
+        default: Standardmäßige Sortierung
+        oldest: Von der ältesten zur neuesten
+        newest: Von der neuesten zur ältesten
+        lowest: Von der schlechtesten zur besten
+        highest: Von der besten zur schlechtesten
+
 users:
     tops:
         title: 'Tops • {name}'
@@ -318,8 +284,6 @@ users:
         opening_date: Geöffnet
         rating: Bewertung
         ridden_at: Gefahren am
-    my_ratings:
-        title: Meine Bewertungen
     reviews:
         title: 'Rezensionen • {name}'
     images:
@@ -375,12 +339,8 @@ nav:
 login:
     title: Anmelden bei Captain Coaster
     subtitle: 'Wir schicken dir einen Anmelde-Link per E-Mail.'
-    send_link: Anmelde-Link senden
-    sending: 'Wird gesendet…'
     redirect_to_register: 'Neu bei Captain Coaster? <a href="{link_path}">Konto erstellen</a>'
-    or_sign_in_with: oder
     connect_with_google: 'Weiter mit Google'
-    terms: 'Wenn du fortfährst, akzeptierst du unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a>.'
     email:
         title: Anmelden bei Captain Coaster
         h1: 'Bereit zur Abfahrt!'
@@ -391,33 +351,30 @@ login:
     link_sent: 'Wenn ein Konto mit {email} verknüpft ist, erhältst du einen Anmelde-Link. Öffne ihn, um dich anzumelden.'
     rate_limit_exceeded: 'Zu viele Anmeldeversuche. Versuche es später erneut.'
 
+    form:
+        submit: Anmelde-Link senden
+        submitting: 'Wird gesendet…'
+    or: oder
+
 register:
     title: 'Konto erstellen'
     subtitle: 'Bewerte deine gefahrenen Achterbahnen, erstelle deine Tops und bestimme die Weltrangliste mit.'
     link_sent: 'Konto erstellt. Sieh in deinem Postfach ({email}) nach und öffne den Link, um dein Konto zu aktivieren.'
     rate_limit_exceeded: 'Zu viele Registrierungsversuche. Versuche es später erneut.'
     form:
-        email: E-Mail
         first_name: Vorname
         last_name: Nachname
         submit: 'Konto erstellen'
-    email:
-        title: 'Bestätige deine E-Mail-Adresse'
-        h1: 'Willkommen an Bord!'
-        paragraph1: 'Um Captain Coaster zu nutzen, klicke auf den Bestätigungsbutton. Dieser Link ist gültig für'
-        button: Aktivieren
-        paragraph2: 'Du erhältst diese E-Mail, weil du ein Konto bei Captain Coaster erstellt hast. Falls du das nicht warst, antworte einfach auf diese E-Mail.'
-    email_verified: 'Deine E-Mail-Adresse {email} ist bestätigt. Willkommen bei Captain Coaster!'
 
 contact:
     title: Kontaktiere uns
-    send: 'Nachricht senden'
     form:
         name: Dein Name
         email: "Deine E-Mail-Adresse"
         email_help: "Nur wenn du eine Antwort möchtest."
         message: Deine Nachricht
         sender_help: "Wir antworten an die E-Mail-Adresse deines Kontos."
+        submit: 'Nachricht senden'
     email:
         title: Kontaktformular - Captain Coaster
     flash:
@@ -427,13 +384,6 @@ coaster_search:
     title: 'Achterbahnen suchen'
     num_found: '{num} Achterbahnen gefunden'
     no_results: 'Keine Achterbahnen entsprechen deinen Kriterien'
-
-nearby:
-    title: Finde Achterbahnen in der Nähe
-    num_found: '{num} Achterbahnen gefunden'
-    geo_on: Lokalisierung aktiviert
-    geo_off: Lokalisierung deaktiviert
-    km_away: '{num} km entfernt'
 
 badge:
     rating1: 1. Bewertung
@@ -460,12 +410,6 @@ error:
     generic:
         title: 'Hoppla! Ein Fehler ist aufgetreten!'
         message: 'Ein Fehler ist aufgetreten. Kontaktiere uns, wenn das Problem weiterhin besteht'
-    maintenance:
-        title: 'Kurzer Technischer Halt! 🔧'
-        message: 'Bitte bleiben Sie in der Warteschlange. Wir nehmen den Betrieb in wenigen Minuten wieder auf!'
-
-banner:
-    coasters: '{count, plural, one {1 coaster} other {# coasters}}'
 
 clipboard:
     copied: 'Kopiert!'
@@ -478,24 +422,6 @@ search_index:
     noTerm: Kein Suchbegriff
     short: Ihre Suche ist zu kurz und muss mehr als 2 Zeichen enthalten.
     error: 'Bei der Suche ist ein Fehler aufgetreten'
-    coasters_found: >-
-        {num, plural,
-            =0 {Keine Achterbahnen gefunden}
-            =1 {1 Achterbahn gefunden}
-            other {# Achterbahnen gefunden}
-        }
-    parks_found: >-
-        {num, plural,
-            =0 {Keine Parks oder Schausteller gefunden}
-            =1 {1 Park oder Schausteller gefunden}
-            other {# Parks oder Schausteller gefunden}
-        }
-    users_found: >-
-        {num, plural,
-            =0 {Keine Benutzer gefunden}
-            =1 {1 Benutzer gefunden}
-            other {# Benutzer gefunden}
-        }
     unified_results_found: >-
         {num, plural,
             =0 {Keine Ergebnisse für "{query}" gefunden}
@@ -522,3 +448,12 @@ form:
     tag_choice:
         help: 'Bis zu {max}'
         show_all: 'Alle anzeigen ({count})'
+    cancel: Abbrechen
+    email: E-Mail
+
+account:
+    terms: 'Wenn du fortfährst, akzeptierst du unsere <a href="{link_path}">Allgemeinen Geschäftsbedingungen</a>.'
+
+units:
+    metric: Internationale Einheitensystem
+    imperial: Britische Einheitensystem

@@ -13,23 +13,6 @@
     display: block;
 }
 
-/* Search Input */
-.search-container input[type='search'] {
-    width: 100%;
-    padding-right: 2.5rem;
-    border: 1px solid var(--control-border);
-    border-radius: 4px;
-    transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease;
-}
-
-.search-container input[type='search']:focus {
-    border-color: var(--cc-primary);
-    box-shadow: 0 0 0 2px color-mix(in oklch, var(--action) 25%, transparent);
-    outline: none;
-}
-
 /* Search Dropdown */
 .search-dropdown {
     position: absolute;

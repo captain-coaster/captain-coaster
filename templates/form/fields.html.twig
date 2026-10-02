@@ -12,11 +12,13 @@
    has interacted (:user-invalid), never on load.
  - The root form's errors render as a summary linking to each invalid field;
    it takes focus on load so screen readers hear it first.
- - Custom widgets: star_rating (StarRatingType), tag_choice (TagChoiceType).
+ - Custom widgets: star_rating (StarRatingType), tag_choice (TagChoiceType),
+   switch (SwitchType).
+ - control_size and mark_optional come from FieldPresentationExtension.
 #}
 
 {%- block control_class -%}
-block min-h-12 w-full rounded-control border border-control-line bg-surface px-3.5 py-2.5 text-body text-ink placeholder:text-muted hover:enabled:read-write:border-ink focus-visible:border-focus focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle disabled:text-muted aria-invalid:border-danger aria-invalid:ring-1 aria-invalid:ring-danger aria-invalid:ring-inset user-invalid:border-danger user-invalid:ring-1 user-invalid:ring-danger user-invalid:ring-inset
+    {{- include('form/_control_class.html.twig', {size: control_size|default('default')}) -}}
 {%- endblock control_class -%}
 
 {# Rows #}
@@ -63,13 +65,14 @@ block min-h-12 w-full rounded-control border border-control-line bg-surface px-3
 {%- endblock form_rows -%}
 
 {%- block form_label -%}
-    {%- set label_attr = label_attr|merge({class: ('mb-0 block w-auto border-0 p-0 text-body font-semibold normal-case text-ink ' ~ label_attr.class|default(''))|trim}) -%}
+    {#- Compact forms (filter panel) set labels a step down, below their group titles. -#}
+    {%- set label_attr = label_attr|merge({class: ('mb-0 block w-auto border-0 p-0 font-semibold normal-case ' ~ (control_size|default('default') == 'compact' ? 'text-caption text-muted-strong ' : 'text-body text-ink ') ~ label_attr.class|default(''))|trim}) -%}
     {{- parent() -}}
 {%- endblock form_label -%}
 
 {%- block form_label_content -%}
     {{- parent() -}}
-    {%- if not required -%}
+    {%- if not required and (mark_optional is not defined or mark_optional) -%}
         {{ ' ' }}<span class="font-normal text-muted">{{ 'form.optional'|trans({}, 'messages') }}</span>
     {%- endif -%}
 {%- endblock form_label_content -%}
@@ -130,10 +133,23 @@ block min-h-12 w-full rounded-control border border-control-line bg-surface px-3
 
 {%- block form_widget_simple -%}
     {%- if type is not defined or type not in ['file', 'hidden'] -%}
-        {%- set attr = attr|merge({class: (block('control_class') ~ ' read-only:border-line read-only:bg-canvas ' ~ attr.class|default(''))|trim}) -%}
+        {#- Date: iOS centers the value unless told otherwise. -#}
+        {%- set date_class = type|default('') == 'date' ? 'cursor-pointer [&::-webkit-date-and-time-value]:text-left ' : '' -%}
+        {%- set attr = attr|merge({class: (block('control_class') ~ ' read-only:border-line read-only:bg-canvas ' ~ date_class ~ attr.class|default(''))|trim}) -%}
     {%- endif -%}
     {{- parent() -}}
 {%- endblock form_widget_simple -%}
+
+{# Search: the control with a leading magnifier. #}
+
+{%- block search_widget -%}
+    {%- set type = type|default('search') -%}
+    {%- set attr = attr|merge({class: ('pl-10 ' ~ attr.class|default(''))|trim}) -%}
+    <div class="relative">
+        {{- block('form_widget_simple') -}}
+        {{- ux_icon('lucide:search', {class: 'pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-muted', 'aria-hidden': 'true'}) -}}
+    </div>
+{%- endblock search_widget -%}
 
 {%- block textarea_widget -%}
     {%- set attr = attr|merge({class: (block('control_class') ~ ' min-h-36 resize-y read-only:border-line read-only:bg-canvas ' ~ attr.class|default(''))|trim}) -%}
@@ -238,6 +254,17 @@ block min-h-12 w-full rounded-control border border-control-line bg-surface px-3
     {%- endif -%}
 {%- endblock checkbox_radio_label -%}
 
+{# Switch (SwitchType): for settings and filters applied as soon as they change.
+   A 40x24 track; the whole row is the target (44px compact, 56px otherwise). #}
+
+{%- block switch_widget -%}
+    {%- set attr = attr|merge({role: 'switch', class: ('relative m-0 h-6 w-10 shrink-0 cursor-pointer appearance-none rounded-pill border-[1.5px] border-control-line bg-subtle transition-colors duration-180 before:absolute before:top-1/2 before:left-0.5 before:size-4 before:-translate-y-1/2 before:rounded-full before:bg-control-line before:transition-[translate,background-color] before:duration-180 checked:border-action checked:bg-action checked:before:translate-x-4 checked:before:bg-white focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line motion-reduce:transition-none motion-reduce:before:transition-none ' ~ attr.class|default(''))|trim}) -%}
+    <label for="{{ id }}" class="mb-0 flex cursor-pointer items-center justify-between gap-4 font-normal has-disabled:cursor-not-allowed has-disabled:text-muted {{ control_size|default('default') == 'compact' ? 'min-h-11' : 'min-h-14' }}">
+        <span>{{ translation_domain is same as(false) ? label : label|trans(label_translation_parameters, translation_domain) }}</span>
+        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}>
+    </label>
+{%- endblock switch_widget -%}
+
 {%- block checkbox_radio_input_class -%}
 peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-line bg-surface transition-colors duration-120 checked:border-action checked:bg-action focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-focus disabled:cursor-not-allowed disabled:border-line disabled:bg-subtle aria-invalid:border-danger
 {%- endblock checkbox_radio_input_class -%}
@@ -302,14 +329,14 @@ peer m-0 size-6 cursor-pointer appearance-none border-[1.5px] border-control-lin
 
 {# Turnstile (interaction-only): no row wrapper, and the box stays out of the
    layout until Cloudflare puts a challenge in it, so an invisible check
-   leaves no gap above the submit button. #}
+   leaves no gap above the submit button. Its error is only in the summary:
+   the field has no label, so the summary already shows the message itself. #}
 
 {%- block turnstile_row -%}
     {%- if enable -%}
         <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
         <div class="cf-turnstile empty:hidden" data-sitekey="{{ key }}"
             {%- for name, value in attr|filter((value, name) => name != 'class') %} {{ name }}="{{ value }}"{% endfor %}></div>
-        {{- form_errors(form) -}}
     {%- endif -%}
 {%- endblock turnstile_row -%}
 
