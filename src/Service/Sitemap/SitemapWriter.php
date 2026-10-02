@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Sitemap;
 
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
@@ -25,7 +25,7 @@ class SitemapWriter
     private const string SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 
     public function __construct(
-        private readonly SitemapService $sitemapService,
+        private readonly SitemapEntries $entries,
         #[Autowire('%kernel.project_dir%/public')]
         private readonly string $directory,
     ) {
@@ -37,7 +37,7 @@ class SitemapWriter
         return $this->write(
             self::PAGES_FILE,
             ['xmlns:xhtml' => 'http://www.w3.org/1999/xhtml'],
-            $this->sitemapService->getUrlsForPages(),
+            $this->entries->getUrlsForPages(),
             static function (\XMLWriter $xml, array $url): void {
                 foreach ($url['alternates'] as $locale => $alternate) {
                     $xml->startElement('xhtml:link');
@@ -60,7 +60,7 @@ class SitemapWriter
         $pages = $this->write(
             self::IMAGES_FILE,
             ['xmlns:image' => 'http://www.google.com/schemas/sitemap-image/1.1'],
-            $this->sitemapService->getUrlsForImages(),
+            $this->entries->getUrlsForImages(),
             static function (\XMLWriter $xml, array $url) use (&$images): void {
                 foreach ($url['images'] as $image) {
                     $xml->startElement('image:image');

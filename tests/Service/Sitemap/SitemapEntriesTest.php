@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Service;
+namespace App\Tests\Service\Sitemap;
 
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ParkRepository;
 use App\Service\PictureUrlSigner;
-use App\Service\SitemapService;
+use App\Service\Sitemap\SitemapEntries;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-class SitemapServiceTest extends TestCase
+class SitemapEntriesTest extends TestCase
 {
     private CoasterRepository&MockObject $coasterRepository;
     private ParkRepository&MockObject $parkRepository;
@@ -26,7 +26,7 @@ class SitemapServiceTest extends TestCase
         $this->imageRepository = $this->createMock(ImageRepository::class);
     }
 
-    private function makeService(bool $v2 = true): SitemapService
+    private function makeService(bool $v2 = true): SitemapEntries
     {
         $router = $this->createMock(UrlGeneratorInterface::class);
         $router->method('generate')->willReturnCallback(
@@ -34,7 +34,7 @@ class SitemapServiceTest extends TestCase
                 .(isset($params['id']) ? '/'.$params['id'].'/'.$params['slug'] : '')
         );
 
-        return new SitemapService(
+        return new SitemapEntries(
             $this->coasterRepository,
             $this->parkRepository,
             $this->imageRepository,

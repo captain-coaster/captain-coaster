@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Sitemap;
 
 use App\DTO\PictureRef;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ParkRepository;
+use App\Service\PictureUrlSigner;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -20,7 +21,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * image sitemap has one entry per page holding its photos (<image:loc> only: the title and
  * geo_location tags were removed from the format).
  */
-class SitemapService
+class SitemapEntries
 {
     /** Google reads at most this many <image:image> per <url>. */
     private const int MAX_IMAGES_PER_PAGE = 1000;

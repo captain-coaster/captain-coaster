@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Command;
 
 use App\Command\SitemapUpdateCommand;
-use App\Service\SitemapWriter;
+use App\Service\Sitemap\SitemapWriter;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Command\Command;

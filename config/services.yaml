@@ -29,7 +29,7 @@ services:
     # please note that last definitions always *replace* previous ones
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Service\SitemapService:
+    App\Service\Sitemap\SitemapEntries:
         arguments:
             $locales: '%app_locales_array%'
 
