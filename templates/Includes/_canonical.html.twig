@@ -1,0 +1,15 @@
+{#
+  Canonical URL and language versions of an indexable page, for the <head> (block header).
+  Built from the entity, not from the request: query strings and a wrong slug in the URL all
+  point back to the one address listed in sitemap.xml (SitemapService), with the same
+  alternates: every locale, the page itself included, and x-default on the first one.
+
+  route:  route name
+  params: route parameters without _locale (default {})
+#}
+{% set params = params|default({}) %}
+<link rel="canonical" href="{{ url(route, params|merge({_locale: app.request.locale})) }}">
+{% for locale in locales %}
+<link rel="alternate" hreflang="{{ locale }}" href="{{ url(route, params|merge({_locale: locale})) }}">
+{% endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ url(route, params|merge({_locale: locales|first})) }}">

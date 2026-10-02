@@ -13,6 +13,7 @@
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="{{ app.request.uri }}"/>
   <meta property="og:image" content="{{ absolute_url(asset('build/images/logo_big.png')) }}"/>
+  {{ include('Includes/_canonical.html.twig', {route: 'default_index'}, with_context = false) }}
 {% endblock %}
 
 {% block body %}

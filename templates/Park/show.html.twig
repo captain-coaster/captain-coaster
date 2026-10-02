@@ -5,6 +5,9 @@
 {% set subTitle = park.country.name|trans([], 'database') %}
 {% set parentUrl = path('map_index', {'parkslug': park.slug}) %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
+{% block header %}
+  {{ include('Includes/_canonical.html.twig', {route: 'park_show', params: {id: park.id, slug: park.slug}}, with_context = false) }}
+{% endblock %}
 {% if park.formerNames %}
     {% set secondaryTitle = park.formerNames|join(', ') %}
 {% endif %}
