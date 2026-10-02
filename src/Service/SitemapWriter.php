@@ -19,6 +19,9 @@ class SitemapWriter
     public const string PAGES_FILE = 'sitemap.xml';
     public const string IMAGES_FILE = 'sitemap_image.xml';
 
+    /** A sitemap file holds at most 50,000 URLs; beyond that it must be split behind a sitemap index. */
+    public const int MAX_URLS = 50000;
+
     private const string SITEMAP_NS = 'http://www.sitemaps.org/schemas/sitemap/0.9';
 
     public function __construct(
@@ -116,6 +119,9 @@ class SitemapWriter
 
             if (0 === $count) {
                 throw new \RuntimeException(\sprintf('No URL to write in "%s", the previous file is kept.', $file));
+            }
+            if ($count > self::MAX_URLS) {
+                throw new \RuntimeException(\sprintf('"%s" would hold %d URLs, above the limit of %d: split it behind a sitemap index. The previous file is kept.', $file, $count, self::MAX_URLS));
             }
 
             // Readable by the web server whatever the umask of the user running the command.

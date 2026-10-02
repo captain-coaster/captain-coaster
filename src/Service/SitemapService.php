@@ -7,14 +7,16 @@ namespace App\Service;
 use App\DTO\PictureRef;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
+use App\Repository\ParkRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Lists the entries of sitemap.xml (pages) and sitemap_image.xml (photos); SitemapWriter turns
  * them into files.
  *
- * Follows Google's sitemap rules: every language version lists all versions including itself,
- * <lastmod> is the only optional tag kept (<changefreq> and <priority> are ignored), and the
+ * Follows Google's sitemap rules: every language version lists all versions including itself
+ * (plus x-default, the first locale, for visitors in any other language), <lastmod> is the only
+ * optional tag kept (<changefreq> and <priority> are ignored), and the
  * image sitemap has one entry per page holding its photos (<image:loc> only: the title and
  * geo_location tags were removed from the format).
  */
@@ -26,6 +28,7 @@ class SitemapService
     /** @param array<string> $locales */
     public function __construct(
         private readonly CoasterRepository $coasterRepository,
+        private readonly ParkRepository $parkRepository,
         private readonly ImageRepository $imageRepository,
         private readonly UrlGeneratorInterface $router,
         private readonly PictureUrlSigner $pictureUrlSigner,
@@ -44,6 +47,25 @@ class SitemapService
 
         // Ranking: recomputed once a month.
         yield from $this->localizedUrls('ranking_index', [], new \DateTimeImmutable('first day of this month midnight'));
+
+        // Parks with at least one coaster; a park page lists its coasters and their ratings, so
+        // it changes with the latest rating of any of them.
+        $parkLastRatings = [];
+        foreach ($coasters as $coaster) {
+            $parkId = (int) $coaster['parkId'];
+            $parkLastRatings[$parkId] = max($parkLastRatings[$parkId] ?? '', $coaster['lastmod'] ?? '');
+        }
+        foreach ($this->parkRepository->findForSitemap() as $park) {
+            if (!isset($parkLastRatings[$park['id']])) {
+                continue;
+            }
+
+            yield from $this->localizedUrls(
+                'park_show',
+                ['id' => $park['id'], 'slug' => $park['slug']],
+                '' !== $parkLastRatings[$park['id']] ? new \DateTimeImmutable($parkLastRatings[$park['id']]) : null,
+            );
+        }
 
         foreach ($coasters as $coaster) {
             if (null === $coaster['slug']) {
@@ -105,7 +127,7 @@ class SitemapService
     }
 
     /**
-     * One entry per locale, each listing every language version, itself included.
+     * One entry per locale, each listing every language version, itself included, and x-default.
      *
      * @param array<string, mixed> $params
      *
@@ -113,17 +135,22 @@ class SitemapService
      */
     private function localizedUrls(string $route, array $params, ?\DateTimeInterface $lastmod): array
     {
-        $alternates = [];
+        $versions = [];
         foreach ($this->locales as $locale) {
-            $alternates[$locale] = $this->router->generate(
+            $versions[$locale] = $this->router->generate(
                 $route,
                 ['_locale' => $locale] + $params,
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
         }
 
+        $alternates = $versions;
+        if ([] !== $versions) {
+            $alternates['x-default'] = reset($versions);
+        }
+
         $urls = [];
-        foreach ($alternates as $loc) {
+        foreach ($versions as $loc) {
             $url = ['loc' => $loc, 'alternates' => $alternates];
             if (null !== $lastmod) {
                 $url['lastmod'] = $lastmod->format(\DateTimeInterface::W3C);

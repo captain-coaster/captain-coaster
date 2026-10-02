@@ -6,6 +6,7 @@ namespace App\Tests\Service;
 
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
+use App\Repository\ParkRepository;
 use App\Service\PictureUrlSigner;
 use App\Service\SitemapService;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -15,11 +16,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class SitemapServiceTest extends TestCase
 {
     private CoasterRepository&MockObject $coasterRepository;
+    private ParkRepository&MockObject $parkRepository;
     private ImageRepository&MockObject $imageRepository;
 
     protected function setUp(): void
     {
         $this->coasterRepository = $this->createMock(CoasterRepository::class);
+        $this->parkRepository = $this->createMock(ParkRepository::class);
         $this->imageRepository = $this->createMock(ImageRepository::class);
     }
 
@@ -33,6 +36,7 @@ class SitemapServiceTest extends TestCase
 
         return new SitemapService(
             $this->coasterRepository,
+            $this->parkRepository,
             $this->imageRepository,
             $router,
             new PictureUrlSigner('https://pictures.example.com', 'test-secret', $v2),
@@ -50,20 +54,27 @@ class SitemapServiceTest extends TestCase
     // Pages
     // -------------------------------------------------------------------
 
-    public function testEveryLanguageVersionListsAllVersionsIncludingItself(): void
+    /** @return list<array{loc: string, alternates: array<string, string>, lastmod?: string}> */
+    private function pages(): array
+    {
+        return iterator_to_array($this->makeService()->getUrlsForPages(), false);
+    }
+
+    public function testEveryLanguageVersionListsAllVersionsItselfAndXDefault(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 42, 'slug' => 'voltron', 'lastmod' => '2026-10-01 18:30:00'],
+            ['id' => 42, 'slug' => 'voltron', 'parkId' => 7, 'lastmod' => '2026-10-01 18:30:00'],
         ]);
 
-        $urls = iterator_to_array($this->makeService()->getUrlsForPages(), false);
+        $urls = $this->pages();
 
-        // Home and ranking, then the coaster, each in both locales.
+        // Home and ranking, then the coaster, each in both locales (the park has no row here).
         self::assertCount(6, $urls);
 
         $alternates = [
             'en' => 'https://captaincoaster.com/en/show_coaster/42/voltron',
             'fr' => 'https://captaincoaster.com/fr/show_coaster/42/voltron',
+            'x-default' => 'https://captaincoaster.com/en/show_coaster/42/voltron',
         ];
         self::assertSame($alternates['en'], $urls[4]['loc']);
         self::assertSame($alternates, $urls[4]['alternates']);
@@ -74,12 +85,12 @@ class SitemapServiceTest extends TestCase
     public function testLastmodIsTheLatestRatingAndNoIgnoredTagIsEmitted(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 1, 'slug' => 'old', 'lastmod' => '2026-09-01 10:00:00'],
-            ['id' => 2, 'slug' => 'recent', 'lastmod' => '2026-10-01 18:30:00'],
-            ['id' => 3, 'slug' => 'unrated', 'lastmod' => null],
+            ['id' => 1, 'slug' => 'old', 'parkId' => 7, 'lastmod' => '2026-09-01 10:00:00'],
+            ['id' => 2, 'slug' => 'recent', 'parkId' => 7, 'lastmod' => '2026-10-01 18:30:00'],
+            ['id' => 3, 'slug' => 'unrated', 'parkId' => 7, 'lastmod' => null],
         ]);
 
-        $urls = iterator_to_array($this->makeService()->getUrlsForPages(), false);
+        $urls = $this->pages();
 
         // Home carries the latest rating of the whole site.
         self::assertStringStartsWith('2026-10-01T18:30:00', $urls[0]['lastmod'] ?? '');
@@ -89,14 +100,38 @@ class SitemapServiceTest extends TestCase
         self::assertArrayNotHasKey('priority', $urls[0]);
     }
 
+    public function testParksWithACoasterAreListedWithTheirLatestRating(): void
+    {
+        $this->coasterRepository->method('findForSitemap')->willReturn([
+            ['id' => 1, 'slug' => 'old', 'parkId' => 7, 'lastmod' => '2026-09-01 10:00:00'],
+            ['id' => 2, 'slug' => 'recent', 'parkId' => '7', 'lastmod' => '2026-10-01 18:30:00'],
+            ['id' => 3, 'slug' => 'unrated', 'parkId' => 8, 'lastmod' => null],
+        ]);
+        $this->parkRepository->method('findForSitemap')->willReturn([
+            ['id' => 7, 'slug' => 'europa-park'],
+            ['id' => 8, 'slug' => 'new-park'],
+            ['id' => 9, 'slug' => 'park-without-coaster'],
+        ]);
+
+        $urls = $this->pages();
+
+        // Home, ranking, 2 parks, 3 coasters, in both locales.
+        self::assertCount(14, $urls);
+        self::assertSame('https://captaincoaster.com/en/park_show/7/europa-park', $urls[4]['loc']);
+        self::assertStringStartsWith('2026-10-01T18:30:00', $urls[4]['lastmod'] ?? '');
+        self::assertSame('https://captaincoaster.com/en/park_show/8/new-park', $urls[6]['loc']);
+        self::assertArrayNotHasKey('lastmod', $urls[6]);
+        self::assertStringNotContainsString('park-without-coaster', implode(' ', array_column($urls, 'loc')));
+    }
+
     public function testACoasterWithoutSlugIsLeftOut(): void
     {
         $this->coasterRepository->method('findForSitemap')->willReturn([
-            ['id' => 1, 'slug' => null, 'lastmod' => null],
+            ['id' => 1, 'slug' => null, 'parkId' => 7, 'lastmod' => null],
         ]);
 
         // Home and ranking only.
-        self::assertCount(4, iterator_to_array($this->makeService()->getUrlsForPages(), false));
+        self::assertCount(4, $this->pages());
     }
 
     // -------------------------------------------------------------------

@@ -47,7 +47,7 @@ class SitemapWriterTest extends TestCase
 
     public function testPagesFileListsLocAlternatesAndLastmod(): void
     {
-        $alternates = ['en' => 'https://captaincoaster.com/en/a?x=1&y=2', 'fr' => 'https://captaincoaster.com/fr/a?x=1&y=2'];
+        $alternates = ['en' => 'https://captaincoaster.com/en/a?x=1&y=2', 'fr' => 'https://captaincoaster.com/fr/a?x=1&y=2', 'x-default' => 'https://captaincoaster.com/en/a?x=1&y=2'];
         $this->sitemapService->method('getUrlsForPages')->willReturn([
             ['loc' => $alternates['en'], 'alternates' => $alternates, 'lastmod' => '2026-10-01T18:30:00+02:00'],
             ['loc' => $alternates['fr'], 'alternates' => $alternates],
@@ -61,6 +61,7 @@ class SitemapWriterTest extends TestCase
         self::assertSame($alternates['en'], $xpath->evaluate('string(/s:urlset/s:url[1]/s:loc)'));
         self::assertSame($alternates['fr'], $xpath->evaluate('string(/s:urlset/s:url[1]/xhtml:link[@hreflang="fr"][@rel="alternate"]/@href)'));
         self::assertSame($alternates['en'], $xpath->evaluate('string(/s:urlset/s:url[1]/xhtml:link[@hreflang="en"]/@href)'));
+        self::assertSame($alternates['en'], $xpath->evaluate('string(/s:urlset/s:url[1]/xhtml:link[@hreflang="x-default"]/@href)'));
         self::assertSame('2026-10-01T18:30:00+02:00', $xpath->evaluate('string(/s:urlset/s:url[1]/s:lastmod)'));
         self::assertSame(0, (int) $xpath->evaluate('count(/s:urlset/s:url[2]/s:lastmod)'));
         self::assertSame(0, (int) $xpath->evaluate('count(//s:changefreq | //s:priority)'));
@@ -103,6 +104,24 @@ class SitemapWriterTest extends TestCase
         } catch (\RuntimeException) {
             self::assertSame('previous', file_get_contents($this->directory.'/sitemap_image.xml'));
             self::assertFileDoesNotExist($this->directory.'/sitemap_image.xml.tmp');
+        }
+    }
+
+    public function testAFileAboveTheUrlLimitIsNotPublished(): void
+    {
+        file_put_contents($this->directory.'/sitemap.xml', 'previous');
+        $this->sitemapService->method('getUrlsForPages')->willReturnCallback(static function (): \Generator {
+            for ($i = 0; $i <= SitemapWriter::MAX_URLS; ++$i) {
+                yield ['loc' => 'https://captaincoaster.com/en/'.$i, 'alternates' => []];
+            }
+        });
+
+        try {
+            $this->writer()->writePages();
+            self::fail('A file search engines would reject must not replace the previous one.');
+        } catch (\RuntimeException $e) {
+            self::assertStringContainsString('sitemap index', $e->getMessage());
+            self::assertSame('previous', file_get_contents($this->directory.'/sitemap.xml'));
         }
     }
 
