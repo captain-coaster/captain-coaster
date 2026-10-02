@@ -94,7 +94,7 @@ class ProfileSettingsForm extends AbstractType
             'mapped' => false,
             'constraints' => [
                 new File(
-                    maxSize: '2M',
+                    maxSize: '10M',
                     mimeTypes: [
                         'image/jpeg',
                         'image/png',
