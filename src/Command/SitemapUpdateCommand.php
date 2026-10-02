@@ -4,65 +4,71 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\SitemapService;
+use App\Service\Sitemap\SitemapWriter;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: 'sitemap:update',
-    description: 'Update sitemaps for pages and images.',
-    hidden: false,
-)]
+/**
+ * Regenerates the static sitemap files (public/sitemap.xml, public/sitemap_image.xml); run
+ * daily by cron.
+ *
+ * The two files are independent: one failing leaves its previous file in place (SitemapWriter)
+ * and does not stop the other. Each failure is logged as an error, which is what alerts in
+ * production, and fails the command.
+ */
+#[AsCommand(name: 'sitemap:update', description: 'Write the static sitemap files (pages and images)')]
 class SitemapUpdateCommand extends Command
 {
     public function __construct(
-        private readonly SitemapService $sitemapService,
-        #[Autowire(service: 'sitemap.cache_pool')]
-        private readonly CacheInterface $sitemapCache
+        private readonly SitemapWriter $sitemapWriter,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addOption('pages', null, InputOption::VALUE_NONE)
-            ->addOption('images', null, InputOption::VALUE_NONE);
+        $this
+            ->addOption('pages', null, InputOption::VALUE_NONE, 'Only write sitemap.xml')
+            ->addOption('images', null, InputOption::VALUE_NONE, 'Only write sitemap_image.xml');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $stopwatch = new Stopwatch();
-        $stopwatch->start('command');
+        $io = new SymfonyStyle($input, $output);
 
-        $updatePages = $input->getOption('pages');
-        $updateImages = $input->getOption('images');
+        // No option: both files.
+        $all = !$input->getOption('pages') && !$input->getOption('images');
+        $writers = [];
+        if ($all || $input->getOption('pages')) {
+            $writers[SitemapWriter::PAGES_FILE] = fn (): string => \sprintf('%d URLs', $this->sitemapWriter->writePages());
+        }
+        if ($all || $input->getOption('images')) {
+            $writers[SitemapWriter::IMAGES_FILE] = function (): string {
+                $counts = $this->sitemapWriter->writeImages();
 
-        // If no options are provided, update both
-        if (!$updatePages && !$updateImages) {
-            $updatePages = true;
-            $updateImages = true;
+                return \sprintf('%d pages, %d images', $counts['pages'], $counts['images']);
+            };
         }
 
-        if ($updatePages) {
-            $this->sitemapCache->delete('sitemap_urls');
-            $this->sitemapCache->get('sitemap_urls', fn () => $this->sitemapService->getUrlsForPages());
-            $output->writeln('Pages sitemap updated.');
+        $failed = false;
+        foreach ($writers as $file => $write) {
+            $start = microtime(true);
+
+            try {
+                $io->writeln(\sprintf('%s written: %s, %.1f s.', $file, $write(), microtime(true) - $start));
+            } catch (\Throwable $e) {
+                $failed = true;
+                $this->logger->error('Sitemap "{file}" was not updated: {message}', ['file' => $file, 'message' => $e->getMessage(), 'exception' => $e]);
+                $io->error(\sprintf('%s was not updated, the previous file is kept: %s', $file, $e->getMessage()));
+            }
         }
 
-        if ($updateImages) {
-            $this->sitemapCache->delete('sitemap_image');
-            $this->sitemapCache->get('sitemap_image', fn () => $this->sitemapService->getUrlsForImages());
-            $output->writeln('Images sitemap updated.');
-        }
-
-        $output->writeln((string) $stopwatch->stop('command'));
-
-        return Command::SUCCESS;
+        return $failed ? Command::FAILURE : Command::SUCCESS;
     }
 }

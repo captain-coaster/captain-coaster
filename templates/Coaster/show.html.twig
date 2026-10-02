@@ -11,6 +11,8 @@
     {% set secondaryTitle = coaster.formerNames|join(', ') %}
 {% endif %}
 
+{% set canonical = {route: 'show_coaster', params: {id: coaster.id, slug: coaster.slug}} %}
+
 {# {% block header %} #}
     {# <meta name="description" content="{{ coaster.name }} is a {{ coaster.manufacturer.name }} roller coaster"/> #}
 {# {% endblock %} #}

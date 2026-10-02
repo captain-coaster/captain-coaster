@@ -30,6 +30,14 @@ Captain Coaster is a participative guide for roller coaster enthusiasts — user
 - **`src/Service/`** — all business logic and orchestration. Uses repositories for data access, handles external API calls.
 - **`src/Repository/`** — Doctrine DQL/QueryBuilder queries only. Never contains business logic.
 
+### Service layout
+
+`src/Service/` is grouped by subject: a feature with two or more classes gets its own folder (`Service/Ranking/`, `Service/Sitemap/`), tests mirrored under `tests/Service/{Subject}/`. A lone class stays at the root.
+
+- **New class**: put it in its subject's folder; when it is the second class of a subject, create the folder and move the first one in the same PR.
+- **Existing flat classes** (most of the root today) move when their subject is next reworked, one subject per PR.
+- **Split a feature where deciding meets I/O**: one class works out what to produce from the repositories, another writes it (file, S3, HTTP), so each is tested without the other. `SitemapEntries` lists URLs, `SitemapWriter` streams them to disk.
+
 ### Routing
 
 All user-facing routes are locale-prefixed: `/{_locale<en|fr|es|de>}/`. The root `/` and admin `/team` routes bypass the locale prefix.
@@ -85,7 +93,7 @@ Mid term aim:
 ### Naming conventions
 
 - **Controllers**: `{Feature}Controller` (e.g. `CoasterController`)
-- **Services**: `src/Service/`, descriptive names — most end `Service` (e.g. `RankingService`), a few end `Manager` or a bare domain noun where that reads more naturally (`ImageManager`, `PromptNameSanitizer`); there's no strict suffix rule
+- **Services**: named for what the class does (`RankingCalculator`, `SitemapWriter`, `PictureUrlSigner`, `PromptNameSanitizer`). Many older ones end `Service` or `Manager` (`RankingService`, `ImageManager`); for a new class, `Service` is the fallback when no sharper noun fits
 - **Repositories**: `{Entity}Repository`
 - **Voters**: `{Entity}Voter`
 - **Form Types**: `{Purpose}Type`
@@ -119,6 +127,10 @@ Pick a cache's policy from what changes its data:
 - **The current member's own actions**: uncached when the query is per-member (they're cheap and indexed); when it's shared, a listener clears the entry, so a member sees their action right away (`RiddenCoasterListener`).
 
 Each piece of data lives in one cache layer: search results are cached in `search.cache_pool` only, so the listeners' clear takes effect immediately.
+
+### Sitemaps
+
+`/sitemap.xml` and `/sitemap_image.xml` are static files, with no route or controller: the daily `sitemap:update` cron writes them into `public/` (git-ignored) and the web server serves them. A page type joins the sitemap in `SitemapEntries`, and its template sets `canonical` (`{route, params}`), which `base.html.twig` turns into the same canonical URL and `hreflang` alternates in the `<head>`. `SitemapWriter` refuses a file above 50,000 URLs (the format's limit) and keeps the previous one; the pages sitemap is at about 44,000, the next step is a sitemap index.
 
 ### Code style
 

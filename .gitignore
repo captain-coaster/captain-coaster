@@ -9,6 +9,10 @@
 # deploy.sh's record of the pre-deploy commit, used by its rollback command
 /.deploy_previous_commit
 
+# written by `sitemap:update` (cron), served as static files
+/public/sitemap.xml
+/public/sitemap_image.xml
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
