@@ -25,6 +25,9 @@ class RankingController extends AbstractController
 {
     final public const int COASTERS_PER_PAGE = 50;
 
+    /** A ranking narrowed by one of these alone is a page of its own for search engines ("best coasters in the US"). */
+    private const array INDEXABLE_FILTERS = ['continent', 'country', 'manufacturer', 'materialType', 'seatingType'];
+
     public function __construct(
         private readonly PaginatorInterface $paginator,
         private readonly RankingRepository $rankingRepository,
@@ -106,9 +109,26 @@ class RankingController extends AbstractController
     }
 
     /**
+     * The filters of the page's canonical URL: none for the full ranking, the filter itself for a ranking narrowed by
+     * one of INDEXABLE_FILTERS, and null for any other filtering, which stays out of search engines.
+     *
+     * @param array<string, mixed> $queryFilters validated filters
+     *
+     * @return ?array<string, mixed>
+     */
+    public static function canonicalFilters(array $queryFilters): ?array
+    {
+        if ([] === $queryFilters) {
+            return [];
+        }
+
+        return 1 === \count($queryFilters) && \in_array(array_key_first($queryFilters), self::INDEXABLE_FILTERS, true) ? $queryFilters : null;
+    }
+
+    /**
      * @param array<string, mixed> $filters
      *
-     * @return array{coasters: PaginationInterface<int, mixed>, filtered: bool, firstRank: int, riddenIds: array<int, true>, ranking: ?Ranking, queryFilters: array<string, mixed>}
+     * @return array{coasters: PaginationInterface<int, mixed>, filtered: bool, canonicalFilters: ?array<string, mixed>, firstRank: int, riddenIds: array<int, true>, ranking: ?Ranking, queryFilters: array<string, mixed>}
      */
     private function results(array $filters, int $page): array
     {
@@ -140,6 +160,7 @@ class RankingController extends AbstractController
         return [
             'coasters' => $pagination,
             'filtered' => [] !== $queryFilters,
+            'canonicalFilters' => self::canonicalFilters($queryFilters),
             'firstRank' => self::COASTERS_PER_PAGE * ($page - 1) + 1,
             'riddenIds' => $riddenIds,
             'ranking' => $this->rankingRepository->findCurrent(),

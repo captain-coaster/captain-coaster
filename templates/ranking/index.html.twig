@@ -19,14 +19,15 @@
     </p>
   {% endset %}
 {% endif %}
-{% if not filtered %}
-  {% set canonical = {route: 'ranking_index', params: coasters.currentPageNumber > 1 ? {page: coasters.currentPageNumber} : {}} %}
+{# canonicalFilters is null for a filtering that stays out of search engines (RankingController::canonicalFilters()). #}
+{% if canonicalFilters is not null %}
+  {% set canonical = {route: 'ranking_index', params: (canonicalFilters ? {filters: canonicalFilters} : {})|merge(coasters.currentPageNumber > 1 ? {page: coasters.currentPageNumber} : {})} %}
 {% endif %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
   <meta name="description" content="{{ 'description'|trans }}"/>
-  {% if filtered %}
+  {% if canonicalFilters is null %}
     <meta name="robots" content="noindex, follow">
   {% endif %}
 {% endblock %}
