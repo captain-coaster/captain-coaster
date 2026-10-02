@@ -128,7 +128,7 @@ Each piece of data lives in one cache layer: search results are cached in `searc
 
 ### Sitemaps
 
-`/sitemap.xml` and `/sitemap_image.xml` are static files, with no route or controller: the daily `sitemap:update` cron writes them into `public/` (git-ignored) and the web server serves them. A page type joins the sitemap in `SitemapEntries`, and its template includes `Includes/_canonical.html.twig` so the page declares the same canonical URL and `hreflang` alternates. `SitemapWriter` refuses a file above 50,000 URLs (the format's limit) and keeps the previous one; the pages sitemap is at about 44,000, the next step is a sitemap index.
+`/sitemap.xml` and `/sitemap_image.xml` are static files, with no route or controller: the daily `sitemap:update` cron writes them into `public/` (git-ignored) and the web server serves them. A page type joins the sitemap in `SitemapEntries`, and its template sets `canonical` (`{route, params}`), which `base.html.twig` turns into the same canonical URL and `hreflang` alternates in the `<head>`. `SitemapWriter` refuses a file above 50,000 URLs (the format's limit) and keeps the previous one; the pages sitemap is at about 44,000, the next step is a sitemap index.
 
 ### Code style
 

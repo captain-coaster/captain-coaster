@@ -9,6 +9,7 @@ use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Repository\ParkRepository;
 use App\Service\PictureUrlSigner;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -33,6 +34,7 @@ class SitemapEntries
         private readonly ImageRepository $imageRepository,
         private readonly UrlGeneratorInterface $router,
         private readonly PictureUrlSigner $pictureUrlSigner,
+        #[Autowire(param: 'app_locales_array')]
         private readonly array $locales,
     ) {
     }

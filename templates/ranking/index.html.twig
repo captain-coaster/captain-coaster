@@ -19,14 +19,15 @@
     </p>
   {% endset %}
 {% endif %}
+{% if not filtered %}
+  {% set canonical = {route: 'ranking_index', params: coasters.currentPageNumber > 1 ? {page: coasters.currentPageNumber} : {}} %}
+{% endif %}
 {% block title %}{{ title }}{% endblock %}
 
 {% block header %}
   <meta name="description" content="{{ 'description'|trans }}"/>
   {% if filtered %}
     <meta name="robots" content="noindex, follow">
-  {% else %}
-    <link rel="canonical" href="{{ url('ranking_index', coasters.currentPageNumber > 1 ? {page: coasters.currentPageNumber} : {}) }}">
   {% endif %}
 {% endblock %}
 
