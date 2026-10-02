@@ -68,6 +68,7 @@ export default class extends Controller {
 
     handleChange(event) {
         if (this.isFilterInput(event.target)) {
+            this.resetPage();
             // Skip filter if geolocation is in progress
             if (!this.geolocating) {
                 this.filterData();
@@ -129,8 +130,16 @@ export default class extends Controller {
             this.isFilterInput(event.target) &&
             event.target.type === 'search'
         ) {
+            this.resetPage();
             this.debouncedFilterData();
         }
+    }
+
+    // A changed filter starts over from the first page: the page field holds
+    // the URL's ?page=N after a load on a later page.
+    resetPage() {
+        const page = this.element.querySelector('input[name="page"]');
+        if (page) page.value = 1;
     }
 
     isFilterInput(element) {

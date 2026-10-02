@@ -252,6 +252,16 @@ class FilterService
         // First validate and sanitize
         $sanitized = $this->validateFilters($filters, $context);
 
+        // Ridden / not ridden are relative to a rider: the signed-in one unless the request names
+        // another. Links and the address bar don't carry it ("load more", a reload).
+        if (!isset($sanitized['user']) && (isset($sanitized['ridden']) || isset($sanitized['notridden']))) {
+            if ($currentUser instanceof User) {
+                $sanitized['user'] = $currentUser->getId();
+            } else {
+                unset($sanitized['ridden'], $sanitized['notridden']);
+            }
+        }
+
         // Then check user filter permissions if applicable
         if (!empty($sanitized['user'])) {
             $this->checkUserFilterPermission($sanitized['user'], $currentUser);
