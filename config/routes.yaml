@@ -31,11 +31,3 @@ connect_google_check:
 
 login_check:
     path: '/{_locale<en|fr|es|de>}/login/check'
-
-sitemap:
-    path: '/sitemap.xml'
-    controller: App\Controller\SitemapController::indexAction
-
-sitemap_image:
-    path: '/sitemap_image.xml'
-    controller: App\Controller\SitemapController::imageAction

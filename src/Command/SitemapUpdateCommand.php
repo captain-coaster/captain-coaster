@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\SitemapService;
+use App\Service\SitemapWriter;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Contracts\Cache\CacheInterface;
 
+/**
+ * Regenerates the static sitemap files (public/sitemap.xml, public/sitemap_image.xml). Run
+ * daily by cron; an error leaves the previous files in place and fails the command.
+ */
 #[AsCommand(
     name: 'sitemap:update',
     description: 'Update sitemaps for pages and images.',
@@ -22,9 +24,7 @@ use Symfony\Contracts\Cache\CacheInterface;
 class SitemapUpdateCommand extends Command
 {
     public function __construct(
-        private readonly SitemapService $sitemapService,
-        #[Autowire(service: 'sitemap.cache_pool')]
-        private readonly CacheInterface $sitemapCache
+        private readonly SitemapWriter $sitemapWriter,
     ) {
         parent::__construct();
     }
@@ -49,39 +49,17 @@ class SitemapUpdateCommand extends Command
             $updateImages = true;
         }
 
-        // Built before the cached copy is replaced: a failed or empty build keeps the sitemap
-        // being served instead of caching an empty one.
         if ($updatePages) {
-            $urls = $this->sitemapService->getUrlsForPages();
-            if ([] === $urls) {
-                $output->writeln('<error>Pages sitemap is empty, the cached one is kept.</error>');
-
-                return Command::FAILURE;
-            }
-            $this->replace('sitemap_urls', $urls);
-            $output->writeln(\sprintf('Pages sitemap updated (%d URLs).', \count($urls)));
+            $output->writeln(\sprintf('Pages sitemap updated (%d URLs).', $this->sitemapWriter->writePages()));
         }
 
         if ($updateImages) {
-            $urls = $this->sitemapService->getUrlsForImages();
-            if ([] === $urls) {
-                $output->writeln('<error>Images sitemap is empty, the cached one is kept.</error>');
-
-                return Command::FAILURE;
-            }
-            $this->replace('sitemap_image', $urls);
-            $output->writeln(\sprintf('Images sitemap updated (%d pages, %d images).', \count($urls), array_sum(array_map(static fn (array $url): int => \count($url['images']), $urls))));
+            $counts = $this->sitemapWriter->writeImages();
+            $output->writeln(\sprintf('Images sitemap updated (%d pages, %d images).', $counts['pages'], $counts['images']));
         }
 
         $output->writeln((string) $stopwatch->stop('command'));
 
         return Command::SUCCESS;
-    }
-
-    /** @param list<array<string, mixed>> $urls */
-    private function replace(string $key, array $urls): void
-    {
-        $this->sitemapCache->delete($key);
-        $this->sitemapCache->get($key, static fn (): array => $urls);
     }
 }

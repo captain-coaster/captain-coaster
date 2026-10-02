@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Entity\Coaster;
-use App\Entity\Image;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use App\Service\PictureUrlSigner;
@@ -42,27 +40,10 @@ class SitemapServiceTest extends TestCase
         );
     }
 
-    private function createCoaster(int $id, ?string $slug): Coaster
+    /** @return array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string} */
+    private function imageRow(int $id, int $coasterId, ?string $coasterSlug): array
     {
-        $coaster = new Coaster();
-        $coaster->setName('Coaster '.$id);
-        $coaster->setSlug($slug);
-
-        new \ReflectionProperty(Coaster::class, 'id')->setValue($coaster, $id);
-
-        return $coaster;
-    }
-
-    private function createImage(int $id, Coaster $coaster): Image
-    {
-        $image = new Image();
-        $image->setCoaster($coaster);
-        $image->setFilename($id.'.jpg');
-        $image->setWatermarked(true);
-
-        new \ReflectionProperty(Image::class, 'id')->setValue($image, $id);
-
-        return $image;
+        return ['id' => $id, 'filename' => $id.'.jpg', 'focalX' => null, 'focalY' => null, 'watermarked' => true, 'coasterId' => $coasterId, 'coasterSlug' => $coasterSlug];
     }
 
     // -------------------------------------------------------------------
@@ -75,7 +56,7 @@ class SitemapServiceTest extends TestCase
             ['id' => 42, 'slug' => 'voltron', 'lastmod' => '2026-10-01 18:30:00'],
         ]);
 
-        $urls = $this->makeService()->getUrlsForPages();
+        $urls = iterator_to_array($this->makeService()->getUrlsForPages(), false);
 
         // Home and ranking, then the coaster, each in both locales.
         self::assertCount(6, $urls);
@@ -98,7 +79,7 @@ class SitemapServiceTest extends TestCase
             ['id' => 3, 'slug' => 'unrated', 'lastmod' => null],
         ]);
 
-        $urls = $this->makeService()->getUrlsForPages();
+        $urls = iterator_to_array($this->makeService()->getUrlsForPages(), false);
 
         // Home carries the latest rating of the whole site.
         self::assertStringStartsWith('2026-10-01T18:30:00', $urls[0]['lastmod'] ?? '');
@@ -115,7 +96,7 @@ class SitemapServiceTest extends TestCase
         ]);
 
         // Home and ranking only.
-        self::assertCount(4, $this->makeService()->getUrlsForPages());
+        self::assertCount(4, iterator_to_array($this->makeService()->getUrlsForPages(), false));
     }
 
     // -------------------------------------------------------------------
@@ -124,29 +105,28 @@ class SitemapServiceTest extends TestCase
 
     public function testPhotosAreGroupedUnderTheirCoasterPage(): void
     {
-        $voltron = $this->createCoaster(42, 'voltron-europa-park');
-        $taron = $this->createCoaster(43, 'taron-phantasialand');
         $this->imageRepository->method('findForSitemap')->willReturn([
-            $this->createImage(100, $voltron),
-            $this->createImage(101, $voltron),
-            $this->createImage(200, $taron),
+            $this->imageRow(100, 42, 'voltron-europa-park'),
+            $this->imageRow(101, 42, 'voltron-europa-park'),
+            $this->imageRow(150, 7, null),
+            $this->imageRow(200, 43, 'taron-phantasialand'),
         ]);
 
-        $urls = $this->makeService()->getUrlsForImages();
+        $urls = iterator_to_array($this->makeService()->getUrlsForImages(), false);
 
+        // The coaster without a slug has no page to attach its photo to.
         self::assertCount(2, $urls);
         self::assertSame('https://captaincoaster.com/en/show_coaster/42/voltron-europa-park', $urls[0]['loc']);
         self::assertCount(2, $urls[0]['images']);
+        self::assertSame('https://captaincoaster.com/en/show_coaster/43/taron-phantasialand', $urls[1]['loc']);
         self::assertCount(1, $urls[1]['images']);
     }
 
     public function testImageLocIsTheSignedV2LightboxUrl(): void
     {
-        $this->imageRepository->method('findForSitemap')->willReturn([
-            $this->createImage(48213, $this->createCoaster(42, 'voltron-europa-park')),
-        ]);
+        $this->imageRepository->method('findForSitemap')->willReturn([$this->imageRow(48213, 42, 'voltron-europa-park')]);
 
-        $urls = $this->makeService()->getUrlsForImages();
+        $urls = iterator_to_array($this->makeService()->getUrlsForImages(), false);
 
         self::assertMatchesRegularExpression(
             '#^https://pictures\.example\.com/i/48213/[0-9a-f]{6}/[0-9a-f]{6}/1440x1440/voltron-europa-park\.jpg$#',
@@ -156,11 +136,9 @@ class SitemapServiceTest extends TestCase
 
     public function testImageLocIsTheSignedLegacyUrlWhileV2IsOff(): void
     {
-        $this->imageRepository->method('findForSitemap')->willReturn([
-            $this->createImage(48213, $this->createCoaster(42, 'voltron-europa-park')),
-        ]);
+        $this->imageRepository->method('findForSitemap')->willReturn([$this->imageRow(48213, 42, 'voltron-europa-park')]);
 
-        $urls = $this->makeService(false)->getUrlsForImages();
+        $urls = iterator_to_array($this->makeService(false)->getUrlsForImages(), false);
 
         self::assertMatchesRegularExpression(
             '#^https://pictures\.example\.com/1440x1440/jpg/48213\.jpg\?s=[0-9a-f]{32}$#',
@@ -174,6 +152,6 @@ class SitemapServiceTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
 
-        $this->makeService()->getUrlsForImages();
+        iterator_to_array($this->makeService()->getUrlsForImages(), false);
     }
 }

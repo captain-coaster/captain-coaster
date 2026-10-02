@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\DTO\PictureRef;
 use App\Repository\CoasterRepository;
 use App\Repository\ImageRepository;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Builds the entries of sitemap.xml (pages) and sitemap_image.xml (photos).
+ * Lists the entries of sitemap.xml (pages) and sitemap_image.xml (photos); SitemapWriter turns
+ * them into files.
  *
  * Follows Google's sitemap rules: every language version lists all versions including itself,
  * <lastmod> is the only optional tag kept (<changefreq> and <priority> are ignored), and the
  * image sitemap has one entry per page holding its photos (<image:loc> only: the title and
  * geo_location tags were removed from the format).
- *
- * Errors are not caught here: an empty list would be cached and served as the sitemap.
  */
 class SitemapService
 {
@@ -33,65 +33,75 @@ class SitemapService
     ) {
     }
 
-    /** @return list<array{loc: string, alternates: array<string, string>, lastmod?: string}> */
-    public function getUrlsForPages(): array
+    /** @return iterable<array{loc: string, alternates: array<string, string>, lastmod?: string}> */
+    public function getUrlsForPages(): iterable
     {
         $coasters = $this->coasterRepository->findForSitemap();
 
         // Home: changes with every rating. 'Y-m-d H:i:s' strings sort chronologically.
         $lastRatings = array_filter(array_column($coasters, 'lastmod'));
-        $urls = $this->localizedUrls('default_index', [], [] !== $lastRatings ? new \DateTimeImmutable(max($lastRatings)) : null);
+        yield from $this->localizedUrls('default_index', [], [] !== $lastRatings ? new \DateTimeImmutable(max($lastRatings)) : null);
 
         // Ranking: recomputed once a month.
-        array_push($urls, ...$this->localizedUrls('ranking_index', [], new \DateTimeImmutable('first day of this month midnight')));
+        yield from $this->localizedUrls('ranking_index', [], new \DateTimeImmutable('first day of this month midnight'));
 
         foreach ($coasters as $coaster) {
             if (null === $coaster['slug']) {
                 continue;
             }
 
-            array_push($urls, ...$this->localizedUrls(
+            yield from $this->localizedUrls(
                 'show_coaster',
                 ['id' => $coaster['id'], 'slug' => $coaster['slug']],
                 null !== $coaster['lastmod'] ? new \DateTimeImmutable($coaster['lastmod']) : null,
-            ));
+            );
         }
-
-        return $urls;
     }
 
     /**
      * One entry per coaster page (English URL) with its published, watermarked photos.
      *
-     * @return list<array{loc: string, images: list<string>}>
+     * @return iterable<array{loc: string, images: list<string>}>
      */
-    public function getUrlsForImages(): array
+    public function getUrlsForImages(): iterable
     {
-        $urls = [];
+        $coasterId = null;
+        $loc = '';
+        $images = [];
 
-        foreach ($this->imageRepository->findForSitemap() as $image) {
-            $coaster = $image->getCoaster();
-            $coasterId = $coaster->getId();
-            if (null === $coasterId || null === $coaster->getSlug()) {
+        // Rows come grouped by coaster.
+        foreach ($this->imageRepository->findForSitemap() as $row) {
+            if (null === $row['coasterSlug']) {
                 continue;
             }
 
-            $urls[$coasterId] ??= [
-                'loc' => $this->router->generate(
+            if ($row['coasterId'] !== $coasterId) {
+                if ([] !== $images) {
+                    yield ['loc' => $loc, 'images' => $images];
+                }
+                $coasterId = $row['coasterId'];
+                $loc = $this->router->generate(
                     'show_coaster',
-                    ['id' => $coasterId, 'slug' => $coaster->getSlug(), '_locale' => 'en'],
+                    ['id' => $coasterId, 'slug' => $row['coasterSlug'], '_locale' => 'en'],
                     UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-                'images' => [],
-            ];
+                );
+                $images = [];
+            }
 
-            if (\count($urls[$coasterId]['images']) < self::MAX_IMAGES_PER_PAGE) {
+            if (\count($images) < self::MAX_IMAGES_PER_PAGE) {
                 // The lightbox derivative: whole photo, inside 1440x1440, real .jpg extension.
-                $urls[$coasterId]['images'][] = $this->pictureUrlSigner->signImage($image, 1440, 1440, 'jpg');
+                $images[] = $this->pictureUrlSigner->signImage(
+                    new PictureRef($row['id'], $row['filename'], $row['focalX'], $row['focalY'], $row['watermarked'], $row['coasterSlug']),
+                    1440,
+                    1440,
+                    'jpg',
+                );
             }
         }
 
-        return array_values($urls);
+        if ([] !== $images) {
+            yield ['loc' => $loc, 'images' => $images];
+        }
     }
 
     /**
