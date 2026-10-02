@@ -238,6 +238,22 @@ apply_dependency_changes() {
     fi
 }
 
+# The sitemaps are static files written by the daily `sitemap:update` cron
+# (public/sitemap.xml, public/sitemap_image.xml, not in git). Generate them
+# only when missing -- first deploy of this layout, or a new server -- so a
+# crawler doesn't get a 404 until the next cron run. Never blocks a deploy.
+ensure_sitemaps() {
+    if [ -f "$PROJECT_DIR/public/sitemap.xml" ] && [ -f "$PROJECT_DIR/public/sitemap_image.xml" ]; then
+        return 0
+    fi
+    log "Sitemap files missing, generating..."
+    if php bin/console sitemap:update --env=prod --no-debug; then
+        success "Sitemaps generated"
+    else
+        warning "Could not generate the sitemaps. Run manually: php bin/console sitemap:update --env=prod"
+    fi
+}
+
 # Closing sequence shared by full_deploy() and rollback() — cheap regardless
 # of what changed, always safe to run.
 finalize_deploy() {
@@ -245,6 +261,7 @@ finalize_deploy() {
     warm_cache
     reload_php_fpm
     restart_messenger_worker
+    ensure_sitemaps
     verify_deployment
     disable_maintenance
 }

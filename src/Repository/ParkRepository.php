@@ -93,4 +93,21 @@ class ParkRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+
+    /**
+     * Id and slug of every park, for the pages sitemap.
+     *
+     * @return list<array{id: int, slug: string}>
+     */
+    public function findForSitemap(): array
+    {
+        /** @var list<array{id: int, slug: string}> $rows */
+        $rows = $this->createQueryBuilder('p')
+            ->select('p.id AS id', 'p.slug AS slug')
+            ->orderBy('p.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $rows;
+    }
 }

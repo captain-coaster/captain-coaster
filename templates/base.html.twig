@@ -12,6 +12,17 @@
   <meta name="apple-mobile-web-app-title" content="{{ 'app.name'|trans }}">
   {# The canvas token (--bg), so the browser chrome runs into the page. With dark mode, split into two tags with media="(prefers-color-scheme: light|dark)". #}
   <meta name="theme-color" content="#F3F6FB">
+  {# An indexable page sets `canonical` ({route, params}): its canonical URL and its language versions (every locale and
+     x-default), the same as its sitemap.xml entry (SitemapEntries). Built from the entity, so a query string or a wrong
+     slug in the address points back to the one URL. #}
+  {% if canonical is defined %}
+    {% set canonicalParams = canonical.params|default({}) %}
+    <link rel="canonical" href="{{ url(canonical.route, canonicalParams|merge({_locale: app.request.locale})) }}">
+    {% for locale in locales %}
+      <link rel="alternate" hreflang="{{ locale }}" href="{{ url(canonical.route, canonicalParams|merge({_locale: locale})) }}">
+    {% endfor %}
+    <link rel="alternate" hreflang="x-default" href="{{ url(canonical.route, canonicalParams|merge({_locale: locales|first})) }}">
+  {% endif %}
   {% block header %}{% endblock %}
   {# Hashed URL comes from the build manifest; the Vite dev server serves fonts itself. #}
   {% if app.environment != 'dev' %}

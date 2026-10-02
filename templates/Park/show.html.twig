@@ -5,6 +5,7 @@
 {% set subTitle = park.country.name|trans([], 'database') %}
 {% set parentUrl = path('map_index', {'parkslug': park.slug}) %}
 {% block title %}{{ title }} • {{ subTitle }}{% endblock %}
+{% set canonical = {route: 'park_show', params: {id: park.id, slug: park.slug}} %}
 {% if park.formerNames %}
     {% set secondaryTitle = park.formerNames|join(', ') %}
 {% endif %}
