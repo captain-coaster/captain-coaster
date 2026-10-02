@@ -18,24 +18,24 @@
 
                             {# Styled by section-header.css until the coaster page is redesigned. #}
                             <select name="filters[sort]" class="block w-full" aria-label="{{ 'review.sort.label'|trans }}">
-                                    <option value=""
-                                            {% if filters is not null or filters.sort == '' %}selected{% endif %}>
-                                        {{ 'review.sort.default'|trans() }}
-                                    </option>
-                                    <option value="updatedAt|asc"
-                                            {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
-                                        {{ 'review.sort.oldest'|trans() }}
-                                    </option>
-                                    <option value="updatedAt|desc"
-                                            {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
-                                        {{ 'review.sort.newest' |trans() }}
-                                    </option>
-                                    <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
-                                        {{ 'review.sort.highest' |trans() }}
-                                    </option>
-                                    <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
-                                        {{ 'review.sort.lowest' |trans() }}
-                                    </option>
+                                <option value=""
+                                        {% if filters is not null or filters.sort == '' %}selected{% endif %}>
+                                    {{ 'review.sort.default'|trans() }}
+                                </option>
+                                <option value="updatedAt|asc"
+                                        {% if filters.sort == 'updatedAt|asc' %}selected{% endif %}>
+                                    {{ 'review.sort.oldest'|trans() }}
+                                </option>
+                                <option value="updatedAt|desc"
+                                        {% if filters.sort == 'updatedAt|desc' %}selected{% endif %}>
+                                    {{ 'review.sort.newest' |trans() }}
+                                </option>
+                                <option value="value|desc" {% if filters.sort == 'value|desc' %}selected{% endif %}>
+                                    {{ 'review.sort.highest' |trans() }}
+                                </option>
+                                <option value="value|asc" {% if filters.sort == 'value|asc' %}selected{% endif %}>
+                                    {{ 'review.sort.lowest' |trans() }}
+                                </option>
                             </select>
                         </form>
                     {% endif %}
