@@ -7,6 +7,7 @@ notif:
         message: 'Check it out: Captain Coaster just gave you the "{name}" badge!'
     announcement:
         emailDefaultChanged: 'Email notifications are now off by default. Tap to turn them back on.'
+        bannerRetired: 'Personal banners are being retired: they stop updating on 31 October 2026. If you embedded yours on a forum or a website, please remove it.'
     ranking:
         message: 'World Roller Coaster Rankings have just been updated!'
         messageWithNewCoaster: 'World Roller Coaster Rankings have just been updated. {name} has been added to the ranking!'

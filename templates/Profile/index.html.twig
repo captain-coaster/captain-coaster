@@ -12,18 +12,6 @@
           <!-- stats -->
           {% include 'Profile/user_stats.html.twig' with {'stats': stats} only %}
           <!-- stats -->
-          <!-- banner -->
-          <div class="cc-panel">
-            <div class="cc-panel__body">
-              <h4 class="content-group-lg">
-                {{ 'profile.banner.title'|trans }}
-              </h4>
-              <div id="my-banner" class="text-center content-group">
-                  {% include 'Profile/banner.html.twig' with {'user': user} only %}
-              </div>
-            </div>
-          </div>
-          <!-- banner -->
           <!-- badges -->
           <div class="cc-panel cc-panel--flat">
             <div class="cc-panel__heading">
