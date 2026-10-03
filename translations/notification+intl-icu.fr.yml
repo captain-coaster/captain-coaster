@@ -7,6 +7,7 @@ notif:
         message: 'Wahou, Captain Coaster vient de te décerner le badge "{name}" !'
     announcement:
         emailDefaultChanged: 'Les notifications par e-mail sont désormais désactivées par défaut. Touche ici pour les réactiver.'
+        bannerRetired: "Les bannières personnalisées s'arrêtent : elles ne seront plus mises à jour après le 31 octobre 2026. Si tu as intégré la tienne sur un forum ou un site, pense à la retirer."
     ranking:
         message: "Le classement mondial des coasters du monde vient d'être mis à jour !"
         messageWithNewCoaster: "Le classement mondial des coasters du monde vient d'être mis à jour. {name} a été ajouté au classement !"

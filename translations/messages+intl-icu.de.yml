@@ -171,13 +171,6 @@ profile:
         photos: Meine Fotos
         reviews: Meine Rezensionen
     badge: Abzeichen
-    banner:
-        title: Persönliches Banner
-        getbbcode: Kopiere BBCode (Foren)
-        gethtml: Kopiere HTML
-        copied: 'Kopiert!'
-        copy_failed: Kopieren fehlgeschlagen
-        unavailable: 'Bewerte und ranke Achterbahnen, um dein persönliches Banner zu erstellen! Die Aktualisierung kann einige Stunden dauern.'
     stats:
         title: 'Überblick'
         ridden_coasters: '{count, plural, =1 {Achterbahn} other {Achterbahnen}}'

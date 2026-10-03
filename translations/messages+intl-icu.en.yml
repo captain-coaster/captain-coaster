@@ -171,13 +171,6 @@ profile:
         photos: 'My photos'
         reviews: 'My reviews'
     badge: 'Badges'
-    banner:
-        title: 'Personal banner'
-        getbbcode: 'Copy BBCode (forums)'
-        gethtml: 'Copy html'
-        copied: 'Copied!'
-        copy_failed: 'Copy failed'
-        unavailable: 'Rate and rank coasters to generate your personal banner! Banner can take a few hours to update.'
     stats:
         title: 'Overview'
         ridden_coasters: '{count, plural, =1 {coaster} other {coasters}}'

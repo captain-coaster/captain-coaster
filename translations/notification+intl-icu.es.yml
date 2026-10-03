@@ -7,6 +7,7 @@ notif:
         message: 'Échale un vistazo: ¡Captain Coaster acaba de darte la insignia "{name}"!'
     announcement:
         emailDefaultChanged: 'Las notificaciones por correo ahora están desactivadas por defecto. Toca aquí para reactivarlas.'
+        bannerRetired: 'Los banners personalizados se retiran: dejarán de actualizarse el 31 de octubre de 2026. Si insertaste el tuyo en un foro o un sitio web, retíralo.'
     ranking:
         message: '¡La clasificación de las mejores montañas rusas del mundo acaba de actualizarse!'
         messageWithNewCoaster: 'La clasificación de las mejores montañas rusas del mundo acaba de actualizarse. ¡{name} ha sido añadido al ranking!'
