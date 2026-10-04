@@ -29,7 +29,9 @@ class BannerGenerateCommand extends Command
 
     protected function configure(): void
     {
-        $this->addOption('all', null, InputOption::VALUE_NONE, 'Regenerate banners for all users (migration)');
+        $this
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Regenerate banners for all users (migration)')
+            ->addOption('ids', null, InputOption::VALUE_REQUIRED, 'Regenerate banners for these comma-separated user ids only');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -38,8 +40,14 @@ class BannerGenerateCommand extends Command
         $stopwatch->start('banner');
 
         $isAll = $input->getOption('all');
+        /** @var string|null $idsOption */
+        $idsOption = $input->getOption('ids');
 
-        if ($isAll) {
+        if (null !== $idsOption) {
+            $ids = array_values(array_unique(array_filter(array_map(intval(...), explode(',', $idsOption)))));
+            $output->writeln(\sprintf('Generating banners for %d given users...', \count($ids)));
+            $users = $this->userRepository->findBy(['id' => $ids]);
+        } elseif ($isAll) {
             $output->writeln('Generating banners for ALL users...');
             $users = $this->userRepository->findAll();
         } else {

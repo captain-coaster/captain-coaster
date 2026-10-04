@@ -171,13 +171,6 @@ profile:
         photos: Mis fotos
         reviews: Mis reseñas
     badge: Insignias
-    banner:
-        title: Banner personalizado
-        getbbcode: Copiar BBCode (foros)
-        gethtml: Copiar html
-        copied: '¡Copiado!'
-        copy_failed: Error al copiar
-        unavailable: '¡Califica y clasifica montañas rusas para generar tu banner personalizado! La actualización puede tardar unas horas.'
     stats:
         title: 'Visión general'
         ridden_coasters: '{count, plural, =1 {montaña rusa} other {montañas rusas}}'
