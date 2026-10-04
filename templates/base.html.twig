@@ -30,9 +30,6 @@
     <link rel="preload" href="{{ asset('build/assets/fonts/barlow-condensed-600-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
   {% endif %}
   {{ reprise_entry_link_tags('app') }}
-  {% if app.environment != 'dev' %}
-  <script defer src="https://umami.captaincoaster.com/script.js" data-website-id="f4b63258-75c9-45d8-a774-40e0a228aa50"></script>
-  {% endif %}
   {% block stylesheets %}{% endblock %}
 </head>
 {# Active nav section, shared by Nav:Header and Nav:TabBar. #}
