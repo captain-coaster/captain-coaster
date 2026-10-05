@@ -75,6 +75,33 @@ class PictureUrlSignerTest extends TestCase
         );
     }
 
+    public function testV2PhotoWithARevMatchesTheLambdaVector(): void
+    {
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
+        $picture = new PictureRef(48213, '48213.jpg', 0.4213, 0.5871, true, 'voltron-europa-park', 2);
+
+        $this->assertSame(
+            'https://pictures.example.com/i/48213/967ead/4476dd/480x300/voltron-europa-park.avif',
+            $signer->signImage($picture, 480, 300, 'avif')
+        );
+    }
+
+    public function testANullRevDoesNotChangeTheUrl(): void
+    {
+        $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);
+
+        // Same expected URLs as the two vectors around this test, which predate `rev`: adding
+        // the property must not move a single existing URL (it would regenerate every variant).
+        $this->assertSame(
+            'https://pictures.example.com/i/48213/b765d7/a4247d/480x300/voltron-europa-park.avif',
+            $signer->signImage(new PictureRef(48213, '48213.jpg', 0.4213, 0.5871, true, 'voltron-europa-park', null), 480, 300, 'avif')
+        );
+        $this->assertSame(
+            'https://pictures.example.com/i/7/0765b9/fba667/96x72/blue-fire.jpg',
+            $signer->signImage(PictureRef::fromRow(['id' => 7, 'filename' => '7.jpg', 'focalX' => null, 'focalY' => null, 'watermarked' => false, 'rev' => null, 'coasterId' => 1, 'coasterSlug' => 'blue-fire']), 96, 72, 'jpg')
+        );
+    }
+
     public function testV2PhotoWithoutFocalPointMatchesTheLambdaVector(): void
     {
         $signer = new PictureUrlSigner('https://pictures.example.com', 'test-secret', true);

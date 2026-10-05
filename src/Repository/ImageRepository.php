@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\DTO\PictureRef;
 use App\Entity\Coaster;
 use App\Entity\Image;
 use App\Entity\User;
@@ -13,6 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Image>
+ *
+ * @phpstan-import-type PictureRow from PictureRef
  */
 class ImageRepository extends ServiceEntityRepository
 {
@@ -129,16 +132,16 @@ class ImageRepository extends ServiceEntityRepository
     }
 
     /**
-     * Published, watermarked photos as plain rows (no entity hydration), grouped by coaster and
-     * in the coaster page's order -- the image sitemap lists them per page.
+     * Published, watermarked photos without entity hydration, grouped by coaster and in the
+     * coaster page's order -- the image sitemap lists them per page.
      *
-     * @return list<array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string}>
+     * @return list<array{coasterId: int, coasterSlug: ?string, picture: PictureRef}>
      */
     public function findForSitemap(): array
     {
-        /** @var list<array{id: int, filename: string, focalX: ?float, focalY: ?float, watermarked: bool, coasterId: int, coasterSlug: ?string}> $rows */
+        /** @var list<PictureRow> $rows */
         $rows = $this->createQueryBuilder('i')
-            ->select('i.id AS id', 'i.filename AS filename', 'i.focalX AS focalX', 'i.focalY AS focalY', 'i.watermarked AS watermarked', 'c.id AS coasterId', 'c.slug AS coasterSlug')
+            ->select(PictureRef::SELECT)
             ->innerJoin('i.coaster', 'c')
             ->where('i.enabled = 1')
             ->andWhere('i.watermarked = 1')
@@ -148,6 +151,9 @@ class ImageRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
 
-        return $rows;
+        return array_map(
+            static fn (array $row): array => ['coasterId' => $row['coasterId'], 'coasterSlug' => $row['coasterSlug'], 'picture' => PictureRef::fromRow($row)],
+            $rows,
+        );
     }
 }

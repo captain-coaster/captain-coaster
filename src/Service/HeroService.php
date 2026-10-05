@@ -27,7 +27,7 @@ use Symfony\Contracts\Cache\ItemInterface;
 class HeroService
 {
     // Bumped with the pick's shape, so a deploy never reads an entry in the old one.
-    private const string CACHE_KEY = 'hero_pick_v3';
+    private const string CACHE_KEY = 'hero_pick_v4';
 
     private const array CATEGORIES = ['upcoming', 'new', 'trending', 'photo'];
 
