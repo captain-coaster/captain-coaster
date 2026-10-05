@@ -51,8 +51,8 @@ class CountryCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            // The name follows the code.
-            CountryField::new('code'),
+            // The name follows the code. Empty by default, so the first country of the list isn't created by mistake.
+            CountryField::new('code')->setFormTypeOption('placeholder', ''),
             TextField::new('name')->hideOnForm(),
             AssociationField::new('continent'),
             TextField::new('slug')->onlyWhenUpdating()->setFormTypeOption('disabled', 'disabled'),
